@@ -1,0 +1,7 @@
+; Reusable instruction specs, in a separate theory to break the dependency
+; cycle: generated traces import these specs, and ZesislarProofs depends on
+; the generated traces.
+(coq.theory
+ (name InstrSpecs)
+ (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
+ (theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2))

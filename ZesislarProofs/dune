@@ -1,0 +1,8 @@
+(include_subdirs qualified)
+
+(coq.theory
+ (name ZesislarProofs)
+ (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
+ (theories
+   isla isla.riscv64 InstrSpecs
+   lithium iris stdpp RecordUpdate Ltac2))

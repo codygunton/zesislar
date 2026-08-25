@@ -1,0 +1,2 @@
+; Exclude build outputs from dune's source tree.
+(dirs :standard \ build)

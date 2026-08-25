@@ -1,0 +1,14 @@
+/build/
+/_build/
+__pycache__/
+
+# Intermediate isla output; the reviewed Coq beside it is committed.
+*.isla
+
+# Local tracking documents.
+/STATUS.md
+/docs/ai/
+/*.log
+
+# Local opam switch pointer (machine-specific).
+.coq-switch
