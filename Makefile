@@ -26,6 +26,11 @@ DUMP      := build/endpoint-entry-dump/entrypoints.dump
 TRACE_DIR := generated/isla-traces/entrypoints
 TRACE_COQ := IslaTraces.entrypoints
 
+ZKVM_EXIT_DUMP      := experiments/islaris-zkvm-exit/zkvm_exit.dump
+ZKVM_EXIT_TRACE_DIR := generated/isla-traces/zkvm_exit
+ZKVM_EXIT_TRACE_COQ := IslaTraces.zkvm_exit
+ZKVM_EXIT_ISLA_CFG  := riscv64_zesu_exit.toml
+
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
 ISLA_CFG := riscv64_zesu.toml
@@ -66,6 +71,20 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 .PHONY: traces
 traces: $(TRACE_DIR)/instrs.v
 
+$(ISLA_ETC)/$(ZKVM_EXIT_ISLA_CFG): experiments/islaris-zkvm-exit/$(ZKVM_EXIT_ISLA_CFG)
+	install -m644 $< $@
+
+$(ZKVM_EXIT_TRACE_DIR)/instrs.v: $(ZKVM_EXIT_DUMP) $(ISLA_ETC)/$(ZKVM_EXIT_ISLA_CFG)
+	mkdir -p $(ZKVM_EXIT_TRACE_DIR)
+	$(OPAM) islaris $(ZKVM_EXIT_DUMP) -j 3 -o $(ZKVM_EXIT_TRACE_DIR) \
+	  --coqdir=$(ZKVM_EXIT_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	       $(ZKVM_EXIT_TRACE_DIR)/dune
+
+.PHONY: zkvm-exit-traces
+zkvm-exit-traces: $(ZKVM_EXIT_TRACE_DIR)/instrs.v
+
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
 trace-one:
@@ -83,11 +102,11 @@ regs:
 # --- build proofs -------------------------------------------------------
 .PHONY: proof
 proof: traces
-	$(OPAM) dune build @all
+	$(OPAM) dune build --root . @all
 
 .PHONY: proof-verbose
 proof-verbose: traces
-	$(OPAM) dune build @all --display short
+	$(OPAM) dune build --root . @all --display short
 
 # --- housekeeping -------------------------------------------------------
 .PHONY: doctor
@@ -134,7 +153,7 @@ check-viewer:
 
 .PHONY: check-local
 check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
-	$(OPAM) dune build @all
+	$(OPAM) dune build --root . @all
 
 .PHONY: check
 check: doctor check-local
@@ -143,7 +162,7 @@ check: doctor check-local
 .PHONY: clean
 clean:
 	rm -rf build
-	$(OPAM) dune clean 2>/dev/null || true
+	$(OPAM) dune clean --root . 2>/dev/null || true
 
 .PHONY: distclean
 distclean: clean
