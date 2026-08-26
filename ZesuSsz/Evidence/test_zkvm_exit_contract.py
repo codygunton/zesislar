@@ -32,7 +32,8 @@ class ZkvmExitContractTest(unittest.TestCase):
                     {"address": 2000, "bytes": "aabb"}],
                 "occurrences": [],
             }, {
-                "qualified": "zkvm_exit", "executedExtentPcs": [4, 8, 12, 16],
+                "qualified": "zkvm_exit", "entryReached": True,
+                "executedExtentPcs": [4, 8, 12, 16],
                 "hostWrites": [], "occurrences": [{
                     "entryRegisters": {"available": 2 ** 32 - 1, "values": registers},
                     "afterPc": 16, "executedInstructionCount": 4, "hostWrites": [],

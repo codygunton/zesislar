@@ -101,12 +101,18 @@ let
     cp first-evidence.json "$out/evidence.json"
     cp first-minimal.trace "$out/minimal.trace"
     cp first-invalid.trace "$out/invalid.trace"
-    python ${../ZesuSsz/Evidence/check_zkvm_exit_contract.py} \
+    PYTHONPATH=${../ZesuSsz/Evidence} python ${../ZesuSsz/Evidence/check_zkvm_exit_contract.py} \
       --spec ${../contracts/level1-zkvm-exit-evidence.json} \
       --manifest ${manifest}/contracts.json \
       --bindings ${bindings}/bindings.json \
       --evidence "$out/evidence.json" \
       --output "$out/zkvm-exit-contract.json"
+    PYTHONPATH=${../ZesuSsz/Evidence} python ${../ZesuSsz/Evidence/check_write_failure_contract.py} \
+      --spec ${../contracts/level1-write-failure-evidence.json} \
+      --manifest ${manifest}/contracts.json \
+      --bindings ${bindings}/bindings.json \
+      --evidence "$out/evidence.json" \
+      --output "$out/write-failure-contract.json"
   '';
 
   viewerData = pkgs.runCommand "zesu-ssz-level1-viewer-data" {
@@ -133,6 +139,7 @@ let
     cp ${bindings}/bindings.json "$out/level1-boundary-bindings.json"
     cp ${evidence}/evidence.json "$out/level1-evidence.json"
     cp ${evidence}/zkvm-exit-contract.json "$out/zkvm-exit-contract.json"
+    cp ${evidence}/write-failure-contract.json "$out/write-failure-contract.json"
   '';
 in {
   inherit bindings cfg evidence manifest rocq viewerData;

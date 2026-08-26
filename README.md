@@ -84,6 +84,6 @@ The evidence build clears the guest environment before each QEMU run.
 It generates two trace sets and requires byte-identical traces and JSON reports.
 Run `make check-evidence-reproducible` to force Nix to rebuild and compare the store output.
 
-The evidence output also contains `zkvm-exit-contract.json`.
-This pilot tests eight observable `zkvm_exit` clauses for every vector.
-It lists four model clauses that the current QEMU trace cannot measure.
+The evidence output contains `zkvm-exit-contract.json` and `write-failure-contract.json`.
+The shared framework checks artifact identity, boundaries, occurrences, registers, PC extents, and report structure.
+Each report separates passed observable clauses from model clauses that QEMU cannot measure.
