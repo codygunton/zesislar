@@ -105,6 +105,10 @@
         "nixpkgs": [
           "binaryFv",
           "nixpkgs"
+        ],
+        "zesu": [
+          "binaryFv",
+          "zesu"
         ]
       }
     },

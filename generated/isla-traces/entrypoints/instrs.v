@@ -7,10 +7,10 @@ Require Export IslaTraces.entrypoints.a14d30.
 Require Export IslaTraces.entrypoints.a161c0.
 
 Definition instr_map := [
-  (0x10140%Z, a10140 (* auipc t0,0x2000a *));
-  (0x101c4%Z, a101c4 (* auipc t0,0x2400a *));
-  (0x12168%Z, a12168 (* addi sp,sp,-2032 *));
-  (0x14ccc%Z, a14ccc (* auipc a0,0x24005 *));
-  (0x14d30%Z, a14d30 (* addi sp,sp,-2000 *));
-  (0x161c0%Z, a161c0 (* auipc a0,0x1 *))
+  (0x10140%Z, a10140 (* auipc t0, 0x2000a *));
+  (0x101c4%Z, a101c4 (* auipc t0, 0x2400a *));
+  (0x12168%Z, a12168 (* addi sp, sp, -0x7f0 *));
+  (0x14ccc%Z, a14ccc (* auipc a0, 0x24005 *));
+  (0x14d30%Z, a14d30 (* addi sp, sp, -0x7d0 *));
+  (0x161c0%Z, a161c0 (* auipc a0, 0x1 *))
 ].

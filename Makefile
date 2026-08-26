@@ -22,7 +22,7 @@ OPAM := opam exec --switch=$(OPAM_SWITCH) --
 PROG      ?= entrypoints
 LOAD_ADDR ?= 0x10300000
 
-DUMP      := verification-target/zesu/entrypoints.dump
+DUMP      := build/endpoint-entry-dump/entrypoints.dump
 TRACE_DIR := generated/isla-traces/entrypoints
 TRACE_COQ := IslaTraces.entrypoints
 
@@ -34,17 +34,18 @@ ISLA_ETC := $(shell opam var --switch=$(OPAM_SWITCH) prefix)/etc/islaris
 .PHONY: all
 all: proof
 
-# --- disassemble --------------------------------------------------------
-# TODO: add a target to produce the ELF from the Zesu nix build.
-# For now, assume the ELF is available and the dump is hand-maintained.
+# --- pinned target ------------------------------------------------------
+
+.PHONY: target-source
+target-source:
+	nix run .#link-zesu-source
 
 .PHONY: disasm
-disasm:
-	@echo "TODO: produce $(SRC_DIR)/$(PROG).raw.dump from the ELF"
+disasm: $(DUMP)
 
-.PHONY: check-dump
-check-dump:
-	@echo "TODO: diff annotated dump against fresh objdump"
+$(DUMP):
+	mkdir -p build
+	nix build .#endpoint-entry-dump --out-link build/endpoint-entry-dump
 
 # --- install the isla config -------------------------------------------
 $(ISLA_ETC)/$(ISLA_CFG): ZesuSsz/$(ISLA_CFG)
