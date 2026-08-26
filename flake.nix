@@ -54,6 +54,7 @@
           link-zesu-source = {
             type = "app";
             program = "${target.sourceLink}/bin/link-zesu-source";
+            meta.description = "Link verification-target/zesu to the pinned Nix source";
           };
         });
 
