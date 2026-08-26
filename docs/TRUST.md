@@ -30,6 +30,9 @@ The dynamic evidence build clears the QEMU guest environment.
 It requires two independent runs to produce byte-identical traces and reports.
 
 The contract evidence framework checks only clauses visible in the QEMU trace.
-Current checkers cover `zkvm_exit` and `writeFailure`.
+Current checkers cover all six Level 1 contracts.
 It does not convert successful evidence into a theorem premise.
 The report names each contract clause that the trace cannot measure.
+
+The `sszDecode` report does not claim the EVM-Sail semantic relation.
+The `writeSuccess` report does not claim full decoded-value equality.

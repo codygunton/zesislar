@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-from contract_evidence import (check_pc_extent, complete_registers, context,
-                               make_report, one, run_cli)
+from contract_evidence import (check_pc_extent, check_preserved_integer_registers,
+                               complete_registers, context, make_report, one, run_cli)
 
 
 def validate(spec: dict, manifest: dict, bindings: dict, evidence: dict) -> dict:
@@ -42,9 +42,8 @@ def validate(spec: dict, manifest: dict, bindings: dict, evidence: dict) -> dict
         if actual_writes != expected_writes or len(run.occurrence["memoryWrites"]) != 2:
             raise ValueError(f"writeFailure memory frame differs for {label}")
 
-        for register in spec["calleePreservedIntegerRegisters"]:
-            if before[register] != after[register]:
-                raise ValueError(f"writeFailure changed preserved x{register} for {label}")
+        check_preserved_integer_registers(
+            before, after, spec["calleePreservedIntegerRegisters"], f"writeFailure for {label}")
         terminal = one(run.vector["terminalOutputs"], f"terminal output for {label}")
         if terminal["address"] != output["address"] or terminal["bytes"] != expected_bytes:
             raise ValueError(f"writeFailure stdout append differs for {label}")

@@ -101,18 +101,29 @@ let
     cp first-evidence.json "$out/evidence.json"
     cp first-minimal.trace "$out/minimal.trace"
     cp first-invalid.trace "$out/invalid.trace"
-    PYTHONPATH=${../ZesuSsz/Evidence} python ${../ZesuSsz/Evidence/check_zkvm_exit_contract.py} \
-      --spec ${../contracts/level1-zkvm-exit-evidence.json} \
-      --manifest ${manifest}/contracts.json \
-      --bindings ${bindings}/bindings.json \
-      --evidence "$out/evidence.json" \
-      --output "$out/zkvm-exit-contract.json"
-    PYTHONPATH=${../ZesuSsz/Evidence} python ${../ZesuSsz/Evidence/check_write_failure_contract.py} \
-      --spec ${../contracts/level1-write-failure-evidence.json} \
-      --manifest ${manifest}/contracts.json \
-      --bindings ${bindings}/bindings.json \
-      --evidence "$out/evidence.json" \
-      --output "$out/write-failure-contract.json"
+    check_contract() {
+      script="$1"
+      spec="$2"
+      output="$3"
+      PYTHONPATH=${../ZesuSsz/Evidence} python "$script" \
+        --spec "$spec" \
+        --manifest ${manifest}/contracts.json \
+        --bindings ${bindings}/bindings.json \
+        --evidence "$out/evidence.json" \
+        --output "$out/$output"
+    }
+    check_contract ${../ZesuSsz/Evidence/check_read_input_contract.py} \
+      ${../contracts/level1-read-input-evidence.json} read-input-contract.json
+    check_contract ${../ZesuSsz/Evidence/check_allocator_get_contract.py} \
+      ${../contracts/level1-allocator-get-evidence.json} allocator-get-contract.json
+    check_contract ${../ZesuSsz/Evidence/check_decode_contract.py} \
+      ${../contracts/level1-decode-evidence.json} ssz-decode-contract.json
+    check_contract ${../ZesuSsz/Evidence/check_write_success_contract.py} \
+      ${../contracts/level1-write-success-evidence.json} write-success-contract.json
+    check_contract ${../ZesuSsz/Evidence/check_write_failure_contract.py} \
+      ${../contracts/level1-write-failure-evidence.json} write-failure-contract.json
+    check_contract ${../ZesuSsz/Evidence/check_zkvm_exit_contract.py} \
+      ${../contracts/level1-zkvm-exit-evidence.json} zkvm-exit-contract.json
   '';
 
   viewerData = pkgs.runCommand "zesu-ssz-level1-viewer-data" {
@@ -138,8 +149,7 @@ let
     cp ${manifest}/contracts.json "$out/level1-manifest.json"
     cp ${bindings}/bindings.json "$out/level1-boundary-bindings.json"
     cp ${evidence}/evidence.json "$out/level1-evidence.json"
-    cp ${evidence}/zkvm-exit-contract.json "$out/zkvm-exit-contract.json"
-    cp ${evidence}/write-failure-contract.json "$out/write-failure-contract.json"
+    cp ${evidence}/*-contract.json "$out/"
   '';
 in {
   inherit bindings cfg evidence manifest rocq viewerData;

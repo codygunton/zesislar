@@ -61,6 +61,23 @@ def complete_registers(snapshot: dict, description: str) -> list[int]:
     return snapshot["values"]
 
 
+def named_binding(binding: dict, name: str) -> dict:
+    return one([row for row in binding["bindings"] if row["name"] == name],
+               f"{binding['qualified']} {name} binding")
+
+
+def check_preserved_integer_registers(before: list[int], after: list[int],
+                                      registers: list[int], description: str) -> None:
+    for register in registers:
+        if before[register] != after[register]:
+            raise ValueError(f"{description} changed preserved x{register}")
+
+
+def vector_record(rows: list[dict], label: str, description: str) -> dict:
+    return one([row for row in rows if row["vector"] == label],
+               f"{description} for {label}")
+
+
 def check_pc_extent(run: ContractRun, execution_pcs: set[int], exit_pc: int,
                     exit_is_captured_instruction: bool = False,
                     require_exact_extent: bool = False) -> int:

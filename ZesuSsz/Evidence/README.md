@@ -35,4 +35,6 @@ It also generates two JSON reports and requires byte equality.
 `contract_evidence.py` supplies the shared contract-checking framework.
 The `zkvm_exit` checker tests the entry code, terminal PC, exit-code store, memory frame, stdout frame, and step count.
 The `writeFailure` checker tests failure encoding, output writes, the return PC, the memory frame, and preserved integer registers.
+The remaining checkers cover `readInput`, `allocatorGet`, `sszDecode`, and `writeSuccess`.
+They test concrete ABI values, memory frames, outcomes, output framing, and observed step counts.
 Each report separately lists the clauses that the current trace cannot measure.
