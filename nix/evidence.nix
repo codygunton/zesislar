@@ -72,18 +72,35 @@ let
       -I${pkgs.qemu-user}/include $(pkg-config --cflags glib-2.0) \
       ${tools}/qemu_trace_plugin.c -o trace.so
     snapshots=$(python -c 'import json; rows=json.load(open("${manifest}/contracts.json"))["instances"]; cfg=json.load(open("${cfg}/zesu-cfg.json")); main=next(row for row in cfg["functionInstances"] if row["kind"] == "concrete" and row["name"] == "ssz_decode_root.main"); pcs=sorted({pc for row in rows for pc in row["executionPcs"]} | {row["entryPc"] for row in rows} | set(main["pcs"])); print(",".join("snapshot="+str(pc) for pc in pcs))')
-    for vector in minimal invalid; do
-      qemu-riscv64 \
-        -plugin ./trace.so,out="$vector.trace",input=${smokeInputs}/"$vector.ssz",input_address=0x2001a000,context_address=0x2401a0b8,terminal=0x101d0,capture_write=0x10190,capture_window=0x14d30,capture_window_width=848,"$snapshots" \
-        ${endpointElf}/bin/zesu-ssz-decode
-    done
+    run_vectors() {
+      prefix="$1"
+      for vector in minimal invalid; do
+        env -i ${pkgs.qemu-user}/bin/qemu-riscv64 \
+          -plugin ./trace.so,out="$prefix-$vector.trace",input=${smokeInputs}/"$vector.ssz",input_address=0x2001a000,context_address=0x2401a0b8,terminal=0x101d0,capture_write=0x10190,capture_window=0x14d30,capture_window_width=848,"$snapshots" \
+          ${endpointElf}/bin/zesu-ssz-decode
+      done
+    }
+    run_vectors first
+    run_vectors second
+    cmp first-minimal.trace second-minimal.trace
+    cmp first-invalid.trace second-invalid.trace
     mkdir -p "$out"
-    python ${tools}/analyze.py \
-      --manifest ${manifest}/contracts.json --bindings ${bindings}/bindings.json \
-      --elf ${endpointElf}/bin/zesu-ssz-decode \
-      --trace minimal=minimal.trace --trace invalid=invalid.trace \
-      --input minimal=${smokeInputs}/minimal.ssz --input invalid=${smokeInputs}/invalid.ssz \
-      --output "$out/evidence.json"
+    analyze() {
+      prefix="$1"
+      output="$2"
+      python ${tools}/analyze.py \
+        --manifest ${manifest}/contracts.json --bindings ${bindings}/bindings.json \
+        --elf ${endpointElf}/bin/zesu-ssz-decode \
+        --trace minimal="$prefix-minimal.trace" --trace invalid="$prefix-invalid.trace" \
+        --input minimal=${smokeInputs}/minimal.ssz --input invalid=${smokeInputs}/invalid.ssz \
+        --output "$output"
+    }
+    analyze first first-evidence.json
+    analyze second second-evidence.json
+    cmp first-evidence.json second-evidence.json
+    cp first-evidence.json "$out/evidence.json"
+    cp first-minimal.trace "$out/minimal.trace"
+    cp first-invalid.trace "$out/invalid.trace"
   '';
 
   viewerData = pkgs.runCommand "zesu-ssz-level1-viewer-data" {

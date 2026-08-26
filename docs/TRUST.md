@@ -25,3 +25,6 @@ They only help reviewers inspect contract boundaries.
 The generated Level 1 Rocq map is not dynamic evidence.
 The contracts use its ELF-derived PC regions and exit PCs.
 Nix regenerates this map from the pinned CFG and rejects a changed snapshot.
+
+The dynamic evidence build clears the QEMU guest environment.
+It requires two independent runs to produce byte-identical traces and reports.

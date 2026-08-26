@@ -26,3 +26,8 @@ The Level 1 contracts import that file for their execution regions and exit PCs.
 
 The `level1-viewer-data` Nix package contains all Level 1 review data.
 Its checker rejects any proof claim.
+
+The evidence derivation runs QEMU with an empty guest environment.
+This keeps the initial guest stack address independent of Nix builder variables.
+The derivation generates two complete trace sets and requires byte equality.
+It also generates two JSON reports and requires byte equality.

@@ -18,9 +18,13 @@ The following Nix outputs match the Lean repository byte for byte:
 - The Level 1 manifest
 - The Level 1 boundary bindings
 
-The dynamic evidence differs only by the QEMU user-stack base.
-The target ELF, inputs, QEMU events, registers relative to the stack base, memory events, and outcomes match.
-`compare_level1_evidence.py` rejects every difference after this one normalization.
+The old Lean report and the Rocq report differ only by the QEMU user-stack base.
+`compare_level1_evidence.py` rejects every other difference.
+
+The Rocq evidence itself is byte-reproducible.
+The QEMU guest receives an empty environment, so builder variables cannot move its initial stack.
+Each Nix build produces two trace sets and two reports, then requires byte equality.
+`nix build --rebuild` also confirms equality with the stored output.
 
 The Rocq repository also builds a checked viewer payload.
 It contains all six boundaries, both dynamic vectors, bindings, flame data, and a speedscope profile.

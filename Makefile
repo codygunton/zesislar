@@ -123,6 +123,10 @@ check-evidence-tools:
 check-level1-rocq:
 	nix build .#level1-contract-rocq
 
+.PHONY: check-evidence-reproducible
+check-evidence-reproducible:
+	nix build --rebuild .#level1-contract-evidence --no-link
+
 .PHONY: check-viewer
 check-viewer:
 	$(PYTHON) -m unittest discover -s ZesuSsz/Viewer -p 'test_*.py'
