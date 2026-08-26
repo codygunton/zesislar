@@ -1,6 +1,9 @@
 /build/
 /_build/
 __pycache__/
+node_modules/
+dist/
+sail_smt_cache
 
 # Intermediate isla output; the reviewed Coq beside it is committed.
 *.isla
