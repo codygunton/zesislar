@@ -1,8 +1,0 @@
-//@isla-config: riscv64_zesu.toml
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
-   10140:	2000a297          	auipc	t0,0x2000a
-   101c4:	2400a297          	auipc	t0,0x2400a
-   12168:	81010113          	addi	sp,sp,-2032
-   14ccc:	24005517          	auipc	a0,0x24005
-   14d30:	83010113          	addi	sp,sp,-2000
-   161c0:	00001517          	auipc	a0,0x1

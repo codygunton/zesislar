@@ -2,7 +2,7 @@
 let
   python = pkgs.python3.withPackages (ps: [ ps.capstone ps.pyelftools ]);
   tools = builtins.path {
-    path = ../tools/evidence;
+    path = ../ZesuSsz/Evidence;
     name = "zesislar-evidence-tools";
   };
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-root=$(cd "$(dirname "$0")/.." && pwd)
+root=$(cd "$(dirname "$0")/../.." && pwd)
 evm_source=${EVM_SAIL_REPO:-/home/cody/evm-sail}
 sail_source=${SAIL_REPO:-}
 
@@ -21,16 +21,16 @@ cleanup() {
 trap cleanup EXIT
 
 rsync -a "$evm_source/sail/" "$stage/"
-install -m644 "$root/spec/evm_decoder.sail_project" "$stage/"
+install -m644 "$root/ZesuSsz/EvmSail/decoder.sail_project" "$stage/"
 
 export PATH="$root/bin:$PATH"
 "$sail_source/sail" \
   --coq --coq-semantic-range-types --coq-undef-axioms \
   --coq-output-dir "$output" -o evm_decoder \
-  --project "$stage/evm_decoder.sail_project" --all-modules
+  --project "$stage/decoder.sail_project" --all-modules
 
 sed -i 's/^Require Import evm_decoder_types\.$/Require Import EvmSail.evm_decoder_types./' \
   "$output/evm_decoder.v"
 
-python3 "$root/tools/check_evm_sail_snapshot.py" \
+python3 "$root/ZesuSsz/EvmSail/check_snapshot.py" \
   --snapshot "$root/generated/evm-sail-coq" --generated "$output"

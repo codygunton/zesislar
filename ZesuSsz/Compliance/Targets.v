@@ -1,8 +1,8 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import EvmSail.evm_decoder_types.
-Require Import ZesislarProofs.Compliance.KnownBugs.
-Require Import ZesislarProofs.Compliance.EvmSailAdapter.
-Require Import ZesislarProofs.Contracts.Coarse.
+Require Import ZesuSsz.Compliance.KnownBugs.
+Require Import ZesuSsz.Compliance.EvmSailAdapter.
+Require Import ZesuSsz.Contracts.Coarse.
 
 Import ListNotations.
 

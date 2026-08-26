@@ -4,6 +4,7 @@ __pycache__/
 node_modules/
 dist/
 sail_smt_cache
+verification-target/zesu
 *.vo
 *.vok
 *.vos

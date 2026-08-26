@@ -1,4 +1,4 @@
-# Zesislar: islaris verification of the Zesu SSZ decoder.
+# ZesuSsz: Islaris verification of the Zesu SSZ decoder.
 #
 # Mirrors the structure of islaris-tutorial/Makefile.
 # Every path is overridable.
@@ -47,7 +47,7 @@ check-dump:
 	@echo "TODO: diff annotated dump against fresh objdump"
 
 # --- install the isla config -------------------------------------------
-$(ISLA_ETC)/$(ISLA_CFG): ZesislarProofs/$(ISLA_CFG)
+$(ISLA_ETC)/$(ISLA_CFG): ZesuSsz/$(ISLA_CFG)
 	install -m644 $< $@
 
 .PHONY: install-isla-config
@@ -91,7 +91,7 @@ proof-verbose: traces
 # --- housekeeping -------------------------------------------------------
 .PHONY: doctor
 doctor:
-	@bash tools/doctor.sh
+	@bash ZesuSsz/Toolchain/doctor.sh
 
 .PHONY: endpoint
 endpoint:
@@ -107,20 +107,20 @@ evidence:
 
 .PHONY: check-evm-sail-snapshot
 check-evm-sail-snapshot:
-	$(PYTHON) tools/check_evm_sail_snapshot.py
+	$(PYTHON) ZesuSsz/EvmSail/check_snapshot.py
 
 .PHONY: regenerate-evm-sail-snapshot
 regenerate-evm-sail-snapshot:
-	bash tools/regenerate_evm_sail_snapshot.sh
+	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
 
 .PHONY: check-evidence-tools
 check-evidence-tools:
-	PYTHONPATH=tools/evidence $(PYTHON) -m unittest discover -s tools/evidence -p 'test_*.py'
+	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 
 .PHONY: check-viewer
 check-viewer:
-	$(PYTHON) -m unittest discover -s tools/viewer -p 'test_*.py'
-	cd tools/viewer/speedscope && npm run typecheck && npm run lint
+	$(PYTHON) -m unittest discover -s ZesuSsz/Viewer -p 'test_*.py'
+	cd ZesuSsz/Viewer/speedscope && npm run typecheck && npm run lint
 
 .PHONY: check-local
 check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces

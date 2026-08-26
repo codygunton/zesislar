@@ -65,9 +65,9 @@ No compliance proposition accepts this evidence as a premise.
 
 ## Layout
 
-- `ZesislarProofs/Compliance` contains the target definitions.
-- `ZesislarProofs/Contracts` contains the six coarse contract statements.
+- `ZesuSsz/Compliance` contains the target definitions.
+- `ZesuSsz/Contracts` contains the six coarse contract statements.
 - `generated/evm-sail-coq` contains the pinned decoder snapshot.
 - `generated/isla-traces/entrypoints` contains entry trace smoke tests.
-- `tools/evidence` contains the evidence pipeline.
-- `tools/viewer` contains the advanced speedscope viewer.
+- `ZesuSsz/Evidence` contains the evidence pipeline.
+- `ZesuSsz/Viewer` contains the advanced speedscope viewer.
