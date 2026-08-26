@@ -92,7 +92,32 @@ proof-verbose: traces
 # --- housekeeping -------------------------------------------------------
 .PHONY: doctor
 doctor:
-	@echo "TODO: copy doctor.sh from islaris-tutorial and adjust"
+	@bash tools/doctor.sh
+
+.PHONY: endpoint
+endpoint:
+	nix build .#endpoint-elf
+
+.PHONY: cfg
+cfg:
+	nix build .#endpoint-cfg
+
+.PHONY: evidence
+evidence:
+	nix build .#coarse-contract-evidence
+
+.PHONY: check-evm-sail-snapshot
+check-evm-sail-snapshot:
+	$(PYTHON) tools/check_evm_sail_snapshot.py
+
+.PHONY: check-evidence-tools
+check-evidence-tools:
+	PYTHONPATH=tools/evidence $(PYTHON) -m unittest discover -s tools/evidence -p 'test_*.py'
+
+.PHONY: check-viewer
+check-viewer:
+	$(PYTHON) -m unittest discover -s tools/viewer -p 'test_*.py'
+	cd tools/viewer/speedscope && npm run typecheck && npm run lint
 
 .PHONY: clean
 clean:

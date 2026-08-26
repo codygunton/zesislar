@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "jsx": "react",
+    "noUnusedLocals": true,
+    "jsxFactory": "h",
+    "target": "es2015",
+    "skipLibCheck": true
+  }
+}
