@@ -29,7 +29,10 @@
             inherit pkgs endpointElf;
             smokeInputs = binaryFv.packages.${system}.zesuSszDecodeSmoke;
           };
-          viewerUi = import ./nix/viewer.nix { inherit pkgs; };
+          viewerUi = import ./nix/viewer.nix {
+            inherit pkgs;
+            viewerData = evidence.viewerData;
+          };
         in {
           endpoint-elf = endpointElf;
           endpoint-entry-dump = target.entryDump;
@@ -38,6 +41,8 @@
           level1-contract-manifest = evidence.manifest;
           level1-contract-bindings = evidence.bindings;
           level1-contract-evidence = evidence.evidence;
+          level1-contract-rocq = evidence.rocq;
+          level1-viewer-data = evidence.viewerData;
           viewer = viewerUi;
           default = endpointElf;
         });
@@ -64,6 +69,8 @@
         zesu-source = self.packages.${system}.zesu-source;
         endpoint-cfg = self.packages.${system}.endpoint-cfg;
         level1-contract-evidence = self.packages.${system}.level1-contract-evidence;
+        level1-contract-rocq = self.packages.${system}.level1-contract-rocq;
+        level1-viewer-data = self.packages.${system}.level1-viewer-data;
         viewer = self.packages.${system}.viewer;
       });
     };

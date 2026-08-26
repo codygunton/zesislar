@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "repository": "binary-fv-experiment",
+    "revision": "38a3a14a"
+  },
+  "exactFiles": {
+    "analyze.py": "a09bd03d1edd9e3f91dd9b65d7b6a7b3a003e5d09d994b34e0044ecc3402a400",
+    "qemu_trace_plugin.c": "9af1cfc981574ad32dd614a6c989dad8dbfe5d33474adf8ffbf68518b75c1414",
+    "test_analyze.py": "da3e95099e79544e3f4cbb4af30959043780236d20e2b387acdbc95fa4d2ac88",
+    "generate_level_manifest.py": "5688fb00c0c0d920a782cfdd08c8d9043d1743b404e8493b5a50eefe6d16aece",
+    "test_level_manifest.py": "d9053f3e9883c028729823867fe45ceac064d635bb606fbc6834ebea589298d0",
+    "generate_level_boundary_bindings.py": "38f3302e66582fa6ca40a60b75e50cc1b4dd67304ada7e6ff00ffdad698b7743",
+    "test_level_boundary_bindings.py": "d611c57819ee9bbccd95583a0d2589015e10edafe862322e39745ab44c20b7f3",
+    "generate_zesu_cfg.py": "23c628547cc604cdd113f52d9364cdbeebd64a214b281ca54a8f2a1844e6739a",
+    "test_zesu_cfg.py": "78aa443d1a63a719886045783e683d3d7c91417fd30900a6fb2102e3db1ace06",
+    "build_flame_ui_data.py": "144b87b1317911b147d410638ebbe9cde3633e61abe52635258b88dace436941",
+    "test_flame_ui_data.py": "4297d80971aaa72e1dd9ffdc4c9a45de18b85d98cd1070132fee679f47cd04cd",
+    "elf_identity.py": "6171b09d344ce429c7c2b65ec1ed3a5f4cdd060fb0bd85957ab2cc1fbf3b2274"
+  },
+  "rocqAdaptations": {
+    "generator": "generate_level1_rocq.py",
+    "tests": "test_generate_level1_rocq.py",
+    "snapshot": "ZesuSsz/Generated/Level1.v"
+  }
+}

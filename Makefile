@@ -117,6 +117,11 @@ regenerate-evm-sail-snapshot:
 .PHONY: check-evidence-tools
 check-evidence-tools:
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+	$(PYTHON) ZesuSsz/Evidence/check_parity.py
+
+.PHONY: check-level1-rocq
+check-level1-rocq:
+	nix build .#level1-contract-rocq
 
 .PHONY: check-viewer
 check-viewer:

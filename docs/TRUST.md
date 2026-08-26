@@ -21,3 +21,7 @@ The trace generator binds each entry smoke test to one instruction opcode.
 
 Evidence files do not occur in any compliance target.
 They only help reviewers inspect contract boundaries.
+
+The generated Level 1 Rocq map is not dynamic evidence.
+The contracts use its ELF-derived PC regions and exit PCs.
+Nix regenerates this map from the pinned CFG and rejects a changed snapshot.

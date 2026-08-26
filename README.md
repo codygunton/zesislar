@@ -76,3 +76,6 @@ No compliance proposition accepts this evidence as a premise.
 - `ZesuSsz/Evidence` contains the evidence pipeline.
 - `ZesuSsz/Viewer` contains the advanced speedscope viewer.
 - `verification-target/zesu` is an ignored link to the pinned Zesu source.
+
+Build `.#level1-viewer-data` to inspect the manifest, bindings, traces, and proof map.
+The `.#viewer` package includes the same payload with the speedscope application.

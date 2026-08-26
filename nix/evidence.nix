@@ -48,11 +48,25 @@ let
     python ${tools}/test_level_boundary_bindings.py "$out/bindings.json"
   '';
 
+  rocq = pkgs.runCommand "zesu-ssz-level1-contract-rocq" {
+    nativeBuildInputs = [ python ];
+  } ''
+    mkdir -p "$out/ZesuSsz/Generated"
+    export PYTHONPATH=${tools}
+    python ${tools}/test_generate_level1_rocq.py
+    python ${tools}/generate_level1_rocq.py \
+      --manifest ${manifest}/contracts.json \
+      --cfg ${cfg}/zesu-cfg.json \
+      --output "$out/ZesuSsz/Generated/Level1.v"
+    cmp "$out/ZesuSsz/Generated/Level1.v" ${../ZesuSsz/Generated/Level1.v}
+  '';
+
   evidence = pkgs.runCommand "zesu-ssz-level1-contract-evidence" {
     nativeBuildInputs = [ pkgs.gcc pkgs.glib pkgs.pkg-config python pkgs.qemu-user ];
   } ''
     set -euo pipefail
     export PYTHONPATH=${tools}
+    export ZESU_SSZ_ROOT=${../.}
     python -m unittest discover -s ${tools} -p 'test_*.py'
     gcc -shared -fPIC -O2 -Wall -Wextra -Werror \
       -I${pkgs.qemu-user}/include $(pkg-config --cflags glib-2.0) \
@@ -71,6 +85,31 @@ let
       --input minimal=${smokeInputs}/minimal.ssz --input invalid=${smokeInputs}/invalid.ssz \
       --output "$out/evidence.json"
   '';
+
+  viewerData = pkgs.runCommand "zesu-ssz-level1-viewer-data" {
+    nativeBuildInputs = [ python ];
+  } ''
+    mkdir -p "$out"
+    export PYTHONPATH=${tools}:${../ZesuSsz/Viewer}
+    python ${tools}/build_flame_ui_data.py \
+      --input ${cfg}/flame.json \
+      --core "$out/flame-core.json" --details "$out/flame-details.json"
+    python ${tools}/build_level1_proof_map.py \
+      --cfg ${cfg}/zesu-cfg.json --flame ${cfg}/flame.json \
+      --manifest ${manifest}/contracts.json --evidence ${evidence}/evidence.json \
+      --bindings ${bindings}/bindings.json --progress ${../contracts/viewer-progress.json} \
+      --output "$out/proof-map.json" --flame-progress-output "$out/flame-progress.json"
+    python ${tools}/check_level1_proof_map.py \
+      --proof-map "$out/proof-map.json" --manifest ${manifest}/contracts.json \
+      --evidence ${evidence}/evidence.json --bindings ${bindings}/bindings.json
+    python ${../ZesuSsz/Viewer/build_zesu_speedscope.py} \
+      --core "$out/flame-core.json" --progress "$out/flame-progress.json" \
+      --scope decode --details-url flame-details.json \
+      --output "$out/zesu-decode.speedscope.json"
+    cp ${manifest}/contracts.json "$out/level1-manifest.json"
+    cp ${bindings}/bindings.json "$out/level1-boundary-bindings.json"
+    cp ${evidence}/evidence.json "$out/level1-evidence.json"
+  '';
 in {
-  inherit bindings cfg evidence manifest;
+  inherit bindings cfg evidence manifest rocq viewerData;
 }

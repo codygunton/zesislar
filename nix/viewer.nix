@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, viewerData }:
 
 pkgs.buildNpmPackage {
   pname = "zesu-ssz-speedscope";
@@ -9,6 +9,7 @@ pkgs.buildNpmPackage {
   installPhase = ''
     runHook preInstall
     node_modules/.bin/tsx scripts/build-release.ts --outdir "$out" --protocol http
+    cp -R ${viewerData}/. "$out/"
     cp assets/source-code-pro/LICENSE.md "$out/source-code-pro.LICENSE.md"
     cp LICENSE "$out/speedscope.LICENSE"
     runHook postInstall

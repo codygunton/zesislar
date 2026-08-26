@@ -2,20 +2,13 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.isla.
 Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Contracts.Machine.
+Require Import ZesuSsz.Generated.Level1.
 
 Import ListNotations.
 
 Definition ByteString := list Z.
 Definition maxSszInputSize : nat := 64 * 1024 * 1024.
 Definition level1ContractFuel : nat := Nat.pow 2 160.
-
-(** These values match the six entries in the pinned endpoint ELF. *)
-Definition readInputEntryPc : Z := 0x10140.
-Definition zkvmExitEntryPc : Z := 0x101c4.
-Definition decodeInputEntryPc : Z := 0x12168.
-Definition allocatorGetEntryPc : Z := 0x14ccc.
-Definition writeSuccessEntryPc : Z := 0x14d30.
-Definition writeFailureEntryPc : Z := 0x161c0.
 
 Record ReadInputArgs : Type := {
   readReturnAddress : Z;
@@ -74,33 +67,21 @@ Record Level1MachineModel (State Decoded : Type) : Type := {
 
   readInputEntry : ReadInputArgs -> State -> Prop;
   readInputExit : ReadInputArgs -> ReadInputOutcome -> State -> State -> Prop;
-  readInputRegion : Z -> Prop;
-  readInputExitPc : Z -> Prop;
 
   allocatorGetEntry : AllocatorGetArgs -> State -> Prop;
   allocatorGetExit : AllocatorGetArgs -> AllocatorGetOutcome -> State -> State -> Prop;
-  allocatorGetRegion : Z -> Prop;
-  allocatorGetExitPc : Z -> Prop;
 
   decodeBoundaryEntry : DecodeBoundaryArgs -> State -> Prop;
   decodeBoundaryExit : DecodeBoundaryArgs -> DecodeBoundaryOutcome Decoded -> State -> State -> Prop;
-  decodeRegion : Z -> Prop;
-  decodeExitPc : Z -> Prop;
 
   writeSuccessEntry : WriteSuccessArgs Decoded -> State -> Prop;
   writeSuccessExit : WriteSuccessArgs Decoded -> ByteString -> State -> State -> Prop;
-  writeSuccessRegion : Z -> Prop;
-  writeSuccessExitPc : Z -> Prop;
 
   writeFailureEntry : WriteFailureArgs -> State -> Prop;
   writeFailureExit : WriteFailureArgs -> ByteString -> State -> State -> Prop;
-  writeFailureRegion : Z -> Prop;
-  writeFailureExitPc : Z -> Prop;
 
   zkvmExitEntry : ZkvmExitArgs -> State -> Prop;
   zkvmExitPost : ZkvmExitArgs -> unit -> State -> State -> Prop;
-  zkvmExitRegion : Z -> Prop;
-  zkvmExitExitPc : Z -> Prop;
 
   referenceDecodes : ByteString -> Decoded -> Prop;
   decodedResultRelModuloKnownBugs : ByteString -> Decoded -> Decoded -> Prop;
@@ -194,25 +175,28 @@ Definition Implements {State Decoded Args Outcome}
 Definition InputIndexedBound (bound : nat -> nat) : Prop :=
   forall size : nat, size <= maxSszInputSize -> bound size < level1ContractFuel.
 
+Definition ZkvmExitExecutionPc (pc : Z) : Prop :=
+  PcInRanges zkvmExitExecutionPcRanges pc /\ pc <> zkvmExitTerminalPc.
+
 Record Level1ContractAssumptions {State Decoded}
     (model : Level1MachineModel State Decoded) : Prop := {
   level1ReadInput : exists bound, InputIndexedBound bound /\
-    Implements model (readInputRegion State Decoded model) (readInputExitPc State Decoded model)
+    Implements model (PcInRanges readInputExecutionPcRanges) (PcInList readInputExitPcs)
       (readInputContract model (fun args => bound (length (readInputBytes args))));
   level1AllocatorGet : exists bound, InputIndexedBound bound /\
-    Implements model (allocatorGetRegion State Decoded model) (allocatorGetExitPc State Decoded model)
+    Implements model (PcInRanges allocatorGetExecutionPcRanges) (PcInList allocatorGetExitPcs)
       (allocatorGetContract model (fun args => bound (length (allocatorInput args))));
   level1SszDecode : exists bound, InputIndexedBound bound /\
-    Implements model (decodeRegion State Decoded model) (decodeExitPc State Decoded model)
+    Implements model (PcInRanges decodeInputExecutionPcRanges) (PcInList decodeInputExitPcs)
       (decodeContractModuloKnownBugs model (fun args => bound (length (decodeInput args))));
   level1WriteSuccess : exists bound, InputIndexedBound bound /\
-    Implements model (writeSuccessRegion State Decoded model) (writeSuccessExitPc State Decoded model)
+    Implements model (PcInRanges writeSuccessExecutionPcRanges) (PcInList writeSuccessExitPcs)
       (writeSuccessContract model (fun args => bound (successInputSize Decoded args)));
   level1WriteFailure : exists bound : nat, Nat.lt bound level1ContractFuel /\
-    Implements model (writeFailureRegion State Decoded model) (writeFailureExitPc State Decoded model)
+    Implements model (PcInRanges writeFailureExecutionPcRanges) (PcInList writeFailureExitPcs)
       (writeFailureContract model (fun _ => bound));
   level1ZkvmExit : exists bound : nat, Nat.lt bound level1ContractFuel /\
-    Implements model (zkvmExitRegion State Decoded model) (zkvmExitExitPc State Decoded model)
+    Implements model ZkvmExitExecutionPc (PcInList zkvmExitExitPcs)
       (zkvmExitContract model (fun _ => bound))
 }.
 
