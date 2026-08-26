@@ -83,3 +83,7 @@ The `.#viewer` package includes the same payload with the speedscope application
 The evidence build clears the guest environment before each QEMU run.
 It generates two trace sets and requires byte-identical traces and JSON reports.
 Run `make check-evidence-reproducible` to force Nix to rebuild and compare the store output.
+
+The evidence output also contains `zkvm-exit-contract.json`.
+This pilot tests eight observable `zkvm_exit` clauses for every vector.
+It lists four model clauses that the current QEMU trace cannot measure.

@@ -31,3 +31,7 @@ The evidence derivation runs QEMU with an empty guest environment.
 This keeps the initial guest stack address independent of Nix builder variables.
 The derivation generates two complete trace sets and requires byte equality.
 It also generates two JSON reports and requires byte equality.
+
+`check_zkvm_exit_contract.py` is the first contract-specific evidence checker.
+It checks the entry code, terminal PC, exit-code store, memory frame, stdout frame, and step count.
+Its report separately lists machine permissions and endpoint input state as unmeasured clauses.

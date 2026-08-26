@@ -28,3 +28,7 @@ Nix regenerates this map from the pinned CFG and rejects a changed snapshot.
 
 The dynamic evidence build clears the QEMU guest environment.
 It requires two independent runs to produce byte-identical traces and reports.
+
+The `zkvm_exit` pilot checks only clauses visible in the QEMU trace.
+It does not convert successful evidence into a theorem premise.
+The report names each contract clause that the trace cannot measure.
