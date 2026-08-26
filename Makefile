@@ -19,13 +19,12 @@ export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
 
-PROG      ?= zesu
+PROG      ?= entrypoints
 LOAD_ADDR ?= 0x10300000
 
-SRC_DIR   := verification-target/$(PROG)
-DUMP      := $(SRC_DIR)/$(PROG).dump
-TRACE_DIR := generated/isla-traces/$(PROG)
-TRACE_COQ := IslaTraces.$(PROG)
+DUMP      := verification-target/zesu/entrypoints.dump
+TRACE_DIR := generated/isla-traces/entrypoints
+TRACE_COQ := IslaTraces.entrypoints
 
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
@@ -57,7 +56,7 @@ install-isla-config: $(ISLA_ETC)/$(ISLA_CFG)
 # --- generate traces ---------------------------------------------------
 $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	mkdir -p $(TRACE_DIR)
-	$(OPAM) islaris $(DUMP) -j 4 -o $(TRACE_DIR) \
+	$(OPAM) islaris $(DUMP) -j 6 -o $(TRACE_DIR) \
 	  --coqdir=$(TRACE_COQ) --arch=riscv64
 	sed -i -e '/(package islaris)/d' \
 	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
@@ -110,6 +109,10 @@ evidence:
 check-evm-sail-snapshot:
 	$(PYTHON) tools/check_evm_sail_snapshot.py
 
+.PHONY: regenerate-evm-sail-snapshot
+regenerate-evm-sail-snapshot:
+	bash tools/regenerate_evm_sail_snapshot.sh
+
 .PHONY: check-evidence-tools
 check-evidence-tools:
 	PYTHONPATH=tools/evidence $(PYTHON) -m unittest discover -s tools/evidence -p 'test_*.py'
@@ -118,6 +121,14 @@ check-evidence-tools:
 check-viewer:
 	$(PYTHON) -m unittest discover -s tools/viewer -p 'test_*.py'
 	cd tools/viewer/speedscope && npm run typecheck && npm run lint
+
+.PHONY: check-local
+check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
+	$(OPAM) dune build @all
+
+.PHONY: check
+check: doctor check-local
+	nix flake check
 
 .PHONY: clean
 clean:

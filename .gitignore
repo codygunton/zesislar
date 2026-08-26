@@ -4,6 +4,11 @@ __pycache__/
 node_modules/
 dist/
 sail_smt_cache
+*.vo
+*.vok
+*.vos
+*.glob
+.*.aux
 
 # Intermediate isla output; the reviewed Coq beside it is committed.
 *.isla

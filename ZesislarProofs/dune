@@ -4,5 +4,5 @@
  (name ZesislarProofs)
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
-   isla isla.riscv64 InstrSpecs
+   isla isla.riscv64 InstrSpecs EvmSail SailStdpp
    lithium iris stdpp RecordUpdate Ltac2))

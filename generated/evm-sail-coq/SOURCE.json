@@ -1,0 +1,10 @@
+{
+  "evmSailRevision": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+  "sailCompilerRevision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+  "sailStdppVersion": "0.20.2",
+  "sailProject": "spec/evm_decoder.sail_project",
+  "snapshotSha256": {
+    "evm_decoder.v": "52dbbc0dc7b5c9110a15ad0468b700cfaeb8f08f613fc906def77664abf91421",
+    "evm_decoder_types.v": "e726a4e6205938fe0dd26c1cda0499bada681a63fdbf78768c800214fe93db81"
+  }
+}
