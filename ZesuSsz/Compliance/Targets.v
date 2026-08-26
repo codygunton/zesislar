@@ -2,11 +2,10 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import EvmSail.evm_decoder_types.
 Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
-Require Import ZesuSsz.Contracts.Coarse.
+Require Import ZesuSsz.Contracts.Level1.
 
 Import ListNotations.
 
-Definition ByteString := list Z.
 Definition maxInputBytes : nat := 64 * 1024 * 1024.
 Definition InputWithinBound (input : ByteString) : Prop :=
   Nat.le (length input) maxInputBytes.
@@ -76,17 +75,6 @@ Definition ComplianceForInput
     referenceRuns reference input expected ->
     equivalent actual expected.
 
-(** Later machine proofs must discharge these six assumptions. *)
-Definition CoarseContractAssumptions
-    (readInput allocatorGet sszDecode writeSuccess writeFailure zkvmExit :
-      CoarseContract) : Prop :=
-  contractImplements readInput /\
-  contractImplements allocatorGet /\
-  contractImplements sszDecode /\
-  contractImplements writeSuccess /\
-  contractImplements writeFailure /\
-  contractImplements zkvmExit.
-
 (** This target keeps the intended conditional proof strategy explicit. *)
 Definition ConditionalCompliance
     (assumptions : Prop)
@@ -109,13 +97,25 @@ Definition ConditionalExactCompliance
 
 (** This is the main statement that later proof work must establish. *)
 Definition MainComplianceStatement
-    (readInput allocatorGet sszDecode writeSuccess writeFailure zkvmExit :
-      CoarseContract)
+    {State Decoded : Type}
+    (machine : Level1MachineModel State Decoded)
     (endpoint : EndpointSemantics)
     (reference : ReferenceSemantics)
     (applies : BugApplies)
     (equivalent : OutcomeRelation) : Prop :=
   ConditionalCompliance
-    (CoarseContractAssumptions readInput allocatorGet sszDecode
-      writeSuccess writeFailure zkvmExit)
+    (Level1ContractAssumptions machine)
     endpoint reference applies equivalent.
+
+(** This target gives exact compliance for an input outside the fixed bug domains. *)
+Definition MainExactComplianceStatement
+    {State Decoded : Type}
+    (machine : Level1MachineModel State Decoded)
+    (endpoint : EndpointSemantics)
+    (reference : ReferenceSemantics)
+    (applies : BugApplies)
+    (equivalent : OutcomeRelation)
+    (input : ByteString) : Prop :=
+  ConditionalExactCompliance
+    (Level1ContractAssumptions machine)
+    endpoint reference applies equivalent input.

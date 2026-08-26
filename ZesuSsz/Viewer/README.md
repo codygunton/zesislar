@@ -7,5 +7,5 @@ The repository does not store `node_modules`, `dist`, or generated profiles.
 Run `make check-viewer` after `npm ci` in `ZesuSsz/Viewer/speedscope`.
 
 The viewer keeps the complete advanced interface from that worktree.
-Zesislar changes only the input status data and build integration.
+ZesuSsz changes only the input status data and build integration.
 Contract status is review data and is not a Rocq assumption.

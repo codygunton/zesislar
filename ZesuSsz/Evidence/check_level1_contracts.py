@@ -21,7 +21,7 @@ EXPECTED = {
 def validate(manifest: dict) -> None:
     actual = {row["qualified"]: row["entryPc"] for row in manifest["instances"]}
     if actual != EXPECTED:
-        raise ValueError(f"coarse contract boundary differs: {actual}")
+        raise ValueError(f"Level 1 contract boundary differs: {actual}")
 
 
 def main() -> int:

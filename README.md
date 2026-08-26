@@ -1,6 +1,6 @@
-# Zesislar
+# ZesuSsz
 
-Zesislar prepares a Rocq and Islaris proof of the pinned Zesu SSZ decoder.
+ZesuSsz prepares a Rocq and Islaris proof of the pinned Zesu SSZ decoder.
 This repository does not contain the compliance proof yet.
 
 ## Fixed proof target
@@ -9,7 +9,7 @@ The target compares the pinned RV64IM endpoint with the EVM-Sail SSZ decoder.
 It states compliance modulo seven fixed bugs.
 It also states exact compliance for an input that avoids those bugs.
 
-Six coarse contracts form the conditional proof boundary:
+Six Level 1 contracts form the conditional proof boundary:
 
 - `readInput`
 - `allocatorGet`
@@ -18,8 +18,9 @@ Six coarse contracts form the conditional proof boundary:
 - `writeFailure`
 - `zkvmExit`
 
-The setup keeps these contracts coarse.
-It does not copy Lean proofs or the former hLevel3 hierarchy.
+The Rocq interfaces retain the Level 1 argument, outcome, trace, bound, and semantic structure.
+The machine adapter supplies concrete Islaris state predicates during proof work.
+The repository does not copy Lean proofs or the former Level 3 hierarchy.
 
 ## Source pins
 
@@ -29,6 +30,7 @@ The committed decoder snapshot uses Sail `25cc260d` and SailStdpp `0.20.2`.
 
 Nix builds the ELF.
 Git does not store the ELF.
+Run `make target-source` to link `verification-target/zesu` to the pinned Nix source.
 `SOURCE.json` records all generated Rocq file hashes.
 
 ## Start checks
@@ -40,6 +42,7 @@ make doctor
 make check-evidence-tools
 make check-viewer
 make check-evm-sail-snapshot
+make target-source
 make traces
 make proof
 ```
@@ -66,8 +69,10 @@ No compliance proposition accepts this evidence as a premise.
 ## Layout
 
 - `ZesuSsz/Compliance` contains the target definitions.
-- `ZesuSsz/Contracts` contains the six coarse contract statements.
+- `ZesuSsz/Contracts` contains the six Level 1 contract statements.
+- `ZesuSsz/EvmSail` contains the decoder-only Sail project and snapshot checks.
 - `generated/evm-sail-coq` contains the pinned decoder snapshot.
 - `generated/isla-traces/entrypoints` contains entry trace smoke tests.
 - `ZesuSsz/Evidence` contains the evidence pipeline.
 - `ZesuSsz/Viewer` contains the advanced speedscope viewer.
+- `verification-target/zesu` is an ignored link to the pinned Zesu source.

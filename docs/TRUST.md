@@ -13,6 +13,7 @@ Isla executes the Sail RISC-V model symbolically.
 Z3 removes infeasible paths.
 Islaris translates the remaining traces to Rocq.
 Nix and Zig build the pinned endpoint ELF.
+Nix also exposes the pinned Zesu source and generates the entry instruction dump.
 
 The ELF hash binds machine work to one binary.
 The snapshot manifest binds reference work to one EVM-Sail extraction.

@@ -2,10 +2,10 @@
 
 import unittest
 
-from check_coarse_contracts import EXPECTED, validate
+from check_level1_contracts import EXPECTED, validate
 
 
-class CoarseContractTest(unittest.TestCase):
+class Level1ContractTest(unittest.TestCase):
     def manifest(self) -> dict:
         return {"instances": [
             {"qualified": name, "entryPc": pc}

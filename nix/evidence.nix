@@ -3,10 +3,10 @@ let
   python = pkgs.python3.withPackages (ps: [ ps.capstone ps.pyelftools ]);
   tools = builtins.path {
     path = ../ZesuSsz/Evidence;
-    name = "zesislar-evidence-tools";
+    name = "zesu-ssz-evidence";
   };
 
-  cfg = pkgs.runCommand "zesislar-zesu-cfg" { nativeBuildInputs = [ python ]; } ''
+  cfg = pkgs.runCommand "zesu-ssz-cfg" { nativeBuildInputs = [ python ]; } ''
     mkdir -p "$out" repeated
     export PYTHONPATH=${tools}
     python ${tools}/generate_zesu_cfg.py \
@@ -26,7 +26,7 @@ let
     cmp "$out/proof-map.json" repeated/proof-map.json
   '';
 
-  manifest = pkgs.runCommand "zesislar-coarse-contract-manifest" {
+  manifest = pkgs.runCommand "zesu-ssz-level1-contract-manifest" {
     nativeBuildInputs = [ python ];
   } ''
     mkdir -p "$out"
@@ -34,10 +34,10 @@ let
       --cfg ${cfg}/zesu-cfg.json --flame ${cfg}/flame.json \
       --level 1 --output "$out/contracts.json"
     python ${tools}/test_level_manifest.py "$out/contracts.json"
-    PYTHONPATH=${tools} python ${tools}/check_coarse_contracts.py "$out/contracts.json"
+    PYTHONPATH=${tools} python ${tools}/check_level1_contracts.py "$out/contracts.json"
   '';
 
-  bindings = pkgs.runCommand "zesislar-coarse-contract-bindings" {
+  bindings = pkgs.runCommand "zesu-ssz-level1-contract-bindings" {
     nativeBuildInputs = [ python ];
   } ''
     mkdir -p "$out"
@@ -48,7 +48,7 @@ let
     python ${tools}/test_level_boundary_bindings.py "$out/bindings.json"
   '';
 
-  evidence = pkgs.runCommand "zesislar-coarse-contract-evidence" {
+  evidence = pkgs.runCommand "zesu-ssz-level1-contract-evidence" {
     nativeBuildInputs = [ pkgs.gcc pkgs.glib pkgs.pkg-config python pkgs.qemu-user ];
   } ''
     set -euo pipefail

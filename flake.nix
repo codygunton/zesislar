@@ -35,9 +35,9 @@
           endpoint-entry-dump = target.entryDump;
           zesu-source = target.source;
           endpoint-cfg = evidence.cfg;
-          coarse-contract-manifest = evidence.manifest;
-          coarse-contract-bindings = evidence.bindings;
-          coarse-contract-evidence = evidence.evidence;
+          level1-contract-manifest = evidence.manifest;
+          level1-contract-bindings = evidence.bindings;
+          level1-contract-evidence = evidence.evidence;
           viewer = viewerUi;
           default = endpointElf;
         });
@@ -62,7 +62,7 @@
         endpoint-entry-dump = self.packages.${system}.endpoint-entry-dump;
         zesu-source = self.packages.${system}.zesu-source;
         endpoint-cfg = self.packages.${system}.endpoint-cfg;
-        coarse-contract-evidence = self.packages.${system}.coarse-contract-evidence;
+        level1-contract-evidence = self.packages.${system}.level1-contract-evidence;
         viewer = self.packages.${system}.viewer;
       });
     };

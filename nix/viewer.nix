@@ -1,7 +1,7 @@
 { pkgs }:
 
 pkgs.buildNpmPackage {
-  pname = "zesislar-speedscope";
+  pname = "zesu-ssz-speedscope";
   version = "1.25.0";
   src = ../ZesuSsz/Viewer/speedscope;
   npmDepsHash = "sha256-hgvO5iU9lerTa9FJRHq9lm67lgrFSM5AR02GShsM3P8=";

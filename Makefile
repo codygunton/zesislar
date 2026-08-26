@@ -104,7 +104,7 @@ cfg:
 
 .PHONY: evidence
 evidence:
-	nix build .#coarse-contract-evidence
+	nix build .#level1-contract-evidence
 
 .PHONY: check-evm-sail-snapshot
 check-evm-sail-snapshot:
