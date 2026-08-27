@@ -22,6 +22,6 @@ The theorem proves the following focused instruction behavior:
 - `sd` writes the input `x10` value to `0x2401a0d0`.
 - Control reaches the terminal PC at `0x101d0`.
 
-The same file defines a concrete endpoint model from Islaris sequential states.
-One contract step runs one complete generated instruction trace.
-`level1ZkvmExitCanonical` proves the bounded Level 1 field with a bound of three instructions.
+The terminal `instr_pre` resources state the final register and memory values.
+`zkvmExitTermination` certifies the four-PC path and its three-instruction bound.
+`level1ZkvmExit` combines both proofs into the native Level 1 field.

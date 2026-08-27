@@ -21,5 +21,6 @@ The theorem proves the following behavior:
 - The body writes both allocator addresses to the output stack slots.
 - Control reaches `0x14cec`.
 
-The same file defines a concrete endpoint model from Islaris sequential states.
-`level1AllocatorCanonical` proves the full bounded Level 1 contract field.
+The terminal `instr_pre` resources state the final register and memory values.
+`allocatorGetTermination` certifies the nine-PC path and its eight-instruction bound.
+`level1AllocatorGet` combines both proofs into the native Level 1 field.
