@@ -1,40 +1,16 @@
 From iris.program_logic Require Import language.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Experiments.OperationalBridge.
 Require Import ZesuSsz.Contracts.Machine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Level1.
 From IslaTraces.zkvm_exit Require Import instrs.
 
-Record IslarisEndpointState : Type := {
-  endpointLocal : seq_local_state;
-  endpointGlobal : seq_global_state
-}.
-
-Definition islarisEndpointPc (state : IslarisEndpointState) : option Z :=
-  match endpointLocal state with
-  | {| seq_regs := regs; seq_pc_reg := pcReg |} =>
-      match regs !! pcReg with
-      | Some (RVal_Bits pc) =>
-          if N.eqb (bvn_n pc) 64 then Some (bvn_unsigned pc) else None
-      | _ => None
-      end
-  end.
-
-(** One contract step executes exactly one generated instruction trace. *)
-Definition islarisInstructionStep (_ : nat)
-    (before after : IslarisEndpointState) : Prop :=
-  exists (pc : bv 64) trace observations,
-    seq_trace (endpointLocal before) = tnil /\
-    seq_nb_state (endpointLocal before) = false /\
-    seq_regs (endpointLocal before) !! seq_pc_reg (endpointLocal before) =
-      Some (RVal_Bits pc) /\
-    seq_instrs (endpointGlobal before) !! pc = Some trace /\
-    nsteps (S (isla_trace_length trace))
-      ([endpointLocal before], endpointGlobal before)
-      observations
-      ([endpointLocal after], endpointGlobal after) /\
-    seq_trace (endpointLocal after) = tnil /\
-    seq_nb_state (endpointLocal after) = false.
+Notation IslarisEndpointState := OperationalState.
+Notation endpointLocal := operationalLocal.
+Notation endpointGlobal := operationalGlobal.
+Notation islarisEndpointPc := operationalPc.
+Notation islarisInstructionStep := operationalInstructionStep.
 
 (** Canonical states make the operational discharge obligation executable. *)
 Definition zkvmExitInstrMap : gmap (bv 64) isla_trace :=
@@ -60,22 +36,11 @@ Definition zkvmExitInitialRegs (code oldX5 : bv 64) : reg_map :=
   (<["x5" := RVal_Bits oldX5]>
   (<["PC" := RVal_Bits (Z_to_bv 64 0x101c4)]> ∅))))))))))))))).
 
-Definition zkvmExitLocal (regs : reg_map) : seq_local_state := {|
-  seq_trace := tnil;
-  seq_regs := regs;
-  seq_pc_reg := "PC";
-  seq_nb_state := false
-|}.
+Definition zkvmExitLocal := operationalLocalState.
 
-Definition zkvmExitGlobal (mem : mem_map) : seq_global_state := {|
-  seq_instrs := zkvmExitInstrMap;
-  seq_mem := mem
-|}.
+Definition zkvmExitGlobal := operationalGlobalState zkvmExitInstrMap.
 
-Definition zkvmExitState (regs : reg_map) (mem : mem_map) : IslarisEndpointState := {|
-  endpointLocal := zkvmExitLocal regs;
-  endpointGlobal := zkvmExitGlobal mem
-|}.
+Definition zkvmExitState := operationalState zkvmExitInstrMap.
 
 (** Add registers without changing any register already present in [local]. *)
 Definition frameLocalRegs (extra : reg_map)
@@ -215,34 +180,6 @@ Definition zkvmExitRegsAfterStore (code oldX5 : bv 64) : reg_map :=
       ((Z_to_bv 64 0x101c8 + Z_to_bv 64 4 + Z_to_bv 64 4)%bv)]>
     (zkvmExitRegsAfterAddi code oldX5).
 
-Ltac solve_pure_match :=
-  cbn;
-  repeat first [left | split | eexists];
-  try reflexivity.
-
-Lemma readAccessorZToBv n z `{!BvWf n z} :
-  read_accessor [] (RVal_Bits (Z_to_bv n z)) =
-    Some (RVal_Bits (BV n z)).
-Proof.
-  cbn. f_equal. f_equal. f_equal.
-  apply bvn_eq. split; first reflexivity.
-  unfold bvn_unsigned. cbn.
-  rewrite Z_to_bv_unsigned bv_unsigned_BV.
-  apply bv_wrap_small. apply bv_wf_in_range. exact BvWf0.
-Qed.
-
-Ltac pure_trace_nstep :=
-  eapply nsteps_l with (κ := []) (κs := []);
-  [ eapply step_atomic with (t1 := []) (t2 := []) (efs := []);
-    [ reflexivity | reflexivity |
-      eapply SeqStep with (κ' := None);
-      [ reflexivity |
-        first [eapply DeclareConstBitVecS' |
-               econstructor; cbn; reflexivity |
-               constructor] |
-        solve_pure_match ] ] |
-    cbn ].
-
 Lemma zkvmExitAuipcStep code oldX5 mem :
   islarisInstructionStep 0
     (zkvmExitState (zkvmExitInitialRegs code oldX5) mem)
@@ -265,7 +202,7 @@ Proof.
         split; first reflexivity.
         cbn. repeat split; reflexivity.
   - cbn.
-    repeat pure_trace_nstep.
+    repeat operational_trace_step.
     constructor.
   Unshelve. all: exact (Z_to_bv 64 0).
 Qed.
@@ -292,7 +229,7 @@ Proof.
         split; first reflexivity.
         cbn. repeat split; reflexivity.
   - cbn.
-    repeat pure_trace_nstep.
+    repeat operational_trace_step.
     constructor.
   Unshelve. all: exact (Z_to_bv 64 0).
 Qed.
@@ -323,7 +260,7 @@ Proof.
         -- cbn. f_equal.
         -- cbn. repeat split; reflexivity.
   - cbn.
-    repeat pure_trace_nstep.
+    repeat operational_trace_step.
     all: try apply readAccessorZToBv.
     + replace
         ((Z_to_bv 64 0x2401a1c4 +
@@ -333,7 +270,7 @@ Proof.
         with 0x2401a0d0 by bv_solve.
       rewrite Hmem.
       repeat split; reflexivity.
-    + pure_trace_nstep. constructor.
+    + operational_trace_step. constructor.
   Unshelve. all: try exact (Z_to_bv 64 0); try exact false.
 Qed.
 
