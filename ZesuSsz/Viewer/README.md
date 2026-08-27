@@ -1,12 +1,11 @@
-# Zesu contract viewer
+# Zesislar viewer data
 
-This viewer comes from `binary-regions-speedscope@03685e14`.
-It contains the Zesu speedscope fork, its profile converter, and its payload checks.
+This directory converts Zesislar evidence into shared viewer data.
+It also checks the generated profiles and proof-map payload.
 
-The repository does not store `node_modules`, `dist`, or generated profiles.
-Run `make check-viewer` after `npm ci` in `ZesuSsz/Viewer/speedscope`.
-Nix adds the generated Level 1 evidence payload to the built viewer.
+Build the data with `nix build .#level1-viewer-data`.
+Run the local checks with `make check-viewer`.
 
-The viewer keeps the complete advanced interface from that worktree.
-ZesuSsz changes only the input status data and build integration.
+The application lives in `codygunton/binary-fv-viewer`.
+That repository selects this Nix package through its Zesislar provider.
 Contract status is review data and is not a Rocq assumption.

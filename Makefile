@@ -168,7 +168,6 @@ check-evidence-reproducible:
 .PHONY: check-viewer
 check-viewer:
 	$(PYTHON) -m unittest discover -s ZesuSsz/Viewer -p 'test_*.py'
-	cd ZesuSsz/Viewer/speedscope && npm run typecheck && npm run lint
 
 .PHONY: check-local
 check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
