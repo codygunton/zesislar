@@ -4,7 +4,8 @@ This experiment covers the eight instructions from `0x14ccc` through `0x14ce8`.
 The body reads two input words from the stack and writes the allocator pair to the next two slots.
 
 Run `make allocator-get-traces` to regenerate the traces.
-Run `opam exec --switch=$HOME/islaris -- dune build --root . ZesuSsz/Experiments/AllocatorGetIslaris.vo` to check the theorem.
+Run `make proof` to check the Islaris and Level 1 theorems in
+`ZesuSsz/Experiments/AllocatorGet.v`.
 
 The focused configuration places RAM from `0x20000000` through `0x3fffffff`.
 The dump constrains each stack access to this range and requires eight-byte stack alignment.
@@ -20,5 +21,5 @@ The theorem proves the following behavior:
 - The body writes both allocator addresses to the output stack slots.
 - Control reaches `0x14cec`.
 
-The theorem does not prove the full Level 1 `allocatorGetContract`.
-It does not connect the stack words to the endpoint state model.
+The same file defines a concrete endpoint model from Islaris sequential states.
+`level1AllocatorCanonical` proves the full bounded Level 1 contract field.

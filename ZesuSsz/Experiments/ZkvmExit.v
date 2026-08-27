@@ -1,16 +1,53 @@
 From iris.program_logic Require Import language.
 Require Import isla.riscv64.riscv64.
+From IslaTraces.zkvm_exit Require Import instrs.
 Require Import ZesuSsz.Experiments.OperationalBridge.
 Require Import ZesuSsz.Contracts.Machine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Level1.
-From IslaTraces.zkvm_exit Require Import instrs.
 
-Notation IslarisEndpointState := OperationalState.
-Notation endpointLocal := operationalLocal.
-Notation endpointGlobal := operationalGlobal.
-Notation islarisEndpointPc := operationalPc.
-Notation islarisInstructionStep := operationalInstructionStep.
+(** The production I/O context is below the tutorial RAM window. This register
+    collection matches the focused trace-generation configuration. *)
+Definition zesu_sys_regs : list (reg_kind * valu_shape) := [
+  (KindReg "rv_enable_pmp", ExactShape (RVal_Bool false));
+  (KindReg "rv_enable_misaligned_access", ExactShape (RVal_Bool false));
+  (KindReg "rv_ram_base", ExactShape (RVal_Bits (BV 64 0x0)));
+  (KindReg "rv_ram_size", ExactShape (RVal_Bits (BV 64 0x40000000)));
+  (KindReg "rv_rom_base", ExactShape (RVal_Bits (BV 64 0x1000)));
+  (KindReg "rv_rom_size", ExactShape (RVal_Bits (BV 64 0x100)));
+  (KindReg "rv_clint_base", ExactShape (RVal_Bits (BV 64 0x2000000)));
+  (KindReg "rv_clint_size", ExactShape (RVal_Bits (BV 64 0xc0000)));
+  (KindReg "rv_htif_tohost", ExactShape (RVal_Bits (BV 64 0x40001000)));
+  (KindReg "cur_privilege", ExactShape (RVal_Enum "Machine"));
+  (KindReg "misa", ExactShape (RegVal_Struct [
+    ("bits", RVal_Bits (BV 64 0x8000000000001100))]));
+  (KindReg "mstatus", StructShape [("bits", MaskShape 64 0x20000 0)]);
+  (KindReg "satp", BitsShape 64)
+].
+
+Lemma zkvm_exit_instruction_body `{!islaG Σ} `{!threadG}
+    (code old_x5 old_exit_code : bv 64) :
+  instr 0x101c4 (Some a101c4) -∗
+  instr 0x101c8 (Some a101c8) -∗
+  instr 0x101cc (Some a101cc) -∗
+  instr_body 0x101c4 (
+    reg_col zesu_sys_regs ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗
+    "x10" ↦ᵣ RVal_Bits code ∗
+    0x2401a0d0 ↦ₘ old_exit_code ∗
+    instr_pre 0x101d0 (
+      reg_col zesu_sys_regs ∗
+      "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+      "x10" ↦ᵣ RVal_Bits code ∗
+      0x2401a0d0 ↦ₘ code ∗
+      True)).
+Proof.
+  iStartProof.
+  repeat liAStep; liShow.
+  Unshelve. all: prepare_sidecond.
+  all: liShow.
+  all: try bv_solve.
+Qed.
 
 (** Canonical states make the operational discharge obligation executable. *)
 Definition zkvmExitInstrMap : gmap (bv 64) isla_trace :=
@@ -36,10 +73,6 @@ Definition zkvmExitInitialRegs (code oldX5 : bv 64) : reg_map :=
   (<["x5" := RVal_Bits oldX5]>
   (<["PC" := RVal_Bits (Z_to_bv 64 0x101c4)]> ∅))))))))))))))).
 
-Definition zkvmExitLocal := operationalLocalState.
-
-Definition zkvmExitGlobal := operationalGlobalState zkvmExitInstrMap.
-
 Definition zkvmExitState := operationalState zkvmExitInstrMap.
 
 Definition zkvmExitRegsAfterAuipc (code oldX5 : bv 64) : reg_map :=
@@ -59,101 +92,52 @@ Definition zkvmExitRegsAfterStore (code oldX5 : bv 64) : reg_map :=
     (zkvmExitRegsAfterAddi code oldX5).
 
 Lemma zkvmExitAuipcStep code oldX5 mem :
-  islarisInstructionStep 0
+  operationalInstructionStep 0
     (zkvmExitState (zkvmExitInitialRegs code oldX5) mem)
     (zkvmExitState (zkvmExitRegsAfterAuipc code oldX5) mem).
 Proof.
-  unfold islarisInstructionStep.
-  eexists (Z_to_bv 64 0x101c4), a101c4, [].
-  repeat split; try reflexivity.
-  cbn.
-  eapply nsteps_l with (κ := []) (κs := []).
-  - eapply step_atomic with (t1 := []) (t2 := []) (efs := []).
-    + reflexivity.
-    + reflexivity.
-    + eapply SeqStep with (κ' := None).
-      * reflexivity.
-      * constructor.
-      * cbn.
-        split; first reflexivity.
-        eexists (Z_to_bv 64 0x101c4).
-        split; first reflexivity.
-        cbn. repeat split; reflexivity.
-  - cbn.
-    repeat operational_trace_step.
-    constructor.
+  operational_begin_instruction (Z_to_bv 64 0x101c4) a101c4.
+  repeat operational_trace_step.
+  constructor.
   Unshelve. all: exact (Z_to_bv 64 0).
 Qed.
 
 Lemma zkvmExitAddiStep code oldX5 mem :
-  islarisInstructionStep 1
+  operationalInstructionStep 1
     (zkvmExitState (zkvmExitRegsAfterAuipc code oldX5) mem)
     (zkvmExitState (zkvmExitRegsAfterAddi code oldX5) mem).
 Proof.
-  unfold islarisInstructionStep.
-  eexists (Z_to_bv 64 0x101c8), a101c8, [].
-  repeat split; try reflexivity.
-  cbn.
-  eapply nsteps_l with (κ := []) (κs := []).
-  - eapply step_atomic with (t1 := []) (t2 := []) (efs := []).
-    + reflexivity.
-    + reflexivity.
-    + eapply SeqStep with (κ' := None).
-      * reflexivity.
-      * constructor.
-      * cbn.
-        split; first reflexivity.
-        eexists (Z_to_bv 64 0x101c8).
-        split; first reflexivity.
-        cbn. repeat split; reflexivity.
-  - cbn.
-    repeat operational_trace_step.
-    constructor.
+  operational_begin_instruction (Z_to_bv 64 0x101c8) a101c8.
+  repeat operational_trace_step.
+  constructor.
   Unshelve. all: exact (Z_to_bv 64 0).
 Qed.
 
 Lemma zkvmExitStoreStep code oldX5 mem oldExitCode :
   read_mem mem 0x2401a0d0 8 = Some oldExitCode ->
-  islarisInstructionStep 2
+  operationalInstructionStep 2
     (zkvmExitState (zkvmExitRegsAfterAddi code oldX5) mem)
     (zkvmExitState (zkvmExitRegsAfterStore code oldX5)
       (write_mem 8 mem (Z_to_bv 64 0x2401a0d0) (bv_unsigned code))).
 Proof.
   intros Hmem.
-  unfold islarisInstructionStep.
-  eexists (Z_to_bv 64 0x101cc), a101cc, [].
-  repeat split; try reflexivity.
-  cbn.
-  eapply nsteps_l with (κ := []) (κs := []).
-  - eapply step_atomic with (t1 := []) (t2 := []) (efs := []).
-    + reflexivity.
-    + reflexivity.
-    + eapply SeqStep with (κ' := None).
-      * reflexivity.
-      * constructor.
-      * cbn.
-        split; first reflexivity.
-        eexists (Z_to_bv 64 0x101cc).
-        split.
-        -- cbn. f_equal.
-        -- cbn. repeat split; reflexivity.
-  - cbn.
-    repeat operational_trace_step.
-    all: try apply readAccessorZToBv.
-    + replace
-        ((Z_to_bv 64 0x2401a1c4 +
-          Z_to_bv 64 0xfffffffffffffef4 + 24)%bv)
-        with (Z_to_bv 64 0x2401a0d0) by bv_solve.
-      replace (bv_unsigned (Z_to_bv 64 0x2401a0d0))
-        with 0x2401a0d0 by bv_solve.
-      rewrite Hmem.
-      repeat split; reflexivity.
-    + operational_trace_step. constructor.
+  operational_begin_instruction (Z_to_bv 64 0x101cc) a101cc.
+  repeat operational_trace_step.
+  all: try apply readAccessorZToBv.
+  - replace
+      ((Z_to_bv 64 0x2401a1c4 +
+        Z_to_bv 64 0xfffffffffffffef4 + 24)%bv)
+      with (Z_to_bv 64 0x2401a0d0) by bv_solve.
+    replace (bv_unsigned (Z_to_bv 64 0x2401a0d0))
+      with 0x2401a0d0 by bv_solve.
+    rewrite Hmem.
+    repeat split; reflexivity.
+  - operational_trace_step. constructor.
   Unshelve. all: try exact (Z_to_bv 64 0); try exact false.
 Qed.
 
 Definition zkvmExitCanonicalEntry (args : ZkvmExitArgs)
-    (state : IslarisEndpointState) : Prop :=
+    (state : OperationalState) : Prop :=
   0 <= zkvmExitCode args < 2 ^ 64 /\
   exists (oldX5 : bv 64) mem oldExitCode,
     read_mem mem 0x2401a0d0 8 = Some oldExitCode /\
@@ -161,7 +145,7 @@ Definition zkvmExitCanonicalEntry (args : ZkvmExitArgs)
       (zkvmExitInitialRegs (Z_to_bv 64 (zkvmExitCode args)) oldX5) mem.
 
 Definition zkvmExitCanonicalPost (args : ZkvmExitArgs) (_ : unit)
-    (before after : IslarisEndpointState) : Prop :=
+    (before after : OperationalState) : Prop :=
   exists (oldX5 : bv 64) mem oldExitCode,
     read_mem mem 0x2401a0d0 8 = Some oldExitCode /\
     before = zkvmExitState
@@ -172,9 +156,9 @@ Definition zkvmExitCanonicalPost (args : ZkvmExitArgs) (_ : unit)
         (bv_unsigned (Z_to_bv 64 (zkvmExitCode args)))).
 
 Definition zkvmExitCanonicalModel :
-    Level1MachineModel IslarisEndpointState unit := {|
-  endpointStep := islarisInstructionStep;
-  endpointPc := islarisEndpointPc;
+    Level1MachineModel OperationalState unit := {|
+  endpointStep := operationalInstructionStep;
+  endpointPc := operationalPc;
   readInputEntry := fun _ _ => False;
   readInputExit := fun _ _ _ _ => False;
   allocatorGetEntry := fun _ _ => False;
