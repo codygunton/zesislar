@@ -31,6 +31,11 @@ ZKVM_EXIT_TRACE_DIR := generated/isla-traces/zkvm_exit
 ZKVM_EXIT_TRACE_COQ := IslaTraces.zkvm_exit
 ZKVM_EXIT_ISLA_CFG  := riscv64_zesu_exit.toml
 
+ALLOCATOR_GET_DUMP      := experiments/islaris-allocator-get/allocator_get.dump
+ALLOCATOR_GET_TRACE_DIR := generated/isla-traces/allocator_get
+ALLOCATOR_GET_TRACE_COQ := IslaTraces.allocator_get
+ALLOCATOR_GET_ISLA_CFG  := riscv64_zesu_allocator.toml
+
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
 ISLA_CFG := riscv64_zesu.toml
@@ -84,6 +89,20 @@ $(ZKVM_EXIT_TRACE_DIR)/instrs.v: $(ZKVM_EXIT_DUMP) $(ISLA_ETC)/$(ZKVM_EXIT_ISLA_
 
 .PHONY: zkvm-exit-traces
 zkvm-exit-traces: $(ZKVM_EXIT_TRACE_DIR)/instrs.v
+
+$(ISLA_ETC)/$(ALLOCATOR_GET_ISLA_CFG): experiments/islaris-allocator-get/$(ALLOCATOR_GET_ISLA_CFG)
+	install -m644 $< $@
+
+$(ALLOCATOR_GET_TRACE_DIR)/instrs.v: $(ALLOCATOR_GET_DUMP) $(ISLA_ETC)/$(ALLOCATOR_GET_ISLA_CFG)
+	mkdir -p $(ALLOCATOR_GET_TRACE_DIR)
+	$(OPAM) islaris $(ALLOCATOR_GET_DUMP) -j 8 -o $(ALLOCATOR_GET_TRACE_DIR) \
+	  --coqdir=$(ALLOCATOR_GET_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	       $(ALLOCATOR_GET_TRACE_DIR)/dune
+
+.PHONY: allocator-get-traces
+allocator-get-traces: $(ALLOCATOR_GET_TRACE_DIR)/instrs.v
 
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
