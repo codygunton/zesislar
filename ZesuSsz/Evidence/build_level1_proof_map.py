@@ -17,8 +17,9 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
     rows = manifest["instances"]
     expected = {row["qualified"] for row in rows}
     states = {row["qualified"]: row for row in progress["states"]}
-    if set(states) != expected:
-        raise ValueError("progress does not name the exact Level 1 inventory")
+    main_qualified = "ssz_decode_root.main"
+    if set(states) != expected | {main_qualified}:
+        raise ValueError("progress does not name main and the exact Level 1 inventory")
 
     observed: dict[str, dict] = {}
     for vector in evidence["vectors"]:
@@ -50,12 +51,16 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         "column": 0, "status": "artifact", "instructionCount": 0,
     }]
     edges = []
+    main_state = states[main_qualified]
     flame_states = [{
-        "owner": main["id"], "qualified": main["name"], "status": "proof_not_started",
+        "owner": main["id"], "qualified": main["name"],
+        "status": main_state["status"], "contract": main_state["contract"],
     }]
     for row in rows:
         capture = observed[row["id"]]
         status = states[row["qualified"]]["status"]
+        proof_status = "proved" if status == "proved" else "not_started"
+        proved_count = states[row["qualified"]].get("provedInstructionCount", 0)
         boundary_id = "level1-" + row["id"].replace(":", "-")
         source = row["functionInstanceIdentity"]["function"]["declaration"]
         boundary = {
@@ -76,14 +81,19 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
             "dwarfBindings": bindings_by_id[row["id"]],
             "evidenceStatus": "captured",
             "contractStatus": "specified_assumption",
-            "proofStatus": "not_started",
+            "proofStatus": proof_status,
+            "provedInstructionCount": proved_count,
+            **({"theorem": states[row["qualified"]]["theorem"]}
+               if states[row["qualified"]].get("theorem") else {}),
         }
         boundaries.append(boundary)
         regions.append({
             "id": boundary_id,
             "label": row["qualified"],
             "authoringState": status,
-            "blocker": "The Level 1 machine proof is not complete.",
+            "blocker": ("The native Level 1 contract proof is complete."
+                        if proof_status == "proved"
+                        else "The Level 1 machine proof is not complete."),
             "scope": "selected-child",
             "pcs": row["executionPcs"],
             "boundaryIds": [boundary_id],
@@ -102,10 +112,13 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         node_id = "contract-" + boundary_id
         nodes.append({
             "id": node_id, "label": row["qualified"], "kind": "level1Contract",
-            "column": 1, "status": status, "proofStatus": "not_started",
+            "column": 1, "status": status, "proofStatus": proof_status,
             "evidenceStatus": "captured", "contractStatus": "specified_assumption",
             "level0UseStatus": "consumed", "boundaryId": boundary_id,
             "instructionCount": row["subtreeInstructionCount"],
+            "provedInstructionCount": proved_count,
+            **({"theorem": states[row["qualified"]]["theorem"]}
+               if states[row["qualified"]].get("theorem") else {}),
         })
         edges.extend([
             {"source": "spec", "target": node_id, "kind": "semantic-review"},
@@ -129,9 +142,10 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
          "phase": "level0-glue", "instructionCount": len(glue_pcs),
          "provedInstructionCount": 0},
         {"id": "assembly", "label": "Level 1 contract assembly", "kind": "conversion",
-         "column": 2, "status": "proof_not_started", "proofStatus": "not_started"},
+         "column": 2, "status": "in_progress", "proofStatus": "in_progress"},
         {"id": "root", "label": "MainComplianceStatement", "kind": "parent",
-         "column": 3, "status": "proof_not_started", "proofStatus": "not_started"},
+         "column": 3, "status": main_state["status"], "proofStatus": "not_started",
+         "contractStatus": "specified_assumption", "contract": main_state["contract"]},
     ])
     edges.extend([
         {"source": "glue", "target": "assembly", "kind": "dependency"},
@@ -144,7 +158,8 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         "artifact": cfg["artifact"],
         "instructions": [], "blocks": [], "boundaries": boundaries, "manifests": [],
         "formalCoverage": {
-            "directPcCount": 0, "boundaryRegionPcCount": len(selected & set(main["pcs"])),
+            "directPcCount": sum(row["provedInstructionCount"] for row in boundaries),
+            "boundaryRegionPcCount": len(selected & set(main["pcs"])),
             "conditionalContractPcCount": 0, "endpointPcCount": flame["uniqueProgramTotal"],
         },
         "compilerProvenance": {"state": "same-ELF DWARF"},

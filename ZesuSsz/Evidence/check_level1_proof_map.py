@@ -23,14 +23,21 @@ def validate(proof_map: dict, manifest: dict, evidence: dict, bindings: dict) ->
             raise ValueError("a boundary does not report captured evidence")
         if row["contractStatus"] != "specified_assumption":
             raise ValueError("a boundary does not report the contract assumption")
-        if row["proofStatus"] != "not_started":
-            raise ValueError("the evidence payload makes a proof claim")
+        if row["proofStatus"] not in {"not_started", "proved"}:
+            raise ValueError("a boundary has an unknown proof status")
+        if row["proofStatus"] == "proved":
+            if not row.get("theorem") or row.get("provedInstructionCount", 0) <= 0:
+                raise ValueError("a proved boundary lacks its theorem or instruction count")
+        elif row.get("provedInstructionCount", 0) != 0:
+            raise ValueError("an unproved boundary reports proved instructions")
     statuses = {node.get("proofStatus") for node in proof_map["refinementGraph"]["nodes"]
                 if node.get("proofStatus")}
-    if statuses != {"not_started"}:
-        raise ValueError("the refinement graph makes a proof claim")
-    if proof_map["formalCoverage"]["directPcCount"] != 0:
-        raise ValueError("evidence is reported as direct formal coverage")
+    if not statuses <= {"not_started", "proved", "in_progress"}:
+        raise ValueError("the refinement graph has an unknown proof status")
+    proved_count = sum(row.get("provedInstructionCount", 0)
+                       for row in boundaries.values())
+    if proof_map["formalCoverage"]["directPcCount"] != proved_count:
+        raise ValueError("formal coverage differs from proved instruction counts")
     if (proof_map["formalCoverage"]["boundaryRegionPcCount"] >
             proof_map["formalCoverage"]["endpointPcCount"]):
         raise ValueError("boundary coverage exceeds the endpoint instruction count")

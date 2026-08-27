@@ -33,11 +33,20 @@ class Level1ProofMapTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exact six"):
             validate(*documents)
 
-    def test_proof_claim_is_rejected(self):
+    def test_kernel_backed_proof_claim_passes(self):
+        documents = list(fixture())
+        documents[0] = copy.deepcopy(documents[0])
+        boundary = documents[0]["boundaries"][0]
+        boundary.update(proofStatus="proved", theorem="level1Example",
+                        provedInstructionCount=3)
+        documents[0]["formalCoverage"]["directPcCount"] = 3
+        validate(*documents)
+
+    def test_proof_claim_without_theorem_is_rejected(self):
         documents = list(fixture())
         documents[0] = copy.deepcopy(documents[0])
         documents[0]["boundaries"][0]["proofStatus"] = "proved"
-        with self.assertRaisesRegex(ValueError, "proof claim"):
+        with self.assertRaisesRegex(ValueError, "lacks its theorem"):
             validate(*documents)
 
 

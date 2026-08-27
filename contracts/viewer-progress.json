@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
   "states": [
+    {"qualified": "ssz_decode_root.main", "status": "contract_specified_assumption", "contract": "MainComplianceStatement"},
     {"qualified": "read_input", "status": "contract_specified_assumption", "contract": "readInputContract"},
-    {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
+    {"qualified": "zkvm_exit", "status": "proved", "contract": "zkvmExitContract", "theorem": "level1ZkvmExit", "provedInstructionCount": 3},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
-    {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
+    {"qualified": "alt_fl_alloc.get", "status": "proved", "contract": "allocatorGetContract", "theorem": "level1AllocatorGet", "provedInstructionCount": 8},
     {"qualified": "ssz_decode_observation.writeSuccess", "status": "contract_specified_assumption", "contract": "writeSuccessContract"},
-    {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
+    {"qualified": "ssz_decode_observation.writeFailure", "status": "proved", "contract": "writeFailureContract", "theorem": "level1WriteFailure", "provedInstructionCount": 10}
   ]
 }
