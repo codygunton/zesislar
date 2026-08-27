@@ -1,0 +1,25 @@
+//@isla-config: riscv64_zesu_exit.toml
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+   161c0:	00001517          	auipc	a0,0x1
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+   161c4:	60850513          	addi	a0,a0,1544
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+   161c8:	00600593          	li	a1,6
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+   161cc:	ffffa317          	auipc	t1,0xffffa
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+//@constraint: = x6 0x00000000000101cc
+   161d0:	fc430067          	jr	-60(t1)
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+   10190:	2400a297          	auipc	t0,0x2400a
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+   10194:	f2828293          	addi	t0,t0,-216
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+//@constraint: = x5 0x000000002401a0b8
+   10198:	00a2b423          	sd	a0,8(t0)
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+//@constraint: = x5 0x000000002401a0b8
+   1019c:	00b2b823          	sd	a1,16(t0)
+//@constraint: = ((_ extract 2 2) misa.bits) 0b0
+//@constraint: = x1 0x0000000000014d24
+   101a0:	00008067          	ret

@@ -113,15 +113,18 @@ Lemma allocatorGetTermination :
     (PcInRanges allocatorGetExecutionPcRanges)
     (PcInList allocatorGetExitPcs) 0x14ccc 8.
 Proof.
-  exists allocatorGetPath. repeat split.
-  - repeat constructor; unfold StraightLineInstructionStep; lia.
-  - apply Forall_forall. intros pc Hpc.
-    unfold PcInRanges. eexists 0x14ccc, 0x14cec. split.
-    + cbn. auto.
-    + unfold allocatorGetPath in Hpc. cbn in Hpc.
-      apply elem_of_list_In in Hpc. cbn in Hpc. lia.
-  - eexists 0x14cec. split; [reflexivity | cbn; auto].
-  - lia.
+  exists allocatorGetPath. split; first reflexivity. split.
+  - unfold allocatorGetPath.
+    solve_instruction_path ltac:(unfold StraightLineInstructionStep; lia).
+  - split.
+    + apply Forall_forall. intros pc Hpc.
+      unfold PcInRanges. eexists 0x14ccc, 0x14cec. split.
+      * cbn. auto.
+      * unfold allocatorGetPath in Hpc. cbn in Hpc.
+        apply elem_of_list_In in Hpc. cbn in Hpc. lia.
+    + split.
+      * eexists 0x14cec. split; [reflexivity | cbn; auto].
+      * split; [reflexivity | lia].
 Qed.
 
 Theorem level1AllocatorGet :

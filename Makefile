@@ -36,6 +36,11 @@ ALLOCATOR_GET_TRACE_DIR := generated/isla-traces/allocator_get
 ALLOCATOR_GET_TRACE_COQ := IslaTraces.allocator_get
 ALLOCATOR_GET_ISLA_CFG  := riscv64_zesu_allocator.toml
 
+WRITE_FAILURE_DUMP      := experiments/islaris-write-failure/write_failure.dump
+WRITE_FAILURE_TRACE_DIR := generated/isla-traces/write_failure
+WRITE_FAILURE_TRACE_COQ := IslaTraces.write_failure
+WRITE_FAILURE_ISLA_CFG  := riscv64_zesu_exit.toml
+
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
 ISLA_CFG := riscv64_zesu.toml
@@ -103,6 +108,17 @@ $(ALLOCATOR_GET_TRACE_DIR)/instrs.v: $(ALLOCATOR_GET_DUMP) $(ISLA_ETC)/$(ALLOCAT
 
 .PHONY: allocator-get-traces
 allocator-get-traces: $(ALLOCATOR_GET_TRACE_DIR)/instrs.v
+
+$(WRITE_FAILURE_TRACE_DIR)/instrs.v: $(WRITE_FAILURE_DUMP) $(ISLA_ETC)/$(WRITE_FAILURE_ISLA_CFG)
+	mkdir -p $(WRITE_FAILURE_TRACE_DIR)
+	$(OPAM) islaris $(WRITE_FAILURE_DUMP) -j 10 -o $(WRITE_FAILURE_TRACE_DIR) \
+	  --coqdir=$(WRITE_FAILURE_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	       $(WRITE_FAILURE_TRACE_DIR)/dune
+
+.PHONY: write-failure-traces
+write-failure-traces: $(WRITE_FAILURE_TRACE_DIR)/instrs.v
 
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one

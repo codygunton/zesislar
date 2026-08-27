@@ -5,5 +5,5 @@
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit
-   IslaTraces.allocator_get
+   IslaTraces.allocator_get IslaTraces.write_failure
    lithium iris stdpp RecordUpdate Ltac2))
