@@ -10,6 +10,8 @@ verification-target/zesu
 *.vos
 *.glob
 .*.aux
+.lia.cache
+rocq_mcp_cache_*.v
 
 # Intermediate isla output; the reviewed Coq beside it is committed.
 *.isla

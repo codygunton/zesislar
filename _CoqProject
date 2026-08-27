@@ -1,0 +1,25 @@
+# Load paths for coq-lsp and any other editor that does not read dune.
+#
+# `make proof` runs dune, which writes the .vo files under _build/default.
+# These lines mirror the `(coq.theory ...)` stanzas in ZesuSsz/dune,
+# InstrSpecs/dune, generated/isla-traces/*/dune, generated/evm-sail-coq/dune
+# and generated/sail-stdpp/dune, so the editor loads exactly what dune built.
+# Run the build first: with no .vo files the imports fail, the notations they
+# define go missing, and the proof body then reports "Syntax error: illegal
+# begin of vernac" instead of a missing module.
+#
+# isla, lithium, iris, stdpp, RecordUpdate and Ltac2 live in the opam switch's
+# user-contrib, so coqc finds them without a -Q line. The switch itself is
+# named in .coq-switch.
+
+-Q _build/default/ZesuSsz ZesuSsz
+-Q _build/default/InstrSpecs InstrSpecs
+-Q _build/default/generated/isla-traces/entrypoints IslaTraces.entrypoints
+-Q _build/default/generated/isla-traces/zkvm_exit IslaTraces.zkvm_exit
+-Q _build/default/generated/isla-traces/allocator_get IslaTraces.allocator_get
+-Q _build/default/generated/evm-sail-coq EvmSail
+-Q _build/default/generated/sail-stdpp SailStdpp
+
+# Same warning suppressions dune passes.
+-arg -w -arg -notation-overridden
+-arg -w -arg -redundant-canonical-projection
