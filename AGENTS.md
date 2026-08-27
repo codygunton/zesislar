@@ -1,0 +1,78 @@
+# Zesislar proof rules
+
+These rules apply to all proof work in this repository.
+
+## Proof objective
+
+Prove each binary region against its Level 1 contract.
+Use the contract boundary that the compliance theorem consumes.
+Do not replace a contract proof with an instruction-body theorem.
+Do not use execution evidence as a proof premise.
+
+## Required proof pattern
+
+Use Islaris and Iris for machine-state correctness.
+State the entry resources, the allowed outcome, and the terminal resources in `IslarisContractResources`.
+State the binary theorem with `IslarisContractSpec` and `IslarisContractCorrect`.
+Start the proof with `iStartProof` and introduce the code and arguments with `iIntros`.
+Use `liAStep` for instruction execution and `liShow` to inspect the remaining state.
+Use standard Iris tactics, `bv_solve`, and small arithmetic steps to close the final resource entailment.
+Connect the native proof to the Level 1 assumption with `nativeContractBridge`.
+
+The proof must establish the final machine state through terminal `instr_pre` resources.
+The proof must preserve all framed registers and memory that the contract requires.
+The proof must state the outcome relation that the Level 1 contract requires.
+
+Use a separate checked certificate for termination, region confinement, the exit PC, and the instruction bound.
+Generate this certificate from the pinned ELF and its control-flow graph when the region is not small.
+Do not weaken the contract to match one observed path.
+
+## Scale requirements
+
+Do not write one lemma for each instruction.
+Do not write symbolic-map lemmas, cache lemmas, or a custom operational interpreter.
+Do not copy generated instruction semantics into proof files.
+Do not hand-write large `instr` conjunctions, PC transition tables, or path lists.
+Extend the existing generators when Islaris needs these repetitive artifacts.
+
+Use Islaris proof automation across straight-line blocks.
+Use Iris branch reasoning for binary branches.
+Supply a loop invariant for each loop.
+Do not unroll a large loop to obtain a finite proof.
+Keep generated artifacts separate from reviewed contract resources and proof scripts.
+
+Before new automation, inspect `~/islaris` and `~/islaris-tutorial` for an existing idiom.
+Prefer an upstream Islaris tactic or extension point over repository-specific proof machinery.
+Do not fork Islaris unless the user approves that change.
+
+## File structure
+
+Keep one reviewed proof file for each Level 1 contract when practical.
+Use the structure in `ZesuSsz/Experiments/ZkvmExit.v`, `AllocatorGet.v`, and `WriteFailure.v`.
+Move shared definitions to `ZesuSsz/Contracts/` only after two proofs need the same definition.
+Put generated trace semantics under `generated/isla-traces/`.
+Put generators and their checks under `ZesuSsz/Evidence/` or the applicable build directory.
+
+## Proof workflow
+
+1. Confirm the exact Level 1 entry, exit, outcome, frame, region, and bound.
+2. Generate Islaris traces from the pinned binary.
+3. Attempt the complete native contract with built-in Islaris automation.
+4. Inspect all residual goals before new lemmas or automation.
+5. Add only reusable invariants or tactics that the residual goals require.
+6. Generate and check the control-flow certificate.
+7. Apply `nativeContractBridge` and prove the exact Level 1 assumption.
+8. Verify the proof with `rocq-mcp` before the complete project gate.
+
+Stop and ask the user before changing the contract, proof boundary, or proof architecture.
+Report instruction counts, branch counts, loops, residual goals, and any manual proof growth.
+Treat rapid proof-size growth as an automation defect, not as routine proof work.
+
+## Verification
+
+Use `rocq-mcp` as the primary proof tool.
+Call `rocq_health` before proof work.
+Use `rocq_start`, `rocq_check`, and `rocq_step_multi` during proof development.
+Use `rocq_compile_file` and `rocq_verify` for final proof verification.
+Run focused trace and proof targets during development.
+Run `make check` before each proof commit or completion claim.
