@@ -23,3 +23,11 @@ The theorem proves the following focused instruction behavior:
 
 The theorem does not prove the Level 1 `zkvmExitContract`.
 It does not connect the memory write to the endpoint `exitCode` field.
+
+`zkvm_exit_islaris_contract` lifts this result to `ZkvmExitArgs` and
+`IslarisContractSpec`.
+Its entry predicate requires a 64-bit exit code and owns the affected machine resources.
+Its exit predicate owns the updated exit-code word at the terminal PC.
+
+The pure `ContractImplements` theorem still needs a concrete endpoint state and step relation.
+`Level1MachineModel` leaves both items abstract, so no theorem can connect them to these resources yet.
