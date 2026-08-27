@@ -31,3 +31,12 @@ Its exit predicate owns the updated exit-code word at the terminal PC.
 
 The pure `ContractImplements` theorem still needs a concrete endpoint state and step relation.
 `Level1MachineModel` leaves both items abstract, so no theorem can connect them to these resources yet.
+
+`ZkvmExitOperational.v` supplies a first concrete model from Islaris `seq_local_state`
+and `seq_global_state` values.
+It defines one contract step as one complete generated instruction trace.
+The three step lemmas prove 10, 12, and 31 internal `seq_step` events.
+`level1ZkvmExitCanonical` proves the bounded Level 1 field with a bound of three instructions.
+
+This first operational model fixes unrelated registers to canonical values.
+The production bridge must generalize those registers while preserving the same three trace proofs.
