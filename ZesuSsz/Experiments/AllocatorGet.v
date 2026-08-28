@@ -4,23 +4,6 @@ Require Import ZesuSsz.Contracts.Machine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Level1.
 
-Definition allocator_sys_regs : list (reg_kind * valu_shape) := [
-  (KindReg "rv_enable_pmp", ExactShape (RVal_Bool false));
-  (KindReg "rv_enable_misaligned_access", ExactShape (RVal_Bool false));
-  (KindReg "rv_ram_base", ExactShape (RVal_Bits (BV 64 0x20000000)));
-  (KindReg "rv_ram_size", ExactShape (RVal_Bits (BV 64 0x20000000)));
-  (KindReg "rv_rom_base", ExactShape (RVal_Bits (BV 64 0x1000)));
-  (KindReg "rv_rom_size", ExactShape (RVal_Bits (BV 64 0x100)));
-  (KindReg "rv_clint_base", ExactShape (RVal_Bits (BV 64 0x2000000)));
-  (KindReg "rv_clint_size", ExactShape (RVal_Bits (BV 64 0xc0000)));
-  (KindReg "rv_htif_tohost", ExactShape (RVal_Bits (BV 64 0x40001000)));
-  (KindReg "cur_privilege", ExactShape (RVal_Enum "Machine"));
-  (KindReg "misa", ExactShape (RegVal_Struct [
-    ("bits", RVal_Bits (BV 64 0x8000000000001100))]));
-  (KindReg "mstatus", StructShape [("bits", MaskShape 64 0x20000 0)]);
-  (KindReg "satp", BitsShape 64)
-].
-
 Definition allocator_get_resources `{!islaG Sigma} `{!threadG} :
     IslarisContractResources AllocatorGetArgs AllocatorGetOutcome := {|
   islarisCode :=
@@ -35,7 +18,7 @@ Definition allocator_get_resources `{!islaG Sigma} `{!threadG} :
   islarisEntry := fun args =>
     (∃ (sp old_x10 old_x11 old_x12 old_x13 stack0 stack8 : bv 64),
       ⌜bv_unsigned sp = allocatorStackPointer args⌝ ∗
-      reg_col allocator_sys_regs ∗
+      reg_col zesu_ram_sys_regs ∗
       "x2" ↦ᵣ RVal_Bits sp ∗
       "x10" ↦ᵣ RVal_Bits old_x10 ∗
       "x11" ↦ᵣ RVal_Bits old_x11 ∗
@@ -52,7 +35,7 @@ Definition allocator_get_resources `{!islaG Sigma} `{!threadG} :
     (∃ (sp stack0 stack8 : bv 64),
       ⌜bv_unsigned sp = allocatorStackPointer args⌝ ∗
       ⌜outcome = Build_AllocatorGetOutcome 0x2401a0b0 0x177a8⌝ ∗
-      reg_col allocator_sys_regs ∗
+      reg_col zesu_ram_sys_regs ∗
       "x2" ↦ᵣ RVal_Bits sp ∗
       "x10" ↦ᵣ RVal_Bits (BV 64 0x2401a0b0) ∗
       "x11" ↦ᵣ RVal_Bits (BV 64 0x177a8) ∗

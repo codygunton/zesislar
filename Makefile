@@ -36,6 +36,10 @@ ALLOCATOR_GET_TRACE_DIR := generated/isla-traces/allocator_get
 ALLOCATOR_GET_TRACE_COQ := IslaTraces.allocator_get
 ALLOCATOR_GET_ISLA_CFG  := riscv64_zesu_allocator.toml
 
+READ_INPUT_DUMP      := experiments/islaris-read-input/read_input.dump
+READ_INPUT_TRACE_DIR := generated/isla-traces/read_input
+READ_INPUT_TRACE_COQ := IslaTraces.read_input
+READ_INPUT_ISLA_CFG  := riscv64_zesu_allocator.toml
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
 ISLA_CFG := riscv64_zesu.toml
@@ -104,6 +108,16 @@ $(ALLOCATOR_GET_TRACE_DIR)/instrs.v: $(ALLOCATOR_GET_DUMP) $(ISLA_ETC)/$(ALLOCAT
 .PHONY: allocator-get-traces
 allocator-get-traces: $(ALLOCATOR_GET_TRACE_DIR)/instrs.v
 
+$(READ_INPUT_TRACE_DIR)/instrs.v: $(READ_INPUT_DUMP) $(ISLA_ETC)/$(READ_INPUT_ISLA_CFG)
+	mkdir -p $(READ_INPUT_TRACE_DIR)
+	$(OPAM) islaris $(READ_INPUT_DUMP) -j 8 -o $(READ_INPUT_TRACE_DIR) \
+	  --coqdir=$(READ_INPUT_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	       $(READ_INPUT_TRACE_DIR)/dune
+
+.PHONY: read-input-traces
+read-input-traces: $(READ_INPUT_TRACE_DIR)/instrs.v
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
 trace-one:
