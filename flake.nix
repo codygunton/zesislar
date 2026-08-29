@@ -1,0 +1,57 @@
+{
+  description = "Rocq and Islaris verification of the Zesu SSZ decoder";
+
+  inputs = {
+    binaryFv.url = "github:codygunton/binary-fv-experiment/38a3a14a";
+    nixpkgs.follows = "binaryFv/nixpkgs";
+    evmSail.follows = "binaryFv/evmSail";
+    evmSailCompiler.follows = "binaryFv/evmSailCompiler";
+    zesu = {
+      flake = false;
+      follows = "binaryFv/zesu";
+    };
+  };
+
+  outputs = { self, binaryFv, nixpkgs, evmSail, evmSailCompiler, zesu }:
+    let
+      systems = [ "x86_64-linux" ];
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+    in {
+      packages = forAllSystems (system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+          endpointElf = binaryFv.packages.${system}.zesuSszDecodeRv64Elf;
+          target = import ./nix/target.nix {
+            inherit pkgs endpointElf;
+            zesuSource = zesu;
+          };
+        in {
+          endpoint-elf = endpointElf;
+          endpoint-entry-dump = target.entryDump;
+          zesu-source = target.source;
+          default = endpointElf;
+        });
+
+      apps = forAllSystems (system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+          target = import ./nix/target.nix {
+            inherit pkgs;
+            endpointElf = binaryFv.packages.${system}.zesuSszDecodeRv64Elf;
+            zesuSource = zesu;
+          };
+        in {
+          link-zesu-source = {
+            type = "app";
+            program = "${target.sourceLink}/bin/link-zesu-source";
+            meta.description = "Link verification-target/zesu to the pinned Nix source";
+          };
+        });
+
+      checks = forAllSystems (system: {
+        endpoint-elf = self.packages.${system}.endpoint-elf;
+        endpoint-entry-dump = self.packages.${system}.endpoint-entry-dump;
+        zesu-source = self.packages.${system}.zesu-source;
+      });
+    };
+}

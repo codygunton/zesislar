@@ -1,0 +1,152 @@
+{
+  "nodes": {
+    "binaryFv": {
+      "inputs": {
+        "evmSail": "evmSail",
+        "evmSailCompiler": "evmSailCompiler",
+        "leanSail": "leanSail",
+        "nixpkgs": "nixpkgs",
+        "sailRiscv": "sailRiscv",
+        "zesu": "zesu"
+      },
+      "locked": {
+        "lastModified": 1787173587,
+        "narHash": "sha256-2bUSGgdv/U10Ucop+ltAnsfupkf2MiGMWVbd6KuUPKQ=",
+        "owner": "codygunton",
+        "repo": "binary-fv-experiment",
+        "rev": "38a3a14a959067688ee253919929742ca51e26a6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "codygunton",
+        "ref": "38a3a14a",
+        "repo": "binary-fv-experiment",
+        "type": "github"
+      }
+    },
+    "evmSail": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786322618,
+        "narHash": "sha256-bPk8TKtbtsXH8/An3thERju18aAJZURpckQkDO1xzag=",
+        "owner": "frisitano",
+        "repo": "evm-sail",
+        "rev": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "frisitano",
+        "repo": "evm-sail",
+        "rev": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+        "type": "github"
+      }
+    },
+    "evmSailCompiler": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786238299,
+        "narHash": "sha256-NYOdGg4JQvdjiE0jAiniQyeZau7ojd7V+igite5qI/4=",
+        "owner": "frisitano",
+        "repo": "sail",
+        "rev": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "frisitano",
+        "repo": "sail",
+        "rev": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+        "type": "github"
+      }
+    },
+    "leanSail": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775733076,
+        "narHash": "sha256-fR/AHGfbqIsHgCzD//N9HsXVKLfmxOksPN8M7cwLfUs=",
+        "owner": "rems-project",
+        "repo": "lean-sail",
+        "rev": "79b4d08505af29d88b3918f32d29840fae1fa191",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rems-project",
+        "repo": "lean-sail",
+        "rev": "79b4d08505af29d88b3918f32d29840fae1fa191",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1783279667,
+        "narHash": "sha256-/NAkDSsve+GNM0Bt6tleJdCGfsTlK89nPjkVOzZMo0s=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f205b5574fd0cb7da5b702a2da51507b7f4fdd1b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "binaryFv": "binaryFv",
+        "evmSail": [
+          "binaryFv",
+          "evmSail"
+        ],
+        "evmSailCompiler": [
+          "binaryFv",
+          "evmSailCompiler"
+        ],
+        "nixpkgs": [
+          "binaryFv",
+          "nixpkgs"
+        ],
+        "zesu": [
+          "binaryFv",
+          "zesu"
+        ]
+      }
+    },
+    "sailRiscv": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780709230,
+        "narHash": "sha256-pi/XP6+NX/wNpBESmnEg2d5cppMpMwFripDPk9vTx9I=",
+        "owner": "riscv",
+        "repo": "sail-riscv",
+        "rev": "65ddde80ee2b131bf46c20e6e748343c336c4071",
+        "type": "github"
+      },
+      "original": {
+        "owner": "riscv",
+        "repo": "sail-riscv",
+        "rev": "65ddde80ee2b131bf46c20e6e748343c336c4071",
+        "type": "github"
+      }
+    },
+    "zesu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786493738,
+        "narHash": "sha256-SINLbsTz77g4i6G8PWqyyhZVZuoIISmN9CPdDyhoA+s=",
+        "owner": "codygunton",
+        "repo": "zesu",
+        "rev": "d67f28c112c8a382d4cbc64b1a7c6c49c1412b0f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "codygunton",
+        "ref": "d67f28c",
+        "repo": "zesu",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
