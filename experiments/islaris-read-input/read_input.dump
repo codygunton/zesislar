@@ -1,25 +1,17 @@
 //@isla-config: riscv64_zesu_allocator.toml
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
    10140:	2000a297          	auipc	t0,0x2000a
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
    10144:	ec028293          	addi	t0,t0,-320
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
 //@constraint: = ((_ extract 2 0) x10) 0b000
 //@constraint: bvuge x10 rv_ram_base
 //@constraint: bvult x10 (bvadd rv_ram_base rv_ram_size)
    10148:	00553023          	sd	t0,0(a0)
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
    1014c:	2400a297          	auipc	t0,0x2400a
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
    10150:	f6c28293          	addi	t0,t0,-148
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
 //@constraint: = x5 0x000000002401a0b8
    10154:	0002b303          	ld	t1,0(t0)
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
 //@constraint: = ((_ extract 2 0) x11) 0b000
 //@constraint: bvuge x11 rv_ram_base
 //@constraint: bvult x11 (bvadd rv_ram_base rv_ram_size)
    10158:	0065b023          	sd	t1,0(a1)
-//@constraint: = ((_ extract 2 2) misa.bits) 0b0
 //@constraint: = x1 0x0000000000014ccc
    1015c:	00008067          	ret

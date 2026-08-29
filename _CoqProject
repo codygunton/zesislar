@@ -17,6 +17,7 @@
 -Q _build/default/generated/isla-traces/entrypoints IslaTraces.entrypoints
 -Q _build/default/generated/isla-traces/zkvm_exit IslaTraces.zkvm_exit
 -Q _build/default/generated/isla-traces/allocator_get IslaTraces.allocator_get
+-Q _build/default/generated/isla-traces/read_input IslaTraces.read_input
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/sail-stdpp SailStdpp
 
