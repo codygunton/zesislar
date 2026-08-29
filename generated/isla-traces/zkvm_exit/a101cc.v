@@ -13,7 +13,6 @@ Definition a101cc : isla_trace :=
   AssumeReg "cur_privilege" [] (RegVal_Base (Val_Enum "Machine")) Mk_annot :t:
   Smt (DeclareConst 1%Z (Ty_BitVec 64%N)) Mk_annot :t:
   Assume (AExp_Binop (Eq) (AExp_Manyop (Bvmanyarith Bvand) [AExp_Val (AVal_Var "mstatus" [Field "bits"]) Mk_annot; AExp_Val (AVal_Bits (BV 64%N 0x20000%Z)) Mk_annot] Mk_annot) (AExp_Val (AVal_Bits (BV 64%N 0x0%Z)) Mk_annot) Mk_annot) Mk_annot :t:
-  Assume (AExp_Binop (Eq) (AExp_Unop (Extract 2%N 2%N) (AExp_Val (AVal_Var "misa" [Field "bits"]) Mk_annot) Mk_annot) (AExp_Val (AVal_Bits (BV 1%N 0x0%Z)) Mk_annot) Mk_annot) Mk_annot :t:
   Smt (DeclareConst 2%Z (Ty_BitVec 64%N)) Mk_annot :t:
   Assume (AExp_Binop (Eq) (AExp_Val (AVal_Var "x5" []) Mk_annot) (AExp_Val (AVal_Bits (BV 64%N 0x2401a0b8%Z)) Mk_annot) Mk_annot) Mk_annot :t:
   Smt (DeclareConst 3%Z (Ty_BitVec 64%N)) Mk_annot :t:
