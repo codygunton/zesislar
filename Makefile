@@ -44,6 +44,9 @@ WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
 WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
 WRITE_SUCCESS_TRACE_STAMP := generated/isla-traces/write_success.stamp
 WRITE_SUCCESS_ISLA_CFG  := riscv64_zesu_write_success.toml
+WRITE_SUCCESS_MONOLITHIC_DUMP_DIR := experiments/islaris-write-success/monolithic-generated
+WRITE_SUCCESS_MONOLITHIC_DUMP_STAMP := $(WRITE_SUCCESS_MONOLITHIC_DUMP_DIR)/.stamp
+WRITE_SUCCESS_MONOLITHIC_TRACE_STAMP := generated/isla-traces/write_success_monolithic.stamp
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
 ISLA_CFG := riscv64_zesu.toml
@@ -149,6 +152,30 @@ $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SU
 
 .PHONY: write-success-traces
 write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP)
+
+$(WRITE_SUCCESS_MONOLITHIC_DUMP_STAMP): build/endpoint-elf experiments/islaris-write-success/monolithic-profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
+	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --profile experiments/islaris-write-success/monolithic-profile.json \
+	  --split-output-dir $(WRITE_SUCCESS_MONOLITHIC_DUMP_DIR)
+	touch $@
+
+$(WRITE_SUCCESS_MONOLITHIC_TRACE_STAMP): $(WRITE_SUCCESS_MONOLITHIC_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG)
+	@for dump_file in $(WRITE_SUCCESS_MONOLITHIC_DUMP_DIR)/block_*.dump; do \
+	  block_name=$$(basename $$dump_file .dump); \
+	  block_number=$${block_name#block_}; \
+	  trace_dir=generated/isla-traces/write_success_monolithic_$$block_number; \
+	  mkdir -p $$trace_dir; \
+	  $(OPAM) islaris $$dump_file -j 16 -o $$trace_dir \
+	    --coqdir=IslaTraces.write_success_monolithic_$$block_number --arch=riscv64; \
+	  sed -i -e '/(package islaris)/d' \
+	    -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	    $$trace_dir/dune; \
+	done
+	touch $@
+
+.PHONY: write-success-monolithic-traces
+write-success-monolithic-traces: $(WRITE_SUCCESS_MONOLITHIC_TRACE_STAMP)
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
 trace-one:

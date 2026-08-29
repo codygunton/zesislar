@@ -17,4 +17,8 @@
    IslaTraces.write_success_16 IslaTraces.write_success_17
    IslaTraces.write_success_18 IslaTraces.write_success_19
    IslaTraces.write_success_20
+   IslaTraces.write_success_monolithic_00
+   IslaTraces.write_success_monolithic_01
+   IslaTraces.write_success_monolithic_02
+   IslaTraces.write_success_monolithic_03
    lithium iris stdpp RecordUpdate Ltac2))
