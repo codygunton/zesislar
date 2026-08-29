@@ -29,10 +29,18 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
 
     def test_constrains_only_return_instructions(self):
         self.assertEqual(
-            control_flow_constraints("ret", "x1"),
+            control_flow_constraints("ret", "x1", "PC"),
             ["= ((_ extract 1 0) x1) 0b00"],
         )
-        self.assertEqual(control_flow_constraints("jalr 8(ra)", "x1"), [])
+        self.assertEqual(
+            control_flow_constraints("bne a0,a1,100", "x1", "PC"),
+            ["= ((_ extract 1 0) PC) 0b00"],
+        )
+        self.assertEqual(
+            control_flow_constraints("j 100", "x1", "PC"),
+            ["= ((_ extract 1 0) PC) 0b00"],
+        )
+        self.assertEqual(control_flow_constraints("jalr 8(ra)", "x1", "PC"), [])
 
 
 if __name__ == "__main__":

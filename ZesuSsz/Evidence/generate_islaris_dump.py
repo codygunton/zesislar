@@ -44,10 +44,18 @@ def effective_address_constraints(instruction: str, bases: dict[str, str]) -> li
     return constraints
 
 
-def control_flow_constraints(instruction: str, return_register: str | None) -> list[str]:
-    if instruction != "ret" or return_register is None:
-        return []
-    return [f"= ((_ extract 1 0) {return_register}) 0b00"]
+BRANCHES = {"beq", "bne", "blt", "bge", "bltu", "bgeu", "beqz", "bnez", "j"}
+
+
+def control_flow_constraints(
+    instruction: str, return_register: str | None, program_counter: str | None
+) -> list[str]:
+    opcode = instruction.split(maxsplit=1)[0]
+    if opcode == "ret" and return_register is not None:
+        return [f"= ((_ extract 1 0) {return_register}) 0b00"]
+    if opcode in BRANCHES and program_counter is not None:
+        return [f"= ((_ extract 1 0) {program_counter}) 0b00"]
+    return []
 
 
 def main() -> None:
@@ -82,7 +90,10 @@ def main() -> None:
         annotations.extend(
             f"//@constraint: {constraint}"
             for constraint in control_flow_constraints(
-                instruction, profile.get("alignedReturnRegister"))
+                instruction,
+                profile.get("alignedReturnRegister"),
+                profile.get("alignedProgramCounter"),
+            )
         )
         for base, constraints in profile.get("constraintsByMemoryBase", {}).items():
             if f"({base})" in instruction:
