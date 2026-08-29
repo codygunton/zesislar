@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.allocator_get Require Import instrs.
-Require Import ZesuSsz.Contracts.Machine.
+Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Level1.
 

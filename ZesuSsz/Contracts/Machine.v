@@ -1,24 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
-Require Import isla.riscv64.riscv64.
 
 Import ListNotations.
 
-Definition zesu_ram_sys_regs : list (reg_kind * valu_shape) := [
-  (KindReg "rv_enable_pmp", ExactShape (RVal_Bool false));
-  (KindReg "rv_enable_misaligned_access", ExactShape (RVal_Bool false));
-  (KindReg "rv_ram_base", ExactShape (RVal_Bits (BV 64 0x20000000)));
-  (KindReg "rv_ram_size", ExactShape (RVal_Bits (BV 64 0x20000000)));
-  (KindReg "rv_rom_base", ExactShape (RVal_Bits (BV 64 0x1000)));
-  (KindReg "rv_rom_size", ExactShape (RVal_Bits (BV 64 0x100)));
-  (KindReg "rv_clint_base", ExactShape (RVal_Bits (BV 64 0x2000000)));
-  (KindReg "rv_clint_size", ExactShape (RVal_Bits (BV 64 0xc0000)));
-  (KindReg "rv_htif_tohost", ExactShape (RVal_Bits (BV 64 0x40001000)));
-  (KindReg "cur_privilege", ExactShape (RVal_Enum "Machine"));
-  (KindReg "misa", ExactShape (RegVal_Struct [
-    ("bits", RVal_Bits (BV 64 0x8000000000001100))]));
-  (KindReg "mstatus", StructShape [("bits", MaskShape 64 0x20000 0)]);
-  (KindReg "satp", BitsShape 64)
-].
 (** A machine contract describes one binary region without selecting a proof method. *)
 Record RelationalMachineContract
     (State Args Outcome : Type) : Type := {
@@ -69,14 +52,6 @@ Inductive InstructionPathFollows (nextPc : Z -> Z -> Prop) :
     InstructionPathFollows nextPc (toPc :: rest) ->
     InstructionPathFollows nextPc (fromPc :: toPc :: rest).
 
-Ltac solve_instruction_path solve_edge :=
-  lazymatch goal with
-  | |- InstructionPathFollows _ (_ :: _ :: _) =>
-      apply InstructionPathNext;
-      [ solve [solve_edge] | solve_instruction_path solve_edge ]
-  | |- InstructionPathFollows _ [_] => constructor
-  end.
-
 Definition StraightLineInstructionStep (fromPc toPc : Z) : Prop :=
   (toPc = fromPc + 4)%Z.
 
@@ -89,7 +64,7 @@ Definition InstructionPathCertificate
     hd_error instructionPath = Some entryPc /\
     InstructionPathFollows nextPc instructionPath /\
     Forall region (removelast instructionPath) /\
-    (exists pc, List.last instructionPath entryPc = pc /\ exitPc pc) /\
+    (exists pc, last instructionPath entryPc = pc /\ exitPc pc) /\
     length instructionPath = S bound /\
     0 < bound.
 
