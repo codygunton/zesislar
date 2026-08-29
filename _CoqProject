@@ -20,6 +20,7 @@
 -Q _build/default/generated/isla-traces/write_success_12 IslaTraces.write_success_12
 -Q _build/default/generated/isla-traces/write_success_13 IslaTraces.write_success_13
 -Q _build/default/generated/isla-traces/write_success_14 IslaTraces.write_success_14
+-Q _build/default/generated/isla-traces/write_success_15 IslaTraces.write_success_15
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/sail-stdpp SailStdpp
 
