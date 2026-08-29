@@ -417,3 +417,131 @@ Proof.
   all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
+
+Definition encoderBooleanSpec `{!islaG Sigma} `{!threadG}
+    (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (∃ (old_x5 old_x11 stackByte stackRa : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗
+    "x10" ↦ᵣ RVal_Bits value ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
+    (bv_unsigned sp - 16) ↦ₘ? 7 ∗
+    (bv_unsigned sp - 9) ↦ₘ (bv_extract 0 8 stackByte) ∗
+    (bv_unsigned sp - 8) ↦ₘ stackRa ∗
+    mmio_range 0x2401a0c0 16 ∗
+    spec_trace
+      (writeOutputEvents ((sp - BV 64 9)%bv) (BV 64 1) tail) ∗
+    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
+    ⌜(0x20000000 <= bv_unsigned sp - 16)%Z⌝ ∗
+    ⌜(bv_unsigned sp < 0x40000000)%Z⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
+    instr_pre (bv_unsigned ret)
+      (reg_col zesu_ram_sys_regs ∗
+       "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x10" ↦ᵣ RVal_Bits ((sp - BV 64 9)%bv) ∗
+       "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
+       (bv_unsigned sp - 16) ↦ₘ? 7 ∗
+       (bv_unsigned sp - 9) ↦ₘ
+         (bv_extract 0 8 (bv_and value (BV 64 1))) ∗
+       (bv_unsigned sp - 8) ↦ₘ ret ∗
+       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@encoderBooleanSpec) := I.
+
+Lemma encoder_boolean_correct `{!islaG Sigma} `{!threadG}
+    (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15b9c (encoderBooleanSpec value sp ret tail P).
+Proof.
+  move => * /=.
+  iStartProof.
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
+  all: try rewrite bv_sign_extend_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
+
+Definition encoderBytesSpec `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (∃ (old_x5 old_x6 old_s0 old_s1
+       stack0 stack1 stack2 stack3 stack4 stack5 : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗
+    "x6" ↦ᵣ RVal_Bits old_x6 ∗
+    "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
+    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+    (bv_unsigned sp - 48) ↦ₘ stack0 ∗
+    (bv_unsigned sp - 40) ↦ₘ stack1 ∗
+    (bv_unsigned sp - 32) ↦ₘ stack2 ∗
+    (bv_unsigned sp - 24) ↦ₘ stack3 ∗
+    (bv_unsigned sp - 16) ↦ₘ stack4 ∗
+    (bv_unsigned sp - 8) ↦ₘ stack5 ∗
+    bv_unsigned data ↦ₘ∗ bytes ∗
+    ⌜bv_unsigned size = length bytes⌝ ∗
+    mmio_range 0x2401a0c0 16 ∗
+    spec_trace
+      (writeOutputEvents ((sp - BV 64 48)%bv) (BV 64 8)
+        (writeOutputEvents data size tail)) ∗
+    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
+    ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
+    ⌜(bv_unsigned sp < 0x40000000)%Z⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
+    instr_pre (bv_unsigned ret)
+      (∃ (final_x6 : bv 64),
+       reg_col zesu_ram_sys_regs ∗
+       "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x6" ↦ᵣ RVal_Bits final_x6 ∗
+       "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
+       "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+       (bv_unsigned sp - 48) ↦ₘ size ∗
+       (bv_unsigned sp - 40) ↦ₘ (BV 64 0x15c90) ∗
+       (bv_unsigned sp - 32) ↦ₘ stack2 ∗
+       (bv_unsigned sp - 24) ↦ₘ old_s1 ∗
+       (bv_unsigned sp - 16) ↦ₘ old_s0 ∗
+       (bv_unsigned sp - 8) ↦ₘ ret ∗
+       bv_unsigned data ↦ₘ∗ bytes ∗
+       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@encoderBytesSpec) := I.
+
+Lemma encoder_bytes_correct `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_19.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15c6c (encoderBytesSpec data size sp ret bytes tail P).
+Proof.
+  move => * /=.
+  iStartProof.
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
+  all: try rewrite bv_sign_extend_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
