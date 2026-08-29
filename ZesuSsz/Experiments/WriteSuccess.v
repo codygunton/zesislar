@@ -242,3 +242,78 @@ Proof.
     rewrite take_insert; [|bv_solve].
     f_equal; [done|]. f_equal. bv_solve. }
 Qed.
+
+Lemma zesu_memcpy_loop_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x101d8 zesuMemcpyLoopSpec.
+Proof.
+  iStartProof.
+  iIntros "#Hcode".
+  iLöb as "IH".
+  iModIntro.
+  iApply instr_pre_to_body.
+  iNext.
+  iApply (zesu_memcpy_loop with "Hcode IH").
+Qed.
+
+Definition zesuMemcpySpec `{!islaG Sigma} `{!threadG}
+    (dst src n ret : bv 64) (srcdata dstdata : list (bv 8))
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (tmp13 tmp14 tmp15 : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗
+    "x10" ↦ᵣ RVal_Bits dst ∗ "x11" ↦ᵣ RVal_Bits src ∗
+    "x12" ↦ᵣ RVal_Bits n ∗ "x13" ↦ᵣ RVal_Bits tmp13 ∗
+    "x14" ↦ᵣ RVal_Bits tmp14 ∗ "x15" ↦ᵣ RVal_Bits tmp15 ∗
+    bv_unsigned src ↦ₘ∗ srcdata ∗ bv_unsigned dst ↦ₘ∗ dstdata ∗
+    ⌜bv_unsigned n = length srcdata⌝ ∗
+    ⌜bv_unsigned n = length dstdata⌝ ∗
+    ⌜(0x20000000 <= bv_unsigned src)%Z⌝ ∗
+    ⌜(bv_unsigned src + bv_unsigned n < 0x40000000)%Z⌝ ∗
+    ⌜(0x20000000 <= bv_unsigned dst)%Z⌝ ∗
+    ⌜(bv_unsigned dst + bv_unsigned n < 0x40000000)%Z⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
+    instr_pre (bv_unsigned ret)
+      (∃ (final13 final14 : bv 64),
+        reg_col zesu_ram_sys_regs ∗
+        "x1" ↦ᵣ RVal_Bits ret ∗
+        "x10" ↦ᵣ RVal_Bits dst ∗ "x11" ↦ᵣ RVal_Bits src ∗
+        "x12" ↦ᵣ RVal_Bits n ∗ "x13" ↦ᵣ RVal_Bits final13 ∗
+        "x14" ↦ᵣ RVal_Bits final14 ∗ "x15" ↦ᵣ RVal_Bits n ∗
+        bv_unsigned src ↦ₘ∗ srcdata ∗ bv_unsigned dst ↦ₘ∗ srcdata ∗
+        P ∗ True) ∗
+    P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@zesuMemcpySpec) := I.
+
+Lemma zesu_memcpy_correct `{!islaG Sigma} `{!threadG}
+    (dst src n ret : bv 64) (srcdata dstdata : list (bv 8))
+    (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x101d4 (zesuMemcpySpec dst src n ret srcdata dstdata P).
+Proof.
+  iStartProof.
+  iIntros "#Hcode".
+  iAssert (□ instr_pre 0x101d8 zesuMemcpyLoopSpec)%I as "#Hloop".
+  { iLöb as "IH".
+    iModIntro.
+    iApply instr_pre_to_body.
+    iNext.
+    iApply zesu_memcpy_loop.
+    - iExact "Hcode".
+    - iExact "IH". }
+  iEval (simpl) in "Hcode".
+  iDestruct "Hcode" as
+    "(#H101d4 & #H101d8 & #H101dc & #H101e0 & #H101e4 & #H101e8 &
+     #H101ec & #H101f0 & #H101f4 & _)".
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try bv_solve.
+  all: try lia.
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
