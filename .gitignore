@@ -15,6 +15,7 @@ rocq_mcp_cache_*.v
 
 # Generated Isla traces. The build regenerates this complete directory.
 /generated/isla-traces/
+/experiments/islaris-write-success/write_success.dump
 
 # Local tracking documents.
 /STATUS.md
