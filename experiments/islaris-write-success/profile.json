@@ -2,6 +2,7 @@
   "islaConfig": "riscv64_zesu_write_success.toml",
   "alignedReturnRegister": "x1",
   "alignedProgramCounter": "PC",
+  "controlFlowRegisters": {"ra": "x1", "t1": "x6"},
   "ranges": [
     ["0x14d30", "0x14d80"], ["0x14d80", "0x14e00"],
     ["0x14e14", "0x14e2c"],
@@ -12,7 +13,12 @@
     ["0x156e8", "0x15730"], ["0x1573c", "0x15744"],
     ["0x158e0", "0x15a14"],
     ["0x10190", "0x101a4"],
-    ["0x101d4", "0x101f8"]
+    ["0x101d4", "0x101f8"],
+    ["0x15b9c", "0x15bc8"],
+    ["0x15bc8", "0x15c10"],
+    ["0x15c10", "0x15c6c"],
+    ["0x15c6c", "0x15cb0"],
+    ["0x15d10", "0x15d38"]
   ],
   "memoryBaseRegisters": {
     "sp": "x2",

@@ -45,16 +45,26 @@ def effective_address_constraints(instruction: str, bases: dict[str, str]) -> li
 
 
 BRANCHES = {"beq", "bne", "blt", "bge", "bltu", "bgeu", "beqz", "bnez", "j"}
+INDIRECT_JUMP = re.compile(r"^(?:jalr|jr)\s+(-?\d+)\(([^)]+)\)")
 
 
 def control_flow_constraints(
-    instruction: str, return_register: str | None, program_counter: str | None
+    instruction: str, return_register: str | None, program_counter: str | None,
+    jump_registers: dict[str, str] | None = None,
 ) -> list[str]:
     opcode = instruction.split(maxsplit=1)[0]
     if opcode == "ret" and return_register is not None:
         return [f"= ((_ extract 1 0) {return_register}) 0b00"]
     if opcode in BRANCHES and program_counter is not None:
         return [f"= ((_ extract 1 0) {program_counter}) 0b00"]
+    jump = INDIRECT_JUMP.match(instruction)
+    if jump is not None and jump_registers is not None:
+        offset_text, base = jump.groups()
+        register = jump_registers.get(base)
+        if register is not None:
+            offset = int(offset_text) % (1 << 64)
+            target = f"(bvadd {register} 0x{offset:016x})"
+            return [f"= ((_ extract 1 0) {target}) 0b00"]
     return []
 
 
@@ -93,6 +103,7 @@ def main() -> None:
                 instruction,
                 profile.get("alignedReturnRegister"),
                 profile.get("alignedProgramCounter"),
+                profile.get("controlFlowRegisters", {}),
             )
         )
         for base, constraints in profile.get("constraintsByMemoryBase", {}).items():

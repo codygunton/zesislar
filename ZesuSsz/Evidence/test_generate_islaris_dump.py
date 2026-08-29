@@ -27,7 +27,7 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
             effective_address_constraints("addi sp,sp,-16", {"sp": "x2"}), []
         )
 
-    def test_constrains_only_return_instructions(self):
+    def test_generates_control_flow_alignment_constraints(self):
         self.assertEqual(
             control_flow_constraints("ret", "x1", "PC"),
             ["= ((_ extract 1 0) x1) 0b00"],
@@ -40,7 +40,16 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
             control_flow_constraints("j 100", "x1", "PC"),
             ["= ((_ extract 1 0) PC) 0b00"],
         )
-        self.assertEqual(control_flow_constraints("jalr 8(ra)", "x1", "PC"), [])
+        self.assertEqual(
+            control_flow_constraints(
+                "jalr 8(ra)", "x1", "PC", {"ra": "x1"}
+            ),
+            ["= ((_ extract 1 0) (bvadd x1 0x0000000000000008)) 0b00"],
+        )
+        self.assertEqual(
+            control_flow_constraints("jr -108(t1)", "x1", "PC", {"t1": "x6"}),
+            ["= ((_ extract 1 0) (bvadd x6 0xffffffffffffff94)) 0b00"],
+        )
 
 
 if __name__ == "__main__":
