@@ -78,7 +78,7 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	       $(TRACE_DIR)/dune
 
 .PHONY: traces
-traces: $(TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v
+traces: $(TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v
 
 $(ISLA_ETC)/$(ZKVM_EXIT_ISLA_CFG): experiments/islaris-zkvm-exit/$(ZKVM_EXIT_ISLA_CFG)
 	install -m644 $< $@
