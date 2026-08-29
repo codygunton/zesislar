@@ -40,9 +40,9 @@ READ_INPUT_DUMP      := experiments/islaris-read-input/read_input.dump
 READ_INPUT_TRACE_DIR := generated/isla-traces/read_input
 READ_INPUT_TRACE_COQ := IslaTraces.read_input
 READ_INPUT_ISLA_CFG  := riscv64_zesu_allocator.toml
-WRITE_SUCCESS_DUMP      := experiments/islaris-write-success/write_success.dump
-WRITE_SUCCESS_TRACE_DIR := generated/isla-traces/write_success
-WRITE_SUCCESS_TRACE_COQ := IslaTraces.write_success
+WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
+WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
+WRITE_SUCCESS_TRACE_STAMP := generated/isla-traces/write_success.stamp
 WRITE_SUCCESS_ISLA_CFG  := riscv64_zesu_write_success.toml
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
@@ -82,7 +82,7 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	       $(TRACE_DIR)/dune
 
 .PHONY: traces
-traces: $(TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_DIR)/instrs.v
+traces: $(TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP)
 
 $(ISLA_ETC)/$(ZKVM_EXIT_ISLA_CFG): experiments/islaris-zkvm-exit/$(ZKVM_EXIT_ISLA_CFG)
 	install -m644 $< $@
@@ -123,24 +123,32 @@ $(READ_INPUT_TRACE_DIR)/instrs.v: $(READ_INPUT_DUMP) $(ISLA_ETC)/$(READ_INPUT_IS
 .PHONY: read-input-traces
 read-input-traces: $(READ_INPUT_TRACE_DIR)/instrs.v
 
-$(WRITE_SUCCESS_DUMP): build/endpoint-elf experiments/islaris-write-success/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+$(WRITE_SUCCESS_DUMP_STAMP): build/endpoint-elf experiments/islaris-write-success/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
 	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-write-success/profile.json --output $@
+	  --profile experiments/islaris-write-success/profile.json \
+	  --split-output-dir $(WRITE_SUCCESS_DUMP_DIR)
+	touch $@
 
 $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG): experiments/islaris-write-success/$(WRITE_SUCCESS_ISLA_CFG)
 	install -m644 $< $@
 
-$(WRITE_SUCCESS_TRACE_DIR)/instrs.v: $(WRITE_SUCCESS_DUMP) $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG)
-	mkdir -p $(WRITE_SUCCESS_TRACE_DIR)
-	$(OPAM) islaris $(WRITE_SUCCESS_DUMP) -j 16 -o $(WRITE_SUCCESS_TRACE_DIR) \
-	  --coqdir=$(WRITE_SUCCESS_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	       $(WRITE_SUCCESS_TRACE_DIR)/dune
+$(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG)
+	@for dump_file in $(WRITE_SUCCESS_DUMP_DIR)/block_*.dump; do \
+	  block_name=$$(basename $$dump_file .dump); \
+	  block_number=$${block_name#block_}; \
+	  trace_dir=generated/isla-traces/write_success_$$block_number; \
+	  mkdir -p $$trace_dir; \
+	  $(OPAM) islaris $$dump_file -j 16 -o $$trace_dir \
+	    --coqdir=IslaTraces.write_success_$$block_number --arch=riscv64; \
+	  sed -i -e '/(package islaris)/d' \
+	    -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	    $$trace_dir/dune; \
+	done
+	touch $@
 
 .PHONY: write-success-traces
-write-success-traces: $(WRITE_SUCCESS_TRACE_DIR)/instrs.v
+write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP)
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
 trace-one:

@@ -1,7 +1,8 @@
 {
   "islaConfig": "riscv64_zesu_write_success.toml",
   "ranges": [
-    ["0x14d30", "0x14e00"], ["0x14e14", "0x14e2c"],
+    ["0x14d30", "0x14d80"], ["0x14d80", "0x14e00"],
+    ["0x14e14", "0x14e2c"],
     ["0x14e38", "0x14e3c"], ["0x14e48", "0x14e4c"],
     ["0x14e58", "0x14e5c"], ["0x14e68", "0x14e6c"],
     ["0x14e78", "0x14e7c"], ["0x14e88", "0x14ed8"],
@@ -9,11 +10,8 @@
     ["0x156e8", "0x15730"], ["0x1573c", "0x15744"],
     ["0x158e0", "0x15a14"]
   ],
-  "constraintsByMemoryBase": {
-    "s0": [
-      "= ((_ extract 2 0) x8) 0b000",
-      "bvuge x8 rv_ram_base",
-      "bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)"
-    ]
+  "memoryBaseRegisters": {
+    "sp": "x2",
+    "s0": "x8"
   }
 }
