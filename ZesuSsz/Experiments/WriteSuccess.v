@@ -17,6 +17,15 @@ Import ListNotations.
 Lemma bv_sign_extend_64_idemp (b : bv 64) : bv_sign_extend 64 b = b.
 Proof. apply bv_sign_extend_idemp. Qed.
 
+Lemma bv_zero_extend_64_zero_8 (b : bv 8) :
+  bv_zero_extend 64 b = BV 64 0 -> b = BV 8 0.
+Proof.
+  move => Hzero.
+  apply bv_eq.
+  move: (f_equal bv_unsigned Hzero).
+  rewrite bv_zero_extend_unsigned // !bv_unsigned_BV //.
+Qed.
+
 #[local] Hint Rewrite bv_sign_extend_64_idemp : isla_coq_rewrite.
 
 Definition writeSuccessOtherRegisters : list string :=
@@ -119,6 +128,101 @@ Proof.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
 
+Definition writeOutputEvents (data size : bv 64) (tail : spec) : spec :=
+  scons (SWriteMem (BV 64 0x2401a0c0) data)
+    (scons (SWriteMem (BV 64 0x2401a0c8) size) tail).
+
+Ltac close_infeasible_bv_branches :=
+  match goal with
+  | Hneq : ?left ≠ ?right |- _ =>
+      try solve [iExFalso; iPureIntro; apply Hneq; bv_solve]
+  | _ : _ = false |- _ => try solve [iExFalso; iPureIntro; bv_solve]
+  | _ : false = _ |- _ => try solve [iExFalso; iPureIntro; bv_solve]
+  | _ => idtac
+  end.
+
+Definition encoderOptionalSomeSpec `{!islaG Sigma} `{!threadG}
+    (data value sp ret : bv 64) (tag : bv 8)
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (∃ (old_x5 old_x6 old_x8 old_x11 : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
+    "x8" ↦ᵣ RVal_Bits old_x8 ∗
+    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
+    bv_unsigned data ↦ₘ value ∗ (bv_unsigned data + 8) ↦ₘ tag ∗
+    (bv_unsigned sp - 32) ↦ₘ? 32 ∗
+    mmio_range 0x2401a0c0 16 ∗
+    spec_trace
+      (writeOutputEvents ((sp - BV 64 16 - BV 64 16 + BV 64 7)%bv)
+        (BV 64 1)
+        (writeOutputEvents ((sp - BV 64 16)%bv) (BV 64 8) tail)) ∗
+    ⌜tag ≠ BV 8 0⌝ ∗
+    ⌜bv_extract 0 3 data = BV 3 0⌝ ∗
+    ⌜(0x20000000 <= bv_unsigned data)%Z⌝ ∗
+    ⌜(bv_unsigned data + 8 < 0x40000000)%Z⌝ ∗
+    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
+    ⌜(0x20000000 <= bv_unsigned sp - 32)%Z⌝ ∗
+    ⌜(bv_unsigned sp < 0x40000000)%Z⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
+    instr_pre (bv_unsigned ret)
+      (∃ (final_x6 : bv 64),
+       reg_col zesu_ram_sys_regs ∗
+       "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x6" ↦ᵣ RVal_Bits final_x6 ∗ "x8" ↦ᵣ RVal_Bits old_x8 ∗
+       "x10" ↦ᵣ RVal_Bits ((sp - BV 64 16)%bv) ∗
+       "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+       bv_unsigned data ↦ₘ value ∗ (bv_unsigned data + 8) ↦ₘ tag ∗
+       (bv_unsigned sp - 32) ↦ₘ? 8 ∗
+       (bv_unsigned sp - 24) ↦ₘ? 8 ∗
+       (bv_unsigned sp - 16) ↦ₘ? 8 ∗
+       (bv_unsigned sp - 8) ↦ₘ? 8 ∗
+       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@encoderOptionalSomeSpec) := I.
+
+Lemma encoder_optional_some_correct `{!islaG Sigma} `{!threadG}
+    (data value sp ret : bv 64) (tag : bv 8)
+    (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_17.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15bc8
+    (encoderOptionalSomeSpec data value sp ret tag tail P).
+Proof.
+  move => * /=.
+  iStartProof.
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try (bv_simplify_arith select (bv_extract 0 3 data = _)).
+  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
+  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
+  all: try rewrite bv_sign_extend_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
+  all: try match goal with
+           | Hneq : ?tag ≠ (BV 8 0) |- _ =>
+               match goal with
+               | Hzero : bv_zero_extend 64 tag = (BV 64 0) |- _ =>
+                   exfalso; apply Hneq;
+                   exact (bv_zero_extend_64_zero_8 tag Hzero)
+               end
+           end.
+  Unshelve. all: try exact inhabitant.
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
+
 Definition writeOutputEntry `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (∃ (old_x5 old_data old_size : bv 64),
@@ -157,10 +261,6 @@ Proof.
   all: try bv_solve.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
-
-Definition writeOutputEvents (data size : bv 64) (tail : spec) : spec :=
-  scons (SWriteMem (BV 64 0x2401a0c0) data)
-    (scons (SWriteMem (BV 64 0x2401a0c8) size) tail).
 
 Definition writeOutputTraceSpec `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
@@ -589,15 +689,6 @@ Definition encoderOptionalNoneSpec `{!islaG Sigma} `{!threadG}
        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@encoderOptionalNoneSpec) := I.
-
-Ltac close_infeasible_bv_branches :=
-  match goal with
-  | Hneq : ?left ≠ ?right |- _ =>
-      try solve [iExFalso; iPureIntro; apply Hneq; bv_solve]
-  | _ : _ = false |- _ => try solve [iExFalso; iPureIntro; bv_solve]
-  | _ : false = _ |- _ => try solve [iExFalso; iPureIntro; bv_solve]
-  | _ => idtac
-  end.
 
 Lemma encoder_optional_none_correct `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
