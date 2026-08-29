@@ -74,11 +74,11 @@ No compliance proposition accepts this evidence as a premise.
 - `generated/evm-sail-coq` contains the pinned decoder snapshot.
 - `generated/isla-traces/entrypoints` contains entry trace smoke tests.
 - `ZesuSsz/Evidence` contains the evidence pipeline.
-- `ZesuSsz/Viewer` contains the advanced speedscope viewer.
+- `ZesuSsz/Viewer` generates and checks the shared viewer data.
 - `verification-target/zesu` is an ignored link to the pinned Zesu source.
 
 Build `.#level1-viewer-data` to inspect the manifest, bindings, traces, and proof map.
-The `.#viewer` package includes the same payload with the speedscope application.
+The application lives in [binary-fv-viewer](https://github.com/codygunton/binary-fv-viewer).
 
 The evidence build clears the guest environment before each QEMU run.
 It generates two trace sets and requires byte-identical traces and JSON reports.
