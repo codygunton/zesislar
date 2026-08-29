@@ -16,12 +16,17 @@ Definition writeSuccessMonolithicOtherRegShapes : list (reg_kind * valu_shape) :
   (fun register => (KindReg register, BitsShape 64))
     <$> writeSuccessMonolithicOtherRegisters.
 
+Definition writeSuccessMonolithicOutputEvents
+    (data size : bv 64) (tail : spec) : spec :=
+  scons (SWriteMem (BV 64 0x2401a0c0) data)
+    (scons (SWriteMem (BV 64 0x2401a0c8) size) tail).
+
 (** This deliberately uses one [instr_body] and one automation run.  It does
     not import, state, or apply contracts for any callee.  [Abort] keeps the
     first direct-search result visible without presenting it as a proof. *)
 Lemma write_success_monolithic_attempt `{!islaG Sigma} `{!threadG}
     (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
-    (tail : spec) :
+    (decodedBytes : list (bv 8)) (tail : spec) :
   ([∗ list] instruction ∈
       IslaTraces.write_success_monolithic_00.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
@@ -47,15 +52,18 @@ Lemma write_success_monolithic_attempt `{!islaG Sigma} `{!threadG}
     "x10" ↦ᵣ RVal_Bits decoded ∗ "x11" ↦ᵣ: (fun _ =>
     "x12" ↦ᵣ: (fun _ =>
     (bv_unsigned sp - 0x7d0) ↦ₘ? 2000 ∗
-    bv_unsigned decoded ↦ₘ? 2000 ∗
+    bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
     mmio_range 0x2401a0c0 16 ∗
-    spec_trace tail ∗
+    spec_trace
+      (writeSuccessMonolithicOutputEvents
+        (BV 64 0x179c5) (BV 64 6) tail) ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
     ⌜(0x20000800 <= bv_unsigned sp)%Z⌝ ∗
     ⌜(bv_unsigned sp + 0x800 < 0x40000000)%Z⌝ ∗
     ⌜bv_extract 0 3 decoded = BV 3 0⌝ ∗
+    ⌜length decodedBytes = 848%nat⌝ ∗
     ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
-    ⌜(bv_unsigned decoded + 2000 < 0x40000000)%Z⌝ ∗
+    ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
     instr_pre 0x14d10 True ∗ True)))%I.
 Proof.
   move => * /=.
