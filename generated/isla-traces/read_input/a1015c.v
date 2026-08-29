@@ -3,7 +3,6 @@ From isla Require Import opsem.
 Definition a1015c : isla_trace :=
   Smt (DeclareConst 2%Z (Ty_BitVec 64%N)) Mk_annot :t:
   Assume (AExp_Binop (Eq) (AExp_Manyop (Bvmanyarith Bvand) [AExp_Val (AVal_Var "mstatus" [Field "bits"]) Mk_annot; AExp_Val (AVal_Bits (BV 64%N 0x20000%Z)) Mk_annot] Mk_annot) (AExp_Val (AVal_Bits (BV 64%N 0x0%Z)) Mk_annot) Mk_annot) Mk_annot :t:
-  Assume (AExp_Binop (Eq) (AExp_Unop (Extract 2%N 2%N) (AExp_Val (AVal_Var "misa" [Field "bits"]) Mk_annot) Mk_annot) (AExp_Val (AVal_Bits (BV 1%N 0x0%Z)) Mk_annot) Mk_annot) Mk_annot :t:
   Smt (DeclareConst 3%Z (Ty_BitVec 64%N)) Mk_annot :t:
   Assume (AExp_Binop (Eq) (AExp_Val (AVal_Var "x1" []) Mk_annot) (AExp_Val (AVal_Bits (BV 64%N 0x14ccc%Z)) Mk_annot) Mk_annot) Mk_annot :t:
   Smt (DeclareConst 4%Z (Ty_BitVec 64%N)) Mk_annot :t:
