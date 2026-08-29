@@ -17,6 +17,8 @@ Definition zesu_ram_sys_regs : list (reg_kind * valu_shape) := [
   (KindReg "cur_privilege", ExactShape (RVal_Enum "Machine"));
   (KindReg "misa", ExactShape (RegVal_Struct [
     ("bits", RVal_Bits (BV 64 0x8000000000001100))]));
+  (KindReg "mtvec", ExactShape (RegVal_Struct [
+    ("bits", RVal_Bits (BV 64 0))]));
   (KindReg "mstatus", StructShape [("bits", MaskShape 64 0x20000 0)]);
   (KindReg "satp", BitsShape 64)
 ].
