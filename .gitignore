@@ -11,8 +11,8 @@ verification-target/zesu
 *.glob
 .*.aux
 
-# Intermediate isla output; the reviewed Coq beside it is committed.
-*.isla
+# Generated Isla traces. The build regenerates this complete directory.
+/generated/isla-traces/
 
 # Local tracking documents.
 /STATUS.md
