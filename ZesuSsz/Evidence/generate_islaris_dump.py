@@ -44,6 +44,12 @@ def effective_address_constraints(instruction: str, bases: dict[str, str]) -> li
     return constraints
 
 
+def control_flow_constraints(instruction: str, return_register: str | None) -> list[str]:
+    if instruction != "ret" or return_register is None:
+        return []
+    return [f"= ((_ extract 1 0) {return_register}) 0b00"]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--disassembly", required=True)
@@ -72,6 +78,11 @@ def main() -> None:
             f"//@constraint: {constraint}"
             for constraint in effective_address_constraints(
                 instruction, profile.get("memoryBaseRegisters", {}))
+        )
+        annotations.extend(
+            f"//@constraint: {constraint}"
+            for constraint in control_flow_constraints(
+                instruction, profile.get("alignedReturnRegister"))
         )
         for base, constraints in profile.get("constraintsByMemoryBase", {}).items():
             if f"({base})" in instruction:

@@ -1,6 +1,6 @@
 import unittest
 
-from generate_islaris_dump import effective_address_constraints
+from generate_islaris_dump import control_flow_constraints, effective_address_constraints
 
 
 class EffectiveAddressConstraintsTest(unittest.TestCase):
@@ -26,6 +26,13 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
         self.assertEqual(
             effective_address_constraints("addi sp,sp,-16", {"sp": "x2"}), []
         )
+
+    def test_constrains_only_return_instructions(self):
+        self.assertEqual(
+            control_flow_constraints("ret", "x1"),
+            ["= ((_ extract 1 0) x1) 0b00"],
+        )
+        self.assertEqual(control_flow_constraints("jalr 8(ra)", "x1"), [])
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_00 Require Import instrs.
+From IslaTraces.write_success_14 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Level1.
@@ -87,7 +88,7 @@ Global Instance : LithiumUnfold (@write_success_prologue_exit) := I.
 Lemma write_success_prologue `{!islaG Sigma} `{!threadG}
     (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
     (P : iProp Sigma) :
-  ([∗ list] instruction ∈ instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_00.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x14d30
     (write_success_prologue_entry sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7
@@ -104,5 +105,44 @@ Proof.
   all: try (bv_simplify_arith H1).
   all: try bv_solve.
   all: try lia.
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
+
+Definition writeOutputEntry `{!islaG Sigma} `{!threadG}
+    (data size ret : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (∃ (old_x5 old_data old_size : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits old_x5 ∗
+    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+    0x2401a0c0 ↦ₘ old_data ∗ 0x2401a0c8 ↦ₘ old_size ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeOutputEntry) := I.
+
+Definition writeOutputExit `{!islaG Sigma} `{!threadG}
+    (data size ret : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+   0x2401a0c0 ↦ₘ data ∗ 0x2401a0c8 ↦ₘ size ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeOutputExit) := I.
+
+Lemma write_output_correct `{!islaG Sigma} `{!threadG}
+    (data size ret : bv 64) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x10190
+    (writeOutputEntry data size ret P ∗
+     instr_pre (bv_unsigned ret) (writeOutputExit data size ret P) ∗ True).
+Proof.
+  move => * /=.
+  iStartProof.
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try bv_solve.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
