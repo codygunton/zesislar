@@ -98,6 +98,14 @@ doctor:
 endpoint:
 	nix build .#endpoint-elf
 
+.PHONY: cfg
+cfg:
+	nix build .#endpoint-cfg
+
+.PHONY: evidence
+evidence:
+	nix build .#level1-contract-evidence
+
 .PHONY: check-evm-sail-snapshot
 check-evm-sail-snapshot:
 	$(PYTHON) ZesuSsz/EvmSail/check_snapshot.py
@@ -106,8 +114,25 @@ check-evm-sail-snapshot:
 regenerate-evm-sail-snapshot:
 	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
 
+.PHONY: check-evidence-tools
+check-evidence-tools:
+	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+	$(PYTHON) ZesuSsz/Evidence/check_parity.py
+
+.PHONY: check-level1-rocq
+check-level1-rocq:
+	nix build .#level1-contract-rocq
+
+.PHONY: check-evidence-reproducible
+check-evidence-reproducible:
+	nix build --rebuild .#level1-contract-evidence --no-link
+
+.PHONY: check-viewer
+check-viewer:
+	$(PYTHON) -m unittest discover -s ZesuSsz/Viewer -p 'test_*.py'
+
 .PHONY: check-local
-check-local: check-evm-sail-snapshot traces
+check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
 	$(OPAM) dune build --root . @all
 
 .PHONY: check

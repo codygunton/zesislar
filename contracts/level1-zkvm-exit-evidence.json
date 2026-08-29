@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "contract": "zkvm_exit",
+  "argumentRegister": 10,
+  "ioContextAddress": 604086456,
+  "exitCodeOffset": 24,
+  "observableClauses": [
+    "entryPc",
+    "entryCodeRegister",
+    "codeRange",
+    "terminalPc",
+    "exitCodeStore",
+    "writesOnlyExitCode",
+    "stdoutUnchanged",
+    "stepCount"
+  ],
+  "unobservableClauses": [
+    "StorePmaAllows",
+    "ConfiguredMachinePre",
+    "stdinUnchanged",
+    "stdinCursorUnchanged"
+  ]
+}
