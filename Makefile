@@ -152,21 +152,10 @@ $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SU
 	done
 	touch $@
 
-$(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile
-	mkdir -p $(WRITE_SUCCESS_INDEX_DIR)
-	@{ \
-	  echo '(include_subdirs qualified)'; \
-	  echo '(coq.theory'; \
-	  echo ' (name IslaTraces.write_success_blocks)'; \
-	  echo ' (theories'; \
-	  for dump_file in $(WRITE_SUCCESS_DUMP_DIR)/block_*.dump; do \
-	    block_name=$$(basename $$dump_file .dump); \
-	    block_number=$${block_name#block_}; \
-	    echo "  IslaTraces.write_success_$$block_number"; \
-	  done; \
-	  echo ' ))'; \
-	} > $(WRITE_SUCCESS_INDEX_DIR)/dune
-	@echo 'Definition generated_write_success_trace_index : Prop := True.' > $(WRITE_SUCCESS_INDEX_DIR)/Index.v
+$(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evidence/generate_islaris_trace_index.py
+	$(PYTHON) ZesuSsz/Evidence/generate_islaris_trace_index.py \
+	  --dump-dir $(WRITE_SUCCESS_DUMP_DIR) \
+	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 21
 	touch $@
 
 .PHONY: write-success-traces
