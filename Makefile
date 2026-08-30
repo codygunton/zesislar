@@ -43,6 +43,8 @@ READ_INPUT_ISLA_CFG  := riscv64_zesu_allocator.toml
 WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
 WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
 WRITE_SUCCESS_TRACE_STAMP := generated/isla-traces/write_success.stamp
+WRITE_SUCCESS_INDEX_DIR := generated/isla-traces/write_success_blocks
+WRITE_SUCCESS_INDEX_STAMP := $(WRITE_SUCCESS_INDEX_DIR)/.stamp
 WRITE_SUCCESS_ISLA_CFG  := riscv64_zesu_write_success.toml
 WRITE_SUCCESS_MONOLITHIC_DUMP_DIR := experiments/islaris-write-success/monolithic-generated
 WRITE_SUCCESS_MONOLITHIC_DUMP_STAMP := $(WRITE_SUCCESS_MONOLITHIC_DUMP_DIR)/.stamp
@@ -85,7 +87,7 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	       $(TRACE_DIR)/dune
 
 .PHONY: traces
-traces: $(TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP)
+traces: $(TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
 
 $(ISLA_ETC)/$(ZKVM_EXIT_ISLA_CFG): experiments/islaris-zkvm-exit/$(ZKVM_EXIT_ISLA_CFG)
 	install -m644 $< $@
@@ -150,8 +152,25 @@ $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SU
 	done
 	touch $@
 
+$(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile
+	mkdir -p $(WRITE_SUCCESS_INDEX_DIR)
+	@{ \
+	  echo '(include_subdirs qualified)'; \
+	  echo '(coq.theory'; \
+	  echo ' (name IslaTraces.write_success_blocks)'; \
+	  echo ' (theories'; \
+	  for dump_file in $(WRITE_SUCCESS_DUMP_DIR)/block_*.dump; do \
+	    block_name=$$(basename $$dump_file .dump); \
+	    block_number=$${block_name#block_}; \
+	    echo "  IslaTraces.write_success_$$block_number"; \
+	  done; \
+	  echo ' ))'; \
+	} > $(WRITE_SUCCESS_INDEX_DIR)/dune
+	@echo 'Definition generated_write_success_trace_index : Prop := True.' > $(WRITE_SUCCESS_INDEX_DIR)/Index.v
+	touch $@
+
 .PHONY: write-success-traces
-write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP)
+write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
 
 $(WRITE_SUCCESS_MONOLITHIC_DUMP_STAMP): build/endpoint-elf experiments/islaris-write-success/monolithic-profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
