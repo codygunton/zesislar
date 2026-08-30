@@ -1,5 +1,20 @@
 {
   "islaConfig": "riscv64_zesu_write_success.toml",
+  "useLoadStoreSpecs": true,
+  "loadArrayViews": [
+    {
+      "start": "0x14d80",
+      "end": "0x14e00",
+      "base": "s0",
+      "offset": 720
+    },
+    {
+      "start": "0x14e88",
+      "end": "0x14f04",
+      "base": "sp",
+      "offset": 1032
+    }
+  ],
   "alignedReturnRegister": "x1",
   "alignedProgramCounter": "PC",
   "controlFlowRegisters": {"ra": "x1", "t1": "x6"},

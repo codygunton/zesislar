@@ -5,6 +5,8 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Experiments.WriteSuccess.
 
+(** Standard ABI adapters for the shared output and memory-copy helpers. *)
+
 Definition zesu_c_call_ret `{!islaG Sigma} `{!threadG}
     (stack_size : Z) (regs : list valu) (ret sp : bv 64)
     (Q : list (bv 64) -> iProp Sigma) : iProp Sigma :=
@@ -263,4 +265,39 @@ Proof.
   iStartProof. iIntros "#Hcode". iModIntro.
   iApply instr_pre_to_body. iNext.
   iApply zesu_memcpy_call_correct. iExact "Hcode".
+Qed.
+
+Definition zesuWriteOutputCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (zesu_c_call 0
+    (fun args _ RET =>
+      ∃ tail : spec,
+      mmio_range 0x2401a0c0 16 ∗
+      spec_trace (writeOutputEvents (args !!! 0%nat) (args !!! 1%nat) tail) ∗
+      RET (fun _ =>
+        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+
+Global Instance : LithiumUnfold (@zesuWriteOutputCallSpec) := I.
+
+Lemma zesu_write_output_call_correct `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x10190 zesuWriteOutputCallSpec.
+Proof.
+  move => * /=.
+  iStartProof.
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try bv_solve.
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
+
+Lemma zesu_write_output_call_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x10190 zesuWriteOutputCallSpec.
+Proof.
+  iStartProof. iIntros "#Hcode". iModIntro.
+  iApply instr_pre_to_body. iNext.
+  iApply zesu_write_output_call_correct. iExact "Hcode".
 Qed.
