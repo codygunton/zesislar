@@ -29,14 +29,26 @@ Definition writeSuccessValueEvents (sp : bv 64) (values : list (bv 64))
               (writeSuccessValueWord values 5)
               (writeOutputEvents (sp - 16)%bv (BV 64 8)
                 (writeOutputEvents (sp + 1588)%bv (BV 64 32)
-                  (writeOutputEvents (sp - 16)%bv (BV 64 8) tail)))))))).
+                (writeOutputEvents (sp - 16)%bv (BV 64 8) tail)))))))).
+
+Definition writeSuccessValueRegisters : list string :=
+  ["x1"; "x3"; "x4"; "x5"; "x6"; "x7"; "x8"; "x9";
+   "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
+   "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
+   "x26"; "x27"; "x28"; "x29"; "x30"; "x31"].
+
+Definition writeSuccessValueRegShapes : list (reg_kind * valu_shape) :=
+  (fun register => (KindReg register, BitsShape 64))
+    <$> writeSuccessValueRegisters.
 
 Definition writeSuccessValuePost `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
-   reg_col writeSuccessHeaderRegShapes ∗
+   reg_col writeSuccessValueRegShapes ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
+   "x10" ↦ᵣ RVal_Bits (default (BV 64 0) (values !! 8%nat)) ∗
+   "x11" ↦ᵣ RVal_Bits (BV 64 0) ∗
    (bv_unsigned sp - 48) ↦ₘ? 48 ∗
    (bv_unsigned sp + 1032) ↦ₘ∗ values ∗
    bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
