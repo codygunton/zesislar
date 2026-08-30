@@ -12,6 +12,7 @@
   "memoryBaseRegisters": {
     "sp": "x2",
     "s0": "x8",
+    "s1": "x9",
     "t0": "x5",
     "a3": "x13",
     "a4": "x14",

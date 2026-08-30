@@ -95,7 +95,7 @@ Definition zesuEncoderBytesCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
       (reg_col zesu_ram_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 ret) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
        "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
-       "x6" ↦ᵣ: fun r6 => ⌜valu_has_shape r6 (BitsShape 64)⌝ ∗
+       ("x6" ↦ᵣ: fun r6 => ⌜valu_has_shape r6 (BitsShape 64)⌝) ∗
        "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
        "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
        (bv_unsigned sp - 48) ↦ₘ? 48 ∗
