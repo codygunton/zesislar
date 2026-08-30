@@ -20,6 +20,9 @@
     ["0x15c6c", "0x15cb0"],
     ["0x15d10", "0x15d38"]
   ],
+  "splitRanges": [
+    {"start": "0x14d30", "end": "0x15a14", "maxInstructions": 24}
+  ],
   "memoryBaseRegisters": {
     "sp": "x2",
     "s0": "x8",
