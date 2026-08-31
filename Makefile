@@ -1,4 +1,4 @@
-# Zesislar: islaris verification of the Zesu SSZ decoder.
+# ZesuSsz: Islaris verification of the Zesu SSZ decoder.
 #
 # Mirrors the structure of islaris-tutorial/Makefile.
 # Every path is overridable.
@@ -19,13 +19,12 @@ export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
 
-PROG      ?= zesu
+PROG      ?= entrypoints
 LOAD_ADDR ?= 0x10300000
 
-SRC_DIR   := verification-target/$(PROG)
-DUMP      := $(SRC_DIR)/$(PROG).dump
-TRACE_DIR := generated/isla-traces/$(PROG)
-TRACE_COQ := IslaTraces.$(PROG)
+DUMP      := build/endpoint-entry-dump/entrypoints.dump
+TRACE_DIR := generated/isla-traces/entrypoints
+TRACE_COQ := IslaTraces.entrypoints
 
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
@@ -35,20 +34,21 @@ ISLA_ETC := $(shell opam var --switch=$(OPAM_SWITCH) prefix)/etc/islaris
 .PHONY: all
 all: proof
 
-# --- disassemble --------------------------------------------------------
-# TODO: add a target to produce the ELF from the Zesu nix build.
-# For now, assume the ELF is available and the dump is hand-maintained.
+# --- pinned target ------------------------------------------------------
+
+.PHONY: target-source
+target-source:
+	nix run .#link-zesu-source
 
 .PHONY: disasm
-disasm:
-	@echo "TODO: produce $(SRC_DIR)/$(PROG).raw.dump from the ELF"
+disasm: $(DUMP)
 
-.PHONY: check-dump
-check-dump:
-	@echo "TODO: diff annotated dump against fresh objdump"
+$(DUMP):
+	mkdir -p build
+	nix build .#endpoint-entry-dump --out-link build/endpoint-entry-dump
 
 # --- install the isla config -------------------------------------------
-$(ISLA_ETC)/$(ISLA_CFG): ZesislarProofs/$(ISLA_CFG)
+$(ISLA_ETC)/$(ISLA_CFG): ZesuSsz/$(ISLA_CFG)
 	install -m644 $< $@
 
 .PHONY: install-isla-config
@@ -57,7 +57,7 @@ install-isla-config: $(ISLA_ETC)/$(ISLA_CFG)
 # --- generate traces ---------------------------------------------------
 $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	mkdir -p $(TRACE_DIR)
-	$(OPAM) islaris $(DUMP) -j 4 -o $(TRACE_DIR) \
+	$(OPAM) islaris $(DUMP) -j 6 -o $(TRACE_DIR) \
 	  --coqdir=$(TRACE_COQ) --arch=riscv64
 	sed -i -e '/(package islaris)/d' \
 	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
@@ -83,21 +83,41 @@ regs:
 # --- build proofs -------------------------------------------------------
 .PHONY: proof
 proof: traces
-	$(OPAM) dune build @all
+	$(OPAM) dune build --root . @all
 
 .PHONY: proof-verbose
 proof-verbose: traces
-	$(OPAM) dune build @all --display short
+	$(OPAM) dune build --root . @all --display short
 
 # --- housekeeping -------------------------------------------------------
 .PHONY: doctor
 doctor:
-	@echo "TODO: copy doctor.sh from islaris-tutorial and adjust"
+	@bash ZesuSsz/Toolchain/doctor.sh
+
+.PHONY: endpoint
+endpoint:
+	nix build .#endpoint-elf
+
+.PHONY: check-evm-sail-snapshot
+check-evm-sail-snapshot:
+	$(PYTHON) ZesuSsz/EvmSail/check_snapshot.py
+
+.PHONY: regenerate-evm-sail-snapshot
+regenerate-evm-sail-snapshot:
+	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
+
+.PHONY: check-local
+check-local: check-evm-sail-snapshot traces
+	$(OPAM) dune build --root . @all
+
+.PHONY: check
+check: doctor check-local
+	nix flake check
 
 .PHONY: clean
 clean:
 	rm -rf build
-	$(OPAM) dune clean 2>/dev/null || true
+	$(OPAM) dune clean --root . 2>/dev/null || true
 
 .PHONY: distclean
 distclean: clean

@@ -1,5 +1,5 @@
 ; Reusable instruction specs, in a separate theory to break the dependency
-; cycle: generated traces import these specs, and ZesislarProofs depends on
+; cycle: generated traces import these specs, and ZesuSsz depends on
 ; the generated traces.
 (coq.theory
  (name InstrSpecs)

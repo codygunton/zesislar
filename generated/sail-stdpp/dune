@@ -1,0 +1,43 @@
+(coq.theory
+ (name SailStdpp)
+ (modules
+   Inhabited
+   MachineWordInterface
+   TypeCasts
+   MachineWord
+   Values
+   GenericValue
+   Instances
+   Instr_kinds
+   Values_lemmas
+   String
+   Prompt_monad
+   Prompt
+   State
+   State_monad
+   State_lemmas
+   State_monad_lemmas
+   State_lifting
+   Hoare
+   Undefined
+   Operators_mwords
+   Base
+   Real
+   Impl_base
+   ConcurrencyInterfaceBuiltins
+   ConcurrencyInterfaceTypes
+   ConcurrencyInterface
+   ConcurrencyInterfaceTypesV2
+   ConcurrencyInterfaceBuiltinsV2
+   ConcurrencyInterfaceV2
+ )
+ (theories stdpp stdpp.bitvector)
+ (coqdoc_flags :standard --utf8
+               --external https://plv.mpi-sws.org/coqdoc/stdpp/ stdpp
+               --coqlib_url https://coq.inria.fr/doc/V8.20.1/stdlib
+ )
+)
+
+(alias
+ (name stdpp)
+ (deps (alias all)))
