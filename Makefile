@@ -118,6 +118,11 @@ regenerate-evm-sail-snapshot:
 check-evidence-tools:
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_parity.py
+	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
+
+.PHONY: check-proof-hygiene
+check-proof-hygiene:
+	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 
 .PHONY: check-level1-rocq
 check-level1-rocq:
