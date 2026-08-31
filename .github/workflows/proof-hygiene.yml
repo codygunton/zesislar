@@ -13,4 +13,8 @@ jobs:
       - name: Check proof files and generated traces
         run: python3 ZesuSsz/Evidence/check_proof_hygiene.py
       - name: Test evidence tools
-        run: PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+        run: |
+          PYTHONPATH=ZesuSsz/Evidence python3 -m unittest \
+            test_check_proof_hygiene \
+            test_generate_islaris_dump \
+            test_generate_islaris_trace_index
