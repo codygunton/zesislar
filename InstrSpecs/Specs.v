@@ -9,7 +9,7 @@
     encounter new opcodes in the binary. *)
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
-Require Import InstrSpecs.Machine.
+Require Export InstrSpecs.Machine.
 
 Import ListNotations.
 
