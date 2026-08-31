@@ -26,10 +26,6 @@
 -Q _build/default/generated/isla-traces/write_success_18 IslaTraces.write_success_18
 -Q _build/default/generated/isla-traces/write_success_19 IslaTraces.write_success_19
 -Q _build/default/generated/isla-traces/write_success_20 IslaTraces.write_success_20
--Q _build/default/generated/isla-traces/write_success_monolithic_00 IslaTraces.write_success_monolithic_00
--Q _build/default/generated/isla-traces/write_success_monolithic_01 IslaTraces.write_success_monolithic_01
--Q _build/default/generated/isla-traces/write_success_monolithic_02 IslaTraces.write_success_monolithic_02
--Q _build/default/generated/isla-traces/write_success_monolithic_03 IslaTraces.write_success_monolithic_03
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/sail-stdpp SailStdpp
 
