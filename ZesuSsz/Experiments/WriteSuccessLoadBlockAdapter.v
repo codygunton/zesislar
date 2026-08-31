@@ -32,10 +32,6 @@ Proof.
   nia.
 Qed.
 
-Lemma zesu_ram_instr_sys_regs_eq :
-  zesu_ram_sys_regs = zesu_instr_sys_regs.
-Proof. reflexivity. Qed.
-
 Definition writeSuccessLoadCallerRegisters : list string :=
   ["x1"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17"] ++ tmp_registers.
 
@@ -103,7 +99,6 @@ Proof.
   iDestruct "Hspec" as (sp base b10 b11 values saved) "[Hregs Hmemory]".
   iEval (unfold writeSuccessLoadRegisterResources) in "Hregs".
   iDestruct "Hregs" as "(Hsys & Hcaller & Hsaved & H10 & H11 & H2)".
-  iEval (rewrite zesu_ram_instr_sys_regs_eq) in "Hsys".
   iEval (unfold writeSuccessLoadMemoryResources) in "Hmemory".
   iDestruct "Hmemory" as
     "(Hvalues & Hstack & %Hlength & %Hbasealign & %Hbasemin & %Hbasemax &
@@ -138,8 +133,7 @@ Proof.
     iIntros "Hpost".
     iDestruct "Hpost" as
       "(HpostSys & HpostRegs & Hpost2 & Hpost8 & HpostValues & HpostStack & _)".
-    iEval (unfold writeSuccessLoadTerminal;
-      rewrite zesu_ram_instr_sys_regs_eq). iFrame. }
+    iEval (unfold writeSuccessLoadTerminal). iFrame. }
   iExists sp, base, values.
   iFrame "Hsys H2 H8 Hvalues Hstack".
   iSplitL "H10 H11 H12 H13 H14".
