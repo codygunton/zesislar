@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "coqVersion": "8.19.0",
+  "duneVersion": "3.23.1",
+  "islarisRevision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+  "islaRevision": "b8e614bda4a20e42c37d8b216853653133d04322",
+  "sailRevision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+  "sailStdppVersion": "0.20.2"
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "states": [
+    {"qualified": "read_input", "status": "contract_specified_assumption", "contract": "readInputContract"},
+    {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
+    {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
+    {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "contract_specified_assumption", "contract": "writeSuccessContract"},
+    {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
+  ]
+}
