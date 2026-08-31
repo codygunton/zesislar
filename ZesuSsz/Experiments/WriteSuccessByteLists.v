@@ -33,6 +33,75 @@ Fixpoint byteListItemResources `{!islaG Sigma} (address : Z)
 
 Global Instance : LithiumUnfold (@byteListItemResources) := I.
 
+Lemma byteListItemResources_app `{!islaG Sigma} (address : Z)
+    (left right : list ByteListItem) :
+  byteListItemResources address (left ++ right) -∗
+  byteListItemResources address left ∗
+  byteListItemResources (address + 16 * Z.of_nat (length left)) right.
+Proof.
+  iInduction left as [|item left] "IH" forall (address); simpl.
+  - iIntros "Hright". iSplit; first done.
+    replace (address + 16 * 0%nat)%Z with address by lia.
+    iExact "Hright".
+  - iIntros "Hresources".
+    iDestruct "Hresources" as "(Hdata & Hsize & Hbytes & %Hlength & Hrest)".
+    iDestruct ("IH" $! (address + 16)%Z with "Hrest") as "[Hleft Hright]".
+    iSplitL "Hdata Hsize Hbytes Hleft".
+    { iFrame. done. }
+    replace (address + 16 + 16 * Z.of_nat (length left))%Z with
+      (address + 16 * Z.of_nat (length (item :: left)))%Z by (simpl; lia).
+    iExact "Hright".
+Qed.
+
+Lemma byteListItemResources_app_combine `{!islaG Sigma} (address : Z)
+    (left right : list ByteListItem) :
+  byteListItemResources address left -∗
+  byteListItemResources (address + 16 * Z.of_nat (length left)) right -∗
+  byteListItemResources address (left ++ right).
+Proof.
+  iInduction left as [|item left] "IH" forall (address); simpl.
+  - iIntros "_ Hright".
+    have Hzero : (address + 16 * 0%nat)%Z = address by lia.
+    iEval (rewrite Hzero) in "Hright".
+    iExact "Hright".
+  - iIntros "Hleft Hright".
+    iDestruct "Hleft" as "(Hdata & Hsize & Hbytes & %Hlength & Hleft)".
+    iFrame.
+    iSplit; first done.
+    have Haddress :
+      (address + 16 * Z.of_nat (length (item :: left)))%Z =
+      (address + 16 + 16 * Z.of_nat (length left))%Z by (simpl; lia).
+    iEval (rewrite Haddress) in "Hright".
+    iPoseProof ("IH" $! (address + 16)%Z with "Hleft Hright") as "Hcombined".
+    iExact "Hcombined".
+Qed.
+
+Definition byteListProcessedResources `{!islaG Sigma} (address : Z)
+    (items : list ByteListItem) : iProp Sigma :=
+  byteListItemResources address items.
+
+Lemma byteListProcessedResources_combine `{!islaG Sigma} (address : Z)
+    (left right : list ByteListItem) :
+  byteListProcessedResources address left -∗
+  byteListItemResources (address + 16 * Z.of_nat (length left)) right -∗
+  byteListItemResources address (left ++ right).
+Proof.
+  rewrite /byteListProcessedResources.
+  apply byteListItemResources_app_combine.
+Qed.
+
+Lemma byteListProcessedResources_snoc `{!islaG Sigma} (address : Z)
+    (items : list ByteListItem) (item : ByteListItem) :
+  byteListProcessedResources address items -∗
+  byteListItemResources (address + 16 * Z.of_nat (length items)) [item] -∗
+  byteListProcessedResources address (items ++ [item]).
+Proof.
+  rewrite /byteListProcessedResources.
+  apply byteListItemResources_app_combine.
+Qed.
+
+Global Opaque byteListProcessedResources.
+
 Fixpoint byteListItemEvents (sp : bv 64) (items : list ByteListItem)
     (tail : spec) : spec :=
   match items with
@@ -53,7 +122,8 @@ Definition byteListsLoopOtherRegShapes : list (reg_kind * valu_shape) :=
     <$> byteListsLoopOtherRegisters.
 
 Definition byteListsLoopExit `{!islaG Sigma} `{!threadG}
-    (sp savedRa savedS0 savedS1 finalPointer : bv 64)
+    (sp savedRa savedS0 savedS1 finalPointer : bv 64) (itemBase : Z)
+    (items : list ByteListItem)
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ reg_col byteListsLoopOtherRegShapes ∗
    "x1" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
@@ -67,6 +137,7 @@ Definition byteListsLoopExit `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 24) ↦ₘ savedRa ∗
    (bv_unsigned sp + 16) ↦ₘ savedS0 ∗
    (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
+   byteListItemResources itemBase items ∗
    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@byteListsLoopExit) := I.
@@ -77,8 +148,9 @@ Definition byteListEndPointer (pointer : bv 64)
 
 Definition byteListsLoopSpec `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) : iProp Sigma :=
-  (∃ (sp savedRa savedS0 savedS1 pointer : bv 64)
-      (item : ByteListItem) (rest : list ByteListItem) (tail : spec),
+  (∃ (sp savedRa savedS0 savedS1 pointer : bv 64) (itemBase : Z)
+      (done : list ByteListItem) (item : ByteListItem)
+      (rest : list ByteListItem) (tail : spec),
     reg_col zesu_ram_sys_regs ∗ reg_col byteListsLoopOtherRegShapes ∗
     "x1" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
@@ -92,10 +164,13 @@ Definition byteListsLoopSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 24) ↦ₘ savedRa ∗
     (bv_unsigned sp + 16) ↦ₘ savedS0 ∗
     (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
+    byteListProcessedResources itemBase done ∗
     byteListItemResources (bv_unsigned pointer) (item :: rest) ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace (byteListItemEvents sp (item :: rest) tail) ∗
     ⌜S (length rest) < 2 ^ 64⌝ ∗
+    ⌜bv_unsigned pointer =
+      (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
     ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
@@ -105,15 +180,17 @@ Definition byteListsLoopSpec `{!islaG Sigma} `{!threadG}
     P ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1
-        (byteListEndPointer pointer (item :: rest)) tail P) ∗
+        (byteListEndPointer pointer (item :: rest)) itemBase
+        (done ++ item :: rest) tail P) ∗
     True)%I.
 
 Global Instance : LithiumUnfold (@byteListsLoopSpec) := I.
 
 Definition byteListsAfterCallSpec `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) : iProp Sigma :=
-  (∃ (sp savedRa savedS0 savedS1 pointer : bv 64)
-      (item : ByteListItem) (rest : list ByteListItem) (tail : spec),
+  (∃ (sp savedRa savedS0 savedS1 pointer : bv 64) (itemBase : Z)
+      (done : list ByteListItem) (item : ByteListItem)
+      (rest : list ByteListItem) (tail : spec),
     reg_col zesu_ram_sys_regs ∗ reg_col byteListsLoopOtherRegShapes ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15c4c) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
@@ -127,11 +204,17 @@ Definition byteListsAfterCallSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 24) ↦ₘ savedRa ∗
     (bv_unsigned sp + 16) ↦ₘ savedS0 ∗
     (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
+    byteListProcessedResources itemBase done ∗
+    bv_unsigned pointer ↦ₘ byteListData item ∗
+    (bv_unsigned pointer + 8) ↦ₘ byteListSize item ∗
     bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+    ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
     byteListItemResources (bv_unsigned pointer + 16) rest ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace (byteListItemEvents sp rest tail) ∗ P ∗
     ⌜S (length rest) < 2 ^ 64⌝ ∗
+    ⌜bv_unsigned pointer =
+      (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
     ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
@@ -141,7 +224,8 @@ Definition byteListsAfterCallSpec `{!islaG Sigma} `{!threadG}
     □ instr_pre 0x15c3c (byteListsLoopSpec P) ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1
-        (byteListEndPointer pointer (item :: rest)) tail P) ∗
+        (byteListEndPointer pointer (item :: rest)) itemBase
+        (done ++ item :: rest) tail P) ∗
     True)%I.
 
 Global Instance : LithiumUnfold (@byteListsAfterCallSpec) := I.
@@ -176,8 +260,24 @@ Proof.
     | Hneq : _ <> 0%bv |- _ => exfalso; apply Hneq; bv_solve
     end.
   all: try (cbn; done).
+  2: {
+    rename select (bv_unsigned pointer = _)%Z into Hposition.
+    iDestruct select (byteListProcessedResources itemBase done) as "Hdone".
+    iDestruct select (bv_unsigned pointer ↦ₘ byteListData item)%I as "Hdata".
+    iDestruct select ((bv_unsigned pointer + 8) ↦ₘ byteListSize item)%I
+      as "Hsize".
+    iDestruct select
+      (bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item)%I as "Hbytes".
+    iSplitL "Hdone Hdata Hsize Hbytes".
+    - iApply (byteListProcessedResources_combine itemBase done [item]
+        with "Hdone").
+      simpl. rewrite <- Hposition.
+      iFrame. iSplit; first done. done.
+    - iFrame. done.
+  }
   iExists
-      (tail, more, next, (pointer + BV 64 16)%bv,
+      (tail, more, next, done ++ [item], itemBase,
+       (pointer + BV 64 16)%bv,
        savedS1, savedS0, savedRa, tt)ₗ.
   liARun.
   Unshelve. all: prepare_sidecond.
@@ -214,6 +314,33 @@ Proof.
         cbn in Hbound; lia
     end.
   all: try (cbn in H3; lia).
+  rename select (bv_unsigned pointer = _)%Z into Hposition.
+  iDestruct select (byteListProcessedResources itemBase done) as "Hdone".
+  iDestruct select (bv_unsigned pointer ↦ₘ byteListData item)%I as "Hdata".
+  iDestruct select ((bv_unsigned pointer + 8) ↦ₘ byteListSize item)%I
+    as "Hsize".
+  iDestruct select
+    (bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item)%I as "Hbytes".
+  iSplitL "Hdone Hdata Hsize Hbytes".
+  - iApply (byteListProcessedResources_snoc itemBase done item with "Hdone").
+    simpl. rewrite <- Hposition.
+    iFrame. iSplit; first done. done.
+  - rewrite <- app_assoc. simpl.
+    iFrame.
+    repeat iSplit.
+    all: try iAssumption.
+    all: iPureIntro.
+    all: try assumption.
+    all: try match goal with
+      | Hbound : S (length (?head :: ?rest)) < 2 ^ 64 |- _ =>
+          cbn in Hbound; lia
+      end.
+    all: try (cbn in *; lia).
+    all: try (rewrite app_length; simpl; lia).
+    all: try
+      (bv_simplify_arith select (bv_extract 0 3 pointer = _); bv_solve).
+    all: try bv_solve.
+    all: try lia.
   all: lazymatch goal with |- ?G => fail "byteLists continuation residual" G end.
 Qed.
 
@@ -234,6 +361,8 @@ Proof.
   all: try assumption.
   all: try rewrite bv_sign_extend_64_idemp.
   all: try (bv_simplify_arith H2; bv_solve).
+  all: try
+    (bv_simplify_arith select (bv_extract 0 3 pointer = _); bv_solve).
   all: try bv_solve.
   all: try lia.
   Unshelve.
@@ -266,6 +395,7 @@ Proof.
   all: try bv_solve.
   all: try lia.
   Unshelve.
+  all: liShow.
   all: destruct rest as [|next more].
   all: try (unfold byteListEndPointer; bv_solve).
   all: try match goal with
@@ -276,8 +406,27 @@ Proof.
     | Hneq : _ <> 0%bv |- _ => exfalso; apply Hneq; bv_solve
     end.
   all: try (cbn; done).
+  2: {
+    rename select (bv_unsigned pointer = _)%Z into Hposition.
+    iDestruct select (byteListProcessedResources itemBase done) as "Hdone".
+    iDestruct select (_ ↦ₘ byteListData item)%I as "Hdata".
+    iDestruct select (_ ↦ₘ byteListSize item)%I as "Hsize".
+    have HdataAddress : bv_unsigned LET0 = bv_unsigned pointer by bv_solve.
+    have HsizeAddress : bv_unsigned LET5 = bv_unsigned pointer + 8 by bv_solve.
+    iEval (rewrite HdataAddress) in "Hdata".
+    iEval (rewrite HsizeAddress) in "Hsize".
+    iDestruct select
+      (bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item)%I as "Hbytes".
+    iSplitL "Hdone Hdata Hsize Hbytes".
+    - iApply (byteListProcessedResources_combine itemBase done [item]
+        with "Hdone").
+      simpl. rewrite <- Hposition.
+      iFrame. done.
+    - iFrame.
+  }
   iExists
-      (tail, more, next, (pointer + BV 64 16)%bv,
+      (tail, more, next, done ++ [item], itemBase,
+       (pointer + BV 64 16)%bv,
        savedS1, savedS0, savedRa, tt)ₗ.
   liARun.
   Unshelve. all: prepare_sidecond.
@@ -318,5 +467,31 @@ Proof.
     | Hbound : context [length (?head :: ?tail)] |- _ =>
         cbn in Hbound; lia
     end.
+  rename select (bv_unsigned pointer = _)%Z into Hposition.
+  iDestruct select (byteListProcessedResources itemBase done) as "Hdone".
+  iDestruct select (_ ↦ₘ byteListData item)%I as "Hdata".
+  iDestruct select (_ ↦ₘ byteListSize item)%I as "Hsize".
+  have HdataAddress : bv_unsigned LET0 = bv_unsigned pointer by bv_solve.
+  have HsizeAddress : bv_unsigned LET5 = bv_unsigned pointer + 8 by bv_solve.
+  iEval (rewrite HdataAddress) in "Hdata".
+  iEval (rewrite HsizeAddress) in "Hsize".
+  iDestruct select
+    (bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item)%I as "Hbytes".
+  iSplitL "Hdone Hdata Hsize Hbytes".
+  - iApply (byteListProcessedResources_snoc itemBase done item with "Hdone").
+    simpl. rewrite <- Hposition.
+    iFrame. iSplit; first done. done.
+  - rewrite <- app_assoc. simpl.
+    iFrame.
+    repeat iSplit.
+    all: try iAssumption.
+    all: iPureIntro.
+    all: try assumption.
+    all: try (cbn in *; lia).
+    all: try (rewrite app_length; simpl; lia).
+    all: try
+      (bv_simplify_arith select (bv_extract 0 3 pointer = _); bv_solve).
+    all: try bv_solve.
+    all: try lia.
   all: lazymatch goal with |- ?G => fail "byteLists loop residual" G end.
 Qed.
