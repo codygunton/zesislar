@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-From IslaTraces.write_success_blocks Require Import Index Hints22 Hints23 Hints24.
+From IslaTraces.write_success_blocks Require Import Index HintsLoadBlock.
 Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.

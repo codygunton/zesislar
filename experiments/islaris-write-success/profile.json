@@ -18,25 +18,18 @@
   "alignedReturnRegister": "x1",
   "alignedProgramCounter": "PC",
   "controlFlowRegisters": {"ra": "x1", "t1": "x6"},
-  "ranges": [
-    ["0x14d30", "0x14d80"], ["0x14d80", "0x14e00"],
-    ["0x14e14", "0x14e2c"],
-    ["0x14e38", "0x14e3c"], ["0x14e48", "0x14e4c"],
-    ["0x14e58", "0x14e5c"], ["0x14e68", "0x14e6c"],
-    ["0x14e78", "0x14e7c"], ["0x14e88", "0x14ed8"],
-    ["0x14ee4", "0x14ef4"], ["0x15668", "0x15680"],
-    ["0x156e8", "0x15730"], ["0x1573c", "0x15744"],
-    ["0x158e0", "0x15a14"],
-    ["0x10190", "0x101a4"],
-    ["0x101d4", "0x101f8"],
-    ["0x15b9c", "0x15bc8"],
-    ["0x15bc8", "0x15c10"],
-    ["0x15c10", "0x15c6c"],
-    ["0x15c6c", "0x15cb0"],
-    ["0x15d10", "0x15d38"]
+  "cfgRegions": [
+    {"function": "ssz_decode_observation.writeSuccess", "block": 0},
+    {"function": "write_output"},
+    {"function": "memcpy"},
+    {"function": "ssz_decode_observation.Encoder.boolean"},
+    {"function": "ssz_decode_observation.Encoder.optionalU64"},
+    {"function": "ssz_decode_observation.Encoder.byteLists"},
+    {"function": "ssz_decode_observation.Encoder.bytes"},
+    {"function": "ssz_decode_observation.Encoder.int__anon_1525"}
   ],
-  "splitRanges": [
-    {"start": "0x14d30", "end": "0x15a14", "maxInstructions": 24}
+  "cfgBlockFunctions": [
+    {"function": "ssz_decode_observation.writeSuccess", "maxInstructions": 24}
   ],
   "memoryBaseRegisters": {
     "sp": "x2",

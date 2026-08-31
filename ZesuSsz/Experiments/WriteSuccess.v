@@ -1,13 +1,13 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_00 Require Import instrs.
-From IslaTraces.write_success_14 Require Import instrs.
-From IslaTraces.write_success_15 Require Import instrs.
-From IslaTraces.write_success_16 Require Import instrs.
-From IslaTraces.write_success_17 Require Import instrs.
-From IslaTraces.write_success_18 Require Import instrs.
-From IslaTraces.write_success_19 Require Import instrs.
-From IslaTraces.write_success_20 Require Import instrs.
+From IslaTraces.write_success_01 Require Import instrs.
+From IslaTraces.write_success_02 Require Import instrs.
+From IslaTraces.write_success_03 Require Import instrs.
+From IslaTraces.write_success_04 Require Import instrs.
+From IslaTraces.write_success_05 Require Import instrs.
+From IslaTraces.write_success_06 Require Import instrs.
+From IslaTraces.write_success_07 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Level1.
@@ -188,13 +188,13 @@ Global Instance : LithiumUnfold (@encoderOptionalSomeSpec) := I.
 Lemma encoder_optional_some_correct `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tag : bv 8)
     (tail : spec) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_17.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_04.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15bc8
     (encoderOptionalSomeSpec data value sp ret tag tail P).
@@ -247,7 +247,7 @@ Global Instance : LithiumUnfold (@writeOutputExit) := I.
 
 Lemma write_output_correct `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x10190
     (writeOutputEntry data size ret P ∗
@@ -284,7 +284,7 @@ Global Instance : LithiumUnfold (@writeOutputTraceSpec) := I.
 
 Lemma write_output_trace_correct `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (tail : spec) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x10190 (writeOutputTraceSpec data size ret tail P).
 Proof.
@@ -332,7 +332,7 @@ Definition zesuMemcpyLoopSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuMemcpyLoopSpec) := I.
 
 Lemma zesu_memcpy_loop `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x101d8 zesuMemcpyLoopSpec -∗
   instr_body 0x101d8 zesuMemcpyLoopSpec.
@@ -393,7 +393,7 @@ Proof.
 Qed.
 
 Lemma zesu_memcpy_loop_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x101d8 zesuMemcpyLoopSpec.
 Proof.
@@ -441,7 +441,7 @@ Global Instance : LithiumUnfold (@zesuMemcpySpec) := I.
 Lemma zesu_memcpy_correct `{!islaG Sigma} `{!threadG}
     (dst src n ret : bv 64) (srcdata dstdata : list (bv 8))
     (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x101d4 (zesuMemcpySpec dst src n ret srcdata dstdata P).
 Proof.
@@ -499,9 +499,9 @@ Global Instance : LithiumUnfold (@encoderIntSpec) := I.
 
 Lemma encoder_int_correct `{!islaG Sigma} `{!threadG}
     (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d10 (encoderIntSpec value sp ret tail P).
 Proof.
@@ -554,9 +554,9 @@ Global Instance : LithiumUnfold (@encoderBooleanSpec) := I.
 
 Lemma encoder_boolean_correct `{!islaG Sigma} `{!threadG}
     (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15b9c (encoderBooleanSpec value sp ret tail P).
 Proof.
@@ -625,11 +625,11 @@ Global Instance : LithiumUnfold (@encoderBytesSpec) := I.
 Lemma encoder_bytes_correct `{!islaG Sigma} `{!threadG}
     (data size sp ret : bv 64) (bytes : list (bv 8))
     (tail : spec) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_19.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15c6c (encoderBytesSpec data size sp ret bytes tail P).
 Proof.
@@ -692,13 +692,13 @@ Global Instance : LithiumUnfold (@encoderOptionalNoneSpec) := I.
 
 Lemma encoder_optional_none_correct `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_17.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_04.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15bc8 (encoderOptionalNoneSpec data value sp ret tail P).
 Proof.

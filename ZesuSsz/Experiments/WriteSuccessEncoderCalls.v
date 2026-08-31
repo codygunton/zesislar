@@ -37,9 +37,9 @@ Definition zesuEncoderIntCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuEncoderIntCallSpec) := I.
 
 Lemma zesu_encoder_int_call_correct `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d10 zesuEncoderIntCallSpec.
 Proof.
@@ -57,9 +57,9 @@ Proof.
 Qed.
 
 Lemma zesu_encoder_int_call_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15d10 zesuEncoderIntCallSpec.
 Proof.
@@ -105,11 +105,11 @@ Definition zesuEncoderBytesCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuEncoderBytesCallSpec) := I.
 
 Lemma zesu_encoder_bytes_call_correct `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_19.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15c6c zesuEncoderBytesCallSpec.
 Proof.
@@ -128,11 +128,11 @@ Proof.
 Qed.
 
 Lemma zesu_encoder_bytes_call_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_19.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec.
 Proof.
@@ -154,9 +154,9 @@ Definition zesuEncoderBooleanCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma 
 Global Instance : LithiumUnfold (@zesuEncoderBooleanCallSpec) := I.
 
 Lemma zesu_encoder_boolean_call_correct `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15b9c zesuEncoderBooleanCallSpec.
 Proof.
@@ -174,9 +174,9 @@ Proof.
 Qed.
 
 Lemma zesu_encoder_boolean_call_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15b9c zesuEncoderBooleanCallSpec.
 Proof.
@@ -192,9 +192,9 @@ Definition zesuEncoderIntAny `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuEncoderIntAny) := I.
 
 Lemma zesu_encoder_int_any_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15d10 zesuEncoderIntAny.
 Proof.
@@ -214,11 +214,11 @@ Definition zesuEncoderBytesAny `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuEncoderBytesAny) := I.
 
 Lemma zesu_encoder_bytes_any_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_19.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_20.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15c6c zesuEncoderBytesAny.
 Proof.
@@ -238,9 +238,9 @@ Definition zesuEncoderBooleanAny `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuEncoderBooleanAny) := I.
 
 Lemma zesu_encoder_boolean_any_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_16.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15b9c zesuEncoderBooleanAny.
 Proof.

@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-From IslaTraces.write_success_15 Require Import instrs.
+From IslaTraces.write_success_02 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Experiments.WriteSuccess.
@@ -97,7 +97,7 @@ Global Instance : LithiumUnfold (@zesuMemcpyPublicSpec) := I.
 
 Lemma zesu_memcpy_public_correct `{!islaG Sigma} `{!threadG}
     (dst src n ret : bv 64) (srcdata : list (bv 8)) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x101d4 (zesuMemcpyPublicSpec dst src n ret srcdata).
 Proof.
@@ -128,7 +128,7 @@ Definition zesuMemcpyAny `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuMemcpyAny) := I.
 
 Lemma zesu_memcpy_any_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x101d4 zesuMemcpyAny.
 Proof.
@@ -162,7 +162,7 @@ Definition zesuMemcpyCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuMemcpyCallSpec) := I.
 
 Lemma zesu_memcpy_call_correct `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x101d4 zesuMemcpyCallSpec.
 Proof.
@@ -258,7 +258,7 @@ Proof.
 Qed.
 
 Lemma zesu_memcpy_call_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x101d4 zesuMemcpyCallSpec.
 Proof.
@@ -279,7 +279,7 @@ Definition zesuWriteOutputCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@zesuWriteOutputCallSpec) := I.
 
 Lemma zesu_write_output_call_correct `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x10190 zesuWriteOutputCallSpec.
 Proof.
@@ -293,7 +293,7 @@ Proof.
 Qed.
 
 Lemma zesu_write_output_call_pre `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec.
 Proof.

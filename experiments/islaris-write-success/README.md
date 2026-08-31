@@ -1,6 +1,7 @@
 # `writeSuccess` Islaris proof
 
-The profile selects the 190 parent-owned instructions from the pinned ELF.
+The profile selects proof regions by function name from the pinned CFG.
+The generator derives every `writeSuccess` block from that CFG.
 The dump generator adds only the local constraints for decoded-memory loads.
 The Isla config supplies the machine-wide stack constraints.
 

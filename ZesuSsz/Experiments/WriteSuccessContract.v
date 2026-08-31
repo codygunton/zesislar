@@ -1,8 +1,8 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
-From IslaTraces.write_success_14 Require Import instrs.
-From IslaTraces.write_success_15 Require Import instrs.
+From IslaTraces.write_success_01 Require Import instrs.
+From IslaTraces.write_success_02 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -74,9 +74,9 @@ Lemma write_success_to_load_block `{!islaG Sigma} `{!threadG}
     (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_15.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_14.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x101d4 zesuMemcpyCallSpec -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗

@@ -125,9 +125,10 @@ $(READ_INPUT_TRACE_DIR)/instrs.v: $(READ_INPUT_DUMP) $(ISLA_ETC)/$(READ_INPUT_IS
 .PHONY: read-input-traces
 read-input-traces: $(READ_INPUT_TRACE_DIR)/instrs.v
 
-$(WRITE_SUCCESS_DUMP_STAMP): build/endpoint-elf experiments/islaris-write-success/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+$(WRITE_SUCCESS_DUMP_STAMP): build/endpoint-elf build/endpoint-cfg experiments/islaris-write-success/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
 	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --cfg build/endpoint-cfg/zesu-cfg.json \
 	  --profile experiments/islaris-write-success/profile.json \
 	  --split-output-dir $(WRITE_SUCCESS_DUMP_DIR)
 	touch $@
@@ -136,7 +137,9 @@ $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG): experiments/islaris-write-success/$(WRITE
 	install -m644 $< $@
 
 $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG)
-	@for dump_file in $(WRITE_SUCCESS_DUMP_DIR)/block_*.dump; do \
+	find generated/isla-traces -maxdepth 1 -type d \
+	  -name 'write_success_[0-9]*' -exec rm -rf {} +
+	@set -e; for dump_file in $(WRITE_SUCCESS_DUMP_DIR)/block_*.dump; do \
 	  block_name=$$(basename $$dump_file .dump); \
 	  block_number=$${block_name#block_}; \
 	  trace_dir=generated/isla-traces/write_success_$$block_number; \
@@ -152,7 +155,9 @@ $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SU
 $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evidence/generate_islaris_trace_index.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_trace_index.py \
 	  --dump-dir $(WRITE_SUCCESS_DUMP_DIR) \
-	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 21
+	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 8 \
+	  --hint-group LoadBlock:0x14d80:0x14e00 \
+	  --hint-group ValueBlock:0x14e88:0x14f08
 	touch $@
 
 .PHONY: write-success-traces

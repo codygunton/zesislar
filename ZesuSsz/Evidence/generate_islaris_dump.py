@@ -153,6 +153,40 @@ def split_control_flow_range(
             if any(start <= pc < stop for pc in pcs)]
 
 
+def cfg_ranges(cfg: dict[str, object], profile: dict[str, object]) -> tuple[
+    list[tuple[int, int]], int
+]:
+    """Select reviewed regions and proof blocks from the generated CFG."""
+    functions = {function["name"]: function for function in cfg["functions"]}
+    ranges = []
+    for region in profile.get("cfgRegions", []):
+        function = functions[region["function"]]
+        if "block" in region:
+            block = function["blocks"][region["block"]]
+            ranges.append((block["start"], block["end"]))
+        else:
+            ranges.append((function["start"], function["start"] + function["size"]))
+    reviewed_count = len(ranges)
+    for selection in profile.get("cfgBlockFunctions", []):
+        if isinstance(selection, str):
+            name, maximum = selection, None
+        else:
+            name = selection["function"]
+            maximum = selection.get("maxInstructions")
+        for block in functions[name]["blocks"]:
+            instructions = block["instructions"]
+            if maximum is None:
+                ranges.append((block["start"], block["end"]))
+                continue
+            for offset in range(0, len(instructions), maximum):
+                start = instructions[offset]["pc"]
+                stop = (instructions[offset + maximum]["pc"]
+                        if offset + maximum < len(instructions)
+                        else block["end"])
+                ranges.append((start, stop))
+    return ranges, reviewed_count
+
+
 def control_flow_constraints(
     instruction: str, return_register: str | None, program_counter: str | None,
     jump_registers: dict[str, str] | None = None,
@@ -177,6 +211,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--disassembly", required=True)
     parser.add_argument("--profile", required=True)
+    parser.add_argument("--cfg")
     outputs = parser.add_mutually_exclusive_group(required=True)
     outputs.add_argument("--output")
     outputs.add_argument("--split-output-dir")
@@ -189,8 +224,13 @@ def main() -> None:
         match = INSTRUCTION.match(line)
         if match is not None:
             instructions.append((int(match.group(1), 16), match.group(2)))
-    ranges = [(int(a, 0), int(b, 0)) for a, b in profile["ranges"]]
-    base_range_count = len(ranges)
+    if args.cfg:
+        ranges, base_range_count = cfg_ranges(
+            json.loads(Path(args.cfg).read_text()), profile
+        )
+    else:
+        ranges = [(int(a, 0), int(b, 0)) for a, b in profile["ranges"]]
+        base_range_count = len(ranges)
     for split_range in profile.get("splitRanges", []):
         ranges.extend(split_control_flow_range(
             instructions,
@@ -251,6 +291,10 @@ def main() -> None:
     else:
         output_dir = Path(args.split_output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
+        expected = {output_dir / f"block_{index:02}.dump"
+                    for index in range(len(selected))}
+        for stale in set(output_dir.glob("block_*.dump")) - expected:
+            stale.unlink()
         for index, block in enumerate(selected):
             write_text_if_changed(
                 output_dir / f"block_{index:02}.dump",

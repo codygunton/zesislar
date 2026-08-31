@@ -46,6 +46,7 @@ def generate(
     output_dir: Path,
     first_block: int,
     theory_prefix: str = "write_success",
+    hint_groups: dict[str, tuple[int, int]] | None = None,
 ) -> None:
     blocks: list[tuple[int, Path]] = []
     for dump in dump_dir.glob("block_*.dump"):
@@ -57,6 +58,7 @@ def generate(
     entries_by_address: dict[int, str] = {}
     specs_by_address: dict[int, tuple[str, str, int]] = {}
     for number, dump in blocks:
+        suffix = f"{number:02d}"
         pending_spec = None
         for line in dump.read_text().splitlines():
             spec_match = SPEC.match(line)
@@ -66,13 +68,13 @@ def generate(
             match = INSTRUCTION.match(line)
             if match:
                 address = int(match.group(1), 16)
-                module = f"IslaTraces.{theory_prefix}_{number}.a{address:x}"
+                module = f"IslaTraces.{theory_prefix}_{suffix}.a{address:x}"
                 entries_by_address[address] = f"{module}.a{address:x}"
                 if pending_spec is not None:
                     term = re.sub(r"\bpc\b", f"0x{address:x}", pending_spec)
                     specs_by_address[address] = (
                         term,
-                        f"Require Import IslaTraces.write_success_{number}.a{address:x}_spec.",
+                        f"Require Import IslaTraces.{theory_prefix}_{suffix}.a{address:x}_spec.",
                         number,
                     )
                 pending_spec = None
@@ -86,7 +88,7 @@ def generate(
 
     output_dir.mkdir(parents=True, exist_ok=True)
     theories = "\n".join(
-        f"  IslaTraces.{theory_prefix}_{number}" for number, _ in blocks)
+        f"  IslaTraces.{theory_prefix}_{number:02d}" for number, _ in blocks)
     (output_dir / "dune").write_text(
         "(include_subdirs qualified)\n"
         "(coq.theory\n"
@@ -94,7 +96,7 @@ def generate(
         f" (theories\n{theories}\n ))\n")
 
     imports = "\n".join(
-        f"From IslaTraces.{theory_prefix}_{number} Require Import instrs."
+        f"From IslaTraces.{theory_prefix}_{number:02d} Require Import instrs."
         for number, _ in blocks)
     source = [
         "From Coq Require Import ZArith.ZArith.",
@@ -162,6 +164,17 @@ def generate(
         ]
         (output_dir / f"Hints{number}.v").write_text("\n".join(hints) + "\n")
 
+    for name, (start, stop) in (hint_groups or {}).items():
+        addresses = sorted(
+            address for address in specs_by_address if start <= address < stop
+        )
+        hints = [
+            f"From IslaTraces.{theory_prefix}_blocks Require Import Index.",
+            *(f"#[export] Existing Instance find_body_a{address:x}_inst | 8."
+              for address in addresses),
+        ]
+        (output_dir / f"Hints{name}.v").write_text("\n".join(hints) + "\n")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -169,12 +182,18 @@ def main() -> None:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--first-block", type=int, default=0)
     parser.add_argument("--theory-prefix", default="write_success")
+    parser.add_argument("--hint-group", action="append", default=[])
     args = parser.parse_args()
+    hint_groups = {}
+    for item in args.hint_group:
+        name, start, stop = item.split(":")
+        hint_groups[name] = (int(start, 0), int(stop, 0))
     generate(
         args.dump_dir,
         args.output_dir,
         args.first_block,
         args.theory_prefix,
+        hint_groups,
     )
 
 

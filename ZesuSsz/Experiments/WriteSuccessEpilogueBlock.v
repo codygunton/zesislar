@@ -1,7 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
-From IslaTraces.write_success_149 Require Import a15a10.
+From IslaTraces.write_success_125 Require Import a15a10.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccess.
@@ -104,7 +104,7 @@ Definition writeSuccessReturnAnySpec `{!islaG Sigma} `{!threadG} : iProp Sigma :
 Global Instance : LithiumUnfold (@writeSuccessReturnAnySpec) := I.
 
 Lemma write_success_return_any_block `{!islaG Sigma} `{!threadG} :
-  instr 0x15a10 (Some IslaTraces.write_success_149.a15a10.a15a10) -∗
+  instr 0x15a10 (Some IslaTraces.write_success_125.a15a10.a15a10) -∗
   instr_body 0x15a10 writeSuccessReturnAnySpec.
 Proof.
   iStartProof.

@@ -256,7 +256,7 @@ Global Instance : LithiumUnfold (@byteListsAfterCallSpec) := I.
 
 Lemma write_success_byte_lists_after_call `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15c4c (byteListsAfterCallSpec P).
 Proof.
@@ -370,7 +370,7 @@ Qed.
 
 Lemma write_success_byte_lists_loop `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
   □ instr_pre 0x15c3c (byteListsLoopSpec P) -∗
@@ -522,7 +522,7 @@ Qed.
 
 Lemma write_success_byte_lists_loop_pre `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
   □ instr_pre 0x15c3c (byteListsLoopSpec P).
@@ -576,17 +576,17 @@ Definition byteListsSavedRegisters : list string :=
    "x23"; "x24"; "x25"; "x26"; "x27"].
 
 Definition byteListsCode `{!islaG Sigma} : iProp Sigma :=
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I.
 
 Lemma byteListsCode_intro `{!islaG Sigma} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗ byteListsCode.
 Proof. iIntros "Hcode". iExact "Hcode". Qed.
 
 Lemma byteListsCode_elim `{!islaG Sigma} :
   byteListsCode -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I.
 Proof. iIntros "Hcode". iExact "Hcode". Qed.
 
@@ -602,7 +602,7 @@ Definition byteListsEmptyBranchSpec `{!islaG Sigma} `{!threadG}
 Global Instance : LithiumUnfold (@byteListsEmptyBranchSpec) := I.
 
 Lemma byte_lists_empty_branch `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
-  instr 0x15c38 (Some IslaTraces.write_success_18.a15c38.a15c38) -∗
+  instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   instr_body 0x15c38 (byteListsEmptyBranchSpec P).
 Proof.
   iStartProof.
@@ -628,7 +628,7 @@ Proof.
 Qed.
 
 Lemma byte_lists_empty_branch_pre `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
-  instr 0x15c38 (Some IslaTraces.write_success_18.a15c38.a15c38) -∗
+  instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   □ instr_pre 0x15c38 (byteListsEmptyBranchSpec P).
 Proof.
   iStartProof. iIntros "#Hcode". iModIntro.
@@ -647,7 +647,7 @@ Global Instance : LithiumUnfold (@byteListsNonemptyBranchSpec) := I.
 
 Lemma byte_lists_nonempty_branch `{!islaG Sigma} `{!threadG}
     (count : bv 64) (P : iProp Sigma) :
-  instr 0x15c38 (Some IslaTraces.write_success_18.a15c38.a15c38) -∗
+  instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   instr_body 0x15c38 (byteListsNonemptyBranchSpec count P).
 Proof.
   iStartProof.
@@ -675,7 +675,7 @@ Qed.
 
 Lemma byte_lists_nonempty_branch_pre `{!islaG Sigma} `{!threadG}
     (count : bv 64) (P : iProp Sigma) :
-  instr 0x15c38 (Some IslaTraces.write_success_18.a15c38.a15c38) -∗
+  instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   □ instr_pre 0x15c38 (byteListsNonemptyBranchSpec count P).
 Proof.
   iStartProof. iIntros "#Hcode". iModIntro.
@@ -706,7 +706,7 @@ Lemma write_success_byte_lists_epilogue `{!islaG Sigma} `{!threadG}
     (Hmax : bv_unsigned callerSp < 0x40000000)
     (Hret1 : bv_extract 0 1 ret = BV 1 0)
     (Hret : bv_extract 0 2 ret = BV 2 0) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15c58
     (byteListsLoopExit (callerSp - BV 64 32)%bv ret savedS0 savedS1
@@ -750,7 +750,7 @@ Lemma byte_lists_epilogue_pre `{!islaG Sigma} `{!threadG}
     (Hmax : bv_unsigned callerSp < 0x40000000)
     (Hret1 : bv_extract 0 1 ret = BV 1 0)
     (Hret : bv_extract 0 2 ret = BV 2 0) :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15c58
     (byteListsLoopExit (callerSp - BV 64 32)%bv ret savedS0 savedS1
@@ -766,7 +766,7 @@ Proof.
 Qed.
 
 Lemma write_success_byte_lists `{!islaG Sigma} `{!threadG} :
-  ([∗ list] instruction ∈ IslaTraces.write_success_18.instrs.instr_map,
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗

@@ -2,6 +2,7 @@ import unittest
 
 from generate_islaris_dump import (
     control_flow_constraints,
+    cfg_ranges,
     effective_address_constraints,
     load_store_spec_annotations,
     jump_spec_annotations,
@@ -111,6 +112,33 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
             split_control_flow_range(instructions, 0x100, 0x114, 2),
             [(0x100, 0x108), (0x108, 0x110), (0x110, 0x114)],
         )
+
+    def test_selects_reviewed_regions_and_blocks_from_cfg(self):
+        cfg = {"functions": [
+            {"name": "caller", "start": 0x100, "size": 0x20,
+             "blocks": [
+                 {"start": 0x100, "end": 0x108, "instructions": [
+                     {"pc": 0x100}, {"pc": 0x104}]},
+                 {"start": 0x108, "end": 0x120, "instructions": [
+                     {"pc": 0x108}, {"pc": 0x10c}, {"pc": 0x110}]},
+             ]},
+            {"name": "helper", "start": 0x200, "size": 0x10,
+             "blocks": [{"start": 0x200, "end": 0x210,
+                         "instructions": [{"pc": 0x200}]}]},
+        ]}
+        profile = {
+            "cfgRegions": [
+                {"function": "caller", "block": 0},
+                {"function": "helper"},
+            ],
+            "cfgBlockFunctions": [
+                {"function": "caller", "maxInstructions": 2}],
+        }
+        self.assertEqual(cfg_ranges(cfg, profile), (
+            [(0x100, 0x108), (0x200, 0x210),
+             (0x100, 0x108), (0x108, 0x110), (0x110, 0x120)],
+            2,
+        ))
 
 
 if __name__ == "__main__":
