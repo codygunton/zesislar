@@ -43,3 +43,46 @@ Definition PcInRanges (ranges : list (Z * Z)) (pc : Z) : Prop :=
   exists lower upper, In (lower, upper) ranges /\ (lower <= pc < upper)%Z.
 
 Definition PcInList (pcs : list Z) (pc : Z) : Prop := In pc pcs.
+
+Inductive InstructionPathFollows (nextPc : Z -> Z -> Prop) :
+    list Z -> Prop :=
+| InstructionPathOne pc : InstructionPathFollows nextPc [pc]
+| InstructionPathNext fromPc toPc rest :
+    nextPc fromPc toPc ->
+    InstructionPathFollows nextPc (toPc :: rest) ->
+    InstructionPathFollows nextPc (fromPc :: toPc :: rest).
+
+Definition StraightLineInstructionStep (fromPc toPc : Z) : Prop :=
+  (toPc = fromPc + 4)%Z.
+
+(** A finite path certifies the instruction bound separately from the
+    Islaris resource proof. The path contains its terminal PC. *)
+Definition InstructionPathCertificate
+    (nextPc : Z -> Z -> Prop) (region exitPc : Z -> Prop)
+    (entryPc : Z) (bound : nat) : Prop :=
+  exists instructionPath : list Z,
+    hd_error instructionPath = Some entryPc /\
+    InstructionPathFollows nextPc instructionPath /\
+    Forall region (removelast instructionPath) /\
+    (exists pc, last instructionPath entryPc = pc /\ exitPc pc) /\
+    length instructionPath = S bound /\
+    0 < bound.
+
+(** The bridge keeps state correctness and termination as separate proofs. *)
+Record NativeContractAssumption
+    (correctness : Prop)
+    (nextPc : Z -> Z -> Prop) (region exitPc : Z -> Prop)
+    (entryPc : Z) (bound : nat) : Prop := {
+  nativeStateCorrect : correctness;
+  nativeTermination :
+    InstructionPathCertificate nextPc region exitPc entryPc bound
+}.
+
+Lemma nativeContractBridge
+    (correctness : Prop)
+    (nextPc : Z -> Z -> Prop) (region exitPc : Z -> Prop)
+    (entryPc : Z) (bound : nat) :
+  correctness ->
+  InstructionPathCertificate nextPc region exitPc entryPc bound ->
+  NativeContractAssumption correctness nextPc region exitPc entryPc bound.
+Proof. constructor; assumption. Qed.

@@ -10,6 +10,9 @@ verification-target/zesu
 *.vos
 *.glob
 .*.aux
+.lia.cache
+.nia.cache
+rocq_mcp_cache_*.v
 
 # Generated Isla traces. The build regenerates this complete directory.
 /generated/isla-traces/
