@@ -1,0 +1,16 @@
+name: Proof hygiene
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  proof-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check proof files and generated traces
+        run: python3 ZesuSsz/Evidence/check_proof_hygiene.py
+      - name: Test evidence tools
+        run: PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
