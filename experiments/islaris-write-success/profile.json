@@ -26,7 +26,8 @@
     {"function": "ssz_decode_observation.Encoder.optionalU64"},
     {"function": "ssz_decode_observation.Encoder.byteLists"},
     {"function": "ssz_decode_observation.Encoder.bytes"},
-    {"function": "ssz_decode_observation.Encoder.int__anon_1525"}
+    {"function": "ssz_decode_observation.Encoder.int__anon_1525"},
+    {"function": "ssz_decode_observation.Encoder.int__anon_1658"}
   ],
   "cfgBlockFunctions": [
     {"function": "ssz_decode_observation.writeSuccess", "maxInstructions": 24}

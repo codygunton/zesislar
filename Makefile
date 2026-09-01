@@ -155,13 +155,14 @@ $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SU
 $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evidence/generate_islaris_trace_index.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_trace_index.py \
 	  --dump-dir $(WRITE_SUCCESS_DUMP_DIR) \
-	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 8 \
+	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 9 \
 	  --hint-group LoadBlock:0x14d80:0x14e00 \
 	  --hint-group ValueBlock:0x14e88:0x14f08 \
 	  --hint-group HashesLoop:0x15754:0x158e0 \
 	  --hint-group BlobHashesLoop:0x153d4:0x15564 \
 	  --hint-group StorageKeysLoop:0x15228:0x153b4 \
-	  --hint-group WithdrawalsLoop:0x15694:0x156e8
+	  --hint-group WithdrawalsLoop:0x15694:0x156e8 \
+	  --hint-group AuthorizationsLoop:0x15590:0x15620
 	touch $@
 
 .PHONY: write-success-traces

@@ -2,3 +2,4 @@ Require Export ZesuSsz.Experiments.WriteSuccessHashesLoop.
 Require Export ZesuSsz.Experiments.WriteSuccessBlobHashesLoop.
 Require Export ZesuSsz.Experiments.WriteSuccessStorageKeysLoop.
 Require Export ZesuSsz.Experiments.WriteSuccessWithdrawalsLoop.
+Require Export ZesuSsz.Experiments.WriteSuccessAuthorizationsLoop.

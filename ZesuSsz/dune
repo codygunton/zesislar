@@ -10,5 +10,6 @@
    IslaTraces.write_success_02 IslaTraces.write_success_03
    IslaTraces.write_success_04 IslaTraces.write_success_05
    IslaTraces.write_success_06 IslaTraces.write_success_07
+   IslaTraces.write_success_08
    IslaTraces.write_success_blocks
    lithium iris stdpp RecordUpdate Ltac2))
