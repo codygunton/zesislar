@@ -1,18 +1,7 @@
 # Load paths for Rocq tools that do not read dune.
 -Q _build/default/ZesuSsz ZesuSsz
 -Q _build/default/InstrSpecs InstrSpecs
--Q _build/default/generated/isla-traces/entrypoints IslaTraces.entrypoints
--Q _build/default/generated/isla-traces/zkvm_exit IslaTraces.zkvm_exit
--Q _build/default/generated/isla-traces/allocator_get IslaTraces.allocator_get
--Q _build/default/generated/isla-traces/read_input IslaTraces.read_input
--Q _build/default/generated/isla-traces/write_success_00 IslaTraces.write_success_00
--Q _build/default/generated/isla-traces/write_success_01 IslaTraces.write_success_01
--Q _build/default/generated/isla-traces/write_success_02 IslaTraces.write_success_02
--Q _build/default/generated/isla-traces/write_success_03 IslaTraces.write_success_03
--Q _build/default/generated/isla-traces/write_success_04 IslaTraces.write_success_04
--Q _build/default/generated/isla-traces/write_success_05 IslaTraces.write_success_05
--Q _build/default/generated/isla-traces/write_success_06 IslaTraces.write_success_06
--Q _build/default/generated/isla-traces/write_success_07 IslaTraces.write_success_07
+-R _build/default/generated/isla-traces IslaTraces
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/sail-stdpp SailStdpp
 

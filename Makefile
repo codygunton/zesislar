@@ -157,7 +157,8 @@ $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evid
 	  --dump-dir $(WRITE_SUCCESS_DUMP_DIR) \
 	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 8 \
 	  --hint-group LoadBlock:0x14d80:0x14e00 \
-	  --hint-group ValueBlock:0x14e88:0x14f08
+	  --hint-group ValueBlock:0x14e88:0x14f08 \
+	  --hint-group HashesLoop:0x15754:0x158e0
 	touch $@
 
 .PHONY: write-success-traces
