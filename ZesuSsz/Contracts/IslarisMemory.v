@@ -269,6 +269,48 @@ Section array_regions.
     iExact "Hvalues".
   Qed.
 
+  Lemma mem_mapsto_array_recombine_u8_read (a : Z)
+      (values : list (bv 8)) (start : nat) (value : bv 8)
+      (suffixAddress byteAddress : Z) :
+    a ↦ₘ∗ take start values -∗
+    suffixAddress ↦ₘ∗ drop (S start) values -∗
+    byteAddress ↦ₘ value -∗
+    ⌜values !! start = Some value⌝ -∗
+    ⌜suffixAddress = (a + Z.of_nat (S start))%Z⌝ -∗
+    ⌜byteAddress = (a + Z.of_nat start)%Z⌝ -∗
+    a ↦ₘ∗ values.
+  Proof.
+    iIntros "Hprefix Hsuffix Hbyte"
+      (Hlookup HsuffixAddress HbyteAddress).
+    subst suffixAddress byteAddress.
+    iEval (rewrite -mem_mapsto_array_singleton) in "Hbyte".
+    iPoseProof (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
+      (take start values) [value] start with "Hprefix") as "Hleft".
+    { rewrite length_take. apply Nat.min_l.
+      apply lookup_lt_Some in Hlookup. lia. }
+    have HbyteAddress :
+        (a + Z.of_N (8 `div` 8) * Z.of_nat start)%Z =
+        (a + Z.of_nat start)%Z.
+    { change (a + 1 * Z.of_nat start = a + Z.of_nat start)%Z. lia. }
+    iEval (rewrite HbyteAddress) in "Hleft".
+    iSpecialize ("Hleft" with "Hbyte").
+    iEval (rewrite -(take_S_r values start value Hlookup)) in "Hleft".
+    iPoseProof (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
+      (take (S start) values) (drop (S start) values) (S start) with
+      "Hleft") as "Hcombine".
+    { rewrite length_take. apply Nat.min_l.
+      apply lookup_lt_Some in Hlookup. lia. }
+    have HsuffixAddress :
+        (a + Z.of_N (8 `div` 8) * Z.of_nat (S start))%Z =
+        (a + Z.of_nat (S start))%Z.
+    { change (a + 1 * Z.of_nat (S start) =
+        a + Z.of_nat (S start))%Z. lia. }
+    iEval (rewrite HsuffixAddress) in "Hcombine".
+    iSpecialize ("Hcombine" with "Hsuffix").
+    iEval (rewrite take_drop) in "Hcombine".
+    iExact "Hcombine".
+  Qed.
+
   Lemma mem_mapsto_u64_array_to_bytes (a : Z) q
       (values : list (bv 64)) :
     a ↦ₘ{q}∗ values -∗ a ↦ₘ{q}∗ bytes_of_u64s values.
