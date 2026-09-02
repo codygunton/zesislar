@@ -220,6 +220,7 @@ Definition writeSuccessTransactionsAt14f1cSpec
       (Z_to_bv 64 (base + 288 * Z.of_nat (length processed))) ∗
     (base + 288 * Z.of_nat (length processed)) ↦ₘ∗
       writeSuccessTransactionBytes transaction ∗
+    (base + 288 * Z.of_nat (length processed)) ↦ₘ∗ ([] : list (bv 8)) ∗
     writeSuccessTransactions14f1cFrame sp base transactions processed ∗
     writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail ∗

@@ -73,6 +73,11 @@ Proof.
       writeSuccessTransactionsBytes remaining)%I
       with "[HremainingBytes]" as "HremainingBytesExpected";
     [ iExact "HremainingBytes" | ];
+    iDestruct (mem_mapsto_array_app 8%N
+      (base + 288 * Z.of_nat (length processed)) (DfracOwn 1)
+      ([] : list (bv 8)) (writeSuccessTransactionBytes transaction)
+      with "[HtransactionBytes]") as "[HemptyPrefix HtransactionBytes]";
+    [ iExact "HtransactionBytes" | ];
     iAssert (writeSuccessTransactionRestOwn transaction)
       with "[Haccess Hentries Hblob Hauthorizations]" as "HtransactionRest";
     [ iEval (unfold writeSuccessTransactionRestOwn); iFrame; done | ];
@@ -105,8 +110,8 @@ Proof.
   all: iSplit; first (iPureIntro; bv_solve).
   all: iEval (unfold writeSuccessTransactions14f1cFrame).
   all: cbn.
+  all: iFrame "HloadFacts HemptyPrefix".
   all: iFrame.
-  all: iFrame "HloadFacts"; done.
   all: try prepare_sidecond.
   all: try assumption.
   all: try (cbn; rewrite ?length_take ?length_drop; lia).
@@ -115,4 +120,8 @@ Proof.
   all: try iFrame.
   all: try done.
   Unshelve. all: try exact inhabitant.
+  all: try done.
+  all: have Hzero : (1 * 0 = 0)%Z by lia.
+  all: iEval (rewrite Hzero Z.add_0_r) in "HtransactionBytes".
+  all: iExact "HtransactionBytes".
 Qed.
