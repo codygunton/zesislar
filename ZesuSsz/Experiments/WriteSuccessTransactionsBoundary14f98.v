@@ -1,0 +1,105 @@
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundarySpec.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f90.
+
+Import ListNotations.
+
+Definition writeSuccessTransactions14f98OtherRegisters : list string :=
+  ["x1"; "x3"; "x4"; "x19"; "x20"; "x21"; "x22";
+   "x27"].
+
+Definition writeSuccessTransactions14f98OtherRegShapes :
+    list (reg_kind * valu_shape) :=
+  writeSuccessTransactions14f90OtherRegShapes.
+
+Definition writeSuccessTransactionsScratch14f98
+    `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z)
+    (transactions processed : list writeSuccessTransaction)
+    (transaction : writeSuccessTransaction) : iProp Sigma :=
+  ((bv_unsigned sp - 48) ↦ₘ? 152 ∗
+   (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
+   (bv_unsigned sp + 112) ↦ₘ
+     Z_to_bv 64 (Z.of_nat (length transactions)) ∗
+   (bv_unsigned sp + 120) ↦ₘ? 104 ∗
+   (bv_unsigned sp + 224) ↦ₘ writeSuccessTransactionWord transaction 152 ∗
+   (bv_unsigned sp + 232) ↦ₘ writeSuccessTransactionWord transaction 144 ∗
+   (bv_unsigned sp + 240) ↦ₘ writeSuccessTransactionWord transaction 136 ∗
+   (bv_unsigned sp + 248) ↦ₘ
+     Z_to_bv 64 (Z.of_nat (length processed)) ∗
+   (bv_unsigned sp + 256) ↦ₘ? 16 ∗
+   (bv_unsigned sp + 272) ↦ₘ writeSuccessTransactionWord transaction 176 ∗
+   (bv_unsigned sp + 280) ↦ₘ? 1384 ∗
+   (bv_unsigned sp + 1664) ↦ₘ writeSuccessTransactionWord transaction 160 ∗
+   (bv_unsigned sp + 1672) ↦ₘ writeSuccessTransactionWord transaction 168 ∗
+   (bv_unsigned sp + 1680) ↦ₘ? 216 ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsScratch14f98) := I.
+Definition writeSuccessTransactionsMachine14f98
+    `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z)
+    (transactions processed : list writeSuccessTransaction)
+    (transaction : writeSuccessTransaction) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   reg_col writeSuccessTransactions14f98OtherRegShapes ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 272)) ∗
+   "x6" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 273)) ∗
+   "x7" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 274)) ∗
+   "x8" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 192) ∗
+   "x9" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 16) ∗
+   "x10" ↦ᵣ RVal_Bits
+     (Z_to_bv 64 (base + 288 * Z.of_nat (length processed))) ∗
+   "x11" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 160) ∗
+   "x12" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 168) ∗
+   "x13" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 280)) ∗
+   "x14" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 281)) ∗
+   "x15" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 282)) ∗
+   "x16" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 283)) ∗
+   "x17" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 284)) ∗
+   "x23" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 24) ∗
+   "x24" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 8) ∗
+   "x25" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 0) ∗
+   "x26" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 184) ∗
+   "x28" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 275)) ∗
+   "x29" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 276)) ∗
+   "x30" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 277)) ∗
+   "x31" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 278)) ∗
+   "x18" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 279)) ∗
+   writeSuccessTransactionsScratch14f98
+     sp base transactions processed transaction ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsMachine14f98) := I.
+
+Definition writeSuccessTransactionsAt14f98Spec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp : bv 64) (base : Z) (transaction : writeSuccessTransaction)
+      (transactions processed remaining : list writeSuccessTransaction)
+      (bytes prefix suffix : list (bv 8)) (tail : spec),
+    writeSuccessTransactionsMachine14f98
+      sp base transactions processed transaction ∗
+    (base + 288 * Z.of_nat (length processed)) ↦ₘ∗
+      writeSuccessTransactionBytes transaction ∗
+    writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
+      transactions processed remaining bytes prefix suffix tail ∗
+    writeSuccessTransactionsLoadFacts
+      sp base transaction processed bytes ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsAt14f98Spec) := I.
