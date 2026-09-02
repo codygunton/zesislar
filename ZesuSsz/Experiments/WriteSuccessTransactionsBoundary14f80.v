@@ -28,6 +28,8 @@ Definition writeSuccessTransactionsMachine14f80
      (bv_zero_extend 64 (writeSuccessTransactionByte transaction 272)) ∗
    "x6" ↦ᵣ RVal_Bits
      (bv_zero_extend 64 (writeSuccessTransactionByte transaction 273)) ∗
+   "x7" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 274)) ∗
    "x8" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 192) ∗
    "x9" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 16) ∗
    "x10" ↦ᵣ RVal_Bits
@@ -48,6 +50,8 @@ Definition writeSuccessTransactionsMachine14f80
    "x24" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 8) ∗
    "x25" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 0) ∗
    "x26" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 184) ∗
+   "x28" ↦ᵣ RVal_Bits
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 275)) ∗
    writeSuccessTransactionsScratch14f68
      sp base transactions processed transaction ∗ True)%I.
 
