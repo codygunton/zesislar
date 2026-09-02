@@ -13,6 +13,7 @@ Require Export InstrSpecs.Machine.
 
 Import ListNotations.
 
+
 Definition rv64_sd_spec `{!islaG Σ} `{!threadG}
     (system_regs : list (reg_kind * valu_shape)) (ram_start ram_end pc : Z)
     (Rsrc Rbase : string) (offset : Z) : iProp Σ :=
@@ -92,6 +93,87 @@ Definition zesu_ld_array_at_spec `{!islaG Σ} `{!threadG}
     (bv_unsigned base + arrayOffset) ↦ₘ∗ values ∗ True).
 
 Global Instance : LithiumUnfold (@zesu_ld_array_at_spec) := I.
+
+Definition zesu_ld_byte_array_at_spec `{!islaG Σ} `{!threadG}
+    (pc : Z) (Rdst Rbase : string) (offset arrayOffset : Z)
+    (index : nat) : iProp Σ :=
+  ∃ (base word : bv 64) (values : list (bv 8)),
+  reg_col zesu_instr_sys_regs ∗
+  Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
+  (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
+  (bv_unsigned base + offset) ↦ₘ word ∗
+  (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
+    drop (index + 8) values ∗
+  ⌜(offset = arrayOffset + Z.of_nat index)%Z⌝ ∗
+  ⌜(index + 8 <= length values)%nat⌝ ∗
+  ⌜word = Z_to_bv 64
+    (little_endian_to_bv 8 (take 8 (drop index values)))⌝ ∗
+  ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
+  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  instr_pre (pc + 4) (
+    reg_col zesu_instr_sys_regs ∗
+    Rdst ↦ᵣ RVal_Bits
+      word ∗
+    Rbase ↦ᵣ RVal_Bits base ∗
+    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
+    (bv_unsigned base + offset) ↦ₘ word ∗
+    (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
+      drop (index + 8) values ∗ True).
+
+Global Instance : LithiumUnfold (@zesu_ld_byte_array_at_spec) := I.
+
+Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
+    (pc : Z) (R : string) (offset arrayOffset : Z)
+    (index : nat) : iProp Σ :=
+  ∃ (base word : bv 64) (values : list (bv 8)),
+  reg_col zesu_instr_sys_regs ∗
+  R ↦ᵣ RVal_Bits base ∗
+  (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
+  (bv_unsigned base + offset) ↦ₘ word ∗
+  (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
+    drop (index + 8) values ∗
+  ⌜(offset = arrayOffset + Z.of_nat index)%Z⌝ ∗
+  ⌜(index + 8 <= length values)%nat⌝ ∗
+  ⌜word = Z_to_bv 64
+    (little_endian_to_bv 8 (take 8 (drop index values)))⌝ ∗
+  ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
+  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  instr_pre (pc + 4) (
+    reg_col zesu_instr_sys_regs ∗
+    R ↦ᵣ RVal_Bits
+      word ∗
+    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
+    (bv_unsigned base + offset) ↦ₘ word ∗
+    (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
+      drop (index + 8) values ∗ True).
+
+Global Instance : LithiumUnfold (@zesu_ld_same_byte_array_at_spec) := I.
+
+Definition zesu_lbu_byte_array_at_spec `{!islaG Σ} `{!threadG}
+    (pc : Z) (Rdst Rbase : string) (offset arrayOffset : Z)
+    (index : nat) : iProp Σ :=
+  ∃ (base : bv 64) (byte : bv 8) (values : list (bv 8)),
+  reg_col zesu_instr_sys_regs ∗
+  Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
+  (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
+  (bv_unsigned base + offset) ↦ₘ byte ∗
+  (bv_unsigned base + arrayOffset + Z.of_nat (index + 1)) ↦ₘ∗
+    drop (index + 1) values ∗
+  ⌜(offset = arrayOffset + Z.of_nat index)%Z⌝ ∗
+  ⌜(index < length values)%nat⌝ ∗
+  ⌜values !! index = Some byte⌝ ∗
+  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  instr_pre (pc + 4) (
+    reg_col zesu_instr_sys_regs ∗
+    Rdst ↦ᵣ RVal_Bits
+      (bv_zero_extend 64 byte) ∗
+    Rbase ↦ᵣ RVal_Bits base ∗
+    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
+    (bv_unsigned base + offset) ↦ₘ byte ∗
+    (bv_unsigned base + arrayOffset + Z.of_nat (index + 1)) ↦ₘ∗
+      drop (index + 1) values ∗ True).
+
+Global Instance : LithiumUnfold (@zesu_lbu_byte_array_at_spec) := I.
 
 Ltac solve_zesu_ld_array_at :=
   multimatch goal with

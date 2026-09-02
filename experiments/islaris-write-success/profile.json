@@ -13,6 +13,13 @@
       "end": "0x14f04",
       "base": "sp",
       "offset": 1032
+    },
+    {
+      "start": "0x14f1c",
+      "end": "0x150d0",
+      "base": "a0",
+      "offset": 0,
+      "kind": "byte"
     }
   ],
   "alignedReturnRegister": "x1",
@@ -31,6 +38,9 @@
   ],
   "cfgBlockFunctions": [
     {"function": "ssz_decode_observation.writeSuccess", "maxInstructions": 24}
+  ],
+  "cfgPostRegions": [
+    {"function": "ssz_decode_observation.Encoder.int__anon_1645"}
   ],
   "memoryBaseRegisters": {
     "sp": "x2",
