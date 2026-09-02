@@ -115,8 +115,8 @@ Definition zesu_ld_byte_array_at_spec `{!islaG Σ} `{!threadG}
     Rdst ↦ᵣ RVal_Bits
       word ∗
     Rbase ↦ᵣ RVal_Bits base ∗
-    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + offset) ↦ₘ word ∗
+    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
       drop (index + 8) values ∗ True).
 
@@ -142,8 +142,8 @@ Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
     reg_col zesu_instr_sys_regs ∗
     R ↦ᵣ RVal_Bits
       word ∗
-    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + offset) ↦ₘ word ∗
+    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
       drop (index + 8) values ∗ True).
 
@@ -168,8 +168,8 @@ Definition zesu_lbu_byte_array_at_spec `{!islaG Σ} `{!threadG}
     Rdst ↦ᵣ RVal_Bits
       (bv_zero_extend 64 byte) ∗
     Rbase ↦ᵣ RVal_Bits base ∗
-    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + offset) ↦ₘ byte ∗
+    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + arrayOffset + Z.of_nat (index + 1)) ↦ₘ∗
       drop (index + 1) values ∗ True).
 
