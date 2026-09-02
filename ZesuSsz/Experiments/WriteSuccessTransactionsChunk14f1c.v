@@ -150,10 +150,35 @@ Proof.
   iFrame "HwordNormalized HsuffixNormalized".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
-  iExists (tail, suffix, prefix, bytes, remaining, transactions, sp, tt)ₗ.
+  iRename select
+    ((base + 288 * Z.of_nat (length processed)) ↦ₘ
+      Z_to_bv 64 (little_endian_to_bv 8
+        (take 8
+          (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
+            transaction))))%I into "HwordFinal".
+  iRename select
+    ((_ ↦ₘ∗ drop 8
+      (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
+        transaction))%I) into "HsuffixFinal".
+  iPoseProof (mem_mapsto_array_recombine_u64_read
+    (base + 288 * Z.of_nat (length processed))
+    (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction)
+    0 _ _ with
+    "HprefixNormalized HsuffixFinal HwordFinal [] [] []") as "HarrayFinal".
+  { iPureIntro. cbn. lia. }
+  { iPureIntro. cbn. lia. }
+  { iPureIntro. rewrite H0. lia. }
+  iExists
+    (tail, suffix, prefix, bytes, remaining, processed, transactions,
+      transaction, base, sp, tt)ₗ.
+  iSplit.
+  { iPureIntro. rewrite /WriteSuccessTransactionsSpec.writeSuccessTransactionWord
+      drop_0. done. }
+  cbn.
+  iFrame "HarrayFinal".
   iFrame.
   repeat iSplit; try (iPureIntro; assumption).
-  all: done.
+  all: try done.
 Qed.
 
 Lemma write_success_transactions_chunk_14f1c
