@@ -39,6 +39,8 @@ Definition writeSuccessTransactionsAt14f24Spec
       writeSuccessTransactionWord transaction 8 ∗
     (base + 288 * Z.of_nat (length processed) + 16) ↦ₘ∗
       drop 16 (writeSuccessTransactionBytes transaction) ∗
+    (base + 288 * Z.of_nat (length processed) + 16) ↦ₘ∗
+      ([] : list (bv 8)) ∗
     writeSuccessTransactions14f24Frame sp base transactions processed ∗
     writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail ∗

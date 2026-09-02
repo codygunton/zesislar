@@ -98,6 +98,12 @@ Proof.
   iEval (rewrite Hstart) in "Hprefix Hsuffix".
   rewrite Hstart.
   iEval (cbn) in "Hsuffix".
+  iDestruct (mem_mapsto_array_app 8%N
+    (base + 288 * Z.of_nat (length processed) + 16) (DfracOwn 1)
+    ([] : list (bv 8))
+    (drop 16
+      (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction))
+    with "Hsuffix") as "[Hempty Hsuffix]".
   rewrite H7 !Z.add_0_r.
   iFrame "Hprefix Hsuffix".
   repeat iSplit; try iPureIntro; try lia; try done.
