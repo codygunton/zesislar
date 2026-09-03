@@ -55,7 +55,8 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
     }]
     for row in rows:
         capture = observed[row["id"]]
-        status = states[row["qualified"]]["status"]
+        state = states[row["qualified"]]
+        status = state["status"]
         boundary_id = "level1-" + row["id"].replace(":", "-")
         source = row["functionInstanceIdentity"]["function"]["declaration"]
         boundary = {
@@ -113,8 +114,8 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         ])
         flame_states.append({
             "owner": row["id"], "qualified": row["qualified"], "status": status,
-            **({"contract": states[row["qualified"]]["contract"]}
-               if states[row["qualified"]].get("contract") else {}),
+            **{field: state[field] for field in ("contract", "theorem", "condition")
+               if state.get(field)},
         })
 
     regions.append({

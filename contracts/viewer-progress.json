@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "contract_specified_assumption", "contract": "writeSuccessContract"},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "Five nested loops are proved. The transaction loop proof is in progress."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ]
 }

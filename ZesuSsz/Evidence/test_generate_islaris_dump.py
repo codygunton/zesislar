@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 from pathlib import Path
 
@@ -83,11 +84,13 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
         )
 
     def test_scopes_all_transaction_byte_array_loads(self):
-        root = Path(__file__).parents[2]
+        root = Path(os.environ.get("ZESU_SSZ_ROOT", Path(__file__).parents[2]))
         profile = json.loads(
             (root / "experiments/islaris-write-success/profile.json").read_text()
         )
         generated = root / "experiments/islaris-write-success/generated"
+        if not generated.is_dir():
+            self.skipTest("generated writeSuccess dumps are unavailable")
         selected = {}
         for dump in generated.glob("block_*.dump"):
             for line in dump.read_text().splitlines():
