@@ -116,7 +116,22 @@ Definition writeSuccessTransactionsMachine150a8 `{!islaG Sigma} `{!threadG}
            (BV 64 8))
          (bv_zero_extend 64 (writeSuccessTransactionByte transaction 281)))) ∗
    "x15" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 128) ∗
-   "x16" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 265) ∗
+   "x16" ↦ᵣ RVal_Bits
+     (bv_shiftl
+       (bv_or
+         (bv_or
+           (bv_shiftl
+             (bv_zero_extend 64 (writeSuccessTransactionByte transaction 272))
+             (BV 64 24))
+           (bv_shiftl
+             (bv_zero_extend 64 (writeSuccessTransactionByte transaction 271))
+             (BV 64 16)))
+         (bv_or
+           (bv_shiftl
+             (bv_zero_extend 64 (writeSuccessTransactionByte transaction 270))
+             (BV 64 8))
+           (bv_zero_extend 64 (writeSuccessTransactionByte transaction 269))))
+       (BV 64 32)) ∗
    "x17" ↦ᵣ RVal_Bits
      (bv_or
        (bv_shiftl
