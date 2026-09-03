@@ -215,3 +215,23 @@ Definition writeSuccessTransactionsAt14fecSpec
           transaction 277)))%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsAt14fecSpec) := I.
+
+Definition writeSuccessTransactionsAt14ff0Spec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ transaction,
+    writeSuccessTransactionsAt14fe0LoadSpec P
+      transaction
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 268))
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 269))
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 270))
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 271)))%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsAt14ff0Spec) := I.
