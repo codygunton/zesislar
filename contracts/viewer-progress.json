@@ -5,7 +5,14 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "Five nested loops are proved. The transaction loop proof is in progress."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "Five nested loops are proved. The access-list and transaction proofs are in progress."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
+  ],
+  "frameStates": [
+    {"owner": "fi:1:3e96", "status": "proof_in_progress", "condition": "The transaction loop proof is in progress."},
+    {"owner": "fi:1:3fdd", "status": "proof_in_progress", "condition": "The storage-key and blob-hash loops are proved. The access-list proof is in progress."},
+    {"owner": "fi:1:406f", "status": "unconditionally_proven", "theorem": "write_success_authorizations_loop"},
+    {"owner": "fi:1:40af", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
+    {"owner": "fi:1:4116", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"}
   ]
 }

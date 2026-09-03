@@ -117,6 +117,7 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
             **{field: state[field] for field in ("contract", "theorem", "condition")
                if state.get(field)},
         })
+    flame_states.extend(dict(state) for state in progress.get("frameStates", []))
 
     regions.append({
         "id": "level0-glue", "label": "main parent-owned glue",
