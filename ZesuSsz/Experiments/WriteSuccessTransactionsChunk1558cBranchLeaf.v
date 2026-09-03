@@ -47,7 +47,6 @@ Proof.
   all: try assumption.
   all: try bv_solve.
   Unshelve. all: try iFrame.
-  all: lazymatch goal with |- ?G => fail "branch1558c zero leaf" G end.
 Qed.
 
 Lemma write_success_transactions_chunk_1558c_nonzero_leaf
@@ -61,14 +60,12 @@ Proof.
   liARun.
   Unshelve. all: prepare_sidecond.
   all: try assumption.
-  all: try close_infeasible_bv_branches.
   all: try match goal with
   | |- _ => exfalso; apply Hcount; bv_solve
   end.
   all: try bv_solve.
   Unshelve. all: try iFrame.
   all: try (iExFalso; iPureIntro; apply Hcount; bv_solve).
-  all: lazymatch goal with |- ?G => fail "branch1558c nonzero leaf" G end.
 Qed.
 
 Lemma write_success_transactions_chunk_1558c_branch_leaf
@@ -87,7 +84,6 @@ Proof.
     all: try assumption.
     all: try bv_solve.
     Unshelve. all: try iFrame.
-    all: lazymatch goal with |- ?G => fail "combined zero leaf" G end.
   - iDestruct "Hnonzero" as (count Hcount) "Hnonzero".
     iEval (rewrite /writeSuccessTransactionsAt1558cNonzeroLeafSpec)
       in "Hnonzero".
@@ -95,9 +91,7 @@ Proof.
     liARun.
     Unshelve. all: prepare_sidecond.
     all: try assumption.
-    all: try close_infeasible_bv_branches.
     all: try bv_solve.
     Unshelve. all: try iFrame.
     all: try (iExFalso; iPureIntro; apply Hcount; bv_solve).
-    all: lazymatch goal with |- ?G => fail "combined nonzero leaf" G end.
 Qed.
