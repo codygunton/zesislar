@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fc8.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15028.
 
 Definition writeSuccessTransactions14fe0LoadFrame
     `{!islaG Sigma} `{!threadG}
@@ -235,3 +236,45 @@ Definition writeSuccessTransactionsAt14ff0Spec
           transaction 271)))%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsAt14ff0Spec) := I.
+
+Definition writeSuccessTransactionsAt15018Spec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp : bv 64) (base : Z)
+      (transaction : WriteSuccessTransactionsSpec.writeSuccessTransaction)
+      (transactions processed remaining :
+        list WriteSuccessTransactionsSpec.writeSuccessTransaction)
+      (bytes prefix suffix : list (bv 8)) (tail : spec)
+      (x18 x20 x29 : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x10" ↦ᵣ RVal_Bits
+      (Z_to_bv 64 (base + 288 * Z.of_nat (length processed))) ∗
+    "x27" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x18" ↦ᵣ RVal_Bits x18 ∗
+    "x20" ↦ᵣ RVal_Bits x20 ∗
+    "x29" ↦ᵣ RVal_Bits x29 ∗
+    (reg_col zesu_ram_sys_regs ∗
+     "x10" ↦ᵣ RVal_Bits
+       (Z_to_bv 64 (base + 288 * Z.of_nat (length processed))) ∗
+     "x18" ↦ᵣ RVal_Bits
+       (WriteSuccessTransactionsSpec.writeSuccessTransactionWord
+         transaction 48) ∗
+     "x20" ↦ᵣ RVal_Bits
+       (WriteSuccessTransactionsSpec.writeSuccessTransactionWord
+         transaction 56) ∗
+     "x29" ↦ᵣ RVal_Bits
+       (WriteSuccessTransactionsSpec.writeSuccessTransactionWord
+         transaction 64) ∗
+     "x27" ↦ᵣ RVal_Bits
+       (bv_zero_extend 64
+         (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+           transaction 32)) -∗
+     writeSuccessTransactionsMachine15028
+       sp base transactions processed transaction) ∗
+    (base + 288 * Z.of_nat (length processed)) ↦ₘ∗
+      WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction ∗
+    writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
+      transactions processed remaining bytes prefix suffix tail ∗
+    writeSuccessTransactionsLoadFacts
+      sp base transaction processed bytes ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsAt15018Spec) := I.
