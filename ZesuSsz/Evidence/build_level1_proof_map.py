@@ -152,7 +152,13 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         "compilerProvenance": {"state": "same-ELF DWARF"},
         "phases": [{"id": "level0-glue", "label": "main parent-owned glue", "pcs": glue_pcs}],
         "authoringRegions": regions,
-        "flameProgress": {"states": flame_states},
+        "flameProgress": {
+            "states": flame_states,
+            **({"regionScope": progress["regionScope"]}
+               if progress.get("regionScope") else {}),
+            **({"proofRegions": progress["proofRegions"]}
+               if progress.get("proofRegions") else {}),
+        },
         "refinementGraph": {"nodes": nodes, "edges": edges},
     }
 

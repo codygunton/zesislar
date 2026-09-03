@@ -57,14 +57,14 @@ def check(profile: dict, core: dict, details: list | None, label: str) -> list[s
     meta = profile["zesuMeta"]
 
     parents = tree_parents(core)
-    if len(frames) != len(parents):
+    if len(frames) < len(parents):
         problems.append(f"{label}: {len(frames)} frames for {len(parents)} payload nodes")
         return problems
     if len(meta) != len(frames):
         problems.append(f"{label}: {len(meta)} metadata rows for {len(frames)} frames")
         return problems
-    if details is not None and len(details) != len(frames):
-        problems.append(f"{label}: {len(details)} detail rows for {len(frames)} frames")
+    if details is not None and len(details) != len(parents):
+        problems.append(f"{label}: {len(details)} detail rows for {len(parents)} payload nodes")
 
     try:
         rebuilt = event_parents(profile)

@@ -120,6 +120,29 @@ class ConvertTest(unittest.TestCase):
         self.assertEqual(full["zesuProfile"]["detailsUrl"], "flame-details-full.json")
         self.assertIn("full-program", full["profiles"][0]["name"])
 
+    def test_proof_regions_add_a_granular_default_profile(self) -> None:
+        progress = progress_fixture() | {
+            "regionScope": {
+                "label": "sample proof regions",
+                "startPc": "0x100",
+                "endPc": "0x110",
+            },
+            "proofRegions": [{
+                "label": "proved middle",
+                "startPc": "0x104",
+                "endPc": "0x10c",
+                "status": "unconditionally_proven",
+                "theorem": "middle_correct",
+            }],
+        }
+        profile = convert(core_fixture(), progress, "decode", "details.json")
+
+        self.assertEqual(profile["activeProfileIndex"], 1)
+        self.assertEqual(profile["profiles"][1]["name"], "writeSuccess proof regions")
+        regions = profile["zesuMeta"][-4:]
+        self.assertEqual([row["machineInstructionCount"] for row in regions], [4, 1, 2, 1])
+        self.assertEqual(regions[2]["theorem"], "middle_correct")
+
 
 class ProofStateTest(unittest.TestCase):
     def test_every_state_maps_to_a_palette_column(self) -> None:

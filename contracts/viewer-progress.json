@@ -13,6 +13,26 @@
     {"owner": "fi:1:3fdd", "status": "proof_in_progress", "condition": "The storage-key and blob-hash loops are proved. The access-list proof is in progress."},
     {"owner": "fi:1:406f", "status": "unconditionally_proven", "theorem": "write_success_authorizations_loop"},
     {"owner": "fi:1:40af", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
-    {"owner": "fi:1:4116", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"}
+    {"owner": "fi:1:4116", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"},
+    {"owner": "fn:0x10190", "status": "unconditionally_proven", "theorem": "zesu_write_output_call_correct"},
+    {"owner": "fi:0:2d1", "status": "unconditionally_proven", "theorem": "zesu_memcpy_call_correct"},
+    {"owner": "fi:1:4276", "status": "unconditionally_proven", "theorem": "zesu_encoder_boolean_call_correct"},
+    {"owner": "fi:1:4316", "status": "unconditionally_proven", "theorem": "write_success_byte_lists"},
+    {"owner": "fi:1:43a9", "status": "unconditionally_proven", "theorem": "zesu_encoder_u256_call_correct"},
+    {"owner": "fi:1:4578", "status": "unconditionally_proven", "theorem": "zesu_encoder_int_call_correct"}
+  ],
+  "regionScope": {
+    "label": "writeSuccess machine-code proof progress",
+    "startPc": "0x14d30",
+    "endPc": "0x15a14"
+  },
+  "proofRegions": [
+    {"label": "Transaction loop work", "startPc": "0x14f04", "endPc": "0x15664", "status": "proof_in_progress", "condition": "The leaf proofs and their composition are in progress."},
+    {"label": "Access-list loop work", "startPc": "0x151d4", "endPc": "0x153c0", "status": "proof_in_progress", "condition": "The outer access-list proof is in progress."},
+    {"label": "Storage-key loop", "startPc": "0x15228", "endPc": "0x153b4", "status": "unconditionally_proven", "theorem": "write_success_storage_keys_loop"},
+    {"label": "Blob-hash loop", "startPc": "0x153d4", "endPc": "0x15564", "status": "unconditionally_proven", "theorem": "write_success_blob_hashes_loop"},
+    {"label": "Authorization loop", "startPc": "0x15590", "endPc": "0x15620", "status": "unconditionally_proven", "theorem": "write_success_authorizations_loop"},
+    {"label": "Withdrawal loop", "startPc": "0x15694", "endPc": "0x156e8", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
+    {"label": "Hash loop", "startPc": "0x15754", "endPc": "0x158e0", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"}
   ]
 }
