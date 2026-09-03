@@ -30,6 +30,7 @@
     {"label": "Transaction loop work", "startPc": "0x14f04", "endPc": "0x15664", "status": "proof_in_progress", "condition": "The leaf proofs and their composition are in progress."},
     {"label": "Access-list loop work", "startPc": "0x151d4", "endPc": "0x153c0", "status": "proof_in_progress", "condition": "The outer access-list proof is in progress."},
     {"label": "Transaction entry path", "startPc": "0x14f08", "endPc": "0x14fc8", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14f08"},
+    {"label": "Transaction prefix assembly", "startPc": "0x14fc8", "endPc": "0x14fe0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14fc8_to_14fe0"},
     {"label": "Transaction value path", "startPc": "0x1505c", "endPc": "0x15078", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_1505c"},
     {"label": "Transaction output return", "startPc": "0x150e8", "endPc": "0x150f0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150e8"},
     {"label": "Transaction call continuation", "startPc": "0x150fc", "endPc": "0x15118", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150fc"},
