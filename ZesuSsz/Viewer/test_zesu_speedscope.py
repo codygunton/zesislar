@@ -37,9 +37,9 @@ def core_fixture() -> dict:
         },
         "meta": [
             {"owner": "fi:0", "qualified": "main", "displayTreeLevel": 0,
-             "machineInstructionCount": 1},
+             "machineInstructionCount": 1, "pcs": [0x100]},
             {"owner": "fi:1", "qualified": "decode", "displayTreeLevel": 1,
-             "machineInstructionCount": 2},
+             "machineInstructionCount": 2, "pcs": [0x104, 0x108]},
             {"owner": "fi:2", "qualified": "inner", "displayTreeLevel": 2,
              "machineInstructionCount": 4},
             {"owner": "fi:3", "qualified": "encode", "displayTreeLevel": 1,
@@ -137,11 +137,15 @@ class ConvertTest(unittest.TestCase):
         }
         profile = convert(core_fixture(), progress, "decode", "details.json")
 
-        self.assertEqual(profile["activeProfileIndex"], 1)
-        self.assertEqual(profile["profiles"][1]["name"], "writeSuccess proof regions")
-        regions = profile["zesuMeta"][-4:]
-        self.assertEqual([row["machineInstructionCount"] for row in regions], [4, 1, 2, 1])
-        self.assertEqual(regions[2]["theorem"], "middle_correct")
+        self.assertEqual(len(profile["profiles"]), 1)
+        regions = profile["zesuMeta"][-2:]
+        self.assertEqual([row["machineInstructionCount"] for row in regions], [1, 2])
+        self.assertEqual(regions[1]["theorem"], "middle_correct")
+        parents = [
+            event["frame"] for event in profile["profiles"][0]["events"]
+            if event["type"] == "O"
+        ]
+        self.assertEqual(parents[:4], [0, 4, 1, 5])
 
 
 class ProofStateTest(unittest.TestCase):

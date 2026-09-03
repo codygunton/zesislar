@@ -144,6 +144,7 @@ let
       --evidence ${evidence}/evidence.json --bindings ${bindings}/bindings.json
     python ${../ZesuSsz/Viewer/build_zesu_speedscope.py} \
       --core "$out/flame-core.json" --progress "$out/flame-progress.json" \
+      --details-input "$out/flame-details.json" \
       --scope decode --details-url flame-details.json \
       --output "$out/zesu-decode.speedscope.json"
     cp ${manifest}/contracts.json "$out/level1-manifest.json"

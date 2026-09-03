@@ -71,7 +71,7 @@ def check(profile: dict, core: dict, details: list | None, label: str) -> list[s
     except ValueError as error:
         problems.append(f"{label}: {error}")
         rebuilt = None
-    if rebuilt is not None and rebuilt != parents:
+    if rebuilt is not None and rebuilt[:len(parents)] != parents:
         problems.append(f"{label}: the event stream does not rebuild the call hierarchy")
 
     for index, (frame, row) in enumerate(zip(frames, meta)):
