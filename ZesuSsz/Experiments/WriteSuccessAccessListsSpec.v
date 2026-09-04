@@ -137,24 +137,28 @@ Definition writeSuccessAccessListsOtherRegShapes :
 Definition writeSuccessAccessListsScratch `{!islaG Sigma}
     (sp : bv 64) (base : Z) (total : nat) (storedIndex : bv 64) :
     iProp Sigma :=
-  ((bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
-   (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat total) ∗
-   (bv_unsigned sp + 272) ↦ₘ storedIndex ∗
-   (bv_unsigned sp + 1744) ↦ₘ? 40 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   writeSuccessStorageKeysScratch sp ∗ True)%I.
+  (∃ savedX22 : bv 64,
+    (bv_unsigned sp + 136) ↦ₘ savedX22 ∗
+    (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
+    (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat total) ∗
+    (bv_unsigned sp + 272) ↦ₘ storedIndex ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 40 ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+    writeSuccessStorageKeysScratch sp ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsScratch) := I.
 
 Definition writeSuccessAccessListsCopiedScratch `{!islaG Sigma}
     (sp : bv 64) (base : Z) (total processed : nat)
     (entry : writeSuccessAccessEntry) : iProp Sigma :=
-  ((bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
-   (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat total) ∗
-   (bv_unsigned sp + 272) ↦ₘ Z_to_bv 64 (Z.of_nat processed) ∗
-   (bv_unsigned sp + 1744) ↦ₘ∗ writeSuccessAccessEntryBytes entry ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   writeSuccessStorageKeysScratch sp ∗ True)%I.
+  (∃ savedX22 : bv 64,
+    (bv_unsigned sp + 136) ↦ₘ savedX22 ∗
+    (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
+    (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat total) ∗
+    (bv_unsigned sp + 272) ↦ₘ Z_to_bv 64 (Z.of_nat processed) ∗
+    (bv_unsigned sp + 1744) ↦ₘ∗ writeSuccessAccessEntryBytes entry ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+    writeSuccessStorageKeysScratch sp ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsCopiedScratch) := I.
 

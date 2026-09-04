@@ -126,5 +126,4 @@ Proof.
   all: try bv_solve.
   all: try lia.
   all: try iFrame.
-  all: lazymatch goal with |- ?G => fail "RESIDUAL_15210_POST" G end.
 Qed.
