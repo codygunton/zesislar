@@ -6,6 +6,7 @@ from pathlib import Path
 from generate_islaris_dump import (
     control_flow_constraints,
     cfg_ranges,
+    configured_spec_annotations,
     effective_address_constraints,
     INSTRUCTION,
     load_array_view,
@@ -16,6 +17,25 @@ from generate_islaris_dump import (
 
 
 class EffectiveAddressConstraintsTest(unittest.TestCase):
+    def test_generates_configured_instruction_specs(self):
+        profile = {
+            "instructionSpecs": {
+                "0x15680": {
+                    "spec": "a15680_addi_spec pc",
+                    "tactic": "all: bv_solve.",
+                },
+            },
+        }
+        self.assertEqual(
+            configured_spec_annotations(0x15680, profile),
+            [
+                "//@import: InstrSpecs.Specs",
+                "//@spec: a15680_addi_spec pc",
+                "//@spec_tactic: all: bv_solve.",
+            ],
+        )
+        self.assertEqual(configured_spec_annotations(0x15684, profile), [])
+
     def test_generates_load_store_specs_from_abi_names(self):
         self.assertEqual(
             load_store_spec_annotations("ld a0,8(s0)"),

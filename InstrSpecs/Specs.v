@@ -295,3 +295,22 @@ Definition zesu_jalr_same_spec `{!islaG Σ} `{!threadG}
     R ↦ᵣ RVal_Bits (Z_to_bv 64 (pc + 4)) ∗ True).
 
 Global Instance : LithiumUnfold (@zesu_jalr_same_spec) := I.
+
+Definition a15680_addi_spec `{!islaG Σ} `{!threadG} (pc : Z) : iProp Σ :=
+  ∃ src : bv 64,
+  reg_col zesu_sys_regs ∗
+  "x9" ↦ᵣ RVal_Bits src ∗
+  "x10" ↦ᵣ: (fun _ => True)%I ∗
+  instr_pre (pc + 4) (
+    reg_col zesu_sys_regs ∗
+    "x9" ↦ᵣ RVal_Bits src ∗
+    "x10" ↦ᵣ RVal_Bits src ∗ True).
+Global Instance : LithiumUnfold (@a15680_addi_spec) := I.
+
+Definition a15684_auipc_spec `{!islaG Σ} `{!threadG} (pc : Z) : iProp Σ :=
+  reg_col zesu_sys_regs ∗
+  "x1" ↦ᵣ: (fun _ => True)%I ∗
+  instr_pre (pc + 4) (
+    reg_col zesu_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 pc) ∗ True).
+Global Instance : LithiumUnfold (@a15684_auipc_spec) := I.

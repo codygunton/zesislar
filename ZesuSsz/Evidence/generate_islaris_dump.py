@@ -111,6 +111,21 @@ def jump_spec_annotations(
     ]
 
 
+def configured_spec_annotations(
+    pc: int, profile: dict[str, object],
+) -> list[str]:
+    """Return the reviewed spec annotation for one configured instruction."""
+    configured = profile.get("instructionSpecs", {})
+    spec = configured.get(f"0x{pc:x}")
+    if spec is None:
+        return []
+    return [
+        "//@import: InstrSpecs.Specs",
+        f"//@spec: {spec['spec']}",
+        f"//@spec_tactic: {spec['tactic']}",
+    ]
+
+
 def effective_address_constraints(instruction: str, bases: dict[str, str]) -> list[str]:
     match = MEMORY_INSTRUCTION.match(instruction)
     if match is None:
@@ -295,12 +310,12 @@ def main() -> None:
                 annotations.extend(f"//@constraint: {constraint}"
                                    for constraint in constraints)
         for index in range_indexes:
-            spec_annotations = []
+            spec_annotations = configured_spec_annotations(pc, profile)
             if (profile.get("useLoadStoreSpecs", False)
                     and index >= base_range_count):
                 array_view = load_array_view(pc, profile)
-                spec_annotations = load_store_spec_annotations(
-                    instruction, profile.get("memoryBaseRegisters", {}), array_view)
+                spec_annotations.extend(load_store_spec_annotations(
+                    instruction, profile.get("memoryBaseRegisters", {}), array_view))
                 spec_annotations.extend(jump_spec_annotations(
                     instruction, profile.get("controlFlowRegisters", {})))
             selected[index].extend(spec_annotations + annotations + [line])

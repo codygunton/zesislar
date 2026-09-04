@@ -1,6 +1,16 @@
 {
   "islaConfig": "riscv64_zesu_write_success.toml",
   "useLoadStoreSpecs": true,
+  "instructionSpecs": {
+    "0x15680": {
+      "spec": "a15680_addi_spec pc",
+      "tactic": "all: (try bv_solve; try lia)."
+    },
+    "0x15684": {
+      "spec": "a15684_auipc_spec pc",
+      "tactic": "all: (try bv_solve; try lia)."
+    }
+  },
   "loadArrayViews": [
     {
       "start": "0x14d80",
