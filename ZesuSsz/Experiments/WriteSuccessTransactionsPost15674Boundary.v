@@ -57,6 +57,7 @@ Definition writeSuccessTransactionsPost15674CallEntrySpec
       writeSuccessTransactionsPost15674CallRegisters) ∗
     reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
       writeSuccessTransactionsPost15674Saved saved) ∗
+    ⌜length saved = 12%nat⌝ ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674ReturnOther) ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15670) ∗
@@ -92,6 +93,7 @@ Definition writeSuccessTransactionsPost15678Spec
       writeSuccessTransactionsPost15674Caller) ∗
     reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
       writeSuccessTransactionsPost15674Saved saved) ∗
+    ⌜length saved = 12%nat⌝ ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674ReturnOther) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
@@ -117,6 +119,7 @@ Definition writeSuccessTransactionsPost15674ReturnFrame
   (reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674ReturnOther) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
+   ⌜length saved = 12%nat⌝ ∗
    ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
    P ∗ True ∗
    ((bv_unsigned sp - 48) ↦ₘ? 48 -∗
@@ -148,7 +151,8 @@ Proof.
   iDestruct "Hrest" as "(H2 & Hstack & Hitems & Hmmio & Htrace & _)".
   iEval (unfold writeSuccessTransactionsPost15674ReturnFrame) in "Hframe".
   iDestruct "Hframe" as
-    "(HreturnOther & Hbase & Hown & Hfacts & HP & _ & HscratchFrame)".
+    "(HreturnOther & Hbase & Hown & HsavedLength & Hfacts & HP & _ &
+      HscratchFrame)".
   iDestruct (mem_mapsto_uninit_split 32 with "Hstack") as
     "(_ & Hstack48)"; first lia.
   have HstackAddress : bv_unsigned sp - 80 + 32 = bv_unsigned sp - 48 by lia.
@@ -157,5 +161,5 @@ Proof.
   iExists sp, base, transactions, bytes, tail, first, second, items, saved,
     b10, b11.
   iFrame "Hsys Hcaller Hsaved HreturnOther H2 H10 H11 HscratchFull Hbase Hown
-    Hitems Hfacts Hmmio Htrace HP".
+    Hitems HsavedLength Hfacts Hmmio Htrace HP".
 Qed.
