@@ -6,6 +6,8 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccess.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
+Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment13A.
+Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment13B.
 
 Import ListNotations.
 
@@ -26,14 +28,9 @@ Lemma write_success_blob_hashes_chunk1a `{!islaG Sigma} `{!threadG}
   instr_body 0x15454 (writeSuccessBlobHashesBodySpec P) -∗
   instr_body 0x15434 (writeSuccessBlobHashesBodySpec P).
 Proof.
-  prove_write_success_blob_segment 0x15454.
-  liARun.
-  iExists
-    (tail, bytes, processed, (processed + S remaining)%nat, base, tt)ₗ.
-  liARun.
-  Unshelve.
-  all: prepare_sidecond.
-  all: try (apply bv_eq; rewrite bv_and_unsigned; assumption).
-  all: try (bv_simplify_arith H1; bv_solve).
-  Unshelve. all: try liARun.
+  iIntros "#Hlookup #Hcode Hnext".
+  iPoseProof (write_success_blob_hashes_chunk1a_15454 P with
+    "Hlookup Hcode Hnext") as "Hmiddle".
+  iApply (write_success_blob_hashes_chunk1a_15438 P with
+    "Hlookup Hcode Hmiddle").
 Qed.
