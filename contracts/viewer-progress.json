@@ -27,7 +27,10 @@
     "endPc": "0x15a14"
   },
   "proofRegions": [
+    {"label": "Load-to-Header", "startPc": "0x14d80", "endPc": "0x14e00", "status": "unconditionally_proven", "theorem": "write_success_load_header"},
+    {"label": "Header-to-Value", "startPc": "0x14e00", "endPc": "0x14f04", "status": "unconditionally_proven", "theorem": "write_success_header_value_transactions"},
     {"label": "Transaction loop work", "startPc": "0x14f04", "endPc": "0x15664", "status": "unconditionally_proven", "theorem": "write_success_transactions_loop_pre"},
+    {"label": "Transaction pipeline exit", "startPc": "0x15664", "endPc": "0x15668", "status": "unconditionally_proven", "theorem": "write_success_transactions_loop_pre"},
     {"label": "Access-list composition", "startPc": "0x151d0", "endPc": "0x153c0", "status": "unconditionally_proven", "theorem": "write_success_transactions_access_lists"},
     {"label": "Transaction entry path", "startPc": "0x14f08", "endPc": "0x14fc8", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14f08"},
     {"label": "Transaction prefix assembly", "startPc": "0x14fc8", "endPc": "0x14fe0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14fc8_to_14fe0"},
