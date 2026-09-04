@@ -6,18 +6,12 @@ Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
 
-Definition writeSuccessTransactionsLoopExitEvents
+Definition writeSuccessTransactionsLoopExitEventsFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
-    (bytes : list (bv 8)) (tail : spec) (first second : bv 64)
-    (items : list ByteListItem) : iProp Sigma :=
-  (reg_col zesu_ram_sys_regs ∗
-   reg_col writeSuccessTransactionsOtherRegShapes ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
-   base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
-   (bv_unsigned sp - 48) ↦ₘ? 152 ∗
+    (tail : spec) (first second : bv 64) (items : list ByteListItem)
+    : iProp Sigma :=
+  ((bv_unsigned sp - 48) ↦ₘ? 152 ∗
    (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
    (bv_unsigned sp + 112) ↦ₘ Z_to_bv 64 (Z.of_nat (length transactions)) ∗
    (bv_unsigned sp + 120) ↦ₘ? 984 ∗
@@ -35,6 +29,23 @@ Definition writeSuccessTransactionsLoopExitEvents
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P))%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsLoopExitEventsFrame) := I.
+
+Definition writeSuccessTransactionsLoopExitEvents
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
+    (bytes : list (bv 8)) (tail : spec) (first second : bv 64)
+    (items : list ByteListItem) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   reg_col writeSuccessTransactionsOtherRegShapes ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+   base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
+   writeSuccessTransactionsLoopExitEventsFrame P sp base transactions tail
+     first second items)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopExitEvents) := I.
