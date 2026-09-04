@@ -27,19 +27,23 @@ Proof.
   iDestruct "Hframe" as
     "(Hprefix & Hsuffix & Hprocessed & Htransaction & Hremaining & HP & Hinv &
       Hexit & %Hto & _)".
-  iEval (unfold writeSuccessTransactionsInvariant) in "Hinv".
-  iDestruct "Hinv" as
-    "(%HtransactionsEq & %HbytesEq & %HprefixEq & %HsuffixEq & %HbytesAppend &
-      %HbytesLength & %HprefixLength & %HsuffixLength & %HtransactionsBound &
-      %Halign & %Hlower & %Hupper & %HbaseAlign & %HbaseLower & %HbaseUpper & _)".
+  iDestruct "Hinv" as "#Hinv".
+  iPoseProof "Hinv" as "#HinvCopy".
+  iEval (unfold writeSuccessTransactionsInvariant) in "HinvCopy".
+  do 9 (iDestruct "HinvCopy" as "[_ HinvCopy]").
+  iDestruct "HinvCopy" as "[HspAlign HinvCopy]".
+  iDestruct "HinvCopy" as "[HspLower HinvCopy]".
+  iDestruct "HinvCopy" as "[HspUpper _]".
+  iDestruct "HspAlign" as "%Halign".
+  iDestruct "HspLower" as "%Hlower".
+  iDestruct "HspUpper" as "%Hupper".
   iAssert (writeSuccessTransactionsOptionalAddressSomeFrame P sp base transaction
     transactions processed remaining bytes prefix suffix tail)%I
-    with "[Hprefix Hsuffix Hprocessed Htransaction Hremaining HP Hexit]"
+    with "[Hprefix Hsuffix Hprocessed Htransaction Hremaining HP Hinv Hexit]"
     as "Hframe".
   { rewrite /writeSuccessTransactionsOptionalAddressSomeFrame.
-    iFrame "Hprefix Hsuffix Hprocessed Htransaction Hremaining HP Hexit".
-    rewrite /writeSuccessTransactionsInvariant.
-    repeat iSplit; try iPureIntro; try assumption; done. }
+    iFrame "Hprefix Hsuffix Hprocessed Htransaction Hremaining HP Hinv Hexit".
+    iSplit; [iPureIntro; exact Hto | done]. }
   iAssert (writeSuccessTransactionsOptionalAddressSome15190Frame P sp base
     transaction transactions processed remaining bytes prefix suffix tail)%I
     with "[H34 Hscratch Hframe]" as "Hframe15190".

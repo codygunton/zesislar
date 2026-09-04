@@ -69,16 +69,36 @@ Proof.
     "(Hsys & Hother & H1 & H2 & H5 & H12 & H8 & H9 & H18 & H19 & H20 & H21 &
       H22 & H23 & H24 & H25 & H26 & H27 & H10 & H11 & Hscratch & Hmmio &
       Htrace & Hframe & Hnext & _)".
-  iPoseProof (write_success_transactions_optional_address_some_1518c_call_registers
-    with "[Hother H5 H12]") as
+  iAssert (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
+    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers) ∗
+    "x12" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x13" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x14" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x15" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x16" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x17" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I
+    with "[Hother H5 H12]" as "Hregisters".
+  { iApply (write_success_transactions_optional_address_some_1518c_call_registers).
+    iFrame. }
+  iDestruct "Hregisters" as
     "(H34 & Htmp & H12 & H13 & H14 & H15 & H16 & H17)".
-  iPoseProof (write_success_transactions_optional_address_some_1518c_call_scratch
-    P sp base transaction transactions processed remaining bytes prefix suffix tail
-    with "[H34 Hscratch Hframe]") as
+  iAssert (writeSuccessTransactionsOptionalAddressSome15190Frame P sp base
+    transaction transactions processed remaining bytes prefix suffix tail ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < 0x40000000⌝)%I
+    with "[H34 Hscratch Hframe]" as "HscratchOut".
+  { iApply (write_success_transactions_optional_address_some_1518c_call_scratch
+      P sp base transaction transactions processed remaining bytes prefix suffix tail).
+    iFrame. }
+  iDestruct "HscratchOut" as
     "(Hframe15190 & %Halign & %Hlower & %Hupper)".
   iPoseProof (write_success_transactions_optional_address_some_1518c_call_continuation
     P sp base transaction transactions processed remaining bytes prefix suffix tail
-    with "[Hnext Hframe15190]") as "HretPre".
+    ) as "HretWand".
+  iSpecialize ("HretWand" with "Hnext").
+  iSpecialize ("HretWand" with "Hframe15190").
+  iRename "HretWand" into "HretPre".
   have HstackLower : (0x20000000 <= bv_unsigned sp - 16)%Z by lia.
   have HstackUpper : (bv_unsigned sp < 0x40000000)%Z by lia.
   rewrite /writeSuccessTransactionsOptionalAddressSome1518cCallEntry.
