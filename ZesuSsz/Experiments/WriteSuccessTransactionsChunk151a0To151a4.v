@@ -6,6 +6,7 @@ Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151a0MvSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151a0To151a4Return.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
