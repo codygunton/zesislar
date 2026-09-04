@@ -21,12 +21,24 @@ Definition writeSuccessTransactionsPostScratch15670
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostScratch15670) := I.
 
+Definition writeSuccessTransactionsPostOtherRegisters : list string :=
+  ["x3"; "x4"; "x5"; "x6"; "x7"; "x8"; "x9";
+   "x12"; "x13"; "x14"; "x15"; "x16"; "x17"; "x18"; "x19";
+   "x20"; "x21"; "x22"; "x23"; "x24"; "x25"; "x26"; "x27";
+   "x28"; "x29"; "x30"; "x31"].
+
+Definition writeSuccessTransactionsPostOtherRegShapes :
+    list (reg_kind * valu_shape) :=
+  (fun register => (KindReg register, BitsShape 64))
+    <$> writeSuccessTransactionsPostOtherRegisters.
+
 Definition writeSuccessTransactionsPostAt15670Spec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
-      (bytes : list (bv 8)) (tail : spec) (first second : bv 64),
+      (bytes : list (bv 8)) (tail : spec) (first second ra : bv 64),
     reg_col zesu_ram_sys_regs ∗
-    reg_col writeSuccessTransactionsOtherRegShapes ∗
+    "x1" ↦ᵣ RVal_Bits ra ∗
+    reg_col writeSuccessTransactionsPostOtherRegShapes ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
     "x10" ↦ᵣ RVal_Bits first ∗
     "x11" ↦ᵣ RVal_Bits second ∗
@@ -66,6 +78,11 @@ Proof.
     (sp base transactions bytes tail first)
     "(Hsys & Hother & H2 & H10 & H11 & Harray & Hown & Hscratch &
       Hmmio & Htrace & Hq & _)".
+  iDestruct (reg_col_lookup writeSuccessTransactionsOtherRegShapes 0%nat
+    (KindReg "x1", BitsShape 64) with "Hother") as
+    (ra Hra) "(Hx1 & Hother)".
+  { vm_compute. reflexivity. }
+  apply valu_has_bits_shape in Hra as (raBits & ->).
   iDestruct "Hq" as
     "(HlowerFrame & HsavedFrame & %HspAlign16 & %HspAlign8 &
       %HspLower & %HspUpper & HP)".
@@ -93,10 +110,10 @@ Proof.
   rewrite instr_pre'_eq. iNext. iIntros "Hpost".
   iApply "Hnext".
   iEval (rewrite /writeSuccessTransactionsPostAt15670Spec).
-  iExists sp, base, transactions, bytes, tail, first, second.
+  iExists sp, base, transactions, bytes, tail, first, second, raBits.
   iDestruct "Hpost" as
     "(HsysPost & H11Post & H2Post & HloadPost & _)".
-  iFrame "HsysPost H10 H11Post H2Post HloadPost Hother Harray Hown
+  iFrame "HsysPost H10 H11Post H2Post HloadPost Hx1 Hother Harray Hown
     HscratchLower HscratchBase HscratchLength HscratchPrefix HscratchFirst
     HscratchSuffix Hmmio Htrace HlowerFrame HsavedFrame HP".
   repeat iSplit; try iPureIntro; try assumption; try lia.
