@@ -17,13 +17,15 @@ Lemma write_success_transactions_access_to_split `{!islaG Sigma}
        (bv_unsigned sp + 1752) ↦ₘ writeSuccessTransactionWord transaction 273 ∗
        (bv_unsigned sp + 1760) ↦ₘ
          bv_extract 0 32
-           (bv_or
+           (bv_sign_extend 64
+            (bv_extract 0 32
+             (bv_or
              (bv_or
                (bv_zero_extend 64 (writeSuccessTransactionByte transaction 284) ≪ 24)
                (bv_zero_extend 64 (writeSuccessTransactionByte transaction 283) ≪ 16))
              (bv_or
                (bv_zero_extend 64 (writeSuccessTransactionByte transaction 282) ≪ 8)
-               (bv_zero_extend 64 (writeSuccessTransactionByte transaction 281)))) ∗
+               (bv_zero_extend 64 (writeSuccessTransactionByte transaction 281)))))) ∗
        (bv_unsigned sp + 1764) ↦ₘ? 132
    | None =>
        (bv_unsigned sp + 1744) ↦ₘ writeSuccessTransactionByte transaction 264 ∗

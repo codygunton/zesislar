@@ -5,7 +5,7 @@ From IslaTraces.write_success_blocks Require Import
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f0Spec.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsValidFrame.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151b4.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151c4.
@@ -44,7 +44,7 @@ Proof.
   all: iDestruct "HinvariantCopy" as
     "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
   all: have HmaxSp : (bv_unsigned sp < 0x40000000)%Z by lia.
-  all: iPoseProof (write_success_transaction_valid_frame transaction
+  all: iPoseProof (write_success_transactions_valid_frame transaction
     with "Htransaction") as "[%Hvalid Htransaction]".
   all: have HdataPointer :
       WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 192 =
@@ -321,7 +321,9 @@ Proof.
              WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 273 ∗
            (bv_unsigned sp + 1760) ↦ₘ
              bv_extract 0 32
-               (bv_or
+               (bv_sign_extend 64
+                (bv_extract 0 32
+                 (bv_or
                  (bv_or
                    (bv_shiftl
                      (bv_zero_extend 64
@@ -337,7 +339,7 @@ Proof.
                        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 282))
                      (BV 64 8))
                    (bv_zero_extend 64
-                     (WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 281)))) ∗
+                     (WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 281)))))) ∗
            (bv_unsigned sp + 1764) ↦ₘ? 132
        end ∗ True))%I
     with "[Hx3 Hx4 Hx7 Hx12 Hx13 Hx14 Hx15 Hx16 Hx17 Hx28 Hx29 Hx30 Hx31
@@ -345,7 +347,11 @@ Proof.
       H152 H160 H168 H176 H184 H192 H200 H208 H216 H224 H232 H240 H248 H256
       H264 H272 H280 H1640 H1648 H1656 H1660 H1664 H1672 H1680 HtoTail]"
     as "Hhidden".
-  { iEval (rewrite /reg_col); iEval (cbn); iFrame "∗ #". }
+  { rewrite /reg_col. cbn.
+    iFrame "Hx3 Hx4 Hx7 Hx12 Hx13 Hx14 Hx15 Hx16 Hx17 Hx28 Hx29 Hx30 Hx31
+      H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H104 H112 H120 H128 H136 H144
+      H152 H160 H168 H176 H184 H192 H200 H208 H216 H224 H232 H240 H248 H256
+      H264 H272 H280 H1640 H1648 H1656 H1660 H1664 H1672 H1680 HtoTail". }
   iAssert
       (base ↦ₘ∗ prefix ∗
        (base + 288 * length processed) ↦ₘ∗ suffix ∗
@@ -356,7 +362,7 @@ Proof.
          (WriteSuccessTransactionsSpec.writeSuccessTransactionsLoopExit
             sp base transactions bytes tail P))%I
     with "[HbasePrefix HbaseSuffix Hprocessed Hremaining HP Hexit]" as "Houter".
-  all: iFrame.
+  { iFrame. }
   iAssert
       (match WriteSuccessTransactionsSpec.writeSuccessTransactionData transaction with
        | [] => True
@@ -387,6 +393,7 @@ Proof.
     with "[HdataBounds HaccessOwn HaccessEntriesOwn HblobOwn HauthOwn]"
     as "HtransactionRest".
   { iFrame. }
+  iFrame "HdataArray".
   iSplitR "Hnext HupperRaw Houter HtransactionRest Hhidden".
   { iPureIntro; reflexivity. }
   iSplitR "Hnext HupperRaw Houter HtransactionRest Hhidden".
@@ -403,6 +410,7 @@ Proof.
   { iPureIntro; bv_solve. }
   iSplitR "Hnext HupperRaw Houter HtransactionRest Hhidden".
   { iPureIntro; bv_solve. }
+  iSplitL "Hnext HupperRaw Houter HtransactionRest Hhidden"; [|done].
   iApply (instr_pre_wand 0x151c4 0x151c4 false true with "Hnext");
     [done | done |].
   iIntros "Hpost".
