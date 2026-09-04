@@ -48,5 +48,4 @@ Proof.
   all: try (apply bv_eq; rewrite bv_and_unsigned; assumption).
   all: try bv_solve.
   all: try lia.
-  Unshelve. all: lazymatch goal with |- ?G => fail "residual" G end.
 Qed.
