@@ -5,9 +5,8 @@ Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
 
 Definition writeSuccessAccessListsTailScratchFrame `{!islaG Sigma}
-    (sp : bv 64) (base : Z) (total : nat) : iProp Sigma :=
-  (∃ savedX22 : bv 64,
-    (bv_unsigned sp + 136) ↦ₘ savedX22 ∗
+    (sp : bv 64) (base : Z) (total : nat) (savedX22 : bv 64) : iProp Sigma :=
+  ((bv_unsigned sp + 136) ↦ₘ savedX22 ∗
     (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
     (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat total) ∗
     (bv_unsigned sp + 1744) ↦ₘ? 40 ∗
@@ -17,7 +16,7 @@ Definition writeSuccessAccessListsTailScratchFrame `{!islaG Sigma}
 Definition writeSuccessAccessListsTailFrame `{!islaG Sigma} `{!threadG}
     (x19 sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
     (entries processed remaining : list writeSuccessAccessEntry)
-    (bytes prefix suffix : list (bv 8)) (x10 x22 x27 : bv 64)
+    (bytes prefix suffix : list (bv 8)) (savedX22 x10 x22 x27 : bv 64)
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col writeSuccessAccessListsOtherRegShapes ∗
    "x10" ↦ᵣ RVal_Bits x10 ∗ "x19" ↦ᵣ RVal_Bits x19 ∗
@@ -27,13 +26,14 @@ Definition writeSuccessAccessListsTailFrame `{!islaG Sigma} `{!threadG}
    writeSuccessAccessEntriesOwn processed ∗
    writeSuccessAccessEntryOwn entry ∗
    writeSuccessAccessEntriesOwn remaining ∗
-   writeSuccessAccessListsTailScratchFrame sp base (length entries) ∗
+   writeSuccessAccessListsTailScratchFrame sp base (length entries) savedX22 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessAccessListsEvents sp remaining tail) ∗ P ∗
    writeSuccessAccessListsInvariant sp base entries processed
      (entry :: remaining) bytes prefix suffix ∗
    instr_pre 0x153c0
-     (writeSuccessAccessListsLoopExit sp base entries bytes tail x19 P) ∗
+     (writeSuccessAccessListsLoopExit
+       sp base entries bytes tail x19 savedX22 P) ∗
    True)%I.
 
 Definition writeSuccessAccessListsAt153b4SplitSpec
@@ -42,7 +42,7 @@ Definition writeSuccessAccessListsAt153b4SplitSpec
   (∃ (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
       (entries processed remaining : list writeSuccessAccessEntry)
       (bytes prefix suffix : list (bv 8))
-      (x10 x11 x22 x27 : bv 64) (tail : spec),
+      (savedX22 x10 x11 x22 x27 : bv 64) (tail : spec),
     reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
     "x11" ↦ᵣ RVal_Bits x11 ∗
     (bv_unsigned sp + 272) ↦ₘ
@@ -51,7 +51,7 @@ Definition writeSuccessAccessListsAt153b4SplitSpec
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
     writeSuccessAccessListsTailFrame x19 sp base entry entries processed
-      remaining bytes prefix suffix x10 x22 x27 tail P ∗ True)%I.
+      remaining bytes prefix suffix savedX22 x10 x22 x27 tail P ∗ True)%I.
 
 Definition writeSuccessAccessListsAt153b8Spec
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma) :
@@ -59,7 +59,7 @@ Definition writeSuccessAccessListsAt153b8Spec
   (∃ (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
       (entries processed remaining : list writeSuccessAccessEntry)
       (bytes prefix suffix : list (bv 8))
-      (x10 x22 x27 : bv 64) (tail : spec),
+      (savedX22 x10 x22 x27 : bv 64) (tail : spec),
     reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
     "x11" ↦ᵣ RVal_Bits
       (Z_to_bv 64 (Z.of_nat (length processed))) ∗
@@ -69,7 +69,7 @@ Definition writeSuccessAccessListsAt153b8Spec
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
     writeSuccessAccessListsTailFrame x19 sp base entry entries processed
-      remaining bytes prefix suffix x10 x22 x27 tail P ∗ True)%I.
+      remaining bytes prefix suffix savedX22 x10 x22 x27 tail P ∗ True)%I.
 
 Definition writeSuccessAccessListsAt153bcSpec
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma) :
@@ -77,7 +77,7 @@ Definition writeSuccessAccessListsAt153bcSpec
   (∃ (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
       (entries processed remaining : list writeSuccessAccessEntry)
       (bytes prefix suffix : list (bv 8))
-      (x10 x22 x27 : bv 64) (tail : spec),
+      (savedX22 x10 x22 x27 : bv 64) (tail : spec),
     reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
     "x11" ↦ᵣ RVal_Bits
       (Z_to_bv 64 (Z.of_nat (length processed)) + BV 64 1)%bv ∗
@@ -87,7 +87,7 @@ Definition writeSuccessAccessListsAt153bcSpec
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
     writeSuccessAccessListsTailFrame x19 sp base entry entries processed
-      remaining bytes prefix suffix x10 x22 x27 tail P ∗ True)%I.
+      remaining bytes prefix suffix savedX22 x10 x22 x27 tail P ∗ True)%I.
 
 Global Instance : LithiumUnfold
   (@writeSuccessAccessListsAt153b4SplitSpec) := I.
@@ -102,13 +102,12 @@ Proof.
   iIntros "Htail".
   iDestruct "Htail" as
     (sp base entry entries processed remaining bytes prefix suffix
-      x10 x11 x22 x27 tail)
+      savedX22 x10 x11 x22 x27 tail)
     "(Hsys & Hother & Hx2 & Hx10 & Hx19 & Hx11 & Hx22 & Hx27 &
       Hprefix & Hsuffix & Hprocessed & Hentries & Hscratch & Hmmio &
       Htrace & HP & Hinv & Hexit & _)".
   iDestruct "Hentries" as "(Hentry & Hremaining & _)".
   iDestruct "Hscratch" as
-    (savedX22)
     "(Hsaved & Hbase & Htotal & Hindex & Hcopied & Houtput & Hstorage & _)".
   iDestruct "Hinv" as
     "(%HentriesEq & %HbytesEq & %HprefixEq & %HsuffixEq & %HbytesSplit &
@@ -119,7 +118,7 @@ Proof.
   { rewrite /writeSuccessAccessListsInvariant.
     repeat iSplit; try iPureIntro; try assumption; done. }
   iExists sp, base, entry, entries, processed, remaining, bytes, prefix,
-    suffix, x10, x11, x22, x27, tail.
+    suffix, savedX22, x10, x11, x22, x27, tail.
   iFrame "Hsys Hx2 Hx11 Hindex".
   iSplit; [iPureIntro; exact Halign |].
   iSplit; [iPureIntro; exact Hlow |].

@@ -125,7 +125,7 @@ Proof.
   iIntros "Hentry".
   iDestruct "Hentry" as
     (sp base entry entries processed remaining bytes prefix suffix
-      x10 x22 x27 tail)
+      savedX22 x10 x22 x27 tail)
     "(Hsys & Hx2 & Hx11 & Hindex & %HspAlign & %HspLow & %HspHigh &
       Hframe & _)".
   iDestruct "Hframe" as
@@ -134,7 +134,6 @@ Proof.
       HP & Hinv & Hexit & _)".
   iDestruct "HentryOwn" as "(HstorageOwn & %HentryValid & _)".
   iDestruct "Hscratch" as
-    (savedX22)
     "(Hsaved & Hbase & Htotal & Hcopied & Houtput & Hstorage & _)".
   iDestruct "Hinv" as
     "(%HentriesEq & %HbytesEq & %HprefixEq & %HsuffixEq & %HbytesSplit &
@@ -185,10 +184,10 @@ Proof.
   { apply (write_success_access_entries_bytes_length_tail entry remaining);
       assumption. }
   iAssert (writeSuccessAccessListsScratch sp base (length entries)
-      (Z_to_bv 64 (Z.of_nat (length processed))))%I
+      (Z_to_bv 64 (Z.of_nat (length processed))) savedX22)%I
     with "[Hsaved Hbase Htotal Hindex Hcopied Houtput Hstorage]" as
     "HscratchNew".
-  { rewrite /writeSuccessAccessListsScratch. iExists savedX22. iFrame. }
+  { rewrite /writeSuccessAccessListsScratch. iFrame. }
   iAssert (writeSuccessAccessListsInvariant sp base entries
       (processed ++ [entry]) remaining bytes
       (writeSuccessAccessEntriesBytes (processed ++ [entry]))
@@ -200,7 +199,8 @@ Proof.
   iExists sp, base, entries, (processed ++ [entry]), remaining, bytes,
     (writeSuccessAccessEntriesBytes (processed ++ [entry])),
     (writeSuccessAccessEntriesBytes remaining),
-    (Z_to_bv 64 (Z.of_nat (length processed))), x10, x22, x27, tail.
+    (Z_to_bv 64 (Z.of_nat (length processed))), savedX22,
+    x10, x22, x27, tail.
   iFrame "Hsys Hother Hx2 Hx10 Hx19 Hx11 Hx22 Hx27 HbasePrefixNew
     HremainingBytes HprocessedNew Hremaining HscratchNew Hmmio Htrace HP
     HinvNew Hexit".

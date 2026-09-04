@@ -50,7 +50,7 @@ Proof.
     writeSuccessAccessListsCopiedSpec) in "Hout".
   iDestruct "Hout" as
     (sp base entry entries processed remaining bytes prefix suffix
-      x10 x11 x22 x27 tail)
+      savedX22 x10 x11 x22 x27 tail)
     "(Hsys & Hother & Hx2 & Hx10 & Hx19 & Hx11 & Hx22 & Hx27 &
       HbasePrefix & HbaseSuffix & HprocessedOwn & HentryOwn & Hscratch &
       Hmmio & Htrace & HP & Hinv & Hloop & _)".
@@ -105,7 +105,7 @@ Proof.
       writeSuccessAccessListsCopiedSpec) in "Hout".
     iDestruct "Hout" as
       (sp2 base2 entry2 entries2 processed2 remaining2 bytes2 prefix2 suffix2
-        x10_2 x11_2 x22_2 x27_2 tail2)
+        savedX22_2 x10_2 x11_2 x22_2 x27_2 tail2)
       "(Hsys & Hother & Hx2 & Hx10 & Hx19 & Hx11 & Hx22 & Hx27 &
         HbasePrefix & HbaseSuffix & HprocessedOwn & HentryOwn & Hscratch &
         Hmmio & Htrace & HP & Hinv & Hloop & _)".
@@ -125,7 +125,6 @@ Proof.
     iDestruct "HentryOwn2" as "(HstorageOwn2 & %HentryValid2 & _)".
     iEval (unfold writeSuccessAccessListsCopiedScratch) in "Hscratch".
     iDestruct "Hscratch" as
-      (savedX22)
       "(HsavedX22 & HbasePtr & Htotal & Hprocessed & Hcopied &
         HscratchStack & HstorageScratch & _)".
     have HentryLength :
@@ -259,6 +258,7 @@ Proof.
       constr:(writeSuccessAccessEntriesBytes (entry2 :: remaining2)) in
     let x10T := constr:(x10_2) in
     let x11T := constr:(x11_2) in
+    let savedX22T := constr:(savedX22_2) in
     let tailT := constr:(tail2) in
     let HentryValidT := constr:(HentryValid2) in
     iApply
@@ -268,7 +268,7 @@ Proof.
     [ rewrite HPC24Address; iExact "Hnext"
     | rewrite /writeSuccessAccessListsAt15224Spec;
       iExists spT, baseT, entryT, entriesT, processedT, remainingT,
-        bytesT, prefixT, suffixT, x10T, x11T, tailT;
+        bytesT, prefixT, suffixT, savedX22T, x10T, x11T, tailT;
       iAssert (writeSuccessAccessEntryOwn entryT)%I
         with "[HstorageOwn2]" as "HentryTarget";
       [ iEval (unfold writeSuccessAccessEntryOwn);
@@ -282,7 +282,7 @@ Proof.
       | idtac ];
       iAssert
         (writeSuccessAccessListsCopiedScratch spT baseT
-          (length entriesT) (length processedT) entryT)%I
+          (length entriesT) (length processedT) entryT savedX22T)%I
         with "[HsavedX22 HbasePtr Htotal Hprocessed HcopiedFinal
           HscratchStack HstorageScratch]" as "HscratchTarget";
       [ iEval (unfold writeSuccessAccessListsCopiedScratch);

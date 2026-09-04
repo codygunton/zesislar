@@ -13,7 +13,7 @@ Lemma write_success_access_lists_nonzero_storage_to_loop
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma)
     (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
     (entries processed remaining : list writeSuccessAccessEntry)
-    (bytes prefix suffix : list (bv 8)) (x10 x11 : bv 64)
+    (bytes prefix suffix : list (bv 8)) (savedX22 x10 x11 : bv 64)
     (tail : spec)
     (Hnonzero : writeSuccessAccessEntryWord entry 8 <> BV 64 0) :
   (reg_col zesu_ram_sys_regs ∗
@@ -29,7 +29,7 @@ Lemma write_success_access_lists_nonzero_storage_to_loop
    ⌜writeSuccessAccessEntryValid entry⌝ ∗
    writeSuccessAccessEntriesOwn remaining ∗
    writeSuccessAccessListsCopiedScratch
-     sp base (length entries) (length processed) entry ∗
+     sp base (length entries) (length processed) entry savedX22 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
      (writeSuccessStorageKeysEvents sp
@@ -39,7 +39,7 @@ Lemma write_success_access_lists_nonzero_storage_to_loop
      (entry :: remaining) bytes prefix suffix ∗
    instr_pre 0x153c0
      (writeSuccessAccessListsLoopExit
-       sp base entries bytes tail x19 P) ∗
+       sp base entries bytes tail x19 savedX22 P) ∗
    instr_body 0x153b4 (writeSuccessAccessListsTailSpec x19 P) ∗ True) -∗
   writeSuccessAccessListsStorageAnyLoopSpec x19 P.
 Proof.
@@ -68,7 +68,7 @@ Proof.
       "Hregs Hx10 Hx11"). }
   iPoseProof (write_success_access_lists_storage_frame_intro
     x19 P sp base entry entries processed remaining bytes prefix suffix
-    x10 x11 tail count HcountCase Hvalid HstorageLow HstorageHigh with
+    savedX22 x10 x11 tail count HcountCase Hvalid HstorageLow HstorageHigh with
     "[Hprefix Hsuffix Hprocessed Hremaining Hcopied HP Hexit]") as
     "(HstorageScratch & Hframe)".
   { iFrame. done. }

@@ -113,6 +113,7 @@ Proof.
   iExists
     (writeSuccessAccessEntryBytes entry ++
      writeSuccessAccessEntriesBytes remaining).
+  iExists savedX22.
   iExists ((sp - BV 64 16)%bv).
   iExists (BV 64 8).
   iExists x22.

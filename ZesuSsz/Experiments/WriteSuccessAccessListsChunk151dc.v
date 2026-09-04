@@ -55,6 +55,9 @@ Proof.
   { rewrite H2 Nat2Z.inj_mul app_length. cbn. lia. }
   have HprocessedRange :
       (0 <= Z.of_nat (length processed) < 2 ^ 64)%Z by lia.
+  have HentriesNonempty : processed ++ entry :: remaining <> [].
+  { intro Hnil. destruct processed; discriminate. }
+  have HbaseUpper := H10 HentriesNonempty.
   have HoffsetRange :
       (0 <= 40 * Z.of_nat (length processed) /\
        base + 40 * Z.of_nat (length processed) < 2 ^ 64)%Z by lia.
@@ -81,8 +84,8 @@ Proof.
   all: try (replace (bv_unsigned (BV 64 40)) with 40 by vm_compute; lia).
   all: try (change
     (base + 40 * Z.of_nat (length processed) + 40 < 1073741824)%Z;
-    rewrite H2 Nat2Z.inj_mul app_length in H10;
-    cbn in H10;
+    rewrite H2 Nat2Z.inj_mul app_length in HbaseUpper;
+    cbn in HbaseUpper;
     lia).
   Unshelve.
   have HentryLength :
@@ -96,7 +99,7 @@ Proof.
          writeSuccessAccessEntriesBytes remaining))%I into "Hcopied".
   iEval (rewrite (take_app_length' _ _ _ HentryLength)) in "Hcopied".
   iExists
-    (tail,
+    (tail, savedX22,
      (writeSuccessAccessEntryBytes entry ++
       writeSuccessAccessEntriesBytes remaining),
      writeSuccessAccessEntriesBytes processed,

@@ -29,7 +29,7 @@ Proof.
   all: try iFrame.
   Unshelve. all: try exact inhabitant.
   all: iExists
-    (tail, x27, x22, x10, suffix, prefix, bytes, remaining, entries,
+    (tail, x27, x22, x10, savedX22, suffix, prefix, bytes, remaining, entries,
       entry, base, tt)ₗ.
   all: iFrame.
 Qed.

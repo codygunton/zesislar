@@ -53,20 +53,20 @@ Definition writeSuccessAccessListsTailPayload
     (sp : bv 64) : iProp Sigma :=
   (∃ (base : Z) (entry : writeSuccessAccessEntry)
       (entries processed remaining : list writeSuccessAccessEntry)
-      (bytes prefix suffix : list (bv 8)) (tail : spec),
+      (bytes prefix suffix : list (bv 8)) (savedX22 : bv 64) (tail : spec),
     base ↦ₘ∗ prefix ∗
     (base + 40 * Z.of_nat (length processed)) ↦ₘ∗ suffix ∗
     writeSuccessAccessEntriesOwn processed ∗
     writeSuccessAccessEntriesOwn (entry :: remaining) ∗
     writeSuccessAccessListsScratch sp base (length entries)
-      (Z_to_bv 64 (Z.of_nat (length processed))) ∗
+      (Z_to_bv 64 (Z.of_nat (length processed))) savedX22 ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeSuccessAccessListsEvents sp remaining tail) ∗ P ∗
     writeSuccessAccessListsInvariant sp base entries processed
       (entry :: remaining) bytes prefix suffix ∗
     instr_pre 0x153c0
       (writeSuccessAccessListsLoopExit
-        sp base entries bytes tail x19 P) ∗ True)%I.
+        sp base entries bytes tail x19 savedX22 P) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsTailPayload) := I.
 
@@ -74,7 +74,7 @@ Lemma write_success_access_lists_zero_storage_to_tail
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma)
     (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
     (entries processed remaining : list writeSuccessAccessEntry)
-    (bytes prefix suffix : list (bv 8)) (tail : spec)
+    (bytes prefix suffix : list (bv 8)) (savedX22 : bv 64) (tail : spec)
     (Hzero : writeSuccessAccessEntryWord entry 8 = BV 64 0) :
   (base ↦ₘ∗ prefix ∗
    (base + 40 * Z.of_nat (length processed)) ↦ₘ∗ suffix ∗
@@ -83,7 +83,7 @@ Lemma write_success_access_lists_zero_storage_to_tail
    ⌜writeSuccessAccessEntryValid entry⌝ ∗
    writeSuccessAccessEntriesOwn remaining ∗
    writeSuccessAccessListsCopiedScratch
-     sp base (length entries) (length processed) entry ∗
+     sp base (length entries) (length processed) entry savedX22 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
      (writeSuccessStorageKeysEvents sp
@@ -93,7 +93,7 @@ Lemma write_success_access_lists_zero_storage_to_tail
      (entry :: remaining) bytes prefix suffix ∗
    instr_pre 0x153c0
      (writeSuccessAccessListsLoopExit
-       sp base entries bytes tail x19 P) ∗ True) -∗
+       sp base entries bytes tail x19 savedX22 P) ∗ True) -∗
   writeSuccessAccessListsTailPayload x19 P sp.
 Proof.
   iIntros "(Hprefix & Hsuffix & Hprocessed & HentryStorage & %Hvalid &
@@ -120,21 +120,21 @@ Proof.
   { rewrite /writeSuccessAccessEntryOwn /writeSuccessAccessEntryStorageOwn
       HcountZero.
     iFrame. iPureIntro. repeat split; assumption. }
-  iDestruct "Hcopied" as (savedX22)
+  iDestruct "Hcopied" as
     "(Hsaved & Hbase & Htotal & Hindex & Hcopied & Houtput & Hstorage & _)".
   iPoseProof (write_success_byte_array_to_uninit
     (bv_unsigned sp + 1744) (writeSuccessAccessEntryBytes entry)
     with "Hcopied") as "Hcopied".
   iEval (rewrite HentryLength) in "Hcopied".
   iAssert (writeSuccessAccessListsScratch sp base (length entries)
-      (Z_to_bv 64 (Z.of_nat (length processed))))%I
+      (Z_to_bv 64 (Z.of_nat (length processed))) savedX22)%I
     with "[Hsaved Hbase Htotal Hindex Hcopied Houtput Hstorage]" as
     "Hscratch".
   { rewrite /writeSuccessAccessListsScratch.
-    iExists savedX22. iFrame. }
+    iFrame. }
   iEval (rewrite HcountZero /=) in "Htrace".
   iExists base, entry, entries, processed, remaining, bytes,
-    prefix, suffix, tail.
+    prefix, suffix, savedX22, tail.
   iFrame.
 Qed.
 
@@ -172,14 +172,15 @@ Proof.
   - iDestruct "HentryValid" as "[HentryValid _]".
     iDestruct "Hremaining" as "[Hremaining _]".
     iPoseProof (write_success_access_lists_zero_storage_to_tail
-      x19 P sp base entry entries processed remaining bytes prefix suffix tail
-      H1 with "[-]") as "Hpayload".
+      x19 P sp base entry entries processed remaining bytes prefix suffix
+      savedX22 tail H1 with "[-]") as "Hpayload".
     { iFrame. }
     iDestruct "Hpayload" as
       (payloadBase payloadEntry payloadEntries payloadProcessed
-        payloadRemaining payloadBytes payloadPrefix payloadSuffix payloadTail)
+        payloadRemaining payloadBytes payloadPrefix payloadSuffix
+        payloadSavedX22 payloadTail)
       "Hpayload".
-    iExists (payloadTail, payloadSuffix, payloadPrefix, payloadBytes,
+    iExists (payloadTail, payloadSavedX22, payloadSuffix, payloadPrefix, payloadBytes,
       payloadRemaining, payloadProcessed, payloadEntries, payloadEntry,
       payloadBase, tt)ₗ.
     iExact "Hpayload".
@@ -189,7 +190,7 @@ Proof.
       "(Hcopied & Hmmio & Htrace & HP & #Hinv & Hexit & _)".
     iPoseProof (write_success_access_lists_nonzero_storage_to_loop
       x19 P sp base entry entries processed remaining bytes prefix suffix
-      x10 x11 tail H1 with "[$]") as "Hloop".
+      savedX22 x10 x11 tail H1 with "[$]") as "Hloop".
     iDestruct "Hloop" as
       (loopSp loopBase loopTotal loopBytes loopTail) "Hloop".
     iExists (loopTail, loopBytes, loopTotal, loopBase, loopSp, tt)ₗ.

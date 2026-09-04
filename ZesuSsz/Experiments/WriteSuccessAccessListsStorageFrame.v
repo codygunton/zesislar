@@ -42,7 +42,7 @@ Definition writeSuccessAccessListsStorageFrame
       (entry :: remaining) bytes prefix suffix ∗
     instr_pre 0x153c0
       (writeSuccessAccessListsLoopExit
-        sp accessBase entries bytes finalTail x19 P) ∗ True)%I.
+        sp accessBase entries bytes finalTail x19 savedX22 P) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsStorageFrame) := I.
 
@@ -109,14 +109,14 @@ Proof.
     as "HentryOwn".
   { rewrite /writeSuccessAccessEntryOwn. iFrame. done. }
   iAssert (writeSuccessAccessListsScratch sp accessBase (length entries)
-      (Z_to_bv 64 (Z.of_nat (length processed))))%I
+      (Z_to_bv 64 (Z.of_nat (length processed))) savedX22)%I
     with "[Hsaved Hbase Htotal Hindex Hcopied Houtput Hstorage]" as
     "Hscratch".
   { iPoseProof (write_success_byte_array_to_uninit
       (bv_unsigned sp + 1744) (writeSuccessAccessEntryBytes entry)
       with "Hcopied") as "Hcopied".
     iEval (rewrite (proj1 HentryValid)) in "Hcopied".
-    rewrite /writeSuccessAccessListsScratch. iExists savedX22. iFrame. }
+    rewrite /writeSuccessAccessListsScratch. iFrame. }
   iEval (rewrite Htail) in "Htrace".
   iEval (rewrite /reg_col; cbn) in "Hother".
   iDestruct "Hother" as
@@ -128,7 +128,7 @@ Proof.
   destruct (valu_has_bits_shape v10 64 Hv10) as [b10 ->].
   destruct (valu_has_bits_shape v11 64 Hv11) as [b11 ->].
   iExists sp, accessBase, entry, entries, processed, remaining, bytes,
-    prefix, suffix, b10, b11, pointer, (BV 64 0), finalTail.
+    prefix, suffix, savedX22, b10, b11, pointer, (BV 64 0), finalTail.
   rewrite /reg_col. cbn.
   iFrame "Hsys Hx2 Hprefix Hsuffix Hprocessed Hremaining Hscratch Hmmio
     HP Hinv HaccessExit HentryOwn Hx19".

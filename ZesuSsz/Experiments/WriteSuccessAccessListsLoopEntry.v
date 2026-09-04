@@ -28,7 +28,7 @@ Proof.
   all: try iFrame.
   all: try (iExists (storedIndex, tt)ₗ; cbn; iFrame).
   all: try (iExists
-    (tail, storedIndex,
+    (tail, savedX22, storedIndex,
       writeSuccessAccessEntriesBytes (entry :: remaining),
       writeSuccessAccessEntriesBytes processed,
       writeSuccessAccessEntriesBytes (processed ++ entry :: remaining),
@@ -45,7 +45,7 @@ Proof.
     discriminate Hnil.
   - exfalso. apply H11. rewrite app_nil_r. reflexivity.
   - iExists
-      (tail, storedIndex,
+      (tail, savedX22, storedIndex,
         writeSuccessAccessEntriesBytes (entry :: remaining),
         writeSuccessAccessEntriesBytes processed,
         writeSuccessAccessEntriesBytes (processed ++ entry :: remaining),

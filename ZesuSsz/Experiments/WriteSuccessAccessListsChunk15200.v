@@ -45,7 +45,7 @@ Proof.
   Unshelve. all: try liARun.
   Unshelve.
   iExists
-    (tail,
+    (tail, savedX22,
      (writeSuccessAccessEntryBytes entry ++
       writeSuccessAccessEntriesBytes remaining),
      writeSuccessAccessEntriesBytes processed,

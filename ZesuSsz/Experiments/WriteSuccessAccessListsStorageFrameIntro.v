@@ -9,7 +9,7 @@ Lemma write_success_access_lists_storage_frame_intro
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma)
     (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
     (entries processed remaining : list writeSuccessAccessEntry)
-    (bytes prefix suffix : list (bv 8)) (x10 x11 : bv 64)
+    (bytes prefix suffix : list (bv 8)) (savedX22 x10 x11 : bv 64)
     (tail : spec) (count : nat)
     (Hcount : writeSuccessAccessEntryStorageCount entry = S count)
     (Hvalid : writeSuccessAccessEntryValid entry)
@@ -24,12 +24,12 @@ Lemma write_success_access_lists_storage_frame_intro
    writeSuccessAccessEntriesOwn processed ∗
    writeSuccessAccessEntriesOwn remaining ∗
    writeSuccessAccessListsCopiedScratch
-     sp base (length entries) (length processed) entry ∗ P ∗
+     sp base (length entries) (length processed) entry savedX22 ∗ P ∗
    writeSuccessAccessListsInvariant sp base entries processed
      (entry :: remaining) bytes prefix suffix ∗
    instr_pre 0x153c0
      (writeSuccessAccessListsLoopExit
-       sp base entries bytes tail x19 P) ∗ True) -∗
+       sp base entries bytes tail x19 savedX22 P) ∗ True) -∗
   writeSuccessStorageKeysScratch sp ∗
   writeSuccessAccessListsStorageFrame x19 P sp
     (bv_unsigned (writeSuccessAccessEntryStoragePointer entry)) (S count)
@@ -40,7 +40,7 @@ Proof.
     [HentryLength [Hpointer [HcountWord [HstorageLength HcountBound]]]].
   iIntros "(Hprefix & Hsuffix & Hprocessed & Hremaining & Hcopied & HP &
     #Hinv & Hexit & _)".
-  iDestruct "Hcopied" as (savedX22)
+  iDestruct "Hcopied" as
     "(Hsaved & Hbase & Htotal & Hindex & Hcopied & HoutputScratch &
       HstorageScratch & _)".
   iFrame "HstorageScratch".

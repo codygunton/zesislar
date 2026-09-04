@@ -8,7 +8,7 @@ Definition writeSuccessAccessListsAt15224Spec `{!islaG Sigma} `{!threadG}
   (∃ (sp : bv 64) (base : Z) (entry : writeSuccessAccessEntry)
       (entries processed remaining : list writeSuccessAccessEntry)
       (bytes prefix suffix : list (bv 8))
-      (x10 x11 : bv 64) (tail : spec),
+      (savedX22 x10 x11 : bv 64) (tail : spec),
     reg_col zesu_ram_sys_regs ∗
     reg_col writeSuccessAccessListsOtherRegShapes ∗
     "x2" ↦ᵣ RVal_Bits sp ∗ "x10" ↦ᵣ RVal_Bits x10 ∗
@@ -21,7 +21,7 @@ Definition writeSuccessAccessListsAt15224Spec `{!islaG Sigma} `{!threadG}
     writeSuccessAccessEntriesOwn processed ∗
     writeSuccessAccessEntriesOwn (entry :: remaining) ∗
     writeSuccessAccessListsCopiedScratch
-      sp base (length entries) (length processed) entry ∗
+      sp base (length entries) (length processed) entry savedX22 ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
       (writeSuccessAccessListsPhaseEvents
@@ -29,7 +29,8 @@ Definition writeSuccessAccessListsAt15224Spec `{!islaG Sigma} `{!threadG}
     writeSuccessAccessListsInvariant
       sp base entries processed (entry :: remaining) bytes prefix suffix ∗
     instr_pre 0x153c0
-      (writeSuccessAccessListsLoopExit sp base entries bytes tail x19 P) ∗
+      (writeSuccessAccessListsLoopExit
+        sp base entries bytes tail x19 savedX22 P) ∗
     True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsAt15224Spec) := I.
