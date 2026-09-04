@@ -106,7 +106,7 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
                               if "byte_array_at_spec" in line]
                 if byte_specs:
                     selected[pc] = byte_specs[0].split()[1]
-        self.assertEqual(len(selected), 54)
+        self.assertEqual(len(selected), 63)
         self.assertEqual(
             list(selected.values()).count("zesu_ld_byte_array_at_spec"), 30
         )
@@ -114,10 +114,10 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
             list(selected.values()).count("zesu_ld_same_byte_array_at_spec"), 1
         )
         self.assertEqual(
-            list(selected.values()).count("zesu_lbu_byte_array_at_spec"), 23
+            list(selected.values()).count("zesu_lbu_byte_array_at_spec"), 32
         )
         self.assertEqual(min(selected), 0x14F1C)
-        self.assertEqual(max(selected), 0x150CC)
+        self.assertEqual(max(selected), 0x15498)
 
     def test_generates_same_register_jalr_spec(self):
         self.assertEqual(
