@@ -19,6 +19,20 @@ Definition writeSuccessTransactionsLoopEventsPostSpec
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopEventsPostSpec) := I.
 
+(**
+   The transaction instruction traces contain no store to [1104(sp)] through
+   [1119(sp)].  The only accesses are the loads at [0x15668] and [0x1566c].
+   The closest earlier stack stores are [0x150d4], [0x150d8], and [0x150dc],
+   at offsets 1048, 1056, and 1064.  This carrier is the single specialized
+   loop obligation that preserves the exact words, item ownership, and trace.
+*)
+Definition writeSuccessTransactionsLoopEventsCarrier
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  □ instr_pre 0x14f04 (writeSuccessTransactionsLoopEventsSpec P).
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsLoopEventsCarrier) := I.
+
 Lemma write_success_transactions_loop_events_exit_adapter
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   writeSuccessTransactionsLoopEventsPostSpec P -∗
@@ -60,4 +74,14 @@ Proof.
     [done | reflexivity |].
   iIntros "Hentry".
   iApply (write_success_transactions_loop_events_exit_adapter P with "Hentry").
+Qed.
+
+Lemma write_success_transactions_loop_events_carrier_parent
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  writeSuccessTransactionsLoopEventsCarrier P -∗
+  □ instr_pre 0x14f04 (writeSuccessTransactionsLoopEventsPostSpec P).
+Proof.
+  iStartProof. iIntros "Hcarrier".
+  iEval (unfold writeSuccessTransactionsLoopEventsCarrier) in "Hcarrier".
+  iApply (write_success_transactions_loop_events_parent P with "Hcarrier").
 Qed.
