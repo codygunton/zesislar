@@ -27,6 +27,27 @@
       "base": "s3",
       "offset": 0,
       "kind": "byte"
+    },
+    {
+      "start": "0x15434",
+      "end": "0x15438",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
+    },
+    {
+      "start": "0x15454",
+      "end": "0x15464",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
+    },
+    {
+      "start": "0x15490",
+      "end": "0x1549c",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
     }
   ],
   "alignedReturnRegister": "x1",
