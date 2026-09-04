@@ -52,9 +52,11 @@ Definition writeSuccessTransactionsScratch15090 `{!islaG Sigma} `{!threadG}
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsScratch15090) := I.
 
-Definition writeSuccessTransactionsMachine15090 `{!islaG Sigma} `{!threadG}
+Definition writeSuccessTransactionsMachine15090WithX15
+    `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (transactions processed :
-      list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
+      list writeSuccessTransaction) (transaction : writeSuccessTransaction)
+    (x15 : valu) :
     iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    reg_col writeSuccessTransactions15090OtherRegShapes ∗
@@ -103,7 +105,7 @@ Definition writeSuccessTransactionsMachine15090 `{!islaG Sigma} `{!threadG}
            (bv_zero_extend 64 (writeSuccessTransactionByte transaction 282))
            (BV 64 8))
          (bv_zero_extend 64 (writeSuccessTransactionByte transaction 281)))) ∗
-   "x15" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 120) ∗
+   "x15" ↦ᵣ x15 ∗
    "x16" ↦ᵣ RVal_Bits
      (bv_shiftl
        (bv_or
@@ -158,6 +160,16 @@ Definition writeSuccessTransactionsMachine15090 `{!islaG Sigma} `{!threadG}
        (BV 64 8)) ∗
    writeSuccessTransactionsScratch15090
      sp base transactions processed transaction ∗ True)%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsMachine15090WithX15) := I.
+
+Definition writeSuccessTransactionsMachine15090 `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z) (transactions processed :
+      list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
+    iProp Sigma :=
+  writeSuccessTransactionsMachine15090WithX15 sp base transactions processed
+    transaction (RVal_Bits (writeSuccessTransactionWord transaction 120)).
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsMachine15090) := I.
 
