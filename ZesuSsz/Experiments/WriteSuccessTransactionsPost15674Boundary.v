@@ -73,6 +73,7 @@ Definition writeSuccessTransactionsPost15674CallEntrySpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
       (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
@@ -104,6 +105,7 @@ Definition writeSuccessTransactionsPost15678Spec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace tail ∗
     P ∗ True)%I.
@@ -121,6 +123,7 @@ Definition writeSuccessTransactionsPost15674ReturnFrame
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    ⌜length saved = 12%nat⌝ ∗
    ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
    P ∗ True ∗
    ((bv_unsigned sp - 48) ↦ₘ? 48 -∗
       writeSuccessTransactionsPostScratch15670 sp base (length transactions)
@@ -151,15 +154,14 @@ Proof.
   iDestruct "Hrest" as "(H2 & Hstack & Hitems & Hmmio & Htrace & _)".
   iEval (unfold writeSuccessTransactionsPost15674ReturnFrame) in "Hframe".
   iDestruct "Hframe" as
-    "(HreturnOther & Hbase & Hown & HsavedLength & Hfacts & HP & _ &
+    "(HreturnOther & Hbase & Hown & HsavedLength & Hfacts & HspUpper & HP & _ &
       HscratchFrame)".
   iDestruct (mem_mapsto_uninit_split 32 with "Hstack") as
     "(_ & Hstack48)"; first lia.
   have HstackAddress : bv_unsigned sp - 80 + 32 = bv_unsigned sp - 48 by lia.
   iEval (rewrite HstackAddress) in "Hstack48".
   iPoseProof ("HscratchFrame" with "Hstack48") as "HscratchFull".
-  iExists sp, base, transactions, bytes, tail, first, second, items, saved,
-    b10, b11.
+  iExists sp, base, transactions, bytes, tail, first, second, items, saved.
   iFrame "Hsys Hcaller Hsaved HreturnOther H2 H10 H11 HscratchFull Hbase Hown
-    Hitems HsavedLength Hfacts Hmmio Htrace HP".
+    Hitems HsavedLength Hfacts HspUpper Hmmio Htrace HP".
 Qed.
