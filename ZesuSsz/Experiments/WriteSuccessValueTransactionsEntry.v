@@ -102,7 +102,7 @@ Proof.
 Qed.
 
 (** Resources that the top-level proof must preserve through the header block. *)
-Definition writeSuccessHeaderValueProviderFrame
+Definition writeSuccessHeaderValueProviderResources
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (sourceBytes : list (bv 8))
     (values : list (bv 64)) (payload : list (bv 8))
@@ -129,14 +129,24 @@ Definition writeSuccessHeaderValueProviderFrame
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+
+Definition writeSuccessHeaderValueProviderFrame
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (sourceBytes : list (bv 8))
+    (values : list (bv 64)) (payload : list (bv 8))
+    (tail : spec) (base : Z) (transactions : list writeSuccessTransaction)
+    (transactionBytes : list (bv 8)) : iProp Sigma :=
+  (writeSuccessHeaderValueProviderResources P sp sourceBytes values payload tail
+      base transactions transactionBytes ∗
    instr_pre 0x14f04
      (writeSuccessValuePost sp values payload
        (writeSuccessTransactionsEvents sp transactions tail)
        (writeSuccessValueTransactionsProviderFrame P sp values payload tail
-         base transactions sourceBytes transactionBytes)) ∗
-   P ∗ True)%I.
+         base transactions sourceBytes transactionBytes)))%I.
 
+Global Instance : LithiumUnfold
+    (@writeSuccessHeaderValueProviderResources) := I.
 Global Instance : LithiumUnfold
     (@writeSuccessHeaderValueProviderFrame) := I.
 
@@ -161,11 +171,13 @@ Proof.
     "(Hsys & Hother & H2 & Hfields & Hsource & Hcopied & Hgap272 &
       Hmmio & Htrace & Hframe & _)".
   iEval (rewrite /writeSuccessHeaderValueProviderFrame) in "Hframe".
-  iDestruct "Hframe" as
+  iDestruct "Hframe" as "[Hresources Hcontinue]".
+  iEval (rewrite /writeSuccessHeaderValueProviderResources) in "Hresources".
+  iDestruct "Hresources" as
     "(Hlower & Hgap104 & Hgap192 & Hpayload & Harray & Hown & Hexit &
       Hinvariant & %HsourceLength & %HvaluesBytes & %HvaluesLength &
       %HpayloadLength & %HbaseEq & %HcountEq & %Halign16 & %Halign8 &
-      %HlowerBound & %HupperBound & Hcontinue & HP & _)".
+      %HlowerBound & %HupperBound & HP & _)".
   iEval (rewrite -HvaluesBytes) in "Hcopied".
   iPoseProof (mem_mapsto_bytes_to_u64_array with "Hcopied") as "Hvalues".
   rewrite /writeSuccessValueSpec.
