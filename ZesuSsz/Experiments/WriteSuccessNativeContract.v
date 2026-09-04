@@ -206,24 +206,28 @@ Definition writeSuccessLoadWithFramePre `{!islaG Sigma} `{!threadG}
         (writeSuccessTransactions witness)
         (writeSuccessTransactionBytes witness))))%I.
 
-Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
+(** These downstream continuations support the conditional composition proof.
+    They are not part of the public native entry contract. *)
+Definition writeSuccessNativeProofAssumptions `{!islaG Sigma} `{!threadG}
     {State Decoded} (model : Level1MachineModel State Decoded)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    : iProp Sigma :=
+  (writeSuccessLoadWithFramePre model outputRelation args witness ∗
+   instr_pre 0x14d10 True ∗ True)%I.
+
+Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
   ((bv_unsigned (writeSuccessEntrySp witness) - 0x7d0) ↦ₘ? 1896 ∗
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
      writeSuccessDecodedBytes witness ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessCallerOutputEventsWithFrame (BV 64 0x179c5) (BV 64 6)
-     (writeSuccessTraceTail witness)) ∗
-   writeSuccessLoadWithFramePre model outputRelation args witness ∗
-   instr_pre 0x14d10 True ∗ True)%I.
+     (writeSuccessTraceTail witness)) ∗ True)%I.
 
 Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
-    {State Decoded} (model : Level1MachineModel State Decoded)
-    (outputRelation : WriteSuccessOutputRelation Decoded)
-    (args : WriteSuccessArgs Decoded) : iProp Sigma :=
+    {Decoded} (args : WriteSuccessArgs Decoded) : iProp Sigma :=
   (∃ witness : writeSuccessNativeWitness Decoded,
     ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
     write_success_prologue_entry
@@ -235,7 +239,7 @@ Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
       (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
       (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
       (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-      (writeSuccessProloguePayload model outputRelation args witness))%I.
+      (writeSuccessProloguePayload witness))%I.
 
 Definition writeSuccessNativeCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   writeSuccessCompleteNativeCode.
@@ -246,7 +250,7 @@ Definition writeSuccessNativeResources {State Decoded}
     `{!islaG Sigma} `{!threadG} :
     IslarisContractResources (WriteSuccessArgs Decoded) ByteString := {|
   islarisCode := writeSuccessNativeCode;
-  islarisEntry := writeSuccessNativeEntry model outputRelation;
+  islarisEntry := writeSuccessNativeEntry;
   islarisExit := writeSuccessTerminalResources outputRelation
 |}.
 
