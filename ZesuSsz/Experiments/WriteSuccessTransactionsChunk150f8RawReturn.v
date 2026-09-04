@@ -32,7 +32,6 @@ Lemma write_success_transactions_150fc_raw_return_adapter
        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 32))]
     (BV 64 0x150fc) sp
     (fun _ =>
-      reg_col ([(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]) ∗
       writeSuccessTransactions150f0Frame P sp base transaction transactions
         processed remaining bytes prefix suffix tail ∗
       writeSuccessTransactionsScratchRest150f8 sp base transactions processed transaction ∗
@@ -50,9 +49,10 @@ Lemma write_success_transactions_150fc_raw_return_adapter
       (bv_unsigned
         (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 168)) =
       BV 8 0 :: tagTail⌝ -∗
+  reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] -∗
   writeSuccessTransactionsAt150fcFramedSpec P.
 Proof.
-  iIntros "Hret" (Hshape).
+  iIntros "Hret" (Hshape) "Hcaller34".
   iEval (unfold zesu_c_call_ret) in "Hret".
   iDestruct "Hret" as "(Hsys & Htmp & Hsaved & Hrest)".
   iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "Hrest".
@@ -62,13 +62,13 @@ Proof.
   iDestruct "Hrest" as (b11) "(%Hr11Bits & H2 & Hstack & HQ)".
   subst r10 r11.
   iDestruct "HQ" as
-    "(Hcaller34 & Hframe & HscratchRest & Hvalue & Htag & Htail & Hmmio & Htrace & _)".
+    "(Hframe & HscratchRest & Hvalue & Htag & Htail & Hmmio & Htrace & _)".
   iEval (rewrite /reg_col /=) in "Htmp Hsaved".
+  iEval (rewrite /reg_col /=) in "Hcaller34".
+  iDestruct "Hcaller34" as "(H3 & H4 & _)".
   iDestruct "Htmp" as
     "(H1 & H12 & H13 & H14 & H15 & H16 & H17 & H5 & H6 & H7 & H28 & H29 &
       H30 & H31 & _)".
-  iEval (rewrite /reg_col /=) in "Hcaller34".
-  iDestruct "Hcaller34" as "(H3 & H4 & _)".
   iDestruct "Hsaved" as
     "(H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)".
   iDestruct "H8" as (v8) "(%Hv8 & H8)". subst v8.
@@ -85,7 +85,7 @@ Proof.
   iDestruct "H27" as (v27) "(%Hv27 & H27)". subst v27.
   iPoseProof (write_success_transactions_scratch_150f8_combine
     sp base transactions processed transaction tagTail
-    with "HscratchRest Hvalue Htag Htail") as "Hscratch".
+    with "HscratchRest Hstack Hvalue Htag Htail") as "Hscratch".
   iSpecialize ("Hscratch" with "[]").
   { iPureIntro. exact Hshape. }
   iExists sp, base, transaction, transactions, processed, remaining,

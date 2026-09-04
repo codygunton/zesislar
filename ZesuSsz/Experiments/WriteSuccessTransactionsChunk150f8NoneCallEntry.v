@@ -21,6 +21,7 @@ Lemma write_success_transactions_chunk_150f8_none_call_entry
       (bv_unsigned
         (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 168)) =
       BV 8 0 :: tagTail⌝ -∗
+  reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] -∗
   instr_pre (bv_unsigned (BV 64 0x150fc))
     (zesu_c_call_ret 32
       [RVal_Bits (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 192);
@@ -38,7 +39,6 @@ Lemma write_success_transactions_chunk_150f8_none_call_entry
          (WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 32))]
       (BV 64 0x150fc) sp
       (fun _ =>
-        reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
         writeSuccessTransactions150f0Frame P sp base transaction transactions
           processed remaining bytes prefix suffix tail ∗
         writeSuccessTransactionsScratchRest150f8 sp base transactions processed transaction ∗
@@ -53,15 +53,17 @@ Lemma write_success_transactions_chunk_150f8_none_call_entry
             (WriteSuccessTransactionsSpec.writeSuccessTransactionsEvents
               sp remaining tail)) ∗ True)).
 Proof.
-  iStartProof. iIntros "Hnext" (Hshape).
+  iStartProof. iIntros "Hnext" (Hshape) "Hcaller34".
   iEval (rewrite <- instr_pre'_eq) in "Hnext".
   iApply (instr_pre_wand 0x150fc 0x150fc false true with "Hnext");
     [done | reflexivity |].
   iIntros "Hpost".
   iPoseProof (write_success_transactions_150fc_raw_return_adapter P
     sp base transaction transactions processed remaining bytes prefix suffix
-    tail tagTail with "Hpost") as "Hpost".
-  iSpecialize ("Hpost" with "[]").
+    tail tagTail) as "Hraw".
+  iSpecialize ("Hraw" with "Hpost").
+  iSpecialize ("Hraw" with "[]").
   { iPureIntro. exact Hshape. }
-  iExact "Hpost".
+  iSpecialize ("Hraw" with "Hcaller34").
+  iExact "Hraw".
 Qed.
