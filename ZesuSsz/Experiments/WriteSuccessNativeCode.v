@@ -1,0 +1,42 @@
+From Coq Require Import Lists.List.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_00 Require Import instrs.
+From IslaTraces.write_success_01 Require Import instrs.
+From IslaTraces.write_success_02 Require Import instrs.
+From IslaTraces.write_success_03 Require Import instrs.
+From IslaTraces.write_success_04 Require Import instrs.
+From IslaTraces.write_success_05 Require Import instrs.
+From IslaTraces.write_success_06 Require Import instrs.
+From IslaTraces.write_success_07 Require Import instrs.
+From IslaTraces.write_success_08 Require Import instrs.
+From IslaTraces.write_success_127 Require Import instrs.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Contracts.IslarisCode.
+
+(** All executable code used by the native [writeSuccess] proof. *)
+Definition writeSuccessCompleteNativeCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (([∗ list] instruction ∈ IslaTraces.write_success_00.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup ∗
+   IslaTraces.write_success_blocks.Index.spec_instr_resources ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_04.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_08.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)) ∗
+   ([∗ list] instruction ∈ IslaTraces.write_success_127.instrs.instr_map,
+      instr instruction.1 (Some instruction.2)))%I.
+
+Global Instance : LithiumUnfold (@writeSuccessCompleteNativeCode) := I.
