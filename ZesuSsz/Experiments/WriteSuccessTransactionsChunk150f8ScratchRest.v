@@ -1,6 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8.
 Import ListNotations.
@@ -83,4 +84,52 @@ Proof.
   - rewrite /writeSuccessTransactionsScratchRest150f8.
     iFrame.
   - iFrame.
+Qed.
+
+Lemma write_success_transactions_scratch_150f8_combine
+    `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z)
+    (transactions processed :
+      list WriteSuccessTransactionsSpec.writeSuccessTransaction)
+    (transaction : WriteSuccessTransactionsSpec.writeSuccessTransaction)
+    (tagTail : list (bv 8)) :
+  writeSuccessTransactionsScratchRest150f8 sp base transactions processed transaction -∗
+  (bv_unsigned sp + 1664) ↦ₘ
+    WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 160 -∗
+  (bv_unsigned sp + 1672) ↦ₘ BV 8 0 -∗
+  (bv_unsigned sp + 1673) ↦ₘ∗ tagTail -∗
+  ⌜bv_to_little_endian 8 8
+      (bv_unsigned
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 168)) =
+      BV 8 0 :: tagTail⌝ -∗
+  writeSuccessTransactionsScratch150e8 sp base transactions processed transaction.
+Proof.
+  iIntros "Hrest Hvalue Htag Htail" (Hshape).
+  iEval (rewrite -mem_mapsto_array_singleton) in "Htag".
+  have HtagAddr :
+      (bv_unsigned sp + 1672 + Z.of_N (8 `div` 8) * 1)%Z =
+      bv_unsigned sp + 1673 by cbn; lia.
+  iEval (rewrite <- HtagAddr) in "Htail".
+  iPoseProof (mem_mapsto_array_app_combine 8%N (bv_unsigned sp + 1672)
+    (DfracOwn 1) [BV 8 0] tagTail with "Htag Htail") as "HtagArray".
+  iPoseProof (mem_mapsto_byte_array_to_mapsto
+    (bv_unsigned sp + 1672) (DfracOwn 1) ([BV 8 0] ++ tagTail)
+    with "HtagArray") as "HtagWord".
+  have HtagLen : length ([BV 8 0] ++ tagTail) = 8%nat.
+  { pose proof (f_equal (@length (bv 8)) Hshape) as Hlen.
+    rewrite length_bv_to_little_endian in Hlen; [|lia].
+    cbn in Hlen. symmetry. exact Hlen. }
+  have HtagRound :
+      Z_to_bv 64
+        (little_endian_to_bv 8 ([BV 8 0] ++ tagTail)) =
+      WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 168.
+  { pose proof (Z_to_bv_little_endian_to_bv_to_little_endian
+      64 8 8
+      (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 168)
+      ltac:(lia) ltac:(cbn; lia)) as Hround.
+    rewrite Hshape in Hround. exact Hround. }
+  iEval (rewrite HtagLen HtagRound) in "HtagWord".
+  iEval (rewrite /writeSuccessTransactionsScratchRest150f8) in "Hrest".
+  iEval (rewrite /writeSuccessTransactionsScratch150e8).
+  iFrame.
 Qed.
