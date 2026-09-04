@@ -86,13 +86,16 @@ Lemma write_success_transactions_loop_exit_events_handoff
 Proof.
   iStartProof. iIntros "Hexit".
   iExists sp, base, transactions, bytes, tail, first, second, items.
-  iEval (unfold writeSuccessTransactionsLoopExitEvents;
-    unfold writeSuccessTransactionsLoopExitEventsFrame) in "Hexit".
+  iEval (unfold writeSuccessTransactionsLoopExitEvents) in "Hexit".
   iDestruct "Hexit" as
-    "(Hsys & Hother & H2 & H10 & H11 & Harray & Hown & HscratchLower &
-      HscratchBase & HscratchLength & HscratchPrefix & HscratchFirst & HscratchSecond &
-      HscratchSuffix & Hitems & %Hfacts & Hmmio & Htrace & HcallStack &
-      %HspAlign16 & %HspAlign8 & %HspLower & %HspUpper & HP)".
+    "(Hsys & Hother & H2 & H10 & H11 & Harray & Hown & Hframe)".
+  iEval (unfold writeSuccessTransactionsLoopExitEventsFrame) in "Hframe".
+  iDestruct "Hframe" as "(Hscratch & Hmmio & Htrace & HP)".
+  iEval (unfold writeSuccessTransactionsEventScratch) in "Hscratch".
+  iDestruct "Hscratch" as
+    "(HscratchLower & HscratchBase & HscratchLength & HscratchPrefix & HscratchFirst &
+      HscratchSecond & HscratchSuffix & Hitems & %Hfacts & HcallStack & %HspAlign16 &
+      %HspAlign8 & %HspLower & %HspUpper)".
   destruct Hfacts as
     (HsecondLength & HitemsLength & HfirstAlign & HfirstLower & HfirstUpper &
      HspExtract & HspCallLower & HspMax).
