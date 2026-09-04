@@ -9,6 +9,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15668.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15668.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
 Require Import IslaTraces.write_success_87.a15668_spec.
 
 Definition writeSuccessTransactionsPostAt15668EventsSpec
@@ -73,6 +74,30 @@ Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostAt15668EventsSpec) := I.
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostAt1566cEventsSpec) := I.
+
+Lemma write_success_transactions_loop_exit_events_handoff
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
+    (bytes : list (bv 8)) (tail : spec) (first second : bv 64)
+    (items : list ByteListItem) :
+  writeSuccessTransactionsLoopExitEvents P sp base transactions bytes tail
+    first second items -∗
+  writeSuccessTransactionsPostAt15668EventsSpec P.
+Proof.
+  iStartProof. iIntros "Hexit".
+  iExists sp, base, transactions, bytes, tail, first, second, items.
+  iEval (unfold writeSuccessTransactionsLoopExitEvents) in "Hexit".
+  iDestruct "Hexit" as
+    "(Hsys & Hother & H2 & H10 & H11 & Harray & Hown & HscratchLower &
+      HscratchBase & HscratchLength & HscratchPrefix & HscratchFirst & HscratchSecond &
+      HscratchSuffix & Hitems & %Hfacts & Hmmio & Htrace & HcallStack &
+      %HspAlign16 & %HspAlign8 & %HspLower & %HspUpper & HP)".
+  destruct Hfacts as
+    (HsecondLength & HitemsLength & HfirstAlign & HfirstLower & HfirstUpper &
+     HspExtract & HspCallLower & HspMax).
+  iFrame.
+  repeat iSplit; try iPureIntro; try assumption; try iExact "HP".
+Qed.
 
 Lemma write_success_transactions_post_15668_events
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
