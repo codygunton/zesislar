@@ -32,7 +32,7 @@ Fixpoint writeSuccessStorageKeysEvents (sp : bv 64) (count : nat)
 Definition writeSuccessStorageKeysOtherRegisters : list string :=
   ["x1"; "x3"; "x4"; "x5"; "x6"; "x7"; "x8"; "x9";
    "x10"; "x11"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
-   "x18"; "x19"; "x20"; "x21"; "x23"; "x24"; "x25"; "x26";
+   "x18"; "x20"; "x21"; "x23"; "x24"; "x25"; "x26";
    "x28"; "x29"; "x30"; "x31"].
 
 Definition writeSuccessStorageKeysOtherRegShapes :
@@ -51,11 +51,12 @@ Definition writeSuccessStorageKeysScratch `{!islaG Sigma}
 Global Instance : LithiumUnfold (@writeSuccessStorageKeysScratch) := I.
 
 Definition writeSuccessStorageKeysLoopExit `{!islaG Sigma} `{!threadG}
-    (sp : bv 64) (base : Z) (total : nat) (bytes : list (bv 8))
+    (x19 sp : bv 64) (base : Z) (total : nat) (bytes : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (∃ pointer : bv 64,
     reg_col zesu_ram_sys_regs ∗
     reg_col writeSuccessStorageKeysOtherRegShapes ∗
+    "x19" ↦ᵣ RVal_Bits x19 ∗
     "x2" ↦ᵣ RVal_Bits sp ∗ "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (BV 64 0) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
@@ -65,12 +66,13 @@ Definition writeSuccessStorageKeysLoopExit `{!islaG Sigma} `{!threadG}
 Global Instance : LithiumUnfold (@writeSuccessStorageKeysLoopExit) := I.
 
 Definition writeSuccessStorageKeysLoopSpec `{!islaG Sigma} `{!threadG}
-    (P : iProp Sigma) : iProp Sigma :=
+    (x19 : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp pointer : bv 64) (base : Z)
       (total processed remaining : nat) (bytes : list (bv 8))
       (tail : spec),
     reg_col zesu_ram_sys_regs ∗
     reg_col writeSuccessStorageKeysOtherRegShapes ∗
+    "x19" ↦ᵣ RVal_Bits x19 ∗
     "x2" ↦ᵣ RVal_Bits sp ∗ "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
@@ -79,17 +81,18 @@ Definition writeSuccessStorageKeysLoopSpec `{!islaG Sigma} `{!threadG}
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
     instr_pre 0x153b4
-      (writeSuccessStorageKeysLoopExit sp base total bytes tail P) ∗ True)%I.
+      (writeSuccessStorageKeysLoopExit x19 sp base total bytes tail P) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessStorageKeysLoopSpec) := I.
 
 Definition writeSuccessStorageKeysTailSpec `{!islaG Sigma} `{!threadG}
-    (P : iProp Sigma) : iProp Sigma :=
+    (x19 : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp pointer : bv 64) (base : Z)
       (total processed remaining : nat) (bytes : list (bv 8))
       (tail : spec),
     reg_col zesu_ram_sys_regs ∗
     reg_col writeSuccessStorageKeysOtherRegShapes ∗
+    "x19" ↦ᵣ RVal_Bits x19 ∗
     "x2" ↦ᵣ RVal_Bits sp ∗ "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
@@ -98,7 +101,7 @@ Definition writeSuccessStorageKeysTailSpec `{!islaG Sigma} `{!threadG}
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
     instr_pre 0x153b4
-      (writeSuccessStorageKeysLoopExit sp base total bytes tail P) ∗ True)%I.
+      (writeSuccessStorageKeysLoopExit x19 sp base total bytes tail P) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessStorageKeysTailSpec) := I.
 

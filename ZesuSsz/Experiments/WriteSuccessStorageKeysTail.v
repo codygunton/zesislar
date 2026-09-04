@@ -20,12 +20,12 @@ Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
           typeclasses eauto ] : typeclass_instances.
 
 Lemma write_success_storage_keys_tail `{!islaG Sigma} `{!threadG}
-    (P : iProp Sigma) :
+    (x19 : bv 64) (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
-  □ instr_pre 0x15228 (writeSuccessStorageKeysLoopSpec P) -∗
-  instr_body 0x153a8 (writeSuccessStorageKeysTailSpec P).
+  □ instr_pre 0x15228 (writeSuccessStorageKeysLoopSpec x19 P) -∗
+  instr_body 0x153a8 (writeSuccessStorageKeysTailSpec x19 P).
 Proof.
   move => *.
   iStartProof.

@@ -19,11 +19,12 @@ Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
         | change (FindInContext (FindInstrKind reduced later) FICSyntactic);
           typeclasses eauto ] : typeclass_instances.
 
-Lemma write_success_storage_keys_p `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+Lemma write_success_storage_keys_p `{!islaG Sigma} `{!threadG}
+    (x19 : bv 64) (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  instr_body 0x152dc (writeSuccessStorageKeysLoopSpec P) -∗
-  instr_body 0x152b4 (writeSuccessStorageKeysLoopSpec P).
+  instr_body 0x152dc (writeSuccessStorageKeysLoopSpec x19 P) -∗
+  instr_body 0x152b4 (writeSuccessStorageKeysLoopSpec x19 P).
 Proof.
   prove_write_success_storage_segment 0x152dc.
   Unshelve. all: solve_write_success_storage_obligation.
