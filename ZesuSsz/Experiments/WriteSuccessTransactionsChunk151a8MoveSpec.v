@@ -22,7 +22,7 @@ Lemma write_success_transactions_151a8_move_spec
   instr_body pc (writeSuccessTransactions151a8MoveSpec pc).
 Proof.
   iStartProof.
-  repeat liAStep; liShow.
+  liARun.
   Unshelve. all: prepare_sidecond.
   all: try bv_solve; try lia.
 Qed.
