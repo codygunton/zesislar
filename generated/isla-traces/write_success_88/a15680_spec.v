@@ -19,7 +19,7 @@ Lemma a15680_spec `{!islaG Σ} `{!threadG} pc:
   ⊢ instr_body pc (a15680_addi_spec pc).
 Proof.
   iStartProof.
-  repeat liAStep; liShow.
+  repeat liAStep.
   Unshelve. all: prepare_sidecond.
   all: (try bv_solve; try lia).
 Qed.
