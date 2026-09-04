@@ -6,6 +6,7 @@ Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk1519cAdapter.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Remove Hints find_body_a151a4_inst : typeclass_instances.
@@ -33,49 +34,41 @@ Proof.
   all: try iFrame.
   Unshelve.
   all: repeat iIntros "?"; liARun.
-  all: iRename select
-    (WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant
-      sp base transactions processed (transaction :: remaining) bytes prefix suffix)%I
-    into "Hinv".
-  all: iPoseProof "Hinv" as "#HinvCopy".
+  all: iRename select (base ↦ₘ∗ prefix ∗ _)%I into "Hphase".
+  all: iDestruct "Hphase" as
+    "(Hprefix & Hsuffix & Hprocessed & Htransaction & Hremaining & Hmmio &
+      Htrace & HP & Hinv & Hexit & _)".
+  all: iPoseProof "Hinv" as "#HinvKeep".
+  all: iPoseProof "HinvKeep" as "#HinvCopy".
   all: iEval
     (unfold WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant)
     in "HinvCopy".
   all: iDestruct "HinvCopy" as
     "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
-  all: have Hsp128 : bv_unsigned (sp + 128) = bv_unsigned sp + 128 by
-    (rewrite bv_add_unsigned bv_unsigned_BV;
-     apply bv_wrap_small;
-     pose proof (bv_unsigned_in_range 64 sp);
-     pose proof (bv_unsigned_in_range 64 (BV 64 128));
-     unfold bv_modulus in *; cbn in *; lia).
-  all: have Hextract128 : bv_extract 0 3 (sp + 128) = 0%bv by
-    bv_solve.
   all: iRename select ("x5" ↦ᵣ _)%I into "Hx5".
   all: iRename select ("x10" ↦ᵣ _)%I into "Hx10".
-  all: unLET;
-    iExists (tail, suffix, prefix, bytes, remaining, processed, transactions,
-      transaction, base, sp, tt)ₗ;
-    iSplit; [iPureIntro; exact Hextract128|];
-    iSplit; [iPureIntro; rewrite Hsp128; rewrite !bv_unsigned_BV; lia|];
-    iSplit; [iPureIntro; rewrite Hsp128; rewrite !bv_unsigned_BV; lia|];
-    iEval (unfold writeSuccessTransactionsMachine151a0);
-    iEval (unfold writeSuccessTransactionsMachine1519c);
-    rewrite /reg_col;
-    cbn;
-    iFrame;
-    iSplitL "Hx5".
-    - iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def).
-      iExists (RVal_Bits b). iFrame "Hx5". iPureIntro. cbn. reflexivity.
-    - iEval (cbn) in "Hx10".
-      set v :=
-        WriteSuccessTransactionsSpec.writeSuccessTransactionWord
-          transaction 48.
-      have -> : (v + 0)%bv = v.
-      { apply (bv_add_0_r v (bv_0 64)). apply bv_0_unsigned. }
-      iFrame.
+  all: unLET.
+  all: iApply (write_success_transactions_chunk_1519c_adapter
+    P sp base transaction transactions processed remaining bytes prefix suffix tail
+    Halign Hmin Hmax).
+  all: iEval (unfold
+    WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff).
+  all: iSplitR
+    "Hprefix Hsuffix Hprocessed Htransaction Hremaining Hmmio Htrace HP HinvKeep Hexit".
+  - all: iEval (unfold writeSuccessTransactionsMachine151a0).
+    all: iEval (unfold writeSuccessTransactionsMachine1519c).
+    all: iEval (rewrite ->@bv_add_0_r by done) in "Hx10".
+    all: rewrite /reg_col; cbn; iFrame.
+    all: repeat iSplit; try (iPureIntro; cbn; done).
+    all: try (iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def);
+      iExists (RVal_Bits b); iFrame "Hx5"; iPureIntro; cbn; reflexivity).
+  - all: iFrame.
   Unshelve.
+  all: try assumption.
+  all: try bv_solve.
   all: try prepare_sidecond.
   all: try assumption.
   all: try bv_solve.
+  Unshelve.
+  all: iExact "HinvKeep".
 Qed.
