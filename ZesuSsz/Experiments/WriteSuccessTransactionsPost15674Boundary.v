@@ -58,12 +58,15 @@ Definition writeSuccessTransactionsPost15674CallEntrySpec
     reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
       writeSuccessTransactionsPost15674Saved saved) ∗
     ⌜length saved = 12%nat⌝ ∗
+    ⌜Forall (fun v => valu_has_shape v (BitsShape 64)) saved⌝ ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674ReturnOther) ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15670) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
     "x10" ↦ᵣ RVal_Bits first ∗
     "x11" ↦ᵣ RVal_Bits second ∗
+    (bv_unsigned sp - 80) ↦ₘ? 80 ∗
+    (bv_unsigned sp) ↦ₘ? 104 ∗
     (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
     (bv_unsigned sp + 112) ↦ₘ Z_to_bv 64 (Z.of_nat (length transactions)) ∗
     (bv_unsigned sp + 120) ↦ₘ? 984 ∗

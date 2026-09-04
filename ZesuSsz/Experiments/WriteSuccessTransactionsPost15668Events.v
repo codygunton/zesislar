@@ -17,6 +17,7 @@ Definition writeSuccessTransactionsPostAt15668EventsSpec
       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)
       ((bv_unsigned sp) ↦ₘ? 104 ∗
        (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
+       (bv_unsigned sp - 80) ↦ₘ? 32 ∗
        ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
        ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
        ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
@@ -35,6 +36,7 @@ Definition writeSuccessTransactionsPostAt1566cEventsSpec
     mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ((bv_unsigned sp) ↦ₘ? 104 ∗ (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
+     (bv_unsigned sp - 80) ↦ₘ? 32 ∗
      ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
      ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
      ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P) ∗ True)%I.
@@ -63,7 +65,7 @@ Proof.
   iDestruct "Hentry" as (sp base transactions bytes tail)
     "(Hsys & Hother & H2 & H10 & H11 & Harray & Hown & Hscratch & Hmmio &
       Htrace & Hq & _)".
-  iDestruct "Hq" as "(HlowerFrame & HsavedFrame & %HspAlign16 & %HspAlign8 &
+  iDestruct "Hq" as "(HlowerFrame & HsavedFrame & HcallStack & %HspAlign16 & %HspAlign8 &
     %HspLower & %HspUpper & HP)".
   iEval (rewrite /writeSuccessTransactionsScratch) in "Hscratch".
   iDestruct "Hscratch" as
@@ -92,6 +94,6 @@ Proof.
   iDestruct "Hpost" as "(HsysPost & H10Post & H2Post & HloadPost & _)".
   iFrame "HsysPost H10Post H2Post HloadPost H11 Hother Harray Hown
     HscratchLower HscratchBase HscratchLength HscratchPrefix HscratchSuffix
-    Hmmio Htrace HlowerFrame HsavedFrame HP".
+    Hmmio Htrace HlowerFrame HsavedFrame HcallStack HP".
   repeat iSplit; try iPureIntro; try assumption; try lia.
 Qed.

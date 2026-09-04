@@ -21,6 +21,7 @@ Definition writeSuccessTransactionsPostAt15674EventsSpec
       first second ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ((bv_unsigned sp) ↦ₘ? 104 ∗ (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
+     (bv_unsigned sp - 80) ↦ₘ? 32 ∗
      ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
      ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
      ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P) ∗ True)%I.

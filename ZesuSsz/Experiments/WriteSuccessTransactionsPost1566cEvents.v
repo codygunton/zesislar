@@ -23,6 +23,7 @@ Definition writeSuccessTransactionsPostAt15670EventsSpec
       first second ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ((bv_unsigned sp) ↦ₘ? 104 ∗ (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
+     (bv_unsigned sp - 80) ↦ₘ? 32 ∗
      ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
      ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
      ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P) ∗ True)%I.
@@ -52,7 +53,7 @@ Proof.
     (KindReg "x1", BitsShape 64) with "Hother") as (ra Hra) "(Hx1 & Hother)".
   { vm_compute. reflexivity. }
   apply valu_has_bits_shape in Hra as (raBits & ->).
-  iDestruct "Hq" as "(HlowerFrame & HsavedFrame & %HspAlign16 & %HspAlign8 &
+  iDestruct "Hq" as "(HlowerFrame & HsavedFrame & HcallStack & %HspAlign16 & %HspAlign8 &
     %HspLower & %HspUpper & HP)".
   iEval (rewrite /writeSuccessTransactionsPostScratch1566c) in "Hscratch".
   iDestruct "Hscratch" as
@@ -78,6 +79,6 @@ Proof.
   iDestruct "Hpost" as "(HsysPost & H11Post & H2Post & HloadPost & _)".
   iFrame "HsysPost H10 H11Post H2Post HloadPost Hx1 Hother Harray Hown
     HscratchLower HscratchBase HscratchLength HscratchPrefix HscratchFirst
-    HscratchSuffix Hmmio Htrace HlowerFrame HsavedFrame HP".
+    HscratchSuffix Hmmio Htrace HlowerFrame HsavedFrame HcallStack HP".
   repeat iSplit; try iPureIntro; try assumption; try lia.
 Qed.
