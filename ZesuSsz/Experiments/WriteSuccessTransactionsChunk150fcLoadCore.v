@@ -11,6 +11,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150fcLoadSpec.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
+Local Opaque WriteSuccessTransactionsSpec.writeSuccessTransactionOwn.
 
 Lemma write_success_transactions_chunk_150fc_load_core
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -38,21 +39,17 @@ Proof.
   all: try iFrame.
   Unshelve.
   all: repeat iIntros "?".
+  all: iRename select (writeSuccessTransactionOwn transaction) into
+    "HtransactionOwn".
   all: iDestruct select (_ ∗ _)%I as
     "(Hremaining & Hmmio & Htrace & HP & Hinvariant & Hexit & _)".
   all: iPoseProof "Hinvariant" as "#HinvariantCopy".
-  all: iPoseProof "HinvariantCopy" as "#HinvariantKeep".
   all: iDestruct "HinvariantCopy" as
     "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
   all: have Halign8 := write_success_transactions_stack_aligned_8 sp Halign.
   all: have Hmin272 : 0x20000000 <= bv_unsigned sp + 272 by lia.
   all: have Hmax272 : bv_unsigned sp + 272 < 0x40000000 by lia.
   all: liARun.
-  all: iEval (unfold writeSuccessTransactions15100LoadPost,
-    WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff,
-    writeSuccessTransactionsMachine15100).
-  all: iFrame "HinvariantKeep".
-  all: iFrame.
   Unshelve.
   all: try prepare_sidecond.
   all: try assumption.
