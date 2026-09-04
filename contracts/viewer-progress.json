@@ -5,12 +5,12 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "Five nested loops and several transaction path segments are proved. The remaining access-list and transaction leaves are in progress."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The access-list composition and transaction value load are proved. The U256 call and transaction loop composition remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
     {"owner": "fi:1:3e96", "status": "proof_in_progress", "condition": "The transaction loop proof is in progress."},
-    {"owner": "fi:1:3fdd", "status": "proof_in_progress", "condition": "The storage-key and blob-hash loops are proved. The access-list proof is in progress."},
+    {"owner": "fi:1:3fdd", "status": "unconditionally_proven", "theorem": "write_success_access_lists_loop_pre"},
     {"owner": "fi:1:406f", "status": "unconditionally_proven", "theorem": "write_success_authorizations_loop"},
     {"owner": "fi:1:40af", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
     {"owner": "fi:1:4116", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"},
@@ -27,8 +27,8 @@
     "endPc": "0x15a14"
   },
   "proofRegions": [
-    {"label": "Transaction loop work", "startPc": "0x14f04", "endPc": "0x15664", "status": "proof_in_progress", "condition": "The leaf proofs and their composition are in progress."},
-    {"label": "Access-list loop work", "startPc": "0x151d4", "endPc": "0x153c0", "status": "proof_in_progress", "condition": "The outer access-list proof is in progress."},
+    {"label": "Transaction loop work", "startPc": "0x14f04", "endPc": "0x15664", "status": "proof_in_progress", "condition": "The 0x151ac U256 call and final transaction composition remain."},
+    {"label": "Access-list composition", "startPc": "0x151d0", "endPc": "0x153c0", "status": "unconditionally_proven", "theorem": "write_success_transactions_access_lists"},
     {"label": "Transaction entry path", "startPc": "0x14f08", "endPc": "0x14fc8", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14f08"},
     {"label": "Transaction prefix assembly", "startPc": "0x14fc8", "endPc": "0x14fe0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14fc8_to_14fe0"},
     {"label": "Transaction byte 268 load", "startPc": "0x14fe0", "endPc": "0x14fe4", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_14fe0"},
@@ -42,6 +42,7 @@
     {"label": "Transaction output return", "startPc": "0x150e8", "endPc": "0x150f0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150e8"},
     {"label": "Transaction call continuation", "startPc": "0x150fc", "endPc": "0x15118", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150fc"},
     {"label": "Transaction gas-limit call", "startPc": "0x15148", "endPc": "0x15154", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_15148"},
+    {"label": "Transaction value load", "startPc": "0x1519c", "endPc": "0x151ac", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_151a0_to_151ac"},
     {"label": "Transaction data call", "startPc": "0x151b4", "endPc": "0x151c4", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_151b4"},
     {"label": "Transaction access-count call", "startPc": "0x151c4", "endPc": "0x151d0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_151c4"},
     {"label": "Access-list entry loads", "startPc": "0x1521c", "endPc": "0x15224", "status": "unconditionally_proven", "theorem": "write_success_access_lists_chunk_1521c"},
