@@ -309,7 +309,6 @@ Proof.
       "Hmachine Hprefix Hsuffix Hprocessed Htransaction Hremaining Hmmio Htrace
        HP Hinvariant Hexit".
     all: done.
-    all: lazymatch goal with |- ?G => fail "casezero" G end.
   - have Hcount :
         bv_unsigned
           (WriteSuccessTransactionsSpec.writeSuccessTransactionWord
