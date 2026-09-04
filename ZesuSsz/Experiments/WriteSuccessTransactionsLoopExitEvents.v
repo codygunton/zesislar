@@ -60,33 +60,45 @@ Definition writeSuccessTransactionsLoopExitEvents
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopExitEvents) := I.
 
+Definition writeSuccessTransactionsLoopEventsFrame
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (base : Z)
+    (transactions processed remaining : list writeSuccessTransaction)
+    (bytes prefix suffix : list (bv 8)) (tail : spec) (first second : bv 64)
+    (items : list ByteListItem) (exit : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   reg_col writeSuccessTransactionsOtherRegShapes ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length processed))) ∗
+   base ↦ₘ∗ prefix ∗
+   (base + 288 * Z.of_nat (length processed)) ↦ₘ∗ suffix ∗
+   writeSuccessTransactionsOwn processed ∗
+   writeSuccessTransactionsOwn remaining ∗
+   writeSuccessTransactionsEventScratch sp base transactions first second items ∗
+   mmio_range 0x2401a0c0 16 ∗
+   spec_trace (writeSuccessTransactionsEvents sp remaining
+     (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+       (byteListItemEvents (sp - BV 64 32)%bv items
+         (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗
+   P ∗
+   writeSuccessTransactionsInvariant
+     sp base transactions processed remaining bytes prefix suffix ∗
+   instr_pre writeSuccessTransactionsLoopExitAddress exit ∗ True)%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsLoopEventsFrame) := I.
+
 Definition writeSuccessTransactionsLoopEventsSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp : bv 64) (base : Z)
       (transactions processed remaining : list writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec) (first second : bv 64)
       (items : list ByteListItem),
-    reg_col zesu_ram_sys_regs ∗
-    reg_col writeSuccessTransactionsOtherRegShapes ∗
-    "x2" ↦ᵣ RVal_Bits sp ∗
-    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
-    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length processed))) ∗
-    base ↦ₘ∗ prefix ∗
-    (base + 288 * Z.of_nat (length processed)) ↦ₘ∗ suffix ∗
-    writeSuccessTransactionsOwn processed ∗
-    writeSuccessTransactionsOwn remaining ∗
-    writeSuccessTransactionsEventScratch sp base transactions first second items ∗
-    mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeSuccessTransactionsEvents sp remaining
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (byteListItemEvents (sp - BV 64 32)%bv items
-          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗
-    P ∗
-    writeSuccessTransactionsInvariant
-      sp base transactions processed remaining bytes prefix suffix ∗
-    instr_pre writeSuccessTransactionsLoopExitAddress
+    writeSuccessTransactionsLoopEventsFrame P sp base transactions processed
+      remaining bytes prefix suffix tail first second items
       (writeSuccessTransactionsLoopExitEvents P sp base transactions bytes tail
-        first second items) ∗ True)%I.
+        first second items))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopEventsSpec) := I.
