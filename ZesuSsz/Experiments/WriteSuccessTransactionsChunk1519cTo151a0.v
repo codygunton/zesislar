@@ -33,11 +33,32 @@ Proof.
   all: try iFrame.
   Unshelve.
   all: repeat iIntros "?"; liARun.
+  all: iRename select
+    (WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant
+      sp base transactions processed (transaction :: remaining) bytes prefix suffix)%I
+    into "Hinv".
+  all: iPoseProof "Hinv" as "#HinvCopy".
+  all: iEval
+    (unfold WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant)
+    in "HinvCopy".
+  all: iDestruct "HinvCopy" as
+    "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
+  all: have Hsp128 : bv_unsigned (sp + 128) = bv_unsigned sp + 128 by
+    (rewrite bv_add_unsigned bv_unsigned_BV;
+     apply bv_wrap_small;
+     pose proof (bv_unsigned_in_range 64 sp);
+     pose proof (bv_unsigned_in_range 64 (BV 64 128));
+     unfold bv_modulus in *; cbn in *; lia).
+  all: have Hextract128 : bv_extract 0 3 (sp + 128) = 0%bv by
+    bv_solve.
   all: iRename select ("x5" ↦ᵣ _)%I into "Hx5".
   all: iRename select ("x10" ↦ᵣ _)%I into "Hx10".
   all: unLET;
     iExists (tail, suffix, prefix, bytes, remaining, processed, transactions,
       transaction, base, sp, tt)ₗ;
+    iSplit; [iPureIntro; exact Hextract128|];
+    iSplit; [iPureIntro; rewrite Hsp128; rewrite !bv_unsigned_BV; lia|];
+    iSplit; [iPureIntro; rewrite Hsp128; rewrite !bv_unsigned_BV; lia|];
     iEval (unfold writeSuccessTransactionsMachine151a0);
     iEval (unfold writeSuccessTransactionsMachine1519c);
     rewrite /reg_col;
