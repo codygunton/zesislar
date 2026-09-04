@@ -16,21 +16,7 @@ Lemma write_success_transactions_chunk_150f8_none_call_entry
       list WriteSuccessTransactionsSpec.writeSuccessTransaction)
     (bytes prefix suffix : list (bv 8)) (tail : spec)
     (tagTail : list (bv 8)) :
-  instr_body 0x150fc (writeSuccessTransactionsAt150fcFramedSpec P) -∗
-  reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] -∗
-  writeSuccessTransactions150f0Frame P sp base transaction transactions
-    processed remaining bytes prefix suffix tail -∗
-  writeSuccessTransactionsScratchRest150f8 sp base transactions processed transaction -∗
-  (bv_unsigned sp + 1664) ↦ₘ
-    (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 160) -∗
-  (bv_unsigned sp + 1672) ↦ₘ BV 8 0 -∗
-  (bv_unsigned sp + 1673) ↦ₘ∗ tagTail -∗
-  mmio_range 0x2401a0c0 16 -∗
-  spec_trace
-    (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
-      WriteSuccessTransactionsSpec.TransactionNonce sp transaction
-      (WriteSuccessTransactionsSpec.writeSuccessTransactionsEvents
-        sp remaining tail)) -∗
+  instr_pre'_def false 0x150fc (writeSuccessTransactionsAt150fcFramedSpec P) -∗
   ⌜bv_to_little_endian 8 8
       (bv_unsigned
         (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 168)) =
@@ -67,7 +53,8 @@ Lemma write_success_transactions_chunk_150f8_none_call_entry
             (WriteSuccessTransactionsSpec.writeSuccessTransactionsEvents
               sp remaining tail)) ∗ True)).
 Proof.
-  iStartProof. iIntros "Hnext Hcaller34 Hframe Hscratch Hvalue Htag Htail Hmmio Htrace" (Hshape).
+  iStartProof. iIntros "Hnext" (Hshape).
+  iEval (rewrite <- instr_pre'_eq) in "Hnext".
   iApply (instr_pre_wand 0x150fc 0x150fc false true with "Hnext");
     [done | reflexivity |].
   iIntros "Hpost".
