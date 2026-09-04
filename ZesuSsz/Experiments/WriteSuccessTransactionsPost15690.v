@@ -16,6 +16,36 @@ Definition writeSuccessTransactionsPost15690BranchSpec
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPost15690BranchSpec) := I.
 
+Definition writeSuccessTransactionsPost15690NonzeroSpec
+    `{!islaG Sigma} `{!threadG} (pc : Z) : iProp Sigma :=
+  (∃ data : bv 64,
+    reg_col zesu_ram_sys_regs ∗ "x9" ↦ᵣ RVal_Bits data ∗
+    ⌜data <> BV 64 0⌝ ∗
+    instr_pre (pc + 4)
+      (reg_col zesu_ram_sys_regs ∗ "x9" ↦ᵣ RVal_Bits data ∗ True))%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsPost15690NonzeroSpec) := I.
+
+Lemma write_success_transactions_post_15690_nonzero_spec
+    `{!islaG Sigma} `{!threadG} :
+  instr 0x15690 (Some IslaTraces.write_success_89.a15690.a15690) -∗
+  instr_body 0x15690 (writeSuccessTransactionsPost15690NonzeroSpec 0x15690).
+Proof.
+  iStartProof.
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try bv_solve.
+  all: try (apply bv_eq; rewrite bv_and_unsigned; rewrite bv_unsigned_BV;
+    assumption).
+  all: try (exfalso; apply H; bv_solve).
+  Unshelve. all: try liARun.
+  all: try iFrame.
+  all: try prepare_sidecond.
+  all: try bv_solve.
+  Unshelve. all: try (exfalso; apply H0; reflexivity).
+Qed.
+
 Lemma write_success_transactions_post_15690_branch_spec
     `{!islaG Sigma} `{!threadG} :
   instr 0x15690 (Some IslaTraces.write_success_89.a15690.a15690) -∗
