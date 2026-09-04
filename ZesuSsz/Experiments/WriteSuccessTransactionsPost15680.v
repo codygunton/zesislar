@@ -4,7 +4,10 @@ From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1567c.
+Require Import IslaTraces.write_success_88.a15680_spec.
 
 Definition writeSuccessTransactionsPostAt15684Spec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -17,6 +20,7 @@ Definition writeSuccessTransactionsPostAt15684Spec
       writeSuccessTransactionsPost15674Caller) ∗
     reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
       writeSuccessTransactionsPost1567cSavedTail saved) ∗
+    ⌜length saved = 10%nat⌝ ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674ReturnOther) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
@@ -29,6 +33,7 @@ Definition writeSuccessTransactionsPostAt15684Spec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
     mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
@@ -47,24 +52,29 @@ Proof.
   { iPureIntro.
     rewrite IslaTraces.write_success_blocks.Index.lookup_a15680.
     done. }
+  iPoseProof (IslaTraces.write_success_88.a15680_spec.a15680_spec
+    0x15680 with "Hinstr15680") as "Hmv".
   rewrite instr_pre'_eq. iIntros "Hentry".
   iEval (rewrite /writeSuccessTransactionsPostAt15680Spec) in "Hentry".
   iDestruct "Hentry" as
     (sp base transactions bytes tail first second data data9 items saved r10 r11)
-    "(Hsys & Hcaller & Hsaved & HreturnOther & H2 & H8 & H9 & H10 & H11 &
-      Hscratch & Hbase & Hown & Hitems & Hfacts & Hmmio & Htrace & HP & _)".
-  iEval (unfold writeSuccessTransactionsPost1567cSavedTail) in "Hsaved".
-  iEval (rewrite !reg_col_cons reg_col_nil) in "Hsaved".
-  iDestruct "Hsaved" as
-    "(H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)".
-  liARun.
-  iEval (rewrite instr_pre'_eq) in "Hnext".
+    "(Hsys & Hcaller & Hsaved & %HsavedLength & HreturnOther & H2 & H8 & H9 & H10 & H11 &
+      Hscratch & Hbase & Hown & Hitems & Hfacts & HspUpper & Hmmio & Htrace & HP & _)".
+  iAssert ("x10" ↦ᵣ: (fun _ => True))%I with "[H10]" as "H10Any".
+  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+    iExists _. iFrame. }
+  iEval (rewrite /a15680_addi_spec).
+  iApply "Hmv".
+  iExists data9.
+  iFrame "Hsys H9 H10Any".
+  repeat iSplit; try iPureIntro; try assumption; try bv_solve; try lia.
+  rewrite instr_pre'_eq. iNext. iIntros "Hpost".
+  iDestruct "Hpost" as "(HsysPost & H9Post & H10Post & _)".
   iApply "Hnext".
   iEval (rewrite /writeSuccessTransactionsPostAt15684Spec).
   iExists sp, base, transactions, bytes, tail, first, second, data, data9,
     items, saved, r10, r11.
-  iFrame "Hsys Hcaller HreturnOther H2 H8 H9 H11 Hscratch Hbase Hown Hitems
-    Hfacts Hmmio Htrace HP".
-  iFrame "Hsaved".
-  iFrame.
+  iFrame "HsysPost Hcaller Hsaved HreturnOther H2 H8 H9Post H11
+    H10Post Hscratch Hbase Hown Hitems Hfacts HspUpper Hmmio Htrace HP".
+  iPureIntro. exact HsavedLength.
 Qed.
