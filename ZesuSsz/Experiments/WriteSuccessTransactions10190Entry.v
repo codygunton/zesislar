@@ -66,7 +66,22 @@ Proof.
   iSplit; first done.
   iExists (writeSuccessTransactionWord transaction 128).
   iSplit; first done.
-  iExists (writeSuccessTransactionWord transaction 265).
+  iExists
+    (bv_shiftl
+      (bv_or
+        (bv_or
+          (bv_shiftl
+            (bv_zero_extend 64 (writeSuccessTransactionByte transaction 272))
+            (BV 64 24))
+          (bv_shiftl
+            (bv_zero_extend 64 (writeSuccessTransactionByte transaction 271))
+            (BV 64 16)))
+        (bv_or
+          (bv_shiftl
+            (bv_zero_extend 64 (writeSuccessTransactionByte transaction 270))
+            (BV 64 8))
+          (bv_zero_extend 64 (writeSuccessTransactionByte transaction 269))))
+      (BV 64 32)).
   iSplit; first done.
   iExists (bv_or
       (bv_shiftl
