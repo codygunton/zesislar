@@ -1,23 +1,9 @@
-From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-From IslaTraces.write_success_blocks Require Import
-  Index HintsHashesLoop HintsBlobHashesLoop HintsStorageKeysLoop.
-Require Import ZesuSsz.Contracts.IslarisMachine.
+From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-
-Import ListNotations.
-
-Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
-Local Existing Instance subsume_instr_pre_wand_inst | 1.
 Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-#[local] Hint Extern 7
-  (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>
-  let reduced := eval vm_compute in address in
-  first [ constr_eq address reduced; fail 1
-        | change (FindInContext (FindInstrKind reduced later) FICSyntactic);
-          typeclasses eauto ] : typeclass_instances.
+Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17A.
+Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17B.
 
 Lemma write_success_blob_hashes_chunk1e `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :
@@ -26,14 +12,8 @@ Lemma write_success_blob_hashes_chunk1e `{!islaG Sigma} `{!threadG}
   instr_body 0x15494 (writeSuccessBlobHashesBodySpec P) -∗
   instr_body 0x1548c (writeSuccessBlobHashesBodySpec P).
 Proof.
-  prove_write_success_blob_segment 0x15494.
-  liARun.
-  iExists
-    (tail, bytes, processed, (processed + S remaining)%nat, base, tt)ₗ.
-  liARun.
-  Unshelve.
-  all: prepare_sidecond.
-  all: try (apply bv_eq; rewrite bv_and_unsigned; assumption).
-  all: try (bv_simplify_arith H1; bv_solve).
-  Unshelve. all: try liARun.
+  iIntros "#Hlookup _ Hnext".
+  iPoseProof (write_success_blob_hashes_segment17_b P with
+    "Hlookup Hnext") as "Hmiddle".
+  iApply (write_success_blob_hashes_segment17_a P with "Hlookup Hmiddle").
 Qed.
