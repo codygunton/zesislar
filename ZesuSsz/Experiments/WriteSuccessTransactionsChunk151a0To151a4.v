@@ -6,6 +6,7 @@ Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151a0To151a4Return.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Remove Hints find_body_a151a4_inst : typeclass_instances.
@@ -75,11 +76,19 @@ Proof.
       have Hv : (v + 0)%bv = v by
         (apply (bv_add_0_r v (bv_0 64)); apply bv_0_unsigned).
       iEval (rewrite Hv) in "Hx11". iExact "Hx11". }
-  iExists (tail, suffix, prefix, bytes, remaining, processed, transactions,
-    transaction, base, sp, tt)ₗ.
-  iSplit; [iPureIntro; exact Hextract128|].
-  iSplit; [iPureIntro; assumption|].
-  iSplit; [iPureIntro; assumption|].
-  iFrame "HmachineFinal HbasePrefix HbaseSuffix Hprocessed Htransaction
-    Hremaining Hmmio Htrace HP Hinvariant Hexit".
+  iAssert (writeSuccessTransactions151a4Outer P sp base transaction
+    transactions processed remaining bytes prefix suffix tail)%I with
+    "[HbasePrefix HbaseSuffix Hprocessed Htransaction Hremaining Hmmio Htrace
+      HP Hinvariant Hexit]" as "Houter".
+  { rewrite /writeSuccessTransactions151a4Outer
+      /WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff.
+    iFrame. done. }
+  iPoseProof (write_success_transactions_chunk_151a0_to_151a4_return P sp base
+    transaction transactions processed remaining bytes prefix suffix tail with
+    "[] [] [] HmachineFinal Houter") as "Hreturn".
+  - iPureIntro. exact Hextract128.
+  - iPureIntro. assumption.
+  - iPureIntro. assumption.
+  - rewrite /writeSuccessTransactionsAt151a4Spec.
+    iExact "Hreturn".
 Qed.
