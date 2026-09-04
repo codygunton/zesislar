@@ -28,7 +28,8 @@ Definition writeSuccessTransactionsPostAt15680Spec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
       (bytes : list (bv 8)) (tail : spec) (first second data data9 : bv 64)
-      (items : list ByteListItem) (saved : list valu),
+      (items : list ByteListItem) (saved : list valu)
+      (r10 r11 : bv 64),
     reg_col zesu_ram_sys_regs ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674Caller) ∗
@@ -39,8 +40,8 @@ Definition writeSuccessTransactionsPostAt15680Spec
     "x2" ↦ᵣ RVal_Bits sp ∗
     "x8" ↦ᵣ RVal_Bits data ∗
     "x9" ↦ᵣ RVal_Bits data9 ∗
-    "x10" ↦ᵣ RVal_Bits first ∗
-    "x11" ↦ᵣ RVal_Bits second ∗
+    "x10" ↦ᵣ RVal_Bits r10 ∗
+    "x11" ↦ᵣ RVal_Bits r11 ∗
     writeSuccessTransactionsPost15680Scratch sp base (length transactions)
       first second ∗
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
@@ -69,7 +70,7 @@ Proof.
   rewrite instr_pre'_eq. iIntros "Hentry".
   iEval (rewrite /writeSuccessTransactionsPostAt1567cSpec) in "Hentry".
   iDestruct "Hentry" as
-    (sp base transactions bytes tail first second data items saved)
+    (sp base transactions bytes tail first second data items saved r10 r11)
     "(Hsys & Hcaller & Hsaved & HreturnOther & H2 & H8 & H10 & H11 & Hscratch &
       Hbase & Hown & Hitems & Hfacts & Hmmio & Htrace & HP & _)".
   iEval (unfold writeSuccessTransactionsPost1567cSavedTail) in "Hsaved".

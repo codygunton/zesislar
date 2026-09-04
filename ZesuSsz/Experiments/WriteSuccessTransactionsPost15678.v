@@ -5,6 +5,7 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1566c.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
 
 Definition writeSuccessTransactionsPost15674SavedTail : list string :=
@@ -69,18 +70,25 @@ Proof.
   rewrite instr_pre'_eq. iIntros "Hentry".
   iEval (rewrite /writeSuccessTransactionsPost15678Spec) in "Hentry".
   iDestruct "Hentry" as
-    (sp base transactions bytes tail first second items saved)
+    (sp base transactions bytes tail first second items saved r10 r11)
     "(Hsys & Hcaller & Hsaved & %HsavedLength & HreturnOther & H2 & H10 & H11 & Hscratch &
       Hbase & Hown & Hitems & Hfacts & Hmmio & Htrace & HP & _)".
-  destruct saved as [|v8 [|v9 [|v18 [|v19 [|v20 [|v21 [|v22 [|v23
-    [|v24 [|v25 [|v26 [|v27 saved]]]]]]]]]]]]].
-  all: cbn in HsavedLength; try lia.
-  all: destruct saved as [|vrest rest]; cbn in HsavedLength; try lia.
+  destruct saved as [|v8 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v9 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v18 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v19 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v20 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v21 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v22 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v23 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v24 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v25 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v26 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|v27 saved]; cbn in HsavedLength; try lia.
+  destruct saved as [|vrest rest]; cbn in HsavedLength; try lia.
   iEval (rewrite !reg_col_cons reg_col_nil) in "Hsaved".
   iDestruct "Hsaved" as
     "(H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)".
-  iEval (unfold writeSuccessTransactionsPost15674Saved) in "Hsaved".
-  iEval (rewrite !reg_col_cons reg_col_nil) in "Hsaved".
   iEval (unfold writeSuccessTransactionsPostScratch15670) in "Hscratch".
   iDestruct "Hscratch" as
     "(Hlower & HbaseWord & HlengthWord & HscratchPrefix & HscratchFirst &
@@ -94,8 +102,7 @@ Proof.
     (n data HdataLength) "Hload".
   cbn in HdataLength. subst n.
   iAssert ("x8" ↦ᵣ: (fun _ => True))%I with "[H8]" as "H8Any".
-  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists _. iFrame. }
+  { iFrame "H8". }
   rewrite /InstrSpecs.Specs.zesu_ld_spec /InstrSpecs.Specs.rv64_ld_spec.
   iApply "Hld".
   iExists data, sp.
