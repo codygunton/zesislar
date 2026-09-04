@@ -49,6 +49,8 @@
     {"label": "Blob-hash loop", "startPc": "0x153d4", "endPc": "0x15564", "status": "unconditionally_proven", "theorem": "write_success_blob_hashes_loop"},
     {"label": "Transaction authorization branch", "startPc": "0x1558c", "endPc": "0x15590", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_1558c_branch"},
     {"label": "Authorization loop", "startPc": "0x15590", "endPc": "0x15620", "status": "unconditionally_proven", "theorem": "write_success_authorizations_loop"},
+    {"label": "Transaction signature fields", "startPc": "0x15644", "endPc": "0x15658", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_15644_entry"},
+    {"label": "Transaction signature call", "startPc": "0x15658", "endPc": "0x1565c", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_15658_call"},
     {"label": "Withdrawal loop", "startPc": "0x15694", "endPc": "0x156e8", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
     {"label": "Hash loop", "startPc": "0x15754", "endPc": "0x158e0", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"}
   ]
