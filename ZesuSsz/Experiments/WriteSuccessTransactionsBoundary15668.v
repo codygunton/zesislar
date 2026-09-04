@@ -12,9 +12,13 @@ Definition writeSuccessTransactionsPostFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
     (bytes : list (bv 8)) (tail : spec) : iProp Sigma :=
-  (writeSuccessTransactionsLoopExit sp base transactions bytes tail P ∗
-   (bv_unsigned sp) ↦ₘ? 104 ∗
-   (bv_unsigned sp + 1896) ↦ₘ? 104 ∗ True)%I.
+  (writeSuccessTransactionsLoopExit sp base transactions bytes tail
+     ((bv_unsigned sp) ↦ₘ? 104 ∗
+      (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
+      ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+      ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
+      ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+      ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostFrame) := I.
@@ -32,12 +36,16 @@ Lemma write_success_transactions_post_handoff
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
     (bytes : list (bv 8)) (tail : spec) :
-  writeSuccessTransactionsLoopExit sp base transactions bytes tail P -∗
-  (bv_unsigned sp) ↦ₘ? 104 -∗
-  (bv_unsigned sp + 1896) ↦ₘ? 104 -∗
+  writeSuccessTransactionsLoopExit sp base transactions bytes tail
+      ((bv_unsigned sp) ↦ₘ? 104 ∗
+       (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
+       ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+       ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
+       ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+       ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P) -∗
   writeSuccessTransactionsPostAt15668Spec P.
 Proof.
-  iIntros "Hexit Hlower Hsaved".
+  iIntros "Hexit".
   iExists sp, base, transactions, bytes, tail.
   iFrame.
 Qed.
