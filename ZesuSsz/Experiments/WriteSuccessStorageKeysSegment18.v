@@ -6,6 +6,8 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccess.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
+Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18Core.
+Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18Tail.
 
 Import ListNotations.
 
@@ -26,7 +28,7 @@ Lemma write_success_storage_keys_r `{!islaG Sigma} `{!threadG}
   instr_body 0x152ec (writeSuccessStorageKeysLoopSpec x19 P) -∗
   instr_body 0x152e4 (writeSuccessStorageKeysLoopSpec x19 P).
 Proof.
-  prove_write_success_storage_segment 0x152ec.
-  Unshelve. all: solve_write_success_storage_obligation.
-  Unshelve. all: try liARun.
+  iStartProof. iIntros "#Hlookup #Hcode Hnext".
+  iApply (write_success_storage_keys_r_core x19 P with "Hlookup Hcode").
+  iApply (write_success_storage_keys_r_tail x19 P with "Hlookup Hcode Hnext").
 Qed.
