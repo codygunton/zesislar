@@ -309,6 +309,22 @@ Proof.
   iSplit; first done. iFrame.
 Qed.
 
+Lemma write_success_blob_hashes_segment15_registers
+    `{!islaG Sigma} `{!threadG} (target : string) (index : nat)
+    (byte : bv 8) :
+  writeSuccessBlobHashesBodyOtherRegShapes !! index =
+    Some (KindReg target, BitsShape 64) ->
+  reg_col (delete index writeSuccessBlobHashesBodyOtherRegShapes) -∗
+  target ↦ᵣ RVal_Bits (bv_zero_extend 64 byte) -∗
+  reg_col writeSuccessBlobHashesBodyOtherRegShapes.
+Proof.
+  intros Hlookup. iIntros "Hregs Htarget".
+  rewrite (reg_col_lookup writeSuccessBlobHashesBodyOtherRegShapes index
+    (KindReg target, BitsShape 64) Hlookup).
+  iExists (RVal_Bits (bv_zero_extend 64 byte)).
+  iSplit; first done. iFrame.
+Qed.
+
 Lemma write_success_blob_hashes_segment15_registers_x26
     `{!islaG Sigma} `{!threadG} (byte : bv 8) :
   reg_col (delete 23%nat writeSuccessBlobHashesBodyOtherRegShapes) -∗
