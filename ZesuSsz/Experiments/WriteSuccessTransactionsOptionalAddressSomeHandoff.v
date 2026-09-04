@@ -79,7 +79,7 @@ Global Instance :
   LithiumUnfold (@writeSuccessTransactionsOptionalAddressSomeAt15168Spec) := I.
 
 (** The stack state after [sd x10, 1744(sp)] at [0x15168]. *)
-Definition writeSuccessTransactionsScratch1516c `{!islaG Sigma} `{!threadG}
+Definition writeSuccessTransactionsScratch1516Prefix `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (transactions processed :
       list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
     iProp Sigma :=
@@ -125,13 +125,21 @@ Definition writeSuccessTransactionsScratch1516c `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1660) ↦ₘ? 4 ∗
    (bv_unsigned sp + 1664) ↦ₘ writeSuccessTransactionWord transaction 160 ∗
    (bv_unsigned sp + 1672) ↦ₘ writeSuccessTransactionWord transaction 168 ∗
-   (bv_unsigned sp + 1680) ↦ₘ? 64 ∗
+   (bv_unsigned sp + 1680) ↦ₘ? 64 ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsScratch1516Prefix) := I.
+
+Definition writeSuccessTransactionsScratch1516c `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z) (transactions processed :
+      list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
+    iProp Sigma :=
+  (writeSuccessTransactionsScratch1516Prefix sp base transactions processed transaction ∗
    (bv_unsigned sp + 1744) ↦ₘ writeSuccessTransactionWord transaction 265 ∗
    (bv_unsigned sp + 1752) ↦ₘ? 144 ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsScratch1516c) := I.
 
-Definition writeSuccessTransactionsMachine1516c `{!islaG Sigma} `{!threadG}
+Definition writeSuccessTransactions1516cRegisters `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (transactions processed :
       list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
     iProp Sigma :=
@@ -168,7 +176,15 @@ Definition writeSuccessTransactionsMachine1516c `{!islaG Sigma} `{!threadG}
    "x25" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 0) ∗
    "x26" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 184) ∗
    "x27" ↦ᵣ RVal_Bits
-     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32)) ∗
+     (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32)) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactions1516cRegisters) := I.
+
+Definition writeSuccessTransactionsMachine1516c `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z) (transactions processed :
+      list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
+    iProp Sigma :=
+  (writeSuccessTransactions1516cRegisters sp base transactions processed transaction ∗
    writeSuccessTransactionsScratch1516c
      sp base transactions processed transaction ∗ True)%I.
 
@@ -188,3 +204,37 @@ Definition writeSuccessTransactionsOptionalAddressSomeAt1516cSpec
 
 Global Instance :
   LithiumUnfold (@writeSuccessTransactionsOptionalAddressSomeAt1516cSpec) := I.
+
+(** The state after [sd x11, 1752(sp)] at [0x1516c]. *)
+Definition writeSuccessTransactionsScratch15170 `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z) (transactions processed :
+      list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
+    iProp Sigma :=
+  (writeSuccessTransactionsScratch1516Prefix sp base transactions processed transaction ∗
+   (bv_unsigned sp + 1744) ↦ₘ writeSuccessTransactionWord transaction 265 ∗
+   (bv_unsigned sp + 1752) ↦ₘ writeSuccessTransactionWord transaction 273 ∗
+   (bv_unsigned sp + 1760) ↦ₘ? 136 ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsScratch15170) := I.
+
+Definition writeSuccessTransactionsMachine15170 `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (base : Z) (transactions processed :
+      list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
+    iProp Sigma :=
+  (writeSuccessTransactions1516cRegisters sp base transactions processed transaction ∗
+   writeSuccessTransactionsScratch15170 sp base transactions processed transaction ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessTransactionsMachine15170) := I.
+
+Definition writeSuccessTransactionsOptionalAddressSomeAt15170Spec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp : bv 64) (base : Z) (transaction : writeSuccessTransaction)
+      (transactions processed remaining : list writeSuccessTransaction)
+      (bytes prefix suffix : list (bv 8)) (tail : spec),
+    ⌜writeSuccessTransactionByte transaction 285 ≠ BV 8 0⌝ ∗
+    writeSuccessTransactionPhaseHandoff TransactionTo
+      (writeSuccessTransactionsMachine15170 sp base transactions processed transaction)
+      sp base transaction transactions processed remaining bytes prefix suffix tail P)%I.
+
+Global Instance :
+  LithiumUnfold (@writeSuccessTransactionsOptionalAddressSomeAt15170Spec) := I.
