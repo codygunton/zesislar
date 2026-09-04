@@ -13,7 +13,8 @@ Definition writeSuccessTransactionsScratchRest150f8
       list WriteSuccessTransactionsSpec.writeSuccessTransaction)
     (transaction : WriteSuccessTransactionsSpec.writeSuccessTransaction) :
     iProp Sigma :=
-  ((bv_unsigned sp - 48) ↦ₘ? 152 ∗
+  ((bv_unsigned sp - 48) ↦ₘ? 16 ∗
+   (bv_unsigned sp) ↦ₘ? 104 ∗
    (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
    (bv_unsigned sp + 112) ↦ₘ Z_to_bv 64 (Z.of_nat (length transactions)) ∗
    (bv_unsigned sp + 120) ↦ₘ bv_zero_extend 64
@@ -32,8 +33,8 @@ Definition writeSuccessTransactionsScratchRest150f8
    (bv_unsigned sp + 216) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 96 ∗
    (bv_unsigned sp + 224) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 152 ∗
    (bv_unsigned sp + 232) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 144 ∗
-   (bv_unsigned sp + 240) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 136 ∗
-   (bv_unsigned sp + 248) ↦ₘ Z_to_bv 64 (Z.of_nat (length processed)) ∗
+  (bv_unsigned sp + 240) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 136 ∗
+  (bv_unsigned sp + 248) ↦ₘ Z_to_bv 64 (Z.of_nat (length processed)) ∗
    (bv_unsigned sp + 256) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 208 ∗
    (bv_unsigned sp + 264) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 216 ∗
    (bv_unsigned sp + 272) ↦ₘ WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 176 ∗
@@ -66,6 +67,7 @@ Lemma write_success_transactions_scratch_150f8_split
     (transaction : WriteSuccessTransactionsSpec.writeSuccessTransaction) :
   writeSuccessTransactionsScratch150e8 sp base transactions processed transaction -∗
   writeSuccessTransactionsScratchRest150f8 sp base transactions processed transaction ∗
+  (bv_unsigned sp - 32) ↦ₘ? 32 ∗
   (bv_unsigned sp + 1664) ↦ₘ
     WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 160 ∗
   (bv_unsigned sp + 1672) ↦ₘ
@@ -78,12 +80,20 @@ Proof.
       H160 & H168 & H176 & H184 & H192 & H200 & H208 & H216 & H224 &
       H232 & H240 & H248 & H256 & H264 & H272 & H280 & H1640 & H1648 &
       H1656 & H1660 & Hvalue & Htag & H1680 & H1744 & H1745 & _)".
-  iSplitL "Hlower Hbase Hlength H120 H128 H136 H144 H152 H160 H168 H176
+  iDestruct (mem_mapsto_uninit_split 16 with "Hlower") as
+    "[Hlower16 HlowerRest]"; first lia.
+  iDestruct (mem_mapsto_uninit_split 32 with "HlowerRest") as
+    "[Hstack Hupper104]"; first lia.
+  have HstackAddr : bv_unsigned sp - 48 + 16 = bv_unsigned sp - 32 by lia.
+  have HupperAddr : bv_unsigned sp - 48 + 16 + 32 = bv_unsigned sp by lia.
+  iEval (rewrite HstackAddr) in "Hstack".
+  iEval (rewrite HupperAddr) in "Hupper104".
+  iSplitL "Hlower16 Hupper104 Hbase Hlength H120 H128 H136 H144 H152 H160 H168 H176
     H184 H192 H200 H208 H216 H224 H232 H240 H248 H256 H264 H272 H280
     H1640 H1648 H1656 H1660 H1680 H1744 H1745".
   - rewrite /writeSuccessTransactionsScratchRest150f8.
     iFrame.
-  - iFrame.
+  - iFrame "Hstack Hvalue Htag".
 Qed.
 
 Lemma write_success_transactions_scratch_150f8_combine
@@ -94,6 +104,7 @@ Lemma write_success_transactions_scratch_150f8_combine
     (transaction : WriteSuccessTransactionsSpec.writeSuccessTransaction)
     (tagTail : list (bv 8)) :
   writeSuccessTransactionsScratchRest150f8 sp base transactions processed transaction -∗
+  (bv_unsigned sp - 32) ↦ₘ? 32 -∗
   (bv_unsigned sp + 1664) ↦ₘ
     WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 160 -∗
   (bv_unsigned sp + 1672) ↦ₘ BV 8 0 -∗
@@ -104,7 +115,7 @@ Lemma write_success_transactions_scratch_150f8_combine
       BV 8 0 :: tagTail⌝ -∗
   writeSuccessTransactionsScratch150e8 sp base transactions processed transaction.
 Proof.
-  iIntros "Hrest Hvalue Htag Htail" (Hshape).
+  iIntros "Hrest Hstack Hvalue Htag Htail" (Hshape).
   iEval (rewrite -mem_mapsto_array_singleton) in "Htag".
   have HtagAddr :
       (bv_unsigned sp + 1672 + Z.of_N (8 `div` 8) * 1)%Z =
@@ -130,6 +141,21 @@ Proof.
     rewrite Hshape in Hround. exact Hround. }
   iEval (rewrite HtagLen HtagRound) in "HtagWord".
   iEval (rewrite /writeSuccessTransactionsScratchRest150f8) in "Hrest".
+  iDestruct "Hrest" as
+    "(Hlower16 & Hupper104 & Hbase & Hlength & H120 & H128 & H136 & H144 &
+      H152 & H160 & H168 & H176 & H184 & H192 & H200 & H208 & H216 & H224 &
+      H232 & H240 & H248 & H256 & H264 & H272 & H280 & H1640 & H1648 &
+      H1656 & H1660 & H1680 & H1744 & H1745 & _)".
+  have HstackAddr : bv_unsigned sp - 48 + 16 = bv_unsigned sp - 32 by lia.
+  have HupperAddr : bv_unsigned sp - 48 + 48 = bv_unsigned sp by lia.
+  iAssert ((bv_unsigned sp - 48) ↦ₘ? 152)%I
+    with "[Hlower16 Hstack Hupper104]" as "Hlower".
+  { iAssert ((bv_unsigned sp - 48) ↦ₘ? 48)%I
+      with "[Hlower16 Hstack]" as "Hlower48".
+    { iApply (mem_mapsto_uninit_combine 16 with "[Hlower16] [Hstack]");
+        [lia | iExact "Hlower16" | iEval (rewrite HstackAddr); iExact "Hstack"]. }
+    iApply (mem_mapsto_uninit_combine 48 with "[Hlower48] [Hupper104]");
+      [lia | iExact "Hlower48" | iEval (rewrite HupperAddr); iExact "Hupper104"]. }
   iEval (rewrite /writeSuccessTransactionsScratch150e8).
   iFrame.
 Qed.
