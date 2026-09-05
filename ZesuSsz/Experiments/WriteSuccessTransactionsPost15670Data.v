@@ -28,7 +28,7 @@ Proof.
   all: try exact inhabitant.
   all: try bv_solve.
   Unshelve.
-  all: iExists (items, remaining, tail, bytes, transactions, base, pointer, tt)ₗ.
+  all: iExists (items, count, tail, bytes, transactions, base, pointer, tt)ₗ.
   all: iRename select (mmio_range 0x2401a0c0 16)%I into "Hmmio".
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.

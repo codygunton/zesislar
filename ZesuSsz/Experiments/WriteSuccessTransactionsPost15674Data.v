@@ -93,7 +93,7 @@ Proof.
   iEval (rewrite /writeSuccessTransactionsPost15674DataCallEntrySpec).
   iExists sp, base, (length transactions),
     (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail), first, second,
-    pointer, (Z_to_bv 64 (Z.of_nat (S remaining))), items,
+    pointer, (Z_to_bv 64 (Z.of_nat remaining)), items,
     [RVal_Bits a8; RVal_Bits a9; RVal_Bits a18; RVal_Bits a19; RVal_Bits a20;
      RVal_Bits a21; RVal_Bits a22; RVal_Bits a23; RVal_Bits a24; RVal_Bits a25;
      RVal_Bits a26; RVal_Bits a27].

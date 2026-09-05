@@ -13,7 +13,7 @@ Definition writeSuccessTransactionsPost1566cDataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp pointer : bv 64) (base : Z)
       (transactions : list writeSuccessTransaction) (bytes : list (bv 8))
-      (tail : spec) (remaining : nat) (first second : bv 64)
+      (tail : spec) (count : nat) (first second : bv 64)
       (items : list ByteListItem),
     reg_col zesu_ram_sys_regs ∗
     reg_col writeSuccessTransactionsOtherRegShapes ∗
@@ -22,7 +22,7 @@ Definition writeSuccessTransactionsPost1566cDataSpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
-      (Z_to_bv 64 (Z.of_nat (S remaining))) items ∗
+      (Z_to_bv 64 (Z.of_nat count)) items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
@@ -35,7 +35,7 @@ Definition writeSuccessTransactionsPost15670DataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp pointer : bv 64) (base : Z)
       (transactions : list writeSuccessTransaction) (bytes : list (bv 8))
-      (tail : spec) (remaining : nat) (first second ra : bv 64)
+      (tail : spec) (count : nat) (first second ra : bv 64)
       (items : list ByteListItem),
     reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits ra ∗
     reg_col writeSuccessTransactionsPostOtherRegShapes ∗
@@ -44,7 +44,7 @@ Definition writeSuccessTransactionsPost15670DataSpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
-      (Z_to_bv 64 (Z.of_nat (S remaining))) items ∗
+      (Z_to_bv 64 (Z.of_nat count)) items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
@@ -57,7 +57,7 @@ Definition writeSuccessTransactionsPost15674DataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp pointer : bv 64) (base : Z)
       (transactions : list writeSuccessTransaction) (bytes : list (bv 8))
-      (tail : spec) (remaining : nat) (first second : bv 64)
+      (tail : spec) (count : nat) (first second : bv 64)
       (items : list ByteListItem),
     reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15670) ∗
     reg_col writeSuccessTransactionsPostOtherRegShapes ∗
@@ -66,7 +66,7 @@ Definition writeSuccessTransactionsPost15674DataSpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
-      (Z_to_bv 64 (Z.of_nat (S remaining))) items ∗
+      (Z_to_bv 64 (Z.of_nat count)) items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items

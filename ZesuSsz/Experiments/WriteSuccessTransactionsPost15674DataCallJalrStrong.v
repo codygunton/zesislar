@@ -52,6 +52,7 @@ Definition writeSuccessTransactionsPost15674DataCallReturnFixedSpec
     reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
       writeSuccessTransactionsPost15674Saved saved) ∗
     ⌜length saved = 12%nat⌝ ∗
+    ⌜Forall (fun v => valu_has_shape v (BitsShape 64)) saved⌝ ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
       writeSuccessTransactionsPost15674ReturnOther) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗ "x10" ↦ᵣ RVal_Bits r10 ∗
@@ -295,6 +296,7 @@ Proof.
   iExists [a8; a9; a18; a19; a20; a21; a22; a23; a24; a25; a26; a27], b10, b11.
   iFrame "HpostSys HpostCaller HpostSaved HreturnOther Hpost2 Hpost10 Hpost11
     Hscratch Hcarrier Hwithdrawals HpostMmio HpostTrace HP".
-  iPureIntro. reflexivity.
+  iSplit; first (iPureIntro; reflexivity).
+  iPureIntro. repeat constructor; assumption.
 
 Qed.

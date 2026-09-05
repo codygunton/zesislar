@@ -17,10 +17,10 @@ Definition writeSuccessTransactionsPostAt15668DataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp pointer : bv 64) (base : Z)
       (transactions : list writeSuccessTransaction) (bytes : list (bv 8))
-      (tail : spec) (remaining : nat) (first second : bv 64)
+      (tail : spec) (count : nat) (first second : bv 64)
       (items : list ByteListItem),
     writeSuccessTransactionsLoopExitWithdrawalsData P sp pointer base
-      transactions bytes tail remaining first second items)%I.
+      transactions bytes tail count first second items)%I.
 
 (** The source theorem for this contract must preserve both decoded words and
     provide all withdrawals resources at the byte-lists return point. *)
@@ -60,7 +60,7 @@ Definition writeSuccessTransactionsDataWithdrawalsProvider
     writeSuccessTransactionsLoopExitWithdrawalsData
       (writeSuccessTransactionsWithdrawalsLoopFrame P sp pointer base
         transactions bytes tail total processed remaining prefix suffix)
-      sp pointer base transactions bytes tail remaining first second items -∗
+      sp pointer base transactions bytes tail (S remaining) first second items -∗
     ((bv_unsigned sp + 1120) ↦ₘ pointer ∗
      (bv_unsigned sp + 1128) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
      writeSuccessTransactionsWithdrawalsResources P sp pointer base total

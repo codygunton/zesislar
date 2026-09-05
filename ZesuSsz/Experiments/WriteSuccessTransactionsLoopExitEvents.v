@@ -368,10 +368,10 @@ Definition writeSuccessTransactionsLoopExitEventsData
 Definition writeSuccessTransactionsLoopExitWithdrawalsData
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp pointer : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
-    (bytes : list (bv 8)) (tail : spec) (remaining : nat)
+    (bytes : list (bv 8)) (tail : spec) (count : nat)
     (first second : bv 64) (items : list ByteListItem) : iProp Sigma :=
   writeSuccessTransactionsLoopExitEventsData P sp base transactions bytes tail
-    first second pointer (Z_to_bv 64 (Z.of_nat (S remaining))) items.
+    first second pointer (Z_to_bv 64 (Z.of_nat count)) items.
 
 Definition writeSuccessTransactionsLoopCarrierFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -481,21 +481,21 @@ Qed.
 Lemma write_success_transactions_loop_carrier_exit_to_events
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp pointer : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
-    (bytes : list (bv 8)) (tail : spec) (remaining : nat)
+    (bytes : list (bv 8)) (tail : spec) (count : nat)
     (first second : bv 64) (items : list ByteListItem)
     (Halign16 : bv_unsigned sp `mod` 16 = 0)
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
     (Hlow : 0x20000000 <= bv_unsigned sp - 48)
     (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
-    first second pointer (Z_to_bv 64 (Z.of_nat (S remaining))) items -∗
+    first second pointer (Z_to_bv 64 (Z.of_nat count)) items -∗
   writeSuccessTransactionsLoopExitWithdrawalsData P sp pointer base transactions
-    bytes tail remaining first second items.
+    bytes tail count first second items.
 Proof.
   iIntros "Hexit".
   rewrite /writeSuccessTransactionsLoopExitWithdrawalsData.
   iApply (write_success_transactions_loop_carrier_exit_to_events_data P
     sp base transactions bytes tail first second pointer
-    (Z_to_bv 64 (Z.of_nat (S remaining))) items Halign16 Halign8 Hlow Hhigh
+    (Z_to_bv 64 (Z.of_nat count)) items Halign16 Halign8 Hlow Hhigh
     with "Hexit").
 Qed.

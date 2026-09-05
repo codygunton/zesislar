@@ -51,7 +51,7 @@ Lemma write_success_transactions_data_provider_parent
   writeSuccessTransactionsLoopExitWithdrawalsData
     (writeSuccessTransactionsWithdrawalsLoopFrame P sp pointer base
       transactions bytes tail total processed remaining prefix suffix)
-    sp pointer base transactions bytes tail remaining first second items -∗
+    sp pointer base transactions bytes tail (S remaining) first second items -∗
   ((bv_unsigned sp + 1120) ↦ₘ pointer ∗
    (bv_unsigned sp + 1128) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
    writeSuccessTransactionsWithdrawalsResources P sp pointer base total
