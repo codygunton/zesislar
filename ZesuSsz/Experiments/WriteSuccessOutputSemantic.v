@@ -19,6 +19,51 @@ Definition writeOutputPayloadObservation
 
 Definition WriteOutputDescriptor : Type := (bv 64 * bv 64)%type.
 
+Definition writeOutputDescriptorEvents
+    (descriptor : WriteOutputDescriptor) : list seq_label :=
+  let '(data, size) := descriptor in
+  [SWriteMem (BV 64 0x2401a0c0) data;
+   SWriteMem (BV 64 0x2401a0c8) size].
+
+Fixpoint writeOutputDescriptorsEvents
+    (descriptors : list WriteOutputDescriptor) : list seq_label :=
+  match descriptors with
+  | [] => []
+  | descriptor :: tail =>
+      writeOutputDescriptorEvents descriptor ++
+      writeOutputDescriptorsEvents tail
+  end.
+
+Fixpoint writeOutputDescriptorsSpec
+    (descriptors : list WriteOutputDescriptor) (tail : spec) : spec :=
+  match descriptors with
+  | [] => tail
+  | (data, size) :: descriptorTail =>
+      writeOutputEvents data size
+        (writeOutputDescriptorsSpec descriptorTail tail)
+  end.
+
+(** This relation supplies the liveness fact that prefix-closed [spec] lacks. *)
+Definition writeOutputCompleteTrace
+    (descriptors : list WriteOutputDescriptor)
+    (tailEvents observed : list seq_label) : Prop :=
+  observed = writeOutputDescriptorsEvents descriptors ++ tailEvents.
+
+Lemma writeOutputCompleteTrace_allowed descriptors tail tailEvents observed :
+  writeOutputCompleteTrace descriptors tailEvents observed ->
+  tail tailEvents ->
+  writeOutputDescriptorsSpec descriptors tail observed.
+Proof.
+  intros -> Htail. induction descriptors as [|[data size] descriptorTail IH].
+  - exact Htail.
+  - simpl. unfold writeOutputDescriptorEvents, writeOutputEvents, scons.
+    right. eexists. split; first reflexivity. right.
+    right. eexists. split; first reflexivity.
+    destruct descriptorTail as [|descriptor rest].
+    + right. exact Htail.
+    + right. exact IH.
+Qed.
+
 (** The index distinguishes repeated writes from the same address. *)
 Fixpoint writeOutputPayloadSnapshots
     (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
