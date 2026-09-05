@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x1502c. The zero hash exit and five post-hash calls compose with exact descriptors through 0x1593c. The final byte-list call setup from 0x159c8 through 0x159d4 is proved. Full suffix integration, the remaining suffix calls, and the final native theorem remain."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x15030. The zero hash exit and five post-hash calls compose with exact descriptors through 0x1593c. The call at 0x1593c and seven later call setup segments are proved. Full suffix integration, the remaining suffix calls, and the final native theorem remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
@@ -44,6 +44,7 @@
     {"label": "Transaction byte 32 load", "startPc": "0x15018", "endPc": "0x1501c", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_15018"},
     {"label": "Transaction word loads", "startPc": "0x1501c", "endPc": "0x15028", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_1501c"},
     {"label": "Transaction carrier store", "startPc": "0x15028", "endPc": "0x1502c", "status": "unconditionally_proven", "theorem": "write_success_transactions_carrier_chunk_15028_store"},
+    {"label": "Transaction carrier shift", "startPc": "0x1502c", "endPc": "0x15030", "status": "unconditionally_proven", "theorem": "write_success_transactions_carrier_chunk_1502c"},
     {"label": "Transaction value path", "startPc": "0x1505c", "endPc": "0x15078", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_1505c"},
     {"label": "Transaction output return", "startPc": "0x150e8", "endPc": "0x150f0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150e8"},
     {"label": "Transaction call continuation", "startPc": "0x150fc", "endPc": "0x15118", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150fc"},
@@ -81,6 +82,14 @@
     {"label": "Witness nodes pointer load", "startPc": "0x15930", "endPc": "0x15934", "status": "unconditionally_proven", "theorem": "write_success_post_15930_load_pointer"},
     {"label": "Witness nodes count load", "startPc": "0x15934", "endPc": "0x15938", "status": "unconditionally_proven", "theorem": "write_success_post_15934_load_count"},
     {"label": "Witness nodes call address", "startPc": "0x15938", "endPc": "0x1593c", "status": "unconditionally_proven", "theorem": "write_success_post_15938_auipc"},
+    {"label": "Witness nodes byte-list call", "startPc": "0x1593c", "endPc": "0x15940", "status": "unconditionally_proven", "theorem": "write_success_post_1593c_byte_lists_call"},
+    {"label": "Second byte-list call setup", "startPc": "0x15940", "endPc": "0x1594c", "status": "unconditionally_proven", "theorem": "write_success_post_15940_byte_list_setup"},
+    {"label": "Third byte-list call setup", "startPc": "0x15950", "endPc": "0x1595c", "status": "unconditionally_proven", "theorem": "write_success_post_15950_byte_list_setup"},
+    {"label": "Integer call setup", "startPc": "0x15960", "endPc": "0x15968", "status": "unconditionally_proven", "theorem": "write_success_suffix_int_15960_setup"},
+    {"label": "True boolean call setup", "startPc": "0x15974", "endPc": "0x1597c", "status": "unconditionally_proven", "theorem": "write_success_suffix_boolean_15974_setup"},
+    {"label": "Conditional bytes call setup", "startPc": "0x15980", "endPc": "0x1598c", "status": "unconditionally_proven", "theorem": "write_success_suffix_bytes_15980_setup"},
+    {"label": "False boolean call setup", "startPc": "0x15994", "endPc": "0x1599c", "status": "unconditionally_proven", "theorem": "write_success_suffix_boolean_15994_setup"},
+    {"label": "Second integer call setup", "startPc": "0x159a0", "endPc": "0x159ac", "status": "unconditionally_proven", "theorem": "write_success_suffix_int_159a0_setup"},
     {"label": "Final byte-list call setup", "startPc": "0x159c8", "endPc": "0x159d4", "status": "unconditionally_proven", "theorem": "write_success_post_159c8_final_call_setup"},
     {"label": "Function epilogue", "startPc": "0x159d8", "endPc": "0x15a14", "status": "unconditionally_proven", "theorem": "write_success_epilogue_block"}
   ]
