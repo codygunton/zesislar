@@ -7,6 +7,8 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Generated.Level1.
+Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessHeaderValueTransactions.
 Require Import ZesuSsz.Experiments.WriteSuccessLoadHeader.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeCalleeProviders.
@@ -75,6 +77,14 @@ Arguments writeSuccessTransactionBytes {Decoded} _.
 Definition writeSuccessFrameSp {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : bv 64 :=
   (writeSuccessEntrySp witness - BV 64 2000)%bv.
+
+Definition writeSuccessNativeTailEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  writeSuccessHeaderEvents (writeSuccessFrameSp witness)
+    (writeSuccessValueEvents (writeSuccessFrameSp witness)
+      (writeSuccessValues witness)
+      (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
+        (writeSuccessTransactions witness) (writeSuccessTraceTail witness))).
 
 Definition writeSuccessWitnessWellFormed {Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
@@ -202,9 +212,9 @@ Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
         (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness))
       (writeSuccessLoadHeaderRemainder
         (writeSuccessHeaderTerminal model outputRelation args)
-        (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
-        (writeSuccessValues witness) (writeSuccessPayload witness)
-        (writeSuccessTraceTail witness) (writeSuccessTransactionBase witness)
+      (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+      (writeSuccessValues witness) (writeSuccessPayload witness)
+      (writeSuccessTraceTail witness) (writeSuccessTransactionBase witness)
         (writeSuccessTransactions witness)
         (writeSuccessTransactionBytes witness))))%I.
 
@@ -239,7 +249,7 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
      writeSuccessDecodedBytes witness ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessCallerOutputEventsWithFrame (BV 64 0x179c5) (BV 64 6)
-     (writeSuccessTraceTail witness)) ∗
+     (writeSuccessNativeTailEvents witness)) ∗
    writeSuccessNativeDataResources witness ∗
    ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
    ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
@@ -275,7 +285,7 @@ Definition writeSuccessNativeLoadResources {Decoded}
       (writeSuccessFrameSp witness)
       (take 720 (writeSuccessDecodedBytes witness))
       (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness))
+        (BV 64 0x179c5) (BV 64 6) (writeSuccessNativeTailEvents witness))
       (reg_col writeSuccessLoadHeaderExtraRegisters ∗
        writeSuccessNativeDataResources witness)
 |}.
@@ -340,7 +350,7 @@ Proof.
         (writeSuccessFrameSp witness)
         (take 720 (writeSuccessDecodedBytes witness))
         (writeSuccessCallerOutputEventsWithFrame
-          (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness))
+          (BV 64 0x179c5) (BV 64 6) (writeSuccessNativeTailEvents witness))
         (reg_col writeSuccessLoadHeaderExtraRegisters ∗
          writeSuccessNativeDataResources witness)))%I
     with "[Hexit]" as "Hload".
@@ -373,7 +383,7 @@ Proof.
     (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-    (writeSuccessDecodedBytes witness) (writeSuccessTraceTail witness)
+    (writeSuccessDecodedBytes witness) (writeSuccessNativeTailEvents witness)
     (writeSuccessNativeDataResources witness)
     Hdecoded HspExtract HspMin HspMax with
     "Hlookup Hmain HmemcpyCode HoutputCode Hmemcpy Houtput Hload") as "HtoLoad".
