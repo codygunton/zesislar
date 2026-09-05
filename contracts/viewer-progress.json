@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. Carrier composition, the remaining suffix calls, and the final native theorem remain."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x14f80. Suffix composition, the remaining suffix calls, and the final native theorem remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
@@ -70,6 +70,7 @@
     {"label": "Hash count move", "startPc": "0x15744", "endPc": "0x15748", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_15744_raw"},
     {"label": "Hash count call address", "startPc": "0x15748", "endPc": "0x1574c", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_15748_raw"},
     {"label": "Hash count call", "startPc": "0x1574c", "endPc": "0x15750", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_1574c_call"},
+    {"label": "Hash count branch", "startPc": "0x15750", "endPc": "0x15754", "status": "conditionally_proven", "theorem": "write_success_suffix_hashes_15750_nonzero_state; write_success_suffix_hashes_15750_zero_state", "condition": "Both branch leaves are proved. The suffix wrapper must supply their exact preconditions."},
     {"label": "Hash loop", "startPc": "0x15754", "endPc": "0x158e0", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"},
     {"label": "Post-hash bytes call 0", "startPc": "0x158e0", "endPc": "0x158f0", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_158e0"},
     {"label": "Post-hash bytes call 1", "startPc": "0x158f0", "endPc": "0x15900", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_158f0"},
