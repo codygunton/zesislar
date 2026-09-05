@@ -218,6 +218,16 @@ Definition writeSuccessSuffixBytesAt15910Carrier `{!islaG Sigma} `{!threadG}
       writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
         (writeOutputEvents data size tail)) 952 P.
 
+Definition writeSuccessSuffixBytesAt15910CarrierExact `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15910))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
+    (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
+    (fun _ _ tail => tail) 952 P.
+
 Definition writeSuccessSuffixBytesAt15920Carrier `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
@@ -230,6 +240,16 @@ Definition writeSuccessSuffixBytesAt15920Carrier `{!islaG Sigma} `{!threadG}
       writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
         (writeOutputEvents data size tail)) 968 P.
 
+Definition writeSuccessSuffixBytesAt15920CarrierExact `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15920))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
+    (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
+    (fun _ _ tail => tail) 968 P.
+
 Definition writeSuccessSuffixBytesAt15930Carrier `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
@@ -240,12 +260,27 @@ Definition writeSuccessSuffixBytesAt15930Carrier `{!islaG Sigma} `{!threadG}
     (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
     (fun _ _ tail => tail) 984 P.
 
+Definition writeSuccessSuffixBytesAt15930CarrierShape `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
+    (fun data size tail =>
+      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEvents data size tail)) 984 P.
+
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierNext) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900Carrier) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900CarrierExact) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910Carrier) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910CarrierExact) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920Carrier) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920CarrierExact) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930Carrier) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930CarrierShape) := I.
 
 Lemma write_success_suffix_bytes_158f0_carrier
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
@@ -310,6 +345,213 @@ Proof.
     bv_unsigned sp + 936 + 8 = bv_unsigned sp + 944 by lia.
   all: iEval (rewrite Haddr936) in "HdescData".
   all: iEval (rewrite Haddr944) in "HdescSize".
+  all: rewrite /reg_col; cbn.
+  all: iFrame "HdescData HdescSize".
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+Qed.
+
+Lemma write_success_suffix_bytes_15900_carrier
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
+  instr_body 0x15910 (writeSuccessSuffixBytesAt15910CarrierExact sp P) -∗
+  instr_body 0x15900 (writeSuccessSuffixBytesAt15910Carrier sp P).
+Proof.
+  move => *.
+  iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
+  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
+    in "Hcode".
+  liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try assumption.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try iFrame.
+  Unshelve.
+  all: try iExists
+    (tail, bytes, 0x15910, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15910CarrierExact
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
+      Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15910CarrierExact
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: have Hreturn : Z_to_bv 64 88336 = BV 64 88336 by bv_solve.
+  all: rewrite -Hreturn.
+  all: try iRename select (_ ↦ₘ data)%I into "HdescData".
+  all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
+  all: have Haddr952 :
+    bv_unsigned (sp + BV 64 952)%bv = bv_unsigned sp + 952 by bv_solve.
+  all: have Haddr960 :
+    bv_unsigned (sp + BV 64 960)%bv = bv_unsigned sp + 960 by bv_solve.
+  all: iEval (rewrite Haddr952) in "HdescData".
+  all: iEval (rewrite Haddr960) in "HdescSize".
+  all: rewrite /reg_col; cbn.
+  all: iFrame "HdescData HdescSize".
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+Qed.
+
+Lemma write_success_suffix_bytes_15910_carrier
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
+  instr_body 0x15920 (writeSuccessSuffixBytesAt15920CarrierExact sp P) -∗
+  instr_body 0x15910 (writeSuccessSuffixBytesAt15920Carrier sp P).
+Proof.
+  move => *.
+  iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
+  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
+    in "Hcode".
+  liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try assumption.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try iFrame.
+  Unshelve.
+  all: try iExists
+    (tail, bytes, 0x15920, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15920CarrierExact
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
+      Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15920CarrierExact
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: have Hreturn : Z_to_bv 64 88352 = BV 64 88352 by bv_solve.
+  all: rewrite -Hreturn.
+  all: try iRename select (_ ↦ₘ data)%I into "HdescData".
+  all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
+  all: have Haddr968 :
+    bv_unsigned (sp + BV 64 968)%bv = bv_unsigned sp + 968 by bv_solve.
+  all: have Haddr976 :
+    bv_unsigned (sp + BV 64 976)%bv = bv_unsigned sp + 976 by bv_solve.
+  all: iEval (rewrite Haddr968) in "HdescData".
+  all: iEval (rewrite Haddr976) in "HdescSize".
+  all: rewrite /reg_col; cbn.
+  all: iFrame "HdescData HdescSize".
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+Qed.
+
+Lemma write_success_suffix_bytes_15920_carrier
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
+  instr_body 0x15930 (writeSuccessSuffixBytesAt15930Carrier sp P) -∗
+  instr_body 0x15920 (writeSuccessSuffixBytesAt15930CarrierShape sp P).
+Proof.
+  move => *.
+  iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
+  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
+    in "Hcode".
+  liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try assumption.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try iFrame.
+  Unshelve.
+  all: try iExists
+    (tail, bytes, 0x15930, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15930Carrier
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
+      Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15930Carrier
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: have Hreturn : Z_to_bv 64 88368 = BV 64 88368 by bv_solve.
+  all: rewrite -Hreturn.
+  all: try iRename select (_ ↦ₘ data)%I into "HdescData".
+  all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
+  all: have Haddr984 :
+    bv_unsigned (sp + BV 64 984)%bv = bv_unsigned sp + 984 by bv_solve.
+  all: have Haddr992 :
+    bv_unsigned (sp + BV 64 992)%bv = bv_unsigned sp + 992 by bv_solve.
+  all: iEval (rewrite Haddr984) in "HdescData".
+  all: iEval (rewrite Haddr992) in "HdescSize".
   all: rewrite /reg_col; cbn.
   all: iFrame "HdescData HdescSize".
   all: iFrame.
