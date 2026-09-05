@@ -67,13 +67,73 @@ Definition writeSuccessSuffixBytesAt158f0Carrier `{!islaG Sigma} `{!threadG}
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0Carrier) := I.
 
+Definition writeSuccessSuffixBytesAt158e0CarrierData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+   "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+   "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
+   "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+   "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   spec_trace
+     (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+       (writeOutputEvents data size trace)) ∗
+   bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+     ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
+      "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
+      "x26"; "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   (bv_unsigned sp + 920) ↦ₘ data ∗
+   (bv_unsigned sp + 928) ↦ₘ size ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158e0CarrierData) := I.
+
+Definition writeSuccessSuffixBytesAt158f0CarrierExactData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits (BV 64 0x158f0) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+   "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
+   "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   spec_trace trace ∗ bv_unsigned data ↦ₘ∗ bytes ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+     ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
+      "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
+      "x26"; "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   (bv_unsigned sp + 920) ↦ₘ data ∗
+   (bv_unsigned sp + (920 + 8)) ↦ₘ size ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierExactData) := I.
+
 Lemma write_success_suffix_bytes_158e0_carrier
-    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma)
+    (data size oldS0 oldS1 : bv 64) (bytes : list (bv 8)) (trace : spec) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
-  instr_body 0x158f0 (writeSuccessSuffixBytesAt158f0Carrier sp P) -∗
-  instr_body 0x158e0 (writeSuccessSuffixBytesAt158e0Carrier sp P).
+  instr_body 0x158f0
+    (writeSuccessSuffixBytesAt158f0CarrierExactData sp data size oldS0 oldS1
+      bytes trace P) -∗
+  instr_body 0x158e0
+    (writeSuccessSuffixBytesAt158e0CarrierData sp data size oldS0 oldS1 bytes
+      trace P).
 Proof.
   move => *.
   iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
@@ -87,8 +147,8 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve.
-  all: try iExists
-    (tail, bytes, 0x158f0, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: iExists
+    (trace, bytes, 0x158f0, oldS1, oldS0, sp, size, data, tt)ₗ.
   all: try cbn.
   all: try unLET.
   all: try iFrame.
@@ -101,25 +161,18 @@ Proof.
   all: try lia.
   all: iSplit; last done.
   all: iIntros "Hpost".
-  all: iEval (rewrite /writeSuccessSuffixBytesAt158f0Carrier).
-  all: iEval (rewrite /writeSuccessSuffixBytes158e0CarrierFrame).
-  all: iExists data, size, oldS0, oldS1, bytes, tail.
-  all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  all: try (rewrite reg_mapsto_pred_eq; iExists _; iFrame).
-  all: try iApply reg_mapsto_pred_intro.
-  Unshelve.
-  all: iSplit; last done.
-  all: iIntros "Hpost".
-  all: iDestruct "Hpost" as
-    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
-      Hmmio & Htrace & _)".
-  all: iEval (rewrite /writeSuccessSuffixBytesAt158f0Carrier).
-  all: iEval (rewrite /writeSuccessSuffixBytes158e0CarrierFrame).
-  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iEval (rewrite /writeSuccessSuffixBytesAt158e0CarrierData).
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   Unshelve.
+  all: try iExists
+    (trace, bytes, 0x158f0, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
   all: have Hreturn : Z_to_bv 64 88304 = BV 64 88304 by bv_solve.
   all: try rewrite -Hreturn.
   all: try iRename select (_ ↦ₘ data)%I into "HdescData".
@@ -133,11 +186,8 @@ Proof.
   all: rewrite /reg_col; cbn.
   all: iFrame "HdescData HdescSize".
   all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  all: try (rewrite reg_mapsto_pred_eq; iExists _; iFrame).
-  all: try iApply reg_mapsto_pred_intro.
-  Unshelve.
-  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+  Unshelve. all: try prepare_sidecond.
+  all: try bv_solve.
 Qed.
 
 Definition writeSuccessSuffixBytesCarrierShapeReg `{!islaG Sigma} `{!threadG}
@@ -279,14 +329,6 @@ Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910CarrierData) := 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920CarrierData) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930CarrierData) := I.
 
-Definition writeSuccessSuffixBytesAt158f0CarrierExactData `{!islaG Sigma} `{!threadG}
-    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
-    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
-  writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
-    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x158f0))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
-    (writeSuccessSuffixBytesCarrierShapeReg "x6") 920 P.
-
 Definition writeSuccessSuffixBytesAt15900CarrierExactData `{!islaG Sigma} `{!threadG}
     (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
@@ -319,7 +361,6 @@ Definition writeSuccessSuffixBytesAt15930CarrierExactData `{!islaG Sigma} `{!thr
     (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
     (writeSuccessSuffixBytesCarrierShapeReg "x6") 984 P.
 
-Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierExactData) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900CarrierExactData) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910CarrierExactData) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920CarrierExactData) := I.
