@@ -358,7 +358,11 @@ Definition writeSuccessTransactionsLoopExitEventsData
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
-       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.
+       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
 
 Definition writeSuccessTransactionsLoopExitWithdrawalsData
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -469,6 +473,7 @@ Proof.
     "(Hsys & Hother & H2 & H10 & H11 & Hbytes & Hown & Hscratch &
       Hcarrier & Hmmio & Htrace & HP & _)".
   iFrame.
+  repeat iSplit; iPureIntro; assumption.
 Qed.
 
 Lemma write_success_transactions_loop_carrier_exit_to_events

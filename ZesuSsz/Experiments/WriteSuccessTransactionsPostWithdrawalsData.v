@@ -100,7 +100,8 @@ Proof.
     /writeSuccessTransactionsLoopExitEventsData) in "Hdata".
   iDestruct "Hdata" as
     "(Hsys & Hother & H2 & H10 & H11 & Hbytes & Hown & Hscratch & Hcarrier &
-      Hwithdrawals & Hmmio & Htrace & Hframe & _)".
+      Hwithdrawals & Hmmio & Htrace & %Halign16 & %Halign8 & %Hlow & %Hhigh &
+      Hframe & _)".
   iEval (rewrite /writeSuccessTransactionsLoopCarrierPayload
     /writeSuccessTransactionsWordsCarrier) in "Hcarrier".
   iDestruct "Hcarrier" as
