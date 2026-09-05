@@ -152,3 +152,21 @@ Proof.
   Unshelve. all: iFrame.
   all: lazymatch goal with |- ?G => fail "159a0 setup residual" G end.
 Qed.
+
+Definition writeSuccessSuffixJump15990Spec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ instr_pre 0x159a0 P ∗ P)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixJump15990Spec) := I.
+
+Lemma write_success_suffix_jump_15990
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  instr_body 0x15990 (writeSuccessSuffixJump15990Spec P).
+Proof.
+  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try assumption; try bv_solve; try lia.
+  Unshelve. all: iFrame.
+  all: lazymatch goal with |- ?G => fail "15990 jump residual" G end.
+Qed.
