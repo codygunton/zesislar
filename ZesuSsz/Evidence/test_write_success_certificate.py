@@ -75,6 +75,8 @@ class WriteSuccessCertificateTests(unittest.TestCase):
         self.assertEqual(path[0], ENTRY_PC)
         self.assertEqual(path[-1], EXIT_PC)
         self.assertTrue(all(edge in edges for edge in zip(path, path[1:])))
+        edge_pcs = {pc for edge in edges for pc in edge}
+        self.assertLessEqual(set(certificate["reachablePcs"]), edge_pcs)
 
     def test_renders_rocq_bridge_from_witness(self):
         source = render_rocq(generate(fixture()))

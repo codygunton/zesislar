@@ -24,6 +24,11 @@ The Rocq port keeps the shared tools byte-identical to `binary-fv-experiment@38a
 Nix regenerates `ZesuSsz/Generated/Level1.v` and rejects any difference.
 The Level 1 contracts import that file for their execution regions and exit PCs.
 
+`generate_write_success_certificate.py` checks the pinned `writeSuccess` CFG.
+It rejects unknown edges, missing exits, changed ELF data, and PCs outside the Level 1 region.
+It emits the complete instruction graph and a concrete entry-to-exit Rocq witness.
+Nix regenerates both certificate files and rejects any difference.
+
 The `level1-viewer-data` Nix package contains all Level 1 review data.
 Its checker rejects any proof claim.
 
