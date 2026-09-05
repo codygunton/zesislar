@@ -10,6 +10,8 @@ Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
 
 Import ListNotations.
 
@@ -79,6 +81,86 @@ Lemma byteListItemDescriptors_spec sp items tail :
   byteListItemEvents sp items tail.
 Proof.
   induction items as [|item rest IH]; simpl; [reflexivity |].
+  rewrite IH. reflexivity.
+Qed.
+
+Definition writeSuccessBytesDescriptors
+    (sp data size : bv 64) : list WriteOutputDescriptor := [
+  ((sp - BV 64 48)%bv, BV 64 8);
+  (data, size)
+].
+
+Lemma writeSuccessBytesDescriptors_spec sp data size tail :
+  writeOutputDescriptorsSpec (writeSuccessBytesDescriptors sp data size) tail =
+  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    (writeOutputEvents data size tail).
+Proof. reflexivity. Qed.
+
+Definition writeSuccessByteListsDescriptors
+    (sp : bv 64) (items : list ByteListItem) :
+    list WriteOutputDescriptor :=
+  ((sp - BV 64 48)%bv, BV 64 8) ::
+  byteListItemDescriptors (sp - BV 64 32)%bv items.
+
+Lemma writeSuccessByteListsDescriptors_spec sp items tail :
+  writeOutputDescriptorsSpec
+      (writeSuccessByteListsDescriptors sp items) tail =
+  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    (byteListItemEvents (sp - BV 64 32)%bv items tail).
+Proof.
+  simpl. rewrite byteListItemDescriptors_spec. reflexivity.
+Qed.
+
+Fixpoint writeSuccessWithdrawalsItemDescriptors
+    (sp : bv 64) (count : nat) : list WriteOutputDescriptor :=
+  match count with
+  | O => []
+  | S count =>
+      [((sp - BV 64 16)%bv, BV 64 8);
+       ((sp - BV 64 16)%bv, BV 64 8);
+       ((sp + BV 64 1768)%bv, BV 64 20);
+       ((sp - BV 64 16)%bv, BV 64 8)] ++
+      writeSuccessWithdrawalsItemDescriptors sp count
+  end.
+
+Lemma writeSuccessWithdrawalsItemDescriptors_spec sp count tail :
+  writeOutputDescriptorsSpec
+      (writeSuccessWithdrawalsItemDescriptors sp count) tail =
+  writeSuccessWithdrawalsEvents sp count tail.
+Proof.
+  induction count as [|count IH]; simpl; [reflexivity |].
+  rewrite IH. reflexivity.
+Qed.
+
+Definition writeSuccessWithdrawalsDescriptors
+    (sp : bv 64) (count : nat) : list WriteOutputDescriptor :=
+  ((sp - BV 64 16)%bv, BV 64 8) ::
+  writeSuccessWithdrawalsItemDescriptors sp count.
+
+Lemma writeSuccessWithdrawalsDescriptors_spec sp count tail :
+  writeOutputDescriptorsSpec
+      (writeSuccessWithdrawalsDescriptors sp count) tail =
+  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+    (writeSuccessWithdrawalsEvents sp count tail).
+Proof.
+  simpl. rewrite writeSuccessWithdrawalsItemDescriptors_spec. reflexivity.
+Qed.
+
+Definition writeSuccessHashesDescriptors
+    (sp : bv 64) (count : nat) : list WriteOutputDescriptor :=
+  ((sp - BV 64 16)%bv, BV 64 8) ::
+  writeSuccessRepeatedDescriptors
+    (sp + BV 64 1744)%bv (BV 64 32) count.
+
+Lemma writeSuccessHashesDescriptors_spec sp count tail :
+  writeOutputDescriptorsSpec (writeSuccessHashesDescriptors sp count) tail =
+  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+    (writeSuccessHashesEvents sp count tail).
+Proof.
+  unfold writeSuccessHashesDescriptors. simpl.
+  rewrite writeSuccessRepeatedDescriptors_spec.
+  f_equal.
+  induction count as [|count IH]; simpl; [reflexivity |].
   rewrite IH. reflexivity.
 Qed.
 
