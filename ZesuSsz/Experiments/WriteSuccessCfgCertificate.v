@@ -1,4 +1,4 @@
-From Coq Require Import Lists.List ZArith.ZArith.
+From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import ZesuSsz.Contracts.Machine.
 
 Import ListNotations.
@@ -53,6 +53,175 @@ Definition writeSuccessCfgMaximal
   exists pc, last path 0%Z = pc /\
     (exitPc pc \/ forall next, ~ nextPc pc next).
 
+(** The PC relation alone cannot express loop progress.  This control state
+    carries one fuel value and the seven loop counters. *)
+Record WriteSuccessControlState : Type := {
+  writeSuccessControlPc : Z;
+  writeSuccessHashesRemaining : nat;
+  writeSuccessBlobHashesRemaining : nat;
+  writeSuccessStorageKeysRemaining : nat;
+  writeSuccessWithdrawalsRemaining : nat;
+  writeSuccessAuthorizationsRemaining : nat;
+  writeSuccessAccessListsRemaining : nat;
+  writeSuccessTransactionsRemaining : nat;
+  writeSuccessControlFuel : nat
+}.
+
+Definition writeSuccessControlRank (state : WriteSuccessControlState) : nat :=
+  writeSuccessControlFuel state +
+  writeSuccessHashesRemaining state +
+  writeSuccessBlobHashesRemaining state +
+  writeSuccessStorageKeysRemaining state +
+  writeSuccessWithdrawalsRemaining state +
+  writeSuccessAuthorizationsRemaining state +
+  writeSuccessAccessListsRemaining state +
+  writeSuccessTransactionsRemaining state.
+
+Definition writeSuccessControlStep
+    (nextPc : Z -> Z -> Prop)
+    (fromState toState : WriteSuccessControlState) : Prop :=
+  nextPc (writeSuccessControlPc fromState) (writeSuccessControlPc toState) /\
+  (writeSuccessControlFuel toState < writeSuccessControlFuel fromState)%nat /\
+  (writeSuccessHashesRemaining toState <= writeSuccessHashesRemaining fromState)%nat /\
+  (writeSuccessBlobHashesRemaining toState <= writeSuccessBlobHashesRemaining fromState)%nat /\
+  (writeSuccessStorageKeysRemaining toState <= writeSuccessStorageKeysRemaining fromState)%nat /\
+  (writeSuccessWithdrawalsRemaining toState <= writeSuccessWithdrawalsRemaining fromState)%nat /\
+  (writeSuccessAuthorizationsRemaining toState <= writeSuccessAuthorizationsRemaining fromState)%nat /\
+  (writeSuccessAccessListsRemaining toState <= writeSuccessAccessListsRemaining fromState)%nat /\
+  (writeSuccessTransactionsRemaining toState <= writeSuccessTransactionsRemaining fromState)%nat.
+
+Lemma writeSuccessControlStep_rank
+    (nextPc : Z -> Z -> Prop) fromState toState :
+  writeSuccessControlStep nextPc fromState toState ->
+  (writeSuccessControlRank toState < writeSuccessControlRank fromState)%nat.
+Proof.
+  intros H.
+  destruct H as (Hpc & Hfuel & Hhash & Hblob & Hstorage & Hwithdrawals &
+    Hauth & Haccess & Htransactions).
+  unfold writeSuccessControlRank.
+  lia.
+Qed.
+
+Inductive writeSuccessControlPath
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop) :
+    list WriteSuccessControlState -> Prop :=
+| WriteSuccessControlPathOne state :
+    writeSuccessControlPath stateStep [state]
+| WriteSuccessControlPathNext fromState toState rest :
+    stateStep fromState toState ->
+    writeSuccessControlPath stateStep (toState :: rest) ->
+    writeSuccessControlPath stateStep (fromState :: toState :: rest).
+
+Lemma writeSuccessControlPath_project
+    (nextPc : Z -> Z -> Prop)
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop) :
+  (forall fromState toState, stateStep fromState toState ->
+    nextPc (writeSuccessControlPc fromState) (writeSuccessControlPc toState)) ->
+  forall states, writeSuccessControlPath stateStep states ->
+    InstructionPathFollows nextPc (List.map writeSuccessControlPc states).
+Proof.
+  intros Hproject states Hstates.
+  induction Hstates as [state | fromState toState rest Hstep Hrest IH].
+  - constructor.
+  - simpl. apply InstructionPathNext.
+    + apply Hproject; assumption.
+    + exact IH.
+Qed.
+
+(** This lemma is the explicit handoff from a ranked state path to the PC
+    witness consumed by [nativeContractBridge].  The caller must provide the
+    state invariant facts for the projected path. *)
+Lemma writeSuccessControlPath_project_certificate
+    (nextPc : Z -> Z -> Prop) (region exitPc : Z -> Prop)
+    (entryPc : Z) (bound : nat)
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop)
+    (Hproject : forall fromState toState, stateStep fromState toState ->
+      nextPc (writeSuccessControlPc fromState)
+        (writeSuccessControlPc toState))
+    (states : list WriteSuccessControlState)
+    (Hstates : writeSuccessControlPath stateStep states)
+    (Hhead : hd_error (List.map writeSuccessControlPc states) = Some entryPc)
+    (Hregion : Forall region
+      (removelast (List.map writeSuccessControlPc states)))
+    (Hexit : exists pc,
+      last (List.map writeSuccessControlPc states) entryPc = pc /\ exitPc pc)
+    (Hlength : length states = S bound)
+    (Hbound : (0 < bound)%nat) :
+  InstructionPathCertificate nextPc region exitPc entryPc bound.
+Proof.
+  exists (List.map writeSuccessControlPc states).
+  repeat split.
+  - exact Hhead.
+  - apply (writeSuccessControlPath_project nextPc stateStep).
+    + exact Hproject.
+    + exact Hstates.
+  - exact Hregion.
+  - exact Hexit.
+  - rewrite map_length.
+    exact Hlength.
+  - exact Hbound.
+Qed.
+
+(** These are the concrete obligations for a future writeSuccess witness.
+    The current loop invariants must instantiate seven counter bounds and
+    show progress on every back edge.  A static instruction count does not
+    discharge any of these inequalities. *)
+Record WriteSuccessLoopCounterObligations
+    (stateInvariant : WriteSuccessControlState -> Prop)
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop)
+    (entryState : WriteSuccessControlState)
+    (bound : nat) : Prop := {
+  writeSuccessEntryStateInvariant : stateInvariant entryState;
+  writeSuccessEntryStatePc :
+    writeSuccessControlPc entryState = 0x14d30;
+  writeSuccessEntryRankBound :
+    (writeSuccessControlRank entryState <= bound)%nat;
+  writeSuccessStateInvariantPreserved :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      stateInvariant toState;
+  writeSuccessFuelProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessControlFuel toState <
+       writeSuccessControlFuel fromState)%nat;
+  writeSuccessHashesProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessHashesRemaining toState <=
+       writeSuccessHashesRemaining fromState)%nat;
+  writeSuccessBlobHashesProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessBlobHashesRemaining toState <=
+       writeSuccessBlobHashesRemaining fromState)%nat;
+  writeSuccessStorageKeysProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessStorageKeysRemaining toState <=
+       writeSuccessStorageKeysRemaining fromState)%nat;
+  writeSuccessWithdrawalsProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessWithdrawalsRemaining toState <=
+       writeSuccessWithdrawalsRemaining fromState)%nat;
+  writeSuccessAuthorizationsProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessAuthorizationsRemaining toState <=
+       writeSuccessAuthorizationsRemaining fromState)%nat;
+  writeSuccessAccessListsProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessAccessListsRemaining toState <=
+       writeSuccessAccessListsRemaining fromState)%nat;
+  writeSuccessTransactionsProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (writeSuccessTransactionsRemaining toState <=
+       writeSuccessTransactionsRemaining fromState)%nat
+}.
+
 (** A bounded execution consumes one natural-number unit at every successor.
     The inductive definition has no constructor for an infinite execution. *)
 Inductive writeSuccessCfgRun
@@ -102,6 +271,39 @@ Proof.
   - reflexivity.
 Qed.
 
+Lemma writeSuccessStateRanked_no_infinite
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop)
+    (rank : WriteSuccessControlState -> nat) :
+  (forall fromState toState, stateStep fromState toState ->
+    (rank toState < rank fromState)%nat) ->
+  forall path : nat -> WriteSuccessControlState,
+    (forall index, stateStep (path index) (path (S index))) -> False.
+Proof.
+  intros Hrank path Hstep.
+  remember (rank (path 0%nat)) as initialRank eqn:Hinitial.
+  revert path Hstep Hinitial.
+  induction initialRank using lt_wf_ind.
+  intros path Hstep Hinitial.
+  pose proof (Hrank (path 0%nat) (path 1%nat) (Hstep 0%nat)) as Hdecrease.
+  rewrite <- Hinitial in Hdecrease.
+  apply (H _ Hdecrease (fun index => path (S index))).
+  - intros index. exact (Hstep (S index)).
+  - reflexivity.
+Qed.
+
+Lemma writeSuccessControlStep_no_infinite
+    (nextPc : Z -> Z -> Prop) :
+  forall path : nat -> WriteSuccessControlState,
+    (forall index, writeSuccessControlStep nextPc
+      (path index) (path (S index))) -> False.
+Proof.
+  intros path Hstep.
+  exact ((writeSuccessStateRanked_no_infinite
+    (writeSuccessControlStep nextPc)
+    writeSuccessControlRank (writeSuccessControlStep_rank nextPc))
+    path Hstep).
+Qed.
+
 (** This record separates the finite witness consumed by the existing bridge
     from the universal bounded-path obligation.  A cyclic CFG must supply a
     ranking or explicit loop budgets to prove [writeSuccessCfgAllPaths]. *)
@@ -110,10 +312,22 @@ Record WriteSuccessCfgCertificate
     (entryPc : Z) (bound : nat) : Type := {
   writeSuccessCfgWitness :
     InstructionPathCertificate nextPc region exitPc entryPc bound;
-  writeSuccessCfgRankWitness : Z -> nat;
-  writeSuccessCfgRankProof :
-    writeSuccessCfgRanked nextPc region writeSuccessCfgRankWitness;
-  writeSuccessCfgNoInfinite : writeSuccessCfgNoInfinitePath nextPc region;
+  writeSuccessCfgStateStep :
+    WriteSuccessControlState -> WriteSuccessControlState -> Prop;
+  writeSuccessCfgStateRankProof :
+    forall fromState toState,
+      writeSuccessCfgStateStep fromState toState ->
+      (writeSuccessControlRank toState <
+       writeSuccessControlRank fromState)%nat;
+  writeSuccessCfgStateProjection :
+    forall fromState toState,
+      writeSuccessCfgStateStep fromState toState ->
+      nextPc (writeSuccessControlPc fromState)
+        (writeSuccessControlPc toState);
+  writeSuccessCfgNoInfiniteState :
+    forall path : nat -> WriteSuccessControlState,
+      (forall index, writeSuccessCfgStateStep
+        (path index) (path (S index))) -> False;
   writeSuccessCfgAllPaths :
     forall path,
       writeSuccessCfgPath nextPc region exitPc entryPc path ->
@@ -153,8 +367,13 @@ Definition writeSuccessCfgBudgetedPathRelation
 Lemma writeSuccessCfgBudgetedPath_implies_certificate
     (nextPc : Z -> Z -> Prop) (region exitPc : Z -> Prop)
     (entryPc : Z) (budget : (Z * Z) -> nat) (bound : nat)
-    (rank : Z -> nat)
-    (Hrank : writeSuccessCfgRanked nextPc region rank)
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop)
+    (Hrank : forall fromState toState, stateStep fromState toState ->
+      (writeSuccessControlRank toState <
+       writeSuccessControlRank fromState)%nat)
+    (Hproject : forall fromState toState, stateStep fromState toState ->
+      nextPc (writeSuccessControlPc fromState)
+        (writeSuccessControlPc toState))
     (Hbudget : forall path,
       writeSuccessCfgPath nextPc region exitPc entryPc path ->
       writeSuccessCfgMaximal nextPc exitPc path ->
@@ -166,10 +385,13 @@ Lemma writeSuccessCfgBudgetedPath_implies_certificate
 Proof.
   intros Hall.
   refine {| writeSuccessCfgWitness := Hwitness;
-            writeSuccessCfgRankWitness := rank;
-            writeSuccessCfgRankProof := Hrank;
-            writeSuccessCfgNoInfinite := writeSuccessCfgRanked_no_infinite
-              nextPc region rank Hrank |}.
+            writeSuccessCfgStateStep := stateStep;
+            writeSuccessCfgStateRankProof := Hrank;
+            writeSuccessCfgStateProjection := Hproject;
+            writeSuccessCfgNoInfiniteState := _ |}.
+  intros path Hpath.
+  exact ((writeSuccessStateRanked_no_infinite stateStep
+    writeSuccessControlRank Hrank) path Hpath).
   intros path Hpath Hmax.
   apply Hall; [|exact Hmax].
   split; [exact Hpath |].
