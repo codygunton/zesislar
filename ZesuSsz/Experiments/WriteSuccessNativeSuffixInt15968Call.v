@@ -32,7 +32,7 @@ Definition writeSuccessSuffixInt15968CallSpec
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    instr_pre 0x1596c (writeSuccessSuffixInt1596cCallPost sp tail) ∗ Q)%I.
+    instr_pre 0x1596c (writeSuccessSuffixInt1596cCallPost sp tail ∗ Q) ∗ Q)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixInt15968CallSpec) := I.
 
@@ -89,9 +89,13 @@ Proof.
   iSplit; first (iPureIntro; bv_solve).
   iSplit; first (iPureIntro; bv_solve).
   iSplit; first (iPureIntro; bv_solve).
-  iEval (unfold writeSuccessSuffixInt1596cCallPost) in "Hpost".
+  iSplit; last done.
+  rewrite -instr_pre'_eq.
+  iApply (instr_pre_wand 0x1596c 0x1596c true true with "Hpost");
+    [done | reflexivity |].
+  iIntros "Hreturn".
+  iEval (unfold writeSuccessSuffixInt1596cCallPost) in "Hreturn".
   iEval (unfold writeSuccessSuffixInt1596cCallPost).
-  rewrite instr_pre'_eq.
-  have Hreturn : Z_to_bv 64 0x1596c = BV 64 0x1596c by bv_solve.
-  rewrite Hreturn. iFrame "Hpost".
+  have HreturnAddress : Z_to_bv 64 0x1596c = BV 64 0x1596c by bv_solve.
+  rewrite HreturnAddress. iFrame "Hreturn HQ".
 Qed.
