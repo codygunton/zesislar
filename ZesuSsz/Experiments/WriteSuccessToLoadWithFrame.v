@@ -106,6 +106,88 @@ Definition writeSuccessLoadHeaderRemainder
 
 Global Instance : LithiumUnfold (@writeSuccessLoadHeaderRemainder) := I.
 
+(** The public entry owns this heap.  Code proofs supply the register frame,
+    loop-exit continuation, and final continuation separately. *)
+Definition writeSuccessLoadHeaderHeapResources
+    `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (sourceBytes : list (bv 8))
+    (values : list (bv 64)) (payload : list (bv 8))
+    (base : Z) (transactions : list writeSuccessTransaction)
+    (transactionBytes : list (bv 8)) : iProp Sigma :=
+  ((bv_unsigned sp - 48) ↦ₘ? 48 ∗
+   bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
+   base ↦ₘ∗ transactionBytes ∗
+   writeSuccessTransactionsOwn transactions ∗
+   writeSuccessTransactionsInvariant sp base transactions [] transactions
+     transactionBytes [] transactionBytes ∗
+   ⌜length sourceBytes = 720%nat⌝ ∗
+   ⌜bytes_of_u64s values = take 592 sourceBytes⌝ ∗
+   ⌜length values = 74%nat⌝ ∗
+   ⌜bv_unsigned (writeSuccessValueWord values 5) = length payload⌝ ∗
+   ⌜writeSuccessValueWord values 7 = Z_to_bv 64 base⌝ ∗
+   ⌜writeSuccessValueWord values 8 =
+      Z_to_bv 64 (Z.of_nat (length transactions))⌝ ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessLoadHeaderHeapResources) := I.
+
+Lemma write_success_load_header_remainder_pack
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (sourceBytes : list (bv 8))
+    (values : list (bv 64)) (payload : list (bv 8))
+    (tail : spec) (base : Z) (transactions : list writeSuccessTransaction)
+    (transactionBytes : list (bv 8)) :
+  reg_col writeSuccessLoadHeaderExtraRegisters -∗
+  writeSuccessLoadHeaderHeapResources sp sourceBytes values payload base
+    transactions transactionBytes -∗
+  instr_pre writeSuccessTransactionsLoopExitAddress
+    (writeSuccessTransactionsLoopExit sp base transactions transactionBytes tail
+      (writeSuccessValueTransactionsContinuation values payload P)) -∗
+  P -∗
+  writeSuccessLoadHeaderRemainder P sp sourceBytes values payload tail base
+    transactions transactionBytes.
+Proof.
+  rewrite /writeSuccessLoadHeaderHeapResources
+    /writeSuccessLoadHeaderRemainder.
+  iIntros "Hextra Hheap Hexit HP".
+  iDestruct "Hheap" as
+    "(Hlower & Hpayload & Harray & Hown & Hinvariant & %HsourceLength &
+      %HvaluesBytes & %HvaluesLength & %HpayloadLength & %HbaseEq &
+      %HcountEq & %Halign16 & %Halign8 & %HlowerBound & %HupperBound & _)".
+  iFrame.
+  repeat iSplit; try iPureIntro; try assumption; done.
+Qed.
+
+Lemma write_success_load_header_remainder_unpack
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (sourceBytes : list (bv 8))
+    (values : list (bv 64)) (payload : list (bv 8))
+    (tail : spec) (base : Z) (transactions : list writeSuccessTransaction)
+    (transactionBytes : list (bv 8)) :
+  writeSuccessLoadHeaderRemainder P sp sourceBytes values payload tail base
+      transactions transactionBytes -∗
+  reg_col writeSuccessLoadHeaderExtraRegisters ∗
+  writeSuccessLoadHeaderHeapResources sp sourceBytes values payload base
+      transactions transactionBytes ∗
+  instr_pre writeSuccessTransactionsLoopExitAddress
+    (writeSuccessTransactionsLoopExit sp base transactions transactionBytes tail
+      (writeSuccessValueTransactionsContinuation values payload P)) ∗
+  P.
+Proof.
+  rewrite /writeSuccessLoadHeaderHeapResources
+    /writeSuccessLoadHeaderRemainder.
+  iIntros "(Hextra & Hlower & Hpayload & Harray & Hown & Hexit &
+    Hinvariant & %HsourceLength & %HvaluesBytes & %HvaluesLength &
+    %HpayloadLength & %HbaseEq & %HcountEq & %Halign16 & %Halign8 &
+    %HlowerBound & %HupperBound & HP & _)".
+  iFrame.
+  repeat iSplit; try iPureIntro; try assumption; done.
+Qed.
+
 Lemma write_success_at_load_with_frame_to_header
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (sourceBytes : list (bv 8))
