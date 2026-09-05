@@ -15,6 +15,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessNativeCalleeProviders.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeCode.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologue.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologueSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessPostTransactionDescriptors.
 Require Import ZesuSsz.Experiments.WriteSuccessToLoadWithFrame.
 Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
@@ -53,7 +54,8 @@ Record writeSuccessNativeWitness (Decoded : Type) : Type := {
   writeSuccessRawTransactions : list ByteListItem;
   writeSuccessWithdrawalsBase : bv 64;
   writeSuccessWithdrawalsBytes : list (bv 8);
-  writeSuccessWithdrawalsCount : nat
+  writeSuccessWithdrawalsCount : nat;
+  writeSuccessPostData : WriteSuccessPostTransactionData
 }.
 
 Arguments writeSuccessEntrySp {Decoded} _.
@@ -83,6 +85,7 @@ Arguments writeSuccessRawTransactions {Decoded} _.
 Arguments writeSuccessWithdrawalsBase {Decoded} _.
 Arguments writeSuccessWithdrawalsBytes {Decoded} _.
 Arguments writeSuccessWithdrawalsCount {Decoded} _.
+Arguments writeSuccessPostData {Decoded} _.
 
 Definition writeSuccessFrameSp {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : bv 64 :=
@@ -94,7 +97,10 @@ Definition writeSuccessNativeTailEvents {Decoded}
     (writeSuccessValueEvents (writeSuccessFrameSp witness)
       (writeSuccessValues witness)
       (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
-        (writeSuccessTransactions witness) (writeSuccessTraceTail witness))).
+        (writeSuccessTransactions witness)
+        (writeSuccessAfterTransactionsEvents (writeSuccessFrameSp witness)
+          (writeSuccessWithdrawalsCount witness)
+          (writeSuccessPostData witness) (writeSuccessTraceTail witness)))).
 
 Definition writeSuccessNativeAfterTagEvents {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : spec :=
@@ -102,7 +108,10 @@ Definition writeSuccessNativeAfterTagEvents {Decoded}
     (writeSuccessValueEvents (writeSuccessFrameSp witness)
       (writeSuccessValues witness)
       (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
-        (writeSuccessTransactions witness) (writeSuccessTraceTail witness))).
+        (writeSuccessTransactions witness)
+        (writeSuccessAfterTransactionsEvents (writeSuccessFrameSp witness)
+          (writeSuccessWithdrawalsCount witness)
+          (writeSuccessPostData witness) (writeSuccessTraceTail witness)))).
 
 Definition writeSuccessWitnessWellFormed {Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)

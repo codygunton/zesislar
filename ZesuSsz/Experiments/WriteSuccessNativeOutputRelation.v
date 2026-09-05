@@ -13,14 +13,18 @@ Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
 
 Import ListNotations.
 
-(** The header descriptor sequence starts with the caller's fixed tag. *)
+(** The sequence starts with the caller tag and ends with public keys. *)
 Definition writeSuccessNativeDescriptors {Decoded}
     (witness : writeSuccessNativeWitness Decoded) :
     list WriteOutputDescriptor :=
   writeSuccessMainDescriptors
     (writeSuccessFrameSp witness)
     (writeSuccessValues witness)
-    (writeSuccessTransactions witness).
+    (writeSuccessTransactions witness) ++
+  writeSuccessAfterTransactionsDescriptors
+    (writeSuccessFrameSp witness)
+    (writeSuccessWithdrawalsCount witness)
+    (writeSuccessPostData witness).
 
 Lemma writeSuccessNativeDescriptors_spec {Decoded}
     (witness : writeSuccessNativeWitness Decoded) tail :
@@ -29,10 +33,17 @@ Lemma writeSuccessNativeDescriptors_spec {Decoded}
     (writeSuccessValueEvents (writeSuccessFrameSp witness)
       (writeSuccessValues witness)
       (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
-        (writeSuccessTransactions witness) tail)).
+        (writeSuccessTransactions witness)
+        (writeSuccessAfterTransactionsEvents
+          (writeSuccessFrameSp witness)
+          (writeSuccessWithdrawalsCount witness)
+          (writeSuccessPostData witness) tail))).
 Proof.
   unfold writeSuccessNativeDescriptors.
-  rewrite writeSuccessMainDescriptors_spec. reflexivity.
+  rewrite writeOutputDescriptorsSpec_app.
+  rewrite writeSuccessMainDescriptors_spec.
+  rewrite writeSuccessAfterTransactionsDescriptors_spec.
+  reflexivity.
 Qed.
 
 (** The write index distinguishes repeated writes from the same stack slot. *)
@@ -67,7 +78,10 @@ Definition writeSuccessCompleteNativeDescriptors {Decoded}
     (witness : writeSuccessNativeWitness Decoded)
     (postData : WriteSuccessPostTransactionData) :
     list WriteOutputDescriptor :=
-  writeSuccessNativeDescriptors witness ++
+  writeSuccessMainDescriptors
+    (writeSuccessFrameSp witness)
+    (writeSuccessValues witness)
+    (writeSuccessTransactions witness) ++
   writeSuccessAfterTransactionsDescriptors
     (writeSuccessFrameSp witness)
     (writeSuccessWithdrawalsCount witness) postData.
@@ -88,7 +102,7 @@ Lemma writeSuccessCompleteNativeDescriptors_spec {Decoded}
 Proof.
   unfold writeSuccessCompleteNativeDescriptors.
   rewrite writeOutputDescriptorsSpec_app.
-  rewrite writeSuccessNativeDescriptors_spec.
+  rewrite writeSuccessMainDescriptors_spec.
   rewrite writeSuccessAfterTransactionsDescriptors_spec.
   reflexivity.
 Qed.
