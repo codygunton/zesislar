@@ -106,6 +106,8 @@ Proof.
   all: iExists data, size, oldS0, oldS1, bytes, tail.
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  all: try (rewrite reg_mapsto_pred_eq; iExists _; iFrame).
+  all: try iApply reg_mapsto_pred_intro.
   Unshelve.
   all: iSplit; last done.
   all: iIntros "Hpost".
@@ -128,6 +130,186 @@ Proof.
     bv_unsigned (sp + BV 64 928)%bv = bv_unsigned sp + 928 by bv_solve.
   all: iEval (rewrite Haddr920) in "HdescData".
   all: iEval (rewrite Haddr928) in "HdescSize".
+  all: rewrite /reg_col; cbn.
+  all: iFrame "HdescData HdescSize".
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  all: try (rewrite reg_mapsto_pred_eq; iExists _; iFrame).
+  all: try iApply reg_mapsto_pred_intro.
+  Unshelve.
+  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+Qed.
+
+Definition writeSuccessSuffixBytesCarrierShapeReg `{!islaG Sigma} `{!threadG}
+    (r : string) : iProp Sigma :=
+  r ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝).
+
+Definition writeSuccessSuffixBytesCarrierExactReg `{!islaG Sigma} `{!threadG}
+    (r : string) (v : bv 64) : iProp Sigma :=
+  r ↦ᵣ RVal_Bits v.
+
+Definition writeSuccessSuffixBytesCarrierState `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (x1 x5 x6 : iProp Sigma)
+    (x10 x11 : bv 64 -> iProp Sigma)
+    (event : bv 64 -> bv 64 -> spec -> spec) (offset : Z)
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (data size oldS0 oldS1 : bv 64) (bytes : list (bv 8)) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗ x1 ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗ x5 ∗ x6 ∗
+    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
+    (x10 data) ∗ (x11 size) ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    spec_trace (event data size tail) ∗ bv_unsigned data ↦ₘ∗ bytes ∗
+    ⌜bv_unsigned size = length bytes⌝ ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+      ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
+       "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
+       "x26"; "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+    (bv_unsigned sp + offset) ↦ₘ data ∗
+    (bv_unsigned sp + (offset + 8)) ↦ₘ size ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesCarrierState) := I.
+
+Definition writeSuccessSuffixBytesAt158f0CarrierNext `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x158f0))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
+    (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
+    (fun _ _ tail => tail) 920 P.
+
+Definition writeSuccessSuffixBytesAt15900Carrier `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
+    (fun data size tail =>
+      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEvents data size tail)) 936 P.
+
+Definition writeSuccessSuffixBytesAt15900CarrierExact `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15900))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
+    (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
+    (fun _ _ tail => tail) 936 P.
+
+Definition writeSuccessSuffixBytesAt15910Carrier `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
+    (fun data size tail =>
+      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEvents data size tail)) 952 P.
+
+Definition writeSuccessSuffixBytesAt15920Carrier `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
+    (fun data size tail =>
+      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEvents data size tail)) 968 P.
+
+Definition writeSuccessSuffixBytesAt15930Carrier `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierState sp
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15930))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
+    (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
+    (fun _ _ tail => tail) 984 P.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierNext) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900Carrier) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900CarrierExact) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910Carrier) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920Carrier) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930Carrier) := I.
+
+Lemma write_success_suffix_bytes_158f0_carrier
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
+  instr_body 0x15900 (writeSuccessSuffixBytesAt15900CarrierExact sp P) -∗
+  instr_body 0x158f0 (writeSuccessSuffixBytesAt15900Carrier sp P).
+Proof.
+  move => *.
+  iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
+  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
+    in "Hcode".
+  liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try assumption.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: try iFrame.
+  Unshelve.
+  all: try iExists
+    (tail, bytes, 0x15900, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15900CarrierExact
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
+      Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15900CarrierExact
+    /writeSuccessSuffixBytesCarrierState).
+  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: have Hreturn : Z_to_bv 64 88320 = BV 64 88320 by bv_solve.
+  all: rewrite -Hreturn.
+  all: try iRename select (_ ↦ₘ data)%I into "HdescData".
+  all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
+  all: have Haddr936 :
+    bv_unsigned (sp + BV 64 936)%bv = bv_unsigned sp + 936 by bv_solve.
+  all: have Haddr944 :
+    bv_unsigned (sp + BV 64 944)%bv = bv_unsigned sp + 944 by bv_solve.
+  all: have Haddr944Frame :
+    bv_unsigned sp + 936 + 8 = bv_unsigned sp + 944 by lia.
+  all: iEval (rewrite Haddr936) in "HdescData".
+  all: iEval (rewrite Haddr944) in "HdescSize".
   all: rewrite /reg_col; cbn.
   all: iFrame "HdescData HdescSize".
   all: iFrame.
