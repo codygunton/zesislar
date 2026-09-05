@@ -304,6 +304,28 @@ Proof.
     path Hstep).
 Qed.
 
+Lemma writeSuccessStateCoverage_no_infinite
+    (nextPc : Z -> Z -> Prop) (region : Z -> Prop)
+    (stateStep : WriteSuccessControlState -> WriteSuccessControlState -> Prop)
+    (rank : WriteSuccessControlState -> nat)
+    (Hrank : forall fromState toState, stateStep fromState toState ->
+      (rank toState < rank fromState)%nat)
+    (Hcoverage : forall path : nat -> Z,
+      (forall index, region (path index)) ->
+      (forall index, nextPc (path index) (path (S index))) ->
+      exists statePath : nat -> WriteSuccessControlState,
+        (forall index,
+          writeSuccessControlPc (statePath index) = path index) /\
+        (forall index,
+          stateStep (statePath index) (statePath (S index)))) :
+  writeSuccessCfgNoInfinitePath nextPc region.
+Proof.
+  intros path Hregion Hnext.
+  destruct (Hcoverage path Hregion Hnext) as [statePath [_ Hstate]].
+  exact ((writeSuccessStateRanked_no_infinite stateStep rank Hrank)
+    statePath Hstate).
+Qed.
+
 (** This record separates the finite witness consumed by the existing bridge
     from the universal bounded-path obligation.  A cyclic CFG must supply a
     ranking or explicit loop budgets to prove [writeSuccessCfgAllPaths]. *)
@@ -322,12 +344,18 @@ Record WriteSuccessCfgCertificate
   writeSuccessCfgStateProjection :
     forall fromState toState,
       writeSuccessCfgStateStep fromState toState ->
-      nextPc (writeSuccessControlPc fromState)
+        nextPc (writeSuccessControlPc fromState)
         (writeSuccessControlPc toState);
-  writeSuccessCfgNoInfiniteState :
-    forall path : nat -> WriteSuccessControlState,
-      (forall index, writeSuccessCfgStateStep
-        (path index) (path (S index))) -> False;
+  writeSuccessCfgStateCoverage :
+    forall path : nat -> Z,
+      (forall index, region (path index)) ->
+      (forall index, nextPc (path index) (path (S index))) ->
+      exists statePath : nat -> WriteSuccessControlState,
+        (forall index,
+          writeSuccessControlPc (statePath index) = path index) /\
+        (forall index, writeSuccessCfgStateStep
+          (statePath index) (statePath (S index)));
+  writeSuccessCfgNoInfinite : writeSuccessCfgNoInfinitePath nextPc region;
   writeSuccessCfgAllPaths :
     forall path,
       writeSuccessCfgPath nextPc region exitPc entryPc path ->
@@ -374,6 +402,13 @@ Lemma writeSuccessCfgBudgetedPath_implies_certificate
     (Hproject : forall fromState toState, stateStep fromState toState ->
       nextPc (writeSuccessControlPc fromState)
         (writeSuccessControlPc toState))
+    (Hcoverage : forall path : nat -> Z,
+      (forall index, region (path index)) ->
+      (forall index, nextPc (path index) (path (S index))) ->
+      exists statePath : nat -> WriteSuccessControlState,
+        (forall index,
+          writeSuccessControlPc (statePath index) = path index) /\
+        (forall index, stateStep (statePath index) (statePath (S index))))
     (Hbudget : forall path,
       writeSuccessCfgPath nextPc region exitPc entryPc path ->
       writeSuccessCfgMaximal nextPc exitPc path ->
@@ -388,10 +423,10 @@ Proof.
             writeSuccessCfgStateStep := stateStep;
             writeSuccessCfgStateRankProof := Hrank;
             writeSuccessCfgStateProjection := Hproject;
-            writeSuccessCfgNoInfiniteState := _ |}.
-  intros path Hpath.
-  exact ((writeSuccessStateRanked_no_infinite stateStep
-    writeSuccessControlRank Hrank) path Hpath).
+            writeSuccessCfgStateCoverage := Hcoverage;
+            writeSuccessCfgNoInfinite := _ |}.
+  apply (writeSuccessStateCoverage_no_infinite nextPc region stateStep
+    writeSuccessControlRank Hrank Hcoverage).
   intros path Hpath Hmax.
   apply Hall; [|exact Hmax].
   split; [exact Hpath |].
