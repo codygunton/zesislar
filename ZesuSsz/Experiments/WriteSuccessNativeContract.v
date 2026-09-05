@@ -86,6 +86,14 @@ Definition writeSuccessNativeTailEvents {Decoded}
       (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
         (writeSuccessTransactions witness) (writeSuccessTraceTail witness))).
 
+Definition writeSuccessNativeAfterTagEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  writeSuccessHeaderEventsAfterTag (writeSuccessFrameSp witness)
+    (writeSuccessValueEvents (writeSuccessFrameSp witness)
+      (writeSuccessValues witness)
+      (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
+        (writeSuccessTransactions witness) (writeSuccessTraceTail witness))).
+
 Definition writeSuccessWitnessWellFormed {Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : Prop :=
@@ -208,8 +216,7 @@ Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
     (writeSuccessAtLoadHeaderWithFrame
       (writeSuccessFrameSp witness)
       (writeSuccessSourceBytes witness)
-      (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness))
+      (writeSuccessNativeTailEvents witness)
       (writeSuccessLoadHeaderRemainder
         (writeSuccessHeaderTerminal model outputRelation args)
       (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
@@ -248,8 +255,7 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
      writeSuccessDecodedBytes witness ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeSuccessCallerOutputEventsWithFrame (BV 64 0x179c5) (BV 64 6)
-     (writeSuccessNativeTailEvents witness)) ∗
+   spec_trace (writeSuccessNativeTailEvents witness) ∗
    writeSuccessNativeDataResources witness ∗
    ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
    ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
@@ -284,8 +290,7 @@ Definition writeSuccessNativeLoadResources {Decoded}
     writeSuccessAtLoadHeaderWithFrame
       (writeSuccessFrameSp witness)
       (take 720 (writeSuccessDecodedBytes witness))
-      (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) (writeSuccessNativeTailEvents witness))
+      (writeSuccessNativeTailEvents witness)
       (reg_col writeSuccessLoadHeaderExtraRegisters ∗
        writeSuccessNativeDataResources witness)
 |}.
@@ -349,8 +354,7 @@ Proof.
       (writeSuccessAtLoadHeaderWithFrame
         (writeSuccessFrameSp witness)
         (take 720 (writeSuccessDecodedBytes witness))
-        (writeSuccessCallerOutputEventsWithFrame
-          (BV 64 0x179c5) (BV 64 6) (writeSuccessNativeTailEvents witness))
+        (writeSuccessNativeTailEvents witness)
         (reg_col writeSuccessLoadHeaderExtraRegisters ∗
          writeSuccessNativeDataResources witness)))%I
     with "[Hexit]" as "Hload".
@@ -383,7 +387,7 @@ Proof.
     (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-    (writeSuccessDecodedBytes witness) (writeSuccessNativeTailEvents witness)
+    (writeSuccessDecodedBytes witness) (writeSuccessNativeAfterTagEvents witness)
     (writeSuccessNativeDataResources witness)
     Hdecoded HspExtract HspMin HspMax with
     "Hlookup Hmain HmemcpyCode HoutputCode Hmemcpy Houtput Hload") as "HtoLoad".

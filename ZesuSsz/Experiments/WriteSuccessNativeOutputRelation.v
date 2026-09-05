@@ -12,12 +12,10 @@ Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
 
 Import ListNotations.
 
-(** The complete native call emits one caller descriptor before the header,
-    value, and transaction descriptors. *)
+(** The header descriptor sequence starts with the caller's fixed tag. *)
 Definition writeSuccessNativeDescriptors {Decoded}
     (witness : writeSuccessNativeWitness Decoded) :
     list WriteOutputDescriptor :=
-  [(BV 64 0x179c5, BV 64 6)] ++
   writeSuccessMainDescriptors
     (writeSuccessFrameSp witness)
     (writeSuccessValues witness)
@@ -26,27 +24,13 @@ Definition writeSuccessNativeDescriptors {Decoded}
 Lemma writeSuccessNativeDescriptors_spec {Decoded}
     (witness : writeSuccessNativeWitness Decoded) tail :
   writeOutputDescriptorsSpec (writeSuccessNativeDescriptors witness) tail =
-  writeSuccessCallerOutputEventsWithFrame
-    (BV 64 0x179c5) (BV 64 6)
-    (writeSuccessHeaderEvents (writeSuccessFrameSp witness)
-      (writeSuccessValueEvents (writeSuccessFrameSp witness)
-        (writeSuccessValues witness)
-        (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
-          (writeSuccessTransactions witness) tail))).
+  writeSuccessHeaderEvents (writeSuccessFrameSp witness)
+    (writeSuccessValueEvents (writeSuccessFrameSp witness)
+      (writeSuccessValues witness)
+      (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
+        (writeSuccessTransactions witness) tail)).
 Proof.
-  change (writeOutputEvents (BV 64 0x179c5) (BV 64 6)
-    (writeOutputDescriptorsSpec
-      (writeSuccessMainDescriptors
-        (writeSuccessFrameSp witness)
-        (writeSuccessValues witness)
-        (writeSuccessTransactions witness)) tail) =
-    writeSuccessCallerOutputEventsWithFrame
-      (BV 64 0x179c5) (BV 64 6)
-      (writeSuccessHeaderEvents (writeSuccessFrameSp witness)
-        (writeSuccessValueEvents (writeSuccessFrameSp witness)
-          (writeSuccessValues witness)
-          (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
-            (writeSuccessTransactions witness) tail)))).
+  unfold writeSuccessNativeDescriptors.
   rewrite writeSuccessMainDescriptors_spec. reflexivity.
 Qed.
 
