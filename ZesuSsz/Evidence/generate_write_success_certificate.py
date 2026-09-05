@@ -146,6 +146,48 @@ def _terminal_edges(blocks: dict[int, dict], reachable: set[int]) -> list[tuple[
     return terminals
 
 
+def _phase_ranks(edges: dict[int, list[int]], reachable: set[int],
+                 back_edges: set[tuple[int, int]],
+                 terminal_nodes: set[int]) -> tuple[dict[int, int], int]:
+    """Rank CFG blocks after removing the seven loop back edges."""
+    forward = {
+        node: [target for target in edges[node]
+               if (node, target) not in back_edges]
+        for node in reachable
+    }
+    visiting: set[int] = set()
+    ranks: dict[int, int] = {}
+
+    def rank(node: int) -> int:
+        if node in ranks:
+            return ranks[node]
+        if node in visiting:
+            raise ValueError("non-back-edge cycle in writeSuccess CFG")
+        visiting.add(node)
+        successors = forward[node]
+        if node in terminal_nodes:
+            value = 0
+        elif not successors:
+            # A loop latch can have only its back edge after edge removal.
+            # Its phase rank is the reset point for the enclosing loop.
+            value = 0
+        else:
+            value = max(rank(target) + 1 for target in successors)
+        visiting.remove(node)
+        ranks[node] = value
+        return value
+
+    rank(ENTRY_PC)
+    if set(ranks) != reachable:
+        missing = sorted(reachable - set(ranks))[0]
+        raise ValueError(f"CFG block {missing:#x} cannot reach a terminal without a back edge")
+    for source, targets in edges.items():
+        for target in targets:
+            if (source, target) not in back_edges and ranks[target] >= ranks[source]:
+                raise ValueError(f"phase rank does not decrease on {source:#x} -> {target:#x}")
+    return ranks, max(ranks.values()) + 1
+
+
 def _artifact(cfg: dict, elf: Path | None, expected_sha256: str | None) -> dict:
     artifact = cfg.get("artifact")
     if not isinstance(artifact, dict):
@@ -225,6 +267,15 @@ def generate(cfg: dict, *, elf: Path | None = None,
             raise ValueError(f"missing CFG back edge {missing[0][0]:#x} -> {missing[0][1]:#x}")
         raise ValueError(f"unexpected CFG back edge {unknown[0][0]:#x} -> {unknown[0][1]:#x}")
     exits = _terminal_edges(blocks, reachable)
+    terminal_sources = {source for source, _ in exits}
+    terminal_nodes = {
+        start for start in reachable
+        if any(_as_pc(instruction.get("pc"), field="instruction PC")
+               in terminal_sources
+               for instruction in blocks[start].get("instructions", []))
+    }
+    phase_ranks, phase_bound = _phase_ranks(
+        edges, reachable, back_edges, terminal_nodes)
     budgets = loop_budgets or {}
     if loop_budgets:
         missing = back_edges - budgets.keys()
@@ -243,6 +294,9 @@ def generate(cfg: dict, *, elf: Path | None = None,
         "backEdges": [{"from": source, "to": target}
                       for source, target in sorted(back_edges)],
         "exitEdges": [{"from": source, "to": target} for source, target in exits],
+        "phaseRank": [{"pc": pc, "rank": phase_ranks[pc]}
+                      for pc in sorted(reachable)],
+        "phaseBound": phase_bound,
         # Level 1 reports 950 static instructions across the complete
         # execution region.  This value is not a dynamic path bound.
         "instructionCount": len(pcs),
@@ -252,13 +306,6 @@ def generate(cfg: dict, *, elf: Path | None = None,
         result["loopBudgets"] = [{"from": source, "to": target,
                                   "maxTraversals": budgets[(source, target)]}
                                  for source, target in sorted(back_edges)]
-        terminal_sources = {source for source, _ in exits}
-        terminal_nodes = {
-            start for start in reachable
-            if any(_as_pc(instruction.get("pc"), field="instruction PC")
-                   in terminal_sources
-                   for instruction in blocks[start].get("instructions", []))
-        }
         result["pathBound"] = _bounded_path_length(
             edges, terminal_nodes, back_edges, budgets)
     return result

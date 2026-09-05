@@ -1,5 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import ZesuSsz.Contracts.Machine.
+Require Import ZesuSsz.Contracts.Level1.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -54,21 +55,43 @@ Definition writeSuccessCfgMaximal
     (exitPc pc \/ forall next, ~ nextPc pc next).
 
 (** The PC relation alone cannot express loop progress.  This control state
-    carries one fuel value and the seven loop counters. *)
+    carries an acyclic CFG phase and the seven loop counters. *)
 Record WriteSuccessControlState : Type := {
   writeSuccessControlPc : Z;
+  writeSuccessControlPhase : nat;
   writeSuccessHashesRemaining : nat;
   writeSuccessBlobHashesRemaining : nat;
   writeSuccessStorageKeysRemaining : nat;
   writeSuccessWithdrawalsRemaining : nat;
   writeSuccessAuthorizationsRemaining : nat;
   writeSuccessAccessListsRemaining : nat;
-  writeSuccessTransactionsRemaining : nat;
-  writeSuccessControlFuel : nat
+  writeSuccessTransactionsRemaining : nat
 }.
 
-Definition writeSuccessControlRank (state : WriteSuccessControlState) : nat :=
-  writeSuccessControlFuel state +
+Definition writeSuccessCfgPhaseBound : nat := 56%nat.
+
+Inductive WriteSuccessCfgLoop : Type :=
+| WriteSuccessHashesLoop
+| WriteSuccessBlobHashesLoop
+| WriteSuccessStorageKeysLoop
+| WriteSuccessWithdrawalsLoop
+| WriteSuccessAuthorizationsLoop
+| WriteSuccessAccessListsLoop
+| WriteSuccessTransactionsLoop.
+
+Definition writeSuccessCfgBackEdgeLoop
+    (edge : Z * Z) (loop : WriteSuccessCfgLoop) : Prop :=
+  match loop with
+  | WriteSuccessHashesLoop => edge = (0x158d4, 0x15754)
+  | WriteSuccessBlobHashesLoop => edge = (0x15558, 0x153d4)
+  | WriteSuccessStorageKeysLoop => edge = (0x153a8, 0x15228)
+  | WriteSuccessWithdrawalsLoop => edge = (0x15614, 0x15590)
+  | WriteSuccessAuthorizationsLoop => edge = (0x156dc, 0x15694)
+  | WriteSuccessAccessListsLoop => edge = (0x153b4, 0x151d4)
+  | WriteSuccessTransactionsLoop => edge = (0x1565c, 0x14f00)
+  end.
+
+Definition writeSuccessControlCounterSum (state : WriteSuccessControlState) : nat :=
   writeSuccessHashesRemaining state +
   writeSuccessBlobHashesRemaining state +
   writeSuccessStorageKeysRemaining state +
@@ -77,18 +100,102 @@ Definition writeSuccessControlRank (state : WriteSuccessControlState) : nat :=
   writeSuccessAccessListsRemaining state +
   writeSuccessTransactionsRemaining state.
 
-Definition writeSuccessControlStep
-    (nextPc : Z -> Z -> Prop)
+Definition writeSuccessControlRank (state : WriteSuccessControlState) : nat :=
+  writeSuccessControlPhase state +
+  writeSuccessCfgPhaseBound * writeSuccessControlCounterSum state.
+
+Definition writeSuccessControlCountersNonincreasing
     (fromState toState : WriteSuccessControlState) : Prop :=
-  nextPc (writeSuccessControlPc fromState) (writeSuccessControlPc toState) /\
-  (writeSuccessControlFuel toState < writeSuccessControlFuel fromState)%nat /\
   (writeSuccessHashesRemaining toState <= writeSuccessHashesRemaining fromState)%nat /\
   (writeSuccessBlobHashesRemaining toState <= writeSuccessBlobHashesRemaining fromState)%nat /\
   (writeSuccessStorageKeysRemaining toState <= writeSuccessStorageKeysRemaining fromState)%nat /\
   (writeSuccessWithdrawalsRemaining toState <= writeSuccessWithdrawalsRemaining fromState)%nat /\
   (writeSuccessAuthorizationsRemaining toState <= writeSuccessAuthorizationsRemaining fromState)%nat /\
   (writeSuccessAccessListsRemaining toState <= writeSuccessAccessListsRemaining fromState)%nat /\
-  (writeSuccessTransactionsRemaining toState <= writeSuccessTransactionsRemaining fromState)%nat.
+  (writeSuccessTransactionsRemaining toState <=
+   writeSuccessTransactionsRemaining fromState)%nat.
+
+Definition writeSuccessControlLoopDecreases
+    (loop : WriteSuccessCfgLoop)
+    (fromState toState : WriteSuccessControlState) : Prop :=
+  match loop with
+  | WriteSuccessHashesLoop =>
+      (writeSuccessHashesRemaining toState < writeSuccessHashesRemaining fromState)%nat
+  | WriteSuccessBlobHashesLoop =>
+      (writeSuccessBlobHashesRemaining toState < writeSuccessBlobHashesRemaining fromState)%nat
+  | WriteSuccessStorageKeysLoop =>
+      (writeSuccessStorageKeysRemaining toState < writeSuccessStorageKeysRemaining fromState)%nat
+  | WriteSuccessWithdrawalsLoop =>
+      (writeSuccessWithdrawalsRemaining toState < writeSuccessWithdrawalsRemaining fromState)%nat
+  | WriteSuccessAuthorizationsLoop =>
+      (writeSuccessAuthorizationsRemaining toState < writeSuccessAuthorizationsRemaining fromState)%nat
+  | WriteSuccessAccessListsLoop =>
+      (writeSuccessAccessListsRemaining toState < writeSuccessAccessListsRemaining fromState)%nat
+  | WriteSuccessTransactionsLoop =>
+      (writeSuccessTransactionsRemaining toState < writeSuccessTransactionsRemaining fromState)%nat
+  end.
+
+Lemma writeSuccessControlLoopDecreases_sum
+    loop fromState toState :
+  writeSuccessControlCountersNonincreasing fromState toState ->
+  writeSuccessControlLoopDecreases loop fromState toState ->
+  (writeSuccessControlCounterSum toState <
+   writeSuccessControlCounterSum fromState)%nat.
+Proof.
+  intros Hnonincreasing Hdecrease.
+  unfold writeSuccessControlCountersNonincreasing in Hnonincreasing.
+  destruct loop; cbn [writeSuccessControlLoopDecreases] in Hdecrease;
+    unfold writeSuccessControlCounterSum; lia.
+Qed.
+
+Lemma writeSuccessControlRank_counter_decrease
+    (phaseFrom phaseTo countersFrom countersTo : nat) :
+  (phaseFrom < writeSuccessCfgPhaseBound)%nat ->
+  (phaseTo < writeSuccessCfgPhaseBound)%nat ->
+  (countersTo < countersFrom)%nat ->
+  (phaseTo + writeSuccessCfgPhaseBound * countersTo <
+   phaseFrom + writeSuccessCfgPhaseBound * countersFrom)%nat.
+Proof.
+  intros Hfrom Hto Hdecrease.
+  unfold writeSuccessControlRank, writeSuccessCfgPhaseBound.
+  unfold writeSuccessCfgPhaseBound in Hfrom, Hto.
+  assert (Hsucc : (S countersTo <= countersFrom)%nat).
+  { lia. }
+  pose proof (Nat.mul_le_mono_l (S countersTo) countersFrom 56 Hsucc) as Hw.
+  rewrite Nat.mul_succ_r in Hw.
+  lia.
+Qed.
+
+Lemma writeSuccessControlRank_phase_decrease
+    (phaseFrom phaseTo countersFrom countersTo : nat) :
+  (phaseFrom < writeSuccessCfgPhaseBound)%nat ->
+  (phaseTo < phaseFrom)%nat ->
+  (countersTo <= countersFrom)%nat ->
+  (phaseTo + writeSuccessCfgPhaseBound * countersTo <
+   phaseFrom + writeSuccessCfgPhaseBound * countersFrom)%nat.
+Proof.
+  intros Hfrom Hphase Hcounters.
+  unfold writeSuccessCfgPhaseBound.
+  unfold writeSuccessCfgPhaseBound in Hfrom.
+  pose proof (Nat.mul_le_mono_l countersTo countersFrom 56 Hcounters) as Hw.
+  lia.
+Qed.
+
+Definition writeSuccessControlStep
+    (nextPc : Z -> Z -> Prop)
+    (fromState toState : WriteSuccessControlState) : Prop :=
+  nextPc (writeSuccessControlPc fromState) (writeSuccessControlPc toState) /\
+  (writeSuccessControlPhase fromState < writeSuccessCfgPhaseBound)%nat /\
+  (writeSuccessControlPhase toState < writeSuccessCfgPhaseBound)%nat /\
+  writeSuccessControlCountersNonincreasing fromState toState /\
+  ((exists loop,
+      writeSuccessCfgBackEdgeLoop
+        (writeSuccessControlPc fromState, writeSuccessControlPc toState) loop /\
+      writeSuccessControlLoopDecreases loop fromState toState) \/
+   ((forall loop,
+       ~ writeSuccessCfgBackEdgeLoop
+         (writeSuccessControlPc fromState, writeSuccessControlPc toState) loop) /\
+    (writeSuccessControlPhase toState < writeSuccessControlPhase fromState)%nat)).
 
 Lemma writeSuccessControlStep_rank
     (nextPc : Z -> Z -> Prop) fromState toState :
@@ -96,10 +203,31 @@ Lemma writeSuccessControlStep_rank
   (writeSuccessControlRank toState < writeSuccessControlRank fromState)%nat.
 Proof.
   intros H.
-  destruct H as (Hpc & Hfuel & Hhash & Hblob & Hstorage & Hwithdrawals &
-    Hauth & Haccess & Htransactions).
-  unfold writeSuccessControlRank.
-  lia.
+  unfold writeSuccessControlStep in H.
+  destruct H as [Hpc Hrest].
+  destruct Hrest as [HfromPhase Hrest].
+  destruct Hrest as [HtoPhase Hrest].
+  destruct Hrest as [Hcounters Hcase].
+  destruct Hcounters as
+    (Hhash & Hblob & Hstorage & Hwithdrawals & Hauth & Haccess & Htransactions).
+  change (writeSuccessControlPhase toState +
+    writeSuccessCfgPhaseBound * writeSuccessControlCounterSum toState <
+    writeSuccessControlPhase fromState +
+    writeSuccessCfgPhaseBound * writeSuccessControlCounterSum fromState)%nat.
+  destruct Hcase as [Hback | (Hnoback & Hphase)].
+  -
+    destruct Hback as [loop [Hedge Hdecrease]].
+    cbn [writeSuccessCfgBackEdgeLoop] in Hedge.
+    clear Hedge Hpc.
+    pose proof (writeSuccessControlLoopDecreases_sum loop fromState toState
+      (conj Hhash (conj Hblob (conj Hstorage (conj Hwithdrawals
+      (conj Hauth (conj Haccess Htransactions)))))) Hdecrease) as Hsum.
+    apply writeSuccessControlRank_counter_decrease; assumption.
+  - assert (Hsum :
+      (writeSuccessControlCounterSum toState <=
+       writeSuccessControlCounterSum fromState)%nat).
+    { unfold writeSuccessControlCounterSum; lia. }
+    apply writeSuccessControlRank_phase_decrease; assumption.
 Qed.
 
 Inductive writeSuccessControlPath
@@ -176,15 +304,37 @@ Record WriteSuccessLoopCounterObligations
     writeSuccessControlPc entryState = 0x14d30;
   writeSuccessEntryRankBound :
     (writeSuccessControlRank entryState <= bound)%nat;
+  writeSuccessStatePhaseBounded :
+    forall state,
+      stateInvariant state ->
+      (writeSuccessControlPhase state < writeSuccessCfgPhaseBound)%nat;
   writeSuccessStateInvariantPreserved :
     forall fromState toState,
       stateInvariant fromState -> stateStep fromState toState ->
       stateInvariant toState;
-  writeSuccessFuelProgress :
+  writeSuccessPhaseBounded :
     forall fromState toState,
       stateInvariant fromState -> stateStep fromState toState ->
-      (writeSuccessControlFuel toState <
-       writeSuccessControlFuel fromState)%nat;
+      (writeSuccessControlPhase fromState < writeSuccessCfgPhaseBound)%nat /\
+      (writeSuccessControlPhase toState < writeSuccessCfgPhaseBound)%nat;
+  writeSuccessNonBackPhaseProgress :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      (forall loop,
+        ~ writeSuccessCfgBackEdgeLoop
+          (writeSuccessControlPc fromState, writeSuccessControlPc toState) loop) ->
+      (writeSuccessControlPhase toState <
+       writeSuccessControlPhase fromState)%nat;
+  writeSuccessCounterMonotonicity :
+    forall fromState toState,
+      stateInvariant fromState -> stateStep fromState toState ->
+      writeSuccessControlCountersNonincreasing fromState toState;
+  writeSuccessBackEdgeProgress :
+    forall fromState toState loop,
+      stateInvariant fromState -> stateStep fromState toState ->
+      writeSuccessCfgBackEdgeLoop
+        (writeSuccessControlPc fromState, writeSuccessControlPc toState) loop ->
+      writeSuccessControlLoopDecreases loop fromState toState;
   writeSuccessHashesProgress :
     forall fromState toState,
       stateInvariant fromState -> stateStep fromState toState ->
@@ -289,6 +439,59 @@ Proof.
   apply (H _ Hdecrease (fun index => path (S index))).
   - intros index. exact (Hstep (S index)).
   - reflexivity.
+Qed.
+
+(** This theorem applies the ranked relation to the actual endpoint machine
+    transition.  It rules out an infinite [endpointStep] execution when the
+    loop invariants establish [Htransition]. *)
+Lemma writeSuccessEndpointNoInfinite
+    (State : Type)
+    (endpointStep : nat -> State -> State -> Prop)
+    (stateInvariant : State -> Prop)
+    (control : State -> WriteSuccessControlState)
+    (nextPc : Z -> Z -> Prop)
+    (Htransition : forall index before after,
+      stateInvariant before -> endpointStep index before after ->
+      writeSuccessControlStep nextPc (control before) (control after)) :
+  forall path : nat -> State,
+    (forall index, stateInvariant (path index)) ->
+    (forall index, endpointStep index (path index) (path (S index))) -> False.
+Proof.
+  intros path Hinvariant Hstep.
+  apply (writeSuccessStateRanked_no_infinite
+    (writeSuccessControlStep nextPc) writeSuccessControlRank
+    (writeSuccessControlStep_rank nextPc) (fun index => control (path index))).
+  intros index.
+  exact (Htransition index (path index) (path (S index))
+    (Hinvariant index) (Hstep index)).
+Qed.
+
+(** This specialization names the Level 1 machine fields.  The two premises
+    are the exact bridge that the seven loop invariants must provide. *)
+Lemma writeSuccessModelEndpointNoInfinite
+    {State Decoded : Type}
+    (model : Level1MachineModel State Decoded)
+    (stateInvariant : State -> Prop)
+    (control : State -> WriteSuccessControlState)
+    (nextPc : Z -> Z -> Prop)
+    (Hpc : forall state,
+      stateInvariant state ->
+      endpointPc State Decoded model state =
+      Some (writeSuccessControlPc (control state)))
+    (Htransition : forall index before after,
+      stateInvariant before ->
+      endpointStep State Decoded model index before after ->
+      writeSuccessControlStep nextPc (control before) (control after)) :
+  forall path : nat -> State,
+    (forall index, stateInvariant (path index)) ->
+    (forall index,
+      endpointStep State Decoded model index (path index) (path (S index))) ->
+    False.
+Proof.
+  intros path Hinvariant Hstep.
+  apply (writeSuccessEndpointNoInfinite State
+    (endpointStep State Decoded model) stateInvariant control nextPc
+    Htransition path Hinvariant Hstep).
 Qed.
 
 Lemma writeSuccessControlStep_no_infinite
@@ -425,11 +628,11 @@ Proof.
             writeSuccessCfgStateProjection := Hproject;
             writeSuccessCfgStateCoverage := Hcoverage;
             writeSuccessCfgNoInfinite := _ |}.
-  apply (writeSuccessStateCoverage_no_infinite nextPc region stateStep
-    writeSuccessControlRank Hrank Hcoverage).
-  intros path Hpath Hmax.
-  apply Hall; [|exact Hmax].
-  split; [exact Hpath |].
-  intros edge Hedge.
-  apply Hbudget; assumption.
+  - exact (writeSuccessStateCoverage_no_infinite nextPc region stateStep
+      writeSuccessControlRank Hrank Hcoverage).
+  - intros path Hpath Hmax.
+    apply Hall; [|exact Hmax].
+    split; [exact Hpath |].
+    intros edge Hedge.
+    apply Hbudget; assumption.
 Qed.

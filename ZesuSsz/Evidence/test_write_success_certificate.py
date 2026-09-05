@@ -50,6 +50,12 @@ class WriteSuccessCertificateTests(unittest.TestCase):
         self.assertEqual(certificate["executionInstructionCount"], 950)
         self.assertNotIn("pathBound", certificate)
         self.assertTrue(certificate["exitEdges"])
+        phase = {row["pc"]: row["rank"] for row in certificate["phaseRank"]}
+        self.assertEqual(set(phase), set(certificate["reachablePcs"]))
+        self.assertEqual(certificate["phaseBound"], max(phase.values()) + 1)
+        for row in certificate["edges"]:
+            if (row["from"], row["to"]) not in EXPECTED_BACK_EDGES:
+                self.assertGreater(phase[row["from"]], phase[row["to"]])
 
     def test_computes_bound_only_with_all_loop_budgets(self):
         cfg = fixture()
