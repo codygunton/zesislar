@@ -434,12 +434,19 @@ Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930Carrier) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930CarrierShape) := I.
 
 Lemma write_success_suffix_bytes_158f0_carrier
-    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma)
+    (data size oldS0 oldS1 : bv 64) (bytes : list (bv 8)) (trace : spec) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
-  instr_body 0x15900 (writeSuccessSuffixBytesAt15900CarrierExact sp P) -∗
-  instr_body 0x158f0 (writeSuccessSuffixBytesAt15900Carrier sp P).
+  instr_body 0x15900
+    (writeSuccessSuffixBytesAt15900CarrierExactData sp data size oldS0 oldS1
+      bytes trace P) -∗
+  instr_body 0x158f0
+    (writeSuccessSuffixBytesAt15900CarrierData sp data size oldS0 oldS1
+      bytes
+      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEvents data size trace)) P).
 Proof.
   move => *.
   iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
@@ -453,8 +460,8 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve.
-  all: try iExists
-    (tail, bytes, 0x15900, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: iExists
+    (trace, bytes, 0x15900, oldS1, oldS0, sp, size, data, tt)ₗ.
   all: try cbn.
   all: try unLET.
   all: try iFrame.
@@ -467,23 +474,19 @@ Proof.
   all: try lia.
   all: iSplit; last done.
   all: iIntros "Hpost".
-  all: iEval (rewrite /writeSuccessSuffixBytesAt15900CarrierExact
-    /writeSuccessSuffixBytesCarrierState).
-  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15900CarrierData
+    /writeSuccessSuffixBytesCarrierDataState).
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   Unshelve.
-  all: iSplit; last done.
-  all: iIntros "Hpost".
-  all: iDestruct "Hpost" as
-    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
-      Hmmio & Htrace & _)".
-  all: iEval (rewrite /writeSuccessSuffixBytesAt15900CarrierExact
-    /writeSuccessSuffixBytesCarrierState).
-  all: iExists data, size, oldS0, oldS1, bytes, tail.
-  all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  Unshelve.
+  all: try iExists
+    (trace, bytes, 0x15900, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
   all: have Hreturn : Z_to_bv 64 88320 = BV 64 88320 by bv_solve.
   all: try rewrite -Hreturn.
   all: try iRename select (_ ↦ₘ data)%I into "HdescData".
@@ -499,9 +502,8 @@ Proof.
   all: rewrite /reg_col; cbn.
   all: iFrame "HdescData HdescSize".
   all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  Unshelve.
-  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+  Unshelve. all: try prepare_sidecond.
+  all: try bv_solve.
 Qed.
 
 Lemma write_success_suffix_bytes_15900_carrier
