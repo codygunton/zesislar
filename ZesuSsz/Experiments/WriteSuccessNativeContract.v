@@ -16,6 +16,8 @@ Require Import ZesuSsz.Experiments.WriteSuccessNativeCode.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologue.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologueSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessToLoadWithFrame.
+Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
 
@@ -47,7 +49,11 @@ Record writeSuccessNativeWitness (Decoded : Type) : Type := {
   writeSuccessTraceTail : spec;
   writeSuccessTransactionBase : Z;
   writeSuccessTransactions : list writeSuccessTransaction;
-  writeSuccessTransactionBytes : list (bv 8)
+  writeSuccessTransactionBytes : list (bv 8);
+  writeSuccessRawTransactions : list ByteListItem;
+  writeSuccessWithdrawalsBase : bv 64;
+  writeSuccessWithdrawalsBytes : list (bv 8);
+  writeSuccessWithdrawalsCount : nat
 }.
 
 Arguments writeSuccessEntrySp {Decoded} _.
@@ -73,6 +79,10 @@ Arguments writeSuccessTraceTail {Decoded} _.
 Arguments writeSuccessTransactionBase {Decoded} _.
 Arguments writeSuccessTransactions {Decoded} _.
 Arguments writeSuccessTransactionBytes {Decoded} _.
+Arguments writeSuccessRawTransactions {Decoded} _.
+Arguments writeSuccessWithdrawalsBase {Decoded} _.
+Arguments writeSuccessWithdrawalsBytes {Decoded} _.
+Arguments writeSuccessWithdrawalsCount {Decoded} _.
 
 Definition writeSuccessFrameSp {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : bv 64 :=
@@ -119,6 +129,20 @@ Definition writeSuccessWitnessWellFormed {Decoded}
     Z_to_bv 64 (Z.of_nat (length (writeSuccessTransactions witness))) /\
   writeSuccessTransactionBytes witness =
     writeSuccessTransactionsBytes (writeSuccessTransactions witness) /\
+  writeSuccessTransactionsPost15674ByteListFacts
+    (writeSuccessFrameSp witness)
+    (writeSuccessValueWord (writeSuccessValues witness) 9)
+    (writeSuccessValueWord (writeSuccessValues witness) 10)
+    (writeSuccessRawTransactions witness) /\
+  writeSuccessValueWord (writeSuccessValues witness) 11 =
+    writeSuccessWithdrawalsBase witness /\
+  writeSuccessValueWord (writeSuccessValues witness) 12 =
+    Z_to_bv 64 (Z.of_nat (writeSuccessWithdrawalsCount witness)) /\
+  length (writeSuccessWithdrawalsBytes witness) =
+    (48 * writeSuccessWithdrawalsCount witness)%nat /\
+  (0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness))%Z /\
+  (bv_unsigned (writeSuccessWithdrawalsBase witness) +
+    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000)%Z /\
   bv_unsigned (writeSuccessEntrySp witness) `mod` 16 = 0 /\
   (0x20000880 <= bv_unsigned (writeSuccessEntrySp witness))%Z /\
   (bv_unsigned (writeSuccessEntrySp witness) + 0x7d0 < 0x40000000)%Z.
@@ -244,7 +268,26 @@ Definition writeSuccessNativeDataResources `{!islaG Sigma}
     (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
     (writeSuccessValues witness) (writeSuccessPayload witness)
     (writeSuccessTransactionBase witness) (writeSuccessTransactions witness)
-    (writeSuccessTransactionBytes witness).
+    (writeSuccessTransactionBytes witness) ∗
+  byteListItemResources
+    (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9))
+    (writeSuccessRawTransactions witness) ∗
+  bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗
+    writeSuccessWithdrawalsBytes witness ∗
+  ⌜writeSuccessTransactionsPost15674ByteListFacts
+    (writeSuccessFrameSp witness)
+    (writeSuccessValueWord (writeSuccessValues witness) 9)
+    (writeSuccessValueWord (writeSuccessValues witness) 10)
+    (writeSuccessRawTransactions witness)⌝ ∗
+  ⌜writeSuccessValueWord (writeSuccessValues witness) 11 =
+    writeSuccessWithdrawalsBase witness⌝ ∗
+  ⌜writeSuccessValueWord (writeSuccessValues witness) 12 =
+    Z_to_bv 64 (Z.of_nat (writeSuccessWithdrawalsCount witness))⌝ ∗
+  ⌜length (writeSuccessWithdrawalsBytes witness) =
+    (48 * writeSuccessWithdrawalsCount witness)%nat⌝ ∗
+  ⌜0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness)⌝ ∗
+  ⌜bv_unsigned (writeSuccessWithdrawalsBase witness) +
+    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝.
 
 Global Instance : LithiumUnfold (@writeSuccessNativeDataResources) := I.
 
@@ -323,11 +366,14 @@ Proof.
   iDestruct "Hcontract" as "[Hentry Hexit]".
   iEval (rewrite /writeSuccessNativeEntry) in "Hentry".
   iDestruct "Hentry" as (witness) "[%HwellFormed Hentry]".
+  pose proof HwellFormed as HwellFormedCopy.
   destruct HwellFormed as
     (Hstack & HdecodedAddress & HreturnAddress & HreturnValue &
      Hdecoded & HdecodedLength & HsourceLength & HsourceBytes &
      HvaluesLength & HvaluesBytes & HpayloadLength & Hbase & Hcount &
-     HtransactionBytes & HspAlign & HspMin & HspMax).
+     HtransactionBytes & HrawFacts & HwithdrawalBase & HwithdrawalCount &
+     HwithdrawalLength & HwithdrawalMin & HwithdrawalMax & HspAlign & HspMin &
+     HspMax).
   have HdecodedMin :
       (0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z
     by lia.
@@ -361,7 +407,7 @@ Proof.
   { iApply (instr_pre_wand with "Hexit");
       [done | done |].
     iIntros "Hload".
-    iExists witness. iSplit; first (iPureIntro; repeat split; assumption).
+    iExists witness. iSplit; first (iPureIntro; exact HwellFormedCopy).
     iExact "Hload". }
   iPoseProof (write_success_prologue
     (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)

@@ -6,6 +6,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeContract.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputDescriptors.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputSemantic.
+Require Import ZesuSsz.Experiments.WriteSuccessPostTransactionDescriptors.
 Require Import ZesuSsz.Experiments.WriteSuccessToLoadWithFrame.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
@@ -58,4 +59,69 @@ Lemma writeSuccessMemorySemanticPremise_sound {State Decoded}
   writeSuccessMemorySemanticPremise model memoryAtWrite ->
   writeSuccessSemanticPremise model
     (writeSuccessMemoryOutputRelation memoryAtWrite).
+Proof. intros Hsemantic args witness bytes. apply Hsemantic. Qed.
+
+(** This sequence covers every output after the transaction loop, including
+    withdrawals and the final public-key list. *)
+Definition writeSuccessCompleteNativeDescriptors {Decoded}
+    (witness : writeSuccessNativeWitness Decoded)
+    (postData : WriteSuccessPostTransactionData) :
+    list WriteOutputDescriptor :=
+  writeSuccessNativeDescriptors witness ++
+  writeSuccessAfterTransactionsDescriptors
+    (writeSuccessFrameSp witness)
+    (writeSuccessWithdrawalsCount witness) postData.
+
+Lemma writeSuccessCompleteNativeDescriptors_spec {Decoded}
+    (witness : writeSuccessNativeWitness Decoded)
+    (postData : WriteSuccessPostTransactionData) tail :
+  writeOutputDescriptorsSpec
+      (writeSuccessCompleteNativeDescriptors witness postData) tail =
+  writeSuccessHeaderEvents (writeSuccessFrameSp witness)
+    (writeSuccessValueEvents (writeSuccessFrameSp witness)
+      (writeSuccessValues witness)
+      (writeSuccessTransactionsEvents (writeSuccessFrameSp witness)
+        (writeSuccessTransactions witness)
+        (writeSuccessAfterTransactionsEvents
+          (writeSuccessFrameSp witness)
+          (writeSuccessWithdrawalsCount witness) postData tail))).
+Proof.
+  unfold writeSuccessCompleteNativeDescriptors.
+  rewrite writeOutputDescriptorsSpec_app.
+  rewrite writeSuccessNativeDescriptors_spec.
+  rewrite writeSuccessAfterTransactionsDescriptors_spec.
+  reflexivity.
+Qed.
+
+Definition writeSuccessCompleteMemoryOutputRelation {Decoded}
+    (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
+    (postDataOf : writeSuccessNativeWitness Decoded ->
+      WriteSuccessPostTransactionData) :
+    WriteSuccessOutputRelation Decoded :=
+  fun _ witness bytes =>
+    writeOutputSequenceObservation memoryAtWrite
+      (writeSuccessCompleteNativeDescriptors witness (postDataOf witness))
+      bytes.
+
+Definition writeSuccessCompleteMemorySemanticPremise {State Decoded}
+    (model : Level1MachineModel State Decoded)
+    (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
+    (postDataOf : writeSuccessNativeWitness Decoded ->
+      WriteSuccessPostTransactionData) : Prop :=
+  forall args witness bytes,
+    writeSuccessWitnessWellFormed args witness ->
+    writeOutputSequenceObservation memoryAtWrite
+      (writeSuccessCompleteNativeDescriptors witness (postDataOf witness))
+      bytes ->
+    decodeObservationSuccess State Decoded model bytes
+      (successDecoded Decoded args).
+
+Lemma writeSuccessCompleteMemorySemanticPremise_sound {State Decoded}
+    (model : Level1MachineModel State Decoded)
+    (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
+    (postDataOf : writeSuccessNativeWitness Decoded ->
+      WriteSuccessPostTransactionData) :
+  writeSuccessCompleteMemorySemanticPremise model memoryAtWrite postDataOf ->
+  writeSuccessSemanticPremise model
+    (writeSuccessCompleteMemoryOutputRelation memoryAtWrite postDataOf).
 Proof. intros Hsemantic args witness bytes. apply Hsemantic. Qed.
