@@ -34,6 +34,14 @@ Fixpoint writeOutputDescriptorsEvents
       writeOutputDescriptorsEvents tail
   end.
 
+Lemma writeOutputDescriptorsEvents_app left right :
+  writeOutputDescriptorsEvents (left ++ right) =
+    writeOutputDescriptorsEvents left ++ writeOutputDescriptorsEvents right.
+Proof.
+  induction left as [|descriptor tail IH]; simpl; [reflexivity |].
+  rewrite IH app_assoc. reflexivity.
+Qed.
+
 Fixpoint writeOutputDescriptorsSpec
     (descriptors : list WriteOutputDescriptor) (tail : spec) : spec :=
   match descriptors with
@@ -48,6 +56,15 @@ Definition writeOutputCompleteTrace
     (descriptors : list WriteOutputDescriptor)
     (tailEvents observed : list seq_label) : Prop :=
   observed = writeOutputDescriptorsEvents descriptors ++ tailEvents.
+
+Lemma writeOutputCompleteTrace_app left right tailEvents observed :
+  writeOutputCompleteTrace (left ++ right) tailEvents observed <->
+  writeOutputCompleteTrace left
+    (writeOutputDescriptorsEvents right ++ tailEvents) observed.
+Proof.
+  unfold writeOutputCompleteTrace.
+  rewrite writeOutputDescriptorsEvents_app app_assoc. reflexivity.
+Qed.
 
 Lemma writeOutputCompleteTrace_allowed descriptors tail tailEvents observed :
   writeOutputCompleteTrace descriptors tailEvents observed ->
