@@ -1,0 +1,24 @@
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14fe4.
+
+Definition writeSuccessTransactionsAt14fecCarrierSpec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ transaction first second third fourth items,
+    writeSuccessTransactionsAt14fe0CarrierLoadSpec P
+      transaction first second third fourth items
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 268))
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 269))
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 270))
+      (bv_zero_extend 64
+        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte
+          transaction 277)))%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsAt14fecCarrierSpec) := I.
