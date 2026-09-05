@@ -187,13 +187,13 @@ Definition writeSuccessHeaderTerminal `{!islaG Sigma} `{!threadG}
       ⌜writeSuccessNativeAllows model args bytes⌝ ∗
       writeSuccessTerminalResources outputRelation args bytes))%I.
 
-Definition writeSuccessLoadWithFramePre `{!islaG Sigma} `{!threadG}
+Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
     {State Decoded} (model : Level1MachineModel State Decoded)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
   (instr_pre 0x14d80
-    (writeSuccessAtLoadWithFrame
+    (writeSuccessAtLoadHeaderWithFrame
       (writeSuccessFrameSp witness)
       (writeSuccessSourceBytes witness)
       (writeSuccessCallerOutputEventsWithFrame
@@ -213,8 +213,7 @@ Definition writeSuccessNativeProofAssumptions `{!islaG Sigma} `{!threadG}
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
-  (writeSuccessLoadWithFramePre model outputRelation args witness ∗
-   instr_pre 0x14d10 True ∗ True)%I.
+  (writeSuccessLoadHeaderWithFramePre model outputRelation args witness ∗ True)%I.
 
 Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
     {Decoded} (witness : writeSuccessNativeWitness Decoded)
