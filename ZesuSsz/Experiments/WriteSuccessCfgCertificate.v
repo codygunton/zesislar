@@ -85,11 +85,21 @@ Definition writeSuccessCfgBackEdgeLoop
   | WriteSuccessHashesLoop => edge = (0x158d4, 0x15754)
   | WriteSuccessBlobHashesLoop => edge = (0x15558, 0x153d4)
   | WriteSuccessStorageKeysLoop => edge = (0x153a8, 0x15228)
-  | WriteSuccessWithdrawalsLoop => edge = (0x15614, 0x15590)
-  | WriteSuccessAuthorizationsLoop => edge = (0x156dc, 0x15694)
+  | WriteSuccessWithdrawalsLoop => edge = (0x156dc, 0x15694)
+  | WriteSuccessAuthorizationsLoop => edge = (0x15614, 0x15590)
   | WriteSuccessAccessListsLoop => edge = (0x153b4, 0x151d4)
   | WriteSuccessTransactionsLoop => edge = (0x1565c, 0x14f00)
   end.
+
+Lemma writeSuccessCfgAuthorizationsBackEdge :
+  writeSuccessCfgBackEdgeLoop (0x15614, 0x15590)
+    WriteSuccessAuthorizationsLoop.
+Proof. reflexivity. Qed.
+
+Lemma writeSuccessCfgWithdrawalsBackEdge :
+  writeSuccessCfgBackEdgeLoop (0x156dc, 0x15694)
+    WriteSuccessWithdrawalsLoop.
+Proof. reflexivity. Qed.
 
 Definition writeSuccessControlCounterSum (state : WriteSuccessControlState) : nat :=
   writeSuccessHashesRemaining state +
