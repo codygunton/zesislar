@@ -64,6 +64,7 @@
     {"label": "Post-transaction byte-list call", "startPc": "0x15674", "endPc": "0x15678", "status": "unconditionally_proven", "theorem": "write_success_transactions_post_15674_call"},
     {"label": "Post-transaction saved load 0", "startPc": "0x15678", "endPc": "0x1567c", "status": "unconditionally_proven", "theorem": "write_success_transactions_post_15678_load"},
     {"label": "Post-transaction saved load 1", "startPc": "0x1567c", "endPc": "0x15680", "status": "unconditionally_proven", "theorem": "write_success_transactions_post_1567c_load"},
+    {"label": "Post-transaction withdrawals handoff", "startPc": "0x15680", "endPc": "0x15694", "status": "conditionally_proven", "theorem": "write_success_transactions_to_withdrawals", "condition": "Needs the transaction event carrier and the withdrawals adapter."},
     {"label": "Withdrawal loop", "startPc": "0x15694", "endPc": "0x156e8", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
     {"label": "Hash loop", "startPc": "0x15754", "endPc": "0x158e0", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"}
   ]
