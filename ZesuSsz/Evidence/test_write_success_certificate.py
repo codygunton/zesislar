@@ -1,0 +1,86 @@
+import copy
+import unittest
+
+from check_write_success_certificate import validate
+from generate_write_success_certificate import (
+    ENTRY_PC,
+    EXIT_PC,
+    EXPECTED_BACK_EDGES,
+    INSTRUCTION_BOUND,
+    generate,
+)
+
+
+def fixture() -> dict:
+    # Keep this fixture small.  The source CFG test uses the pinned endpoint
+    # CFG, while this graph exercises every certificate rejection path.
+    # Each body returns to its loop header, then falls through to the next
+    # loop.  This gives DFS the same seven back edges as the pinned CFG.
+    loops = sorted(EXPECTED_BACK_EDGES, key=lambda edge: edge[1])
+    edges = {ENTRY_PC: [loops[0][1]]}
+    for index, (source, target) in enumerate(loops):
+        next_header = (loops[index + 1][1]
+                       if index + 1 < len(loops) else 0x159D8)
+        edges[target] = [source]
+        edges[source] = [target, next_header]
+    edges[0x159D8] = []
+    blocks = []
+    for start, successors in edges.items():
+        mnemonic = "ret" if start == 0x159D8 else "addi"
+        blocks.append({
+            "start": start,
+            "end": start + 4,
+            "successors": [f"0x{target:x}" for target in successors],
+            "instructions": [{"pc": start, "mnemonic": mnemonic}],
+        })
+    return {"artifact": {"identityScope": "ELF PT_LOAD memory image",
+                          "sha256": "ab" * 32},
+            "functions": [{"name": "ssz_decode_observation.writeSuccess",
+                           "blocks": blocks}]}
+
+
+class WriteSuccessCertificateTests(unittest.TestCase):
+    def test_covers_complete_graph_and_seven_back_edges(self):
+        certificate = generate(fixture())
+        self.assertEqual(certificate["entryPc"], ENTRY_PC)
+        self.assertEqual(certificate["exitPcs"], [EXIT_PC])
+        self.assertEqual({(row["from"], row["to"])
+                          for row in certificate["backEdges"]}, EXPECTED_BACK_EDGES)
+        self.assertEqual(certificate["instructionCount"],
+                         len(certificate["reachablePcs"]))
+        self.assertEqual(certificate["instructionBound"], INSTRUCTION_BOUND)
+        self.assertTrue(certificate["exitEdges"])
+
+    def test_rejects_unknown_edge(self):
+        cfg = fixture()
+        cfg["functions"][0]["blocks"][0]["successors"] = ["0xffff"]
+        with self.assertRaisesRegex(ValueError, "unknown CFG edge"):
+            generate(cfg)
+
+    def test_rejects_missing_exit(self):
+        cfg = fixture()
+        cfg["functions"][0]["blocks"][-1]["instructions"][0]["mnemonic"] = "addi"
+        with self.assertRaisesRegex(ValueError, "missing return exit"):
+            generate(cfg)
+
+    def test_rejects_pc_outside_level1_region(self):
+        cfg = fixture()
+        cfg["functions"][0]["blocks"][0]["instructions"][0]["pc"] = 0x100
+        with self.assertRaisesRegex(ValueError, "outside the Level 1 region"):
+            generate(cfg)
+
+    def test_rejects_changed_pinned_identity(self):
+        with self.assertRaisesRegex(ValueError, "pinned ELF identities differ"):
+            generate(fixture(), expected_sha256="cd" * 32)
+
+    def test_checker_rejects_forged_certificate(self):
+        cfg = fixture()
+        certificate = generate(cfg)
+        forged = copy.deepcopy(certificate)
+        forged["instructionBound"] += 1
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            validate(forged, cfg)
+
+
+if __name__ == "__main__":
+    unittest.main()
