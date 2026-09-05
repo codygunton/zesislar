@@ -16,6 +16,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessNativeCode.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologue.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologueSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessPostTransactionDescriptors.
+Require Import ZesuSsz.Experiments.WriteSuccessPostTransactionResources.
 Require Import ZesuSsz.Experiments.WriteSuccessToLoadWithFrame.
 Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
@@ -296,7 +297,10 @@ Definition writeSuccessNativeDataResources `{!islaG Sigma}
     (48 * writeSuccessWithdrawalsCount witness)%nat⌝ ∗
   ⌜0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness)⌝ ∗
   ⌜bv_unsigned (writeSuccessWithdrawalsBase witness) +
-    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝.
+    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝ ∗
+  writeSuccessPostTransactionDataResources
+    (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+    (writeSuccessDecodedBytes witness) (writeSuccessPostData witness).
 
 Global Instance : LithiumUnfold (@writeSuccessNativeDataResources) := I.
 
