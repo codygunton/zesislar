@@ -7,8 +7,31 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPuncturedScratch.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessValueTransactionsEntry.
+Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
 
 Import ListNotations.
+
+(** The value block always supplies enough words for this decomposition. *)
+Lemma write_success_value_words_split
+    (values : list (bv 64)) (HvaluesLength : length values = 74%nat) :
+  values = take 9 values ++
+    [writeSuccessValueWord values 9; writeSuccessValueWord values 10;
+     writeSuccessValueWord values 11; writeSuccessValueWord values 12] ++
+    drop 13 values.
+Proof.
+  have Hlookup (index : nat) (Hindex : index < 13%nat) :
+      values !! index = Some (writeSuccessValueWord values index).
+  { unfold writeSuccessValueWord.
+    destruct (values !! index) eqn:Hlookup; [done |].
+    apply lookup_ge_None_1 in Hlookup. rewrite HvaluesLength in Hlookup.
+    lia. }
+  rewrite <- (take_drop 9%nat values) at 1.
+  rewrite (drop_S values _ 9%nat (Hlookup 9%nat ltac:(lia))).
+  rewrite (drop_S values _ 10%nat (Hlookup 10%nat ltac:(lia))).
+  rewrite (drop_S values _ 11%nat (Hlookup 11%nat ltac:(lia))).
+  rewrite (drop_S values _ 12%nat (Hlookup 12%nat ltac:(lia))).
+  reflexivity.
+Qed.
 
 (** This handoff separates the four decoded value words from the broad value
     scratch.  The list equation is discharged by the value-block proof. *)
