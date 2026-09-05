@@ -17,6 +17,105 @@ Definition writeOutputPayloadObservation
     bv_unsigned size = Z.of_nat (length payload) /\
     bytes = writeSuccessPublicBytes payload.
 
+Definition WriteOutputDescriptor : Type := (bv 64 * bv 64)%type.
+
+(** The index distinguishes repeated writes from the same address. *)
+Fixpoint writeOutputPayloadSnapshots
+    (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
+    (index : nat) (descriptors : list WriteOutputDescriptor)
+    (payloads : list (list (bv 8))) : Prop :=
+  match descriptors, payloads with
+  | [], [] => True
+  | (data, size) :: descriptorTail, payload :: payloadTail =>
+      memoryAtWrite index data payload /\
+      bv_unsigned size = Z.of_nat (length payload) /\
+      writeOutputPayloadSnapshots memoryAtWrite (S index)
+        descriptorTail payloadTail
+  | _, _ => False
+  end.
+
+Definition writeOutputSequenceObservationFrom
+    (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
+    (index : nat) (descriptors : list WriteOutputDescriptor)
+    (bytes : ByteString) : Prop :=
+  exists payloads : list (list (bv 8)),
+    writeOutputPayloadSnapshots memoryAtWrite index descriptors payloads /\
+    bytes = writeSuccessPublicBytes (concat payloads).
+
+Definition writeOutputSequenceObservation
+    (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
+    (descriptors : list WriteOutputDescriptor) (bytes : ByteString) : Prop :=
+  writeOutputSequenceObservationFrom memoryAtWrite 0 descriptors bytes.
+
+Lemma writeSuccessPublicBytes_app (left right : list (bv 8)) :
+  writeSuccessPublicBytes (left ++ right) =
+    writeSuccessPublicBytes left ++ writeSuccessPublicBytes right.
+Proof. apply map_app. Qed.
+
+Lemma writeOutputPayloadSnapshots_length memoryAtWrite index descriptors payloads :
+  writeOutputPayloadSnapshots memoryAtWrite index descriptors payloads ->
+  length descriptors = length payloads.
+Proof.
+  revert index payloads.
+  induction descriptors as [|[data size] descriptorTail IH];
+    intros index [|payload payloadTail]; simpl; try contradiction; auto.
+  intros (_ & _ & Htail). f_equal. eapply IH. exact Htail.
+Qed.
+
+Lemma writeOutputPayloadSnapshots_app memoryAtWrite index
+    leftDescriptors rightDescriptors leftPayloads rightPayloads :
+  writeOutputPayloadSnapshots memoryAtWrite index leftDescriptors leftPayloads ->
+  writeOutputPayloadSnapshots memoryAtWrite
+    (index + length leftDescriptors) rightDescriptors rightPayloads ->
+  writeOutputPayloadSnapshots memoryAtWrite index
+    (leftDescriptors ++ rightDescriptors) (leftPayloads ++ rightPayloads).
+Proof.
+  revert index leftPayloads.
+  induction leftDescriptors as [|[data size] descriptorTail IH].
+  - intros index [|payload payloadTail] Hleft Hright; simpl in *.
+    + replace (index + 0)%nat with index in Hright by lia.
+      exact Hright.
+    + contradiction.
+  - intros index [|payload payloadTail] Hleft Hright; simpl in *.
+    + contradiction.
+    + destruct Hleft as (Hmemory & Hsize & Htail).
+      repeat split; try assumption.
+      apply IH; [exact Htail |].
+      replace (S index + length descriptorTail)%nat
+        with (index + S (length descriptorTail))%nat by lia.
+      exact Hright.
+Qed.
+
+Lemma writeOutputSequenceObservationFrom_app memoryAtWrite index
+    leftDescriptors rightDescriptors leftBytes rightBytes :
+  writeOutputSequenceObservationFrom memoryAtWrite index
+      leftDescriptors leftBytes ->
+  writeOutputSequenceObservationFrom memoryAtWrite
+      (index + length leftDescriptors) rightDescriptors rightBytes ->
+  writeOutputSequenceObservationFrom memoryAtWrite index
+      (leftDescriptors ++ rightDescriptors) (leftBytes ++ rightBytes).
+Proof.
+  intros (leftPayloads & Hleft & ->) (rightPayloads & Hright & ->).
+  exists (leftPayloads ++ rightPayloads). split.
+  - eapply writeOutputPayloadSnapshots_app; eassumption.
+  - rewrite concat_app writeSuccessPublicBytes_app. reflexivity.
+Qed.
+
+Lemma writeOutputSequenceObservationFrom_empty memoryAtWrite index :
+  writeOutputSequenceObservationFrom memoryAtWrite index [] [].
+Proof. exists []. split; reflexivity. Qed.
+
+Lemma writeOutputSequenceObservationFrom_singleton memoryAtWrite index
+    data size bytes :
+  writeOutputPayloadObservation (memoryAtWrite index) data size bytes ->
+  writeOutputSequenceObservationFrom memoryAtWrite index [(data, size)] bytes.
+Proof.
+  intros (payload & Hmemory & Hsize & ->).
+  exists [payload]. split.
+  - simpl. repeat split; assumption.
+  - simpl. rewrite app_nil_r. reflexivity.
+Qed.
+
 (** [scons] is prefix closed, so the event specification permits no events. *)
 Lemma write_output_events_accept_empty (data size : bv 64) (tail : spec) :
   writeOutputEvents data size tail [].
