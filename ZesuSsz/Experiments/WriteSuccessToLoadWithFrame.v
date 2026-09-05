@@ -76,6 +76,28 @@ Definition writeSuccessAtLoadHeaderWithFrame `{!islaG Sigma} `{!threadG}
 
 Global Instance : LithiumUnfold (@writeSuccessAtLoadHeaderWithFrame) := I.
 
+Lemma writeSuccessAtLoadHeaderWithFrame_mono
+    `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (sourceBytes : list (bv 8)) (events : spec)
+    (P Q : iProp Sigma) :
+  (P -∗ Q) -∗
+  writeSuccessAtLoadHeaderWithFrame sp sourceBytes events P -∗
+  writeSuccessAtLoadHeaderWithFrame sp sourceBytes events Q.
+Proof.
+  rewrite /writeSuccessAtLoadHeaderWithFrame /writeSuccessLoadResidual.
+  iIntros "HPQ Hload".
+  iDestruct "Hload" as
+    (decoded b10 b11 loaded s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11)
+    "(Hregisters & Hloaded & Hstack & %HloadedLength & %HdecodedAlign &
+      %HdecodedMin & %HdecodedMax & %HspAlign & %HspMin & %HspMax &
+      Hsource & Hdestination & Hmmio & Htrace & HP & _)".
+  iExists decoded, b10, b11, loaded, s1, s2, s3, s4, s5, s6, s7, s8, s9,
+    s10, s11.
+  iFrame.
+  repeat iSplit; try iPureIntro; try assumption.
+  all: try (iApply "HPQ"; iExact "HP"); done.
+Qed.
+
 Definition writeSuccessLoadHeaderRemainder
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (sourceBytes : list (bv 8))
@@ -298,7 +320,7 @@ Ltac expose_decoded_length decodedBytes :=
   | _ => liAStep; expose_decoded_length decodedBytes
   end.
 
-Lemma write_success_to_load_with_frame
+Lemma write_success_to_load_with_frame_extra
     `{!islaG Sigma} `{!threadG}
     (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
     (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
@@ -317,7 +339,8 @@ Lemma write_success_to_load_with_frame
   instr_pre 0x14d80
     (writeSuccessAtLoadHeaderWithFrame (sp - 2000) (take 720 decodedBytes)
       (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) tail) P) -∗
+        (BV 64 0x179c5) (BV 64 6) tail)
+      (reg_col writeSuccessLoadHeaderExtraRegisters ∗ P)) -∗
   instr_body 0x14d7c
     (write_success_prologue_exit sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7
        s8 s9 s10 s11
@@ -539,5 +562,59 @@ Proof.
   iEval (cbn) in "HcopyPost".
   iEval (rewrite HheaderLength) in "HheaderDestination".
   iEval (unfold writeSuccessLoadResidual).
-  iFrame "HcopyPost HheaderDestination Hmmio Htrace HP".
+  iFrame "HcopyPost HheaderDestination Hmmio Htrace".
+  iSplitL "H3 H4 HP".
+  { iSplitL "H3 H4".
+    - iEval (rewrite /writeSuccessLoadHeaderExtraRegisters
+        !reg_col_cons reg_col_nil).
+      iFrame.
+    - iExact "HP". }
+  done.
+Qed.
+
+Lemma write_success_to_load_with_frame
+    `{!islaG Sigma} `{!threadG}
+    (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
+    (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
+    (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
+    (Hspalign : bv_extract 0 4 sp = BV 4 0)
+    (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
+    (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x101d4 zesuMemcpyCallSpec -∗
+  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  instr_pre 0x14d80
+    (writeSuccessAtLoadHeaderWithFrame (sp - 2000) (take 720 decodedBytes)
+      (writeSuccessCallerOutputEventsWithFrame
+        (BV 64 0x179c5) (BV 64 6) tail) P) -∗
+  instr_body 0x14d7c
+    (write_success_prologue_exit sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7
+       s8 s9 s10 s11
+       ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
+        bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
+        mmio_range 0x2401a0c0 16 ∗
+        spec_trace (writeSuccessCallerOutputEventsWithFrame
+          (BV 64 0x179c5) (BV 64 6) tail) ∗
+        P ∗ ⌜length decodedBytes = 848%nat⌝ ∗
+        ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
+        ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
+        True)%I).
+Proof.
+  move => *.
+  iStartProof.
+  iIntros
+    "_ #Hlookup #HspecCode #HmemcpyCode #HoutputCode #Hmemcpy #Houtput
+      Hnext".
+  iApply (write_success_to_load_with_frame_extra sp decoded ra s0 s1 s2 s3 s4
+    s5 s6 s7 s8 s9 s10 s11 decodedBytes tail P Hdecoded Hspalign Hspmin Hspmax
+    with "Hlookup HspecCode HmemcpyCode HoutputCode Hmemcpy Houtput").
+  iApply (instr_pre_wand with "Hnext"); [done | done |].
+  iIntros "Hload".
+  iApply (writeSuccessAtLoadHeaderWithFrame_mono with "[] Hload").
+  iIntros "[_ HP]". iExact "HP".
 Qed.
