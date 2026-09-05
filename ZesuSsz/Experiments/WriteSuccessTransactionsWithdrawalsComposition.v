@@ -12,6 +12,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15680.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15684.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15688.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1568cWithdrawals.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsData.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsLoop.
 
 (** This contract isolates the missing relation between the two words loaded
@@ -23,6 +24,17 @@ Definition writeSuccessTransactionsWithdrawalsAdapter
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsWithdrawalsAdapter) := I.
+
+Lemma write_success_transactions_data_handoff_parent
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  □ writeSuccessTransactionsDataWithdrawalsHandoff P -∗
+  □ instr_pre 0x15668 (writeSuccessTransactionsPostAt15668DataSpec P) -∗
+  □ instr_pre 0x15678 (writeSuccessTransactionsWithdrawalsAt15678Spec P).
+Proof.
+  iStartProof. iIntros "#Hhandoff #Hentry".
+  iApply (write_success_transactions_data_withdrawals_handoff_pre P with
+    "Hhandoff Hentry").
+Qed.
 
 Lemma write_success_transactions_to_withdrawals
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

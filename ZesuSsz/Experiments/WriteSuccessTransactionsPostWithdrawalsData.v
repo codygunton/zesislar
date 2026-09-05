@@ -3,9 +3,44 @@ From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1568cWithdrawals.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTail.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTailState.
+
+(** This is the exact transaction exit state before the byte-lists call. *)
+Definition writeSuccessTransactionsPostAt15668DataSpec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp pointer : bv 64) (base : Z)
+      (transactions : list writeSuccessTransaction) (bytes : list (bv 8))
+      (tail : spec) (remaining : nat) (first second : bv 64)
+      (items : list ByteListItem),
+    writeSuccessTransactionsLoopExitWithdrawalsData P sp pointer base
+      transactions bytes tail remaining first second items)%I.
+
+(** The source theorem for this contract must preserve both decoded words and
+    provide all withdrawals resources at the byte-lists return point. *)
+Definition writeSuccessTransactionsDataWithdrawalsHandoff
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (□ instr_pre 0x15668 (writeSuccessTransactionsPostAt15668DataSpec P) -∗
+   □ instr_pre 0x15678 (writeSuccessTransactionsWithdrawalsAt15678Spec P))%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsPostAt15668DataSpec) := I.
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsDataWithdrawalsHandoff) := I.
+
+Lemma write_success_transactions_data_withdrawals_handoff_pre
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  □ writeSuccessTransactionsDataWithdrawalsHandoff P -∗
+  □ instr_pre 0x15668 (writeSuccessTransactionsPostAt15668DataSpec P) -∗
+  □ instr_pre 0x15678 (writeSuccessTransactionsWithdrawalsAt15678Spec P).
+Proof.
+  iStartProof. iIntros "#Hhandoff #Hentry".
+  iEval (rewrite /writeSuccessTransactionsDataWithdrawalsHandoff) in "Hhandoff".
+  iApply ("Hhandoff" with "Hentry").
+Qed.
 
 (** This continuation keeps the decoded withdrawals words at [1120(sp)] and
     [1128(sp)] through the byte-lists return point. *)
