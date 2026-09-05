@@ -7,6 +7,7 @@ from generate_write_success_certificate import (
     EXIT_PC,
     EXPECTED_BACK_EDGES,
     generate,
+    render_rocq,
 )
 
 
@@ -66,6 +67,21 @@ class WriteSuccessCertificateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing loop budget"):
             generate(cfg, loop_budgets={next(iter(edges)): 1})
 
+    def test_witness_path_uses_checked_instruction_edges(self):
+        certificate = generate(fixture())
+        path = certificate["witnessPath"]
+        edges = {(row["from"], row["to"])
+                 for row in certificate["instructionEdges"]}
+        self.assertEqual(path[0], ENTRY_PC)
+        self.assertEqual(path[-1], EXIT_PC)
+        self.assertTrue(all(edge in edges for edge in zip(path, path[1:])))
+
+    def test_renders_rocq_bridge_from_witness(self):
+        source = render_rocq(generate(fixture()))
+        self.assertIn("Lemma writeSuccessGeneratedTermination", source)
+        self.assertIn("Lemma writeSuccessGeneratedBridge", source)
+        self.assertNotIn("Admitted.", source)
+
     def test_rejects_unknown_edge(self):
         cfg = fixture()
         cfg["functions"][0]["blocks"][0]["successors"] = ["0xffff"]
@@ -93,6 +109,14 @@ class WriteSuccessCertificateTests(unittest.TestCase):
         certificate = generate(cfg, loop_budgets={edge: 1 for edge in EXPECTED_BACK_EDGES})
         forged = copy.deepcopy(certificate)
         forged["pathBound"] += 1
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            validate(forged, cfg)
+
+    def test_checker_rejects_forged_instruction_edge(self):
+        cfg = fixture()
+        certificate = generate(cfg)
+        forged = copy.deepcopy(certificate)
+        forged["instructionEdges"][0]["to"] += 4
         with self.assertRaisesRegex(ValueError, "does not match"):
             validate(forged, cfg)
 

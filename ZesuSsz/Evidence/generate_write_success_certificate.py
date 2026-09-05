@@ -9,6 +9,7 @@ in the certificate and cannot be removed by selecting a convenient path.
 from __future__ import annotations
 
 import argparse
+from collections import deque
 import json
 import re
 from pathlib import Path
@@ -146,6 +147,50 @@ def _terminal_edges(blocks: dict[int, dict], reachable: set[int]) -> list[tuple[
     return terminals
 
 
+def _instruction_graph(blocks: dict[int, dict], edges: dict[int, list[int]],
+                       reachable: set[int],
+                       exits: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """Expand block successors into the instruction-level control graph."""
+    result: set[tuple[int, int]] = set(exits)
+    for start in reachable:
+        instructions = blocks[start]["instructions"]
+        pcs = [_as_pc(row["pc"], field="instruction PC")
+               for row in instructions]
+        result.update(zip(pcs, pcs[1:]))
+        for target in edges[start]:
+            target_pc = _as_pc(
+                blocks[target]["instructions"][0]["pc"],
+                field="successor instruction PC")
+            result.add((pcs[-1], target_pc))
+    return sorted(result)
+
+
+def _witness_path(instruction_edges: list[tuple[int, int]]) -> list[int]:
+    """Select one acyclic entry-to-exit path from the complete graph."""
+    successors: dict[int, list[int]] = {}
+    for source, target in instruction_edges:
+        if (source, target) not in EXPECTED_BACK_EDGES:
+            successors.setdefault(source, []).append(target)
+    pending = deque([ENTRY_PC])
+    parent: dict[int, int | None] = {ENTRY_PC: None}
+    while pending:
+        current = pending.popleft()
+        if current == EXIT_PC:
+            break
+        for target in sorted(successors.get(current, [])):
+            if target not in parent:
+                parent[target] = current
+                pending.append(target)
+    if EXIT_PC not in parent:
+        raise ValueError("instruction graph has no acyclic entry-to-exit path")
+    path = []
+    current: int | None = EXIT_PC
+    while current is not None:
+        path.append(current)
+        current = parent[current]
+    return list(reversed(path))
+
+
 def _phase_ranks(edges: dict[int, list[int]], reachable: set[int],
                  back_edges: set[tuple[int, int]],
                  terminal_nodes: set[int]) -> tuple[dict[int, int], int]:
@@ -267,6 +312,8 @@ def generate(cfg: dict, *, elf: Path | None = None,
             raise ValueError(f"missing CFG back edge {missing[0][0]:#x} -> {missing[0][1]:#x}")
         raise ValueError(f"unexpected CFG back edge {unknown[0][0]:#x} -> {unknown[0][1]:#x}")
     exits = _terminal_edges(blocks, reachable)
+    instruction_edges = _instruction_graph(blocks, edges, reachable, exits)
+    witness_path = _witness_path(instruction_edges)
     terminal_sources = {source for source, _ in exits}
     terminal_nodes = {
         start for start in reachable
@@ -294,6 +341,11 @@ def generate(cfg: dict, *, elf: Path | None = None,
         "backEdges": [{"from": source, "to": target}
                       for source, target in sorted(back_edges)],
         "exitEdges": [{"from": source, "to": target} for source, target in exits],
+        "instructionEdges": [
+            {"from": source, "to": target}
+            for source, target in instruction_edges
+        ],
+        "witnessPath": witness_path,
         "phaseRank": [{"pc": pc, "rank": phase_ranks[pc]}
                       for pc in sorted(reachable)],
         "phaseBound": phase_bound,
@@ -311,10 +363,120 @@ def generate(cfg: dict, *, elf: Path | None = None,
     return result
 
 
+def _rocq_list(values: list[str], *, indent: str = "  ") -> str:
+    return "[\n" + "\n".join(
+        f"{indent}{value}{';' if index + 1 < len(values) else ''}"
+        for index, value in enumerate(values)
+    ) + "\n]"
+
+
+def render_rocq(certificate: dict) -> str:
+    """Render the checked instruction graph as a concrete Rocq certificate."""
+    path = [f"0x{pc:x}" for pc in certificate["witnessPath"]]
+    path_edges = set(zip(certificate["witnessPath"],
+                         certificate["witnessPath"][1:]))
+    remaining_edges = [
+        f"(0x{row['from']:x}, 0x{row['to']:x})"
+        for row in certificate["instructionEdges"]
+        if (row["from"], row["to"]) not in path_edges
+    ]
+    bound = len(path) - 1
+    digest = certificate["artifact"]["sha256"]
+    return f"""From Coq Require Import Lists.List ZArith.ZArith Lia.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Generated.Level1.
+
+Import ListNotations.
+Open Scope Z_scope.
+
+Fixpoint instructionPathEdges (path : list Z) : list (Z * Z) :=
+  match path with
+  | fromPc :: ((toPc :: _) as rest) =>
+      (fromPc, toPc) :: instructionPathEdges rest
+  | _ => []
+  end.
+
+Definition writeSuccessGeneratedPath : list Z :=
+{_rocq_list(path)}.
+
+(** Generated from the pinned CFG and ELF PT_LOAD image {digest}. *)
+Definition writeSuccessGeneratedRemainingControlFlow : list (Z * Z) :=
+{_rocq_list(remaining_edges)}.
+
+Definition writeSuccessGeneratedControlFlow : list (Z * Z) :=
+  instructionPathEdges writeSuccessGeneratedPath ++
+  writeSuccessGeneratedRemainingControlFlow.
+
+Definition writeSuccessGeneratedInstructionStep (fromPc toPc : Z) : Prop :=
+  List.In (fromPc, toPc) writeSuccessGeneratedControlFlow.
+
+Lemma instructionPathFollowsMono
+    (first second : Z -> Z -> Prop)
+    (Hsub : forall fromPc toPc, first fromPc toPc -> second fromPc toPc)
+    (path : list Z) :
+  InstructionPathFollows first path -> InstructionPathFollows second path.
+Proof.
+  intros Hpath. induction Hpath; constructor; auto.
+Qed.
+
+Lemma instructionPathEdgesFollow (pc : Z) (rest : list Z) :
+  InstructionPathFollows
+    (fun fromPc toPc => List.In (fromPc, toPc)
+      (instructionPathEdges (pc :: rest)))
+    (pc :: rest).
+Proof.
+  revert pc. induction rest as [|toPc rest IH]; intros pc.
+  - constructor.
+  - apply InstructionPathNext.
+    + cbn [instructionPathEdges]. left. reflexivity.
+    + eapply instructionPathFollowsMono.
+      * intros fromPc nextPc Hin. cbn [instructionPathEdges].
+        right. exact Hin.
+      * apply IH.
+Qed.
+
+Lemma writeSuccessGeneratedTermination :
+  InstructionPathCertificate writeSuccessGeneratedInstructionStep
+    (PcInRanges writeSuccessExecutionPcRanges)
+    (PcInList writeSuccessExitPcs) 0x14d30 {bound}%nat.
+Proof.
+  exists writeSuccessGeneratedPath. split; first reflexivity. split.
+  - unfold writeSuccessGeneratedPath.
+    eapply instructionPathFollowsMono.
+    + intros fromPc toPc Hin.
+      unfold writeSuccessGeneratedInstructionStep,
+        writeSuccessGeneratedControlFlow.
+      apply in_or_app. left. exact Hin.
+    + apply instructionPathEdgesFollow.
+  - split.
+    + apply Forall_forall. intros pc Hpc.
+      unfold PcInRanges. eexists 0x14d30, 0x15a14. split.
+      * cbn [writeSuccessExecutionPcRanges].
+        repeat first [left; reflexivity | right].
+      * unfold writeSuccessGeneratedPath in Hpc. cbn in Hpc. lia.
+    + split.
+      * eexists 0x14d10. split; [reflexivity | cbn; auto].
+      * split; [reflexivity | lia].
+Qed.
+
+Lemma writeSuccessGeneratedBridge (correctness : Prop) :
+  correctness ->
+  NativeContractAssumption correctness writeSuccessGeneratedInstructionStep
+    (PcInRanges writeSuccessExecutionPcRanges)
+    (PcInList writeSuccessExitPcs) 0x14d30 {bound}%nat.
+Proof.
+  intro Hcorrect. apply nativeContractBridge.
+  - exact Hcorrect.
+  - apply writeSuccessGeneratedTermination.
+Qed.
+"""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cfg", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--rocq-output", type=Path)
     parser.add_argument("--elf", type=Path)
     parser.add_argument("--expected-sha256")
     parser.add_argument("--loop-budget", action="append", default=[],
@@ -331,6 +493,9 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(certificate, sort_keys=True,
                                       separators=(",", ":")) + "\n")
+    if args.rocq_output is not None:
+        args.rocq_output.parent.mkdir(parents=True, exist_ok=True)
+        args.rocq_output.write_text(render_rocq(certificate))
     return 0
 
 
