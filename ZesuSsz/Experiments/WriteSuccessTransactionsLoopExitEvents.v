@@ -328,14 +328,45 @@ Definition writeSuccessTransactionsLoopCarrierExit
    reg_col writeSuccessTransactionsOtherRegShapes ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
+    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.
+
+(** This event boundary keeps the decoded words at [1120(sp)] and [1128(sp)]
+    exact.  The generic event scratch uses an uninitialized region there, but
+    the withdrawals continuation needs both values after the event output. *)
+Definition writeSuccessTransactionsLoopExitEventsData
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
+    (bytes : list (bv 8)) (tail : spec)
+    (first second third fourth : bv 64) (items : list ByteListItem) :
+    iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   reg_col writeSuccessTransactionsOtherRegShapes ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+   base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
+   writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
+   writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
+   mmio_range 0x2401a0c0 16 ∗
+   spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+     (byteListItemEvents (sp - BV 64 32)%bv items
        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.
+
+Definition writeSuccessTransactionsLoopExitWithdrawalsData
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp pointer : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
+    (bytes : list (bv 8)) (tail : spec) (remaining : nat)
+    (first second : bv 64) (items : list ByteListItem) : iProp Sigma :=
+  writeSuccessTransactionsLoopExitEventsData P sp base transactions bytes tail
+    first second pointer (Z_to_bv 64 (Z.of_nat (S remaining))) items.
 
 Definition writeSuccessTransactionsLoopCarrierFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -406,13 +437,17 @@ Definition writeSuccessTransactionPhaseCarrierHandoff
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopCarrierExit) := I.
 Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsLoopExitEventsData) := I.
+Global Instance : LithiumUnfold
+    (@writeSuccessTransactionsLoopExitWithdrawalsData) := I.
+Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopCarrierFrame) := I.
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopCarrierSpec) := I.
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionPhaseCarrierHandoff) := I.
 
-Lemma write_success_transactions_loop_carrier_exit_to_events
+Lemma write_success_transactions_loop_carrier_exit_to_events_data
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
     (bytes : list (bv 8)) (tail : spec)
@@ -424,18 +459,37 @@ Lemma write_success_transactions_loop_carrier_exit_to_events
   (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
     first second third fourth items -∗
-  writeSuccessTransactionsLoopExitEvents P sp base transactions bytes tail
-    first second items.
+  writeSuccessTransactionsLoopExitEventsData P sp base transactions bytes tail
+    first second third fourth items.
 Proof.
   iIntros "Hwithdrawals Hexit".
   rewrite /writeSuccessTransactionsLoopCarrierExit
-    /writeSuccessTransactionsLoopExitEvents
-    /writeSuccessTransactionsLoopExitEventsFrame.
+    /writeSuccessTransactionsLoopExitEventsData.
   iDestruct "Hexit" as
     "(Hsys & Hother & H2 & H10 & H11 & Hbytes & Hown & Hscratch &
       Hcarrier & Hmmio & Htrace & HP & _)".
-  iPoseProof (write_success_transactions_event_scratch_combine sp base
-    transactions first second third fourth items Halign16 Halign8 Hlow Hhigh
-    with "Hscratch Hcarrier Hwithdrawals") as "HeventScratch".
   iFrame.
+Qed.
+
+Lemma write_success_transactions_loop_carrier_exit_to_events
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp pointer : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
+    (bytes : list (bv 8)) (tail : spec) (remaining : nat)
+    (first second : bv 64) (items : list ByteListItem)
+    (Halign16 : bv_unsigned sp `mod` 16 = 0)
+    (Halign8 : bv_unsigned sp `mod` 8 = 0)
+    (Hlow : 0x20000000 <= bv_unsigned sp - 48)
+    (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
+  (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
+  writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
+    first second pointer (Z_to_bv 64 (Z.of_nat (S remaining))) items -∗
+  writeSuccessTransactionsLoopExitWithdrawalsData P sp pointer base transactions
+    bytes tail remaining first second items.
+Proof.
+  iIntros "Hwithdrawals Hexit".
+  rewrite /writeSuccessTransactionsLoopExitWithdrawalsData.
+  iApply (write_success_transactions_loop_carrier_exit_to_events_data P
+    sp base transactions bytes tail first second pointer
+    (Z_to_bv 64 (Z.of_nat (S remaining))) items Halign16 Halign8 Hlow Hhigh
+    with "Hwithdrawals Hexit").
 Qed.
