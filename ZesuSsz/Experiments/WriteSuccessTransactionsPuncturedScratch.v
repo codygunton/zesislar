@@ -9,7 +9,8 @@ Definition writeSuccessTransactionsPuncturedScratch `{!islaG Sigma}
    (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
    (bv_unsigned sp + 112) ↦ₘ Z_to_bv 64 (Z.of_nat total) ∗
    (bv_unsigned sp + 120) ↦ₘ? 984 ∗
-   (bv_unsigned sp + 1136) ↦ₘ? 760 ∗ True)%I.
+   (bv_unsigned sp + 1136) ↦ₘ? 608 ∗
+   (bv_unsigned sp + 1792) ↦ₘ? 104 ∗ True)%I.
 
 Definition writeSuccessTransactionsWordsCarrier `{!islaG Sigma}
     (sp first second third fourth : bv 64) : iProp Sigma :=
@@ -28,7 +29,8 @@ Lemma write_success_transactions_scratch_split_carrier
   writeSuccessTransactionsScratch sp base total -∗
   ∃ first second third fourth,
     writeSuccessTransactionsPuncturedScratch sp base total ∗
-    writeSuccessTransactionsWordsCarrier sp first second third fourth.
+    writeSuccessTransactionsWordsCarrier sp first second third fourth ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48.
 Proof.
   iIntros "Hscratch".
   iEval (unfold writeSuccessTransactionsScratch) in "Hscratch".
@@ -60,6 +62,17 @@ Proof.
       bv_unsigned sp + 1136 by lia.
   iEval (rewrite HsuffixAddress;
     replace (1776 - 984 - 8 - 8 - 8 - 8)%Z with 760%Z by lia) in "Hsuffix".
+  iDestruct (mem_mapsto_uninit_split 608 with "Hsuffix") as
+    "[Hmiddle Hsuffix]"; first lia.
+  have HwithdrawalsAddress : bv_unsigned sp + 1136 + 608 =
+      bv_unsigned sp + 1744 by lia.
+  iEval (rewrite HwithdrawalsAddress) in "Hsuffix".
+  iDestruct (mem_mapsto_uninit_split 48 with "Hsuffix") as
+    "[Hwithdrawals Htail]"; first lia.
+  have HtailAddress : bv_unsigned sp + 1744 + 48 =
+      bv_unsigned sp + 1792 by lia.
+  iEval (rewrite HtailAddress;
+    replace (760 - 608 - 48)%Z with 104%Z by lia) in "Htail".
   iDestruct (mem_mapsto_uninit_to_mapsto with "Hfirst") as
     (firstLength first HfirstLength) "Hfirst".
   cbn in HfirstLength. subst firstLength.
@@ -78,17 +91,19 @@ Proof.
   iFrame.
 Qed.
 
+
 Lemma write_success_transactions_scratch_combine_carrier
     `{!islaG Sigma} (sp first second third fourth : bv 64)
     (base : Z) (total : nat) :
   writeSuccessTransactionsPuncturedScratch sp base total -∗
   writeSuccessTransactionsWordsCarrier sp first second third fourth -∗
+  (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
   writeSuccessTransactionsScratch sp base total.
 Proof.
-  iIntros "Hscratch Hcarrier".
+  iIntros "Hscratch Hcarrier Hwithdrawals".
   iEval (unfold writeSuccessTransactionsPuncturedScratch) in "Hscratch".
   iDestruct "Hscratch" as
-    "(Hlower & Hbase & Htotal & Hprefix & Hsuffix & _)".
+    "(Hlower & Hbase & Htotal & Hprefix & Hmiddle & Htail & _)".
   iEval (unfold writeSuccessTransactionsWordsCarrier) in "Hcarrier".
   iDestruct "Hcarrier" as "(Hfirst & Hsecond & Hthird & Hfourth)".
   iPoseProof (mem_mapsto_mapsto_to_uninit _ _ 64 with "Hfirst") as "Hfirst".
@@ -104,6 +119,13 @@ Proof.
     iApply (mem_mapsto_uninit_combine 8 with "Hthird"); first lia.
     have -> : bv_unsigned sp + 1120 + 8 = bv_unsigned sp + 1128 by lia.
     iExact "Hfourth". }
+  iAssert ((bv_unsigned sp + 1136) ↦ₘ? 760)%I
+    with "[Hmiddle Hwithdrawals Htail]" as "Hsuffix".
+  { iApply (mem_mapsto_uninit_combine 608 with "Hmiddle"); first lia.
+    have -> : bv_unsigned sp + 1136 + 608 = bv_unsigned sp + 1744 by lia.
+    iApply (mem_mapsto_uninit_combine 48 with "Hwithdrawals"); first lia.
+    have -> : bv_unsigned sp + 1744 + 48 = bv_unsigned sp + 1792 by lia.
+    iExact "Htail". }
   iAssert ((bv_unsigned sp + 120) ↦ₘ? 1776)%I
     with "[Hprefix Hwords Hsuffix]" as "Hupper".
   { iApply (mem_mapsto_uninit_combine 984 with "Hprefix"); first lia.

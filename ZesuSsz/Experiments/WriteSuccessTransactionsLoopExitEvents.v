@@ -48,7 +48,8 @@ Lemma write_success_transactions_event_scratch_split
   writeSuccessTransactionsEventScratch sp base transactions first second items -∗
   ∃ third fourth,
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
-    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items.
+    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48.
 Proof.
   iIntros "Hscratch".
   rewrite /writeSuccessTransactionsEventScratch
@@ -69,6 +70,17 @@ Proof.
       bv_unsigned sp + 1136 by lia.
   iEval (rewrite HsuffixAddress;
     replace (776 - 8 - 8)%Z with 760%Z by lia) in "Hsuffix".
+  iDestruct (mem_mapsto_uninit_split 608 with "Hsuffix") as
+    "[Hmiddle Hsuffix]"; first lia.
+  have HwithdrawalsAddress : bv_unsigned sp + 1136 + 608 =
+      bv_unsigned sp + 1744 by lia.
+  iEval (rewrite HwithdrawalsAddress) in "Hsuffix".
+  iDestruct (mem_mapsto_uninit_split 48 with "Hsuffix") as
+    "[Hwithdrawals Htail]"; first lia.
+  have HtailAddress : bv_unsigned sp + 1744 + 48 =
+      bv_unsigned sp + 1792 by lia.
+  iEval (rewrite HtailAddress;
+    replace (760 - 608 - 48)%Z with 104%Z by lia) in "Htail".
   iDestruct (mem_mapsto_uninit_to_mapsto with "Hthird") as
     (thirdLength third HthirdLength) "Hthird".
   cbn in HthirdLength. subst thirdLength.
@@ -80,6 +92,7 @@ Proof.
   iPureIntro. exact Hfacts.
 Qed.
 
+
 Lemma write_success_transactions_event_scratch_combine
     `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction)
@@ -90,19 +103,27 @@ Lemma write_success_transactions_event_scratch_combine
     (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
   writeSuccessTransactionsPuncturedScratch sp base (length transactions) -∗
   writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items -∗
+  (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
   writeSuccessTransactionsEventScratch sp base transactions first second items.
 Proof.
-  iIntros "Hscratch Hcarrier".
+  iIntros "Hscratch Hcarrier Hwithdrawals".
   rewrite /writeSuccessTransactionsEventScratch
     /writeSuccessTransactionsPuncturedScratch
     /writeSuccessTransactionsLoopCarrierPayload
     /writeSuccessTransactionsWordsCarrier.
   iDestruct "Hscratch" as
-    "(Hlower & Hbase & Htotal & Hprefix & Hsuffix & _)".
+    "(Hlower & Hbase & Htotal & Hprefix & Hmiddle & Htail & _)".
   iDestruct "Hcarrier" as
     "((Hfirst & Hsecond & Hthird & Hfourth) & Hframe & Hitems & %Hfacts)".
   iPoseProof (mem_mapsto_mapsto_to_uninit _ _ 64 with "Hthird") as "Hthird".
   iPoseProof (mem_mapsto_mapsto_to_uninit _ _ 64 with "Hfourth") as "Hfourth".
+  iAssert ((bv_unsigned sp + 1136) ↦ₘ? 760)%I
+    with "[Hmiddle Hwithdrawals Htail]" as "Hsuffix".
+  { iApply (mem_mapsto_uninit_combine 608 with "Hmiddle"); first lia.
+    have -> : bv_unsigned sp + 1136 + 608 = bv_unsigned sp + 1744 by lia.
+    iApply (mem_mapsto_uninit_combine 48 with "Hwithdrawals"); first lia.
+    have -> : bv_unsigned sp + 1744 + 48 = bv_unsigned sp + 1792 by lia.
+    iExact "Htail". }
   iAssert ((bv_unsigned sp + 1120) ↦ₘ? 776)%I
     with "[Hthird Hfourth Hsuffix]" as "HsuffixFull".
   { iApply (mem_mapsto_uninit_combine 8 with "Hthird"); first lia.
@@ -117,6 +138,7 @@ Proof.
       HspExtract & HspLow & HspHigh).
   repeat iSplit; try iPureIntro; try assumption.
 Qed.
+
 
 Definition writeSuccessTransactionsLoopExitEventsFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -259,6 +281,7 @@ Proof.
   iFrame.
 Qed.
 
+
 Lemma write_success_transaction_phase_events_handoff_pack
     `{!islaG Sigma} `{!threadG}
     (phase : writeSuccessTransactionPhase) (machine : iProp Sigma)
@@ -398,12 +421,13 @@ Lemma write_success_transactions_loop_carrier_exit_to_events
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
     (Hlow : 0x20000000 <= bv_unsigned sp - 48)
     (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
+  (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
     first second third fourth items -∗
   writeSuccessTransactionsLoopExitEvents P sp base transactions bytes tail
     first second items.
 Proof.
-  iIntros "Hexit".
+  iIntros "Hwithdrawals Hexit".
   rewrite /writeSuccessTransactionsLoopCarrierExit
     /writeSuccessTransactionsLoopExitEvents
     /writeSuccessTransactionsLoopExitEventsFrame.
@@ -412,6 +436,6 @@ Proof.
       Hcarrier & Hmmio & Htrace & HP & _)".
   iPoseProof (write_success_transactions_event_scratch_combine sp base
     transactions first second third fourth items Halign16 Halign8 Hlow Hhigh
-    with "Hscratch Hcarrier") as "HeventScratch".
+    with "Hscratch Hcarrier Hwithdrawals") as "HeventScratch".
   iFrame.
 Qed.
