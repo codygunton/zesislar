@@ -51,6 +51,15 @@ Fixpoint writeOutputDescriptorsSpec
         (writeOutputDescriptorsSpec descriptorTail tail)
   end.
 
+Lemma writeOutputDescriptorsSpec_app left right tail :
+  writeOutputDescriptorsSpec (left ++ right) tail =
+    writeOutputDescriptorsSpec left (writeOutputDescriptorsSpec right tail).
+Proof.
+  induction left as [|[data size] descriptorTail IH]; simpl.
+  - reflexivity.
+  - rewrite IH. reflexivity.
+Qed.
+
 (** This relation supplies the liveness fact that prefix-closed [spec] lacks. *)
 Definition writeOutputCompleteTrace
     (descriptors : list WriteOutputDescriptor)
