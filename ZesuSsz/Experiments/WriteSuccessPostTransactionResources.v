@@ -30,8 +30,8 @@ Definition writeSuccessPostDescriptor (words : list (bv 64))
 
 Definition writeSuccessOptionalU64Words
     (payload present : bv 64) (value : option (bv 64)) : Prop :=
-  (present = BV 64 0 /\ value = None) \/
-  (present = BV 64 1 /\ value = Some payload).
+  (bv_extract 0 8 present = BV 8 0 /\ value = None) \/
+  (bv_extract 0 8 present <> BV 8 0 /\ value = Some payload).
 
 Definition writeSuccessOptionalBytesWords
     (data size : bv 64) (value : option WriteOutputDescriptor) : Prop :=
