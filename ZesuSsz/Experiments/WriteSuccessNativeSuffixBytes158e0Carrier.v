@@ -121,7 +121,7 @@ Proof.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   Unshelve.
   all: have Hreturn : Z_to_bv 64 88304 = BV 64 88304 by bv_solve.
-  all: rewrite -Hreturn.
+  all: try rewrite -Hreturn.
   all: try iRename select (_ ↦ₘ data)%I into "HdescData".
   all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
   all: have Haddr920 :
@@ -173,6 +173,157 @@ Definition writeSuccessSuffixBytesCarrierState `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + (offset + 8)) ↦ₘ size ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesCarrierState) := I.
+
+Definition writeSuccessSuffixBytesCarrierExactState `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (x1 x5 x6 : iProp Sigma) (offset : Z) (P : iProp Sigma) :
+    iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ x1 ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ x5 ∗ x6 ∗
+   "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
+   "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   spec_trace trace ∗ bv_unsigned data ↦ₘ∗ bytes ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+     ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
+      "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
+      "x26"; "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   (bv_unsigned sp + offset) ↦ₘ data ∗
+   (bv_unsigned sp + (offset + 8)) ↦ₘ size ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesCarrierExactState) := I.
+
+Definition writeSuccessSuffixBytesCarrierDataState `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (x1 x5 x6 : iProp Sigma)
+    (x10 x11 : bv 64 -> iProp Sigma) (offset : Z) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ x1 ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ x5 ∗ x6 ∗
+   "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
+   (x10 data) ∗ (x11 size) ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   spec_trace trace ∗ bv_unsigned data ↦ₘ∗ bytes ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+     ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
+      "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
+      "x26"; "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   (bv_unsigned sp + offset) ↦ₘ data ∗
+   (bv_unsigned sp + (offset + 8)) ↦ₘ size ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesCarrierDataState) := I.
+
+Definition writeSuccessSuffixBytesAt15900CarrierData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 936 P.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900CarrierData) := I.
+
+Definition writeSuccessSuffixBytesAt158f0CarrierData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x158f0))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 920 P.
+
+Definition writeSuccessSuffixBytesAt15910CarrierData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 952 P.
+
+Definition writeSuccessSuffixBytesAt15920CarrierData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierShapeReg "x1")
+    (writeSuccessSuffixBytesCarrierShapeReg "x5")
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 968 P.
+
+Definition writeSuccessSuffixBytesAt15930CarrierData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15930))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
+    (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 984 P.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910CarrierData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920CarrierData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930CarrierData) := I.
+
+Definition writeSuccessSuffixBytesAt158f0CarrierExactData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x158f0))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6") 920 P.
+
+Definition writeSuccessSuffixBytesAt15900CarrierExactData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15900))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6") 936 P.
+
+Definition writeSuccessSuffixBytesAt15910CarrierExactData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15910))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6") 952 P.
+
+Definition writeSuccessSuffixBytesAt15920CarrierExactData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15920))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6") 968 P.
+
+Definition writeSuccessSuffixBytesAt15930CarrierExactData `{!islaG Sigma} `{!threadG}
+    (sp data size oldS0 oldS1 : bv 64) (bytes : list (bv 8))
+    (trace : spec) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
+    (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15930))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierShapeReg "x6") 984 P.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierExactData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900CarrierExactData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15910CarrierExactData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15920CarrierExactData) := I.
+Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15930CarrierExactData) := I.
 
 Definition writeSuccessSuffixBytesAt158f0CarrierNext `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
@@ -334,7 +485,7 @@ Proof.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   Unshelve.
   all: have Hreturn : Z_to_bv 64 88320 = BV 64 88320 by bv_solve.
-  all: rewrite -Hreturn.
+  all: try rewrite -Hreturn.
   all: try iRename select (_ ↦ₘ data)%I into "HdescData".
   all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
   all: have Haddr936 :
@@ -423,12 +574,19 @@ Proof.
 Qed.
 
 Lemma write_success_suffix_bytes_15910_carrier
-    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) :
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma)
+    (data size oldS0 oldS1 : bv 64) (bytes : list (bv 8)) (trace : spec) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
-  instr_body 0x15920 (writeSuccessSuffixBytesAt15920CarrierExact sp P) -∗
-  instr_body 0x15910 (writeSuccessSuffixBytesAt15920Carrier sp P).
+  instr_body 0x15920
+    (writeSuccessSuffixBytesAt15920CarrierExactData sp data size oldS0 oldS1
+      bytes trace P) -∗
+  instr_body 0x15910
+    (writeSuccessSuffixBytesAt15920CarrierData sp data size oldS0 oldS1
+      bytes
+      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEvents data size trace)) P).
 Proof.
   move => *.
   iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
@@ -442,8 +600,8 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve.
-  all: try iExists
-    (tail, bytes, 0x15920, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: iExists
+    (trace, bytes, 0x15920, oldS1, oldS0, sp, size, data, tt)ₗ.
   all: try cbn.
   all: try unLET.
   all: try iFrame.
@@ -456,25 +614,21 @@ Proof.
   all: try lia.
   all: iSplit; last done.
   all: iIntros "Hpost".
-  all: iEval (rewrite /writeSuccessSuffixBytesAt15920CarrierExact
-    /writeSuccessSuffixBytesCarrierState).
-  all: iExists data, size, oldS0, oldS1, bytes, tail.
+  all: iEval (rewrite /writeSuccessSuffixBytesAt15920CarrierData
+    /writeSuccessSuffixBytesCarrierDataState).
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   Unshelve.
-  all: iSplit; last done.
-  all: iIntros "Hpost".
-  all: iDestruct "Hpost" as
-    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack & Hdata &
-      Hmmio & Htrace & _)".
-  all: iEval (rewrite /writeSuccessSuffixBytesAt15920CarrierExact
-    /writeSuccessSuffixBytesCarrierState).
-  all: iExists data, size, oldS0, oldS1, bytes, tail.
-  all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  Unshelve.
+  all: try iExists
+    (trace, bytes, 0x15920, oldS1, oldS0, sp, size, data, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
   all: have Hreturn : Z_to_bv 64 88352 = BV 64 88352 by bv_solve.
-  all: rewrite -Hreturn.
+  all: try rewrite -Hreturn.
   all: try iRename select (_ ↦ₘ data)%I into "HdescData".
   all: try iRename select (_ ↦ₘ size)%I into "HdescSize".
   all: have Haddr968 :
@@ -486,9 +640,8 @@ Proof.
   all: rewrite /reg_col; cbn.
   all: iFrame "HdescData HdescSize".
   all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  Unshelve.
-  all: lazymatch goal with |- ?G => fail "suffix bytes carrier residual" G end.
+  Unshelve. all: try prepare_sidecond.
+  all: try bv_solve.
 Qed.
 
 Lemma write_success_suffix_bytes_15920_carrier
