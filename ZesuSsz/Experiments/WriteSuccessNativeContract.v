@@ -9,7 +9,9 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessHeaderValueTransactions.
 Require Import ZesuSsz.Experiments.WriteSuccessLoadHeader.
+Require Import ZesuSsz.Experiments.WriteSuccessNativeCalleeProviders.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeCode.
+Require Import ZesuSsz.Experiments.WriteSuccessPrologue.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologueSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessToLoadWithFrame.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
@@ -223,7 +225,12 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
      writeSuccessDecodedBytes witness ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessCallerOutputEventsWithFrame (BV 64 0x179c5) (BV 64 6)
-     (writeSuccessTraceTail witness)) ∗ True)%I.
+     (writeSuccessTraceTail witness)) ∗
+   True ∗
+   ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
+   ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
+   ⌜(bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
+      0x40000000)%Z⌝ ∗ True)%I.
 
 Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
     {Decoded} (args : WriteSuccessArgs Decoded) : iProp Sigma :=
@@ -239,6 +246,133 @@ Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
       (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
       (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
       (writeSuccessProloguePayload witness))%I.
+
+(** This contract is the closed native prefix from the public entry through
+    the load-block entry.  Its exit is the exact resource boundary that the
+    complete writer proof consumes next. *)
+Definition writeSuccessNativeLoadResources {Decoded}
+    `{!islaG Sigma} `{!threadG} :
+    IslarisContractResources (WriteSuccessArgs Decoded)
+      (writeSuccessNativeWitness Decoded) := {|
+  islarisCode := writeSuccessCompleteNativeCode;
+  islarisEntry := writeSuccessNativeEntry;
+  islarisExit := fun _ witness =>
+    writeSuccessAtLoadHeaderWithFrame
+      (writeSuccessFrameSp witness)
+      (take 720 (writeSuccessDecodedBytes witness))
+      (writeSuccessCallerOutputEventsWithFrame
+        (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness)) True
+|}.
+
+Definition writeSuccessNativeLoadAllows {Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : Prop :=
+  writeSuccessWitnessWellFormed args witness.
+
+Definition writeSuccessNativeLoadModel {Decoded}
+    (nextPc : Z -> Z -> Prop) :
+    IslarisContractModel (WriteSuccessArgs Decoded)
+      (writeSuccessNativeWitness Decoded) := {|
+  islarisContractAllows := writeSuccessNativeLoadAllows;
+  islarisContractStep := nextPc;
+  islarisContractResources := fun Sigma HG HT =>
+    @writeSuccessNativeLoadResources Decoded Sigma HG HT
+|}.
+
+Theorem write_success_native_load_state_correct {Decoded}
+    `{!islaG Sigma} `{!threadG} :
+  ⊢ IslarisContractSpec 0x14d30 0x14d80
+    (@writeSuccessNativeLoadAllows Decoded)
+    (@writeSuccessNativeLoadResources Decoded Sigma _ _).
+Proof.
+  rewrite /IslarisContractSpec /writeSuccessNativeLoadResources /=.
+  iStartProof.
+  iIntros "#Hnative" (args).
+  rewrite instr_pre'_eq. iIntros "Hcontract".
+  iDestruct "Hcontract" as "[Hentry Hexit]".
+  iEval (rewrite /writeSuccessNativeEntry) in "Hentry".
+  iDestruct "Hentry" as (witness) "[%HwellFormed Hentry]".
+  destruct HwellFormed as
+    (Hstack & HdecodedAddress & HreturnAddress & HreturnValue &
+     Hdecoded & HdecodedLength & HsourceLength & HsourceBytes &
+     HvaluesLength & HvaluesBytes & HpayloadLength & Hbase & Hcount &
+     HtransactionBytes & HspAlign & HspMin & HspMax).
+  have HdecodedMin :
+      (0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z
+    by lia.
+  have HdecodedMax :
+      (bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
+       0x40000000)%Z by lia.
+  have HspExtract :
+      bv_extract 0 4 (writeSuccessEntrySp witness) = BV 4 0.
+  { apply bv_eq. rewrite bv_extract_0_unsigned.
+    unfold bv_wrap, bv_modulus. cbn. exact HspAlign. }
+  iPoseProof (write_success_native_callee_providers with
+    "Hnative") as "#Hcallees".
+  iEval (rewrite /writeSuccessNativeCalleeProviders) in "Hcallees".
+  iDestruct "Hcallees" as
+    "(#Houtput & #Hmemcpy & #Hboolean & #Hoptional & #HbyteLists &
+      #Hbytes & #Hu256 & #Hint1645 & #Hint & _)".
+  iEval (rewrite /writeSuccessCompleteNativeCode) in "Hnative".
+  iDestruct "Hnative" as
+    "(#Hprologue & #Hlookup & #Hmain & #HoutputCode & #HmemcpyCode &
+      #HbooleanCode & #HoptionalCode & #HbyteListsCode & #HbytesCode &
+      #HintCode & #Hu256Code & #Hint1645Code)".
+  iEval (rewrite -instr_pre'_eq) in "Hexit".
+  iAssert (instr_pre 0x14d80
+      (writeSuccessAtLoadHeaderWithFrame
+        (writeSuccessFrameSp witness)
+        (take 720 (writeSuccessDecodedBytes witness))
+        (writeSuccessCallerOutputEventsWithFrame
+          (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness)) True))%I
+    with "[Hexit]" as "Hload".
+  { iApply (instr_pre_wand with "Hexit");
+      [done | done |].
+    iIntros "Hload".
+    iExists witness. iSplit; first (iPureIntro; repeat split; assumption).
+    iExact "Hload". }
+  iPoseProof (write_success_prologue
+    (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)
+    (writeSuccessReturnValue witness)
+    (writeSuccessSavedS0 witness) (writeSuccessSavedS1 witness)
+    (writeSuccessSavedS2 witness) (writeSuccessSavedS3 witness)
+    (writeSuccessSavedS4 witness) (writeSuccessSavedS5 witness)
+    (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
+    (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
+    (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
+    (writeSuccessProloguePayload witness) with "Hprologue") as "Hbody".
+  iEval (rewrite instr_pre'_eq) in "Hbody".
+  iApply "Hbody".
+  iSplitL "Hentry"; first iExact "Hentry".
+  iSplit; last done.
+  iNext. iIntros "Hhandoff".
+  iPoseProof (write_success_to_load_with_frame
+    (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)
+    (writeSuccessReturnValue witness)
+    (writeSuccessSavedS0 witness) (writeSuccessSavedS1 witness)
+    (writeSuccessSavedS2 witness) (writeSuccessSavedS3 witness)
+    (writeSuccessSavedS4 witness) (writeSuccessSavedS5 witness)
+    (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
+    (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
+    (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
+    (writeSuccessDecodedBytes witness) (writeSuccessTraceTail witness) True
+    Hdecoded HspExtract HspMin HspMax with
+    "Hlookup Hmain HmemcpyCode HoutputCode Hmemcpy Houtput Hload") as "HtoLoad".
+  iEval (rewrite instr_pre'_eq) in "HtoLoad".
+  iApply "HtoLoad". iExact "Hhandoff".
+Qed.
+
+Definition writeSuccessNativeLoadCorrectness {Decoded}
+    (nextPc : Z -> Z -> Prop) : Prop :=
+  IslarisContractCorrect 0x14d30 0x14d80
+    (writeSuccessNativeLoadModel (Decoded := Decoded) nextPc).
+
+Theorem write_success_native_load_correct {Decoded}
+    (nextPc : Z -> Z -> Prop) :
+  writeSuccessNativeLoadCorrectness (Decoded := Decoded) nextPc.
+Proof.
+  intros Sigma HG HT. apply write_success_native_load_state_correct.
+Qed.
 
 Definition writeSuccessNativeCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   writeSuccessCompleteNativeCode.

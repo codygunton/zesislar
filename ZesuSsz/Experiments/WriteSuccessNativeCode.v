@@ -40,3 +40,22 @@ Definition writeSuccessCompleteNativeCode `{!islaG Sigma} `{!threadG} :
       instr instruction.1 (Some instruction.2)))%I.
 
 Global Instance : LithiumUnfold (@writeSuccessCompleteNativeCode) := I.
+
+(** The main writer block resources from the complete native code bundle. *)
+Definition writeSuccessNativeMainCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup ∗
+   IslaTraces.write_success_blocks.Index.spec_instr_resources ∗ True)%I.
+
+Lemma write_success_native_main_code `{!islaG Sigma} `{!threadG} :
+  writeSuccessCompleteNativeCode -∗ writeSuccessNativeMainCode.
+Proof.
+  iIntros "#Hnative".
+  rewrite /writeSuccessCompleteNativeCode /writeSuccessNativeMainCode.
+  iDestruct "Hnative" as
+    "(#Hprologue & #Hlookup & #Hmain & #Houtput & #Hmemcpy & #Hboolean &
+      #Hoptional & #HbyteLists & #Hbytes & #Hint & #Hu256 & #Hint1645)".
+  iFrame "Hlookup Hmain".
+Qed.
+
+Global Typeclasses Opaque writeSuccessNativeMainCode.
