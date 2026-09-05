@@ -494,6 +494,49 @@ Proof.
     Htransition path Hinvariant Hstep).
 Qed.
 
+(** A model-specific witness packages the endpoint-state invariant.  Its
+    transition field proves progress from the seven loop invariants.  It does
+    not assume termination. *)
+Record WriteSuccessModelControlInvariant
+    {State Decoded : Type}
+    (model : Level1MachineModel State Decoded)
+    (control : State -> WriteSuccessControlState)
+    (nextPc : Z -> Z -> Prop) : Type := {
+  writeSuccessModelStateInvariant : State -> Prop;
+  writeSuccessModelPcProjection :
+    forall state,
+      writeSuccessModelStateInvariant state ->
+      endpointPc State Decoded model state =
+      Some (writeSuccessControlPc (control state));
+  writeSuccessModelTransition :
+    forall index before after,
+      writeSuccessModelStateInvariant before ->
+      endpointStep State Decoded model index before after ->
+      writeSuccessControlStep nextPc (control before) (control after)
+}.
+
+Lemma writeSuccessModelControlInvariant_no_infinite
+    {State Decoded : Type}
+    (model : Level1MachineModel State Decoded)
+    (control : State -> WriteSuccessControlState)
+    (nextPc : Z -> Z -> Prop)
+    (invariant : WriteSuccessModelControlInvariant model control nextPc) :
+  forall path : nat -> State,
+    (forall index,
+      writeSuccessModelStateInvariant model control nextPc invariant
+        (path index)) ->
+    (forall index,
+      endpointStep State Decoded model index (path index) (path (S index))) ->
+    False.
+Proof.
+  intros path Hinvariant Hstep.
+  apply (writeSuccessEndpointNoInfinite State
+    (endpointStep State Decoded model)
+    (writeSuccessModelStateInvariant model control nextPc invariant)
+    control nextPc (writeSuccessModelTransition model control nextPc invariant)
+    path Hinvariant Hstep).
+Qed.
+
 Lemma writeSuccessControlStep_no_infinite
     (nextPc : Z -> Z -> Prop) :
   forall path : nat -> WriteSuccessControlState,
