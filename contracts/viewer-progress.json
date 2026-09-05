@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x14f80. Suffix composition, the remaining suffix calls, and the final native theorem remain."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x14fa8. Five post-hash calls preserve exact descriptors. Suffix composition, the remaining suffix calls, and the final native theorem remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
