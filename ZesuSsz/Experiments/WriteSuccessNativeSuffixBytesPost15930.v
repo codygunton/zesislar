@@ -68,6 +68,18 @@ Definition writeSuccessPost15930AggregateSpec
 
 Global Instance : LithiumUnfold (@writeSuccessPost15930AggregateSpec) := I.
 
+Lemma write_success_post_15938_aggregate_auipc
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr 0x15938 (Some IslaTraces.write_success_113.a15938.a15938) -∗
+  instr_body 0x15938 (writeSuccessPost15938AggregateSpec P).
+Proof.
+  iStartProof. iIntros "Hinstr".
+  liARun.
+  Unshelve. all: prepare_sidecond.
+  all: try bv_solve.
+  Unshelve. all: iFrame.
+Qed.
+
 Lemma write_success_post_15934_to_15938
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
