@@ -67,12 +67,18 @@
     {"label": "Post-transaction withdrawals handoff", "startPc": "0x15680", "endPc": "0x15694", "status": "conditionally_proven", "theorem": "write_success_transactions_to_withdrawals", "condition": "Needs the transaction event carrier and the withdrawals adapter."},
     {"label": "Withdrawal loop", "startPc": "0x15694", "endPc": "0x156e8", "status": "unconditionally_proven", "theorem": "write_success_withdrawals_loop"},
     {"label": "Hash entry stack load", "startPc": "0x15740", "endPc": "0x15744", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_a15740_raw"},
+    {"label": "Hash count move", "startPc": "0x15744", "endPc": "0x15748", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_15744_raw"},
+    {"label": "Hash count call address", "startPc": "0x15748", "endPc": "0x1574c", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_15748_raw"},
+    {"label": "Hash count call", "startPc": "0x1574c", "endPc": "0x15750", "status": "unconditionally_proven", "theorem": "write_success_suffix_hashes_1574c_call"},
     {"label": "Hash loop", "startPc": "0x15754", "endPc": "0x158e0", "status": "unconditionally_proven", "theorem": "write_success_hashes_loop"},
     {"label": "Post-hash bytes call 0", "startPc": "0x158e0", "endPc": "0x158f0", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_158e0"},
     {"label": "Post-hash bytes call 1", "startPc": "0x158f0", "endPc": "0x15900", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_158f0"},
     {"label": "Post-hash bytes call 2", "startPc": "0x15900", "endPc": "0x15910", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_15900"},
     {"label": "Post-hash bytes call 3", "startPc": "0x15910", "endPc": "0x15920", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_15910"},
     {"label": "Post-hash bytes call 4", "startPc": "0x15920", "endPc": "0x15930", "status": "unconditionally_proven", "theorem": "write_success_native_suffix_bytes_15920"},
+    {"label": "Witness nodes pointer load", "startPc": "0x15930", "endPc": "0x15934", "status": "unconditionally_proven", "theorem": "write_success_post_15930_load_pointer"},
+    {"label": "Witness nodes count load", "startPc": "0x15934", "endPc": "0x15938", "status": "unconditionally_proven", "theorem": "write_success_post_15934_load_count"},
+    {"label": "Witness nodes call address", "startPc": "0x15938", "endPc": "0x1593c", "status": "unconditionally_proven", "theorem": "write_success_post_15938_auipc"},
     {"label": "Function epilogue", "startPc": "0x159d8", "endPc": "0x15a14", "status": "unconditionally_proven", "theorem": "write_success_epilogue_block"}
   ]
 }
