@@ -5,6 +5,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopEventsPost.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15668Events.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Events.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1567c.
@@ -13,6 +14,8 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15684.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15688.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1568cWithdrawals.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsData.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsPayload.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTailState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsLoop.
 
@@ -35,6 +38,30 @@ Proof.
   iStartProof. iIntros "#Hhandoff #Hentry".
   iApply (write_success_transactions_data_withdrawals_handoff_pre P with
     "Hhandoff Hentry").
+Qed.
+
+Lemma write_success_transactions_data_provider_parent
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
+    (sp pointer : bv 64) (base : Z)
+    (transactions : list writeSuccessTransaction) (bytes : list (bv 8))
+    (tail : spec) (remaining : nat) (first second : bv 64)
+    (items : list ByteListItem) (total processed : nat)
+    (prefix suffix : list (bv 8)) :
+  □ writeSuccessTransactionsDataWithdrawalsProvider P -∗
+  writeSuccessTransactionsLoopExitWithdrawalsData
+    (writeSuccessTransactionsWithdrawalsLoopFrame P sp pointer base
+      transactions bytes tail total processed remaining prefix suffix)
+    sp pointer base transactions bytes tail remaining first second items -∗
+  ((bv_unsigned sp + 1120) ↦ₘ pointer ∗
+   (bv_unsigned sp + 1128) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
+   writeSuccessTransactionsWithdrawalsResources P sp pointer base total
+     processed remaining bytes prefix suffix tail).
+Proof.
+  iStartProof. iIntros "#Hprovider Hdata".
+  iEval (rewrite /writeSuccessTransactionsDataWithdrawalsProvider) in "Hprovider".
+  iSpecialize ("Hprovider" $! sp pointer base transactions bytes tail remaining
+    first second items total processed prefix suffix).
+  iApply ("Hprovider" with "Hdata").
 Qed.
 
 Lemma write_success_transactions_to_withdrawals
