@@ -217,6 +217,20 @@ Definition writeSuccessNativeProofAssumptions `{!islaG Sigma} `{!threadG}
     : iProp Sigma :=
   (writeSuccessLoadHeaderWithFramePre model outputRelation args witness ∗ True)%I.
 
+(** The public adapter owns every heap region referenced by the decoded value.
+    Code-derived continuations and trace-completeness evidence stay outside this
+    data resource. *)
+Definition writeSuccessNativeDataResources `{!islaG Sigma}
+    `{!threadG} {Decoded} (witness : writeSuccessNativeWitness Decoded) :
+    iProp Sigma :=
+  writeSuccessLoadHeaderHeapResources
+    (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+    (writeSuccessValues witness) (writeSuccessPayload witness)
+    (writeSuccessTransactionBase witness) (writeSuccessTransactions witness)
+    (writeSuccessTransactionBytes witness).
+
+Global Instance : LithiumUnfold (@writeSuccessNativeDataResources) := I.
+
 Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
     {Decoded} (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
@@ -226,7 +240,7 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessCallerOutputEventsWithFrame (BV 64 0x179c5) (BV 64 6)
      (writeSuccessTraceTail witness)) ∗
-   True ∗
+   writeSuccessNativeDataResources witness ∗
    ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
    ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
    ⌜(bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
@@ -261,7 +275,9 @@ Definition writeSuccessNativeLoadResources {Decoded}
       (writeSuccessFrameSp witness)
       (take 720 (writeSuccessDecodedBytes witness))
       (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness)) True
+        (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness))
+      (reg_col writeSuccessLoadHeaderExtraRegisters ∗
+       writeSuccessNativeDataResources witness)
 |}.
 
 Definition writeSuccessNativeLoadAllows {Decoded}
@@ -324,7 +340,9 @@ Proof.
         (writeSuccessFrameSp witness)
         (take 720 (writeSuccessDecodedBytes witness))
         (writeSuccessCallerOutputEventsWithFrame
-          (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness)) True))%I
+          (BV 64 0x179c5) (BV 64 6) (writeSuccessTraceTail witness))
+        (reg_col writeSuccessLoadHeaderExtraRegisters ∗
+         writeSuccessNativeDataResources witness)))%I
     with "[Hexit]" as "Hload".
   { iApply (instr_pre_wand with "Hexit");
       [done | done |].
@@ -346,7 +364,7 @@ Proof.
   iSplitL "Hentry"; first iExact "Hentry".
   iSplit; last done.
   iNext. iIntros "Hhandoff".
-  iPoseProof (write_success_to_load_with_frame
+  iPoseProof (write_success_to_load_with_frame_extra
     (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)
     (writeSuccessReturnValue witness)
     (writeSuccessSavedS0 witness) (writeSuccessSavedS1 witness)
@@ -355,7 +373,8 @@ Proof.
     (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-    (writeSuccessDecodedBytes witness) (writeSuccessTraceTail witness) True
+    (writeSuccessDecodedBytes witness) (writeSuccessTraceTail witness)
+    (writeSuccessNativeDataResources witness)
     Hdecoded HspExtract HspMin HspMax with
     "Hlookup Hmain HmemcpyCode HoutputCode Hmemcpy Houtput Hload") as "HtoLoad".
   iEval (rewrite instr_pre'_eq) in "HtoLoad".
