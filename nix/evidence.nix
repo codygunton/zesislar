@@ -51,7 +51,7 @@ let
   rocq = pkgs.runCommand "zesu-ssz-level1-contract-rocq" {
     nativeBuildInputs = [ python ];
   } ''
-    mkdir -p "$out/ZesuSsz/Generated"
+    mkdir -p "$out/ZesuSsz/Generated" "$out/ZesuSsz/Evidence"
     export PYTHONPATH=${tools}
     python ${tools}/test_generate_level1_rocq.py
     python ${tools}/generate_level1_rocq.py \
@@ -59,6 +59,15 @@ let
       --cfg ${cfg}/zesu-cfg.json \
       --output "$out/ZesuSsz/Generated/Level1.v"
     cmp "$out/ZesuSsz/Generated/Level1.v" ${../ZesuSsz/Generated/Level1.v}
+    python ${tools}/generate_write_success_certificate.py \
+      --cfg ${cfg}/zesu-cfg.json \
+      --elf ${endpointElf}/bin/zesu-ssz-decode \
+      --output "$out/ZesuSsz/Evidence/write_success_certificate.json" \
+      --rocq-output "$out/ZesuSsz/Generated/WriteSuccessCertificate.v"
+    cmp "$out/ZesuSsz/Evidence/write_success_certificate.json" \
+      ${../ZesuSsz/Evidence/write_success_certificate.json}
+    cmp "$out/ZesuSsz/Generated/WriteSuccessCertificate.v" \
+      ${../ZesuSsz/Generated/WriteSuccessCertificate.v}
   '';
 
   evidence = pkgs.runCommand "zesu-ssz-level1-contract-evidence" {
