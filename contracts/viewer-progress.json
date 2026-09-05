@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The transaction post path is proved through 0x15680. The U256 call and transaction loop composition remain."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix and all loops are proved. Two post-transaction adapters, final composition, output semantics, and the CFG certificate remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
@@ -27,6 +27,8 @@
     "endPc": "0x15a14"
   },
   "proofRegions": [
+    {"label": "Prologue", "startPc": "0x14d30", "endPc": "0x14d7c", "status": "unconditionally_proven", "theorem": "write_success_prologue"},
+    {"label": "Prologue memcpy call", "startPc": "0x14d7c", "endPc": "0x14d80", "status": "unconditionally_proven", "theorem": "write_success_to_load_with_frame"},
     {"label": "Load-to-Header", "startPc": "0x14d80", "endPc": "0x14e00", "status": "unconditionally_proven", "theorem": "write_success_load_header"},
     {"label": "Header-to-Value", "startPc": "0x14e00", "endPc": "0x14f04", "status": "unconditionally_proven", "theorem": "write_success_header_value_transactions"},
     {"label": "Transaction loop work", "startPc": "0x14f04", "endPc": "0x15664", "status": "unconditionally_proven", "theorem": "write_success_transactions_loop_pre"},
