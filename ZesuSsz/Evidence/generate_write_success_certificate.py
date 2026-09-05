@@ -21,7 +21,7 @@ CONTRACT = "writeSuccess"
 FUNCTION = "ssz_decode_observation.writeSuccess"
 ENTRY_PC = 0x14D30
 EXIT_PC = 0x14D10
-INSTRUCTION_BOUND = 950
+EXECUTION_INSTRUCTION_COUNT = 950
 
 # This is the Level 1 execution region.  The exit PC is intentionally not in
 # this set.  A return leaves the region through the separate exit edge.
@@ -166,8 +166,47 @@ def _artifact(cfg: dict, elf: Path | None, expected_sha256: str | None) -> dict:
     return {"identityScope": identity_scope, "sha256": sha256}
 
 
+def _bounded_path_length(edges: dict[int, list[int]], terminal_nodes: set[int],
+                         back_edges: set[tuple[int, int]], budgets: dict[tuple[int, int], int]) -> int:
+    """Compute the longest path while enforcing each declared loop budget."""
+    missing = back_edges - budgets.keys()
+    if missing:
+        source, target = sorted(missing)[0]
+        raise ValueError(f"missing loop budget for back edge {source:#x} -> {target:#x}")
+    if any(value < 0 for value in budgets.values()):
+        raise ValueError("loop budgets must be non-negative")
+    edge_order = sorted(back_edges)
+    start = (ENTRY_PC, (0,) * len(edge_order))
+    pending = [start]
+    longest: dict[tuple[int, tuple[int, ...]], int] = {start: 1}
+    best = 0
+    while pending:
+        node, counts = pending.pop()
+        length = longest[(node, counts)]
+        if node in terminal_nodes:
+            # Add the synthetic terminal exit PC to the path length.
+            best = max(best, length + 1)
+            continue
+        for target in edges[node]:
+            next_counts = list(counts)
+            edge = (node, target)
+            if edge in budgets:
+                index = edge_order.index(edge)
+                next_counts[index] += 1
+                if next_counts[index] > budgets[edge]:
+                    continue
+            state = (target, tuple(next_counts))
+            if length + 1 > longest.get(state, 0):
+                longest[state] = length + 1
+                pending.append(state)
+    if not best:
+        raise ValueError("bounded CFG paths do not reach the writeSuccess exit")
+    return best
+
+
 def generate(cfg: dict, *, elf: Path | None = None,
-             expected_sha256: str | None = None) -> dict:
+             expected_sha256: str | None = None,
+             loop_budgets: dict[tuple[int, int], int] | None = None) -> dict:
     """Return a certificate for every reachable CFG edge and instruction."""
     artifact = _artifact(cfg, elf, expected_sha256)
     blocks, edges = _graph(cfg)
@@ -186,7 +225,13 @@ def generate(cfg: dict, *, elf: Path | None = None,
             raise ValueError(f"missing CFG back edge {missing[0][0]:#x} -> {missing[0][1]:#x}")
         raise ValueError(f"unexpected CFG back edge {unknown[0][0]:#x} -> {unknown[0][1]:#x}")
     exits = _terminal_edges(blocks, reachable)
-    return {
+    budgets = loop_budgets or {}
+    if loop_budgets:
+        missing = back_edges - budgets.keys()
+        if missing:
+            source, target = sorted(missing)[0]
+            raise ValueError(f"missing loop budget for back edge {source:#x} -> {target:#x}")
+    result = {
         "schemaVersion": 1,
         "contract": CONTRACT,
         "artifact": artifact,
@@ -198,12 +243,25 @@ def generate(cfg: dict, *, elf: Path | None = None,
         "backEdges": [{"from": source, "to": target}
                       for source, target in sorted(back_edges)],
         "exitEdges": [{"from": source, "to": target} for source, target in exits],
-        # Level 1 assigns 950 instructions to the complete writeSuccess
-        # execution region.  This bound includes the proved call regions;
-        # dynamic loop visits remain represented by the back edges above.
+        # Level 1 reports 950 static instructions across the complete
+        # execution region.  This value is not a dynamic path bound.
         "instructionCount": len(pcs),
-        "instructionBound": INSTRUCTION_BOUND,
+        "executionInstructionCount": EXECUTION_INSTRUCTION_COUNT,
     }
+    if loop_budgets:
+        result["loopBudgets"] = [{"from": source, "to": target,
+                                  "maxTraversals": budgets[(source, target)]}
+                                 for source, target in sorted(back_edges)]
+        terminal_sources = {source for source, _ in exits}
+        terminal_nodes = {
+            start for start in reachable
+            if any(_as_pc(instruction.get("pc"), field="instruction PC")
+                   in terminal_sources
+                   for instruction in blocks[start].get("instructions", []))
+        }
+        result["pathBound"] = _bounded_path_length(
+            edges, terminal_nodes, back_edges, budgets)
+    return result
 
 
 def main() -> int:
@@ -212,9 +270,17 @@ def main() -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--elf", type=Path)
     parser.add_argument("--expected-sha256")
+    parser.add_argument("--loop-budget", action="append", default=[],
+                        metavar="FROM:TO:COUNT")
     args = parser.parse_args()
+    budgets = {}
+    for item in args.loop_budget:
+        source, target, count = item.split(":")
+        budgets[(_as_pc(source, field="loop budget source"),
+                 _as_pc(target, field="loop budget target"))] = int(count)
     certificate = generate(json.loads(args.cfg.read_text()), elf=args.elf,
-                           expected_sha256=args.expected_sha256)
+                           expected_sha256=args.expected_sha256,
+                           loop_budgets=budgets or None)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(certificate, sort_keys=True,
                                       separators=(",", ":")) + "\n")

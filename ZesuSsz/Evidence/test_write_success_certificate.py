@@ -6,7 +6,6 @@ from generate_write_success_certificate import (
     ENTRY_PC,
     EXIT_PC,
     EXPECTED_BACK_EDGES,
-    INSTRUCTION_BOUND,
     generate,
 )
 
@@ -48,8 +47,18 @@ class WriteSuccessCertificateTests(unittest.TestCase):
                           for row in certificate["backEdges"]}, EXPECTED_BACK_EDGES)
         self.assertEqual(certificate["instructionCount"],
                          len(certificate["reachablePcs"]))
-        self.assertEqual(certificate["instructionBound"], INSTRUCTION_BOUND)
+        self.assertEqual(certificate["executionInstructionCount"], 950)
+        self.assertNotIn("pathBound", certificate)
         self.assertTrue(certificate["exitEdges"])
+
+    def test_computes_bound_only_with_all_loop_budgets(self):
+        cfg = fixture()
+        edges = set(EXPECTED_BACK_EDGES)
+        certificate = generate(cfg, loop_budgets={edge: 1 for edge in edges})
+        self.assertIn("pathBound", certificate)
+        self.assertGreater(certificate["pathBound"], 0)
+        with self.assertRaisesRegex(ValueError, "missing loop budget"):
+            generate(cfg, loop_budgets={next(iter(edges)): 1})
 
     def test_rejects_unknown_edge(self):
         cfg = fixture()
@@ -75,9 +84,9 @@ class WriteSuccessCertificateTests(unittest.TestCase):
 
     def test_checker_rejects_forged_certificate(self):
         cfg = fixture()
-        certificate = generate(cfg)
+        certificate = generate(cfg, loop_budgets={edge: 1 for edge in EXPECTED_BACK_EDGES})
         forged = copy.deepcopy(certificate)
-        forged["instructionBound"] += 1
+        forged["pathBound"] += 1
         with self.assertRaisesRegex(ValueError, "does not match"):
             validate(forged, cfg)
 

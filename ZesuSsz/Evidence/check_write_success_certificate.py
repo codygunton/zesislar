@@ -12,7 +12,14 @@ from generate_write_success_certificate import generate
 
 def validate(certificate: dict, cfg: dict, *, elf: Path | None = None,
              expected_sha256: str | None = None) -> None:
-    expected = generate(cfg, elf=elf, expected_sha256=expected_sha256)
+    budgets = None
+    if "loopBudgets" in certificate:
+        budgets = {
+            (int(row["from"]), int(row["to"])): int(row["maxTraversals"])
+            for row in certificate["loopBudgets"]
+        }
+    expected = generate(cfg, elf=elf, expected_sha256=expected_sha256,
+                        loop_budgets=budgets)
     if certificate != expected:
         raise ValueError("writeSuccess CFG certificate does not match the pinned CFG")
 
