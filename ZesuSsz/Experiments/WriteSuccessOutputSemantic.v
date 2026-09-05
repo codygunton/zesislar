@@ -148,6 +148,37 @@ Proof.
       exact Hright.
 Qed.
 
+Lemma writeOutputPayloadSnapshots_app_inv memoryAtWrite index
+    leftDescriptors rightDescriptors payloads :
+  writeOutputPayloadSnapshots memoryAtWrite index
+    (leftDescriptors ++ rightDescriptors) payloads ->
+  exists leftPayloads rightPayloads,
+    payloads = leftPayloads ++ rightPayloads /\
+    writeOutputPayloadSnapshots memoryAtWrite index
+      leftDescriptors leftPayloads /\
+    writeOutputPayloadSnapshots memoryAtWrite
+      (index + length leftDescriptors) rightDescriptors rightPayloads.
+Proof.
+  revert index payloads.
+  induction leftDescriptors as [|[data size] descriptorTail IH].
+  - intros index payloads Hpayloads.
+    exists [], payloads. simpl in *.
+    replace (index + 0)%nat with index by lia.
+    auto.
+  - intros index [|payload payloadTail] Hpayloads; simpl in Hpayloads.
+    + contradiction.
+    + destruct Hpayloads as (Hmemory & Hsize & Htail).
+      destruct (IH (S index) payloadTail Htail) as
+        (leftPayloads & rightPayloads & -> & Hleft & Hright).
+      exists (payload :: leftPayloads), rightPayloads.
+      split; first reflexivity.
+      split.
+      * simpl. repeat split; assumption.
+      * replace (index + S (length descriptorTail))%nat
+          with (S index + length descriptorTail)%nat by lia.
+        exact Hright.
+Qed.
+
 Lemma writeOutputSequenceObservationFrom_app memoryAtWrite index
     leftDescriptors rightDescriptors leftBytes rightBytes :
   writeOutputSequenceObservationFrom memoryAtWrite index
@@ -161,6 +192,45 @@ Proof.
   exists (leftPayloads ++ rightPayloads). split.
   - eapply writeOutputPayloadSnapshots_app; eassumption.
   - rewrite concat_app writeSuccessPublicBytes_app. reflexivity.
+Qed.
+
+Lemma writeOutputSequenceObservationFrom_app_inv memoryAtWrite index
+    leftDescriptors rightDescriptors bytes :
+  writeOutputSequenceObservationFrom memoryAtWrite index
+    (leftDescriptors ++ rightDescriptors) bytes ->
+  exists leftBytes rightBytes,
+    bytes = leftBytes ++ rightBytes /\
+    writeOutputSequenceObservationFrom memoryAtWrite index
+      leftDescriptors leftBytes /\
+    writeOutputSequenceObservationFrom memoryAtWrite
+      (index + length leftDescriptors) rightDescriptors rightBytes.
+Proof.
+  intros (payloads & Hpayloads & ->).
+  destruct (writeOutputPayloadSnapshots_app_inv memoryAtWrite index
+    leftDescriptors rightDescriptors payloads Hpayloads) as
+    (leftPayloads & rightPayloads & -> & Hleft & Hright).
+  exists (writeSuccessPublicBytes (concat leftPayloads)),
+    (writeSuccessPublicBytes (concat rightPayloads)).
+  split.
+  - rewrite concat_app writeSuccessPublicBytes_app. reflexivity.
+  - split; [exists leftPayloads | exists rightPayloads]; auto.
+Qed.
+
+Corollary writeOutputSequenceObservationFrom_app_iff memoryAtWrite index
+    leftDescriptors rightDescriptors bytes :
+  writeOutputSequenceObservationFrom memoryAtWrite index
+      (leftDescriptors ++ rightDescriptors) bytes <->
+  exists leftBytes rightBytes,
+    bytes = leftBytes ++ rightBytes /\
+    writeOutputSequenceObservationFrom memoryAtWrite index
+      leftDescriptors leftBytes /\
+    writeOutputSequenceObservationFrom memoryAtWrite
+      (index + length leftDescriptors) rightDescriptors rightBytes.
+Proof.
+  split.
+  - apply writeOutputSequenceObservationFrom_app_inv.
+  - intros (leftBytes & rightBytes & -> & Hleft & Hright).
+    eapply writeOutputSequenceObservationFrom_app; eassumption.
 Qed.
 
 Lemma writeOutputSequenceObservationFrom_empty memoryAtWrite index :
