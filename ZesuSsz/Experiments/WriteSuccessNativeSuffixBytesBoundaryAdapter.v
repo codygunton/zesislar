@@ -1,9 +1,13 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixBytes15920.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixBytesCompose.
+Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
 Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
 Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Experiments.WriteSuccessInstrBodyAdapters.
+From IslaTraces.write_success_blocks Require Import Index.
 
 Import ListNotations.
 
@@ -122,4 +126,38 @@ Proof.
   rewrite Haddr928 Haddr944 Haddr960 Haddr976.
   iFrame.
   all: lazymatch goal with |- ?G => fail "adapter residual" G end.
+Qed.
+
+Lemma write_success_native_suffix_bytes_15750_zero_segment
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15c6c zesuEncoderBytesCallSpec -∗
+  instr 0x15750 (Some IslaTraces.write_success_102.a15750.a15750) -∗
+  instr_body 0x15930 (writeSuccessSuffixBytesAggregateExitAt15930 P) -∗
+  instr_body 0x15750
+    (writeSuccessSuffixHashes15750ZeroState
+      (writeSuccessSuffixBytesAggregateEntryZeroFrame P)).
+Proof.
+  iStartProof.
+  iIntros "#Hlookup #Hcode #Hbytes Hbranch Hnext".
+  iPoseProof (write_success_suffix_bytes_aggregate_exit_to_15930 P) as
+    "HexitWand".
+  iPoseProof (instr_body_wand_adapter 0x15930
+    (writeSuccessSuffixBytesAggregateExitAt15930 P)
+    (writeSuccessSuffixBytesAggregateExit P)
+    with "HexitWand Hnext") as "HnextAgg".
+  iPoseProof (write_success_native_suffix_bytes_158e0_to_15930 P
+    with "Hlookup Hcode Hbytes HnextAgg") as "Hbody158e0".
+  iPoseProof (instr_pre_to_body 0x158e0
+    (writeSuccessSuffixBytesAggregateEntry P) with "Hbody158e0") as
+    "HpreAggregate".
+  iApply (write_success_suffix_hashes_15750_zero_state
+    (writeSuccessSuffixBytesAggregateEntryZeroFrame P) with "Hbranch").
+  iApply (instr_pre_wand 0x158e0 0x158e0 true true
+    (writeSuccessSuffixBytesAggregateEntry P)
+    (writeSuccessSuffixHashes15750ZeroState
+      (writeSuccessSuffixBytesAggregateEntryZeroFrame P))
+    with "HpreAggregate"); [done | reflexivity |].
+  iApply (write_success_suffix_bytes_aggregate_entry_from_15750_zero P).
 Qed.
