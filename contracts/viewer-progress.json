@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x1505c. The zero hash exit and five post-hash calls compose with exact descriptors through 0x1593c. Three byte-list calls, the integer call at 0x15968, later call setup segments, the conditional load and branch, and its join jump are proved. Full suffix integration, the remaining suffix calls, and the final native theorem remain."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x15078. The zero hash exit and five post-hash calls compose with exact descriptors through 0x1593c. Three byte-list calls, two integer calls, later call setup segments, the conditional load and branch, and its join jump are proved. Full suffix integration, the remaining suffix calls, and the final native theorem remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
@@ -100,6 +100,7 @@
     {"label": "False boolean call setup", "startPc": "0x15994", "endPc": "0x1599c", "status": "unconditionally_proven", "theorem": "write_success_suffix_boolean_15994_setup"},
     {"label": "Conditional join jump", "startPc": "0x15990", "endPc": "0x15994", "status": "unconditionally_proven", "theorem": "write_success_suffix_jump_15990"},
     {"label": "Second integer call setup", "startPc": "0x159a0", "endPc": "0x159ac", "status": "unconditionally_proven", "theorem": "write_success_suffix_int_159a0_setup"},
+    {"label": "Second integer call", "startPc": "0x159ac", "endPc": "0x159b0", "status": "unconditionally_proven", "theorem": "write_success_suffix_int_159ac_call"},
     {"label": "Final byte-list call setup", "startPc": "0x159c8", "endPc": "0x159d4", "status": "unconditionally_proven", "theorem": "write_success_post_159c8_final_call_setup"},
     {"label": "Function epilogue", "startPc": "0x159d8", "endPc": "0x15a14", "status": "unconditionally_proven", "theorem": "write_success_epilogue_block"}
   ]
