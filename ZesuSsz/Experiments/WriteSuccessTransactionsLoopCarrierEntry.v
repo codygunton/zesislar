@@ -69,7 +69,7 @@ Proof.
   rewrite /writeSuccessTransactionsAt14f08CarrierSpec.
   iDestruct "Hframe" as
     "(Hsys & Hother & H2 & H10 & H11 & Hprefix & Hsuffix & Hprocessed &
-      Hremaining & Hscratch & Hcarrier & Hmmio & Htrace & HP & Hinvariant &
+      Hremaining & Hscratch & Hcarrier & Hwithdrawals & Hmmio & Htrace & HP & Hinvariant &
       Hexit & _)".
   iDestruct "Hremaining" as "(Htransaction & Hremaining & _)".
   iExists sp, base, transaction, (processed ++ transaction :: remaining),
@@ -80,8 +80,8 @@ Proof.
     first, second, third, fourth, items.
   rewrite /writeSuccessTransactionPhaseCarrierHandoff
     /writeSuccessTransactionsMachine14f08Carrier.
-  iFrame "Hsys Hother H2 H10 H11 Hscratch Hprefix Hsuffix Htransaction
-    Hremaining Hcarrier Hmmio Htrace HP Hexit".
+  iFrame "Hsys Hother H2 H10 H11 Hscratch Hwithdrawals Hprefix Hsuffix
+    Htransaction Hremaining Hcarrier Hmmio Htrace HP Hexit".
   iSplitL "Hprocessed".
   { rewrite /writeSuccessTransactionsProcessedOwn. iExact "Hprocessed". }
   rewrite /writeSuccessTransactionsInvariant
@@ -105,6 +105,7 @@ Definition writeSuccessTransactionsLoopCarrierExitBranchFrame
    writeSuccessTransactionsPuncturedScratch sp base
      (length (processed ++ remaining)) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining
      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
@@ -128,6 +129,7 @@ Lemma write_success_transactions_loop_carrier_entry_exit
   writeSuccessTransactionsPuncturedScratch sp base
     (length (processed ++ remaining)) ∗
   writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+  (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
   mmio_range 0x2401a0c0 16 ∗
   spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
     (byteListItemEvents (sp - BV 64 32)%bv items
@@ -139,7 +141,7 @@ Proof.
   subst remaining. rewrite app_nil_r.
   iEval (unfold writeSuccessTransactionsLoopCarrierExitBranchFrame) in "Hframe".
   iDestruct "Hframe" as
-    "(_ & Hprocessed & _ & Hscratch & Hcarrier & Hmmio & Htail & HP & _)".
+    "(_ & Hprocessed & _ & Hscratch & Hcarrier & Hwithdrawals & Hmmio & Htail & HP & _)".
   iEval (rewrite app_nil_r) in "Hscratch".
   iFrame.
 Qed.

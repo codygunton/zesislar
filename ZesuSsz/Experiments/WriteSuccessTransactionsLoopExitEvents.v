@@ -332,6 +332,7 @@ Definition writeSuccessTransactionsLoopCarrierExit
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
@@ -390,6 +391,7 @@ Definition writeSuccessTransactionsLoopCarrierFrame
    writeSuccessTransactionsOwn remaining ∗
    writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining
      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
@@ -424,6 +426,7 @@ Definition writeSuccessTransactionPhaseCarrierHandoff
    writeSuccessTransactionOwn transaction ∗
    writeSuccessTransactionsOwn remaining ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents phase sp transaction
@@ -460,20 +463,19 @@ Lemma write_success_transactions_loop_carrier_exit_to_events_data
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
     (Hlow : 0x20000000 <= bv_unsigned sp - 48)
     (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
-  (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
     first second third fourth items -∗
   writeSuccessTransactionsLoopExitEventsData P sp base transactions bytes tail
     first second third fourth items.
 Proof.
-  iIntros "Hwithdrawals Hexit".
+  iIntros "Hexit".
   rewrite /writeSuccessTransactionsLoopCarrierExit
     /writeSuccessTransactionsLoopExitEventsData.
   iDestruct "Hexit" as
     "(Hsys & Hother & H2 & H10 & H11 & Hbytes & Hown & Hscratch &
-      Hcarrier & Hmmio & Htrace & HP & _)".
+      Hcarrier & Hwithdrawals & Hmmio & Htrace & HP & _)".
   iFrame.
-  repeat iSplit; iPureIntro; assumption.
+  repeat iSplit; try iPureIntro; try assumption; try done.
 Qed.
 
 Lemma write_success_transactions_loop_carrier_exit_to_events
@@ -485,16 +487,15 @@ Lemma write_success_transactions_loop_carrier_exit_to_events
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
     (Hlow : 0x20000000 <= bv_unsigned sp - 48)
     (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
-  (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
     first second pointer (Z_to_bv 64 (Z.of_nat (S remaining))) items -∗
   writeSuccessTransactionsLoopExitWithdrawalsData P sp pointer base transactions
     bytes tail remaining first second items.
 Proof.
-  iIntros "Hwithdrawals Hexit".
+  iIntros "Hexit".
   rewrite /writeSuccessTransactionsLoopExitWithdrawalsData.
   iApply (write_success_transactions_loop_carrier_exit_to_events_data P
     sp base transactions bytes tail first second pointer
     (Z_to_bv 64 (Z.of_nat (S remaining))) items Halign16 Halign8 Hlow Hhigh
-    with "Hwithdrawals Hexit").
+    with "Hexit").
 Qed.
