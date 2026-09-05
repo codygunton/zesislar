@@ -8,6 +8,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1567c.
 Require Import IslaTraces.write_success_88.a15680_spec.
+Require Import InstrSpecs.Specs.
 
 Definition writeSuccessTransactionsPostAt15684Spec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
