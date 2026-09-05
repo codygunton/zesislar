@@ -23,13 +23,7 @@ Definition writeSuccessTransactionsAt14f24CarrierSpec
     writeSuccessTransactions14f1cCarrierScratch sp base (length transactions)
       (length processed) first second third fourth items ∗
     (base + 288 * Z.of_nat (length processed)) ↦ₘ∗
-      take 8 (writeSuccessTransactionBytes transaction) ∗
-    (base + 288 * Z.of_nat (length processed) + 8) ↦ₘ
-      writeSuccessTransactionWord transaction 8 ∗
-    (base + 288 * Z.of_nat (length processed) + 16) ↦ₘ∗
-      drop 16 (writeSuccessTransactionBytes transaction) ∗
-    (base + 288 * Z.of_nat (length processed) + 16) ↦ₘ∗
-      ([] : list (bv 8)) ∗
+      writeSuccessTransactionBytes transaction ∗
     writeSuccessTransactionsCurrentPhaseCarrierFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail
       first second third fourth items ∗

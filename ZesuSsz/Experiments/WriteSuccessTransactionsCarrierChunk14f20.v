@@ -87,6 +87,22 @@ Proof.
   iFrame "Hprefix Hword Hsuffix".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
+  iRename select ((_ ↦ₘ∗ take 8
+    (writeSuccessTransactionBytes transaction))%I) into "HprefixFinal".
+  iRename select ((_ ↦ₘ Z_to_bv 64 (little_endian_to_bv 8
+    (take 8 (drop 8 (writeSuccessTransactionBytes transaction)))))%I)
+    into "HwordFinal".
+  iRename select ((_ ↦ₘ∗ drop 16
+    (writeSuccessTransactionBytes transaction))%I) into "HsuffixFinal".
+  iPoseProof (mem_mapsto_array_recombine_u64_read
+    (base + 288 * Z.of_nat (length processed))
+    (writeSuccessTransactionBytes transaction) 8
+    (base + 288 * Z.of_nat (length processed) + 16)
+    (base + 288 * Z.of_nat (length processed) + 8) with
+    "HprefixFinal HsuffixFinal HwordFinal [] [] []") as "HarrayFinal".
+  { iPureIntro. lia. }
+  { iPureIntro. cbn. lia. }
+  { iPureIntro. rewrite Hlength. lia. }
   iRename select (writeSuccessTransactionRestOwn transaction ∗ _)%I
     into "HphaseRest".
   iDestruct "HphaseRest" as "[Hrest HphaseRest]".
@@ -115,20 +131,13 @@ Proof.
   { rewrite /writeSuccessTransactionsCurrentPhaseCarrierFrame
       /writeSuccessTransactionPhaseEvents /writeSuccessByteArrayOwn.
     iFrame. }
-  iRename select
-    ((_ ↦ₘ∗ drop 16 (writeSuccessTransactionBytes transaction))%I)
-    into "HsuffixFinal".
-  iDestruct (mem_mapsto_array_app 8%N
-    (base + 288 * Z.of_nat (length processed) + 16) (DfracOwn 1)
-    ([] : list (bv 8)) (drop 16 (writeSuccessTransactionBytes transaction))
-    with "HsuffixFinal") as "[Hempty HsuffixFinal]".
-  iEval (cbn; rewrite ?Z.add_0_r) in "HsuffixFinal".
   iEval (unfold writeSuccessTransactionsAt14f24CarrierSpec).
   iExists
     (items, fourth, third, second, first, tail, suffix, prefix, bytes,
       remaining, processed, transactions, transaction, base, sp, tt)ₗ.
   cbn.
   rewrite /writeSuccessTransactions14f1cCarrierScratch.
+  iFrame "HarrayFinal".
   iFrame.
   repeat iSplit; try iPureIntro; try assumption; try done.
 Qed.
