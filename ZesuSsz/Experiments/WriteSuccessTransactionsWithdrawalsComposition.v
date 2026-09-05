@@ -13,6 +13,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15684.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15688.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1568cWithdrawals.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsData.
+Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTailState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsLoop.
 
 (** This contract isolates the missing relation between the two words loaded

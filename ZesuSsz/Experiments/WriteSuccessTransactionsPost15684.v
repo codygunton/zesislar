@@ -9,6 +9,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1567c.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15680.
 Require Import IslaTraces.write_success_88.a15684_spec.
+Require Import InstrSpecs.Specs.
 
 Definition writeSuccessTransactionsPost15684Caller : list string :=
   ["x12"; "x13"; "x14"; "x15"; "x16"; "x17";
