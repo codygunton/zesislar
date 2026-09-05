@@ -2,3 +2,4 @@ Require Export ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalResou
 Require Export ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalNonzero.
 Require Export ZesuSsz.Experiments.WriteSuccessTransactionsPost15690Zero.
 Require Export ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalBranch.
+Require Export ZesuSsz.Experiments.WriteSuccessTransactionsPost15678WithdrawalsTotal.
