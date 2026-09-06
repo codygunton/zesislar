@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root=$(cd "$(dirname "$0")/../.." && pwd)
+switch_path=${OPAM_SWITCH:-/home/cody/islaris}
+query_file=$(mktemp --suffix=.v)
+output_file=$(mktemp)
+trap 'rm -f "$query_file" "$output_file"' EXIT
+
+cd "$repo_root"
+opam exec --switch="$switch_path" -- dune build --root . \
+  ZesuSsz/Experiments/WriteSuccessDecoderExamples.vo
+
+cat >"$query_file" <<'EOF'
+From Coq Require Import Bool.Bool Lists.List ZArith.ZArith.
+Require Import ZesuSsz.Experiments.WriteSuccessObservation.
+Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
+Require Import ZesuSsz.Experiments.WriteSuccessDecoderExamples.
+Import ListNotations.
+Open Scope Z_scope.
+
+Definition writeSuccessCompleteExecutableCase : bool :=
+  match writeSuccessDecodeObservation
+    (writeSuccessEncodeObservation writeSuccessCp1Observation) with
+  | Some _ => true
+  | None => false
+  end.
+
+Definition writeSuccessDistinctBaseFeeExecutableCase : bool :=
+  match
+    writeSuccessDecodeObservation
+      (writeSuccessEncodeObservation
+        (writeSuccessCp1ObservationWithBaseFee 7)),
+    writeSuccessDecodeObservation
+      (writeSuccessEncodeObservation
+        (writeSuccessCp1ObservationWithBaseFee 8))
+  with
+  | Some first, Some second =>
+      negb (Z.eqb (observationBaseFee first) (observationBaseFee second))
+  | _, _ => false
+  end.
+
+Definition writeSuccessVariablePublicKeysExecutableCase : bool :=
+  match writeSuccessDecodeObservation
+    (writeSuccessEncodeObservation writeSuccessCp1Observation) with
+  | Some decoded =>
+      match observationPublicKeys decoded with
+      | first :: second :: [] =>
+          Nat.eqb (length first) 2 && Nat.eqb (length second) 1
+      | _ => false
+      end
+  | None => false
+  end.
+
+Definition writeSuccessTrailingByteExecutableCase : bool :=
+  match writeSuccessDecodeObservation
+    (writeSuccessEncodeObservation writeSuccessCp1Observation ++ [0]) with
+  | Some _ => false
+  | None => true
+  end.
+
+Eval vm_compute in
+  forallb (fun result => result)
+    [writeSuccessCompleteExecutableCase;
+     writeSuccessDistinctBaseFeeExecutableCase;
+     writeSuccessVariablePublicKeysExecutableCase;
+     writeSuccessTrailingByteExecutableCase].
+EOF
+
+opam exec --switch="$switch_path" -- coqtop -quiet \
+  -R _build/default/ZesuSsz ZesuSsz -batch -l "$query_file" \
+  >"$output_file"
+
+if ! rg -q '^     = true$' "$output_file"; then
+  cat "$output_file"
+  exit 1
+fi
+
+echo "writeSuccess decoder executable cases: passed"
