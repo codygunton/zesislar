@@ -76,6 +76,11 @@ Record Level1MachineModel (State Decoded : Type) : Type := {
   decodeBoundaryExit : DecodeBoundaryArgs -> DecodeBoundaryOutcome Decoded -> State -> State -> Prop;
 
   writeSuccessEntry : WriteSuccessArgs Decoded -> State -> Prop;
+  writeSuccessEntryRepresentation : Decoded -> State -> Prop;
+  writeSuccessEntryRepresents :
+    forall args state,
+      writeSuccessEntry args state ->
+      writeSuccessEntryRepresentation (successDecoded Decoded args) state;
   writeSuccessExit : WriteSuccessArgs Decoded -> ByteString -> State -> State -> Prop;
 
   writeFailureEntry : WriteFailureArgs -> State -> Prop;
@@ -255,7 +260,8 @@ Record IslarisLevel1Model (Decoded : Type) : Type := {
 (** The main theorem consumes native correctness plus a separate bounded
     instruction-path certificate for every Level 1 region. *)
 Record IslarisLevel1ContractAssumptions
-    {Decoded : Type} (model : IslarisLevel1Model Decoded) : Prop := {
+    {State Decoded : Type} (machine : Level1MachineModel State Decoded)
+    (model : IslarisLevel1Model Decoded) : Prop := {
   islarisLevel1ReadInput : exists bound : nat,
     Nat.lt bound level1ContractFuel /\
     NativeContractAssumption
@@ -281,14 +287,17 @@ Record IslarisLevel1ContractAssumptions
       (islarisContractStep _ _ (islarisSszDecodeContract Decoded model))
       (PcInRanges decodeInputExecutionPcRanges) (PcInList decodeInputExitPcs)
       ZesuSsz.Generated.Level1.decodeInputEntry bound;
-  islarisLevel1WriteSuccess : exists bound : nat,
-    Nat.lt bound level1ContractFuel /\
-    NativeContractAssumption
+  islarisLevel1WriteSuccess : exists bound : nat -> nat,
+    InputIndexedBound bound /\
+    NativeExecutionContractAssumption
       (IslarisContractCorrect ZesuSsz.Generated.Level1.writeSuccessEntry
         0x14d10 (islarisWriteSuccessContract Decoded model))
-      (islarisContractStep _ _ (islarisWriteSuccessContract Decoded model))
+      (endpointStep State Decoded machine)
+      (endpointPc State Decoded machine)
+      (writeSuccessEntry State Decoded machine)
       (PcInRanges writeSuccessExecutionPcRanges) (PcInList writeSuccessExitPcs)
-      ZesuSsz.Generated.Level1.writeSuccessEntry bound;
+      ZesuSsz.Generated.Level1.writeSuccessEntry
+      (fun args => bound (successInputSize Decoded args));
   islarisLevel1WriteFailure : exists bound : nat,
     Nat.lt bound level1ContractFuel /\
     NativeContractAssumption
