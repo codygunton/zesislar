@@ -36,6 +36,9 @@ Definition writeSuccessSuffixHashesEntryFrame
    reg_col writeSuccessHashesSourceRest ∗
    "x9" ↦ᵣ RVal_Bits pointer ∗
    base ↦ₘ∗ bytes ∗ writeSuccessHashesScratch sp ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp < 0x40000000⌝ ∗
    writeSuccessFixedWidthArrayInvariant
      sp pointer base total processed remaining bytes ∗
    instr_pre 0x158e0
