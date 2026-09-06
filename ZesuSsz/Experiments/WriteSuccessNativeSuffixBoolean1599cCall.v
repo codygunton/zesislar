@@ -8,25 +8,25 @@ Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
 Require Import ZesuSsz.Experiments.WriteSuccessEvents.
 
-Definition writeSuccessSuffixBooleanSavedRegisters : list string :=
+Definition writeSuccessSuffixBoolean1599cSavedRegisters : list string :=
   ["x8"; "x9"; "x18"; "x19"; "x20"; "x21";
    "x22"; "x23"; "x24"; "x25"; "x26"; "x27"].
 
-Definition writeSuccessSuffixBooleanCallerRegisters : list string :=
+Definition writeSuccessSuffixBoolean1599cCallerRegisters : list string :=
   ["x12"; "x13"; "x14"; "x15"; "x16"; "x17"] ++
   tmp_registers.
 
-Definition writeSuccessSuffixBooleanReturnCallerRegisters : list string :=
-  "x1" :: writeSuccessSuffixBooleanCallerRegisters.
+Definition writeSuccessSuffixBoolean1599cReturnCallerRegisters : list string :=
+  "x1" :: writeSuccessSuffixBoolean1599cCallerRegisters.
 
 Definition writeSuccessSuffixBoolean159a0CallPost
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (tail : spec)
     (saved : list valu) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
-     writeSuccessSuffixBooleanReturnCallerRegisters) ∗
+     writeSuccessSuffixBoolean1599cReturnCallerRegisters) ∗
    reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
-     writeSuccessSuffixBooleanSavedRegisters saved) ∗
+     writeSuccessSuffixBoolean1599cSavedRegisters saved) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
@@ -40,9 +40,9 @@ Definition writeSuccessSuffixBoolean1599cCallSpec
   (∃ (sp value : bv 64) (tail : spec) (saved : list valu),
     reg_col zesu_ram_sys_regs ∗
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
-      writeSuccessSuffixBooleanCallerRegisters) ∗
+      writeSuccessSuffixBoolean1599cCallerRegisters) ∗
     reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
-      writeSuccessSuffixBooleanSavedRegisters saved) ∗
+      writeSuccessSuffixBoolean1599cSavedRegisters saved) ∗
     ⌜length saved = 12%nat⌝ ∗
     ⌜Forall (fun v => valu_has_shape v (BitsShape 64)) saved⌝ ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15998) ∗
@@ -82,7 +82,7 @@ Proof.
       H10 & H11 & Hstack & Hmmio & Htrace & %Halign & %Hmin & %Hmax &
       Hpost & HQ)".
   iEval (rewrite /reg_col) in "Hcaller".
-  iEval (unfold writeSuccessSuffixBooleanCallerRegisters; cbn) in "Hcaller".
+  iEval (unfold writeSuccessSuffixBoolean1599cCallerRegisters; cbn) in "Hcaller".
   iDestruct "Hcaller" as
     "(H12 & H13 & H14 & H15 & H16 & H17 & H5 & H6 & H7 & H28 & H29 &
       H30 & H31 & _)".
@@ -222,4 +222,3 @@ Proof.
   all: iEval (unfold writeSuccessSuffixBoolean159a0CallPost).
   all: iFrame "Hpost HQ".
 Qed.
-
