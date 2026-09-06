@@ -5,7 +5,7 @@
     {"qualified": "zkvm_exit", "status": "contract_specified_assumption", "contract": "zkvmExitContract"},
     {"qualified": "ssz_decode_root.decodeInput", "status": "contract_specified_assumption", "contract": "sszDecodeContract"},
     {"qualified": "alt_fl_alloc.get", "status": "contract_specified_assumption", "contract": "allocatorGetContract"},
-    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x150ec. The nonzero hash entry composes through the hashes loop. The zero hash exit and five post-hash calls compose with exact descriptors through 0x1593c. Three byte-list calls, two integer calls, both Boolean calls, the conditional bytes call, later call setup segments, the conditional load and branch, and its join jump are proved. Full suffix integration, the remaining suffix calls, and the final native theorem remain."},
+    {"qualified": "ssz_decode_observation.writeSuccess", "status": "proof_in_progress", "contract": "writeSuccessContract", "condition": "The native prefix, all loops, the exact output relation, the epilogue, and the CFG certificate are proved. The exact transaction carrier reaches 0x150f8 and has the optional-call scratch and tag splits. The nonzero hash entry composes through the hashes loop. The zero hash exit and five post-hash calls compose with exact descriptors through 0x1593c. Three byte-list calls, two integer calls, both Boolean calls, the conditional bytes call, later call setup segments, the composed conditional load and branch, and its join jump are proved. Full suffix integration, the remaining suffix calls, and the final native theorem remain."},
     {"qualified": "ssz_decode_observation.writeFailure", "status": "contract_specified_assumption", "contract": "writeFailureContract"}
   ],
   "frameStates": [
@@ -56,6 +56,7 @@
     {"label": "Transaction carrier setup", "startPc": "0x15090", "endPc": "0x150b0", "status": "unconditionally_proven", "theorem": "write_success_transactions_carrier_chunk_15090_to_150b0"},
     {"label": "Transaction carrier call setup", "startPc": "0x150b0", "endPc": "0x150e8", "status": "unconditionally_proven", "theorem": "write_success_transactions_carrier_chunk_150b0_to_150ec"},
     {"label": "Transaction output return", "startPc": "0x150e8", "endPc": "0x150f0", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150e8"},
+    {"label": "Transaction optional call setup", "startPc": "0x150f0", "endPc": "0x150f8", "status": "unconditionally_proven", "theorem": "write_success_transactions_carrier_chunk_150f0_entry; write_success_transactions_carrier_150f8_branch"},
     {"label": "Transaction call continuation", "startPc": "0x150fc", "endPc": "0x15118", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_150fc"},
     {"label": "Transaction gas-limit call", "startPc": "0x15148", "endPc": "0x15154", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_15148"},
     {"label": "Transaction value load", "startPc": "0x1519c", "endPc": "0x151ac", "status": "unconditionally_proven", "theorem": "write_success_transactions_chunk_151a0_to_151ac"},
