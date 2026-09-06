@@ -112,6 +112,64 @@ Definition writeSuccessWithdrawalsBackEdgeSpec `{!islaG Sigma} `{!threadG}
 
 Global Instance : LithiumUnfold (@writeSuccessWithdrawalsBackEdgeSpec) := I.
 
+(** This is the same back-edge resource, with the strict suffix decrease
+    derived from its concrete update. *)
+Definition writeSuccessWithdrawalsDecreasingBackEdgeSpec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp pointer : bv 64) (base : Z)
+      (total processed remaining : nat) (bytes prefix suffix : list (bv 8))
+      (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    reg_col writeSuccessWithdrawalsOtherRegShapes ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x8" ↦ᵣ RVal_Bits (pointer + BV 64 48)%bv ∗
+    "x9" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
+    "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
+    base ↦ₘ∗ (prefix ++ take 48 suffix) ∗
+    (bv_unsigned pointer + 48) ↦ₘ∗ drop 48 suffix ∗
+    writeSuccessWithdrawalsScratch sp ∗
+    mmio_range 0x2401a0c0 16 ∗
+    spec_trace (writeSuccessWithdrawalsEvents sp (S remaining) tail) ∗ P ∗
+    writeSuccessWithdrawalsInvariant sp (pointer + BV 64 48)%bv base total
+      (S processed) remaining bytes (prefix ++ take 48 suffix)
+      (drop 48 suffix) ∗
+    instr_pre 0x156e8
+      (writeSuccessWithdrawalsLoopExit sp base total bytes tail P) ∗
+    ⌜writeSuccessWithdrawalsIterationUpdate
+      (writeSuccessWithdrawalsBeforeView pointer processed remaining suffix)
+      (writeSuccessWithdrawalsAfterView pointer processed remaining suffix)⌝ ∗
+    ⌜(ZesuSsz.Experiments.WriteSuccessWithdrawalsMeasure.writeSuccessWithdrawalsMeasure
+         (writeSuccessIterationSuffix
+           (writeSuccessWithdrawalsAfterView pointer processed remaining suffix)) <
+       ZesuSsz.Experiments.WriteSuccessWithdrawalsMeasure.writeSuccessWithdrawalsMeasure
+         (writeSuccessIterationSuffix
+           (writeSuccessWithdrawalsBeforeView pointer processed remaining suffix)))%nat⌝ ∗
+    True)%I.
+
+Global Instance : LithiumUnfold
+    (@writeSuccessWithdrawalsDecreasingBackEdgeSpec) := I.
+
+Lemma writeSuccessWithdrawalsBackEdgeSpecDecreases
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  writeSuccessWithdrawalsBackEdgeSpec P -∗
+  writeSuccessWithdrawalsDecreasingBackEdgeSpec P.
+Proof.
+  rewrite /writeSuccessWithdrawalsBackEdgeSpec
+    /writeSuccessWithdrawalsDecreasingBackEdgeSpec.
+  iIntros "H".
+  iDestruct "H" as
+    (sp pointer base total processed remaining bytes prefix suffix tail)
+    "(Hsys & Hregs & Hx2 & Hx8 & Hx9 & Hx18 & Hprefix & Hsuffix &
+      Hscratch & Hmmio & Htrace & HP & Hinv & Hexit & %Hupdate & _)".
+  iExists sp, pointer, base, total, processed, remaining, bytes, prefix,
+    suffix, tail.
+  iFrame. iSplit; first done.
+  iSplit.
+  - iPureIntro.
+    exact (writeSuccessWithdrawalsIterationDecreases _ _ Hupdate).
+  - done.
+Qed.
+
 Lemma write_success_withdrawals_tail_one_iteration
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
@@ -222,6 +280,31 @@ Proof.
     "Hlookup Hcode Hback").
 Qed.
 
+Lemma write_success_withdrawals_one_iteration_decreases
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x101d4 zesuMemcpyCallSpec -∗
+  □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
+  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x15694
+    (writeSuccessWithdrawalsDecreasingBackEdgeSpec P) -∗
+  instr_body 0x15694 (writeSuccessWithdrawalsLoopSpec P).
+Proof.
+  iStartProof.
+  iIntros "#Hlookup #Hcode #Hmemcpy #Hint #Houtput #Hdecreasing".
+  iAssert (□ instr_pre 0x15694 (writeSuccessWithdrawalsBackEdgeSpec P))%I
+    with "[]" as "#Hback".
+  { iModIntro.
+    iApply (instr_pre_wand 0x15694 0x15694 true true with "Hdecreasing");
+      [done | done |].
+    iApply writeSuccessWithdrawalsBackEdgeSpecDecreases. }
+  iApply (write_success_withdrawals_one_iteration P with
+    "Hlookup Hcode Hmemcpy Hint Houtput Hback").
+Qed.
+
 Print Assumptions writeSuccessWithdrawalsBackEdgeUpdate.
+Print Assumptions writeSuccessWithdrawalsBackEdgeSpecDecreases.
 Print Assumptions write_success_withdrawals_tail_one_iteration.
 Print Assumptions write_success_withdrawals_one_iteration.
+Print Assumptions write_success_withdrawals_one_iteration_decreases.
