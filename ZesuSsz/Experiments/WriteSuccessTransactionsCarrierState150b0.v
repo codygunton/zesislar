@@ -237,5 +237,3 @@ Global Instance : LithiumUnfold (@writeSuccessTransactionsAt150b0CarrierSpec) :=
 
 
 
-
-

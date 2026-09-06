@@ -232,4 +232,3 @@ Definition writeSuccessTransactionsAt1509cCarrierSpec `{!islaG Sigma} `{!threadG
       sp base transaction processed bytes ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsAt1509cCarrierSpec) := I.
-

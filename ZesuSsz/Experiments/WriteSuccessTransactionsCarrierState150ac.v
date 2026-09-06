@@ -236,5 +236,3 @@ Definition writeSuccessTransactionsAt150acCarrierSpec `{!islaG Sigma} `{!threadG
 Global Instance : LithiumUnfold (@writeSuccessTransactionsAt150acCarrierSpec) := I.
 
 
-
-

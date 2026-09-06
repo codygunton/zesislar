@@ -96,7 +96,6 @@ Proof.
   all: iFrame.
   all: try done.
 Qed.
-
 Lemma write_success_transactions_carrier_chunk_150ac
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
@@ -121,4 +120,3 @@ Proof.
     /writeSuccessTransactions150acCarrierPhase.
   iExact "Hentry".
 Qed.
-

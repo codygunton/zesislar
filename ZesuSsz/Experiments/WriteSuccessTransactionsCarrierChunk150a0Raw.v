@@ -149,7 +149,6 @@ Proof.
     (HitemsLength & HitemsBound & HfirstAlign & HfirstLower & HfirstUpper &
       HspAlign & HspLower & HspUpper); assumption.
 Qed.
-
 Lemma write_success_transactions_carrier_chunk_150a0
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
@@ -181,4 +180,3 @@ Proof.
   repeat iSplit; try iPureIntro; try assumption; try done.
   apply write_success_15044_current_unsigned; lia.
 Qed.
-
