@@ -32,10 +32,12 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             )
 
     def test_101d4_generates_a_distinct_pair(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101d4.v"
         rendered = GENERATOR.render_constant_write(
-            target, ROOT / "generated/isla-traces", 0x101D4
+            template, ROOT / "generated/isla-traces", 0x101D4
         )
+        self.assertEqual(rendered, target.read_text())
         self.assertIn("Lemma segment_101d4 ", rendered)
         self.assertIn("Lemma segment_101d4_covered ", rendered)
         self.assertIn('"x15"', rendered)
