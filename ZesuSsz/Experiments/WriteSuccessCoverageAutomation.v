@@ -156,6 +156,31 @@ Proof.
   repeat split; reflexivity.
 Qed.
 
+Lemma writeSuccessDefineConstCovered local global labels afterLocal afterGlobal
+    spawned identifier expression annotation trace' value :
+  local.(seq_trace) =
+    Smt (DefineConst identifier expression) annotation :t: trace' ->
+  eval_exp expression = Some value ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  labels = [] /\
+  afterLocal = local <| seq_trace :=
+    subst_trace value identifier trace' |> /\
+  afterGlobal = global /\
+  spawned = [].
+Proof.
+  intros Hsource Heval Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hsource in Htrace. inversion Htrace; subst.
+  match goal with
+  | Hactual : eval_exp expression = Some ?actual |- _ =>
+      rewrite Heval in Hactual; inversion Hactual; subst actual
+  end.
+  cbn in Hsem. destruct Hsem as (-> & -> & ->).
+  repeat split; reflexivity.
+Qed.
+
 Lemma writeSuccessAssertCovered local global labels afterLocal afterGlobal
     spawned expression annotation trace' :
   local.(seq_trace) =
@@ -408,6 +433,7 @@ Print Assumptions writeSuccessDoneTabledCovered.
 Print Assumptions writeSuccessDoneTrapCovered.
 Print Assumptions writeSuccessReadRegCovered.
 Print Assumptions writeSuccessAssumeCovered.
+Print Assumptions writeSuccessDefineConstCovered.
 Print Assumptions writeSuccessAssertCovered.
 Print Assumptions writeSuccessAssumeRegCovered.
 Print Assumptions writeSuccessWriteRegCovered.
