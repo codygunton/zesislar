@@ -7,7 +7,6 @@ Require Import ZesuSsz.Contracts.ExecutionCertificate.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
-Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
 Require Import ZesuSsz.Experiments.WriteSuccessOperationalModel.
 Require Import ZesuSsz.Experiments.WriteSuccessBlockFramework.
 Require Import ZesuSsz.Experiments.WriteSuccessOperationalDefinitions.
@@ -271,16 +270,6 @@ Section PhaseBLedger.
       (phaseBRank args state <= writeSuccessInstructionBoundConstant)%nat.
   Variable phaseBRoundTrip : writeSuccessObservationRoundTrip.
 
-  Variable phaseBTerminalCorrect :
-    forall executionArgs after,
-      blockExecutionInvariant phaseBInvariant phaseBEntryConsistent
-        phaseBBlockLength phaseBBlockSuccessor executionArgs after ->
-      writeSuccessConcretePc after = Some 0x14d10 ->
-      writeSuccessObservedBytes after.2 =
-        Some (writeSuccessEncodeObservation
-          (successDecoded WriteSuccessObservation executionArgs.1)) /\
-      writeSuccessPreservedState executionArgs.1 executionArgs.2 after.
-
   Lemma phaseBBlockFamily block :
     WriteSuccessBlockFamily phaseBInvariant phaseBEntryConsistent
       phaseBBlockLength phaseBBlockSuccessor phaseBRank phaseBBlockRecords
@@ -479,111 +468,6 @@ Section PhaseBLedger.
       + exfalso. eapply (H address Hpc). exact Hexit.
   Qed.
 
-  Theorem writeSuccessLevel1Operational :
-    ExecutionPathCertificate writeSuccessConcreteStep writeSuccessConcretePc
-      writeSuccessConcreteEntry
-      (PcInRanges writeSuccessExecutionPcRanges)
-      (PcInList writeSuccessExitPcs) 0x14d30
-      (fun _ => writeSuccessInstructionBoundConstant) /\
-    (writeSuccessInstructionBoundConstant < level1ContractFuel)%nat /\
-    forall args before fromStep count after,
-      writeSuccessConcreteEntry args before ->
-      StoppedTrace writeSuccessConcreteStep writeSuccessConcretePc
-        (PcInList writeSuccessExitPcs) fromStep count before after ->
-      writeSuccessConcretePc after = Some 0x14d10 ->
-      writeSuccessObservedBytes after.2 =
-        Some (writeSuccessEncodeObservation
-          (successDecoded WriteSuccessObservation args)) /\
-      writeSuccessDecodeObservation
-        (writeSuccessEncodeObservation
-          (successDecoded WriteSuccessObservation args)) =
-        Some (successDecoded WriteSuccessObservation args) /\
-      writeSuccessPreservedState args before after.
-  Proof using All.
-    split; first exact phaseBExecutionCertificate.
-    split; first exact writeSuccessInstructionBoundBelowFuel.
-    intros args before fromStep count after Hentry Htrace Hpc.
-    destruct (phaseBTerminalCorrect (args, before) after
-      (phaseBTerminalInvariant args fromStep count before after Hentry Htrace)
-      Hpc) as (Hobserved & Hpreserved).
-    split; first exact Hobserved. split; last exact Hpreserved.
-    apply (writeSuccessDecodeFromRoundTrip phaseBRoundTrip).
-    unfold writeSuccessConcreteEntry in Hentry.
-    destruct Hentry as (_ & _ & _ & Hrepresentation & _).
-    unfold writeSuccessConcreteRepresentation in Hrepresentation. tauto.
-  Qed.
-
-  Corollary writeSuccessOperationalImplements :
-    Implements writeSuccessConcreteModel
-      (PcInRanges writeSuccessExecutionPcRanges)
-      (PcInList writeSuccessExitPcs)
-      (writeSuccessContract writeSuccessConcreteModel
-        (fun _ => writeSuccessInstructionBoundConstant)).
-  Proof using All.
-    intros args fromStep before Hentry.
-    destruct phaseBExecutionCertificate as
-      [HentryPc Hterminal Hprefixes Hprogress Hmaximal HnoInfinite].
-    destruct (Hterminal args fromStep before Hentry)
-      as (count & after & Hpositive & Hbound & Htrace &
-          address & Hpc & Hexit).
-    unfold PcInList in Hexit. cbn [writeSuccessExitPcs] in Hexit.
-    destruct Hexit as [<- | []].
-    assert (Hblock :
-        blockExecutionInvariant phaseBInvariant phaseBEntryConsistent
-          phaseBBlockLength phaseBBlockSuccessor (args, before) before).
-    { destruct (phaseBEntryBlockWithLength (args, before) before
-        (conj eq_refl Hentry))
-        as (block & params & Hinvariant & Hconsistent & Hlength).
-      eapply blockExecutionInvariantAtEntry; eassumption. }
-    pose proof (phaseBInvariantTraceConfined (args, before) fromStep count
-      before after Hblock Htrace) as Hconfined.
-    pose proof (writeSuccessLevel1Operational) as Hoperational.
-    destruct Hoperational as (_ & _ & Hcorrect).
-    destruct (Hcorrect args before fromStep count after Hentry Htrace Hpc)
-      as (Hobserved & Hdecoded & Hpreserved).
-    exists count, after,
-      (writeSuccessEncodeObservation
-        (successDecoded WriteSuccessObservation args)).
-    split; first exact Hpositive.
-    split; first exact Hbound.
-    split; first exact Hconfined.
-    split.
-    - exists 0x14d10. split; first exact Hpc.
-      vm_compute. auto.
-    - split.
-      + exact Hdecoded.
-      + split; assumption.
-  Qed.
-
-  Corollary writeSuccessOperationalNativeExecutionContractAssumption :
-    NativeExecutionContractAssumption
-      (forall args before fromStep count after,
-        writeSuccessConcreteEntry args before ->
-        StoppedTrace writeSuccessConcreteStep writeSuccessConcretePc
-          (PcInList writeSuccessExitPcs) fromStep count before after ->
-        writeSuccessConcretePc after = Some 0x14d10 ->
-        writeSuccessObservedBytes after.2 =
-          Some (writeSuccessEncodeObservation
-            (successDecoded WriteSuccessObservation args)) /\
-        writeSuccessDecodeObservation
-          (writeSuccessEncodeObservation
-            (successDecoded WriteSuccessObservation args)) =
-          Some (successDecoded WriteSuccessObservation args) /\
-        writeSuccessPreservedState args before after)
-      writeSuccessConcreteStep writeSuccessConcretePc
-      writeSuccessConcreteEntry
-      (PcInRanges writeSuccessExecutionPcRanges)
-      (PcInList writeSuccessExitPcs) 0x14d30
-      (fun _ => writeSuccessInstructionBoundConstant).
-  Proof using All.
-    apply nativeExecutionContractBridge.
-    - intros args before fromStep count after Hentry Htrace Hpc.
-      destruct writeSuccessLevel1Operational as (_ & _ & Hcorrect).
-      exact (Hcorrect args before fromStep count after Hentry Htrace Hpc).
-    - exact phaseBExecutionCertificate.
-  Qed.
-
-
 End PhaseBLedger.
 
 Print Assumptions phaseBDecreasingExecutionObligations.
@@ -591,6 +475,3 @@ Print Assumptions phaseBPairedExecutionCertificate.
 Print Assumptions phaseBExecutionCertificate.
 Print Assumptions phaseBTerminalInvariant.
 Print Assumptions phaseBInvariantTraceConfined.
-Print Assumptions writeSuccessLevel1Operational.
-Print Assumptions writeSuccessOperationalImplements.
-Print Assumptions writeSuccessOperationalNativeExecutionContractAssumption.
