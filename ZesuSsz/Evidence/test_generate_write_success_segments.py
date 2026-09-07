@@ -348,6 +348,41 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
                 output, ROOT / "generated/isla-traces", 0x101E0
             )
 
+    def test_long_memory_read_generates_complete_pair(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/memory_read_long"
+        for template in templates.glob("*.tmpl"):
+            target_name = template.name.replace("MemoryReadLong", "101e4")
+            target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+            rendered = GENERATOR.render_memory_read_long(
+                template, ROOT / "generated/isla-traces", 0x101E4
+            )
+            self.assertEqual(rendered, target.read_text())
+        self.assertEqual(GENERATOR.ITERATION_PCS.count(0x101E4), 48)
+
+    def test_long_memory_read_rejects_other_shape(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_read_long/"
+            "WriteSuccessSegmentMemoryReadLong.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "unsupported long memory-read"):
+            GENERATOR.render_memory_read_long(
+                template, ROOT / "generated/isla-traces", 0x101F0
+            )
+
+    def test_long_memory_read_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_read_long/"
+            "WriteSuccessSegmentMemoryReadLong.v.tmpl"
+        )
+        rendered = GENERATOR.render_memory_read_long(
+            template, ROOT / "generated/isla-traces", 0x101E4
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment101e4.v"
+            altered.write_text(rendered.replace("segment_101e4", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -281,6 +281,50 @@ def render_two_register_add(template: Path, trace_root: Path, pc: int) -> str:
     return render_generic_template(template, replacements)
 
 
+
+def memory_read_long_metadata(trace_root: Path, pc: int) -> Path:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = (
+        ["AssumeReg"] * 10
+        + ["Smt", "Assume", "Smt", "Assume", "Assume", "Smt",
+           "ReadReg", "Smt", "ReadReg", "Smt", "ReadReg", "Smt",
+           "ReadReg", "Smt", "Smt", "Smt", "ReadMem", "Smt",
+           "WriteReg", "WriteReg"]
+    )
+    if constructors != expected:
+        raise ValueError(f"unsupported long memory-read trace shape at 0x{pc:x}: {constructors}")
+    required = [
+        'ReadReg "x13" [] (RegVal_Base (Val_Symbolic 3%Z))',
+        'ReadMem (RegVal_Base (Val_Symbolic 30%Z)) (RegVal_Poison) '
+        '(RegVal_Base (Val_Symbolic 6%Z)) 1%N None',
+        'WriteReg "x13" [] (RegVal_Base (Val_Symbolic 31%Z))',
+    ]
+    if any(fragment not in source for fragment in required):
+        raise ValueError(f"unsupported long memory-read operands at 0x{pc:x}")
+    return path
+
+
+def render_memory_read_long(template: Path, trace_root: Path, pc: int) -> str:
+    if pc not in ITERATION_PCS:
+        raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
+    path = memory_read_long_metadata(trace_root, pc)
+    next_pc = pc + 4
+    next_path = trace_path(trace_root, next_pc)
+    if path.parent != next_path.parent:
+        raise ValueError(f"source and successor traces use different modules at 0x{pc:x}")
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+    })
+
+
 def check_generated_output(output: Path, rendered: str) -> None:
     if not output.is_file() or output.read_text() != rendered:
         raise ValueError(f"generated segment differs: {output}")
@@ -413,6 +457,7 @@ def main() -> None:
         "--shape", choices=(
             "constant-write", "register-add", "pc-add-write", "indirect-jump",
             "conditional-branch", "direct-jump", "two-register-add",
+            "memory-read-long",
         ),
         default="constant-write",
     )
@@ -433,6 +478,8 @@ def main() -> None:
         )
     elif args.shape == "direct-jump":
         rendered = render_direct_jump(args.template, args.trace_root, args.pc)
+    elif args.shape == "memory-read-long":
+        rendered = render_memory_read_long(args.template, args.trace_root, args.pc)
     else:
         rendered = render_two_register_add(args.template, args.trace_root, args.pc)
     if args.check:
