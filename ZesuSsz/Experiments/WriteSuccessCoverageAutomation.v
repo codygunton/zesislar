@@ -2,6 +2,10 @@ From Coq Require Import Eqdep_dec Lists.List NArith.NArith.
 Require Import isla.opsem.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 
+Lemma writeSuccessSubstTraceNotNil value identifier trace :
+  trace <> tnil -> subst_trace value identifier trace <> tnil.
+Proof. destruct trace; cbn; congruence. Qed.
+
 Lemma writeSuccessBvToBvnInjective n (left right : bv n) :
   bv_to_bvn left = bv_to_bvn right -> left = right.
 Proof.
@@ -50,6 +54,32 @@ Proof.
   split; first reflexivity.
   eapply writeSuccessInstructionPrefixAllNonblocking; first exact Hprefix.
   eapply seqStepSourceBlocking. exact Hstep.
+Qed.
+
+Lemma writeSuccessInstructionPrefixTakeStep before observations done :
+  before.1.(seq_trace) <> tnil ->
+  done.1.(seq_trace) = tnil ->
+  done.1.(seq_nb_state) = false ->
+  IslaInstructionPrefixPath before observations done ->
+  exists labels middleLocal middleGlobal spawned rest,
+    observations =
+      {| microLabels := labels;
+         microAfter := (middleLocal, middleGlobal) |} :: rest /\
+    seq_step before.1 before.2 labels middleLocal middleGlobal spawned /\
+    middleLocal.(seq_nb_state) = false /\
+    IslaInstructionPrefixPath
+      (middleLocal, middleGlobal) rest done.
+Proof.
+  intros Hsource HdoneTrace HdoneNb Hpath.
+  pose proof (writeSuccessInstructionPrefixAllNonblocking
+    _ _ _ Hpath HdoneNb) as Hnonblocking.
+  inversion Hpath as
+    [state | pathBefore labels middleLocal middleGlobal rest pathDone spawned
+      HnotDone Hstep Hrest]; subst.
+  - contradiction.
+  - inversion Hnonblocking; subst.
+    eexists labels, middleLocal, middleGlobal, spawned, rest.
+    repeat split; eauto.
 Qed.
 
 Ltac writeSuccessRejectBlockingPrefix Hsegment :=
@@ -112,15 +142,15 @@ Lemma writeSuccessReadRegCovered local global labels afterLocal afterGlobal
     ReadReg register access symbolic annotation :t: trace' ->
   local.(seq_regs) !! register = Some root ->
   read_accessor access root = Some value ->
-  read_accessor access symbolic = Some value ->
   afterLocal.(seq_nb_state) = false ->
   seq_step local global labels afterLocal afterGlobal spawned ->
   labels = [] /\
   afterLocal = local <| seq_trace := trace' |> /\
   afterGlobal = global /\
-  spawned = [].
+  spawned = [] /\
+  read_accessor access symbolic = Some value.
 Proof.
-  intros Hsource Hregister Hroot Hsymbolic Hafter Hstep.
+  intros Hsource Hregister Hroot Hafter Hstep.
   inversion Hstep as
     [stepGlobal stepLocal event next event' nextLocal nextGlobal
       Hnb Htrace Hsem]; subst.
@@ -131,9 +161,8 @@ Proof.
      Hactual & Hsymbolic' & -> & Hsuccess).
   rewrite Hregister in Hregister'. inversion Hregister'; subst.
   rewrite Hroot in Hactual. inversion Hactual; subst.
-  rewrite Hsymbolic in Hsymbolic'. inversion Hsymbolic'; subst.
-  destruct Hsuccess as [(-> & _)|Hblock].
-  - repeat split; reflexivity.
+  destruct Hsuccess as [(-> & Hmatch)|Hblock].
+  - subst symbolicValue. repeat split; assumption || reflexivity.
   - subst. discriminate Hafter.
 Qed.
 
@@ -426,9 +455,11 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessInstructionPrefixAllNonblocking.
+Print Assumptions writeSuccessSubstTraceNotNil.
 Print Assumptions writeSuccessBvToBvnInjective.
 Print Assumptions writeSuccessBitsValInjective.
 Print Assumptions writeSuccessInstructionSegmentPrefixAllNonblocking.
+Print Assumptions writeSuccessInstructionPrefixTakeStep.
 Print Assumptions writeSuccessDoneTabledCovered.
 Print Assumptions writeSuccessDoneTrapCovered.
 Print Assumptions writeSuccessReadRegCovered.
