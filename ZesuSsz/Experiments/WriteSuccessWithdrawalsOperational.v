@@ -560,8 +560,10 @@ Definition Inv_15694
     (priorLog : list WriteSuccessWithdrawalsRecord)
     (state : WriteSuccessWithdrawalsConcreteState) : Prop :=
   IslaInstructionBoundary state.1 /\
+  state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x15694 /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
+  (exists oldX10, state.1.1.(seq_regs) !! "x10" = Some oldX10) /\
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits pointer) /\
   state.1.1.(seq_regs) !! "x9" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) /\
