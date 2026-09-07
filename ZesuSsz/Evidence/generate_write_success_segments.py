@@ -176,7 +176,7 @@ def render_pc_add_write(template: Path, trace_root: Path, pc: int) -> str:
         ("156a4", f"{next_pc:x}"),
         ('"x1"', f'"{destination_register}"'),
         ("oldX1", "old" + destination_register.upper()),
-        ("BV 64 0xffffffffffffb000", f"BV 64 {addend}"),
+        ("BV 64 0xffffffffffffb000", f"BV 64 0x{addend:x}"),
     ]
     for old, new in replacements:
         text = text.replace(old, new)
