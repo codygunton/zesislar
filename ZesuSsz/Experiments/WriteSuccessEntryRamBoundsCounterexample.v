@@ -4,6 +4,7 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Experiments.WriteSuccessPostTransactionDescriptors.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeContract.
+Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -105,6 +106,30 @@ Proof.
   intros [Hminimum _]. exact (Hminimum eq_refl).
 Qed.
 
+Lemma writeSuccessAcceptedWitnessAllowsNativePayloadBasesOutsideRam :
+  writeSuccessWitnessWellFormed writeSuccessRamCounterexampleArgs
+    writeSuccessRamCounterexampleWitness /\
+  bv_unsigned (writeSuccessValueWord
+    (writeSuccessValues writeSuccessRamCounterexampleWitness) 4) = 0 /\
+  writeSuccessTransactionBase writeSuccessRamCounterexampleWitness = 0 /\
+  ~ (0x20000000 <= bv_unsigned (writeSuccessValueWord
+       (writeSuccessValues writeSuccessRamCounterexampleWitness) 4) /\
+     bv_unsigned (writeSuccessValueWord
+       (writeSuccessValues writeSuccessRamCounterexampleWitness) 4) +
+       Z.of_nat (length (writeSuccessPayload writeSuccessRamCounterexampleWitness))
+       < 0x40000000) /\
+  ~ (0x20000000 <=
+       writeSuccessTransactionBase writeSuccessRamCounterexampleWitness /\
+     writeSuccessTransactionBase writeSuccessRamCounterexampleWitness +
+       Z.of_nat (length (writeSuccessTransactionBytes
+         writeSuccessRamCounterexampleWitness)) < 0x40000000).
+Proof.
+  vm_compute. repeat split; try lia; try reflexivity.
+  all: try congruence; try done.
+  all: try (apply bv_eq; reflexivity).
+  all: intros [Hminimum _]; exact (Hminimum eq_refl).
+Qed.
+
 Lemma writeSuccessAcceptedPayloadCannotSupplyTransactionRamRange
     `{!islaG Sigma} `{!threadG} :
   writeSuccessProloguePayload writeSuccessRamCounterexampleWitness -∗
@@ -121,4 +146,5 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessAcceptedWitnessAllowsTransactionBaseOutsideRam.
+Print Assumptions writeSuccessAcceptedWitnessAllowsNativePayloadBasesOutsideRam.
 Print Assumptions writeSuccessAcceptedPayloadCannotSupplyTransactionRamRange.
