@@ -104,7 +104,7 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
 
     def test_156a0_regenerates_pc_add_write_pair(self):
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a0.v"
-        template = ROOT / "ZesuSsz/Evidence/templates/pc_add_write/pc_add_write.v.tmpl"
+        template = ROOT / "ZesuSsz/Evidence/templates/pc_add_write/pc_add_write_legacy.v.tmpl"
         rendered = GENERATOR.render_pc_add_write(
             template, ROOT / "generated/isla-traces", 0x156A0
         )
@@ -112,6 +112,32 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn("Lemma segment_156a0_mstatus ", rendered)
         self.assertIn("Lemma segment_156a0_mstatus_covered ", rendered)
         self.assertIn("writeSuccess156a0Link", rendered)
+
+    def test_pc_add_write_generates_remaining_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/pc_add_write"
+        components = {
+            "pc_add_write.v.tmpl": "",
+            "pc_add_write_coverage_prefix.v.tmpl": "CoveragePrefix",
+            "pc_add_write_coverage_suffix.v.tmpl": "CoverageSuffix",
+            "pc_add_write_coverage.v.tmpl": "Coverage",
+        }
+        pcs = (0x156AC, 0x15D24, 0x10190, 0x156B8, 0x156C8, 0x156D4)
+        for pc in pcs:
+            for template_name, suffix in components.items():
+                rendered = GENERATOR.render_pc_add_write(
+                    templates / template_name,
+                    ROOT / "generated/isla-traces", pc
+                )
+                target = (
+                    ROOT / "ZesuSsz/Experiments" /
+                    f"WriteSuccessSegment{pc:x}{suffix}.v"
+                )
+                self.assertEqual(rendered, target.read_text())
+            public = (
+                ROOT / "ZesuSsz/Experiments" /
+                f"WriteSuccessSegment{pc:x}Coverage.v"
+            ).read_text()
+            self.assertIn(f"Lemma segment_{pc:x}_covered ", public)
 
     def test_156a4_regenerates_indirect_jump_pair(self):
         names = [
