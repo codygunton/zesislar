@@ -41,6 +41,18 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn('"x15"', rendered)
         self.assertIn("BV 64 0", rendered)
 
+    def test_1569c_regenerates_register_add_pair(self):
+        template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15694.v"
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment1569c.v"
+        rendered = GENERATOR.render_register_add(
+            template, ROOT / "generated/isla-traces", 0x1569C
+        )
+        self.assertEqual(rendered, target.read_text())
+        self.assertIn("Lemma segment_1569c ", rendered)
+        self.assertIn("Lemma segment_1569c_covered ", rendered)
+        self.assertIn('"x8"', rendered)
+        self.assertIn('"x11"', rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
