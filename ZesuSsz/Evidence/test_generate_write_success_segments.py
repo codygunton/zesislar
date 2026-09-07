@@ -18,22 +18,23 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
 
     def test_15698_regenerates_checked_pair(self):
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
         rendered = GENERATOR.render_constant_write(
-            target, ROOT / "generated/isla-traces", 0x15698
+            template, ROOT / "generated/isla-traces", 0x15698
         )
         self.assertEqual(rendered, target.read_text())
         self.assertIn("Lemma segment_15698 ", rendered)
         self.assertIn("Lemma segment_15698_covered ", rendered)
 
     def test_15694_rejects_unsupported_shape(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
         with self.assertRaisesRegex(ValueError, "unsupported trace shape"):
             GENERATOR.render_constant_write(
-                target, ROOT / "generated/isla-traces", 0x15694
+                template, ROOT / "generated/isla-traces", 0x15694
             )
 
     def test_101d4_generates_a_distinct_pair(self):
-        template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101d4.v"
         rendered = GENERATOR.render_constant_write(
             template, ROOT / "generated/isla-traces", 0x101D4
@@ -45,7 +46,7 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn("BV 64 0", rendered)
 
     def test_constant_write_regenerates_remaining_pairs(self):
-        template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
         expected = {
             0x15D20: ("WriteSuccessSegment15d20.v", '"x11"', "BV 64 8", 3),
             0x156C0: ("WriteSuccessSegment156c0.v", '"x11"', "BV 64 20", 1),
@@ -63,7 +64,7 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             self.assertEqual(GENERATOR.ITERATION_PCS.count(pc), occurrences)
 
     def test_1569c_regenerates_register_add_pair(self):
-        template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15694.v"
+        template = ROOT / "ZesuSsz/Evidence/templates/register_add/register_add.v.tmpl"
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment1569c.v"
         rendered = GENERATOR.render_register_add(
             template, ROOT / "generated/isla-traces", 0x1569C
@@ -76,8 +77,9 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
 
     def test_156a0_regenerates_pc_add_write_pair(self):
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a0.v"
+        template = ROOT / "ZesuSsz/Evidence/templates/pc_add_write/pc_add_write.v.tmpl"
         rendered = GENERATOR.render_pc_add_write(
-            target, ROOT / "generated/isla-traces", 0x156A0
+            template, ROOT / "generated/isla-traces", 0x156A0
         )
         self.assertEqual(rendered, target.read_text())
         self.assertIn("Lemma segment_156a0_mstatus ", rendered)
@@ -95,8 +97,10 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         rendered = []
         for name in names:
             target = ROOT / "ZesuSsz/Experiments" / name
+            template_name = name.replace("156a4", "IndirectJump") + ".tmpl"
+            template = ROOT / "ZesuSsz/Evidence/templates/indirect_jump" / template_name
             text = GENERATOR.render_indirect_jump(
-                target, ROOT / "generated/isla-traces", 0x156A4
+                template, ROOT / "generated/isla-traces", 0x156A4
             )
             self.assertEqual(text, target.read_text())
             rendered.append(text)
@@ -104,10 +108,13 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn("Lemma segment_156a4_mstatus_covered ", rendered[-1])
 
     def test_indirect_jump_rejects_other_trace_shape(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a4.v"
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/indirect_jump/"
+            "WriteSuccessSegmentIndirectJump.v.tmpl"
+        )
         with self.assertRaisesRegex(ValueError, "supports only 0x156a4"):
             GENERATOR.render_indirect_jump(
-                target, ROOT / "generated/isla-traces", 0x156A0
+                template, ROOT / "generated/isla-traces", 0x156A0
             )
 
     def test_101d8_conditional_branch_metadata(self):
@@ -129,8 +136,10 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         rendered = []
         for name in names:
             target = ROOT / "ZesuSsz/Experiments" / name
+            template_name = name.replace("101d8", "ConditionalBranch") + ".tmpl"
+            template = ROOT / "ZesuSsz/Evidence/templates/conditional_branch" / template_name
             text = GENERATOR.render_conditional_branch(
-                target, ROOT / "generated/isla-traces", 0x101D8
+                template, ROOT / "generated/isla-traces", 0x101D8
             )
             self.assertEqual(text, target.read_text())
             rendered.append(text)
@@ -144,10 +153,13 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             )
 
     def test_conditional_branch_renderer_rejects_other_pc(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101d8.v"
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/conditional_branch/"
+            "WriteSuccessSegmentConditionalBranch.v.tmpl"
+        )
         with self.assertRaisesRegex(ValueError, "supports only 0x101d8"):
             GENERATOR.render_conditional_branch(
-                target, ROOT / "generated/isla-traces", 0x101E0
+                template, ROOT / "generated/isla-traces", 0x101E0
             )
 
     def test_101f4_regenerates_direct_jump_pair(self):
@@ -160,8 +172,10 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         rendered = []
         for name in names:
             target = ROOT / "ZesuSsz/Experiments" / name
+            template_name = name.replace("101f4", "DirectJump") + ".tmpl"
+            template = ROOT / "ZesuSsz/Evidence/templates/direct_jump" / template_name
             text = GENERATOR.render_direct_jump(
-                target, ROOT / "generated/isla-traces", 0x101F4
+                template, ROOT / "generated/isla-traces", 0x101F4
             )
             self.assertEqual(text, target.read_text())
             rendered.append(text)
@@ -176,10 +190,13 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             )
 
     def test_direct_jump_renderer_rejects_other_pc(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101f4.v"
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/direct_jump/"
+            "WriteSuccessSegmentDirectJump.v.tmpl"
+        )
         with self.assertRaisesRegex(ValueError, "supports only 0x101f4"):
             GENERATOR.render_direct_jump(
-                target, ROOT / "generated/isla-traces", 0x101E0
+                template, ROOT / "generated/isla-traces", 0x101E0
             )
 
     def test_two_register_add_metadata(self):

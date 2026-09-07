@@ -248,19 +248,25 @@ def two_register_add_metadata(
     )
 
 
+def render_generic_template(template: Path, replacements: dict[str, str]) -> str:
+    if template.suffix != ".tmpl":
+        raise ValueError("the renderer requires a generic template")
+    text = template.read_text()
+    if "__SOURCE_PC__" not in text:
+        raise ValueError("generic template lacks the source-PC token")
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    if re.search(r"__[A-Z_]+__", text):
+        raise ValueError("generic template contains an unknown token")
+    return text
+
+
 def render_two_register_add(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
-    if template.suffix != ".tmpl":
-        raise ValueError("the two-register-add renderer requires a generic template")
     next_pc = pc + 4
     source_path, left, right, destination = two_register_add_metadata(trace_root, pc)
     next_path = trace_path(trace_root, next_pc)
-    text = template.read_text()
-    required = {"__SOURCE_PC__"}
-    missing = sorted(token for token in required if token not in text)
-    if missing:
-        raise ValueError(f"generic template lacks tokens: {missing}")
     if source_path.parent != next_path.parent:
         raise ValueError(f"source and successor traces use different modules at 0x{pc:x}")
     replacements = {
@@ -272,11 +278,7 @@ def render_two_register_add(template: Path, trace_root: Path, pc: int) -> str:
         "__DEST_REGISTER__": destination,
         "__DEST_UPPER__": destination.upper(),
     }
-    for old, new in replacements.items():
-        text = text.replace(old, new)
-    if re.search(r"__[A-Z_]+__", text):
-        raise ValueError("generic template contains an unknown token")
-    return text
+    return render_generic_template(template, replacements)
 
 
 def check_generated_output(output: Path, rendered: str) -> None:
@@ -290,19 +292,15 @@ def render_constant_write(template: Path, trace_root: Path, pc: int) -> str:
     next_pc = pc + 4
     source_path, register, constant = constant_write_metadata(trace_root, pc)
     next_path = trace_path(trace_root, next_pc)
-    text = template.read_text()
-    replacements = [
-        ("IslaTraces.write_success_90.a15698", f"IslaTraces.{source_path.parent.name}.a{pc:x}"),
-        ("IslaTraces.write_success_90.a1569c", f"IslaTraces.{next_path.parent.name}.a{next_pc:x}"),
-        ("15698", f"{pc:x}"),
-        ("1569c", f"{next_pc:x}"),
-        ('"x12"', f'"{register}"'),
-        ("oldX12", "old" + register.upper()),
-        ("BV 64 48", f"BV 64 {constant}"),
-    ]
-    for old, new in replacements:
-        text = text.replace(old, new)
-    return text
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": source_path.parent.name,
+        "__NEXT_MODULE__": next_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__DEST_REGISTER__": register,
+        "__DEST_UPPER__": register.upper(),
+        "__CONSTANT__": str(constant),
+    })
 
 
 def render_register_add(template: Path, trace_root: Path, pc: int) -> str:
@@ -313,20 +311,16 @@ def render_register_add(template: Path, trace_root: Path, pc: int) -> str:
         register_add_metadata(trace_root, pc)
     )
     next_path = trace_path(trace_root, next_pc)
-    text = template.read_text()
-    replacements = [
-        ("IslaTraces.write_success_90.a15694", f"IslaTraces.{source_path.parent.name}.a{pc:x}"),
-        ("IslaTraces.write_success_90.a15698", f"IslaTraces.{next_path.parent.name}.a{next_pc:x}"),
-        ("15694", f"{pc:x}"),
-        ("15698", f"{next_pc:x}"),
-        ('"x2"', f'"{source_register}"'),
-        ('"x10"', f'"{destination_register}"'),
-        ("oldX10", "old" + destination_register.upper()),
-        ("BV 64 1744", f"BV 64 {addend}"),
-    ]
-    for old, new in replacements:
-        text = text.replace(old, new)
-    return text
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": source_path.parent.name,
+        "__NEXT_MODULE__": next_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__SOURCE_REGISTER__": source_register,
+        "__DEST_REGISTER__": destination_register,
+        "__DEST_UPPER__": destination_register.upper(),
+        "__ADDEND__": str(addend),
+    })
 
 
 def render_pc_add_write(template: Path, trace_root: Path, pc: int) -> str:
@@ -335,19 +329,15 @@ def render_pc_add_write(template: Path, trace_root: Path, pc: int) -> str:
     next_pc = pc + 4
     source_path, destination_register, addend = pc_add_write_metadata(trace_root, pc)
     next_path = trace_path(trace_root, next_pc)
-    text = template.read_text()
-    replacements = [
-        ("IslaTraces.write_success_90.a156a0", f"IslaTraces.{source_path.parent.name}.a{pc:x}"),
-        ("IslaTraces.write_success_90.a156a4", f"IslaTraces.{next_path.parent.name}.a{next_pc:x}"),
-        ("156a0", f"{pc:x}"),
-        ("156a4", f"{next_pc:x}"),
-        ('"x1"', f'"{destination_register}"'),
-        ("oldX1", "old" + destination_register.upper()),
-        ("BV 64 0xffffffffffffb000", f"BV 64 0x{addend:x}"),
-    ]
-    for old, new in replacements:
-        text = text.replace(old, new)
-    return text
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": source_path.parent.name,
+        "__NEXT_MODULE__": next_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__DEST_REGISTER__": destination_register,
+        "__DEST_UPPER__": destination_register.upper(),
+        "__ADDEND_HEX__": f"{addend:x}",
+    })
 
 
 def render_indirect_jump(template: Path, trace_root: Path, pc: int) -> str:
@@ -358,7 +348,17 @@ def render_indirect_jump(template: Path, trace_root: Path, pc: int) -> str:
         "write_success_90", "x1", "x1", 0xFFFFFFFFFFFFFB34
     ):
         raise ValueError(f"unsupported indirect-jump operands at 0x{pc:x}")
-    return template.read_text()
+    target_pc = 0x101D4
+    target_path = trace_path(trace_root, target_pc)
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__TARGET_MODULE__": target_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{pc + 4:x}",
+        "__TARGET_PC__": f"{target_pc:x}",
+        "__BASE_LINK_REGISTER__": base,
+        "__OFFSET_HEX__": f"0x{offset:x}",
+    })
 
 
 def render_conditional_branch(template: Path, trace_root: Path, pc: int) -> str:
@@ -367,7 +367,20 @@ def render_conditional_branch(template: Path, trace_root: Path, pc: int) -> str:
     path, left, right = conditional_branch_metadata(trace_root, pc)
     if (path.parent.name, left, right) != ("write_success_02", "x15", "x12"):
         raise ValueError(f"unsupported conditional-branch operands at 0x{pc:x}")
-    return template.read_text()
+    fallthrough_pc = 0x101DC
+    taken_pc = 0x101F4
+    fallthrough_path = trace_path(trace_root, fallthrough_pc)
+    taken_path = trace_path(trace_root, taken_pc)
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__FALLTHROUGH_MODULE__": fallthrough_path.parent.name,
+        "__TAKEN_MODULE__": taken_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__FALLTHROUGH_PC__": f"{fallthrough_pc:x}",
+        "__TAKEN_PC__": f"{taken_pc:x}",
+        "__LEFT_REGISTER__": left,
+        "__RIGHT_REGISTER__": right,
+    })
 
 
 def render_direct_jump(template: Path, trace_root: Path, pc: int) -> str:
@@ -376,7 +389,15 @@ def render_direct_jump(template: Path, trace_root: Path, pc: int) -> str:
     path, offset = direct_jump_metadata(trace_root, pc)
     if (path.parent.name, offset) != ("write_success_02", 0xFFFFFFFFFFFFFFE4):
         raise ValueError(f"unsupported direct-jump target at 0x{pc:x}")
-    return template.read_text()
+    target_pc = 0x101D8
+    target_path = trace_path(trace_root, target_pc)
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__TARGET_MODULE__": target_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__TARGET_PC__": f"{target_pc:x}",
+        "__OFFSET_HEX__": f"0x{offset:x}",
+    })
 
 
 def main() -> None:
