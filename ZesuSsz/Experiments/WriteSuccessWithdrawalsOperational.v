@@ -564,6 +564,7 @@ Definition Inv_15694
   writeSuccessWithdrawalsConcretePc state = Some 0x15694 /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   (exists oldX10, state.1.1.(seq_regs) !! "x10" = Some oldX10) /\
+  (exists oldX11, state.1.1.(seq_regs) !! "x11" = Some oldX11) /\
   (exists oldX12, state.1.1.(seq_regs) !! "x12" = Some oldX12) /\
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits pointer) /\
   state.1.1.(seq_regs) !! "x9" =
