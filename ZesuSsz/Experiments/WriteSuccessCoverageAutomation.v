@@ -82,6 +82,69 @@ Proof.
     repeat split; eauto.
 Qed.
 
+Lemma writeSuccessDeclareConstBitVecCovered local global labels
+    afterLocal afterGlobal spawned identifier width annotation trace' :
+  local.(seq_trace) =
+    Smt (DeclareConst identifier (Ty_BitVec width)) annotation :t: trace' ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  exists value : bv width,
+    labels = [] /\
+    afterLocal = local <| seq_trace :=
+      subst_trace (Val_Bits value) identifier trace' |> /\
+    afterGlobal = global /\
+    spawned = [].
+Proof.
+  intros Hsource Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hsource in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & -> & ->).
+  eexists. repeat split; reflexivity.
+Qed.
+
+Lemma writeSuccessDeclareConstBoolCovered local global labels
+    afterLocal afterGlobal spawned identifier annotation trace' :
+  local.(seq_trace) =
+    Smt (DeclareConst identifier Ty_Bool) annotation :t: trace' ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  exists value : bool,
+    labels = [] /\
+    afterLocal = local <| seq_trace :=
+      subst_trace (Val_Bool value) identifier trace' |> /\
+    afterGlobal = global /\
+    spawned = [].
+Proof.
+  intros Hsource Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hsource in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & -> & ->).
+  eexists. repeat split; reflexivity.
+Qed.
+
+Lemma writeSuccessDeclareConstEnumCovered local global labels
+    afterLocal afterGlobal spawned identifier enum annotation trace' :
+  local.(seq_trace) =
+    Smt (DeclareConst identifier (Ty_Enum enum)) annotation :t: trace' ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  exists value : sail_name,
+    labels = [] /\
+    afterLocal = local <| seq_trace :=
+      subst_trace (Val_Enum value) identifier trace' |> /\
+    afterGlobal = global /\
+    spawned = [].
+Proof.
+  intros Hsource Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hsource in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & -> & ->).
+  eexists. repeat split; reflexivity.
+Qed.
+
 Ltac writeSuccessRejectBlockingPrefix Hsegment :=
   let prefix := fresh "prefix" in
   let doneObservation := fresh "doneObservation" in
@@ -232,6 +295,28 @@ Proof.
   repeat split; reflexivity.
 Qed.
 
+Lemma writeSuccessAssertFalseBlocks local global labels afterLocal afterGlobal
+    spawned expression annotation trace' :
+  local.(seq_trace) =
+    Smt (Assert expression) annotation :t: trace' ->
+  eval_exp expression = Some (Val_Bool false) ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  afterLocal.(seq_nb_state) = true.
+Proof.
+  intros Hsource Heval Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hsource in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & -> & ->).
+  destruct b; cbn in *.
+  - match goal with
+    | Hactual : eval_exp expression = Some (Val_Bool true) |- _ =>
+        rewrite Heval in Hactual; discriminate
+    end.
+  - reflexivity.
+Qed.
+
 Lemma writeSuccessAssumeRegCovered local global labels afterLocal afterGlobal
     spawned register access expected annotation trace' root :
   local.(seq_trace) =
@@ -320,6 +405,26 @@ Proof.
   rewrite Hsource in Htrace. inversion Htrace; subst.
   cbn in Hsem. destruct Hsem as (-> & -> & ->).
   repeat split; reflexivity.
+Qed.
+
+Lemma writeSuccessCasesCovered local global labels afterLocal afterGlobal
+    spawned branches :
+  local.(seq_trace) = tcases branches ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  exists branch,
+    branch ∈ branches /\
+    labels = [] /\
+    afterLocal = local <| seq_trace := branch |> /\
+    afterGlobal = global /\
+    spawned = [].
+Proof.
+  intros Hsource Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hsource in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & -> & ->).
+  eexists. repeat split; eauto.
 Qed.
 
 Lemma writeSuccessReadMemBackedCovered local global labels afterLocal afterGlobal
@@ -460,16 +565,21 @@ Print Assumptions writeSuccessBvToBvnInjective.
 Print Assumptions writeSuccessBitsValInjective.
 Print Assumptions writeSuccessInstructionSegmentPrefixAllNonblocking.
 Print Assumptions writeSuccessInstructionPrefixTakeStep.
+Print Assumptions writeSuccessDeclareConstBitVecCovered.
+Print Assumptions writeSuccessDeclareConstBoolCovered.
+Print Assumptions writeSuccessDeclareConstEnumCovered.
 Print Assumptions writeSuccessDoneTabledCovered.
 Print Assumptions writeSuccessDoneTrapCovered.
 Print Assumptions writeSuccessReadRegCovered.
 Print Assumptions writeSuccessAssumeCovered.
 Print Assumptions writeSuccessDefineConstCovered.
 Print Assumptions writeSuccessAssertCovered.
+Print Assumptions writeSuccessAssertFalseBlocks.
 Print Assumptions writeSuccessAssumeRegCovered.
 Print Assumptions writeSuccessWriteRegCovered.
 Print Assumptions writeSuccessBranchAddressCovered.
 Print Assumptions writeSuccessBranchCovered.
+Print Assumptions writeSuccessCasesCovered.
 Print Assumptions writeSuccessReadMemBackedCovered.
 Print Assumptions writeSuccessReadMemMmioCovered.
 Print Assumptions writeSuccessWriteMemBackedCovered.
