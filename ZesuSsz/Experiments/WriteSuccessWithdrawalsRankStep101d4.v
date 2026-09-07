@@ -58,6 +58,37 @@ Proof.
   - unfold bv_modulus. cbn. lia.
 Qed.
 
+Lemma writeSuccessWithdrawalsPhase101e0Zero state :
+  writeSuccessWithdrawalsConcretePc state = Some 0x101e0 ->
+  state.1.1.(seq_regs) !! "x15" = Some (RVal_Bits (BV 64 0)) ->
+  writeSuccessWithdrawalsPhaseRemaining state = 403%nat.
+Proof.
+  intros Hpc Hx15. unfold writeSuccessWithdrawalsPhaseRemaining.
+  rewrite Hpc. unfold writeSuccessWithdrawalsRegisterUnsigned. rewrite Hx15.
+  vm_compute. reflexivity.
+Qed.
+
+Lemma rank_15694_at_101e0_zero state remaining :
+  writeSuccessWithdrawalsConcretePc state = Some 0x101e0 ->
+  state.1.1.(seq_regs) !! "x15" = Some (RVal_Bits (BV 64 0)) ->
+  state.1.1.(seq_regs) !! "x9" =
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) ->
+  (Z.of_nat (S remaining) < 2 ^ 64)%Z ->
+  rank_15694 state = (410 * remaining + 403)%nat.
+Proof.
+  intros Hpc Hx15 Hx9 Hrange.
+  have Hphase := writeSuccessWithdrawalsPhase101e0Zero state Hpc Hx15.
+  unfold rank_15694. rewrite Hpc.
+  unfold writeSuccessWithdrawalsRegisterUnsigned. rewrite Hx9. cbn.
+  rewrite Hphase.
+  change (410 * Nat.pred
+      (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (S remaining))))) + 403 =
+    410 * remaining + 403)%nat.
+  rewrite Z_to_bv_unsigned bv_wrap_small.
+  - rewrite Nat2Z.id. cbn. reflexivity.
+  - unfold bv_modulus. cbn. lia.
+Qed.
+
 Lemma writeSuccessWithdrawals101d4Context args sp pointer base total processed
     remaining withdrawal allBytes prefix current suffix scratch encoderScratch
     registerFrame memoryFrame priorLog state observations94 state98 observations98
@@ -173,4 +204,6 @@ Qed.
 Print Assumptions writeSuccess156a4MstatusPreserved.
 Print Assumptions writeSuccessWithdrawalsPhase101d8Zero.
 Print Assumptions rank_15694_at_101d8_zero.
+Print Assumptions writeSuccessWithdrawalsPhase101e0Zero.
+Print Assumptions rank_15694_at_101e0_zero.
 Print Assumptions writeSuccessWithdrawals101d4Context.
