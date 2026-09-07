@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from generate_write_success_trace_assumptions import collect, event_term
+from generate_write_success_trace_assumptions import collect, event_term, write_coq
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -49,6 +49,21 @@ class WriteSuccessTraceAssumptionsTest(unittest.TestCase):
             ], check=True)
             inventory = json.loads(output.read_text())
             self.assertEqual(inventory["trace_count"], 950)
+
+    def test_writes_chunked_coq_predicate(self):
+        inventory = collect(
+            ROOT / "generated/isla-traces/write_success_blocks/Index.v",
+            ROOT / "generated/isla-traces",
+        )
+        with TemporaryDirectory() as temporary:
+            paths = write_coq(inventory, Path(temporary), chunk_size=100)
+            self.assertEqual(len(paths), 10)
+            source = paths[-1].read_text()
+            self.assertIn(
+                "Definition writeSuccessTraceAssumptions (state : IslaState) : Prop :=",
+                source,
+            )
+            self.assertIn("writeSuccessTraceAssumptionsChunk08", source)
 
 
 if __name__ == "__main__":

@@ -98,14 +98,81 @@ def collect(index: Path, trace_root: Path) -> dict:
     }
 
 
+def write_coq(inventory: dict, output_dir: Path, chunk_size: int = 50) -> list[Path]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    events = ([f"Assume {item['term']} :t: tnil" for item in inventory["assumes"]] +
+              [f"AssumeReg {item['term']} :t: tnil"
+               for item in inventory["assume_regs"]])
+    chunks = [events[start:start + chunk_size]
+              for start in range(0, len(events), chunk_size)]
+    paths = []
+    for number, chunk in enumerate(chunks):
+        name = f"WriteSuccessTraceAssumptionsChunk{number:02d}"
+        path = output_dir / f"{name}.v"
+        body = ";\n  ".join(chunk)
+        path.write_text(
+            "From Coq Require Import Lists.List.\n"
+            "Require Import isla.opsem.\n\n"
+            "Import ListNotations.\n\n"
+            f"Definition writeSuccessTraceAssumptionsChunk{number:02d} : "
+            "list isla_trace := [\n"
+            f"  {body}\n" if body else ""
+        )
+        with path.open("a") as output:
+            output.write("].\n")
+        paths.append(path)
+
+    imports = "\n".join(
+        f"Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk{n:02d}."
+        for n in range(len(chunks)))
+    names = "; ".join(
+        f"writeSuccessTraceAssumptionsChunk{n:02d}" for n in range(len(chunks)))
+    umbrella = output_dir / "WriteSuccessTraceAssumptions.v"
+    umbrella.write_text(
+        "From Coq Require Import Lists.List.\n"
+        "Require Import isla.opsem.\n"
+        "Require Import ZesuSsz.Contracts.InstructionBoundary.\n"
+        f"{imports}\n\n"
+        "Import ListNotations.\n\n"
+        "Definition writeSuccessTraceAssumptionEvents : list isla_trace :=\n"
+        f"  concat [{names}].\n\n"
+        "Definition writeSuccessTraceAssumptionHolds\n"
+        "    (regs : reg_map) (assumption : isla_trace) : Prop :=\n"
+        "  match assumption with\n"
+        "  | Assume condition _ :t: tnil =>\n"
+        "      eval_a_exp regs condition = Some (Val_Bool true)\n"
+        "  | AssumeReg register access expected _ :t: tnil =>\n"
+        "      exists root, regs !! register = Some root /\\\n"
+        "        read_accessor access root = Some expected\n"
+        "  | _ => False\n"
+        "  end.\n\n"
+        "Definition writeSuccessTraceAssumptions (state : IslaState) : Prop :=\n"
+        "  Forall (writeSuccessTraceAssumptionHolds state.1.(seq_regs))\n"
+        "    writeSuccessTraceAssumptionEvents.\n\n"
+        f"Lemma writeSuccessTraceAssumptionEventsCount :\n"
+        f"  length writeSuccessTraceAssumptionEvents = {len(events)}%nat.\n"
+        "Proof.\n"
+        "  unfold writeSuccessTraceAssumptionEvents,\n"
+        f"    {', '.join(f'writeSuccessTraceAssumptionsChunk{n:02d}' for n in range(len(chunks)))}.\n"
+        "  reflexivity.\n"
+        "Qed.\n\n"
+        "Print Assumptions writeSuccessTraceAssumptionEventsCount.\n"
+    )
+    paths.append(umbrella)
+    return paths
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--index", required=True, type=Path)
     parser.add_argument("--trace-root", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--coq-output-dir", type=Path)
     args = parser.parse_args()
     inventory = collect(args.index, args.trace_root)
     args.output.write_text(json.dumps(inventory, indent=2, sort_keys=True) + "\n")
+    if args.coq_output_dir is not None:
+        write_coq(inventory, args.coq_output_dir)
 
 
 if __name__ == "__main__":
