@@ -48,39 +48,45 @@ Qed.
     relational step with that function. *)
 Definition blockExecutionInvariant {State Args Block Params : Type}
     (blockInvariant : Inv_)
+    (entryConsistent : Args -> State -> Prop)
     (blockLength : Block -> nat)
     (blockSuccessor : Args -> Block -> Params -> State -> State)
     (args : Args) (state : State) : Prop :=
   exists block params offset entryState,
     blockInvariant args block params entryState /\
+    entryConsistent args entryState /\
     offset < blockLength block /\
     state = iterate (blockSuccessor args block params) offset entryState.
 
 Lemma blockExecutionInvariantAtEntry {State Args Block Params}
     (blockInvariant : @Inv_ State Args Block Params)
+    (entryConsistent : Args -> State -> Prop)
     (blockLength : Block -> nat)
     (blockSuccessor : Args -> Block -> Params -> State -> State)
     args block params entryState :
   blockInvariant args block params entryState ->
+  entryConsistent args entryState ->
   0 < blockLength block ->
-  blockExecutionInvariant blockInvariant blockLength blockSuccessor
+  blockExecutionInvariant blockInvariant entryConsistent blockLength blockSuccessor
     args entryState.
 Proof.
-  intros Hinvariant Hlength.
+  intros Hinvariant Hconsistent Hlength.
   exists block, params, 0%nat, entryState. repeat split; try assumption.
 Qed.
 
 Lemma blockExecutionInvariantAdvance {State Args Block Params}
     (blockInvariant : @Inv_ State Args Block Params)
+    (entryConsistent : Args -> State -> Prop)
     (blockLength : Block -> nat)
     (blockSuccessor : Args -> Block -> Params -> State -> State)
     args block params offset entryState :
   blockInvariant args block params entryState ->
+  entryConsistent args entryState ->
   S offset < blockLength block ->
-  blockExecutionInvariant blockInvariant blockLength blockSuccessor args
+  blockExecutionInvariant blockInvariant entryConsistent blockLength blockSuccessor args
     (iterate (blockSuccessor args block params) (S offset) entryState).
 Proof.
-  intros Hinvariant Hoffset.
+  intros Hinvariant Hconsistent Hoffset.
   exists block, params, (S offset), entryState. auto.
 Qed.
 
@@ -131,6 +137,7 @@ Lemma blockInvariantPreserved {State Args Block Params : Type}
     (step : nat -> State -> State -> Prop)
     (pc : State -> option Z) (exitPc : Z -> Prop)
     (blockInvariant : @Inv_ State Args Block Params)
+    (entryConsistent : Args -> State -> Prop)
     (blockLength : Block -> nat)
     (blockSuccessor : Args -> Block -> Params -> State -> State) :
   (forall args block params offset entryState index after,
@@ -146,25 +153,28 @@ Lemma blockInvariantPreserved {State Args Block Params : Type}
       blockInvariant args nextBlock nextParams
         (iterate (blockSuccessor args block params)
           (blockLength block) entryState) /\
+      entryConsistent args
+        (iterate (blockSuccessor args block params)
+          (blockLength block) entryState) /\
       0 < blockLength nextBlock) ->
   forall args index before after,
-    blockExecutionInvariant blockInvariant blockLength blockSuccessor
+    blockExecutionInvariant blockInvariant entryConsistent blockLength blockSuccessor
       args before ->
     (forall address, pc before = Some address -> ~ exitPc address) ->
     step index before after ->
-    blockExecutionInvariant blockInvariant blockLength blockSuccessor
+    blockExecutionInvariant blockInvariant entryConsistent blockLength blockSuccessor
       args after.
 Proof.
   intros Hcovered Hhandoff args index before after
-    (block & params & offset & entryState & Hinvariant & Hoffset & ->)
+    (block & params & offset & entryState & Hinvariant & Hconsistent & Hoffset & ->)
     HnotExit Hstep.
   pose proof (Hcovered args block params offset entryState index after
     Hinvariant Hoffset Hstep) as ->.
   destruct (Nat.lt_ge_cases (S offset) (blockLength block)) as [Hinside|Hend].
-  - eapply blockExecutionInvariantAdvance; eassumption.
+    - eapply blockExecutionInvariantAdvance; eassumption.
   - assert (S offset = blockLength block) by lia. subst.
     destruct (Hhandoff args block params entryState Hinvariant)
-      as (nextBlock & nextParams & Hnext & Hlength).
+      as (nextBlock & nextParams & Hnext & HnextConsistent & Hlength).
     exists nextBlock, nextParams, 0%nat,
       (iterate (blockSuccessor args block params)
         (blockLength block) entryState).
@@ -176,6 +186,7 @@ Lemma blockRankPreservedDecrease {State Args Block Params : Type}
     (step : nat -> State -> State -> Prop)
     (pc : State -> option Z) (exitPc : Z -> Prop)
     (blockInvariant : @Inv_ State Args Block Params)
+    (entryConsistent : Args -> State -> Prop)
     (blockLength : Block -> nat)
     (blockSuccessor : Args -> Block -> Params -> State -> State)
     (rank : Args -> State -> nat) :
@@ -197,14 +208,14 @@ Lemma blockRankPreservedDecrease {State Args Block Params : Type}
      rank args
         (iterate (blockSuccessor args block params) offset entryState))%nat) ->
   forall args index before after,
-    blockExecutionInvariant blockInvariant blockLength blockSuccessor
+    blockExecutionInvariant blockInvariant entryConsistent blockLength blockSuccessor
       args before ->
     (forall address, pc before = Some address -> ~ exitPc address) ->
     step index before after ->
     (rank args after < rank args before)%nat.
 Proof.
   intros Hcovered Hdecrease args index before after
-    (block & params & offset & entryState & Hinvariant & Hoffset & ->)
+    (block & params & offset & entryState & Hinvariant & Hconsistent & Hoffset & ->)
     HnotExit Hstep.
   pose proof (Hcovered args block params offset entryState index after
     Hinvariant Hoffset Hstep) as ->.
@@ -217,6 +228,7 @@ Theorem decreasingExecutionObligationsFromBlocks
     (pc : State -> option Z) (entry : Args -> State -> Prop)
     (region exitPc : Z -> Prop) (entryPc : Z) (bound : Args -> nat)
     (blockInvariant : @Inv_ State Args Block Params)
+    (entryConsistent : Args -> State -> Prop)
     (blockLength : Block -> nat)
     (blockSuccessor : Args -> Block -> Params -> State -> State)
     (rank : Args -> State -> nat) :
@@ -225,7 +237,9 @@ Theorem decreasingExecutionObligationsFromBlocks
   (forall args state,
     entry args state ->
     exists block params,
-      blockInvariant args block params state /\ 0 < blockLength block) ->
+      blockInvariant args block params state /\
+      entryConsistent args state /\
+      0 < blockLength block) ->
   (forall args block params offset entryState,
     blockInvariant args block params entryState ->
     offset < blockLength block ->
@@ -260,6 +274,9 @@ Theorem decreasingExecutionObligationsFromBlocks
       blockInvariant args nextBlock nextParams
         (iterate (blockSuccessor args block params)
           (blockLength block) entryState) /\
+      entryConsistent args
+        (iterate (blockSuccessor args block params)
+          (blockLength block) entryState) /\
       0 < blockLength nextBlock) ->
   (forall args block params offset entryState,
     blockInvariant args block params entryState ->
@@ -278,22 +295,26 @@ Proof.
   intros HentryPc HentryNotExit HentryBlock Hdefined Hclassified
     Hexists Hcovered Hhandoff Hdecrease Hbound.
   refine {| executionInvariant :=
-      blockExecutionInvariant blockInvariant blockLength blockSuccessor;
+      blockExecutionInvariant blockInvariant entryConsistent blockLength
+        blockSuccessor;
     executionRank := rank |}.
   - exact HentryPc.
   - exact HentryNotExit.
   - intros args state Hentry.
     destruct (HentryBlock args state Hentry)
-      as (block & params & Hinvariant & Hlength).
+      as (block & params & Hinvariant & Hconsistent & Hlength).
     eapply blockExecutionInvariantAtEntry; eassumption.
   - intros args state
-      (block & params & offset & entryState & Hinvariant & Hoffset & ->).
+      (block & params & offset & entryState & Hinvariant & Hconsistent &
+       Hoffset & ->).
     eapply Hdefined; eassumption.
   - intros args state address
-      (block & params & offset & entryState & Hinvariant & Hoffset & ->) Hpc.
+      (block & params & offset & entryState & Hinvariant & Hconsistent &
+       Hoffset & ->) Hpc.
     eapply Hclassified; eassumption.
   - intros args index state
-      (block & params & offset & entryState & Hinvariant & Hoffset & ->)
+      (block & params & offset & entryState & Hinvariant & Hconsistent &
+       Hoffset & ->)
       HnotExit.
     eexists. eapply Hexists; eassumption.
   - eapply blockInvariantPreserved; eassumption.
