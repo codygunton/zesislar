@@ -64,7 +64,7 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             self.assertEqual(GENERATOR.ITERATION_PCS.count(pc), occurrences)
 
     def test_1569c_regenerates_register_add_pair(self):
-        template = ROOT / "ZesuSsz/Evidence/templates/register_add/register_add.v.tmpl"
+        template = ROOT / "ZesuSsz/Evidence/templates/register_add/register_add_legacy.v.tmpl"
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment1569c.v"
         rendered = GENERATOR.render_register_add(
             template, ROOT / "generated/isla-traces", 0x1569C
@@ -74,6 +74,33 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn("Lemma segment_1569c_covered ", rendered)
         self.assertIn('"x8"', rendered)
         self.assertIn('"x11"', rendered)
+
+    def test_register_add_generates_remaining_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/register_add"
+        components = {
+            "register_add.v.tmpl": "",
+            "register_add_coverage_prefix.v.tmpl": "CoveragePrefix",
+            "register_add_coverage_suffix.v.tmpl": "CoverageSuffix",
+            "register_add_coverage.v.tmpl": "Coverage",
+        }
+        pcs = (0x101EC, 0x15D10, 0x15D1C, 0x10194,
+               0x15D30, 0x156C4, 0x156DC, 0x156E0)
+        for pc in pcs:
+            for template_name, suffix in components.items():
+                rendered = GENERATOR.render_register_add(
+                    templates / template_name,
+                    ROOT / "generated/isla-traces", pc
+                )
+                target = (
+                    ROOT / "ZesuSsz/Experiments" /
+                    f"WriteSuccessSegment{pc:x}{suffix}.v"
+                )
+                self.assertEqual(rendered, target.read_text())
+            public = (
+                ROOT / "ZesuSsz/Experiments" /
+                f"WriteSuccessSegment{pc:x}Coverage.v"
+            ).read_text()
+            self.assertIn(f"Lemma segment_{pc:x}_covered ", public)
 
     def test_156a0_regenerates_pc_add_write_pair(self):
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a0.v"
