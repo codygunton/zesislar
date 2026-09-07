@@ -53,6 +53,16 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn('"x8"', rendered)
         self.assertIn('"x11"', rendered)
 
+    def test_156a0_regenerates_pc_add_write_pair(self):
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a0.v"
+        rendered = GENERATOR.render_pc_add_write(
+            target, ROOT / "generated/isla-traces", 0x156A0
+        )
+        self.assertEqual(rendered, target.read_text())
+        self.assertIn("Lemma segment_156a0_mstatus ", rendered)
+        self.assertIn("Lemma segment_156a0_mstatus_covered ", rendered)
+        self.assertIn("writeSuccess156a0Link", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

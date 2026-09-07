@@ -41,6 +41,15 @@ REGISTER_ADD = re.compile(
     re.DOTALL,
 )
 
+PC_ADD_WRITE = re.compile(
+    r'DefineConst 5%Z \(Manyop \(Bvmanyarith Bvadd\) '
+    r'\[Val \(Val_Symbolic 3%Z\) Mk_annot; '
+    r'Val \(Val_Bits \(BV 64%N 0x(?P<addend>[0-9a-f]+)%Z\)\) Mk_annot\].*?'
+    r'WriteReg "(?P<destination>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 5%Z\)\)',
+    re.DOTALL,
+)
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -91,6 +100,23 @@ def register_add_metadata(trace_root: Path, pc: int) -> tuple[Path, str, str, in
     )
 
 
+def pc_add_write_metadata(trace_root: Path, pc: int) -> tuple[Path, str, int]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = ["Smt", "Assume", "Smt", "ReadReg", "Smt", "Smt", "WriteReg", "WriteReg"]
+    if constructors != expected:
+        raise ValueError(f"unsupported trace shape at 0x{pc:x}: {constructors}")
+    match = PC_ADD_WRITE.search(source)
+    if match is None:
+        raise ValueError(f"unsupported PC-add-write trace at 0x{pc:x}")
+    return path, match.group("destination"), int(match.group("addend"), 16)
+
+
 def render_constant_write(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
@@ -136,13 +162,34 @@ def render_register_add(template: Path, trace_root: Path, pc: int) -> str:
     return text
 
 
+def render_pc_add_write(template: Path, trace_root: Path, pc: int) -> str:
+    if pc not in ITERATION_PCS:
+        raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
+    next_pc = pc + 4
+    source_path, destination_register, addend = pc_add_write_metadata(trace_root, pc)
+    next_path = trace_path(trace_root, next_pc)
+    text = template.read_text()
+    replacements = [
+        ("IslaTraces.write_success_90.a156a0", f"IslaTraces.{source_path.parent.name}.a{pc:x}"),
+        ("IslaTraces.write_success_90.a156a4", f"IslaTraces.{next_path.parent.name}.a{next_pc:x}"),
+        ("156a0", f"{pc:x}"),
+        ("156a4", f"{next_pc:x}"),
+        ('"x1"', f'"{destination_register}"'),
+        ("oldX1", "old" + destination_register.upper()),
+        ("BV 64 0xffffffffffffb000", f"BV 64 {addend}"),
+    ]
+    for old, new in replacements:
+        text = text.replace(old, new)
+    return text
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pc", required=True, type=lambda value: int(value, 0))
     parser.add_argument("--trace-root", required=True, type=Path)
     parser.add_argument("--template", required=True, type=Path)
     parser.add_argument(
-        "--shape", choices=("constant-write", "register-add"),
+        "--shape", choices=("constant-write", "register-add", "pc-add-write"),
         default="constant-write",
     )
     parser.add_argument("--output", required=True, type=Path)
@@ -150,8 +197,10 @@ def main() -> None:
     args = parser.parse_args()
     if args.shape == "constant-write":
         rendered = render_constant_write(args.template, args.trace_root, args.pc)
-    else:
+    elif args.shape == "register-add":
         rendered = render_register_add(args.template, args.trace_root, args.pc)
+    else:
+        rendered = render_pc_add_write(args.template, args.trace_root, args.pc)
     if args.check:
         if not args.output.is_file() or args.output.read_text() != rendered:
             raise SystemExit(f"generated segment differs: {args.output}")
