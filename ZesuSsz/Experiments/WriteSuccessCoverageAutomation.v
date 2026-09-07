@@ -45,5 +45,52 @@ Ltac writeSuccessRejectBlockingPrefix Hsegment :=
     _ _ _ Hsegment) as
     (prefix & doneObservation & Hobservations & Hnonblocking).
 
+Lemma writeSuccessDoneTabledCovered local global labels afterLocal afterGlobal
+    spawned (pc : bv 64) trace :
+  local.(seq_trace) = tnil ->
+  local.(seq_regs) !! local.(seq_pc_reg) = Some (RVal_Bits pc) ->
+  global.(seq_instrs) !! pc = Some trace ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  labels = [] /\
+  afterLocal = local <| seq_trace := trace |> /\
+  afterGlobal = global /\
+  spawned = [].
+Proof.
+  intros Hnil Hpc Htable Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hnil in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & found & Hfound & Hresult).
+  rewrite Hpc in Hfound. simplify_eq.
+  rewrite Htable in Hresult.
+  destruct Hresult as (-> & Heq & ->). subst next.
+  repeat split; reflexivity.
+Qed.
+
+Lemma writeSuccessDoneTrapCovered local global labels afterLocal afterGlobal
+    spawned (pc : bv 64) :
+  local.(seq_trace) = tnil ->
+  local.(seq_regs) !! local.(seq_pc_reg) = Some (RVal_Bits pc) ->
+  global.(seq_instrs) !! pc = None ->
+  seq_step local global labels afterLocal afterGlobal spawned ->
+  labels = [SInstrTrap pc] /\
+  afterLocal = local <| seq_nb_state := true |> /\
+  afterGlobal = global /\
+  spawned = [].
+Proof.
+  intros Hnil Hpc Htable Hstep.
+  inversion Hstep as
+    [stepGlobal stepLocal event next' event' nextLocal nextGlobal
+      Hnb Htrace Hsem]; subst.
+  rewrite Hnil in Htrace. inversion Htrace; subst.
+  cbn in Hsem. destruct Hsem as (-> & found & Hfound & Hresult).
+  rewrite Hpc in Hfound. simplify_eq.
+  rewrite Htable in Hresult. destruct Hresult as (-> & ->).
+  repeat split; reflexivity.
+Qed.
+
 Print Assumptions writeSuccessInstructionPrefixAllNonblocking.
 Print Assumptions writeSuccessInstructionSegmentPrefixAllNonblocking.
+Print Assumptions writeSuccessDoneTabledCovered.
+Print Assumptions writeSuccessDoneTrapCovered.
