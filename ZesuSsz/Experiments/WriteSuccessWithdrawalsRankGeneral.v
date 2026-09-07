@@ -130,6 +130,28 @@ Proof.
     apply IH. lia.
 Qed.
 
+Lemma writeSuccessWithdrawalsOccurrence101e4Repeated count index suffix :
+  (index < count)%nat ->
+  writeSuccessWithdrawalsOccurrenceRemaining 0x101e4 index
+    (concat (repeat writeSuccessWithdrawalsMemcpyBytePcs count) ++ suffix) =
+  (7 * (count - index) + length suffix - 2)%nat.
+Proof.
+  revert index. induction count as [|count IH]; intros index Hindex; first lia.
+  destruct index as [|index].
+  - change (writeSuccessWithdrawalsOccurrenceRemaining 0x101e4 0
+      (writeSuccessWithdrawalsMemcpyBytePcs ++
+       concat (repeat writeSuccessWithdrawalsMemcpyBytePcs count) ++ suffix) =
+      (7 * S count + length suffix - 2)%nat).
+    change (length ([0x101e4; 0x101e8; 0x101ec; 0x101f0; 0x101f4] ++
+      concat (repeat writeSuccessWithdrawalsMemcpyBytePcs count) ++ suffix) =
+      (7 * S count + length suffix - 2)%nat).
+    rewrite !app_length writeSuccessWithdrawalsMemcpyRepeatedLength. cbn. lia.
+  - change (writeSuccessWithdrawalsOccurrenceRemaining 0x101e4 index
+      (concat (repeat writeSuccessWithdrawalsMemcpyBytePcs count) ++ suffix) =
+      (7 * (count - index) + length suffix - 2)%nat).
+    apply IH. lia.
+Qed.
+
 Lemma writeSuccessWithdrawalsOccurrence101d8Formula index :
   (index <= 48)%nat ->
   writeSuccessWithdrawalsOccurrenceRemaining 0x101d8 index
@@ -167,6 +189,18 @@ Proof.
   rewrite writeSuccessWithdrawalsOccurrenceRemainingSkip.
   2: { cbn. intuition discriminate. }
   rewrite writeSuccessWithdrawalsOccurrence101f4Repeated; last exact Hindex.
+  rewrite writeSuccessWithdrawalsAfterMemcpyPcsLength. lia.
+Qed.
+
+Lemma writeSuccessWithdrawalsOccurrence101e4Formula index :
+  (index < 48)%nat ->
+  writeSuccessWithdrawalsOccurrenceRemaining 0x101e4 index
+    writeSuccessWithdrawalsIterationPcs = (402 - 7 * index)%nat.
+Proof.
+  intros Hindex. rewrite writeSuccessWithdrawalsIterationPcsMemcpyLayout.
+  rewrite writeSuccessWithdrawalsOccurrenceRemainingSkip.
+  2: { cbn. intuition discriminate. }
+  rewrite writeSuccessWithdrawalsOccurrence101e4Repeated; last exact Hindex.
   rewrite writeSuccessWithdrawalsAfterMemcpyPcsLength. lia.
 Qed.
 
@@ -233,6 +267,23 @@ Proof.
   - unfold bv_modulus. cbn. lia.
 Qed.
 
+Lemma writeSuccessWithdrawalsPhase101e4Index state index :
+  writeSuccessWithdrawalsConcretePc state = Some 0x101e4 ->
+  state.1.1.(seq_regs) !! "x15" =
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat index))) ->
+  (index < 48)%nat ->
+  writeSuccessWithdrawalsPhaseRemaining state = (402 - 7 * index)%nat.
+Proof.
+  intros Hpc Hx15 Hindex. unfold writeSuccessWithdrawalsPhaseRemaining.
+  rewrite Hpc. unfold writeSuccessWithdrawalsRegisterUnsigned. rewrite Hx15.
+  unfold bvn_unsigned. cbn.
+  rewrite Z_to_bv_unsigned bv_wrap_small.
+  - rewrite Nat2Z.id. cbn [writeSuccessWithdrawalsPcIn
+      writeSuccessWithdrawalsMemcpyOccurrence].
+    apply writeSuccessWithdrawalsOccurrence101e4Formula. exact Hindex.
+  - unfold bv_modulus. cbn. lia.
+Qed.
+
 Lemma rank_15694_at_101d8_index state remaining index :
   writeSuccessWithdrawalsConcretePc state = Some 0x101d8 ->
   state.1.1.(seq_regs) !! "x15" =
@@ -296,12 +347,36 @@ Proof.
   - unfold bv_modulus. cbn. lia.
 Qed.
 
+Lemma rank_15694_at_101e4_index state remaining index :
+  writeSuccessWithdrawalsConcretePc state = Some 0x101e4 ->
+  state.1.1.(seq_regs) !! "x15" =
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat index))) ->
+  (index < 48)%nat ->
+  state.1.1.(seq_regs) !! "x9" =
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) ->
+  (Z.of_nat (S remaining) < 2 ^ 64)%Z ->
+  rank_15694 state = (410 * remaining + (402 - 7 * index))%nat.
+Proof.
+  intros Hpc Hx15 Hindex Hx9 Hrange.
+  have Hphase := writeSuccessWithdrawalsPhase101e4Index state index
+    Hpc Hx15 Hindex.
+  unfold rank_15694. rewrite Hpc.
+  unfold writeSuccessWithdrawalsRegisterUnsigned. rewrite Hx9.
+  unfold bvn_unsigned. cbn.
+  rewrite Hphase. rewrite Z_to_bv_unsigned bv_wrap_small.
+  - rewrite Nat2Z.id. cbn. reflexivity.
+  - unfold bv_modulus. cbn. lia.
+Qed.
+
 Print Assumptions writeSuccessWithdrawalsOccurrence101d8Formula.
 Print Assumptions writeSuccessWithdrawalsOccurrence101e0Formula.
 Print Assumptions writeSuccessWithdrawalsOccurrence101f4Formula.
+Print Assumptions writeSuccessWithdrawalsOccurrence101e4Formula.
 Print Assumptions writeSuccessWithdrawalsPhase101d8Index.
 Print Assumptions writeSuccessWithdrawalsPhase101e0Index.
 Print Assumptions writeSuccessWithdrawalsPhase101f4Index.
+Print Assumptions writeSuccessWithdrawalsPhase101e4Index.
 Print Assumptions rank_15694_at_101d8_index.
 Print Assumptions rank_15694_at_101e0_index.
 Print Assumptions rank_15694_at_101f4_index.
+Print Assumptions rank_15694_at_101e4_index.
