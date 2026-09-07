@@ -30,6 +30,28 @@ Definition writeSuccess15698Regs (regs : reg_map) : reg_map :=
   <["PC" := RVal_Bits writeSuccess15698NextPc]>
     (<["x12" := RVal_Bits (BV 64 48)]> regs).
 
+Lemma writeSuccess15698RegsLookupOther regs reg :
+  reg <> "PC" ->
+  reg <> "x12" ->
+  writeSuccess15698Regs regs !! reg = regs !! reg.
+Proof.
+  intros Hpc Hx12. unfold writeSuccess15698Regs.
+  rewrite lookup_insert_ne; last congruence.
+  rewrite lookup_insert_ne; last congruence.
+  reflexivity.
+Qed.
+
+Lemma writeSuccess15698RegsDom regs oldX12 :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x15698)) ->
+  regs !! "x12" = Some oldX12 ->
+  dom (writeSuccess15698Regs regs) = dom regs.
+Proof.
+  intros Hpc Hx12.
+  apply elem_of_dom_2 in Hpc. apply elem_of_dom_2 in Hx12.
+  unfold writeSuccess15698Regs. rewrite !dom_insert_L.
+  set_solver.
+Qed.
+
 Definition writeSuccess15698Before (regs : reg_map)
     (global : seq_global_state) : IslaState :=
   (writeSuccess15694Local a15698 regs, global).
@@ -168,6 +190,8 @@ Proof.
 Qed.
 
 Print Assumptions segment_15698.
+Print Assumptions writeSuccess15698RegsLookupOther.
+Print Assumptions writeSuccess15698RegsDom.
 
 Lemma segment_15698_covered (regs : reg_map) (global : seq_global_state)
     oldX12 observations after :
