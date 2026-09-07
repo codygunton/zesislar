@@ -18,6 +18,8 @@ export ISLA_REPO
 export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
+CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/check-local
+CHECK_LOCAL_JOBS ?= 48
 
 PROG      ?= entrypoints
 LOAD_ADDR ?= 0x10300000
@@ -244,7 +246,8 @@ check-viewer:
 
 .PHONY: check-local
 check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
-	$(OPAM) dune build --root . @all
+	$(OPAM) dune build --root . --build-dir $(CHECK_LOCAL_BUILD_DIR) \
+	  -j $(CHECK_LOCAL_JOBS) @all
 
 .PHONY: check
 check: doctor check-local
