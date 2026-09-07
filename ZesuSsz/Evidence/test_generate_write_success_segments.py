@@ -63,6 +63,32 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn("Lemma segment_156a0_mstatus_covered ", rendered)
         self.assertIn("writeSuccess156a0Link", rendered)
 
+    def test_156a4_regenerates_indirect_jump_pair(self):
+        names = [
+            "WriteSuccessSegment156a4.v",
+            "WriteSuccessSegment156a4CoveragePrefix.v",
+            "WriteSuccessSegment156a4CoverageSuffixFirst.v",
+            "WriteSuccessSegment156a4CoverageSuffixLast.v",
+            "WriteSuccessSegment156a4Coverage.v",
+        ]
+        rendered = []
+        for name in names:
+            target = ROOT / "ZesuSsz/Experiments" / name
+            text = GENERATOR.render_indirect_jump(
+                target, ROOT / "generated/isla-traces", 0x156A4
+            )
+            self.assertEqual(text, target.read_text())
+            rendered.append(text)
+        self.assertIn("Lemma segment_156a4_mstatus ", rendered[0])
+        self.assertIn("Lemma segment_156a4_mstatus_covered ", rendered[-1])
+
+    def test_indirect_jump_rejects_other_trace_shape(self):
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a4.v"
+        with self.assertRaisesRegex(ValueError, "supports only 0x156a4"):
+            GENERATOR.render_indirect_jump(
+                target, ROOT / "generated/isla-traces", 0x156A0
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -50,6 +50,17 @@ PC_ADD_WRITE = re.compile(
     re.DOTALL,
 )
 
+INDIRECT_JUMP = re.compile(
+    r'ReadReg "(?P<base>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 3%Z\)\).*?'
+    r'Val \(Val_Symbolic 3%Z\) Mk_annot; '
+    r'Val \(Val_Bits \(BV 64%N 0x(?P<offset>[0-9a-f]+)%Z\)\) Mk_annot.*?'
+    r'WriteReg "(?P<link>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 5%Z\)\).*?'
+    r'WriteReg "PC" \[\] \(RegVal_Base \(Val_Symbolic 7%Z\)\)',
+    re.DOTALL,
+)
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -115,6 +126,31 @@ def pc_add_write_metadata(trace_root: Path, pc: int) -> tuple[Path, str, int]:
     if match is None:
         raise ValueError(f"unsupported PC-add-write trace at 0x{pc:x}")
     return path, match.group("destination"), int(match.group("addend"), 16)
+
+
+def indirect_jump_metadata(trace_root: Path, pc: int) -> tuple[Path, str, str, int]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = [
+        "Smt", "Assume", "Smt", "Assume", "Smt", "ReadReg", "Smt",
+        "ReadReg", "Smt", "Smt", "WriteReg", "WriteReg",
+    ]
+    if constructors != expected:
+        raise ValueError(f"unsupported trace shape at 0x{pc:x}: {constructors}")
+    match = INDIRECT_JUMP.search(source)
+    if match is None:
+        raise ValueError(f"unsupported indirect-jump trace at 0x{pc:x}")
+    return (
+        path,
+        match.group("base"),
+        match.group("link"),
+        int(match.group("offset"), 16),
+    )
 
 
 def render_constant_write(template: Path, trace_root: Path, pc: int) -> str:
@@ -183,13 +219,26 @@ def render_pc_add_write(template: Path, trace_root: Path, pc: int) -> str:
     return text
 
 
+def render_indirect_jump(template: Path, trace_root: Path, pc: int) -> str:
+    if pc != 0x156A4:
+        raise ValueError("the checked indirect-jump proof supports only 0x156a4")
+    path, base, link, offset = indirect_jump_metadata(trace_root, pc)
+    if (path.parent.name, base, link, offset) != (
+        "write_success_90", "x1", "x1", 0xFFFFFFFFFFFFFB34
+    ):
+        raise ValueError(f"unsupported indirect-jump operands at 0x{pc:x}")
+    return template.read_text()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pc", required=True, type=lambda value: int(value, 0))
     parser.add_argument("--trace-root", required=True, type=Path)
     parser.add_argument("--template", required=True, type=Path)
     parser.add_argument(
-        "--shape", choices=("constant-write", "register-add", "pc-add-write"),
+        "--shape", choices=(
+            "constant-write", "register-add", "pc-add-write", "indirect-jump"
+        ),
         default="constant-write",
     )
     parser.add_argument("--output", required=True, type=Path)
@@ -199,8 +248,10 @@ def main() -> None:
         rendered = render_constant_write(args.template, args.trace_root, args.pc)
     elif args.shape == "register-add":
         rendered = render_register_add(args.template, args.trace_root, args.pc)
-    else:
+    elif args.shape == "pc-add-write":
         rendered = render_pc_add_write(args.template, args.trace_root, args.pc)
+    else:
+        rendered = render_indirect_jump(args.template, args.trace_root, args.pc)
     if args.check:
         if not args.output.is_file() or args.output.read_text() != rendered:
             raise SystemExit(f"generated segment differs: {args.output}")
