@@ -1,4 +1,5 @@
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -179,6 +180,67 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "supports only 0x101f4"):
             GENERATOR.render_direct_jump(
                 target, ROOT / "generated/isla-traces", 0x101E0
+            )
+
+    def test_two_register_add_metadata(self):
+        expected = {
+            0x101E0: ("x11", "x15", "x13"),
+            0x101E8: ("x10", "x15", "x14"),
+        }
+        for pc, registers in expected.items():
+            path, left, right, destination = (
+                GENERATOR.two_register_add_metadata(
+                    ROOT / "generated/isla-traces", pc
+                )
+            )
+            self.assertEqual(path.parent.name, "write_success_02")
+            self.assertEqual((left, right, destination), registers)
+
+    def test_two_register_add_rejects_linear_constant_write(self):
+        with self.assertRaisesRegex(ValueError, "unsupported trace shape"):
+            GENERATOR.two_register_add_metadata(
+                ROOT / "generated/isla-traces", 0x101D4
+            )
+
+    def test_two_register_add_generates_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/two_register_add"
+        components = [
+            "WriteSuccessSegmentTwoRegisterAdd.v.tmpl",
+            "WriteSuccessSegmentTwoRegisterAddCoveragePrefix.v.tmpl",
+            "WriteSuccessSegmentTwoRegisterAddCoverageSuffix.v.tmpl",
+            "WriteSuccessSegmentTwoRegisterAddCoverage.v.tmpl",
+        ]
+        for pc in (0x101E0, 0x101E8):
+            for component in components:
+                template = templates / component
+                target_name = component.replace("TwoRegisterAdd", f"{pc:x}")
+                target_name = target_name.removesuffix(".tmpl")
+                target = ROOT / "ZesuSsz/Experiments" / target_name
+                rendered = GENERATOR.render_two_register_add(
+                    template, ROOT / "generated/isla-traces", pc
+                )
+                self.assertEqual(rendered, target.read_text())
+            self.assertEqual(GENERATOR.ITERATION_PCS.count(pc), 48)
+
+    def test_two_register_add_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/two_register_add/"
+            "WriteSuccessSegmentTwoRegisterAdd.v.tmpl"
+        )
+        rendered = GENERATOR.render_two_register_add(
+            template, ROOT / "generated/isla-traces", 0x101E0
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment101e0.v"
+            altered.write_text(rendered.replace("segment_101e0", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
+    def test_two_register_add_rejects_output_as_template(self):
+        output = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101e0.v"
+        with self.assertRaisesRegex(ValueError, "requires a generic template"):
+            GENERATOR.render_two_register_add(
+                output, ROOT / "generated/isla-traces", 0x101E0
             )
 
 

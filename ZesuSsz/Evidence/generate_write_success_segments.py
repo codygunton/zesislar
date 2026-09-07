@@ -77,6 +77,17 @@ DIRECT_JUMP = re.compile(
     re.DOTALL,
 )
 
+TWO_REGISTER_ADD = re.compile(
+    r'ReadReg "(?P<left>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 5%Z\)\).*?'
+    r'ReadReg "(?P<right>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 6%Z\)\).*?'
+    r'DefineConst 7%Z \(Manyop \(Bvmanyarith Bvadd\).*?'
+    r'WriteReg "(?P<destination>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 7%Z\)\)',
+    re.DOTALL,
+)
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -210,6 +221,69 @@ def direct_jump_metadata(trace_root: Path, pc: int) -> tuple[Path, int]:
     return path, int(match.group("offset"), 16)
 
 
+def two_register_add_metadata(
+    trace_root: Path, pc: int
+) -> tuple[Path, str, str, str]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = [
+        "Smt", "Assume", "Smt", "ReadReg", "Smt", "Smt", "ReadReg",
+        "Smt", "ReadReg", "Smt", "WriteReg", "WriteReg",
+    ]
+    if constructors != expected:
+        raise ValueError(f"unsupported trace shape at 0x{pc:x}: {constructors}")
+    match = TWO_REGISTER_ADD.search(source)
+    if match is None:
+        raise ValueError(f"unsupported two-register-add trace at 0x{pc:x}")
+    return (
+        path,
+        match.group("left"),
+        match.group("right"),
+        match.group("destination"),
+    )
+
+
+def render_two_register_add(template: Path, trace_root: Path, pc: int) -> str:
+    if pc not in ITERATION_PCS:
+        raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
+    if template.suffix != ".tmpl":
+        raise ValueError("the two-register-add renderer requires a generic template")
+    next_pc = pc + 4
+    source_path, left, right, destination = two_register_add_metadata(trace_root, pc)
+    next_path = trace_path(trace_root, next_pc)
+    text = template.read_text()
+    required = {"__SOURCE_PC__"}
+    missing = sorted(token for token in required if token not in text)
+    if missing:
+        raise ValueError(f"generic template lacks tokens: {missing}")
+    if source_path.parent != next_path.parent:
+        raise ValueError(f"source and successor traces use different modules at 0x{pc:x}")
+    replacements = {
+        "__TRACE_MODULE__": source_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__LEFT_REGISTER__": left,
+        "__RIGHT_REGISTER__": right,
+        "__DEST_REGISTER__": destination,
+        "__DEST_UPPER__": destination.upper(),
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    if re.search(r"__[A-Z_]+__", text):
+        raise ValueError("generic template contains an unknown token")
+    return text
+
+
+def check_generated_output(output: Path, rendered: str) -> None:
+    if not output.is_file() or output.read_text() != rendered:
+        raise ValueError(f"generated segment differs: {output}")
+
+
 def render_constant_write(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
@@ -313,7 +387,7 @@ def main() -> None:
     parser.add_argument(
         "--shape", choices=(
             "constant-write", "register-add", "pc-add-write", "indirect-jump",
-            "conditional-branch", "direct-jump",
+            "conditional-branch", "direct-jump", "two-register-add",
         ),
         default="constant-write",
     )
@@ -332,11 +406,15 @@ def main() -> None:
         rendered = render_conditional_branch(
             args.template, args.trace_root, args.pc
         )
-    else:
+    elif args.shape == "direct-jump":
         rendered = render_direct_jump(args.template, args.trace_root, args.pc)
+    else:
+        rendered = render_two_register_add(args.template, args.trace_root, args.pc)
     if args.check:
-        if not args.output.is_file() or args.output.read_text() != rendered:
-            raise SystemExit(f"generated segment differs: {args.output}")
+        try:
+            check_generated_output(args.output, rendered)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
     else:
         args.output.write_text(rendered)
 
