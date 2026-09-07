@@ -79,7 +79,8 @@ Definition writeSuccessWithdrawalsPhaseRemaining
             [0x15d10; 0x15d14; 0x15d18; 0x15d1c; 0x15d20;
              0x15d24; 0x15d28; 0x15d2c; 0x15d30; 0x15d34] then
           let returnAddress :=
-            if Z.eqb pc 0x15d2c then writeSuccessWithdrawalsSavedReturn state
+            if Z.eqb pc 0x15d28 || Z.eqb pc 0x15d2c
+            then writeSuccessWithdrawalsSavedReturn state
             else writeSuccessWithdrawalsRegisterUnsigned state "x1" in
           match returnAddress with
           | Some returnAddress =>
