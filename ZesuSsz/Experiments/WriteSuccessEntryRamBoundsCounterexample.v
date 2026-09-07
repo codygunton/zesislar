@@ -105,4 +105,20 @@ Proof.
   intros [Hminimum _]. exact (Hminimum eq_refl).
 Qed.
 
+Lemma writeSuccessAcceptedPayloadCannotSupplyTransactionRamRange
+    `{!islaG Sigma} `{!threadG} :
+  writeSuccessProloguePayload writeSuccessRamCounterexampleWitness -∗
+  ⌜~ (0x20000000 <=
+       writeSuccessTransactionBase writeSuccessRamCounterexampleWitness /\
+     writeSuccessTransactionBase writeSuccessRamCounterexampleWitness +
+       Z.of_nat (length (writeSuccessTransactionBytes
+         writeSuccessRamCounterexampleWitness)) < 0x40000000)⌝ ∗
+  writeSuccessProloguePayload writeSuccessRamCounterexampleWitness.
+Proof.
+  iIntros "Hpayload". iFrame.
+  iPureIntro. vm_compute.
+  intros [Hminimum _]. exact (Hminimum eq_refl).
+Qed.
+
 Print Assumptions writeSuccessAcceptedWitnessAllowsTransactionBaseOutsideRam.
+Print Assumptions writeSuccessAcceptedPayloadCannotSupplyTransactionRamRange.
