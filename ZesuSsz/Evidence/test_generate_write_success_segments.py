@@ -43,6 +43,24 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn('"x15"', rendered)
         self.assertIn("BV 64 0", rendered)
 
+    def test_constant_write_regenerates_remaining_pairs(self):
+        template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
+        expected = {
+            0x15D20: ("WriteSuccessSegment15d20.v", '"x11"', "BV 64 8", 3),
+            0x156C0: ("WriteSuccessSegment156c0.v", '"x11"', "BV 64 20", 1),
+        }
+        for pc, (name, register, constant, occurrences) in expected.items():
+            target = ROOT / "ZesuSsz/Experiments" / name
+            rendered = GENERATOR.render_constant_write(
+                template, ROOT / "generated/isla-traces", pc
+            )
+            self.assertEqual(rendered, target.read_text())
+            self.assertIn(f"Lemma segment_{pc:x} ", rendered)
+            self.assertIn(f"Lemma segment_{pc:x}_covered ", rendered)
+            self.assertIn(register, rendered)
+            self.assertIn(constant, rendered)
+            self.assertEqual(GENERATOR.ITERATION_PCS.count(pc), occurrences)
+
     def test_1569c_regenerates_register_add_pair(self):
         template = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15694.v"
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment1569c.v"
