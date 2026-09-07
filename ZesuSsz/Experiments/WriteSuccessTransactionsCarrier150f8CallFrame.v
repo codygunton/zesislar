@@ -59,7 +59,9 @@ Lemma write_success_transactions_150f8_carrier_call_frame_enter
   (bv_unsigned sp - 32) ↦ₘ? 32 ∗
   (bv_unsigned sp + 1664) ↦ₘ writeSuccessTransactionWord transaction 160 ∗
   (bv_unsigned sp + 1672) ↦ₘ writeSuccessTransactionWord transaction 168 ∗
-  ⌜length (writeSuccessTransactionBytes transaction) = 288%nat⌝.
+  ⌜length (writeSuccessTransactionBytes transaction) = 288%nat⌝ ∗
+  ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+  ⌜bv_unsigned sp + 1896 < 0x40000000⌝.
 Proof.
   iIntros "Hframe".
   iEval (unfold writeSuccessTransactions150ecCarrierCallFrame) in "Hframe".
@@ -79,7 +81,7 @@ Proof.
   - rewrite /writeSuccessTransactions150f8CarrierCallFrame
       /writeSuccessTransactionsLoadFacts. iFrame.
     repeat (iSplit; first (iPureIntro; assumption)). done.
-  - iFrame. iPureIntro. exact Hlength.
+  - iFrame. repeat iSplit; iPureIntro; assumption.
 Qed.
 
 Lemma write_success_transactions_150f8_carrier_call_frame_exit
