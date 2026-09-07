@@ -562,6 +562,7 @@ Definition Inv_15694
   IslaInstructionBoundary state.1 /\
   state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x15694 /\
+  (exists oldX1, state.1.1.(seq_regs) !! "x1" = Some oldX1) /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   (exists oldX10, state.1.1.(seq_regs) !! "x10" = Some oldX10) /\
   (exists oldX11, state.1.1.(seq_regs) !! "x11" = Some oldX11) /\
