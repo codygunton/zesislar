@@ -567,6 +567,7 @@ Definition Inv_15694
   (exists oldX10, state.1.1.(seq_regs) !! "x10" = Some oldX10) /\
   (exists oldX11, state.1.1.(seq_regs) !! "x11" = Some oldX11) /\
   (exists oldX12, state.1.1.(seq_regs) !! "x12" = Some oldX12) /\
+  (exists oldX15, state.1.1.(seq_regs) !! "x15" = Some oldX15) /\
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits pointer) /\
   state.1.1.(seq_regs) !! "x9" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) /\
