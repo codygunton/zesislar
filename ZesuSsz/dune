@@ -2,6 +2,14 @@
 
 (coq.theory
  (name ZesuSsz)
+ (modules
+  (:standard \
+   Experiments.WriteSuccessHashesLoopFrame
+   Experiments.WriteSuccessSuffixHashesEntry
+   Experiments.WriteSuccessSuffixHashesEntry15740
+   Experiments.WriteSuccessSuffixHashesEntry15740Prepare
+   Experiments.WriteSuccessSuffixHashesEntryCallerResources
+   Experiments.WriteSuccessSuffixHashesEntryFinal))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit
