@@ -131,6 +131,38 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
                 target, ROOT / "generated/isla-traces", 0x101E0
             )
 
+    def test_101f4_regenerates_direct_jump_pair(self):
+        names = [
+            "WriteSuccessSegment101f4.v",
+            "WriteSuccessSegment101f4CoveragePrefix.v",
+            "WriteSuccessSegment101f4CoverageSuffix.v",
+            "WriteSuccessSegment101f4Coverage.v",
+        ]
+        rendered = []
+        for name in names:
+            target = ROOT / "ZesuSsz/Experiments" / name
+            text = GENERATOR.render_direct_jump(
+                target, ROOT / "generated/isla-traces", 0x101F4
+            )
+            self.assertEqual(text, target.read_text())
+            rendered.append(text)
+        self.assertEqual(GENERATOR.ITERATION_PCS.count(0x101F4), 48)
+        self.assertIn("Lemma segment_101f4 ", rendered[0])
+        self.assertIn("Lemma segment_101f4_covered ", rendered[-1])
+
+    def test_direct_jump_rejects_other_trace_shape(self):
+        with self.assertRaisesRegex(ValueError, "unsupported trace shape"):
+            GENERATOR.direct_jump_metadata(
+                ROOT / "generated/isla-traces", 0x101D4
+            )
+
+    def test_direct_jump_renderer_rejects_other_pc(self):
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101f4.v"
+        with self.assertRaisesRegex(ValueError, "supports only 0x101f4"):
+            GENERATOR.render_direct_jump(
+                target, ROOT / "generated/isla-traces", 0x101E0
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

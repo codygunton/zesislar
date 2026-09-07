@@ -70,6 +70,13 @@ CONDITIONAL_BRANCH = re.compile(
     re.DOTALL,
 )
 
+DIRECT_JUMP = re.compile(
+    r'DefineConst 5%Z .*?Val \(Val_Symbolic 3%Z\) Mk_annot; '
+    r'Val \(Val_Bits \(BV 64%N 0x(?P<offset>[0-9a-f]+)%Z\)\) Mk_annot.*?'
+    r'WriteReg "PC"',
+    re.DOTALL,
+)
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -183,6 +190,26 @@ def conditional_branch_metadata(trace_root: Path, pc: int) -> tuple[Path, str, s
     return path, match.group("left"), match.group("right")
 
 
+def direct_jump_metadata(trace_root: Path, pc: int) -> tuple[Path, int]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = [
+        "Smt", "Assume", "Smt", "Assume", "ReadReg", "Smt", "Smt",
+        "Smt", "WriteReg",
+    ]
+    if constructors != expected:
+        raise ValueError(f"unsupported trace shape at 0x{pc:x}: {constructors}")
+    match = DIRECT_JUMP.search(source)
+    if match is None:
+        raise ValueError(f"unsupported direct-jump trace at 0x{pc:x}")
+    return path, int(match.group("offset"), 16)
+
+
 def render_constant_write(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
@@ -269,6 +296,15 @@ def render_conditional_branch(template: Path, trace_root: Path, pc: int) -> str:
     return template.read_text()
 
 
+def render_direct_jump(template: Path, trace_root: Path, pc: int) -> str:
+    if pc != 0x101F4:
+        raise ValueError("the checked direct-jump proof supports only 0x101f4")
+    path, offset = direct_jump_metadata(trace_root, pc)
+    if (path.parent.name, offset) != ("write_success_02", 0xFFFFFFFFFFFFFFE4):
+        raise ValueError(f"unsupported direct-jump target at 0x{pc:x}")
+    return template.read_text()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pc", required=True, type=lambda value: int(value, 0))
@@ -277,7 +313,7 @@ def main() -> None:
     parser.add_argument(
         "--shape", choices=(
             "constant-write", "register-add", "pc-add-write", "indirect-jump",
-            "conditional-branch",
+            "conditional-branch", "direct-jump",
         ),
         default="constant-write",
     )
@@ -292,10 +328,12 @@ def main() -> None:
         rendered = render_pc_add_write(args.template, args.trace_root, args.pc)
     elif args.shape == "indirect-jump":
         rendered = render_indirect_jump(args.template, args.trace_root, args.pc)
-    else:
+    elif args.shape == "conditional-branch":
         rendered = render_conditional_branch(
             args.template, args.trace_root, args.pc
         )
+    else:
+        rendered = render_direct_jump(args.template, args.trace_root, args.pc)
     if args.check:
         if not args.output.is_file() or args.output.read_text() != rendered:
             raise SystemExit(f"generated segment differs: {args.output}")
