@@ -61,6 +61,15 @@ INDIRECT_JUMP = re.compile(
     re.DOTALL,
 )
 
+CONDITIONAL_BRANCH = re.compile(
+    r'ReadReg "(?P<left>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 5%Z\)\).*?'
+    r'ReadReg "(?P<right>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 6%Z\)\).*?'
+    r'tcases \[.*?BranchAddress .*?WriteReg "PC".*?;.*?WriteReg "PC"',
+    re.DOTALL,
+)
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -153,6 +162,27 @@ def indirect_jump_metadata(trace_root: Path, pc: int) -> tuple[Path, str, str, i
     )
 
 
+def conditional_branch_metadata(trace_root: Path, pc: int) -> tuple[Path, str, str]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = [
+        "Smt", "Assume", "Smt", "Assume", "ReadReg", "Smt", "Smt",
+        "ReadReg", "Smt", "ReadReg", "Smt", "Smt", "Smt", "Smt",
+        "BranchAddress", "WriteReg", "Smt", "WriteReg",
+    ]
+    if constructors != expected:
+        raise ValueError(f"unsupported trace shape at 0x{pc:x}: {constructors}")
+    match = CONDITIONAL_BRANCH.search(source)
+    if match is None:
+        raise ValueError(f"unsupported conditional-branch trace at 0x{pc:x}")
+    return path, match.group("left"), match.group("right")
+
+
 def render_constant_write(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
@@ -230,6 +260,15 @@ def render_indirect_jump(template: Path, trace_root: Path, pc: int) -> str:
     return template.read_text()
 
 
+def render_conditional_branch(template: Path, trace_root: Path, pc: int) -> str:
+    if pc != 0x101D8:
+        raise ValueError("the checked conditional-branch proof supports only 0x101d8")
+    path, left, right = conditional_branch_metadata(trace_root, pc)
+    if (path.parent.name, left, right) != ("write_success_02", "x15", "x12"):
+        raise ValueError(f"unsupported conditional-branch operands at 0x{pc:x}")
+    return template.read_text()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pc", required=True, type=lambda value: int(value, 0))
@@ -237,7 +276,8 @@ def main() -> None:
     parser.add_argument("--template", required=True, type=Path)
     parser.add_argument(
         "--shape", choices=(
-            "constant-write", "register-add", "pc-add-write", "indirect-jump"
+            "constant-write", "register-add", "pc-add-write", "indirect-jump",
+            "conditional-branch",
         ),
         default="constant-write",
     )
@@ -250,8 +290,12 @@ def main() -> None:
         rendered = render_register_add(args.template, args.trace_root, args.pc)
     elif args.shape == "pc-add-write":
         rendered = render_pc_add_write(args.template, args.trace_root, args.pc)
-    else:
+    elif args.shape == "indirect-jump":
         rendered = render_indirect_jump(args.template, args.trace_root, args.pc)
+    else:
+        rendered = render_conditional_branch(
+            args.template, args.trace_root, args.pc
+        )
     if args.check:
         if not args.output.is_file() or args.output.read_text() != rendered:
             raise SystemExit(f"generated segment differs: {args.output}")

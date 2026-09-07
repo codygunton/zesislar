@@ -91,6 +91,46 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
                 target, ROOT / "generated/isla-traces", 0x156A0
             )
 
+    def test_101d8_conditional_branch_metadata(self):
+        path, left, right = GENERATOR.conditional_branch_metadata(
+            ROOT / "generated/isla-traces", 0x101D8
+        )
+        self.assertEqual(path.parent.name, "write_success_02")
+        self.assertEqual((left, right), ("x15", "x12"))
+
+    def test_101d8_regenerates_conditional_branch_pair(self):
+        names = [
+            "WriteSuccessSegment101d8.v",
+            "WriteSuccessSegment101d8CoveragePrefix6.v",
+            "WriteSuccessSegment101d8CoveragePrefix12.v",
+            "WriteSuccessSegment101d8CoverageTaken.v",
+            "WriteSuccessSegment101d8CoverageFallthrough.v",
+            "WriteSuccessSegment101d8Coverage.v",
+        ]
+        rendered = []
+        for name in names:
+            target = ROOT / "ZesuSsz/Experiments" / name
+            text = GENERATOR.render_conditional_branch(
+                target, ROOT / "generated/isla-traces", 0x101D8
+            )
+            self.assertEqual(text, target.read_text())
+            rendered.append(text)
+        self.assertIn("Lemma segment_101d8_mstatus ", rendered[0])
+        self.assertIn("Lemma segment_101d8_mstatus_covered ", rendered[-1])
+
+    def test_conditional_branch_rejects_linear_trace(self):
+        with self.assertRaisesRegex(ValueError, "unsupported trace shape"):
+            GENERATOR.conditional_branch_metadata(
+                ROOT / "generated/isla-traces", 0x101D4
+            )
+
+    def test_conditional_branch_renderer_rejects_other_pc(self):
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101d8.v"
+        with self.assertRaisesRegex(ValueError, "supports only 0x101d8"):
+            GENERATOR.render_conditional_branch(
+                target, ROOT / "generated/isla-traces", 0x101E0
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
