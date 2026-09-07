@@ -151,6 +151,8 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         for name in names:
             target = ROOT / "ZesuSsz/Experiments" / name
             template_name = name.replace("156a4", "IndirectJump") + ".tmpl"
+            if "CoverageSuffixFirst" in name:
+                template_name = "WriteSuccessSegmentIndirectJumpCoverageSuffixFirstLegacy.v.tmpl"
             template = ROOT / "ZesuSsz/Evidence/templates/indirect_jump" / template_name
             text = GENERATOR.render_indirect_jump(
                 template, ROOT / "generated/isla-traces", 0x156A4
@@ -165,10 +167,43 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             ROOT / "ZesuSsz/Evidence/templates/indirect_jump/"
             "WriteSuccessSegmentIndirectJump.v.tmpl"
         )
-        with self.assertRaisesRegex(ValueError, "supports only 0x156a4"):
+        with self.assertRaisesRegex(ValueError, "unsupported trace shape"):
             GENERATOR.render_indirect_jump(
                 template, ROOT / "generated/isla-traces", 0x156A0
             )
+
+    def test_indirect_jump_generates_remaining_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/indirect_jump"
+        components = {
+            "WriteSuccessSegmentIndirectJump.v.tmpl": "",
+            "WriteSuccessSegmentIndirectJumpCoveragePrefix.v.tmpl":
+                "CoveragePrefix",
+            "WriteSuccessSegmentIndirectJumpCoverageSuffixFirst.v.tmpl":
+                "CoverageSuffixFirst",
+            "WriteSuccessSegmentIndirectJumpCoverageSuffixFirstOne.v.tmpl":
+                "CoverageSuffixFirstOne",
+            "WriteSuccessSegmentIndirectJumpCoverageSuffixSecondOne.v.tmpl":
+                "CoverageSuffixSecondOne",
+            "WriteSuccessSegmentIndirectJumpCoverageSuffixLast.v.tmpl":
+                "CoverageSuffixLast",
+            "WriteSuccessSegmentIndirectJumpCoverage.v.tmpl": "Coverage",
+        }
+        for pc in (0x156B0, 0x15D28, 0x156BC, 0x156CC, 0x156D8):
+            for template_name, suffix in components.items():
+                rendered = GENERATOR.render_indirect_jump(
+                    templates / template_name,
+                    ROOT / "generated/isla-traces", pc
+                )
+                target = (
+                    ROOT / "ZesuSsz/Experiments" /
+                    f"WriteSuccessSegment{pc:x}{suffix}.v"
+                )
+                self.assertEqual(rendered, target.read_text())
+            public = (
+                ROOT / "ZesuSsz/Experiments" /
+                f"WriteSuccessSegment{pc:x}Coverage.v"
+            ).read_text()
+            self.assertIn(f"Lemma segment_{pc:x}_covered ", public)
 
     def test_101d8_conditional_branch_metadata(self):
         path, left, right = GENERATOR.conditional_branch_metadata(

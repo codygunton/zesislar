@@ -341,21 +341,25 @@ def render_pc_add_write(template: Path, trace_root: Path, pc: int) -> str:
 
 
 def render_indirect_jump(template: Path, trace_root: Path, pc: int) -> str:
-    if pc != 0x156A4:
-        raise ValueError("the checked indirect-jump proof supports only 0x156a4")
     path, base, link, offset = indirect_jump_metadata(trace_root, pc)
-    if (path.parent.name, base, link, offset) != (
-        "write_success_90", "x1", "x1", 0xFFFFFFFFFFFFFB34
-    ):
+    if base != link:
         raise ValueError(f"unsupported indirect-jump operands at 0x{pc:x}")
-    target_pc = 0x101D4
+    previous_pc = pc - 4
+    _, destination, addend = pc_add_write_metadata(trace_root, previous_pc)
+    if destination != base:
+        raise ValueError(f"predecessor does not define the jump base at 0x{pc:x}")
+    mask = (1 << 64) - 1
+    return_address = (previous_pc + addend) & mask
+    target_pc = ((return_address + offset) & mask) & ~1
     target_path = trace_path(trace_root, target_pc)
     return render_generic_template(template, {
         "__SOURCE_MODULE__": path.parent.name,
         "__TARGET_MODULE__": target_path.parent.name,
         "__SOURCE_PC__": f"{pc:x}",
+        "__PREVIOUS_PC__": f"{previous_pc:x}",
         "__NEXT_PC__": f"{pc + 4:x}",
         "__TARGET_PC__": f"{target_pc:x}",
+        "__RETURN_PC__": f"{return_address:x}",
         "__BASE_LINK_REGISTER__": base,
         "__OFFSET_HEX__": f"0x{offset:x}",
     })

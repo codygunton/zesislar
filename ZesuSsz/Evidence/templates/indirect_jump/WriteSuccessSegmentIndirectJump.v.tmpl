@@ -7,7 +7,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
-Require Import ZesuSsz.Experiments.WriteSuccessSegment156a0.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__PREVIOUS_PC__.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -21,7 +21,7 @@ Definition writeSuccess__SOURCE_PC__Alignment : a_exp :=
         Mk_annot) Mk_annot)
     (AExp_Val (AVal_Bits (BV 2 0)) Mk_annot) Mk_annot.
 
-Definition writeSuccess__SOURCE_PC__Ra : bv 64 := writeSuccess156a0Link.
+Definition writeSuccess__SOURCE_PC__Ra : bv 64 := writeSuccess__PREVIOUS_PC__Link.
 Definition writeSuccess__SOURCE_PC__Link : bv 64 :=
   (Z_to_bv 64 0x__SOURCE_PC__ + BV 64 4)%bv.
 Definition writeSuccess__SOURCE_PC__Target : bv 64 :=
@@ -66,7 +66,7 @@ Definition writeSuccess__SOURCE_PC__After regs global : IslaState :=
   (writeSuccess15694Local a__TARGET_PC__ (writeSuccess__SOURCE_PC__Regs regs), global).
 
 Lemma writeSuccess__SOURCE_PC__ValuesExact :
-  writeSuccess__SOURCE_PC__Ra = Z_to_bv 64 0x106a0 /\
+  writeSuccess__SOURCE_PC__Ra = Z_to_bv 64 0x__RETURN_PC__ /\
   writeSuccess__SOURCE_PC__Link = Z_to_bv 64 0x__NEXT_PC__ /\
   writeSuccess__SOURCE_PC__Target = Z_to_bv 64 0x__TARGET_PC__ /\
   writeSuccess__SOURCE_PC__TargetMasked = Z_to_bv 64 0x__TARGET_PC__.
@@ -79,7 +79,7 @@ Lemma writeSuccess__SOURCE_PC__AlignmentHolds regs :
   eval_a_exp regs writeSuccess__SOURCE_PC__Alignment = Some (Val_Bool true).
 Proof.
   intros Hx1. unfold writeSuccess__SOURCE_PC__Alignment. cbn. rewrite Hx1. cbn.
-  unfold writeSuccess__SOURCE_PC__Ra, writeSuccess156a0Link. vm_compute.
+  unfold writeSuccess__SOURCE_PC__Ra, writeSuccess__PREVIOUS_PC__Link. vm_compute.
   reflexivity.
 Qed.
 
