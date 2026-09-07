@@ -16,10 +16,156 @@ Open Scope Z_scope.
 
 Section PhaseBLedger.
   (** Each family variable supplies the Appendix A block postconditions. *)
-  Variable phaseBBlockParams : Type.
-  Variable phaseBInvariant :
-    @Inv_ WriteSuccessConcreteState WriteSuccessExecutionArgs
-      WriteSuccessBlock phaseBBlockParams.
+  Variable phaseBPrologueParams : Type.
+  Variable phaseBPrologueInvariant :
+    WriteSuccessExecutionArgs -> phaseBPrologueParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBHeaderParams : Type.
+  Variable phaseBHeaderInvariant :
+    WriteSuccessExecutionArgs -> phaseBHeaderParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBTransactionsParams : Type.
+  Variable phaseBTransactionsInvariant :
+    WriteSuccessExecutionArgs -> phaseBTransactionsParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBAccessListsParams : Type.
+  Variable phaseBAccessListsInvariant :
+    WriteSuccessExecutionArgs -> phaseBAccessListsParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBStorageKeysParams : Type.
+  Variable phaseBStorageKeysInvariant :
+    WriteSuccessExecutionArgs -> phaseBStorageKeysParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBBlobHashesParams : Type.
+  Variable phaseBBlobHashesInvariant :
+    WriteSuccessExecutionArgs -> phaseBBlobHashesParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBAuthorizationsParams : Type.
+  Variable phaseBAuthorizationsInvariant :
+    WriteSuccessExecutionArgs -> phaseBAuthorizationsParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBPostTransactionsParams : Type.
+  Variable phaseBPostTransactionsInvariant :
+    WriteSuccessExecutionArgs -> phaseBPostTransactionsParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBWithdrawalsParams : Type.
+  Variable phaseBWithdrawalsInvariant :
+    WriteSuccessExecutionArgs -> phaseBWithdrawalsParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBPostWithdrawalsParams : Type.
+  Variable phaseBPostWithdrawalsInvariant :
+    WriteSuccessExecutionArgs -> phaseBPostWithdrawalsParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBSuffixHashesParams : Type.
+  Variable phaseBSuffixHashesInvariant :
+    WriteSuccessExecutionArgs -> phaseBSuffixHashesParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBTailParams : Type.
+  Variable phaseBTailInvariant :
+    WriteSuccessExecutionArgs -> phaseBTailParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBEpilogueParams : Type.
+  Variable phaseBEpilogueInvariant :
+    WriteSuccessExecutionArgs -> phaseBEpilogueParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBWriteOutputParams : Type.
+  Variable phaseBWriteOutputInvariant :
+    WriteSuccessExecutionArgs -> phaseBWriteOutputParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBMemcpyParams : Type.
+  Variable phaseBMemcpyInvariant :
+    WriteSuccessExecutionArgs -> phaseBMemcpyParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBEncoderIntParams : Type.
+  Variable phaseBEncoderIntInvariant :
+    WriteSuccessExecutionArgs -> phaseBEncoderIntParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBEncoderBooleanParams : Type.
+  Variable phaseBEncoderBooleanInvariant :
+    WriteSuccessExecutionArgs -> phaseBEncoderBooleanParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBEncoderOptionalU64Params : Type.
+  Variable phaseBEncoderOptionalU64Invariant :
+    WriteSuccessExecutionArgs -> phaseBEncoderOptionalU64Params ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBEncoderBytesParams : Type.
+  Variable phaseBEncoderBytesInvariant :
+    WriteSuccessExecutionArgs -> phaseBEncoderBytesParams ->
+    WriteSuccessConcreteState -> Prop.
+  Variable phaseBEncoderByteListsParams : Type.
+  Variable phaseBEncoderByteListsInvariant :
+    WriteSuccessExecutionArgs -> phaseBEncoderByteListsParams ->
+    WriteSuccessConcreteState -> Prop.
+
+  Inductive phaseBBlockParams : Type :=
+  | PhaseBPrologueParams : phaseBPrologueParams -> phaseBBlockParams
+  | PhaseBHeaderParams : phaseBHeaderParams -> phaseBBlockParams
+  | PhaseBTransactionsParams : phaseBTransactionsParams -> phaseBBlockParams
+  | PhaseBAccessListsParams : phaseBAccessListsParams -> phaseBBlockParams
+  | PhaseBStorageKeysParams : phaseBStorageKeysParams -> phaseBBlockParams
+  | PhaseBBlobHashesParams : phaseBBlobHashesParams -> phaseBBlockParams
+  | PhaseBAuthorizationsParams : phaseBAuthorizationsParams -> phaseBBlockParams
+  | PhaseBPostTransactionsParams : phaseBPostTransactionsParams -> phaseBBlockParams
+  | PhaseBWithdrawalsParams : phaseBWithdrawalsParams -> phaseBBlockParams
+  | PhaseBPostWithdrawalsParams : phaseBPostWithdrawalsParams -> phaseBBlockParams
+  | PhaseBSuffixHashesParams : phaseBSuffixHashesParams -> phaseBBlockParams
+  | PhaseBTailParams : phaseBTailParams -> phaseBBlockParams
+  | PhaseBEpilogueParams : phaseBEpilogueParams -> phaseBBlockParams
+  | PhaseBWriteOutputParams : phaseBWriteOutputParams -> phaseBBlockParams
+  | PhaseBMemcpyParams : phaseBMemcpyParams -> phaseBBlockParams
+  | PhaseBEncoderIntParams : phaseBEncoderIntParams -> phaseBBlockParams
+  | PhaseBEncoderBooleanParams : phaseBEncoderBooleanParams -> phaseBBlockParams
+  | PhaseBEncoderOptionalU64Params : phaseBEncoderOptionalU64Params -> phaseBBlockParams
+  | PhaseBEncoderBytesParams : phaseBEncoderBytesParams -> phaseBBlockParams
+  | PhaseBEncoderByteListsParams : phaseBEncoderByteListsParams -> phaseBBlockParams.
+
+  Definition phaseBInvariant :
+      @Inv_ WriteSuccessConcreteState WriteSuccessExecutionArgs
+        WriteSuccessBlock phaseBBlockParams :=
+    fun args block params state =>
+      match block, params with
+      | WriteSuccessPrologue, PhaseBPrologueParams concreteParams =>
+          phaseBPrologueInvariant args concreteParams state
+      | WriteSuccessHeader, PhaseBHeaderParams concreteParams =>
+          phaseBHeaderInvariant args concreteParams state
+      | WriteSuccessTransactions, PhaseBTransactionsParams concreteParams =>
+          phaseBTransactionsInvariant args concreteParams state
+      | WriteSuccessAccessLists, PhaseBAccessListsParams concreteParams =>
+          phaseBAccessListsInvariant args concreteParams state
+      | WriteSuccessStorageKeys, PhaseBStorageKeysParams concreteParams =>
+          phaseBStorageKeysInvariant args concreteParams state
+      | WriteSuccessBlobHashes, PhaseBBlobHashesParams concreteParams =>
+          phaseBBlobHashesInvariant args concreteParams state
+      | WriteSuccessAuthorizations, PhaseBAuthorizationsParams concreteParams =>
+          phaseBAuthorizationsInvariant args concreteParams state
+      | WriteSuccessPostTransactions, PhaseBPostTransactionsParams concreteParams =>
+          phaseBPostTransactionsInvariant args concreteParams state
+      | WriteSuccessWithdrawals, PhaseBWithdrawalsParams concreteParams =>
+          phaseBWithdrawalsInvariant args concreteParams state
+      | WriteSuccessPostWithdrawals, PhaseBPostWithdrawalsParams concreteParams =>
+          phaseBPostWithdrawalsInvariant args concreteParams state
+      | WriteSuccessSuffixHashes, PhaseBSuffixHashesParams concreteParams =>
+          phaseBSuffixHashesInvariant args concreteParams state
+      | WriteSuccessTail, PhaseBTailParams concreteParams =>
+          phaseBTailInvariant args concreteParams state
+      | WriteSuccessEpilogue, PhaseBEpilogueParams concreteParams =>
+          phaseBEpilogueInvariant args concreteParams state
+      | WriteSuccessWriteOutput, PhaseBWriteOutputParams concreteParams =>
+          phaseBWriteOutputInvariant args concreteParams state
+      | WriteSuccessMemcpy, PhaseBMemcpyParams concreteParams =>
+          phaseBMemcpyInvariant args concreteParams state
+      | WriteSuccessEncoderInt, PhaseBEncoderIntParams concreteParams =>
+          phaseBEncoderIntInvariant args concreteParams state
+      | WriteSuccessEncoderBoolean, PhaseBEncoderBooleanParams concreteParams =>
+          phaseBEncoderBooleanInvariant args concreteParams state
+      | WriteSuccessEncoderOptionalU64, PhaseBEncoderOptionalU64Params concreteParams =>
+          phaseBEncoderOptionalU64Invariant args concreteParams state
+      | WriteSuccessEncoderBytes, PhaseBEncoderBytesParams concreteParams =>
+          phaseBEncoderBytesInvariant args concreteParams state
+      | WriteSuccessEncoderByteLists, PhaseBEncoderByteListsParams concreteParams =>
+          phaseBEncoderByteListsInvariant args concreteParams state
+      | _, _ => False
+      end.
   Variable phaseBEntryConsistent :
     WriteSuccessExecutionArgs -> WriteSuccessConcreteState -> Prop.
   Variable phaseBBlockLength : WriteSuccessBlock -> nat.
@@ -279,6 +425,7 @@ Section PhaseBLedger.
         as (_ & _ & _ & _ & _ & _ & Hhandoff).
       exact Hhandoff.
   Qed.
+
 
 End PhaseBLedger.
 
