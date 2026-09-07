@@ -169,14 +169,14 @@ Proof.
     Hsource HdoneTrace HdoneNb Hpath).
 Qed.
 
-Lemma segment_1569c (regs : reg_map) (global : seq_global_state)
+Lemma segment_1569c_mstatus (regs : reg_map) (global : seq_global_state)
     (sp : bv 64) oldX11 :
   regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x1569c)) ->
   regs !! "x8" = Some (RVal_Bits sp) ->
   regs !! "x11" = Some oldX11 ->
   global.(seq_instrs) !! Z_to_bv 64 0x1569c = Some a1569c ->
   global.(seq_instrs) !! Z_to_bv 64 0x156a0 = Some a156a0 ->
-  writeSuccessTraceAssumptions (writeSuccess1569cBefore regs global) ->
+  eval_a_exp regs writeSuccess1569cMstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess1569cBefore regs global)
     (writeSuccess1569cObservations regs global sp)
     (writeSuccess1569cAfter regs global sp) /\
@@ -185,9 +185,7 @@ Lemma segment_1569c (regs : reg_map) (global : seq_global_state)
   (writeSuccess1569cAfter regs global sp).2.(seq_mem) = global.(seq_mem) /\
   concat (map microLabels (writeSuccess1569cObservations regs global sp)) = [].
 Proof.
-  intros Hpc Hsp Hx10 Hcode Hnext Hassumptions.
-  have Hmstatus := writeSuccess1569cMstatusFromTraceAssumptions
-    regs global Hassumptions.
+  intros Hpc Hsp Hx10 Hcode Hnext Hmstatus.
   split; [|repeat split; reflexivity].
   unfold writeSuccess1569cObservations.
   eapply islaInstructionSegmentIntro with
@@ -298,13 +296,8 @@ Proof.
     repeat split; reflexivity.
 Qed.
 
-Print Assumptions writeSuccess1569cMstatusFromTraceAssumptions.
-Print Assumptions writeSuccess1569cNextPcExact.
-Print Assumptions segment_1569c.
-Print Assumptions writeSuccess1569cRegsLookupOther.
-
-Lemma segment_1569c_covered (regs : reg_map) (global : seq_global_state)
-    (sp : bv 64) oldX11 observations after :
+Lemma segment_1569c (regs : reg_map) (global : seq_global_state)
+    (sp : bv 64) oldX11 :
   regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x1569c)) ->
   regs !! "x8" = Some (RVal_Bits sp) ->
   regs !! "x11" = Some oldX11 ->
@@ -312,13 +305,39 @@ Lemma segment_1569c_covered (regs : reg_map) (global : seq_global_state)
   global.(seq_instrs) !! Z_to_bv 64 0x156a0 = Some a156a0 ->
   writeSuccessTraceAssumptions (writeSuccess1569cBefore regs global) ->
   IslaInstructionSegment (writeSuccess1569cBefore regs global)
+    (writeSuccess1569cObservations regs global sp)
+    (writeSuccess1569cAfter regs global sp) /\
+  (writeSuccess1569cAfter regs global sp).1.(seq_regs) =
+    writeSuccess1569cRegs regs sp /\
+  (writeSuccess1569cAfter regs global sp).2.(seq_mem) = global.(seq_mem) /\
+  concat (map microLabels (writeSuccess1569cObservations regs global sp)) = [].
+Proof.
+  intros Hpc Hsp Hx10 Hcode Hnext Hassumptions.
+  eapply segment_1569c_mstatus; eauto.
+  exact (writeSuccess1569cMstatusFromTraceAssumptions
+    regs global Hassumptions).
+Qed.
+
+Print Assumptions writeSuccess1569cMstatusFromTraceAssumptions.
+Print Assumptions writeSuccess1569cNextPcExact.
+Print Assumptions segment_1569c_mstatus.
+Print Assumptions segment_1569c.
+Print Assumptions writeSuccess1569cRegsLookupOther.
+
+Lemma segment_1569c_mstatus_covered (regs : reg_map) (global : seq_global_state)
+    (sp : bv 64) oldX11 observations after :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x1569c)) ->
+  regs !! "x8" = Some (RVal_Bits sp) ->
+  regs !! "x11" = Some oldX11 ->
+  global.(seq_instrs) !! Z_to_bv 64 0x1569c = Some a1569c ->
+  global.(seq_instrs) !! Z_to_bv 64 0x156a0 = Some a156a0 ->
+  eval_a_exp regs writeSuccess1569cMstatus = Some (Val_Bool true) ->
+  IslaInstructionSegment (writeSuccess1569cBefore regs global)
     observations after ->
   after = writeSuccess1569cAfter regs global sp /\
   observations = writeSuccess1569cObservations regs global sp.
 Proof.
-  intros Hpc Hsp Hx10 Hcode Hnext Hassumptions Hsegment.
-  have Hmstatus := writeSuccess1569cMstatusFromTraceAssumptions
-    regs global Hassumptions.
+  intros Hpc Hsp Hx10 Hcode Hnext Hmstatus Hsegment.
   destruct Hsegment as
     [Hstart done prefix labels spawned Hprefix Hnil Hdone Hobservations Hend].
   have HdoneNb := seqStepSourceBlocking _ _ _ _ _ _ Hdone.
@@ -469,4 +488,24 @@ Proof.
     reflexivity.
 Qed.
 
+Lemma segment_1569c_covered (regs : reg_map) (global : seq_global_state)
+    (sp : bv 64) oldX11 observations after :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x1569c)) ->
+  regs !! "x8" = Some (RVal_Bits sp) ->
+  regs !! "x11" = Some oldX11 ->
+  global.(seq_instrs) !! Z_to_bv 64 0x1569c = Some a1569c ->
+  global.(seq_instrs) !! Z_to_bv 64 0x156a0 = Some a156a0 ->
+  writeSuccessTraceAssumptions (writeSuccess1569cBefore regs global) ->
+  IslaInstructionSegment (writeSuccess1569cBefore regs global)
+    observations after ->
+  after = writeSuccess1569cAfter regs global sp /\
+  observations = writeSuccess1569cObservations regs global sp.
+Proof.
+  intros Hpc Hsp Hx10 Hcode Hnext Hassumptions Hsegment.
+  eapply segment_1569c_mstatus_covered; eauto.
+  exact (writeSuccess1569cMstatusFromTraceAssumptions
+    regs global Hassumptions).
+Qed.
+
+Print Assumptions segment_1569c_mstatus_covered.
 Print Assumptions segment_1569c_covered.
