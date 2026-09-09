@@ -112,4 +112,3 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessWithdrawals407EndpointTailFacts.
-

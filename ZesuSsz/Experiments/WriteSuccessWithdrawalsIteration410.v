@@ -152,4 +152,3 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessWithdrawalsIteration410.
-
