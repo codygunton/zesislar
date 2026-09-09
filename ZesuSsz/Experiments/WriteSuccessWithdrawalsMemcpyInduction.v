@@ -2,6 +2,7 @@ From Coq Require Import Lia Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessBlockFramework.
+Require Import ZesuSsz.Experiments.WriteSuccessOperationalModel.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyByteRun.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d8.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101e4.
@@ -9,6 +10,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyState.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRun.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -98,3 +100,49 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessMemcpyBytesRun.
+
+Theorem writeSuccessMemcpyBytesRunWithRecords
+    (regs : reg_map) (global : seq_global_state)
+    (source destination index totalLength : bv 64) (bytes : list (bv 8)) :
+  writeSuccessMemcpyBytesReady regs global source destination index totalLength bytes ->
+  exists segments,
+    IslaInstructionRun (7 * List.length bytes)
+      (writeSuccess101d8Before regs global) segments
+      (writeSuccessMemcpyBytesAfter regs global source destination index bytes) /\
+    segmentRecords (writeSuccess101d8Before regs global)
+      (flattenMicroObservations segments) = [].
+Proof.
+  revert regs global index.
+  induction bytes as [|byte tail IH]; intros regs global index Hready.
+  - exists []. split; first constructor. reflexivity.
+  - cbn in Hready |- *. destruct Hready as (Hhead & Htail).
+    unfold writeSuccessMemcpyByteReady in Hhead.
+    destruct Hhead as
+      (Hpc & Hx10 & Hx11 & Hx12 & Hx15 & Hne & Htable & Hfacts & Hread &
+       HsourceLower & HsourceUpper & HdestinationLower & HdestinationUpper &
+       Hbacked).
+    destruct (writeSuccessMemcpyByteRunWithRecords regs global source
+      destination index totalLength byte Hpc Hx10 Hx11 Hx12 Hx15 Hne Htable
+      Hfacts Hread HsourceLower HsourceUpper HdestinationLower HdestinationUpper
+      Hbacked) as (headSegments & HheadRun & HheadRecords).
+    destruct (IH
+      (writeSuccessMemcpyByteRegs regs source destination index byte)
+      (writeSuccess101f0Global global
+        (writeSuccessMemcpyDestinationAddress destination index)
+        (writeSuccess101e4Loaded byte))
+      (index + BV 64 1)%bv Htail) as
+      (tailSegments & HtailRun & HtailRecords).
+    exists (headSegments ++ tailSegments). split.
+    + replace (7 * S (List.length tail))%nat with
+        (7 + 7 * List.length tail)%nat by lia.
+      eapply islaInstructionRun_app; first exact HheadRun. exact HtailRun.
+    + rewrite flattenMicroObservationsApp.
+      rewrite (segmentRecords_app (writeSuccess101d8Before regs global)
+        (flattenMicroObservations headSegments)
+        (writeSuccessMemcpyByteAfter regs global source destination index byte)
+        (flattenMicroObservations tailSegments)).
+      * rewrite HheadRecords. rewrite HtailRecords. reflexivity.
+      * exact (islaInstructionRunCorrespondence 7 _ _ _ HheadRun).
+Qed.
+
+Print Assumptions writeSuccessMemcpyBytesRunWithRecords.

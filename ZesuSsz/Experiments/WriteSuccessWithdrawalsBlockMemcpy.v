@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Contracts.IslaMemoryOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessBlockFramework.
+Require Import ZesuSsz.Experiments.WriteSuccessOperationalModel.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d4.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d8.
@@ -13,17 +14,33 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyEntry.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyFacts.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyInduction.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyReadiness.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyRecords.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRun.
 
 Import ListNotations.
 Open Scope Z_scope.
 
 Local Opaque writeSuccessMemoryRangeFrame.
 
-Theorem block_memcpy : block_memcpy_statement.
+Theorem block_memcpy_recorded :
+  forall destination source returnAddress bytes destinationBefore memoryFrame
+      priorLog state,
+    Inv_memcpy destination source returnAddress bytes destinationBefore
+      memoryFrame priorLog state ->
+    exists segments after,
+      WriteSuccessWithdrawalsRecordedRun (7 * length bytes + 3)
+        state segments after /\
+      writeSuccessWithdrawalsConcretePc after = Some (bv_unsigned returnAddress) /\
+      read_mem_list after.1.2.(seq_mem) (bv_unsigned destination)
+        (N.of_nat (length bytes)) = Some bytes /\
+      read_mem_list after.1.2.(seq_mem) (bv_unsigned source)
+        (N.of_nat (length bytes)) = Some bytes /\
+      writeSuccessMemoryRangeFrame (bv_unsigned destination) (length bytes)
+        after.1.2.(seq_mem) memoryFrame /\
+      after.2 = priorLog.
 Proof.
-  unfold block_memcpy_statement.
   intros destination source returnAddress bytes destinationBefore memoryFrame
     priorLog state Hinv.
   destruct state as [machine log].
@@ -99,7 +116,7 @@ Proof.
   have Hmstatus : eval_a_exp regs writeSuccess15694Mstatus =
       Some (Val_Bool true) := proj1 Hfacts.
   destruct (segment_101d4 regs global (RVal_Bits oldX15) Hpc Hx15 HcodeD4
-    HcodeD8 Hmstatus) as (HsegD4 & _).
+    HcodeD8 Hmstatus) as (HsegD4 & _ & _ & HlabelsD4).
   set initRegs := writeSuccess101d4Regs regs.
   have HinitFacts : writeSuccessWithdrawalsOperationalRegisterFacts initRegs by
     (apply writeSuccessMemcpyInitFacts; exact Hfacts).
@@ -132,9 +149,9 @@ Proof.
     - exact HdestinationUpper.
     - exact Hdisjoint.
     - exact Hbacked. }
-  destruct (writeSuccessMemcpyBytesRun initRegs global source destination
+  destruct (writeSuccessMemcpyBytesRunWithRecords initRegs global source destination
     (Z_to_bv 64 0) (Z_to_bv 64 (Z.of_nat (length bytes))) bytes Hready) as
-    (loopSegments & HloopRun).
+    (loopSegments & HloopRun & HloopRecords).
   set loopAfter := writeSuccessMemcpyBytesAfter initRegs global source
     destination (Z_to_bv 64 0) bytes.
   set finalRegs := loopAfter.1.(seq_regs).
@@ -191,6 +208,11 @@ Proof.
     (Z_to_bv 64 (Z.of_nat (length bytes)))
     (Z_to_bv 64 (Z.of_nat (length bytes))) HfinalPc HfinalX15 HfinalX12
     ltac:(reflexivity) HfinalCodeD8 HfinalCodeDc HfinalMstatus.
+  have HlabelsD8 : concat (map microLabels
+      (writeSuccess101d8FallthroughAllObservations
+        (Z_to_bv 64 (Z.of_nat (length bytes)))
+        (Z_to_bv 64 (Z.of_nat (length bytes))) finalRegs finalGlobal)) = [] by
+    reflexivity.
   set returnRegs := writeSuccess101d8FallthroughRegs finalRegs.
   have HreturnPc : returnRegs !! "PC" =
       Some (RVal_Bits (Z_to_bv 64 0x101dc)).
@@ -209,10 +231,20 @@ Proof.
   destruct (segment_101dc returnRegs finalGlobal returnAddress HreturnPc
     HreturnX1 HfinalCodeDc HreturnMstatus HreturnAlign) as
     (HsegDc & HsegDcMemory).
-  have HreturnLookup : finalGlobal.(seq_instrs) !! returnAddress <> None.
-  { destruct Hreturn as (returnTrace & Hreturn).
-    unfold finalGlobal, loopAfter.
-    rewrite writeSuccessMemcpyBytesAfterInstrs. rewrite Hreturn. discriminate. }
+  destruct Hreturn as (returnTrace & Hreturn).
+  have HreturnFinal : finalGlobal.(seq_instrs) !! returnAddress =
+      Some returnTrace.
+  { unfold finalGlobal, loopAfter.
+    rewrite writeSuccessMemcpyBytesAfterInstrs. exact Hreturn. }
+  have HreturnLookup : finalGlobal.(seq_instrs) !! returnAddress <> None by
+    (rewrite HreturnFinal; discriminate).
+  have HlabelsDc : concat (map microLabels
+      (writeSuccess101dcObservations returnRegs finalGlobal returnAddress)) = [].
+  { unfold writeSuccess101dcObservations,
+      writeSuccess101dcPrefixObservations, writeSuccess101dcLocals,
+      writeSuccess15694Observation, writeSuccess101dcDoneLabels.
+    cbn. rewrite (writeSuccessMemcpyReturnTargetExact returnAddress Halign).
+    rewrite HreturnFinal. reflexivity. }
   have HdestinationZero : (destination + Z_to_bv 64 0)%bv =
       Z_to_bv 64 (bv_unsigned destination).
   { rewrite Z_to_bv_bv_unsigned. apply bv_eq. bv_solve. }
@@ -223,29 +255,79 @@ Proof.
        writeSuccess101dcObservations returnRegs finalGlobal returnAddress]),
     (writeSuccess101dcAfter returnRegs finalGlobal returnAddress, priorLog).
   split.
-  { change (IslaInstructionRun (7 * length bytes)
-      (writeSuccess101d8Before initRegs global) loopSegments loopAfter)
-      in HloopRun.
-    rewrite HloopBoundary in HloopRun.
+  { have HrecordsD4 := writeSuccessSegmentRecordsEmpty
+      (writeSuccess101d4Before regs global)
+      (writeSuccess101d4Observations regs global) HlabelsD4.
+    have HrecordsD8 := writeSuccessSegmentRecordsEmpty
+      (writeSuccess101d8Before finalRegs finalGlobal)
+      (writeSuccess101d8FallthroughAllObservations
+        (Z_to_bv 64 (Z.of_nat (length bytes)))
+        (Z_to_bv 64 (Z.of_nat (length bytes))) finalRegs finalGlobal)
+      HlabelsD8.
+    have HrecordsDc := writeSuccessSegmentRecordsEmpty
+      (writeSuccess101dcBefore returnRegs finalGlobal)
+      (writeSuccess101dcObservations returnRegs finalGlobal returnAddress)
+      HlabelsDc.
     have Hfirst : IslaInstructionRun 1 (writeSuccess101d4Before regs global)
         [writeSuccess101d4Observations regs global]
         (writeSuccess101d4After regs global).
     { econstructor; first exact HsegD4. constructor. }
-    have Hprefix := islaInstructionRun_app _ _ _ _ _ _ _ Hfirst HloopRun.
-    have HwithFall := islaInstructionRun_snoc _ _ _ _ _ _ Hprefix HsegD8.
-    have Hfull := islaInstructionRun_snoc _ _ _ _ _ _ HwithFall HsegDc.
+    have HrFirst : WriteSuccessWithdrawalsRecordedRun 1
+        (writeSuccess101d4Before regs global, log)
+        [writeSuccess101d4Observations regs global]
+        (writeSuccess101d4After regs global, log).
+    { split; first exact Hfirst.
+      change (log = log ++ segmentRecords
+        (writeSuccess101d4Before regs global)
+        (writeSuccess101d4Observations regs global)).
+      rewrite HrecordsD4.
+      rewrite app_nil_r. reflexivity. }
+    have HrLoop : WriteSuccessWithdrawalsRecordedRun (7 * length bytes)
+        (writeSuccess101d4After regs global, log) loopSegments
+        (loopAfter, log).
+    { split; first exact HloopRun.
+      change (log = log ++ segmentRecords
+        (writeSuccess101d8Before initRegs global)
+        (flattenMicroObservations loopSegments)).
+      rewrite HloopRecords.
+      rewrite app_nil_r. reflexivity. }
+    have HrPrefix := writeSuccessWithdrawalsRecordedRunApp _ _ _ _ _ _ _
+      HrFirst HrLoop.
+    rewrite HloopBoundary in HrPrefix.
+    have HrFall : WriteSuccessWithdrawalsRecordedRun 1
+        (writeSuccess101d8Before finalRegs finalGlobal, log)
+        [writeSuccess101d8FallthroughAllObservations
+          (Z_to_bv 64 (Z.of_nat (length bytes)))
+          (Z_to_bv 64 (Z.of_nat (length bytes))) finalRegs finalGlobal]
+        (writeSuccess101d8FallthroughAfter finalRegs finalGlobal, log).
+    { split.
+      - econstructor; first exact HsegD8. constructor.
+      - change (log = log ++ segmentRecords
+          (writeSuccess101d8Before finalRegs finalGlobal)
+          (writeSuccess101d8FallthroughAllObservations
+            (Z_to_bv 64 (Z.of_nat (length bytes)))
+            (Z_to_bv 64 (Z.of_nat (length bytes))) finalRegs finalGlobal)).
+        rewrite HrecordsD8. rewrite app_nil_r. reflexivity. }
+    have HrWithFall := writeSuccessWithdrawalsRecordedRunApp _ _ _ _ _ _ _
+      HrPrefix HrFall.
+    have HrDc : WriteSuccessWithdrawalsRecordedRun 1
+        (writeSuccess101dcBefore returnRegs finalGlobal, log)
+        [writeSuccess101dcObservations returnRegs finalGlobal returnAddress]
+        (writeSuccess101dcAfter returnRegs finalGlobal returnAddress, log).
+    { split.
+      - econstructor; first exact HsegDc. constructor.
+      - change (log = log ++ segmentRecords
+          (writeSuccess101dcBefore returnRegs finalGlobal)
+          (writeSuccess101dcObservations returnRegs finalGlobal returnAddress)).
+        rewrite HrecordsDc. rewrite app_nil_r. reflexivity. }
+    have HrFull := writeSuccessWithdrawalsRecordedRunApp _ _ _ _ _ _ _
+      HrWithFall HrDc.
     replace (7 * length bytes + 3)%nat with
-      (S (S (1 + 7 * length bytes)))%nat by lia.
-    rewrite <- app_assoc in Hfull.
-    cbn [app] in Hfull.
-    exact Hfull. }
+      (((1 + 7 * length bytes) + 1) + 1)%nat by lia.
+    rewrite <- app_assoc in HrFull. cbn [app] in HrFull.
+    rewrite <- Hlog. exact HrFull. }
   split.
   { unfold writeSuccessWithdrawalsConcretePc. cbn.
-    destruct Hreturn as (returnTrace & Hreturn).
-    have HreturnFinal : finalGlobal.(seq_instrs) !! returnAddress =
-        Some returnTrace.
-    { unfold finalGlobal, loopAfter.
-      rewrite writeSuccessMemcpyBytesAfterInstrs. exact Hreturn. }
     unfold writeSuccess101dcAfter.
     rewrite (writeSuccessMemcpyReturnTargetExact returnAddress Halign).
     rewrite HreturnFinal.
@@ -283,4 +365,17 @@ Proof.
   reflexivity.
 Qed.
 
+Theorem block_memcpy : block_memcpy_statement.
+Proof.
+  unfold block_memcpy_statement.
+  intros destination source returnAddress bytes destinationBefore memoryFrame
+    priorLog state Hinv.
+  destruct (block_memcpy_recorded destination source returnAddress bytes
+    destinationBefore memoryFrame priorLog state Hinv) as
+    (segments & after & Hrecorded & Hresults).
+  exists segments, after. split; last exact Hresults.
+  exact (proj1 Hrecorded).
+Qed.
+
+Print Assumptions block_memcpy_recorded.
 Print Assumptions block_memcpy.
