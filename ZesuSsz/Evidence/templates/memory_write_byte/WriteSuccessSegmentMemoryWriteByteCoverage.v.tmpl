@@ -9,6 +9,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSecon
 Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageMiddleFirst.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageMiddleSecond.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffixFirst.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffixMiddle.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffix.
 
 Lemma segment___SOURCE_PC___covered (regs : reg_map) (global : seq_global_state)
@@ -52,12 +53,16 @@ Proof.
   destruct (segment___SOURCE_PC___suffix_first_covered regs global mstatusBits address
     satp value prefix21 done labels spawned after Hsatp Hx13 Hp21 Hnil Hdone) as
     (prefix25 & Hp25 & HobsSuffixFirst).
+  destruct (segment___SOURCE_PC___suffix_middle_covered regs global mstatusBits address
+    satp value prefix25 done labels spawned after Hp25 Hnil Hdone) as
+    (result & prefix29 & Hp29 & HobsSuffixMiddle).
   destruct (segment___SOURCE_PC___suffix_covered regs global mstatusBits address satp value
-    old prefix25 done labels spawned after Hpc Hmem Hnext Hp25 Hnil Hdone) as
-    (result & Hafter & HobsSuffix).
+    result old prefix29 done labels spawned after Hpc Hmem Hnext Hp29 Hnil Hdone) as
+    (Hafter & HobsSuffix).
   subst after. exists result. split; first reflexivity.
   rewrite Hobs. rewrite HobsSecond. rewrite HobsMiddleFirst.
   rewrite HobsMiddleSecond. rewrite HobsSuffixFirst.
+  rewrite HobsSuffixMiddle.
   repeat rewrite <- app_assoc. rewrite HobsSuffix.
   unfold writeSuccess__SOURCE_PC__Observations,
     writeSuccess__SOURCE_PC__PrefixObservations,
@@ -66,6 +71,7 @@ Proof.
     writeSuccess__SOURCE_PC__MiddleFirstObservations,
     writeSuccess__SOURCE_PC__MiddleSecondObservations,
     writeSuccess__SOURCE_PC__SuffixFirstObservations,
+    writeSuccess__SOURCE_PC__SuffixMiddleObservations,
     writeSuccess__SOURCE_PC__SuffixObservations. cbn. reflexivity.
 Qed.
 

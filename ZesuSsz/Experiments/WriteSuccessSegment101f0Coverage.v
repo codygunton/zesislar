@@ -9,6 +9,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0CoverageSecond.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0CoverageMiddleFirst.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0CoverageMiddleSecond.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0CoverageSuffixFirst.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0CoverageSuffixMiddle.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0CoverageSuffix.
 
 Lemma segment_101f0_covered (regs : reg_map) (global : seq_global_state)
@@ -52,12 +53,16 @@ Proof.
   destruct (segment_101f0_suffix_first_covered regs global mstatusBits address
     satp value prefix21 done labels spawned after Hsatp Hx13 Hp21 Hnil Hdone) as
     (prefix25 & Hp25 & HobsSuffixFirst).
+  destruct (segment_101f0_suffix_middle_covered regs global mstatusBits address
+    satp value prefix25 done labels spawned after Hp25 Hnil Hdone) as
+    (result & prefix29 & Hp29 & HobsSuffixMiddle).
   destruct (segment_101f0_suffix_covered regs global mstatusBits address satp value
-    old prefix25 done labels spawned after Hpc Hmem Hnext Hp25 Hnil Hdone) as
-    (result & Hafter & HobsSuffix).
+    result old prefix29 done labels spawned after Hpc Hmem Hnext Hp29 Hnil Hdone) as
+    (Hafter & HobsSuffix).
   subst after. exists result. split; first reflexivity.
   rewrite Hobs. rewrite HobsSecond. rewrite HobsMiddleFirst.
   rewrite HobsMiddleSecond. rewrite HobsSuffixFirst.
+  rewrite HobsSuffixMiddle.
   repeat rewrite <- app_assoc. rewrite HobsSuffix.
   unfold writeSuccess101f0Observations,
     writeSuccess101f0PrefixObservations,
@@ -66,6 +71,7 @@ Proof.
     writeSuccess101f0MiddleFirstObservations,
     writeSuccess101f0MiddleSecondObservations,
     writeSuccess101f0SuffixFirstObservations,
+    writeSuccess101f0SuffixMiddleObservations,
     writeSuccess101f0SuffixObservations. cbn. reflexivity.
 Qed.
 
