@@ -88,10 +88,11 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
     def test_1569c_regenerates_register_add_pair(self):
         templates = ROOT / "ZesuSsz/Evidence/templates/register_add"
         components = {
-            "register_add.v.tmpl": "",
-            "register_add_coverage_prefix.v.tmpl": "CoveragePrefix",
-            "register_add_coverage_suffix.v.tmpl": "CoverageSuffix",
-            "register_add_coverage.v.tmpl": "Coverage",
+            "register_add_legacy_umbrella.v.tmpl": "",
+            "register_add_legacy_core.v.tmpl": "Core",
+            "register_add_legacy_coverage_prefix.v.tmpl": "CoveragePrefix",
+            "register_add_legacy_coverage_suffix.v.tmpl": "CoverageSuffix",
+            "register_add_legacy_coverage.v.tmpl": "Coverage",
         }
         rendered = {}
         for template_name, suffix in components.items():
@@ -105,10 +106,10 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
                 f"WriteSuccessSegment1569c{suffix}.v"
             )
             self.assertEqual(rendered[suffix], target.read_text())
-        self.assertIn("Lemma segment_1569c ", rendered[""])
+        self.assertIn("Lemma segment_1569c ", rendered["Core"])
         self.assertIn("Lemma segment_1569c_covered ", rendered["Coverage"])
-        self.assertIn('"x8"', rendered[""])
-        self.assertIn('"x11"', rendered[""])
+        self.assertIn('"x8"', rendered["Core"])
+        self.assertIn('"x11"', rendered["Core"])
 
     def test_15694_regenerates_register_add_pair(self):
         templates = ROOT / "ZesuSsz/Evidence/templates/register_add"
