@@ -6,7 +6,6 @@ Require Import IslaTraces.write_success_02.a101e0.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 
 Import ListNotations.
@@ -617,14 +616,13 @@ Lemma segment_101d8 regs global (left right : bv 64) :
   global.(seq_instrs) !! Z_to_bv 64 0x101d8 = Some a101d8 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101dc = Some a101dc ->
   global.(seq_instrs) !! Z_to_bv 64 0x101e0 = Some a101e0 ->
-  writeSuccessTraceAssumptions (writeSuccess101d8Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess101d8Before regs global)
     (writeSuccess101d8Observations left right regs global)
     (writeSuccess101d8After left right regs global).
 Proof.
-  intros Hpc Hx15 Hx12 Hcode Hfall Htaken Hassumptions.
+  intros Hpc Hx15 Hx12 Hcode Hfall Htaken Hmstatus.
   eapply segment_101d8_mstatus; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions).
 Qed.
 
 Definition writeSuccess101d8FinalRegs (left right : bv 64) regs : reg_map :=

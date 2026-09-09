@@ -5,7 +5,6 @@ Require Import IslaTraces.__SOURCE_MODULE__.a__SOURCE_PC__.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 
 Import ListNotations.
@@ -191,7 +190,7 @@ Lemma segment___SOURCE_PC__ regs global :
   regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
   global.(seq_instrs) !! Z_to_bv 64 0x__SOURCE_PC__ = Some a__SOURCE_PC__ ->
   global.(seq_instrs) !! Z_to_bv 64 0x__TARGET_PC__ = Some a__TARGET_PC__ ->
-  writeSuccessTraceAssumptions (writeSuccess__SOURCE_PC__Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess__SOURCE_PC__Before regs global)
     (writeSuccess__SOURCE_PC__Observations regs global)
     (writeSuccess__SOURCE_PC__After regs global) /\
@@ -200,8 +199,7 @@ Lemma segment___SOURCE_PC__ regs global :
   (writeSuccess__SOURCE_PC__After regs global).2.(seq_mem) = global.(seq_mem) /\
   concat (map microLabels (writeSuccess__SOURCE_PC__Observations regs global)) = [].
 Proof.
-  intros Hpc Hcode Hnext Hassumptions. eapply segment___SOURCE_PC___mstatus; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions).
+  intros Hpc Hcode Hnext Hmstatus. eapply segment___SOURCE_PC___mstatus; eauto.
 Qed.
 
 Print Assumptions writeSuccess__SOURCE_PC__AlignmentHolds.

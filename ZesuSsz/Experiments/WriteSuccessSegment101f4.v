@@ -5,7 +5,6 @@ Require Import IslaTraces.write_success_02.a101f4.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 
 Import ListNotations.
@@ -191,7 +190,7 @@ Lemma segment_101f4 regs global :
   regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x101f4)) ->
   global.(seq_instrs) !! Z_to_bv 64 0x101f4 = Some a101f4 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101d8 = Some a101d8 ->
-  writeSuccessTraceAssumptions (writeSuccess101f4Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess101f4Before regs global)
     (writeSuccess101f4Observations regs global)
     (writeSuccess101f4After regs global) /\
@@ -200,8 +199,7 @@ Lemma segment_101f4 regs global :
   (writeSuccess101f4After regs global).2.(seq_mem) = global.(seq_mem) /\
   concat (map microLabels (writeSuccess101f4Observations regs global)) = [].
 Proof.
-  intros Hpc Hcode Hnext Hassumptions. eapply segment_101f4_mstatus; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions).
+  intros Hpc Hcode Hnext Hmstatus. eapply segment_101f4_mstatus; eauto.
 Qed.
 
 Print Assumptions writeSuccess101f4AlignmentHolds.
