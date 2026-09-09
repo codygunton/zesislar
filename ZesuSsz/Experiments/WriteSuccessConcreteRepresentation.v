@@ -7,6 +7,21 @@ Require Import ZesuSsz.Experiments.WriteSuccessParserLemmas.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition writeSuccessAvoidsRange
+    (low high pointer : Z) (len : nat) : Prop :=
+  len = 0%nat \/ pointer + Z.of_nat len <= low \/ high <= pointer.
+
+Lemma writeSuccessAvoidsRangeOverlapRejected low high pointer len :
+  len <> 0%nat ->
+  low < pointer + Z.of_nat len ->
+  pointer < high ->
+  ~ writeSuccessAvoidsRange low high pointer len.
+Proof.
+  intros Hlen Hlow Hhigh Havoids.
+  unfold writeSuccessAvoidsRange in Havoids.
+  lia.
+Qed.
+
 Fixpoint writeSuccessLayoutLe (width : nat) (value : Z) : ByteString :=
   match width with
   | O => []
@@ -446,3 +461,4 @@ Print Assumptions writeSuccessRepresentationBaseFee.
 Print Assumptions writeSuccessRepresentationExtraData.
 Print Assumptions writeSuccessRepresentationBaseFeeUnique.
 Print Assumptions writeSuccessRepresentationExtraDataUnique.
+Print Assumptions writeSuccessAvoidsRangeOverlapRejected.
