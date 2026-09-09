@@ -13,6 +13,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOff.
 Require Import ZesuSsz.Experiments.WriteSuccessStackRange.
 
 Import ListNotations.
@@ -135,7 +136,8 @@ Definition writeSuccessConcreteEntry
   state.2 = [] /\
   writeSuccessConcretePc state = Some 0x14d30 /\
   writeSuccessConcreteInitialState args state.1 /\
-  writeSuccessConcreteRepresentation
+  writeSuccessConcreteRepresentationOff
+    (successStackPointer WriteSuccessObservation args)
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args).
 

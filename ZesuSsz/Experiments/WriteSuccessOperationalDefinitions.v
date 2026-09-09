@@ -8,6 +8,7 @@ Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOff.
 Require Import ZesuSsz.Experiments.WriteSuccessOperationalModel.
 Require Import ZesuSsz.Experiments.WriteSuccessBlockFramework.
 
@@ -44,8 +45,8 @@ Qed.
 
 Definition writeSuccessEntryRepresentation
     (decoded : WriteSuccessObservation) (state : WriteSuccessConcreteState) : Prop :=
-  exists address,
-    writeSuccessConcreteRepresentation decoded state.1.2.(seq_mem) address.
+  exists sp address,
+    writeSuccessConcreteRepresentationOff sp decoded state.1.2.(seq_mem) address.
 
 Lemma writeSuccessEntryRepresentationLaw args state :
   writeSuccessConcreteEntry args state ->
@@ -53,7 +54,8 @@ Lemma writeSuccessEntryRepresentationLaw args state :
     (successDecoded WriteSuccessObservation args) state.
 Proof.
   intros (_ & _ & _ & Hrepresentation).
-  exists (successDecodedAddress WriteSuccessObservation args).
+  exists (successStackPointer WriteSuccessObservation args),
+    (successDecodedAddress WriteSuccessObservation args).
   exact Hrepresentation.
 Qed.
 

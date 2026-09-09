@@ -1,0 +1,23 @@
+From Coq Require Import Lists.List.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOkTrue.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRepresentationBlockerData.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRepresentationBlockerCore.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRepresentationBlockerAssembleHeader.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRepresentationBlockerAssembleLists.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRepresentationBlockerAssembleHashes.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRepresentationBlockerAssemblePostData.
+
+Import ListNotations.
+
+Lemma writeSuccessBlockerFullRepresentation :
+  writeSuccessConcreteRepresentation writeSuccessBlockerDecoded
+    writeSuccessBlockerRepresentedMemory writeSuccessBlockerOwner.
+Proof.
+  apply (proj2 (writeSuccessConcreteRepresentationPreR9Iff _ _ _)).
+  unfold writeSuccessConcreteRepresentationPreR9.
+  apply writeSuccessBlockerRepresentationHeader.
+  apply writeSuccessBlockerRepresentationLists.
+  apply writeSuccessBlockerRepresentationHashes.
+  exact writeSuccessBlockerRepresentationPostData.
+Qed.

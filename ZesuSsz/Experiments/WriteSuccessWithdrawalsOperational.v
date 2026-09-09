@@ -6,6 +6,9 @@ Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOff.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOffValid.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOffWithdrawalList.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessParserLemmas.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputSemantic.
@@ -326,9 +329,9 @@ Proof.
   cbn. rewrite skipn_all2; [reflexivity | lia].
 Qed.
 
-Lemma writeSuccessRepresentationWithdrawalAt decoded memory address index
+Lemma writeSuccessRepresentationWithdrawalAt sp decoded memory address index
     withdrawal :
-  writeSuccessConcreteRepresentation decoded memory address ->
+  writeSuccessConcreteRepresentationOff sp decoded memory address ->
   nth_error (observationWithdrawals decoded) index = Some withdrawal ->
   writeSuccessWithdrawalObservationValid withdrawal /\
   exists pointer,
@@ -340,8 +343,8 @@ Lemma writeSuccessRepresentationWithdrawalAt decoded memory address index
       (pointer + 48 * Z.of_nat index) withdrawal.
 Proof.
   intros Hrepresentation Hnth.
-  have HobservationValid : writeSuccessObservationValid decoded.
-  { unfold writeSuccessConcreteRepresentation in Hrepresentation. tauto. }
+  have HobservationValid : writeSuccessObservationValid decoded :=
+    writeSuccessConcreteRepresentationOffValid _ _ _ _ Hrepresentation.
   have HwithdrawalsValid : writeSuccessListValid
       writeSuccessWithdrawalObservationValid (observationWithdrawals decoded).
   { unfold writeSuccessObservationValid in HobservationValid. tauto. }
@@ -354,7 +357,8 @@ Proof.
   split; first exact HwithdrawalValid.
   have HwithdrawalMemory : writeSuccessWithdrawalListMemory memory address 88
       (observationWithdrawals decoded).
-  { unfold writeSuccessConcreteRepresentation in Hrepresentation. tauto. }
+  { exact (writeSuccessConcreteRepresentationOffWithdrawalList
+      _ _ _ _ Hrepresentation). }
   unfold writeSuccessWithdrawalListMemory in HwithdrawalMemory.
   destruct HwithdrawalMemory as
     (pointer & Hpointer & HpointerRead & HlengthRead & Hitems).
@@ -576,7 +580,8 @@ Definition Inv_1568c
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
   writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
-  writeSuccessConcreteRepresentation
+  writeSuccessConcreteRepresentationOff
+    (successStackPointer WriteSuccessObservation args)
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
   writeSuccessWithdrawalItemsAt state.1.2.(seq_mem) base
@@ -632,7 +637,8 @@ Definition Inv_15694
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
   writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
-  writeSuccessConcreteRepresentation
+  writeSuccessConcreteRepresentationOff
+    (successStackPointer WriteSuccessObservation args)
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
   writeSuccessWithdrawalItemsAt state.1.2.(seq_mem) base
@@ -690,7 +696,8 @@ Definition Inv_156e8
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
   writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
-  writeSuccessConcreteRepresentation
+  writeSuccessConcreteRepresentationOff
+    (successStackPointer WriteSuccessObservation args)
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
   writeSuccessWithdrawalItemsAt state.1.2.(seq_mem) base
@@ -734,7 +741,8 @@ Lemma Inv_15694_current_shape args sp pointer base total processed remaining
     current = writeSuccessWithdrawalRawBytes withdrawal padding.
 Proof.
   unfold Inv_15694. intros Hinv.
-  have Hrepresentation : writeSuccessConcreteRepresentation
+  have Hrepresentation : writeSuccessConcreteRepresentationOff
+      (successStackPointer WriteSuccessObservation args)
       (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
       (successDecodedAddress WriteSuccessObservation args) by tauto.
   have Hnth : nth_error (observationWithdrawals
@@ -744,7 +752,7 @@ Proof.
       (bv_unsigned pointer) 48%N = Some current by tauto.
   have HwithdrawalMemory : writeSuccessWithdrawalMemory state.1.2.(seq_mem)
       (bv_unsigned pointer) withdrawal by tauto.
-  pose proof (writeSuccessRepresentationWithdrawalAt _ _ _ _ _
+  pose proof (writeSuccessRepresentationWithdrawalAt _ _ _ _ _ _
     Hrepresentation Hnth) as [Hvalid _].
   eapply writeSuccessWithdrawalRawBytesFromMemory; eassumption.
 Qed.
