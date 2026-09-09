@@ -456,6 +456,10 @@ Definition Inv_memcpy
   read_mem_list state.1.2.(seq_mem) (bv_unsigned destination)
     (N.of_nat (length bytes)) = Some destinationBefore /\
   islaMemoryRange (bv_unsigned destination) (length bytes) /\
+  0x20000000 <= bv_unsigned source /\
+  bv_unsigned source + Z.of_nat (length bytes) <= 0x40000000 /\
+  0x20000000 <= bv_unsigned destination /\
+  bv_unsigned destination + Z.of_nat (length bytes) <= 0x40000000 /\
   islaMemoryRangesDisjoint (bv_unsigned destination) (length bytes)
     (bv_unsigned source) (length bytes) /\
   (forall location,
