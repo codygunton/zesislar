@@ -5,7 +5,6 @@ Require Import IslaTraces.write_success_02.a101d8.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 
 Import ListNotations.
@@ -192,7 +191,7 @@ Lemma segment_101d4 (regs : reg_map) (global : seq_global_state) oldX15 :
   regs !! "x15" = Some oldX15 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101d4 = Some a101d4 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101d8 = Some a101d8 ->
-  writeSuccessTraceAssumptions (writeSuccess101d4Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess101d4Before regs global)
     (writeSuccess101d4Observations regs global)
     (writeSuccess101d4After regs global) /\
@@ -201,10 +200,8 @@ Lemma segment_101d4 (regs : reg_map) (global : seq_global_state) oldX15 :
   (writeSuccess101d4After regs global).2.(seq_mem) = global.(seq_mem) /\
   concat (map microLabels (writeSuccess101d4Observations regs global)) = [].
 Proof.
-  intros Hpc Hx12 Hcode Hnext Hassumptions.
+  intros Hpc Hx12 Hcode Hnext Hmstatus.
   eapply segment_101d4_mstatus; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions
-    regs global Hassumptions).
 Qed.
 
 Print Assumptions segment_101d4_mstatus.
@@ -338,16 +335,14 @@ Lemma segment_101d4_covered (regs : reg_map) (global : seq_global_state)
   regs !! "x15" = Some oldX15 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101d4 = Some a101d4 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101d8 = Some a101d8 ->
-  writeSuccessTraceAssumptions (writeSuccess101d4Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess101d4Before regs global)
     observations after ->
   after = writeSuccess101d4After regs global /\
   observations = writeSuccess101d4Observations regs global.
 Proof.
-  intros Hpc Hx12 Hcode Hnext Hassumptions Hsegment.
+  intros Hpc Hx12 Hcode Hnext Hmstatus Hsegment.
   eapply segment_101d4_mstatus_covered; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions
-    regs global Hassumptions).
 Qed.
 
 Print Assumptions segment_101d4_mstatus_covered.

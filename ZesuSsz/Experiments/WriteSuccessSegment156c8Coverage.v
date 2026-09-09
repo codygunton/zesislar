@@ -2,7 +2,6 @@ Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.write_success_93.a156c8.
 Require Import IslaTraces.write_success_93.a156cc.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment156c8.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment156c8CoveragePrefix.
@@ -47,15 +46,14 @@ Lemma segment_156c8_covered regs global oldX1 observations after :
   regs !! "x1" = Some oldX1 ->
   global.(seq_instrs) !! Z_to_bv 64 0x156c8 = Some a156c8 ->
   global.(seq_instrs) !! Z_to_bv 64 0x156cc = Some a156cc ->
-  writeSuccessTraceAssumptions (writeSuccess156c8Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess156c8Before regs global)
     observations after ->
   after = writeSuccess156c8After regs global /\
   observations = writeSuccess156c8Observations regs global.
 Proof.
-  intros Hpc Hdest Hcode Hnext Hassumptions Hsegment.
+  intros Hpc Hdest Hcode Hnext Hmstatus Hsegment.
   eapply segment_156c8_mstatus_covered; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions).
 Qed.
 
 Print Assumptions writeSuccess156c8ObservationsSplit.

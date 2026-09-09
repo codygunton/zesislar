@@ -5,24 +5,6 @@ Require Import IslaTraces.write_success_01.a10198.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk00.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk01.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk02.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk03.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk04.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk05.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk06.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk07.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk08.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk09.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk10.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk11.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk12.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk13.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk14.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk15.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk16.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -132,24 +114,6 @@ Definition writeSuccess10194Observations (regs : reg_map)
   writeSuccess10194PrefixObservations regs global sp ++
   [writeSuccess10194Observation
      (writeSuccess10194After regs global sp).1 global].
-
-Lemma writeSuccess10194MstatusFromTraceAssumptions regs global :
-  writeSuccessTraceAssumptions (writeSuccess10194Before regs global) ->
-  eval_a_exp regs writeSuccess10194Mstatus = Some (Val_Bool true).
-Proof.
-  intros Hassumptions.
-  apply Forall_forall with
-    (x := Assume writeSuccess10194Mstatus Mk_annot :t: tnil)
-    in Hassumptions.
-  - exact Hassumptions.
-  - unfold writeSuccessTraceAssumptionEvents.
-    rewrite elem_of_list_In.
-    apply in_concat. exists writeSuccessTraceAssumptionsChunk11.
-    split.
-    + cbn. tauto.
-    + unfold writeSuccessTraceAssumptionsChunk11,
-        writeSuccess10194Mstatus. cbn. tauto.
-Qed.
 
 Lemma writeSuccess10194TakeStep before observations done :
   IslaInstructionPrefixPath before observations done ->
@@ -303,7 +267,7 @@ Lemma segment_10194 (regs : reg_map) (global : seq_global_state)
   regs !! "x5" = Some oldX5 ->
   global.(seq_instrs) !! Z_to_bv 64 0x10194 = Some a10194 ->
   global.(seq_instrs) !! Z_to_bv 64 0x10198 = Some a10198 ->
-  writeSuccessTraceAssumptions (writeSuccess10194Before regs global) ->
+  eval_a_exp regs writeSuccess10194Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess10194Before regs global)
     (writeSuccess10194Observations regs global sp)
     (writeSuccess10194After regs global sp) /\
@@ -312,13 +276,10 @@ Lemma segment_10194 (regs : reg_map) (global : seq_global_state)
   (writeSuccess10194After regs global sp).2.(seq_mem) = global.(seq_mem) /\
   concat (map microLabels (writeSuccess10194Observations regs global sp)) = [].
 Proof.
-  intros Hpc Hsp Hx10 Hcode Hnext Hassumptions.
+  intros Hpc Hsp Hx10 Hcode Hnext Hmstatus.
   eapply segment_10194_mstatus; eauto.
-  exact (writeSuccess10194MstatusFromTraceAssumptions
-    regs global Hassumptions).
 Qed.
 
-Print Assumptions writeSuccess10194MstatusFromTraceAssumptions.
 Print Assumptions writeSuccess10194NextPcExact.
 Print Assumptions segment_10194_mstatus.
 Print Assumptions segment_10194.

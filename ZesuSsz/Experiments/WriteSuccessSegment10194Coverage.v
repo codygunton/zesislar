@@ -2,7 +2,6 @@ Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.write_success_01.a10194.
 Require Import IslaTraces.write_success_01.a10198.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment10194.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment10194CoveragePrefix.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment10194CoverageSuffix.
@@ -50,15 +49,14 @@ Lemma segment_10194_covered (regs : reg_map) (global : seq_global_state)
   regs !! "x5" = Some oldX5 ->
   global.(seq_instrs) !! Z_to_bv 64 0x10194 = Some a10194 ->
   global.(seq_instrs) !! Z_to_bv 64 0x10198 = Some a10198 ->
-  writeSuccessTraceAssumptions (writeSuccess10194Before regs global) ->
+  eval_a_exp regs writeSuccess10194Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess10194Before regs global)
     observations after ->
   after = writeSuccess10194After regs global sp /\
   observations = writeSuccess10194Observations regs global sp.
 Proof.
-  intros Hpc Hsp Hdest Hcode Hnext Hassumptions Hsegment.
+  intros Hpc Hsp Hdest Hcode Hnext Hmstatus Hsegment.
   eapply segment_10194_mstatus_covered; eauto.
-  exact (writeSuccess10194MstatusFromTraceAssumptions regs global Hassumptions).
 Qed.
 
 Print Assumptions writeSuccess10194ObservationsSplit.
