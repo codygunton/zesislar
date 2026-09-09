@@ -152,7 +152,7 @@ Lemma writeSuccessEncoderIntStoreFacts regs (stack : bv 64) :
   bv_unsigned stack `mod` 8 = 0 ->
   0x20000000 <= bv_unsigned stack ->
   bv_unsigned stack + 16 <= 0x40000000 ->
-  exists mstatusBits satp,
+  exists (mstatusBits satp : bv 64),
     regs !! "mstatus" = Some
       (RegVal_Struct [("bits", RVal_Bits mstatusBits)]) /\
     regs !! "satp" = Some (RVal_Bits satp) /\
