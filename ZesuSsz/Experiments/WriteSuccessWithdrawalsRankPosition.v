@@ -127,7 +127,7 @@ Theorem writeSuccessWithdrawalsRankAdjacentPosition
   (position < 408)%nat ->
   writeSuccessWithdrawalsPositionState remaining position before ->
   writeSuccessWithdrawalsPositionState remaining (S position) after ->
-  rank_15694 after < rank_15694 before.
+  (rank_15694 after < rank_15694 before)%nat.
 Proof.
   intros Hposition Hbefore Hafter.
   rewrite (writeSuccessWithdrawalsRankAtPosition _ _ _ Hbefore).
@@ -139,7 +139,7 @@ Theorem writeSuccessWithdrawalsRankPosition408
     remaining before after :
   writeSuccessWithdrawalsPositionState remaining 408 before ->
   writeSuccessWithdrawalsTerminalPositionState remaining after ->
-  rank_15694 after < rank_15694 before.
+  (rank_15694 after < rank_15694 before)%nat.
 Proof.
   intros Hbefore Hafter.
   rewrite (writeSuccessWithdrawalsRankAtPosition _ _ _ Hbefore).
@@ -154,17 +154,19 @@ Theorem writeSuccessWithdrawalsRankPosition409FromTable
     Some (if remaining is O then 0x156e8 else 0x15694) ->
   after.1.1.(seq_regs) !! "x9" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat remaining))) ->
-  rank_15694 after < rank_15694 before.
+  (rank_15694 after < rank_15694 before)%nat.
 Proof.
   intros (Hpc & Hx9 & Hrange) HafterPc HafterX9.
-  eapply writeSuccessWithdrawalsRankPosition409; eassumption.
+  have Hdecrease := writeSuccessWithdrawalsRankPosition409 before after
+    remaining Hpc HafterPc Hx9 HafterX9 Hrange.
+  lia.
 Qed.
 
 Theorem writeSuccessWithdrawalsRankFromSegmentEquation
     remaining position before after :
   (position < 410)%nat ->
   writeSuccessWithdrawalsSegmentEquation remaining position before after ->
-  rank_15694 after < rank_15694 before.
+  (rank_15694 after < rank_15694 before)%nat.
 Proof.
   intros Hposition [Hordinary|[Hcount|Hterminal]].
   - destruct Hordinary as (HbeforePosition & Hbefore & Hafter).
@@ -190,7 +192,7 @@ Theorem writeSuccessWithdrawalsWholeTableRankDecreases remaining states :
     (position < 410)%nat ->
     nth_error states position = Some before ->
     nth_error states (S position) = Some after ->
-    rank_15694 after < rank_15694 before.
+    (rank_15694 after < rank_15694 before)%nat.
 Proof.
   intros [_ Hequations] position before after Hposition Hbefore Hafter.
   apply (writeSuccessWithdrawalsRankFromSegmentEquation remaining position).
