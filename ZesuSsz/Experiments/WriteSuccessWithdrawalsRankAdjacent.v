@@ -81,7 +81,6 @@ Theorem writeSuccessWithdrawalsRankEndOfTable
     before after remaining position pc :
   nth_error writeSuccessWithdrawalsAfterMemcpyPcs position = Some pc ->
   (S position = length writeSuccessWithdrawalsAfterMemcpyPcs)%nat ->
-  pc = 0x156e4 ->
   writeSuccessWithdrawalsConcretePc before = Some pc ->
   writeSuccessWithdrawalsConcretePc after =
     Some (if remaining is O then 0x156e8 else 0x15694) ->
@@ -92,7 +91,10 @@ Theorem writeSuccessWithdrawalsRankEndOfTable
   (Z.of_nat remaining < 2 ^ 64)%Z ->
   rank_15694 after < rank_15694 before.
 Proof.
-  intros Hposition Hend -> Hpc HafterPc Hx9 HafterX9 Hrange.
+  intros Hposition Hend Hpc HafterPc Hx9 HafterX9 Hrange.
+  rewrite writeSuccessWithdrawalsAfterMemcpyPcsLength in Hend.
+  have HpositionExact : position = 67%nat by lia.
+  subst position. cbn in Hposition. inversion Hposition. subst pc.
   destruct remaining as [|remaining].
   - unfold rank_15694, writeSuccessWithdrawalsRegisterUnsigned.
     rewrite Hpc HafterPc Hx9 HafterX9. cbn.
