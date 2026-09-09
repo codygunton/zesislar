@@ -429,6 +429,34 @@ def render_memory_write_output(template: Path, trace_root: Path, pc: int) -> str
     })
 
 
+def memory_write_stack_metadata(
+    trace_root: Path, pc: int
+) -> tuple[Path, str, str, int]:
+    path, base, value, offset = memory_write_long_metadata(trace_root, pc)
+    if pc not in (0x15D14, 0x15D18) or base != "x2":
+        raise ValueError(
+            f"unsupported stack memory-write trace at 0x{pc:x}"
+        )
+    return path, base, value, offset
+
+
+def render_memory_write_stack(template: Path, trace_root: Path, pc: int) -> str:
+    path, base, value, offset = memory_write_stack_metadata(trace_root, pc)
+    next_pc = pc + 4
+    next_path = trace_path(trace_root, next_pc)
+    if path.parent != next_path.parent:
+        raise ValueError(f"source and successor traces use different modules at 0x{pc:x}")
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__BASE_REGISTER__": base,
+        "__VALUE_REGISTER__": value,
+        "__VALUE_HYP__": f"Hx{value.removeprefix('x')}",
+        "__OFFSET__": str(offset),
+    })
+
+
 def render_memory_read_long(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
@@ -578,7 +606,7 @@ def main() -> None:
             "conditional-branch", "direct-jump", "two-register-add",
             "memory-read-long",
             "memory-write-byte",
-            "memory-write-output",
+            "memory-write-output", "memory-write-stack",
         ),
         default="constant-write",
     )
@@ -605,6 +633,8 @@ def main() -> None:
         rendered = render_memory_write_byte(args.template, args.trace_root, args.pc)
     elif args.shape == "memory-write-output":
         rendered = render_memory_write_output(args.template, args.trace_root, args.pc)
+    elif args.shape == "memory-write-stack":
+        rendered = render_memory_write_stack(args.template, args.trace_root, args.pc)
     else:
         rendered = render_two_register_add(args.template, args.trace_root, args.pc)
     if args.check:

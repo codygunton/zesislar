@@ -1,0 +1,130 @@
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+Require Import IslaTraces.__SOURCE_MODULE__.a__NEXT_PC__.
+Require Import ZesuSsz.Contracts.InstructionBoundary.
+Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffixMiddle.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffixFinishBacked.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffixFinishMmio.
+
+Definition writeSuccess__SOURCE_PC__SuffixObservations regs global
+    (mstatusBits address satp value : bv 64) (result : bool) :=
+  [writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace27 mstatusBits address satp value) regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace28 mstatusBits address satp value) regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace29 mstatusBits address satp value result) regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace30 mstatusBits address satp value result) regs)
+     (writeSuccess__SOURCE_PC__Global global address value);
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace31 mstatusBits address satp value result)
+       (writeSuccess__SOURCE_PC__Regs regs))
+     (writeSuccess__SOURCE_PC__Global global address value);
+   writeSuccess15694Observation
+     (writeSuccess__SOURCE_PC__After regs global address value).1
+     (writeSuccess__SOURCE_PC__Global global address value)].
+
+Definition writeSuccess__SOURCE_PC__MmioSuffixObservations regs global
+    (mstatusBits address satp value : bv 64) (result : bool) :=
+  [writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace27 mstatusBits address satp value) regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace28 mstatusBits address satp value) regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace29 mstatusBits address satp value result) regs) global;
+   {| microLabels :=
+        [SWriteMem (writeSuccess__SOURCE_PC__Address address) (bv_to_bvn value)];
+      microAfter :=
+        (writeSuccess15694Local
+          (writeSuccess__SOURCE_PC__Trace30 mstatusBits address satp value result) regs,
+         global) |};
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace31 mstatusBits address satp value result)
+       (writeSuccess__SOURCE_PC__Regs regs)) global;
+   writeSuccess15694Observation
+     (writeSuccess__SOURCE_PC__MmioAfter regs global).1 global].
+
+Lemma segment___SOURCE_PC___suffix_covered regs global
+    (mstatusBits address satp value : bv 64) old
+    prefix25 done labels spawned after :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  read_mem global.(seq_mem)
+    (bv_unsigned (writeSuccess__SOURCE_PC__Address address)) 8 = Some old ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__NEXT_PC__ = Some a__NEXT_PC__ ->
+  IslaInstructionPrefixPath
+    (writeSuccess15694Local
+      (writeSuccess__SOURCE_PC__Trace25 mstatusBits address satp value) regs, global)
+    prefix25 done ->
+  done.1.(seq_trace) = tnil ->
+  seq_step done.1 done.2 labels after.1 after.2 spawned ->
+  exists result,
+  after = writeSuccess__SOURCE_PC__After regs global address value /\
+  prefix25 ++ ({| microLabels := labels; microAfter := after |} :: []) =
+    writeSuccess__SOURCE_PC__SuffixObservations regs global
+      mstatusBits address satp value result.
+Proof.
+  intros Hpc Hmem Hnext Hprefix Hnil Hdone.
+  destruct (segment___SOURCE_PC___suffix_middle_covered regs global mstatusBits
+    address satp value prefix25 done labels spawned after Hprefix Hnil Hdone) as
+    (result & prefix29 & Hp29 & Hmiddle).
+  destruct (segment___SOURCE_PC___suffix_finish_backed_covered regs global
+    mstatusBits address satp value result old prefix29 done labels spawned
+    after Hpc Hmem Hnext Hp29 Hnil Hdone) as (Hafter & Hfinish).
+  exists result. split; first exact Hafter.
+  rewrite Hmiddle. rewrite <- app_assoc. rewrite Hfinish.
+  unfold writeSuccess__SOURCE_PC__SuffixObservations,
+    writeSuccess__SOURCE_PC__SuffixMiddleObservations,
+    writeSuccess__SOURCE_PC__SuffixFinishBackedObservations.
+  cbn. reflexivity.
+
+Qed.
+
+Lemma segment___SOURCE_PC___mmio_suffix_covered regs global
+    (mstatusBits address satp value : bv 64) prefix25 done labels spawned after :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  read_mem global.(seq_mem)
+    (bv_unsigned (writeSuccess__SOURCE_PC__Address address)) 8 = None ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__NEXT_PC__ = Some a__NEXT_PC__ ->
+  IslaInstructionPrefixPath
+    (writeSuccess15694Local
+      (writeSuccess__SOURCE_PC__Trace25 mstatusBits address satp value) regs, global)
+    prefix25 done ->
+  done.1.(seq_trace) = tnil ->
+  seq_step done.1 done.2 labels after.1 after.2 spawned ->
+  exists result,
+  after = writeSuccess__SOURCE_PC__MmioAfter regs global /\
+  prefix25 ++ ({| microLabels := labels; microAfter := after |} :: []) =
+    writeSuccess__SOURCE_PC__MmioSuffixObservations regs global
+      mstatusBits address satp value result.
+Proof.
+  intros Hpc Hmem Hnext Hprefix Hnil Hdone.
+  destruct (segment___SOURCE_PC___suffix_middle_covered regs global mstatusBits
+    address satp value prefix25 done labels spawned after Hprefix Hnil Hdone) as
+    (result & prefix29 & Hp29 & Hmiddle).
+  destruct (segment___SOURCE_PC___suffix_finish_mmio_covered regs global
+    mstatusBits address satp value result prefix29 done labels spawned
+    after Hpc Hmem Hnext Hp29 Hnil Hdone) as (Hafter & Hfinish).
+  exists result. split; first exact Hafter.
+  rewrite Hmiddle. rewrite <- app_assoc. rewrite Hfinish.
+  unfold writeSuccess__SOURCE_PC__MmioSuffixObservations,
+    writeSuccess__SOURCE_PC__SuffixMiddleObservations,
+    writeSuccess__SOURCE_PC__SuffixFinishMmioObservations.
+  cbn. reflexivity.
+
+Qed.
+
+Print Assumptions segment___SOURCE_PC___suffix_covered.
+Print Assumptions segment___SOURCE_PC___mmio_suffix_covered.

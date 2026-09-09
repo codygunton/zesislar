@@ -453,6 +453,52 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "generated segment differs"):
                 GENERATOR.check_generated_output(altered, rendered)
 
+    def test_stack_memory_write_generates_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/memory_write_stack"
+        self.assertEqual(len(list(templates.glob("*.tmpl"))), 15)
+        for pc in (0x15D14, 0x15D18):
+            for template in templates.glob("*.tmpl"):
+                target_name = template.name.replace("MemoryWriteStack", f"{pc:x}")
+                target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+                rendered = GENERATOR.render_memory_write_stack(
+                    template, ROOT / "generated/isla-traces", pc
+                )
+                self.assertEqual(rendered, target.read_text())
+
+    def test_stack_memory_write_rejects_other_shape(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_stack/"
+            "WriteSuccessSegmentMemoryWriteStack.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "unsupported long memory-write"):
+            GENERATOR.render_memory_write_stack(
+                template, ROOT / "generated/isla-traces", 0x101E4
+            )
+
+    def test_stack_memory_write_rejects_output_store(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_stack/"
+            "WriteSuccessSegmentMemoryWriteStack.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "unsupported stack memory-write"):
+            GENERATOR.render_memory_write_stack(
+                template, ROOT / "generated/isla-traces", 0x10198
+            )
+
+    def test_stack_memory_write_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_stack/"
+            "WriteSuccessSegmentMemoryWriteStack.v.tmpl"
+        )
+        rendered = GENERATOR.render_memory_write_stack(
+            template, ROOT / "generated/isla-traces", 0x15D14
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment15d14.v"
+            altered.write_text(rendered.replace("segment_15d14", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
