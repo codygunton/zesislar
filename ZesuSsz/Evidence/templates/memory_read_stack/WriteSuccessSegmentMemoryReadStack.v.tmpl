@@ -1,0 +1,434 @@
+From Coq Require Import Eqdep_dec Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+Require Import IslaTraces.__SOURCE_MODULE__.a__SOURCE_PC__.
+Require Import IslaTraces.__SOURCE_MODULE__.a__NEXT_PC__.
+Require Import ZesuSsz.Contracts.InstructionBoundary.
+Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
+
+Import ListNotations.
+Open Scope Z_scope.
+
+Definition writeSuccess__SOURCE_PC__Aligned : a_exp :=
+  AExp_Binop Eq
+    (AExp_Unop (Extract 2 0)
+      (AExp_Manyop (Bvmanyarith Bvadd)
+        [AExp_Val (AVal_Var "__BASE_REGISTER__" []) Mk_annot;
+         AExp_Val (AVal_Bits (BV 64 __OFFSET__)) Mk_annot] Mk_annot) Mk_annot)
+    (AExp_Val (AVal_Bits (BV 3 0)) Mk_annot) Mk_annot.
+
+Definition writeSuccess__SOURCE_PC__Lower : a_exp :=
+  AExp_Binop (Bvcomp Bvuge)
+    (AExp_Manyop (Bvmanyarith Bvadd)
+      [AExp_Val (AVal_Var "__BASE_REGISTER__" []) Mk_annot;
+       AExp_Val (AVal_Bits (BV 64 __OFFSET__)) Mk_annot] Mk_annot)
+    (AExp_Val (AVal_Var "rv_ram_base" []) Mk_annot) Mk_annot.
+Definition writeSuccess__SOURCE_PC__Upper : a_exp :=
+  AExp_Binop (Bvcomp Bvule)
+    (AExp_Manyop (Bvmanyarith Bvadd)
+      [AExp_Val (AVal_Var "__BASE_REGISTER__" []) Mk_annot;
+       AExp_Val (AVal_Bits (BV 64 __OFFSET__)) Mk_annot] Mk_annot)
+    (AExp_Binop (Bvarith Bvsub)
+      (AExp_Manyop (Bvmanyarith Bvadd)
+        [AExp_Val (AVal_Var "rv_ram_base" []) Mk_annot;
+         AExp_Val (AVal_Var "rv_ram_size" []) Mk_annot] Mk_annot)
+      (AExp_Val (AVal_Bits (BV 64 8)) Mk_annot) Mk_annot) Mk_annot.
+
+Definition writeSuccess__SOURCE_PC__SysRegs (regs : reg_map) : Prop :=
+  regs !! "rv_enable_pmp" = Some (RVal_Bool false) /\
+  regs !! "rv_enable_misaligned_access" = Some (RVal_Bool false) /\
+  regs !! "rv_ram_base" = Some (RVal_Bits (BV 64 0x20000000)) /\
+  regs !! "rv_ram_size" = Some (RVal_Bits (BV 64 0x20000000)) /\
+  regs !! "rv_rom_base" = Some (RVal_Bits (BV 64 0x1000)) /\
+  regs !! "rv_rom_size" = Some (RVal_Bits (BV 64 0x100)) /\
+  regs !! "rv_clint_base" = Some (RVal_Bits (BV 64 0x2000000)) /\
+  regs !! "rv_clint_size" = Some (RVal_Bits (BV 64 0xc0000)) /\
+  regs !! "rv_htif_tohost" = Some (RVal_Bits (BV 64 0x40001000)) /\
+  regs !! "cur_privilege" = Some (RVal_Enum "Machine").
+
+Definition writeSuccess__SOURCE_PC__NextPc : bv 64 :=
+  (Z_to_bv 64 0x__SOURCE_PC__ + BV 64 4)%bv.
+Definition writeSuccess__SOURCE_PC__Address (sp : bv 64) : bv 64 :=
+  (sp + BV 64 __OFFSET__)%bv.
+Definition writeSuccess__SOURCE_PC__Trace1 := writeSuccessTraceTail a__SOURCE_PC__.
+Definition writeSuccess__SOURCE_PC__Trace2 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace1.
+Definition writeSuccess__SOURCE_PC__Trace3 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace2.
+Definition writeSuccess__SOURCE_PC__Trace4 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace3.
+Definition writeSuccess__SOURCE_PC__Trace5 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace4.
+Definition writeSuccess__SOURCE_PC__Trace6 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace5.
+Definition writeSuccess__SOURCE_PC__Trace7 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace6.
+Definition writeSuccess__SOURCE_PC__Trace8 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace7.
+Definition writeSuccess__SOURCE_PC__Trace9 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace8.
+Definition writeSuccess__SOURCE_PC__Trace10 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace9.
+Definition writeSuccess__SOURCE_PC__Trace11 (mstatusBits : bv 64) :=
+  subst_trace (Val_Bits mstatusBits) 2 (writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace10).
+Definition writeSuccess__SOURCE_PC__Trace12 (mstatusBits : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace11 mstatusBits).
+Definition writeSuccess__SOURCE_PC__Trace13 (mstatusBits address : bv 64) :=
+  subst_trace (Val_Bits address) 3
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace12 mstatusBits)).
+Definition writeSuccess__SOURCE_PC__Trace14 (mstatusBits address : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace13 mstatusBits address).
+Definition writeSuccess__SOURCE_PC__Trace15 (mstatusBits address : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace14 mstatusBits address).
+Definition writeSuccess__SOURCE_PC__TraceUpper (mstatusBits address : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace15 mstatusBits address).
+Definition writeSuccess__SOURCE_PC__Trace16 (mstatusBits address : bv 64) :=
+  subst_trace (Val_Bits (Z_to_bv 64 0x__SOURCE_PC__)) 4
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__TraceUpper mstatusBits address)).
+Definition writeSuccess__SOURCE_PC__Trace17 (mstatusBits address : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace16 mstatusBits address).
+Definition writeSuccess__SOURCE_PC__Trace18 (mstatusBits address : bv 64) :=
+  subst_trace (Val_Bits writeSuccess__SOURCE_PC__NextPc) 5
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace17 mstatusBits address)).
+Definition writeSuccess__SOURCE_PC__Trace19 (mstatusBits address : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace18 mstatusBits address).
+Definition writeSuccess__SOURCE_PC__Trace20 (mstatusBits address : bv 64) :=
+  subst_trace (Val_Bits (writeSuccess__SOURCE_PC__Address address)) 6
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace19 mstatusBits address)).
+Definition writeSuccess__SOURCE_PC__Trace21 (mstatusBits address : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace20 mstatusBits address).
+Definition writeSuccess__SOURCE_PC__Trace22 (mstatusBits address satp : bv 64) :=
+  subst_trace (Val_Bits satp) 19
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace21 mstatusBits address)).
+Definition writeSuccess__SOURCE_PC__Trace23 (mstatusBits address satp : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace22 mstatusBits address satp).
+Definition writeSuccess__SOURCE_PC__Trace24 (mstatusBits address satp : bv 64) :=
+  subst_trace (Val_Bits (bv_zero_extend 128 (writeSuccess__SOURCE_PC__Address address))) 26
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace23 mstatusBits address satp)).
+Definition writeSuccess__SOURCE_PC__Trace25 (mstatusBits address satp : bv 64) :=
+  subst_trace (Val_Bits (bv_zero_extend 128 (writeSuccess__SOURCE_PC__Address address))) 32
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace24 mstatusBits address satp)).
+Definition writeSuccess__SOURCE_PC__Trace26 (mstatusBits address satp value : bv 64) :=
+  subst_trace (Val_Bits value) 36
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace25 mstatusBits address satp)).
+Definition writeSuccess__SOURCE_PC__Trace27 (mstatusBits address satp value : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace26 mstatusBits address satp value).
+Definition writeSuccess__SOURCE_PC__Trace28 (mstatusBits address satp value : bv 64) :=
+  subst_trace (Val_Bits value) 37
+    (writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace27 mstatusBits address satp value)).
+Definition writeSuccess__SOURCE_PC__Trace29 (mstatusBits address satp value : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace28 mstatusBits address satp value).
+Definition writeSuccess__SOURCE_PC__Trace30 (mstatusBits address satp value : bv 64) :=
+  writeSuccessTraceTail (writeSuccess__SOURCE_PC__Trace29 mstatusBits address satp value).
+
+Definition writeSuccess__SOURCE_PC__Regs (regs : reg_map) (value : bv 64) : reg_map :=
+  <["PC" := RVal_Bits writeSuccess__SOURCE_PC__NextPc]>
+    (<["__DEST_REGISTER__" := RVal_Bits value]> regs).
+Definition writeSuccess__SOURCE_PC__Before (regs : reg_map)
+    (global : seq_global_state) : IslaState :=
+  (writeSuccess15694Local a__SOURCE_PC__ regs, global).
+Definition writeSuccess__SOURCE_PC__After (regs : reg_map)
+    (global : seq_global_state) (value : bv 64) : IslaState :=
+  (writeSuccess15694Local a__NEXT_PC__ (writeSuccess__SOURCE_PC__Regs regs value), global).
+
+Definition writeSuccess__SOURCE_PC__PreReadObservations (regs : reg_map)
+    (global : seq_global_state) (mstatusBits address satp value : bv 64) : list IslaMicroObservation :=
+  map (fun trace => writeSuccess15694Observation
+    (writeSuccess15694Local trace regs) global)
+    [writeSuccess__SOURCE_PC__Trace1; writeSuccess__SOURCE_PC__Trace2;
+     writeSuccess__SOURCE_PC__Trace3; writeSuccess__SOURCE_PC__Trace4;
+     writeSuccess__SOURCE_PC__Trace5; writeSuccess__SOURCE_PC__Trace6;
+     writeSuccess__SOURCE_PC__Trace7; writeSuccess__SOURCE_PC__Trace8;
+     writeSuccess__SOURCE_PC__Trace9; writeSuccess__SOURCE_PC__Trace10;
+     writeSuccess__SOURCE_PC__Trace11 mstatusBits;
+     writeSuccess__SOURCE_PC__Trace12 mstatusBits;
+     writeSuccess__SOURCE_PC__Trace13 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace14 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace15 mstatusBits address;
+     writeSuccess__SOURCE_PC__TraceUpper mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace16 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace17 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace18 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace19 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace20 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace21 mstatusBits address;
+     writeSuccess__SOURCE_PC__Trace22 mstatusBits address satp;
+     writeSuccess__SOURCE_PC__Trace23 mstatusBits address satp;
+     writeSuccess__SOURCE_PC__Trace24 mstatusBits address satp;
+     writeSuccess__SOURCE_PC__Trace25 mstatusBits address satp;
+     writeSuccess__SOURCE_PC__Trace26 mstatusBits address satp value].
+
+Definition writeSuccess__SOURCE_PC__PostReadPrefix (regs : reg_map)
+    (global : seq_global_state) (mstatusBits address satp value : bv 64) :=
+  [writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace28 mstatusBits address satp value) regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace29 mstatusBits address satp value)
+       (<["__DEST_REGISTER__" := RVal_Bits value]> regs)) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local
+       (writeSuccess__SOURCE_PC__Trace30 mstatusBits address satp value)
+       (writeSuccess__SOURCE_PC__Regs regs value)) global].
+
+Definition writeSuccess__SOURCE_PC__ExecutionPrefix (regs : reg_map)
+    (global : seq_global_state) (mstatusBits address satp value : bv 64)
+    (readLabels : list seq_label) :=
+  writeSuccess__SOURCE_PC__PreReadObservations regs global mstatusBits address satp value ++
+  ({| microLabels := readLabels; microAfter := (writeSuccess15694Local
+      (writeSuccess__SOURCE_PC__Trace27 mstatusBits address satp value) regs, global) |} ::
+   writeSuccess__SOURCE_PC__PostReadPrefix regs global mstatusBits address satp value).
+
+Definition writeSuccess__SOURCE_PC__Observations (regs : reg_map)
+    (global : seq_global_state) (mstatusBits address satp value : bv 64) :=
+  writeSuccess__SOURCE_PC__ExecutionPrefix regs global mstatusBits address satp value [] ++
+  [writeSuccess15694Observation (writeSuccess__SOURCE_PC__After regs global value).1 global].
+
+Definition writeSuccess__SOURCE_PC__MmioObservations (regs : reg_map)
+    (global : seq_global_state) (mstatusBits address satp value : bv 64) :=
+  writeSuccess__SOURCE_PC__ExecutionPrefix regs global mstatusBits address satp value
+    [SReadMem (writeSuccess__SOURCE_PC__Address address) (bv_to_bvn value)] ++
+  [writeSuccess15694Observation (writeSuccess__SOURCE_PC__After regs global value).1 global].
+
+Definition writeSuccess__SOURCE_PC__PrefixObservations (regs : reg_map)
+    (global : seq_global_state) (mstatusBits address satp value : bv 64)
+    (_ : bool) :=
+  writeSuccess__SOURCE_PC__ExecutionPrefix regs global mstatusBits address satp value [].
+
+Lemma writeSuccess__SOURCE_PC__NextPcExact :
+  writeSuccess__SOURCE_PC__NextPc = Z_to_bv 64 0x__NEXT_PC__.
+Proof. vm_compute. apply bv_eq. reflexivity. Qed.
+
+Lemma writeSuccess__SOURCE_PC__SignExtendIdentity (value : bv 64) :
+  bv_sign_extend 64 value = value.
+Proof. bv_solve. Qed.
+
+Lemma writeSuccess__SOURCE_PC__RegsLookupOther regs value reg :
+  reg <> "PC" -> reg <> "__DEST_REGISTER__" ->
+  writeSuccess__SOURCE_PC__Regs regs value !! reg = regs !! reg.
+Proof. intros Hpc Hdest. unfold writeSuccess__SOURCE_PC__Regs.
+  rewrite lookup_insert_ne; last congruence.
+  rewrite lookup_insert_ne; last congruence. reflexivity. Qed.
+
+Lemma writeSuccess__SOURCE_PC__RegsDom regs base value :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  regs !! "__DEST_REGISTER__" = Some (RVal_Bits base) ->
+  dom (writeSuccess__SOURCE_PC__Regs regs value) = dom regs.
+Proof. intros Hpc Hdest. apply elem_of_dom_2 in Hpc. apply elem_of_dom_2 in Hdest.
+  unfold writeSuccess__SOURCE_PC__Regs. rewrite !dom_insert_L. set_solver. Qed.
+
+Ltac writeSuccess__SOURCE_PC__TraceCbn :=
+  cbn [writeSuccess__SOURCE_PC__Trace1 writeSuccess__SOURCE_PC__Trace2
+    writeSuccess__SOURCE_PC__Trace3 writeSuccess__SOURCE_PC__Trace4
+    writeSuccess__SOURCE_PC__Trace5 writeSuccess__SOURCE_PC__Trace6
+    writeSuccess__SOURCE_PC__Trace7 writeSuccess__SOURCE_PC__Trace8
+    writeSuccess__SOURCE_PC__Trace9 writeSuccess__SOURCE_PC__Trace10
+    writeSuccess__SOURCE_PC__Trace11 writeSuccess__SOURCE_PC__Trace12
+    writeSuccess__SOURCE_PC__Trace13 writeSuccess__SOURCE_PC__Trace14
+    writeSuccess__SOURCE_PC__Trace15 writeSuccess__SOURCE_PC__TraceUpper
+    writeSuccess__SOURCE_PC__Trace16 writeSuccess__SOURCE_PC__Trace17
+    writeSuccess__SOURCE_PC__Trace18 writeSuccess__SOURCE_PC__Trace19
+    writeSuccess__SOURCE_PC__Trace20 writeSuccess__SOURCE_PC__Trace21
+    writeSuccess__SOURCE_PC__Trace22 writeSuccess__SOURCE_PC__Trace23
+    writeSuccess__SOURCE_PC__Trace24 writeSuccess__SOURCE_PC__Trace25
+    writeSuccess__SOURCE_PC__Trace26 writeSuccess__SOURCE_PC__Trace27
+    writeSuccess__SOURCE_PC__Trace28 writeSuccess__SOURCE_PC__Trace29
+    writeSuccess__SOURCE_PC__Trace30 writeSuccess__SOURCE_PC__NextPc
+    writeSuccess__SOURCE_PC__Address writeSuccessTraceTail a__SOURCE_PC__].
+
+Lemma segment___SOURCE_PC___core (regs : reg_map) (global : seq_global_state)
+    (mstatusBits address satp value oldDest : bv 64)
+    (readLabels : list seq_label) :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  regs !! "__BASE_REGISTER__" = Some (RVal_Bits address) ->
+  regs !! "mstatus" = Some (RegVal_Struct [("bits", RVal_Bits mstatusBits)]) ->
+  regs !! "satp" = Some (RVal_Bits satp) ->
+  regs !! "__DEST_REGISTER__" = Some (RVal_Bits oldDest) ->
+  writeSuccess__SOURCE_PC__SysRegs regs ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Aligned = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Lower = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Upper = Some (Val_Bool true) ->
+  ((readLabels = [] /\ read_mem global.(seq_mem)
+      (bv_unsigned (writeSuccess__SOURCE_PC__Address address)) 8 = Some (bv_to_bvn value)) \/
+   (readLabels = [SReadMem (writeSuccess__SOURCE_PC__Address address) (bv_to_bvn value)] /\
+    read_mem global.(seq_mem) (bv_unsigned (writeSuccess__SOURCE_PC__Address address)) 8 = None /\
+    (bv_unsigned (writeSuccess__SOURCE_PC__Address address) + 8 <= 2 ^ 64)%Z /\
+    set_Forall (fun item => ~ (bv_unsigned (writeSuccess__SOURCE_PC__Address address) <=
+      bv_unsigned item < bv_unsigned (writeSuccess__SOURCE_PC__Address address) + 8)%Z)
+      (dom global.(seq_mem)))) ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__SOURCE_PC__ = Some a__SOURCE_PC__ ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__NEXT_PC__ = Some a__NEXT_PC__ ->
+  IslaInstructionSegment (writeSuccess__SOURCE_PC__Before regs global)
+    (writeSuccess__SOURCE_PC__ExecutionPrefix regs global mstatusBits address satp value
+       readLabels ++
+     [writeSuccess15694Observation (writeSuccess__SOURCE_PC__After regs global value).1 global])
+    (writeSuccess__SOURCE_PC__After regs global value).
+Proof.
+  intros Hpc Hx2 Hmstatus Hsatp Hdest Hsys HmstatusAssume Haligned Hlower Hupper
+    Hread Hcode Hnext.
+  destruct Hsys as (Hpmp & Hmisaligned & Hrambase & Hramsize & Hrombase & Hromsize &
+    Hclintbase & Hclintsize & Htohost & Hpriv).
+  unfold writeSuccess__SOURCE_PC__ExecutionPrefix,
+    writeSuccess__SOURCE_PC__PreReadObservations,
+    writeSuccess__SOURCE_PC__PostReadPrefix.
+  eapply islaInstructionSegmentIntro with
+    (done := (writeSuccess15694Local tnil (writeSuccess__SOURCE_PC__Regs regs value), global))
+    (labels := []) (spawned := []).
+  - split; first reflexivity. exists (Z_to_bv 64 0x__SOURCE_PC__), a__SOURCE_PC__.
+    cbn. rewrite Hpc Hcode. repeat split; reflexivity.
+  - do 10 (eapply IslaInstructionPrefixStep; first discriminate;
+      [eapply writeSuccessSeqAssumeReg;
+       [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; apply AssumeRegS|
+        first [exact Hpmp | exact Hmisaligned | exact Hrambase | exact Hramsize |
+          exact Hrombase | exact Hromsize | exact Hclintbase | exact Hclintsize |
+          exact Htohost | exact Hpriv]|reflexivity]|]).
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      apply DeclareConstBitVecS' with (b := mstatusBits). }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqAssume; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply AssumeS. exact HmstatusAssume. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      apply DeclareConstBitVecS' with (b := address). }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqAssume; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply AssumeS. exact Haligned. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqAssume; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply AssumeS. exact Hlower. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqAssume; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply AssumeS. exact Hupper. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      apply DeclareConstBitVecS' with (b := Z_to_bv 64 0x__SOURCE_PC__). }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { eapply writeSuccessSeqReadReg with (root := RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__))
+        (value := RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__));
+        [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|exact Hpc|reflexivity|reflexivity]. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply DefineConstS with (v := Val_Bits writeSuccess__SOURCE_PC__NextPc). reflexivity. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { eapply writeSuccessSeqReadReg with (root := RVal_Bits address) (value := RVal_Bits address);
+        [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|exact Hx2|reflexivity|reflexivity]. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply DefineConstS with (v := Val_Bits (writeSuccess__SOURCE_PC__Address address)). cbn.
+      destruct (decide (64%N = 64%N)) as [Heq|Hneq].
+      - rewrite (UIP_dec N.eq_dec Heq eq_refl). cbn. reflexivity.
+      - exfalso. apply Hneq. reflexivity. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { eapply writeSuccessSeqReadReg with
+        (root := RegVal_Struct [("bits", RVal_Bits mstatusBits)])
+        (value := RegVal_Struct [("bits", RVal_Bits mstatusBits)]);
+        [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|exact Hmstatus|reflexivity|reflexivity]. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      apply DeclareConstBitVecS' with (b := satp). }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { eapply writeSuccessSeqReadReg with (root := RVal_Bits satp) (value := RVal_Bits satp);
+        [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|exact Hsatp|reflexivity|reflexivity]. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply DefineConstS with (v := Val_Bits (bv_zero_extend 128
+        (writeSuccess__SOURCE_PC__Address address))). reflexivity. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply DefineConstS with (v := Val_Bits (bv_zero_extend 128
+        (writeSuccess__SOURCE_PC__Address address))). reflexivity. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      apply DeclareConstBitVecS' with (b := value). }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { destruct Hread as [(-> & Hmem)|(-> & Hmem & Hrange & Houtside)].
+      - eapply writeSuccessSeqReadMemBacked with
+          (address := writeSuccess__SOURCE_PC__Address address) (len := 8%N) (value := value);
+          [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|lia|exact Hmem].
+      - eapply writeSuccessSeqReadMemMmio with
+          (address := writeSuccess__SOURCE_PC__Address address) (len := 8%N) (value := value);
+          [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|lia|exact Hmem|exact Hrange|exact Houtside]. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { apply writeSuccessSeqSilent; first reflexivity. writeSuccess__SOURCE_PC__TraceCbn.
+      eapply DefineConstS with (v := Val_Bits value).
+      cbn. rewrite writeSuccess__SOURCE_PC__SignExtendIdentity. reflexivity. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { eapply writeSuccessSeqWriteReg with (root := RVal_Bits oldDest)
+        (value := RVal_Bits value) (updated := RVal_Bits value);
+        [reflexivity|writeSuccess__SOURCE_PC__TraceCbn; constructor|exact Hdest|reflexivity|reflexivity]. }
+    eapply IslaInstructionPrefixStep; first discriminate.
+    { eapply writeSuccessSeqWriteReg with (root := RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__))
+        (value := RVal_Bits writeSuccess__SOURCE_PC__NextPc)
+        (updated := RVal_Bits writeSuccess__SOURCE_PC__NextPc).
+      - reflexivity. - writeSuccess__SOURCE_PC__TraceCbn. constructor.
+      - unfold writeSuccess__SOURCE_PC__Regs. rewrite lookup_insert_ne; last congruence. exact Hpc.
+      - reflexivity. - reflexivity. }
+    apply IslaInstructionPrefixRefl.
+  - reflexivity.
+  - apply writeSuccessSeqDoneTabled with (next := a__NEXT_PC__) (trace := a__NEXT_PC__).
+    + reflexivity. + reflexivity. + constructor.
+    + exists (Z_to_bv 64 0x__NEXT_PC__). unfold writeSuccess__SOURCE_PC__Regs.
+      rewrite lookup_insert writeSuccess__SOURCE_PC__NextPcExact Hnext. repeat split; reflexivity.
+  - left. split; first reflexivity. exists (Z_to_bv 64 0x__NEXT_PC__), a__NEXT_PC__.
+    cbn. unfold writeSuccess__SOURCE_PC__Regs. rewrite lookup_insert.
+    rewrite writeSuccess__SOURCE_PC__NextPcExact Hnext. repeat split; reflexivity.
+Qed.
+
+Lemma segment___SOURCE_PC__ (regs : reg_map) (global : seq_global_state)
+    (mstatusBits address satp value oldDest : bv 64) :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  regs !! "__BASE_REGISTER__" = Some (RVal_Bits address) ->
+  regs !! "mstatus" = Some (RegVal_Struct [("bits", RVal_Bits mstatusBits)]) ->
+  regs !! "satp" = Some (RVal_Bits satp) ->
+  regs !! "__DEST_REGISTER__" = Some (RVal_Bits oldDest) ->
+  writeSuccess__SOURCE_PC__SysRegs regs ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Aligned = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Lower = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Upper = Some (Val_Bool true) ->
+  read_mem global.(seq_mem) (bv_unsigned (writeSuccess__SOURCE_PC__Address address)) 8 = Some (bv_to_bvn value) ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__SOURCE_PC__ = Some a__SOURCE_PC__ ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__NEXT_PC__ = Some a__NEXT_PC__ ->
+  IslaInstructionSegment (writeSuccess__SOURCE_PC__Before regs global)
+    (writeSuccess__SOURCE_PC__Observations regs global mstatusBits address satp value)
+    (writeSuccess__SOURCE_PC__After regs global value) /\
+  (writeSuccess__SOURCE_PC__After regs global value).2.(seq_mem) = global.(seq_mem).
+Proof.
+  intros. split; last reflexivity.
+  unfold writeSuccess__SOURCE_PC__Observations.
+  eapply segment___SOURCE_PC___core; try eassumption. left. split; eassumption || reflexivity.
+Qed.
+
+Lemma segment___SOURCE_PC___mmio (regs : reg_map) (global : seq_global_state)
+    (mstatusBits address satp value oldDest : bv 64) :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  regs !! "__BASE_REGISTER__" = Some (RVal_Bits address) ->
+  regs !! "mstatus" = Some (RegVal_Struct [("bits", RVal_Bits mstatusBits)]) ->
+  regs !! "satp" = Some (RVal_Bits satp) ->
+  regs !! "__DEST_REGISTER__" = Some (RVal_Bits oldDest) ->
+  writeSuccess__SOURCE_PC__SysRegs regs ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Aligned = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Lower = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Upper = Some (Val_Bool true) ->
+  read_mem global.(seq_mem) (bv_unsigned (writeSuccess__SOURCE_PC__Address address)) 8 = None ->
+  (bv_unsigned (writeSuccess__SOURCE_PC__Address address) + 8 <= 2 ^ 64)%Z ->
+  set_Forall (fun item => ~ (bv_unsigned (writeSuccess__SOURCE_PC__Address address) <=
+    bv_unsigned item < bv_unsigned (writeSuccess__SOURCE_PC__Address address) + 8)%Z)
+    (dom global.(seq_mem)) ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__SOURCE_PC__ = Some a__SOURCE_PC__ ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__NEXT_PC__ = Some a__NEXT_PC__ ->
+  IslaInstructionSegment (writeSuccess__SOURCE_PC__Before regs global)
+    (writeSuccess__SOURCE_PC__MmioObservations regs global mstatusBits address satp value)
+    (writeSuccess__SOURCE_PC__After regs global value) /\
+  (writeSuccess__SOURCE_PC__After regs global value).2.(seq_mem) = global.(seq_mem) /\
+  concat (map microLabels (writeSuccess__SOURCE_PC__MmioObservations regs global
+    mstatusBits address satp value)) =
+    [SReadMem (writeSuccess__SOURCE_PC__Address address) (bv_to_bvn value)].
+Proof.
+  intros. repeat split; try reflexivity.
+  unfold writeSuccess__SOURCE_PC__MmioObservations.
+  eapply segment___SOURCE_PC___core; try eassumption.
+  right. repeat split; eassumption || reflexivity.
+Qed.
+
+Print Assumptions writeSuccess__SOURCE_PC__NextPcExact.
+Print Assumptions writeSuccess__SOURCE_PC__SignExtendIdentity.
+Print Assumptions writeSuccess__SOURCE_PC__RegsLookupOther.
+Print Assumptions writeSuccess__SOURCE_PC__RegsDom.
+Print Assumptions segment___SOURCE_PC__.
+Print Assumptions segment___SOURCE_PC___mmio.

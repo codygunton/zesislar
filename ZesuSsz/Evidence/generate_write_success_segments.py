@@ -111,6 +111,18 @@ MEMORY_WRITE_LONG = re.compile(
     re.DOTALL,
 )
 
+MEMORY_READ_STACK = re.compile(
+    r'ReadReg "(?P<base>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 3%Z\)\).*?'
+    r'DefineConst 6%Z \(Manyop \(Bvmanyarith Bvadd\) '
+    r'\[Val \(Val_Symbolic 3%Z\) Mk_annot; '
+    r'Val \(Val_Bits \(BV 64%N 0x(?P<offset>[0-9a-f]+)%Z\)\).*?'
+    r'ReadMem .*?\(RegVal_Base \(Val_Symbolic 6%Z\)\) 8%N None.*?'
+    r'WriteReg "(?P<destination>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 37%Z\)\)',
+    re.DOTALL,
+)
+
 RETURN_PCS = (0x101A0, 0x101DC, 0x15D34)
 
 
@@ -365,6 +377,56 @@ def memory_read_long_metadata(trace_root: Path, pc: int) -> Path:
     if any(fragment not in source for fragment in required):
         raise ValueError(f"unsupported long memory-read operands at 0x{pc:x}")
     return path
+
+
+def memory_read_stack_metadata(
+    trace_root: Path, pc: int
+) -> tuple[Path, str, str, int]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = (
+        ["AssumeReg"] * 10
+        + ["Smt", "Assume", "Smt", "Assume", "Assume", "Assume",
+           "Smt", "ReadReg", "Smt", "ReadReg", "Smt", "ReadReg", "Smt",
+           "ReadReg", "Smt", "Smt", "Smt", "ReadMem", "Smt",
+           "WriteReg", "WriteReg"]
+    )
+    if constructors != expected:
+        raise ValueError(
+            f"unsupported stack memory-read trace shape at 0x{pc:x}: {constructors}"
+        )
+    match = MEMORY_READ_STACK.search(source)
+    if match is None:
+        raise ValueError(f"unsupported stack memory-read operands at 0x{pc:x}")
+    if pc not in (0x156A8, 0x156B4, 0x156D0, 0x15D2C):
+        raise ValueError(f"unsupported stack memory-read trace at 0x{pc:x}")
+    return (
+        path,
+        match.group("base"),
+        match.group("destination"),
+        int(match.group("offset"), 16),
+    )
+
+
+def render_memory_read_stack(template: Path, trace_root: Path, pc: int) -> str:
+    path, base, destination, offset = memory_read_stack_metadata(trace_root, pc)
+    next_pc = pc + 4
+    next_path = trace_path(trace_root, next_pc)
+    if path.parent != next_path.parent:
+        raise ValueError(f"source and successor traces use different modules at 0x{pc:x}")
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__BASE_REGISTER__": base,
+        "__DEST_REGISTER__": destination,
+        "__OFFSET__": str(offset),
+    })
 
 
 def memory_write_byte_metadata(
@@ -638,7 +700,7 @@ def main() -> None:
         "--shape", choices=(
             "constant-write", "register-add", "pc-add-write", "indirect-jump",
             "conditional-branch", "direct-jump", "two-register-add",
-            "memory-read-long",
+            "memory-read-long", "memory-read-stack",
             "memory-write-byte",
             "memory-write-output", "memory-write-stack",
             "return",
@@ -664,6 +726,8 @@ def main() -> None:
         rendered = render_direct_jump(args.template, args.trace_root, args.pc)
     elif args.shape == "memory-read-long":
         rendered = render_memory_read_long(args.template, args.trace_root, args.pc)
+    elif args.shape == "memory-read-stack":
+        rendered = render_memory_read_stack(args.template, args.trace_root, args.pc)
     elif args.shape == "memory-write-byte":
         rendered = render_memory_write_byte(args.template, args.trace_root, args.pc)
     elif args.shape == "memory-write-output":

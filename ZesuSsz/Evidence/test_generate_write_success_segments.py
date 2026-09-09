@@ -499,6 +499,52 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "generated segment differs"):
                 GENERATOR.check_generated_output(altered, rendered)
 
+    def test_stack_memory_read_generates_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/memory_read_stack"
+        self.assertEqual(len(list(templates.glob("*.tmpl"))), 19)
+        expected = {
+            0x156A8: ("write_success_91", "x2", "x10", 0x6D0),
+            0x156B4: ("write_success_92", "x2", "x10", 0x6D8),
+            0x156D0: ("write_success_94", "x2", "x10", 0x6E0),
+            0x15D2C: ("write_success_07", "x2", "x1", 0x8),
+        }
+        for pc, metadata in expected.items():
+            path, base, destination, offset = GENERATOR.memory_read_stack_metadata(
+                ROOT / "generated/isla-traces", pc
+            )
+            self.assertEqual((path.parent.name, base, destination, offset), metadata)
+            for template in templates.glob("*.tmpl"):
+                target_name = template.name.replace("MemoryReadStack", f"{pc:x}")
+                target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+                rendered = GENERATOR.render_memory_read_stack(
+                    template, ROOT / "generated/isla-traces", pc
+                )
+                self.assertEqual(rendered, target.read_text())
+
+    def test_stack_memory_read_rejects_other_shape(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_read_stack/"
+            "WriteSuccessSegmentMemoryReadStack.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "unsupported stack memory-read"):
+            GENERATOR.render_memory_read_stack(
+                template, ROOT / "generated/isla-traces", 0x101E4
+            )
+
+    def test_stack_memory_read_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_read_stack/"
+            "WriteSuccessSegmentMemoryReadStack.v.tmpl"
+        )
+        rendered = GENERATOR.render_memory_read_stack(
+            template, ROOT / "generated/isla-traces", 0x156A8
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment156a8.v"
+            altered.write_text(rendered.replace("segment_156a8", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
     def test_return_generates_complete_pairs(self):
         templates = ROOT / "ZesuSsz/Evidence/templates/return"
         self.assertEqual(len(list(templates.glob("*.tmpl"))), 7)
