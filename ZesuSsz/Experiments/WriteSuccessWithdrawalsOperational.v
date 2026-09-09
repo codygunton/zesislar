@@ -532,6 +532,9 @@ Definition Inv_encoder_int
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits value) /\
   bv_extract 0 2 returnAddress = BV 2 0 /\
+  bv_unsigned sp `mod` 8 = 0 /\
+  0x20000000 <= bv_unsigned sp - 16 /\
+  bv_unsigned sp <= 0x40000000 /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned sp - 16) 16%N = Some scratch /\
   islaMemoryRange (bv_unsigned sp - 16) 16 /\
   (forall location,
