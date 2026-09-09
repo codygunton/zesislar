@@ -495,6 +495,8 @@ Definition Inv_write_output
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits data) /\
   state.1.1.(seq_regs) !! "x11" = Some (RVal_Bits size) /\
   bv_extract 0 2 returnAddress = BV 2 0 /\
+  (exists returnTrace,
+    state.1.2.(seq_instrs) !! returnAddress = Some returnTrace) /\
   bv_unsigned size = Z.of_nat (length bytes) /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned data)
     (N.of_nat (length bytes)) = Some bytes /\
