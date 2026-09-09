@@ -7,6 +7,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyByteRun.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyInduction.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyIterationMemory.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyState.
 
 Open Scope Z_scope.
@@ -91,3 +92,36 @@ Print Assumptions writeSuccessMemcpyBytesAfterLookupOther.
 Print Assumptions writeSuccessMemcpyBytesAfterX15.
 Print Assumptions writeSuccessMemcpyBytesAfterFacts.
 Print Assumptions writeSuccessMemcpyBytesAfterTable.
+
+Lemma writeSuccessMemcpyBytesAfterMemory regs global source destination index
+    bytes offset :
+  index = Z_to_bv 64 offset ->
+  0 <= bv_unsigned destination + offset ->
+  bv_unsigned destination + offset + Z.of_nat (length bytes) <= 2 ^ 64 ->
+  (writeSuccessMemcpyBytesAfter regs global source destination index bytes).2.(seq_mem) =
+    write_mem_list global.(seq_mem) (destination + index)%bv bytes.
+Proof.
+  revert regs global index offset.
+  induction bytes as [|byte tail IH]; intros regs global index offset
+    Hindex Hlower Hupper; cbn.
+  - reflexivity.
+  - rewrite (IH
+      (writeSuccessMemcpyByteRegs regs source destination index byte)
+      (writeSuccess101f0Global global
+        (writeSuccessMemcpyDestinationAddress destination index)
+        (writeSuccess101e4Loaded byte))
+      (index + BV 64 1)%bv (offset + 1)).
+    + unfold writeSuccess101f0Global, writeSuccess101f0Memory. cbn.
+      rewrite writeSuccessMemcpyStoredByte. subst index.
+      unfold writeSuccessMemcpyDestinationAddress.
+      have Hnext :
+          (destination + (Z_to_bv 64 offset + BV 64 1))%bv =
+          ((destination + Z_to_bv 64 offset) `+Z` 1)%bv.
+      { apply (proj2 (bv_eq 64 _ _)). bv_solve. }
+      rewrite Hnext. reflexivity.
+    + subst index. apply (proj2 (bv_eq 64 _ _)). bv_solve.
+    + lia.
+    + cbn in Hupper |- *. lia.
+Qed.
+
+Print Assumptions writeSuccessMemcpyBytesAfterMemory.
