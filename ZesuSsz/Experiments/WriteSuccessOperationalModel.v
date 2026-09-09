@@ -13,7 +13,6 @@ Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -89,6 +88,9 @@ Definition writeSuccessConcreteInitialState
       (successStackPointer WriteSuccessObservation args - 0x7d0) 1896%N =
       Some stackBytes) /\
   set_Forall (fun address =>
+    (0x20000000 <= bv_unsigned address < 0x40000000)%Z)
+    (dom state.2.(seq_mem)) /\
+  set_Forall (fun address =>
     ~ (0x2401a0c0 <= bv_unsigned address < 0x2401a0d0)%Z)
     (dom state.2.(seq_mem)).
 
@@ -134,8 +136,7 @@ Definition writeSuccessConcreteEntry
   writeSuccessConcreteInitialState args state.1 /\
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
-    (successDecodedAddress WriteSuccessObservation args) /\
-  writeSuccessTraceAssumptions state.1.
+    (successDecodedAddress WriteSuccessObservation args).
 
 Fixpoint writeSuccessRecordedPayloads
     (log : list WriteSuccessRecord) : option (list (list (bv 8))) :=
@@ -201,6 +202,17 @@ Lemma writeSuccessConcreteEntryPc args state :
   writeSuccessConcreteEntry args state ->
   writeSuccessConcretePc state = Some 0x14d30.
 Proof. intros (_ & Hpc & _). exact Hpc. Qed.
+
+Lemma writeSuccessConcreteEntryDomInRam args state :
+  writeSuccessConcreteEntry args state ->
+  set_Forall (fun address =>
+    (0x20000000 <= bv_unsigned address < 0x40000000)%Z)
+    (dom state.1.2.(seq_mem)).
+Proof.
+  intros (_ & _ & Hinitial & _).
+  unfold writeSuccessConcreteInitialState in Hinitial.
+  tauto.
+Qed.
 
 Lemma writeSuccessConcreteEntryBlocking args state :
   writeSuccessConcreteEntry args state ->
@@ -337,6 +349,7 @@ Print Assumptions segmentRecords_app.
 Print Assumptions segmentRecordsLabels.
 Print Assumptions writeSuccessConcreteEntryLogEmpty.
 Print Assumptions writeSuccessConcreteEntryPc.
+Print Assumptions writeSuccessConcreteEntryDomInRam.
 Print Assumptions writeSuccessConcreteEntryBlocking.
 Print Assumptions writeSuccessConcreteEntryRejectsNonblocking.
 Print Assumptions writeSuccessConcreteStepProjection.

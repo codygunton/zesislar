@@ -52,7 +52,7 @@ Lemma writeSuccessEntryRepresentationLaw args state :
   writeSuccessEntryRepresentation
     (successDecoded WriteSuccessObservation args) state.
 Proof.
-  intros (_ & _ & _ & Hrepresentation & _).
+  intros (_ & _ & _ & Hrepresentation).
   exists (successDecodedAddress WriteSuccessObservation args).
   exact Hrepresentation.
 Qed.

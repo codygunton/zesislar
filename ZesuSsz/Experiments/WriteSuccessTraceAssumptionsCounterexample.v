@@ -73,7 +73,7 @@ Lemma writeSuccessConcreteInitialStateSetX9Zero args state :
 Proof.
   intros (Htrace & HpcReg & Hnb & Hinstruction & Htable & Hpc & Hx1 & Hx2 &
     Hx10 & Habi & Hsys & Hreturn & Halign & HstackLow & HstackHigh &
-    Hstack & Hmmio).
+    Hstack & Hram & Hmmio).
   unfold writeSuccessConcreteInitialState, writeSuccessConcreteSetX9Zero.
   cbn. repeat split; try assumption.
   - rewrite lookup_insert_ne; [exact Hpc|done].
@@ -96,6 +96,8 @@ Proof.
     exists value. split; last exact Hshape.
     rewrite lookup_insert_ne; first exact Hlookup.
     intro Heq. subst name. cbn in Hitem. intuition congruence.
+  - pose proof (Hram x ltac:(assumption)) as [Hlower _]. exact Hlower.
+  - pose proof (Hram x ltac:(assumption)) as [_ Hupper]. exact Hupper.
 Qed.
 
 Lemma writeSuccessConcretePreTraceEntrySetX9Zero args state :
