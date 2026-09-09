@@ -18,7 +18,7 @@ Proof.
   destruct local as [trace regs pcRegister nb]. cbn in Hinv |- *.
   destruct Hinv as
     (Hboundary & HpcRegister & HconcretePc & Hx1 & Hx2 & Hx10 &
-     HreturnAlign & HstackAlign & HramLower & HramUpper & Hread & Hrange &
+     HreturnAlign & HreturnTrace & HstackAlign & HramLower & HramUpper & Hread & Hrange &
      Hbacked & Hframe & Htable & Hfacts & Hmmio & Hlog).
   cbn in HpcRegister, Hlog, Htable, Hfacts, Hmmio, Hx1, Hx2, Hx10,
     Hread, HconcretePc, Hframe, Hbacked.
