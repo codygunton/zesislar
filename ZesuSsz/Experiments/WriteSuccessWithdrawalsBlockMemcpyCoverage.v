@@ -15,6 +15,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyAfter.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyBoundaryFacts.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyCoverage.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyEntry.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyEndpointPreservation.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyFacts.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyInduction.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyMemory.
@@ -43,7 +44,15 @@ Theorem block_memcpy_recorded_covered :
       (N.of_nat (length bytes)) = Some bytes /\
     writeSuccessMemoryRangeFrame (bv_unsigned destination) (length bytes)
       after.1.2.(seq_mem) memoryFrame /\
-    after.2 = priorLog.
+    after.2 = priorLog /\
+    exists regs global returnTrace,
+      state.1 = writeSuccess101d4Before regs global /\
+      global.(seq_instrs) !! returnAddress = Some returnTrace /\
+      after.1 =
+        (writeSuccess15694Local returnTrace
+          (writeSuccessMemcpyEndpointRegs regs global source destination bytes
+            returnAddress),
+         writeSuccessMemcpyEndpointGlobal regs global source destination bytes).
 Proof.
   intros destination source returnAddress bytes destinationBefore memoryFrame
     priorLog state segments after Hinv Hrecorded.
@@ -375,7 +384,13 @@ Proof.
   { unfold finalGlobal, loopAfter in Hmemory. cbn. rewrite Hmemory.
     rewrite HdestinationZero.
     eapply writeSuccessMemoryRangeFrameWrite; eassumption. }
-  exact HafterLogFinal.
+  split; first exact HafterLogFinal.
+  exists regs, global, returnTrace. split; first reflexivity.
+  split; first exact Hreturn.
+  unfold writeSuccessMemcpyEndpointRegs, writeSuccessMemcpyEndpointGlobal,
+    writeSuccessMemcpyLoopAfter, returnRegs, finalRegs, finalGlobal, loopAfter,
+    initRegs.
+  reflexivity.
 Qed.
 
 Print Assumptions block_memcpy_recorded_covered.
