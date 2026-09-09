@@ -17,6 +17,8 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment101ecCoverage.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0Coverage.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f4Coverage.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyByteRun.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyRecords.
+Require Import ZesuSsz.Experiments.WriteSuccessOperationalModel.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyAssumes.
@@ -27,7 +29,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyState.
 Import ListNotations.
 Open Scope Z_scope.
 
-Theorem writeSuccessMemcpyByteRunCovered regs global
+Theorem writeSuccessMemcpyByteRunCoveredWithRecords regs global
     (source destination index length : bv 64) (byte : bv 8)
     segments after :
   regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x101d8)) ->
@@ -50,7 +52,9 @@ Theorem writeSuccessMemcpyByteRunCovered regs global
   is_Some (global.(seq_mem) !!
     writeSuccessMemcpyDestinationAddress destination index) ->
   IslaInstructionRun 7 (writeSuccess101d8Before regs global) segments after ->
-  after = writeSuccessMemcpyByteAfter regs global source destination index byte.
+  after = writeSuccessMemcpyByteAfter regs global source destination index byte /\
+  segmentRecords (writeSuccess101d8Before regs global)
+    (flattenMicroObservations segments) = [].
 Proof.
   intros Hpc Hx10 Hx11 Hx12 Hx15 Hne Htable Hfacts HsourceRead
     HsourceLower HsourceUpper HdestinationLower HdestinationUpper
@@ -138,7 +142,7 @@ Proof.
   inversion Hrun6 as [|c6 before6 obs6 middle6 rest6 final6 Hseg6 Hrun7]; subst.
   inversion Hrun7; subst.
   destruct (segment_101d8_covered regs global index length obs0 middle0
-    Hpc Hx15 Hx12 HcodeD8 HcodeDc HcodeE0 Hassume0 Hseg0) as (Hmiddle0 & _).
+    Hpc Hx15 Hx12 HcodeD8 HcodeDc HcodeE0 Hassume0 Hseg0) as (Hmiddle0 & Hobs0).
   unfold writeSuccess101d8After in Hmiddle0.
   destruct (decide (index = length)); first contradiction. subst middle0.
   destruct (segment_101e0_covered (writeSuccessMemcpyByteRegs1 regs) global
@@ -151,7 +155,7 @@ Proof.
       rewrite lookup_insert_ne; try discriminate; exact Hx15)
     ltac:(unfold writeSuccessMemcpyByteRegs1, writeSuccess101d8TakenRegs;
       rewrite lookup_insert_ne; try discriminate; exact Hx13)
-    HcodeE0 HcodeE4 Hassume1 Hseg1) as (Hmiddle1 & _).
+    HcodeE0 HcodeE4 Hassume1 Hseg1) as (Hmiddle1 & Hobs1).
   subst middle1.
   destruct (segment_101e4_covered
     (writeSuccessMemcpyByteRegs2 regs source index) global mstatus2
@@ -160,7 +164,7 @@ Proof.
       rewrite lookup_insert; reflexivity)
     HsourceAddress Hmstatus2 Hsatp2 HsysE42 HsourceRead HcodeE4 HcodeE8
     Hassume2 (proj1 HloadAssumes) (proj2 HloadAssumes) Hseg2) as
-    (Hmiddle2 & _).
+    (Hmiddle2 & Hobs2).
   subst middle2.
   destruct (segment_101e8_covered
     (writeSuccessMemcpyByteRegs3 regs source index byte) global destination index
@@ -185,7 +189,7 @@ Proof.
       rewrite writeSuccess101e0RegsLookupOther; try discriminate;
       unfold writeSuccessMemcpyByteRegs1, writeSuccess101d8TakenRegs;
       rewrite lookup_insert_ne; try discriminate; exact Hx14)
-    HcodeE8 HcodeEc Hassume3 Hseg3) as (Hmiddle3 & _).
+    HcodeE8 HcodeEc Hassume3 Hseg3) as (Hmiddle3 & Hobs3).
   subst middle3.
   destruct (segment_101ec_covered
     (writeSuccessMemcpyByteRegs4 regs source destination index byte) global index
@@ -208,7 +212,7 @@ Proof.
       rewrite writeSuccess101e0RegsLookupOther; try discriminate;
       unfold writeSuccessMemcpyByteRegs1, writeSuccess101d8TakenRegs;
       rewrite lookup_insert_ne; try discriminate; exact Hx15)
-    HcodeEc HcodeF0 Hassume4 Hseg4) as (Hmiddle4 & _).
+    HcodeEc HcodeF0 Hassume4 Hseg4) as (Hmiddle4 & Hobs4).
   subst middle4.
   destruct (segment_101f0_covered
     (writeSuccessMemcpyByteRegs5 regs source destination index byte) global
@@ -226,7 +230,39 @@ Proof.
       unfold writeSuccessMemcpyByteRegs3, writeSuccess101e4Regs;
       rewrite lookup_insert_ne; try discriminate; rewrite lookup_insert; reflexivity)
     HsysF05 Hassume5 (proj1 HstoreAssumes) (proj2 HstoreAssumes)
-    HoldByte HcodeF0 HcodeF4 Hseg5) as (result & Hmiddle5 & _).
+    HoldByte HcodeF0 HcodeF4 Hseg5) as (result & Hmiddle5 & Hobs5).
+  have Hlabels0 : concat (map microLabels
+      (writeSuccess101d8Observations index length regs global)) = [].
+  { unfold writeSuccess101d8Observations.
+    destruct (decide (index = length)); first contradiction. reflexivity. }
+  have Hlabels1 : concat (map microLabels
+      (writeSuccess101e0Observations (writeSuccessMemcpyByteRegs1 regs)
+        global source index)) = [] by reflexivity.
+  have Hlabels2 : concat (map microLabels
+      (writeSuccess101e4Observations
+        (writeSuccessMemcpyByteRegs2 regs source index) global mstatus2
+        (writeSuccessMemcpySourceAddress source index) satp2 byte)) = [] by
+    reflexivity.
+  have Hlabels3 : concat (map microLabels
+      (writeSuccess101e8Observations
+        (writeSuccessMemcpyByteRegs3 regs source index byte) global
+        destination index)) = [] by reflexivity.
+  have Hlabels4 : concat (map microLabels
+      (writeSuccess101ecObservations
+        (writeSuccessMemcpyByteRegs4 regs source destination index byte)
+        global index)) = [] by reflexivity.
+  have Hlabels5 : concat (map microLabels
+      (writeSuccess101f0Observations
+        (writeSuccessMemcpyByteRegs5 regs source destination index byte)
+        global mstatus5
+        (writeSuccessMemcpyDestinationAddress destination index) satp5
+        (writeSuccess101e4Loaded byte) result)) = [] by reflexivity.
+  have Hlabels6 : concat (map microLabels
+      (writeSuccess101f4Observations
+        (writeSuccessMemcpyByteRegs6 regs source destination index byte)
+        (writeSuccess101f0Global global
+          (writeSuccessMemcpyDestinationAddress destination index)
+          (writeSuccess101e4Loaded byte)))) = [] by reflexivity.
   subst middle5.
   destruct (segment_101f4_covered
     (writeSuccessMemcpyByteRegs6 regs source destination index byte)
@@ -235,8 +271,52 @@ Proof.
       (writeSuccess101e4Loaded byte)) obs6 after
     ltac:(unfold writeSuccessMemcpyByteRegs6, writeSuccess101f0Regs;
       rewrite lookup_insert; reflexivity)
-    HcodeF4 HcodeD8 Hassume6 Hseg6) as (Hafter & _).
-  exact Hafter.
+    HcodeF4 HcodeD8 Hassume6 Hseg6) as (Hafter & Hobs6).
+  split; first exact Hafter.
+  subst obs0 obs1 obs2 obs3 obs4 obs5 obs6.
+  apply writeSuccessSegmentRecordsEmpty.
+  unfold flattenMicroObservations.
+  repeat rewrite writeSuccessConcatMicroLabelsApp.
+  try rewrite Hlabels0. try rewrite Hlabels1. try rewrite Hlabels2.
+  try rewrite Hlabels3. try rewrite Hlabels4. try rewrite Hlabels5.
+  try rewrite Hlabels6.
+  reflexivity.
+Qed.
+
+Print Assumptions writeSuccessMemcpyByteRunCoveredWithRecords.
+
+Theorem writeSuccessMemcpyByteRunCovered regs global
+    (source destination index length : bv 64) (byte : bv 8)
+    segments after :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x101d8)) ->
+  regs !! "x10" = Some (RVal_Bits destination) ->
+  regs !! "x11" = Some (RVal_Bits source) ->
+  regs !! "x12" = Some (RVal_Bits length) ->
+  regs !! "x15" = Some (RVal_Bits index) ->
+  index <> length ->
+  writeSuccessWithdrawalsInstructionTable global ->
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  read_mem global.(seq_mem)
+    (bv_unsigned (writeSuccessMemcpySourceAddress source index)) 1 =
+    Some (bv_to_bvn byte) ->
+  0x20000000 <= bv_unsigned (writeSuccessMemcpySourceAddress source index) ->
+  bv_unsigned (writeSuccessMemcpySourceAddress source index) + 1 <= 0x40000000 ->
+  0x20000000 <= bv_unsigned
+    (writeSuccessMemcpyDestinationAddress destination index) ->
+  bv_unsigned (writeSuccessMemcpyDestinationAddress destination index) + 1 <=
+    0x40000000 ->
+  is_Some (global.(seq_mem) !!
+    writeSuccessMemcpyDestinationAddress destination index) ->
+  IslaInstructionRun 7 (writeSuccess101d8Before regs global) segments after ->
+  after = writeSuccessMemcpyByteAfter regs global source destination index byte.
+Proof.
+  intros Hpc Hx10 Hx11 Hx12 Hx15 Hne Htable Hfacts HsourceRead
+    HsourceLower HsourceUpper HdestinationLower HdestinationUpper
+    HdestinationBacked Hrun.
+  exact (proj1 (writeSuccessMemcpyByteRunCoveredWithRecords regs global source
+    destination index length byte segments after Hpc Hx10 Hx11 Hx12 Hx15 Hne
+    Htable Hfacts HsourceRead HsourceLower HsourceUpper HdestinationLower
+    HdestinationUpper HdestinationBacked Hrun)).
 Qed.
 
 Print Assumptions writeSuccessMemcpyByteRunCovered.
