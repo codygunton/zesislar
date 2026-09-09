@@ -9,8 +9,6 @@ Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Generated.WriteSuccessCertificate.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
-Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOff.
-Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOffLegacy.
 Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Experiments.WriteSuccessPrologueSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeContract.
@@ -95,8 +93,7 @@ Definition writeSuccessConcreteEntry
   writeSuccessConcreteInitialState args state /\
   writeSuccessConcreteDecodedPointer state =
     Some (successDecodedAddress WriteSuccessObservation args) /\
-  writeSuccessConcreteRepresentationOff
-    (successStackPointer WriteSuccessObservation args)
+  writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args).
 
@@ -151,8 +148,7 @@ Proof.
   destruct Hwell as (_ & Haddress & _).
   exists state.2.(seq_mem),
     (successDecodedAddress WriteSuccessObservation args).
-  split; first exact (writeSuccessConcreteRepresentationOffLegacy
-    _ _ _ _ Hrepresentation).
+  split; first exact Hrepresentation.
   rewrite Haddress. exact Hread.
 Qed.
 
