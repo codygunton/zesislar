@@ -418,6 +418,41 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "generated segment differs"):
                 GENERATOR.check_generated_output(altered, rendered)
 
+    def test_output_memory_write_generates_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/memory_write_output"
+        for pc in (0x10198, 0x1019C):
+            for template in templates.glob("*.tmpl"):
+                target_name = template.name.replace("MemoryWriteOutput", f"{pc:x}")
+                target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+                rendered = GENERATOR.render_memory_write_output(
+                    template, ROOT / "generated/isla-traces", pc
+                )
+                self.assertEqual(rendered, target.read_text())
+
+    def test_output_memory_write_rejects_byte_store(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_output/"
+            "WriteSuccessSegmentMemoryWriteOutput.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "supports only"):
+            GENERATOR.render_memory_write_output(
+                template, ROOT / "generated/isla-traces", 0x101F0
+            )
+
+    def test_output_memory_write_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_output/"
+            "WriteSuccessSegmentMemoryWriteOutput.v.tmpl"
+        )
+        rendered = GENERATOR.render_memory_write_output(
+            template, ROOT / "generated/isla-traces", 0x10198
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment10198.v"
+            altered.write_text(rendered.replace("segment_10198", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -37,7 +37,7 @@ Lemma segment_1019c_covered (regs : reg_map) (global : seq_global_state)
     observations = writeSuccess1019cObservations regs global
       mstatusBits base satp value result outcome.
 Proof.
-  intros Hpc Hx5 Hmstatus Hsatp Hx11 Hsys HmstatusAssume Halign Hlower
+  intros Hpc Hx5 Hmstatus Hsatp Hvalue Hsys HmstatusAssume Halign Hlower
     Hupper Hcode Hnext Hsegment.
   destruct (segment_1019c_prefix5_covered regs global mstatusBits base satp value
     observations after Hsys Hsegment) as
@@ -54,7 +54,7 @@ Proof.
     (HdeclMstatus & HdeclBase & prefix22 & Hp22 & HobsMiddleSecond).
   subst declMstatus declBase.
   destruct (segment_1019c_suffix_first_covered regs global mstatusBits base
-    satp value prefix22 done labels spawned after Hsatp Hx11 Hp22 Hnil Hdone) as
+    satp value prefix22 done labels spawned after Hsatp Hvalue Hp22 Hnil Hdone) as
     (prefix26 & Hp26 & HobsSuffixFirst).
   destruct (segment_1019c_suffix_middle_covered regs global mstatusBits base
     satp value prefix26 done labels spawned after Hp26 Hnil Hdone) as

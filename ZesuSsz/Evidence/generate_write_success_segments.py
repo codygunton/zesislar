@@ -98,6 +98,19 @@ MEMORY_WRITE_BYTE = re.compile(
     re.DOTALL,
 )
 
+MEMORY_WRITE_LONG = re.compile(
+    r'ReadReg "(?P<base>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 3%Z\)\).*?'
+    r'DefineConst 6%Z \(Manyop \(Bvmanyarith Bvadd\) '
+    r'\[Val \(Val_Symbolic 3%Z\) Mk_annot; '
+    r'Val \(Val_Bits \(BV 64%N 0x(?P<offset>[0-9a-f]+)%Z\)\).*?'
+    r'ReadReg "(?P<value>x[0-9]+)" \[\] '
+    r'\(RegVal_Base \(Val_Symbolic 24%Z\)\).*?'
+    r'WriteMem .*?\(RegVal_Base \(Val_Symbolic 6%Z\)\) '
+    r'\(RegVal_Base \(Val_Symbolic 24%Z\)\) 8%N None',
+    re.DOTALL,
+)
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -366,6 +379,56 @@ def render_memory_write_byte(template: Path, trace_root: Path, pc: int) -> str:
     })
 
 
+def memory_write_long_metadata(
+    trace_root: Path, pc: int
+) -> tuple[Path, str, str, int]:
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = (
+        ["AssumeReg"] * 10
+        + ["Smt", "Assume", "Smt", "Assume", "Assume", "Assume",
+           "Smt", "ReadReg", "Smt", "ReadReg", "Smt", "ReadReg", "Smt",
+           "ReadReg", "Smt", "ReadReg", "Smt", "Smt", "Smt",
+           "WriteMem", "WriteReg"]
+    )
+    if constructors != expected:
+        raise ValueError(
+            f"unsupported long memory-write trace shape at 0x{pc:x}: {constructors}"
+        )
+    match = MEMORY_WRITE_LONG.search(source)
+    if match is None:
+        raise ValueError(f"unsupported long memory-write operands at 0x{pc:x}")
+    return (
+        path,
+        match.group("base"),
+        match.group("value"),
+        int(match.group("offset"), 16),
+    )
+
+
+def render_memory_write_output(template: Path, trace_root: Path, pc: int) -> str:
+    if pc not in (0x10198, 0x1019C):
+        raise ValueError("the output-store renderer supports only 0x10198 and 0x1019c")
+    path, base, value, offset = memory_write_long_metadata(trace_root, pc)
+    next_pc = pc + 4
+    next_path = trace_path(trace_root, next_pc)
+    if path.parent != next_path.parent:
+        raise ValueError(f"source and successor traces use different modules at 0x{pc:x}")
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__NEXT_PC__": f"{next_pc:x}",
+        "__BASE_REGISTER__": base,
+        "__VALUE_REGISTER__": value,
+        "__OFFSET__": str(offset),
+    })
+
+
 def render_memory_read_long(template: Path, trace_root: Path, pc: int) -> str:
     if pc not in ITERATION_PCS:
         raise ValueError(f"0x{pc:x} is not in the 410-PC withdrawals iteration")
@@ -515,6 +578,7 @@ def main() -> None:
             "conditional-branch", "direct-jump", "two-register-add",
             "memory-read-long",
             "memory-write-byte",
+            "memory-write-output",
         ),
         default="constant-write",
     )
@@ -539,6 +603,8 @@ def main() -> None:
         rendered = render_memory_read_long(args.template, args.trace_root, args.pc)
     elif args.shape == "memory-write-byte":
         rendered = render_memory_write_byte(args.template, args.trace_root, args.pc)
+    elif args.shape == "memory-write-output":
+        rendered = render_memory_write_output(args.template, args.trace_root, args.pc)
     else:
         rendered = render_two_register_add(args.template, args.trace_root, args.pc)
     if args.check:
