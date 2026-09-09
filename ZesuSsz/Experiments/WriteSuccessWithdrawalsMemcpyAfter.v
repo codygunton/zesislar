@@ -125,3 +125,29 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessMemcpyBytesAfterMemory.
+
+Lemma writeSuccessMemcpyBytesAfterInstrs regs global source destination index bytes :
+  ((writeSuccessMemcpyBytesAfter regs global source destination index bytes).2).(seq_instrs) =
+    global.(seq_instrs).
+Proof.
+  revert regs global index.
+  induction bytes as [|byte tail IH]; intros regs global index; cbn.
+  - reflexivity.
+  - rewrite IH. unfold writeSuccess101f0Global. reflexivity.
+Qed.
+
+Print Assumptions writeSuccessMemcpyBytesAfterInstrs.
+
+Lemma writeSuccessMemcpyBytesAfterBoundary regs global source destination index bytes :
+  writeSuccessMemcpyBytesAfter regs global source destination index bytes =
+    writeSuccess101d8Before
+      ((writeSuccessMemcpyBytesAfter regs global source destination index bytes).1).(seq_regs)
+      (writeSuccessMemcpyBytesAfter regs global source destination index bytes).2.
+Proof.
+  revert regs global index.
+  induction bytes as [|byte tail IH]; intros regs global index; cbn.
+  - reflexivity.
+  - apply IH.
+Qed.
+
+Print Assumptions writeSuccessMemcpyBytesAfterBoundary.
