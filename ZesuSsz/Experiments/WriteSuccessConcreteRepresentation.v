@@ -229,6 +229,299 @@ Definition writeSuccessWithdrawalListMemory
       writeSuccessWithdrawalMemory memory
         (pointer + 48 * Z.of_nat index) item.
 
+Definition writeSuccessMemoryBytesOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (address : Z)
+    (bytes : ByteString) : Prop :=
+  writeSuccessMemoryBytes memory address bytes /\
+  ok address (length bytes).
+
+Definition writeSuccessMemoryIntegerOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (address : Z)
+    (width : nat) (value : Z) : Prop :=
+  writeSuccessMemoryBytesOk ok memory address
+    (writeSuccessLayoutLe width value).
+
+Definition writeSuccessMemorySliceOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (bytes : ByteString) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length bytes)) /\
+    writeSuccessMemoryBytesOk ok memory pointer bytes.
+
+Definition writeSuccessMemoryOptionalU64Ok
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (value : option Z) : Prop :=
+  match value with
+  | None => writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 1 0
+  | Some item =>
+      writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 item /\
+      writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 1 1
+  end.
+
+Definition writeSuccessMemoryOptionalBytesOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (value : option ByteString) : Prop :=
+  match value with
+  | None => writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 0
+  | Some bytes =>
+      exists pointer,
+        0 <= pointer < 2 ^ 64 /\
+        writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+        writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+          (Z.of_nat (length bytes)) /\
+        writeSuccessMemoryBytesOk ok memory pointer bytes /\ pointer <> 0
+  end.
+
+Definition writeSuccessMemoryFixedListOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z)
+    (offset stride : Z) (items : list ByteString) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length items)) /\
+    forall index item,
+      nth_error items index = Some item ->
+      writeSuccessMemoryBytesOk ok memory
+        (pointer + stride * Z.of_nat index) item.
+
+Definition writeSuccessMemoryByteListsOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (items : list ByteString) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length items)) /\
+    forall index item,
+      nth_error items index = Some item ->
+      writeSuccessMemorySliceOk ok memory
+        (pointer + 16 * Z.of_nat index) 0 item.
+
+Definition writeSuccessAccessEntryMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (address : Z)
+    (entry : WriteSuccessAccessEntryObservation) : Prop :=
+  writeSuccessMemoryBytesOk ok memory (address + 16)
+    (observationAccessAddress entry) /\
+  writeSuccessMemoryFixedListOk ok memory address 0 32
+    (observationStorageKeys entry).
+
+Definition writeSuccessAccessListMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (entries : list WriteSuccessAccessEntryObservation) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length entries)) /\
+    forall index entry,
+      nth_error entries index = Some entry ->
+      writeSuccessAccessEntryMemoryOk ok memory
+        (pointer + 40 * Z.of_nat index) entry.
+
+Definition writeSuccessAuthorizationMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (address : Z)
+    (authorization : WriteSuccessAuthorizationObservation) : Prop :=
+  writeSuccessMemoryIntegerOk ok memory address 32
+    (observationAuthorizationChainId authorization) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 32) 32
+    (observationAuthorizationR authorization) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 64) 32
+    (observationAuthorizationS authorization) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 96) 8
+    (observationAuthorizationNonce authorization) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 104) 8
+    (observationAuthorizationV authorization) /\
+  writeSuccessMemoryBytesOk ok memory (address + 112)
+    (observationAuthorizationAddress authorization).
+
+Definition writeSuccessAuthorizationListMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (items : list WriteSuccessAuthorizationObservation) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length items)) /\
+    forall index item,
+      nth_error items index = Some item ->
+      writeSuccessAuthorizationMemoryOk ok memory
+        (pointer + 144 * Z.of_nat index) item.
+
+Definition writeSuccessTransactionMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (address : Z)
+    (transaction : WriteSuccessTransactionObservation) : Prop :=
+  writeSuccessMemoryIntegerOk ok memory (address + 264) 1
+    (observationTransactionType transaction) /\
+  writeSuccessMemoryOptionalU64Ok ok memory address 160
+    (observationTransactionChainId transaction) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 176) 8
+    (observationTransactionNonce transaction) /\
+  writeSuccessMemoryIntegerOk ok memory address 16
+    (observationTransactionGasPrice transaction) /\
+  (match observationTransactionPriorityFee transaction with
+   | None => writeSuccessMemoryIntegerOk ok memory (address + 32) 1 0
+   | Some value =>
+       writeSuccessMemoryIntegerOk ok memory (address + 16) 16 value /\
+       writeSuccessMemoryIntegerOk ok memory (address + 32) 1 1
+   end) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 184) 8
+    (observationTransactionGasLimit transaction) /\
+  (match observationTransactionTo transaction with
+   | None => writeSuccessMemoryIntegerOk ok memory (address + 285) 1 0
+   | Some value =>
+       writeSuccessMemoryBytesOk ok memory (address + 265) value /\
+       writeSuccessMemoryIntegerOk ok memory (address + 285) 1 1
+   end) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 48) 32
+    (observationTransactionValue transaction) /\
+  writeSuccessMemorySliceOk ok memory address 192
+    (observationTransactionData transaction) /\
+  writeSuccessAccessListMemoryOk ok memory address 208
+    (observationTransactionAccessList transaction) /\
+  writeSuccessMemoryFixedListOk ok memory address 224 32
+    (observationTransactionBlobHashes transaction) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 80) 16
+    (observationTransactionMaxBlobFee transaction) /\
+  writeSuccessAuthorizationListMemoryOk ok memory address 240
+    (observationTransactionAuthorizations transaction) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 256) 8
+    (observationTransactionV transaction) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 96) 32
+    (observationTransactionR transaction) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 128) 32
+    (observationTransactionS transaction).
+
+Definition writeSuccessTransactionListMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (items : list WriteSuccessTransactionObservation) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length items)) /\
+    forall index item,
+      nth_error items index = Some item ->
+      writeSuccessTransactionMemoryOk ok memory
+        (pointer + 288 * Z.of_nat index) item.
+
+Definition writeSuccessWithdrawalMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (address : Z)
+    (withdrawal : WriteSuccessWithdrawalObservation) : Prop :=
+  writeSuccessMemoryIntegerOk ok memory address 8
+    (observationWithdrawalIndex withdrawal) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 8) 8
+    (observationWithdrawalValidatorIndex withdrawal) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 16) 8
+    (observationWithdrawalAmount withdrawal) /\
+  writeSuccessMemoryBytesOk ok memory (address + 24)
+    (observationWithdrawalAddress withdrawal).
+
+Definition writeSuccessWithdrawalListMemoryOk
+    (ok : Z -> nat -> Prop) (memory : mem_map) (owner : Z) (offset : Z)
+    (items : list WriteSuccessWithdrawalObservation) : Prop :=
+  exists pointer,
+    0 <= pointer < 2 ^ 64 /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset) 8 pointer /\
+    writeSuccessMemoryIntegerOk ok memory (owner + offset + 8) 8
+      (Z.of_nat (length items)) /\
+    forall index item,
+      nth_error items index = Some item ->
+      writeSuccessWithdrawalMemoryOk ok memory
+        (pointer + 48 * Z.of_nat index) item.
+
+Definition writeSuccessConcreteRepresentationOk
+    (ok : Z -> nat -> Prop) (decoded : WriteSuccessObservation)
+    (memory : mem_map) (address : Z) : Prop :=
+  writeSuccessObservationValid decoded /\
+  (exists top, length top = 848%nat /\
+    read_mem_list memory address 848%N = Some top /\
+    ok address (length top)) /\
+  writeSuccessMemoryIntegerOk ok memory address 8
+    (observationBlockNumber decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 8) 8
+    (observationGasLimit decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 16) 8
+    (observationGasUsed decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 24) 8
+    (observationTimestamp decoded) /\
+  writeSuccessMemorySliceOk ok memory address 32
+    (observationExtraData decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 48) 8
+    (observationBaseFee decoded) /\
+  writeSuccessTransactionListMemoryOk ok memory address 56
+    (observationTransactions decoded) /\
+  writeSuccessMemoryByteListsOk ok memory address 72
+    (observationRawTransactions decoded) /\
+  writeSuccessWithdrawalListMemoryOk ok memory address 88
+    (observationWithdrawals decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 104) 8
+    (observationBlobGasUsed decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 112) 8
+    (observationExcessBlobGas decoded) /\
+  writeSuccessMemoryOptionalU64Ok ok memory address 120
+    (observationSlotNumber decoded) /\
+  writeSuccessMemorySliceOk ok memory address 136
+    (observationBlockAccessList decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 152)
+    (observationParentHash decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 184)
+    (observationFeeRecipient decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 204)
+    (observationStateRoot decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 236)
+    (observationReceiptsRoot decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 268)
+    (observationLogsBloom decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 524)
+    (observationPrevRandao decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 556)
+    (observationBlockHash decoded) /\
+  writeSuccessMemoryFixedListOk ok memory address 592 32
+    (observationVersionedHashes decoded) /\
+  writeSuccessMemorySliceOk ok memory address 608
+    (observationDeposits decoded) /\
+  writeSuccessMemorySliceOk ok memory address 624
+    (observationWithdrawalRequests decoded) /\
+  writeSuccessMemorySliceOk ok memory address 640
+    (observationConsolidations decoded) /\
+  writeSuccessMemorySliceOk ok memory address 656
+    (observationBuilderDeposits decoded) /\
+  writeSuccessMemorySliceOk ok memory address 672
+    (observationBuilderExits decoded) /\
+  writeSuccessMemoryBytesOk ok memory (address + 688)
+    (observationParentBeaconRoot decoded) /\
+  writeSuccessMemoryByteListsOk ok memory address 720
+    (observationWitnessNodes decoded) /\
+  writeSuccessMemoryByteListsOk ok memory address 736
+    (observationWitnessCodes decoded) /\
+  writeSuccessMemoryByteListsOk ok memory address 752
+    (observationWitnessHeaders decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 768) 8
+    (observationChainId decoded) /\
+  writeSuccessMemoryOptionalBytesOk ok memory address 776
+    (observationForkName decoded) /\
+  writeSuccessMemoryIntegerOk ok memory (address + 792) 8
+    (observationActiveForkIndex decoded) /\
+  writeSuccessMemoryOptionalU64Ok ok memory address 800
+    (observationActivationBlock decoded) /\
+  writeSuccessMemoryOptionalU64Ok ok memory address 816
+    (observationActivationTimestamp decoded) /\
+  writeSuccessMemoryByteListsOk ok memory address 832
+    (observationPublicKeys decoded).
+
+Lemma writeSuccessConcreteRepresentationOkObject
+    ok decoded memory address :
+  writeSuccessConcreteRepresentationOk ok decoded memory address ->
+  exists top,
+    length top = 848%nat /\
+    read_mem_list memory address 848%N = Some top /\
+    ok address (length top).
+Proof. unfold writeSuccessConcreteRepresentationOk. tauto. Qed.
+
 (** These offsets come from the pinned ELF DWARF types.  The predicate covers
     the 848-byte top value and every reachable payload. *)
 Definition writeSuccessConcreteRepresentation
@@ -462,3 +755,4 @@ Print Assumptions writeSuccessRepresentationExtraData.
 Print Assumptions writeSuccessRepresentationBaseFeeUnique.
 Print Assumptions writeSuccessRepresentationExtraDataUnique.
 Print Assumptions writeSuccessAvoidsRangeOverlapRejected.
+Print Assumptions writeSuccessConcreteRepresentationOkObject.
