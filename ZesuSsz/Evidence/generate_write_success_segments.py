@@ -111,6 +111,40 @@ MEMORY_WRITE_LONG = re.compile(
     re.DOTALL,
 )
 
+RETURN_PCS = (0x101A0, 0x101DC, 0x15D34)
+
+
+def return_metadata(trace_root: Path, pc: int) -> Path:
+    if pc not in RETURN_PCS:
+        raise ValueError(f"unsupported return PC 0x{pc:x}")
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = [
+        "Smt", "Assume", "Smt", "Assume", "Smt", "ReadReg", "Smt",
+        "ReadReg", "Smt", "Smt", "WriteReg",
+    ]
+    required = [
+        'ReadReg "x1" [] (RegVal_Base (Val_Symbolic 3%Z))',
+        'WriteReg "PC" [] (RegVal_Base (Val_Symbolic 7%Z))',
+        'Val (Val_Bits (BV 64%N 0xfffffffffffffffe%Z))',
+    ]
+    if constructors != expected or any(part not in source for part in required):
+        raise ValueError(f"unsupported return trace at 0x{pc:x}")
+    return path
+
+
+def render_return(template: Path, trace_root: Path, pc: int) -> str:
+    path = return_metadata(trace_root, pc)
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+    })
+
 
 def trace_path(trace_root: Path, pc: int) -> Path:
     matches = sorted(trace_root.glob(f"write_success_*/a{pc:x}.v"))
@@ -607,6 +641,7 @@ def main() -> None:
             "memory-read-long",
             "memory-write-byte",
             "memory-write-output", "memory-write-stack",
+            "return",
         ),
         default="constant-write",
     )
@@ -635,6 +670,8 @@ def main() -> None:
         rendered = render_memory_write_output(args.template, args.trace_root, args.pc)
     elif args.shape == "memory-write-stack":
         rendered = render_memory_write_stack(args.template, args.trace_root, args.pc)
+    elif args.shape == "return":
+        rendered = render_return(args.template, args.trace_root, args.pc)
     else:
         rendered = render_two_register_add(args.template, args.trace_root, args.pc)
     if args.check:

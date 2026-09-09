@@ -499,6 +499,49 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "generated segment differs"):
                 GENERATOR.check_generated_output(altered, rendered)
 
+    def test_return_generates_complete_pairs(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/return"
+        self.assertEqual(len(list(templates.glob("*.tmpl"))), 7)
+        for pc in GENERATOR.RETURN_PCS:
+            for template in templates.glob("*.tmpl"):
+                target_name = template.name.replace("Return", f"{pc:x}")
+                target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+                rendered = GENERATOR.render_return(
+                    template, ROOT / "generated/isla-traces", pc
+                )
+                self.assertEqual(rendered, target.read_text())
+
+    def test_return_rejects_other_shape(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/return/"
+            "WriteSuccessSegmentReturn.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "unsupported return PC"):
+            GENERATOR.render_return(
+                template, ROOT / "generated/isla-traces", 0x101F4
+            )
+
+    def test_return_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/return/"
+            "WriteSuccessSegmentReturn.v.tmpl"
+        )
+        rendered = GENERATOR.render_return(
+            template, ROOT / "generated/isla-traces", 0x101A0
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment101a0.v"
+            altered.write_text(rendered.replace("segment_101a0", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
+    def test_return_rejects_output_as_template(self):
+        output = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101a0.v"
+        with self.assertRaisesRegex(ValueError, "requires a generic template"):
+            GENERATOR.render_return(
+                output, ROOT / "generated/isla-traces", 0x101A0
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
