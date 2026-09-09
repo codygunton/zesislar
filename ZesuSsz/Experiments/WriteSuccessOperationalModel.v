@@ -13,6 +13,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
+Require Import ZesuSsz.Experiments.WriteSuccessStackRange.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -163,11 +164,6 @@ Definition writeSuccessObservedBytes
   | Some payloads => Some (writeSuccessPublicBytes (concat payloads))
   | None => None
   end.
-
-Definition writeSuccessHelperStackDepth : Z := 80.
-
-Definition writeSuccessCalleeStackLow (sp : Z) : Z :=
-  sp - 2000 - writeSuccessHelperStackDepth.
 
 Definition writeSuccessPreservedState
     (args : WriteSuccessArgs WriteSuccessObservation)
