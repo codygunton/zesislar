@@ -21,52 +21,16 @@ Proof.
   subst value. exact Hlookup.
 Qed.
 
-Lemma Inv_15694_rejects_final_iteration_at_architecture_ram_base
+Lemma Inv_15694_zero_remaining_has_zero_counter
     args sp pointer base total processed withdrawal allBytes prefix
     current suffix scratch encoderScratch registerFrame memoryFrame priorLog
     state :
-  state.1.1.(seq_regs) !! "rv_ram_base" =
-    Some (RVal_Bits (BV 64 0x20000000)) ->
   Inv_15694 args sp pointer base total processed 0 withdrawal
     allBytes prefix current suffix scratch encoderScratch registerFrame
     memoryFrame priorLog state ->
-  False.
-Proof.
-  intros Hram Hinv.
-  have Hx9 : state.1.1.(seq_regs) !! "x9" =
-      Some (RVal_Bits (Z_to_bv 64 1)) by
-    (unfold Inv_15694 in Hinv; tauto).
-  have Hassumptions : writeSuccessTraceAssumptions state.1 by
-    (unfold Inv_15694 in Hinv; tauto).
-  unfold writeSuccessTraceAssumptions in Hassumptions.
-  rewrite List.Forall_forall in Hassumptions.
-  specialize (Hassumptions writeSuccessTraceX9LowerAssumption
-    writeSuccessTraceX9LowerCollected).
-  unfold writeSuccessTraceAssumptionHolds,
-    writeSuccessTraceX9LowerAssumption,
-    writeSuccessTraceX9LowerCondition in Hassumptions.
-  cbn in Hassumptions. rewrite Hx9 Hram in Hassumptions.
-  discriminate Hassumptions.
-Qed.
+  state.1.1.(seq_regs) !! "x9" =
+    Some (RVal_Bits (Z_to_bv 64 0)).
+Proof. unfold Inv_15694. tauto. Qed.
 
-Lemma Inv_15694_rejects_accepted_final_iteration
-    args sp pointer base total processed withdrawal allBytes prefix
-    current suffix scratch encoderScratch registerFrame memoryFrame priorLog
-    state :
-  writeSuccessConcreteInitialState args state.1 ->
-  Inv_15694 args sp pointer base total processed 0 withdrawal
-    allBytes prefix current suffix scratch encoderScratch registerFrame
-    memoryFrame priorLog state ->
-  False.
-Proof.
-  intros Hentry Hinv.
-  apply (Inv_15694_rejects_final_iteration_at_architecture_ram_base
-    args sp pointer base total processed withdrawal allBytes prefix current
-    suffix scratch encoderScratch registerFrame memoryFrame priorLog state).
-  - exact (writeSuccessConcreteInitialStateRamBase args state.1 Hentry).
-  - exact Hinv.
-Qed.
-
-Print Assumptions Inv_15694_rejects_final_iteration_at_architecture_ram_base.
 Print Assumptions writeSuccessConcreteInitialStateRamBase.
-Print Assumptions Inv_15694_rejects_accepted_final_iteration.
+Print Assumptions Inv_15694_zero_remaining_has_zero_counter.
