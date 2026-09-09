@@ -2,7 +2,6 @@ Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.write_success_02.a101e4.
 Require Import IslaTraces.write_success_02.a101e8.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101e4.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101e4CoveragePrefix.
@@ -24,18 +23,17 @@ Lemma segment_101e4_covered (regs : reg_map) (global : seq_global_state)
   read_mem global.(seq_mem) (bv_unsigned address) 1 = Some (bv_to_bvn byte) ->
   global.(seq_instrs) !! Z_to_bv 64 0x101e4 = Some a101e4 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101e8 = Some a101e8 ->
-  writeSuccessTraceAssumptions (writeSuccess101e4Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess101e4Lower = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess101e4Upper = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess101e4Before regs global)
     observations after ->
   after = writeSuccess101e4After regs global byte /\
   observations =
     writeSuccess101e4Observations regs global mstatusBits address satp byte.
 Proof.
-  intros Hpc Hx13 Hmstatus Hsatp Hsys Hmem Hcode Hnext Hassumptions Hsegment.
-  have HmstatusAssume :=
-    writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions.
-  have Hlower := writeSuccess101e4LowerFromTraceAssumptions regs global Hassumptions.
-  have Hupper := writeSuccess101e4UpperFromTraceAssumptions regs global Hassumptions.
+  intros Hpc Hx13 Hmstatus Hsatp Hsys Hmem Hcode Hnext
+    HmstatusAssume Hlower Hupper Hsegment.
   destruct (segment_101e4_prefix5_covered regs global mstatusBits address satp byte
     observations after Hsys Hsegment) as
     (done & labels & spawned & prefix5 & Hp5 & Hnil & Hdone & Hend & Hobs).

@@ -4,9 +4,6 @@ Require Import IslaTraces.write_success_02.a101e4.
 Require Import IslaTraces.write_success_02.a101e8.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk01.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptionsChunk06.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 
 Import ListNotations.
@@ -159,30 +156,6 @@ Definition writeSuccess101e4Observations (regs : reg_map)
   writeSuccess101e4PrefixObservations regs global mstatusBits address satp byte ++
   [writeSuccess15694Observation (writeSuccess101e4After regs global byte).1 global].
 
-Lemma writeSuccess101e4LowerFromTraceAssumptions regs global :
-  writeSuccessTraceAssumptions (writeSuccess101e4Before regs global) ->
-  eval_a_exp regs writeSuccess101e4Lower = Some (Val_Bool true).
-Proof.
-  intros H. apply Forall_forall with
-    (x := Assume writeSuccess101e4Lower Mk_annot :t: tnil) in H; first exact H.
-  unfold writeSuccessTraceAssumptionEvents. rewrite elem_of_list_In.
-  apply in_concat. exists writeSuccessTraceAssumptionsChunk01. split.
-  - cbn. tauto.
-  - unfold writeSuccessTraceAssumptionsChunk01, writeSuccess101e4Lower. cbn. tauto.
-Qed.
-
-Lemma writeSuccess101e4UpperFromTraceAssumptions regs global :
-  writeSuccessTraceAssumptions (writeSuccess101e4Before regs global) ->
-  eval_a_exp regs writeSuccess101e4Upper = Some (Val_Bool true).
-Proof.
-  intros H. apply Forall_forall with
-    (x := Assume writeSuccess101e4Upper Mk_annot :t: tnil) in H; first exact H.
-  unfold writeSuccessTraceAssumptionEvents. rewrite elem_of_list_In.
-  apply in_concat. exists writeSuccessTraceAssumptionsChunk06. split.
-  - cbn. tauto.
-  - unfold writeSuccessTraceAssumptionsChunk06, writeSuccess101e4Upper. cbn. tauto.
-Qed.
-
 Lemma writeSuccess101e4NextPcExact :
   writeSuccess101e4NextPc = Z_to_bv 64 0x101e8.
 Proof. vm_compute. apply bv_eq. reflexivity. Qed.
@@ -232,7 +205,9 @@ Lemma segment_101e4 (regs : reg_map) (global : seq_global_state)
   read_mem global.(seq_mem) (bv_unsigned address) 1 = Some (bv_to_bvn byte) ->
   global.(seq_instrs) !! Z_to_bv 64 0x101e4 = Some a101e4 ->
   global.(seq_instrs) !! Z_to_bv 64 0x101e8 = Some a101e8 ->
-  writeSuccessTraceAssumptions (writeSuccess101e4Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess101e4Lower = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess101e4Upper = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess101e4Before regs global)
     (writeSuccess101e4Observations regs global mstatusBits address satp byte)
     (writeSuccess101e4After regs global byte) /\
@@ -242,14 +217,11 @@ Lemma segment_101e4 (regs : reg_map) (global : seq_global_state)
   concat (map microLabels
     (writeSuccess101e4Observations regs global mstatusBits address satp byte)) = [].
 Proof.
-  intros Hpc Hx13 Hmstatus Hsatp Hsys Hmem Hcode Hnext Hassumptions.
+  intros Hpc Hx13 Hmstatus Hsatp Hsys Hmem Hcode Hnext
+    HmstatusAssume Hlower Hupper.
   destruct Hsys as
     (Hpmp & Hmisaligned & Hrambase & Hramsize & Hrombase & Hromsize &
      Hclintbase & Hclintsize & Htohost & Hpriv).
-  have HmstatusAssume :=
-    writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions.
-  have Hlower := writeSuccess101e4LowerFromTraceAssumptions regs global Hassumptions.
-  have Hupper := writeSuccess101e4UpperFromTraceAssumptions regs global Hassumptions.
   split; [|repeat split; reflexivity].
   unfold writeSuccess101e4Observations, writeSuccess101e4PrefixObservations.
   eapply islaInstructionSegmentIntro with
@@ -369,6 +341,4 @@ Qed.
 Print Assumptions writeSuccess101e4NextPcExact.
 Print Assumptions writeSuccess101e4RegsLookupOther.
 Print Assumptions writeSuccess101e4RegsDom.
-Print Assumptions writeSuccess101e4LowerFromTraceAssumptions.
-Print Assumptions writeSuccess101e4UpperFromTraceAssumptions.
 Print Assumptions segment_101e4.
