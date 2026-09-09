@@ -443,6 +443,7 @@ Definition Inv_memcpy
   state.1.1.(seq_regs) !! "x11" = Some (RVal_Bits source) /\
   state.1.1.(seq_regs) !! "x12" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (length bytes)))) /\
+  bv_extract 0 2 returnAddress = BV 2 0 /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
   writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned source)
@@ -491,6 +492,7 @@ Definition Inv_write_output
   state.1.1.(seq_regs) !! "x1" = Some (RVal_Bits returnAddress) /\
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits data) /\
   state.1.1.(seq_regs) !! "x11" = Some (RVal_Bits size) /\
+  bv_extract 0 2 returnAddress = BV 2 0 /\
   bv_unsigned size = Z.of_nat (length bytes) /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned data)
     (N.of_nat (length bytes)) = Some bytes /\
@@ -520,6 +522,7 @@ Definition Inv_encoder_int
   state.1.1.(seq_regs) !! "x1" = Some (RVal_Bits returnAddress) /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits value) /\
+  bv_extract 0 2 returnAddress = BV 2 0 /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned sp - 16) 16%N = Some scratch /\
   islaMemoryRange (bv_unsigned sp - 16) 16 /\
   (forall location,
@@ -563,6 +566,7 @@ Definition Inv_1568c
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits (Z_to_bv 64 base)) /\
   state.1.1.(seq_regs) !! "x9" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat total))) /\
+  (exists oldX18, state.1.1.(seq_regs) !! "x18" = Some oldX18) /\
   writeSuccessWithdrawalsRegisterFrame state.1.1.(seq_regs) registerFrame /\
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
