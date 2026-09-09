@@ -433,9 +433,9 @@ Definition writeSuccessWithdrawalListMemoryOk
       writeSuccessWithdrawalMemoryOk ok memory
         (pointer + 48 * Z.of_nat index) item.
 
-Definition writeSuccessConcreteRepresentationOk
+Definition writeSuccessConcreteRepresentationHeaderOk
     (ok : Z -> nat -> Prop) (decoded : WriteSuccessObservation)
-    (memory : mem_map) (address : Z) : Prop :=
+    (memory : mem_map) (address : Z) (tail : Prop) : Prop :=
   writeSuccessObservationValid decoded /\
   (exists top, length top = 848%nat /\
     read_mem_list memory address 848%N = Some top /\
@@ -451,7 +451,11 @@ Definition writeSuccessConcreteRepresentationOk
   writeSuccessMemorySliceOk ok memory address 32
     (observationExtraData decoded) /\
   writeSuccessMemoryIntegerOk ok memory (address + 48) 8
-    (observationBaseFee decoded) /\
+    (observationBaseFee decoded) /\ tail.
+
+Definition writeSuccessConcreteRepresentationListsOk
+    (ok : Z -> nat -> Prop) (decoded : WriteSuccessObservation)
+    (memory : mem_map) (address : Z) (tail : Prop) : Prop :=
   writeSuccessTransactionListMemoryOk ok memory address 56
     (observationTransactions decoded) /\
   writeSuccessMemoryByteListsOk ok memory address 72
@@ -465,7 +469,11 @@ Definition writeSuccessConcreteRepresentationOk
   writeSuccessMemoryOptionalU64Ok ok memory address 120
     (observationSlotNumber decoded) /\
   writeSuccessMemorySliceOk ok memory address 136
-    (observationBlockAccessList decoded) /\
+    (observationBlockAccessList decoded) /\ tail.
+
+Definition writeSuccessConcreteRepresentationHashesOk
+    (ok : Z -> nat -> Prop) (decoded : WriteSuccessObservation)
+    (memory : mem_map) (address : Z) (tail : Prop) : Prop :=
   writeSuccessMemoryBytesOk ok memory (address + 152)
     (observationParentHash decoded) /\
   writeSuccessMemoryBytesOk ok memory (address + 184)
@@ -493,7 +501,11 @@ Definition writeSuccessConcreteRepresentationOk
   writeSuccessMemorySliceOk ok memory address 672
     (observationBuilderExits decoded) /\
   writeSuccessMemoryBytesOk ok memory (address + 688)
-    (observationParentBeaconRoot decoded) /\
+    (observationParentBeaconRoot decoded) /\ tail.
+
+Definition writeSuccessConcreteRepresentationPostDataOk
+    (ok : Z -> nat -> Prop) (decoded : WriteSuccessObservation)
+    (memory : mem_map) (address : Z) : Prop :=
   writeSuccessMemoryByteListsOk ok memory address 720
     (observationWitnessNodes decoded) /\
   writeSuccessMemoryByteListsOk ok memory address 736
@@ -513,6 +525,14 @@ Definition writeSuccessConcreteRepresentationOk
   writeSuccessMemoryByteListsOk ok memory address 832
     (observationPublicKeys decoded).
 
+Definition writeSuccessConcreteRepresentationOk
+    (ok : Z -> nat -> Prop) (decoded : WriteSuccessObservation)
+    (memory : mem_map) (address : Z) : Prop :=
+  writeSuccessConcreteRepresentationHeaderOk ok decoded memory address
+    (writeSuccessConcreteRepresentationListsOk ok decoded memory address
+      (writeSuccessConcreteRepresentationHashesOk ok decoded memory address
+        (writeSuccessConcreteRepresentationPostDataOk ok decoded memory address))).
+
 Lemma writeSuccessConcreteRepresentationOkObject
     ok decoded memory address :
   writeSuccessConcreteRepresentationOk ok decoded memory address ->
@@ -520,13 +540,17 @@ Lemma writeSuccessConcreteRepresentationOkObject
     length top = 848%nat /\
     read_mem_list memory address 848%N = Some top /\
     ok address (length top).
-Proof. unfold writeSuccessConcreteRepresentationOk. tauto. Qed.
+Proof.
+  unfold writeSuccessConcreteRepresentationOk,
+    writeSuccessConcreteRepresentationHeaderOk.
+  tauto.
+Qed.
 
 (** These offsets come from the pinned ELF DWARF types.  The predicate covers
     the 848-byte top value and every reachable payload. *)
-Definition writeSuccessConcreteRepresentation
+Definition writeSuccessConcreteRepresentationHeaderPreR9
     (decoded : WriteSuccessObservation) (memory : mem_map)
-    (address : Z) : Prop :=
+    (address : Z) (tail : Prop) : Prop :=
   writeSuccessObservationValid decoded /\
   (exists top, length top = 848%nat /\
     read_mem_list memory address 848%N = Some top) /\
@@ -541,7 +565,11 @@ Definition writeSuccessConcreteRepresentation
   writeSuccessMemorySlice memory address 32
     (observationExtraData decoded) /\
   writeSuccessMemoryInteger memory (address + 48) 8
-    (observationBaseFee decoded) /\
+    (observationBaseFee decoded) /\ tail.
+
+Definition writeSuccessConcreteRepresentationListsPreR9
+    (decoded : WriteSuccessObservation) (memory : mem_map)
+    (address : Z) (tail : Prop) : Prop :=
   writeSuccessTransactionListMemory memory address 56
     (observationTransactions decoded) /\
   writeSuccessMemoryByteLists memory address 72
@@ -555,7 +583,11 @@ Definition writeSuccessConcreteRepresentation
   writeSuccessMemoryOptionalU64 memory address 120
     (observationSlotNumber decoded) /\
   writeSuccessMemorySlice memory address 136
-    (observationBlockAccessList decoded) /\
+    (observationBlockAccessList decoded) /\ tail.
+
+Definition writeSuccessConcreteRepresentationHashesPreR9
+    (decoded : WriteSuccessObservation) (memory : mem_map)
+    (address : Z) (tail : Prop) : Prop :=
   writeSuccessMemoryBytes memory (address + 152)
     (observationParentHash decoded) /\
   writeSuccessMemoryBytes memory (address + 184)
@@ -583,7 +615,11 @@ Definition writeSuccessConcreteRepresentation
   writeSuccessMemorySlice memory address 672
     (observationBuilderExits decoded) /\
   writeSuccessMemoryBytes memory (address + 688)
-    (observationParentBeaconRoot decoded) /\
+    (observationParentBeaconRoot decoded) /\ tail.
+
+Definition writeSuccessConcreteRepresentationPostDataPreR9
+    (decoded : WriteSuccessObservation) (memory : mem_map)
+    (address : Z) : Prop :=
   writeSuccessMemoryByteLists memory address 720
     (observationWitnessNodes decoded) /\
   writeSuccessMemoryByteLists memory address 736
@@ -603,17 +639,52 @@ Definition writeSuccessConcreteRepresentation
   writeSuccessMemoryByteLists memory address 832
     (observationPublicKeys decoded).
 
+Definition writeSuccessConcreteRepresentationPreR9
+    (decoded : WriteSuccessObservation) (memory : mem_map)
+    (address : Z) : Prop :=
+  writeSuccessConcreteRepresentationHeaderPreR9 decoded memory address
+    (writeSuccessConcreteRepresentationListsPreR9 decoded memory address
+      (writeSuccessConcreteRepresentationHashesPreR9 decoded memory address
+        (writeSuccessConcreteRepresentationPostDataPreR9 decoded memory address))).
+
+Definition writeSuccessConcreteRepresentation
+    (decoded : WriteSuccessObservation) (memory : mem_map)
+    (address : Z) : Prop :=
+  writeSuccessConcreteRepresentationOk (fun _ _ => True)
+    decoded memory address.
+
 Lemma writeSuccessRepresentationBaseFee decoded memory address :
   writeSuccessConcreteRepresentation decoded memory address ->
   writeSuccessMemoryInteger memory (address + 48) 8
     (observationBaseFee decoded).
-Proof. unfold writeSuccessConcreteRepresentation. tauto. Qed.
+Proof.
+  intros Hrepresentation.
+  assert (Hfield : writeSuccessMemoryIntegerOk (fun _ _ => True)
+      memory (address + 48) 8 (observationBaseFee decoded)).
+  { unfold writeSuccessConcreteRepresentation,
+      writeSuccessConcreteRepresentationOk,
+      writeSuccessConcreteRepresentationHeaderOk in Hrepresentation.
+    tauto. }
+  exact (proj1 Hfield).
+Qed.
 
 Lemma writeSuccessRepresentationExtraData decoded memory address :
   writeSuccessConcreteRepresentation decoded memory address ->
   writeSuccessMemorySlice memory address 32
     (observationExtraData decoded).
-Proof. unfold writeSuccessConcreteRepresentation. tauto. Qed.
+Proof.
+  intros Hrepresentation.
+  assert (Hfield : writeSuccessMemorySliceOk (fun _ _ => True)
+      memory address 32 (observationExtraData decoded)).
+  { unfold writeSuccessConcreteRepresentation,
+      writeSuccessConcreteRepresentationOk,
+      writeSuccessConcreteRepresentationHeaderOk in Hrepresentation.
+    tauto. }
+  destruct Hfield as
+    (pointer & [HpointerLow HpointerHigh] & [HpointerRead _] &
+      [HlengthRead _] & [Hbytes _]).
+  exists pointer. repeat split; assumption.
+Qed.
 
 Lemma writeSuccessObservationExtraDataValid decoded :
   writeSuccessObservationValid decoded ->
@@ -696,10 +767,14 @@ Proof.
   assert (HvalidFirst :
     writeSuccessUnsignedValid 8 (observationBaseFee first)).
   { unfold writeSuccessConcreteRepresentation,
+      writeSuccessConcreteRepresentationOk,
+      writeSuccessConcreteRepresentationHeaderOk,
       writeSuccessObservationValid in Hfirst. tauto. }
   assert (HvalidSecond :
     writeSuccessUnsignedValid 8 (observationBaseFee second)).
   { unfold writeSuccessConcreteRepresentation,
+      writeSuccessConcreteRepresentationOk,
+      writeSuccessConcreteRepresentationHeaderOk,
       writeSuccessObservationValid in Hsecond. tauto. }
   apply Hneq. eapply writeSuccessMemoryInteger64Injective; eassumption.
 Qed.
@@ -724,13 +799,17 @@ Proof.
   { apply Nat2Z.inj.
     eapply writeSuccessMemoryInteger64Injective; try eassumption.
     - unfold writeSuccessUnsignedValid. cbn.
-      unfold writeSuccessConcreteRepresentation in Hfirst.
+      unfold writeSuccessConcreteRepresentation,
+        writeSuccessConcreteRepresentationOk,
+        writeSuccessConcreteRepresentationHeaderOk in Hfirst.
       pose proof (writeSuccessObservationExtraDataValid _ (proj1 Hfirst))
         as Hvalid.
       unfold writeSuccessVariableBytesValid, writeSuccessLengthValid in Hvalid.
       lia.
     - unfold writeSuccessUnsignedValid. cbn.
-      unfold writeSuccessConcreteRepresentation in Hsecond.
+      unfold writeSuccessConcreteRepresentation,
+        writeSuccessConcreteRepresentationOk,
+        writeSuccessConcreteRepresentationHeaderOk in Hsecond.
       pose proof (writeSuccessObservationExtraDataValid _ (proj1 Hsecond))
         as Hvalid.
       unfold writeSuccessVariableBytesValid, writeSuccessLengthValid in Hvalid.
@@ -738,11 +817,15 @@ Proof.
   apply Hneq.
   eapply writeSuccessMemoryBytesInjective.
   - exact Hlength.
-  - unfold writeSuccessConcreteRepresentation in Hfirst.
+  - unfold writeSuccessConcreteRepresentation,
+      writeSuccessConcreteRepresentationOk,
+      writeSuccessConcreteRepresentationHeaderOk in Hfirst.
     pose proof (writeSuccessObservationExtraDataValid _ (proj1 Hfirst))
       as Hvalid.
     exact (proj2 Hvalid).
-  - unfold writeSuccessConcreteRepresentation in Hsecond.
+  - unfold writeSuccessConcreteRepresentation,
+      writeSuccessConcreteRepresentationOk,
+      writeSuccessConcreteRepresentationHeaderOk in Hsecond.
     pose proof (writeSuccessObservationExtraDataValid _ (proj1 Hsecond))
       as Hvalid.
     exact (proj2 Hvalid).
