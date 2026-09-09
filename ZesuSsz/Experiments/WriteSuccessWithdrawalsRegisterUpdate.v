@@ -64,5 +64,103 @@ Proof.
   - intros ->. apply Houtside. apply elem_of_list_In. exact Hin.
 Qed.
 
+Lemma writeSuccessOperationalRegisterFactsInsertUntrackedBit regs register
+    (value : bv 64) :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  register <> "mstatus" ->
+  Forall (fun entry => writeSuccessRegisterKindName entry.1 <> register)
+    zesu_ram_sys_regs ->
+  ~ In register writeSuccessWithdrawalsGeneralRegisters ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (<[register := RVal_Bits value]> regs).
+Proof.
+  intros (Hmstatus & Hsystem & Hgeneral) HmstatusName HsystemNames Houtside.
+  split.
+  - unfold writeSuccessWithdrawalsOperationalMstatus in Hmstatus |- *.
+    cbn in Hmstatus |- *. rewrite lookup_insert_ne; assumption.
+  - split.
+    + revert HsystemNames. induction Hsystem as [|[kind shape] entries Hentry Hentries IH];
+        intros Hnames; first constructor.
+      apply Forall_cons_iff in Hnames as [Hname Hnames]. constructor.
+      * destruct kind as [root|root field]; cbn in *.
+        -- destruct Hentry as (old & Hlookup & Hshape).
+           exists old. split; last exact Hshape.
+           rewrite lookup_insert_ne; [exact Hlookup | congruence].
+        -- destruct Hentry as (old & selected & Hlookup & Hread & Hshape).
+           exists old, selected. repeat split; try assumption.
+           rewrite lookup_insert_ne; [exact Hlookup | congruence].
+      * apply IH. exact Hnames.
+    + intros target Hin. rewrite lookup_insert_ne.
+      * apply Hgeneral. exact Hin.
+      * intros ->. apply Houtside. exact Hin.
+Qed.
+
+Lemma writeSuccessOperationalRegisterFactsInsertX8 regs (value : bv 64) :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (<["x8" := RVal_Bits value]> regs).
+Proof.
+  intros Hfacts. eapply writeSuccessOperationalRegisterFactsInsertUntrackedBit.
+  - exact Hfacts.
+  - discriminate.
+  - vm_compute. repeat constructor; discriminate.
+  - vm_compute. intuition discriminate.
+Qed.
+
+Lemma writeSuccessOperationalRegisterFactsInsertX9 regs (value : bv 64) :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (<["x9" := RVal_Bits value]> regs).
+Proof.
+  intros Hfacts. eapply writeSuccessOperationalRegisterFactsInsertUntrackedBit.
+  - exact Hfacts.
+  - discriminate.
+  - vm_compute. repeat constructor; discriminate.
+  - vm_compute. intuition discriminate.
+Qed.
+
+Lemma writeSuccessOperationalRegisterFactsInsertX18 regs (value : bv 64) :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (<["x18" := RVal_Bits value]> regs).
+Proof.
+  intros Hfacts. eapply writeSuccessOperationalRegisterFactsInsertUntrackedBit.
+  - exact Hfacts.
+  - discriminate.
+  - vm_compute. repeat constructor; discriminate.
+  - vm_compute. intuition discriminate.
+Qed.
+
+Lemma writeSuccessWithdrawalsRegisterFrameInsertX8 regs frame (value : bv 64) :
+  writeSuccessWithdrawalsRegisterFrame regs frame ->
+  writeSuccessWithdrawalsRegisterFrame (<["x8" := RVal_Bits value]> regs) frame.
+Proof.
+  intros Hframe. eapply writeSuccessWithdrawalsRegisterFrameInsertBit;
+    first exact Hframe. vm_compute. intuition discriminate.
+Qed.
+
+Lemma writeSuccessWithdrawalsRegisterFrameInsertX9 regs frame (value : bv 64) :
+  writeSuccessWithdrawalsRegisterFrame regs frame ->
+  writeSuccessWithdrawalsRegisterFrame (<["x9" := RVal_Bits value]> regs) frame.
+Proof.
+  intros Hframe. eapply writeSuccessWithdrawalsRegisterFrameInsertBit;
+    first exact Hframe. vm_compute. intuition discriminate.
+Qed.
+
+Lemma writeSuccessWithdrawalsRegisterFrameInsertX18 regs frame (value : bv 64) :
+  writeSuccessWithdrawalsRegisterFrame regs frame ->
+  writeSuccessWithdrawalsRegisterFrame (<["x18" := RVal_Bits value]> regs) frame.
+Proof.
+  intros Hframe. eapply writeSuccessWithdrawalsRegisterFrameInsertBit;
+    first exact Hframe. vm_compute. intuition discriminate.
+Qed.
+
 Print Assumptions writeSuccessOperationalRegisterFactsInsertBit.
 Print Assumptions writeSuccessWithdrawalsRegisterFrameInsertBit.
+Print Assumptions writeSuccessOperationalRegisterFactsInsertUntrackedBit.
+Print Assumptions writeSuccessOperationalRegisterFactsInsertX8.
+Print Assumptions writeSuccessOperationalRegisterFactsInsertX9.
+Print Assumptions writeSuccessOperationalRegisterFactsInsertX18.
+Print Assumptions writeSuccessWithdrawalsRegisterFrameInsertX8.
+Print Assumptions writeSuccessWithdrawalsRegisterFrameInsertX9.
+Print Assumptions writeSuccessWithdrawalsRegisterFrameInsertX18.
