@@ -3,12 +3,12 @@ Require Import isla.riscv64.riscv64.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.IslaMemoryOperational.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
+Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessParserLemmas.
 Require Import ZesuSsz.Experiments.WriteSuccessOutputSemantic.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
 
 Import ListNotations.
@@ -26,6 +26,41 @@ Definition writeSuccessWithdrawalsConcretePc
   | Some (RVal_Bits value) => Some (bvn_unsigned value)
   | _ => None
   end.
+
+Definition writeSuccessWithdrawalsOperationalMstatus : a_exp :=
+  AExp_Binop Eq
+    (AExp_Manyop (Bvmanyarith Bvand)
+      [AExp_Val (AVal_Var "mstatus" [Field "bits"]) Mk_annot;
+       AExp_Val (AVal_Bits (BV 64 0x20000)) Mk_annot] Mk_annot)
+    (AExp_Val (AVal_Bits (BV 64 0)) Mk_annot) Mk_annot.
+
+Definition writeSuccessWithdrawalsOperationalRegisterShape
+    (regs : reg_map) (entry : reg_kind * valu_shape) : Prop :=
+  match entry.1 with
+  | KindReg register =>
+      exists value, regs !! register = Some value /\
+        valu_has_shape value entry.2
+  | KindField register field =>
+      exists root value,
+        regs !! register = Some root /\
+        read_accessor [Field field] root = Some value /\
+        valu_has_shape value entry.2
+  end.
+
+Definition writeSuccessWithdrawalsOperationalRegisterFacts
+    (regs : reg_map) : Prop :=
+  eval_a_exp regs writeSuccessWithdrawalsOperationalMstatus =
+    Some (Val_Bool true) /\
+  Forall (writeSuccessWithdrawalsOperationalRegisterShape regs)
+    zesu_ram_sys_regs /\
+  forall register,
+    In register
+      ["x1"; "x3"; "x4"; "x5"; "x6"; "x7"; "x10"; "x11";
+       "x12"; "x13"; "x14"; "x15"; "x16"; "x17"; "x19"; "x20";
+       "x21"; "x22"; "x23"; "x24"; "x25"; "x26"; "x27"; "x28";
+       "x29"; "x30"; "x31"] ->
+    exists value : bv 64,
+      regs !! register = Some (RVal_Bits value).
 
 Fixpoint writeSuccessWithdrawalsRecordedPayloads
     (log : list WriteSuccessWithdrawalsRecord) :
@@ -401,7 +436,7 @@ Definition Inv_memcpy
   state.1.1.(seq_regs) !! "x12" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (length bytes)))) /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
-  writeSuccessTraceAssumptions state.1 /\
+  writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned source)
     (N.of_nat (length bytes)) = Some bytes /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned destination)
@@ -452,7 +487,7 @@ Definition Inv_write_output
   read_mem_list state.1.2.(seq_mem) (bv_unsigned data)
     (N.of_nat (length bytes)) = Some bytes /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
-  writeSuccessTraceAssumptions state.1 /\
+  writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   set_Forall
     (fun address =>
       ~ (0x2401a0c0 <= bv_unsigned address < 0x2401a0d0)%Z)
@@ -485,7 +520,7 @@ Definition Inv_encoder_int
   writeSuccessMemoryRangeFrame (bv_unsigned sp - 16) 16
     state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
-  writeSuccessTraceAssumptions state.1 /\
+  writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   set_Forall
     (fun address =>
       ~ (0x2401a0c0 <= bv_unsigned address < 0x2401a0d0)%Z)
@@ -514,6 +549,7 @@ Definition Inv_1568c
     (priorLog : list WriteSuccessWithdrawalsRecord)
     (state : WriteSuccessWithdrawalsConcreteState) : Prop :=
   IslaInstructionBoundary state.1 /\
+  state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x1568c /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits (Z_to_bv 64 base)) /\
@@ -522,7 +558,7 @@ Definition Inv_1568c
   writeSuccessWithdrawalsRegisterFrame state.1.1.(seq_regs) registerFrame /\
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
-  writeSuccessTraceAssumptions state.1 /\
+  writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
@@ -570,25 +606,25 @@ Definition Inv_15694
   (exists oldX15, state.1.1.(seq_regs) !! "x15" = Some oldX15) /\
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits pointer) /\
   state.1.1.(seq_regs) !! "x9" =
-    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) /\
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat remaining))) /\
   state.1.1.(seq_regs) !! "x18" =
     Some (RVal_Bits (sp + BV 64 1768)%bv) /\
   writeSuccessWithdrawalsRegisterFrame state.1.1.(seq_regs) registerFrame /\
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
-  writeSuccessTraceAssumptions state.1 /\
+  writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
   total = length (observationWithdrawals
     (successDecoded WriteSuccessObservation args)) /\
-  total = (processed + S remaining)%nat /\
+  total = (processed + remaining)%nat /\
   nth_error (observationWithdrawals
     (successDecoded WriteSuccessObservation args)) processed = Some withdrawal /\
   allBytes = prefix ++ current ++ suffix /\
   length prefix = (48 * processed)%nat /\
   length current = 48%nat /\
-  length suffix = (48 * remaining)%nat /\
+  length suffix = (48 * Nat.pred remaining)%nat /\
   bv_unsigned sp = successStackPointer WriteSuccessObservation args - 2000 /\
   bv_unsigned sp `mod` 16 = 0 /\
   0x20000000 <= bv_unsigned sp - 16 /\
@@ -623,6 +659,7 @@ Definition Inv_156e8
     (memoryFrame : mem_map) (log : list WriteSuccessWithdrawalsRecord)
     (state : WriteSuccessWithdrawalsConcreteState) : Prop :=
   IslaInstructionBoundary state.1 /\
+  state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x156e8 /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   state.1.1.(seq_regs) !! "x8" = Some (RVal_Bits pointer) /\
@@ -631,7 +668,7 @@ Definition Inv_156e8
   writeSuccessWithdrawalsRegisterFrame state.1.1.(seq_regs) registerFrame /\
   writeSuccessWithdrawalsMemoryFrame sp state.1.2.(seq_mem) memoryFrame /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
-  writeSuccessTraceAssumptions state.1 /\
+  writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
@@ -658,7 +695,7 @@ Definition block_1568c_guard_statement : Prop :=
               Some withdrawal /\
             allBytes = current ++ suffix /\
             length current = 48%nat /\
-            Inv_15694 args sp (Z_to_bv 64 base) base total 0 remaining
+            Inv_15694 args sp (Z_to_bv 64 base) base total 0 (S remaining)
               withdrawal allBytes [] current suffix scratch encoderScratch
               registerFrame memoryFrame priorLog after
       end.
@@ -695,7 +732,7 @@ Definition block_15694_iteration_statement : Prop :=
   forall args sp pointer base total processed r withdrawal nextWithdrawal
       allBytes prefix current nextCurrent nextSuffix scratch encoderScratch
       registerFrame memoryFrame priorLog state,
-    Inv_15694 args sp pointer base total processed (S r) withdrawal
+    Inv_15694 args sp pointer base total processed (S (S r)) withdrawal
       allBytes prefix current (nextCurrent ++ nextSuffix) scratch encoderScratch
       registerFrame memoryFrame priorLog state ->
     nth_error (observationWithdrawals
@@ -710,7 +747,7 @@ Definition block_15694_iteration_statement : Prop :=
       current = writeSuccessWithdrawalRawBytes withdrawal padding /\
       read_mem_list after.1.2.(seq_mem) (bv_unsigned sp + 1744) 48%N =
         Some current /\
-      Inv_15694 args sp (pointer + BV 64 48)%bv base total (S processed) r
+      Inv_15694 args sp (pointer + BV 64 48)%bv base total (S processed) (S r)
         nextWithdrawal allBytes (prefix ++ current) nextCurrent nextSuffix
         current encoderAfter registerFrame memoryFrame
         (priorLog ++ records) after.
@@ -719,7 +756,7 @@ Definition block_15694_iteration_statement : Prop :=
 Definition block_15694_last_iteration_statement : Prop :=
   forall args sp pointer base total processed withdrawal allBytes prefix current
       scratch encoderScratch registerFrame memoryFrame priorLog state,
-    Inv_15694 args sp pointer base total processed 0 withdrawal
+    Inv_15694 args sp pointer base total processed 1 withdrawal
       allBytes prefix current [] scratch encoderScratch registerFrame
       memoryFrame priorLog state ->
     exists segments after records padding,
