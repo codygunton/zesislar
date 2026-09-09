@@ -1,0 +1,125 @@
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+Require Import IslaTraces.__SOURCE_MODULE__.a__SOURCE_PC__.
+Require Import IslaTraces.__NEXT_MODULE__.a__NEXT_PC__.
+Require Import ZesuSsz.Contracts.InstructionBoundary.
+Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
+Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
+
+Import ListNotations.
+Open Scope Z_scope.
+
+Definition writeSuccess__SOURCE_PC__Trace1 :=
+  subst_trace (Val_Bits (BV 64 0)) 2 (writeSuccessTraceTail a__SOURCE_PC__).
+Definition writeSuccess__SOURCE_PC__Trace2 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace1.
+Definition writeSuccess__SOURCE_PC__Trace3 :=
+  subst_trace (Val_Bits (Z_to_bv 64 0x__SOURCE_PC__)) 3
+    (writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace2).
+Definition writeSuccess__SOURCE_PC__Trace4 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace3.
+Definition writeSuccess__SOURCE_PC__NextPc : bv 64 :=
+  (Z_to_bv 64 0x__SOURCE_PC__ + BV 64 4)%bv.
+Definition writeSuccess__SOURCE_PC__Trace5 :=
+  subst_trace (Val_Bits writeSuccess__SOURCE_PC__NextPc) 4
+    (writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace4).
+Definition writeSuccess__SOURCE_PC__Link : bv 64 :=
+  (Z_to_bv 64 0x__SOURCE_PC__ + BV 64 0x__ADDEND_HEX__)%bv.
+Definition writeSuccess__SOURCE_PC__Trace6 :=
+  subst_trace (Val_Bits writeSuccess__SOURCE_PC__Link) 5
+    (writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace5).
+Definition writeSuccess__SOURCE_PC__Trace7 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace6.
+Definition writeSuccess__SOURCE_PC__Trace8 := writeSuccessTraceTail writeSuccess__SOURCE_PC__Trace7.
+
+Definition writeSuccess__SOURCE_PC__Regs (regs : reg_map) : reg_map :=
+  <["PC" := RVal_Bits writeSuccess__SOURCE_PC__NextPc]>
+    (<["__DEST_REGISTER__" := RVal_Bits writeSuccess__SOURCE_PC__Link]> regs).
+
+Lemma writeSuccess__SOURCE_PC__RegsLookupOther regs reg :
+  reg <> "PC" ->
+  reg <> "__DEST_REGISTER__" ->
+  writeSuccess__SOURCE_PC__Regs regs !! reg = regs !! reg.
+Proof.
+  intros Hpc Hx12. unfold writeSuccess__SOURCE_PC__Regs.
+  rewrite lookup_insert_ne; last congruence.
+  rewrite lookup_insert_ne; last congruence.
+  reflexivity.
+Qed.
+
+Lemma writeSuccess__SOURCE_PC__RegsDom regs old__DEST_UPPER__ :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  regs !! "__DEST_REGISTER__" = Some old__DEST_UPPER__ ->
+  dom (writeSuccess__SOURCE_PC__Regs regs) = dom regs.
+Proof.
+  intros Hpc Hx12.
+  apply elem_of_dom_2 in Hpc. apply elem_of_dom_2 in Hx12.
+  unfold writeSuccess__SOURCE_PC__Regs. rewrite !dom_insert_L.
+  set_solver.
+Qed.
+
+Definition writeSuccess__SOURCE_PC__Before (regs : reg_map)
+    (global : seq_global_state) : IslaState :=
+  (writeSuccess15694Local a__SOURCE_PC__ regs, global).
+
+Definition writeSuccess__SOURCE_PC__After (regs : reg_map)
+    (global : seq_global_state) : IslaState :=
+  (writeSuccess15694Local a__NEXT_PC__ (writeSuccess__SOURCE_PC__Regs regs), global).
+
+Lemma writeSuccess__SOURCE_PC__NextPcExact :
+  writeSuccess__SOURCE_PC__NextPc = Z_to_bv 64 0x__NEXT_PC__.
+Proof. unfold writeSuccess__SOURCE_PC__NextPc. bv_solve. Qed.
+
+Definition writeSuccess__SOURCE_PC__PrefixObservations (regs : reg_map)
+    (global : seq_global_state) : list IslaMicroObservation :=
+  [writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace1 regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace2 regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace3 regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace4 regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace5 regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace6 regs) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace7
+       (<["__DEST_REGISTER__" := RVal_Bits writeSuccess__SOURCE_PC__Link]> regs)) global;
+   writeSuccess15694Observation
+     (writeSuccess15694Local writeSuccess__SOURCE_PC__Trace8
+       (writeSuccess__SOURCE_PC__Regs regs)) global].
+
+Definition writeSuccess__SOURCE_PC__Observations (regs : reg_map)
+    (global : seq_global_state) : list IslaMicroObservation :=
+  writeSuccess__SOURCE_PC__PrefixObservations regs global ++
+  [writeSuccess15694Observation
+     (writeSuccess__SOURCE_PC__After regs global).1 global].
+
+
+Definition writeSuccess__SOURCE_PC__First5Observations regs global :=
+  firstn 5 (writeSuccess__SOURCE_PC__PrefixObservations regs global).
+
+Definition writeSuccess__SOURCE_PC__TailObservations regs global :=
+  skipn 5 (writeSuccess__SOURCE_PC__PrefixObservations regs global).
+
+Lemma writeSuccess__SOURCE_PC__PrefixObservationsSplit regs global :
+  writeSuccess__SOURCE_PC__PrefixObservations regs global =
+    writeSuccess__SOURCE_PC__First5Observations regs global ++
+    writeSuccess__SOURCE_PC__TailObservations regs global.
+Proof.
+  unfold writeSuccess__SOURCE_PC__PrefixObservations,
+    writeSuccess__SOURCE_PC__First5Observations,
+    writeSuccess__SOURCE_PC__TailObservations. cbn. reflexivity.
+Qed.
+
+Lemma writeSuccess__SOURCE_PC__PrefixPathAppend before first middle second after :
+  IslaInstructionPrefixPath before first middle ->
+  IslaInstructionPrefixPath middle second after ->
+  IslaInstructionPrefixPath before (first ++ second) after.
+Proof.
+  intros Hfirst Hsecond. induction Hfirst; cbn; first exact Hsecond.
+  econstructor; eauto.
+Qed.
+
+Print Assumptions writeSuccess__SOURCE_PC__PrefixObservationsSplit.
+Print Assumptions writeSuccess__SOURCE_PC__PrefixPathAppend.
