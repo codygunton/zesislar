@@ -139,15 +139,17 @@ Theorem writeSuccessWithdrawalsSuffixRankAtIndex state remaining position pc :
     Some (count_occ Z.eq_dec
       (firstn (342 + position) writeSuccessWithdrawalsIterationPcs) pc) ->
   state.1.1.(seq_regs) !! "x9" =
-    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) ->
-  (Z.of_nat (S remaining) < 2 ^ 64)%Z ->
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat remaining))) ->
+  (0 < remaining)%nat ->
+  (Z.of_nat remaining < 2 ^ 64)%Z ->
   pc <> 0x156e4 ->
   pc <> 0x156e8 ->
   pc <> 0x1568c ->
   pc <> 0x15690 ->
-  rank_15694 state = (410 * remaining + (68 - position))%nat.
+  rank_15694 state =
+    (410 * Nat.pred remaining + (68 - position))%nat.
 Proof.
-  intros Hnth Hpc Hocc Hx9 Hrange HnotE4 HnotE8 Hnot8c Hnot90.
+  intros Hnth Hpc Hocc Hx9 Hpositive Hrange HnotE4 HnotE8 Hnot8c Hnot90.
   have Hphase := writeSuccessWithdrawalsSuffixPhaseAtIndex state position pc
     Hnth Hpc Hocc.
   unfold rank_15694. rewrite Hpc.
@@ -163,7 +165,7 @@ Proof.
     (apply Z.eqb_neq; exact HnotE8).
   rewrite H8c H90 HE4 HE8.
   rewrite Hphase Z_to_bv_unsigned bv_wrap_small.
-  - rewrite Nat2Z.id. cbn. reflexivity.
+  - rewrite Nat2Z.id. reflexivity.
   - unfold bv_modulus. cbn. lia.
 Qed.
 
