@@ -126,6 +126,52 @@ MEMORY_READ_STACK = re.compile(
 RETURN_PCS = (0x101A0, 0x101DC, 0x15D34)
 
 
+def bnez_metadata(trace_root: Path, pc: int) -> tuple[Path, str, int]:
+    if pc != 0x156E4:
+        raise ValueError(f"unsupported bnez PC 0x{pc:x}")
+    path = trace_path(trace_root, pc)
+    source = path.read_text()
+    constructors = [
+        line.strip().split(" ", 1)[0]
+        for line in source.splitlines()
+        if ":t:" in line
+    ]
+    expected = [
+        "Smt", "Assume", "Smt", "Assume", "ReadReg", "Smt", "Smt",
+        "ReadReg", "Smt", "Smt", "Smt", "Smt", "BranchAddress",
+        "WriteReg", "Smt", "WriteReg",
+    ]
+    match = re.search(
+        r'ReadReg "(?P<register>x[0-9]+)" \[\] '
+        r'\(RegVal_Base \(Val_Symbolic 5%Z\)\).*?'
+        r'DefineConst 7%Z.*?'
+        r'Val \(Val_Bits \(BV 64%N 0x(?P<offset>[0-9a-f]+)%Z\)\).*?'
+        r'BranchAddress .*?WriteReg "PC"', source, re.DOTALL,
+    )
+    if constructors != expected or match is None:
+        raise ValueError(f"unsupported bnez trace at 0x{pc:x}")
+    return path, match.group("register"), int(match.group("offset"), 16)
+
+
+def render_bnez(template: Path, trace_root: Path, pc: int) -> str:
+    path, register, offset = bnez_metadata(trace_root, pc)
+    mask = (1 << 64) - 1
+    fallthrough_pc = pc + 4
+    taken_pc = (pc + offset) & mask
+    if register != "x9" or (fallthrough_pc, taken_pc) != (0x156E8, 0x15694):
+        raise ValueError(f"unsupported bnez operands at 0x{pc:x}")
+    fallthrough_path = trace_path(trace_root, fallthrough_pc)
+    taken_path = trace_path(trace_root, taken_pc)
+    return render_generic_template(template, {
+        "__SOURCE_MODULE__": path.parent.name,
+        "__FALLTHROUGH_MODULE__": fallthrough_path.parent.name,
+        "__TAKEN_MODULE__": taken_path.parent.name,
+        "__SOURCE_PC__": f"{pc:x}",
+        "__FALLTHROUGH_PC__": f"{fallthrough_pc:x}",
+        "__TAKEN_PC__": f"{taken_pc:x}",
+    })
+
+
 def return_metadata(trace_root: Path, pc: int) -> Path:
     if pc not in RETURN_PCS:
         raise ValueError(f"unsupported return PC 0x{pc:x}")
@@ -704,6 +750,7 @@ def main() -> None:
             "memory-write-byte",
             "memory-write-output", "memory-write-stack",
             "return",
+            "bnez",
         ),
         default="constant-write",
     )
@@ -736,6 +783,8 @@ def main() -> None:
         rendered = render_memory_write_stack(args.template, args.trace_root, args.pc)
     elif args.shape == "return":
         rendered = render_return(args.template, args.trace_root, args.pc)
+    elif args.shape == "bnez":
+        rendered = render_bnez(args.template, args.trace_root, args.pc)
     else:
         rendered = render_two_register_add(args.template, args.trace_root, args.pc)
     if args.check:

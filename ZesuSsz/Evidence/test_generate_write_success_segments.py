@@ -588,6 +588,41 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
                 output, ROOT / "generated/isla-traces", 0x101A0
             )
 
+    def test_bnez_generates_complete_pair(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/bnez"
+        self.assertEqual(len(list(templates.glob("*.tmpl"))), 6)
+        for template in templates.glob("*.tmpl"):
+            target_name = template.name.replace("Bnez", "156e4")
+            target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+            rendered = GENERATOR.render_bnez(
+                template, ROOT / "generated/isla-traces", 0x156E4
+            )
+            self.assertEqual(rendered, target.read_text())
+
+    def test_bnez_rejects_unsupported_shape(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            trace_dir = Path(temporary_directory) / "write_success_bad"
+            trace_dir.mkdir()
+            (trace_dir / "a156e4.v").write_text(
+                "From isla Require Import opsem.\nDefinition a156e4 := tnil.\n"
+            )
+            with self.assertRaisesRegex(ValueError, "unsupported bnez trace"):
+                GENERATOR.bnez_metadata(Path(temporary_directory), 0x156E4)
+
+    def test_bnez_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/bnez/"
+            "WriteSuccessSegmentBnez.v.tmpl"
+        )
+        rendered = GENERATOR.render_bnez(
+            template, ROOT / "generated/isla-traces", 0x156E4
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment156e4.v"
+            altered.write_text(rendered.replace("segment_156e4", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
