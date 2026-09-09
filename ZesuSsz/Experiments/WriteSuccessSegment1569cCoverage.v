@@ -2,7 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.write_success_90.a1569c.
 Require Import IslaTraces.write_success_90.a156a0.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessSegment1569c.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment1569cCore.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment1569cCoveragePrefix.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment1569cCoverageSuffix.
 

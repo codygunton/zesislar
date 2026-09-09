@@ -6,7 +6,7 @@ Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
-Require Import ZesuSsz.Experiments.WriteSuccessSegment1569c.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment1569cCore.
 
 Definition writeSuccess1569cTailObservations regs global sp :=
   skipn 5 (writeSuccess1569cPrefixObservations regs global sp) ++
