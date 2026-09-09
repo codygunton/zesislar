@@ -2,7 +2,6 @@ Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.__SOURCE_MODULE__.a__SOURCE_PC__.
 Require Import IslaTraces.__TARGET_MODULE__.a__TARGET_PC__.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoveragePrefix.
@@ -46,15 +45,13 @@ Lemma segment___SOURCE_PC___covered regs global observations after :
   regs !! "__BASE_LINK_REGISTER__" = Some (RVal_Bits writeSuccess__SOURCE_PC__Ra) ->
   global.(seq_instrs) !! Z_to_bv 64 0x__SOURCE_PC__ = Some a__SOURCE_PC__ ->
   global.(seq_instrs) !! Z_to_bv 64 0x__TARGET_PC__ = Some a__TARGET_PC__ ->
-  writeSuccessTraceAssumptions (writeSuccess__SOURCE_PC__Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess__SOURCE_PC__Before regs global)
     observations after ->
   after = writeSuccess__SOURCE_PC__After regs global /\
   observations = writeSuccess__SOURCE_PC__Observations regs global.
 Proof.
-  intros Hpc Hx1 Hcode Hnext Hassumptions Hsegment.
-  eapply segment___SOURCE_PC___mstatus_covered; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions).
+  exact (segment___SOURCE_PC___mstatus_covered regs global observations after).
 Qed.
 
 Print Assumptions segment___SOURCE_PC___mstatus_covered.

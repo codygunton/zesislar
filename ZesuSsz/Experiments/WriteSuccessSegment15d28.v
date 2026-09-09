@@ -5,7 +5,6 @@ Require Import IslaTraces.write_success_01.a10190.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegmentAutomation.
 Require Import ZesuSsz.Experiments.WriteSuccessCoverageAutomation.
-Require Import ZesuSsz.Experiments.WriteSuccessTraceAssumptions.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15d24.
 
@@ -294,7 +293,7 @@ Lemma segment_15d28 regs global :
   regs !! "x1" = Some (RVal_Bits writeSuccess15d28Ra) ->
   global.(seq_instrs) !! Z_to_bv 64 0x15d28 = Some a15d28 ->
   global.(seq_instrs) !! Z_to_bv 64 0x10190 = Some a10190 ->
-  writeSuccessTraceAssumptions (writeSuccess15d28Before regs global) ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
   IslaInstructionSegment (writeSuccess15d28Before regs global)
     (writeSuccess15d28Observations regs global)
     (writeSuccess15d28After regs global) /\
@@ -302,9 +301,7 @@ Lemma segment_15d28 regs global :
   (writeSuccess15d28After regs global).2.(seq_mem) = global.(seq_mem) /\
   concat (map microLabels (writeSuccess15d28Observations regs global)) = [].
 Proof.
-  intros Hpc Hx1 Hcode Hnext Hassumptions.
-  eapply segment_15d28_mstatus; eauto.
-  exact (writeSuccess15694MstatusFromTraceAssumptions regs global Hassumptions).
+  exact (segment_15d28_mstatus regs global).
 Qed.
 
 Lemma writeSuccess15d28RegsLookupOther regs reg :
