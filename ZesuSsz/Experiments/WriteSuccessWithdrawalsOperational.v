@@ -112,6 +112,14 @@ Definition writeSuccessWithdrawalIterationRecords
   writeSuccessWithdrawalsRecordedPayloads records =
     Some (writeSuccessWithdrawalFragments withdrawal).
 
+Definition writeSuccessWithdrawalItemsAt
+    (memory : mem_map) (base : Z)
+    (items : list WriteSuccessWithdrawalObservation) : Prop :=
+  forall index item,
+    nth_error items index = Some item ->
+    writeSuccessWithdrawalMemory memory
+      (base + 48 * Z.of_nat index) item.
+
 Definition writeSuccessWithdrawalsObservedBytes
     (records : list WriteSuccessWithdrawalsRecord) : option ByteString :=
   match writeSuccessWithdrawalsRecordedPayloads records with
@@ -562,6 +570,8 @@ Definition Inv_1568c
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
+  writeSuccessWithdrawalItemsAt state.1.2.(seq_mem) base
+    (observationWithdrawals (successDecoded WriteSuccessObservation args)) /\
   total = length (observationWithdrawals
     (successDecoded WriteSuccessObservation args)) /\
   length allBytes = (48 * total)%nat /\
@@ -616,6 +626,8 @@ Definition Inv_15694
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
+  writeSuccessWithdrawalItemsAt state.1.2.(seq_mem) base
+    (observationWithdrawals (successDecoded WriteSuccessObservation args)) /\
   total = length (observationWithdrawals
     (successDecoded WriteSuccessObservation args)) /\
   total = (processed + remaining)%nat /\
@@ -672,6 +684,8 @@ Definition Inv_156e8
   writeSuccessConcreteRepresentation
     (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
     (successDecodedAddress WriteSuccessObservation args) /\
+  writeSuccessWithdrawalItemsAt state.1.2.(seq_mem) base
+    (observationWithdrawals (successDecoded WriteSuccessObservation args)) /\
   read_mem_list state.1.2.(seq_mem) base
     (N.of_nat (length allBytes)) = Some allBytes /\
   state.2 = log.
