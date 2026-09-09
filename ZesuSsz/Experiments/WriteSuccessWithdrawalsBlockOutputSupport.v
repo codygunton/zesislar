@@ -283,4 +283,3 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessOutputReturnAlignmentEval.
-
