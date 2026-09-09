@@ -437,6 +437,7 @@ Definition Inv_memcpy
     (memoryFrame : mem_map) (priorLog : list WriteSuccessWithdrawalsRecord)
     (state : WriteSuccessWithdrawalsConcreteState) : Prop :=
   IslaInstructionBoundary state.1 /\
+  state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x101d4 /\
   state.1.1.(seq_regs) !! "x1" = Some (RVal_Bits returnAddress) /\
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits destination) /\
@@ -488,6 +489,7 @@ Definition Inv_write_output
     (priorLog : list WriteSuccessWithdrawalsRecord)
     (state : WriteSuccessWithdrawalsConcreteState) : Prop :=
   IslaInstructionBoundary state.1 /\
+  state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x10190 /\
   state.1.1.(seq_regs) !! "x1" = Some (RVal_Bits returnAddress) /\
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits data) /\
@@ -518,6 +520,7 @@ Definition Inv_encoder_int
     (memoryFrame : mem_map) (priorLog : list WriteSuccessWithdrawalsRecord)
     (state : WriteSuccessWithdrawalsConcreteState) : Prop :=
   IslaInstructionBoundary state.1 /\
+  state.1.1.(seq_pc_reg) = "PC" /\
   writeSuccessWithdrawalsConcretePc state = Some 0x15d10 /\
   state.1.1.(seq_regs) !! "x1" = Some (RVal_Bits returnAddress) /\
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
