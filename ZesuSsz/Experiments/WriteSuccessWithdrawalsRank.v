@@ -2,6 +2,8 @@ From Coq Require Import Lia Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentation.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOff.
+Require Import ZesuSsz.Experiments.WriteSuccessConcreteRepresentationOffValid.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
@@ -171,14 +173,16 @@ Lemma Inv_1568c_total_range args sp base total allBytes scratch encoderScratch
   (Z.of_nat total < 2 ^ 64)%Z.
 Proof.
   unfold Inv_1568c. intros Hinv.
-  have Hrepresentation : writeSuccessConcreteRepresentation
+  have Hrepresentation : writeSuccessConcreteRepresentationOff
+      (successStackPointer WriteSuccessObservation args)
       (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
       (successDecodedAddress WriteSuccessObservation args) by tauto.
   have Htotal : total = length (observationWithdrawals
       (successDecoded WriteSuccessObservation args)) by tauto.
   have Hvalid : writeSuccessObservationValid
       (successDecoded WriteSuccessObservation args).
-  { unfold writeSuccessConcreteRepresentation in Hrepresentation. tauto. }
+  { exact (writeSuccessConcreteRepresentationOffValid _ _ _ _
+      Hrepresentation). }
   have Hwithdrawals : writeSuccessListValid
       writeSuccessWithdrawalObservationValid
       (observationWithdrawals (successDecoded WriteSuccessObservation args)).
@@ -215,18 +219,20 @@ Lemma Inv_15694_counter_range args sp pointer base total processed remaining
   Inv_15694 args sp pointer base total processed remaining withdrawal
     allBytes prefix current suffix scratch encoderScratch registerFrame
     memoryFrame priorLog state ->
-  (Z.of_nat (S remaining) < 2 ^ 64)%Z.
+  (Z.of_nat remaining < 2 ^ 64)%Z.
 Proof.
   unfold Inv_15694. intros Hinv.
-  have Hrepresentation : writeSuccessConcreteRepresentation
+  have Hrepresentation : writeSuccessConcreteRepresentationOff
+      (successStackPointer WriteSuccessObservation args)
       (successDecoded WriteSuccessObservation args) state.1.2.(seq_mem)
       (successDecodedAddress WriteSuccessObservation args) by tauto.
   have Htotal : total = length (observationWithdrawals
       (successDecoded WriteSuccessObservation args)) by tauto.
-  have Hparts : total = (processed + S remaining)%nat by tauto.
+  have Hparts : total = (processed + remaining)%nat by tauto.
   have Hvalid : writeSuccessObservationValid
       (successDecoded WriteSuccessObservation args).
-  { unfold writeSuccessConcreteRepresentation in Hrepresentation. tauto. }
+  { exact (writeSuccessConcreteRepresentationOffValid _ _ _ _
+      Hrepresentation). }
   have Hwithdrawals : writeSuccessListValid
       writeSuccessWithdrawalObservationValid
       (observationWithdrawals (successDecoded WriteSuccessObservation args)).
@@ -234,7 +240,7 @@ Proof.
   unfold writeSuccessListValid, writeSuccessLengthValid in Hwithdrawals.
   destruct Hwithdrawals as [Hwithdrawals _].
   rewrite <- Htotal in Hwithdrawals.
-  have Hle : (S remaining <= total)%nat by lia.
+  have Hle : (remaining <= total)%nat by lia.
   apply Nat2Z.inj_le in Hle. lia.
 Qed.
 
@@ -244,13 +250,13 @@ Lemma Inv_15694_rank args sp pointer base total processed remaining withdrawal
   Inv_15694 args sp pointer base total processed remaining withdrawal
     allBytes prefix current suffix scratch encoderScratch registerFrame
     memoryFrame priorLog state ->
-  rank_15694 state = (410 * S remaining)%nat.
+  rank_15694 state = (410 * remaining)%nat.
 Proof.
   intros Hinv.
   have Hpc : writeSuccessWithdrawalsConcretePc state = Some 0x15694 by
     (unfold Inv_15694 in Hinv; tauto).
   have Hx9 : state.1.1.(seq_regs) !! "x9" =
-      Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) by
+      Some (RVal_Bits (Z_to_bv 64 (Z.of_nat remaining))) by
     (unfold Inv_15694 in Hinv; tauto).
   have Hrange := Inv_15694_counter_range _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     Hinv.
@@ -259,30 +265,45 @@ Proof.
   unfold writeSuccessWithdrawalsRegisterUnsigned. rewrite Hx9. cbn.
   rewrite Hphase.
   change (410 * Nat.pred
-      (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (S remaining))))) + 410 =
-    410 * S remaining)%nat.
+      (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat remaining)))) + 410 =
+    410 * remaining)%nat.
   rewrite Z_to_bv_unsigned bv_wrap_small.
-  - rewrite Nat2Z.id. cbn. lia.
+  - rewrite Nat2Z.id.
+    have Hpositive : (0 < remaining)%nat.
+    { have Hnth : nth_error (observationWithdrawals
+          (successDecoded WriteSuccessObservation args)) processed =
+          Some withdrawal by (unfold Inv_15694 in Hinv; tauto).
+      have Htotal : total = length (observationWithdrawals
+          (successDecoded WriteSuccessObservation args)) by
+        (unfold Inv_15694 in Hinv; tauto).
+      have Hparts : total = (processed + remaining)%nat by
+        (unfold Inv_15694 in Hinv; tauto).
+      have Hindex : (processed < length (observationWithdrawals
+          (successDecoded WriteSuccessObservation args)))%nat.
+      { apply nth_error_Some. rewrite Hnth. discriminate. }
+      rewrite <- Htotal, Hparts in Hindex. lia. }
+    destruct remaining; first lia. cbn. lia.
   - unfold bv_modulus. cbn. lia.
 Qed.
 
 Lemma rank_15694_at_15698 state remaining :
   writeSuccessWithdrawalsConcretePc state = Some 0x15698 ->
   state.1.1.(seq_regs) !! "x9" =
-    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) ->
-  (Z.of_nat (S remaining) < 2 ^ 64)%Z ->
-  rank_15694 state = (410 * remaining + 409)%nat.
+    Some (RVal_Bits (Z_to_bv 64 (Z.of_nat remaining))) ->
+  (0 < remaining)%nat ->
+  (Z.of_nat remaining < 2 ^ 64)%Z ->
+  rank_15694 state = (410 * Nat.pred remaining + 409)%nat.
 Proof.
-  intros Hpc Hx9 Hrange.
+  intros Hpc Hx9 Hpositive Hrange.
   have Hphase := writeSuccessWithdrawalsPhase15698 state Hpc.
   unfold rank_15694. rewrite Hpc.
   unfold writeSuccessWithdrawalsRegisterUnsigned. rewrite Hx9. cbn.
   rewrite Hphase.
   change (410 * Nat.pred
-      (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (S remaining))))) + 409 =
-    410 * remaining + 409)%nat.
+      (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat remaining)))) + 409 =
+    410 * Nat.pred remaining + 409)%nat.
   rewrite Z_to_bv_unsigned bv_wrap_small.
-  - rewrite Nat2Z.id. cbn. reflexivity.
+  - rewrite Nat2Z.id. reflexivity.
   - unfold bv_modulus. cbn. lia.
 Qed.
 
