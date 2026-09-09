@@ -16,6 +16,20 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
     def test_iteration_has_410_pcs(self):
         self.assertEqual(len(GENERATOR.ITERATION_PCS), 410)
 
+    def test_all_45_pilot_pairs_exist_without_global_trace_premises(self):
+        self.assertEqual(len(GENERATOR.PILOT_PCS), 45)
+        self.assertEqual(len(set(GENERATOR.PILOT_PCS)), 45)
+        for pc in GENERATOR.PILOT_PCS:
+            files = list(
+                (ROOT / "ZesuSsz/Experiments").glob(
+                    f"WriteSuccessSegment{pc:x}*.v"
+                )
+            )
+            text = "\n".join(path.read_text() for path in files)
+            self.assertIn(f"Lemma segment_{pc:x} ", text)
+            self.assertIn(f"Lemma segment_{pc:x}_covered ", text)
+            self.assertNotIn("writeSuccessTraceAssumptions", text)
+
     def test_15698_regenerates_checked_pair(self):
         target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
         template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
@@ -74,6 +88,20 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
         self.assertIn("Lemma segment_1569c_covered ", rendered)
         self.assertIn('"x8"', rendered)
         self.assertIn('"x11"', rendered)
+
+    def test_15694_regenerates_register_add_pair(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/register_add/"
+            "register_add_legacy.v.tmpl"
+        )
+        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15694.v"
+        rendered = GENERATOR.render_register_add(
+            template, ROOT / "generated/isla-traces", 0x15694
+        )
+        self.assertEqual(rendered, target.read_text())
+        self.assertIn("Lemma segment_15694 ", rendered)
+        self.assertIn("Lemma segment_15694_covered ", rendered)
+        self.assertNotIn("writeSuccessTraceAssumptions", rendered)
 
     def test_register_add_generates_remaining_complete_pairs(self):
         templates = ROOT / "ZesuSsz/Evidence/templates/register_add"

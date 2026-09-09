@@ -24,6 +24,14 @@ ITERATION_PCS = (
     + [0x156DC, 0x156E0, 0x156E4]
 )
 
+PILOT_PCS = (
+    0x10190, 0x10194, 0x10198, 0x1019C, 0x101A0,
+    0x101D4, 0x101D8, 0x101DC, 0x101E0, 0x101E4, 0x101E8,
+    0x101EC, 0x101F0, 0x101F4,
+    *range(0x15694, 0x156E5, 4),
+    *range(0x15D10, 0x15D35, 4),
+)
+
 CONST_WRITE = re.compile(
     r'WriteReg "(?P<register>x[0-9]+)" \[\] '
     r'\(RegVal_Base \(Val_Bits \(BV 64%N 0x(?P<constant>[0-9a-f]+)%Z\)\)\) '
