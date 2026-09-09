@@ -52,5 +52,26 @@ Proof.
   f_equal. apply writeSuccessMemcpyByteReadValue.
 Qed.
 
+Lemma writeSuccessMemcpyBackedByte memory address :
+  0 <= address < 2 ^ 64 ->
+  is_Some (memory !! Z_to_bv 64 address) ->
+  exists byte : bv 8,
+    read_mem memory address 1 = Some (bv_to_bvn byte).
+Proof.
+  intros Hrange [byte Hbyte]. exists byte.
+  unfold read_mem, read_mem_list. cbn.
+  rewrite seqZ_cons; last lia. rewrite seqZ_nil; last lia.
+  have Hmap : mapM
+      (fun x : Z => Z_to_bv_checked 64 x ≫= fun i => memory !! i)
+      [address] = Some [byte].
+  { apply mapM_Some_2. constructor; last constructor.
+    apply bind_Some. exists (Z_to_bv 64 address). split.
+    - apply Z_to_bv_checked_Some. rewrite Z_to_bv_unsigned bv_wrap_small;
+        [reflexivity | unfold bv_modulus; cbn; lia].
+    - exact Hbyte. }
+  rewrite Hmap. cbn. f_equal. apply writeSuccessMemcpyByteReadValue.
+Qed.
+
 Print Assumptions writeSuccessMemcpyByteReadValue.
 Print Assumptions writeSuccessMemcpyReadByte.
+Print Assumptions writeSuccessMemcpyBackedByte.
