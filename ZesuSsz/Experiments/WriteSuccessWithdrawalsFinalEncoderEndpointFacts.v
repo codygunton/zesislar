@@ -196,7 +196,7 @@ Proof.
   exact Hx18.
 Qed.
 
-Local Lemma writeSuccessFinalAddressOutputGlobal args sp pointer base total
+Lemma writeSuccessFinalAddressOutputGlobal args sp pointer base total
     processed remaining withdrawal allBytes prefix current suffix scratch
     encoderScratch registerFrame memoryFrame priorLog state regs0 global0 regs1
     global1 regs2 global2 outputRegs outputGlobal :
