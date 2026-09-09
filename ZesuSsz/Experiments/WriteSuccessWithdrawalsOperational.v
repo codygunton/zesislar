@@ -449,6 +449,8 @@ Definition Inv_memcpy
   state.1.1.(seq_regs) !! "x12" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (length bytes)))) /\
   bv_extract 0 2 returnAddress = BV 2 0 /\
+  (exists returnTrace,
+    state.1.2.(seq_instrs) !! returnAddress = Some returnTrace) /\
   writeSuccessWithdrawalsInstructionTable state.1.2 /\
   writeSuccessWithdrawalsOperationalRegisterFacts state.1.1.(seq_regs) /\
   read_mem_list state.1.2.(seq_mem) (bv_unsigned source)
@@ -536,6 +538,8 @@ Definition Inv_encoder_int
   state.1.1.(seq_regs) !! "x2" = Some (RVal_Bits sp) /\
   state.1.1.(seq_regs) !! "x10" = Some (RVal_Bits value) /\
   bv_extract 0 2 returnAddress = BV 2 0 /\
+  (exists returnTrace,
+    state.1.2.(seq_instrs) !! returnAddress = Some returnTrace) /\
   bv_unsigned sp `mod` 8 = 0 /\
   0x20000000 <= bv_unsigned sp - 16 /\
   bv_unsigned sp <= 0x40000000 /\
