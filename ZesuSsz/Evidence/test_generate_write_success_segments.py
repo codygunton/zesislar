@@ -13,6 +13,27 @@ SPEC.loader.exec_module(GENERATOR)
 
 
 class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
+    def check_constant_write_components(self, pc):
+        templates = ROOT / "ZesuSsz/Evidence/templates/constant_write"
+        components = {
+            "constant_write.v.tmpl": "",
+            "constant_write_existence.v.tmpl": "Existence",
+            "constant_write_coverage.v.tmpl": "Coverage",
+        }
+        rendered = {}
+        for template_name, suffix in components.items():
+            rendered[suffix] = GENERATOR.render_constant_write(
+                templates / template_name,
+                ROOT / "generated/isla-traces",
+                pc,
+            )
+            target = (
+                ROOT / "ZesuSsz/Experiments" /
+                f"WriteSuccessSegment{pc:x}{suffix}.v"
+            )
+            self.assertEqual(rendered[suffix], target.read_text())
+        return rendered
+
     def test_iteration_has_410_pcs(self):
         self.assertEqual(len(GENERATOR.ITERATION_PCS), 410)
 
@@ -31,14 +52,9 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             self.assertNotIn("writeSuccessTraceAssumptions", text)
 
     def test_15698_regenerates_checked_pair(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment15698.v"
-        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
-        rendered = GENERATOR.render_constant_write(
-            template, ROOT / "generated/isla-traces", 0x15698
-        )
-        self.assertEqual(rendered, target.read_text())
-        self.assertIn("Lemma segment_15698 ", rendered)
-        self.assertIn("Lemma segment_15698_covered ", rendered)
+        rendered = self.check_constant_write_components(0x15698)
+        self.assertIn("Lemma segment_15698 ", rendered["Existence"])
+        self.assertIn("Lemma segment_15698_covered ", rendered["Coverage"])
 
     def test_15694_rejects_unsupported_shape(self):
         template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
@@ -48,46 +64,51 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             )
 
     def test_101d4_generates_a_distinct_pair(self):
-        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment101d4.v"
-        rendered = GENERATOR.render_constant_write(
-            template, ROOT / "generated/isla-traces", 0x101D4
-        )
-        self.assertEqual(rendered, target.read_text())
-        self.assertIn("Lemma segment_101d4 ", rendered)
-        self.assertIn("Lemma segment_101d4_covered ", rendered)
-        self.assertIn('"x15"', rendered)
-        self.assertIn("BV 64 0", rendered)
+        rendered = self.check_constant_write_components(0x101D4)
+        self.assertIn("Lemma segment_101d4 ", rendered["Existence"])
+        self.assertIn("Lemma segment_101d4_covered ", rendered["Coverage"])
+        self.assertIn('"x15"', rendered["Existence"])
+        self.assertIn("BV 64 0", rendered["Existence"])
 
     def test_constant_write_regenerates_remaining_pairs(self):
-        template = ROOT / "ZesuSsz/Evidence/templates/constant_write/constant_write.v.tmpl"
         expected = {
             0x15D20: ("WriteSuccessSegment15d20.v", '"x11"', "BV 64 8", 3),
             0x156C0: ("WriteSuccessSegment156c0.v", '"x11"', "BV 64 20", 1),
         }
         for pc, (name, register, constant, occurrences) in expected.items():
-            target = ROOT / "ZesuSsz/Experiments" / name
-            rendered = GENERATOR.render_constant_write(
-                template, ROOT / "generated/isla-traces", pc
+            rendered = self.check_constant_write_components(pc)
+            self.assertIn(f"Lemma segment_{pc:x} ", rendered["Existence"])
+            self.assertIn(
+                f"Lemma segment_{pc:x}_covered ", rendered["Coverage"]
             )
-            self.assertEqual(rendered, target.read_text())
-            self.assertIn(f"Lemma segment_{pc:x} ", rendered)
-            self.assertIn(f"Lemma segment_{pc:x}_covered ", rendered)
-            self.assertIn(register, rendered)
-            self.assertIn(constant, rendered)
+            self.assertIn(register, rendered["Existence"])
+            self.assertIn(constant, rendered["Existence"])
             self.assertEqual(GENERATOR.ITERATION_PCS.count(pc), occurrences)
 
     def test_1569c_regenerates_register_add_pair(self):
-        template = ROOT / "ZesuSsz/Evidence/templates/register_add/register_add_legacy.v.tmpl"
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment1569c.v"
-        rendered = GENERATOR.render_register_add(
-            template, ROOT / "generated/isla-traces", 0x1569C
-        )
-        self.assertEqual(rendered, target.read_text())
-        self.assertIn("Lemma segment_1569c ", rendered)
-        self.assertIn("Lemma segment_1569c_covered ", rendered)
-        self.assertIn('"x8"', rendered)
-        self.assertIn('"x11"', rendered)
+        templates = ROOT / "ZesuSsz/Evidence/templates/register_add"
+        components = {
+            "register_add.v.tmpl": "",
+            "register_add_coverage_prefix.v.tmpl": "CoveragePrefix",
+            "register_add_coverage_suffix.v.tmpl": "CoverageSuffix",
+            "register_add_coverage.v.tmpl": "Coverage",
+        }
+        rendered = {}
+        for template_name, suffix in components.items():
+            rendered[suffix] = GENERATOR.render_register_add(
+                templates / template_name,
+                ROOT / "generated/isla-traces",
+                0x1569C,
+            )
+            target = (
+                ROOT / "ZesuSsz/Experiments" /
+                f"WriteSuccessSegment1569c{suffix}.v"
+            )
+            self.assertEqual(rendered[suffix], target.read_text())
+        self.assertIn("Lemma segment_1569c ", rendered[""])
+        self.assertIn("Lemma segment_1569c_covered ", rendered["Coverage"])
+        self.assertIn('"x8"', rendered[""])
+        self.assertIn('"x11"', rendered[""])
 
     def test_15694_regenerates_register_add_pair(self):
         templates = ROOT / "ZesuSsz/Evidence/templates/register_add"
@@ -143,15 +164,32 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             self.assertIn(f"Lemma segment_{pc:x}_covered ", public)
 
     def test_156a0_regenerates_pc_add_write_pair(self):
-        target = ROOT / "ZesuSsz/Experiments/WriteSuccessSegment156a0.v"
-        template = ROOT / "ZesuSsz/Evidence/templates/pc_add_write/pc_add_write_legacy.v.tmpl"
-        rendered = GENERATOR.render_pc_add_write(
-            template, ROOT / "generated/isla-traces", 0x156A0
-        )
-        self.assertEqual(rendered, target.read_text())
-        self.assertIn("Lemma segment_156a0_mstatus ", rendered)
-        self.assertIn("Lemma segment_156a0_mstatus_covered ", rendered)
-        self.assertIn("writeSuccess156a0Link", rendered)
+        templates = ROOT / "ZesuSsz/Evidence/templates/pc_add_write"
+        components = {
+            "pc_add_write_legacy_defs.v.tmpl": "Defs",
+            "pc_add_write_legacy_existence_prefix.v.tmpl": "ExistencePrefix",
+            "pc_add_write_legacy_existence_suffix.v.tmpl": "ExistenceSuffix",
+            "pc_add_write_legacy_existence.v.tmpl": "Existence",
+            "pc_add_write_legacy.v.tmpl": "",
+            "pc_add_write_legacy_coverage_prefix.v.tmpl": "CoveragePrefix",
+            "pc_add_write_legacy_coverage_suffix.v.tmpl": "CoverageSuffix",
+            "pc_add_write_legacy_coverage.v.tmpl": "Coverage",
+        }
+        rendered = {}
+        for template_name, suffix in components.items():
+            text = GENERATOR.render_pc_add_write(
+                templates / template_name,
+                ROOT / "generated/isla-traces", 0x156A0
+            )
+            target = (
+                ROOT / "ZesuSsz/Experiments" /
+                f"WriteSuccessSegment156a0{suffix}.v"
+            )
+            self.assertEqual(text, target.read_text())
+            rendered[suffix] = text
+        self.assertIn("Lemma segment_156a0_mstatus ", rendered["Existence"])
+        self.assertIn("Lemma segment_156a0_mstatus_covered ", rendered["Coverage"])
+        self.assertIn("writeSuccess156a0Link", rendered["Defs"])
 
     def test_pc_add_write_generates_remaining_complete_pairs(self):
         templates = ROOT / "ZesuSsz/Evidence/templates/pc_add_write"
