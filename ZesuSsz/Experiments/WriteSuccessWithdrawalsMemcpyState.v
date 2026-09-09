@@ -7,6 +7,8 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment101e8.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101ec.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f0.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101f4.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRegisterUpdate.
 
 Definition writeSuccessMemcpyByteRegs1 (regs : reg_map) : reg_map :=
   writeSuccess101d8TakenRegs regs.
@@ -80,6 +82,47 @@ Proof.
   rewrite lookup_insert. rewrite writeSuccess101f4TargetExact. reflexivity.
 Qed.
 
+Lemma writeSuccessMemcpyOperationalInsert regs register (value : bv 64) :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  In register ["PC"; "x13"; "x14"; "x15"] ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (<[register := RVal_Bits value]> regs).
+Proof.
+  intros Hfacts Hregister.
+  eapply writeSuccessOperationalRegisterFactsInsertBit.
+  - exact Hfacts.
+  - cbn in Hregister. destruct Hregister as [H|[H|[H|[H|[]]]]];
+      subst register; discriminate.
+  - cbn in Hregister. destruct Hregister as [H|[H|[H|[H|[]]]]];
+      subst register; vm_compute; repeat constructor; discriminate.
+  - cbn in Hregister. destruct Hregister as [H|[H|[H|[H|[]]]]];
+      subst register.
+    + left. reflexivity.
+    + right. vm_compute. tauto.
+    + right. vm_compute. tauto.
+    + right. vm_compute. tauto.
+Qed.
+
+Lemma writeSuccessMemcpyByteOperationalFacts regs source destination index byte :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs regs source destination index byte).
+Proof.
+  intros Hfacts.
+  unfold writeSuccessMemcpyByteRegs, writeSuccessMemcpyByteRegs6,
+    writeSuccessMemcpyByteRegs5, writeSuccessMemcpyByteRegs4,
+    writeSuccessMemcpyByteRegs3, writeSuccessMemcpyByteRegs2,
+    writeSuccessMemcpyByteRegs1, writeSuccess101f4Regs,
+    writeSuccess101f0Regs, writeSuccess101ecRegs, writeSuccess101e8Regs,
+    writeSuccess101e4Regs, writeSuccess101e0Regs,
+    writeSuccess101d8TakenRegs.
+  repeat (apply writeSuccessMemcpyOperationalInsert;
+    [|cbn; intuition congruence]).
+  exact Hfacts.
+Qed.
+
 Print Assumptions writeSuccessMemcpyByteRegsLookupOther.
 Print Assumptions writeSuccessMemcpyByteRegsX15.
 Print Assumptions writeSuccessMemcpyByteRegsPc.
+Print Assumptions writeSuccessMemcpyOperationalInsert.
+Print Assumptions writeSuccessMemcpyByteOperationalFacts.
