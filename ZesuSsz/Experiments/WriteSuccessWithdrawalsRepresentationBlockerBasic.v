@@ -57,6 +57,11 @@ Proof.
     + split; native_compute; reflexivity.
 Qed.
 
+Lemma writeSuccessBlockerExtraDataHeader :
+  writeSuccessMemoryInteger writeSuccessBlockerRepresentedMemory
+    (writeSuccessBlockerOwner + 32) 8 writeSuccessBlockerScratch.
+Proof. native_compute; reflexivity. Qed.
+
 Lemma writeSuccessBlockerBaseFee :
   writeSuccessMemoryInteger writeSuccessBlockerRepresentedMemory
     (writeSuccessBlockerOwner + 48) 8
@@ -65,4 +70,5 @@ Proof. native_compute; reflexivity. Qed.
 
 Print Assumptions writeSuccessBlockerTop.
 Print Assumptions writeSuccessBlockerExtraData.
+Print Assumptions writeSuccessBlockerExtraDataHeader.
 Print Assumptions writeSuccessBlockerBaseFee.

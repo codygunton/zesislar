@@ -36,7 +36,11 @@ Proof.
     + cbn in Hitem. inversion Hitem. subst item.
       unfold writeSuccessWithdrawalMemory. repeat split;
         native_compute; reflexivity.
-    + destruct index; discriminate.
+    + destruct index as [|index].
+      * cbn in Hitem. inversion Hitem. subst item.
+        unfold writeSuccessWithdrawalMemory. repeat split;
+          native_compute; reflexivity.
+      * destruct index; discriminate.
 Qed.
 
 Lemma writeSuccessBlockerVersionedHashes :

@@ -23,6 +23,20 @@ Definition writeSuccessBlockerWithdrawal : WriteSuccessWithdrawalObservation := 
   observationWithdrawalAmount := 0
 |}.
 
+Definition writeSuccessBlockerNextWithdrawal :
+    WriteSuccessWithdrawalObservation := {|
+  observationWithdrawalIndex := 0;
+  observationWithdrawalValidatorIndex := 0;
+  observationWithdrawalAddress := repeat 0 20;
+  observationWithdrawalAmount := 0
+|}.
+
+Definition writeSuccessBlockerNext : list (bv 8) :=
+  repeat (Z_to_bv 8 0) 48.
+
+Definition writeSuccessBlockerAllBytes : list (bv 8) :=
+  writeSuccessBlockerCurrent ++ writeSuccessBlockerNext.
+
 Definition writeSuccessBlockerDecoded : WriteSuccessObservation := {|
   observationParentHash := repeat 0 32;
   observationFeeRecipient := repeat 0 20;
@@ -39,7 +53,8 @@ Definition writeSuccessBlockerDecoded : WriteSuccessObservation := {|
   observationBlockHash := repeat 0 32;
   observationTransactions := [];
   observationRawTransactions := [];
-  observationWithdrawals := [writeSuccessBlockerWithdrawal];
+  observationWithdrawals :=
+    [writeSuccessBlockerWithdrawal; writeSuccessBlockerNextWithdrawal];
   observationBlobGasUsed := 0;
   observationExcessBlobGas := 0;
   observationSlotNumber := None;
@@ -65,9 +80,11 @@ Definition writeSuccessBlockerDecoded : WriteSuccessObservation := {|
 Definition writeSuccessBlockerZeroMemory : mem_map :=
   write_mem_list
     (write_mem_list
-      (write_mem_list (∅ : mem_map) (Z_to_bv 64 writeSuccessBlockerOwner)
-        (repeat (Z_to_bv 8 0) 848))
-      (Z_to_bv 64 0x20001000) (repeat (Z_to_bv 8 0) 48))
+      (write_mem_list
+        (write_mem_list (∅ : mem_map) (Z_to_bv 64 writeSuccessBlockerOwner)
+          (repeat (Z_to_bv 8 0) 848))
+        (Z_to_bv 64 0x20001000) (repeat (Z_to_bv 8 0) 96))
+      (Z_to_bv 64 0x20000ff0) (repeat (Z_to_bv 8 0) 16))
     (Z_to_bv 64 writeSuccessBlockerScratch) (repeat (Z_to_bv 8 0) 48).
 
 Definition writeSuccessBlockerIntegerBytes (value : Z) : list (bv 8) :=
@@ -85,16 +102,17 @@ Definition writeSuccessBlockerMemory : mem_map :=
       (Z_to_bv 64 (writeSuccessBlockerOwner + 88))
       (writeSuccessBlockerIntegerBytes 0x20001000))
     (Z_to_bv 64 (writeSuccessBlockerOwner + 96))
-    (writeSuccessBlockerIntegerBytes 1).
+    (writeSuccessBlockerIntegerBytes 2).
 
 Definition writeSuccessBlockerRepresentedMemory : mem_map :=
   write_mem_list writeSuccessBlockerMemory (Z_to_bv 64 0x20001000)
-    writeSuccessBlockerCurrent.
+    writeSuccessBlockerAllBytes.
 
 Lemma writeSuccessBlockerDecodedValid :
   writeSuccessObservationValid writeSuccessBlockerDecoded.
 Proof.
   unfold writeSuccessBlockerDecoded, writeSuccessBlockerWithdrawal,
+    writeSuccessBlockerNextWithdrawal,
     writeSuccessObservationValid, writeSuccessWithdrawalObservationValid,
     writeSuccessBytesValid, writeSuccessVariableBytesValid,
     writeSuccessListValid, writeSuccessLengthValid,
