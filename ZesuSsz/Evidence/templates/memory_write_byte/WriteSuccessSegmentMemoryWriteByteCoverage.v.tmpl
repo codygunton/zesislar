@@ -1,0 +1,72 @@
+Require Import isla.riscv64.riscv64.
+Require Import IslaTraces.__SOURCE_MODULE__.a__SOURCE_PC__.
+Require Import IslaTraces.__SOURCE_MODULE__.a__NEXT_PC__.
+Require Import ZesuSsz.Contracts.InstructionBoundary.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoveragePrefix.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSecond.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageMiddleFirst.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageMiddleSecond.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffixFirst.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment__SOURCE_PC__CoverageSuffix.
+
+Lemma segment___SOURCE_PC___covered (regs : reg_map) (global : seq_global_state)
+    (mstatusBits address satp value : bv 64) old observations after :
+  regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 0x__SOURCE_PC__)) ->
+  regs !! "__BASE_REGISTER__" = Some (RVal_Bits address) ->
+  regs !! "mstatus" = Some
+    (RegVal_Struct [("bits", RVal_Bits mstatusBits)]) ->
+  regs !! "satp" = Some (RVal_Bits satp) ->
+  regs !! "__VALUE_REGISTER__" = Some (RVal_Bits value) ->
+  writeSuccess__SOURCE_PC__SysRegs regs ->
+  eval_a_exp regs writeSuccess15694Mstatus = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Lower = Some (Val_Bool true) ->
+  eval_a_exp regs writeSuccess__SOURCE_PC__Upper = Some (Val_Bool true) ->
+  read_mem global.(seq_mem) (bv_unsigned address) 1 = Some old ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__SOURCE_PC__ = Some a__SOURCE_PC__ ->
+  global.(seq_instrs) !! Z_to_bv 64 0x__NEXT_PC__ = Some a__NEXT_PC__ ->
+  IslaInstructionSegment (writeSuccess__SOURCE_PC__Before regs global)
+    observations after ->
+  exists result,
+  after = writeSuccess__SOURCE_PC__After regs global address value /\
+  observations = writeSuccess__SOURCE_PC__Observations regs global
+    mstatusBits address satp value result.
+Proof.
+  intros Hpc Hx14 Hmstatus Hsatp Hx13 Hsys HmstatusAssume Hlower Hupper
+    Hmem Hcode Hnext Hsegment.
+  destruct (segment___SOURCE_PC___prefix5_covered regs global mstatusBits address satp value
+    observations after Hsys Hsegment) as
+    (done & labels & spawned & prefix5 & Hp5 & Hnil & Hdone & Hend & Hobs).
+  destruct (segment___SOURCE_PC___second5_covered regs global mstatusBits address satp value
+    prefix5 done labels spawned after Hsys Hp5 Hnil Hdone) as
+    (prefix10 & Hp10 & HobsSecond).
+  destruct (segment___SOURCE_PC___middle_first_covered regs global prefix10 done
+    labels spawned after HmstatusAssume Hlower Hupper Hp10 Hnil Hdone) as
+    (declMstatus & declAddress & prefix15 & Hp15 & HobsMiddleFirst).
+  destruct (segment___SOURCE_PC___middle_second_covered regs global declMstatus
+    declAddress mstatusBits address prefix15 done labels spawned after
+    Hpc Hx14 Hmstatus Hp15 Hnil Hdone) as
+    (HdeclMstatus & HdeclAddress & prefix21 & Hp21 & HobsMiddleSecond).
+  subst declMstatus declAddress.
+  destruct (segment___SOURCE_PC___suffix_first_covered regs global mstatusBits address
+    satp value prefix21 done labels spawned after Hsatp Hx13 Hp21 Hnil Hdone) as
+    (prefix25 & Hp25 & HobsSuffixFirst).
+  destruct (segment___SOURCE_PC___suffix_covered regs global mstatusBits address satp value
+    old prefix25 done labels spawned after Hpc Hmem Hnext Hp25 Hnil Hdone) as
+    (result & Hafter & HobsSuffix).
+  subst after. exists result. split; first reflexivity.
+  rewrite Hobs. rewrite HobsSecond. rewrite HobsMiddleFirst.
+  rewrite HobsMiddleSecond. rewrite HobsSuffixFirst.
+  repeat rewrite <- app_assoc. rewrite HobsSuffix.
+  unfold writeSuccess__SOURCE_PC__Observations,
+    writeSuccess__SOURCE_PC__PrefixObservations,
+    writeSuccess__SOURCE_PC__First5Observations,
+    writeSuccess__SOURCE_PC__Second5Observations,
+    writeSuccess__SOURCE_PC__MiddleFirstObservations,
+    writeSuccess__SOURCE_PC__MiddleSecondObservations,
+    writeSuccess__SOURCE_PC__SuffixFirstObservations,
+    writeSuccess__SOURCE_PC__SuffixObservations. cbn. reflexivity.
+Qed.
+
+Print Assumptions segment___SOURCE_PC___covered.

@@ -383,6 +383,41 @@ class WriteSuccessSegmentGeneratorTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "generated segment differs"):
                 GENERATOR.check_generated_output(altered, rendered)
 
+    def test_byte_memory_write_generates_complete_pair(self):
+        templates = ROOT / "ZesuSsz/Evidence/templates/memory_write_byte"
+        for template in templates.glob("*.tmpl"):
+            target_name = template.name.replace("MemoryWriteByte", "101f0")
+            target = ROOT / "ZesuSsz/Experiments" / target_name.removesuffix(".tmpl")
+            rendered = GENERATOR.render_memory_write_byte(
+                template, ROOT / "generated/isla-traces", 0x101F0
+            )
+            self.assertEqual(rendered, target.read_text())
+        self.assertEqual(GENERATOR.ITERATION_PCS.count(0x101F0), 48)
+
+    def test_byte_memory_write_rejects_other_shape(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_byte/"
+            "WriteSuccessSegmentMemoryWriteByte.v.tmpl"
+        )
+        with self.assertRaisesRegex(ValueError, "unsupported byte memory-write"):
+            GENERATOR.render_memory_write_byte(
+                template, ROOT / "generated/isla-traces", 0x101E4
+            )
+
+    def test_byte_memory_write_rejects_altered_proof_output(self):
+        template = (
+            ROOT / "ZesuSsz/Evidence/templates/memory_write_byte/"
+            "WriteSuccessSegmentMemoryWriteByte.v.tmpl"
+        )
+        rendered = GENERATOR.render_memory_write_byte(
+            template, ROOT / "generated/isla-traces", 0x101F0
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            altered = Path(temporary_directory) / "WriteSuccessSegment101f0.v"
+            altered.write_text(rendered.replace("segment_101f0", "segment_bad", 1))
+            with self.assertRaisesRegex(ValueError, "generated segment differs"):
+                GENERATOR.check_generated_output(altered, rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
