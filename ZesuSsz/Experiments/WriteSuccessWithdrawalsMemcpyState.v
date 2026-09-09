@@ -121,8 +121,96 @@ Proof.
   exact Hfacts.
 Qed.
 
+Lemma writeSuccessMemcpyByteRegs2OperationalFacts regs source index :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs2 regs source index).
+Proof.
+  intros Hfacts. unfold writeSuccessMemcpyByteRegs2,
+    writeSuccessMemcpyByteRegs1, writeSuccess101e0Regs,
+    writeSuccess101d8TakenRegs.
+  repeat (apply writeSuccessMemcpyOperationalInsert;
+    [|cbn; intuition congruence]).
+  exact Hfacts.
+Qed.
+
+Lemma writeSuccessMemcpyByteRegs1OperationalFacts regs :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs1 regs).
+Proof.
+  intros Hfacts. unfold writeSuccessMemcpyByteRegs1,
+    writeSuccess101d8TakenRegs.
+  apply writeSuccessMemcpyOperationalInsert; [exact Hfacts | cbn; auto].
+Qed.
+
+Lemma writeSuccessMemcpyByteRegs3OperationalFacts regs source index byte :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs3 regs source index byte).
+Proof.
+  intros Hfacts. unfold writeSuccessMemcpyByteRegs3,
+    writeSuccessMemcpyByteRegs2, writeSuccessMemcpyByteRegs1,
+    writeSuccess101e4Regs, writeSuccess101e0Regs,
+    writeSuccess101d8TakenRegs.
+  repeat (apply writeSuccessMemcpyOperationalInsert;
+    [|cbn; intuition congruence]). exact Hfacts.
+Qed.
+
+Lemma writeSuccessMemcpyByteRegs4OperationalFacts regs source destination index byte :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs4 regs source destination index byte).
+Proof.
+  intros Hfacts. unfold writeSuccessMemcpyByteRegs4,
+    writeSuccessMemcpyByteRegs3, writeSuccessMemcpyByteRegs2,
+    writeSuccessMemcpyByteRegs1, writeSuccess101e8Regs,
+    writeSuccess101e4Regs, writeSuccess101e0Regs,
+    writeSuccess101d8TakenRegs.
+  repeat (apply writeSuccessMemcpyOperationalInsert;
+    [|cbn; intuition congruence]). exact Hfacts.
+Qed.
+
+Lemma writeSuccessMemcpyByteRegs5OperationalFacts regs source destination index byte :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs5 regs source destination index byte).
+Proof.
+  intros Hfacts. unfold writeSuccessMemcpyByteRegs5,
+    writeSuccessMemcpyByteRegs4, writeSuccessMemcpyByteRegs3,
+    writeSuccessMemcpyByteRegs2, writeSuccessMemcpyByteRegs1,
+    writeSuccess101ecRegs, writeSuccess101e8Regs,
+    writeSuccess101e4Regs, writeSuccess101e0Regs,
+    writeSuccess101d8TakenRegs.
+  repeat (apply writeSuccessMemcpyOperationalInsert;
+    [|cbn; intuition congruence]).
+  exact Hfacts.
+Qed.
+
+Lemma writeSuccessMemcpyByteRegs6OperationalFacts regs source destination index byte :
+  writeSuccessWithdrawalsOperationalRegisterFacts regs ->
+  writeSuccessWithdrawalsOperationalRegisterFacts
+    (writeSuccessMemcpyByteRegs6 regs source destination index byte).
+Proof.
+  intros Hfacts. unfold writeSuccessMemcpyByteRegs6,
+    writeSuccessMemcpyByteRegs5, writeSuccessMemcpyByteRegs4,
+    writeSuccessMemcpyByteRegs3, writeSuccessMemcpyByteRegs2,
+    writeSuccessMemcpyByteRegs1, writeSuccess101f0Regs,
+    writeSuccess101ecRegs, writeSuccess101e8Regs,
+    writeSuccess101e4Regs, writeSuccess101e0Regs,
+    writeSuccess101d8TakenRegs.
+  repeat (apply writeSuccessMemcpyOperationalInsert;
+    [|cbn; intuition congruence]). exact Hfacts.
+Qed.
+
 Print Assumptions writeSuccessMemcpyByteRegsLookupOther.
 Print Assumptions writeSuccessMemcpyByteRegsX15.
 Print Assumptions writeSuccessMemcpyByteRegsPc.
 Print Assumptions writeSuccessMemcpyOperationalInsert.
 Print Assumptions writeSuccessMemcpyByteOperationalFacts.
+Print Assumptions writeSuccessMemcpyByteRegs2OperationalFacts.
+Print Assumptions writeSuccessMemcpyByteRegs1OperationalFacts.
+Print Assumptions writeSuccessMemcpyByteRegs3OperationalFacts.
+Print Assumptions writeSuccessMemcpyByteRegs4OperationalFacts.
+Print Assumptions writeSuccessMemcpyByteRegs5OperationalFacts.
+Print Assumptions writeSuccessMemcpyByteRegs6OperationalFacts.
