@@ -1,8 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 
-Import ZesuSsz.Automation.Hooks.
-
 Lemma test_zesu_call `{!islaG Sigma} `{!threadG}
     (stack_size : Z)
     (P : list (bv 64) -> bv 64 ->

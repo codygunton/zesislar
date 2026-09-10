@@ -1,8 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 
-Import ZesuSsz.Automation.Hooks.
-
 Lemma test_byte_assembly (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) :
   bv_or
     (bv_shiftl

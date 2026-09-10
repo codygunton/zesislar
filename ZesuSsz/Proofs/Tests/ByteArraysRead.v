@@ -1,10 +1,17 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
 From IslaTraces.write_success_32 Require Import a15048.
 
 Import ZesuSsz.Automation.Hooks.
+
+#[local] Hint Rewrite zesu_bv_sign_extend_same : isla_coq_rewrite.
+#[local] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
+#[local] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
 
 Lemma test_read_word_from_byte_array `{!islaG Sigma} `{!threadG}
     (base : bv 64) (bytes : list (bv 8)) :

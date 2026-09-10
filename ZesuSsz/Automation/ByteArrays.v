@@ -24,11 +24,11 @@ Lemma zesu_bv_unsigned_add_no_wrap_64 (base offset : bv 64) :
   bv_unsigned (base + offset)%bv - bv_unsigned base = bv_unsigned offset.
 Proof. intros. bv_solve. Qed.
 
-#[export] Hint Rewrite zesu_bv_sign_extend_same : isla_coq_rewrite.
+#[export] Hint Rewrite zesu_bv_sign_extend_same : zesu_indices.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
-  : isla_coq_rewrite lithium_rewrite.
+  : zesu_indices.
 #[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
-  : isla_coq_rewrite lithium_rewrite.
+  : zesu_indices.
 
 Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :
   (offset + 8 <= length bytes)%nat ->
@@ -137,7 +137,7 @@ Proof.
 Qed.
 
 #[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using lia
-  : zesu_byte_assembly isla_coq_rewrite lithium_rewrite.
+  : zesu_byte_assembly.
 
 Section byte_array_read.
   Context `{!islaG Sigma} `{!threadG}.

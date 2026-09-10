@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Hooks.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -9,6 +10,12 @@ Import ZesuSsz.Automation.Hooks.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
+
+#[local] Hint Rewrite zesu_bv_sign_extend_same : isla_coq_rewrite.
+#[local] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
+#[local] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
 
 Lemma write_success_transactions_chunk_15048
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

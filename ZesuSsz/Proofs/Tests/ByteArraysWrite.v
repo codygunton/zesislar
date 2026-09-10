@@ -1,10 +1,16 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
 From IslaTraces.write_success_00 Require Import a14d34.
 
 Import ZesuSsz.Automation.Hooks.
+
+#[local] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
+#[local] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
 
 Lemma test_write_word_to_byte_array `{!islaG Sigma} `{!threadG}
     (base value : bv 64) (bytes : list (bv 8)) :
@@ -33,9 +39,6 @@ Proof.
   Unshelve. all: prepare_sidecond.
   all: try bv_solve.
   all: try lia.
-  have -> : bv_unsigned (base + 1992) - bv_unsigned base = 1992
-    by bv_solve.
-  done.
 Qed.
 
 Print Assumptions test_write_word_to_byte_array.
