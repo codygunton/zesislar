@@ -8,6 +8,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment156c8.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156a8EncoderIntState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156b4SecondEncoderContext.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156c0OutputContextFromInv.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156c0OutputInv.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156c0OutputPositions.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156c0PositionState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
@@ -36,6 +37,14 @@ Theorem writeSuccessWithdrawals156c0ActualPositionStates args sp pointer base
     (writeSuccessWithdrawalsSecondEncoderEndpoint regs2 global2 sp withdrawal,
      writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
        withdrawal) segments after ->
+  after =
+    (writeSuccessWithdrawalsOutputEntry
+       (writeSuccessWithdrawalsSecondEncoderEndpoint regs2 global2 sp
+         withdrawal).1.(seq_regs)
+       (writeSuccessWithdrawalsSecondEncoderEndpoint regs2 global2 sp
+         withdrawal).2 (sp + BV 64 1768)%bv,
+     writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+       withdrawal) /\
   exists states,
     length states = 5%nat /\
     nth_error states 0 = Some
@@ -55,6 +64,7 @@ Proof.
     scratch encoderScratch registerFrame memoryFrame priorLog state regs0 global0
     regs1 global1 regs2 global2 segments after Hinv Hprefix Hentry1 Hentry2
     Hrun) as (o0 & o1 & o2 & o3 & Hsegments & Hafter & Hr0 & Hr1 & Hr2 & Hr3).
+  split; first exact Hafter.
   have Hsemantic := writeSuccessWithdrawals156c0HandoffPositionStates args sp
     pointer base total processed remaining withdrawal allBytes prefix current
     suffix scratch encoderScratch registerFrame memoryFrame priorLog state regs0
