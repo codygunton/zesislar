@@ -1,0 +1,429 @@
+{
+  "cut_commit": "0e4993a5",
+  "files": {
+    "InstrSpecs/Specs.v": {
+      "solve_zesu_ld_array_at": 1,
+      "zesu_lbu_byte_array_at_spec": 2,
+      "zesu_ld_array_at_spec": 2,
+      "zesu_ld_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Contracts/IslarisMemory.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk1521c.v": {
+      "mem_mapsto_array_recombine_u64_read": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstU256.v": {
+      "mem_mapsto_array_recombine_u64_read": 4
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSpec.v": {
+      "mem_mapsto_array_recombine_u64_read": 4
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw94.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw98.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ACore.v": {
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BCore.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Core.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15ACore.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BCore.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Core90.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fc8.v": {
+      "mem_mapsto_array_recombine_u64_read": 6
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f1c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f20.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f24.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f28.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f2c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f34.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f3c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f44.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f48.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f4c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f54.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f58.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f5c.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f60.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f64.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f68Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f6cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f70Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f74Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f78Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f7cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f80Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f84Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f88Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f8cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f98Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f9cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa0Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa4Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb0Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe0.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe4.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe8.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fec.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15018.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1501cRaw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15020Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15024Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15044Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15048Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15050Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15058Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15078Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15080Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15088Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15090Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1509cRaw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a0Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a8Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b4Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150bcRaw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c4Raw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ccRaw.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v": {
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f70.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f74.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f78.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f7c.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f80.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f84.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f88.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f8c.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f98.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f9c.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa0.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa4.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb0.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe0.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe4.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe8.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fec.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15018.v": {
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v": {
+      "mem_mapsto_array_recombine_u64_read": 3,
+      "solve_zesu_ld_array_at": 3
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1,
+      "zesu_ld_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15048.v": {
+      "mem_mapsto_array_recombine_u64_read": 3,
+      "solve_zesu_ld_array_at": 3,
+      "zesu_ld_byte_array_at_spec": 3
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
+      "mem_mapsto_array_recombine_u64_read": 2,
+      "solve_zesu_ld_array_at": 2,
+      "zesu_ld_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadArray.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadCore.v": {
+      "zesu_ld_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadArray.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadCore.v": {
+      "zesu_ld_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    }
+  }
+}
