@@ -174,3 +174,20 @@ Lemma zesuDecodeFailureHandoff runner model inputRef applies Sigma HG HT args :
   islarisEntry _ _ (@write_failure_resources Sigma HG HT)
       {| failureReturnAddress := 0x14d24 |}.
 Proof. reflexivity. Qed.
+
+Definition zesuBugApplies : BugApplies := fun _ _ _ => False.
+Definition zesuEquivalent : OutcomeRelation := eq.
+
+Theorem zesuCompliance
+    (runner : DecoderEvaluator) (model : DecoderModel)
+    (inputRef : ByteString -> option StatelessInputRef)
+    (decodeBugApplies : ZesuDecodeBugApplies)
+    (mainOk : IslarisContractCorrect mainEntryPc mainExitPc
+      (zesuMainContract runner model inputRef decodeBugApplies))
+    (decodeOk : IslarisContractCorrect decodeEntryPc decodeExitPc
+      (zesuDecodeContract runner model inputRef decodeBugApplies)) :
+  ComplianceModuloKnownBugs zesuEndpoint
+    (EvmSailReference runner model inputRef) zesuBugApplies zesuEquivalent.
+Admitted.
+
+Print Assumptions zesuCompliance.
