@@ -2,10 +2,13 @@ From Coq Require Import Lia Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.InstructionBoundary.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment10190.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment101a0.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d4.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15d10.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsBlockOutputPositionContext.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsBlockOutputPositionState.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsBlockOutputRecordedPositions.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsBlockOutputSupport.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156a8EncoderIntState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156b4SecondEncoderContext.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156c0OutputContextFromInv.
@@ -43,6 +46,15 @@ Theorem writeSuccessWithdrawalsOutputActualPositionStates args sp pointer base
     (writeSuccess10190Before outputRegs outputGlobal,
      writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
        withdrawal) segments after ->
+  after =
+    (writeSuccess101a0After (writeSuccessOutputRegs4 outputRegs) outputGlobal
+       (Z_to_bv 64 0x156d0),
+     writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+       withdrawal ++
+       [(SWriteMem (BV 64 0x2401a0c0)
+          (bv_to_bvn (sp + BV 64 1768)%bv), outputGlobal.(seq_mem));
+        (SWriteMem (BV 64 0x2401a0c8) (bv_to_bvn (BV 64 20)),
+          outputGlobal.(seq_mem))]) /\
   exists states,
     length states = 6%nat /\
     nth_error states 0 = Some
@@ -83,6 +95,14 @@ Proof.
     encoderScratch registerFrame memoryFrame priorLog state regs0 global0 regs1
     global1 regs2 global2 outputRegs outputGlobal Hinv Hprefix Hentry1 Hentry2
     Houtput) as (_ & Hx9 & Hrange).
+  destruct (writeSuccessOutputRecordedPositionPath outputRegs outputGlobal
+    (sp + BV 64 1768)%bv (BV 64 20) (Z_to_bv 64 0x156d0) returnTrace
+    (writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+      withdrawal) segments after Hpc Hx1 Hx10 Hx11 Halign Hreturn Htable Hfacts
+    Hmmio Hrun) as
+    (mstatusBits & satp & result98 & result9c & pathStates & Hsegments &
+     Hafter & HpathLength & HpathStart & HpathEnd & HpathEdges).
+  split; first exact Hafter.
   eapply writeSuccessOutputRecordedPositionStates; eassumption.
 Qed.
 
