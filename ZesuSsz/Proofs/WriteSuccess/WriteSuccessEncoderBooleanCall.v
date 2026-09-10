@@ -19,7 +19,7 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
           typeclasses eauto ] : typeclass_instances.
 
 Definition zesuEncoderBooleanCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (zesu_c_call 16
+  (zesu_call 16
     (fun _ sp RET =>
       ∃ tail : spec,
       mmio_range 0x2401a0c0 16 ∗
@@ -38,15 +38,7 @@ Lemma zesu_encoder_boolean_call_correct `{!islaG Sigma} `{!threadG} :
   instr_body 0x15b9c zesuEncoderBooleanCallSpec.
 Proof.
   move => * /=.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try rewrite bv_sign_extend_idemp.
-  all: try bv_solve.
-  all: try lia.
-  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
+  zesu_block.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
 
