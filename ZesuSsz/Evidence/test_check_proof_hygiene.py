@@ -1,6 +1,11 @@
 import unittest
 
-from check_proof_hygiene import PLACEHOLDER, forbidden_counts, ratchet_failures
+from check_proof_hygiene import (
+    PLACEHOLDER,
+    forbidden_counts,
+    proof_size_ratchet_failures,
+    ratchet_failures,
+)
 
 
 class ProofHygieneTests(unittest.TestCase):
@@ -31,6 +36,22 @@ class ProofHygieneTests(unittest.TestCase):
     def test_new_forbidden_name_fails(self):
         counts = forbidden_counts("zesu_ld_byte_array_at_spec")
         self.assertEqual(len(ratchet_failures("new.v", counts, {})), 1)
+
+    def test_proof_size_ratchet(self):
+        messages = ["instr_body proof has 50 lines: Test.v:1"]
+        baseline = {"Test.v": {
+            "long_proofs": 1,
+            "max_proof_lines": 50,
+            "rename_proofs": 0,
+            "max_renames": 0,
+        }}
+        self.assertEqual(
+            proof_size_ratchet_failures("Test.v", messages, baseline), []
+        )
+        messages = ["instr_body proof has 51 lines: Test.v:1"]
+        self.assertEqual(
+            len(proof_size_ratchet_failures("Test.v", messages, baseline)), 1
+        )
 
 
 if __name__ == "__main__":

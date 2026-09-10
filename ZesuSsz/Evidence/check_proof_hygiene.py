@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
+SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 PROOFS_PREFIX = "ZesuSsz/Proofs/"
@@ -66,7 +67,7 @@ A2_PATTERNS = (
     "WriteSuccessHostObservation.v",
 )
 A2_EXCEPTIONS = {"WriteSuccessWithdrawalsIterationBody.v"}
-CP1_ENFORCED = False
+CP1_ENFORCED = True
 
 
 def tracked_files() -> list[str]:
@@ -128,9 +129,45 @@ def proof_size_warnings(name: str, lines: list[str]) -> list[str]:
     return warnings
 
 
+def proof_size_metrics(messages: list[str]) -> dict[str, int]:
+    line_counts = [
+        int(match.group(1))
+        for message in messages
+        if (match := re.search(r"instr_body proof has (\d+) lines", message))
+    ]
+    rename_counts = [
+        int(match.group(1))
+        for message in messages
+        if (match := re.search(r"proof has (\d+) iRename", message))
+    ]
+    return {
+        "long_proofs": len(line_counts),
+        "max_proof_lines": max(line_counts, default=0),
+        "rename_proofs": len(rename_counts),
+        "max_renames": max(rename_counts, default=0),
+    }
+
+
+def proof_size_ratchet_failures(
+    name: str, messages: list[str], baseline: dict[str, dict[str, int]]
+) -> list[str]:
+    current = proof_size_metrics(messages)
+    allowed = baseline.get(name, {})
+    failures = []
+    for metric, count in current.items():
+        limit = allowed.get(metric, 0)
+        if count > limit:
+            failures.append(
+                f"proof-size increase: {name}: {metric}: {count} > {limit}"
+            )
+    return failures
+
+
 def main() -> None:
     baseline_data = json.loads(BASELINE_PATH.read_text())
     baseline = baseline_data["files"]
+    size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
+    size_baseline = size_baseline_data["files"]
     failures: list[str] = []
     warnings: list[str] = []
     remaining = 0
@@ -165,7 +202,10 @@ def main() -> None:
                 failures.append(f"Appendix A.2 file remains: {name}")
             size_messages = proof_size_warnings(name, lines)
             if CP1_ENFORCED:
-                failures.extend(size_messages)
+                warnings.extend(size_messages)
+                failures.extend(
+                    proof_size_ratchet_failures(name, size_messages, size_baseline)
+                )
             else:
                 warnings.extend(size_messages)
 
@@ -179,7 +219,7 @@ def main() -> None:
             failures.extend(ratchet_failures(name, counts, baseline))
 
     if warnings:
-        print(f"proof-size warnings before CP1: {len(warnings)}", file=sys.stderr)
+        print(f"warning: {len(warnings)} proof-size baseline violations remain", file=sys.stderr)
     if remaining:
         print(
             f"warning: {remaining} baseline forbidden-name occurrences remain",

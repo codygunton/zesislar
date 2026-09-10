@@ -371,11 +371,6 @@
       "solve_zesu_ld_array_at": 1,
       "zesu_ld_byte_array_at_spec": 1
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15048.v": {
-      "mem_mapsto_array_recombine_u64_read": 3,
-      "solve_zesu_ld_array_at": 3,
-      "zesu_ld_byte_array_at_spec": 3
-    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
       "mem_mapsto_array_recombine_u64_read": 2,
       "solve_zesu_ld_array_at": 2,
