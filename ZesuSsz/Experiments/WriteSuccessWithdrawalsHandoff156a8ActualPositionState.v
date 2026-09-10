@@ -25,6 +25,9 @@ Theorem writeSuccessWithdrawals156a8ActualPositionStates args sp pointer base
     (writeSuccessWithdrawals156a8State regs global sp pointer current, priorLog)
     segments after ->
   exists states,
+    after =
+      (writeSuccessWithdrawalsEncoderInt156b4State regs global sp pointer
+        current withdrawal, priorLog) /\
     length states = 4%nat /\
     nth_error states 0 = Some
       (writeSuccessWithdrawals156a8State regs global sp pointer current,
@@ -53,6 +56,7 @@ Proof.
     (writeSuccessWithdrawals156b0State regs global sp pointer current withdrawal,
      priorLog);
     after].
+  split; first exact Hafter.
   split; first reflexivity.
   split; first reflexivity.
   split; first reflexivity.

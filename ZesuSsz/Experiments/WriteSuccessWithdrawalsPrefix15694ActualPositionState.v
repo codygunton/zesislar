@@ -19,6 +19,7 @@ Theorem writeSuccessWithdrawalsPrefix15694ActualPositionStates args sp pointer
     memoryFrame priorLog state ->
   WriteSuccessWithdrawalsRecordedRun 5 state segments after ->
   exists states,
+    after = (writeSuccessWithdrawalsPrefixAfter state.1 sp pointer, priorLog) /\
     length states = 6%nat /\
     nth_error states 0 = Some state /\
     nth_error states 5 = Some after /\
@@ -45,6 +46,7 @@ Proof.
     (writeSuccessWithdrawalsPrefixStatea0 state.1 sp pointer, priorLog);
     (writeSuccessWithdrawalsPrefixStatea4 state.1 sp pointer, priorLog);
     after].
+  split; first exact Hafter.
   split; first reflexivity.
   split; first reflexivity.
   split; first reflexivity.

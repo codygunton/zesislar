@@ -1,5 +1,6 @@
 From Coq Require Import Lia Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
+Require Import IslaTraces.write_success_91.a156a8.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d4.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d8.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
@@ -7,7 +8,9 @@ Require Import ZesuSsz.Experiments.WriteSuccessSegment15698.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment1569c.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment156a0.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment156a4.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment156a8.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsBlockMemcpyPositions.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsHandoff156a8EncoderIntState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsIterationBounds.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyAfter.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyEndpointPreservation.
@@ -16,6 +19,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyPositionState.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyPositionStates.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpyPositions.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsPositionEdges.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsPrefix15694Entry.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsPrefix15694InvMemcpy.
@@ -50,6 +54,9 @@ Theorem writeSuccessWithdrawalsMemcpyActualPositionGroups args sp pointer base
     writeSuccessWithdrawalsPrefixAfter state.1 sp pointer =
       writeSuccess101d4Before regs global /\
     global.(seq_instrs) !! Z_to_bv 64 0x156a8 = Some returnTrace /\
+    after =
+      (writeSuccessWithdrawals156a8State regs global sp pointer current,
+       priorLog) /\
     segments = [obsD4] ++ loopSegments ++ [obsD8; obsDc] /\
     WriteSuccessWithdrawalsRecordedRun 1
       (writeSuccessWithdrawalsPrefixAfter state.1 sp pointer, priorLog) [obsD4]
@@ -104,8 +111,8 @@ Proof.
     state.1.2.(seq_mem) priorLog
     (writeSuccessWithdrawalsPrefixAfter state.1 sp pointer, priorLog)
     segments after Hmemcpy Hrecorded') as
-    (_ & _ & _ & _ & _ & regs & global & returnTrace & Hentry & Hreturn &
-     Hafter & obsD4 & loopSegments & obsD8 & obsDc & Hsegments & HrD4 &
+    (_ & _ & _ & _ & HafterLog & regs & global & returnTrace & Hentry & Hreturn &
+     HafterMachine & obsD4 & loopSegments & obsD8 & obsDc & Hsegments & HrD4 &
      Hloop & HrD8 & HrDc).
   have Hrange : (Z.of_nat (S remaining) < 2 ^ 64)%Z.
   { have H := writeSuccessWithdrawalsIterationRemainingRange args sp pointer
@@ -147,9 +154,25 @@ Proof.
   destruct (writeSuccessWithdrawalsMemcpyCanonicalPositionStates remaining regs
     global pointer (sp + BV 64 1744)%bv current priorLog Hcurrent Hx9regs Hrange)
     as (HloopPositions & Hexit & HreturnPosition).
-  exists regs, global, returnTrace, obsD4, loopSegments, obsD8, obsDc.
+  have Htable : writeSuccessWithdrawalsInstructionTable global.
+  { unfold Inv_memcpy in Hmemcpy. rewrite Hentry in Hmemcpy. cbn in Hmemcpy.
+    tauto. }
+  have Hcode : global.(seq_instrs) !! Z_to_bv 64 0x156a8 = Some a156a8.
+  { apply Htable. cbn. tauto. }
+  rewrite Hreturn in Hcode. inversion Hcode. subst returnTrace.
+  have HafterExact : after =
+      (writeSuccessWithdrawals156a8State regs global sp pointer current,
+       priorLog).
+  { destruct after as [afterMachine afterLog].
+    cbn in HafterMachine, HafterLog |- *. subst afterMachine afterLog.
+    unfold writeSuccessWithdrawals156a8State,
+      writeSuccessWithdrawals156a8Regs,
+      writeSuccessWithdrawals156a8Global, writeSuccess156a8Before.
+    reflexivity. }
+  exists regs, global, a156a8, obsD4, loopSegments, obsD8, obsDc.
   split; first exact Hentry.
   split; first exact Hreturn.
+  split; first exact HafterExact.
   split; first exact Hsegments.
   split; first exact HrD4.
   split; first exact Hloop.
