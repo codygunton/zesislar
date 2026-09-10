@@ -6,8 +6,6 @@ From IslaTraces.write_success_32 Require Import a15048.
 
 Import ZesuSsz.Automation.Hooks.
 
-#[local] Hint Rewrite bv_sign_extend_64_idemp : isla_coq_rewrite.
-
 Lemma test_read_word_from_byte_array `{!islaG Sigma} `{!threadG}
     (base : bv 64) (bytes : list (bv 8)) :
   length bytes = 288%nat ->
@@ -34,8 +32,6 @@ Proof.
   Unshelve. all: prepare_sidecond.
   all: try bv_solve.
   all: try lia.
-  have -> : bv_unsigned (base + 80) - bv_unsigned base = 80 by bv_solve.
-  done.
 Qed.
 
 Print Assumptions test_read_word_from_byte_array.

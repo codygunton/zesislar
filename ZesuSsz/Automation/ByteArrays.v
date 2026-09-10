@@ -9,6 +9,27 @@ Import ListNotations.
 Definition zesu_byte_access_size (len : N) : bool :=
   (len =? 1)%N || (len =? 2)%N || (len =? 4)%N || (len =? 8)%N.
 
+Lemma zesu_bv_sign_extend_same (n : N) (value : bv n) :
+  bv_sign_extend n value = value.
+Proof. apply bv_sign_extend_idemp. Qed.
+
+Lemma zesu_bv_unsigned_add_Z_64 (base : bv 64) (offset : Z) :
+  (0 <= offset)%Z ->
+  (bv_unsigned base + offset < 2 ^ 64)%Z ->
+  bv_unsigned (base + Z_to_bv 64 offset)%bv - bv_unsigned base = offset.
+Proof. intros. bv_solve. Qed.
+
+Lemma zesu_bv_unsigned_add_no_wrap_64 (base offset : bv 64) :
+  (bv_unsigned base + bv_unsigned offset < 2 ^ 64)%Z ->
+  bv_unsigned (base + offset)%bv - bv_unsigned base = bv_unsigned offset.
+Proof. intros. bv_solve. Qed.
+
+#[export] Hint Rewrite zesu_bv_sign_extend_same : isla_coq_rewrite.
+#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
+  : isla_coq_rewrite lithium_rewrite.
+
 Section byte_array_read.
   Context `{!islaG Sigma} `{!threadG}.
 
