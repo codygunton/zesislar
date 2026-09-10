@@ -351,12 +351,7 @@ Proof.
   rewrite Hstart H7 !Z.add_0_r.
   iFrame "Hprefix96 Hsuffix104".
   repeat iSplit; try iPureIntro; try lia; try done.
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
+  zesu_run.
   all: try iFrame.
   Unshelve.
   all: try prepare_sidecond.
@@ -424,9 +419,8 @@ Proof.
     as "HmachineFinal".
   { rewrite /writeSuccessTransactionsMachine1505c
       /writeSuccessTransactionsMachine15048WithX16AndScratch.
-    iFrame "HsysFinal HotherFinal". liARun.
-    Unshelve. all: prepare_sidecond.
-    all: try assumption. all: try bv_solve. all: try reflexivity. }
+    iFrame "HsysFinal HotherFinal". zesu_run.
+    all: try reflexivity. }
   iExists (tail, suffix, prefix, bytes, remaining, processed,
     transactions, transaction, base, sp, tt)ₗ.
   iFrame "HmachineFinal HarrayFinal HframeFinal".
@@ -629,12 +623,7 @@ Proof.
   rewrite Hstart H7 !Z.add_0_r.
   iFrame "Hprefix88 Hsuffix96".
   repeat iSplit; try iPureIntro; try lia; try done.
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
+  zesu_run.
   all: try iFrame.
   Unshelve.
   all: try prepare_sidecond.
@@ -702,9 +691,8 @@ Proof.
     as "HmachineFinal".
   { rewrite /writeSuccessTransactionsMachine15054
       /writeSuccessTransactionsMachine15048WithX16AndScratch.
-    iFrame "HsysFinal HotherFinal". liARun.
-    Unshelve. all: prepare_sidecond.
-    all: try assumption. all: try bv_solve. all: try reflexivity. }
+    iFrame "HsysFinal HotherFinal". zesu_run.
+    all: try reflexivity. }
   iExists (tail, suffix, prefix, bytes, remaining, processed,
     transactions, transaction, base, sp, tt)ₗ.
   iFrame "HmachineFinal HarrayFinal HframeFinal".
@@ -913,12 +901,7 @@ Proof.
   rewrite Hstart H7 !Z.add_0_r.
   iFrame "Hprefix80 Hsuffix88".
   repeat iSplit; try iPureIntro; try lia; try done.
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
+  zesu_run.
   all: try iFrame.
   Unshelve.
   all: try prepare_sidecond.
@@ -986,9 +969,8 @@ Proof.
     as "HmachineFinal".
   { rewrite /writeSuccessTransactionsMachine1504c
       /writeSuccessTransactionsMachine15048WithX16AndScratch.
-    iFrame "HsysFinal HotherFinal". liARun.
-    Unshelve. all: prepare_sidecond.
-    all: try assumption. all: try bv_solve. all: try reflexivity. }
+    iFrame "HsysFinal HotherFinal". zesu_run.
+    all: try reflexivity. }
   iExists (tail, suffix, prefix, bytes, remaining, processed,
     transactions, transaction, base, sp, tt)ₗ.
   iFrame "HmachineFinal HarrayFinal HframeFinal".
