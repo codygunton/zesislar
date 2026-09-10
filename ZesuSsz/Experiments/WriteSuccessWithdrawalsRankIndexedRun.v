@@ -4,6 +4,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRun.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRank.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRankPosition.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRankPositionEdges.
 
 Import ListNotations.
 
@@ -21,8 +22,9 @@ Definition WriteSuccessWithdrawalsIndexedRun
       nth_error segments position = Some observations /\
       nth_error states position = Some beforeAt /\
       nth_error states (S position) = Some afterAt /\
-      WriteSuccessWithdrawalsRecordedRun 1 beforeAt [observations] afterAt) /\
-  writeSuccessWithdrawalsRankedEndpoints remaining states.
+      WriteSuccessWithdrawalsRecordedRun 1 beforeAt [observations] afterAt /\
+      writeSuccessWithdrawalsSegmentEquation remaining position beforeAt
+        afterAt).
 
 Theorem writeSuccessWithdrawalsIndexedRunEverySegmentDecreases
     remaining before segments states :
@@ -36,16 +38,16 @@ Theorem writeSuccessWithdrawalsIndexedRunEverySegmentDecreases
       WriteSuccessWithdrawalsRecordedRun 1 beforeAt [observations] afterAt /\
       rank_15694 afterAt < rank_15694 beforeAt.
 Proof.
-  intros (_ & _ & Hsegments & Hranked) position Hposition.
+  intros (_ & _ & Hsegments) position Hposition.
   destruct (Hsegments position Hposition) as
     (observations & beforeAt & afterAt & Hobservations & Hbefore & Hafter &
-     Hrun).
+     Hrun & Hequation).
   exists observations, beforeAt, afterAt.
   split; first exact Hobservations.
   split; first exact Hbefore.
   split; first exact Hafter.
   split; first exact Hrun.
-  eapply writeSuccessWithdrawalsWholeTableRankDecreases; eassumption.
+  eapply writeSuccessWithdrawalsActualSegmentEquationDecreases; eassumption.
 Qed.
 
 Print Assumptions writeSuccessWithdrawalsIndexedRunEverySegmentDecreases.
