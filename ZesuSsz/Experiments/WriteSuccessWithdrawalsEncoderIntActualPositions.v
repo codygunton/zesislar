@@ -64,6 +64,14 @@ Theorem writeSuccessWithdrawalsEncoderIntActualPositions remaining start
     (writeSuccess15d10Before regs global, priorLog) segments after ->
   exists prefix output suffix prefixStates outputStates suffixStates,
     segments = (prefix ++ output) ++ suffix /\
+    length prefixStates = 8%nat /\
+    length outputStates = 6%nat /\
+    length suffixStates = 4%nat /\
+    nth_error prefixStates 0 =
+      Some (writeSuccess15d10Before regs global, priorLog) /\
+    nth_error prefixStates 7 = nth_error outputStates 0 /\
+    nth_error outputStates 5 = nth_error suffixStates 0 /\
+    nth_error suffixStates 3 = Some after /\
     WriteSuccessWithdrawalsPositionEdges prefix prefixStates /\
     WriteSuccessWithdrawalsPositionEdges output outputStates /\
     WriteSuccessWithdrawalsPositionEdges suffix suffixStates /\
@@ -102,7 +110,9 @@ Proof.
     (writeSuccess10190Before (writeSuccessEncoderIntRegs7 regs sp)
       (writeSuccessEncoderIntGlobal2 global sp returnAddress value), priorLog)
     Hstart Hpc Hx1 Hx2 Hx10 Hx9 Hcounter Hscratch Hrange HstackAlign HramLower
-    HramUpper Htable Hfacts Hprefix) as (prefixStates & HprefixEdges & HprefixFacts).
+    HramUpper Htable Hfacts Hprefix) as
+    (prefixStates & HprefixLength2 & HprefixStart2 & HprefixEnd2 &
+     HprefixEdges & HprefixFacts).
   set (global2 := writeSuccessEncoderIntGlobal2 global sp returnAddress value).
   set (regs7 := writeSuccessEncoderIntRegs7 regs sp).
   have Htable2 : writeSuccessWithdrawalsInstructionTable global2.
@@ -160,7 +170,8 @@ Proof.
     (writeSuccessEncoderIntRegs7X10 regs sp)
     (writeSuccessEncoderIntRegs7X11 regs sp) Hx9_7 Hcounter HsavedRead Hrange
     HreturnCode Htable2 Hfacts7 Hmmio2 Houtput) as
-    (outputStates & HoutputEdges & HoutputFacts).
+    (outputStates & HoutputLength2 & HoutputStart2 & HoutputEnd2 &
+     HoutputEdges & HoutputFacts).
   have HreturnTrace2 : global2.(seq_instrs) !! returnAddress = Some returnTrace.
   { unfold global2, writeSuccessEncoderIntGlobal2,
       writeSuccessEncoderIntGlobal1, writeSuccess15d18Global,
@@ -186,10 +197,14 @@ Proof.
     suffix after Hstart (writeSuccessEncoderIntRegs7X2 regs sp)
     (writeSuccessEncoderIntRegs7X1 regs sp) Hx9_7 Hcounter Hfacts7 HsavedRead
     Hrange HstackAlign HramLower HramUpper HreturnAlign HreturnTrace2 Htable2
-    Hsuffix) as (suffixStates & HsuffixEdges & HsuffixFacts).
+    Hsuffix) as
+    (suffixStates & HsuffixLength2 & HsuffixStart2 & HsuffixEnd2 &
+     HsuffixEdges & HsuffixFacts).
   exists prefix, output, suffix, prefixStates, outputStates, suffixStates.
-  rewrite Hsegments HrestSegments. repeat split; try assumption.
-  apply app_assoc.
+  rewrite Hsegments HrestSegments. split; first apply app_assoc.
+  repeat split; try assumption.
+  - rewrite HprefixEnd2. rewrite HoutputStart2. reflexivity.
+  - rewrite HoutputEnd2. rewrite HsuffixStart2. rewrite Hjoin. reflexivity.
 Qed.
 
 Print Assumptions writeSuccessWithdrawalsEncoderIntActualPositions.

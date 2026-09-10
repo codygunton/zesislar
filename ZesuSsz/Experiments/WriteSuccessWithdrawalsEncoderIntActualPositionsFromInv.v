@@ -25,6 +25,13 @@ Theorem writeSuccessWithdrawalsEncoderIntActualPositionsFromInv remaining start
   WriteSuccessWithdrawalsRecordedRun 15 state segments after ->
   exists prefix output suffix prefixStates outputStates suffixStates,
     segments = (prefix ++ output) ++ suffix /\
+    length prefixStates = 8%nat /\
+    length outputStates = 6%nat /\
+    length suffixStates = 4%nat /\
+    nth_error prefixStates 0 = Some state /\
+    nth_error prefixStates 7 = nth_error outputStates 0 /\
+    nth_error outputStates 5 = nth_error suffixStates 0 /\
+    nth_error suffixStates 3 = Some after /\
     WriteSuccessWithdrawalsPositionEdges prefix prefixStates /\
     WriteSuccessWithdrawalsPositionEdges output outputStates /\
     WriteSuccessWithdrawalsPositionEdges suffix suffixStates /\

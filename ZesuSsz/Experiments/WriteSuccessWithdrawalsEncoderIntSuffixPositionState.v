@@ -45,6 +45,11 @@ Lemma writeSuccessWithdrawalsEncoderIntSuffixActualPositions remaining start
     (writeSuccess15d2cBefore (writeSuccessEncoderIntAfterOutputRegs regs) global,
       priorLog) segments after ->
   exists states,
+    length states = 4%nat /\
+    nth_error states 0 = Some
+      (writeSuccess15d2cBefore (writeSuccessEncoderIntAfterOutputRegs regs) global,
+        priorLog) /\
+    nth_error states 3 = Some after /\
     WriteSuccessWithdrawalsPositionEdges segments states /\
     forall offset stateAt,
       (offset < 3)%nat ->
@@ -59,7 +64,7 @@ Proof.
     Hrange Halign Hlower Hupper HreturnAlign Hreturn Htable Hrecorded) as
     (mstatus & satp & states & Hafter & Hsegments & Hlength & Hstate0 &
      Hstate3 & Hedges).
-  exists states. split; first exact Hedges.
+  exists states. repeat split; try assumption.
   intros offset stateAt Hoffset Hstate.
   destruct offset as [|offset].
   - rewrite Hstate0 in Hstate. injection Hstate as <-.
