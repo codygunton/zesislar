@@ -28,6 +28,7 @@ Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperationalData.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOutputCallerFacts.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOutputEndpointPreservation.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsPositionEdges.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsPositionStateBuild.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsPrefix15694Entry.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRankPosition.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRankIndexed.
@@ -78,6 +79,7 @@ Theorem writeSuccessWithdrawals156d0RecordedPositionStates args sp pointer base
   writeSuccessWithdrawalsSelectedOccurrence after 0x15d10 = Some 2%nat /\
   after.1.1.(seq_regs) !! "x9" =
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) /\
+  writeSuccessWithdrawalsPositionState remaining 392 after /\
   exists states,
     length states = 4%nat /\
     nth_error states 0 =
@@ -216,6 +218,27 @@ Proof.
       try discriminate. rewrite writeSuccess156d4RegsLookupOther;
       try discriminate. rewrite writeSuccess156d0RegsLookupOther;
       try discriminate. exact Hx9. }
+  split.
+  { eapply (writeSuccessWithdrawalsPositionStateBuild remaining 392 after
+      0x15d10).
+    - lia.
+    - vm_compute. reflexivity.
+    - rewrite Hafter. unfold writeSuccessWithdrawalsConcretePc,
+        writeSuccess156d8After, writeSuccess15694Local. cbn.
+      rewrite lookup_insert. destruct writeSuccess156d8ValuesExact as
+        (_ & _ & _ & Hpc). rewrite Hpc. unfold bvn_unsigned. cbn.
+      rewrite Z_to_bv_unsigned. vm_compute. reflexivity.
+    - rewrite Hafter. unfold writeSuccessWithdrawalsSelectedOccurrence,
+        writeSuccessWithdrawalsRegisterUnsigned. cbn.
+      unfold writeSuccess156d8Regs. rewrite lookup_insert_ne;
+        last discriminate. rewrite lookup_insert.
+      destruct writeSuccess156d8ValuesExact as (_ & Hlink & _).
+      rewrite Hlink. reflexivity.
+    - rewrite Hafter. cbn. rewrite writeSuccess156d8RegsLookupOther;
+        try discriminate. rewrite writeSuccess156d4RegsLookupOther;
+        try discriminate. rewrite writeSuccess156d0RegsLookupOther;
+        try discriminate. exact Hx9.
+    - exact Hrange. }
   exists states. repeat split; try assumption.
   change (nth_error states 0 =
     Some ((writeSuccess15694Local a156d0
