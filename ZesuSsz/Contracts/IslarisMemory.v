@@ -37,6 +37,27 @@ Proof.
   rewrite Z_to_bv_small; [apply bv_to_little_endian_to_bv; lia | done].
 Qed.
 
+Lemma byte_array_roundtrip (count : nat) (values : list (bv 8)) :
+  length values = count ->
+  bv_to_little_endian count 8
+    (bv_unsigned
+      (Z_to_bv (8 * N.of_nat count)%N
+        (little_endian_to_bv 8 values))) = values.
+Proof.
+  intros Hlength.
+  have Hbound :
+    (0 <= little_endian_to_bv 8 values <
+      bv_modulus (8 * N.of_nat count))%Z.
+  { pose proof (little_endian_to_bv_bound 8 values).
+    rewrite Hlength in H.
+    unfold bv_modulus. rewrite N2Z.inj_mul. cbn.
+    replace (Z.of_N (N.of_nat count)) with (Z.of_nat count) by lia.
+    replace (8 * Z.of_nat count)%Z with
+      (Z.of_nat count * 8)%Z by lia.
+    exact H. }
+  rewrite Z_to_bv_small; [apply bv_to_little_endian_to_bv; lia | done].
+Qed.
+
 Lemma bytes_of_u64s_map_chunks (chunks : list (list (bv 8))) :
   Forall (fun bytes => length bytes = 8%nat) chunks ->
   bytes_of_u64s
@@ -100,6 +121,22 @@ Section array_regions.
       ?Z_to_bv_bv_unsigned; [iExact "Hvalue" | apply bv_unsigned_in_range].
   Qed.
 
+  Lemma mem_mapsto_byte_array_to_mapsto_len (count : nat) (a : Z) q
+      (values : list (bv 8)) :
+    length values = count ->
+    a ↦ₘ{q}∗ values -∗
+    a ↦ₘ{q}
+      Z_to_bv (8 * N.of_nat count)%N (little_endian_to_bv 8 values).
+  Proof.
+    iIntros (Hcount) "Hvalues".
+    iDestruct (mem_mapsto_byte_array_to_mapsto with "Hvalues") as "Hvalue".
+    iEval (rewrite Hcount) in "Hvalue".
+    have Hwidth : (Z.to_N (Z.of_nat count) * 8)%N =
+      (8 * N.of_nat count)%N by nia.
+    iEval (rewrite Hwidth) in "Hvalue".
+    iExact "Hvalue".
+  Qed.
+
   Lemma mem_mapsto_mapsto_to_byte_array (a : Z) q (value : bv 64) :
     a ↦ₘ{q} value -∗
     a ↦ₘ{q}∗ bv_to_little_endian 8 8 (bv_unsigned value).
@@ -111,6 +148,25 @@ Section array_regions.
     have Hlen' : len = 8%nat by nia. subst len.
     iExists 1%N. iSplit; [done |]. iSplit.
     { iPureIntro. rewrite length_bv_to_little_endian; [nia | nia]. }
+    iApply (big_sepL_impl with "Hvalue").
+    iIntros "!>" (index byte Hlookup) "Hbyte".
+    replace (a + Z.of_nat index * Z.of_N 1)%Z with
+      (a + Z.of_nat index)%Z by (cbn; lia).
+    iApply mem_mapsto_byte_to_mapsto. iExact "Hbyte".
+  Qed.
+
+  Lemma mem_mapsto_mapsto_to_byte_array_len (count : nat) (a : Z) q
+      (value : bv (8 * N.of_nat count)) :
+    a ↦ₘ{q} value -∗
+    a ↦ₘ{q}∗ bv_to_little_endian count 8 (bv_unsigned value).
+  Proof.
+    rewrite mem_mapsto_eq mem_mapsto_array_eq /mem_mapsto_def
+      /mem_mapsto_array_def.
+    iIntros "Hvalue".
+    iDestruct "Hvalue" as (len Hlen Hrange) "Hvalue".
+    have Hlen' : len = count by nia. subst len.
+    iExists 1%N. iSplit; [done |]. iSplit.
+    { iPureIntro. rewrite length_bv_to_little_endian; [nia | lia]. }
     iApply (big_sepL_impl with "Hvalue").
     iIntros "!>" (index byte Hlookup) "Hbyte".
     replace (a + Z.of_nat index * Z.of_N 1)%Z with
@@ -226,6 +282,49 @@ Section array_regions.
     iIntros (Hcount) "Hleft Hright".
     iApply (mem_mapsto_array_app_combine n a q left right with "Hleft").
     rewrite Hcount. iExact "Hright".
+  Qed.
+
+  Lemma mem_mapsto_array_recombine_read (count : nat) (a : Z)
+      (values : list (bv 8)) (start : nat)
+      (suffixAddress wordAddress : Z) :
+    a ↦ₘ∗ take start values -∗
+    suffixAddress ↦ₘ∗ drop (start + count) values -∗
+    wordAddress ↦ₘ
+      Z_to_bv (8 * N.of_nat count)%N
+        (little_endian_to_bv 8 (take count (drop start values))) -∗
+    ⌜suffixAddress = (a + Z.of_nat (start + count))%Z⌝ -∗
+    ⌜wordAddress = (a + Z.of_nat start)%Z⌝ -∗
+    ⌜(start + count <= length values)%nat⌝ -∗
+    a ↦ₘ∗ values.
+  Proof.
+    iIntros "Hprefix Hsuffix Hword"
+      (HsuffixAddress HwordAddress Hbounds).
+    subst suffixAddress wordAddress.
+    iDestruct (mem_mapsto_mapsto_to_byte_array_len with "Hword")
+      as "Hmiddle".
+    have HmiddleLength : length (take count (drop start values)) = count.
+    { rewrite length_take length_drop. lia. }
+    iEval (rewrite (byte_array_roundtrip _ _ HmiddleLength)) in "Hmiddle".
+    iPoseProof (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
+      (take start values) (take count (drop start values)) start with
+      "Hprefix") as "Hleft".
+    { rewrite length_take. lia. }
+    iEval (rewrite /= Z.mul_1_l) in "Hleft".
+    iSpecialize ("Hleft" with "Hmiddle").
+    iPoseProof (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
+      (take start values ++ take count (drop start values))
+      (drop (start + count) values) (start + count) with
+      "Hleft") as "Hcombine".
+    { rewrite length_app length_take HmiddleLength. lia. }
+    have HsuffixAddress :
+        (a + Z.of_N (8 `div` 8) * Z.of_nat (start + count))%Z =
+        (a + Z.of_nat (start + count))%Z.
+    { change (a + 1 * Z.of_nat (start + count) =
+        a + Z.of_nat (start + count))%Z. lia. }
+    iEval (rewrite HsuffixAddress) in "Hcombine".
+    iPoseProof ("Hcombine" with "Hsuffix") as "Hvalues".
+    iEval (rewrite take_take_drop take_drop) in "Hvalues".
+    iExact "Hvalues".
   Qed.
 
   Lemma mem_mapsto_array_recombine_u64_read (a : Z)
