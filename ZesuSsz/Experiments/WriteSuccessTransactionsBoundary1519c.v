@@ -83,24 +83,26 @@ Definition writeSuccessTransactionsScratch1519c `{!islaG Sigma} `{!threadG}
        (bv_unsigned sp + 1752) ↦ₘ
          writeSuccessTransactionWord transaction 273 ∗
        (bv_unsigned sp + 1760) ↦ₘ
-         bv_extract 0 32
-           (bv_or
+       bv_extract 0 32
+         (bv_sign_extend 64
+           (bv_extract 0 32
              (bv_or
-               (bv_shiftl
+               (bv_or
+                 (bv_shiftl
+                   (bv_zero_extend 64
+                     (writeSuccessTransactionByte transaction 284))
+                   (BV 64 24))
+                 (bv_shiftl
+                   (bv_zero_extend 64
+                     (writeSuccessTransactionByte transaction 283))
+                   (BV 64 16)))
+               (bv_or
+                 (bv_shiftl
+                   (bv_zero_extend 64
+                     (writeSuccessTransactionByte transaction 282))
+                   (BV 64 8))
                  (bv_zero_extend 64
-                   (writeSuccessTransactionByte transaction 284))
-                 (BV 64 24))
-               (bv_shiftl
-                 (bv_zero_extend 64
-                   (writeSuccessTransactionByte transaction 283))
-                 (BV 64 16)))
-             (bv_or
-               (bv_shiftl
-                 (bv_zero_extend 64
-                   (writeSuccessTransactionByte transaction 282))
-                 (BV 64 8))
-               (bv_zero_extend 64
-                 (writeSuccessTransactionByte transaction 281)))) ∗
+                   (writeSuccessTransactionByte transaction 281)))))) ∗
        (bv_unsigned sp + 1764) ↦ₘ? 132
    end ∗ True)%I.
 

@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import a15cc8 a15ccc a15cd0 a15cd4.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
+Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256Spec.
 

@@ -8,14 +8,54 @@ Require Import ZesuSsz.Experiments.WriteSuccess.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderCalls.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsIteration.
 Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpy.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRest.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMeasure.
 
 Import ListNotations.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
+
+Record WriteSuccessWithdrawalsIterationState (Frame : Type) : Type := {
+  writeSuccessIterationPc : Z;
+  writeSuccessIterationPointer : Z;
+  writeSuccessIterationProcessed : nat;
+  writeSuccessIterationRemaining : nat;
+  writeSuccessIterationSuffix : list (bv 8);
+  writeSuccessIterationFrame : Frame
+}.
+
+Arguments writeSuccessIterationPc {Frame} _.
+Arguments writeSuccessIterationPointer {Frame} _.
+Arguments writeSuccessIterationProcessed {Frame} _.
+Arguments writeSuccessIterationRemaining {Frame} _.
+Arguments writeSuccessIterationSuffix {Frame} _.
+Arguments writeSuccessIterationFrame {Frame} _.
+
+Definition writeSuccessWithdrawalsIterationUpdate {Frame}
+    (before after : WriteSuccessWithdrawalsIterationState Frame) : Prop :=
+  writeSuccessIterationPc before = 0x15694 /\
+  writeSuccessIterationRemaining before = S (writeSuccessIterationRemaining after) /\
+  length (writeSuccessIterationSuffix before) =
+    (48 * writeSuccessIterationRemaining before)%nat /\
+  writeSuccessIterationPointer after = writeSuccessIterationPointer before + 48 /\
+  writeSuccessIterationProcessed after = S (writeSuccessIterationProcessed before) /\
+  writeSuccessIterationSuffix after = skipn 48 (writeSuccessIterationSuffix before) /\
+  writeSuccessIterationFrame after = writeSuccessIterationFrame before /\
+  writeSuccessIterationPc after =
+    if writeSuccessIterationRemaining after is O then 0x156e8 else 0x15694.
+
+Lemma writeSuccessWithdrawalsIterationDecreases {Frame}
+    (before after : WriteSuccessWithdrawalsIterationState Frame) :
+  writeSuccessWithdrawalsIterationUpdate before after ->
+  (writeSuccessWithdrawalsMeasure (writeSuccessIterationSuffix after) <
+   writeSuccessWithdrawalsMeasure (writeSuccessIterationSuffix before))%nat.
+Proof.
+  intros (_ & Hremaining & Hlength & _ & _ & Hsuffix & _ & _).
+  rewrite Hsuffix. unfold writeSuccessWithdrawalsMeasure.
+  rewrite skipn_length. rewrite Hlength. rewrite Hremaining. lia.
+Qed.
 
 Lemma writeSuccessWithdrawalsTotalShift processed remaining :
   (processed + S (S remaining))%nat = (S processed + S remaining)%nat.

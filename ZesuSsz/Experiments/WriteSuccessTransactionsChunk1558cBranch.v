@@ -8,7 +8,6 @@ Require Import ZesuSsz.Experiments.WriteSuccessCalls.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
 Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
 Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsLoop.
 Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsInvariantIntro.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15584.
@@ -206,44 +205,6 @@ Definition writeSuccessTransactionsAuthorizationsAnyLoopSpec
 Global Instance : LithiumUnfold
   (@writeSuccessTransactionsAuthorizationsAnyLoopSpec) := I.
 
-Lemma write_success_transactions_authorizations_any_loop_pre
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
-  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
-  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x101d4 zesuMemcpyCallSpec -∗
-  □ instr_pre 0x15cb0 zesuEncoderU256CallSpec -∗
-  □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
-  □ instr_pre 0x15590
-    (writeSuccessTransactionsAuthorizationsAnyLoopSpec P).
-Proof.
-  iIntros "#Hlookup #Hcode #Hmemcpy #Hu256 #Hint #Houtput".
-  iAssert (□ ∀ (authorizationSp : bv 64) (authorizationBase : Z)
-      (authorizationTotal : nat) (authorizationBytes : list (bv 8))
-      (authorizationTail : spec),
-      instr_pre 0x15590
-        (writeSuccessAuthorizationsLoopSpec
-          (writeSuccessTransactionsAuthorizationsFrame authorizationSp
-            authorizationBase authorizationTotal authorizationBytes
-            authorizationTail P)))%I as "#HallLoops".
-  { iModIntro. iIntros (authorizationSp authorizationBase authorizationTotal
-      authorizationBytes authorizationTail).
-    iApply (write_success_authorizations_loop_pre
-      (writeSuccessTransactionsAuthorizationsFrame authorizationSp
-        authorizationBase authorizationTotal authorizationBytes
-        authorizationTail P) with
-      "Hlookup Hcode Hmemcpy Hu256 Hint Houtput"). }
-  rewrite instr_pre'_eq.
-  iModIntro. iNext.
-  iIntros "(%authorizationSp & %authorizationBase & %authorizationTotal &
-    %authorizationBytes & %authorizationTail & HloopSpec)".
-  iSpecialize ("HallLoops" $! authorizationSp authorizationBase
-    authorizationTotal authorizationBytes authorizationTail).
-  iPoseProof "HallLoops" as "#Hloop".
-  iDestruct ("Hloop" with "HloopSpec") as (instruction) "(Hinstr & Hwp)".
-  iExists instruction. iFrame.
-Qed.
-
 Lemma write_success_transactions_1558c_nonzero_destination
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (count : bv 64)
     (Hcount : count <> BV 64 0) :
@@ -253,14 +214,14 @@ Lemma write_success_transactions_1558c_nonzero_destination
   □ instr_pre 0x15cb0 zesuEncoderU256CallSpec -∗
   □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x15590
+    (writeSuccessTransactionsAuthorizationsAnyLoopSpec P) -∗
   instr_body 0x15620 (writeSuccessTransactionsAt15620Spec P) -∗
   instr_pre 0x15590
     (reg_col zesu_ram_sys_regs ∗ "x18" ↦ᵣ RVal_Bits count ∗
      writeSuccessTransactions1558cFrame P count).
 Proof.
-  iIntros "#Hlookup #Hcode #Hmemcpy #Hu256 #Hint #Houtput Hnext".
-  iPoseProof (write_success_transactions_authorizations_any_loop_pre P with
-    "Hlookup Hcode Hmemcpy Hu256 Hint Houtput") as "#Hloop".
+  iIntros "#Hlookup #Hcode #Hmemcpy #Hu256 #Hint #Houtput #Hloop Hnext".
   iApply (instr_pre_wand 0x15590 0x15590 true true with "Hloop");
     [done | done |].
   iIntros "(Hsys & H18 & Hframe)".
@@ -438,12 +399,14 @@ Lemma write_success_transactions_chunk_1558c_branch
   □ instr_pre 0x15cb0 zesuEncoderU256CallSpec -∗
   □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x15590
+    (writeSuccessTransactionsAuthorizationsAnyLoopSpec P) -∗
   instr_body 0x15620 (writeSuccessTransactionsAt15620Spec P) -∗
   instr_body 0x1558c (writeSuccessTransactionsAt1558cCoreSpec P).
 Proof.
   move => *.
   iStartProof.
-  iIntros "_ #Hlookup #Hcode #Hmemcpy #Hu256 #Hint #Houtput Hnext".
+  iIntros "_ #Hlookup #Hcode #Hmemcpy #Hu256 #Hint #Houtput #Hauthloop Hnext".
   iPoseProof "Hlookup" as "#HrawLookup".
   iEval (rewrite /instr_lookup_resources) in "HrawLookup".
   iPoseProof ("HrawLookup" $! 0x1558c with "[]") as "#HbranchCode".
@@ -467,5 +430,5 @@ Proof.
     iFrame.
     iSplit; last done.
     iApply (write_success_transactions_1558c_nonzero_destination P count Hcount
-      with "Hlookup Hcode Hmemcpy Hu256 Hint Houtput Hnext").
+      with "Hlookup Hcode Hmemcpy Hu256 Hint Houtput Hauthloop Hnext").
 Qed.

@@ -3,12 +3,14 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeCalleeProviders.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeCode.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeTransactionLoopProvider.
-Require Import ZesuSsz.Experiments.WriteSuccessLoadHeader.
+Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessLoadHeaderPre.
 Require Import ZesuSsz.Experiments.WriteSuccessToLoadWithFrame.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
 Require Import ZesuSsz.Experiments.WriteSuccessValueTransactionsEntry.
 
-Lemma write_success_native_load_with_frame_pre
+Lemma write_success_native_load_header_with_frame_pre
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
     (sp : bv 64) (sourceBytes : list (bv 8))
     (values : list (bv 64)) (payload : list (bv 8))
@@ -16,9 +18,10 @@ Lemma write_success_native_load_with_frame_pre
     (transactionBytes : list (bv 8)) :
   writeSuccessCompleteNativeCode -∗
   □ instr_pre 0x14d80
-    (writeSuccessAtLoadWithFrame sp sourceBytes
-      (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) tail)
+    (writeSuccessAtLoadHeaderWithFrame sp sourceBytes
+      (writeSuccessHeaderEvents sp
+        (writeSuccessValueEvents sp values
+          (writeSuccessTransactionsEvents sp transactions tail)))
       (writeSuccessLoadHeaderRemainder P sp sourceBytes values payload tail base
         transactions transactionBytes)).
 Proof.
@@ -32,18 +35,10 @@ Proof.
   iPoseProof (write_success_native_transaction_loop_provider
     (writeSuccessValueTransactionsContinuation values payload P)
     with "Hnative") as "#Hloop".
-  iEval (rewrite /writeSuccessCompleteNativeCode) in "Hnative".
-  iDestruct "Hnative" as
-    "(#Hprologue & #Hlookup & #Hcode & #HoutputCode & #HmemcpyCode &
-      #HbooleanCode & #HoptionalCode & #HbyteListsCode & #HbytesCode &
-      #HintCode & #Hu256Code & #Hint1645Code)".
-  iPoseProof (write_success_load_header P sp sourceBytes values payload tail
+  iPoseProof (write_success_native_main_code with "Hnative") as "#Hmain".
+  iEval (rewrite /writeSuccessNativeMainCode) in "Hmain".
+  iDestruct "Hmain" as "(#Hlookup & #Hcode & _)".
+  iApply (write_success_load_header_pre P sp sourceBytes values payload tail
     base transactions transactionBytes with
-    "Hlookup Hcode Hmemcpy Houtput Hbytes Hint Hloop") as "Hheader".
-  iModIntro. iApply instr_pre_to_body. iNext.
-  iApply (instr_pre_wand 0x14d80 0x14d80 false false with "Hheader");
-    [done | reflexivity |].
-  iIntros "HatLoad".
-  iApply (write_success_at_load_with_frame_to_header P sp sourceBytes values
-    payload tail base transactions transactionBytes with "HatLoad").
+    "Hlookup Hcode Hmemcpy Houtput Hbytes Hint Hloop").
 Qed.

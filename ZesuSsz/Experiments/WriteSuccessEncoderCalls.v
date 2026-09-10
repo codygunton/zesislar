@@ -2,7 +2,9 @@ From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccess.
+Require Import ZesuSsz.Experiments.WriteSuccessEncoderInt.
+Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytes.
+Require Import ZesuSsz.Experiments.WriteSuccessEncoderBoolean.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
 Require Export ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
 Require Export ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.

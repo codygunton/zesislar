@@ -97,23 +97,25 @@ Definition ConditionalExactCompliance
 
 (** This is the main statement that later proof work must establish. *)
 Definition MainComplianceStatement
-    {Decoded : Type} (level1 : IslarisLevel1Model Decoded)
+    {State Decoded : Type} (machine : Level1MachineModel State Decoded)
+    (level1 : IslarisLevel1Model Decoded)
     (endpoint : EndpointSemantics)
     (reference : ReferenceSemantics)
     (applies : BugApplies)
     (equivalent : OutcomeRelation) : Prop :=
   ConditionalCompliance
-    (IslarisLevel1ContractAssumptions level1)
+    (IslarisLevel1ContractAssumptions machine level1)
     endpoint reference applies equivalent.
 
 (** This target gives exact compliance for an input outside the fixed bug domains. *)
 Definition MainExactComplianceStatement
-    {Decoded : Type} (level1 : IslarisLevel1Model Decoded)
+    {State Decoded : Type} (machine : Level1MachineModel State Decoded)
+    (level1 : IslarisLevel1Model Decoded)
     (endpoint : EndpointSemantics)
     (reference : ReferenceSemantics)
     (applies : BugApplies)
     (equivalent : OutcomeRelation)
     (input : ByteString) : Prop :=
   ConditionalExactCompliance
-    (IslarisLevel1ContractAssumptions level1)
+    (IslarisLevel1ContractAssumptions machine level1)
     endpoint reference applies equivalent input.

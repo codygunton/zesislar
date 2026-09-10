@@ -137,6 +137,7 @@ Definition writeSuccessLoadHeaderHeapResources
     (base : Z) (transactions : list writeSuccessTransaction)
     (transactionBytes : list (bv 8)) : iProp Sigma :=
   ((bv_unsigned sp - 48) ↦ₘ? 48 ∗
+   (bv_unsigned sp - 80) ↦ₘ? 32 ∗
    bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
    base ↦ₘ∗ transactionBytes ∗
    writeSuccessTransactionsOwn transactions ∗
@@ -171,13 +172,14 @@ Lemma write_success_load_header_remainder_pack
       (writeSuccessValueTransactionsContinuation values payload P)) -∗
   P -∗
   writeSuccessLoadHeaderRemainder P sp sourceBytes values payload tail base
-    transactions transactionBytes.
+    transactions transactionBytes ∗
+  (bv_unsigned sp - 80) ↦ₘ? 32.
 Proof.
   rewrite /writeSuccessLoadHeaderHeapResources
     /writeSuccessLoadHeaderRemainder.
   iIntros "Hextra Hheap Hexit HP".
   iDestruct "Hheap" as
-    "(Hlower & Hpayload & Harray & Hown & Hinvariant & %HsourceLength &
+    "(Hlower & Hcall & Hpayload & Harray & Hown & Hinvariant & %HsourceLength &
       %HvaluesBytes & %HvaluesLength & %HpayloadLength & %HbaseEq &
       %HcountEq & %Halign16 & %Halign8 & %HlowerBound & %HupperBound & _)".
   iFrame.
@@ -191,7 +193,8 @@ Lemma write_success_load_header_remainder_unpack
     (tail : spec) (base : Z) (transactions : list writeSuccessTransaction)
     (transactionBytes : list (bv 8)) :
   writeSuccessLoadHeaderRemainder P sp sourceBytes values payload tail base
-      transactions transactionBytes -∗
+      transactions transactionBytes ∗
+  (bv_unsigned sp - 80) ↦ₘ? 32 -∗
   reg_col writeSuccessLoadHeaderExtraRegisters ∗
   writeSuccessLoadHeaderHeapResources sp sourceBytes values payload base
       transactions transactionBytes ∗
@@ -202,10 +205,10 @@ Lemma write_success_load_header_remainder_unpack
 Proof.
   rewrite /writeSuccessLoadHeaderHeapResources
     /writeSuccessLoadHeaderRemainder.
-  iIntros "(Hextra & Hlower & Hpayload & Harray & Hown & Hexit &
+  iIntros "((Hextra & Hlower & Hpayload & Harray & Hown & Hexit &
     Hinvariant & %HsourceLength & %HvaluesBytes & %HvaluesLength &
     %HpayloadLength & %HbaseEq & %HcountEq & %Halign16 & %Halign8 &
-    %HlowerBound & %HupperBound & HP & _)".
+    %HlowerBound & %HupperBound & HP & _) & Hcall)".
   iFrame.
   repeat iSplit; try iPureIntro; try assumption; done.
 Qed.

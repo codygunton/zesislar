@@ -12,17 +12,6 @@ Import ListNotations.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
-Lemma bv_unsigned_add_no_wrap_64 (left right : bv 64) :
-  (bv_unsigned left + bv_unsigned right < 2 ^ 64)%Z ->
-  bv_unsigned (left + right)%bv = bv_unsigned left + bv_unsigned right.
-Proof.
-  move => Hsum. rewrite bv_add_unsigned.
-  apply bv_wrap_small.
-  pose proof (bv_unsigned_in_range 64 left).
-  pose proof (bv_unsigned_in_range 64 right).
-  unfold bv_modulus in *. cbn in *. lia.
-Qed.
-
 Definition writeSuccessFixedWidthArrayInvariant `{!islaG Sigma}
     (sp pointer : bv 64) (base : Z) (total processed remaining : nat)
     (bytes : list (bv 8)) : iProp Sigma :=

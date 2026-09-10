@@ -4,7 +4,8 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsHashesLoop HintsBlobHashesLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
+Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Experiments.WriteSuccessTactics.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
 
 Import ListNotations.

@@ -5,7 +5,7 @@ From IslaTraces.write_success_blocks Require Import
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesLoop.
+Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAuthorizationsAdapter.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary153d0.
 Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15564.
@@ -41,16 +41,13 @@ Lemma write_success_transactions_chunk_153d0
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x153d4 (writeSuccessBlobHashesLoopSpec P) -∗
   instr_body 0x15564 (writeSuccessTransactionsAt15564Spec P) -∗
   instr_body 0x153d0 (writeSuccessTransactionsAt153d0Spec P).
 Proof.
   move => *.
   iStartProof.
-  iIntros "_ #Hlookup #Hcode #Houtput Hnext".
-  iPoseProof (write_success_blob_hashes_loop_pre P with
-    "Hlookup Hcode Houtput") as "#HblobLoop".
-  iPoseProof (write_success_blob_hashes_loop P with
-    "Hlookup Hcode Houtput HblobLoop") as "HblobBody".
+  iIntros "_ #Hlookup #Hcode #Houtput #HblobLoop Hnext".
   iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
     in "Hcode".
   liARun.

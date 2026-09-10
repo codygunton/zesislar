@@ -141,17 +141,20 @@ $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG): experiments/islaris-write-success/$(WRITE
 $(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(WRITE_SUCCESS_ISLA_CFG)
 	find generated/isla-traces -maxdepth 1 -type d \
 	  -name 'write_success_[0-9]*' -exec rm -rf {} +
-	@set -e; for dump_file in $(WRITE_SUCCESS_DUMP_DIR)/block_*.dump; do \
-	  block_name=$$(basename $$dump_file .dump); \
-	  block_number=$${block_name#block_}; \
-	  trace_dir=generated/isla-traces/write_success_$$block_number; \
-	  mkdir -p $$trace_dir; \
-	  $(OPAM) islaris $$dump_file -j 16 -o $$trace_dir \
-	    --coqdir=IslaTraces.write_success_$$block_number --arch=riscv64; \
-	  sed -i -e '/(package islaris)/d' \
-	    -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	    $$trace_dir/dune; \
-	done
+	@find $(WRITE_SUCCESS_DUMP_DIR) -maxdepth 1 -type f -name 'block_*.dump' \
+	  -print0 | sort -z | xargs -0 -n 1 -P 3 sh -c ' \
+	    set -e; \
+	    dump_file=$$1; \
+	    block_name=$$(basename $$dump_file .dump); \
+	    block_number=$${block_name#block_}; \
+	    trace_dir=generated/isla-traces/write_success_$$block_number; \
+	    mkdir -p $$trace_dir; \
+	    $(OPAM) islaris $$dump_file -j 16 -o $$trace_dir \
+	      --coqdir=IslaTraces.write_success_$$block_number --arch=riscv64; \
+	    sed -i -e "/(package islaris)/d" \
+	      -e "s/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/" \
+	      $$trace_dir/dune \
+	  ' sh
 	touch $@
 
 $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evidence/generate_islaris_trace_index.py
@@ -164,7 +167,9 @@ $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evid
 	  --hint-group BlobHashesLoop:0x153d4:0x15564 \
 	  --hint-group StorageKeysLoop:0x15228:0x153b4 \
 	  --hint-group WithdrawalsLoop:0x15694:0x156e8 \
-	  --hint-group AuthorizationsLoop:0x15590:0x15620
+	  --hint-group AuthorizationsLoop:0x15590:0x15620 \
+	  --hint-group AccessListsLoop:0x151d4:0x153c0 \
+	  --hint-group TransactionsLoop:0x14f00:0x15668
 	touch $@
 
 .PHONY: write-success-traces
@@ -227,6 +232,7 @@ check-evidence-tools:
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_parity.py
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
+	bash ZesuSsz/Evidence/check_write_success_decoder.sh
 
 .PHONY: check-proof-hygiene
 check-proof-hygiene:
