@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_failure Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.

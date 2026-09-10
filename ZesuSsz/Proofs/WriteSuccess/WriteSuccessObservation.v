@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import ZesuSsz.Contracts.Endpoints.
 

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 
 Definition writeOutputEvents (data size : bv 64) (tail : spec) : spec :=

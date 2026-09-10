@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Endpoints.
 

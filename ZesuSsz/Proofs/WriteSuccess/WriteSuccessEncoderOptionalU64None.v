@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_04 Require Import instrs.

@@ -35,7 +35,7 @@ def validate() -> None:
     if not (ROOT / adaptations["snapshot"]).is_file():
         raise ValueError(f"missing Rocq boundary snapshot: {adaptations['snapshot']}")
 
-    contract = (ROOT / "ZesuSsz" / "Contracts" / "Level1.v").read_text()
+    contract = (ROOT / "ZesuSsz" / "Contracts" / "Endpoints.v").read_text()
     if "Require Import ZesuSsz.Generated.Level1." not in contract:
         raise ValueError("Level 1 contracts do not import the generated boundary map")
     forbidden = ("readInputRegion :", "decodeRegion :", "writeSuccessRegion :")

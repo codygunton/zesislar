@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 From iris.program_logic Require Import language.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.zkvm_exit Require Import instrs.

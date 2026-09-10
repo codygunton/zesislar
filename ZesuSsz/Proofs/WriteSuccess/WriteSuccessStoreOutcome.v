@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 

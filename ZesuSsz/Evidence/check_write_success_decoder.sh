@@ -3,12 +3,16 @@ set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/../.." && pwd)
 switch_path=${OPAM_SWITCH:-/home/cody/islaris}
+build_dir=${AGENT_BUILD_DIR:-"$repo_root/_build/agents/push1"}
 query_file=$(mktemp --suffix=.v)
 output_file=$(mktemp)
 trap 'rm -f "$query_file" "$output_file"' EXIT
 
 cd "$repo_root"
-opam exec --switch="$switch_path" -- dune build --root . \
+python3 tools/build_record.py --build-dir "$build_dir" \
+  --target WriteSuccessDecoderExamples -- \
+  opam exec --switch="$switch_path" -- dune build --root . \
+  --build-dir "$build_dir" --cache=enabled -j32 \
   ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.vo
 
 cat >"$query_file" <<'EOF'
@@ -68,7 +72,8 @@ Eval vm_compute in
 EOF
 
 opam exec --switch="$switch_path" -- coqtop -quiet \
-  -R _build/default/ZesuSsz ZesuSsz -batch -l "$query_file" \
+  -Q "$build_dir/default/InstrSpecs" InstrSpecs \
+  -R "$build_dir/default/ZesuSsz" ZesuSsz -batch -l "$query_file" \
   >"$output_file"
 
 if ! rg -q '^     = true$' "$output_file"; then

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.All.
 Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalResources.
 Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalNonzero.
 Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15690Zero.

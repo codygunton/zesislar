@@ -18,8 +18,12 @@ export ISLA_REPO
 export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
-CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/check-local
-CHECK_LOCAL_JOBS ?= 48
+CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/agents/check-local
+CHECK_LOCAL_JOBS ?= 32
+CHECK_AGENT ?= push1
+AGENT_BUILD_DIR ?= $(CURDIR)/_build/agents/$(CHECK_AGENT)
+AGENT_JOBS ?= 32
+export AGENT_BUILD_DIR
 
 PROG      ?= entrypoints
 LOAD_ADDR ?= 0x10300000
@@ -238,6 +242,21 @@ check-evidence-tools:
 check-proof-hygiene:
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 
+.PHONY: check-fast
+check-fast: check-evidence-tools
+	$(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
+	  --target check-fast -- $(OPAM) dune build --root . \
+	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
+	  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all \
+	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
+
+.PHONY: check-iris
+check-iris:
+	$(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
+	  --target check-iris -- $(OPAM) dune build --root . \
+	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
+	  @ZesuSsz/Proofs/all
+
 .PHONY: check-level1-rocq
 check-level1-rocq:
 	nix build .#level1-contract-rocq
@@ -252,7 +271,9 @@ check-viewer:
 
 .PHONY: check-local
 check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
-	$(OPAM) dune build --root . --build-dir $(CHECK_LOCAL_BUILD_DIR) \
+	$(PYTHON) tools/build_record.py --build-dir $(CHECK_LOCAL_BUILD_DIR) \
+	  --target check-local -- $(OPAM) dune build --root . \
+	  --build-dir $(CHECK_LOCAL_BUILD_DIR) --cache=enabled \
 	  -j $(CHECK_LOCAL_JOBS) @all
 
 .PHONY: check
