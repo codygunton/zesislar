@@ -319,4 +319,3 @@ Proof.
 Qed.
 
 Print Assumptions writeSuccessWithdrawalsEncoderIntPrefixActualPositions.
-
