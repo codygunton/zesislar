@@ -12,11 +12,20 @@ Ltac zesu_liAReadMem :=
         (tac_fast_apply (li_wp_read_mem_zesu _ _ _ _ _ _ _ _) _)
   end.
 
+Ltac zesu_liAWriteMem :=
+  lazymatch goal with
+  | |- envs_entails ?Delta
+      (WPasm (WriteMem _ _ _ _ _ _ _ :t: _)) =>
+      notypeclasses refine
+        (tac_fast_apply (li_wp_write_mem_zesu _ _ _ _ _ _ _ _ _) _)
+  end.
+
 Ltac liAStep ::=
  liEnsureInvariant;
  try liAIntroduceLetInGoal;
  first [
-    zesu_liAReadMem
+    zesu_liAWriteMem
+  | zesu_liAReadMem
   | liAAsm
   | liAExp
   | liAOther

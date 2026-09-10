@@ -174,6 +174,26 @@ Section array_regions.
     iApply mem_mapsto_byte_to_mapsto. iExact "Hbyte".
   Qed.
 
+  Lemma mem_mapsto_mapsto_to_byte_array_N (len : N) (a : Z) q
+      (value : bv (8 * len)) :
+    a ↦ₘ{q} value -∗
+    a ↦ₘ{q}∗ bv_to_little_endian (N.to_nat len) 8 (bv_unsigned value).
+  Proof.
+    rewrite mem_mapsto_eq mem_mapsto_array_eq /mem_mapsto_def
+      /mem_mapsto_array_def.
+    iIntros "Hvalue".
+    iDestruct "Hvalue" as (count Hcount Hrange) "Hvalue".
+    have Hlen : len = N.of_nat count by nia. subst len.
+    iEval (rewrite Nat2N.id).
+    iExists 1%N. iSplit; [done |]. iSplit.
+    { iPureIntro. rewrite length_bv_to_little_endian; [nia | lia]. }
+    iApply (big_sepL_impl with "Hvalue").
+    iIntros "!>" (index byte Hlookup) "Hbyte".
+    replace (a + Z.of_nat index * Z.of_N 1)%Z with
+      (a + Z.of_nat index)%Z by (cbn; lia).
+    iApply mem_mapsto_byte_to_mapsto. iExact "Hbyte".
+  Qed.
+
   Lemma mem_mapsto_array_singleton n (a : Z) q (value : bv n) :
     a ↦ₘ{q}∗ [value] ⊣⊢ a ↦ₘ{q} value.
   Proof.
