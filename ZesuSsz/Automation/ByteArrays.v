@@ -30,6 +30,115 @@ Proof. intros. bv_solve. Qed.
 #[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
   : isla_coq_rewrite lithium_rewrite.
 
+Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :
+  (offset + 8 <= length bytes)%nat ->
+  take 8 (drop offset bytes) =
+    [default (BV 8 0) (bytes !! offset);
+     default (BV 8 0) (bytes !! (offset + 1)%nat);
+     default (BV 8 0) (bytes !! (offset + 2)%nat);
+     default (BV 8 0) (bytes !! (offset + 3)%nat);
+     default (BV 8 0) (bytes !! (offset + 4)%nat);
+     default (BV 8 0) (bytes !! (offset + 5)%nat);
+     default (BV 8 0) (bytes !! (offset + 6)%nat);
+     default (BV 8 0) (bytes !! (offset + 7)%nat)].
+Proof.
+  intros Hlength.
+  have Hbyte (index : nat) (Hindex : (index < length bytes)%nat) :
+      bytes !! index = Some (default (BV 8 0) (bytes !! index)).
+  { destruct (nth_lookup_or_length bytes index (BV 8 0)) as [Hlookup|Hlookup].
+    - rewrite Hlookup. reflexivity.
+    - lia. }
+  apply list_eq. intros index.
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    replace (offset + 0)%nat with offset by lia.
+    rewrite (Hbyte offset ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 1)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 2)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 3)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 4)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 5)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 6)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 7)%nat ltac:(lia)). reflexivity. }
+  rewrite lookup_take_ge; [done|lia].
+Qed.
+
+Lemma zesu_assemble_8_bytes
+    (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) :
+  bv_or
+    (bv_shiftl
+      (bv_or
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64 b7) (BV 64 24))
+          (bv_shiftl (bv_zero_extend 64 b6) (BV 64 16)))
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64 b5) (BV 64 8))
+          (bv_zero_extend 64 b4)))
+      (BV 64 32))
+    (bv_or
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64 b3) (BV 64 24))
+        (bv_shiftl (bv_zero_extend 64 b2) (BV 64 16)))
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64 b1) (BV 64 8))
+        (bv_zero_extend 64 b0))) =
+  Z_to_bv 64 (little_endian_to_bv 8 [b0; b1; b2; b3; b4; b5; b6; b7]).
+Proof.
+  unfold little_endian_to_bv, little_endian_to_Z.
+  rewrite !fmap_cons. cbn.
+  apply bv_eq. bv_simplify. bitblast as index.
+  all: (f_equal; lia).
+Qed.
+
+Lemma zesu_assemble_8_bytes_at (bytes : list (bv 8)) (offset : nat) :
+  (offset + 8 <= length bytes)%nat ->
+  bv_or
+    (bv_shiftl
+      (bv_or
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 7)%nat))) (BV 64 24))
+          (bv_shiftl (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 6)%nat))) (BV 64 16)))
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 5)%nat))) (BV 64 8))
+          (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 4)%nat)))))
+      (BV 64 32))
+    (bv_or
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64
+          (default (BV 8 0) (bytes !! (offset + 3)%nat))) (BV 64 24))
+        (bv_shiftl (bv_zero_extend 64
+          (default (BV 8 0) (bytes !! (offset + 2)%nat))) (BV 64 16)))
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64
+          (default (BV 8 0) (bytes !! (offset + 1)%nat))) (BV 64 8))
+        (bv_zero_extend 64 (default (BV 8 0) (bytes !! offset))))) =
+  Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop offset bytes))).
+Proof.
+  intros Hlength. rewrite (zesu_take_8_drop bytes offset Hlength).
+  apply zesu_assemble_8_bytes.
+Qed.
+
+#[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using lia
+  : zesu_byte_assembly isla_coq_rewrite lithium_rewrite.
+
 Section byte_array_read.
   Context `{!islaG Sigma} `{!threadG}.
 
