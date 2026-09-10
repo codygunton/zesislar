@@ -3,7 +3,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.read_input Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Import ListNotations.
 

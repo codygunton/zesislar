@@ -2,7 +2,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_failure Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Definition failureObservation : ByteString :=
   [0x5a; 0x53; 0x53; 0x5a; 0x01; 0x00].

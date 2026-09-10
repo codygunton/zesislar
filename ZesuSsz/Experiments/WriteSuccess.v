@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Generated.Level1.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Require Export ZesuSsz.Experiments.WriteSuccessBitvector.
 Require Export ZesuSsz.Experiments.WriteSuccessEvents.

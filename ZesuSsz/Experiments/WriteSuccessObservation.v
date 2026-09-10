@@ -1,5 +1,5 @@
 From Coq Require Import Lists.List ZArith.ZArith Lia.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -354,4 +354,3 @@ Definition writeSuccessObservationValid
     (observationActivationTimestamp observation) /\
   writeSuccessListValid writeSuccessVariableBytesValid
     (observationPublicKeys observation).
-

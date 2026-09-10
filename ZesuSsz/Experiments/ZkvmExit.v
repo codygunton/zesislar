@@ -3,7 +3,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.zkvm_exit Require Import instrs.
 Require Import ZesuSsz.Contracts.Machine.
 Require Import ZesuSsz.Generated.Level1.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Definition zesu_sys_regs : list (reg_kind * valu_shape) := [
   (KindReg "rv_enable_pmp", ExactShape (RVal_Bool false));

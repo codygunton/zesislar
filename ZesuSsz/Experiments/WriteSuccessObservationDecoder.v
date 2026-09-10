@@ -1,5 +1,5 @@
 From Coq Require Import Bool.Bool Lists.List ZArith.ZArith Lia.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Import ListNotations.
 Open Scope Z_scope.

@@ -2,7 +2,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.allocator_get Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Definition allocator_get_resources `{!islaG Sigma} `{!threadG} :
     IslarisContractResources AllocatorGetArgs AllocatorGetOutcome := {|

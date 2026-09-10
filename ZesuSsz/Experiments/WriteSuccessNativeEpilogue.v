@@ -2,7 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Experiments.WriteSuccess.
 Require Import ZesuSsz.Experiments.WriteSuccessEpilogueBlock.
 Require Import ZesuSsz.Experiments.WriteSuccessNativeContract.
@@ -10,17 +10,17 @@ Require Import ZesuSsz.Experiments.WriteSuccessNativeContract.
 (** This adapter converts the generic epilogue return into the exact public
     native exit.  The outer suffix can use the result as one continuation. *)
 Lemma write_success_native_epilogue_continuation
-    `{!islaG Sigma} `{!threadG} {State Decoded}
-    (model : Level1MachineModel State Decoded)
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
-    (semantic : writeSuccessSemanticPremise model outputRelation)
+    (semantic : writeSuccessSemanticPremise allows outputRelation)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     (bytes : ByteString)
     (Hwell : writeSuccessWitnessWellFormed args witness)
     (Houtput : outputRelation args witness bytes) :
   instr_pre 0x14d10
     (∃ result : ByteString,
-      ⌜writeSuccessNativeAllows model args result⌝ ∗
+      ⌜writeSuccessNativeAllows allows args result⌝ ∗
       writeSuccessTerminalResources outputRelation args result) -∗
   instr_pre
     (bv_unsigned

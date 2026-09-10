@@ -5,7 +5,7 @@ From IslaTraces.write_success_00 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Experiments.WriteSuccessEvents.
 Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
@@ -163,16 +163,13 @@ Definition WriteSuccessOutputRelation (Decoded : Type) : Type :=
   WriteSuccessArgs Decoded -> writeSuccessNativeWitness Decoded ->
   ByteString -> Prop.
 
-Definition writeSuccessNativeAllows {State Decoded}
-    (model : Level1MachineModel State Decoded) :
-    WriteSuccessArgs Decoded -> ByteString -> Prop :=
-  contractAllows State (WriteSuccessArgs Decoded) ByteString
-    (writeSuccessContract model (fun _ => 0%nat)).
+Definition writeSuccessNativeAllows {Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop) :
+    WriteSuccessArgs Decoded -> ByteString -> Prop := allows.
 
-Lemma writeSuccessNativeAllows_exact {State Decoded}
-    (model : Level1MachineModel State Decoded) args bytes :
-  writeSuccessNativeAllows model args bytes <->
-  decodeObservationSuccess State Decoded model bytes (successDecoded Decoded args).
+Lemma writeSuccessNativeAllows_exact {Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop) args bytes :
+  writeSuccessNativeAllows allows args bytes <-> allows args bytes.
 Proof. reflexivity. Qed.
 
 Definition writeSuccessTerminalSavedSlots `{!islaG Sigma} `{!threadG}
@@ -233,16 +230,16 @@ Definition writeSuccessTerminalResources `{!islaG Sigma} `{!threadG}
     writeSuccessTerminalMachine witness)%I.
 
 Definition writeSuccessHeaderTerminal `{!islaG Sigma} `{!threadG}
-    {State Decoded} (model : Level1MachineModel State Decoded)
+    {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) : iProp Sigma :=
   (instr_pre 0x14d10
     (∃ bytes : ByteString,
-      ⌜writeSuccessNativeAllows model args bytes⌝ ∗
+      ⌜writeSuccessNativeAllows allows args bytes⌝ ∗
       writeSuccessTerminalResources outputRelation args bytes))%I.
 
 Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
-    {State Decoded} (model : Level1MachineModel State Decoded)
+    {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
@@ -252,7 +249,7 @@ Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
       (writeSuccessSourceBytes witness)
       (writeSuccessNativeTailEvents witness)
       (writeSuccessLoadHeaderRemainder
-        (writeSuccessHeaderTerminal model outputRelation args)
+        (writeSuccessHeaderTerminal allows outputRelation args)
       (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
       (writeSuccessValues witness) (writeSuccessPayload witness)
       (writeSuccessTraceTail witness) (writeSuccessTransactionBase witness)
@@ -262,11 +259,11 @@ Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
 (** These downstream continuations support the conditional composition proof.
     They are not part of the public native entry contract. *)
 Definition writeSuccessNativeProofAssumptions `{!islaG Sigma} `{!threadG}
-    {State Decoded} (model : Level1MachineModel State Decoded)
+    {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
-  (writeSuccessLoadHeaderWithFramePre model outputRelation args witness ∗ True)%I.
+  (writeSuccessLoadHeaderWithFramePre allows outputRelation args witness ∗ True)%I.
 
 (** The public adapter owns every heap region referenced by the decoded value.
     Code-derived continuations and trace-completeness evidence stay outside this
@@ -469,8 +466,7 @@ Qed.
 Definition writeSuccessNativeCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   writeSuccessCompleteNativeCode.
 
-Definition writeSuccessNativeResources {State Decoded}
-    (model : Level1MachineModel State Decoded)
+Definition writeSuccessNativeResources {Decoded}
     (outputRelation : WriteSuccessOutputRelation Decoded)
     `{!islaG Sigma} `{!threadG} :
     IslarisContractResources (WriteSuccessArgs Decoded) ByteString := {|
@@ -479,23 +475,23 @@ Definition writeSuccessNativeResources {State Decoded}
   islarisExit := writeSuccessTerminalResources outputRelation
 |}.
 
-Definition writeSuccessNativeModel {State Decoded}
-    (model : Level1MachineModel State Decoded)
+Definition writeSuccessNativeModel {Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (nextPc : Z -> Z -> Prop) :
     IslarisContractModel (WriteSuccessArgs Decoded) ByteString := {|
-  islarisContractAllows := writeSuccessNativeAllows model;
+  islarisContractAllows := writeSuccessNativeAllows allows;
   islarisContractStep := nextPc;
   islarisContractResources := fun Sigma HG HT =>
-    @writeSuccessNativeResources State Decoded model outputRelation Sigma HG HT
+    @writeSuccessNativeResources Decoded outputRelation Sigma HG HT
 |}.
 
 (** A native correctness proof needs this semantic premise in addition to the
     machine-resource handoff and the CFG certificate. *)
-Definition writeSuccessSemanticPremise {State Decoded}
-    (model : Level1MachineModel State Decoded)
+Definition writeSuccessSemanticPremise {Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded) : Prop :=
   forall args witness bytes,
     writeSuccessWitnessWellFormed args witness ->
     outputRelation args witness bytes ->
-    decodeObservationSuccess State Decoded model bytes (successDecoded Decoded args).
+    allows args bytes.
