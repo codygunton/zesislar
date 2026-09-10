@@ -42,6 +42,10 @@ Theorem writeSuccessWithdrawals156b4ActualPositionStates args sp pointer base
      priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
        (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal))
     segments after ->
+  after =
+    (writeSuccessWithdrawalsSecondEncoderEntry regs global sp withdrawal,
+     priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+       (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal)) /\
   exists states,
     length states = 4%nat /\
     nth_error states 0 = Some
@@ -61,7 +65,8 @@ Proof.
     pointer base total processed (S remaining) withdrawal allBytes prefix current
     suffix scratch encoderScratch registerFrame memoryFrame priorLog state regs0
     global0 regs global segments after Hinv Hprefix Hentry Hrecorded) as
-    (_ & states & Hlength & Hstart & Hend & Hedges).
+    (Hafter & states & Hlength & Hstart & Hend & Hedges).
+  split; first exact Hafter.
   have Hsemantic := writeSuccessWithdrawals156b4HandoffPositionStates args sp
     pointer base total processed remaining withdrawal allBytes prefix current
     suffix scratch encoderScratch registerFrame memoryFrame priorLog state regs0
