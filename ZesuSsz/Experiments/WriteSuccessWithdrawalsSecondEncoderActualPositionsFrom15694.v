@@ -34,12 +34,23 @@ Theorem writeSuccessWithdrawalsSecondEncoderActualPositionsFrom15694 args sp
     allBytes prefix current suffix scratch encoderScratch registerFrame
     memoryFrame priorLog state ->
   WriteSuccessWithdrawalsRecordedRun 410 state segments after ->
-  exists regs0 global0 regs global encoderSegments encoderAfter prefixStates
-      outputStates suffixStates,
+  exists regs0 global0 regs global encoderRegs encoderGlobal encoderSegments
+      encoderAfter prefixStates outputStates suffixStates,
     writeSuccessWithdrawalsPrefixAfter state.1 sp pointer =
       writeSuccess101d4Before regs0 global0 /\
     writeSuccessWithdrawalsEncoderInt156b4State regs0 global0 sp pointer current
       withdrawal = writeSuccess15d10Before regs global /\
+    (writeSuccessWithdrawalsSecondEncoderEntry regs global sp withdrawal,
+      priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+        (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal)).1 =
+      writeSuccess15d10Before encoderRegs encoderGlobal /\
+    encoderAfter =
+      (writeSuccessWithdrawalsEncoderIntEndpoint encoderRegs encoderGlobal sp
+         (Z_to_bv 64 0x156c0) (writeSuccessWithdrawalsValidatorValue withdrawal),
+       (priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+          (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal)) ++
+       writeSuccessWithdrawalsEncoderIntRecords encoderGlobal sp
+         (Z_to_bv 64 0x156c0) (writeSuccessWithdrawalsValidatorValue withdrawal)) /\
     Inv_encoder_int (writeSuccessWithdrawalsValidatorValue withdrawal) sp
       (Z_to_bv 64 0x156c0)
       (writeSuccessWithdrawalsFirstEncoderScratch sp withdrawal)
@@ -144,12 +155,15 @@ Proof.
     encoderSegments encoderAfter
     ltac:(unfold writeSuccessWithdrawalsEncoderIntPositionStart; tauto)
     HencoderInv Hx9 Hrange Hencoder) as
-    (prefixGroup & outputGroup & suffixGroup & prefixStates & outputStates &
-     suffixStates & Hgroups).
-  exists regs0, global0, regs, global, encoderSegments, encoderAfter,
-    prefixStates, outputStates, suffixStates.
+    (encoderRegs & encoderGlobal & prefixGroup & outputGroup & suffixGroup &
+     prefixStates & outputStates & suffixStates & HencoderEntry &
+     HencoderAfter & Hgroups).
+  exists regs0, global0, regs, global, encoderRegs, encoderGlobal,
+    encoderSegments, encoderAfter, prefixStates, outputStates, suffixStates.
   split; first exact Hprefix.
   split; first exact Hentry.
+  split; first exact HencoderEntry.
+  split; first exact HencoderAfter.
   split; first exact HencoderInv.
   split; first exact Hencoder.
   exists prefixGroup, outputGroup, suffixGroup. exact Hgroups.

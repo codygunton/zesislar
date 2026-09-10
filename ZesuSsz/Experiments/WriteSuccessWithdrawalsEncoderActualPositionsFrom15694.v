@@ -33,9 +33,15 @@ Import ListNotations.
 Definition WriteSuccessWithdrawalsEncoderActualPositionPackage remaining start
     (value sp returnAddress : bv 64) scratch memoryFrame priorLog state segments
     after : Prop :=
-  Inv_encoder_int value sp returnAddress scratch memoryFrame priorLog state /\
-  WriteSuccessWithdrawalsRecordedRun 15 state segments after /\
-  exists prefix output suffix prefixStates outputStates suffixStates,
+  exists regs global,
+    state.1 = writeSuccess15d10Before regs global /\
+    after =
+      (writeSuccessWithdrawalsEncoderIntEndpoint regs global sp returnAddress value,
+       priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+         returnAddress value) /\
+    Inv_encoder_int value sp returnAddress scratch memoryFrame priorLog state /\
+    WriteSuccessWithdrawalsRecordedRun 15 state segments after /\
+    exists prefix output suffix prefixStates outputStates suffixStates,
     segments = (prefix ++ output) ++ suffix /\
     length prefixStates = 8%nat /\
     length outputStates = 6%nat /\
@@ -129,38 +135,43 @@ Proof.
     pointer base total processed remaining withdrawal allBytes prefix current
     suffix scratch encoderScratch registerFrame memoryFrame priorLog state segments
     after Hinv Hrun) as
-    (regs0a & global0a & firstSegments & firstAfter & firstPrefixStates &
-     firstOutputStates & firstSuffixStates & Hprefix0 & Hinv0 & Hrun0 &
+    (regs0a & global0a & encoderRegs0 & encoderGlobal0 & firstSegments &
+     firstAfter & firstPrefixStates & firstOutputStates & firstSuffixStates &
+     Hprefix0 & Hentry0 & Hafter0 & Hinv0 & Hrun0 &
      firstPrefixGroup & firstOutputGroup & firstSuffixGroup & Hgroups0).
   destruct (writeSuccessWithdrawalsSecondEncoderActualPositionsFrom15694 args sp
     pointer base total processed remaining withdrawal allBytes prefix current
     suffix scratch encoderScratch registerFrame memoryFrame priorLog state segments
     after Hinv Hrun) as
-    (regs0b & global0b & regs1b & global1b & secondSegments & secondAfter &
-     secondPrefixStates & secondOutputStates & secondSuffixStates & Hprefix1 &
-     Hentry1 & Hinv1 & Hrun1 & secondPrefixGroup & secondOutputGroup &
+    (regs0b & global0b & regs1b & global1b & encoderRegs1 & encoderGlobal1 &
+     secondSegments & secondAfter & secondPrefixStates & secondOutputStates &
+     secondSuffixStates & Hprefix1 & Hentry1 & HencoderEntry1 & Hafter1 & Hinv1 &
+     Hrun1 & secondPrefixGroup & secondOutputGroup &
      secondSuffixGroup & Hgroups1).
   destruct (writeSuccessWithdrawalsFinalEncoderActualPositionsFrom15694 args sp
     pointer base total processed remaining withdrawal allBytes prefix current
     suffix scratch encoderScratch registerFrame memoryFrame priorLog state segments
     after Hinv Hrun) as
     (regs0c & global0c & regs1c & global1c & regs2c & global2c & outputRegs &
-     outputGlobal & finalSegments & finalAfter & finalPrefixStates &
-     finalOutputStates & finalSuffixStates & Hprefix2 & Hentry2a & Hentry2b &
-     Houtput2 & Hinv2 & Hrun2 & finalPrefixGroup & finalOutputGroup &
+     outputGlobal & encoderRegs2 & encoderGlobal2 & finalSegments & finalAfter &
+     finalPrefixStates & finalOutputStates & finalSuffixStates & Hprefix2 &
+     Hentry2a & Hentry2b & Houtput2 & HencoderEntry2 & Hafter2 & Hinv2 & Hrun2 &
+     finalPrefixGroup & finalOutputGroup &
      finalSuffixGroup & Hgroups2).
   split.
   - exists regs0a, global0a, firstSegments, firstAfter.
     split; first exact Hprefix0.
     unfold WriteSuccessWithdrawalsEncoderActualPositionPackage.
-    split; first exact Hinv0. split; first exact Hrun0.
+    exists encoderRegs0, encoderGlobal0. split; first exact Hentry0.
+    split; first exact Hafter0. split; first exact Hinv0. split; first exact Hrun0.
     exists firstPrefixGroup, firstOutputGroup, firstSuffixGroup,
       firstPrefixStates, firstOutputStates, firstSuffixStates. exact Hgroups0.
   - split.
     + exists regs0b, global0b, regs1b, global1b, secondSegments, secondAfter.
       split; first exact Hprefix1. split; first exact Hentry1.
       unfold WriteSuccessWithdrawalsEncoderActualPositionPackage.
-      split; first exact Hinv1. split; first exact Hrun1.
+      exists encoderRegs1, encoderGlobal1. split; first exact HencoderEntry1.
+      split; first exact Hafter1. split; first exact Hinv1. split; first exact Hrun1.
       exists secondPrefixGroup, secondOutputGroup, secondSuffixGroup,
         secondPrefixStates, secondOutputStates, secondSuffixStates. exact Hgroups1.
     + exists regs0c, global0c, regs1c, global1c, regs2c, global2c, outputRegs,
@@ -168,7 +179,8 @@ Proof.
       split; first exact Hprefix2. split; first exact Hentry2a.
       split; first exact Hentry2b. split; first exact Houtput2.
       unfold WriteSuccessWithdrawalsEncoderActualPositionPackage.
-      split; first exact Hinv2. split; first exact Hrun2.
+      exists encoderRegs2, encoderGlobal2. split; first exact HencoderEntry2.
+      split; first exact Hafter2. split; first exact Hinv2. split; first exact Hrun2.
       exists finalPrefixGroup, finalOutputGroup, finalSuffixGroup,
         finalPrefixStates, finalOutputStates, finalSuffixStates. exact Hgroups2.
 Qed.

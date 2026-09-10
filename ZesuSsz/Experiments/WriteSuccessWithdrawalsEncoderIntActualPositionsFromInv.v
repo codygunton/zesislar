@@ -23,7 +23,12 @@ Theorem writeSuccessWithdrawalsEncoderIntActualPositionsFromInv remaining start
     Some (RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining)))) ->
   (Z.of_nat (S remaining) < 2 ^ 64)%Z ->
   WriteSuccessWithdrawalsRecordedRun 15 state segments after ->
-  exists prefix output suffix prefixStates outputStates suffixStates,
+  exists regs global prefix output suffix prefixStates outputStates suffixStates,
+    state.1 = writeSuccess15d10Before regs global /\
+    after =
+      (writeSuccessWithdrawalsEncoderIntEndpoint regs global sp returnAddress value,
+       priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+         returnAddress value) /\
     segments = (prefix ++ output) ++ suffix /\
     length prefixStates = 8%nat /\
     length outputStates = 6%nat /\
@@ -76,9 +81,40 @@ Proof.
     have Hpceq : pc = Z_to_bv 64 0x15d10.
     { rewrite <- (Z_to_bv_bv_unsigned 64 pc), Hunsigned. reflexivity. }
     subst pc. exact Hpc. }
-  eapply writeSuccessWithdrawalsEncoderIntActualPositions with
-    (returnTrace := returnTrace) (scratch := scratch)
-    (memoryFrame := memoryFrame); eassumption.
+  have Hpositions : exists prefix output suffix prefixStates outputStates
+      suffixStates,
+      segments = (prefix ++ output) ++ suffix /\
+      length prefixStates = 8%nat /\
+      length outputStates = 6%nat /\
+      length suffixStates = 4%nat /\
+      nth_error prefixStates 0 = Some
+        (writeSuccess15d10Before regs global, priorLog) /\
+      nth_error prefixStates 7 = nth_error outputStates 0 /\
+      nth_error outputStates 5 = nth_error suffixStates 0 /\
+      nth_error suffixStates 3 = Some after /\
+      WriteSuccessWithdrawalsPositionEdges prefix prefixStates /\
+      WriteSuccessWithdrawalsPositionEdges output outputStates /\
+      WriteSuccessWithdrawalsPositionEdges suffix suffixStates /\
+      (forall offset stateAt, (offset < 7)%nat ->
+        nth_error prefixStates offset = Some stateAt ->
+        writeSuccessWithdrawalsPositionState remaining (start + offset) stateAt) /\
+      (forall offset stateAt, (offset < 5)%nat ->
+        nth_error outputStates offset = Some stateAt ->
+        writeSuccessWithdrawalsPositionState remaining
+          (start + (7 + offset))%nat stateAt) /\
+      (forall offset stateAt, (offset < 3)%nat ->
+        nth_error suffixStates offset = Some stateAt ->
+        writeSuccessWithdrawalsPositionState remaining
+          (start + (12 + offset))%nat stateAt).
+  { eapply writeSuccessWithdrawalsEncoderIntActualPositions with
+      (returnTrace := returnTrace) (scratch := scratch)
+      (memoryFrame := memoryFrame); eassumption. }
+  destruct Hpositions as (prefix & output & suffix & prefixStates &
+    outputStates & suffixStates & Hpositions).
+  exists regs, global, prefix, output, suffix, prefixStates, outputStates,
+    suffixStates.
+  split; first reflexivity.
+  split; first exact Hafter. exact Hpositions.
 Qed.
 
 Print Assumptions writeSuccessWithdrawalsEncoderIntActualPositionsFromInv.

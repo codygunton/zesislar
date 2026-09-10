@@ -2,6 +2,8 @@ From Coq Require Import Lia Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Experiments.WriteSuccessObservation.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment101d4.
+Require Import ZesuSsz.Experiments.WriteSuccessSegment15d10.
+Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsBlockEncoderIntRecordedExact.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment156b0.
 Require Import ZesuSsz.Experiments.WriteSuccessSegment15694.
 Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsOperational.
@@ -30,9 +32,17 @@ Theorem writeSuccessWithdrawalsFirstEncoderActualPositionsFrom15694 args sp poin
     allBytes prefix current suffix scratch encoderScratch registerFrame
     memoryFrame priorLog state ->
   WriteSuccessWithdrawalsRecordedRun 410 state segments after ->
-  exists regs global encoderSegments encoderAfter prefixStates outputStates suffixStates,
+  exists regs global encoderRegs encoderGlobal encoderSegments encoderAfter
+      prefixStates outputStates suffixStates,
     writeSuccessWithdrawalsPrefixAfter state.1 sp pointer =
       writeSuccess101d4Before regs global /\
+    (writeSuccessWithdrawalsEncoderInt156b4State regs global sp pointer current
+      withdrawal, priorLog).1 = writeSuccess15d10Before encoderRegs encoderGlobal /\
+    encoderAfter =
+      (writeSuccessWithdrawalsEncoderIntEndpoint encoderRegs encoderGlobal sp
+         (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal),
+       priorLog ++ writeSuccessWithdrawalsEncoderIntRecords encoderGlobal sp
+         (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal)) /\
     Inv_encoder_int (writeSuccessWithdrawalsIndexValue withdrawal) sp
       (Z_to_bv 64 0x156b4) encoderScratch
       (writeSuccessWithdrawalsEncoderInt156b4State regs global sp pointer current
@@ -132,11 +142,14 @@ Proof.
       withdrawal, priorLog) encoderSegments encoderAfter
     ltac:(unfold writeSuccessWithdrawalsEncoderIntPositionStart; tauto)
     HencoderInv Hx9 Hrange Hencoder) as
-    (prefixGroup & outputGroup & suffixGroup & prefixStates & outputStates &
-     suffixStates & Hgroups).
-  exists regs0, global0, encoderSegments, encoderAfter, prefixStates,
-    outputStates, suffixStates.
+    (encoderRegs & encoderGlobal & prefixGroup & outputGroup & suffixGroup &
+     prefixStates & outputStates & suffixStates & HencoderEntry &
+     HencoderAfter & Hgroups).
+  exists regs0, global0, encoderRegs, encoderGlobal, encoderSegments,
+    encoderAfter, prefixStates, outputStates, suffixStates.
   split; first exact Hprefix.
+  split; first exact HencoderEntry.
+  split; first exact HencoderAfter.
   split; first exact HencoderInv.
   split; first exact Hencoder.
   exists prefixGroup, outputGroup, suffixGroup. exact Hgroups.

@@ -55,7 +55,8 @@ Theorem writeSuccessWithdrawalsFinalEncoderActualPositionsFrom15694 args sp poin
     memoryFrame priorLog state ->
   WriteSuccessWithdrawalsRecordedRun 410 state segments after ->
   exists regs0 global0 regs1 global1 regs2 global2 outputRegs outputGlobal
-      encoderSegments encoderAfter prefixStates outputStates suffixStates,
+      encoderRegs encoderGlobal encoderSegments encoderAfter prefixStates
+      outputStates suffixStates,
     writeSuccessWithdrawalsPrefixAfter state.1 sp pointer =
       writeSuccess101d4Before regs0 global0 /\
     writeSuccessWithdrawalsEncoderInt156b4State regs0 global0 sp pointer current
@@ -68,6 +69,23 @@ Theorem writeSuccessWithdrawalsFinalEncoderActualPositionsFrom15694 args sp poin
       (writeSuccessWithdrawalsSecondEncoderEndpoint regs2 global2 sp
         withdrawal).2 (sp + BV 64 1768)%bv =
       writeSuccess10190Before outputRegs outputGlobal /\
+    (writeSuccess156d8After
+      (writeSuccess156d4Regs
+        (writeSuccess156d0Regs
+          (writeSuccessOutputEndpointRegs outputRegs (Z_to_bv 64 0x156d0))
+          (writeSuccessWithdrawalsAmountValue withdrawal))) outputGlobal,
+     writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+       withdrawal ++ writeSuccessWithdrawalsOutputRecordsExact outputGlobal
+         (sp + BV 64 1768)%bv (BV 64 20)).1 =
+      writeSuccess15d10Before encoderRegs encoderGlobal /\
+    encoderAfter =
+      (writeSuccessWithdrawalsEncoderIntEndpoint encoderRegs encoderGlobal sp
+         (Z_to_bv 64 0x156dc) (writeSuccessWithdrawalsAmountValue withdrawal),
+       (writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+          withdrawal ++ writeSuccessWithdrawalsOutputRecordsExact outputGlobal
+            (sp + BV 64 1768)%bv (BV 64 20)) ++
+       writeSuccessWithdrawalsEncoderIntRecords encoderGlobal sp
+         (Z_to_bv 64 0x156dc) (writeSuccessWithdrawalsAmountValue withdrawal)) /\
     Inv_encoder_int (writeSuccessWithdrawalsAmountValue withdrawal) sp
       (Z_to_bv 64 0x156dc)
       (writeSuccessWithdrawalsSecondEncoderScratch sp withdrawal)
@@ -229,14 +247,18 @@ Proof.
     encoderSegments encoderAfter
     ltac:(unfold writeSuccessWithdrawalsEncoderIntPositionStart; tauto)
     HfinalInv Hx9 Hrange Hencoder) as
-    (prefixGroup & outputGroup & suffixGroup & prefixStates & outputStates &
-     suffixStates & Hgroups).
-  exists regs0, global0, regs1, global1, regs2, global2, outputRegs, outputGlobal,
-    encoderSegments, encoderAfter, prefixStates, outputStates, suffixStates.
+    (encoderRegs & encoderGlobal & prefixGroup & outputGroup & suffixGroup &
+     prefixStates & outputStates & suffixStates & HencoderEntry &
+     HencoderAfter & Hgroups).
+  exists regs0, global0, regs1, global1, regs2, global2, outputRegs,
+    outputGlobal, encoderRegs, encoderGlobal, encoderSegments, encoderAfter,
+    prefixStates, outputStates, suffixStates.
   split; first exact Hprefix.
   split; first exact Hentry1.
   split; first exact Hentry2.
   split; first exact Houtput.
+  split; first (unfold outLog in HencoderEntry; exact HencoderEntry).
+  split; first (unfold outLog in HencoderAfter; exact HencoderAfter).
   split; first (unfold outLog in HfinalInv; exact HfinalInv).
   split; first (unfold outLog in Hencoder; exact Hencoder).
   exists prefixGroup, outputGroup, suffixGroup.
