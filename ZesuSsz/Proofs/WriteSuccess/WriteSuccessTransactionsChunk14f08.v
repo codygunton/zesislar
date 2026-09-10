@@ -4,27 +4,27 @@ Require Import InstrSpecs.Lookup.
 Require Import InstrSpecs.Specs.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundarySpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f08Entry.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f20.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f24.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f28.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f2c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f30.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f34.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f38.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f3c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f40.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f44.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f48.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f4c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f50.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f54.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f58.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f5c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f60.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14f64.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundarySpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f08Entry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f20.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f24.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f28.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f2c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f30.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f34.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f38.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f3c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f40.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f44.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f48.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f4c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f50.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f54.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f58.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f5c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f60.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14f64.
 
 Lemma write_success_transactions_chunk_14f08
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

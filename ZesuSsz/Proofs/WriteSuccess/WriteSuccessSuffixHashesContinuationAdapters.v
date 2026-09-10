@@ -1,7 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 
 Definition writeSuccessSuffixHashesLoopResources

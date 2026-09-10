@@ -1,10 +1,10 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesSourceWords.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesSourceWords.
 
 Lemma write_success_suffix_hashes_entry_count_nonzero
     (remaining : nat) (HremainingBound : (S remaining < 2 ^ 64)%nat) :

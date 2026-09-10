@@ -3,9 +3,9 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.Endpoints.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessEpilogueBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEpilogueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
 
 (** This adapter converts the generic epilogue return into the exact public
     native exit.  The outer suffix can use the result as one continuation. *)

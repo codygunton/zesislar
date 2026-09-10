@@ -2,13 +2,13 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactions10190MachineAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary10190Prepared.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactions10190ReturnBuilder.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190MachineAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary10190Prepared.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190ReturnBuilder.
 
 Lemma write_success_transactions_10190_prepared_to_call
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

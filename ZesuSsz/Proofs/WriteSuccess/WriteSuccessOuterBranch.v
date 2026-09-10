@@ -2,7 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import InstrSpecs.Lookup.
-Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
 
 Local Instance : LithiumUnfold (@writeSuccessValuePost) := I.
 

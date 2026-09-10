@@ -2,9 +2,9 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151a8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151a8MoveSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary151a8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151a8MoveSpec.
 
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 

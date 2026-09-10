@@ -2,14 +2,14 @@ From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_04 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessTactics.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64Spec.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomeCore.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomeFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTactics.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64Spec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomeCore.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomeFrame.
 
 #[local] Hint Rewrite (@bv_sign_extend_idemp 64) :
   lithium_rewrite isla_coq_rewrite.

@@ -3,9 +3,9 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f0Spec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15bc8Some.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f8Jump.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f0Spec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15bc8Some.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f8Jump.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

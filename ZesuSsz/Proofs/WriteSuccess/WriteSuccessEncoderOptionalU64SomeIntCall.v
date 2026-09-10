@@ -1,9 +1,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBoundaries.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomePublicResume.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomePublicResume.
 
 Lemma zesu_encoder_optional_u64_some_int_pre
     `{!islaG Sigma} `{!threadG}

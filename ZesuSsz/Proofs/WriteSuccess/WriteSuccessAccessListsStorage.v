@@ -4,15 +4,15 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsTransactionsLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsChunk1521c.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsBoundary1521c.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsBoundary15224.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsStorageFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsStorageNonzero.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsChunk1521c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsBoundary1521c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsBoundary15224.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsStorageFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsStorageNonzero.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

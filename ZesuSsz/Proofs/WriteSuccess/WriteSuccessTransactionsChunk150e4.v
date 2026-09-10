@@ -2,11 +2,11 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8Adapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8Phase.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150e4Phase.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e8Adapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e8Phase.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150e4Phase.
 
 Lemma write_success_transactions_body_150e8_phase_public
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

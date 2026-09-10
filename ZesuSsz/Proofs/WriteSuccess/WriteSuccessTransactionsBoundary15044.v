@@ -1,8 +1,8 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15028.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15028.
 
 Definition writeSuccessTransactionsScratch15044 `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (transactions processed :

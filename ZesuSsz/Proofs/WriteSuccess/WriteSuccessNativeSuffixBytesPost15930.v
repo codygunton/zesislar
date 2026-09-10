@@ -3,8 +3,8 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixBytesBoundaryAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessPost15930Loads.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixBytesBoundaryAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPost15930Loads.
 
 (** The aggregate frame remains opaque in [P].  These states expose only the
     two post-hash loads and the return-address update. *)

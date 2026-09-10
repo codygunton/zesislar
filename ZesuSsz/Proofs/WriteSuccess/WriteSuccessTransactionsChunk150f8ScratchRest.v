@@ -2,8 +2,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e8.
 Import ListNotations.
 
 Definition writeSuccessTransactionsScratchRest150f8

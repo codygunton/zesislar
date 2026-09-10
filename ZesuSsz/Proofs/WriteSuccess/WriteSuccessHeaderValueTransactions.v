@@ -3,15 +3,15 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessHeaderBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSemanticAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessValueTransactionsEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSemanticAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueTransactionsEntry.
 
 Definition writeSuccessHeaderValueTransactionsSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

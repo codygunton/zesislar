@@ -3,7 +3,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome1517cBoundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome1517cBoundary.
 
 Lemma write_success_transactions_optional_address_some_15180_to_1518c
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

@@ -1,7 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15088.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1508c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15088.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1508c.
 
 Lemma write_success_transactions_chunk_15088_load_registers
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (base : Z)

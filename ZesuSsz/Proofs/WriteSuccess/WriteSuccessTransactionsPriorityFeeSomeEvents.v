@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Definition writeSuccessTransactionsPriorityFeeSomeBooleanTail
     (sp : bv 64) (transaction : writeSuccessTransaction)

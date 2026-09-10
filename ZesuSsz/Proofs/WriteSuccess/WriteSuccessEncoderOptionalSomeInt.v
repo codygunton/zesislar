@@ -3,9 +3,9 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_07 Require Import instrs.
 From IslaTraces.write_success_01 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderInt.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderInt.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBoundaries.
 
 #[local] Hint Rewrite bv_sign_extend_64_idemp : isla_coq_rewrite.
 

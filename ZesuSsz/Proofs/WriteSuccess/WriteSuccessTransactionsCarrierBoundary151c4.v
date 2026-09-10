@@ -1,11 +1,11 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierBoundary151b4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151c4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierBoundary151b4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary151c4.
 
 (* The bytes encoder returns at 0x151c4.  It preserves the carrier scratch
    and the branch-independent event resources from 0x151b4. *)

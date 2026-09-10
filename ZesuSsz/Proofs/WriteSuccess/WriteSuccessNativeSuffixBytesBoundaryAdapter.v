@@ -1,12 +1,12 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixBytes15920.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixBytesCompose.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessInstrBodyAdapters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixBytes15920.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixBytesCompose.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessInstrBodyAdapters.
 From IslaTraces.write_success_blocks Require Import Index.
 
 Import ListNotations.

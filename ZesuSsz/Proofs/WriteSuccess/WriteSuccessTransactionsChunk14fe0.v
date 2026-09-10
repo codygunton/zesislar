@@ -5,10 +5,10 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fc8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fe0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fe0Loads.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fc8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fe0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fe0Loads.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

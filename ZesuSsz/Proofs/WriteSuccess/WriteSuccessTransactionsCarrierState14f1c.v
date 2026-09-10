@@ -1,12 +1,12 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Definition writeSuccessTransactionsCurrentPhaseCarrierFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

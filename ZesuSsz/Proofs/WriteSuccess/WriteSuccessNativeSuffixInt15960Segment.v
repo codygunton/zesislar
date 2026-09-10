@@ -5,10 +5,10 @@ From IslaTraces.write_success_116 Require Import a15960.
 From IslaTraces.write_success_116 Require Import a15964.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessInstrBodyAdapters.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixInt15968Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessInstrBodyAdapters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixInt15968Call.
 
 Definition writeSuccessSuffixInt15960To1596cSpec
     `{!islaG Sigma} `{!threadG} (Q : iProp Sigma) : iProp Sigma :=

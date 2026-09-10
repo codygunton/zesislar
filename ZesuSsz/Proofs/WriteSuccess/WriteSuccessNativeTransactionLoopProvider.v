@@ -1,10 +1,10 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeCalleeProviders.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAuthorizationsAnyLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCalleeProviders.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsAuthorizationsAnyLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 (** The closed transaction Loop contract derived from the complete code. *)
 Lemma write_success_native_transaction_loop_provider

@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15104.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15104.
 
 Lemma write_success_transactions_150fc_registers `{!islaG Sigma} `{!threadG} :
   reg_col

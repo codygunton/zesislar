@@ -2,9 +2,9 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSemanticAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSemanticAdapter.
 
 Definition writeSuccessTransactionsValueAdapter
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

@@ -1,9 +1,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierBoundary15118.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierBoundary15118.
 
 (* The gas-limit entry at 0x15148 keeps the priority-fee handoff scratch.
    The phase contract changes registers only and hands control to 0x15154. *)

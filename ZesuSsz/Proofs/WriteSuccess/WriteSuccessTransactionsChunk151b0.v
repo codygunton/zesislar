@@ -2,8 +2,8 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_49 Require Import a151b0_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151b0Prepared.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151b0Prepared.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

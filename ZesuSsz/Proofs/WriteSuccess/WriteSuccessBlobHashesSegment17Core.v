@@ -2,8 +2,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Frame.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17IndexZeroSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Frame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment17IndexZeroSpec.
 
 Lemma write_success_blob_hashes_segment17_core
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

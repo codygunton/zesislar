@@ -4,14 +4,14 @@ From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 From IslaTraces.write_success_46 Require Import a1518c_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome1517cBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome1518cCallAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome1518cCallFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome15190.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome15190Boundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome1517cBoundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome1518cCallAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome1518cCallFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome15190.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome15190Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Lemma write_success_transactions_optional_address_some_1518c_to_15190
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

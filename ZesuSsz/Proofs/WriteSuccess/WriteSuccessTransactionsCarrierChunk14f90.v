@@ -5,15 +5,15 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f90.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f98.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14f90.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14f98.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPuncturedScratch.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f90.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f98.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14f90.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14f98.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPuncturedScratch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

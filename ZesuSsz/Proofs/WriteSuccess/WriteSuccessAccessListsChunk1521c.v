@@ -5,9 +5,9 @@ From IslaTraces.write_success_blocks Require Import
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsBoundary1521c.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsBoundary15224.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsBoundary1521c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsBoundary15224.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Remove Hints writeSuccessAccessEntryStorageOwn_unfold :

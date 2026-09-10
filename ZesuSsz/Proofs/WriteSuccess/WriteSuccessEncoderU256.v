@@ -1,11 +1,11 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderU256Spec.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256Prologue.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256Output.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256Epilogue.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256Spec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256Prologue.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256Output.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256Epilogue.
 
 Lemma zesu_encoder_u256_call_correct `{!islaG Sigma} `{!threadG} :
   ([∗ list] instruction ∈

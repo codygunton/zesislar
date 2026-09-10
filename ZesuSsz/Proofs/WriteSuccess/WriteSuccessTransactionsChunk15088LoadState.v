@@ -1,9 +1,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15088.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15088LoadFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15088.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15088LoadFrame.
 
 Definition writeSuccessTransactions15088LoadState
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

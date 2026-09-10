@@ -24,7 +24,7 @@ def main() -> None:
     for name in tracked_files():
         if name.startswith("generated/isla-traces/"):
             failures.append(f"tracked generated Isla trace: {name}")
-        if not name.startswith("ZesuSsz/Experiments/") or not name.endswith(".v"):
+        if not name.startswith("ZesuSsz/Proofs/") or not name.endswith(".v"):
             continue
         for number, line in enumerate((ROOT / name).read_text().splitlines(), 1):
             if PLACEHOLDER.search(line):

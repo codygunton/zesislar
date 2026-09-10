@@ -1,2 +1,2 @@
-Require Export ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Export ZesuSsz.Experiments.WriteSuccessTransactionsLoop.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoop.

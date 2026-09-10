@@ -4,11 +4,11 @@ From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_113 Require Import a1593c_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
 
 Import ListNotations.
 

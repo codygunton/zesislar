@@ -5,16 +5,16 @@ From IslaTraces.write_success_blocks Require Import
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151d0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary151d0.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151d0Defs.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151d0Helpers.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151d0HandoffInvariant.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151d0HandoffPost.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151d0Defs.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151d0Helpers.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151d0HandoffInvariant.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151d0HandoffPost.
 
 Lemma write_success_transactions_151d0_access_handoff_nonempty
     `{!islaG Sigma} `{!threadG}

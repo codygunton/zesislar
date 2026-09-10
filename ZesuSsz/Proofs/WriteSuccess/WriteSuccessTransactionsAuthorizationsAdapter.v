@@ -2,11 +2,11 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15564.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15584.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15620.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15564.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15584.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15620.
 
 Lemma write_success_fixed_lists_concat_length
     (width : nat) (lists : list (list (bv 8))) :

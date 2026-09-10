@@ -9,13 +9,13 @@ trap 'rm -f "$query_file" "$output_file"' EXIT
 
 cd "$repo_root"
 opam exec --switch="$switch_path" -- dune build --root . \
-  ZesuSsz/Experiments/WriteSuccessDecoderExamples.vo
+  ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.vo
 
 cat >"$query_file" <<'EOF'
 From Coq Require Import Bool.Bool Lists.List ZArith.ZArith.
-Require Import ZesuSsz.Experiments.WriteSuccessObservation.
-Require Import ZesuSsz.Experiments.WriteSuccessObservationDecoder.
-Require Import ZesuSsz.Experiments.WriteSuccessDecoderExamples.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservationDecoder.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessDecoderExamples.
 Import ListNotations.
 Open Scope Z_scope.
 

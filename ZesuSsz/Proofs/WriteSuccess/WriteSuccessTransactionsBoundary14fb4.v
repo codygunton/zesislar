@@ -1,15 +1,15 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundarySpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f98.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f9c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fa0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fa4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fa8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fb0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundarySpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f98.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f9c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fa0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fa4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fa8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fb0.
 
 Import ListNotations.
 

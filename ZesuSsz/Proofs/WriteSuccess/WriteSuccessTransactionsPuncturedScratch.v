@@ -1,7 +1,7 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Definition writeSuccessTransactionsPuncturedScratch `{!islaG Sigma}
     (sp : bv 64) (base : Z) (total : nat) : iProp Sigma :=

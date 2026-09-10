@@ -3,8 +3,8 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_03 Require Import instrs.
 From IslaTraces.write_success_01 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBoolean.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalNoneBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBoolean.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalNoneBoundaries.
 
 Lemma encoder_optional_none_boolean `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :

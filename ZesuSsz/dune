@@ -4,12 +4,12 @@
  (name ZesuSsz)
  (modules
   (:standard \
-   Experiments.WriteSuccessHashesLoopFrame
-   Experiments.WriteSuccessSuffixHashesEntry
-   Experiments.WriteSuccessSuffixHashesEntry15740
-   Experiments.WriteSuccessSuffixHashesEntry15740Prepare
-   Experiments.WriteSuccessSuffixHashesEntryCallerResources
-   Experiments.WriteSuccessSuffixHashesEntryFinal))
+   Proofs.WriteSuccess.WriteSuccessHashesLoopFrame
+   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry
+   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry15740
+   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry15740Prepare
+   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryCallerResources
+   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryFinal))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit

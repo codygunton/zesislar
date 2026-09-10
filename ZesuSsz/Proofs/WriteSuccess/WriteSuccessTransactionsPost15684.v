@@ -3,11 +3,11 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1567c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15680.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost1567c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15680.
 Require Import IslaTraces.write_success_88.a15684_spec.
 Require Import InstrSpecs.Specs.
 

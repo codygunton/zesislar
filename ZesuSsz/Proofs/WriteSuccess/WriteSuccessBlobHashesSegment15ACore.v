@@ -4,9 +4,9 @@ Require Import InstrSpecs.Specs.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import IslaTraces.write_success_67.a1545c_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Frame.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15AReturn.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Frame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15AReturn.
 
 Local Remove Hints a1545c_spec_inst : typeclass_instances.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.

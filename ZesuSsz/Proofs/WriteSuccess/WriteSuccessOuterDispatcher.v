@@ -4,10 +4,10 @@ From IslaTraces.write_success_blocks Require Import Index.
 Require Import InstrSpecs.Lookup.
 Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessOuterBranch.
-Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsValueAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOuterBranch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsValueAdapter.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

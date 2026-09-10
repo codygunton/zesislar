@@ -1,15 +1,15 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Frame.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Entry.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2APrepare94.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2ARaw94.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2AReturn94.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2APrepare98.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2ARaw98.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2AReturn98.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Frame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Entry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2APrepare94.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2ARaw94.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2AReturn94.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2APrepare98.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2ARaw98.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2AReturn98.
 
 Lemma write_success_blob_hashes_chunk2a `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :

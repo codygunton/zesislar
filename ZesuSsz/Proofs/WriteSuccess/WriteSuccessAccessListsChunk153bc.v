@@ -2,8 +2,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsTailBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsTailBoundaries.
 
 Import ListNotations.
 

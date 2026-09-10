@@ -1,8 +1,8 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18FrameDefs.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18FrameExtract.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18FrameArray.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment18FrameDefs.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment18FrameExtract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment18FrameArray.
 
 Lemma write_success_storage_keys_segment18_prepare
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma) :

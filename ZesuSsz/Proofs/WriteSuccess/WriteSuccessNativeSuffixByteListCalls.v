@@ -5,13 +5,13 @@ From IslaTraces.write_success_114 Require Import a1594c_spec.
 From IslaTraces.write_success_115 Require Import a1595c_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixByteListSetups.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixScalarSetups.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixByteListSetups.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixScalarSetups.
 
 Import ListNotations.
 

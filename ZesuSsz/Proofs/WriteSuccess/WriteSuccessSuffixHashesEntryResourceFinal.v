@@ -1,13 +1,13 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15744Compose.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15744Raw.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15748Compose.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesEntryResources.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cEntryHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15748EntryPreAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15744Compose.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15744Raw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15748Compose.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cEntryHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15748EntryPreAdapter.
 
 Lemma write_success_suffix_hashes_entry_resource_nonzero
     `{!islaG Sigma} `{!threadG}

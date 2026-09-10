@@ -4,18 +4,18 @@ From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_87 Require Import a15674_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15670Events.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Call.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15678.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15670Events.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1566c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15668Events.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1566cEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15670Events.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15678.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15670Events.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost1566c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15668Events.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost1566cEvents.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

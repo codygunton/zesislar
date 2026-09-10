@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 From IslaTraces.write_success_blocks Require Import Index.
-Require Import ZesuSsz.Experiments.WriteSuccessTactics.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTactics.
 
 Definition writeSuccessSuffixHashes15750NonzeroState
     `{!islaG Sigma} `{!threadG} (value : bv 64) (Q : iProp Sigma) : iProp Sigma :=

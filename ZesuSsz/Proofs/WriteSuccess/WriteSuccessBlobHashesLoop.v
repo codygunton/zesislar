@@ -4,34 +4,34 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsHashesLoop HintsBlobHashesLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
 
 Import ListNotations.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment01.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment02.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment03.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment04.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment05.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment06.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment07.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment08.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment09.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment10.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment11.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment12.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment13.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment14.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment16.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment18.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment19.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment20.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment01.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment02.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment03.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment04.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment05.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment06.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment07.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment08.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment09.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment10.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment11.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment12.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment13.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment14.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment16.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment17.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment18.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment19.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment20.
 #[local] Hint Extern 7
   (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>
   let reduced := eval vm_compute in address in

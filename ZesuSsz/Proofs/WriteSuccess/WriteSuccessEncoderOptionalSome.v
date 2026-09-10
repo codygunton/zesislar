@@ -5,11 +5,11 @@ From IslaTraces.write_success_03 Require Import instrs.
 From IslaTraces.write_success_07 Require Import instrs.
 From IslaTraces.write_success_01 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBoundaries.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBranch.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomePreInt.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeInt.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBranch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomePreInt.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeInt.
 
 Lemma encoder_optional_some_correct `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tag : bv 8)

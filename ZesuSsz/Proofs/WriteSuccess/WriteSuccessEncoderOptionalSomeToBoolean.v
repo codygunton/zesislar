@@ -2,8 +2,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_04 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBoundaries.
 
 Lemma encoder_optional_some_to_boolean `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tag : bv 8)

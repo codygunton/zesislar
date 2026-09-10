@@ -1,9 +1,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18FrameDefs.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment18FrameDefs.
 
 Lemma write_success_storage_keys_segment18_extract
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma) :

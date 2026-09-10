@@ -3,9 +3,9 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytes.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytes.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 
 #[local] Hint Rewrite (@bv_sign_extend_idemp 64) :
   lithium_rewrite isla_coq_rewrite.

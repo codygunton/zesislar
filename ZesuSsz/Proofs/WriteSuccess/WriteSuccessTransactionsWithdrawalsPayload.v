@@ -1,8 +1,8 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
 
 (** The decoded value words at stack offsets 1120 and 1128 are values 11 and
     12.  This payload gives those words their withdrawals interpretation. *)

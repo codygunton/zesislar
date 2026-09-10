@@ -4,8 +4,8 @@ Require Import InstrSpecs.Specs.
 Require Import IslaTraces.write_success_33.a15090_spec.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15090LoadState.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15090LoadState.
 
 Local Remove Hints a15090_spec_inst : typeclass_instances.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.

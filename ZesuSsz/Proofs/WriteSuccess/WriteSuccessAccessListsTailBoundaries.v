@@ -1,8 +1,8 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
 
 Definition writeSuccessAccessListsTailScratchFrame `{!islaG Sigma}
     (sp : bv 64) (base : Z) (total : nat) (savedX22 : bv 64) : iProp Sigma :=

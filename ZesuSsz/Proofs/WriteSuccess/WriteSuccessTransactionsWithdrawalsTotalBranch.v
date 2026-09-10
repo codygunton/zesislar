@@ -3,13 +3,13 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15690Zero.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15690Withdrawals.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsPayload.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalNonzero.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalResources.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15690Zero.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15690Withdrawals.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPostWithdrawalsHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsPayload.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalNonzero.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Definition writeSuccessTransactionsWithdrawalsTotalAt15690Spec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

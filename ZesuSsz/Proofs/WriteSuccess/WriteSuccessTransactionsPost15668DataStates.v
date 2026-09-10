@@ -1,13 +1,13 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1566c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPuncturedScratch.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost1566c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPuncturedScratch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Definition writeSuccessTransactionsPost1566cDataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

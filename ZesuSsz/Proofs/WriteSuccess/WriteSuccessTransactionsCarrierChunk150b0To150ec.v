@@ -1,10 +1,10 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState150b0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState150ec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierChunk150b0To150d8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierChunk150d8To150ec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState150b0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState150ec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk150b0To150d8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk150d8To150ec.
 
 Lemma write_success_transactions_carrier_chunk_150b0_to_150ec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

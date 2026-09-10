@@ -4,16 +4,16 @@ From IslaTraces.write_success_blocks Require Import Index HintsAuthorizationsLoo
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsFirstU256.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsOutput.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsFirstInt.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSecondInt.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSecondU256.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsThirdU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsFirstU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsOutput.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsFirstInt.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSecondInt.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSecondU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsThirdU256.
 
 Import ListNotations.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.

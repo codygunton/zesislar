@@ -3,13 +3,13 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151b4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151acReturn.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151acEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151acSetup.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary151b4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151acReturn.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151acEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151acSetup.
 
 Import ListNotations WriteSuccessTransactionsSpec.
 

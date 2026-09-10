@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f0Spec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f0Spec.
 
 Lemma write_success_transactions_invariant_bound
     `{!islaG Sigma}

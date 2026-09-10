@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 
 Definition writeSuccessSuffixHashes15748Q
     `{!islaG Sigma} `{!threadG}

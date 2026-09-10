@@ -2,7 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_02 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
 
 Import ListNotations.
 

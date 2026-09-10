@@ -2,18 +2,18 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk1558cBranch.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderInt1645Call.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64Call.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBodyPrefixWitnessProvider.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopProvider.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk1558cBranch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderInt1645Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBodyPrefixWitnessProvider.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopProvider.
 
 Definition writeSuccessTransactionsLoopProviderEntryResources
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

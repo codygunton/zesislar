@@ -4,9 +4,9 @@ From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_118 Require Import a1597c_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 
 Definition writeSuccessSuffixBooleanSavedRegisters : list string :=
   ["x8"; "x9"; "x18"; "x19"; "x20"; "x21";

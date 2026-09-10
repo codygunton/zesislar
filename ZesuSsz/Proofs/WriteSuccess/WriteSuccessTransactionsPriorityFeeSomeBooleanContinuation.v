@@ -1,12 +1,12 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeNoneBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBooleanCallRet.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBooleanReturn.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeBooleanReturn.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeNoneBoundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBoundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBooleanCallRet.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBooleanReturn.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeBooleanReturn.
 
 Definition writeSuccessTransactionsPriorityFeeSomeBooleanFramedCallRet
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

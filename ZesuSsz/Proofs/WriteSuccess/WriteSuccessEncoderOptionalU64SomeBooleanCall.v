@@ -2,11 +2,11 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_04 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBoundaries.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomeFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomePublicResume.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomeFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomePublicResume.
 
 Lemma zesu_encoder_optional_u64_some_boolean_call
     `{!islaG Sigma} `{!threadG}

@@ -1,7 +1,7 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesEntryCallerResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryCallerResources.
 
 Local Instance writeSuccessFixedWidthArrayInvariant_persistent
     `{!islaG Sigma} `{!threadG}

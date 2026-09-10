@@ -2,14 +2,14 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15088.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1508c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15088LoadSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15088LoadState.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15088LoadPrepare.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15088LoadCore.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15088LoadReturn.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15088.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1508c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15088LoadSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15088LoadState.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15088LoadPrepare.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15088LoadCore.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15088LoadReturn.
 
 Lemma write_success_15088_current_unsigned (current : Z) :
   (0 <= current)%Z ->

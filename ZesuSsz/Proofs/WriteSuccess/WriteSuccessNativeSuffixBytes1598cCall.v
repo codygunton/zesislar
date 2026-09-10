@@ -4,8 +4,8 @@ From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_119 Require Import a1598c_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 
 Definition writeSuccessSuffixBytes15990CallPost
     `{!islaG Sigma} `{!threadG}

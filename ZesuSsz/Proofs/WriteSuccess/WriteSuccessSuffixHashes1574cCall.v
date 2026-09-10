@@ -1,8 +1,8 @@
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 Require Import IslaTraces.write_success_101.a1574c_spec.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 
 Definition writeSuccessSuffixHashes1574cCallPost
     `{!islaG Sigma} `{!threadG} (sp value : bv 64) (tail : spec) : iProp Sigma :=

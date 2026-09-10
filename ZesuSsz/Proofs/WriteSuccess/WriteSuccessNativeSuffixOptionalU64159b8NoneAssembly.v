@@ -1,13 +1,13 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64Call.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixOptionalU64159b8Defs.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixOptionalU64159b8CallPrefix.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixOptionalU64159b8NoneTag.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixOptionalU64159b8NonePost.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8CallPrefix.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8NoneTag.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8NonePost.
 
 Definition writeSuccessSuffixOptionalU64159b8NoneFrame
     `{!islaG Sigma} `{!threadG} (Q : iProp Sigma)

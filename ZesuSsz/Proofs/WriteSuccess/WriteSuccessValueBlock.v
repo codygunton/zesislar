@@ -3,12 +3,12 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsValueBlock.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessHeaderBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
 
 Import ListNotations.
 

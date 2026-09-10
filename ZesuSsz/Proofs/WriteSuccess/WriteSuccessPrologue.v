@@ -2,10 +2,10 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_00 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Export ZesuSsz.Experiments.WriteSuccessPrologueSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessPrologueChunk14d30.
-Require Import ZesuSsz.Experiments.WriteSuccessPrologueChunk14d48.
-Require Import ZesuSsz.Experiments.WriteSuccessPrologueChunk14d5c.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueChunk14d30.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueChunk14d48.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueChunk14d5c.
 
 Lemma write_success_prologue `{!islaG Sigma} `{!threadG}
     (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)

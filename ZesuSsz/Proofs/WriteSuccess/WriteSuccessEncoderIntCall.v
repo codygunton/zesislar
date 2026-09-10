@@ -4,8 +4,8 @@ From IslaTraces.write_success_08 Require Import instrs.
 From IslaTraces.write_success_07 Require Import instrs.
 From IslaTraces.write_success_01 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 
 #[local] Hint Rewrite (@bv_sign_extend_idemp 64) :
   lithium_rewrite isla_coq_rewrite.

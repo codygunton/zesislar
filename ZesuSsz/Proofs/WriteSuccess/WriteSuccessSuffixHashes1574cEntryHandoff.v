@@ -1,10 +1,10 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cNonzeroCaller.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesEntryResources.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750EntryHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cNonzeroCaller.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750EntryHandoff.
 
 Lemma write_success_suffix_hashes_entry_1574c_handoff
     `{!islaG Sigma} `{!threadG}

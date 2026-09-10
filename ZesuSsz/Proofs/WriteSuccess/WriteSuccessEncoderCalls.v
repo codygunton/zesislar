@@ -2,14 +2,14 @@ From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderInt.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytes.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBoolean.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderInt.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytes.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBoolean.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256.
 
 Definition zesuEncoderIntAny `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (∃ (value sp ret : bv 64) (tail : spec),

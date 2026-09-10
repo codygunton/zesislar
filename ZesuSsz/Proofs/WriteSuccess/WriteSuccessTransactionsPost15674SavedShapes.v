@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
 
 Lemma write_success_transactions_post_15674_saved_shapes
     `{!islaG Sigma} `{!threadG} (saved : list valu) :

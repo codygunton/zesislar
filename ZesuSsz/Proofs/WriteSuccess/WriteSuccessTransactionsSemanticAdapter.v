@@ -1,7 +1,7 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Definition writeSuccessTransactionsSemanticAdapter
     `{!islaG Sigma} `{!threadG} (entry P : iProp Sigma) : iProp Sigma :=

@@ -3,10 +3,10 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15678.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15678.
 
 Definition writeSuccessTransactionsPost1567cSavedTail : list string :=
   ["x18"; "x19"; "x20"; "x21";

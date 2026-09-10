@@ -3,13 +3,13 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsWithdrawalsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpy.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRest.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsMemcpy.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsRest.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsTail.
 
 Lemma write_success_withdrawals_loop `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :

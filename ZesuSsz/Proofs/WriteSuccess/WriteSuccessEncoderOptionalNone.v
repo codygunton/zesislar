@@ -5,10 +5,10 @@ From IslaTraces.write_success_04 Require Import instrs.
 From IslaTraces.write_success_03 Require Import instrs.
 From IslaTraces.write_success_07 Require Import instrs.
 From IslaTraces.write_success_01 Require Import instrs.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalNoneBoundaries.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalNoneEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalNoneTail.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalNoneBoolean.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalNoneBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalNoneEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalNoneTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalNoneBoolean.
 
 Import ListNotations.
 

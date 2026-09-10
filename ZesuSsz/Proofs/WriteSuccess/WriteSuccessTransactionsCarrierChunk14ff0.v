@@ -2,20 +2,20 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fc8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fe0Loads.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15028.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14fc8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14fe4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14ff0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState15018.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState15028.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fc8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fe0Loads.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15028.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14fc8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14fe4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14ff0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState15018.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState15028.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

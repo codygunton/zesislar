@@ -1,14 +1,14 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeNoneBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBoundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBooleanAbiFinalize.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBooleanAbiTail.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBooleanRegisters.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeSomeBooleanReturnPre.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeNoneBoundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBoundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBooleanAbiFinalize.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBooleanAbiTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBooleanRegisters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeBooleanReturnPre.
 
 Definition writeSuccessTransactionsPriorityFeeSomeBooleanPreparedSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

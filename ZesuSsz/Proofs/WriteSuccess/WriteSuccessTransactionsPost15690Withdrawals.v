@@ -2,9 +2,9 @@ From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15690.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15690.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPostWithdrawalsHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Lemma write_success_transactions_post_15690_withdrawals
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

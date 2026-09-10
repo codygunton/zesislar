@@ -3,10 +3,10 @@ From IslaTraces.write_success_blocks Require Import
   Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsLoopBody.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsLoopBody.
 
 Lemma write_success_access_lists_loop_pre
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma) :

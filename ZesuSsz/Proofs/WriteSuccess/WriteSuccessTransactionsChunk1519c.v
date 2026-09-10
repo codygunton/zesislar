@@ -2,12 +2,12 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151b4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk1519cTo151a0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151a0To151ac.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151ac.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary151b4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk1519cTo151a0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151a0To151ac.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151ac.
 
 Lemma write_success_transactions_chunk_1519c
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

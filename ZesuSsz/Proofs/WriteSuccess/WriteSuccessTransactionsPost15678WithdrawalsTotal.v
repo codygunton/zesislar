@@ -2,15 +2,15 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674DataCallJalrStrong.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15678WithdrawalsTotalAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalTail.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalResources.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674DataCallJalrStrong.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15678WithdrawalsTotalAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPostWithdrawalsHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Lemma write_success_transactions_post_15678_withdrawals_total
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

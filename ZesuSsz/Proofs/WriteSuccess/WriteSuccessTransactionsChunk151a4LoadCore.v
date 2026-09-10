@@ -3,8 +3,8 @@ Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
 Require Import IslaTraces.write_success_49.a151a4_spec.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk151a4LoadState.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk151a4LoadState.
 
 Local Remove Hints a151a4_spec_inst : typeclass_instances.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.

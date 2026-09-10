@@ -4,10 +4,10 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150fc.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15104.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150fcLoad.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150fcAuipc.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150fc.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15104.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150fcLoad.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150fcAuipc.
 
 Import ListNotations.
 

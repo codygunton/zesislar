@@ -3,14 +3,14 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150e8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150ec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150f0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150ecEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150ecJump.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk10190Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150e8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150ec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150f0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150ecEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150ecJump.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk10190Call.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

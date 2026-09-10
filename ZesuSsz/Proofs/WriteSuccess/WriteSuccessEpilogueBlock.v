@@ -4,7 +4,7 @@ From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_126 Require Import a15a10.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
 
 Import ListNotations.
 

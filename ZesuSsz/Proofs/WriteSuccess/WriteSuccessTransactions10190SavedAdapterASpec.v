@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Definition writeSuccessTransactions10190SavedHead
     (transaction : writeSuccessTransaction) : list (reg_kind * valu_shape) :=

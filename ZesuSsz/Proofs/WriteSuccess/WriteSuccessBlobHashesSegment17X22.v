@@ -1,5 +1,5 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
 
 Lemma write_success_blob_hashes_segment17_registers_x22
     `{!islaG Sigma} `{!threadG} (byte : bv 8) :

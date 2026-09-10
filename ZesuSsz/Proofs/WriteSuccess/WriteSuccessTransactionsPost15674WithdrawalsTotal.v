@@ -3,21 +3,21 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15668DataStates.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674Boundary.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15674DataCallJalrStrong.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15678WithdrawalsTotal.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15678WithdrawalsTotalAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPuncturedScratch.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1566c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalResources.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15668DataStates.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674DataCallJalrStrong.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15678WithdrawalsTotal.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15678WithdrawalsTotalAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPostWithdrawalsHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPuncturedScratch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost1566c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Definition writeSuccessTransactionsCarrierWithdrawalsTotalData
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

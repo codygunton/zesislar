@@ -4,15 +4,15 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsHashesLoop HintsBlobHashesLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTactics.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTactics.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
 
 Import ListNotations.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
 #[local] Hint Extern 7
   (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>
   let reduced := eval vm_compute in address in

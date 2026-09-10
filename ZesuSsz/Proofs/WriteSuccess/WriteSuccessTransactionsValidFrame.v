@@ -1,5 +1,5 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Lemma write_success_transactions_valid_frame
     `{!islaG Sigma} (transaction : writeSuccessTransaction) :

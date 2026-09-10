@@ -1,9 +1,9 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesCallContinuations.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesEntryResources.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesSourceWords.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesCallContinuations.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesSourceWords.
 
 Lemma write_success_suffix_hashes_entry_15754_handoff
     `{!islaG Sigma} `{!threadG}

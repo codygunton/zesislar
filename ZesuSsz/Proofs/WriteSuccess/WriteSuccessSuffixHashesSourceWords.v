@@ -1,5 +1,5 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
 
 Definition writeSuccessHashesSourceRest : list (reg_kind * valu_shape) :=
   [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64);

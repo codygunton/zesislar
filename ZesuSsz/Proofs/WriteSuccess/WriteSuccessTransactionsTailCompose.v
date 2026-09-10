@@ -2,11 +2,11 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15620.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsTailHelpers.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsTailMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsTailInvariant.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15620.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsTailHelpers.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsTailMemory.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsTailInvariant.
 
 Import ListNotations.
 

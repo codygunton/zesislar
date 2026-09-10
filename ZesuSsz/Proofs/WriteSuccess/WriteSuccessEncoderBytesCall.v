@@ -1,1 +1,1 @@
-Require Export ZesuSsz.Experiments.WriteSuccessEncoderBytesCallCore.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCallCore.

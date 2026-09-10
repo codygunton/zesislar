@@ -1,18 +1,18 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderInt1645Call.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary153d0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk153d0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15564.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15574.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk1558cBranch.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBodySuffixFinal.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderInt1645Call.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary153d0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk153d0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15564.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15574.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk1558cBranch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBodySuffixFinal.
 
 Lemma write_success_transactions_body_suffix_late_prefix
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

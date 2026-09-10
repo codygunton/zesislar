@@ -1,8 +1,8 @@
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15744Raw.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15748Compose.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesQContinuations.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15744Raw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15748Compose.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesQContinuations.
 
 Definition writeSuccessSuffixHashes15744NonzeroSpec
     `{!islaG Sigma} `{!threadG}

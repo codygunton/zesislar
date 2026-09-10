@@ -3,11 +3,11 @@ Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14fc8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState150c0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState150c4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14fc8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState150c0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState150c4.
 
 #[local] Typeclasses Opaque writeSuccessTransactionsCurrentPhaseCarrierFrame.
 

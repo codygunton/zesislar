@@ -1,10 +1,10 @@
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeCore.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeFrameBounds.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeMachineAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeCore.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeFrameBounds.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeMachineAdapter.
 
 Definition writeSuccessTransactionsPriorityFeeNonePreparedSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

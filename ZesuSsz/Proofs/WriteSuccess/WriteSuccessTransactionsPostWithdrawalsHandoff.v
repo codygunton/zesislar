@@ -1,6 +1,6 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Definition writeSuccessTransactionsPostWithdrawalsHandoff
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

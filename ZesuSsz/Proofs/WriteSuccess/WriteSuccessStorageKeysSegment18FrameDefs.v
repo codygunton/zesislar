@@ -1,9 +1,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Frame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Frame.
 
 Definition writeSuccessStorageKeysLbuOuterFrame `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) (x19 sp pointer : bv 64) (base : Z)

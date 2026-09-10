@@ -2,10 +2,10 @@ From IslaTraces.write_success_blocks Require Import Index.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBytesCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixBytes158e0Carrier.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixBytes158e0Carrier.
 
 Import ListNotations.
 

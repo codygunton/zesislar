@@ -2,9 +2,9 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixInt159a0Segment.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixScalarSetups.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixInt159a0Segment.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixScalarSetups.
 
 Definition writeSuccessSuffixJump15990To159b0Spec
     `{!islaG Sigma} `{!threadG} (Q : iProp Sigma) : iProp Sigma :=

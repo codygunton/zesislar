@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import a15cd8 a15cdc a15ce0.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderU256Spec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256Spec.
 
 #[local] Hint Rewrite (@bv_sign_extend_idemp 64) :
   lithium_rewrite isla_coq_rewrite.

@@ -4,8 +4,8 @@ From IslaTraces.write_success_blocks Require Import Index HintsLoadBlock.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessLoadBlockAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessLoadBlockCore.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoadBlockAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoadBlockCore.
 
 Definition writeSuccessLoadBlockWithFrameSpec
     `{!islaG Sigma} `{!threadG} : iProp Sigma :=

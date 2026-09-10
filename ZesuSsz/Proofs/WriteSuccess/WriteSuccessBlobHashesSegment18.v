@@ -4,18 +4,18 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsHashesLoop HintsBlobHashesLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
 
 Import ListNotations.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2A.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2B.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2C.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesChunk2D.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2A.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2B.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2C.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesChunk2D.
 #[local] Hint Extern 7
   (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>
   let reduced := eval vm_compute in address in

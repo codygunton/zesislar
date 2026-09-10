@@ -2,8 +2,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTailLoads.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalTailState.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTailLoads.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalTailState.
 
 #[local] Hint Extern 7
   (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>

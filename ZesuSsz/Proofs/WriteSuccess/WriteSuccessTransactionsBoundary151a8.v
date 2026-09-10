@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1519c.
 
 Definition writeSuccessTransactionsMachine151a8 `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (transactions processed :

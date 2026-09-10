@@ -6,12 +6,12 @@ From IslaTraces.write_success_blocks Require Import
 Require Import IslaTraces.write_success_66.a153dc_spec.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment02State.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment02ARawFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment02ARawRegisters.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment02ARecombine.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment02State.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment02ARawFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment02ARawRegisters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment02ARecombine.
 
 Local Remove Hints a153dc_spec_inst : typeclass_instances.
 

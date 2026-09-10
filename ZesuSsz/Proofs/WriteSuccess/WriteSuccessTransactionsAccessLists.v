@@ -4,15 +4,15 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsTransactionsLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsLoopProof.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary151d0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary153c0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1519c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAccessListsAdapter.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAccessEntryFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsLoopProof.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary151d0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary153c0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1519c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsAccessListsAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsAccessEntryFrame.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

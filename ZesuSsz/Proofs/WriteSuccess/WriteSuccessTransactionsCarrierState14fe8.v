@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState14fe4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14fe4.
 
 Definition writeSuccessTransactionsAt14fe8CarrierSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

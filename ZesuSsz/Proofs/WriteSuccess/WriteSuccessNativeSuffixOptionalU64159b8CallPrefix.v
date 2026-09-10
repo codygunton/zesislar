@@ -1,8 +1,8 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessNativeSuffixOptionalU64159b8Defs.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs.
 
 Definition writeSuccessSuffixOptionalU64159b8RawCallPrefix
     `{!islaG Sigma} `{!threadG} (sp ptr : bv 64) : iProp Sigma :=

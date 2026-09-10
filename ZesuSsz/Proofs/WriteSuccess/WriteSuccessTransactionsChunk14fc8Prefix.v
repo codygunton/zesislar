@@ -5,18 +5,18 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundarySpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14fc8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary1501c.
-Require Import ZesuSsz.Experiments.WriteSuccessInstrBodyAdapters.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14fc8To14fe0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14fe0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14fe4.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14fe8.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14fec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk14ff0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15018.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundarySpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14fc8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1501c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessInstrBodyAdapters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14fc8To14fe0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14fe0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14fe4.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14fe8.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14fec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk14ff0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15018.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.

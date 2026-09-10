@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeCore.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeCore.
 
 Lemma write_success_transactions_priority_fee_frame_bounds_32
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

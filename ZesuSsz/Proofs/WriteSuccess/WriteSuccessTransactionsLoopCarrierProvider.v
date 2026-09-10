@@ -2,9 +2,9 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopCarrierCompose.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopCarrierEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopCarrierCompose.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopCarrierEntry.
 
 Lemma write_success_transactions_loop_carrier_prefix_provider
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

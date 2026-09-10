@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeBooleanAbiTail.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPriorityFeeBooleanRegisters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeBooleanAbiTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeBooleanRegisters.
 
 Lemma write_success_transactions_priority_fee_boolean_abi_intro
     `{!islaG Sigma} `{!threadG}

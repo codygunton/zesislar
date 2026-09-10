@@ -1,6 +1,6 @@
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
 
 Lemma write_success_transactions_access_invariant_stack
     `{!islaG Sigma} (sp : bv 64) (R : iProp Sigma)

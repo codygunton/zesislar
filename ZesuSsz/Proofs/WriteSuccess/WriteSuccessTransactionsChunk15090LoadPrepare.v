@@ -1,11 +1,11 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15090.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15090LoadSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15090LoadState.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15090LoadFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk15090LoadArrayPrepare.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15090.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15090LoadSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15090LoadState.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15090LoadFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk15090LoadArrayPrepare.
 
 Lemma write_success_transactions_chunk_15090_load_prepare
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

@@ -3,9 +3,9 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15668.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15668.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15668.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15668.
 
 Definition writeSuccessTransactionsPostScratch15670
     `{!islaG Sigma} (sp : bv 64) (base : Z) (total : nat)

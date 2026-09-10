@@ -3,10 +3,10 @@ Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary14f1c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15028.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15044.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary15048.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15028.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15044.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary15048.
 Require Import IslaTraces.write_success_32.a15044_spec.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.

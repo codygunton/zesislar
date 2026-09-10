@@ -2,15 +2,15 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsBoundary151dc.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsChunk151dc.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsChunk15200.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsChunk15210.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsStorage.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsBoundary151dc.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsChunk151dc.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsChunk15200.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsChunk15210.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsStorage.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsTail.
 
 Definition writeSuccessAccessListsAt151dcBody
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma) : iProp Sigma :=

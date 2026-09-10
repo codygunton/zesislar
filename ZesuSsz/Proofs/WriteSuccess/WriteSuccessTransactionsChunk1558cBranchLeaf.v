@@ -2,7 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_74 Require Import a1558c.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTactics.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTactics.
 
 Definition writeSuccessTransactionsAt1558cZeroLeafSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

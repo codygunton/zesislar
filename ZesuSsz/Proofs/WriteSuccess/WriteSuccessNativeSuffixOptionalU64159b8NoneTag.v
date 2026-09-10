@@ -1,7 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f8TagBridge.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f8TagBridge.
 
 Lemma write_success_suffix_optional_u64_tag_bytes (tag : bv 64) :
   ∃ tail,

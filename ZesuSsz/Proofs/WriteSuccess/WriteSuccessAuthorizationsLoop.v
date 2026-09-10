@@ -3,13 +3,13 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsAuthorizationsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsMemcpy.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsRest.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsMemcpy.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsRest.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsTail.
 
 Lemma write_success_authorizations_loop `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :

@@ -1,12 +1,12 @@
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 Require Import IslaTraces.write_success_101.a1574c_spec.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesCallContinuations.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesBranchAdapters.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesCallContinuations.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesBranchAdapters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 
 Definition writeSuccessSuffixHashes1574cNonzeroSpec
     `{!islaG Sigma} `{!threadG}

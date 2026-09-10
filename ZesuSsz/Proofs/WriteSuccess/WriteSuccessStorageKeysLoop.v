@@ -4,36 +4,36 @@ From IslaTraces.write_success_blocks Require Import
   Index HintsHashesLoop HintsBlobHashesLoop HintsStorageKeysLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
 
 Import ListNotations.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment01.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment02.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment03.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment04.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment05.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment06.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment07.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment08.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment09.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment10.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment11.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment12.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment13.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment14.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment15.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment16.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment17.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment18.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment19.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysSegment20.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysOutput.
-Require Import ZesuSsz.Experiments.WriteSuccessStorageKeysTail.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment01.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment02.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment03.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment04.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment05.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment06.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment07.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment08.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment09.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment10.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment11.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment12.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment13.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment14.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment15.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment16.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment17.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment18.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment19.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSegment20.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysOutput.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysTail.
 #[local] Hint Extern 7
   (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>
   let reduced := eval vm_compute in address in

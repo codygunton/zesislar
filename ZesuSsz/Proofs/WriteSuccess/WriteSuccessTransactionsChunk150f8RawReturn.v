@@ -1,10 +1,10 @@
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f0Spec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150f0.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsBoundary150fc.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk150f8ScratchRest.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f0Spec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150f0.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary150fc.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f8ScratchRest.
 
 Import ListNotations.
 

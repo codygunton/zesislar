@@ -1,10 +1,10 @@
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactions10190SavedAdapterASpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactions10190SavedAdapterAHead.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactions10190SavedAdapterAMiddle.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190SavedAdapterASpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190SavedAdapterAHead.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190SavedAdapterAMiddle.
 
 Lemma write_success_transactions_10190_saved_adapter_a
     `{!islaG Sigma} `{!threadG} (transaction : writeSuccessTransaction) :

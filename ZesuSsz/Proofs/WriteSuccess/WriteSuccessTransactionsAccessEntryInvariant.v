@@ -1,9 +1,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessAccessListsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAccessInvariantCore.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAccessInvariantStack.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsAccessInvariantBounds.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsAccessInvariantCore.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsAccessInvariantStack.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsAccessInvariantBounds.
 
 Import ListNotations.
 

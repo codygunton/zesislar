@@ -1,12 +1,12 @@
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Frame.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment15Entry.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17Prepare.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17Core.
-Require Import ZesuSsz.Experiments.WriteSuccessBlobHashesSegment17Return.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Frame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment15Entry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment17Prepare.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment17Core.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBlobHashesSegment17Return.
 
 Lemma write_success_blob_hashes_segment17_a `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :

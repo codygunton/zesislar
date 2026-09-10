@@ -3,10 +3,10 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost1568c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPost15690Withdrawals.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost1568c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15690Withdrawals.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPostWithdrawalsHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Definition writeSuccessTransactionsPost1568cWithdrawalsRest
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=

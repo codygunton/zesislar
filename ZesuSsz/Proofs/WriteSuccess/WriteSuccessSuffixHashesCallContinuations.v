@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesBranchAdapters.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesBranchAdapters.
 
 Definition writeSuccessSuffixHashes15750NonzeroQ
     `{!islaG Sigma} `{!threadG}

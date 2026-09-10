@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessAuthorizationsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSpec.
 
 Import ListNotations.
 

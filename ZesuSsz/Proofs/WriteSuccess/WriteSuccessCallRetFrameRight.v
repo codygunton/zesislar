@@ -1,5 +1,5 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 
 Lemma write_success_call_ret_frame_right
     `{!islaG Sigma} `{!threadG}

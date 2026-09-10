@@ -1,5 +1,5 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
 
 Lemma write_success_suffix_hashes_15750_nonzero_pre_adapter
     `{!islaG Sigma} `{!threadG}

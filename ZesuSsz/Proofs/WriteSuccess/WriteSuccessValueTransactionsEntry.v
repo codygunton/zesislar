@@ -1,10 +1,10 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopMemory.
-Require Import ZesuSsz.Experiments.WriteSuccessHeaderSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessValueBlock.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopMemory.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Import ListNotations.
 

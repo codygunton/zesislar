@@ -2,16 +2,16 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessByteLists.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierWithdrawalsTotalProvider.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopCarrierAt14f00.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopCarrierEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopCarrierProvider.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsPostWithdrawalsHandoff.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsWithdrawalsTotalResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierWithdrawalsTotalProvider.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopCarrierAt14f00.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopCarrierEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopCarrierProvider.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPostWithdrawalsHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalResources.
 
 Lemma write_success_transactions_loop_carrier_14f04_pre
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

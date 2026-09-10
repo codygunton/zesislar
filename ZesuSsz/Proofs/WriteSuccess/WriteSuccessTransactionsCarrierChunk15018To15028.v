@@ -2,16 +2,16 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisCode.
 From IslaTraces.write_success_blocks Require Import Index.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsChunk1501c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState15018.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState1501c.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState15020.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState15024.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierState15028.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierChunk15018.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierChunk1501cRaw.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierChunk15020Raw.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsCarrierChunk15024Raw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk1501c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState15018.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState1501c.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState15020.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState15024.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState15028.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk15018.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk1501cRaw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk15020Raw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk15024Raw.
 
 Lemma write_success_transactions_carrier_chunk_15024
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

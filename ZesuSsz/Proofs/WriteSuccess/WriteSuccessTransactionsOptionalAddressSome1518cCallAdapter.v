@@ -1,8 +1,8 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome1518cCallFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsOptionalAddressSome1518cCallEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome1518cCallFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsOptionalAddressSome1518cCallEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Lemma write_success_transactions_optional_address_some_1518c_call_adapter
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)

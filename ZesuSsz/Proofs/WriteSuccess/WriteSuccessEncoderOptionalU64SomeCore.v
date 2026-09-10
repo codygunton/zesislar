@@ -2,15 +2,15 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_04 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBoundaries.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalSomeBranch.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomeBooleanCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomeFrame.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomeIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalU64SomePublicResumeLeaf.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalSomeBranch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomeBooleanCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomeFrame.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomeIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64SomePublicResumeLeaf.
 
 Lemma zesu_encoder_optional_u64_some_core
     `{!islaG Sigma} `{!threadG}

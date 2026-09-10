@@ -2,9 +2,9 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_04 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessTactics.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderOptionalNoneBoundaries.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTactics.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalNoneBoundaries.
 
 Lemma encoder_optional_none_tail `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :

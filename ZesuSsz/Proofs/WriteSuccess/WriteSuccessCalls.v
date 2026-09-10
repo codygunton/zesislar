@@ -4,12 +4,12 @@ From IslaTraces.write_success_02 Require Import instrs.
 From IslaTraces.write_success_01 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisMachine.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessMemcpy.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessMemcpy.
 
 (** Standard ABI adapters for the shared output and memory-copy helpers. *)
 
-Require Import ZesuSsz.Experiments.WriteSuccessCallAbi.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 Definition zesuMemcpyPublicSpec `{!islaG Sigma} `{!threadG}
     (dst src n ret : bv 64) (srcdata : list (bv 8)) : iProp Sigma :=
   (∃ (tmp13 tmp14 tmp15 : bv 64),

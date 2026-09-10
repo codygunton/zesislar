@@ -4,14 +4,14 @@ From IslaTraces.write_success_blocks Require Import Index HintsWithdrawalsLoop.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Experiments.WriteSuccess.
-Require Import ZesuSsz.Experiments.WriteSuccessCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderCalls.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsSpec.
-Require Import ZesuSsz.Experiments.WriteSuccessBitvector.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMemcpy.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsRest.
-Require Import ZesuSsz.Experiments.WriteSuccessWithdrawalsMeasure.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsMemcpy.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsRest.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsMeasure.
 
 Import ListNotations.
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
@@ -178,10 +178,10 @@ Definition writeSuccessWithdrawalsDecreasingBackEdgeSpec
     ⌜writeSuccessWithdrawalsIterationUpdate
       (writeSuccessWithdrawalsBeforeView pointer processed remaining suffix)
       (writeSuccessWithdrawalsAfterView pointer processed remaining suffix)⌝ ∗
-    ⌜(ZesuSsz.Experiments.WriteSuccessWithdrawalsMeasure.writeSuccessWithdrawalsMeasure
+    ⌜(ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsMeasure.writeSuccessWithdrawalsMeasure
          (writeSuccessIterationSuffix
            (writeSuccessWithdrawalsAfterView pointer processed remaining suffix)) <
-       ZesuSsz.Experiments.WriteSuccessWithdrawalsMeasure.writeSuccessWithdrawalsMeasure
+       ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsMeasure.writeSuccessWithdrawalsMeasure
          (writeSuccessIterationSuffix
            (writeSuccessWithdrawalsBeforeView pointer processed remaining suffix)))%nat⌝ ∗
     True)%I.

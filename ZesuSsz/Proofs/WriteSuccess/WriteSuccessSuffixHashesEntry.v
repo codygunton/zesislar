@@ -4,16 +4,16 @@ From IslaTraces.write_success_blocks Require Import
   Index Hints101 Hints102 Hints103.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessHashesLoop.
-Require Import ZesuSsz.Experiments.WriteSuccessLoopCommon.
-Require Import ZesuSsz.Experiments.WriteSuccessEncoderIntCall.
-Require Import ZesuSsz.Experiments.WriteSuccessEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15744Raw.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15748Raw.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes1574cCall.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashes15750Branch.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesSourceWords.
-Require Import ZesuSsz.Experiments.WriteSuccessSuffixHashesEntryAdapter.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15744Raw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15748Raw.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesSourceWords.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryAdapter.
 Require Import InstrSpecs.Lookup.
 
 Import ListNotations.

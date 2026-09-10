@@ -2,11 +2,11 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
 Require Import ZesuSsz.Contracts.IslarisCode.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopCarrierEntry.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopEntryBody.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopEntryExit.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsLoopExitEvents.
-Require Import ZesuSsz.Experiments.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopCarrierEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopEntryBody.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopEntryExit.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
