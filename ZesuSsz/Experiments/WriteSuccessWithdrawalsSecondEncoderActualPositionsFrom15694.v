@@ -40,6 +40,15 @@ Theorem writeSuccessWithdrawalsSecondEncoderActualPositionsFrom15694 args sp
       writeSuccess101d4Before regs0 global0 /\
     writeSuccessWithdrawalsEncoderInt156b4State regs0 global0 sp pointer current
       withdrawal = writeSuccess15d10Before regs global /\
+    Inv_encoder_int (writeSuccessWithdrawalsValidatorValue withdrawal) sp
+      (Z_to_bv 64 0x156c0)
+      (writeSuccessWithdrawalsFirstEncoderScratch sp withdrawal)
+      (writeSuccessWithdrawalsFirstEncoderEndpoint regs global sp withdrawal).2.(seq_mem)
+      (priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+        (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal))
+      (writeSuccessWithdrawalsSecondEncoderEntry regs global sp withdrawal,
+       priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
+         (Z_to_bv 64 0x156b4) (writeSuccessWithdrawalsIndexValue withdrawal)) /\
     WriteSuccessWithdrawalsRecordedRun 15
       (writeSuccessWithdrawalsSecondEncoderEntry regs global sp withdrawal,
        priorLog ++ writeSuccessWithdrawalsEncoderIntRecords global sp
@@ -141,6 +150,7 @@ Proof.
     prefixStates, outputStates, suffixStates.
   split; first exact Hprefix.
   split; first exact Hentry.
+  split; first exact HencoderInv.
   split; first exact Hencoder.
   exists prefixGroup, outputGroup, suffixGroup. exact Hgroups.
 Qed.

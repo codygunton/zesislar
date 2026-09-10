@@ -33,6 +33,12 @@ Theorem writeSuccessWithdrawalsFirstEncoderActualPositionsFrom15694 args sp poin
   exists regs global encoderSegments encoderAfter prefixStates outputStates suffixStates,
     writeSuccessWithdrawalsPrefixAfter state.1 sp pointer =
       writeSuccess101d4Before regs global /\
+    Inv_encoder_int (writeSuccessWithdrawalsIndexValue withdrawal) sp
+      (Z_to_bv 64 0x156b4) encoderScratch
+      (writeSuccessWithdrawalsEncoderInt156b4State regs global sp pointer current
+        withdrawal).2.(seq_mem) priorLog
+      (writeSuccessWithdrawalsEncoderInt156b4State regs global sp pointer current
+        withdrawal, priorLog) /\
     WriteSuccessWithdrawalsRecordedRun 15
       (writeSuccessWithdrawalsEncoderInt156b4State regs global sp pointer
         current withdrawal, priorLog) encoderSegments encoderAfter /\
@@ -131,6 +137,7 @@ Proof.
   exists regs0, global0, encoderSegments, encoderAfter, prefixStates,
     outputStates, suffixStates.
   split; first exact Hprefix.
+  split; first exact HencoderInv.
   split; first exact Hencoder.
   exists prefixGroup, outputGroup, suffixGroup. exact Hgroups.
 Qed.

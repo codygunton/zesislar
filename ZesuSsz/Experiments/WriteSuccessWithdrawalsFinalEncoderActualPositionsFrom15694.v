@@ -68,6 +68,21 @@ Theorem writeSuccessWithdrawalsFinalEncoderActualPositionsFrom15694 args sp poin
       (writeSuccessWithdrawalsSecondEncoderEndpoint regs2 global2 sp
         withdrawal).2 (sp + BV 64 1768)%bv =
       writeSuccess10190Before outputRegs outputGlobal /\
+    Inv_encoder_int (writeSuccessWithdrawalsAmountValue withdrawal) sp
+      (Z_to_bv 64 0x156dc)
+      (writeSuccessWithdrawalsSecondEncoderScratch sp withdrawal)
+      outputGlobal.(seq_mem)
+      (writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+        withdrawal ++ writeSuccessWithdrawalsOutputRecordsExact outputGlobal
+          (sp + BV 64 1768)%bv (BV 64 20))
+      (writeSuccess156d8After
+        (writeSuccess156d4Regs
+          (writeSuccess156d0Regs
+            (writeSuccessOutputEndpointRegs outputRegs (Z_to_bv 64 0x156d0))
+            (writeSuccessWithdrawalsAmountValue withdrawal))) outputGlobal,
+       writeSuccessWithdrawalsSecondEncoderLog priorLog global1 global2 sp
+         withdrawal ++ writeSuccessWithdrawalsOutputRecordsExact outputGlobal
+           (sp + BV 64 1768)%bv (BV 64 20)) /\
     WriteSuccessWithdrawalsRecordedRun 15
       (writeSuccess156d8After
         (writeSuccess156d4Regs
@@ -222,6 +237,7 @@ Proof.
   split; first exact Hentry1.
   split; first exact Hentry2.
   split; first exact Houtput.
+  split; first (unfold outLog in HfinalInv; exact HfinalInv).
   split; first (unfold outLog in Hencoder; exact Hencoder).
   exists prefixGroup, outputGroup, suffixGroup.
   unfold outLog in Hgroups. exact Hgroups.
