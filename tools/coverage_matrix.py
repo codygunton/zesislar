@@ -72,6 +72,7 @@ HELPER_COVERAGE = (
     (0x1573C, 0x15740, "write_success_suffix_hashes_entry"),
     (0x15750, 0x15754, "write_success_suffix_hashes_entry_15750_handoff"),
     (0x159B8, 0x159C8, "write_success_suffix_optional_u64_159b8"),
+    (0x159B0, 0x159B8, "block_159b0"),
     (0x159D4, 0x159D8, "write_success_post_159d4_byte_lists_call"),
 )
 
