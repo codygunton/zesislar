@@ -7,22 +7,26 @@ Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEpilogueBlock.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
 
 (** This adapter converts the generic epilogue return into the exact public
     native exit.  The outer suffix can use the result as one continuation. *)
 Lemma write_success_native_epilogue_continuation
-    `{!islaG Sigma} `{!threadG} {Decoded}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    `{!islaG Sigma} `{!threadG}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
-    (semantic : writeSuccessSemanticPremise allows outputRelation)
+    (semantic : writeSuccessSemanticPremise (Decoded := Decoded)
+      allows outputRelation)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     (bytes : ByteString)
-    (Hwell : writeSuccessWitnessWellFormed args witness)
+    (Hwell : writeSuccessWitnessWellFormed (Decoded := Decoded) args witness)
     (Houtput : outputRelation args witness bytes) :
   instr_pre 0x14d10
     (∃ result : ByteString,
       ⌜writeSuccessNativeAllows allows args result⌝ ∗
-      writeSuccessTerminalResources outputRelation args result) -∗
+      writeSuccessTerminalResources (Decoded := Decoded)
+        outputRelation args result) -∗
   instr_pre
     (bv_unsigned
       (bv_or
@@ -44,7 +48,7 @@ Proof.
     (Hstack & HdecodedAddress & HreturnAddress & HreturnValue & Hdecoded &
      HdecodedLength & HsourceLength & HsourceBytes & HvaluesLength &
      HvaluesBytes & HpayloadLength & Hbase & Hcount & HtransactionBytes &
-     HrawFacts & HwithdrawalBase & HwithdrawalCount & HwithdrawalLength &
+     Hrepresentation & HrawFacts & HwithdrawalBase & HwithdrawalCount & HwithdrawalLength &
      HwithdrawalMin & HwithdrawalMax & HspAlign & HspMin & HspMax).
   have HframeRestore :
       (writeSuccessFrameSp witness + BV 64 2000)%bv =
