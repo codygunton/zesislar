@@ -67,6 +67,7 @@ HELPER_COVERAGE = (
     (0x15680, 0x15694, "block_15680"),
     # These checked composition lemmas postdate the viewer coverage data.
     (0x156E8, 0x15700, "write_success_suffix_int_pair"),
+    (0x15700, 0x15718, "block_15700"),
     (0x1572C, 0x1573C, "write_success_suffix_root_output"),
     (0x1573C, 0x15740, "write_success_suffix_hashes_entry"),
     (0x15750, 0x15754, "write_success_suffix_hashes_entry_15750_handoff"),
