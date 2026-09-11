@@ -64,6 +64,7 @@ HELPER_COVERAGE = (
     (0x15D10, 0x15D38, "zesu_encoder_int_call_correct"),
     # The viewer file still uses five pre-composition theorem names here.
     (0x158E0, 0x15930, "write_success_native_suffix_bytes_158e0_to_15930"),
+    (0x15680, 0x15694, "block_15680"),
 )
 
 
