@@ -6,6 +6,7 @@ Require Import isla.opsem.
 Require Import isla.riscv64.riscv64.
 Require Import EvmSail.evm_decoder_types.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
+Require Import ZesuSsz.Compliance.BugPredicates.
 Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Compliance.ObservationBridge.
 Require Import ZesuSsz.Compliance.Targets.
@@ -52,6 +53,11 @@ Definition zesuEndpoint : EndpointSemantics := {|
 
 Definition ZesuDecodeBugApplies :=
   KnownBug -> ByteString -> WriteSuccessObservation -> Prop.
+
+Definition zesuObservationBugApplies : ZesuDecodeBugApplies :=
+  fun bug input observation =>
+    zesuBugApplies bug input
+      (DecodeSuccess (observationToStatelessInput observation)).
 
 Definition DecodeMeaningModuloKnownBugs
     (runner : DecoderEvaluator) (model : DecoderModel)
@@ -175,17 +181,13 @@ Lemma zesuDecodeFailureHandoff runner model inputRef applies Sigma HG HT args :
       {| failureReturnAddress := 0x14d24 |}.
 Proof. reflexivity. Qed.
 
-Definition zesuBugApplies : BugApplies := fun _ _ _ => False.
-Definition zesuEquivalent : OutcomeRelation := eq.
-
 Theorem zesuCompliance
     (runner : DecoderEvaluator) (model : DecoderModel)
     (inputRef : ByteString -> option StatelessInputRef)
-    (decodeBugApplies : ZesuDecodeBugApplies)
     (mainOk : IslarisContractCorrect mainEntryPc mainExitPc
-      (zesuMainContract runner model inputRef decodeBugApplies))
+      (zesuMainContract runner model inputRef zesuObservationBugApplies))
     (decodeOk : IslarisContractCorrect decodeEntryPc decodeExitPc
-      (zesuDecodeContract runner model inputRef decodeBugApplies)) :
+      (zesuDecodeContract runner model inputRef zesuObservationBugApplies)) :
   ComplianceModuloKnownBugs zesuEndpoint
     (EvmSailReference runner model inputRef) zesuBugApplies zesuEquivalent.
 Admitted.
