@@ -27,3 +27,4 @@ rocq_mcp_cache_*.v
 
 # Local opam switch pointer (machine-specific).
 .coq-switch
+/.ai-coord/
