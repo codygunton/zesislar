@@ -133,6 +133,7 @@ Definition writeSuccessNativeAfterTagEvents {Decoded}
   writeOutputPayloadsSpec
     (tl (writeSuccessAllDescriptors (writeSuccessFrameSp witness)
       (writeSuccessValues witness) (writeSuccessTransactions witness)
+      (writeSuccessRawTransactions witness)
       (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)))
     (tl (writeSuccessExactPayloads (writeSuccessDecodedBytes witness)
       (writeSuccessValues witness) (writeSuccessPayload witness)
