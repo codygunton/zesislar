@@ -27,7 +27,7 @@ Fixpoint writeSuccessRepeatedDescriptors
 Lemma writeSuccessRepeatedDescriptors_spec data size count tail :
   writeOutputDescriptorsSpec
       (writeSuccessRepeatedDescriptors data size count) tail =
-  Nat.iter count (writeOutputEvents data size) tail.
+  Nat.iter count (writeOutputEventsAny data size) tail.
 Proof.
   induction count; simpl; [reflexivity |].
   rewrite IHcount. reflexivity.
@@ -93,8 +93,8 @@ Definition writeSuccessBytesDescriptors
 
 Lemma writeSuccessBytesDescriptors_spec sp data size tail :
   writeOutputDescriptorsSpec (writeSuccessBytesDescriptors sp data size) tail =
-  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-    (writeOutputEvents data size tail).
+  writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+    (writeOutputEventsAny data size tail).
 Proof. reflexivity. Qed.
 
 Definition writeSuccessByteListsDescriptors
@@ -106,7 +106,7 @@ Definition writeSuccessByteListsDescriptors
 Lemma writeSuccessByteListsDescriptors_spec sp items tail :
   writeOutputDescriptorsSpec
       (writeSuccessByteListsDescriptors sp items) tail =
-  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
     (byteListItemEvents (sp - BV 64 32)%bv items tail).
 Proof.
   simpl. rewrite byteListItemDescriptors_spec. reflexivity.
@@ -141,7 +141,7 @@ Definition writeSuccessWithdrawalsDescriptors
 Lemma writeSuccessWithdrawalsDescriptors_spec sp count tail :
   writeOutputDescriptorsSpec
       (writeSuccessWithdrawalsDescriptors sp count) tail =
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
     (writeSuccessWithdrawalsEvents sp count tail).
 Proof.
   simpl. rewrite writeSuccessWithdrawalsItemDescriptors_spec. reflexivity.
@@ -155,7 +155,7 @@ Definition writeSuccessHashesDescriptors
 
 Lemma writeSuccessHashesDescriptors_spec sp count tail :
   writeOutputDescriptorsSpec (writeSuccessHashesDescriptors sp count) tail =
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
     (writeSuccessHashesEvents sp count tail).
 Proof.
   unfold writeSuccessHashesDescriptors. simpl.

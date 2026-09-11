@@ -43,7 +43,7 @@ Definition writeSuccessTransactionsOptionalAddressSome1518cCallFrame
    writeSuccessTransactionsScratch15174
      sp base transactions processed transaction ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20)
+   spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
      (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
        (writeSuccessTransactionsEvents sp remaining tail))) ∗
    writeSuccessTransactionsOptionalAddressSomeFrame P sp base transaction

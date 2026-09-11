@@ -26,7 +26,7 @@ Definition zesuEncoderInt1645CallSpec `{!islaG Sigma} `{!threadG} :
     (bv_unsigned sp - 32) ↦ₘ? 32 ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16) tail) ∗
+      (writeOutputEventsAny (sp - BV 64 32)%bv (BV 64 16) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗

@@ -18,7 +18,7 @@ Definition zesuEncoderU256CallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
       ∃ tail : spec,
       mmio_range 0x2401a0c0 16 ∗
       spec_trace
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32) tail) ∗
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) tail) ∗
       RET (fun _ =>
         mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
 
@@ -59,7 +59,7 @@ Definition zesuEncoderU256AtOutputCallSpec
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32) tail) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) tail) ∗
     zesuEncoderU256CallerContinuation sp ret saved tail ∗ True)%I.
 
 Global Instance : LithiumUnfold
@@ -112,7 +112,7 @@ Definition zesuEncoderU256WriteOutputEntrySpec
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32) tail) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) tail) ∗
     zesuEncoderU256CallerContinuation sp ret saved tail ∗
     instr_body 0x15cd8 zesuEncoderU256AfterOutputSpec ∗ True)%I.
 

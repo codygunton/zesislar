@@ -38,7 +38,7 @@ Definition writeSuccessTransactionsOptionalAddressSome1518cCallEntry
      (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32)) ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15190) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20)
+   spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
      (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
        (writeSuccessTransactionsEvents sp remaining tail))) ∗
    instr_pre 0x15190

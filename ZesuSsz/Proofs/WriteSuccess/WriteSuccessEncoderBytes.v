@@ -19,7 +19,7 @@ Definition encoderBytesIntCallAnySpec `{!islaG Sigma} `{!threadG} : iProp Sigma 
   (∃ (data size sp ret : bv 64) (bytes : list (bv 8))
       (old_x6 old_s0 old_s1 stack2 : bv 64) (tail : spec) (P : iProp Sigma),
     encoderIntSpec size (sp - BV 64 32)%bv (BV 64 0x15c90)
-      (writeOutputEvents data size tail)
+      (writeOutputEventsAny data size tail)
       (encoderBytesSuffixFrame data size sp ret bytes
         old_x6 old_s0 old_s1 stack2 tail P))%I.
 
@@ -38,7 +38,7 @@ Proof.
   iDestruct "Hspec" as
     (data size sp ret bytes old_x6 old_s0 old_s1 stack2 tail P) "Hspec".
   iPoseProof (encoder_int_correct size (sp - BV 64 32)%bv
-    (BV 64 0x15c90) (writeOutputEvents data size tail)
+    (BV 64 0x15c90) (writeOutputEventsAny data size tail)
     (encoderBytesSuffixFrame data size sp ret bytes
       old_x6 old_s0 old_s1 stack2 tail P) with
     "HintCode HoutputCode") as "Hbody".
@@ -66,8 +66,8 @@ Definition encoderBytesSpec `{!islaG Sigma} `{!threadG}
     ⌜bv_unsigned size = length bytes⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents ((sp - BV 64 48)%bv) (BV 64 8)
-        (writeOutputEvents data size tail)) ∗
+      (writeOutputEventsAny ((sp - BV 64 48)%bv) (BV 64 8)
+        (writeOutputEventsAny data size tail)) ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
     ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
     ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗

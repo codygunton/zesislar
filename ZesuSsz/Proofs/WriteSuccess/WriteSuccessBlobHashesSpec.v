@@ -26,7 +26,7 @@ Fixpoint writeSuccessBlobHashesEvents (sp : bv 64) (count : nat)
   match count with
   | O => tail
   | S count =>
-      writeOutputEvents (sp + BV 64 1680)%bv (BV 64 32)
+      writeOutputEventsAny (sp + BV 64 1680)%bv (BV 64 32)
         (writeSuccessBlobHashesEvents sp count tail)
   end.
 

@@ -22,12 +22,12 @@ Fixpoint writeSuccessAuthorizationsEvents (sp : bv 64) (count : nat)
   match count with
   | O => tail
   | S count =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-        (writeOutputEvents (sp + BV 64 1856)%bv (BV 64 20)
-          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-                (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+        (writeOutputEventsAny (sp + BV 64 1856)%bv (BV 64 20)
+          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+            (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+                (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
                   (writeSuccessAuthorizationsEvents sp count tail))))))
   end.
 
@@ -47,29 +47,29 @@ Definition writeSuccessAuthorizationsPhaseEvents
   | AuthorizationsFirstU256 =>
       writeSuccessAuthorizationsEvents sp (S remaining) tail
   | AuthorizationsOutput =>
-      writeOutputEvents (sp + BV 64 1856)%bv (BV 64 20)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-            (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+      writeOutputEventsAny (sp + BV 64 1856)%bv (BV 64 20)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+            (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
                 (writeSuccessAuthorizationsEvents sp remaining tail)))))
   | AuthorizationsFirstInt =>
-      writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-            (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+      writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+            (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
               (writeSuccessAuthorizationsEvents sp remaining tail))))
   | AuthorizationsSecondInt =>
-      writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+      writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
             (writeSuccessAuthorizationsEvents sp remaining tail)))
   | AuthorizationsSecondU256 =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
           (writeSuccessAuthorizationsEvents sp remaining tail))
   | AuthorizationsThirdU256 =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
         (writeSuccessAuthorizationsEvents sp remaining tail)
   | AuthorizationsTail => writeSuccessAuthorizationsEvents sp remaining tail
   end.

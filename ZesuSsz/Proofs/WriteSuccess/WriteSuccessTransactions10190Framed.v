@@ -16,7 +16,7 @@ Definition writeSuccessTransactionsAt10190FramedBlock
       sp base transaction transactions processed ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining tail))) ∗
    writeSuccessTransactions150ecCallFrame P sp base transaction
@@ -55,7 +55,7 @@ Lemma write_success_transactions_10190_framed_unpack
       sp base transaction transactions processed ∗
   mmio_range 0x2401a0c0 16 ∗
   spec_trace
-    (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+    (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
   writeSuccessTransactions150ecCallFrame P sp base transaction

@@ -42,8 +42,8 @@ Definition writeSuccessSuffixAt15910 `{!islaG Sigma} `{!threadG}
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) ∗
     bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗

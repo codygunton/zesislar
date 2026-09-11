@@ -20,7 +20,7 @@ Definition writeSuccessSuffixHashes15748EntrySource
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+     (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessHashesEvents sp (S remaining) tail)) ∗
    writeSuccessSuffixHashesEntryFrame
      sp pointer base total processed remaining bytes tail P)%I.

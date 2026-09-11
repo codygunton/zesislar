@@ -31,7 +31,7 @@ Lemma write_success_transactions_post_15678_withdrawals_total
         (writeSuccessTransactionsPost15678PreservedScratch sp transactionBase
           transactionTotal first second items))
       sp transactionBase transactionTotal
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessWithdrawalsEvents sp count tail))
       first second pointer (Z_to_bv 64 (Z.of_nat count)) items).
 Proof.

@@ -90,8 +90,8 @@ Fixpoint writeSuccessAccessListsEvents (sp : bv 64)
   match entries with
   | [] => tail
   | entry :: entries =>
-      writeOutputEvents (sp + BV 64 1760)%bv (BV 64 20)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp + BV 64 1760)%bv (BV 64 20)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (writeSuccessStorageKeysEvents sp
             (writeSuccessAccessEntryStorageCount entry)
             (writeSuccessAccessListsEvents sp entries tail)))
@@ -108,13 +108,13 @@ Definition writeSuccessAccessListsPhaseEvents
     (remaining : list writeSuccessAccessEntry) (tail : spec) : spec :=
   match phase with
   | AccessListsOutput =>
-      writeOutputEvents (sp + BV 64 1760)%bv (BV 64 20)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp + BV 64 1760)%bv (BV 64 20)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (writeSuccessStorageKeysEvents sp
             (writeSuccessAccessEntryStorageCount entry)
             (writeSuccessAccessListsEvents sp remaining tail)))
   | AccessListsCount =>
-      writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessStorageKeysEvents sp
           (writeSuccessAccessEntryStorageCount entry)
           (writeSuccessAccessListsEvents sp remaining tail))

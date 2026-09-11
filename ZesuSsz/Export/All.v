@@ -1,1 +1,2 @@
-(** Public adequacy and snapshot exports are added in Phase 2. *)
+Require Export ZesuSsz.Export.Snapshots.
+Require Export ZesuSsz.Export.Adequacy.

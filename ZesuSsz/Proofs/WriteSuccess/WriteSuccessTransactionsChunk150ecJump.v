@@ -26,7 +26,7 @@ Definition writeSuccessTransactionsAt150ecJumpBlock
      sp base transactions processed transaction ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining tail))) ∗
    writeSuccessTransactions150ecCallFrame P sp base transaction
@@ -43,7 +43,7 @@ Definition writeSuccessTransactionsAt10190Block
      sp base transactions processed transaction ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining tail))) ∗
      writeSuccessTransactions150ecCallFrame P sp base transaction
@@ -119,7 +119,7 @@ Lemma write_success_transactions_at10190_block_unpack
     sp base transactions processed transaction ∗
   mmio_range 0x2401a0c0 16 ∗
   spec_trace
-    (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+    (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
   writeSuccessTransactions150ecCallFrame P sp base transaction

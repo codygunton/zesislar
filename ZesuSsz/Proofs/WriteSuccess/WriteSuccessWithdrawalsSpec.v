@@ -22,10 +22,10 @@ Fixpoint writeSuccessWithdrawalsEvents (sp : bv 64) (count : nat)
   match count with
   | O => tail
   | S count =>
-      writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-          (writeOutputEvents (sp + BV 64 1768)%bv (BV 64 20)
-            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+          (writeOutputEventsAny (sp + BV 64 1768)%bv (BV 64 20)
+            (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
               (writeSuccessWithdrawalsEvents sp count tail))))
   end.
 
@@ -42,16 +42,16 @@ Definition writeSuccessWithdrawalsPhaseEvents
   match phase with
   | WithdrawalsFirstInt => writeSuccessWithdrawalsEvents sp (S remaining) tail
   | WithdrawalsSecondInt =>
-      writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-        (writeOutputEvents (sp + BV 64 1768)%bv (BV 64 20)
-          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+        (writeOutputEventsAny (sp + BV 64 1768)%bv (BV 64 20)
+          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
             (writeSuccessWithdrawalsEvents sp remaining tail)))
   | WithdrawalsOutput =>
-      writeOutputEvents (sp + BV 64 1768)%bv (BV 64 20)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp + BV 64 1768)%bv (BV 64 20)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (writeSuccessWithdrawalsEvents sp remaining tail))
   | WithdrawalsThirdInt =>
-      writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessWithdrawalsEvents sp remaining tail)
   | WithdrawalsTail => writeSuccessWithdrawalsEvents sp remaining tail
   end.

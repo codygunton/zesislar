@@ -193,67 +193,67 @@ Fixpoint writeSuccessTransactionsBytes
 Definition writeSuccessOptionalU64Events (sp : bv 64)
     (value : option (bv 64)) (tail : spec) : spec :=
   match value with
-  | None => writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) tail
+  | None => writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail
   | Some _ =>
-      writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)
+      writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)
   end.
 
 Definition writeSuccessOptionalU128Events (sp : bv 64)
     (value : option (bv 64 * bv 64)) (tail : spec) : spec :=
   match value with
-  | None => writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) tail
+  | None => writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail
   | Some _ =>
-      writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
-        (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16) tail)
+      writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
+        (writeOutputEventsAny (sp - BV 64 32)%bv (BV 64 16) tail)
   end.
 
 Definition writeSuccessOptionalAddressEvents (sp : bv 64)
     (value : option (list (bv 8))) (tail : spec) : spec :=
   match value with
-  | None => writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) tail
+  | None => writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail
   | Some _ =>
-      writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
-        (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20) tail)
+      writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
+        (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20) tail)
   end.
 
 Definition writeSuccessTransactionEvents (sp : bv 64)
     (transaction : writeSuccessTransaction) (tail : spec) : spec :=
-  writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+  writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
     (writeSuccessOptionalU64Events sp
       (writeSuccessTransactionChainId transaction)
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-        (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 32)%bv (BV 64 16)
           (writeSuccessOptionalU128Events sp
             (writeSuccessTransactionGasPriorityFee transaction)
-            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+            (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
               (writeSuccessOptionalAddressEvents sp
                 (writeSuccessTransactionTo transaction)
-                (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents
+                (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny
                       (writeSuccessTransactionDataPointer transaction)
                       (Z_to_bv 64
                         (Z.of_nat
                           (length (writeSuccessTransactionData transaction))))
-                      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+                      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
                         (writeSuccessAccessListsEvents sp
                           (writeSuccessTransactionAccessEntries transaction)
-                          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+                          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
                             (writeSuccessBlobHashesEvents sp
                               (length
                                 (writeSuccessTransactionBlobHashes transaction))
-                              (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
-                                (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+                              (writeOutputEventsAny (sp - BV 64 32)%bv (BV 64 16)
+                                (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
                                   (writeSuccessAuthorizationsEvents sp
                                     (length
                                       (writeSuccessTransactionAuthorizations
                                         transaction))
-                                    (writeOutputEvents
+                                    (writeOutputEventsAny
                                       (sp - BV 64 16)%bv (BV 64 8)
-                                      (writeOutputEvents
+                                      (writeOutputEventsAny
                                         (sp - BV 64 48)%bv (BV 64 32)
-                                        (writeOutputEvents
+                                        (writeOutputEventsAny
                                           (sp - BV 64 48)%bv (BV 64 32)
                                           tail))))))))))))))))))).
 
@@ -317,53 +317,53 @@ Definition writeSuccessTransactionPhaseEvents
     (phase : writeSuccessTransactionPhase) (sp : bv 64)
     (transaction : writeSuccessTransaction) (tail : spec) : spec :=
   let transactionTail := tail in
-  let sEvents := writeOutputEvents (sp - BV 64 48)%bv (BV 64 32) transactionTail in
-  let rEvents := writeOutputEvents (sp - BV 64 48)%bv (BV 64 32) sEvents in
-  let vEvents := writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) rEvents in
+  let sEvents := writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) transactionTail in
+  let rEvents := writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) sEvents in
+  let vEvents := writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) rEvents in
   let authorizationEvents :=
     writeSuccessAuthorizationsEvents sp
       (length (writeSuccessTransactionAuthorizations transaction)) vEvents in
   let authorizationCountEvents :=
-    writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) authorizationEvents in
+    writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) authorizationEvents in
   let maxFeeEvents :=
-    writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
+    writeOutputEventsAny (sp - BV 64 32)%bv (BV 64 16)
       authorizationCountEvents in
   let blobEvents :=
     writeSuccessBlobHashesEvents sp
       (length (writeSuccessTransactionBlobHashes transaction)) maxFeeEvents in
   let blobCountEvents :=
-    writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) blobEvents in
+    writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) blobEvents in
   let accessEvents :=
     writeSuccessAccessListsEvents sp
       (writeSuccessTransactionAccessEntries transaction) blobCountEvents in
   let accessCountEvents :=
-    writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) accessEvents in
+    writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) accessEvents in
   let dataEvents :=
-    writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-      (writeOutputEvents (writeSuccessTransactionDataPointer transaction)
+    writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny (writeSuccessTransactionDataPointer transaction)
         (Z_to_bv 64
           (Z.of_nat (length (writeSuccessTransactionData transaction))))
         accessCountEvents) in
   let valueEvents :=
-    writeOutputEvents (sp - BV 64 48)%bv (BV 64 32) dataEvents in
+    writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) dataEvents in
   let toEvents :=
     writeSuccessOptionalAddressEvents sp
       (writeSuccessTransactionTo transaction) valueEvents in
   let gasLimitEvents :=
-    writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) toEvents in
+    writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) toEvents in
   let priorityEvents :=
     writeSuccessOptionalU128Events sp
       (writeSuccessTransactionGasPriorityFee transaction) gasLimitEvents in
   let gasPriceEvents :=
-    writeOutputEvents (sp - BV 64 32)%bv (BV 64 16) priorityEvents in
+    writeOutputEventsAny (sp - BV 64 32)%bv (BV 64 16) priorityEvents in
   let nonceEvents :=
-    writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) gasPriceEvents in
+    writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) gasPriceEvents in
   let chainEvents :=
     writeSuccessOptionalU64Events sp
       (writeSuccessTransactionChainId transaction) nonceEvents in
   match phase with
   | TransactionType =>
-      writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1) chainEvents
+      writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1) chainEvents
   | TransactionChainId => chainEvents
   | TransactionNonce => nonceEvents
   | TransactionGasPrice => gasPriceEvents

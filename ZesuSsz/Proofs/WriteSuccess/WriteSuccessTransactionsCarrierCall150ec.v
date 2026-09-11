@@ -16,9 +16,9 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvent
 
 Definition writeSuccessTransactionsCarrierOutputTail
     (sp : bv 64) (items : list ByteListItem) (tail : spec) : spec :=
-  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
     (byteListItemEvents (sp - BV 64 32)%bv items
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)).
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)).
 
 Definition writeSuccessTransactions150ecCarrierCallFrame
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -190,7 +190,7 @@ Definition writeSuccessTransactionsAt10190CarrierCallSpec
     "x2" ↦ᵣ RVal_Bits sp ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+      (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
         (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
           (writeSuccessTransactionsEvents sp remaining
             (writeSuccessTransactionsCarrierOutputTail sp items tail)))) ∗

@@ -28,9 +28,9 @@ Lemma write_success_transactions_carrier_phase_handoff_pack
   spec_trace
     (writeSuccessTransactionPhaseEvents phase sp transaction
       (writeSuccessTransactionsEvents sp remaining
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
           (byteListItemEvents (sp - BV 64 32)%bv items
-            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))))) -∗
+            (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))))) -∗
   P -∗
   writeSuccessTransactionsInvariant sp base transactions processed
     (transaction :: remaining) bytes prefix suffix -∗
@@ -71,9 +71,9 @@ Lemma write_success_transactions_carrier_phase_handoff_unpack
   spec_trace
     (writeSuccessTransactionPhaseEvents phase sp transaction
       (writeSuccessTransactionsEvents sp remaining
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
           (byteListItemEvents (sp - BV 64 32)%bv items
-            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))))) ∗
+            (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))))) ∗
   P ∗
   writeSuccessTransactionsInvariant sp base transactions processed
     (transaction :: remaining) bytes prefix suffix ∗

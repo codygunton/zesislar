@@ -25,9 +25,9 @@ Definition writeSuccessTransactionsPost1566cDataSpec
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
       (Z_to_bv 64 (Z.of_nat count)) items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
@@ -47,9 +47,9 @@ Definition writeSuccessTransactionsPost15670DataSpec
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
       (Z_to_bv 64 (Z.of_nat count)) items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
@@ -69,9 +69,9 @@ Definition writeSuccessTransactionsPost15674DataSpec
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
       (Z_to_bv 64 (Z.of_nat count)) items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.

@@ -206,7 +206,7 @@ Definition writeSuccessTransactionsContext150e8 `{!islaG Sigma} `{!threadG}
    writeSuccessTransactionsOwn remaining ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents
          TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining tail))) ∗

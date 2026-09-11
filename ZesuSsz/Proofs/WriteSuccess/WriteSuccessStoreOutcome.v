@@ -43,11 +43,12 @@ Definition writeSuccessStoreOutcomeGlobal (global : seq_global_state)
   | WriteSuccessStoreMmio => global
   end.
 
-Definition writeSuccessStoreOutcomeLabels (address value : bv 64)
+Definition writeSuccessStoreOutcomeLabels (snapshot : seq_snapshot)
+    (address value : bv 64)
     (outcome : WriteSuccessStoreOutcome) : list seq_label :=
   match outcome with
   | WriteSuccessStoreBacked => []
-  | WriteSuccessStoreMmio => [SWriteMem address (bv_to_bvn value)]
+  | WriteSuccessStoreMmio => [SWriteMem address (bv_to_bvn value) snapshot]
   end.
 
 Print Assumptions writeSuccessStoreOutcomePermitted.

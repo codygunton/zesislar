@@ -46,10 +46,10 @@ Definition writeSuccessSuffixOptionalU64159b8Spec
     ⌜0x20000000 <= bv_unsigned ptr⌝ ∗
     ⌜bv_unsigned ptr + 8 < 0x40000000⌝ ∗
     (⌜bv_extract 0 8 tag = BV 8 0⌝ ∗
-      spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) tail) ∨
+      spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∨
      ⌜bv_extract 0 8 tag <> BV 8 0⌝ ∗
-      spec_trace (writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
+      spec_trace (writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     (∀ b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27,
       instr_pre 0x159bc
         (writeSuccessSuffixOptionalU64159b8Return

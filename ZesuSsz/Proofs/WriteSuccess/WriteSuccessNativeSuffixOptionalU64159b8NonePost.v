@@ -19,7 +19,7 @@ Definition writeSuccessSuffixOptionalU64159b8NonePost
    ⌜0x20000000 <= bv_unsigned ptr⌝ ∗
    ⌜bv_unsigned ptr + 8 < 0x40000000⌝ ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) tail) ∗
+   spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
    instr_pre 0x159bc
      (zesu_c_call_ret 32
        [RVal_Bits b8; RVal_Bits b9; RVal_Bits b18; RVal_Bits b19;

@@ -37,8 +37,8 @@ Definition writeSuccessSuffixBytesAt158e0Carrier `{!islaG Sigma} `{!threadG}
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) ∗
     bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
@@ -81,8 +81,8 @@ Definition writeSuccessSuffixBytesAt158e0CarrierData `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-       (writeOutputEvents data size trace)) ∗
+     (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+       (writeOutputEventsAny data size trace)) ∗
    bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
@@ -386,8 +386,8 @@ Definition writeSuccessSuffixBytesAt15900Carrier `{!islaG Sigma} `{!threadG}
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
     (fun data size tail =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) 936 P.
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) 936 P.
 
 Definition writeSuccessSuffixBytesAt15900CarrierExact `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
@@ -408,8 +408,8 @@ Definition writeSuccessSuffixBytesAt15910Carrier `{!islaG Sigma} `{!threadG}
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
     (fun data size tail =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) 952 P.
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) 952 P.
 
 Definition writeSuccessSuffixBytesAt15910CarrierExact `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
@@ -430,8 +430,8 @@ Definition writeSuccessSuffixBytesAt15920Carrier `{!islaG Sigma} `{!threadG}
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
     (fun data size tail =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) 968 P.
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) 968 P.
 
 Definition writeSuccessSuffixBytesAt15920CarrierExact `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
@@ -462,8 +462,8 @@ Definition writeSuccessSuffixBytesAt15930CarrierShape `{!islaG Sigma} `{!threadG
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11")
     (fun data size tail =>
-      writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) 984 P.
+      writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) 984 P.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0CarrierNext) := I.
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900Carrier) := I.
@@ -487,8 +487,8 @@ Lemma write_success_suffix_bytes_158f0_carrier
   instr_body 0x158f0
     (writeSuccessSuffixBytesAt15900CarrierData sp data size oldS0 oldS1
       bytes
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size trace)) P).
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size trace)) P).
 Proof.
   move => *.
   iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
@@ -560,8 +560,8 @@ Lemma write_success_suffix_bytes_15900_carrier
   instr_body 0x15900
     (writeSuccessSuffixBytesAt15910CarrierData sp data size oldS0 oldS1
       bytes
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size trace)) P).
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size trace)) P).
 Proof.
   move => *.
   iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".
@@ -631,8 +631,8 @@ Lemma write_success_suffix_bytes_15910_carrier
   instr_body 0x15910
     (writeSuccessSuffixBytesAt15920CarrierData sp data size oldS0 oldS1
       bytes
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size trace)) P).
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size trace)) P).
 Proof.
   move => *.
   iStartProof. iIntros "_ #Hlookup #Hcode #Hbytes Hnext".

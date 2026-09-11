@@ -50,7 +50,7 @@ Definition writeSuccessPost159c8Descriptors sp data :=
     (writeSuccessPostByteLists159c8 data).
 
 Definition writeSuccessPost159c8Events sp data tail :=
-  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
     (byteListItemEvents (sp - BV 64 32)%bv
       (writeSuccessPostByteLists159c8 data) tail).
 
@@ -102,7 +102,7 @@ Definition writeSuccessPost159a0Descriptors sp data :=
   writeSuccessPost159b0Descriptors sp data.
 
 Definition writeSuccessPost159a0Events sp data tail :=
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
     (writeSuccessPost159b0Events sp data tail).
 
 Lemma writeSuccessPost159a0Descriptors_spec sp data tail :
@@ -122,12 +122,12 @@ Definition writeSuccessPost1596cDescriptors sp data :=
   end ++ writeSuccessPost159a0Descriptors sp data.
 
 Definition writeSuccessPost1596cEvents sp data tail :=
-  writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
+  writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
     (match writeSuccessPostConditional1596c data with
      | None => writeSuccessPost159a0Events sp data tail
      | Some bytes =>
-         writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-           (writeOutputEvents (fst bytes) (snd bytes)
+         writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+           (writeOutputEventsAny (fst bytes) (snd bytes)
              (writeSuccessPost159a0Events sp data tail))
      end).
 
@@ -153,7 +153,7 @@ Definition writeSuccessPost15960Descriptors sp data :=
   writeSuccessPost1596cDescriptors sp data.
 
 Definition writeSuccessPost15960Events sp data tail :=
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
     (writeSuccessPost1596cEvents sp data tail).
 
 Lemma writeSuccessPost15960Descriptors_spec sp data tail :
@@ -175,13 +175,13 @@ Definition writeSuccessPost15930Descriptors sp data :=
   writeSuccessPost15960Descriptors sp data.
 
 Definition writeSuccessPost15930Events sp data tail :=
-  writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
     (byteListItemEvents (sp - BV 64 32)%bv
       (writeSuccessPostByteLists15930 data)
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv
           (writeSuccessPostByteLists15940 data)
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
             (byteListItemEvents (sp - BV 64 32)%bv
               (writeSuccessPostByteLists15950 data)
               (writeSuccessPost15960Events sp data tail)))))).
@@ -225,8 +225,8 @@ Definition writeSuccessPost158e0Descriptors sp data :=
 
 Definition writeSuccessPost158e0Events sp data tail :=
   let bytesEvents bytes rest :=
-    writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-      (writeOutputEvents (fst bytes) (snd bytes) rest) in
+    writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny (fst bytes) (snd bytes) rest) in
   bytesEvents (writeSuccessPostBytes158e0 data)
     (bytesEvents (writeSuccessPostBytes158f0 data)
       (bytesEvents (writeSuccessPostBytes15900 data)
@@ -249,7 +249,7 @@ Definition writeSuccessPost1573cDescriptors sp data :=
   writeSuccessPost158e0Descriptors sp data.
 
 Definition writeSuccessPost1573cEvents sp data tail :=
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
     (writeSuccessHashesEvents sp (writeSuccessPostHashesCount data)
       (writeSuccessPost158e0Events sp data tail)).
 
@@ -275,13 +275,13 @@ Definition writeSuccessPost156e8Descriptors sp data :=
   writeSuccessPost1573cDescriptors sp data.
 
 Definition writeSuccessPost156e8Events sp data tail :=
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+    (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
       (writeSuccessOptionalU64Events sp (writeSuccessPostOptional15700 data)
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-          (writeOutputEvents (fst (writeSuccessPostBytes1571c data))
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+          (writeOutputEventsAny (fst (writeSuccessPostBytes1571c data))
             (snd (writeSuccessPostBytes1571c data))
-            (writeOutputEvents (sp + BV 64 1000)%bv (BV 64 32)
+            (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32)
               (writeSuccessPost1573cEvents sp data tail)))))).
 
 Lemma writeSuccessPost156e8Descriptors_spec sp data tail :
@@ -300,7 +300,7 @@ Definition writeSuccessAfterTransactionsDescriptors sp withdrawalsCount data :=
   writeSuccessPost156e8Descriptors sp data.
 
 Definition writeSuccessAfterTransactionsEvents sp withdrawalsCount data tail :=
-  writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+  writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
     (writeSuccessWithdrawalsEvents sp withdrawalsCount
       (writeSuccessPost156e8Events sp data tail)).
 

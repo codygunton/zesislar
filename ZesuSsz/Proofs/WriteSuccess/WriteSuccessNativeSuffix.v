@@ -19,9 +19,9 @@ Definition writeSuccessNativeCarrierEvents
     (sp : bv 64) (transactions : list writeSuccessTransaction)
     (items : list ByteListItem) (tail : spec) : spec :=
   writeSuccessTransactionsEvents sp transactions
-    (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))).
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))).
 
 (** This native-only load remainder preserves the byte-list call frame and
     the exact transaction witnesses for the event-aware carrier. *)

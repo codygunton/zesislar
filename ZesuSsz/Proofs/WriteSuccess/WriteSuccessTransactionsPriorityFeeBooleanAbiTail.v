@@ -20,7 +20,7 @@ Definition writeSuccessTransactionsPriorityFeeBooleanAbiTail
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
    (∃ callTail : spec,
      mmio_range 0x2401a0c0 16 ∗
-     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) callTail) ∗
+     spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) callTail) ∗
      instr_pre 0x15148
        (zesu_c_call_ret 16
          (writeSuccessTransactionsPriorityFeeSavedValues transaction)
@@ -40,7 +40,7 @@ Lemma write_success_transactions_priority_fee_boolean_abi_tail
   (bv_unsigned sp - 16) ↦ₘ? 16 -∗
   mmio_range 0x2401a0c0 16 -∗
   spec_trace
-    (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
+    (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionGasLimit sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) -∗
   instr_pre 0x15148

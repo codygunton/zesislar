@@ -224,18 +224,87 @@ Section byte_array_read.
         * iPureIntro. reflexivity.
         * iPureIntro. exact Hbounds.
     - done.
-    - iDestruct "Hcont" as (?? Pks Pks') "[Hks [% Hcont]]";
+    - iDestruct "Hcont" as (?? Pks Pks') "[Hks [%Hscons Hcont]]";
         simplify_eq/=.
-      iApply (wp_read_mmio with "[Hmem] Hks");
-        [done | lia| spec_solver | | ].
-      { iApply (mmio_range_shorten with "Hmem"); lia. }
-      iIntros "Hspec". iApply "Hcont".
-      iApply (spec_trace_mono with "Hspec"). spec_solver.
+      iApply (wp_read_mmio with "[] [] [Hmem] Hks").
+      + done.
+      + lia.
+      + intros snapshot _ _. specialize (Hscons [SReadMem a vread snapshot]).
+        apply Hscons. right. eexists _, []. split; [done|by left].
+      + rewrite /snapshot_reg_resources. done.
+      + rewrite /snapshot_mem_resources. done.
+      + iApply (mmio_range_shorten with "Hmem"); lia.
+      + iIntros (snapshot) "_ _ Hspec". iApply "Hcont".
+        iApply (spec_trace_mono with "Hspec"). spec_solver.
   Qed.
 End byte_array_read.
 
 Section byte_array_write.
   Context `{!islaG Sigma} `{!threadG}.
+
+  Lemma li_wp_write_mmio_snapshot_zesu len n success kind a (vnew : bv n)
+      tag ann es claimSearchAddress :
+    (⌜n = (8 * len)%N⌝ ∗
+    ⌜len <> 0%N⌝ ∗
+    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mmioKind =>
+      match mmioKind with
+      | MKMMIO mmioAddress mmioLength =>
+          ⌜mmioAddress <= bv_unsigned a⌝ ∗
+          ⌜bv_unsigned a + Z.of_N len <= mmioAddress + mmioLength⌝ ∗
+          find_in_context (FindMemMapsTo claimSearchAddress) (fun claimKind =>
+            match claimKind with
+            | MKArray claimWidth claimAddress claimBytes =>
+                match claimWidth as width
+                  return list (bv width) -> iProp Sigma with
+                | 8%N => fun claimBytes8 =>
+                    ∃ Pks Pks' accept,
+                      spec_trace Pks ∗
+                      ⌜forall snapshot,
+                        snapshot_mem_agreement snapshot
+                          [(claimAddress, claimBytes8)] -> accept snapshot⌝ ∗
+                      ⌜scons_snap (SWriteMem a vnew) accept Pks' ⊆ Pks⌝ ∗
+                      (spec_trace Pks' -∗ WPasm es)
+                | _ => fun _ => False
+                end claimBytes
+            | _ => False
+            end)
+      | _ => False
+      end))
+    ⊢ WPasm (WriteMem (RVal_Bool success) kind
+      (RVal_Bits (@bv_to_bvn 64 a))
+      (RVal_Bits (@bv_to_bvn n vnew)) len tag ann :t: es).
+  Proof.
+    iDestruct 1 as (Hwidth Hlen mmioKind) "[Hmmio Hrest]".
+    destruct mmioKind; try done.
+    iDestruct "Hrest" as "(%Hlower&%Hupper&HclaimFind)".
+    iDestruct "HclaimFind" as (claimKind) "[Hclaim Hrest]".
+    destruct claimKind as
+      [mapWidth mapValue | claimWidth claimAddress claimBytes |
+       uninitAddress uninitLength | nestedAddress nestedLength]; try done.
+    destruct claimWidth; try done.
+    destruct p; try done.
+    destruct p; try done.
+    destruct p; try done.
+    destruct p; try done.
+    iDestruct "Hrest" as (Pks Pks' accept)
+      "(Hks&%Haccept&%Hsubset&Hcont)".
+    iApply (wp_write_mmio n len a vnew es ann success kind tag Pks []
+      [(claimAddress, claimBytes)] with "[] [Hclaim] [Hmmio] Hks").
+    - exact Hwidth.
+    - lia.
+    - intros snapshot _ Hmemory.
+      specialize (Hsubset [SWriteMem a vnew snapshot]). apply Hsubset.
+      right. eexists _, []. split; [by apply Haccept|].
+      split; [done|by left].
+    - rewrite /snapshot_reg_resources. done.
+    - rewrite /snapshot_mem_resources /=. iFrame.
+    - iApply (mmio_range_shorten with "Hmmio"); lia.
+    - iIntros (snapshot) "_ %Hmemory Hspec". iApply "Hcont".
+      iApply (spec_trace_mono with "Hspec").
+      intros labels Htail. specialize (Hsubset (SWriteMem a vnew snapshot :: labels)).
+      apply Hsubset. right. exists snapshot, labels. split; [by apply Haccept|].
+      split; [done|by right].
+  Qed.
 
   Lemma li_wp_write_mem_zesu len n success kind a (vnew : bv n) tag ann es:
     (⌜n = (8 * len)%N⌝ ∗
@@ -348,12 +417,17 @@ Section byte_array_write.
       have -> : (n0 - (bv_unsigned a - a0) - Z.of_N len) =
         (a0 + n0 - (bv_unsigned a + Z.of_N len)) by lia.
       done.
-    - iDestruct "Hcont" as (?? Pks Pks') "[Hks [% Hcont]]";
+    - iDestruct "Hcont" as (?? Pks Pks') "[Hks [%Hscons Hcont]]";
         simplify_eq/=.
-      iApply (wp_write_mmio with "[Hmem] Hks");
-        [done | lia| spec_solver | | ].
-      { iApply (mmio_range_shorten with "Hmem"); lia. }
-      iIntros "Hspec". iApply "Hcont".
-      iApply (spec_trace_mono with "Hspec"). spec_solver.
+      iApply (wp_write_mmio with "[] [] [Hmem] Hks").
+      + done.
+      + lia.
+      + intros snapshot _ _. specialize (Hscons [SWriteMem a vnew snapshot]).
+        apply Hscons. right. eexists _, []. split; [done|by left].
+      + rewrite /snapshot_reg_resources. done.
+      + rewrite /snapshot_mem_resources. done.
+      + iApply (mmio_range_shorten with "Hmem"); lia.
+      + iIntros (snapshot) "_ _ Hspec". iApply "Hcont".
+        iApply (spec_trace_mono with "Hspec"). spec_solver.
   Qed.
 End byte_array_write.

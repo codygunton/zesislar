@@ -23,7 +23,7 @@ Definition writeSuccessSuffixInt15960To1596cSpec
     (bv_unsigned sp + 64) ↦ₘ value ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
     mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail) ∗
+    spec_trace (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -41,7 +41,7 @@ Definition writeSuccessSuffixInt15960Frame
    "x5" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    (bv_unsigned base - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (base - BV 64 16)%bv (BV 64 8) tail) ∗
+   spec_trace (writeOutputEventsAny (base - BV 64 16)%bv (BV 64 8) tail) ∗
    instr_pre 0x1596c (writeSuccessSuffixInt1596cCallPost base tail ∗ Q) ∗ Q)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixInt15960Frame) := I.

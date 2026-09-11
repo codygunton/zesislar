@@ -30,7 +30,7 @@ Definition writeSuccessSuffixHashes1574cCallSpec
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail) ∗
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗

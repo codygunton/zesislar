@@ -16,7 +16,7 @@ Definition writeSuccessTransactionsPriorityFeeNonePreparedSpec
       transactions processed remaining bytes prefix suffix tail ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
+      (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
         (writeSuccessTransactionPhaseEvents TransactionGasLimit sp transaction
           (writeSuccessTransactionsEvents sp remaining tail))) ∗
     writeSuccessTransactionsPriorityFeeFrame P sp base transaction

@@ -21,23 +21,26 @@ Definition writeOutputPayloadObservation
 Definition WriteOutputDescriptor : Type := (bv 64 * bv 64)%type.
 
 Definition writeOutputDescriptorEvents
+    (snapshot : seq_snapshot)
     (descriptor : WriteOutputDescriptor) : list seq_label :=
   let '(data, size) := descriptor in
-  [SWriteMem (BV 64 0x2401a0c0) data;
-   SWriteMem (BV 64 0x2401a0c8) size].
+  [SWriteMem (BV 64 0x2401a0c0) data snapshot;
+   SWriteMem (BV 64 0x2401a0c8) size snapshot].
 
 Fixpoint writeOutputDescriptorsEvents
+    (snapshot : seq_snapshot)
     (descriptors : list WriteOutputDescriptor) : list seq_label :=
   match descriptors with
   | [] => []
   | descriptor :: tail =>
-      writeOutputDescriptorEvents descriptor ++
-      writeOutputDescriptorsEvents tail
+      writeOutputDescriptorEvents snapshot descriptor ++
+      writeOutputDescriptorsEvents snapshot tail
   end.
 
-Lemma writeOutputDescriptorsEvents_app left right :
-  writeOutputDescriptorsEvents (left ++ right) =
-    writeOutputDescriptorsEvents left ++ writeOutputDescriptorsEvents right.
+Lemma writeOutputDescriptorsEvents_app snapshot left right :
+  writeOutputDescriptorsEvents snapshot (left ++ right) =
+    writeOutputDescriptorsEvents snapshot left ++
+    writeOutputDescriptorsEvents snapshot right.
 Proof.
   induction left as [|descriptor tail IH]; simpl; [reflexivity |].
   rewrite IH app_assoc. reflexivity.
@@ -48,7 +51,7 @@ Fixpoint writeOutputDescriptorsSpec
   match descriptors with
   | [] => tail
   | (data, size) :: descriptorTail =>
-      writeOutputEvents data size
+      writeOutputEventsAny data size
         (writeOutputDescriptorsSpec descriptorTail tail)
   end.
 
@@ -63,29 +66,29 @@ Qed.
 
 (** This relation supplies the liveness fact that prefix-closed [spec] lacks. *)
 Definition writeOutputCompleteTrace
-    (descriptors : list WriteOutputDescriptor)
+    (snapshot : seq_snapshot) (descriptors : list WriteOutputDescriptor)
     (tailEvents observed : list seq_label) : Prop :=
-  observed = writeOutputDescriptorsEvents descriptors ++ tailEvents.
+  observed = writeOutputDescriptorsEvents snapshot descriptors ++ tailEvents.
 
-Lemma writeOutputCompleteTrace_app left right tailEvents observed :
-  writeOutputCompleteTrace (left ++ right) tailEvents observed <->
-  writeOutputCompleteTrace left
-    (writeOutputDescriptorsEvents right ++ tailEvents) observed.
+Lemma writeOutputCompleteTrace_app snapshot left right tailEvents observed :
+  writeOutputCompleteTrace snapshot (left ++ right) tailEvents observed <->
+  writeOutputCompleteTrace snapshot left
+    (writeOutputDescriptorsEvents snapshot right ++ tailEvents) observed.
 Proof.
   unfold writeOutputCompleteTrace.
   rewrite writeOutputDescriptorsEvents_app app_assoc. reflexivity.
 Qed.
 
-Lemma writeOutputCompleteTrace_allowed descriptors tail tailEvents observed :
-  writeOutputCompleteTrace descriptors tailEvents observed ->
+Lemma writeOutputCompleteTrace_allowed snapshot descriptors tail tailEvents observed :
+  writeOutputCompleteTrace snapshot descriptors tailEvents observed ->
   tail tailEvents ->
   writeOutputDescriptorsSpec descriptors tail observed.
 Proof.
   intros -> Htail. induction descriptors as [|[data size] descriptorTail IH].
   - exact Htail.
-  - simpl. unfold writeOutputDescriptorEvents, writeOutputEvents, scons.
-    right. eexists. split; first reflexivity. right.
-    right. eexists. split; first reflexivity.
+  - simpl. unfold writeOutputDescriptorEvents, writeOutputEventsAny, scons.
+    right. eexists snapshot, _. split; first reflexivity. right.
+    right. eexists snapshot, _. split; first reflexivity.
     destruct descriptorTail as [|descriptor rest].
     + right. exact Htail.
     + right. exact IH.
@@ -260,15 +263,15 @@ Qed.
 
 (** [scons] is prefix closed, so the event specification permits no events. *)
 Lemma write_output_events_accept_empty (data size : bv 64) (tail : spec) :
-  writeOutputEvents data size tail [].
-Proof. unfold writeOutputEvents, scons. auto. Qed.
+  writeOutputEventsAny data size tail [].
+Proof. unfold writeOutputEventsAny, scons. auto. Qed.
 
 Lemma write_output_events_accept_descriptor_prefix
-    (data size : bv 64) (tail : spec) :
-  writeOutputEvents data size tail
-    [SWriteMem (BV 64 0x2401a0c0) data;
-     SWriteMem (BV 64 0x2401a0c8) size].
-Proof. unfold writeOutputEvents, scons. naive_solver. Qed.
+    (data size : bv 64) (tail : spec) snapshot :
+  writeOutputEventsAny data size tail
+    [SWriteMem (BV 64 0x2401a0c0) data snapshot;
+     SWriteMem (BV 64 0x2401a0c8) size snapshot].
+Proof. unfold writeOutputEventsAny, scons. naive_solver. Qed.
 
 Lemma write_output_payload_observation
     (memoryAtWrite : bv 64 -> list (bv 8) -> Prop)

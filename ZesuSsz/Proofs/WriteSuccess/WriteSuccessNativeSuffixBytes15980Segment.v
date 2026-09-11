@@ -25,8 +25,8 @@ Definition writeSuccessSuffixBytes15980To15990Spec
     ⌜bv_unsigned size = length bytes⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents data size tail)) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny data size tail)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗

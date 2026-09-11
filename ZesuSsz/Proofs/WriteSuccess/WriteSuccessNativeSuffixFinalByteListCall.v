@@ -43,7 +43,7 @@ Definition writeSuccessFinalCallEntryFrame
     byteListItemResources (bv_unsigned pointer) items ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
     ⌜bv_unsigned count = length items⌝ ∗
     ⌜length items < 2 ^ 64⌝ ∗

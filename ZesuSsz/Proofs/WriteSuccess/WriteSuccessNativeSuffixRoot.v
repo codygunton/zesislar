@@ -39,7 +39,7 @@ Definition writeSuccessSuffixAt1572c `{!islaG Sigma} `{!threadG}
     "x11" ↦ᵣ RVal_Bits oldSize ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp + BV 64 1000)%bv (BV 64 32) tail) ∗
+      (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗

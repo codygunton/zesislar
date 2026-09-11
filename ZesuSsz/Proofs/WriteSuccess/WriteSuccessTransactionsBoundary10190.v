@@ -18,7 +18,7 @@ Definition writeSuccessTransactionsAt10190Spec
       sp base transactions processed transaction ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+      (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
         (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
           (writeSuccessTransactionsEvents sp remaining tail))) ∗
     writeSuccessTransactions150ecCallFrame P sp base transaction

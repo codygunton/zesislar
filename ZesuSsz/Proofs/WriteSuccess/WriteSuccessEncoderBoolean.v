@@ -23,7 +23,7 @@ Definition encoderBooleanSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp - 8) ↦ₘ stackRa ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents ((sp - BV 64 9)%bv) (BV 64 1) tail) ∗
+      (writeOutputEventsAny ((sp - BV 64 9)%bv) (BV 64 1) tail) ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
     ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
     ⌜(0x20000000 <= bv_unsigned sp - 16)%Z⌝ ∗

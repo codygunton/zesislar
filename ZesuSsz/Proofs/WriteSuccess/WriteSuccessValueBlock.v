@@ -21,16 +21,16 @@ Definition writeSuccessValueWord (values : list (bv 64)) (index : nat) :
 
 Definition writeSuccessValueEvents (sp : bv 64) (values : list (bv 64))
     (tail : spec) : spec :=
-  writeOutputEvents (sp - 16)%bv (BV 64 8)
-    (writeOutputEvents (sp - 16)%bv (BV 64 8)
-      (writeOutputEvents (sp - 16)%bv (BV 64 8)
-        (writeOutputEvents (sp - 16)%bv (BV 64 8)
-          (writeOutputEvents (sp - 48)%bv (BV 64 8)
-            (writeOutputEvents (writeSuccessValueWord values 4)
+  writeOutputEventsAny (sp - 16)%bv (BV 64 8)
+    (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
+          (writeOutputEventsAny (sp - 48)%bv (BV 64 8)
+            (writeOutputEventsAny (writeSuccessValueWord values 4)
               (writeSuccessValueWord values 5)
-              (writeOutputEvents (sp - 16)%bv (BV 64 8)
-                (writeOutputEvents (sp + 1588)%bv (BV 64 32)
-                (writeOutputEvents (sp - 16)%bv (BV 64 8) tail)))))))).
+              (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
+                (writeOutputEventsAny (sp + 1588)%bv (BV 64 32)
+                (writeOutputEventsAny (sp - 16)%bv (BV 64 8) tail)))))))).
 
 Definition writeSuccessValueRegisters : list string :=
   ["x1"; "x3"; "x4"; "x5"; "x6"; "x7"; "x8"; "x9";
@@ -183,9 +183,9 @@ Proof.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
   Unshelve.
   iExists
-    (writeOutputEvents (sp - 16)%bv (BV 64 8)
-       (writeOutputEvents (sp + 1588)%bv (BV 64 32)
-          (writeOutputEvents (sp - 16)%bv (BV 64 8) tail)),
+    (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
+       (writeOutputEventsAny (sp + 1588)%bv (BV 64 32)
+          (writeOutputEventsAny (sp - 16)%bv (BV 64 8) tail)),
      payload, tt)ₗ.
   liARun.
   Unshelve.

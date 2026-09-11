@@ -26,7 +26,7 @@ Fixpoint writeSuccessStorageKeysEvents (sp : bv 64) (count : nat)
   match count with
   | O => tail
   | S count =>
-      writeOutputEvents (sp + BV 64 1712)%bv (BV 64 32)
+      writeOutputEventsAny (sp + BV 64 1712)%bv (BV 64 32)
         (writeSuccessStorageKeysEvents sp count tail)
   end.
 

@@ -183,8 +183,8 @@ Proof.
     by bv_solve.
   iEval (rewrite <- HtraceAddr) in "Htrace".
   iAssert (spec_trace
-      (writeOutputEvents (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv (BV 64 1)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv (BV 64 1)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (writeSuccessTransactionPhaseEvents TransactionNonce sp transaction
             (writeSuccessTransactionsEvents sp remaining
               (WriteSuccessTransactionsCarrierCall150ec.writeSuccessTransactionsCarrierOutputTail sp items tail))))))%I

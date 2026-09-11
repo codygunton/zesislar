@@ -40,8 +40,8 @@ Definition writeSuccessSuffixAt156e8 `{!islaG Sigma} `{!threadG}
     "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
+    spec_trace (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -60,7 +60,7 @@ Definition writeSuccessSuffixAt156f4 `{!islaG Sigma} `{!threadG}
     "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail) ∗
+    spec_trace (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -180,7 +180,7 @@ Proof.
   all: try iFrame.
   Unshelve.
   all: try iExists
-    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail,
+    (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail,
      0x156f4, sp, first, tt)ₗ.
   all: try cbn.
   all: try unLET.

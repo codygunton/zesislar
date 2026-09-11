@@ -261,8 +261,8 @@ Proof.
       (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv = (sp - BV 64 25)%bv by bv_solve.
   iEval (rewrite <- HtraceAddr) in "Htrace".
   iAssert (spec_trace
-      (writeOutputEvents (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv (BV 64 1)
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv (BV 64 1)
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
             WriteSuccessTransactionsSpec.TransactionNonce sp transaction
             (WriteSuccessTransactionsSpec.writeSuccessTransactionsEvents

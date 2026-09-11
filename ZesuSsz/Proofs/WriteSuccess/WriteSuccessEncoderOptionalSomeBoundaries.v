@@ -46,13 +46,13 @@ Global Instance : LithiumUnfold (@encoderOptionalSomeContext) := I.
 
 Definition encoderOptionalSomeInitialEvents
     (sp : bv 64) (tail : spec) : spec :=
-  writeOutputEvents ((sp - BV 64 16 - BV 64 16 + BV 64 7)%bv)
+  writeOutputEventsAny ((sp - BV 64 16 - BV 64 16 + BV 64 7)%bv)
     (BV 64 1)
-    (writeOutputEvents ((sp - BV 64 16)%bv) (BV 64 8) tail).
+    (writeOutputEventsAny ((sp - BV 64 16)%bv) (BV 64 8) tail).
 
 Definition encoderOptionalSomeAfterBooleanEvents
     (sp : bv 64) (tail : spec) : spec :=
-  writeOutputEvents ((sp - BV 64 16)%bv) (BV 64 8) tail.
+  writeOutputEventsAny ((sp - BV 64 16)%bv) (BV 64 8) tail.
 
 Definition encoderOptionalSomeSpec `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tag : bv 8)

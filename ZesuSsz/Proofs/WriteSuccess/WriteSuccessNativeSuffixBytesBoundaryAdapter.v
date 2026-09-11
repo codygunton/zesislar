@@ -41,16 +41,16 @@ Definition writeSuccessSuffixBytesAggregateEntryZeroFrame
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d1 s1
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d2 s2
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d3 s3
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents d4 s4
-                      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                        (writeOutputEvents d5 s5 tail)))))))))) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d1 s1
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d2 s2
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d3 s3
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d4 s4
+                      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                        (writeOutputEventsAny d5 s5 tail)))))))))) ∗
     bv_unsigned d1 ↦ₘ∗ b1 ∗ ⌜bv_unsigned s1 = length b1⌝ ∗
     bv_unsigned d2 ↦ₘ∗ b2 ∗ ⌜bv_unsigned s2 = length b2⌝ ∗
     bv_unsigned d3 ↦ₘ∗ b3 ∗ ⌜bv_unsigned s3 = length b3⌝ ∗

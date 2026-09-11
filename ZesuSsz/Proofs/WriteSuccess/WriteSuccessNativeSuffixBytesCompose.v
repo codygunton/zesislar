@@ -32,16 +32,16 @@ Definition writeSuccessSuffixBytesAggregateEntry `{!islaG Sigma} `{!threadG}
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d1 s1
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d2 s2
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d3 s3
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents d4 s4
-                      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                        (writeOutputEvents d5 s5 tail)))))))))) ∗
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d1 s1
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d2 s2
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d3 s3
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d4 s4
+                      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                        (writeOutputEventsAny d5 s5 tail)))))))))) ∗
     bv_unsigned d1 ↦ₘ∗ b1 ∗ ⌜bv_unsigned s1 = length b1⌝ ∗
     bv_unsigned d2 ↦ₘ∗ b2 ∗ ⌜bv_unsigned s2 = length b2⌝ ∗
     bv_unsigned d3 ↦ₘ∗ b3 ∗ ⌜bv_unsigned s3 = length b3⌝ ∗
@@ -187,25 +187,25 @@ Lemma write_success_suffix_bytes_rotate_158f0
     (sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5 oldS0 oldS1 : bv 64)
     (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec) :
   writeSuccessSuffixBytesAt158f0CarrierExactData sp d1 s1 oldS0 oldS1 b1
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d2 s2
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d3 s3
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d4 s4
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents d5 s5 tail))))))))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d2 s2
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d3 s3
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d4 s4
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d5 s5 tail))))))))
       (writeSuccessSuffixBytesP1 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P) -∗
   writeSuccessSuffixBytesAt15900CarrierData sp d2 s2 oldS0 oldS1 b2
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d2 s2
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d3 s3
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d4 s4
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents d5 s5 tail))))))))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d2 s2
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d3 s3
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d4 s4
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d5 s5 tail))))))))
       (writeSuccessSuffixBytesP2 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P).
 Proof.
@@ -266,21 +266,21 @@ Lemma write_success_suffix_bytes_rotate_15900
     (sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5 oldS0 oldS1 : bv 64)
     (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec) :
   writeSuccessSuffixBytesAt15900CarrierExactData sp d2 s2 oldS0 oldS1 b2
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d3 s3
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d4 s4
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d5 s5 tail))))))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d3 s3
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d4 s4
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d5 s5 tail))))))
       (writeSuccessSuffixBytesP2 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P) -∗
   writeSuccessSuffixBytesAt15910CarrierData sp d3 s3 oldS0 oldS1 b3
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d3 s3
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d4 s4
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d5 s5 tail))))))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d3 s3
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d4 s4
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d5 s5 tail))))))
       (writeSuccessSuffixBytesP3 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P).
 Proof.
@@ -333,17 +333,17 @@ Lemma write_success_suffix_bytes_rotate_15910
     (sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5 oldS0 oldS1 : bv 64)
     (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec) :
   writeSuccessSuffixBytesAt15910CarrierExactData sp d3 s3 oldS0 oldS1 b3
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d4 s4
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d5 s5 tail))))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d4 s4
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d5 s5 tail))))
       (writeSuccessSuffixBytesP3 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P) -∗
   writeSuccessSuffixBytesAt15920CarrierData sp d4 s4 oldS0 oldS1 b4
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d4 s4
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d5 s5 tail))))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d4 s4
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d5 s5 tail))))
       (writeSuccessSuffixBytesP4 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P).
 Proof.
@@ -395,8 +395,8 @@ Lemma write_success_suffix_bytes_rotate_15920
     (sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5 oldS0 oldS1 : bv 64)
     (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec) :
   writeSuccessSuffixBytesAt15920CarrierExactData sp d4 s4 oldS0 oldS1 b4
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d5 s5 tail))
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d5 s5 tail))
       (writeSuccessSuffixBytesP4 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
         b1 b2 b3 b4 b5 P) -∗
   writeSuccessSuffixBytesAt15930CarrierShape sp
@@ -483,100 +483,100 @@ Proof.
   iPoseProof (instr_pre_wand 0x15920 0x15920 false false
     (writeSuccessSuffixBytesAt15930CarrierShape sp P5)
     (writeSuccessSuffixBytesAt15920CarrierExactData sp d4 s4 oldS0 oldS1 b4
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d5 s5 tail)) P4)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d5 s5 tail)) P4)
     with "Hbody5") as "Hbody5to4"; [done | done |].
   iSpecialize ("Hbody5to4" with "[]").
   { iApply (write_success_suffix_bytes_rotate_15920 P sp d1 s1 d2 s2 d3 s3
       d4 s4 d5 s5 oldS0 oldS1 b1 b2 b3 b4 b5 tail). }
   iPoseProof (write_success_suffix_bytes_15910_carrier sp P4
     d4 s4 oldS0 oldS1 b4
-    (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-      (writeOutputEvents d5 s5 tail))
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny d5 s5 tail))
     with "Hlookup Hcode Hbytes Hbody5to4") as "Hbody4".
   iPoseProof (instr_pre_wand 0x15910 0x15910 false false
     (writeSuccessSuffixBytesAt15920CarrierData sp d4 s4 oldS0 oldS1 b4
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d4 s4
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d5 s5 tail)))) P4)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d4 s4
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d5 s5 tail)))) P4)
     (writeSuccessSuffixBytesAt15910CarrierExactData sp d3 s3 oldS0 oldS1 b3
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d4 s4
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d5 s5 tail)))) P3)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d4 s4
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d5 s5 tail)))) P3)
     with "Hbody4") as "Hbody4to3"; [done | done |].
   iSpecialize ("Hbody4to3" with "[]").
   { iApply (write_success_suffix_bytes_rotate_15910 P sp d1 s1 d2 s2 d3 s3
       d4 s4 d5 s5 oldS0 oldS1 b1 b2 b3 b4 b5 tail). }
   iPoseProof (write_success_suffix_bytes_15900_carrier sp P3
     d3 s3 oldS0 oldS1 b3
-    (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-      (writeOutputEvents d4 s4
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-          (writeOutputEvents d5 s5 tail))))
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny d4 s4
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+          (writeOutputEventsAny d5 s5 tail))))
     with "Hlookup Hcode Hbytes Hbody4to3") as "Hbody3".
   iPoseProof (instr_pre_wand 0x15900 0x15900 false false
     (writeSuccessSuffixBytesAt15910CarrierData sp d3 s3 oldS0 oldS1 b3
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d3 s3
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d4 s4
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d5 s5 tail)))))) P3)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d3 s3
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d4 s4
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d5 s5 tail)))))) P3)
     (writeSuccessSuffixBytesAt15900CarrierExactData sp d2 s2 oldS0 oldS1 b2
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d3 s3
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d4 s4
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d5 s5 tail)))))) P2)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d3 s3
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d4 s4
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d5 s5 tail)))))) P2)
     with "Hbody3") as "Hbody3to2"; [done | done |].
   iSpecialize ("Hbody3to2" with "[]").
   { iApply (write_success_suffix_bytes_rotate_15900 P sp d1 s1 d2 s2 d3 s3
       d4 s4 d5 s5 oldS0 oldS1 b1 b2 b3 b4 b5 tail). }
   iPoseProof (write_success_suffix_bytes_158f0_carrier sp P2
     d2 s2 oldS0 oldS1 b2
-    (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-      (writeOutputEvents d3 s3
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-          (writeOutputEvents d4 s4
-            (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-              (writeOutputEvents d5 s5 tail))))))
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny d3 s3
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+          (writeOutputEventsAny d4 s4
+            (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+              (writeOutputEventsAny d5 s5 tail))))))
     with "Hlookup Hcode Hbytes Hbody3to2") as "Hbody2".
   iPoseProof (instr_pre_wand 0x158f0 0x158f0 false false
     (writeSuccessSuffixBytesAt15900CarrierData sp d2 s2 oldS0 oldS1 b2
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d2 s2
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d3 s3
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d4 s4
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents d5 s5 tail)))))))) P2)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d2 s2
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d3 s3
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d4 s4
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d5 s5 tail)))))))) P2)
     (writeSuccessSuffixBytesAt158f0CarrierExactData sp d1 s1 oldS0 oldS1 b1
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-        (writeOutputEvents d2 s2
-          (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-            (writeOutputEvents d3 s3
-              (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                (writeOutputEvents d4 s4
-                  (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                    (writeOutputEvents d5 s5 tail)))))))) P1)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d2 s2
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d3 s3
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d4 s4
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d5 s5 tail)))))))) P1)
     with "Hbody2") as "Hbody2to1"; [done | done |].
   iSpecialize ("Hbody2to1" with "[]").
   { iApply (write_success_suffix_bytes_rotate_158f0 P sp d1 s1 d2 s2 d3 s3
       d4 s4 d5 s5 oldS0 oldS1 b1 b2 b3 b4 b5 tail). }
   iPoseProof (write_success_suffix_bytes_158e0_carrier sp P1
     d1 s1 oldS0 oldS1 b1
-    (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-      (writeOutputEvents d2 s2
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-          (writeOutputEvents d3 s3
-            (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-              (writeOutputEvents d4 s4
-                (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
-                  (writeOutputEvents d5 s5 tail))))))))
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny d2 s2
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+          (writeOutputEventsAny d3 s3
+            (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+              (writeOutputEventsAny d4 s4
+                (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                  (writeOutputEventsAny d5 s5 tail))))))))
     with "Hlookup Hcode Hbytes Hbody2to1") as "Hbody1".
   iEval (rewrite instr_pre'_eq) in "Hbody1".
   iApply ("Hbody1" with "[Hentry]").

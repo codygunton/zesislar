@@ -148,9 +148,9 @@ Definition writeSuccessTransactionsLoopExitEventsFrame
     : iProp Sigma :=
   (writeSuccessTransactionsEventScratch sp base transactions first second items ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+   spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
-       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P)%I.
+       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsLoopExitEventsFrame) := I.
@@ -190,9 +190,9 @@ Definition writeSuccessTransactionsLoopEventsFrame
    writeSuccessTransactionsEventScratch sp base transactions first second items ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining
-     (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+     (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
        (byteListItemEvents (sp - BV 64 32)%bv items
-         (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗
+         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗
    P ∗
    writeSuccessTransactionsInvariant
      sp base transactions processed remaining bytes prefix suffix ∗
@@ -232,9 +232,9 @@ Definition writeSuccessTransactionPhaseEventsHandoff
    spec_trace
      (writeSuccessTransactionPhaseEvents phase sp transaction
        (writeSuccessTransactionsEvents sp remaining
-         (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+         (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
            (byteListItemEvents (sp - BV 64 32)%bv items
-             (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))))) ∗
+             (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))))) ∗
    P ∗
    writeSuccessTransactionsInvariant sp base transactions processed
      (transaction :: remaining) bytes prefix suffix ∗
@@ -263,9 +263,9 @@ Lemma write_success_transactions_loop_events_pack
   writeSuccessTransactionsEventScratch sp base transactions first second items -∗
   mmio_range 0x2401a0c0 16 -∗
   spec_trace (writeSuccessTransactionsEvents sp remaining
-    (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
-        (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)))) -∗
+        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)))) -∗
   P -∗
   writeSuccessTransactionsInvariant
     sp base transactions processed remaining bytes prefix suffix -∗
@@ -301,9 +301,9 @@ Lemma write_success_transaction_phase_events_handoff_pack
   spec_trace
     (writeSuccessTransactionPhaseEvents phase sp transaction
       (writeSuccessTransactionsEvents sp remaining
-        (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
           (byteListItemEvents (sp - BV 64 32)%bv items
-            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))))) -∗
+            (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))))) -∗
   P -∗
   writeSuccessTransactionsInvariant sp base transactions processed
     (transaction :: remaining) bytes prefix suffix -∗
@@ -335,9 +335,9 @@ Definition writeSuccessTransactionsLoopCarrierExit
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+   spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
-    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.
+    (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.
 
 (** This event boundary keeps the decoded words at [1120(sp)] and [1128(sp)]
     exact.  The generic event scratch uses an uninitialized region there, but
@@ -358,9 +358,9 @@ Definition writeSuccessTransactionsLoopExitEventsData
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+   spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
-       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
+       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
@@ -395,9 +395,9 @@ Definition writeSuccessTransactionsLoopCarrierFrame
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining
-     (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+     (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
        (byteListItemEvents (sp - BV 64 32)%bv items
-         (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗ P ∗
+         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗ P ∗
    writeSuccessTransactionsInvariant
      sp base transactions processed remaining bytes prefix suffix ∗
    instr_pre writeSuccessTransactionsLoopExitAddress exit ∗ True)%I.
@@ -432,9 +432,9 @@ Definition writeSuccessTransactionPhaseCarrierHandoff
    spec_trace
      (writeSuccessTransactionPhaseEvents phase sp transaction
        (writeSuccessTransactionsEvents sp remaining
-         (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+         (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
            (byteListItemEvents (sp - BV 64 32)%bv items
-             (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail))))) ∗
+             (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))))) ∗
    P ∗
    writeSuccessTransactionsInvariant sp base transactions processed
      (transaction :: remaining) bytes prefix suffix ∗

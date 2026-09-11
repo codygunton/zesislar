@@ -62,7 +62,7 @@ Definition encoderBytesSuffixSpec `{!islaG Sigma} `{!threadG}
    (bv_unsigned (sp - BV 64 32) - 16) ↦ₘ size ∗
    (bv_unsigned (sp - BV 64 32) - 8) ↦ₘ (BV 64 0x15c90) ∗
    mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents data size tail) ∗
+   spec_trace (writeOutputEventsAny data size tail) ∗
    encoderBytesSuffixFrame data size sp ret bytes
      old_x6 old_s0 old_s1 stack2 tail P ∗ True)%I.
 

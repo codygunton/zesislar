@@ -112,8 +112,8 @@ Definition writeSuccessTransactionsOptionalAddressSomeBooleanSetupSpec
     "x11" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 273) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
     mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
-      (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20)
+    spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
+      (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
         (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
           (writeSuccessTransactionsEvents sp remaining tail)))) ∗
     writeSuccessTransactionsOptionalAddressSomeCallerFrame P sp base transaction
@@ -133,7 +133,7 @@ Definition writeSuccessTransactionsOptionalAddressSomePostSpec
     writeSuccessTransactionsMachine15180
       sp base transactions processed transaction r10 r11 ∗
     mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20)
+    spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
       (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
     writeSuccessTransactionsOptionalAddressSomeFrame P sp base transaction
@@ -178,7 +178,7 @@ Definition writeSuccessTransactionsOptionalAddressSomeAt1518cSpec
     writeSuccessTransactionsScratch15174
       sp base transactions processed transaction ∗
     mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20)
+    spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
       (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
     writeSuccessTransactionsOptionalAddressSomeFrame P sp base transaction

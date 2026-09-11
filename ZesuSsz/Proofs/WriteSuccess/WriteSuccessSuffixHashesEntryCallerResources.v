@@ -54,7 +54,7 @@ Definition writeSuccessSuffixHashesEntrySpec
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessHashesEvents sp (S remaining) tail)) ∗
     P ∗ writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
@@ -79,7 +79,7 @@ Definition writeSuccessSuffixHashes15740Post
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+     (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessHashesEvents sp (S remaining) tail)) ∗
    P ∗ writeSuccessFixedWidthArrayInvariant
      sp pointer base total processed remaining bytes ∗
@@ -104,7 +104,7 @@ Definition writeSuccessSuffixHashesAt15740Spec
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
     mmio_range 0x2401a0c0 16 ∗
     spec_trace
-      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessHashesEvents sp (S remaining) tail)) ∗
     P ∗ writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
@@ -125,7 +125,7 @@ Definition writeSuccessSuffixHashes15740Frame
    (bv_unsigned sp + 904) ↦ₘ pointer ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+     (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessHashesEvents sp (S remaining) tail)) ∗
    P ∗ writeSuccessFixedWidthArrayInvariant
      sp pointer base total processed remaining bytes ∗

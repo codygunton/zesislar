@@ -28,9 +28,9 @@ Definition writeSuccessTransactionsLoopCarrierAt14f00Spec
     writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
     spec_trace (writeSuccessTransactionsEvents sp remaining
-      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items
-          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗ P ∗
+          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)))) ∗ P ∗
     writeSuccessTransactionsInvariant sp base transactions processed remaining
       bytes prefix suffix ∗
     instr_pre writeSuccessTransactionsLoopExitAddress

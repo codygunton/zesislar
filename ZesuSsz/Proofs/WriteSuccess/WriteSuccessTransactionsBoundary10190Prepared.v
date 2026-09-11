@@ -95,7 +95,7 @@ Definition writeSuccessTransactionsAt10190PreparedBlock
    ⌜bv_unsigned sp < 0x40000000⌝ ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining tail))) ∗
    writeSuccessTransactions10190ReturnBuilder
@@ -114,7 +114,7 @@ Lemma write_success_transactions_10190_prepared_pack
   ⌜bv_unsigned sp < 0x40000000⌝ -∗
   mmio_range 0x2401a0c0 16 -∗
   spec_trace
-    (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+    (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) -∗
   writeSuccessTransactions10190ReturnBuilder
@@ -142,7 +142,7 @@ Lemma write_success_transactions_10190_prepared_unpack
   ⌜bv_unsigned sp < 0x40000000⌝ ∗
   mmio_range 0x2401a0c0 16 ∗
   spec_trace
-    (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+    (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
   writeSuccessTransactions10190ReturnBuilder

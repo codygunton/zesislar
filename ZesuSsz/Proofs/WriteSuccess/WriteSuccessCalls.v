@@ -218,7 +218,7 @@ Definition zesuWriteOutputCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
     (fun args _ RET =>
       ∃ tail : spec,
       mmio_range 0x2401a0c0 16 ∗
-      spec_trace (writeOutputEvents (args !!! 0%nat) (args !!! 1%nat) tail) ∗
+      spec_trace (writeOutputEventsAny (args !!! 0%nat) (args !!! 1%nat) tail) ∗
       RET (fun _ =>
         mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
 

@@ -60,9 +60,9 @@ Definition writeSuccessTransactionsPost15674WithdrawalsTotalSpec
    writeSuccessTransactionsLoopCarrierPayload sp first second pointer
      (Z_to_bv 64 (Z.of_nat count)) items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+   spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
-       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
          (writeSuccessWithdrawalsEvents sp count tail)))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
@@ -170,7 +170,7 @@ Proof.
   { iEval (rewrite -instr_pre'_eq) in "Hloop". iExact "Hloop". }
   iPoseProof (write_success_transactions_post_15674_data_call_jalr_strong Data
     sp transactionBase (length transactions)
-    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+    (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
       (writeSuccessWithdrawalsEvents sp count tail))
     first second pointer (Z_to_bv 64 (Z.of_nat count)) items with
     "Hlookup Hcode [HbyteLists] Hnext") as "Hjalr".

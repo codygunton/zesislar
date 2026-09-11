@@ -17,9 +17,9 @@ Definition zesuEncoderOptionalU64SomeCallSpec
       ⌜bv_unsigned (args !!! 0%nat) + 8 < 0x40000000⌝ ∗
       mmio_range 0x2401a0c0 16 ∗
       spec_trace
-        (writeOutputEvents (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv
+        (writeOutputEventsAny (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv
           (BV 64 1)
-          (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
+          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
       RET (fun _ =>
         bv_unsigned (args !!! 0%nat) ↦ₘ value ∗
         (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
@@ -40,7 +40,7 @@ Definition zesuEncoderOptionalU64NoneCallSpec
       ⌜bv_unsigned (args !!! 0%nat) + 8 < 0x40000000⌝ ∗
       mmio_range 0x2401a0c0 16 ∗
       spec_trace
-        (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1) tail) ∗
+        (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
       RET (fun _ =>
         bv_unsigned (args !!! 0%nat) ↦ₘ value ∗
         (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗

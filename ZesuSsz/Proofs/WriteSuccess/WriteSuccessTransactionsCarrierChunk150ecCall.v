@@ -39,7 +39,7 @@ Definition writeSuccessTransactionsAt150ecCarrierCallBlock
    "x2" ↦ᵣ RVal_Bits sp ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining
            (writeSuccessTransactionsCarrierOutputTail sp items tail)))) ∗
@@ -67,7 +67,7 @@ Definition writeSuccessTransactionsAt10190CarrierCallBlock
    "x2" ↦ᵣ RVal_Bits sp ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace
-     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
+     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
          (writeSuccessTransactionsEvents sp remaining
            (writeSuccessTransactionsCarrierOutputTail sp items tail)))) ∗

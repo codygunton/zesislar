@@ -40,7 +40,7 @@ Lemma write_success_transactions_151ac_call_entry_intro
   (bv_unsigned sp - 48) ↦ₘ? 48 -∗
   mmio_range 0x2401a0c0 16 -∗
   spec_trace
-    (WriteSuccessEvents.writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
+    (WriteSuccessEvents.writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32)
       (writeSuccessTransactionPhaseEvents TransactionData sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) -∗
   instr_pre 0x151b4
