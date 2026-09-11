@@ -324,10 +324,10 @@ Ltac expose_decoded_length decodedBytes :=
   | _ => liAStep; expose_decoded_length decodedBytes
   end.
 
-Lemma write_success_to_load_with_frame_extra
+Lemma write_success_to_load_with_frame_events_extra
     `{!islaG Sigma} `{!threadG}
     (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
-    (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
+    (decodedBytes : list (bv 8)) (events : spec) (P : iProp Sigma)
     (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
     (Hspalign : bv_extract 0 4 sp = BV 4 0)
     (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
@@ -336,14 +336,10 @@ Lemma write_success_to_load_with_frame_extra
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
-    instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x101d4 zesuMemcpyCallSpec -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
   instr_pre 0x14d80
     (writeSuccessAtLoadHeaderWithFrame (sp - 2000) (take 720 decodedBytes)
-      (writeSuccessCallerOutputEventsWithFrame
-        (BV 64 0x179c5) (BV 64 6) tail)
+      events
       (reg_col writeSuccessLoadHeaderExtraRegisters ∗ P)) -∗
   instr_body 0x14d7c
     (write_success_prologue_exit sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7
@@ -351,8 +347,7 @@ Lemma write_success_to_load_with_frame_extra
        ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
         bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
         mmio_range 0x2401a0c0 16 ∗
-        spec_trace (writeSuccessCallerOutputEventsWithFrame
-          (BV 64 0x179c5) (BV 64 6) tail) ∗
+        spec_trace events ∗
         P ∗ ⌜length decodedBytes = 848%nat⌝ ∗
         ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
         ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
@@ -361,8 +356,7 @@ Proof.
   move => *.
   iStartProof.
   iIntros
-    "_ #Hlookup #HspecCode #HmemcpyCode #HoutputCode #Hmemcpy #Houtput
-      Hnext".
+    "_ #Hlookup #HspecCode #HmemcpyCode #Hmemcpy Hnext".
   iEval (rewrite /instr_lookup_resources) in "Hlookup".
   iPoseProof ("Hlookup" $! 0x14d7c with "[]") as "#Hinstr14d7c".
   { iPureIntro. rewrite IslaTraces.write_success_blocks.Index.lookup_a14d7c.
@@ -574,6 +568,52 @@ Proof.
       iFrame.
     - iExact "HP". }
   done.
+Qed.
+
+Lemma write_success_to_load_with_frame_extra
+    `{!islaG Sigma} `{!threadG}
+    (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
+    (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
+    (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
+    (Hspalign : bv_extract 0 4 sp = BV 4 0)
+    (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
+    (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x101d4 zesuMemcpyCallSpec -∗
+  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  instr_pre 0x14d80
+    (writeSuccessAtLoadHeaderWithFrame (sp - 2000) (take 720 decodedBytes)
+      (writeSuccessCallerOutputEventsWithFrame
+        (BV 64 0x179c5) (BV 64 6) tail)
+      (reg_col writeSuccessLoadHeaderExtraRegisters ∗ P)) -∗
+  instr_body 0x14d7c
+    (write_success_prologue_exit sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7
+       s8 s9 s10 s11
+       ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
+        bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
+        mmio_range 0x2401a0c0 16 ∗
+        spec_trace (writeSuccessCallerOutputEventsWithFrame
+          (BV 64 0x179c5) (BV 64 6) tail) ∗
+        P ∗ ⌜length decodedBytes = 848%nat⌝ ∗
+        ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
+        ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
+        True)%I).
+Proof.
+  move => *.
+  iStartProof.
+  iIntros
+    "_ #Hlookup #HspecCode #HmemcpyCode #HoutputCode #Hmemcpy #Houtput
+      Hnext".
+  iApply (write_success_to_load_with_frame_events_extra sp decoded ra s0 s1
+    s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 decodedBytes
+    (writeSuccessCallerOutputEventsWithFrame
+      (BV 64 0x179c5) (BV 64 6) tail) P Hdecoded Hspalign Hspmin Hspmax
+    with "Hlookup HspecCode HmemcpyCode Hmemcpy Hnext").
 Qed.
 
 Lemma write_success_to_load_with_frame

@@ -418,12 +418,12 @@ Definition writeSuccessNativeLoadResources {Decoded}
     IslarisContractResources (WriteSuccessArgs Decoded)
       (writeSuccessNativeWitness Decoded) := {|
   islarisCode := writeSuccessCompleteNativeCode;
-  islarisEntry := writeSuccessNativeLegacyEntry;
+  islarisEntry := writeSuccessNativeEntry;
   islarisExit := fun _ witness =>
     writeSuccessAtLoadHeaderWithFrame
       (writeSuccessFrameSp witness)
       (take 720 (writeSuccessDecodedBytes witness))
-      (writeSuccessNativeLegacyTailEvents witness)
+      (writeSuccessNativeTailEvents witness)
       (reg_col writeSuccessLoadHeaderExtraRegisters ∗
        writeSuccessNativeDataResources witness)
 |}.
@@ -457,7 +457,7 @@ Proof.
   iIntros "#Hnative" (args).
   rewrite instr_pre'_eq. iIntros "Hcontract".
   iDestruct "Hcontract" as "[Hentry Hexit]".
-  iEval (rewrite /writeSuccessNativeLegacyEntry) in "Hentry".
+  iEval (rewrite /writeSuccessNativeEntry) in "Hentry".
   iDestruct "Hentry" as (witness) "[%HwellFormed Hentry]".
   pose proof HwellFormed as HwellFormedCopy.
   destruct HwellFormed as
@@ -493,7 +493,7 @@ Proof.
       (writeSuccessAtLoadHeaderWithFrame
         (writeSuccessFrameSp witness)
         (take 720 (writeSuccessDecodedBytes witness))
-        (writeSuccessNativeLegacyTailEvents witness)
+        (writeSuccessNativeTailEvents witness)
         (reg_col writeSuccessLoadHeaderExtraRegisters ∗
          writeSuccessNativeDataResources witness)))%I
     with "[Hexit]" as "Hload".
@@ -511,13 +511,13 @@ Proof.
     (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-    (writeSuccessLegacyProloguePayload witness) with "Hprologue") as "Hbody".
+    (writeSuccessProloguePayload witness) with "Hprologue") as "Hbody".
   iEval (rewrite instr_pre'_eq) in "Hbody".
   iApply "Hbody".
   iSplitL "Hentry"; first iExact "Hentry".
   iSplit; last done.
   iNext. iIntros "Hhandoff".
-  iPoseProof (write_success_to_load_with_frame_extra
+  iPoseProof (write_success_to_load_with_frame_events_extra
     (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)
     (writeSuccessReturnValue witness)
     (writeSuccessSavedS0 witness) (writeSuccessSavedS1 witness)
@@ -527,10 +527,10 @@ Proof.
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
     (writeSuccessDecodedBytes witness)
-    (writeSuccessNativeLegacyAfterTagEvents witness)
+    (writeSuccessNativeTailEvents witness)
     (writeSuccessNativeDataResources witness)
     Hdecoded HspExtract HspMin HspMax with
-    "Hlookup Hmain HmemcpyCode HoutputCode Hmemcpy Houtput Hload") as "HtoLoad".
+    "Hlookup Hmain HmemcpyCode Hmemcpy Hload") as "HtoLoad".
   iEval (rewrite instr_pre'_eq) in "HtoLoad".
   iApply "HtoLoad". iExact "Hhandoff".
 Qed.
