@@ -21,3 +21,9 @@ Ltac zesu_run :=
 Ltac zesu_block :=
   iStartProof;
   zesu_run.
+
+Tactic Notation "zesu_pack" constr(witness) :=
+  iExists witness;
+  iFrame;
+  try done;
+  try zesu_finish.

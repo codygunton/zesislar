@@ -38,3 +38,11 @@ Proof.
 Qed.
 
 Print Assumptions test_zesu_block.
+
+Lemma test_zesu_pack `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  P -∗ ∃ n : nat, ⌜n = 7%nat⌝ ∗ P.
+Proof.
+  iStartProof. iIntros "HP". zesu_pack 7%nat.
+Qed.
+
+Print Assumptions test_zesu_pack.
