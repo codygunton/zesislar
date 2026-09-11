@@ -65,6 +65,13 @@ HELPER_COVERAGE = (
     # The viewer file still uses five pre-composition theorem names here.
     (0x158E0, 0x15930, "write_success_native_suffix_bytes_158e0_to_15930"),
     (0x15680, 0x15694, "block_15680"),
+    # These checked composition lemmas postdate the viewer coverage data.
+    (0x156E8, 0x15700, "write_success_suffix_int_pair"),
+    (0x1572C, 0x1573C, "write_success_suffix_root_output"),
+    (0x1573C, 0x15740, "write_success_suffix_hashes_entry"),
+    (0x15750, 0x15754, "write_success_suffix_hashes_entry_15750_handoff"),
+    (0x159B8, 0x159C8, "write_success_suffix_optional_u64_159b8"),
+    (0x159D4, 0x159D8, "write_success_post_159d4_byte_lists_call"),
 )
 
 
