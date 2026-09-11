@@ -1,0 +1,251 @@
+Require Import ZesuSsz.Automation.All.
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Contracts.IslarisCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+
+Import ListNotations.
+
+Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
+Local Existing Instance subsume_instr_pre_wand_inst | 1.
+
+Definition writeSuccessSuffixIntOtherRegisters : list string :=
+  ["x3"; "x4"; "x6"; "x7"; "x8"; "x9";
+   "x12"; "x13"; "x14"; "x15"; "x16"; "x17"; "x18"; "x19";
+   "x20"; "x21"; "x22"; "x23"; "x24"; "x25"; "x26"; "x27";
+   "x28"; "x29"; "x30"; "x31"].
+
+Definition writeSuccessSuffixIntFrame `{!islaG Sigma} `{!threadG}
+    (sp first second : bv 64) (saved : list valu) (P : iProp Sigma) :
+    iProp Sigma :=
+  (reg_col (zip_with (fun register value =>
+      (KindReg register, ExactShape value))
+    writeSuccessSuffixIntOtherRegisters saved) ∗
+   ⌜length saved = length writeSuccessSuffixIntOtherRegisters⌝ ∗
+   (bv_unsigned sp + 1136) ↦ₘ first ∗
+   (bv_unsigned sp + 1144) ↦ₘ second ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixIntFrame) := I.
+
+Definition writeSuccessSuffixAt156e8 `{!islaG Sigma} `{!threadG}
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp first second : bv 64) (saved : list valu) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+    spec_trace (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
+      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    writeSuccessSuffixIntFrame sp first second saved P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixAt156e8) := I.
+
+Definition writeSuccessSuffixAt156f4 `{!islaG Sigma} `{!threadG}
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp first second : bv 64) (saved : list valu) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits (BV 64 0x156f4) ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
+    "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+    spec_trace (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail) ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    writeSuccessSuffixIntFrame sp first second saved P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixAt156f4) := I.
+
+Definition writeSuccessSuffixAt15700 `{!islaG Sigma} `{!threadG}
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp first second : bv 64) (saved : list valu) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits (BV 64 0x15700) ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
+    "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+    spec_trace tail ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    writeSuccessSuffixIntFrame sp first second saved P ∗ True)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessSuffixAt15700) := I.
+
+Lemma write_success_suffix_156f4_int
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
+  instr_body 0x15700 (writeSuccessSuffixAt15700 P) -∗
+  instr_body 0x156f4 (writeSuccessSuffixAt156f4 P).
+Proof.
+  move => *.
+  iStartProof. iIntros "_ #Hlookup #Hcode #Hint Hnext".
+  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
+    in "Hcode".
+  liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try assumption.
+  all: try bv_solve.
+  all: try lia.
+  all: try iFrame.
+  Unshelve.
+  all: try iExists (tail, 0x15700, sp, second, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
+  Unshelve.
+  all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixAt15700).
+  all: iExists sp, first, second, saved, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixAt15700).
+  all: iExists sp, first, second, saved, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixAt15700).
+  all: iExists sp, first, second, saved, tail.
+  all: have Hreturn : Z_to_bv 64 87808 = BV 64 87808 by bv_solve.
+  all: have HsecondAddress :
+    bv_unsigned (sp + BV 64 1144)%bv = bv_unsigned sp + 1144 by bv_solve.
+  all: iRename select
+    (bv_unsigned (sp + BV 64 1144)%bv ↦ₘ second)%I into "Hsecond".
+  all: iEval (rewrite HsecondAddress) in "Hsecond".
+  all: rewrite -Hreturn.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  all: try iExact "Hsys".
+  all: lazymatch goal with |- ?G => fail "remaining goal" G end.
+Qed.
+
+Lemma write_success_suffix_156e8_int
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
+  instr_body 0x156f4 (writeSuccessSuffixAt156f4 P) -∗
+  instr_body 0x156e8 (writeSuccessSuffixAt156e8 P).
+Proof.
+  move => *.
+  iStartProof. iIntros "_ #Hlookup #Hcode #Hint Hnext".
+  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
+    in "Hcode".
+  liARun.
+  Unshelve. all: try prepare_sidecond.
+  all: try assumption.
+  all: try bv_solve.
+  all: try lia.
+  all: try iFrame.
+  Unshelve.
+  all: try iExists
+    (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail,
+     0x156f4, sp, first, tt)ₗ.
+  all: try cbn.
+  all: try unLET.
+  all: try iFrame.
+  all: try bv_solve.
+  all: try lia.
+  all: try liARun.
+  Unshelve.
+  all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixAt156f4).
+  all: iExists sp, first, second, saved, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: try prepare_sidecond.
+  all: try rewrite bv_sign_extend_64_idemp.
+  all: try bv_solve.
+  all: try lia.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixAt156f4).
+  all: iExists sp, first, second, saved, tail.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  Unshelve.
+  all: iSplit; last done.
+  all: iIntros "Hpost".
+  all: iDestruct "Hpost" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  all: iEval (rewrite /writeSuccessSuffixAt156f4).
+  all: iExists sp, first, second, saved, tail.
+  all: have Hreturn :
+    Z_to_bv 64 0x156f4 = BV 64 0x156f4 by bv_solve.
+  all: have HfirstAddress :
+    bv_unsigned (sp + BV 64 1136)%bv = bv_unsigned sp + 1136 by bv_solve.
+  all: iRename select
+    (bv_unsigned (sp + BV 64 1136)%bv ↦ₘ first)%I into "Hfirst".
+  all: iEval (rewrite HfirstAddress) in "Hfirst".
+  all: rewrite -Hreturn.
+  all: iFrame.
+  all: repeat iSplit; try iPureIntro; try assumption; try lia.
+  all: try iExact "Hsys".
+  all: lazymatch goal with |- ?G => fail "remaining goal" G end.
+Qed.
+
+Lemma write_success_suffix_int_pair
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15d10 zesuEncoderIntCallSpec -∗
+  instr_body 0x15700 (writeSuccessSuffixAt15700 P) -∗
+  instr_body 0x156e8 (writeSuccessSuffixAt156e8 P).
+Proof.
+  iStartProof. iIntros "#Hlookup #Hcode #Hint Hnext".
+  iPoseProof (write_success_suffix_156f4_int P
+    with "Hlookup Hcode Hint Hnext") as "Hsecond".
+  iApply (write_success_suffix_156e8_int P
+    with "Hlookup Hcode Hint Hsecond").
+Qed.

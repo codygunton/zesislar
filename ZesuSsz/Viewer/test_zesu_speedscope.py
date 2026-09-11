@@ -37,9 +37,9 @@ def core_fixture() -> dict:
         },
         "meta": [
             {"owner": "fi:0", "qualified": "main", "displayTreeLevel": 0,
-             "machineInstructionCount": 1},
+             "machineInstructionCount": 1, "pcs": [0x100]},
             {"owner": "fi:1", "qualified": "decode", "displayTreeLevel": 1,
-             "machineInstructionCount": 2},
+             "machineInstructionCount": 2, "pcs": [0x104, 0x108]},
             {"owner": "fi:2", "qualified": "inner", "displayTreeLevel": 2,
              "machineInstructionCount": 4},
             {"owner": "fi:3", "qualified": "encode", "displayTreeLevel": 1,
@@ -119,6 +119,33 @@ class ConvertTest(unittest.TestCase):
         self.assertEqual(full["zesuProfile"]["scope"], "full")
         self.assertEqual(full["zesuProfile"]["detailsUrl"], "flame-details-full.json")
         self.assertIn("full-program", full["profiles"][0]["name"])
+
+    def test_proof_regions_add_a_granular_default_profile(self) -> None:
+        progress = progress_fixture() | {
+            "regionScope": {
+                "label": "sample proof regions",
+                "startPc": "0x100",
+                "endPc": "0x110",
+            },
+            "proofRegions": [{
+                "label": "proved middle",
+                "startPc": "0x104",
+                "endPc": "0x10c",
+                "status": "unconditionally_proven",
+                "theorem": "middle_correct",
+            }],
+        }
+        profile = convert(core_fixture(), progress, "decode", "details.json")
+
+        self.assertEqual(len(profile["profiles"]), 1)
+        regions = profile["zesuMeta"][-2:]
+        self.assertEqual([row["machineInstructionCount"] for row in regions], [1, 2])
+        self.assertEqual(regions[1]["theorem"], "middle_correct")
+        parents = [
+            event["frame"] for event in profile["profiles"][0]["events"]
+            if event["type"] == "O"
+        ]
+        self.assertEqual(parents[:4], [0, 4, 1, 5])
 
 
 class ProofStateTest(unittest.TestCase):

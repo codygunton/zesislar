@@ -55,7 +55,8 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
     }]
     for row in rows:
         capture = observed[row["id"]]
-        status = states[row["qualified"]]["status"]
+        state = states[row["qualified"]]
+        status = state["status"]
         boundary_id = "level1-" + row["id"].replace(":", "-")
         source = row["functionInstanceIdentity"]["function"]["declaration"]
         boundary = {
@@ -113,9 +114,10 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         ])
         flame_states.append({
             "owner": row["id"], "qualified": row["qualified"], "status": status,
-            **({"contract": states[row["qualified"]]["contract"]}
-               if states[row["qualified"]].get("contract") else {}),
+            **{field: state[field] for field in ("contract", "theorem", "condition")
+               if state.get(field)},
         })
+    flame_states.extend(dict(state) for state in progress.get("frameStates", []))
 
     regions.append({
         "id": "level0-glue", "label": "main parent-owned glue",
@@ -150,7 +152,13 @@ def build(cfg: dict, flame: dict, manifest: dict, evidence: dict,
         "compilerProvenance": {"state": "same-ELF DWARF"},
         "phases": [{"id": "level0-glue", "label": "main parent-owned glue", "pcs": glue_pcs}],
         "authoringRegions": regions,
-        "flameProgress": {"states": flame_states},
+        "flameProgress": {
+            "states": flame_states,
+            **({"regionScope": progress["regionScope"]}
+               if progress.get("regionScope") else {}),
+            **({"proofRegions": progress["proofRegions"]}
+               if progress.get("proofRegions") else {}),
+        },
         "refinementGraph": {"nodes": nodes, "edges": edges},
     }
 

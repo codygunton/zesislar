@@ -1,5 +1,7 @@
 /build/
 /_build/
+/_build_*/
+/._build_*/
 __pycache__/
 node_modules/
 dist/
@@ -16,6 +18,7 @@ rocq_mcp_cache_*.v
 
 # Generated Isla traces. The build regenerates this complete directory.
 /generated/isla-traces/
+/experiments/islaris-write-success/generated/
 
 # Local tracking documents.
 /STATUS.md
@@ -24,3 +27,4 @@ rocq_mcp_cache_*.v
 
 # Local opam switch pointer (machine-specific).
 .coq-switch
+/.ai-coord/

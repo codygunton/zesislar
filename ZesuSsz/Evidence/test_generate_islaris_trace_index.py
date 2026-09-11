@@ -25,16 +25,26 @@ class LookupTreeTest(unittest.TestCase):
             output_dir = root / "index"
             dump_dir.mkdir()
             (dump_dir / "block_0.dump").write_text(
+                "//@spec: example_spec pc\n"
                 "100: 00000013 nop\n"
             )
-            generate(dump_dir, output_dir, 0, "example")
+            generate(dump_dir, output_dir, 0, "example",
+                     {"Entry": (0x100, 0x104)})
             self.assertIn(
-                "IslaTraces.example_0.a100.a100",
+                "IslaTraces.example_00.a100.a100",
+                (output_dir / "Index.v").read_text(),
+            )
+            self.assertIn(
+                "Require Import IslaTraces.example_00.a100_spec.",
                 (output_dir / "Index.v").read_text(),
             )
             self.assertIn(
                 "(name IslaTraces.example_blocks)",
                 (output_dir / "dune").read_text(),
+            )
+            self.assertIn(
+                "Existing Instance find_body_a100_inst",
+                (output_dir / "HintsEntry.v").read_text(),
             )
 
 if __name__ == "__main__":

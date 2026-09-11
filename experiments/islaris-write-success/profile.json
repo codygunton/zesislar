@@ -1,0 +1,94 @@
+{
+  "islaConfig": "riscv64_zesu_write_success.toml",
+  "useLoadStoreSpecs": true,
+  "instructionSpecs": {
+    "0x15680": {
+      "spec": "a15680_addi_spec pc",
+      "tactic": "all: (try bv_solve; try lia)."
+    },
+    "0x15684": {
+      "spec": "a15684_auipc_spec pc",
+      "tactic": "all: (try bv_solve; try lia)."
+    }
+  },
+  "loadArrayViews": [
+    {
+      "start": "0x14d80",
+      "end": "0x14e00",
+      "base": "s0",
+      "offset": 720
+    },
+    {
+      "start": "0x14e88",
+      "end": "0x14f04",
+      "base": "sp",
+      "offset": 1032
+    },
+    {
+      "start": "0x14f1c",
+      "end": "0x150d0",
+      "base": "a0",
+      "offset": 0,
+      "kind": "byte"
+    },
+    {
+      "start": "0x153dc",
+      "end": "0x153e0",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
+    },
+    {
+      "start": "0x15434",
+      "end": "0x15438",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
+    },
+    {
+      "start": "0x15454",
+      "end": "0x15464",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
+    },
+    {
+      "start": "0x15490",
+      "end": "0x1549c",
+      "base": "s3",
+      "offset": 0,
+      "kind": "byte"
+    }
+  ],
+  "alignedReturnRegister": "x1",
+  "alignedProgramCounter": "PC",
+  "controlFlowRegisters": {"ra": "x1", "t1": "x6"},
+  "cfgRegions": [
+    {"function": "ssz_decode_observation.writeSuccess", "block": 0},
+    {"function": "write_output"},
+    {"function": "memcpy"},
+    {"function": "ssz_decode_observation.Encoder.boolean"},
+    {"function": "ssz_decode_observation.Encoder.optionalU64"},
+    {"function": "ssz_decode_observation.Encoder.byteLists"},
+    {"function": "ssz_decode_observation.Encoder.bytes"},
+    {"function": "ssz_decode_observation.Encoder.int__anon_1525"},
+    {"function": "ssz_decode_observation.Encoder.int__anon_1658"}
+  ],
+  "cfgBlockFunctions": [
+    {"function": "ssz_decode_observation.writeSuccess", "maxInstructions": 24}
+  ],
+  "cfgPostRegions": [
+    {"function": "ssz_decode_observation.Encoder.int__anon_1645"}
+  ],
+  "memoryBaseRegisters": {
+    "sp": "x2",
+    "s0": "x8",
+    "s1": "x9",
+    "t0": "x5",
+    "a3": "x13",
+    "a4": "x14",
+    "a0": "x10",
+    "s3": "x19",
+    "s6": "x22"
+  }
+}

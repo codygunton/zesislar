@@ -2,7 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import EvmSail.evm_decoder_types.
 Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
-Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.Endpoints.
 
 Import ListNotations.
 
@@ -97,25 +97,25 @@ Definition ConditionalExactCompliance
 
 (** This is the main statement that later proof work must establish. *)
 Definition MainComplianceStatement
-    {State Decoded : Type}
-    (machine : Level1MachineModel State Decoded)
+    {Decoded : Type}
+    (level1 : IslarisLevel1Model Decoded)
     (endpoint : EndpointSemantics)
     (reference : ReferenceSemantics)
     (applies : BugApplies)
     (equivalent : OutcomeRelation) : Prop :=
   ConditionalCompliance
-    (Level1ContractAssumptions machine)
+    (IslarisLevel1ContractAssumptions level1)
     endpoint reference applies equivalent.
 
 (** This target gives exact compliance for an input outside the fixed bug domains. *)
 Definition MainExactComplianceStatement
-    {State Decoded : Type}
-    (machine : Level1MachineModel State Decoded)
+    {Decoded : Type}
+    (level1 : IslarisLevel1Model Decoded)
     (endpoint : EndpointSemantics)
     (reference : ReferenceSemantics)
     (applies : BugApplies)
     (equivalent : OutcomeRelation)
     (input : ByteString) : Prop :=
   ConditionalExactCompliance
-    (Level1ContractAssumptions machine)
+    (IslarisLevel1ContractAssumptions level1)
     endpoint reference applies equivalent input.

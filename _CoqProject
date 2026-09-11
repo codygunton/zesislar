@@ -1,7 +1,7 @@
 # Load paths for Rocq tools that do not read dune.
 -Q _build/default/ZesuSsz ZesuSsz
 -Q _build/default/InstrSpecs InstrSpecs
--Q _build/default/generated/isla-traces/entrypoints IslaTraces.entrypoints
+-R _build/default/generated/isla-traces IslaTraces
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/sail-stdpp SailStdpp
 
