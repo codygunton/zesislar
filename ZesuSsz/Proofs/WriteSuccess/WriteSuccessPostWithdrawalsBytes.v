@@ -136,6 +136,45 @@ Definition writeSuccessPostWithdrawalsAt1572cState
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsAt1572cState) := I.
 
+Ltac prepare_post_withdrawals_bytes_call sp data size bytes tail
+    s8 s9 s18 s19 s20 s21 s22 s23 s24 s25 s26 s27 :=
+  try iRename select
+    (reg_col (zip_with (fun register (value : bv 64) =>
+      (KindReg register, ExactShape (RVal_Bits value)))
+      writeSuccessPostWithdrawalsSaved
+      [s8; s9; s18; s19; s20; s21; s22; s23; s24; s25; s26; s27]))
+    into "Hsaved";
+  try iEval (cbn) in "Hsaved";
+  try iDestruct "Hsaved" as
+    "(H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)";
+  try iRename select (mmio_range 0x2401a0c0 16) into "Hmmio";
+  try iRename select ("x2" ↦ᵣ RVal_Bits sp)%I into "H2";
+  try iRename select ("x5" ↦ᵣ RVal_Bits _)%I into "H5";
+  try iRename select ("x6" ↦ᵣ RVal_Bits _)%I into "H6";
+  try iRename select ("x10" ↦ᵣ RVal_Bits data)%I into "H10";
+  try iRename select ("x11" ↦ᵣ RVal_Bits size)%I into "H11";
+  try iRename select ((bv_unsigned sp - 48) ↦ₘ? 48)%I into "Hstack";
+  try iRename select (bv_unsigned data ↦ₘ∗ bytes)%I into "Hdata";
+  try iRename select
+    (spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))
+    into "Htrace";
+  repeat iDestruct select (_ ∗ _)%I as "(? & ?)";
+  iExists
+    (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32) tail,
+      bytes, 0x1572c, s9, s8, sp, size, data, tt)ₗ;
+  cbn;
+  repeat iDestruct select (_ ∗ _)%I as "(? & ?)";
+  iDestruct select
+    (∃ value : valu, ⌜value = RVal_Bits s8⌝ ∗ "x8" ↦ᵣ value)%I
+    as (value8) "(-> & H8)";
+  iDestruct select
+    (∃ value : valu, ⌜value = RVal_Bits s9⌝ ∗ "x9" ↦ᵣ value)%I
+    as (value9) "(-> & H9)";
+  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def);
+  iFrame "H2 H5 H6 H8 H9 H10 H11 Hstack Hdata Hmmio Htrace";
+  repeat iSplit; try iPureIntro; try assumption; try lia; try bv_solve;
+  try iAssumption; try iExact "Hmmio".
+
 Lemma block_15728 `{!islaG Sigma} `{!threadG}
     (sp optionalValue optionalTag data size root : bv 64)
     (bytes : list (bv 8)) (saved : list (bv 64)) (tail : spec)
@@ -159,43 +198,8 @@ Proof.
   liARun.
   Unshelve. all: try zesu_finish.
   Unshelve.
-  all: try iRename select
-    (reg_col (zip_with (fun register (value : bv 64) =>
-      (KindReg register, ExactShape (RVal_Bits value)))
-      writeSuccessPostWithdrawalsSaved
-      [s8; s9; s18; s19; s20; s21; s22; s23; s24; s25; s26; s27]))
-    into "Hsaved".
-  all: try iEval (cbn) in "Hsaved".
-  all: try iDestruct "Hsaved" as
-    "(H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)".
-  all: try iRename select (mmio_range 0x2401a0c0 16) into "Hmmio".
-  all: try iRename select ("x2" ↦ᵣ RVal_Bits sp)%I into "H2".
-  all: try iRename select ("x5" ↦ᵣ RVal_Bits _)%I into "H5".
-  all: try iRename select ("x6" ↦ᵣ RVal_Bits _)%I into "H6".
-  all: try iRename select ("x10" ↦ᵣ RVal_Bits data)%I into "H10".
-  all: try iRename select ("x11" ↦ᵣ RVal_Bits size)%I into "H11".
-  all: try iRename select ((bv_unsigned sp - 48) ↦ₘ? 48)%I into "Hstack".
-  all: try iRename select (bv_unsigned data ↦ₘ∗ bytes)%I into "Hdata".
-  all: try iRename select
-    (spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))
-    into "Htrace".
-  all: repeat iDestruct select (_ ∗ _)%I as "(? & ?)".
-  all: iExists
-    (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32) tail,
-      bytes, 0x1572c, s9, s8, sp, size, data, tt)ₗ.
-  all: cbn.
-  all: repeat iDestruct select (_ ∗ _)%I as "(? & ?)".
-  all: iDestruct select
-    (∃ value : valu, ⌜value = RVal_Bits s8⌝ ∗ "x8" ↦ᵣ value)%I
-    as (value8) "(%Hvalue8 & H8)"; subst value8.
-  all: iDestruct select
-    (∃ value : valu, ⌜value = RVal_Bits s9⌝ ∗ "x9" ↦ᵣ value)%I
-    as (value9) "(%Hvalue9 & H9)"; subst value9.
-  all: iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def).
-  all: iFrame "H2 H5 H6 H8 H9 H10 H11 Hstack Hdata Hmmio Htrace".
-  all: repeat iSplit; try iPureIntro; try assumption; try lia; try bv_solve.
-  all: try iAssumption.
-  all: try iExact "Hmmio".
+  all: prepare_post_withdrawals_bytes_call sp data size bytes tail
+    s8 s9 s18 s19 s20 s21 s22 s23 s24 s25 s26 s27.
   iApply (instr_pre_wand 0x1572c 0x1572c true true with "HnextPre");
     [done | reflexivity |].
   iIntros "Hreturn".
