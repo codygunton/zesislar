@@ -71,6 +71,7 @@ Definition writeOutputTraceSpec `{!islaG Sigma} `{!threadG}
        "x1" ↦ᵣ RVal_Bits ret ∗
        "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
        "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+       bv_unsigned data ↦ₘ∗ payload ∗
        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeOutputTraceSpec) := I.
@@ -106,6 +107,7 @@ Proof.
   iSplit.
   { iPureIntro. reflexivity. }
   unshelve (repeat zesu_liAStepNoWrite).
+  all: try iFrame.
   Unshelve. all: prepare_sidecond.
   all: try assumption.
   all: try bv_solve.

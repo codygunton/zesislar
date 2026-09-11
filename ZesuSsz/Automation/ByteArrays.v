@@ -1,5 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 From iris.proofmode Require Import environments.
+From iris.program_logic Require Import lifting.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -242,6 +243,59 @@ End byte_array_read.
 Section byte_array_write.
   Context `{!islaG Sigma} `{!threadG}.
 
+  (** Snapshot claims describe ordinary memory.  An MMIO write does not
+      change that memory, so the continuation keeps the claims. *)
+  Lemma wp_write_mmio_preserve_mem_claims n len a (vnew : bv n) es ann res
+      kind tag (Pks : spec) (regClaims : list (sail_name * valu))
+      (memClaims : list (Z * list byte)) :
+    n = (8 * len)%N ->
+    0 < Z.of_N len ->
+    (forall snapshot, snapshot_reg_agreement snapshot regClaims ->
+      snapshot_mem_agreement snapshot memClaims ->
+      Pks [SWriteMem a vnew snapshot]) ->
+    snapshot_reg_resources regClaims -∗
+    snapshot_mem_resources memClaims -∗
+    mmio_range (bv_unsigned a) (Z.of_N len) -∗
+    spec_trace Pks -∗
+    (∀ snapshot,
+      ⌜snapshot_reg_agreement snapshot regClaims⌝ -∗
+      ⌜snapshot_mem_agreement snapshot memClaims⌝ -∗
+      snapshot_mem_resources memClaims -∗
+      spec_trace (fun labels => Pks (SWriteMem a vnew snapshot :: labels)) -∗
+      WPasm es) -∗
+    WPasm (WriteMem (RVal_Bool res) kind
+      (RVal_Bits (@bv_to_bvn 64 a)) (RVal_Bits (@bv_to_bvn n vnew))
+      len tag ann :t: es).
+  Proof.
+    iIntros (Hwidth Hlen Haccept)
+      "HregClaims HmemClaims Hmmio Hspec Hcont".
+    subst. setoid_rewrite wp_asm_unfold.
+    iIntros ([????]) "/= -> -> -> Hregs".
+    iApply wp_lift_step; [done|].
+    iIntros (sigma1 ????) "(Hctx & Hictx & Hmem)".
+    iApply fupd_mask_intro; first set_solver. iIntros "Hmask".
+    iDestruct (mmio_range_lookup with "Hmem Hmmio") as %Hread; [done|].
+    rewrite N2Z.id in Hread.
+    iDestruct (mmio_range_in_range with "Hmmio") as %Hrange.
+    iDestruct (mmio_range_Forall with "Hmem Hmmio") as %HmmioBytes.
+    iDestruct (snapshot_reg_resources_agree with
+      "Hregs HregClaims") as %HregAgree.
+    iPoseProof (snapshot_mem_resources_agree with
+      "Hmem HmemClaims") as "%HmemAgree".
+    iSplit.
+    { iPureIntro. eexists _, _, _, _. simpl.
+      econstructor; [done | by econstructor |]. simpl.
+      eexists ∅, _, _. simplify_option_eq. naive_solver. }
+    iIntros "!>" (????) "_". iMod "Hmask" as "_".
+    inv_seq_step.
+    revert select (exists _, _) => -[?[?[?[?[??]]]]].
+    simplify_option_eq. destruct_and!. simplify_eq.
+    iMod (spec_ctx_cons with "Hctx Hspec") as "[Hctx Hspec]";
+      [apply Haccept; assumption|].
+    iFrame. iModIntro. iSplitL; [|done].
+    iApply ("Hcont" with "[] [] HmemClaims Hspec"); done.
+  Qed.
+
   Lemma li_wp_write_mmio_snapshot_zesu len n success kind a (vnew : bv n)
       tag ann es claimSearchAddress :
     (⌜n = (8 * len)%N⌝ ∗
@@ -263,7 +317,8 @@ Section byte_array_write.
                         snapshot_mem_agreement snapshot
                           [(claimAddress, claimBytes8)] -> accept snapshot⌝ ∗
                       ⌜scons_snap (SWriteMem a vnew) accept Pks' ⊆ Pks⌝ ∗
-                      (spec_trace Pks' -∗ WPasm es)
+                      (claimAddress ↦ₘ∗ claimBytes8 -∗
+                       spec_trace Pks' -∗ WPasm es)
                 | _ => fun _ => False
                 end claimBytes
             | _ => False
@@ -288,7 +343,8 @@ Section byte_array_write.
     destruct p; try done.
     iDestruct "Hrest" as (Pks Pks' accept)
       "(Hks&%Haccept&%Hsubset&Hcont)".
-    iApply (wp_write_mmio n len a vnew es ann success kind tag Pks []
+    iApply (wp_write_mmio_preserve_mem_claims n len a vnew es ann success
+      kind tag Pks []
       [(claimAddress, claimBytes)] with "[] [Hclaim] [Hmmio] Hks").
     - exact Hwidth.
     - lia.
@@ -299,7 +355,10 @@ Section byte_array_write.
     - rewrite /snapshot_reg_resources. done.
     - rewrite /snapshot_mem_resources /=. iFrame.
     - iApply (mmio_range_shorten with "Hmmio"); lia.
-    - iIntros (snapshot) "_ %Hmemory Hspec". iApply "Hcont".
+    - iIntros (snapshot) "_ %Hmemory Hclaim Hspec".
+      iEval (rewrite /snapshot_mem_resources /=) in "Hclaim".
+      iDestruct "Hclaim" as "[Hclaim _]".
+      iApply ("Hcont" with "Hclaim").
       iApply (spec_trace_mono with "Hspec").
       intros labels Htail. specialize (Hsubset (SWriteMem a vnew snapshot :: labels)).
       apply Hsubset. right. exists snapshot, labels. split; [by apply Haccept|].

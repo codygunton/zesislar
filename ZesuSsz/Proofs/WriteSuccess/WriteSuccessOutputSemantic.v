@@ -2,7 +2,9 @@ Require Import ZesuSsz.Automation.All.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 
 Import ListNotations.
 
@@ -19,6 +21,44 @@ Definition writeOutputPayloadObservation
     bytes = writeSuccessPublicBytes payload.
 
 Definition WriteOutputDescriptor : Type := (bv 64 * bv 64)%type.
+
+Definition writeSuccessPrivateBytes (bytes : ByteString) : list (bv 8) :=
+  map (Z_to_bv 8) bytes.
+
+(** This specification pairs every output descriptor with one fixed payload.
+    A length mismatch rejects the trace. *)
+Fixpoint writeOutputPayloadsSpec
+    (descriptors : list WriteOutputDescriptor)
+    (payloads : list (list (bv 8))) (tail : spec) : spec :=
+  match descriptors, payloads with
+  | [], [] => tail
+  | (data, size) :: descriptorTail, payload :: payloadTail =>
+      writeOutputEvents data size payload
+        (writeOutputPayloadsSpec descriptorTail payloadTail tail)
+  | _, _ => fun _ => False
+  end.
+
+Lemma writeOutputPayloadsSpec_app leftDescriptors rightDescriptors
+    leftPayloads rightPayloads tail :
+  length leftDescriptors = length leftPayloads ->
+  writeOutputPayloadsSpec
+    (leftDescriptors ++ rightDescriptors) (leftPayloads ++ rightPayloads) tail =
+  writeOutputPayloadsSpec leftDescriptors leftPayloads
+    (writeOutputPayloadsSpec rightDescriptors rightPayloads tail).
+Proof.
+  revert leftPayloads. induction leftDescriptors as [|[data size] descriptors IH];
+    intros [|payload payloads] Hlength; simpl in *; try lia; [reflexivity|].
+  rewrite IH; [reflexivity|lia].
+Qed.
+
+Lemma writeSuccessPublicPrivateBytes bytes :
+  Forall writeSuccessByte bytes ->
+  writeSuccessPublicBytes (writeSuccessPrivateBytes bytes) = bytes.
+Proof.
+  intros Hvalid. induction Hvalid as [|byte bytes Hbyte Hbytes IH]; simpl.
+  - reflexivity.
+  - f_equal; [unfold writeSuccessByte in Hbyte; bv_solve|exact IH].
+Qed.
 
 Definition writeOutputDescriptorEvents
     (snapshot : seq_snapshot)
