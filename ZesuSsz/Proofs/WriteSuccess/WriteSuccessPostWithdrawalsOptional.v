@@ -21,6 +21,12 @@ Definition writeSuccessPostWithdrawalsVolatile : list string :=
   ["x3"; "x4"; "x6"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16";
    "x17"; "x28"; "x29"; "x30"; "x31"].
 
+Definition writeSuccessPostWithdrawalsRemainingEvents
+    (sp data size : bv 64) (tail : spec) : spec :=
+  writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+    (writeOutputEventsAny data size
+      (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32) tail)).
+
 Definition writeSuccessPostWithdrawalsAt1571c
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
   (∃ (sp optionalValue optionalTag data size root : bv 64)
@@ -50,7 +56,7 @@ Definition writeSuccessPostWithdrawalsAt1571c
     bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
     mmio_range 0x2401a0c0 16 ∗
-    spec_trace (writeOutputEventsAny data size tail) ∗
+    spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -87,11 +93,11 @@ Definition writeSuccessPostWithdrawalsAt15700
     mmio_range 0x2401a0c0 16 ∗
     ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
-         (writeOutputEventsAny data size tail))) ∨
+         (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
      (⌜bv_extract 0 8 optionalTag <> BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
-           (writeOutputEventsAny data size tail))))) ∗
+           (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -129,11 +135,11 @@ Definition writeSuccessPostWithdrawalsAt15718
     mmio_range 0x2401a0c0 16 ∗
     ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
-         (writeOutputEventsAny data size tail))) ∨
+         (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
      (⌜bv_extract 0 8 optionalTag <> BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
-           (writeOutputEventsAny data size tail))))) ∗
+           (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -165,11 +171,11 @@ Definition writeSuccessPostWithdrawals15700State
    ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
    ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
       spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
-        (writeOutputEventsAny data size tail))) ∨
+        (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
     (⌜bv_extract 0 8 optionalTag <> BV 8 0⌝ ∗
       spec_trace (writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
-          (writeOutputEventsAny data size tail))))) ∗
+          (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
    ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -200,11 +206,11 @@ Definition writeSuccessPostWithdrawals15718State
    ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
    ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
       spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
-        (writeOutputEventsAny data size tail))) ∨
+        (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
     (⌜bv_extract 0 8 optionalTag <> BV 8 0⌝ ∗
       spec_trace (writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
-          (writeOutputEventsAny data size tail))))) ∗
+          (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
    ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -241,7 +247,7 @@ Definition writeSuccessPostWithdrawals1571cState
    (bv_unsigned sp + 1168) ↦ₘ data ∗ (bv_unsigned sp + 1176) ↦ₘ size ∗
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
    ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
-   spec_trace (writeOutputEventsAny data size tail) ∗
+   spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
    ⌜bv_unsigned sp < 0x40000000⌝ ∗
@@ -279,7 +285,7 @@ Lemma post_withdrawals_optional_return `{!islaG Sigma} `{!threadG}
     instr_pre 0x1571c
       (writeSuccessSuffixOptionalU64159b8Return
         (BV 64 0x1571c) sp (sp + BV 64 1624)%bv optionalValue optionalTag
-        (writeOutputEventsAny data size tail)
+        (writeSuccessPostWithdrawalsRemainingEvents sp data size tail)
         b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗
        writeSuccessPostWithdrawalsCallFrame
          sp optionalValue optionalTag data size root bytes tail P).
@@ -457,12 +463,12 @@ Definition writeSuccessPostWithdrawalsOptionalReady
       (writeSuccessPostWithdrawalsCallFrame
         sp optionalValue optionalTag data size root bytes tail P)
       (BV 64 0x1571c) sp (sp + BV 64 1624)%bv optionalValue optionalTag
-      (writeOutputEventsAny data size tail) ∨
+      (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∨
     writeSuccessSuffixOptionalU64159b8SomeFrame
       (writeSuccessPostWithdrawalsCallFrame
         sp optionalValue optionalTag data size root bytes tail P)
       (BV 64 0x1571c) sp (sp + BV 64 1624)%bv optionalValue optionalTag
-      (writeOutputEventsAny data size tail)))%I.
+      (writeSuccessPostWithdrawalsRemainingEvents sp data size tail)))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsOptionalReady) := I.
@@ -477,7 +483,7 @@ Lemma post_withdrawals_optional_prepare `{!islaG Sigma} `{!threadG}
     instr_pre 0x1571c
       (writeSuccessSuffixOptionalU64159b8Return
         (BV 64 0x1571c) sp (sp + BV 64 1624)%bv optionalValue optionalTag
-        (writeOutputEventsAny data size tail)
+        (writeSuccessPostWithdrawalsRemainingEvents sp data size tail)
         b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗
        writeSuccessPostWithdrawalsCallFrame
         sp optionalValue optionalTag data size root bytes tail P)) -∗
@@ -601,13 +607,13 @@ Proof.
       (writeSuccessPostWithdrawalsCallFrame
         sp optionalValue optionalTag data size root bytes tail P)
       (BV 64 0x1571c) sp (sp + BV 64 1624)%bv optionalValue optionalTag
-      (writeOutputEventsAny data size tail) with "Hcall Hnone").
+      (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) with "Hcall Hnone").
   - apply_post_withdrawals_optional_call.
     iApply (write_success_suffix_optional_u64_159b8_some_assembly
       (writeSuccessPostWithdrawalsCallFrame
         sp optionalValue optionalTag data size root bytes tail P)
       (BV 64 0x1571c) sp (sp + BV 64 1624)%bv optionalValue optionalTag
-      (writeOutputEventsAny data size tail) with "Hcall Hsome").
+      (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) with "Hcall Hsome").
   Unshelve. all: try zesu_finish.
   all: lazymatch goal with |- ?G => fail "block_15718 residual" G end.
 Qed.
