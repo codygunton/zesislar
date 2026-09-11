@@ -36,7 +36,8 @@ Lemma write_success_native_epilogue_continuation
       (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
       (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
       (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-      (writeSuccessNativeExitMemory witness)).
+      (writeSuccessNativeExitMemory witness ∗
+       spec_trace (writeSuccessTraceTail witness))).
 Proof.
   pose proof Hwell as Hfacts.
   destruct Hfacts as
@@ -71,7 +72,8 @@ Proof.
       "Hpost".
     iDestruct "Hpost" as
       "(Hsys & H1 & Hother & H2 & H8 & H9 & H18 & H19 & H20 & H21 & H22 &
-        H23 & H24 & H25 & H26 & H27 & Hslots & Hmemory & _)".
+        H23 & H24 & H25 & H26 & H27 & Hslots & Hterminal & _)".
+    iDestruct "Hterminal" as "(Hmemory & Htrace)".
     iEval (rewrite /writeSuccessEpilogueSavedSlots) in "Hslots".
     iDestruct "Hslots" as
       "(HslotRa & Hslot0 & Hslot1 & Hslot2 & Hslot3 & Hslot4 & Hslot5 &

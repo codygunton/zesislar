@@ -272,7 +272,8 @@ Definition writeSuccessTerminalResources `{!islaG Sigma} `{!threadG}
     ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
     ⌜outputRelation args witness bytes⌝ ∗
     writeSuccessTerminalMachine witness ∗
-    writeSuccessNativeExitMemory witness)%I.
+    writeSuccessNativeExitMemory witness ∗
+    spec_trace (writeSuccessTraceTail witness))%I.
 
 Definition writeSuccessHeaderTerminal `{!islaG Sigma} `{!threadG}
     {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
