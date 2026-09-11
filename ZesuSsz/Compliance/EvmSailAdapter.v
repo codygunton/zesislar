@@ -6,7 +6,11 @@ Import ListNotations.
 (** An evaluator gives meaning to the prompt monad and its host operations.
     A later proof must supply and validate one concrete evaluator. *)
 Record DecoderEvaluator : Type := {
-  evaluates : forall A, M A -> list Z -> option A -> Prop
+  evaluates : forall A, M A -> list Z -> option A -> Prop;
+  (** This field records the determinism assumption for the reference
+      evaluator. *)
+  evaluates_functional : forall A m bytes r1 r2,
+    evaluates A m bytes r1 -> evaluates A m bytes r2 -> r1 = r2
 }.
 
 (** The generated action remains a field because Coq 8 cannot compile its
