@@ -54,7 +54,8 @@ Definition writeSuccessSuffixOptionalU64159b8SomeSpec
     (∀ (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64),
       instr_pre 0x159bc
         (writeSuccessSuffixOptionalU64159b8Return
-          sp ptr value tag tail b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
+          (BV 64 0x159bc) sp ptr value tag tail b8 b9 b18 b19 b20 b21 b22
+          b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8SomeSpec) := I.
@@ -80,12 +81,12 @@ Proof.
       Hstack & Hvalue & Htag & Hmmio & %HspAlign & %HspLower & %HspUpper &
       %HptrAlign & %HptrLower & %HptrUpper & %HtagNonzero & Htrace & Hret & HQ)".
   iAssert (writeSuccessSuffixOptionalU64159b8SomeFrame
-      Q sp ptr value tag tail)%I
+      Q (BV 64 0x159bc) sp ptr value tag tail)%I
     with "[Htmp H2 H10 H11 H12 H13 H14 H15 H16 H17 H8 H9 H18 H19 H20
       H21 H22 H23 H24 H25 H26 H27 Hstack Hvalue Htag Hmmio Htrace Hret HQ]"
     as "Hframe".
   { rewrite /writeSuccessSuffixOptionalU64159b8SomeFrame. iFrame.
-    repeat iSplit; try iPureIntro; try assumption. }
+    repeat iSplit; try iPureIntro; try assumption; try bv_solve. }
   iApply "Hjalrx".
   rewrite /InstrSpecs.Specs.zesu_jalr_same_spec.
   iExists (BV 64 0x159b4); iFrame "Hsys H1".
@@ -100,5 +101,5 @@ Proof.
     [done | done |].
   iIntros "Hcall".
   iApply (write_success_suffix_optional_u64_159b8_some_assembly
-    Q sp ptr value tag tail with "Hcall Hframe").
+    Q (BV 64 0x159bc) sp ptr value tag tail with "Hcall Hframe").
 Qed.

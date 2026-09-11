@@ -7,13 +7,13 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 
 Definition writeSuccessSuffixOptionalU64159b8Return
     `{!islaG Sigma} `{!threadG}
-    (sp ptr value tag : bv 64) (tail : spec)
+    (ret sp ptr value tag : bv 64) (tail : spec)
     (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64) : iProp Sigma :=
   zesu_c_call_ret 32
     [RVal_Bits b8; RVal_Bits b9; RVal_Bits b18; RVal_Bits b19;
      RVal_Bits b20; RVal_Bits b21; RVal_Bits b22; RVal_Bits b23;
      RVal_Bits b24; RVal_Bits b25; RVal_Bits b26; RVal_Bits b27]
-    (BV 64 0x159bc) sp
+    ret sp
     (fun _ =>
       bv_unsigned ptr ↦ₘ value ∗
       (bv_unsigned ptr + 8) ↦ₘ tag ∗

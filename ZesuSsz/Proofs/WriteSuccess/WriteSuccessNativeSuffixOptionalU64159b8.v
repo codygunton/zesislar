@@ -53,7 +53,8 @@ Definition writeSuccessSuffixOptionalU64159b8Spec
     (∀ b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27,
       instr_pre 0x159bc
         (writeSuccessSuffixOptionalU64159b8Return
-          sp ptr value tag tail b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
+          (BV 64 0x159bc) sp ptr value tag tail b8 b9 b18 b19 b20 b21 b22
+          b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixOptionalU64159b8Spec) := I.
 

@@ -6,10 +6,10 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs.
 
 Definition writeSuccessSuffixOptionalU64159b8RawCallPrefix
-    `{!islaG Sigma} `{!threadG} (sp ptr : bv 64) : iProp Sigma :=
+    `{!islaG Sigma} `{!threadG} (ret sp ptr : bv 64) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (0x159b8 + 4)) ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits ptr ∗
    "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
@@ -33,6 +33,9 @@ Definition writeSuccessSuffixOptionalU64159b8RawCallPrefix
    "x27" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    (bv_unsigned sp - 32) ↦ₘ? 32 ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
    ⌜bv_unsigned sp < 0x40000000⌝)%I.
 
@@ -40,7 +43,7 @@ Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8RawCallPrefix) := I.
 
 Definition writeSuccessSuffixOptionalU64159b8CallPrefixSaved
-    `{!islaG Sigma} `{!threadG} (sp ptr : bv 64)
+    `{!islaG Sigma} `{!threadG} (ret sp ptr : bv 64)
     (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers) ∗
@@ -58,8 +61,11 @@ Definition writeSuccessSuffixOptionalU64159b8CallPrefixSaved
    "x22" ↦ᵣ RVal_Bits b22 ∗ "x23" ↦ᵣ RVal_Bits b23 ∗
    "x24" ↦ᵣ RVal_Bits b24 ∗ "x25" ↦ᵣ RVal_Bits b25 ∗
    "x26" ↦ᵣ RVal_Bits b26 ∗ "x27" ↦ᵣ RVal_Bits b27 ∗
-   "x1" ↦ᵣ RVal_Bits (BV 64 0x159bc) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 32 /\ bv_unsigned sp < 0x40000000⌝ ∗
    (bv_unsigned sp - 32) ↦ₘ? 32)%I.
 
@@ -67,10 +73,10 @@ Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8CallPrefixSaved) := I.
 
 Lemma write_success_suffix_optional_u64_159b8_call_prefix
-    `{!islaG Sigma} `{!threadG} (sp ptr : bv 64) :
-  writeSuccessSuffixOptionalU64159b8RawCallPrefix sp ptr -∗
+    `{!islaG Sigma} `{!threadG} (ret sp ptr : bv 64) :
+  writeSuccessSuffixOptionalU64159b8RawCallPrefix ret sp ptr -∗
   ∃ (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64),
-    writeSuccessSuffixOptionalU64159b8CallPrefixSaved sp ptr
+    writeSuccessSuffixOptionalU64159b8CallPrefixSaved ret sp ptr
       b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27.
 Proof.
   iIntros "Hraw".
@@ -78,7 +84,8 @@ Proof.
   iDestruct "Hraw" as
     "(Hsys & Htmp & H1 & H2 & H10 & H11 & H12 & H13 & H14 & H15 & H16 &
       H17 & H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 &
-      H26 & H27 & Hstack & %HspAlign & %HspLower & %HspUpper)".
+      H26 & H27 & Hstack & %HspAlign & %Hret0 & %Hret1 & %Hret2 &
+      %HspLower & %HspUpper)".
   iEval (rewrite !reg_mapsto_pred_eq /reg_mapsto_pred_def) in
     "H11 H12 H13 H14 H15 H16 H17 H8 H9 H18 H19 H20 H21 H22 H23 H24 H25
       H26 H27".
@@ -152,8 +159,6 @@ Proof.
     iExists (RVal_Bits b17). iFrame "H17". iPureIntro. cbn. done. }
   iFrame "Hsys Htmp H10 H11bits H12bits H13bits H14bits H15bits H16bits
     H17bits H8 H9 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27".
-  have HreturnAddress : Z_to_bv 64 (0x159b8 + 4) = BV 64 0x159bc
-    by bv_solve.
-  iEval (rewrite HreturnAddress) in "H1".
-  iFrame "H1 H2 Hstack". repeat iSplit; iPureIntro; lia.
+  iFrame "H1 H2 Hstack".
+  repeat iSplit; iPureIntro; assumption || lia.
 Qed.

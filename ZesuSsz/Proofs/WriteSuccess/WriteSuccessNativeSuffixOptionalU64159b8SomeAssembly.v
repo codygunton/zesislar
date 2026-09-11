@@ -12,7 +12,7 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU6415
 
 Definition writeSuccessSuffixOptionalU64159b8SomeFrame
     `{!islaG Sigma} `{!threadG} (Q : iProp Sigma)
-    (sp ptr value tag : bv 64) (tail : spec) : iProp Sigma :=
+    (ret sp ptr value tag : bv 64) (tail : spec) : iProp Sigma :=
   (reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits ptr ∗
@@ -40,6 +40,9 @@ Definition writeSuccessSuffixOptionalU64159b8SomeFrame
    (bv_unsigned ptr + 8) ↦ₘ tag ∗
    mmio_range 0x2401a0c0 16 ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
    ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
    ⌜bv_unsigned sp < 0x40000000⌝ ∗
    ⌜bv_extract 0 3 ptr = BV 3 0⌝ ∗
@@ -49,19 +52,19 @@ Definition writeSuccessSuffixOptionalU64159b8SomeFrame
    spec_trace (writeOutputEventsAny (sp - BV 64 25)%bv (BV 64 1)
      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
    (∀ (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64),
-      instr_pre 0x159bc
+      instr_pre (bv_unsigned ret)
         (writeSuccessSuffixOptionalU64159b8Return
-          sp ptr value tag tail b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
+          ret sp ptr value tag tail b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8SomeFrame) := I.
 
 Lemma write_success_suffix_optional_u64_159b8_some_assembly
     `{!islaG Sigma} `{!threadG} (Q : iProp Sigma)
-    (sp ptr value tag : bv 64) (tail : spec) :
+    (ret sp ptr value tag : bv 64) (tail : spec) :
   (reg_col zesu_ram_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (0x159b8 + 4)) ∗ True) -∗
-  writeSuccessSuffixOptionalU64159b8SomeFrame Q sp ptr value tag tail -∗
+   "x1" ↦ᵣ RVal_Bits ret ∗ True) -∗
+  writeSuccessSuffixOptionalU64159b8SomeFrame Q ret sp ptr value tag tail -∗
   zesuEncoderOptionalU64CallSpec.
 Proof.
   iIntros "(HsysRet & H1Ret & _) Hframe".
@@ -70,14 +73,15 @@ Proof.
     "(Htmp & H2 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H8 &
       H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 &
       Hstack & Hvalue & Htag & Hmmio & %HspAlign & %HspLower & %HspUpper &
-      %HptrAlign & %HptrLower & %HptrUpper & %HtagNonzero & Htrace & Hret & HQ)".
-  iAssert (writeSuccessSuffixOptionalU64159b8RawCallPrefix sp ptr)%I
+      %Hret0 & %Hret1 & %Hret2 & %HptrAlign & %HptrLower & %HptrUpper &
+      %HtagNonzero & Htrace & Hret & HQ)".
+  iAssert (writeSuccessSuffixOptionalU64159b8RawCallPrefix ret sp ptr)%I
     with "[HsysRet Htmp H1Ret H2 H10 H11 H12 H13 H14 H15 H16 H17 H8 H9
       H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 Hstack]" as "Hraw".
   { rewrite /writeSuccessSuffixOptionalU64159b8RawCallPrefix.
     iFrame.
     repeat iSplit; try iPureIntro; try assumption; try bv_solve; try lia. }
-  iPoseProof (write_success_suffix_optional_u64_159b8_call_prefix sp ptr
+  iPoseProof (write_success_suffix_optional_u64_159b8_call_prefix ret sp ptr
     with "Hraw") as "Hprefix".
   iDestruct "Hprefix" as
     (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27) "Hprefix".
@@ -85,19 +89,19 @@ Proof.
   iDestruct (write_success_suffix_optional_u64_tag_split
     (bv_unsigned ptr + 8) tag with "Htag") as
     (tagTail) "(HtagByte & HtagTail & %HtagShape)".
-  iAssert (instr_pre 0x159bc
+  iAssert (instr_pre (bv_unsigned ret)
     (zesu_c_call_ret 32
       [RVal_Bits b8; RVal_Bits b9; RVal_Bits b18; RVal_Bits b19;
        RVal_Bits b20; RVal_Bits b21; RVal_Bits b22; RVal_Bits b23;
        RVal_Bits b24; RVal_Bits b25; RVal_Bits b26; RVal_Bits b27]
-      (BV 64 0x159bc) sp
+      ret sp
       (fun _ =>
         bv_unsigned ptr ↦ₘ value ∗
         (bv_unsigned ptr + 8) ↦ₘ bv_extract 0 8 tag ∗
         mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I
     with "[Hret HQ HtagTail]" as "HpostExact".
-  { iApply (instr_pre_wand 0x159bc 0x159bc true true with "Hret");
-      [done | reflexivity |].
+  { iApply (instr_pre_wand (bv_unsigned ret) (bv_unsigned ret) true true
+      with "Hret"); [done | reflexivity |].
     iIntros "Hreturn".
     iEval (unfold zesu_c_call_ret) in "Hreturn".
     iDestruct "Hreturn" as "(HsysPost & HtmpPost & HsavedPost & HrestPost)".

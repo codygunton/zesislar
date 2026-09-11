@@ -50,7 +50,7 @@ Definition writeSuccessTailOptionalSetupSpec
     (∀ b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27,
       instr_pre 0x159bc
         (writeSuccessSuffixOptionalU64159b8Return
-          sp (sp + BV 64 296)%bv value tag tail
+          (BV 64 0x159bc) sp (sp + BV 64 296)%bv value tag tail
           b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗ Q)) ∗ Q)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTailOptionalSetupSpec) := I.

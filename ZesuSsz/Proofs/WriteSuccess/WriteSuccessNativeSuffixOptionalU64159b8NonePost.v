@@ -9,9 +9,9 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU6415
 
 Definition writeSuccessSuffixOptionalU64159b8NonePost
     `{!islaG Sigma} `{!threadG}
-    (sp ptr value : bv 64) (tag : bv 8) (tail : spec)
+    (ret sp ptr value : bv 64) (tag : bv 8) (tail : spec)
     (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64) : iProp Sigma :=
-  (writeSuccessSuffixOptionalU64159b8CallPrefixSaved sp ptr
+  (writeSuccessSuffixOptionalU64159b8CallPrefixSaved ret sp ptr
      b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗
    bv_unsigned ptr ↦ₘ value ∗
    (bv_unsigned ptr + 8) ↦ₘ tag ∗ ⌜tag = BV 8 0⌝ ∗
@@ -20,12 +20,12 @@ Definition writeSuccessSuffixOptionalU64159b8NonePost
    ⌜bv_unsigned ptr + 8 < 0x40000000⌝ ∗
    mmio_range 0x2401a0c0 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
-   instr_pre 0x159bc
+   instr_pre (bv_unsigned ret)
      (zesu_c_call_ret 32
        [RVal_Bits b8; RVal_Bits b9; RVal_Bits b18; RVal_Bits b19;
         RVal_Bits b20; RVal_Bits b21; RVal_Bits b22; RVal_Bits b23;
         RVal_Bits b24; RVal_Bits b25; RVal_Bits b26; RVal_Bits b27]
-       (BV 64 0x159bc) sp
+       ret sp
        (fun _ =>
          bv_unsigned ptr ↦ₘ value ∗
          (bv_unsigned ptr + 8) ↦ₘ tag ∗
@@ -36,9 +36,9 @@ Global Instance : LithiumUnfold
 
 Lemma write_success_suffix_optional_u64_159b8_none_post
     `{!islaG Sigma} `{!threadG}
-    (sp ptr value : bv 64) (tag : bv 8) (tail : spec)
+    (ret sp ptr value : bv 64) (tag : bv 8) (tail : spec)
     (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64) :
-  writeSuccessSuffixOptionalU64159b8NonePost sp ptr value tag tail
+  writeSuccessSuffixOptionalU64159b8NonePost ret sp ptr value tag tail
     b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 -∗
   zesuEncoderOptionalU64NoneCallSpec.
 Proof.
@@ -49,7 +49,7 @@ Proof.
   iDestruct "Hsaved" as
     "(Hsys & Htmp & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H8 &
       H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 &
-      H1 & H2 & %HspAlign & %Hbounds & Hstack)".
+      H1 & H2 & %HspAlign & %Hret0 & %Hret1 & %Hret2 & %Hbounds & Hstack)".
   iEval (rewrite !reg_mapsto_pred_eq /reg_mapsto_pred_def) in
     "H11 H12 H13 H14 H15 H16 H17".
   iDestruct "H11" as (r11) "(H11 & %Hs11)".
@@ -67,7 +67,7 @@ Proof.
   apply valu_has_bits_shape in Hs16 as (b16 & ->).
   apply valu_has_bits_shape in Hs17 as (b17 & ->).
   rewrite /zesuEncoderOptionalU64NoneCallSpec /zesu_c_call.
-  iExists sp, (BV 64 0x159bc). iFrame "Hsys Htmp".
+  iExists sp, ret. iFrame "Hsys Htmp".
   iEval (rewrite !reg_mapsto_pred_eq /reg_mapsto_pred_def; simpl).
   iExists (RVal_Bits ptr). iFrame "H10". iExists ptr. iSplit; first done.
   iExists (RVal_Bits b11). iFrame "H11". iExists b11. iSplit; first done.
