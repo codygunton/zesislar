@@ -164,6 +164,49 @@ Definition WriteSuccessOutputRelation (Decoded : Type) : Type :=
   WriteSuccessArgs Decoded -> writeSuccessNativeWitness Decoded ->
   ByteString -> Prop.
 
+(** These resources contain every non-callee-stack memory region owned at the
+    public entry.  The complete contract returns the same resources. *)
+Definition writeSuccessNativeDataResources `{!islaG Sigma}
+    `{!threadG} {Decoded} (witness : writeSuccessNativeWitness Decoded) :
+    iProp Sigma :=
+  writeSuccessLoadHeaderHeapResources
+    (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+    (writeSuccessValues witness) (writeSuccessPayload witness)
+    (writeSuccessTransactionBase witness) (writeSuccessTransactions witness)
+    (writeSuccessTransactionBytes witness) ∗
+  byteListItemResources
+    (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9))
+    (writeSuccessRawTransactions witness) ∗
+  bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗
+    writeSuccessWithdrawalsBytes witness ∗
+  ⌜writeSuccessTransactionsPost15674ByteListFacts
+    (writeSuccessFrameSp witness)
+    (writeSuccessValueWord (writeSuccessValues witness) 9)
+    (writeSuccessValueWord (writeSuccessValues witness) 10)
+    (writeSuccessRawTransactions witness)⌝ ∗
+  ⌜writeSuccessValueWord (writeSuccessValues witness) 11 =
+    writeSuccessWithdrawalsBase witness⌝ ∗
+  ⌜writeSuccessValueWord (writeSuccessValues witness) 12 =
+    Z_to_bv 64 (Z.of_nat (writeSuccessWithdrawalsCount witness))⌝ ∗
+  ⌜length (writeSuccessWithdrawalsBytes witness) =
+    (48 * writeSuccessWithdrawalsCount witness)%nat⌝ ∗
+  ⌜0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness)⌝ ∗
+  ⌜bv_unsigned (writeSuccessWithdrawalsBase witness) +
+    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝ ∗
+  writeSuccessPostTransactionDataResources
+    (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+    (writeSuccessDecodedBytes witness) (writeSuccessPostData witness).
+
+Global Instance : LithiumUnfold (@writeSuccessNativeDataResources) := I.
+
+Definition writeSuccessNativeExitMemory `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  (writeSuccessNativeDataResources witness ∗
+   bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
+     writeSuccessDecodedBytes witness)%I.
+
+Global Instance : LithiumUnfold (@writeSuccessNativeExitMemory) := I.
+
 Definition writeSuccessNativeAllows {Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop) :
     WriteSuccessArgs Decoded -> ByteString -> Prop := allows.
@@ -228,7 +271,8 @@ Definition writeSuccessTerminalResources `{!islaG Sigma} `{!threadG}
   (∃ witness : writeSuccessNativeWitness Decoded,
     ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
     ⌜outputRelation args witness bytes⌝ ∗
-    writeSuccessTerminalMachine witness)%I.
+    writeSuccessTerminalMachine witness ∗
+    writeSuccessNativeExitMemory witness)%I.
 
 Definition writeSuccessHeaderTerminal `{!islaG Sigma} `{!threadG}
     {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
@@ -265,42 +309,6 @@ Definition writeSuccessNativeProofAssumptions `{!islaG Sigma} `{!threadG}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
   (writeSuccessLoadHeaderWithFramePre allows outputRelation args witness ∗ True)%I.
-
-(** The public adapter owns every heap region referenced by the decoded value.
-    Code-derived continuations and trace-completeness evidence stay outside this
-    data resource. *)
-Definition writeSuccessNativeDataResources `{!islaG Sigma}
-    `{!threadG} {Decoded} (witness : writeSuccessNativeWitness Decoded) :
-    iProp Sigma :=
-  writeSuccessLoadHeaderHeapResources
-    (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
-    (writeSuccessValues witness) (writeSuccessPayload witness)
-    (writeSuccessTransactionBase witness) (writeSuccessTransactions witness)
-    (writeSuccessTransactionBytes witness) ∗
-  byteListItemResources
-    (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9))
-    (writeSuccessRawTransactions witness) ∗
-  bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗
-    writeSuccessWithdrawalsBytes witness ∗
-  ⌜writeSuccessTransactionsPost15674ByteListFacts
-    (writeSuccessFrameSp witness)
-    (writeSuccessValueWord (writeSuccessValues witness) 9)
-    (writeSuccessValueWord (writeSuccessValues witness) 10)
-    (writeSuccessRawTransactions witness)⌝ ∗
-  ⌜writeSuccessValueWord (writeSuccessValues witness) 11 =
-    writeSuccessWithdrawalsBase witness⌝ ∗
-  ⌜writeSuccessValueWord (writeSuccessValues witness) 12 =
-    Z_to_bv 64 (Z.of_nat (writeSuccessWithdrawalsCount witness))⌝ ∗
-  ⌜length (writeSuccessWithdrawalsBytes witness) =
-    (48 * writeSuccessWithdrawalsCount witness)%nat⌝ ∗
-  ⌜0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness)⌝ ∗
-  ⌜bv_unsigned (writeSuccessWithdrawalsBase witness) +
-    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝ ∗
-  writeSuccessPostTransactionDataResources
-    (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
-    (writeSuccessDecodedBytes witness) (writeSuccessPostData witness).
-
-Global Instance : LithiumUnfold (@writeSuccessNativeDataResources) := I.
 
 Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
     {Decoded} (witness : writeSuccessNativeWitness Decoded)
