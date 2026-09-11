@@ -9,6 +9,8 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTrace.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderValueTransactions.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoadHeader.
@@ -94,7 +96,7 @@ Definition writeSuccessFrameSp {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : bv 64 :=
   (writeSuccessEntrySp witness - BV 64 2000)%bv.
 
-Definition writeSuccessNativeTailEvents {Decoded}
+Definition writeSuccessNativeLegacyTailEvents {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : spec :=
   writeSuccessHeaderEvents (writeSuccessFrameSp witness)
     (writeSuccessValueEvents (writeSuccessFrameSp witness)
@@ -105,7 +107,7 @@ Definition writeSuccessNativeTailEvents {Decoded}
           (writeSuccessWithdrawalsCount witness)
           (writeSuccessPostData witness) (writeSuccessTraceTail witness)))).
 
-Definition writeSuccessNativeAfterTagEvents {Decoded}
+Definition writeSuccessNativeLegacyAfterTagEvents {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : spec :=
   writeSuccessHeaderEventsAfterTag (writeSuccessFrameSp witness)
     (writeSuccessValueEvents (writeSuccessFrameSp witness)
@@ -115,6 +117,29 @@ Definition writeSuccessNativeAfterTagEvents {Decoded}
         (writeSuccessAfterTransactionsEvents (writeSuccessFrameSp witness)
           (writeSuccessWithdrawalsCount witness)
           (writeSuccessPostData witness) (writeSuccessTraceTail witness)))).
+
+Definition writeSuccessNativeTailEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  writeSuccessExactEvents (writeSuccessFrameSp witness)
+    (writeSuccessDecodedBytes witness) (writeSuccessValues witness)
+    (writeSuccessPayload witness) (writeSuccessTransactions witness)
+    (writeSuccessRawTransactions witness)
+    (writeSuccessWithdrawalsBytes witness)
+    (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)
+    (writeSuccessTraceTail witness).
+
+Definition writeSuccessNativeAfterTagEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  writeOutputPayloadsSpec
+    (tl (writeSuccessAllDescriptors (writeSuccessFrameSp witness)
+      (writeSuccessValues witness) (writeSuccessTransactions witness)
+      (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)))
+    (tl (writeSuccessExactPayloads (writeSuccessDecodedBytes witness)
+      (writeSuccessValues witness) (writeSuccessPayload witness)
+      (writeSuccessTransactions witness) (writeSuccessRawTransactions witness)
+      (writeSuccessWithdrawalsBytes witness)
+      (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)))
+    (writeSuccessTraceTail witness).
 
 Definition writeSuccessWitnessWellFormed {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
@@ -338,6 +363,19 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
       0x40000000)%Z⌝ ∗ True)%I.
 
+Definition writeSuccessLegacyProloguePayload `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  ((bv_unsigned (writeSuccessEntrySp witness) - 0x7d0) ↦ₘ? 1896 ∗
+   bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
+     writeSuccessDecodedBytes witness ∗
+   mmio_range 0x2401a0c0 16 ∗
+   spec_trace (writeSuccessNativeLegacyTailEvents witness) ∗
+   writeSuccessNativeDataResources witness ∗
+   ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
+   ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
+   ⌜(bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
+      0x40000000)%Z⌝ ∗ True)%I.
+
 Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded) : iProp Sigma :=
@@ -354,6 +392,22 @@ Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
       (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
       (writeSuccessProloguePayload witness))%I.
 
+Definition writeSuccessNativeLegacyEntry `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) : iProp Sigma :=
+  (∃ witness : writeSuccessNativeWitness Decoded,
+    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
+    write_success_prologue_entry
+      (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)
+      (writeSuccessReturnValue witness)
+      (writeSuccessSavedS0 witness) (writeSuccessSavedS1 witness)
+      (writeSuccessSavedS2 witness) (writeSuccessSavedS3 witness)
+      (writeSuccessSavedS4 witness) (writeSuccessSavedS5 witness)
+      (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
+      (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
+      (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
+      (writeSuccessLegacyProloguePayload witness))%I.
+
 (** This contract is the closed native prefix from the public entry through
     the load-block entry.  Its exit is the exact resource boundary that the
     complete writer proof consumes next. *)
@@ -363,12 +417,12 @@ Definition writeSuccessNativeLoadResources {Decoded}
     IslarisContractResources (WriteSuccessArgs Decoded)
       (writeSuccessNativeWitness Decoded) := {|
   islarisCode := writeSuccessCompleteNativeCode;
-  islarisEntry := writeSuccessNativeEntry;
+  islarisEntry := writeSuccessNativeLegacyEntry;
   islarisExit := fun _ witness =>
     writeSuccessAtLoadHeaderWithFrame
       (writeSuccessFrameSp witness)
       (take 720 (writeSuccessDecodedBytes witness))
-      (writeSuccessNativeTailEvents witness)
+      (writeSuccessNativeLegacyTailEvents witness)
       (reg_col writeSuccessLoadHeaderExtraRegisters ∗
        writeSuccessNativeDataResources witness)
 |}.
@@ -402,7 +456,7 @@ Proof.
   iIntros "#Hnative" (args).
   rewrite instr_pre'_eq. iIntros "Hcontract".
   iDestruct "Hcontract" as "[Hentry Hexit]".
-  iEval (rewrite /writeSuccessNativeEntry) in "Hentry".
+  iEval (rewrite /writeSuccessNativeLegacyEntry) in "Hentry".
   iDestruct "Hentry" as (witness) "[%HwellFormed Hentry]".
   pose proof HwellFormed as HwellFormedCopy.
   destruct HwellFormed as
@@ -438,7 +492,7 @@ Proof.
       (writeSuccessAtLoadHeaderWithFrame
         (writeSuccessFrameSp witness)
         (take 720 (writeSuccessDecodedBytes witness))
-        (writeSuccessNativeTailEvents witness)
+        (writeSuccessNativeLegacyTailEvents witness)
         (reg_col writeSuccessLoadHeaderExtraRegisters ∗
          writeSuccessNativeDataResources witness)))%I
     with "[Hexit]" as "Hload".
@@ -456,7 +510,7 @@ Proof.
     (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-    (writeSuccessProloguePayload witness) with "Hprologue") as "Hbody".
+    (writeSuccessLegacyProloguePayload witness) with "Hprologue") as "Hbody".
   iEval (rewrite instr_pre'_eq) in "Hbody".
   iApply "Hbody".
   iSplitL "Hentry"; first iExact "Hentry".
@@ -471,7 +525,8 @@ Proof.
     (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
     (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
     (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
-    (writeSuccessDecodedBytes witness) (writeSuccessNativeAfterTagEvents witness)
+    (writeSuccessDecodedBytes witness)
+    (writeSuccessNativeLegacyAfterTagEvents witness)
     (writeSuccessNativeDataResources witness)
     Hdecoded HspExtract HspMin HspMax with
     "Hlookup Hmain HmemcpyCode HoutputCode Hmemcpy Houtput Hload") as "HtoLoad".
