@@ -21,16 +21,24 @@ Import ListNotations.
 Record WriteSuccessPostTransactionData : Type := {
   writeSuccessPostOptional15700 : option (bv 64);
   writeSuccessPostBytes1571c : WriteOutputDescriptor;
+  writeSuccessPostBytes1571cPayload : list (bv 8);
   writeSuccessPostHashesCount : nat;
+  writeSuccessPostHashesPayload : list (bv 8);
   writeSuccessPostBytes158e0 : WriteOutputDescriptor;
+  writeSuccessPostBytes158e0Payload : list (bv 8);
   writeSuccessPostBytes158f0 : WriteOutputDescriptor;
+  writeSuccessPostBytes158f0Payload : list (bv 8);
   writeSuccessPostBytes15900 : WriteOutputDescriptor;
+  writeSuccessPostBytes15900Payload : list (bv 8);
   writeSuccessPostBytes15910 : WriteOutputDescriptor;
+  writeSuccessPostBytes15910Payload : list (bv 8);
   writeSuccessPostBytes15920 : WriteOutputDescriptor;
+  writeSuccessPostBytes15920Payload : list (bv 8);
   writeSuccessPostByteLists15930 : list ByteListItem;
   writeSuccessPostByteLists15940 : list ByteListItem;
   writeSuccessPostByteLists15950 : list ByteListItem;
   writeSuccessPostConditional1596c : option WriteOutputDescriptor;
+  writeSuccessPostConditional1596cPayload : option (list (bv 8));
   writeSuccessPostOptional159b0 : option (bv 64);
   writeSuccessPostOptional159bc : option (bv 64);
   writeSuccessPostByteLists159c8 : list ByteListItem

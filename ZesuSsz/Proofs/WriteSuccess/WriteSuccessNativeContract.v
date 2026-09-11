@@ -18,6 +18,7 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologue.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessToLoadWithFrame.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15674Boundary.
@@ -116,6 +117,7 @@ Definition writeSuccessNativeAfterTagEvents {Decoded}
           (writeSuccessPostData witness) (writeSuccessTraceTail witness)))).
 
 Definition writeSuccessWitnessWellFormed {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : Prop :=
   successStackPointer Decoded args = bv_unsigned (writeSuccessEntrySp witness) /\
@@ -140,6 +142,13 @@ Definition writeSuccessWitnessWellFormed {Decoded}
     Z_to_bv 64 (Z.of_nat (length (writeSuccessTransactions witness))) /\
   writeSuccessTransactionBytes witness =
     writeSuccessTransactionsBytes (writeSuccessTransactions witness) /\
+  writeSuccessMemoryRepresents
+    (writeSuccessDecodedBytes witness) (writeSuccessValues witness)
+    (writeSuccessPayload witness) (writeSuccessTransactions witness)
+    (writeSuccessRawTransactions witness)
+    (writeSuccessWithdrawalsBytes witness)
+    (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)
+    (successDecoded Decoded args) /\
   writeSuccessTransactionsPost15674ByteListFacts
     (writeSuccessFrameSp witness)
     (writeSuccessValueWord (writeSuccessValues witness) 9)
@@ -265,7 +274,8 @@ Definition writeSuccessTerminalMachine `{!islaG Sigma} `{!threadG}
    writeSuccessTerminalSavedSlots witness)%I.
 
 Definition writeSuccessTerminalResources `{!islaG Sigma} `{!threadG}
-    {Decoded} (outputRelation : WriteSuccessOutputRelation Decoded)
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (bytes : ByteString) :
     iProp Sigma :=
   (∃ witness : writeSuccessNativeWitness Decoded,
@@ -276,7 +286,8 @@ Definition writeSuccessTerminalResources `{!islaG Sigma} `{!threadG}
     spec_trace (writeSuccessTraceTail witness))%I.
 
 Definition writeSuccessHeaderTerminal `{!islaG Sigma} `{!threadG}
-    {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) : iProp Sigma :=
   (instr_pre 0x14d10
@@ -285,7 +296,8 @@ Definition writeSuccessHeaderTerminal `{!islaG Sigma} `{!threadG}
       writeSuccessTerminalResources outputRelation args bytes))%I.
 
 Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
-    {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
@@ -305,7 +317,8 @@ Definition writeSuccessLoadHeaderWithFramePre `{!islaG Sigma} `{!threadG}
 (** These downstream continuations support the conditional composition proof.
     They are not part of the public native entry contract. *)
 Definition writeSuccessNativeProofAssumptions `{!islaG Sigma} `{!threadG}
-    {Decoded} (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     : iProp Sigma :=
@@ -326,7 +339,8 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
       0x40000000)%Z⌝ ∗ True)%I.
 
 Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
-    {Decoded} (args : WriteSuccessArgs Decoded) : iProp Sigma :=
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) : iProp Sigma :=
   (∃ witness : writeSuccessNativeWitness Decoded,
     ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
     write_success_prologue_entry
@@ -344,6 +358,7 @@ Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
     the load-block entry.  Its exit is the exact resource boundary that the
     complete writer proof consumes next. *)
 Definition writeSuccessNativeLoadResources {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     `{!islaG Sigma} `{!threadG} :
     IslarisContractResources (WriteSuccessArgs Decoded)
       (writeSuccessNativeWitness Decoded) := {|
@@ -359,25 +374,28 @@ Definition writeSuccessNativeLoadResources {Decoded}
 |}.
 
 Definition writeSuccessNativeLoadAllows {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
     (witness : writeSuccessNativeWitness Decoded) : Prop :=
   writeSuccessWitnessWellFormed args witness.
 
 Definition writeSuccessNativeLoadModel {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (nextPc : Z -> Z -> Prop) :
     IslarisContractModel (WriteSuccessArgs Decoded)
       (writeSuccessNativeWitness Decoded) := {|
   islarisContractAllows := writeSuccessNativeLoadAllows;
   islarisContractStep := nextPc;
   islarisContractResources := fun Sigma HG HT =>
-    @writeSuccessNativeLoadResources Decoded Sigma HG HT
+    @writeSuccessNativeLoadResources Decoded _ Sigma HG HT
 |}.
 
 Theorem write_success_native_load_state_correct {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     `{!islaG Sigma} `{!threadG} :
   ⊢ IslarisContractSpec 0x14d30 0x14d80
-    (@writeSuccessNativeLoadAllows Decoded)
-    (@writeSuccessNativeLoadResources Decoded Sigma _ _).
+    (@writeSuccessNativeLoadAllows Decoded _)
+    (@writeSuccessNativeLoadResources Decoded _ Sigma _ _).
 Proof.
   rewrite /IslarisContractSpec /writeSuccessNativeLoadResources /=.
   iStartProof.
@@ -391,7 +409,7 @@ Proof.
     (Hstack & HdecodedAddress & HreturnAddress & HreturnValue &
      Hdecoded & HdecodedLength & HsourceLength & HsourceBytes &
      HvaluesLength & HvaluesBytes & HpayloadLength & Hbase & Hcount &
-     HtransactionBytes & HrawFacts & HwithdrawalBase & HwithdrawalCount &
+     HtransactionBytes & Hrepresentation & HrawFacts & HwithdrawalBase & HwithdrawalCount &
      HwithdrawalLength & HwithdrawalMin & HwithdrawalMax & HspAlign & HspMin &
      HspMax).
   have HdecodedMin :
@@ -462,11 +480,13 @@ Proof.
 Qed.
 
 Definition writeSuccessNativeLoadCorrectness {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (nextPc : Z -> Z -> Prop) : Prop :=
   IslarisContractCorrect 0x14d30 0x14d80
     (writeSuccessNativeLoadModel (Decoded := Decoded) nextPc).
 
 Theorem write_success_native_load_correct {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (nextPc : Z -> Z -> Prop) :
   writeSuccessNativeLoadCorrectness (Decoded := Decoded) nextPc.
 Proof.
@@ -477,6 +497,7 @@ Definition writeSuccessNativeCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   writeSuccessCompleteNativeCode.
 
 Definition writeSuccessNativeResources {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (outputRelation : WriteSuccessOutputRelation Decoded)
     `{!islaG Sigma} `{!threadG} :
     IslarisContractResources (WriteSuccessArgs Decoded) ByteString := {|
@@ -486,6 +507,7 @@ Definition writeSuccessNativeResources {Decoded}
 |}.
 
 Definition writeSuccessNativeModel {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded)
     (nextPc : Z -> Z -> Prop) :
@@ -493,12 +515,13 @@ Definition writeSuccessNativeModel {Decoded}
   islarisContractAllows := writeSuccessNativeAllows allows;
   islarisContractStep := nextPc;
   islarisContractResources := fun Sigma HG HT =>
-    @writeSuccessNativeResources Decoded outputRelation Sigma HG HT
+    @writeSuccessNativeResources Decoded _ outputRelation Sigma HG HT
 |}.
 
 (** A native correctness proof needs this semantic premise in addition to the
     machine-resource handoff and the CFG certificate. *)
 Definition writeSuccessSemanticPremise {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (outputRelation : WriteSuccessOutputRelation Decoded) : Prop :=
   forall args witness bytes,

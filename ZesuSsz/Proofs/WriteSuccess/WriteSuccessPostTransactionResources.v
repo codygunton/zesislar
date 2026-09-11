@@ -40,22 +40,22 @@ Definition writeSuccessOptionalBytesWords
   (data <> BV 64 0 /\ value = Some (data, size)).
 
 Definition writeSuccessDescriptorResources `{!islaG Sigma}
-    (descriptor : WriteOutputDescriptor) : iProp Sigma :=
-  (∃ bytes : list (bv 8),
-    bv_unsigned descriptor.1 ↦ₘ∗ bytes ∗
-    ⌜bv_unsigned descriptor.2 = Z.of_nat (length bytes)⌝)%I.
+    (descriptor : WriteOutputDescriptor) (bytes : list (bv 8)) : iProp Sigma :=
+  (bv_unsigned descriptor.1 ↦ₘ∗ bytes ∗
+   ⌜bv_unsigned descriptor.2 = Z.of_nat (length bytes)⌝)%I.
 
 Definition writeSuccessHashesResources `{!islaG Sigma}
-    (pointer : bv 64) (count : nat) : iProp Sigma :=
-  (∃ bytes : list (bv 8),
-    bv_unsigned pointer ↦ₘ∗ bytes ∗
-    ⌜length bytes = (32 * count)%nat⌝)%I.
+    (pointer : bv 64) (count : nat) (bytes : list (bv 8)) : iProp Sigma :=
+  (bv_unsigned pointer ↦ₘ∗ bytes ∗
+   ⌜length bytes = (32 * count)%nat⌝)%I.
 
 Definition writeSuccessOptionalDescriptorResources `{!islaG Sigma}
-    (descriptor : option WriteOutputDescriptor) : iProp Sigma :=
-  match descriptor with
-  | None => True
-  | Some value => writeSuccessDescriptorResources value
+    (descriptor : option WriteOutputDescriptor)
+    (bytes : option (list (bv 8))) : iProp Sigma :=
+  match descriptor, bytes with
+  | None, None => True
+  | Some value, Some payload => writeSuccessDescriptorResources value payload
+  | _, _ => False
   end.
 
 (** These equalities follow the pinned [StatelessInput] DWARF layout. *)
@@ -102,14 +102,20 @@ Definition writeSuccessPostTransactionDataResources `{!islaG Sigma}
     (data : WriteSuccessPostTransactionData) : iProp Sigma :=
   let source := writeSuccessPostSourceWords sourceBytes in
   let tail := writeSuccessPostTailWords decodedBytes in
-  (writeSuccessDescriptorResources (writeSuccessPostBytes1571c data) ∗
+  (writeSuccessDescriptorResources (writeSuccessPostBytes1571c data)
+     (writeSuccessPostBytes1571cPayload data) ∗
    writeSuccessHashesResources (writeSuccessPostWord source 74)
-     (writeSuccessPostHashesCount data) ∗
-   writeSuccessDescriptorResources (writeSuccessPostBytes158e0 data) ∗
-   writeSuccessDescriptorResources (writeSuccessPostBytes158f0 data) ∗
-   writeSuccessDescriptorResources (writeSuccessPostBytes15900 data) ∗
-   writeSuccessDescriptorResources (writeSuccessPostBytes15910 data) ∗
-   writeSuccessDescriptorResources (writeSuccessPostBytes15920 data) ∗
+     (writeSuccessPostHashesCount data) (writeSuccessPostHashesPayload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes158e0 data)
+     (writeSuccessPostBytes158e0Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes158f0 data)
+     (writeSuccessPostBytes158f0Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes15900 data)
+     (writeSuccessPostBytes15900Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes15910 data)
+     (writeSuccessPostBytes15910Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes15920 data)
+     (writeSuccessPostBytes15920Payload data) ∗
    byteListItemResources (bv_unsigned (writeSuccessPostWord tail 0))
      (writeSuccessPostByteLists15930 data) ∗
    byteListItemResources (bv_unsigned (writeSuccessPostWord tail 2))
@@ -117,7 +123,8 @@ Definition writeSuccessPostTransactionDataResources `{!islaG Sigma}
    byteListItemResources (bv_unsigned (writeSuccessPostWord tail 4))
      (writeSuccessPostByteLists15950 data) ∗
    writeSuccessOptionalDescriptorResources
-     (writeSuccessPostConditional1596c data) ∗
+     (writeSuccessPostConditional1596c data)
+     (writeSuccessPostConditional1596cPayload data) ∗
    byteListItemResources (bv_unsigned (writeSuccessPostWord tail 14))
      (writeSuccessPostByteLists159c8 data) ∗
    ⌜writeSuccessPostTransactionDataFacts sp sourceBytes decodedBytes data⌝)%I.
