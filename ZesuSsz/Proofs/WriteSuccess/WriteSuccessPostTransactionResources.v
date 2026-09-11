@@ -133,3 +133,19 @@ Global Instance : LithiumUnfold (@writeSuccessDescriptorResources) := I.
 Global Instance : LithiumUnfold (@writeSuccessHashesResources) := I.
 Global Instance : LithiumUnfold (@writeSuccessOptionalDescriptorResources) := I.
 Global Instance : LithiumUnfold (@writeSuccessPostTransactionDataResources) := I.
+
+Lemma writeSuccessOptionalDescriptorResources_shape
+    `{!islaG Sigma} `{!threadG}
+    (descriptor : option WriteOutputDescriptor)
+    (payload : option (list (bv 8))) :
+  writeSuccessOptionalDescriptorResources descriptor payload -∗
+  ⌜match descriptor, payload with
+    | None, None => True
+    | Some _, Some _ => True
+    | _, _ => False
+    end⌝.
+Proof.
+  destruct descriptor, payload; simpl; iIntros "H"; done.
+Qed.
+
+Print Assumptions writeSuccessOptionalDescriptorResources_shape.

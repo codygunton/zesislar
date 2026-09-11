@@ -94,10 +94,10 @@ Lemma writeSuccessBytesFragments_length bytes :
   length (writeSuccessBytesFragments bytes) = 2%nat.
 Proof. reflexivity. Qed.
 
-Lemma writeSuccessNativeByteListsFragments_length items :
+Lemma writeSuccessNativeByteListsFragments_length sp items :
   length (writeSuccessListFragments writeSuccessBytesFragments
     (writeSuccessByteListsObservation items)) =
-  length (writeSuccessByteListsDescriptors (BV 64 0) items).
+  length (writeSuccessByteListsDescriptors sp items).
 Proof.
   rewrite (writeSuccessListFragments_constant_length
     writeSuccessBytesFragments 2%nat);
@@ -111,12 +111,12 @@ Lemma writeSuccessWithdrawalsItemDescriptors_length sp count :
     (4 * count)%nat.
 Proof. induction count; simpl; lia. Qed.
 
-Lemma writeSuccessNativeWithdrawalFragments_length withdrawalsBytes count :
+Lemma writeSuccessNativeWithdrawalFragments_length sp withdrawalsBytes count :
   length (writeSuccessListFragments writeSuccessWithdrawalFragments
     (map writeSuccessWithdrawalObservationOfBytes
       (map (fun index => take 48 (drop (48 * index) withdrawalsBytes))
         (seq 0 count)))) =
-  length (writeSuccessWithdrawalsDescriptors (BV 64 0) count).
+  length (writeSuccessWithdrawalsDescriptors sp count).
 Proof.
   rewrite (writeSuccessListFragments_constant_length
     writeSuccessWithdrawalFragments 4%nat).
@@ -338,3 +338,177 @@ Proof.
   cbn.
   rewrite Htransactions. reflexivity.
 Qed.
+
+Definition writeSuccessPostPayloadShape
+    (post : WriteSuccessPostTransactionData) : Prop :=
+  match writeSuccessPostConditional1596c post,
+      writeSuccessPostConditional1596cPayload post with
+  | None, None => True
+  | Some _, Some _ => True
+  | _, _ => False
+  end.
+
+Definition writeSuccessOptionCount {A : Type} (value : option A) : nat :=
+  match value with None => 1%nat | Some _ => 2%nat end.
+
+Definition writeSuccessForkCount (value : option ByteString) : nat :=
+  match value with None => 1%nat | Some _ => 3%nat end.
+
+Lemma writeSuccessOptionCount_map {A B : Type} (f : A -> B) value :
+  writeSuccessOptionCount (option_map f value) = writeSuccessOptionCount value.
+Proof. destruct value; reflexivity. Qed.
+
+Lemma writeSuccessOptionalFragments_length
+    (encode : Z -> ByteString) value :
+  length (writeSuccessOptionalFragments encode value) =
+    writeSuccessOptionCount value.
+Proof. destruct value; reflexivity. Qed.
+
+Lemma writeSuccessOptionalBytesFragments_length value :
+  length (writeSuccessOptionalBytesFragments value) =
+    writeSuccessOptionCount value.
+Proof. destruct value; reflexivity. Qed.
+
+Lemma writeSuccessForkFragments_length value :
+  length (writeSuccessForkFragments value) = writeSuccessForkCount value.
+Proof. destruct value; reflexivity. Qed.
+
+Lemma writeSuccessPostFragments_length observation :
+  length (writeSuccessPostFragments observation) =
+    (2 + writeSuccessOptionCount (observationSlotNumber observation) +
+     2 + 1 + (1 + length (observationVersionedHashes observation)) +
+     10 + (1 + 2 * length (observationWitnessNodes observation)) +
+     (1 + 2 * length (observationWitnessCodes observation)) +
+     (1 + 2 * length (observationWitnessHeaders observation)) + 1 +
+     writeSuccessForkCount (observationForkName observation) + 1 +
+     writeSuccessOptionCount (observationActivationBlock observation) +
+     writeSuccessOptionCount (observationActivationTimestamp observation) +
+     (1 + 2 * length (observationPublicKeys observation)))%nat.
+Proof.
+  unfold writeSuccessPostFragments.
+  repeat rewrite app_length.
+  rewrite !writeSuccessBytesFragments_length.
+  rewrite !writeSuccessOptionalFragments_length.
+  rewrite writeSuccessForkFragments_length.
+  rewrite (writeSuccessListFragments_constant_length
+    (fun bytes : ByteString => [bytes]) 1%nat); [|intros; reflexivity].
+  rewrite !(@writeSuccessListFragments_constant_length ByteString
+    writeSuccessBytesFragments 2%nat _ writeSuccessBytesFragments_length).
+  cbn [length]. lia.
+Qed.
+
+Lemma writeSuccessOptionalU64Descriptors_length sp value :
+  length (writeSuccessOptionalU64Descriptors sp value) =
+    writeSuccessOptionCount value.
+Proof. destruct value; reflexivity. Qed.
+
+Lemma writeSuccessHashesDescriptors_length sp count :
+  length (writeSuccessHashesDescriptors sp count) = (1 + count)%nat.
+Proof.
+  unfold writeSuccessHashesDescriptors. simpl.
+  rewrite writeSuccessRepeatedDescriptors_length. lia.
+Qed.
+
+Lemma writeSuccessPostDescriptors_length sp post :
+  length (writeSuccessPost156e8Descriptors sp post) =
+    (2 + writeSuccessOptionCount (writeSuccessPostOptional15700 post) +
+     2 + 1 + (1 + writeSuccessPostHashesCount post) + 10 +
+     (1 + 2 * length (writeSuccessPostByteLists15930 post)) +
+     (1 + 2 * length (writeSuccessPostByteLists15940 post)) +
+     (1 + 2 * length (writeSuccessPostByteLists15950 post)) + 1 +
+     (match writeSuccessPostConditional1596c post with
+      | None => 1%nat | Some _ => 3%nat end) + 1 +
+     writeSuccessOptionCount (writeSuccessPostOptional159b0 post) +
+     writeSuccessOptionCount (writeSuccessPostOptional159bc post) +
+     (1 + 2 * length (writeSuccessPostByteLists159c8 post)))%nat.
+Proof.
+  unfold writeSuccessPost156e8Descriptors,
+    writeSuccessPost1573cDescriptors, writeSuccessPost158e0Descriptors,
+    writeSuccessPost15930Descriptors, writeSuccessPost15960Descriptors,
+    writeSuccessPost1596cDescriptors, writeSuccessPost159a0Descriptors,
+    writeSuccessPost159b0Descriptors, writeSuccessPost159bcDescriptors,
+    writeSuccessPost159c8Descriptors.
+  repeat rewrite app_length.
+  rewrite writeSuccessHashesDescriptors_length.
+  rewrite !writeSuccessByteListsDescriptors_length.
+  destruct (writeSuccessPostConditional1596c post);
+    destruct (writeSuccessPostOptional15700 post);
+    destruct (writeSuccessPostOptional159b0 post);
+    destruct (writeSuccessPostOptional159bc post); cbn; lia.
+Qed.
+
+Lemma writeSuccessPostDescriptors_fragments_length sp decodedBytes values
+    payload transactions rawTransactions withdrawalsBytes withdrawalsCount
+    post :
+  writeSuccessPostPayloadShape post ->
+  length (writeSuccessPost156e8Descriptors sp post) =
+  length (writeSuccessPostFragments
+    (writeSuccessExactObservation decodedBytes values payload transactions
+      rawTransactions withdrawalsBytes withdrawalsCount post)).
+Proof.
+  intros Hshape.
+  rewrite writeSuccessPostDescriptors_length.
+  rewrite writeSuccessPostFragments_length.
+  unfold writeSuccessExactObservation, writeSuccessNativeObservation.
+  cbn.
+  unfold writeSuccessByteListsObservation, writeSuccessFixedChunks.
+  rewrite !map_length !seq_length.
+  rewrite !writeSuccessOptionCount_map.
+  unfold writeSuccessPostPayloadShape in Hshape.
+  destruct (writeSuccessPostConditional1596c post);
+    destruct (writeSuccessPostConditional1596cPayload post);
+    try contradiction; cbn; reflexivity.
+Qed.
+
+Theorem writeSuccessAllDescriptors_payloads_length sp decodedBytes values
+    payload transactions rawTransactions withdrawalsBytes withdrawalsCount
+    post :
+  writeSuccessPostPayloadShape post ->
+  length (writeSuccessAllDescriptors sp values transactions rawTransactions
+    withdrawalsCount post) =
+  length (writeSuccessExactPayloads decodedBytes values payload transactions
+    rawTransactions withdrawalsBytes withdrawalsCount post).
+Proof.
+  intros Hshape.
+  pose proof (writeSuccessMainDescriptors_fragments_length sp decodedBytes
+    values payload transactions rawTransactions withdrawalsBytes
+    withdrawalsCount post) as Hmain.
+  pose proof (writeSuccessNativeByteListsFragments_length sp rawTransactions)
+    as Hraw.
+  pose proof (writeSuccessNativeWithdrawalFragments_length sp
+    withdrawalsBytes withdrawalsCount) as Hwithdrawals.
+  pose proof (writeSuccessPostDescriptors_fragments_length sp decodedBytes
+    values payload transactions rawTransactions withdrawalsBytes
+    withdrawalsCount post Hshape) as Hpost.
+  have Hdescriptors :
+    length (writeSuccessAllDescriptors sp values transactions rawTransactions
+      withdrawalsCount post) =
+    (length (writeSuccessMainDescriptors sp values transactions) +
+     length (writeSuccessByteListsDescriptors sp rawTransactions) +
+     length (writeSuccessWithdrawalsDescriptors sp withdrawalsCount) +
+     length (writeSuccessPost156e8Descriptors sp post))%nat.
+  { unfold writeSuccessAllDescriptors, writeSuccessAfterTransactionsDescriptors.
+    rewrite !app_length. lia. }
+  have Hfragments :
+    length (writeSuccessExactPayloads decodedBytes values payload transactions
+      rawTransactions withdrawalsBytes withdrawalsCount post) =
+    (length (writeSuccessMainFragments
+       (writeSuccessExactObservation decodedBytes values payload transactions
+         rawTransactions withdrawalsBytes withdrawalsCount post)) +
+     length (writeSuccessRawTransactionFragments
+       (writeSuccessExactObservation decodedBytes values payload transactions
+         rawTransactions withdrawalsBytes withdrawalsCount post)) +
+     length (writeSuccessWithdrawalListFragments
+       (writeSuccessExactObservation decodedBytes values payload transactions
+         rawTransactions withdrawalsBytes withdrawalsCount post)) +
+     length (writeSuccessPostFragments
+       (writeSuccessExactObservation decodedBytes values payload transactions
+         rawTransactions withdrawalsBytes withdrawalsCount post)))%nat.
+  { unfold writeSuccessExactPayloads. rewrite map_length.
+    rewrite writeSuccessEncodeFragments_groups !app_length. lia. }
+  unfold writeSuccessRawTransactionFragments,
+    writeSuccessWithdrawalListFragments in Hraw, Hwithdrawals.
+  rewrite Hdescriptors Hfragments Hmain Hraw Hwithdrawals Hpost. reflexivity.
+Qed.
+
+Print Assumptions writeSuccessAllDescriptors_payloads_length.
