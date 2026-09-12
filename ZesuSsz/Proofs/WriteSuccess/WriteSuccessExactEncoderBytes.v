@@ -278,3 +278,30 @@ Proof.
 Qed.
 
 Print Assumptions encoder_bytes_exact_call_pre.
+
+Lemma encoder_bytes_uninit_48_to_words `{!islaG Sigma} (sp : bv 64) :
+  (bv_unsigned sp - 48) ↦ₘ? 48 -∗
+  ∃ w0 w1 w2 w3 w4 w5 : bv 64,
+    (bv_unsigned sp - 48) ↦ₘ w0 ∗ (bv_unsigned sp - 40) ↦ₘ w1 ∗
+    (bv_unsigned sp - 32) ↦ₘ w2 ∗ (bv_unsigned sp - 24) ↦ₘ w3 ∗
+    (bv_unsigned sp - 16) ↦ₘ w4 ∗ (bv_unsigned sp - 8) ↦ₘ w5.
+Proof.
+  iIntros "Hstack".
+  iDestruct (mem_mapsto_uninit_split 8 with "Hstack") as "[H0 Hstack]"; [lia|].
+  iEval (replace (bv_unsigned sp - 48 + 8) with (bv_unsigned sp - 40) by lia) in "Hstack".
+  iDestruct (mem_mapsto_uninit_split 8 with "Hstack") as "[H1 Hstack]"; [lia|].
+  iEval (replace (bv_unsigned sp - 40 + 8) with (bv_unsigned sp - 32) by lia) in "Hstack".
+  iDestruct (mem_mapsto_uninit_split 8 with "Hstack") as "[H2 Hstack]"; [lia|].
+  iEval (replace (bv_unsigned sp - 32 + 8) with (bv_unsigned sp - 24) by lia) in "Hstack".
+  iDestruct (mem_mapsto_uninit_split 8 with "Hstack") as "[H3 Hstack]"; [lia|].
+  iEval (replace (bv_unsigned sp - 24 + 8) with (bv_unsigned sp - 16) by lia) in "Hstack".
+  iDestruct (mem_mapsto_uninit_split 8 with "Hstack") as "[H4 H5]"; [lia|].
+  iEval (replace (bv_unsigned sp - 16 + 8) with (bv_unsigned sp - 8) by lia) in "H5".
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H0") as (? w0 ->) "H0".
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H1") as (? w1 ->) "H1".
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H2") as (? w2 ->) "H2".
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H3") as (? w3 ->) "H3".
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H4") as (? w4 ->) "H4".
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H5") as (? w5 ->) "H5".
+  iExists w0, w1, w2, w3, w4, w5. iFrame.
+Qed.
