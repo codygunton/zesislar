@@ -5,6 +5,7 @@ Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputDescriptors.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
@@ -56,6 +57,7 @@ Definition writeSuccessMemoryOutputRelation {Decoded}
       (writeSuccessNativeDescriptors witness) bytes.
 
 Definition writeSuccessMemorySemanticPremise {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop) : Prop :=
   forall args witness bytes,
@@ -65,12 +67,15 @@ Definition writeSuccessMemorySemanticPremise {Decoded}
     allows args bytes.
 
 Lemma writeSuccessMemorySemanticPremise_sound {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop) :
   writeSuccessMemorySemanticPremise allows memoryAtWrite ->
   writeSuccessSemanticPremise allows
     (writeSuccessMemoryOutputRelation memoryAtWrite).
 Proof. intros Hsemantic args witness bytes. apply Hsemantic. Qed.
+
+Print Assumptions writeSuccessMemorySemanticPremise_sound.
 
 (** This sequence covers every output after the transaction loop, including
     withdrawals and the final public-key list. *)
@@ -118,6 +123,7 @@ Definition writeSuccessCompleteMemoryOutputRelation {Decoded}
       bytes.
 
 Definition writeSuccessCompleteMemorySemanticPremise {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
     (postDataOf : writeSuccessNativeWitness Decoded ->
@@ -130,6 +136,7 @@ Definition writeSuccessCompleteMemorySemanticPremise {Decoded}
     allows args bytes.
 
 Lemma writeSuccessCompleteMemorySemanticPremise_sound {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
     (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
     (memoryAtWrite : nat -> bv 64 -> list (bv 8) -> Prop)
     (postDataOf : writeSuccessNativeWitness Decoded ->
@@ -138,3 +145,5 @@ Lemma writeSuccessCompleteMemorySemanticPremise_sound {Decoded}
   writeSuccessSemanticPremise allows
     (writeSuccessCompleteMemoryOutputRelation memoryAtWrite postDataOf).
 Proof. intros Hsemantic args witness bytes. apply Hsemantic. Qed.
+
+Print Assumptions writeSuccessCompleteMemorySemanticPremise_sound.

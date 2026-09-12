@@ -3,6 +3,8 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_127 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 
+Local Existing Instance subsume_instr_pre_guard_inst | 0.
+
 Lemma test_block_reduces_code_list `{!islaG Sigma} `{!threadG} (sp : bv 64) :
   ([∗ list] instruction ∈ take 1 IslaTraces.write_success_127.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
@@ -26,3 +28,12 @@ Proof.
 Qed.
 
 Print Assumptions test_body_to_pre_subsumption.
+
+Lemma test_guarded_subsumption_unchanged `{!islaG Sigma} `{!threadG}
+    (later : bool) (address : Z) (sp : bv 64) :
+  ⊢ subsume (instr_pre' later address ("x2" ↦ᵣ RVal_Bits sp ∗ True))
+    (fun _ : unit => instr_pre' later address ("x2" ↦ᵣ RVal_Bits sp ∗ True))
+    (fun _ => True%I).
+Proof. zesu_block. Qed.
+
+Print Assumptions test_guarded_subsumption_unchanged.

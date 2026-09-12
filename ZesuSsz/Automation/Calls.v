@@ -4,22 +4,22 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
 
 Lemma subsume_instr_pre_guard `{!islaG Sigma} `{!threadG}
-    A address available_l requested_l available requested G :
-  (∃ x : A, ⌜implb available_l (requested_l x)⌝ ∗
-    ⌜available = requested x⌝ ∗ G x) ⊢
-  subsume (instr_pre' available_l address available)
-    (fun x => instr_pre' (requested_l x) address (requested x)) G.
+    A address available requested G :
+  (∃ x : A, ⌜available = requested x⌝ ∗ G x) ⊢
+  subsume (instr_body address available)
+    (fun x => instr_pre address (requested x)) G.
 Proof.
-  iDestruct 1 as (x Hguard Hequal) "HG".
+  iDestruct 1 as (x Hequal) "HG".
   iIntros "Hpre". iExists x. iFrame "HG". rewrite -Hequal.
-  iApply (instr_pre_wand with "Hpre"); [exact Hguard | reflexivity |].
+  iApply (instr_pre_wand address address false true with "Hpre");
+    [done | reflexivity |].
   auto.
 Qed.
 
 Definition subsume_instr_pre_guard_inst `{!islaG Sigma} `{!threadG} :=
   [instance subsume_instr_pre_guard].
-Global Remove Hints subsume_instr_pre'_inst : typeclass_instances.
-Global Existing Instance subsume_instr_pre_guard_inst | 1.
+(* Enable this identity-resource conversion at exact block boundaries only.
+   Legacy boundaries can require contravariant resource matching instead. *)
 
 Lemma reg_col_exact_bv_to_bits `{!islaG Sigma} `{!threadG}
     (registers : list string) (values : list (bv 64)) :

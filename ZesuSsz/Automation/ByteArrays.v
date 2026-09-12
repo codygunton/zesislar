@@ -529,8 +529,18 @@ Section byte_array_uninit_subsumption.
       with "Hhead Htail"); lia.
   Qed.
 
+  Lemma subsume_mem_scratch_byte_array_uninit A a1 a2
+      (bytes : list (bv 8)) n2 G
+      `{!TCOr (TCFastDone (length bytes = 16%nat))
+              (TCFastDone (length bytes = 32%nat))} :
+    (⌜a1 = a2⌝ ∗ ⌜Z.of_nat (length bytes) <= n2⌝ ∗
+      (a2 + Z.of_nat (length bytes)) ↦ₘ? (n2 - Z.of_nat (length bytes)) ∗
+      ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof. apply subsume_mem_byte_array_uninit. Qed.
+
   Definition subsume_mem_byte_array_uninit_inst :=
-    [instance @subsume_mem_byte_array_uninit].
+    [instance @subsume_mem_scratch_byte_array_uninit].
   Global Existing Instance subsume_mem_byte_array_uninit_inst | 84.
 
 End byte_array_uninit_subsumption.

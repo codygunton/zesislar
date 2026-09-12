@@ -4,6 +4,8 @@ From IslaTraces.write_success_127 Require Import instrs.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutput.
 
+Local Existing Instance subsume_instr_pre_guard_inst | 0.
+
 Lemma encoder_u128_exact_output_correct `{!islaG Sigma} `{!threadG}
     (low high sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
   ([∗ list] instruction ∈ take 4 (drop 4

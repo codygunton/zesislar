@@ -44,6 +44,21 @@ Qed.
 
 Print Assumptions test_byte_array_16_uninit_subsumption.
 
+Lemma test_byte_array_32_uninit_subsumption `{!islaG Sigma}
+    (base : Z) (bytes : list (bv 8)) (upper : bv 64) :
+  length bytes = 32%nat ->
+  0 <= base ->
+  base + 48 < 2 ^ 64 ->
+  (base + 32) ↦ₘ? 8 -∗ (base + 40) ↦ₘ upper -∗
+  subsume (base ↦ₘ∗ bytes) (fun _ : unit => base ↦ₘ? 48)
+    (fun _ => True%I).
+Proof.
+  intros Hlength Hbase Hbound. iStartProof. liARun.
+  Unshelve. all: prepare_sidecond; try assumption; try lia.
+Qed.
+
+Print Assumptions test_byte_array_32_uninit_subsumption.
+
 Lemma test_two_words_byte_array_conversion `{!islaG Sigma}
     (base : Z) (low high : bv 64) :
   base ↦ₘ low -∗ (base + 8) ↦ₘ high -∗
