@@ -16,3 +16,15 @@ Proof.
 Qed.
 
 Print Assumptions test_byte_array_8_uninit_subsumption.
+
+Lemma test_word_byte_array_subsumption `{!islaG Sigma}
+    (base : Z) (byte : bv 8) :
+  base ↦ₘ byte -∗
+  subsume (base ↦ₘ byte)
+    (fun _ : unit => base ↦ₘ∗ [byte]) (fun _ => True%I).
+Proof.
+  iStartProof. iIntros "Hbyte". liARun.
+  Unshelve. all: prepare_sidecond; try reflexivity; try iFrame.
+Qed.
+
+Print Assumptions test_word_byte_array_subsumption.

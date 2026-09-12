@@ -513,3 +513,43 @@ Section byte_array_uninit_subsumption.
   Global Existing Instance subsume_mem_byte_array_8_uninit_inst | 85.
 
 End byte_array_uninit_subsumption.
+
+Section word_byte_array_subsumption.
+  Context `{!islaG Sigma}.
+
+  Lemma subsume_mem_word_byte_array A (a1 a2 : Z) (len : N)
+      (available : bv (8 * len)) (requested : A -> list (bv 8)) G :
+    ((∃ x,
+      ⌜a1 = a2⌝ ∗
+      ⌜requested x =
+        bv_to_little_endian (N.to_nat len) 8 (bv_unsigned available)⌝ ∗
+      G x)%I) ⊢
+    subsume (a1 ↦ₘ available) (fun x : A => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hword".
+    iDestruct "Hrule" as (x) "(-> & %Hrequested & HG)".
+    iExists x. iSplitL "Hword".
+    - rewrite Hrequested.
+      iApply (mem_mapsto_mapsto_to_byte_array_N with "Hword").
+    - iExact "HG".
+  Qed.
+
+  Definition subsume_mem_word_byte_array_inst :=
+    [instance @subsume_mem_word_byte_array].
+  Global Existing Instance subsume_mem_word_byte_array_inst | 96.
+
+  Lemma subsume_mem_byte_singleton A (a1 a2 : Z) (available : bv 8)
+      (requested : A -> list (bv 8)) G :
+    ((∃ x, ⌜a1 = a2⌝ ∗ ⌜requested x = [available]⌝ ∗ G x)%I) ⊢
+    subsume (a1 ↦ₘ available) (fun x : A => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hbyte".
+    iDestruct "Hrule" as (x) "(-> & %Hrequested & HG)".
+    iExists x. rewrite Hrequested mem_mapsto_array_singleton. iFrame.
+  Qed.
+
+  Definition subsume_mem_byte_singleton_inst :=
+    [instance @subsume_mem_byte_singleton].
+  Global Existing Instance subsume_mem_byte_singleton_inst | 97.
+
+End word_byte_array_subsumption.
