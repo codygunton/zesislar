@@ -6,35 +6,10 @@ Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactHeaderAutomation.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactHeaderSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPayloadCall.
-
-Ltac run_exact_header_call_until stop :=
-  lazymatch goal with
-  | |- instr_body ?address _ =>
-      first [ constr_eq address stop
-            | first
-                [ progress iEval
-                    (unfold zesuWriteOutputPayloadCallSpec, zesu_c_call)
-                | liAStep
-                | progress prepare_sidecond
-                | reflexivity
-                | vm_compute
-                | bv_solve
-                | lia ];
-              run_exact_header_call_until stop ]
-  | _ =>
-      first
-        [ progress iEval (unfold zesuWriteOutputPayloadCallSpec, zesu_c_call)
-        | liAStep
-        | progress prepare_sidecond
-        | reflexivity
-        | vm_compute
-        | bv_solve
-        | lia ];
-      run_exact_header_call_until stop
-  end.
 
 Ltac prove_exact_header_stack_call sp bytes tail P next offset width data eventTail :=
   iAssert (instr_body next

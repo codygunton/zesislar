@@ -2,6 +2,25 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 
+Lemma reg_col_exact_bv_to_bits `{!islaG Sigma} `{!threadG}
+    (registers : list string) (values : list (bv 64)) :
+  length registers = length values ->
+  reg_col (zip_with (fun register value =>
+      (KindReg register, ExactShape value)) registers
+    ((fun value : bv 64 => RVal_Bits value) <$> values)) -∗
+  reg_col ((fun register => (KindReg register, BitsShape 64)) <$> registers).
+Proof.
+  revert values. induction registers as [|register registers IH];
+    intros [|value values] Hlength; simpl in Hlength; try lia.
+  - iIntros "_". rewrite reg_col_nil. done.
+  - rewrite !reg_col_cons. iIntros "[Hhead Htail]".
+    iDestruct "Hhead" as (actual Hactual) "Hregister".
+    simpl in Hactual. subst actual.
+    iSplitL "Hregister".
+    { iExists (RVal_Bits value). iFrame. done. }
+    iApply (IH values); [lia | iExact "Htail"].
+Qed.
+
 Definition zesu_call_ret `{!islaG Sigma} `{!threadG}
     (stack_size : Z) (regs : list valu) (ret sp : bv 64)
     (Q : list (bv 64) -> iProp Sigma) : iProp Sigma :=
