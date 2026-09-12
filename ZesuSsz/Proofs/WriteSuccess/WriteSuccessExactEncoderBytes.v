@@ -1,0 +1,280 @@
+Require Import ZesuSsz.Automation.All.
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_06 Require Import instrs.
+From IslaTraces.write_success_01 Require Import instrs.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Export.Snapshots.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderInt.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutput.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
+
+Definition encoderBytesExactOutputResources `{!islaG Sigma} `{!threadG}
+    (size sp ret : bv 64) (old_s0 old_s1 stack2 : bv 64)
+    (P : iProp Sigma) : iProp Sigma :=
+  (("x6" ↦ᵣ: fun r6 => ⌜valu_has_shape r6 (BitsShape 64)⌝) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
+   bv_unsigned (sp - BV 64 48)%bv ↦ₘ∗
+     writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)) ∗
+   (bv_unsigned sp - 40) ↦ₘ (BV 64 0x15c90) ∗
+   (bv_unsigned sp - 32) ↦ₘ stack2 ∗
+   (bv_unsigned sp - 24) ↦ₘ old_s1 ∗
+   (bv_unsigned sp - 16) ↦ₘ old_s0 ∗
+   (bv_unsigned sp - 8) ↦ₘ ret ∗ P)%I.
+
+Definition encoderBytesExactPost `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (old_x6 old_s0 old_s1 stack2 : bv 64)
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+   bv_unsigned data ↦ₘ∗ bytes ∗
+   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   encoderBytesExactOutputResources size sp ret old_s0 old_s1 stack2 P ∗
+   True)%I.
+
+Definition encoderBytesExactSuffixFrame `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (old_x6 old_s0 old_s1 stack2 : bv 64)
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  ("x6" ↦ᵣ RVal_Bits old_x6 ∗
+   "x8" ↦ᵣ RVal_Bits size ∗ "x9" ↦ᵣ RVal_Bits data ∗
+   (bv_unsigned sp - 32) ↦ₘ stack2 ∗
+   (bv_unsigned sp - 24) ↦ₘ old_s1 ∗
+   (bv_unsigned sp - 16) ↦ₘ old_s0 ∗
+   (bv_unsigned sp - 8) ↦ₘ ret ∗
+   bv_unsigned data ↦ₘ∗ bytes ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗
+   ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+   ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
+   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
+   instr_pre (bv_unsigned ret)
+     (encoderBytesExactPost data size sp ret bytes
+       old_x6 old_s0 old_s1 stack2 tail P) ∗ True)%I.
+
+Definition encoderBytesExactOutputFrame `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (old_x6 old_s0 old_s1 stack2 : bv 64)
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  encoderBytesExactOutputResources size sp ret old_s0 old_s1 stack2 P.
+
+Definition encoderBytesExactSuffixSpec `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (old_x6 old_s0 old_s1 stack2 : bv 64)
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits (BV 64 0x15c90) ∗
+   "x2" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x10" ↦ᵣ RVal_Bits (sp - BV 64 48)%bv ∗
+   "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+   bv_unsigned (sp - BV 64 48)%bv ↦ₘ∗
+     writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)) ∗
+   (bv_unsigned sp - 40) ↦ₘ (BV 64 0x15c90) ∗
+   mmio_range 0x2401a0c0 16 ∗
+   spec_trace (writeOutputEvents data size bytes tail) ∗
+   encoderBytesExactSuffixFrame data size sp ret bytes
+     old_x6 old_s0 old_s1 stack2 tail P ∗ True)%I.
+
+Definition encoderBytesExactSpec `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (∃ (old_x5 old_x6 old_s0 old_s1
+       stack0 stack1 stack2 stack3 stack4 stack5 : bv 64),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
+    "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
+    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+    (bv_unsigned sp - 48) ↦ₘ stack0 ∗
+    (bv_unsigned sp - 40) ↦ₘ stack1 ∗
+    (bv_unsigned sp - 32) ↦ₘ stack2 ∗
+    (bv_unsigned sp - 24) ↦ₘ stack3 ∗
+    (bv_unsigned sp - 16) ↦ₘ stack4 ∗
+    (bv_unsigned sp - 8) ↦ₘ stack5 ∗
+    bv_unsigned data ↦ₘ∗ bytes ∗
+    ⌜bv_unsigned size = length bytes⌝ ∗
+    mmio_range 0x2401a0c0 16 ∗
+    spec_trace
+      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)))
+        (writeOutputEvents data size bytes tail)) ∗
+    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
+    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
+    instr_pre (bv_unsigned ret)
+      (encoderBytesExactPost data size sp ret bytes
+        old_x6 old_s0 old_s1 stack2 tail P))%I.
+
+Global Instance : LithiumUnfold (@encoderBytesExactPost) := I.
+Global Instance : LithiumUnfold (@encoderBytesExactSuffixFrame) := I.
+Global Instance : LithiumUnfold (@encoderBytesExactOutputFrame) := I.
+Global Instance : LithiumUnfold (@encoderBytesExactSuffixSpec) := I.
+Global Instance : LithiumUnfold (@encoderBytesExactSpec) := I.
+
+#[local] Hint Rewrite bv_sign_extend_64_idemp : isla_coq_rewrite.
+
+Lemma encoder_bytes_exact_suffix_correct `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (old_x6 old_s0 old_s1 stack2 : bv 64)
+    (tail : spec) (P : iProp Sigma) :
+  instr 0x15c90 (Some a15c90) -∗ instr 0x15c94 (Some a15c94) -∗
+  instr 0x15c98 (Some a15c98) -∗ instr 0x15c9c (Some a15c9c) -∗
+  instr 0x15ca0 (Some a15ca0) -∗ instr 0x15ca4 (Some a15ca4) -∗
+  instr 0x15ca8 (Some a15ca8) -∗ instr 0x15cac (Some a15cac) -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15c90 (encoderBytesExactSuffixSpec data size sp ret bytes
+    old_x6 old_s0 old_s1 stack2 tail P).
+Proof.
+  iStartProof. iIntros "#H90 #H94 #H98 #H9c #Ha0 #Ha4 #Ha8 #Hac #HoutputCode".
+  iAssert (□ instr_pre 0x10190
+    (writeOutputTraceSpec data size ret bytes tail
+      (encoderBytesExactOutputFrame data size sp ret bytes
+        old_x6 old_s0 old_s1 stack2 tail P)))%I as "#Houtput".
+  { iModIntro. iApply instr_pre_to_body. iNext.
+    iApply write_output_trace_correct. iExact "HoutputCode". }
+  liARun.
+  Unshelve. all: prepare_sidecond; try assumption; try rewrite bv_sign_extend_idemp;
+    try bv_solve; try lia.
+  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
+  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
+  all: try bv_solve.
+  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
+  all: try (change (Z.to_N (bv_unsigned size) =
+    Z.to_N (Z.of_nat (length bytes))); f_equal; lia).
+  Unshelve. all: try liARun.
+  all: try (unfold encoderBytesExactPost, encoderBytesExactOutputFrame;
+    reflexivity).
+  all: try (rewrite /encoderBytesExactOutputResources
+    /encoderBytesExactPost; iFrame).
+  all: try unLET.
+  iRename select (bv_unsigned (sp - BV 64 32 + BV 64 24)%bv ↦ₘ ret)%I into "HretMem".
+  iRename select (bv_unsigned (sp - BV 64 32 + BV 64 16)%bv ↦ₘ old_s0)%I into "Hs0Mem".
+  iRename select (bv_unsigned (sp - BV 64 32 + BV 64 8)%bv ↦ₘ old_s1)%I into "Hs1Mem".
+  iRename select ("x2" ↦ᵣ RVal_Bits (sp - BV 64 32 + BV 64 32)%bv)%I into "H2".
+  iRename select ("x6" ↦ᵣ RVal_Bits _)%I into "H6".
+  iEval (replace (bv_unsigned (sp - BV 64 32 + BV 64 24)%bv)
+    with (bv_unsigned sp - 8) by bv_solve) in "HretMem".
+  iEval (replace (bv_unsigned (sp - BV 64 32 + BV 64 16)%bv)
+    with (bv_unsigned sp - 16) by bv_solve) in "Hs0Mem".
+  iEval (replace (bv_unsigned (sp - BV 64 32 + BV 64 8)%bv)
+    with (bv_unsigned sp - 24) by bv_solve) in "Hs1Mem".
+  iEval (replace (sp - BV 64 32 + BV 64 32)%bv with sp by bv_solve) in "H2".
+  iSplitL "H6".
+  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+    iExists (RVal_Bits (Z_to_bv 64 89256 + BV 64 18446744073709527040)%bv).
+    iFrame. iPureIntro. done. }
+  iFrame.
+Qed.
+
+Definition encoderBytesIntExactCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (∃ (data size sp ret : bv 64) (bytes : list (bv 8))
+      (old_x6 old_s0 old_s1 stack2 : bv 64) (tail : spec) (P : iProp Sigma),
+    encoderIntExactSpec size (sp - BV 64 32)%bv (BV 64 0x15c90)
+      (writeOutputEvents data size bytes tail)
+      (encoderBytesExactSuffixFrame data size sp ret bytes
+        old_x6 old_s0 old_s1 stack2 tail P))%I.
+
+Global Instance : LithiumUnfold (@encoderBytesIntExactCallSpec) := I.
+
+Lemma encoder_bytes_int_exact_call_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15d10 encoderBytesIntExactCallSpec.
+Proof.
+  iStartProof. iIntros "#HintCode #HoutputCode". iModIntro.
+  iApply instr_pre_to_body. iNext. rewrite instr_pre'_eq.
+  iIntros "Hspec". iDestruct "Hspec" as
+    (data size sp ret bytes old_x6 old_s0 old_s1 stack2 tail P) "Hspec".
+  iPoseProof (encoder_int_exact_correct size (sp - BV 64 32)%bv
+    (BV 64 0x15c90) (writeOutputEvents data size bytes tail)
+    (encoderBytesExactSuffixFrame data size sp ret bytes
+      old_x6 old_s0 old_s1 stack2 tail P) with
+    "HintCode HoutputCode") as "Hbody".
+  rewrite instr_pre'_eq. iApply ("Hbody" with "Hspec").
+Qed.
+
+Lemma encoder_bytes_exact_correct `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15c6c (encoderBytesExactSpec data size sp ret bytes tail P).
+Proof.
+  move => * /=. iStartProof.
+  iIntros "_ #HbytesCode #HintCode #HoutputCode".
+  iPoseProof (encoder_bytes_int_exact_call_pre with
+    "HintCode HoutputCode") as "#Hint".
+  iEval (simpl) in "HbytesCode".
+  iDestruct "HbytesCode" as
+    "(#H00 & #H04 & #H08 & #H0c & #H10 & #H14 & #H18 & #H1c &
+      #H20 & #H24 & #H28 & #H2c & #H30 & #H34 & #H38 & #H3c & #H40 & _)".
+  liARun.
+  iAssert (□ instr_pre 0x15c90
+    (encoderBytesExactSuffixSpec data size sp ret bytes
+      old_x6 old_s0 old_s1 stack2 tail P))%I as "#Hsuffix".
+  { iModIntro. iApply instr_pre_to_body. iNext.
+    iApply (encoder_bytes_exact_suffix_correct with
+      "H24 H28 H2c H30 H34 H38 H3c H40 HoutputCode"). }
+  iClear "H24 H28 H2c H30 H34 H38 H3c H40 HintCode HoutputCode".
+  iExists (P, tail, stack2, old_s1, old_s0, old_x6, bytes,
+    ret, sp, size, data, tt)ₗ.
+  liARun.
+  Unshelve. all: prepare_sidecond; try assumption;
+    try (bv_simplify_arith select (bv_extract 0 4 sp = _));
+    try (bv_simplify_arith select (bv_extract 0 3 sp = _));
+    try rewrite bv_sign_extend_idemp; try bv_solve; try lia.
+  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
+  all: try (replace (bv_unsigned (sp - BV 64 32 - BV 64 16)%bv)
+    with (bv_unsigned (sp - BV 64 48)%bv) by bv_solve; reflexivity).
+  Unshelve. all: try exact inhabitant.
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
+
+Print Assumptions encoder_bytes_exact_correct.
+
+Definition encoderBytesExactCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (∃ (data size sp ret : bv 64) (bytes : list (bv 8))
+      (tail : spec) (P : iProp Sigma),
+    encoderBytesExactSpec data size sp ret bytes tail P)%I.
+
+Global Instance : LithiumUnfold (@encoderBytesExactCallSpec) := I.
+
+Lemma encoder_bytes_exact_call_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15c6c encoderBytesExactCallSpec.
+Proof.
+  iStartProof. iIntros "#HbytesCode #HintCode #HoutputCode". iModIntro.
+  iApply instr_pre_to_body. iNext. rewrite instr_pre'_eq.
+  iIntros "Hspec". iDestruct "Hspec" as (data size sp ret bytes tail P) "Hspec".
+  iPoseProof (encoder_bytes_exact_correct data size sp ret bytes tail P with
+    "HbytesCode HintCode HoutputCode") as "Hbody".
+  rewrite instr_pre'_eq. iApply ("Hbody" with "Hspec").
+Qed.
+
+Print Assumptions encoder_bytes_exact_call_pre.
