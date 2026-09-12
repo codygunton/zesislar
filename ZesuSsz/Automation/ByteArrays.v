@@ -490,3 +490,26 @@ Section byte_array_write.
         iApply (spec_trace_mono with "Hspec"). spec_solver.
   Qed.
 End byte_array_write.
+
+Section byte_array_uninit_subsumption.
+  Context `{!islaG Sigma}.
+
+  Lemma subsume_mem_byte_array_8_uninit A a1 a2
+      (bytes : list (bv 8)) n2 G :
+    (⌜a1 = a2⌝ ∗ ⌜length bytes = 8%nat⌝ ∗ ⌜8 <= n2⌝ ∗
+      (a2 + 8) ↦ₘ? (n2 - 8) ∗ ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof.
+    iIntros "(-> & %Hlength & %Hsize & Htail & %x & HG) Hbytes".
+    iExists x. iFrame "HG".
+    iDestruct (mem_mapsto_byte_array_to_mapsto_len 8 with "Hbytes")
+      as "Hword"; first exact Hlength.
+    iDestruct (mem_mapsto_mapsto_to_uninit with "Hword") as "Hhead".
+    iApply (mem_mapsto_uninit_combine 8 with "Hhead Htail"); lia.
+  Qed.
+
+  Definition subsume_mem_byte_array_8_uninit_inst :=
+    [instance @subsume_mem_byte_array_8_uninit].
+  Global Existing Instance subsume_mem_byte_array_8_uninit_inst | 85.
+
+End byte_array_uninit_subsumption.
