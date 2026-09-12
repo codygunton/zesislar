@@ -512,6 +512,27 @@ Section byte_array_uninit_subsumption.
     [instance @subsume_mem_byte_array_8_uninit].
   Global Existing Instance subsume_mem_byte_array_8_uninit_inst | 85.
 
+  Lemma subsume_mem_byte_array_uninit A a1 a2
+      (bytes : list (bv 8)) n2 G :
+    (⌜a1 = a2⌝ ∗ ⌜Z.of_nat (length bytes) <= n2⌝ ∗
+      (a2 + Z.of_nat (length bytes)) ↦ₘ? (n2 - Z.of_nat (length bytes)) ∗
+      ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof.
+    iIntros "(-> & %Hsize & Htail & %x & HG) Hbytes".
+    iExists x. iFrame "HG".
+    iDestruct (mem_mapsto_byte_array_to_mapsto_len (length bytes)
+      with "Hbytes") as "Hword"; first reflexivity.
+    iDestruct (mem_mapsto_mapsto_to_uninit with "Hword") as "Hhead".
+    iEval (rewrite N.mul_comm N.div_mul; [rewrite nat_N_Z | done]) in "Hhead".
+    iApply (mem_mapsto_uninit_combine (Z.of_nat (length bytes))
+      with "Hhead Htail"); lia.
+  Qed.
+
+  Definition subsume_mem_byte_array_uninit_inst :=
+    [instance @subsume_mem_byte_array_uninit].
+  Global Existing Instance subsume_mem_byte_array_uninit_inst | 84.
+
 End byte_array_uninit_subsumption.
 
 Section word_byte_array_subsumption.
@@ -537,6 +558,38 @@ Section word_byte_array_subsumption.
   Definition subsume_mem_word_byte_array_inst :=
     [instance @subsume_mem_word_byte_array].
   Global Existing Instance subsume_mem_word_byte_array_inst | 96.
+
+  Lemma mem_mapsto_u64_pair_to_byte_array (a : Z) (low high : bv 64) :
+    a ↦ₘ low -∗ (a + 8) ↦ₘ high -∗
+    a ↦ₘ∗ (bv_to_little_endian 8 8 (bv_unsigned low) ++
+           bv_to_little_endian 8 8 (bv_unsigned high)).
+  Proof.
+    iIntros "Hlow Hhigh".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hlow") as "Hlow".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hhigh") as "Hhigh".
+    iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
+      (bv_to_little_endian 8 8 (bv_unsigned low))
+      (bv_to_little_endian 8 8 (bv_unsigned high)) 8 with "Hlow").
+    { rewrite length_bv_to_little_endian; [done | lia]. }
+    rewrite /= Z.mul_1_l. iExact "Hhigh".
+  Qed.
+
+  Lemma mem_mapsto_u64_quad_to_byte_array (a : Z) (w0 w1 w2 w3 : bv 64) :
+    a ↦ₘ w0 -∗ (a + 8) ↦ₘ w1 -∗ (a + 16) ↦ₘ w2 -∗ (a + 24) ↦ₘ w3 -∗
+    a ↦ₘ∗
+      ((bv_to_little_endian 8 8 (bv_unsigned w0) ++
+        bv_to_little_endian 8 8 (bv_unsigned w1)) ++
+       (bv_to_little_endian 8 8 (bv_unsigned w2) ++
+        bv_to_little_endian 8 8 (bv_unsigned w3))).
+  Proof.
+    iIntros "H0 H1 H2 H3".
+    iDestruct (mem_mapsto_u64_pair_to_byte_array with "H0 H1") as "Hlower".
+    iEval (replace (a + 24)%Z with (a + 16 + 8)%Z by lia) in "H3".
+    iDestruct (mem_mapsto_u64_pair_to_byte_array with "H2 H3") as "Hupper".
+    iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1) _ _ 16
+      with "Hlower"); first reflexivity.
+    rewrite /= Z.mul_1_l. iExact "Hupper".
+  Qed.
 
   Lemma subsume_mem_byte_singleton A (a1 a2 : Z) (available : bv 8)
       (requested : A -> list (bv 8)) G :

@@ -160,7 +160,6 @@ Proof.
   all: try iRename select (instr_pre (bv_unsigned ret) _)%I into "Hreturn".
   all: try iRename select (_ ↦ₘ ret)%I into "Hra".
   all: try iRename select (mmio_range 0x2401a0c0 16)%I into "Hmmio".
-  all: try iRename select P into "HP".
   all: try iFrame "Hlow Hra".
   all: try iEval (rewrite reg_col_nil).
   all: try iExists (tail, tt)ₗ.
