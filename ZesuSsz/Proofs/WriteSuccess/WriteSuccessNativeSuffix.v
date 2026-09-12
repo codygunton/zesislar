@@ -103,7 +103,7 @@ Lemma write_success_native_event_remainder_pack
   reg_col writeSuccessLoadHeaderExtraRegisters -∗
   writeSuccessNativeDataResources witness -∗
   P -∗
-  writeSuccessNativeEventRemainder P
+  writeSuccessNativeEventRemainder (writeSuccessNativeStaticResources ∗ P)
     (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
     (writeSuccessDecodedBytes witness)
     (writeSuccessValues witness) (writeSuccessPayload witness)
@@ -118,7 +118,7 @@ Proof.
   iDestruct "Hdata" as
     "(Hheap & Hitems & Hwithdrawals & %Hfacts & %HwithdrawalBase &
       %HwithdrawalCount & %HwithdrawalLength & %HwithdrawalMin &
-      %HwithdrawalMax & Hpost)".
+      %HwithdrawalMax & Hpost & Hstatic)".
   iEval (rewrite /writeSuccessLoadHeaderHeapResources) in "Hheap".
   iDestruct "Hheap" as
     "(Hlower & Hcall & Hpayload & Harray & Hown & Hinvariant &

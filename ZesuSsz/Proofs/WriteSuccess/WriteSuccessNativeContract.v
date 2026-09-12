@@ -199,6 +199,12 @@ Definition WriteSuccessOutputRelation (Decoded : Type) : Type :=
   WriteSuccessArgs Decoded -> writeSuccessNativeWitness Decoded ->
   ByteString -> Prop.
 
+Definition writeSuccessNativeStaticResources `{!islaG Sigma} : iProp Sigma :=
+  (bv_unsigned (BV 64 0x179c5) ↦ₘ∗
+    writeSuccessPrivateBytes [90; 83; 83; 90; 1; 1])%I.
+
+Global Instance : LithiumUnfold (@writeSuccessNativeStaticResources) := I.
+
 (** These resources contain every non-callee-stack memory region owned at the
     public entry.  The complete contract returns the same resources. *)
 Definition writeSuccessNativeDataResources `{!islaG Sigma}
@@ -230,7 +236,8 @@ Definition writeSuccessNativeDataResources `{!islaG Sigma}
     Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝ ∗
   writeSuccessPostTransactionDataResources
     (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
-    (writeSuccessDecodedBytes witness) (writeSuccessPostData witness).
+    (writeSuccessDecodedBytes witness) (writeSuccessPostData witness) ∗
+  writeSuccessNativeStaticResources.
 
 Global Instance : LithiumUnfold (@writeSuccessNativeDataResources) := I.
 
