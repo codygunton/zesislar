@@ -35,6 +35,27 @@ Proof.
   cbn. lia.
 Qed.
 
+Lemma writeSuccessBytesOfU64s_app left right :
+  bytes_of_u64s (left ++ right) =
+  bytes_of_u64s left ++ bytes_of_u64s right.
+Proof.
+  apply flat_map_app.
+Qed.
+
+Lemma writeSuccessBytesOfU64s_drop n values :
+  bytes_of_u64s (drop n values) = drop (8 * n) (bytes_of_u64s values).
+Proof.
+  revert values. induction n as [|n IH]; intros [|value values];
+    cbn [bytes_of_u64s]; try reflexivity.
+  rewrite drop_app length_bv_to_little_endian; [|lia].
+  have Hdrop : drop (8 * S n)
+      (bv_to_little_endian 8 8 (bv_unsigned value)) = [].
+  { apply drop_ge. rewrite length_bv_to_little_endian; lia. }
+  rewrite Hdrop. cbn.
+  replace (8 * S n - 8)%nat with (8 * n)%nat by lia.
+  apply IH.
+Qed.
+
 Definition writeSuccessExactValueWord (values : list (bv 64)) (index : nat) :=
   writeSuccessValueWord (take 69 values) index.
 
@@ -91,6 +112,57 @@ Definition writeSuccessExactValueMemory `{!islaG Sigma}
    (bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (bytes_of_u64s values))%I.
 
 Global Instance : LithiumUnfold (@writeSuccessExactValueMemory) := I.
+
+Lemma writeSuccessExactValueMemory_from_bytes `{!islaG Sigma}
+    (sp : bv 64) (bytes : list (bv 8)) (values : list (bv 64)) :
+  length values = 74%nat ->
+  bytes_of_u64s values = take 592 bytes ->
+  (bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes -∗
+  writeSuccessExactValueMemory sp values.
+Proof.
+  intros Hlength Hbytes. iIntros "Hmemory".
+  iEval (rewrite -Hbytes) in "Hmemory".
+  iPoseProof (mem_mapsto_bytes_to_u64_array with "Hmemory") as "Hvalues".
+  iDestruct (mem_mapsto_array_app 64%N (bv_unsigned sp + 1032)
+    (DfracOwn 1) (take 69 values) (drop 69 values) with "[Hvalues]")
+    as "[Hprefix Hsuffix]".
+  { rewrite take_drop. iFrame. }
+  have HprefixLength : length (take 69 values) = 69%nat.
+  { rewrite length_take Hlength. lia. }
+  iEval (rewrite HprefixLength /=) in "Hsuffix".
+  iPoseProof (mem_mapsto_u64_array_to_bytes with "Hsuffix") as "Hsuffix".
+  iEval (rewrite writeSuccessBytesOfU64s_drop) in "Hsuffix".
+  iEval (replace (bv_unsigned sp + 1032 + 8 * 69%nat) with
+    (bv_unsigned sp + 1584) by lia) in "Hsuffix".
+  iEval (rewrite -(take_drop 4 (drop 552 (bytes_of_u64s values)))) in "Hsuffix".
+  iDestruct (mem_mapsto_array_app 8%N (bv_unsigned sp + 1584)
+    (DfracOwn 1) (take 4 (drop 552 (bytes_of_u64s values)))
+    (drop 4 (drop 552 (bytes_of_u64s values))) with "Hsuffix")
+    as "[Hfour Hrest]".
+  iEval (rewrite /= drop_drop Nat.add_comm) in "Hrest".
+  have HbytesLength : length (bytes_of_u64s values) = 592%nat.
+  { apply Nat2Z.inj. rewrite writeSuccessBytesOfU64s_length Hlength. cbn. lia. }
+  have HfourLength : length (take 4 (drop 552 (bytes_of_u64s values))) = 4%nat.
+  { rewrite length_take length_drop HbytesLength. lia. }
+  iEval (rewrite HfourLength /=) in "Hrest".
+  iEval (replace (bv_unsigned sp + 1584 + 4) with
+    (bv_unsigned sp + 1588) by lia) in "Hrest".
+  iEval (rewrite -(take_drop 32 (drop 556 (bytes_of_u64s values)))) in "Hrest".
+  iDestruct (mem_mapsto_array_app 8%N (bv_unsigned sp + 1588)
+    (DfracOwn 1) (take 32 (drop 556 (bytes_of_u64s values)))
+    (drop 32 (drop 556 (bytes_of_u64s values))) with "Hrest")
+    as "[Hhash Htail]".
+  iEval (rewrite /= drop_drop Nat.add_comm) in "Htail".
+  have HhashLength : length (take 32 (drop 556 (bytes_of_u64s values))) = 32%nat.
+  { rewrite length_take length_drop HbytesLength. lia. }
+  iEval (rewrite HhashLength /=) in "Htail".
+  iEval (replace (bv_unsigned sp + 1588 + 32) with
+    (bv_unsigned sp + 1620) by lia) in "Htail".
+  rewrite /writeSuccessExactValueMemory /writeSuccessValueBlockHash.
+  iFrame.
+Qed.
+
+Print Assumptions writeSuccessExactValueMemory_from_bytes.
 
 Definition writeSuccessExactValuePost `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8))
