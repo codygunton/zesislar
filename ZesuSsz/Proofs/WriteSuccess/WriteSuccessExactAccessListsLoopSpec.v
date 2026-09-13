@@ -33,3 +33,11 @@ Proof.
   iExact "Hstate".
 Qed.
 Print Assumptions access_loop_state_resources.
+
+Definition accessExactExitBodies `{!islaG Sigma} `{!threadG}
+    (x19 : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (∀ (sp : bv 64) (base : Z) (entries : list writeSuccessAccessEntry)
+     (bytes : list (bv 8)) (tail : spec) (savedX22 : bv 64),
+   instr_body 0x153c0 (writeSuccessAccessListsLoopExit sp base entries bytes tail x19 savedX22
+     (accessExactLoopFrame sp base entries bytes tail x19 savedX22 P)))%I.
+Global Instance : LithiumUnfold (@accessExactExitBodies) := I.
