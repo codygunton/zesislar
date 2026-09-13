@@ -1,40 +1,42 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Automation.Continuations.
 Require Import isla.riscv64.riscv64.
-From ZesuSsz.Proofs.WriteSuccess Require Import
-  WriteSuccessOutput WriteSuccessExactStorageKeysWide WriteSuccessExactStorageKeysWords
-  WriteSuccessExactStorageKeysEmit WriteSuccessExactStorageKeysEmitHandoff.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Export.Snapshots.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutput.
+From Coq Require Import Lists.List.
+From IslaTraces.write_success_61 Require Import instrs.
+Local Existing Instance subsume_instr_pre_guard_inst | 0.
+
+Definition storageKeysOutputEntry `{!islaG Sigma} `{!threadG}
+    (sp old_ra old_x5 old_data old_size : bv 64) (payload : list (bv 8)) (tail : spec)
+    (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ "x1" ↦ᵣ RVal_Bits old_ra ∗
+   "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x10" ↦ᵣ RVal_Bits old_data ∗
+   "x11" ↦ᵣ RVal_Bits old_size ∗ bv_unsigned (sp + BV 64 1712)%bv ↦ₘ∗ payload ∗
+   mmio_range 0x2401a0c0 16 ∗
+   spec_trace (writeOutputEvents (sp + BV 64 1712)%bv (BV 64 32) payload tail) ∗ ⌜length payload = 32%nat⌝ ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@storageKeysOutputEntry) := I.
+
+Definition storageKeysOutputPost `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x153a8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗ "x10" ↦ᵣ RVal_Bits (sp + BV 64 1712)%bv ∗
+   "x11" ↦ᵣ RVal_Bits (BV 64 32) ∗ bv_unsigned (sp + BV 64 1712)%bv ↦ₘ∗ payload ∗
+   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   ("x2" ↦ᵣ RVal_Bits sp ∗ P ∗ True) ∗ True)%I.
+Global Instance : LithiumUnfold (@storageKeysOutputPost) := I.
 
 Lemma storage_keys_output_correct `{!islaG Sigma} `{!threadG}
-    row base bytes index sp a b c d tail (P : iProp Sigma) :
-  ([∗ list] instruction ∈ take 8 (drop 8 IslaTraces.write_success_61.instrs.instr_map),
-    instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ take 8 (drop 16 IslaTraces.write_success_61.instrs.instr_map),
+    sp old_ra old_x5 old_data old_size payload tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ take 4 (drop 20 IslaTraces.write_success_61.instrs.instr_map),
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x10190 (writeOutputTraceSpec (sp + BV 64 1712)%bv (BV 64 32)
-    (BV 64 0x153a8) (take 32 (drop index bytes)) tail
-    (storageKeysEmitFrame sp (take 32 (drop index bytes))
-      (storageKeysEmitCallerFrame row base bytes index P))) -∗
-  instr_body 0x153a8 (storageKeysEmitPost sp (take 32 (drop index bytes)) tail
-    (storageKeysEmitCallerFrame row base bytes index P)) -∗
-  instr_body 0x15368 (storageKeysWordsPost row base bytes index
-    (storageKeysOutputResources sp a b c d (take 32 (drop index bytes)) tail P)).
+    (BV 64 0x153a8) payload tail ("x2" ↦ᵣ RVal_Bits sp ∗ P ∗ True)) -∗
+  instr_body 0x153a8 (storageKeysOutputPost sp payload tail P) -∗
+  instr_body 0x15398 (storageKeysOutputEntry sp old_ra old_x5 old_data old_size payload tail P).
 Proof.
-  iStartProof. iIntros "#Hwide #Hemit #Houtput Hnext".
-  iAssert (instr_body 0x15388 (∃ old_ra old5 old11 : bv 64,
-    storageKeysEmitEntry sp old_ra old5 old11 a b c d (take 32 (drop index bytes)) tail
-      (storageKeysEmitCallerFrame row base bytes index P))) with "[Hnext]" as "Hcall".
-  { iApply instr_body_exists. iIntros (old_ra).
-    iApply instr_body_exists. iIntros (old5).
-    iApply instr_body_exists. iIntros (old11).
-    iApply (storage_keys_emit_correct sp old_ra old5 old11 a b c d
-      (take 32 (drop index bytes)) tail
-      (storageKeysEmitCallerFrame row base bytes index P) with "Hemit Houtput Hnext"). }
-  iApply (storage_keys_wide_correct row base bytes index
-    (storageKeysOutputResources sp a b c d (take 32 (drop index bytes)) tail P)
-    with "Hwide").
-  iApply (instr_pre_wand 0x15388 0x15388 false false with "Hcall");
-    [done | reflexivity |].
-  iApply (storage_keys_wide_to_emit row base bytes index sp a b c d tail P).
+  zesu_block.
+  all: try (eexists; eexists; repeat split; reflexivity).
+  all: unfold storageKeysOutputPost; reflexivity.
 Qed.
 Print Assumptions storage_keys_output_correct.
