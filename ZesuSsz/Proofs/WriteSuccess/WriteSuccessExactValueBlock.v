@@ -103,8 +103,8 @@ Proof.
   all: try (iSplit; [iPureIntro; unfold writeSuccessExactValueWord; reflexivity |]). all: try (repeat iSplit; try iPureIntro; try assumption; try bv_solve; try lia; try iFrame). iPoseProof (write_success_exact_value_suffix_pre sp values payload tail P with
   "Hlookup Hcode Houtput Hint") as "#HvalueSuffix". iApply (instr_pre_wand 0x14ed4 0x14ed4 true true with "HvalueSuffix"); [done | reflexivity |]. iIntros "Hreturn". iEval (unfold writeSuccessExactValueBaseFeeReturnSpec).
   iExists b8, b9, w2. iFrame. iDestruct "Hreturn" as "(HretSys & Hret1 & Hret2 & Hret5 & Hret10 & Hret11 & HretStack & HretMmio & HretTrace & _)". have Hret : Z_to_bv 64 (85712 + 4) = BV 64 0x14ed4 by (apply bv_eq; vm_compute).
-  iEval (rewrite Hret) in "Hret1". iFrame "Hret1". iPoseProof (write_success_byte_array_to_uninit with "Hframe0") as "Hframe0Uninit". have HstackAddress : bv_unsigned (sp - BV 64 48)%bv = bv_unsigned sp - 48 by bv_solve.
-  iEval (rewrite HstackAddress) in "Hframe0Uninit". iEval (simpl) in "Hframe0Uninit". iFrame. repeat iSplit; try iPureIntro; try assumption; try bv_solve; try lia.
+  iEval (rewrite Hret) in "Hret1". iFrame "Hret1".
+  zesu_run. Unshelve. all: zesu_finish.
 Qed.
 
 Print Assumptions write_success_exact_value_block.
