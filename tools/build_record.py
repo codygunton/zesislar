@@ -10,6 +10,8 @@ import sys
 import time
 from pathlib import Path
 
+from coqc_recipe import remember_recipe
+
 
 def error_class(returncode: int, output: str) -> str | None:
     if returncode == 0:
@@ -31,10 +33,12 @@ def main() -> int:
     if not command:
         parser.error("a Dune build command is required after --")
 
+    remember_recipe(Path(args.build_dir))
     started = time.monotonic()
     result = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, check=False)
     elapsed_ms = round((time.monotonic() - started) * 1000)
+    remember_recipe(Path(args.build_dir))
     sys.stdout.write(result.stdout)
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
     record = {

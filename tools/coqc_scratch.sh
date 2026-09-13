@@ -15,7 +15,7 @@ if [[ ! -f "$scratch_file" || ! -f "$trace_file" ]]; then
   exit 2
 fi
 
-python3 - "$scratch_file" "$build_dir" "$trace_file" <<'PY'
+python3 - "$scratch_file" "$build_dir" "$trace_file" "$(dirname "$(realpath "$0")")" <<'PY'
 import os
 import resource
 import subprocess
@@ -27,47 +27,14 @@ from pathlib import Path
 
 source = Path(sys.argv[1])
 build_dir = Path(sys.argv[2])
-data = Path(sys.argv[3]).read_bytes()
-offset = 0
+sys.path.insert(0, sys.argv[4])
+from coqc_recipe import remember_recipe
 
-
-def parse():
-    global offset
-    if data[offset:offset + 1] == b"(":
-        offset += 1
-        result = []
-        while data[offset:offset + 1] != b")":
-            result.append(parse())
-        offset += 1
-        return result
-    colon = data.index(b":", offset)
-    length = int(data[offset:colon])
-    offset = colon + 1
-    atom = data[offset:offset + length].decode()
-    offset += length
-    return atom
-
-
-command = None
-working_dir = None
-while offset < len(data):
-    event = parse()
-    if not isinstance(event, list) or event[:2] != ["process", "start"]:
-        continue
-    fields = {
-        field[0]: field[1:]
-        for field in event[3:]
-        if isinstance(field, list) and field
-    }
-    program = fields.get("prog", [""])[0]
-    raw_args = fields.get("process_args", [])
-    args = raw_args[0] if len(raw_args) == 1 and isinstance(raw_args[0], list) else raw_args
-    if Path(program).name == "coqc" and any(arg.endswith(".v") for arg in args):
-        command = [program, *args]
-        working_dir = fields.get("dir", [str(build_dir / "default")])[0]
-
-if command is None:
-    raise SystemExit("no coqc compile command exists in trace.csexp")
+recipe = remember_recipe(build_dir)
+if recipe is None:
+    raise SystemExit("no coqc compiler recipe exists; build a focused proof target first")
+command = recipe["command"]
+working_dir = recipe["working_dir"]
 
 flags = []
 skip = False

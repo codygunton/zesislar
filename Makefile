@@ -233,6 +233,7 @@ regenerate-evm-sail-snapshot:
 
 .PHONY: check-evidence-tools
 check-evidence-tools:
+	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_parity.py
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
