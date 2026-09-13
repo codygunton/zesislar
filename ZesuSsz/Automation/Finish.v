@@ -38,6 +38,26 @@ Ltac zesu_run_until boundary :=
   first [boundary tt |
     first [liUnfoldLate | liAStep]; zesu_run_until boundary | idtac].
 
+Ltac zesu_known_array_values :=
+  repeat match goal with
+  | Hread : ?bytes !! ?index = Some ?value,
+    Hknown : ?bytes !! ?known_index = Some ?known_value |- _ =>
+      is_var value;
+      tryif constr_eq value known_value then fail 1 else idtac;
+      let Hindex := fresh "Hindex" in
+      assert (Hindex : index = known_index) by
+        (unLET; autorewrite with zesu_indices;
+         rewrite ?Z.div_1_r; reflexivity);
+      rewrite Hindex Hknown in Hread;
+      injection Hread as Hread; subst value
+  end.
+
+Ltac zesu_finish_array_branch :=
+  zesu_known_array_values; exfalso;
+  first [bv_solve | match goal with
+    | Hbranch : _ <> _ |- _ => bv_simplify Hbranch; congruence
+    end].
+
 Ltac zesu_tuple_witness T :=
   lazymatch T with
   | li_prod ?A ?B =>
