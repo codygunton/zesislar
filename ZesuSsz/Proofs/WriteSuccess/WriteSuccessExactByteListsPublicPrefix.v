@@ -1,0 +1,50 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.Resources.
+Require Import ZesuSsz.Automation.Alignment.
+Require Import ZesuSsz.Automation.MemoryWords.
+Require Import ZesuSsz.Automation.ByteListResources.
+Require Import ZesuSsz.Automation.OutputPayloads.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsPublicSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntCall.
+From IslaTraces.write_success_05 Require Import instrs.
+Import ZesuSsz.Automation.Calls.FramedContinuations.
+
+Lemma byte_lists_exact_public_prefix_correct `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15d10 zesuEncoderIntPayloadCallSpec -∗
+  instr_body 0x15c34 byteListsExactPublicCountReturnSpec -∗
+  instr_body 0x15c10 encoderByteListsExactCallSpec.
+Proof.
+  iStartProof. iIntros "#Hcode #Hint Hnext".
+  iPoseProof "Hcode" as "#HsavedCode". iEval (simpl) in "Hcode".
+  zesu_open_resource_groups. zesu_run. Unshelve.
+  all: try zesu_pack
+    (byteListItemPayloadEvents (sp - BV 64 32)%bv items tail,
+      0x15c34%Z, (sp - BV 64 32)%bv, b11, tt)ₗ.
+  all: zesu_run. Unshelve. all: try zesu_alignment.
+  all: try (zesu_normalize_output_payload; reflexivity).
+  all: try (pose (saved :=
+    [RVal_Bits b1; RVal_Bits b2; RVal_Bits b3; RVal_Bits b4;
+     RVal_Bits b5; RVal_Bits b6; RVal_Bits b7; RVal_Bits b8;
+     RVal_Bits b9; RVal_Bits b18]);
+    iPoseProof (byte_lists_epilogue_pre sp ret b b0
+      (byteListEndPointer b10 items) saved (bv_unsigned b10) items tail
+      ltac:(assumption) ltac:(assumption) ltac:(assumption)
+      ltac:(assumption) ltac:(assumption)
+      with "HsavedCode") as "#Hepilogue";
+    iSplitL; [iIntros "Hreturned"; zesu_open_resource_groups; zesu_run | done]).
+  Unshelve.
+  all: try zesu_pack (tail, items,
+    [RVal_Bits b1; RVal_Bits b2; RVal_Bits b3; RVal_Bits b4;
+     RVal_Bits b5; RVal_Bits b6; RVal_Bits b7; RVal_Bits b8;
+     RVal_Bits b9; RVal_Bits b18], b10, b0, b, ret, sp, tt)ₗ.
+  all: zesu_open_bits_registers; zesu_run. Unshelve. all: try zesu_alignment.
+  all: try zesu_pack_register "x7".
+  all: zesu_run. Unshelve. all: try zesu_alignment.
+  all: zesu_finish.
+Qed.
+Print Assumptions byte_lists_exact_public_prefix_correct.
