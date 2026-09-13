@@ -57,6 +57,20 @@ Lemma zesu_bv_sub_twice_64 (base first second : bv 64) :
   (base - first - second)%bv = (base - (first + second))%bv.
 Proof. bv_solve. Qed.
 
+Lemma zesu_bv_add_zero_64 (value : bv 64) :
+  (value + BV 64 0)%bv = value.
+Proof. bv_solve. Qed.
+
+Lemma zesu_aligned_tag_end (pointer : bv 64) (limit : Z) :
+  bv_extract 0 3 pointer = BV 3 0 ->
+  limit `mod` 8 = 0 ->
+  bv_unsigned pointer + 8 < limit ->
+  bv_unsigned pointer + 9 < limit.
+Proof.
+  intros Halign Hlimit Hupper. bv_simplify Halign.
+  change (bv_unsigned pointer `mod` 8 = 0) in Halign. lia.
+Qed.
+
 Lemma zesu_u64_little_endian_roundtrip (value : bv 64) :
   Z_to_bv 64 (little_endian_to_bv 8
     (bv_to_little_endian 8 8 (bv_unsigned value))) = value.
@@ -73,7 +87,7 @@ Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
 #[export] Hint Rewrite zesu_bv_sub_twice_64
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite Z.sub_diag zesu_u64_little_endian_roundtrip
-  zesu_array_region_start_8_same : zesu_indices.
+  zesu_array_region_start_8_same zesu_bv_add_zero_64 : zesu_indices.
 #[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve

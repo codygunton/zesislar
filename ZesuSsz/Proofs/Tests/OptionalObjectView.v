@@ -17,3 +17,10 @@ Lemma optional_object_view_return `{!islaG Sigma} `{!threadG}
 Proof. iStartProof. zesu_run. Qed.
 
 Print Assumptions optional_object_view_return.
+
+Lemma optional_object_none_view `{!islaG Sigma} `{!threadG}
+    (pointer : Z) (value : bv 64) (P : iProp Sigma) :
+  pointer ↦ₘ value ∗ (pointer + 8) ↦ₘ (BV 8 0) ∗ P ∗ True -∗
+  pointer ↦ₘ∗ (bytes_of_u64s [value] ++ [BV 8 0]) ∗ P ∗ True.
+Proof. iStartProof. zesu_run. Qed.
+Print Assumptions optional_object_none_view.

@@ -18,15 +18,77 @@ Ltac zesu_finish_little_endian :=
       repeat eexists; repeat split; reflexivity
   end.
 
+Ltac zesu_finish_tag_bound :=
+  solve [eapply zesu_aligned_tag_end;
+    [eassumption | first [reflexivity | eassumption] | eassumption]].
+
+Ltac zesu_finish_mask :=
+  lazymatch goal with
+  | |- bv_and _ _ = _ =>
+      solve [apply bv_eq; rewrite bv_and_unsigned; simpl; assumption]
+  end.
+
+Ltac zesu_finish_constant :=
+  lazymatch goal with
+  | |- @eq (bv _) _ _ =>
+      timeout 1 (solve [apply bv_eq; vm_compute; reflexivity])
+  end.
+
+Ltac zesu_finish_ram_address :=
+  match goal with
+  | Hlower : (0x20000000 <= bv_unsigned ?pointer)%Z,
+    Hupper : (bv_unsigned ?pointer + _ < 0x40000000)%Z |- _ =>
+      lazymatch goal with
+      | |- context[pointer] => solve [clear -Hlower Hupper; bv_solve]
+      end
+  end.
+
+Ltac zesu_finish_pointer_alignment :=
+  lazymatch goal with
+  | |- bv_extract _ _ _ = _ => idtac
+  end;
+  match goal with
+  | Halign : bv_unsigned ?pointer `mod` _ = 0 |- _ =>
+      lazymatch goal with
+      | |- context[pointer] => solve [clear -Halign; bv_solve]
+      end
+  | Halign : bv_extract 0 _ ?pointer = _ |- _ =>
+      lazymatch goal with
+      | |- context[pointer] => solve [clear -Halign; bv_solve]
+      end
+  end.
+
+Ltac zesu_finish_ram_known :=
+  lazymatch goal with
+  | |- bv_unsigned ?pointer >= _ =>
+      solve [change (bv_unsigned pointer >= 0x20000000)%Z;
+        apply Z.le_ge; assumption]
+  | |- bv_unsigned ?pointer < _ =>
+      solve [change (bv_unsigned pointer < 0x40000000)%Z; assumption]
+  end.
+
 Ltac zesu_finish :=
-  prepare_sidecond;
   try autorewrite with zesu_indices;
+  try iAssumption;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ => prepare_sidecond
+  | _ => unLET
+  end;
+  try autorewrite with zesu_indices;
+  try iAssumption;
   try simpl;
   try done;
   try assumption;
+  try zesu_finish_tag_bound;
+  try zesu_finish_mask;
+  try zesu_finish_constant;
+  try (apply Z.le_ge; assumption);
+  try zesu_finish_ram_known;
+  try zesu_finish_ram_address;
+  try zesu_finish_pointer_alignment;
   try zesu_saturate_alignment;
-  try bv_solve;
   try lia;
+  try bv_solve;
   try zesu_finish_little_endian.
 
 Ltac zesu_finish_framed_wand :=
@@ -55,11 +117,24 @@ Ltac zesu_finish_closed_wand :=
        first [zesu_finish_closed_wand | zesu_finish_framed_wand | zesu_finish]]
   end.
 
+Ltac zesu_solve_instances :=
+  lazymatch goal with
+  | |- heapG _ => typeclasses eauto
+  | |- islaG _ => typeclasses eauto
+  | |- threadG => typeclasses eauto
+  end.
+
+Ltac zesu_run_pass :=
+  unshelve (time "zesu_run" repeat zesu_liAStep; liShow;
+    try zesu_finish_closed_wand;
+    try zesu_finish_framed_wand;
+    zesu_finish).
+
 Ltac zesu_run :=
-  unshelve (time "zesu_run" repeat zesu_liAStep; liShow);
-  try zesu_finish_closed_wand;
-  try zesu_finish_framed_wand;
-  zesu_finish.
+  zesu_run_pass;
+  try zesu_solve_instances;
+  zesu_run_pass;
+  try zesu_solve_instances.
 
 Ltac zesu_block :=
   iStartProof;
