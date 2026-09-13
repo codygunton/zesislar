@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 
-def compiler_recipe(data: bytes):
+def trace_events(data: bytes):
     offset = 0
 
     def parse():
@@ -24,12 +24,17 @@ def compiler_recipe(data: bytes):
         offset += length
         return atom
 
-    recipe = None
     while offset < len(data):
         try:
             event = parse()
         except (ValueError, IndexError, UnicodeDecodeError):
             break  # A running Dune process can leave its last event incomplete.
+        yield event
+
+
+def compiler_recipe(data: bytes):
+    recipe = None
+    for event in trace_events(data):
         if not isinstance(event, list) or event[:2] != ["process", "start"]:
             continue
         fields = {field[0]: field[1:] for field in event[3:]
