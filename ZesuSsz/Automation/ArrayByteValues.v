@@ -63,6 +63,26 @@ Proof.
   - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
 Qed.
 
+Lemma array_byte_four_value (a b c d : bv 8) :
+  bv_or (Z_to_bv 64 (bv_unsigned c * 65536 + bv_unsigned d * 16777216))
+    (Z_to_bv 64 (bv_unsigned a + bv_unsigned b * 256)) =
+  Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d]).
+Proof.
+  rewrite -array_byte_pair_value16 -array_byte_pair_value.
+  have Hc : Z_to_bv 64 (bv_unsigned c * 65536) =
+    bv_shiftl (bv_zero_extend 64 c) (BV 64 16) by bv_solve.
+  have Hd : Z_to_bv 64 (bv_unsigned d * 16777216) =
+    bv_shiftl (bv_zero_extend 64 d) (BV 64 24) by bv_solve.
+  have Hb : Z_to_bv 64 (bv_unsigned b * 256) =
+    bv_shiftl (bv_zero_extend 64 b) (BV 64 8) by bv_solve.
+  rewrite Hc Hd Hb.
+  unfold little_endian_to_bv, little_endian_to_Z.
+  rewrite !fmap_cons. cbn.
+  apply bv_eq. bv_simplify. bitblast as index.
+  all: (f_equal; lia).
+Qed.
+Print Assumptions array_byte_four_value.
+
 Ltac zesu_normalize_array_byte_lookups :=
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat

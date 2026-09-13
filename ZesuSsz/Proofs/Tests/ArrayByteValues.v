@@ -40,3 +40,10 @@ Print Assumptions test_array_byte_pair_value16.
 Print Assumptions test_array_byte_pair.
 Print Assumptions array_byte_lookup.
 Print Assumptions test_array_byte_cursor.
+
+Lemma test_array_byte_four_value (a b c d : bv 8) :
+  bv_or (Z_to_bv 64 (bv_unsigned c * 65536 + bv_unsigned d * 16777216))
+    (Z_to_bv 64 (bv_unsigned a + bv_unsigned b * 256)) =
+  Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d]).
+Proof. apply array_byte_four_value. Qed.
+Print Assumptions test_array_byte_four_value.
