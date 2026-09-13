@@ -20,6 +20,9 @@ Ltac zesu_finish_little_endian :=
 
 Ltac zesu_finish :=
   prepare_sidecond;
+  try autorewrite with zesu_indices;
+  try simpl;
+  try done;
   try assumption;
   try zesu_saturate_alignment;
   try bv_solve;
@@ -38,8 +41,23 @@ Ltac zesu_finish_framed_wand :=
        iEval (rewrite !bi.sep_True) in Hpost; iExact Hpost | done]
   end.
 
+Ltac zesu_finish_closed_wand :=
+  lazymatch goal with
+  | |- envs_entails _ ((?available -∗ ?requested) ∗ ?rest)%I =>
+      iSplitL "";
+      [first [solve [iIntros "?"; iAssumption] |
+        unshelve (repeat zesu_liAStep; liShow);
+        lazymatch goal with
+        | |- envs_entails _ _ => fail "closed wand needs external resources"
+        | _ => zesu_finish
+        end; done] |
+       unshelve (repeat zesu_liAStep; liShow);
+       first [zesu_finish_closed_wand | zesu_finish_framed_wand | zesu_finish]]
+  end.
+
 Ltac zesu_run :=
   unshelve (time "zesu_run" repeat zesu_liAStep; liShow);
+  try zesu_finish_closed_wand;
   try zesu_finish_framed_wand;
   zesu_finish.
 

@@ -8,7 +8,7 @@ Lemma test_framed_wand `{!islaG Sigma} `{!threadG}
   P -∗ (("x10" ↦ᵣ RVal_Bits value ∗ True -∗
     "x10" ↦ᵣ RVal_Bits value ∗ P ∗ True) ∗ True).
 Proof.
-  iStartProof. iIntros "HP". zesu_finish_framed_wand.
+  iStartProof. iIntros "HP". zesu_run.
 Qed.
 
 Lemma test_framed_continuation `{!islaG Sigma} `{!threadG}

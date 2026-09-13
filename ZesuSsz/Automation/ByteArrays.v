@@ -53,8 +53,27 @@ Lemma zesu_bv_unsigned_add_no_wrap_64 (base offset : bv 64) :
   bv_unsigned (base + offset)%bv - bv_unsigned base = bv_unsigned offset.
 Proof. intros. bv_solve. Qed.
 
+Lemma zesu_bv_sub_twice_64 (base first second : bv 64) :
+  (base - first - second)%bv = (base - (first + second))%bv.
+Proof. bv_solve. Qed.
+
+Lemma zesu_u64_little_endian_roundtrip (value : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    (bv_to_little_endian 8 8 (bv_unsigned value))) = value.
+Proof.
+  apply Z_to_bv_little_endian_to_bv_to_little_endian; [lia | reflexivity].
+Qed.
+
+Lemma zesu_array_region_start_8_same base :
+  array_region_start 8 base base = 0%nat.
+Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
+
 #[export] Hint Rewrite zesu_bv_sign_extend_same
   : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite zesu_bv_sub_twice_64
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite Z.sub_diag zesu_u64_little_endian_roundtrip
+  zesu_array_region_start_8_same : zesu_indices.
 #[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
@@ -587,6 +606,30 @@ End byte_array_uninit_subsumption.
 
 Section word_byte_array_subsumption.
   Context `{!islaG Sigma}.
+
+  Lemma subsume_mem_optional_object_array
+      (A : Type) (a1 a2 : Z) (value : bv 64)
+      (requested : A -> list (bv 8)) (G : A -> iProp Sigma)
+      `{!TCFastDone (forall x : A, length (requested x) = 9%nat)} :
+    (∃ x : A, ⌜a1 = a2⌝ ∗
+      ⌜take 8 (requested x) = bv_to_little_endian 8 8 (bv_unsigned value)⌝ ∗
+      (a2 + 8) ↦ₘ∗ drop 8 (requested x) ∗ G x)%I ⊢
+    subsume (a1 ↦ₘ value) (fun x => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hword". iDestruct "Hrule" as (x) "(-> & %Hprefix & Htail & HG)".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hword") as "Hhead".
+    iExists x. iSplitL "Hhead Htail".
+    - iEval (rewrite -(take_drop 8 (requested x))).
+      iApply (mem_mapsto_array_app_combine_at 8 a2 _ _ _ 8 with "[Hhead] [Htail]").
+      + rewrite Hprefix. apply length_bv_to_little_endian. lia.
+      + rewrite Hprefix. iExact "Hhead".
+      + iExact "Htail".
+    - iExact "HG".
+  Qed.
+
+  Definition subsume_mem_optional_object_array_inst :=
+    [instance @subsume_mem_optional_object_array].
+  Global Existing Instance subsume_mem_optional_object_array_inst | 95.
 
   Lemma subsume_mem_word_byte_array A (a1 a2 : Z) (len : N)
       (available : bv (8 * len)) (requested : A -> list (bv 8)) G :
