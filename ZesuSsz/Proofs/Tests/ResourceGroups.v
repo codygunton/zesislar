@@ -39,3 +39,13 @@ Proof.
   iStartProof. iIntros "Hgroup". zesu_open_resource_groups. zesu_run.
 Qed.
 Print Assumptions resource_groups_pure.
+
+Lemma resource_bits_collection `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  reg_col [(KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64)] -∗
+  P -∗ reg_col [(KindReg "x7", BitsShape 64)] ∗
+  "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗ P ∗ True.
+Proof.
+  iStartProof. iIntros "Hregisters HP".
+  zesu_open_bits_registers. zesu_run.
+Qed.
+Print Assumptions resource_bits_collection.

@@ -16,6 +16,18 @@ Ltac zesu_open_processed_resources :=
   repeat iSelect (byteListProcessedResources _ _)%I
     ltac:(fun H => iEval (unfold byteListProcessedResources) in H).
 
+Lemma simplify_goal_byte_list_processed_nil `{!islaG Sigma}
+    (address : Z) (T : iProp Sigma) :
+  T ⊢ simplify_goal (byteListProcessedResources address []) T.
+Proof.
+  unfold simplify_goal. iIntros "HT". iFrame "HT".
+  iApply byteListProcessedResources_nil.
+Qed.
+Print Assumptions simplify_goal_byte_list_processed_nil.
+Definition simplify_goal_byte_list_processed_nil_inst :=
+  [instance @simplify_goal_byte_list_processed_nil with 0%N].
+Global Existing Instance simplify_goal_byte_list_processed_nil_inst.
+
 Lemma simplify_goal_byte_list_processed_snoc `{!islaG Sigma}
     (address : Z) (done : list ByteListItem) (item : ByteListItem)
     (T : iProp Sigma) :
