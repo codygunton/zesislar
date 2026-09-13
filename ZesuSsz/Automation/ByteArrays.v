@@ -574,6 +574,15 @@ Section byte_array_uninit_subsumption.
     [instance @subsume_mem_scratch_byte_array_uninit].
   Global Existing Instance subsume_mem_byte_array_uninit_inst | 84.
 
+  Definition subsume_mem_scratch_byte_array_1_uninit
+      (A : Type) (a1 a2 : Z) (bytes : list (bv 8)) (n2 : Z)
+      (G : A -> iProp Sigma) `{!TCFastDone (length bytes = 1%nat)} :=
+    @subsume_mem_byte_array_uninit A a1 a2 bytes n2 G.
+
+  Definition subsume_mem_scratch_byte_array_1_uninit_inst :=
+    [instance @subsume_mem_scratch_byte_array_1_uninit].
+  Global Existing Instance subsume_mem_scratch_byte_array_1_uninit_inst | 83.
+
 End byte_array_uninit_subsumption.
 
 Section word_byte_array_subsumption.
