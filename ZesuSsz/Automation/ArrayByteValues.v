@@ -83,6 +83,18 @@ Proof.
 Qed.
 Print Assumptions array_byte_four_value.
 
+Lemma array_byte_eight (a b c d e f g h : bv 8) :
+  bv_or (bv_shiftl (Z_to_bv 64 (little_endian_to_bv 8 [e;f;g;h])) (BV 64 32))
+    (Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d])) =
+  Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d;e;f;g;h]).
+Proof.
+  unfold little_endian_to_bv, little_endian_to_Z.
+  rewrite !fmap_cons. cbn.
+  apply bv_eq. bv_simplify. bitblast as index.
+  all: (f_equal; lia).
+Qed.
+Print Assumptions array_byte_eight.
+
 Ltac zesu_normalize_array_byte_lookups :=
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat

@@ -47,3 +47,10 @@ Lemma test_array_byte_four_value (a b c d : bv 8) :
   Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d]).
 Proof. apply array_byte_four_value. Qed.
 Print Assumptions test_array_byte_four_value.
+
+Lemma test_array_byte_eight (a b c d e f g h : bv 8) :
+  bv_or (bv_shiftl (Z_to_bv 64 (little_endian_to_bv 8 [e;f;g;h])) (BV 64 32))
+    (Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d])) =
+  Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d;e;f;g;h]).
+Proof. apply array_byte_eight. Qed.
+Print Assumptions test_array_byte_eight.
