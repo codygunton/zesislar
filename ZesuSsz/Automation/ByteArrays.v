@@ -55,6 +55,8 @@ Proof. intros. bv_solve. Qed.
 
 #[export] Hint Rewrite zesu_bv_sign_extend_same
   : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve

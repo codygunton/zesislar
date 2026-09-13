@@ -26,8 +26,21 @@ Ltac zesu_finish :=
   try lia;
   try zesu_finish_little_endian.
 
+Ltac zesu_finish_framed_wand :=
+  lazymatch goal with
+  | |- envs_entails _ ((?available -∗ ?requested) ∗ True)%I =>
+      let Hpost := lazymatch goal with
+        | |- envs_entails (Envs _ _ ?counter) _ => constr:(IAnon counter)
+        end in
+      iSplit;
+      [iIntros "?"; rewrite ?Z_to_bv_bv_unsigned;
+       timeout 5 (iFrame "∗");
+       iEval (rewrite !bi.sep_True) in Hpost; iExact Hpost | done]
+  end.
+
 Ltac zesu_run :=
   unshelve (time "zesu_run" repeat zesu_liAStep; liShow);
+  try zesu_finish_framed_wand;
   zesu_finish.
 
 Ltac zesu_block :=
