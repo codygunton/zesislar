@@ -7,6 +7,34 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 
 Import ListNotations.
 
+Lemma zesu_byte_array_word_region `{!islaG Sigma}
+    (address : Z) (q : dfrac) (bytes : list (bv 8)) (offset count : nat)
+    (Hbound : (offset + count * 8 <= length bytes)%nat) :
+  address ↦ₘ{q}∗ bytes -∗
+  address ↦ₘ{q}∗ take offset bytes ∗
+  (address + Z.of_nat offset) ↦ₘ{q}∗
+    u64s_of_bytes count (take (count * 8) (drop offset bytes)) ∗
+  (address + Z.of_nat (offset + count * 8)) ↦ₘ{q}∗
+    drop (offset + count * 8) bytes.
+Proof.
+  iIntros "Hbytes".
+  iDestruct (mem_mapsto_array_region 8 address q bytes offset (count * 8)
+    Hbound with "Hbytes") as "(Hprefix & Hwords & Hsuffix)".
+  have Hlength : length (take (count * 8) (drop offset bytes)) = (count * 8)%nat.
+  { rewrite length_take length_drop. lia. }
+  have Hwords : bytes_of_u64s
+      (u64s_of_bytes count (take (count * 8) (drop offset bytes))) =
+      take (count * 8) (drop offset bytes).
+  { apply bytes_of_u64s_of_bytes. exact Hlength. }
+  iEval (rewrite -Hwords) in "Hwords".
+  iDestruct (mem_mapsto_bytes_to_u64_array with "Hwords") as "Hwords".
+  have Hbyte : Z.of_N (8 `div` 8) = 1 by reflexivity.
+  iEval (rewrite Hbyte !Z.mul_1_l) in "Hwords Hsuffix".
+  iFrame.
+Qed.
+
+Print Assumptions zesu_byte_array_word_region.
+
 Definition zesu_byte_access_size (len : N) : bool :=
   (len =? 1)%N || (len =? 2)%N || (len =? 4)%N || (len =? 8)%N.
 

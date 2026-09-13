@@ -1,9 +1,11 @@
 Require Import ZesuSsz.Automation.All.
+From iris.proofmode Require Import environments.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 From IslaTraces.write_success_01 Require Import instrs.
 From IslaTraces.write_success_02 Require Import instrs.
+From IslaTraces.write_success_09 Require Import a14d7c_spec.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -18,6 +20,8 @@ Local Instance : LithiumUnfold (@writeSuccessLoadBlockAdapterSpec) := I.
 Local Instance : LithiumUnfold (@writeSuccessLoadRegisterResources) := I.
 Local Instance : LithiumUnfold (@writeSuccessLoadMemoryResources) := I.
 Local Instance : LithiumUnfold (@writeSuccessLoadTerminal) := I.
+Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
+Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
 Definition writeSuccessCallerOutputEvents
     (data size : bv 64) (tail : spec) : spec :=
@@ -43,29 +47,6 @@ Proof. f_equal. lia. Qed.
 #[local] Hint Rewrite Z_to_nat_add_sub_base Z_to_nat_offset_sub :
   write_success_offsets.
 
-Ltac run_write_success_until_load_block :=
-  lazymatch goal with
-  | |- instr_body 0x14d80 _ => idtac
-  | _ =>
-      first
-        [ progress iEval (unfold zesuMemcpyCallSpec, zesu_c_call)
-        | progress iEval (unfold zesuWriteOutputCallSpec, zesu_c_call)
-        | liAStep ];
-      run_write_success_until_load_block
-  end.
-
-Ltac expose_write_success_decoded_memory decoded decodedBytes :=
-  first
-    [ iRename select (bv_unsigned decoded ↦ₘ∗ decodedBytes)%I
-        into "HdecodedMemory"
-    | liAStep;
-      expose_write_success_decoded_memory decoded decodedBytes ].
-
-Ltac expose_write_success_decoded_length decodedBytes :=
-  lazymatch goal with
-  | _ : length decodedBytes = _ |- _ => idtac
-  | _ => liAStep; expose_write_success_decoded_length decodedBytes
-  end.
 
 Lemma write_success_to_load_block `{!islaG Sigma} `{!threadG}
     (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64)
@@ -125,85 +106,65 @@ Proof.
     - pose proof (bv_unsigned_in_range 64 sp).
       change (0 <= bv_unsigned sp - 2000 < 18446744073709551616)%Z.
       lia. }
-  expose_write_success_decoded_memory (sp + 32)%bv decodedBytes.
-  expose_write_success_decoded_length decodedBytes.
-  have HdecodedRegionBound : (720 + 128 <= length decodedBytes)%nat by lia.
-  unfold IPM_JANNO, LET_GOAL.
-  pose proof (mem_mapsto_array_region 8%N (bv_unsigned (sp + 32))
-    (DfracOwn 1) decodedBytes 720 128 HdecodedRegionBound) as HsplitLemma.
-  iAssert (
-    bv_unsigned (sp + 32) ↦ₘ∗ take 720 decodedBytes ∗
-    (bv_unsigned (sp + 32) + 720) ↦ₘ∗
-      take 128 (drop 720 decodedBytes) ∗
-    (bv_unsigned (sp + 32) + 848) ↦ₘ∗ drop 848 decodedBytes)%I
-    with "[HdecodedMemory]" as "Hsplit".
-  { iApply HsplitLemma. iExact "HdecodedMemory". }
-  iDestruct "Hsplit" as
-    "[HdecodedPrefix [HdecodedTail HdecodedSuffix]]".
+  iPoseProof "Hlookup" as "Hdirect".
+  iEval (rewrite /instr_lookup_resources) in "Hdirect".
+  iPoseProof ("Hdirect" $! 0x14d7c with "[]") as "#Hinstr14d7c".
+  { iPureIntro. rewrite IslaTraces.write_success_blocks.Index.lookup_a14d7c. done. }
+  iPoseProof (IslaTraces.write_success_09.a14d7c_spec.a14d7c_spec
+    0x14d7c with "Hinstr14d7c") as "Hjalr".
+  iClear "Hdirect".
+  rewrite instr_pre'_eq. iIntros "Hentry".
+  iEval (rewrite -instr_pre'_eq) in "Hmemcpy Houtput Hcontinue".
+  iDestruct "Hentry" as
+    "(Hsys & Hother & H1 & H2 & H8 & H9 & H18 & H19 & H20 & H21 &
+      H22 & H23 & H24 & H25 & H26 & H27 & H10 & H11 & H12 & Hsaved & Hpre & _)".
+  iDestruct "Hpre" as
+    "(Hstack & HdecodedMemory & Hmmio & Htrace & HP & %Hlength & %HsrcMin & %HsrcMax & Hreturn & _)".
+  have HdecodedRegionBound : (720 + 16 * 8 <= length decodedBytes)%nat by lia.
+  iDestruct (zesu_byte_array_word_region (bv_unsigned (sp + 32))
+    (DfracOwn 1) decodedBytes 720 16 HdecodedRegionBound
+    with "HdecodedMemory") as "(HdecodedPrefix & HdecodedWords & HdecodedSuffix)".
   set (decodedTail := take 128 (drop 720 decodedBytes)).
   set (decodedWords := u64s_of_bytes 16 decodedTail).
-  have HdecodedTailLength : length decodedTail = 128%nat.
-  { rewrite /decodedTail length_take length_drop. lia. }
-  have HdecodedWordsBytes : bytes_of_u64s decodedWords = decodedTail.
-  { apply bytes_of_u64s_of_bytes. exact HdecodedTailLength. }
-  iEval (rewrite -HdecodedWordsBytes) in "HdecodedTail".
-  iDestruct (mem_mapsto_bytes_to_u64_array with "HdecodedTail") as
-    "HdecodedWords".
-  iEval (cbn) in "HdecodedWords".
   iAssert (□ instr_pre 0x14d80 writeSuccessLoadBlockAdapterSpec)%I as
     "#HloadBlock".
   { iApply write_success_load_block_adapter_pre. iExact "HspecCode". }
   iClear "HspecCode".
-  repeat first
-    [ progress iEval (unfold zesuMemcpyCallSpec, zesu_c_call)
-    | progress iEval (unfold zesuWriteOutputCallSpec, zesu_c_call)
-    | liAStep
-    | progress prepare_sidecond
-    | bv_solve
-    | lia ].
-  Unshelve.
-  all: try (iExists
-    ([RVal_Bits s1; RVal_Bits s2; RVal_Bits s3; RVal_Bits s4;
+  iApply "Hjalr".
+  rewrite /InstrSpecs.Specs.zesu_jalr_same_spec.
+  iExists (BV 64 0xfd78). iFrame "Hsys H1".
+  iSplit; first (iPureIntro; bv_solve).
+  have Htarget : bv_unsigned
+    (bv_or (bv_and ((BV 64 0xfd78) + BV 64 1116)%bv
+      (BV 64 18446744073709551614)) (BV 64 0)) = 0x101d4 by bv_solve.
+  rewrite Htarget.
+  iApply (instr_pre_wand 0x101d4 0x101d4 true true with "Hmemcpy"); [done | done |].
+  iIntros "Hcallee".
+  iDestruct "Hcallee" as "(Hsys & H1 & _)".
+  iEval (unfold zesuMemcpyCallSpec, zesu_c_call).
+  zesu_run_until ltac:(fun _ => lazymatch goal with
+    |- envs_entails _ (∃ x : list valu *ₗ list (bv 64) *ₗ
+      bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ (), _) => idtac
+  end).
+  liInst (fun x =>
+    x.1ₗ = [RVal_Bits s1; RVal_Bits s2; RVal_Bits s3; RVal_Bits s4;
       RVal_Bits s5; RVal_Bits s6; RVal_Bits s7; RVal_Bits s8;
-      RVal_Bits s9; RVal_Bits s10; RVal_Bits s11],
-     decodedWords, b11, b10, (sp + 32)%bv, (sp - 2000)%bv, tt)ₗ).
-  all: try iSplit.
-  all: try (iEval (unfold writeSuccessLoadRegisterResources); iFrame).
-  all: try (iEval (unfold writeSuccessLoadMemoryResources;
-    rewrite HspSub2000); iFrame).
-  all: try (repeat iSplit; try iPureIntro).
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try (rewrite bv_sub_unsigned bv_wrap_small;
-    [ unfold bv_wrap, bv_modulus in Hspalign; cbn in Hspalign;
-      rewrite Zminus_mod Hspalign; vm_compute
-    | pose proof (bv_unsigned_in_range 64 sp); lia ]).
-  all: try (bv_simplify Hspalign; bv_solve).
-  all: try bv_solve.
+      RVal_Bits s9; RVal_Bits s10; RVal_Bits s11] /\
+    x.2ₗ = decodedWords /\ x.5ₗ = (sp + 32)%bv /\ x.6ₗ = (sp - 2000)%bv).
+  zesu_run.
+  Unshelve. all: try zesu_handoff.
+  Unshelve. all: try zesu_finish.
+  Unshelve. all: try zesu_frame_handoff.
+  Unshelve. all: try zesu_finish.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try (bv_simplify Hspalign; bv_solve).
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try rewrite Hdecoded720.
-  all: try (autorewrite with write_success_offsets; cbn;
-    rewrite !length_drop; lia).
-  Unshelve.
-  all: try rewrite Hdecoded720.
-  all: try (autorewrite with write_success_offsets; cbn;
-    rewrite !length_drop; lia).
-  all: try (cbn; rewrite ?length_take ?length_drop; lia).
   all: try (apply bv_add_32_mod_8_zero; assumption).
-  all: try (rewrite <- HspSub2000;
-    apply bv_sub_2000_mod_8_zero; assumption).
-  all: try (change (720 <= length (take 720 decodedBytes))%nat;
-    rewrite length_take; lia).
+  all: try (apply bv_sub_2000_mod_8_zero; assumption).
+  all: try (cbn; rewrite length_take; lia).
+  all: try (rewrite HspSub2000;
+    bv_simplify_arith Hspalign; unfold bv_wrap, bv_modulus in Hspalign;
+    cbn in Hspalign; rewrite Zminus_mod Hspalign; vm_compute).
+  all: try reflexivity.
   all: try (change (720 <= Z.of_nat (length (take 720 decodedBytes)))%Z;
-    rewrite length_take; lia).
-  all: iExact "Hcontinue".
+    rewrite length_take Hlength; lia).
 Qed.
+Print Assumptions write_success_to_load_block.

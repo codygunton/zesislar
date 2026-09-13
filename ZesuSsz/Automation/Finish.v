@@ -34,6 +34,10 @@ Ltac zesu_block :=
   simpl;
   zesu_run.
 
+Ltac zesu_run_until boundary :=
+  first [boundary tt |
+    first [liUnfoldLate | liAStep]; zesu_run_until boundary | idtac].
+
 Ltac zesu_tuple_witness T :=
   lazymatch T with
   | li_prod ?A ?B =>
