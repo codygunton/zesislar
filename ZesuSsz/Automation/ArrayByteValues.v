@@ -95,6 +95,30 @@ Proof.
 Qed.
 Print Assumptions array_byte_eight.
 
+Lemma array_byte_pair_shift_value (low high : bv 8) :
+  bv_or (bv_shiftl (bv_zero_extend 64 high) (BV 64 8))
+    (bv_zero_extend 64 low) =
+  Z_to_bv 64 (bv_unsigned low + bv_unsigned high * 256).
+Proof.
+  replace (bv_shiftl (bv_zero_extend 64 high) (BV 64 8))
+    with (Z_to_bv 64 (bv_unsigned high * 256)) by bv_solve.
+  apply array_byte_pair_value.
+Qed.
+Print Assumptions array_byte_pair_shift_value.
+
+Lemma array_byte_pair_shift_value16 (low high : bv 8) :
+  bv_or (bv_shiftl (bv_zero_extend 64 high) (BV 64 24))
+    (bv_shiftl (bv_zero_extend 64 low) (BV 64 16)) =
+  Z_to_bv 64 (bv_unsigned low * 65536 + bv_unsigned high * 16777216).
+Proof.
+  replace (bv_shiftl (bv_zero_extend 64 high) (BV 64 24))
+    with (Z_to_bv 64 (bv_unsigned high * 16777216)) by bv_solve.
+  replace (bv_shiftl (bv_zero_extend 64 low) (BV 64 16))
+    with (Z_to_bv 64 (bv_unsigned low * 65536)) by bv_solve.
+  apply array_byte_pair_value16.
+Qed.
+Print Assumptions array_byte_pair_shift_value16.
+
 Ltac zesu_normalize_array_byte_lookups :=
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat

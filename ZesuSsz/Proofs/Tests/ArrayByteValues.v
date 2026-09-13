@@ -54,3 +54,17 @@ Lemma test_array_byte_eight (a b c d e f g h : bv 8) :
   Z_to_bv 64 (little_endian_to_bv 8 [a;b;c;d;e;f;g;h]).
 Proof. apply array_byte_eight. Qed.
 Print Assumptions test_array_byte_eight.
+
+Lemma test_array_byte_pair_shift_value (low high : bv 8) :
+  bv_or (bv_shiftl (bv_zero_extend 64 high) (BV 64 8))
+    (bv_zero_extend 64 low) =
+  Z_to_bv 64 (bv_unsigned low + bv_unsigned high * 256).
+Proof. apply array_byte_pair_shift_value. Qed.
+Print Assumptions test_array_byte_pair_shift_value.
+
+Lemma test_array_byte_pair_shift_value16 (low high : bv 8) :
+  bv_or (bv_shiftl (bv_zero_extend 64 high) (BV 64 24))
+    (bv_shiftl (bv_zero_extend 64 low) (BV 64 16)) =
+  Z_to_bv 64 (bv_unsigned low * 65536 + bv_unsigned high * 16777216).
+Proof. apply array_byte_pair_shift_value16. Qed.
+Print Assumptions test_array_byte_pair_shift_value16.
