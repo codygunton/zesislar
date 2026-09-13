@@ -24,3 +24,13 @@ Proof.
   zesu_run.
 Qed.
 Print Assumptions byte_list_processed_return.
+
+Lemma byte_list_processed_identity `{!islaG Sigma} (address : Z)
+    (items : list ByteListItem) (P : iProp Sigma) :
+  byteListProcessedResources address items -∗
+  P -∗ byteListItemResources address items ∗ P ∗ True.
+Proof.
+  iStartProof. iIntros "Hitems HP".
+  zesu_open_processed_resources. zesu_run.
+Qed.
+Print Assumptions byte_list_processed_identity.

@@ -10,6 +10,11 @@ Proof. unfold byteListEndPointer. bv_solve. Qed.
 Print Assumptions byte_list_end_advance.
 #[export] Hint Rewrite byte_list_end_advance : zesu_indices.
 #[export] Hint Rewrite <- app_assoc : zesu_indices.
+#[export] Hint Rewrite app_nil_r : zesu_indices.
+
+Ltac zesu_open_processed_resources :=
+  repeat iSelect (byteListProcessedResources _ _)%I
+    ltac:(fun H => iEval (unfold byteListProcessedResources) in H).
 
 Lemma simplify_goal_byte_list_processed_snoc `{!islaG Sigma}
     (address : Z) (done : list ByteListItem) (item : ByteListItem)
