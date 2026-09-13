@@ -86,6 +86,6 @@ Proof.
   Unshelve. all: prepare_sidecond.
   all: try assumption; try unLET; try rewrite bv_sign_extend_64_idemp;
     try bv_solve; try lia.
-  Unshelve. all: iFrame.
+  Unshelve. all: zesu_run.
   all: lazymatch goal with |- ?G => fail "1596c load residual" G end.
 Qed.

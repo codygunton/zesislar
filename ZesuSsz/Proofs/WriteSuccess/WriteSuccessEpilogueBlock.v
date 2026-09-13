@@ -153,7 +153,7 @@ Proof.
     rewrite (bv_wrap_small 64 (bv_unsigned sp + offset)); [reflexivity|].
     change (0 <= bv_unsigned sp + offset < 18446744073709551616)%Z.
     lia. }
-  rewrite !bv_sign_extend_64_idemp.
+  rewrite ?bv_sign_extend_64_idemp.
   rewrite (HspAdd 1992 ltac:(lia)) (HspAdd 1984 ltac:(lia))
     (HspAdd 1976 ltac:(lia)) (HspAdd 1968 ltac:(lia))
     (HspAdd 1960 ltac:(lia)) (HspAdd 1952 ltac:(lia))

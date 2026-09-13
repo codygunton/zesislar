@@ -58,24 +58,19 @@ Proof.
   rewrite /IslarisContractSpec /allocator_get_resources /=.
   iStartProof.
   iIntros "(Hi1&Hi2&Hi3&Hi4&Hi5&Hi6&Hi7&Hi8)" (args).
-  repeat liAStep; liShow.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  Unshelve.
+  repeat lazymatch goal with
+  | |- _ ⊢ WPasm tnil => fail 1
+  | _ => zesu_liAStep
+  end.
+  liShow.
   iExists (Build_AllocatorGetOutcome 0x2401a0b0 0x177a8, tt)ₗ.
   red_li_prod.
   iSplit; first done.
   iExists sp, stack0, stack8.
-  replace (bv_unsigned LET4) with (bv_unsigned sp + 8) by bv_solve.
-  replace LET7 with stack8 by bv_solve.
-  replace (bv_unsigned LET9) with (bv_unsigned sp) by bv_solve.
-  replace LET12 with stack0 by bv_solve.
-  replace LET14 with (BV 64 0x2401a0b0) by bv_solve.
-  replace LET16 with (BV 64 0x177a8) by bv_solve.
-  replace (bv_unsigned LET18) with (bv_unsigned sp + 16) by bv_solve.
-  replace (bv_unsigned LET22) with (bv_unsigned sp + 24) by bv_solve.
-  iFrame. done.
+  zesu_run.
+  Unshelve. all: zesu_run.
 Qed.
+Print Assumptions allocator_get_state_correct.
 
 Definition allocatorGetModel :
     IslarisContractModel AllocatorGetArgs AllocatorGetOutcome := {|

@@ -236,7 +236,7 @@ Proof.
     have Hx22Value :
         bv_sign_extend 64 (writeSuccessAccessEntryWord entry2 0) =
           writeSuccessAccessEntryWord entry2 0 by rewrite bv_sign_extend_idemp.
-    iEval (rewrite Hx22Value) in "Hx22Current".
+    iEval (rewrite ?Hx22Value) in "Hx22Current".
     have Hx27Value :
         bv_sign_extend 64
           (Z_to_bv (8 * 8)
@@ -244,7 +244,7 @@ Proof.
               (take 8 (drop 8 (writeSuccessAccessEntryBytes entry2))))) =
           writeSuccessAccessEntryWord entry2 8.
     { rewrite /writeSuccessAccessEntryWord. bv_solve. }
-    iEval (rewrite Hx27Value) in "Hx27Current".
+    iEval (rewrite ?Hx27Value) in "Hx27Current".
     let spT := constr:(sp2) in
     let baseT := constr:(base2) in
     let entryT := constr:(entry2) in

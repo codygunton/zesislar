@@ -69,17 +69,10 @@ Proof.
   iEval (rewrite -instr_pre'_eq) in "Hnext".
   replace (bv_wrap 64 87672) with 87672 by bv_solve.
   liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
+  Unshelve. all: zesu_finish.
   Unshelve.
-  iExists (tail, suffix, prefix, bytes, remaining, processed, total, base, tt)ₗ.
-  iSplit.
-  { subst LET8. rewrite bv_sign_extend_idemp. done. }
-  subst LET0 LET3 LET5.
-  rewrite bv_sign_extend_idemp Haddr1120 Haddr1128.
-  rewrite /writeSuccessTransactionsWithdrawalsTailFrame.
-  iFrame.
-  repeat iSplit; iPureIntro; assumption.
+  zesu_pack (tail, suffix, prefix, bytes, processed, total, base, tt)ₗ.
+  all: zesu_run.
+  Unshelve. all: zesu_finish.
 Qed.
+Print Assumptions write_success_transactions_withdrawals_tail_loads.

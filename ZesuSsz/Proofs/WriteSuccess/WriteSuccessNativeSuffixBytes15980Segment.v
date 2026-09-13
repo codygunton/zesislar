@@ -78,7 +78,7 @@ Proof.
   all: try bv_solve.
   all: try lia.
   Unshelve. all: try iFrame.
-  all: try rewrite Hdata0 HsizeExt.
+  all: try rewrite ?Hdata0 ?HsizeExt.
   all: try bv_solve.
   all: try reflexivity.
   all: lazymatch goal with |- ?G => fail "15980 segment residual" G end.
