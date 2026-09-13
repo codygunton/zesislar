@@ -22,6 +22,21 @@ Lemma test_array_byte_pair (low high : bv 8) :
 Proof. apply array_byte_pair. Qed.
 
 Print Assumptions array_byte_pair.
+Lemma test_array_byte_pair_value (low high : bv 8) :
+  bv_or (Z_to_bv 64 (bv_unsigned high * 256)) (bv_zero_extend 64 low) =
+    Z_to_bv 64 (bv_unsigned low + bv_unsigned high * 256).
+Proof. apply array_byte_pair_value. Qed.
+
+Lemma test_array_byte_pair_value16 (low high : bv 8) :
+  bv_or (Z_to_bv 64 (bv_unsigned high * 16777216))
+    (Z_to_bv 64 (bv_unsigned low * 65536)) =
+  Z_to_bv 64 (bv_unsigned low * 65536 + bv_unsigned high * 16777216).
+Proof. apply array_byte_pair_value16. Qed.
+
+Print Assumptions array_byte_pair_value.
+Print Assumptions array_byte_pair_value16.
+Print Assumptions test_array_byte_pair_value.
+Print Assumptions test_array_byte_pair_value16.
 Print Assumptions test_array_byte_pair.
 Print Assumptions array_byte_lookup.
 Print Assumptions test_array_byte_cursor.

@@ -26,6 +26,43 @@ Proof.
   all: (f_equal; lia).
 Qed.
 
+Lemma array_byte_pair_value (low high : bv 8) :
+  bv_or (Z_to_bv 64 (bv_unsigned high * 256)) (bv_zero_extend 64 low) =
+    Z_to_bv 64 (bv_unsigned low + bv_unsigned high * 256).
+Proof.
+  have Hshift : Z_to_bv 64 (bv_unsigned high * 256) =
+      bv_shiftl (bv_zero_extend 64 high) (BV 64 8) by bv_solve.
+  rewrite Hshift array_byte_pair.
+  unfold little_endian_to_bv, little_endian_to_Z.
+  rewrite !fmap_cons. cbn.
+  rewrite Z.shiftl_0_l Z.lor_0_r.
+  have Hland : Z.land (bv_unsigned low) (Z.shiftl (bv_unsigned high) 8) = 0.
+  { bitblast as index. all: (f_equal; lia). }
+  rewrite -Z.add_nocarry_lor //.
+  rewrite Z.shiftl_mul_pow2; [|lia]. cbn. reflexivity.
+Qed.
+Lemma array_byte_pair_value16 (low high : bv 8) :
+  bv_or (Z_to_bv 64 (bv_unsigned high * 16777216))
+    (Z_to_bv 64 (bv_unsigned low * 65536)) =
+  Z_to_bv 64 (bv_unsigned low * 65536 + bv_unsigned high * 16777216).
+Proof.
+  have Hlow : bv_unsigned low * 65536 = Z.shiftl (bv_unsigned low) 16.
+  { rewrite Z.shiftl_mul_pow2; [|lia]. cbn. reflexivity. }
+  have Hhigh : bv_unsigned high * 16777216 = Z.shiftl (bv_unsigned high) 24.
+  { rewrite Z.shiftl_mul_pow2; [|lia]. cbn. reflexivity. }
+  have Hland : Z.land (bv_unsigned low * 65536)
+      (bv_unsigned high * 16777216) = 0.
+  { rewrite Hlow Hhigh. bitblast as index. all: (f_equal; lia). }
+  rewrite (Z.add_nocarry_lor _ _ Hland).
+  apply bv_eq. bv_simplify.
+  rewrite -(Z.add_nocarry_lor _ _ Hland).
+  rewrite !bv_wrap_small.
+  - rewrite Z.lor_comm -(Z.add_nocarry_lor _ _ Hland). reflexivity.
+  - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
+  - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
+  - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
+Qed.
+
 Ltac zesu_normalize_array_byte_lookups :=
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat
