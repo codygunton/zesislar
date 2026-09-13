@@ -15,5 +15,13 @@ Lemma test_array_byte_cursor (row : bv 64) (base : Z)
     (little_endian_to_bv 8 (take 1 (drop (index + 282)%nat bytes))).
 Proof. intros. zesu_array_byte_value. Qed.
 
+Lemma test_array_byte_pair (low high : bv 8) :
+  bv_or (bv_shiftl (bv_zero_extend 64 high) (BV 64 8))
+    (bv_zero_extend 64 low) =
+  Z_to_bv 64 (little_endian_to_bv 8 [low; high]).
+Proof. apply array_byte_pair. Qed.
+
+Print Assumptions array_byte_pair.
+Print Assumptions test_array_byte_pair.
 Print Assumptions array_byte_lookup.
 Print Assumptions test_array_byte_cursor.

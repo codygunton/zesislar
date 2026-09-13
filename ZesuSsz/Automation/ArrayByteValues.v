@@ -15,6 +15,17 @@ Proof.
   cbn. bv_solve.
 Qed.
 
+Lemma array_byte_pair (low high : bv 8) :
+  bv_or (bv_shiftl (bv_zero_extend 64 high) (BV 64 8))
+    (bv_zero_extend 64 low) =
+  Z_to_bv 64 (little_endian_to_bv 8 [low; high]).
+Proof.
+  unfold little_endian_to_bv, little_endian_to_Z.
+  rewrite !fmap_cons. cbn.
+  apply bv_eq. bv_simplify. bitblast as index.
+  all: (f_equal; lia).
+Qed.
+
 Ltac zesu_normalize_array_byte_lookups :=
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat
