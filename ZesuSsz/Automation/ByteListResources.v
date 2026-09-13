@@ -2,6 +2,15 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
 
+Lemma byte_list_end_advance (pointer : bv 64)
+    (item : ByteListItem) (rest : list ByteListItem) :
+  byteListEndPointer pointer (item :: rest) =
+  byteListEndPointer (pointer + BV 64 16)%bv rest.
+Proof. unfold byteListEndPointer. bv_solve. Qed.
+Print Assumptions byte_list_end_advance.
+#[export] Hint Rewrite byte_list_end_advance : zesu_indices.
+#[export] Hint Rewrite <- app_assoc : zesu_indices.
+
 Lemma simplify_goal_byte_list_processed_snoc `{!islaG Sigma}
     (address : Z) (done : list ByteListItem) (item : ByteListItem)
     (T : iProp Sigma) :
