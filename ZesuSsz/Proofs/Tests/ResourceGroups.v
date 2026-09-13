@@ -64,3 +64,16 @@ Proof.
   zesu_pack_register "x7". zesu_run.
 Qed.
 Print Assumptions resource_bits_bundled.
+
+Lemma resource_branch_frame `{!islaG Sigma} `{!threadG}
+    (sp total cursor : bv 64) (P : iProp Sigma) :
+  reg_col zesu_ram_sys_regs ∗ reg_col [(KindReg "x7", BitsShape 64)] ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗ "x10" ↦ᵣ RVal_Bits total ∗
+    "x11" ↦ᵣ RVal_Bits cursor ∗ P ∗ True ⊣⊢
+  reg_col zesu_ram_sys_regs ∗ "x10" ↦ᵣ RVal_Bits total ∗
+    "x11" ↦ᵣ RVal_Bits cursor ∗
+    (reg_col [(KindReg "x7", BitsShape 64)] ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+      P ∗ True) ∗ True.
+Proof. apply zesu_branch_resource_equiv. Qed.
+Print Assumptions resource_branch_frame.
+Print Assumptions zesu_branch_resource_equiv.

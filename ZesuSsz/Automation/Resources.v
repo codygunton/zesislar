@@ -1,6 +1,18 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 
+(* Resource algebra only. The final group retains every caller resource. *)
+Lemma zesu_branch_resource_equiv {Sigma : gFunctors}
+    (sys regs stack total cursor frame : iProp Sigma) :
+  sys ∗ regs ∗ stack ∗ total ∗ cursor ∗ frame ⊣⊢
+  sys ∗ total ∗ cursor ∗ (regs ∗ stack ∗ frame) ∗ True.
+Proof.
+  iSplit.
+  - iIntros "(Hsys & Hregs & Hstack & Htotal & Hcursor & Hframe)". iFrame.
+  - iIntros "(Hsys & Htotal & Hcursor & Hrest & _)".
+    iDestruct "Hrest" as "(Hregs & Hstack & Hframe)". iFrame.
+Qed.
+
 (* Open separating groups. Keep memory arrays and register collections whole. *)
 Ltac zesu_open_resource_groups :=
   repeat first
