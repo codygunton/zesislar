@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_127 Require Import instrs.
+From IslaTraces.write_success_29 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 
 Local Existing Instance subsume_instr_pre_guard_inst | 0.
@@ -37,3 +38,10 @@ Lemma test_guarded_subsumption_unchanged `{!islaG Sigma} `{!threadG}
 Proof. zesu_block. Qed.
 
 Print Assumptions test_guarded_subsumption_unchanged.
+
+Lemma test_block_retains_raw_array_code `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_29.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr 0x14f1c (Some a14f1c) ∗ True.
+Proof. zesu_block. Qed.
+Print Assumptions test_block_retains_raw_array_code.

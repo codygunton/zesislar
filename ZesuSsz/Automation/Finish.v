@@ -1,6 +1,7 @@
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
+Require Export ZesuSsz.Automation.ArrayCursors.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -111,6 +112,8 @@ Ltac zesu_finish :=
   end;
   try autorewrite with zesu_indices;
   try iAssumption;
+  try (timeout 2 zesu_normalize_array_cursors);
+  try reflexivity;
   try simpl;
   try done;
   try assumption;
@@ -178,6 +181,9 @@ Ltac zesu_run :=
 Ltac zesu_block :=
   iStartProof;
   simpl;
+  repeat first [progress iIntros (?) | progress iIntros "#?" |
+    progress iIntros "?"];
+  repeat iDestruct select (_ ∗ _)%I as "[? ?]";
   zesu_run.
 
 Ltac zesu_run_until boundary :=
