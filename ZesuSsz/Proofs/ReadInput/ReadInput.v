@@ -96,41 +96,18 @@ Proof.
   iIntros "(Hi1&Hi2&Hi3&Hi4&Hi5&Hi6&Hi7&Hi8)" (args).
   repeat lazymatch goal with
   | |- _ ⊢ WPasm tnil => fail 1
-  | _ => liAStep
+  | _ => zesu_liAStep
   end.
   liShow.
   iExists (Build_ReadInputOutcome 0x2001a000, tt)ₗ.
-  red_li_prod.
-  iSplit; first done.
+  red_li_prod. iSplit; first done.
   iExists bufferSlot, sizeSlot, sizeWord, savedWord.
-  replace LET2 with (BV 64 0x2001a000) by reflexivity.
-  replace (bv_unsigned LET4) with
-    (bv_unsigned (bufferSlot + (BV 64 0))) by reflexivity.
-  replace LET10 with (BV 64 0x2401a0b8) by
-    (unfold LET10, LET8; symmetry; exact read_input_io_pointer_eq).
-  replace (bv_unsigned LET12) with
-    (bv_unsigned (readInputIoPointer + (BV 64 0))) by
-    (unfold LET12; rewrite read_input_io_pointer_eq; reflexivity).
-  replace LET15 with sizeWord by
-    (unfold LET15; symmetry; apply bv_sign_extend_idemp).
-  replace (bv_unsigned LET17) with
-    (bv_unsigned (sizeSlot + (BV 64 0))) by reflexivity.
-  iFrame. done.
+  unshelve (repeat zesu_liAStep; liShow).
   Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try (apply bv_eq; rewrite bv_and_unsigned; simpl; assumption).
-  all: try (change (0x20000000 <= bv_unsigned bufferSlot)%Z; assumption).
-  all: try (apply Z.le_ge; change (0x20000000 <= bv_unsigned bufferSlot)%Z;
-            assumption).
   all: try (apply Z.le_ge;
-            change (0x20000000 <= bv_unsigned sizeSlot)%Z;
-            rewrite H1; rewrite H3; rewrite <- H0;
-            clear - H9; lia).
-  all: try (change (bv_unsigned bufferSlot < 0x40000000)%Z; assumption).
-  all: try (change (bv_unsigned sizeSlot < 0x40000000)%Z; assumption).
-  all: try (change (bv_extract 0 3 bufferSlot = BV 3 0); assumption).
-  all: try (change (bv_extract 0 3 sizeSlot = BV 3 0); assumption).
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
+    change (0x20000000 <= bv_unsigned sizeSlot)%Z;
+    clear -H0 H1 H3 H9; lia).
+  all: zesu_finish.
 Qed.
 
 Definition readInputControlFlow : list (Z * Z) := [
