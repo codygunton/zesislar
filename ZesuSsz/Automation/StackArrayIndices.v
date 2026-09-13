@@ -14,6 +14,11 @@ Proof.
 Qed.
 
 Ltac zesu_normalize_stack_array_indices :=
+  try match goal with
+  | Hlow : (0x20000000 <= bv_unsigned ?sp - ?amount)%Z |- _ =>
+      let Hlower := fresh "HstackArrayLower" in
+      assert (Hlower : (0x20000000 <= bv_unsigned sp)%Z) by lia
+  end;
   repeat match goal with
   | Hlow : (0x20000000 <= bv_unsigned ?sp)%Z,
     Hhigh : (bv_unsigned ?sp + ?extent < 0x40000000)%Z
