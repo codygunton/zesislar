@@ -34,6 +34,39 @@ Ltac zesu_finish_constant :=
       timeout 1 (solve [apply bv_eq; vm_compute; reflexivity])
   end.
 
+Ltac zesu_normalize_memory_constants :=
+  repeat match goal with
+  | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
+      let value := constr:(bv_add left right) in
+      let integer := eval vm_compute in (bv_unsigned value) in
+      lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
+      let Hconstant := fresh "Hconstant" in
+      assert (Hconstant : value = BV 64 integer) by
+        (apply bv_eq; vm_compute; reflexivity);
+      rewrite Hconstant; clear Hconstant
+  end.
+
+Ltac zesu_normalize_memory_addresses :=
+  repeat match goal with
+  | Hlower : (?minimum <= bv_unsigned ?pointer)%Z,
+    Hupper : (bv_unsigned ?pointer2 + _ < ?maximum)%Z
+    |- context[mem_mapsto (bv_unsigned (bv_add ?base ?offset)) _ _] =>
+      constr_eq base pointer;
+      constr_eq pointer pointer2;
+      let low := eval vm_compute in minimum in
+      let high := eval vm_compute in maximum in
+      let ramLow := eval vm_compute in (0x20000000%Z) in
+      let ramHigh := eval vm_compute in (0x40000000%Z) in
+      constr_eq low ramLow; constr_eq high ramHigh;
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
+      let Haddress := fresh "Haddress" in
+      assert (Haddress : bv_unsigned (bv_add pointer offset) =
+        (bv_unsigned pointer + integer)%Z) by
+        (clear -Hlower Hupper; bv_solve);
+      rewrite Haddress; clear Haddress
+  end.
+
 Ltac zesu_finish_ram_address :=
   match goal with
   | Hlower : (0x20000000 <= bv_unsigned ?pointer)%Z,
@@ -69,6 +102,8 @@ Ltac zesu_finish_ram_known :=
 
 Ltac zesu_finish :=
   try autorewrite with zesu_indices;
+  try (timeout 2 zesu_normalize_memory_constants);
+  try (timeout 2 zesu_normalize_memory_addresses);
   try iAssumption;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ => prepare_sidecond
@@ -131,7 +166,11 @@ Ltac zesu_run_pass :=
     zesu_finish).
 
 Ltac zesu_run :=
-  zesu_run_pass;
+  unshelve (zesu_run_pass;
+    try zesu_solve_instances;
+    zesu_run_pass;
+    try zesu_solve_instances;
+    zesu_finish);
   try zesu_solve_instances;
   zesu_run_pass;
   try zesu_solve_instances.
