@@ -15,7 +15,7 @@ Lemma access_tail_exact_loop_native `{!islaG Sigma} `{!threadG}
     sp base entries processed entry rest bytes x19 savedX22 tail (P : iProp Sigma) :
   ([∗ list] instruction ∈ IslaTraces.write_success_63.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  □ instr_pre 0x151d4 (writeSuccessExactAccessListsLoopSpec x19 P) -∗
+  □ instr_pre 0x151d4 (writeSuccessExactAccessListsLoopSpec sp base entries bytes tail x19 savedX22 P) -∗
   □ instr_body 0x153b4 (writeSuccessStorageKeysLoopExit x19 sp
     (bv_unsigned (writeSuccessAccessEntryStoragePointer entry))
     (writeSuccessAccessEntryStorageCount entry) (writeSuccessAccessEntryStorageBytes entry)

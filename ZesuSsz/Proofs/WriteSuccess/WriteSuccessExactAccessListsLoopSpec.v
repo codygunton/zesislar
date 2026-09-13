@@ -12,9 +12,10 @@ Definition accessExactLoopFrame `{!islaG Sigma} `{!threadG}
 Global Instance : LithiumUnfold (@accessExactLoopFrame) := I.
 
 Definition writeSuccessExactAccessListsLoopSpec `{!islaG Sigma} `{!threadG}
-    (x19 : bv 64) (P : iProp Sigma) : iProp Sigma :=
-  (∃ (sp : bv 64) (base : Z) (entries processed remaining : list writeSuccessAccessEntry)
-     (bytes : list (bv 8)) (storedIndex savedX22 data pointer count : bv 64) (tail : spec),
+    (sp : bv 64) (base : Z) (entries : list writeSuccessAccessEntry)
+    (bytes : list (bv 8)) (tail : spec) (x19 savedX22 : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (∃ (processed remaining : list writeSuccessAccessEntry)
+     (storedIndex data pointer count : bv 64),
    writeSuccessExactAccessListsState sp base entries processed remaining bytes storedIndex
      x19 savedX22 data pointer count tail
      (accessExactLoopFrame sp base entries bytes tail x19 savedX22 P))%I.
@@ -26,18 +27,18 @@ Lemma access_loop_state_resources `{!islaG Sigma} `{!threadG}
   writeSuccessExactAccessListsState sp base entries processed remaining bytes storedIndex
     x19 savedX22 data pointer count tail
     (accessExactLoopFrame sp base entries bytes tail x19 savedX22 P) -∗
-  writeSuccessExactAccessListsLoopSpec x19 P.
+  writeSuccessExactAccessListsLoopSpec sp base entries bytes tail x19 savedX22 P.
 Proof.
   iIntros "Hstate".
-  iExists sp, base, entries, processed, remaining, bytes, storedIndex, savedX22, data, pointer, count, tail.
+  iExists processed, remaining, storedIndex, data, pointer, count.
   iExact "Hstate".
 Qed.
 Print Assumptions access_loop_state_resources.
 
 Definition accessExactExitBodies `{!islaG Sigma} `{!threadG}
-    (x19 : bv 64) (P : iProp Sigma) : iProp Sigma :=
-  (∀ (sp : bv 64) (base : Z) (entries : list writeSuccessAccessEntry)
-     (bytes : list (bv 8)) (tail : spec) (savedX22 : bv 64),
+    (sp : bv 64) (base : Z) (entries : list writeSuccessAccessEntry)
+    (bytes : list (bv 8)) (tail : spec) (x19 savedX22 : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (
    instr_body 0x153c0 (writeSuccessAccessListsLoopExit sp base entries bytes tail x19 savedX22
      (accessExactLoopFrame sp base entries bytes tail x19 savedX22 P)))%I.
 Global Instance : LithiumUnfold (@accessExactExitBodies) := I.
