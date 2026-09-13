@@ -49,3 +49,18 @@ Proof.
   zesu_open_bits_registers. zesu_run.
 Qed.
 Print Assumptions resource_bits_collection.
+
+Lemma resource_bits_bundled `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  reg_col [(KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64);
+    (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+    (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)] -∗
+  P -∗ ∃ x : valu *ₗ (), ⌜valu_has_shape x.1ₗ (BitsShape 64)⌝ ∗
+    "x7" ↦ᵣ x.1ₗ ∗
+    reg_col [(KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+      (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)] ∗
+    "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗ P ∗ True.
+Proof.
+  iStartProof. iIntros "Hregisters HP". zesu_open_bits_registers.
+  zesu_pack_register "x7". zesu_run.
+Qed.
+Print Assumptions resource_bits_bundled.

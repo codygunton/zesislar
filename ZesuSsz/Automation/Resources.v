@@ -13,8 +13,20 @@ Ltac zesu_open_bits_registers :=
     ltac:(fun H =>
       iEval (rewrite reg_col_cons) in H;
       iDestruct H as "[? ?]";
+      let actual := fresh "registerValue" in
       iDestruct select (∃ value, ⌜valu_has_shape value (BitsShape 64)⌝ ∗
-        _ ↦ᵣₖ value)%I as (value) "[%? ?]").
+        _ ↦ᵣₖ value)%I as (actual) "?";
+      zesu_open_resource_groups).
+
+Ltac zesu_pack_register register :=
+  let instantiate H :=
+    let entry := iTypeOf H in
+    lazymatch entry with
+    | Some (_, ?r ↦ᵣ ?value)%I => zesu_pack (value, tt)ₗ
+    | Some (_, KindReg ?r ↦ᵣₖ ?value)%I => zesu_pack (value, tt)ₗ
+    end in
+  first [iSelect (KindReg register ↦ᵣₖ _)%I instantiate
+        |iSelect (register ↦ᵣ _)%I instantiate].
 
 Ltac zesu_normalize_resource_addresses :=
   match goal with
