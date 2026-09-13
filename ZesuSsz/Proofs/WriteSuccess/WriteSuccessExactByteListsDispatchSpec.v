@@ -49,3 +49,13 @@ Definition byteListsExactDispatchSpec `{!islaG Sigma} `{!threadG}
     byteListsExactDispatchFrame P sp savedRa savedS0 savedS1 pointer
       (pointer + BV 64 8)%bv itemBase done items tail)%I.
 Global Instance : LithiumUnfold (@byteListsExactDispatchSpec) := I.
+
+Definition byteListsExactCountReturnSpec `{!islaG Sigma} `{!threadG}
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp savedRa savedS0 savedS1 pointer : bv 64) (itemBase : Z)
+      (done items : list ByteListItem) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length items))) ∗
+    byteListsExactDispatchFrame P sp savedRa savedS0 savedS1 pointer
+      pointer itemBase done items tail)%I.
+Global Instance : LithiumUnfold (@byteListsExactCountReturnSpec) := I.
