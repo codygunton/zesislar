@@ -119,6 +119,7 @@ Definition encoderBytesExactSpec `{!islaG Sigma} `{!threadG}
       (encoderBytesExactPost data size sp ret bytes
         old_x6 old_s0 old_s1 stack2 tail P))%I.
 
+Global Instance : LithiumUnfold (@encoderBytesExactOutputResources) := I.
 Global Instance : LithiumUnfold (@encoderBytesExactPost) := I.
 Global Instance : LithiumUnfold (@encoderBytesExactSuffixFrame) := I.
 Global Instance : LithiumUnfold (@encoderBytesExactOutputFrame) := I.
@@ -162,23 +163,7 @@ Proof.
   all: try (rewrite /encoderBytesExactOutputResources
     /encoderBytesExactPost; iFrame).
   all: try unLET.
-  iRename select (bv_unsigned (sp - BV 64 32 + BV 64 24)%bv ↦ₘ ret)%I into "HretMem".
-  iRename select (bv_unsigned (sp - BV 64 32 + BV 64 16)%bv ↦ₘ old_s0)%I into "Hs0Mem".
-  iRename select (bv_unsigned (sp - BV 64 32 + BV 64 8)%bv ↦ₘ old_s1)%I into "Hs1Mem".
-  iRename select ("x2" ↦ᵣ RVal_Bits (sp - BV 64 32 + BV 64 32)%bv)%I into "H2".
-  iRename select ("x6" ↦ᵣ RVal_Bits _)%I into "H6".
-  iEval (replace (bv_unsigned (sp - BV 64 32 + BV 64 24)%bv)
-    with (bv_unsigned sp - 8) by bv_solve) in "HretMem".
-  iEval (replace (bv_unsigned (sp - BV 64 32 + BV 64 16)%bv)
-    with (bv_unsigned sp - 16) by bv_solve) in "Hs0Mem".
-  iEval (replace (bv_unsigned (sp - BV 64 32 + BV 64 8)%bv)
-    with (bv_unsigned sp - 24) by bv_solve) in "Hs1Mem".
-  iEval (replace (sp - BV 64 32 + BV 64 32)%bv with sp by bv_solve) in "H2".
-  iSplitL "H6".
-  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists (RVal_Bits (Z_to_bv 64 89256 + BV 64 18446744073709527040)%bv).
-    iFrame. iPureIntro. done. }
-  iFrame.
+  all: zesu_run.
 Qed.
 
 Definition encoderBytesIntExactCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
