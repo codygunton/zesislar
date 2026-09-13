@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.ArrayForget.
+Require Import ZesuSsz.Automation.CallScratch.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -30,17 +31,8 @@ Proof.
   { unfold writeSuccessU256WordsPayload, writeSuccessPrivateBytes.
     rewrite map_length !app_length.
     cbn [writeSuccessEncodeU64 writeSuccessEncodeLe length]. reflexivity. }
-  iDestruct (byte_array_forget with "Hpayload") as "Hpayload".
-  have Haddress : bv_unsigned (sp - BV 64 48)%bv = (bv_unsigned sp - 48)%Z by bv_solve.
-  iEval (rewrite Hlen Haddress /=) in "Hpayload".
-  iDestruct (mem_mapsto_mapsto_to_uninit with "Hret") as "Hret".
-  iEval (cbn) in "Hret".
-  iEval (replace (bv_unsigned sp - 8)%Z with (bv_unsigned sp - 16 + 8)%Z by lia) in "Hret".
-  iPoseProof (mem_mapsto_uninit_combine 8 (bv_unsigned sp - 16) (DfracOwn 1) 16
-    with "Hgap Hret") as "Hrest"; first lia.
-  iEval (replace (bv_unsigned sp - 16)%Z with (bv_unsigned sp - 48 + 32)%Z by lia) in "Hrest".
-  iPoseProof (mem_mapsto_uninit_combine 32 (bv_unsigned sp - 48) (DfracOwn 1) 48
-    with "Hpayload Hrest") as "Hscratch"; first lia.
+  iPoseProof (call_scratch_reuse sp ret _ Hlen Hlow
+    with "[$Hpayload $Hgap $Hret]") as "Hscratch".
   unfold encoderU256SimplePost. iFrame.
 Qed.
 Print Assumptions encoder_u256_simple_post.
