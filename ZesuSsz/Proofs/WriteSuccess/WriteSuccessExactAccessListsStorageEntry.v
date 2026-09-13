@@ -21,6 +21,11 @@ Definition accessStorageLoopFrame `{!islaG Sigma} `{!threadG}
     (bytes : list (bv 8)) (savedX22 : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (base ↦ₘ∗ bytes ∗ writeSuccessAccessEntriesOwn processed ∗ writeSuccessAccessEntriesOwn rest ∗
    ⌜writeSuccessAccessEntryValid entry⌝ ∗
+   ⌜writeSuccessAccessEntryStorageCount entry <> 0%nat ->
+     0x20000000 <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
+   ⌜writeSuccessAccessEntryStorageCount entry <> 0%nat ->
+     bv_unsigned (writeSuccessAccessEntryStoragePointer entry) +
+       Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) < 0x40000000⌝ ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ writeSuccessAccessEntryBytes entry ∗
    (bv_unsigned sp + 136) ↦ₘ savedX22 ∗
    (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
