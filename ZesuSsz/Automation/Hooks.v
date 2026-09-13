@@ -111,7 +111,7 @@ Ltac zesu_liAStepGenericWrite :=
  try liAIntroduceLetInGoal;
  zesu_liAWriteMemFocused.
 
-Ltac liAStep ::=
+Ltac zesu_liAStep :=
  liEnsureInvariant;
  try liAIntroduceLetInGoal;
  first [
@@ -125,3 +125,5 @@ Ltac liAStep ::=
   | liLetBindHint
   | liUnfoldLate
  ]; liSimpl.
+
+Ltac liAStep ::= zesu_liAStep.

@@ -53,11 +53,12 @@ Lemma zesu_bv_unsigned_add_no_wrap_64 (base offset : bv 64) :
   bv_unsigned (base + offset)%bv - bv_unsigned base = bv_unsigned offset.
 Proof. intros. bv_solve. Qed.
 
-#[export] Hint Rewrite zesu_bv_sign_extend_same : zesu_indices.
+#[export] Hint Rewrite zesu_bv_sign_extend_same
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
-  : zesu_indices.
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
-  : zesu_indices.
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
 
 Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :
   (offset + 8 <= length bytes)%nat ->

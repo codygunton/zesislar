@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
+Require Export ZesuSsz.Automation.Hooks.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -26,7 +27,7 @@ Ltac zesu_finish :=
   try zesu_finish_little_endian.
 
 Ltac zesu_run :=
-  unshelve liARun;
+  unshelve (time "zesu_run" repeat zesu_liAStep; liShow);
   zesu_finish.
 
 Ltac zesu_block :=
@@ -36,7 +37,7 @@ Ltac zesu_block :=
 
 Ltac zesu_run_until boundary :=
   first [boundary tt |
-    first [liUnfoldLate | liAStep]; zesu_run_until boundary | idtac].
+    first [liUnfoldLate | zesu_liAStep]; zesu_run_until boundary | idtac].
 
 Ltac zesu_known_array_values :=
   repeat match goal with
@@ -53,9 +54,12 @@ Ltac zesu_known_array_values :=
   end.
 
 Ltac zesu_finish_array_branch :=
-  zesu_known_array_values; exfalso;
+  unLET; zesu_known_array_values; exfalso;
   first [bv_solve | match goal with
     | Hbranch : _ <> _ |- _ => bv_simplify Hbranch; congruence
+    end | match goal with
+    | Htag : ?tag <> _, Hbranch : bv_zero_extend _ ?tag = _ |- _ =>
+        bv_simplify Htag; bv_simplify Hbranch; lia
     end].
 
 Ltac zesu_tuple_witness T :=
