@@ -34,3 +34,16 @@ Proof.
 Qed.
 
 Print Assumptions byte_lists_exact_public_count_return_correct.
+
+Lemma byte_lists_exact_public_count_return_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15c6c encoderBytesExactCallSpec -∗
+  □ instr_pre 0x15c34 byteListsExactPublicCountReturnSpec.
+Proof.
+  iStartProof. iIntros "#Hcode #Hbytes". iModIntro.
+  iApply instr_pre_to_body. iNext.
+  iApply byte_lists_exact_public_count_return_correct; iAssumption.
+Qed.
+
+Print Assumptions byte_lists_exact_public_count_return_pre.
