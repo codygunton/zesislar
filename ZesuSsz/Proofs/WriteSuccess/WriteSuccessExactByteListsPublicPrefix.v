@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Resources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsPublicResources.
 Require Import ZesuSsz.Automation.Alignment.
 Require Import ZesuSsz.Automation.MemoryWords.
 Require Import ZesuSsz.Automation.ByteListResources.
@@ -36,15 +37,11 @@ Proof.
       ltac:(assumption) ltac:(assumption) ltac:(assumption)
       ltac:(assumption) ltac:(assumption)
       with "HsavedCode") as "#Hepilogue";
-    iSplitL; [iIntros "Hreturned"; zesu_open_resource_groups; zesu_run | done]).
-  Unshelve.
-  all: try zesu_pack (tail, items,
-    [RVal_Bits b1; RVal_Bits b2; RVal_Bits b3; RVal_Bits b4;
-     RVal_Bits b5; RVal_Bits b6; RVal_Bits b7; RVal_Bits b8;
-     RVal_Bits b9; RVal_Bits b18], b10, b0, b, ret, sp, tt)ₗ.
-  all: zesu_open_bits_registers; zesu_run. Unshelve. all: try zesu_alignment.
-  all: try zesu_pack_register "x7".
-  all: zesu_run. Unshelve. all: try zesu_alignment.
+    iSplitL; [iIntros "Hreturned";
+      iApply (byte_lists_public_count_resources_checked sp ret b b0 b10 b11
+        b12 b13 b14 b15 b16 b17 saved items tail with "Hepilogue");
+      try assumption; zesu_open_resource_groups; zesu_run | done]).
+  Unshelve. all: try zesu_alignment.
   all: zesu_finish.
 Qed.
 Print Assumptions byte_lists_exact_public_prefix_correct.

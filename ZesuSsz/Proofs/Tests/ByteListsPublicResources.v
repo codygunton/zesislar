@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsPublicResources.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Resources.
 Require Import ZesuSsz.Automation.Alignment.
@@ -49,12 +50,6 @@ Lemma byte_lists_public_count_resources `{!islaG Sigma} `{!threadG}
    byteListsPublicFrame sp ret s0 s1 saved (bv_unsigned pointer) items tail ∗ True) -∗
   byteListsExactPublicCountReturnSpec.
 Proof.
-  intros Hsaved Halign Hmin Hmax Hret1 Hret2 Hcount Hlength Hpointer Hlow Hhigh.
-  iStartProof. iIntros "#Hepilogue Hresources". zesu_open_resource_groups.
-  zesu_run. Unshelve.
-  zesu_pack (tail, items, saved, pointer, s1, s0, ret, sp, tt)ₗ.
-  zesu_run. Unshelve. all: try zesu_alignment.
-  all: zesu_open_bits_registers; try zesu_pack_register "x7"; zesu_run.
-  Unshelve. all: try zesu_alignment. all: zesu_finish.
+  apply byte_lists_public_count_resources_checked.
 Qed.
 Print Assumptions byte_lists_public_count_resources.
