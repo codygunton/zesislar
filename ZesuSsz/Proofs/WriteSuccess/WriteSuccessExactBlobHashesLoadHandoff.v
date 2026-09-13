@@ -1,0 +1,59 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBlobHashesLoads16.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBlobHashesLoads20.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsFlagLoads.
+From IslaTraces.write_success_66 Require Import instrs.
+
+Definition blobLoad20Frame `{!islaG Sigma} `{!threadG} (bytes : list (bv 8))
+    (index : nat) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col [(KindReg "x9", BitsShape 64); (KindReg "x18", BitsShape 64);
+    (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64)] ∗
+   ⌜(index + 24 <= length bytes)%nat⌝ ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@blobLoad20Frame) := I.
+
+Definition blobLoaded16Frame `{!islaG Sigma} `{!threadG}
+    (bytes : list (bv 8)) (index : nat) (P : iProp Sigma) : iProp Sigma :=
+  ("x6" ↦ᵣ RVal_Bits (transactionRowByte bytes index 16) ∗
+   "x7" ↦ᵣ RVal_Bits (transactionRowByte bytes index 17) ∗
+   "x28" ↦ᵣ RVal_Bits (transactionRowByte bytes index 18) ∗
+   "x8" ↦ᵣ RVal_Bits (transactionRowByte bytes index 19) ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@blobLoaded16Frame) := I.
+
+Lemma blob_load16_to_load20 `{!islaG Sigma} `{!threadG}
+    row base bytes index (P : iProp Sigma) :
+  blobLoads16Post row base bytes index (blobLoad20Frame bytes index P) -∗
+  blobLoads20Entry row base bytes index (blobLoaded16Frame bytes index P).
+Proof.
+  iIntros "Hfirst". iEval (unfold blobLoads16Post) in "Hfirst".
+  iDestruct "Hfirst" as
+    "(Hsys & H6 & H7 & H28 & H1 & Hrow & Harray & %Hcursor & %Hbound & %Hlow & %Hhigh & Hframe & _)".
+  iEval (unfold blobLoad20Frame) in "Hframe".
+  iDestruct "Hframe" as "(Hregs & %Hbound24 & HP & _)".
+  iEval (unfold blobLoads20Entry, blobLoaded16Frame).
+  iFrame. done.
+Qed.
+Print Assumptions blob_load16_to_load20.
+
+Lemma blob_loads16_20_correct `{!islaG Sigma} `{!threadG}
+    row base bytes index (P : iProp Sigma) :
+  ([∗ list] instruction ∈ take 4 IslaTraces.write_success_66.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ take 4 (drop 4 IslaTraces.write_success_66.instrs.instr_map),
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x153f4 (blobLoads20Post row base bytes index
+    (blobLoaded16Frame bytes index P)) -∗
+  instr_body 0x153d4 (blobLoads16Entry row base bytes index
+    (blobLoad20Frame bytes index P)).
+Proof.
+  iStartProof. iIntros "#H16 #H20 Hnext".
+  iPoseProof (blob_loads20_correct row base bytes index
+    (blobLoaded16Frame bytes index P) with "H20 Hnext") as "Hmid".
+  iApply (blob_loads16_correct row base bytes index
+    (blobLoad20Frame bytes index P) with "H16").
+  iApply (instr_pre_wand 0x153e4 0x153e4 false false with "Hmid");
+    [done | reflexivity |].
+  iApply blob_load16_to_load20.
+Qed.
+Print Assumptions blob_loads16_20_correct.
