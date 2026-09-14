@@ -240,3 +240,112 @@ Print Assumptions executor_store_15d14.
 Print Assumptions executor_store_15d18.
 Print Assumptions executor_output_10198.
 Print Assumptions executor_output_1019c.
+
+(** The first branch has a false register read condition. *)
+Definition executor_infeasible_first : isla_trace :=
+  tcases [
+    ReadReg "PC" [] (RVal_Bits (Z_to_bv 64 0)) Mk_annot :t:
+    WriteReg "PC" [] (RVal_Bits (Z_to_bv 64 0x10198)) Mk_annot :t: tnil;
+    ReadReg "PC" [] (RVal_Bits (Z_to_bv 64 0x10190)) Mk_annot :t:
+    WriteReg "PC" [] (RVal_Bits (Z_to_bv 64 0x10194)) Mk_annot :t: tnil].
+
+Lemma executor_skips_infeasible_first :
+  ExecutorTest 0x10190 executor_infeasible_first 0x10194 "x1" 0x156e8.
+Proof. Time vm_compute. bv_solve. Qed.
+
+Print Assumptions executor_skips_infeasible_first.
+
+(** Branch exclusivity is necessary even for constant traces. *)
+Lemma completed_cases_branch branch branches regs sigma labels theta' sigma' :
+  branch ∈ branches ->
+  CompletedInstructionSegment (instruction_boundary branch regs) sigma labels theta' sigma' ->
+  CompletedInstructionSegment (instruction_boundary (tcases branches) regs) sigma labels theta' sigma'.
+Proof.
+  intros Hbranch [n [boundary [memory [prefix [last [Hprefix [Hnil [Hlast Hlabels]]]]]]]].
+  exists (S n), boundary, memory, prefix, last. repeat split; try assumption.
+  change (InstructionPrefix (S n) (instruction_boundary (tcases branches) regs)
+    sigma ([] ++ prefix) boundary memory).
+  eapply InstructionPrefixStep with
+    (theta' := instruction_boundary branch regs) (sigma' := sigma);
+    [discriminate| |reflexivity|exact Hprefix].
+  eapply SeqStep with (κ := None) (κ' := None).
+  - reflexivity.
+  - apply CasesES. exact Hbranch.
+  - repeat split; reflexivity.
+Qed.
+Print Assumptions completed_cases_branch.
+
+Definition two_cases_regs : reg_map := {["PC" := RVal_Bits (Z_to_bv 64 0)]}.
+Definition two_cases_global : seq_global_state := {|
+  seq_instrs := empty; seq_mem := empty |}.
+Definition two_cases_branch (pc : bv 64) : isla_trace :=
+  WriteReg "PC" [] (RVal_Bits pc) Mk_annot :t: tnil.
+Definition two_cases : isla_trace :=
+  tcases [two_cases_branch (Z_to_bv 64 4); two_cases_branch (Z_to_bv 64 8)].
+
+Lemma two_cases_branch_completed pc :
+  exists labels theta,
+    CompletedInstructionSegment (instruction_boundary (two_cases_branch pc) two_cases_regs)
+      two_cases_global labels theta two_cases_global /\
+    seq_regs theta !! "PC" = Some (RVal_Bits pc).
+Proof.
+  let regs := constr:(<["PC" := RVal_Bits pc]> two_cases_regs) in
+  exists [SInstrTrap pc (seq_state_snapshot (instruction_boundary tnil regs) two_cases_global)],
+    ((instruction_boundary tnil regs) <| seq_nb_state := true |>).
+  split; [|simpl; apply lookup_insert].
+  exists 1%nat, (instruction_boundary tnil (<["PC" := RVal_Bits pc]> two_cases_regs)),
+    two_cases_global, [],
+    [SInstrTrap pc (seq_state_snapshot
+      (instruction_boundary tnil (<["PC" := RVal_Bits pc]> two_cases_regs)) two_cases_global)].
+  repeat split; try reflexivity.
+  - change (InstructionPrefix 1 (instruction_boundary (two_cases_branch pc) two_cases_regs)
+      two_cases_global ([] ++ [])
+      (instruction_boundary tnil (<["PC" := RVal_Bits pc]> two_cases_regs)) two_cases_global).
+    eapply InstructionPrefixStep with
+      (theta' := instruction_boundary tnil (<["PC" := RVal_Bits pc]> two_cases_regs))
+      (sigma' := two_cases_global); [discriminate| |reflexivity|constructor].
+    eapply exec_register_write. unfold exec_register_event, two_cases_regs.
+    rewrite lookup_singleton. reflexivity.
+  - eapply SeqStep with (κ := Some (LDone tnil))
+      (κ' := Some (SInstrTrap pc (seq_state_snapshot
+        (instruction_boundary tnil (<["PC" := RVal_Bits pc]> two_cases_regs)) two_cases_global))).
+    + reflexivity.
+    + constructor.
+    + split; [reflexivity|]. exists pc.
+      split; [simpl; apply lookup_insert|]. simpl. rewrite lookup_empty. repeat split; reflexivity.
+Qed.
+
+Theorem two_feasible_cases_counterexample :
+  exists labels theta labels' theta',
+    CompletedInstructionSegment (instruction_boundary two_cases two_cases_regs)
+      two_cases_global labels theta two_cases_global /\
+    CompletedInstructionSegment (instruction_boundary two_cases two_cases_regs)
+      two_cases_global labels' theta' two_cases_global /\
+    seq_regs theta !! "PC" = Some (RVal_Bits (Z_to_bv 64 4)) /\
+    seq_regs theta' !! "PC" = Some (RVal_Bits (Z_to_bv 64 8)) /\
+    seq_regs theta <> seq_regs theta'.
+Proof.
+  destruct (two_cases_branch_completed (Z_to_bv 64 4)) as [labels [theta [Hrun Hpc]]].
+  destruct (two_cases_branch_completed (Z_to_bv 64 8)) as [labels' [theta' [Hrun' Hpc']]].
+  exists labels, theta, labels', theta'. repeat split; try assumption.
+  - apply completed_cases_branch with (branch := two_cases_branch (Z_to_bv 64 4)); [set_solver|exact Hrun].
+  - apply completed_cases_branch with (branch := two_cases_branch (Z_to_bv 64 8)); [set_solver|exact Hrun'].
+  - intros Heq. rewrite Heq Hpc' in Hpc. injection Hpc. intros Hbits.
+    vm_compute in Hbits. discriminate.
+Qed.
+Print Assumptions two_feasible_cases_counterexample.
+
+Fixpoint trace_has_declaration_or_read (trace : isla_trace) : bool :=
+  match trace with
+  | tnil => false
+  | e :t: rest =>
+      match e with
+      | Smt (DeclareConst _ _) _ | ReadMem _ _ _ _ _ _ => true
+      | _ => trace_has_declaration_or_read rest
+      end
+  | tcases branches => existsb trace_has_declaration_or_read branches
+  end.
+Lemma two_cases_has_no_declarations_or_reads :
+  trace_has_declaration_or_read two_cases = false.
+Proof. vm_compute. reflexivity. Qed.
+Print Assumptions two_cases_has_no_declarations_or_reads.
