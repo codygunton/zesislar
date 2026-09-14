@@ -51,14 +51,11 @@ Proof.
   move => * /=.
   iStartProof.
   unshelve (repeat zesu_liAStepNoWrite).
-  1-3: prepare_sidecond; try assumption; try bv_solve.
-  replace LET4 with (BV 64 (machineOutputAddress defaultMap)) by
-    (unfold LET4, LET2, LET0; bv_solve).
+  all: try zesu_solve_pending_sidecond.
   zesu_liAStepGenericWrite.
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
-  1: prepare_sidecond; try assumption; try bv_solve.
-  replace LET8 with (BV 64 (machineOutputSizeAddress defaultMap)) by bv_solve.
+  all: try zesu_solve_pending_sidecond.
   zesu_liAStepSnapshotWriteAt base.
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
