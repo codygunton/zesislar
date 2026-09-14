@@ -38,3 +38,23 @@ Proof.
   all: try (eexists; eexists; repeat split; reflexivity).
 Qed.
 Print Assumptions transactions_type_output_correct.
+Lemma transactions_type_output_call_correct `{!islaG Sigma} `{!threadG}
+    data oldra old5 kind tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_34.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x150e8
+    (transactionTypeOutputEntry data oldra old5 kind tail P ∗
+     instr_pre 0x150f0 (transactionTypeOutputPost data kind tail P) ∗ True).
+Proof.
+  iStartProof. iIntros "#Hcaller #Houtput".
+  iAssert (□ instr_pre 0x10190
+    (writeOutputTraceSpec data (BV 64 1) (BV 64 0x150f0) [kind] tail P))%I as "#Hcallee".
+  { iModIntro. iApply instr_pre_to_body. iNext.
+    iApply write_output_trace_correct. iExact "Houtput". }
+  iEval (rewrite /IslaTraces.write_success_34.instrs.instr_map /=) in "Hcaller".
+  iDestruct "Hcaller" as "#(H0 & H1 & _)". zesu_run.
+  all: try (eexists; eexists; repeat split; reflexivity).
+Qed.
+Print Assumptions transactions_type_output_call_correct.
