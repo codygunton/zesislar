@@ -71,6 +71,7 @@ Check total CPU use, per-process CPU use, load, available memory, and swap use.
 State that a proof is single-thread bound when one process uses one core and the machine remains idle.
 
 Treat a proof module as too large when it takes more than 300 seconds or uses more than 6 GiB.
+These limits follow section 6 of the active plan and override the retired 90-second limit.
 Treat other modules as too large when they take more than 60 seconds or use more than 2 GiB.
 Stop repeated work on that module.
 Split it at sound proof-state boundaries before further full compilation.
