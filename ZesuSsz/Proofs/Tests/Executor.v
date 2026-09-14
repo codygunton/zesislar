@@ -70,98 +70,98 @@ Definition ExecutorTest (pc : Z) (trace : isla_trace) (next : Z)
   end) = true.
 
 Lemma executor_pilot_10190 : ExecutorTest 0x10190 a10190 0x10194 "x5" 0x2401a190.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_10194 : ExecutorTest 0x10194 a10194 0x10198 "x5" ((mapIoContextAddress defaultMap) - 216).
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_10198 : ExecutorTest 0x10198 a10198 0x1019c "x10" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_1019c : ExecutorTest 0x1019c a1019c 0x101a0 "x11" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101a0 : ExecutorTest 0x101a0 a101a0 0x156e8 "x1" 0x156e8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 
 Lemma executor_pilot_101d4 : ExecutorTest 0x101d4 a101d4 0x101d8 "x15" 0.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101d8 : ExecutorTest 0x101d8 a101d8 0x101e0 "x15" 0.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101dc : ExecutorTest 0x101dc a101dc 0x156e8 "x1" 0x156e8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101e0 : ExecutorTest 0x101e0 a101e0 0x101e4 "x13" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101e4 : ExecutorTest 0x101e4 a101e4 0x101e8 "x13" 0x5a.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101e8 : ExecutorTest 0x101e8 a101e8 0x101ec "x14" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101ec : ExecutorTest 0x101ec a101ec 0x101f0 "x15" 1.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101f0 : ExecutorTest 0x101f0 a101f0 0x101f4 "x13" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_101f4 : ExecutorTest 0x101f4 a101f4 0x101d8 "x1" 0x156e8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 
 Lemma executor_pilot_15694 : ExecutorTest 0x15694 a15694 0x15698 "x10" (0x20010000 + 1744).
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15698 : ExecutorTest 0x15698 a15698 0x1569c "x12" 48.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_1569c : ExecutorTest 0x1569c a1569c 0x156a0 "x11" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156a0 : ExecutorTest 0x156a0 a156a0 0x156a4 "x1" 0x106a0.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156a4 : ExecutorTest 0x156a4 a156a4 0x101d4 "x1" 0x156a8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156a8 : ExecutorTest 0x156a8 a156a8 0x156ac "x10" 0x5a5a5a5a5a5a5a5a.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156ac : ExecutorTest 0x156ac a156ac 0x156b0 "x1" 0x156ac.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156b0 : ExecutorTest 0x156b0 a156b0 0x15d10 "x1" 0x156b4.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156b4 : ExecutorTest 0x156b4 a156b4 0x156b8 "x10" 0x5a5a5a5a5a5a5a5a.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156b8 : ExecutorTest 0x156b8 a156b8 0x156bc "x1" 0x156b8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156bc : ExecutorTest 0x156bc a156bc 0x15d10 "x1" 0x156c0.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156c0 : ExecutorTest 0x156c0 a156c0 0x156c4 "x11" 20.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156c4 : ExecutorTest 0x156c4 a156c4 0x156c8 "x10" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156c8 : ExecutorTest 0x156c8 a156c8 0x156cc "x1" 0x106c8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156cc : ExecutorTest 0x156cc a156cc 0x10190 "x1" 0x156d0.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156d0 : ExecutorTest 0x156d0 a156d0 0x156d4 "x10" 0x5a5a5a5a5a5a5a5a.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156d4 : ExecutorTest 0x156d4 a156d4 0x156d8 "x1" 0x156d4.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156d8 : ExecutorTest 0x156d8 a156d8 0x15d10 "x1" 0x156dc.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156dc : ExecutorTest 0x156dc a156dc 0x156e0 "x8" (0x20010000 + 48).
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156e0 : ExecutorTest 0x156e0 a156e0 0x156e4 "x9" 0.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_156e4 : ExecutorTest 0x156e4 a156e4 0x15694 "x9" 1.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 
 Lemma executor_pilot_15d10 : ExecutorTest 0x15d10 a15d10 0x15d14 "x2" (0x20010000 - 16).
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d14 : ExecutorTest 0x15d14 a15d14 0x15d18 "x1" 0x156e8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d18 : ExecutorTest 0x15d18 a15d18 0x15d1c "x10" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d1c : ExecutorTest 0x15d1c a15d1c 0x15d20 "x10" 0x20010000.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d20 : ExecutorTest 0x15d20 a15d20 0x15d24 "x11" 8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d24 : ExecutorTest 0x15d24 a15d24 0x15d28 "x1" 0xfd24.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d28 : ExecutorTest 0x15d28 a15d28 0x10190 "x1" 0x15d2c.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d2c : ExecutorTest 0x15d2c a15d2c 0x15d30 "x1" 0x5a5a5a5a5a5a5a5a.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d30 : ExecutorTest 0x15d30 a15d30 0x15d34 "x2" (0x20010000 + 16).
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 Lemma executor_pilot_15d34 : ExecutorTest 0x15d34 a15d34 0x156e8 "x1" 0x156e8.
-Proof. Time vm_compute. bv_solve. Qed.
+Proof. Time (vm_compute; bv_solve). Qed.
 
 Print Assumptions executor_pilot_156a8.
 
@@ -378,3 +378,88 @@ Lemma read_symbol_ground_repeated_substitutions :
       (RegVal_Struct [("bits", RVal_Bool true)])) = Some (Val_Bool true).
 Proof. vm_compute. reflexivity. Qed.
 Print Assumptions read_symbol_ground_repeated_substitutions.
+
+(** A future register read forces the value across another declaration. *)
+Definition pending_fixture_regs : reg_map :=
+  <["flag" := RVal_Bool true]> {["PC" := RVal_Bits (Z_to_bv 64 0)]}.
+Definition pending_fixture_trace : isla_trace :=
+  Smt (DeclareConst 8 Ty_Bool) Mk_annot :t:
+  ReadReg "flag" [] (RVal_Symbolic 7) Mk_annot :t:
+  WriteReg "PC" [] (RVal_Bits (Z_to_bv 64 4)) Mk_annot :t: tnil.
+Lemma pending_fixture_pin replacement :
+  RegisterReadPin 7 (RVal_Symbolic 7) replacement (Val_Bool true)
+    pending_fixture_regs (subst_trace replacement 7 pending_fixture_trace).
+Proof.
+  simpl. apply RegisterReadPinLater; [reflexivity|].
+  eapply RegisterReadPinHere with
+    (actual := RVal_Bool true) (actualValue := RVal_Bool true)
+    (patternValue := RegVal_Base replacement).
+  - apply lookup_insert.
+  - reflexivity.
+  - reflexivity.
+  - apply read_symbol_base.
+  - apply read_symbol_base.
+Qed.
+Lemma pending_fixture_forces_value replacement sigma labels theta' sigma' :
+  CompletedInstructionSegment
+    (instruction_boundary (subst_trace replacement 7 pending_fixture_trace) pending_fixture_regs)
+    sigma labels theta' sigma' ->
+  base_ground replacement -> replacement = Val_Bool true.
+Proof.
+  intros Hrun Hground. eapply register_read_pin_completed;
+    [exact Hrun|apply pending_fixture_pin|exact Hground].
+Qed.
+Print Assumptions pending_fixture_forces_value.
+
+(** The syntactic checker rejects the two-feasible-branch counterexample. *)
+Definition exclusivity_fixture_guard : exp :=
+  Unop Not (Val (Val_Bool true) Mk_annot) Mk_annot.
+Definition exclusivity_fixture_branch guard : isla_trace :=
+  Smt (Assert guard) Mk_annot :t: tnil.
+Lemma exclusivity_accepts_reverse_nested_negation :
+  trace_exclusiveb (tcases
+    [exclusivity_fixture_branch (Unop Not exclusivity_fixture_guard Mk_annot);
+     exclusivity_fixture_branch exclusivity_fixture_guard]) = true.
+Proof. vm_compute. reflexivity. Qed.
+Lemma exclusivity_rejects_same_guard :
+  trace_exclusiveb (tcases
+    [exclusivity_fixture_branch exclusivity_fixture_guard;
+     exclusivity_fixture_branch exclusivity_fixture_guard]) = false.
+Proof. vm_compute. reflexivity. Qed.
+Lemma exclusivity_rejects_nested_feasible_alternatives :
+  trace_exclusiveb (tcases [tcases
+    [WriteReg "PC" [] (RVal_Bits (Z_to_bv 64 4)) Mk_annot :t: tnil;
+     WriteReg "PC" [] (RVal_Bits (Z_to_bv 64 8)) Mk_annot :t: tnil]]) = false.
+Proof. vm_compute. reflexivity. Qed.
+Print Assumptions exclusivity_accepts_reverse_nested_negation.
+Print Assumptions exclusivity_rejects_same_guard.
+Print Assumptions exclusivity_rejects_nested_feasible_alternatives.
+
+(** The complete condition accepts a pinned complementary branch and rejects its missing read. *)
+Definition pinning_fixture_regs : reg_map :=
+  <["flag" := RVal_Bool true]> {["PC" := RVal_Bits (Z_to_bv 64 0)]}.
+Definition pinning_fixture_sigma : seq_global_state := {| seq_instrs := ∅; seq_mem := ∅ |}.
+Definition pinning_fixture_branch (guard : exp) (pc : Z) : isla_trace :=
+  Smt (Assert guard) Mk_annot :t:
+  WriteReg "PC" [] (RVal_Bits (Z_to_bv 64 pc)) Mk_annot :t: tnil.
+Definition pinning_fixture_trace : isla_trace :=
+  Smt (DeclareConst 7 Ty_Bool) Mk_annot :t:
+  ReadReg "flag" [] (RVal_Symbolic 7) Mk_annot :t:
+  tcases [pinning_fixture_branch (Val (Val_Symbolic 7) Mk_annot) 4;
+    pinning_fixture_branch (Unop Not (Val (Val_Symbolic 7) Mk_annot) Mk_annot) 8].
+Lemma pinning_fixture_deterministic :
+  executor_deterministicb pinning_fixture_trace pinning_fixture_regs pinning_fixture_sigma = true.
+Proof. vm_compute. reflexivity. Qed.
+Lemma pinning_fixture_unpinned_rejected :
+  executor_deterministicb pinning_fixture_trace
+    {["PC" := RVal_Bits (Z_to_bv 64 0)]} pinning_fixture_sigma = false.
+Proof. vm_compute. reflexivity. Qed.
+Lemma pinning_fixture_pc :
+  match exec_instr pinning_fixture_trace pinning_fixture_regs pinning_fixture_sigma with
+  | Some (regs, _, _, _) => regs !! "PC" = Some (RVal_Bits (Z_to_bv 64 4))
+  | None => False
+  end.
+Proof. vm_compute. reflexivity. Qed.
+Print Assumptions pinning_fixture_deterministic.
+Print Assumptions pinning_fixture_unpinned_rejected.
+Print Assumptions pinning_fixture_pc.
