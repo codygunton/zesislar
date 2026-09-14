@@ -30,9 +30,9 @@ Definition transactionFieldSourceHeap `{!islaG Sigma}
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionFieldSourceHeap) := I.
 
-Definition transactionFieldSourceSavedTail `{!islaG Sigma}
-    (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
-    (dataBytes accessBytes : list (bv 8)) (Q : iProp Sigma) : iProp Sigma :=
+Local Notation transactionFieldSourceSavedTail :=
+  (fun (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
+    (dataBytes accessBytes : list (bv 8)) (Q : iProp _) =>
   ((bv_unsigned sp + 168) ↦ₘ transactionRowWord bytes index 240 ∗
    (bv_unsigned sp + 176) ↦ₘ transactionRowWord bytes index 256 ∗
    (bv_unsigned sp + 184) ↦ₘ transactionRowWord bytes index 120 ∗
@@ -49,8 +49,7 @@ Definition transactionFieldSourceSavedTail `{!islaG Sigma}
      bv_unsigned (transactionRowWord bytes index 192) + Z.of_nat (length dataBytes) < (machineRamEnd defaultMap)⌝ ∗
    ⌜accessBytes <> [] -> (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 208) /\
      bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < (machineRamEnd defaultMap)⌝ ∗
-   Q ∗ True)%I.
-Global Instance : LithiumUnfold (@transactionFieldSourceSavedTail) := I.
+   Q ∗ True)%I).
 
 Definition transactionFieldSourceFeeRest `{!islaG Sigma}
     (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
