@@ -520,8 +520,166 @@ Definition exec_declaration (x : var_name) (ty : ty) (rest : isla_trace)
   | _ => None
   end.
 
+(** Reject infeasible data conditions before selecting a branch. *)
+Definition executor_bits_eqb (x y : bvn) : bool :=
+  N.eqb x.(bvn_n) y.(bvn_n) && Z.eqb (bvn_unsigned x) (bvn_unsigned y).
+
+Definition executor_base_eqb (x y : base_val) : bool :=
+  match x, y with
+  | Val_Symbolic a, Val_Symbolic b => Z.eqb a b
+  | Val_Bool a, Val_Bool b => Bool.eqb a b
+  | Val_Bits a, Val_Bits b => executor_bits_eqb a b
+  | Val_Enum a, Val_Enum b => String.eqb a b
+  | _, _ => false
+  end.
+
+Fixpoint executor_valu_eqb (x y : valu) : bool :=
+  match x, y with
+  | RegVal_Base a, RegVal_Base b => executor_base_eqb a b
+  | RegVal_I a b, RegVal_I c d => Z.eqb a c && Z.eqb b d
+  | RegVal_String a, RegVal_String b => String.eqb a b
+  | RegVal_Unit, RegVal_Unit | RegVal_Poison, RegVal_Poison => true
+  | RegVal_Vector xs, RegVal_Vector ys | RegVal_List xs, RegVal_List ys =>
+      (fix equal (xs ys : list valu) :=
+        match xs, ys with
+        | [], [] => true
+        | a :: xs, b :: ys => executor_valu_eqb a b && equal xs ys
+        | _, _ => false
+        end) xs ys
+  | RegVal_Struct xs, RegVal_Struct ys =>
+      (fix equal (xs ys : list (sail_name * valu)) :=
+        match xs, ys with
+        | [], [] => true
+        | a :: xs, b :: ys => String.eqb a.1 b.1 &&
+            executor_valu_eqb a.2 b.2 && equal xs ys
+        | _, _ => false
+        end) xs ys
+  | RegVal_Constructor a x, RegVal_Constructor b y =>
+      String.eqb a b && executor_valu_eqb x y
+  | _, _ => false
+  end.
+
+Definition executor_option_valu_eqb (x y : option valu) : bool :=
+  match x, y with
+  | Some a, Some b => executor_valu_eqb a b
+  | None, None => true
+  | _, _ => false
+  end.
+
+Lemma executor_bits_eqb_reflect x y : executor_bits_eqb x y = true <-> x = y.
+Proof. unfold executor_bits_eqb. rewrite andb_true_iff N.eqb_eq Z.eqb_eq. symmetry. apply bvn_eq. Qed.
+Lemma executor_base_eqb_reflect x y : executor_base_eqb x y = true <-> x = y.
+Proof.
+  destruct x, y; simpl; try (split; [discriminate|congruence]);
+    rewrite ?Z.eqb_eq ?Bool.eqb_true_iff ?executor_bits_eqb_reflect ?String.eqb_eq;
+    split; intros; congruence.
+Qed.
+Lemma executor_valu_eqb_reflect x y : executor_valu_eqb x y = true <-> x = y.
+Proof.
+  revert x y. fix IH 1. intros x y. destruct x, y; simpl;
+    try (split; [discriminate|congruence]);
+    rewrite ?executor_base_eqb_reflect ?andb_true_iff ?Z.eqb_eq ?String.eqb_eq;
+    try (split; intros; congruence).
+  - clear IH. naive_solver.
+  - revert l0. induction l as [|a l IHlist]; intros [|b l0]; simpl; try done;
+      try (split; [discriminate|congruence]).
+    rewrite andb_true_iff (IH a b) IHlist. clear IH. naive_solver.
+  - revert l0. induction l as [|a l IHlist]; intros [|b l0]; simpl; try done;
+      try (split; [discriminate|congruence]).
+    rewrite andb_true_iff (IH a b) IHlist. clear IH. naive_solver.
+  - revert l0. induction l as [|[name a] l IHlist]; intros [|[name' b] l0]; simpl; try done;
+      try (split; [discriminate|congruence]).
+    rewrite !andb_true_iff String.eqb_eq (IH a b) IHlist. clear IH. naive_solver.
+  - rewrite (IH x y). clear IH. naive_solver.
+Qed.
+
+
+Definition executor_write_disjointb (address : bv 64) (len : N)
+    (sigma : seq_global_state) : bool :=
+  forallb (fun entry => negb
+    (Z.leb (bv_unsigned address) (bv_unsigned entry.1) &&
+     Z.ltb (bv_unsigned entry.1) (bv_unsigned address + Z.of_N len)))
+    (map_to_list sigma.(seq_mem)).
+
+Lemma executor_write_disjointb_reflect address len sigma :
+  executor_write_disjointb address len sigma = true <->
+  set_Forall (fun a => ~ (bv_unsigned address <= bv_unsigned a <
+    bv_unsigned address + Z.of_N len)) (dom sigma.(seq_mem)).
+Proof.
+  unfold executor_write_disjointb.
+  rewrite <-Is_true_true. rewrite forallb_True Forall_forall. unfold set_Forall.
+  split.
+  - intros H a Hdom. apply elem_of_dom in Hdom. destruct Hdom as [value Hvalue].
+    specialize (H (a, value)). simpl in H.
+    assert ((a, value) ∈ map_to_list (seq_mem sigma)) as Hin by
+      (apply elem_of_map_to_list; exact Hvalue).
+    specialize (H Hin).
+    apply Is_true_true in H.
+    rewrite negb_true_iff andb_false_iff Z.leb_gt Z.ltb_ge in H. lia.
+  - intros H [a value] Hin. apply elem_of_map_to_list in Hin. simpl.
+    apply Is_true_true.
+    rewrite negb_true_iff andb_false_iff Z.leb_gt Z.ltb_ge.
+    assert (a ∈ dom (seq_mem sigma)) as Hdom by
+      (apply elem_of_dom; exists value; exact Hin).
+    specialize (H a Hdom). lia.
+Qed.
+Lemma executor_option_valu_eqb_reflect x y :
+  executor_option_valu_eqb x y = true <-> x = y.
+Proof.
+  destruct x as [a|], y as [b|]; simpl;
+    try (split; [discriminate|congruence]); try done.
+  rewrite executor_valu_eqb_reflect. split; intros; congruence.
+Qed.
+
+Definition exec_event_feasibleb (e : event) (regs : reg_map)
+    (sigma : seq_global_state) : bool :=
+  match e with
+  | ReadReg name al pattern _ =>
+      match regs !! name with
+      | Some actual => executor_option_valu_eqb (read_accessor al actual) (read_accessor al pattern)
+      | None => false
+      end
+  | AssumeReg name al value _ =>
+      match regs !! name with
+      | Some actual => executor_option_valu_eqb (read_accessor al actual) (Some value)
+      | None => false
+      end
+  | ReadMem data _ (RVal_Bits address) len _ _ =>
+      match data with
+      | RVal_Bits value =>
+          let address' := Z_to_bv 64 (bvn_unsigned address) in
+          let value' := Z_to_bv (8 * len) (bvn_unsigned value) in
+          executor_bits_eqb address (bv_to_bvn address') &&
+          executor_bits_eqb value (bv_to_bvn value') &&
+          bool_decide (0 < Z.of_N len) &&
+          match read_mem sigma.(seq_mem) (bv_unsigned address') len with
+          | Some memory => executor_bits_eqb memory (bv_to_bvn value')
+          | None => false
+          end
+      | _ => false
+      end
+  | WriteMem _ _ (RVal_Bits address) data len _ _ =>
+      match data with
+      | RVal_Bits value =>
+          let address' := Z_to_bv 64 (bvn_unsigned address) in
+          let value' := Z_to_bv (8 * len) (bvn_unsigned value) in
+          executor_bits_eqb address (bv_to_bvn address') &&
+          executor_bits_eqb value (bv_to_bvn value') &&
+          bool_decide (0 < Z.of_N len) &&
+          match read_mem sigma.(seq_mem) (bv_unsigned address') len with
+          | Some _ => true
+          | None =>
+              bool_decide (bv_unsigned address' + Z.of_N len <= 2 ^ 64) &&
+              executor_write_disjointb address' len sigma
+          end
+      | _ => false
+      end
+  | _ => true
+  end.
+
 Definition exec_nondeclaration_event (e : event) (rest : isla_trace) (regs : reg_map)
     (sigma : seq_global_state) : option (isla_trace * ExecutorResult) :=
+  if exec_event_feasibleb e regs sigma then
   match exec_silent_event e rest regs sigma with
   | Some result => Some result
   | None =>
@@ -529,7 +687,7 @@ Definition exec_nondeclaration_event (e : event) (rest : isla_trace) (regs : reg
       | Some result => Some (rest, result)
       | None => (fun result => (rest, result)) <$> exec_memory_event e regs sigma
       end
-  end.
+  end else None.
 
 Definition exec_event (e : event) (rest : isla_trace) (regs : reg_map)
     (sigma : seq_global_state) : option (isla_trace * ExecutorResult) :=
@@ -560,6 +718,7 @@ Lemma exec_nondeclaration_event_sound e rest regs sigma trace'
     (instruction_boundary trace' regs') sigma' [].
 Proof.
   unfold exec_nondeclaration_event.
+  destruct (exec_event_feasibleb e regs sigma); [|discriminate].
   destruct (exec_silent_event e rest regs sigma) as [result|] eqn:Hsilent.
   - intros Heq _. inversion Heq; subst; clear Heq.
     eapply exec_silent_event_sound. exact Hsilent.
@@ -766,3 +925,9 @@ Print Assumptions exec_declaration_sound.
 Print Assumptions exec_event_sound.
 Print Assumptions exec_trace_sound.
 Print Assumptions exec_instr_sound.
+
+Print Assumptions executor_bits_eqb_reflect.
+Print Assumptions executor_base_eqb_reflect.
+Print Assumptions executor_valu_eqb_reflect.
+Print Assumptions executor_option_valu_eqb_reflect.
+Print Assumptions executor_write_disjointb_reflect.
