@@ -357,3 +357,16 @@ Lemma executor_used_pc_declaration_10190 : trace_unusedb 3 a10190 = false.
 Proof. vm_compute. reflexivity. Qed.
 Print Assumptions executor_unused_declaration_10190.
 Print Assumptions executor_used_pc_declaration_10190.
+
+Lemma read_symbol_duplicate_field :
+  read_symbol 7
+    (RegVal_Struct [("bits", RVal_Bool false); ("bits", RVal_Symbolic 7)])
+    (RegVal_Struct [("bits", RVal_Bool false); ("bits", RVal_Bool true)]) =
+    Some (Val_Bool true).
+Proof. Time vm_compute. reflexivity. Qed.
+Lemma read_symbol_requires_matching_field_name :
+  read_symbol 7 (RegVal_Struct [("bits", RVal_Symbolic 7)])
+    (RegVal_Struct [("other", RVal_Bool true)]) = None.
+Proof. vm_compute. reflexivity. Qed.
+Print Assumptions read_symbol_duplicate_field.
+Print Assumptions read_symbol_requires_matching_field_name.
