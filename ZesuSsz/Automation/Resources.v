@@ -15,6 +15,17 @@ Proof.
     iDestruct "Hrest" as "(Hregs & Hstack & Hframe)". iFrame.
 Qed.
 
+(* A bits shape supplies a typed witness without changing its owner. *)
+Ltac zesu_expose_bits_shape_values :=
+  repeat match goal with
+  | Hshape : valu_has_shape ?value (BitsShape 64) |- _ =>
+      is_var value;
+      let bits := fresh "registerBits" in
+      let Hequal := fresh "registerBitsEqual" in
+      destruct (valu_has_bits_shape value 64 Hshape) as [bits Hequal];
+      subst value
+  end.
+
 (* Expose register values. Preserve fixed values and all shape facts. *)
 Ltac zesu_open_bits_registers :=
   repeat first
@@ -38,7 +49,8 @@ Ltac zesu_open_bits_registers :=
     | let actual := fresh "registerValue" in
       iDestruct select (∃ value, ⌜valu_has_shape value _⌝ ∗ _ ↦ᵣ value)%I
         as (actual) "?";
-      zesu_open_resource_groups ].
+      zesu_open_resource_groups ];
+  zesu_expose_bits_shape_values.
 
 Ltac zesu_pack_register register :=
   let instantiate H :=
