@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsPriorityFeeGasCall.
 Require Import ZesuSsz.Automation.CallScratchSized.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -44,3 +45,29 @@ Proof.
   iFrame. repeat iSplit; try done; iPureIntro; lia.
 Qed.
 Print Assumptions transactions_priority_value_to_gas_limit.
+Lemma transactions_fee_gas_continuation `{!islaG Sigma} `{!threadG}
+    (sp gaslow gashigh tag low high value : bv 64) tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_41.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_43.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15154 (transactionGasLimitPost sp value tail
+    (transactionFeeGasLimitFrame sp gaslow gashigh tag low high P)) -∗
+  □ instr_pre 0x15138 (transactionPriorityValuePost sp low high
+    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail)
+    ("x27" ↦ᵣ RVal_Bits tag ∗ transactionGasPriceFrame sp gaslow gashigh
+      ("x26" ↦ᵣ RVal_Bits value ∗ P ∗ True) ∗ True)).
+Proof.
+  iIntros "#Hjoin #Hcaller #Hint #Houtput #Hnext".
+  iPoseProof (transactions_priority_fee_gas_call_correct sp value tail
+    (transactionFeeGasLimitFrame sp gaslow gashigh tag low high P)
+    with "Hjoin Hcaller Hint Houtput") as "Hcallee".
+  iModIntro. iApply (instr_pre_wand 0x15138 0x15138 false true with "Hcallee"); [done | done |].
+  iIntros "Hpost". iApply (transactions_priority_value_to_gas_limit with "Hpost Hnext").
+Qed.
+Print Assumptions transactions_fee_gas_continuation.
