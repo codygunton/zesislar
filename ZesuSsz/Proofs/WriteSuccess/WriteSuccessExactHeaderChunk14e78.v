@@ -27,7 +27,7 @@ Proof.
   Unshelve.
   all: try prepare_sidecond; try assumption; try bv_solve; try lia; try iFrame.
   Unshelve. liShow.
-  iDestruct select (mmio_range (machineOutputAddress defaultMap) 16)%I as "Hmmio".
+  iDestruct select (mmio_range _ 16)%I as "Hmmio".
   iDestruct select (spec_trace (writeOutputEvents (sp + BV 64 1556)%bv (BV 64 32) (writeSuccessHeaderPayload 524 32 bytes) tail))%I as "Htrace".
   iDestruct select ((bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes)%I as "Hcopy".
   iDestruct (mem_mapsto_array_region 8%N (bv_unsigned sp + 1032) (DfracOwn 1) (take 592 bytes) 524 32 with "Hcopy") as "[Hprefix [Hpayload Hsuffix]]".
