@@ -15,109 +15,13 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState1
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierCall150ec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsLoopExitEvents.
 
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk150ecCallSpec.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierChunk150ecJump.
+
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 #[local] Typeclasses Opaque writeSuccessTransactionsCurrentPhaseCarrierFrame
   writeSuccessTransactions150ecCarrierScratch.
-
-Definition writeSuccessTransactionsAt150ecCarrierCallBlock
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
-    (sp : bv 64) (base : Z) (transaction : writeSuccessTransaction)
-    (transactions processed remaining : list writeSuccessTransaction)
-    (bytes prefix suffix : list (bv 8)) (tail : spec)
-    (first second third fourth : bv 64) (items : list ByteListItem) : iProp Sigma :=
-  (reg_col zesu_ram_sys_regs ∗
-   reg_col (zip_with (fun register value => (KindReg register, ExactShape value))
-     writeSuccessTransactions150ecCallerRegisters
-     (writeSuccessTransactions150ecCallerValues transaction)) ∗
-   reg_col (zip_with (fun register value => (KindReg register, ExactShape value))
-     ["x8"; "x9"; "x18"; "x19"; "x20"; "x21";
-      "x22"; "x23"; "x24"; "x25"; "x26"; "x27"]
-     (writeSuccessTransactions150ecSavedValues transaction)) ∗
-   "x10" ↦ᵣ RVal_Bits (bv_add sp (BV 64 1744)) ∗
-   "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
-   "x1" ↦ᵣ RVal_Bits (BV 64 0x100e8) ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗
-   mmio_range (machineOutputAddress defaultMap) 16 ∗
-   spec_trace
-     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
-       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
-         (writeSuccessTransactionsEvents sp remaining
-           (writeSuccessTransactionsCarrierOutputTail sp items tail)))) ∗
-   writeSuccessTransactions150ecCarrierCallFrame P sp base transaction
-     transactions processed remaining bytes prefix suffix tail
-     first second third fourth items ∗ True)%I.
-
-Definition writeSuccessTransactionsAt10190CarrierCallBlock
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
-    (sp : bv 64) (base : Z) (transaction : writeSuccessTransaction)
-    (transactions processed remaining : list writeSuccessTransaction)
-    (bytes prefix suffix : list (bv 8)) (tail : spec)
-    (first second third fourth : bv 64) (items : list ByteListItem) : iProp Sigma :=
-  (reg_col zesu_ram_sys_regs ∗
-   reg_col (zip_with (fun register value => (KindReg register, ExactShape value))
-     writeSuccessTransactions150ecCallerRegisters
-     (writeSuccessTransactions150ecCallerValues transaction)) ∗
-   reg_col (zip_with (fun register value => (KindReg register, ExactShape value))
-     ["x8"; "x9"; "x18"; "x19"; "x20"; "x21";
-      "x22"; "x23"; "x24"; "x25"; "x26"; "x27"]
-     (writeSuccessTransactions150ecSavedValues transaction)) ∗
-   "x10" ↦ᵣ RVal_Bits (bv_add sp (BV 64 1744)) ∗
-   "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
-   "x1" ↦ᵣ RVal_Bits (BV 64 0x150f0) ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗
-   mmio_range (machineOutputAddress defaultMap) 16 ∗
-   spec_trace
-     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
-       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
-         (writeSuccessTransactionsEvents sp remaining
-           (writeSuccessTransactionsCarrierOutputTail sp items tail)))) ∗
-   writeSuccessTransactions150ecCarrierCallFrame P sp base transaction
-     transactions processed remaining bytes prefix suffix tail
-     first second third fourth items ∗ True)%I.
-
-Global Instance : LithiumUnfold
-    (@writeSuccessTransactionsAt150ecCarrierCallBlock) := I.
-Global Instance : LithiumUnfold
-    (@writeSuccessTransactionsAt10190CarrierCallBlock) := I.
-
-Lemma write_success_transactions_carrier_chunk_150ec_jump_block
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
-    (sp : bv 64) (base : Z) (transaction : writeSuccessTransaction)
-    (transactions processed remaining : list writeSuccessTransaction)
-    (bytes prefix suffix : list (bv 8)) (tail : spec)
-    (first second third fourth : bv 64) (items : list ByteListItem) :
-  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
-  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  instr_pre 0x10190 (writeSuccessTransactionsAt10190CarrierCallBlock P sp base
-    transaction transactions processed remaining bytes prefix suffix tail
-    first second third fourth items) -∗
-  instr_body 0x150ec (writeSuccessTransactionsAt150ecCarrierCallBlock P sp base
-    transaction transactions processed remaining bytes prefix suffix tail
-    first second third fourth items).
-Proof.
-  move => *.
-  iStartProof.
-  iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve. all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  all: try (unfold writeSuccessTransactionsCarrierOutputTail; iFrame).
-  Unshelve. all: repeat iIntros "?"; liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  all: try (unfold writeSuccessTransactionsCarrierOutputTail; iFrame).
-  Unshelve. all: try exact inhabitant.
-Qed.
 
 Lemma write_success_transactions_carrier_chunk_150ec_jump
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
@@ -170,3 +74,4 @@ Proof.
   cbn. iFrame.
   repeat iSplit; iPureIntro; done.
 Qed.
+Print Assumptions write_success_transactions_carrier_chunk_150ec_jump.

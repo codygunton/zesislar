@@ -91,72 +91,13 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve. all: try exact inhabitant.
-  subst LET0. subst LET1. subst LET5. subst LET6.
-  subst LET10. subst LET13.
-  have Hstore32Address :
-      bv_unsigned (sp + BV 64 1656)%bv = bv_unsigned sp + 1656 by bv_solve.
-  have Hstore8Address :
-      bv_unsigned (sp + BV 64 1744)%bv = bv_unsigned sp + 1744 by bv_solve.
-  have HauipcValue :
-      (Z_to_bv 64 86248 + BV 64 18446744073709531136)%bv =
-      BV 64 0x100e8 by bv_solve.
-  iRename select ((bv_unsigned (sp + BV 64 1656)%bv) ↦ₘ _)%I
-    into "Hstored32".
-  iRename select ((bv_unsigned (sp + BV 64 1656)%bv + 4) ↦ₘ? _)%I
-    into "Hsuffix32".
-  iRename select ((bv_unsigned (sp + BV 64 1744)%bv) ↦ₘ _)%I
-    into "Hstored8".
-  iRename select ((bv_unsigned (sp + BV 64 1744)%bv + 1) ↦ₘ? _)%I
-    into "Hsuffix8".
-  iRename select
-    ("x1" ↦ᵣ RVal_Bits
-      (Z_to_bv 64 86248 + BV 64 18446744073709531136)%bv)%I
-    into "Hx1".
-  iEval (rewrite Hstore32Address) in "Hstored32 Hsuffix32".
-  iEval (rewrite Hstore8Address) in "Hstored8 Hsuffix8".
-  iEval (rewrite HauipcValue) in "Hx1".
-  have Hsuffix32Address :
-      (bv_unsigned sp + 1656 + 4 = bv_unsigned sp + 1660)%Z by lia.
-  have Hsuffix32Length :
-      (bv_unsigned sp + 1656 + 8 - (bv_unsigned sp + 1660) = 4)%Z by lia.
-  have Hsuffix8Address :
-      (bv_unsigned sp + 1744 + 1 = bv_unsigned sp + 1745)%Z by lia.
-  have Hsuffix8Length :
-      (bv_unsigned sp + 1744 + 48 - (bv_unsigned sp + 1745) = 47)%Z by lia.
-  iEval (rewrite Hsuffix32Address Hsuffix32Length) in "Hsuffix32".
-  iEval (rewrite Hsuffix8Address Hsuffix8Length) in "Hsuffix8".
-  rewrite /writeSuccessTransactionsAt150ecCarrierSpec.
   iExists (items, fourth, third, second, first, tail, suffix, prefix, bytes,
     remaining, processed, transactions, transaction, base, sp, tt)ₗ.
-  cbn.
-  rewrite /writeSuccessTransactionsMachine150ecCarrier /reg_col
-    /writeSuccessTransactions150ecCarrierScratch.
-  cbn.
-  iFrame.
-  have Hstored8Value :
-      bv_extract 0 8
-        (bv_zero_extend 64 (writeSuccessTransactionByte transaction 264)) =
-      writeSuccessTransactionByte transaction 264 by bv_solve.
-  iEval (rewrite Hstored8Value) in "Hstored8".
-  have HbyteListFacts :
-      writeSuccessTransactionsPost15674ByteListFacts
-          sp first second items.
-  { repeat split; assumption. }
-  iAssert
-    (⌜writeSuccessTransactionsPost15674ByteListFacts
-        sp first second items⌝)%I as "#HbyteListFacts".
-  { iPureIntro. exact HbyteListFacts. }
-  iAssert (writeSuccessTransactionsLoadFacts
-    sp base transaction processed bytes)%I as "#HloadFacts".
-  { rewrite /writeSuccessTransactionsLoadFacts.
-    repeat iSplit; try iPureIntro; try assumption; try done. }
-  iAssert (writeSuccessTransactionsCurrentPhaseCarrierFrame P sp base
-    transaction transactions processed remaining bytes prefix suffix tail
-    first second third fourth items)%I with "[-Hstored8]" as "Hphase".
-  { rewrite /writeSuccessTransactionsCurrentPhaseCarrierFrame.
-    iFrame. }
-  iFrame.
-  repeat iSplit; iPureIntro; assumption.
+  zesu_block.
+  iFrame "∗".
+  zesu_promote_folded_pure_resources.
+  iEval (unfold writeSuccessTransactionsLoadFacts).
+  zesu_finish_pure_resources.
 Qed.
 
 Lemma write_success_transactions_carrier_chunk_150d8_to_150ec
