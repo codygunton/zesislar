@@ -32,3 +32,12 @@ Print Assumptions array_cursor_dynamic_range.
    rewrite Z.mul_1_r;
    eapply (array_cursor_dynamic_range row offset _ base _ _ bytes); eassumption)
   : typeclass_instances.
+
+#[global] Hint Extern 8
+  (FindHypEqual (FICMemMapstoSemantic (bv_unsigned (bv_add ?row ?offset) + 0))
+    (?base ↦ₘ∗ ?bytes) (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_array_eq; left;
+   change (base <= bv_unsigned (row + offset)%bv + 0 < base + Z.of_nat (length bytes) * 1)%Z;
+   rewrite Z.add_0_r Z.mul_1_r;
+   eapply (array_cursor_dynamic_range row offset _ base _ _ bytes); eassumption)
+  : typeclass_instances.
