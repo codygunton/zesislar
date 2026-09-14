@@ -2,6 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.ArrayCursors.
+Require Import ZesuSsz.Automation.ArrayByteValues.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -121,13 +122,20 @@ Ltac zesu_finish :=
   try (timeout 2 zesu_normalize_memory_addresses);
   try iAssumption;
   lazymatch goal with
-  | |- SHELVED_SIDECOND _ => prepare_sidecond
+  | |- SHELVED_SIDECOND _ =>
+      first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+        prepare_sidecond]
   | _ => unLET
   end;
   try autorewrite with zesu_indices;
   try iAssumption;
   try (timeout 2 zesu_normalize_array_cursors);
   try reflexivity;
+  try (timeout 2 (lazymatch goal with
+    | |- @eq (bv 64) _ (Z_to_bv 64
+        (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
+        solve [zesu_array_eight_value]
+    end));
   try simpl;
   try done;
   try assumption;

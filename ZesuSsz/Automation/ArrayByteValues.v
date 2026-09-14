@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ArrayCursors.
+Require Import ZesuSsz.Automation.ByteArrays.
 From Coq Require Import Lists.List ZArith.ZArith.
 
 Lemma array_byte_lookup (bytes : list (bv 8)) (index : nat) (byte : bv 8) :
@@ -134,10 +135,78 @@ Ltac zesu_normalize_array_byte_lookups :=
         (index + count)%nat) by
         (eapply array_cursor_index;
           [exact Hcursor | vm_compute; reflexivity | exact Hlower |
-           exact Hupper | lia]);
+           exact Hupper |
+           first [match goal with
+             | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
+                 clear - Hbound; lia
+             end | lia]]);
       rewrite Z.div_1_r Hindex in Hlookup; clear Hindex
+  end;
+  repeat match goal with
+  | Hlookup : ?bytes !! Z.to_nat
+      (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte,
+    Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
+    Hlower : (0x20000000 <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < 0x40000000)%Z |- _ =>
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
+      let count := eval vm_compute in (Z.to_nat integer) in
+      let Hindex := fresh "HarrayByteIndex" in
+      assert (Hindex : Z.to_nat (bv_unsigned (bv_add row offset) - base) =
+        (index + count)%nat) by
+        (eapply array_cursor_index;
+          [exact Hcursor | vm_compute; reflexivity | exact Hlower |
+           exact Hupper |
+           first [match goal with
+             | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
+                 clear - Hbound; lia
+             end | lia]]);
+      rewrite Hindex in Hlookup; clear Hindex
   end.
 
 Ltac zesu_array_byte_value :=
   zesu_normalize_array_byte_lookups;
   eapply array_byte_lookup; eassumption.
+
+Lemma array_byte_eight_low_first (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) :
+  bv_or
+    (bv_shiftl
+      (bv_or
+        (bv_or (bv_shiftl (bv_zero_extend 64 b7) (BV 64 24))
+          (bv_shiftl (bv_zero_extend 64 b6) (BV 64 16)))
+        (bv_or (bv_shiftl (bv_zero_extend 64 b5) (BV 64 8))
+          (bv_zero_extend 64 b4))) (BV 64 32))
+    (bv_or
+      (bv_or (bv_shiftl (bv_zero_extend 64 b1) (BV 64 8))
+        (bv_zero_extend 64 b0))
+      (bv_or (bv_shiftl (bv_zero_extend 64 b2) (BV 64 16))
+        (bv_shiftl (bv_zero_extend 64 b3) (BV 64 24)))) =
+  Z_to_bv 64 (little_endian_to_bv 8 [b0; b1; b2; b3; b4; b5; b6; b7]).
+Proof.
+  rewrite (bv_or_comm
+    (bv_or (bv_shiftl (bv_zero_extend 64 b1) (BV 64 8)) (bv_zero_extend 64 b0))
+    (bv_or (bv_shiftl (bv_zero_extend 64 b2) (BV 64 16))
+      (bv_shiftl (bv_zero_extend 64 b3) (BV 64 24)))).
+  rewrite (bv_or_comm (bv_shiftl (bv_zero_extend 64 b2) (BV 64 16))
+    (bv_shiftl (bv_zero_extend 64 b3) (BV 64 24))).
+  apply zesu_assemble_8_bytes.
+Qed.
+Print Assumptions array_byte_eight_low_first.
+
+Ltac zesu_array_eight_value :=
+  zesu_normalize_array_byte_lookups;
+  first [timeout 2 (rewrite zesu_assemble_8_bytes) |
+    timeout 2 (rewrite array_byte_eight_low_first)];
+  match goal with
+  | |- context[take 8 (drop ?offset ?bytes)] =>
+      rewrite (zesu_take_8_drop bytes offset ltac:(lia))
+  end;
+  repeat match goal with
+  | Hread : ?bytes !! ?observed = Some ?byte
+    |- context[default _ (?bytes !! ?requested)] =>
+      first [rewrite Hread |
+        let Hindex := fresh "HarrayEightIndex" in
+        assert (Hindex : observed = requested) by lia;
+        rewrite <- Hindex, Hread; clear Hindex]
+  end;
+  reflexivity.
