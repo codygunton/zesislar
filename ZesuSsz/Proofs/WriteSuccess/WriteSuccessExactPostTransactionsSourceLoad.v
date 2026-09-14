@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_87 Require Import instrs.
@@ -10,8 +11,8 @@ Definition postTransactionsSourceLoadEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x10" ↦ᵣ RVal_Bits olddata ∗
    "x11" ↦ᵣ RVal_Bits oldsize ∗ (bv_unsigned sp + 1032) ↦ₘ∗ values ∗
    ⌜length values = 69%nat⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@postTransactionsSourceLoadEntry) := I.
 
 Definition postTransactionsSourceLoadPost `{!islaG Sigma} `{!threadG}
@@ -22,8 +23,8 @@ Definition postTransactionsSourceLoadPost `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits (default (BV 64 0) (values !! 10%nat)) ∗
    (bv_unsigned sp + 1032) ↦ₘ∗ values ∗
    ⌜length values = 69%nat⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@postTransactionsSourceLoadPost) := I.
 
 Lemma post_transactions_exact_source_load_correct `{!islaG Sigma} `{!threadG}

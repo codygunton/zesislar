@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchSized.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -32,7 +33,7 @@ Lemma transactions_value_to_data `{!islaG Sigma} `{!threadG}
       (writeOutputEvents data size bytes tail))
     (transactionValueDataCaller data size sp w0 w1 w2 w3 old6 old9 bytes tail P) -∗
   transactionDataJumpEntry data size (BV 64 0x151b4) (sp - BV 64 48)%bv (BV 64 32)
-    (transactionDataBytesFrame data size sp (BV 64 0x2401a0b8) old6 old9 bytes tail
+    (transactionDataBytesFrame data size sp (BV 64 (mapIoContextAddress defaultMap)) old6 old9 bytes tail
       (transactionValueDataSourceFrame sp w0 w1 w2 w3 P)).
 Proof.
   iIntros "Hpost".

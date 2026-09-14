@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsOwnership.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
 Require Import isla.riscv64.riscv64.
@@ -11,10 +12,10 @@ Lemma access_storage_ownership_return `{!islaG Sigma}
    writeSuccessAccessEntriesOwn processed ∗ writeSuccessAccessEntriesOwn rest ∗
    ⌜writeSuccessAccessEntryValid entry⌝ ∗
    ⌜writeSuccessAccessEntryStorageCount entry <> 0%nat ->
-     0x20000000 <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
+     (mapRamBase defaultMap) <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
    ⌜writeSuccessAccessEntryStorageCount entry <> 0%nat ->
      bv_unsigned (writeSuccessAccessEntryStoragePointer entry) +
-       Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) < 0x40000000⌝ ∗
+       Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) < (machineRamEnd defaultMap)⌝ ∗
    ⌜entries = processed ++ entry :: rest⌝ ∗ True)%I -∗
   writeSuccessAccessEntriesOwn entries.
 Proof.

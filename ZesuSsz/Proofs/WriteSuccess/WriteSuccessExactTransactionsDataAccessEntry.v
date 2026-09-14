@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -24,9 +25,9 @@ Definition transactionAccessAfterDataCaller `{!islaG Sigma} `{!threadG}
    ⌜count = Z_to_bv 64 (Z.of_nat (length entries))⌝ ∗
    ⌜bytes = writeSuccessAccessEntriesBytes entries⌝ ∗
    ⌜length bytes = (40 * length entries)%nat⌝ ∗ ⌜(length entries < 2 ^ 64)%nat⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionAccessAfterDataCaller) := I.
 
 Definition transactionAccessRetainedMemory `{!islaG Sigma} `{!threadG}
@@ -76,7 +77,7 @@ Proof.
   iAssert (reg_col writeSuccessAccessListsOtherRegShapes)%I
     with "[H1 H5 H6 H8 H9 H12 H13 H18 H20 H21 H23 H24 H25 H26 Hother]" as "Hregs".
   { iPoseProof (reg_col_shape_predicate with "H6") as "Hpredicate".
-    iApply (reg_col_mixed_collect [("x1", BV 64 0x151d0); ("x5", BV 64 0x2401a0b8);
+    iApply (reg_col_mixed_collect [("x1", BV 64 0x151d0); ("x5", BV 64 (mapIoContextAddress defaultMap));
       ("x8", data); ("x9", feeLow); ("x12", w2); ("x13", w3); ("x18", w0);
       ("x20", w1); ("x21", w3); ("x23", feeHigh); ("x24", gashigh); ("x25", gaslow); ("x26", value)]
       [(KindReg "x6", BitsShape 64)]

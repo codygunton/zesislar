@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
@@ -47,7 +48,7 @@ Lemma write_success_transactions_chunk_150f8_none_call_entry
           (WriteSuccessTransactionsSpec.writeSuccessTransactionWord transaction 160) ∗
         (bv_unsigned sp + 1672) ↦ₘ BV 8 0 ∗
         (bv_unsigned sp + 1673) ↦ₘ∗ tagTail ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace
           (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
             WriteSuccessTransactionsSpec.TransactionNonce sp transaction

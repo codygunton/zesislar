@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
@@ -15,17 +16,17 @@ Definition writeSuccessTransactionsPriorityFeeBooleanAbiTail
    ⌜bv_extract 0 1 (BV 64 0x15148) = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 (BV 64 0x15148) = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 (BV 64 0x15148) = BV 2 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16 /\
-     bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16 /\
+     bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
    (∃ callTail : spec,
-     mmio_range 0x2401a0c0 16 ∗
+     mmio_range (machineOutputAddress defaultMap) 16 ∗
      spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) callTail) ∗
      instr_pre 0x15148
        (zesu_c_call_ret 16
          (writeSuccessTransactionsPriorityFeeSavedValues transaction)
          (BV 64 0x15148) sp
-         (fun _ => mmio_range 0x2401a0c0 16 ∗ spec_trace callTail ∗ True))))%I.
+         (fun _ => mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace callTail ∗ True))))%I.
 
 Global Typeclasses Opaque writeSuccessTransactionsPriorityFeeBooleanAbiTail.
 
@@ -35,10 +36,10 @@ Lemma write_success_transactions_priority_fee_boolean_abi_tail
     (remaining : list WriteSuccessTransactionsSpec.writeSuccessTransaction)
     (sp : bv 64) (tail : spec)
     (Halign : bv_unsigned sp `mod` 16 = 0)
-    (Hlower : 0x20000000 <= bv_unsigned sp - 16)
-    (Hupper : bv_unsigned sp < 0x40000000) :
+    (Hlower : (mapRamBase defaultMap) <= bv_unsigned sp - 16)
+    (Hupper : bv_unsigned sp < (machineRamEnd defaultMap)) :
   (bv_unsigned sp - 16) ↦ₘ? 16 -∗
-  mmio_range 0x2401a0c0 16 -∗
+  mmio_range (machineOutputAddress defaultMap) 16 -∗
   spec_trace
     (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionGasLimit sp transaction

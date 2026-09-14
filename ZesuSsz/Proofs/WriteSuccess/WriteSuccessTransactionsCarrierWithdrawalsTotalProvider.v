@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -32,8 +33,8 @@ Definition writeSuccessTransactionsCarrierWithdrawalsTotalExitSpec
      (Z_to_bv 64 (Z.of_nat count)) items ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsCarrierWithdrawalsTotalExitSpec) := I.

@@ -40,7 +40,7 @@ class GenerateLevel1RocqTests(unittest.TestCase):
     def test_generates_fixed_context_and_glue(self):
         manifest, cfg = fixture()
         output = generate(manifest, cfg)
-        self.assertIn("Definition inputBufferAddress : Z := 0x2001a000.", output)
+        self.assertIn("Definition inputBufferAddress : Z := mapInputBufferAddress defaultMap.", output)
         self.assertIn("Definition mainGlueInstructionCount : nat := 24.", output)
         self.assertIn("Definition mainGlueWordAt1004 : Z := 0x00000013.", output)
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes1574cCall.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
@@ -9,11 +10,11 @@ Definition writeSuccessSuffixHashes15750NonzeroQ
     (sp value : bv 64) (tail : spec) (Q : iProp Sigma) : iProp Sigma :=
   ("x1" ↦ᵣ RVal_Bits (BV 64 0x15750) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ Q)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ Q)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixHashes15750NonzeroQ) := I.
 

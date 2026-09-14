@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -19,13 +20,13 @@ Definition writeSuccessTransactionsLoopEntryFacts
     (288 * length remaining)%nat /\
   (length (processed ++ remaining) < 2 ^ 64)%nat /\
   bv_unsigned sp `mod` 16 = 0 /\
-  0x20000000 <= bv_unsigned sp - 48 /\
-  bv_unsigned sp + 1896 < 0x40000000 /\
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 /\
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap) /\
   base `mod` 8 = 0 /\
-  0x20000000 <= base /\
+  (mapRamBase defaultMap) <= base /\
   base + Z.of_nat
     (length (writeSuccessTransactionsBytes (processed ++ remaining))) <
-      0x40000000.
+      (machineRamEnd defaultMap).
 
 Definition writeSuccessTransactionsLoopBodyBranchFrame `{!islaG Sigma}
     `{!threadG} (P : iProp Sigma) (sp : bv 64) (base : Z)
@@ -47,7 +48,7 @@ Definition writeSuccessTransactionsLoopBodyBranchFrame `{!islaG Sigma}
    (bv_unsigned sp + 112) ↦ₘ
       Z_to_bv 64 (Z.of_nat (length (processed ++ remaining))) ∗
    (bv_unsigned sp + 120) ↦ₘ? 1776 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining tail) ∗ P ∗
    instr_pre writeSuccessTransactionsLoopExitAddress
      (writeSuccessTransactionsLoopExit sp base (processed ++ remaining)

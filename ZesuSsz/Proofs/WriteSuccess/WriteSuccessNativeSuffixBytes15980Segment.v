@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -23,14 +24,14 @@ Definition writeSuccessSuffixBytes15980To15990Spec
     (bv_unsigned sp + 8) ↦ₘ size ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (writeOutputEventsAny data size tail)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 8 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 8 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x15990
       (writeSuccessSuffixBytes15990CallPost
         sp data size data oldS1 bytes tail ∗ Q) ∗

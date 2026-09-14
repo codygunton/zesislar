@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -45,7 +46,7 @@ Definition writeSuccessTransactionsPost15674CallEntryEventsSpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ mmio_range 0x2401a0c0 16 ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.

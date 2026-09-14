@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteViews.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
@@ -25,9 +26,9 @@ Definition transactionRecipientLowerRetained `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 120) ↦ₘ (transactionRowByte bytes index 285) ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 272 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
-   ⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 128 < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 128 < (machineRamEnd defaultMap))%Z⌝ ∗
    "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (little_endian_to_bv 8 [(default (BV 8 0) (bytes !! (index + 281)%nat)); (default (BV 8 0) (bytes !! (index + 282)%nat))])) ∗
    "x11" ↦ᵣ RVal_Bits (transactionRowByte bytes index 264) ∗
    "x12" ↦ᵣ RVal_Bits (transactionRowByte bytes index 265) ∗

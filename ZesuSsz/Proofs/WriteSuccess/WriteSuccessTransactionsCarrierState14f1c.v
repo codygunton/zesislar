@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -22,7 +23,7 @@ Definition writeSuccessTransactionsCurrentPhaseCarrierFrame
    writeSuccessByteArrayOwn (writeSuccessTransactionDataPointer transaction)
      (writeSuccessTransactionData transaction) ∗
    writeSuccessTransactionRestOwn transaction ∗
-   writeSuccessTransactionsOwn remaining ∗ mmio_range 0x2401a0c0 16 ∗
+   writeSuccessTransactionsOwn remaining ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessTransactionPhaseEvents TransactionType sp transaction
      (writeSuccessTransactionsEvents sp remaining
        (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)

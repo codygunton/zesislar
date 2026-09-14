@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From iris.proofmode Require Import environments.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -25,8 +26,8 @@ Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
 Definition writeSuccessCallerOutputEvents
     (data size : bv 64) (tail : spec) : spec :=
-  scons (SWriteMem (BV 64 0x2401a0c0) data)
-    (scons (SWriteMem (BV 64 0x2401a0c8) size) tail).
+  scons (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data)
+    (scons (SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size) tail).
 
 Definition writeSuccessCallerOtherRegisters : list string :=
   ["x3"; "x4"; "x5"; "x6"; "x7"; "x13"; "x14"; "x15"; "x16"; "x17";
@@ -53,8 +54,8 @@ Lemma write_success_to_load_block `{!islaG Sigma} `{!threadG}
     (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
     (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
     (Hspalign : bv_extract 0 4 sp = BV 4 0)
-    (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
-    (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
+    (Hspmin : ((mapRamBase defaultMap + 0x880) <= bv_unsigned sp)%Z)
+    (Hspmax : (bv_unsigned sp + 0x7d0 < (machineRamEnd defaultMap))%Z) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
@@ -74,13 +75,13 @@ Lemma write_success_to_load_block `{!islaG Sigma} `{!threadG}
        s8 s9 s10 s11
        ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
         bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace
           (writeSuccessCallerOutputEvents (BV 64 0x179c5) (BV 64 6) tail) ∗
         P ∗
         ⌜length decodedBytes = 848%nat⌝ ∗
-        ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
-        ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
+        ⌜((mapRamBase defaultMap) <= bv_unsigned decoded)%Z⌝ ∗
+        ⌜(bv_unsigned decoded + 848 < (machineRamEnd defaultMap))%Z⌝ ∗
         instr_pre 0x14d10 True ∗ True)%I).
 Proof.
   move => *.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
@@ -42,11 +43,11 @@ Lemma write_success_transactions_carrier_chunk_150d8_to_150ec_raw
     (first second third fourth : bv 64) (items : list ByteListItem)
     (HtransactionLength : length (writeSuccessTransactionBytes transaction) = 288%nat)
     (HbaseAlign : (base + 288 * Z.of_nat (length processed)) `mod` 8 = 0)
-    (HbaseLower : 0x20000000 <= base + 288 * Z.of_nat (length processed))
-    (HbaseUpper : base + 288 * Z.of_nat (length processed) + 288 < 0x40000000)
+    (HbaseLower : (mapRamBase defaultMap) <= base + 288 * Z.of_nat (length processed))
+    (HbaseUpper : base + 288 * Z.of_nat (length processed) + 288 < (machineRamEnd defaultMap))
     (HspAlign8 : bv_unsigned sp `mod` 8 = 0)
-    (HspLower48 : 0x20000000 <= bv_unsigned sp - 48)
-    (HspUpper1896 : bv_unsigned sp + 1896 < 0x40000000) :
+    (HspLower48 : (mapRamBase defaultMap) <= bv_unsigned sp - 48)
+    (HspUpper1896 : bv_unsigned sp + 1896 < (machineRamEnd defaultMap)) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   instr_body 0x150ec (writeSuccessTransactionsAt150ecCarrierSpec P) -∗

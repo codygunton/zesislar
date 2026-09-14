@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactAccessListsReturnLoopEntry WriteSuccessExactAccessListsReturnCount
@@ -25,8 +26,8 @@ Definition accessBlobSourceResources `{!islaG Sigma} `{!threadG}
    ⌜length bytes = (32 * total)%nat⌝ ∗ ⌜bv_unsigned pointer = base⌝ ∗
    ⌜savedX22 = Z_to_bv 64 (Z.of_nat total)⌝ ∗
    ⌜(Z.of_nat total < 18446744073709551616)%Z⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    instr_pre 0x15564 (writeSuccessBlobHashesLoopExit sp base total bytes tail F) ∗ True)%I.
 Global Instance : LithiumUnfold (@accessBlobSourceResources) := I.
 

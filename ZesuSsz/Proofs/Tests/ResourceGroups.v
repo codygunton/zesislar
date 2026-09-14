@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Resources.
 
@@ -21,8 +22,8 @@ Print Assumptions resource_groups_nested.
 
 Lemma resource_array_ram_offset `{!islaG Sigma}
     (pointer : bv 64) (bytes : list (bv 8)) :
-  0x20000000 <= bv_unsigned pointer ->
-  bv_unsigned pointer + 32 < 0x40000000 ->
+  (mapRamBase defaultMap) <= bv_unsigned pointer ->
+  bv_unsigned pointer + 32 < (machineRamEnd defaultMap) ->
   (bv_unsigned pointer + 16)%Z ↦ₘ∗ bytes -∗
   bv_unsigned (pointer + BV 64 16)%bv ↦ₘ∗ bytes ∗ True.
 Proof.

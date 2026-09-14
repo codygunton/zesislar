@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
@@ -11,12 +12,12 @@ Lemma write_success_transactions_151d0_nonempty_invariant
       (40 * length (entry :: entries))%nat)
     (Hbound : (length (entry :: entries) < 2 ^ 64)%nat)
     (HspAlign : bv_unsigned sp `mod` 16 = 0)
-    (HspLower : 0x20000000 <= bv_unsigned sp - 48)
-    (HspUpper : bv_unsigned sp + 1896 < 0x40000000)
-    (HbaseLower : 0x20000000 <= base)
+    (HspLower : (mapRamBase defaultMap) <= bv_unsigned sp - 48)
+    (HspUpper : bv_unsigned sp + 1896 < (machineRamEnd defaultMap))
+    (HbaseLower : (mapRamBase defaultMap) <= base)
     (HbaseUpper : base +
       Z.of_nat (length (writeSuccessAccessEntriesBytes (entry :: entries))) <
-      0x40000000) :
+      (machineRamEnd defaultMap)) :
   ⊢ writeSuccessAccessListsInvariant sp base
     (entry :: entries) [] (entry :: entries)
     (writeSuccessAccessEntriesBytes (entry :: entries)) []

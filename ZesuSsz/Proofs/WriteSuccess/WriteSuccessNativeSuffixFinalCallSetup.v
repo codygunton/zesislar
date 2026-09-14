@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -29,7 +30,7 @@ Definition writeSuccessPost159c8SetupSpec
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     (bv_unsigned sp + 88) ↦ₘ count ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 88 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 88 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x159d4 (writeSuccessPost159d4SetupSpec P) ∗ P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPost159c8SetupSpec) := I.

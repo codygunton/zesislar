@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_03 Require Import instrs.
@@ -39,12 +40,12 @@ Definition zesuEncoderBooleanPayloadCallSpec `{!islaG Sigma} `{!threadG} :
     ("x5" ↦ᵣ: fun r5 => ⌜valu_has_shape r5 (BitsShape 64)⌝) ∗
     "x10" ↦ᵣ RVal_Bits (writeSuccessBooleanWord present) ∗
     ("x11" ↦ᵣ: fun r11 => ⌜valu_has_shape r11 (BitsShape 64)⌝) ∗
-    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
       (writeSuccessBooleanPayload present) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
@@ -55,7 +56,7 @@ Definition zesuEncoderBooleanPayloadCallSpec `{!islaG Sigma} `{!threadG} :
        ("x5" ↦ᵣ: fun r5 => ⌜valu_has_shape r5 (BitsShape 64)⌝) ∗
        ("x10" ↦ᵣ: fun r10 => ⌜valu_has_shape r10 (BitsShape 64)⌝) ∗
        ("x11" ↦ᵣ: fun r11 => ⌜valu_has_shape r11 (BitsShape 64)⌝) ∗
-       (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+       (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
        spec_trace tail ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderBooleanPayloadCallSpec) := I.
@@ -71,13 +72,13 @@ Definition encoderBooleanPayloadSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp - 16) ↦ₘ? 7 ∗
     (bv_unsigned sp - 9) ↦ₘ (bv_extract 0 8 stackByte) ∗
     (bv_unsigned sp - 8) ↦ₘ stackRa ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
       [bv_extract 0 8 (bv_and value (BV 64 1))] tail) ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
     ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
@@ -92,7 +93,7 @@ Definition encoderBooleanPayloadSpec `{!islaG Sigma} `{!threadG}
        (bv_unsigned sp - 9) ↦ₘ
          (bv_extract 0 8 (bv_and value (BV 64 1))) ∗
        (bv_unsigned sp - 8) ↦ₘ ret ∗
-       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+       mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@encoderBooleanPayloadSpec) := I.
 
@@ -119,7 +120,7 @@ Lemma writeSuccessBooleanStackAddress sp :
 Proof. bv_solve. Qed.
 
 Lemma writeSuccessBooleanArrayStart sp :
-  0x20000000 <= bv_unsigned sp - 16 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 16 ->
   IslarisMemory.array_region_start 8
     (bv_unsigned (sp + BV 64 18446744073709551600 + BV 64 7)%bv)
     (bv_unsigned sp - 9) = 0%nat.
@@ -131,7 +132,7 @@ Proof. intros Hmin.
 Qed.
 
 Lemma writeSuccessBooleanNoWrap sp :
-  0x20000000 <= bv_unsigned sp - 16 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 16 ->
   bv_unsigned (sp - BV 64 9)%bv = bv_unsigned sp - 9.
 Proof. intros Hmin. bv_solve. Qed.
 
@@ -159,7 +160,7 @@ Proof.
       [bv_extract 0 8 (bv_and value (BV 64 1))] tail))%I into "Htrace".
   all: try iRename select (instr_pre (bv_unsigned ret) _)%I into "Hreturn".
   all: try iRename select (_ ↦ₘ ret)%I into "Hra".
-  all: try iRename select (mmio_range 0x2401a0c0 16)%I into "Hmmio".
+  all: try iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
   all: try iFrame "Hlow Hra".
   all: try iEval (rewrite reg_col_nil).
   all: try iExists (tail, tt)ₗ.
@@ -238,7 +239,7 @@ Proof.
        (bv_unsigned sp - 9) ↦ₘ
          (bv_extract 0 8
            (bv_and (writeSuccessBooleanWord present) (BV 64 1))) ∗
-       (bv_unsigned sp - 8) ↦ₘ ret ∗ mmio_range 0x2401a0c0 16 ∗
+       (bv_unsigned sp - 8) ↦ₘ ret ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
        spec_trace tail ∗ True))%I with "[Hnext]" as "Hreturn".
   { iApply (instr_pre_wand (bv_unsigned ret) (bv_unsigned ret) true true
       with "Hnext"); [done | done |].

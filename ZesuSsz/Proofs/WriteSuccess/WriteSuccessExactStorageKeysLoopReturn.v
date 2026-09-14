@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -14,7 +15,7 @@ Definition storageKeysTailFrame `{!islaG Sigma} `{!threadG}
     (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col writeSuccessStorageKeysOtherRegShapes ∗
    "x19" ↦ᵣ RVal_Bits x19 ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-   base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗ mmio_range 0x2401a0c0 16 ∗
+   base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactStorageKeysEvents sp (S processed) remaining bytes tail) ∗ P ∗
    writeSuccessFixedWidthArrayInvariant sp pointer base total processed remaining bytes ∗
    instr_pre 0x153b4 (writeSuccessStorageKeysLoopExit x19 sp base total bytes tail P) ∗ True)%I.

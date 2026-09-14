@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -22,7 +23,7 @@ Lemma transactions_priority_to_boolean `{!islaG Sigma} `{!threadG}
       (if present then BV 64 0x15128 else BV 64 0x15148) tail
       (transactionPriorityBooleanCallerFrame sp low high tag P)) -∗
   transactionPriorityBooleanEntry present sp (BV 64 0x15118) (sp - BV 64 32)%bv
-    (BV 64 0x2401a0b8) (BV 64 16) tail
+    (BV 64 (mapIoContextAddress defaultMap)) (BV 64 16) tail
     (transactionPriorityBooleanCallerFrame sp low high tag P).
 Proof.
   iIntros "Hstate Hnext".
@@ -58,7 +59,7 @@ Lemma transactions_priority_boolean_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcode #Hboolean #Houtput #Hnext".
   iPoseProof (transactions_priority_boolean_call_correct present sp (BV 64 0x15118)
-    (sp - BV 64 32)%bv (BV 64 0x2401a0b8) (BV 64 16) tail
+    (sp - BV 64 32)%bv (BV 64 (mapIoContextAddress defaultMap)) (BV 64 16) tail
     (transactionPriorityBooleanCallerFrame sp low high tag P)
     with "Hcode Hboolean Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand (if present then 0x1511c else 0x1513c)

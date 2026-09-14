@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -35,8 +36,8 @@ Definition writeSuccessTransactionsPostAt15684Spec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostAt15684Spec) := I.

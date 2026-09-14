@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -94,10 +95,10 @@ Definition writeSuccessWithdrawalsInvariant `{!islaG Sigma}
    ⌜bv_unsigned pointer = (base + 48 * Z.of_nat processed)%Z⌝ ∗
    ⌜(S remaining < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 16)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 16)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessWithdrawalsInvariant) := I.
 
@@ -111,7 +112,7 @@ Definition writeSuccessWithdrawalsLoopExit `{!islaG Sigma} `{!threadG}
     "x9" ↦ᵣ RVal_Bits (BV 64 0) ∗
     "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
     base ↦ₘ∗ bytes ∗ writeSuccessWithdrawalsScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗
     ⌜bv_unsigned pointer = (base + 48 * Z.of_nat total)%Z⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessWithdrawalsLoopExit) := I.
@@ -128,7 +129,7 @@ Definition writeSuccessWithdrawalsLoopSpec `{!islaG Sigma} `{!threadG}
     "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
     base ↦ₘ∗ prefix ∗ bv_unsigned pointer ↦ₘ∗ suffix ∗
     writeSuccessWithdrawalsScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessWithdrawalsEvents sp (S remaining) tail) ∗ P ∗
     writeSuccessWithdrawalsInvariant
       sp pointer base total processed remaining bytes prefix suffix ∗
@@ -149,7 +150,7 @@ Definition writeSuccessWithdrawalsCopiedSpec `{!islaG Sigma} `{!threadG}
     "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
     base ↦ₘ∗ prefix ∗ bv_unsigned pointer ↦ₘ∗ suffix ∗
     writeSuccessWithdrawalsCopiedScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessWithdrawalsPhaseEvents phase sp remaining tail) ∗ P ∗
     writeSuccessWithdrawalsInvariant
       sp pointer base total processed remaining bytes prefix suffix ∗
@@ -170,7 +171,7 @@ Definition writeSuccessWithdrawalsTailSpec `{!islaG Sigma} `{!threadG}
     "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
     base ↦ₘ∗ prefix ∗ bv_unsigned pointer ↦ₘ∗ suffix ∗
     writeSuccessWithdrawalsScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessWithdrawalsEvents sp remaining tail) ∗ P ∗
     writeSuccessWithdrawalsInvariant
       sp pointer base total processed remaining bytes prefix suffix ∗

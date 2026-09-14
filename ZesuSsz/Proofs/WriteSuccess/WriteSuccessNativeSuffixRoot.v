@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Lookup.
@@ -34,16 +35,16 @@ Definition writeSuccessSuffixAt1572c `{!islaG Sigma} `{!threadG}
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x1572c) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x10" ↦ᵣ RVal_Bits oldData ∗
     "x11" ↦ᵣ RVal_Bits oldSize ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessSuffixRootFrame sp root P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixAt1572c) := I.
@@ -57,11 +58,11 @@ Definition writeSuccessSuffixAt1573c `{!islaG Sigma} `{!threadG}
     "x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessSuffixRootFrame sp root P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixAt1573c) := I.

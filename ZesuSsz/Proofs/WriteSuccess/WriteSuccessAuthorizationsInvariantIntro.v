@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAuthorizationsSpec.
@@ -40,11 +41,11 @@ Lemma write_success_authorizations_invariant_zero_intro
     (Hbytes : length bytes = (144 * S remaining)%nat)
     (Hbound : (S remaining < 2 ^ 64)%nat)
     (Halign : bv_unsigned sp `mod` 16 = 0)
-    (HspMin : (0x20000000 <= bv_unsigned sp - 48)%Z)
-    (HspMax : (bv_unsigned sp + 1896 < 0x40000000)%Z)
-    (HbaseMin : (0x20000000 <= bv_unsigned pointer)%Z)
+    (HspMin : ((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z)
+    (HspMax : (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z)
+    (HbaseMin : ((mapRamBase defaultMap) <= bv_unsigned pointer)%Z)
     (HbaseMax :
-      (bv_unsigned pointer + Z.of_nat (length bytes) < 0x40000000)%Z) :
+      (bv_unsigned pointer + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z) :
   ⊢ writeSuccessAuthorizationsInvariant sp pointer (bv_unsigned pointer)
     (S remaining) 0%nat remaining bytes [] bytes.
 Proof.

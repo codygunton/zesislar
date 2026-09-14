@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import ZesuSsz.Automation.WordPayloads.
 Require Import isla.riscv64.riscv64.
@@ -12,8 +13,8 @@ Definition transactionRecipientValuePreparation `{!islaG Sigma} `{!threadG}
   ("x13" ↦ᵣ RVal_Bits old13 ∗ "x18" ↦ᵣ RVal_Bits w0 ∗
    "x20" ↦ᵣ RVal_Bits w1 ∗ (bv_unsigned sp + 128) ↦ₘ w2 ∗
    "x21" ↦ᵣ RVal_Bits w3 ∗ (bv_unsigned sp - 48) ↦ₘ? 32 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientValuePreparation) := I.
 
 Definition transactionRecipientValueSourceFrame `{!islaG Sigma} `{!threadG}
@@ -21,8 +22,8 @@ Definition transactionRecipientValueSourceFrame `{!islaG Sigma} `{!threadG}
   ((bv_unsigned sp + 1640) ↦ₘ first ∗
    (bv_unsigned sp + 1648) ↦ₘ second ∗ (bv_unsigned sp + 1656) ↦ₘ last ∗
    bv_unsigned (sp + BV 64 1744)%bv ↦ₘ∗ words_20_payload first second last ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientValueSourceFrame) := I.
 
 Lemma transactions_recipient_output_to_value `{!islaG Sigma} `{!threadG}
@@ -35,7 +36,7 @@ Lemma transactions_recipient_output_to_value `{!islaG Sigma} `{!threadG}
       (transactionRecipientValuePreparation sp w0 w1 w2 w3 old13 P)) -∗
   instr_pre 0x151b4 (transactionValuePost sp w0 w1 w2 w3 tail
     (transactionRecipientValueSourceFrame sp first second last P)) -∗
-  transactionValueEntry sp w0 w1 w2 w3 (BV 64 0x15190) (BV 64 0x2401a0b8) tail
+  transactionValueEntry sp w0 w1 w2 w3 (BV 64 0x15190) (BV 64 (mapIoContextAddress defaultMap)) tail
     (transactionRecipientValueSourceFrame sp first second last P).
 Proof.
   iIntros "Hpost Hnext".

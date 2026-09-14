@@ -40,11 +40,59 @@ Section exact_array.
     iExists x. iFrame.
   Qed.
   Definition subsume_mem_array_slice_inst := [instance subsume_mem_array_slice].
+Lemma mem_array_slice_restore (base : Z) (bytes : list (bv 8))
+    (start count : nat) :
+  (start + count <= length bytes)%nat ->
+  base ↦ₘ∗ take start bytes -∗
+  (base + Z.of_nat start) ↦ₘ∗ take count (drop start bytes) -∗
+  (base + Z.of_nat (start + count)) ↦ₘ∗ drop (start + count) bytes -∗
+  base ↦ₘ∗ bytes.
+Proof.
+  iIntros (Hbound) "Hprefix Hslice Hsuffix".
+  have Hstart : length (take start bytes) = start.
+  { rewrite length_take Nat.min_l; lia. }
+  have Hcount : length (take count (drop start bytes)) = count.
+  { rewrite length_take length_drop Nat.min_l; lia. }
+  iPoseProof (mem_mapsto_array_app_combine_at 8 base (DfracOwn 1)
+    (take start bytes) (take count (drop start bytes)) start Hstart
+    with "Hprefix [Hslice]") as "Hleft".
+  { cbn. rewrite Z.mul_1_l. iExact "Hslice". }
+  have Hleft : length (take start bytes ++ take count (drop start bytes)) =
+    (start + count)%nat by rewrite length_app Hstart Hcount.
+  iPoseProof (mem_mapsto_array_app_combine_at 8 base (DfracOwn 1)
+    (take start bytes ++ take count (drop start bytes))
+    (drop (start + count) bytes) (start + count) Hleft
+    with "Hleft [Hsuffix]") as "Hwhole".
+  { cbn. rewrite Z.mul_1_l. iExact "Hsuffix". }
+  rewrite <- drop_drop. rewrite <- app_assoc. rewrite !take_drop.
+  iExact "Hwhole".
+Qed.
+Lemma subsume_mem_array_restore A (base address : Z) (bytes : list (bv 8))
+    (start count : nat) G :
+  (⌜address = (base + Z.of_nat start)%Z⌝ ∗
+   ⌜(start + count <= length bytes)%nat⌝ ∗
+   base ↦ₘ∗ take start bytes ∗
+   (base + Z.of_nat (start + count)) ↦ₘ∗ drop (start + count) bytes ∗
+   (∃ x : A, G x))%I ⊢
+  subsume (address ↦ₘ∗ take count (drop start bytes))
+    (fun _ : A => base ↦ₘ∗ bytes) G.
+Proof.
+  iIntros "(%Haddress & %Hbound & Hprefix & Hsuffix & Hcontinue) Hslice".
+  iDestruct "Hcontinue" as (x) "HG". iExists x. iFrame "HG".
+  rewrite Haddress.
+  iApply (mem_array_slice_restore base bytes start count Hbound
+    with "Hprefix Hslice Hsuffix").
+Qed.
+Definition subsume_mem_array_restore_inst := [instance subsume_mem_array_restore].
+
 End exact_array.
+Print Assumptions mem_array_slice_restore.
+Print Assumptions subsume_mem_array_restore.
 
 Module SliceMatching.
   #[export] Remove Hints subsume_mem_array_inst : typeclass_instances.
   #[export] Existing Instance subsume_mem_array_exact_inst | 0.
+  #[export] Existing Instance subsume_mem_array_restore_inst | 1.
   #[export] Existing Instance subsume_mem_array_slice_inst | 1.
   #[export] Existing Instance subsume_mem_array_region_inst | 2.
   #[export] Hint Rewrite array_slice_stack_index using bv_solve

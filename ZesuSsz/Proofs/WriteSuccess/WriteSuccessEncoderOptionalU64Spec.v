@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
@@ -13,9 +14,9 @@ Definition zesuEncoderOptionalU64SomeCallSpec
       (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
       ⌜tag ≠ BV 8 0⌝ ∗
       ⌜bv_extract 0 3 (args !!! 0%nat) = BV 3 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
-      ⌜bv_unsigned (args !!! 0%nat) + 8 < 0x40000000⌝ ∗
-      mmio_range 0x2401a0c0 16 ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
+      ⌜bv_unsigned (args !!! 0%nat) + 8 < (machineRamEnd defaultMap)⌝ ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeOutputEventsAny (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv
           (BV 64 1)
@@ -23,7 +24,7 @@ Definition zesuEncoderOptionalU64SomeCallSpec
       RET (fun _ =>
         bv_unsigned (args !!! 0%nat) ↦ₘ value ∗
         (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderOptionalU64SomeCallSpec) := I.
 
@@ -36,15 +37,15 @@ Definition zesuEncoderOptionalU64NoneCallSpec
       (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
       ⌜tag = BV 8 0⌝ ∗
       ⌜bv_extract 0 3 (args !!! 0%nat) = BV 3 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
-      ⌜bv_unsigned (args !!! 0%nat) + 8 < 0x40000000⌝ ∗
-      mmio_range 0x2401a0c0 16 ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
+      ⌜bv_unsigned (args !!! 0%nat) + 8 < (machineRamEnd defaultMap)⌝ ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
       RET (fun _ =>
         bv_unsigned (args !!! 0%nat) ↦ₘ value ∗
         (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderOptionalU64NoneCallSpec) := I.
 

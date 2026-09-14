@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_failure Require Import instrs.
@@ -32,19 +33,19 @@ Definition write_failure_resources `{!islaG Sigma} `{!threadG} :
       "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
       "x10" ↦ᵣ RVal_Bits old_x10 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
       0x177c8 ↦ₘ∗ failureMemory ∗
-      0x2401a0c0 ↦ₘ old_pointer ∗ 0x2401a0c8 ↦ₘ old_length ∗ True)%I;
+      (machineOutputAddress defaultMap) ↦ₘ old_pointer ∗ (machineOutputSizeAddress defaultMap) ↦ₘ old_length ∗ True)%I;
   islarisExit := fun args bytes =>
     (⌜failureReturnAddress args = 0x14d24⌝ ∗
      ⌜bytes = failureObservation⌝ ∗
      reg_col zesu_sys_regs ∗
      "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
-     "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+     "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
      "x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗
      "x10" ↦ᵣ RVal_Bits (BV 64 0x177c8) ∗
      "x11" ↦ᵣ RVal_Bits (BV 64 6) ∗
      0x177c8 ↦ₘ∗ failureMemory ∗
-     0x2401a0c0 ↦ₘ (BV 64 0x177c8) ∗
-     0x2401a0c8 ↦ₘ (BV 64 6) ∗ True)%I
+     (machineOutputAddress defaultMap) ↦ₘ (BV 64 0x177c8) ∗
+     (machineOutputSizeAddress defaultMap) ↦ₘ (BV 64 6) ∗ True)%I
 |}.
 
 Definition writeFailureAllows
@@ -66,7 +67,7 @@ Definition writeFailureOutputTraceSpec `{!islaG Sigma} `{!threadG}
     reg_col zesu_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-    bv_unsigned data ↦ₘ∗ payload ∗ mmio_range 0x2401a0c0 16 ∗
+    bv_unsigned data ↦ₘ∗ payload ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents data size payload tail) ∗
     ⌜Z.to_N (bv_unsigned size) = N.of_nat (length payload)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
@@ -75,9 +76,9 @@ Definition writeFailureOutputTraceSpec `{!islaG Sigma} `{!threadG}
     instr_pre (bv_unsigned ret)
       (reg_col zesu_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits ret ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-       bv_unsigned data ↦ₘ∗ payload ∗ mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+       bv_unsigned data ↦ₘ∗ payload ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeFailureOutputTraceSpec) := I.
 
@@ -90,16 +91,16 @@ Definition writeFailureTraceEntry `{!islaG Sigma} `{!threadG} : iProp Sigma :=
     "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
     "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
     "x10" ↦ᵣ RVal_Bits old_x10 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
-    0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗
+    0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (BV 64 0x177c8) (BV 64 6)
       failureMemory writeFailureTraceTail) ∗
     instr_pre 0x14d24
       (reg_col zesu_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits (BV 64 0x177c8) ∗
        "x11" ↦ᵣ RVal_Bits (BV 64 6) ∗
-       0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗ spec_trace writeFailureTraceTail ∗
+       0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace writeFailureTraceTail ∗
        ("x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ True) ∗ True) ∗
     True)%I.
 
@@ -167,19 +168,17 @@ Proof.
   move => * /=.
   iStartProof.
   unshelve (repeat zesu_liAStepNoWrite).
-  Unshelve. all: try (prepare_sidecond; try assumption; try bv_solve).
+  Unshelve. all: try zesu_solve_pending_sidecond.
   Unshelve.
-  replace LET4 with (BV 64 0x2401a0c0) by
-    (unfold LET4, LET2, LET0; bv_solve).
   zesu_liAStepGenericWrite.
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
-  Unshelve. all: try (prepare_sidecond; try assumption; try bv_solve).
+  Unshelve. all: try zesu_solve_pending_sidecond.
   Unshelve.
-  replace LET8 with (BV 64 0x2401a0c8) by bv_solve.
   zesu_liAStepSnapshotWriteAt (bv_unsigned data).
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
+  all: try zesu_solve_pending_sidecond.
   iExists ((fun snapshot =>
     read_mem_list snapshot.(snap_mem) (bv_unsigned data)
       (Z.to_N (bv_unsigned size)) = Some payload), tail, tt)ₗ.
@@ -316,8 +315,8 @@ Lemma write_failure_exports_bytes mstatusBits satp labels threads globalState
          seq_mem := writeFailureInitialMemory |})
     labels (threads, globalState) ->
   labels =
-    SWriteMem (BV 64 0x2401a0c0) (BV 64 0x177c8) firstSnapshot ::
-    SWriteMem (BV 64 0x2401a0c8) (BV 64 6) writeSnapshot ::
+    SWriteMem (BV 64 (machineOutputAddress defaultMap)) (BV 64 0x177c8) firstSnapshot ::
+    SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) (BV 64 6) writeSnapshot ::
     tailLabels ->
   read_mem_list writeSnapshot.(snap_mem) 0x177c8 6 = Some failureMemory.
 Proof.
@@ -393,7 +392,8 @@ Theorem level1WriteFailure :
 Proof.
   exists 10%nat. split.
   - unfold level1ContractFuel.
-    pose proof (Nat.pow_gt_lin_r 2 160 ltac:(lia)) as Hbound. lia.
+    apply (Nat.lt_trans _ 160 _); [lia |].
+    apply Nat.pow_gt_lin_r. lia.
   - apply nativeContractBridge.
     + intros Sigma HG HT. apply write_failure_state_correct.
     + exact writeFailureTermination.

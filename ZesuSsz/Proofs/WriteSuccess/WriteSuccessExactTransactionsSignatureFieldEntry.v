@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -11,7 +12,7 @@ Definition transactionSignatureFieldCaller `{!islaG Sigma} `{!threadG}
      (KindReg "x26", BitsShape 64); (KindReg "x8", BitsShape 64)] ∗
    (bv_unsigned sp + 272) ↦ₘ? 8 ∗
    ⌜(index + 288 <= length bytes)%nat⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureFieldCaller) := I.
 
 Definition transactionSignatureFieldRetained `{!islaG Sigma} `{!threadG}
@@ -21,7 +22,7 @@ Definition transactionSignatureFieldRetained `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 240) ↦ₘ (transactionRowWord bytes index 136) ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗
    ⌜(index + 288 <= length bytes)%nat⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureFieldRetained) := I.
 
 Lemma transactions_signature_field_entry `{!islaG Sigma} `{!threadG}

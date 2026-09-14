@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -68,8 +69,8 @@ Definition writeSuccessTransactionsMachine14fb4Carrier
    writeSuccessTransactions14f98CarrierScratch sp base (length transactions)
      (length processed) transaction first second third fourth items ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Definition writeSuccessTransactionsAt14fb4CarrierSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsFlagLoads.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -15,8 +16,8 @@ Definition transactionRecipientMiddleEntry `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits row ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 272 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientMiddleEntry) := I.
 
 Definition transactionRecipientMiddlePost `{!islaG Sigma} `{!threadG}
@@ -30,8 +31,8 @@ Definition transactionRecipientMiddlePost `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits row ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 272 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientMiddlePost) := I.
 
 Lemma transactions_recipient_middle_correct `{!islaG Sigma} `{!threadG}

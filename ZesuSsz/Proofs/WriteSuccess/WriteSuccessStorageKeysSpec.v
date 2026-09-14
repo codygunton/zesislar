@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -61,7 +62,7 @@ Definition writeSuccessStorageKeysLoopExit `{!islaG Sigma} `{!threadG}
     "x2" ↦ᵣ RVal_Bits sp ∗ "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (BV 64 0) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗
     ⌜bv_unsigned pointer = (base + 32 * Z.of_nat total)%Z⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessStorageKeysLoopExit) := I.
@@ -77,7 +78,7 @@ Definition writeSuccessStorageKeysLoopSpec `{!islaG Sigma} `{!threadG}
     "x2" ↦ᵣ RVal_Bits sp ∗ "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessStorageKeysEvents sp (S remaining) tail) ∗ P ∗
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
@@ -97,7 +98,7 @@ Definition writeSuccessStorageKeysTailSpec `{!islaG Sigma} `{!threadG}
     "x2" ↦ᵣ RVal_Bits sp ∗ "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessStorageKeysEvents sp remaining tail) ∗ P ∗
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗

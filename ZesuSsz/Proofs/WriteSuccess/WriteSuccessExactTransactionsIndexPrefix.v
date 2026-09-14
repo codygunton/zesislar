@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -12,8 +13,8 @@ Definition transactionsIndexEntry `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 104) ↦ₘ base ∗
    (bv_unsigned sp + 120) ↦ₘ? 1776 ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsIndexEntry) := I.
 
 Definition transactionsIndexPost `{!islaG Sigma} `{!threadG}
@@ -27,8 +28,8 @@ Definition transactionsIndexPost `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 248) ↦ₘ cursor ∗
    (bv_unsigned sp + 256) ↦ₘ? 1640 ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsIndexPost) := I.
 
 Lemma transactions_index_prefix_correct `{!islaG Sigma} `{!threadG}

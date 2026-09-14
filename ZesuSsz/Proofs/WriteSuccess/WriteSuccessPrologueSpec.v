@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -43,8 +44,8 @@ Definition writeSuccessPrologueFacts `{!islaG Sigma} `{!threadG}
     (sp decoded : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (⌜bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z⌝ ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-   ⌜(0x20000880 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 0x7d0 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap + 0x880) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 0x7d0 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPrologueFacts) := I.
 

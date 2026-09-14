@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -105,7 +106,7 @@ Lemma write_success_transactions_150fc_some_raw_return_adapter
       (bv_unsigned (sp + BV 64 1664)%bv + 8) ↦ₘ
         WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 168 ∗
       (bv_unsigned sp + 1673) ↦ₘ∗ tagTail ∗
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
           WriteSuccessTransactionsSpec.TransactionNonce sp transaction
@@ -227,7 +228,7 @@ Lemma write_success_transactions_chunk_150f8_some_call_entry
         (bv_unsigned (sp + BV 64 1664)%bv + 8) ↦ₘ
           WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 168 ∗
         (bv_unsigned sp + 1673) ↦ₘ∗ tagTail ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace
           (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
             WriteSuccessTransactionsSpec.TransactionNonce sp transaction

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -13,7 +14,7 @@ Lemma authorization_int_to_second_int `{!islaG Sigma} `{!threadG}
       (writeSuccessPrivateBytes (writeSuccessEncodeU64
         (bv_unsigned (transactionRowWord bytes 0 104)))) tail) P -∗
   instr_pre 0x155e4 (authorizationIntPost sp bytes (BV 64 0x155e4) tail P) -∗
-  authorizationIntEntry sp (BV 64 0x155d8) (BV 64 0x2401a0b8)
+  authorizationIntEntry sp (BV 64 0x155d8) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 8) bytes 104 (BV 64 0x155e4) tail P.
 Proof.
   iIntros "Hpost Hnext".

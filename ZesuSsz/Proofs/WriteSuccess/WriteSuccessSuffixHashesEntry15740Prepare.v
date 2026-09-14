@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessLoopCommon.
@@ -43,11 +44,11 @@ Proof.
       bv_extract 0 3 (sp + BV 64 912)%bv = BV 3 0.
   { clear - HspAlign. bv_simplify_arith HspAlign; bv_solve. }
   have H912RamLower :
-      bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 0x20000000) by
+      bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)) by
     apply write_success_suffix_ram_lower_912; assumption.
   have H912RamUpper :
       bv_unsigned (sp + BV 64 912)%bv <=
-        bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv by
+        bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv by
     apply write_success_suffix_ram_upper_912; assumption.
   iExists sp, pointer, base, total, processed, remaining, bytes, tail.
   rewrite /writeSuccessSuffixHashes15740State.

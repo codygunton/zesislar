@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -42,7 +43,7 @@ Definition writeSuccessLoadHeaderResidual
        (writeSuccessValueTransactionsContinuation values payload P)) ∗
    writeSuccessTransactionsInvariant sp base transactions [] transactions
      transactionBytes [] transactionBytes ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessHeaderEvents sp
        (writeSuccessValueEvents sp values
@@ -56,8 +57,8 @@ Definition writeSuccessLoadHeaderResidual
       Z_to_bv 64 (Z.of_nat (length transactions))⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Definition writeSuccessLoadHeaderSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -75,11 +76,11 @@ Definition writeSuccessLoadHeaderSpec
     bv_unsigned sp ↦ₘ? 312 ∗
     ⌜length loaded = 16%nat⌝ ∗
     ⌜bv_unsigned decoded `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned decoded + 720⌝ ∗
-    ⌜bv_unsigned decoded + 848 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned decoded + 720⌝ ∗
+    ⌜bv_unsigned decoded + 848 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-    ⌜bv_unsigned sp + 312 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+    ⌜bv_unsigned sp + 312 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessLoadHeaderResidual P sp sourceBytes values payload tail base
       transactions transactionBytes)%I.
 

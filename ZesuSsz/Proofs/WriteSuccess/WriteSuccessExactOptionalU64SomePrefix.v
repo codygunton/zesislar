@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -28,10 +29,10 @@ Definition optionalU64SomeExactPrefixEntry `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp - 32) ↦ₘ? 32 ∗
    ⌜value = Z_to_bv 64 (little_endian_to_bv 8 (take 8 bytes))⌝ ∗
    ⌜(8 <= length bytes)%nat⌝ ∗ ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-   ⌜bv_unsigned pointer + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+   ⌜bv_unsigned pointer + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    P ∗
    instr_pre 0x15be8
      (optionalU64SomeExactPrefixPost pointer value sp ret old_x8 old_x11 bytes P) ∗ True)%I.

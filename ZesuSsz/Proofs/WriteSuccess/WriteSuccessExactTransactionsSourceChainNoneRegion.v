@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -14,8 +15,8 @@ Lemma transactions_source_chain_none_region_correct `{!islaG Sigma} `{!threadG}
     dataBytes accessBytes entries tail (Q : iProp Sigma) :
   bv_extract 0 8 (transactionRowWord bytes (288 * processed) 168) = BV 8 0 ->
   bv_unsigned sp `mod` 16 = 0 ->
-  0x20000000 <= bv_unsigned sp - 48 ->
-  bv_unsigned sp + 1896 < 0x40000000 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 ->
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap) ->
   writeSuccessCompleteNativeCode -∗
   □ instr_pre 0x153d0 (transactionSourceFieldPost sp base bytes processed (288 * processed)
     dataBytes accessBytes

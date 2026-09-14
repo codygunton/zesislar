@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CodeLookup.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -15,13 +16,13 @@ Definition transactionRecipientAbsentEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    "x10" ↦ᵣ RVal_Bits (BV 64 0) ∗ "x11" ↦ᵣ RVal_Bits old11 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
      (writeSuccessBooleanWordPayload (BV 64 0))
      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
        (writeSuccessU256WordsPayload w0 w1 w2 w3) tail)) ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    transactionRecipientAbsentValuePreparation sp first second w0 w1 w2 w3 old12 old13 last P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientAbsentEntry) := I.
 

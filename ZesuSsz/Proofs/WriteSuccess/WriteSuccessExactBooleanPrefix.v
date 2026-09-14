@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_03 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -19,8 +20,8 @@ Lemma encoder_boolean_exact_prefix `{!islaG Sigma} `{!threadG}
      "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
      "x10" ↦ᵣ RVal_Bits value ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
      ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-     ⌜bv_unsigned sp < 0x40000000⌝ ∗ P ∗ True).
+     ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+     ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ P ∗ True).
 Proof.
   zesu_block.
   all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).

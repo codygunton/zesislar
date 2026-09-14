@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysPairHandoff.
@@ -14,7 +15,7 @@ Definition blobPairs8Frame `{!islaG Sigma} `{!threadG}
   ("x19" ↦ᵣ RVal_Bits row ∗ "x27" ↦ᵣ RVal_Bits count ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 32 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    "x6" ↦ᵣ RVal_Bits (Z_to_bv 64
      (bv_unsigned (storageKeyByte bytes index 16) + bv_unsigned (storageKeyByte bytes index 17) * 256)) ∗
    "x7" ↦ᵣ RVal_Bits (Z_to_bv 64

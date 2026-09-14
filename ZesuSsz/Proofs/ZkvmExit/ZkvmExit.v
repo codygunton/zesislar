@@ -3,7 +3,7 @@ Require Import ZesuSsz.Automation.Hooks.
 From iris.program_logic Require Import language.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.zkvm_exit Require Import instrs.
-Require Import ZesuSsz.Contracts.Machine.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Endpoints.
@@ -24,14 +24,14 @@ Definition zkvm_exit_resources `{!islaG Sigma} `{!threadG} :
       reg_col zesu_sys_regs ∗
       "x5" ↦ᵣ RVal_Bits old_x5 ∗
       "x10" ↦ᵣ RVal_Bits code ∗
-      0x2401a0d0 ↦ₘ old_exit_code ∗ True)%I;
+      (machineExitAddress defaultMap) ↦ₘ old_exit_code ∗ True)%I;
   islarisExit := fun args _ =>
     (∃ (code : bv 64),
       ⌜bv_unsigned code = zkvmExitCode args⌝ ∗
       reg_col zesu_sys_regs ∗
-      "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+      "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
       "x10" ↦ᵣ RVal_Bits code ∗
-      0x2401a0d0 ↦ₘ code ∗ True)%I
+      (machineExitAddress defaultMap) ↦ₘ code ∗ True)%I
 |}.
 
 Definition zkvmExitAllows (_ : ZkvmExitArgs) (_ : unit) : Prop := True.
@@ -56,7 +56,7 @@ Definition zkvmExitTrapSpec (code : bv 64) : spec :=
     snil.
 
 Definition zkvmExitTraceSpec (code : bv 64) : spec :=
-  scons (SWriteMem (BV 64 0x2401a0d0) code) (zkvmExitTrapSpec code).
+  scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) code) (zkvmExitTrapSpec code).
 
 Lemma li_zkvm_exit_trap `{!islaG Sigma} `{!threadG} (code : bv 64) :
   (snapshot_reg_resources
@@ -95,7 +95,7 @@ Lemma zkvm_exit_trace_iris `{!islaG Sigma} `{!threadG} (code : bv 64) :
   "x5" ↦ᵣ RVal_Bits (BV 64 0) -∗
   "x10" ↦ᵣ RVal_Bits code -∗
   0x20000 ↦ₘ∗ zkvmExitFrame -∗
-  mmio_range 0x2401a0d0 8 -∗
+  mmio_range (machineExitAddress defaultMap) 8 -∗
   spec_trace (zkvmExitTraceSpec code) -∗
   WPasm tnil.
 Proof.
@@ -103,9 +103,9 @@ Proof.
   iIntros "Hi1 Hi2 Hi3 Htrap Hsys HPC Hx5 Hx10 Hframe Hmmio Hspec".
   unshelve (repeat zesu_liAStepNoWrite).
   1-3: prepare_sidecond; try assumption; try bv_solve.
-  replace LET2 with (BV 64 0x2401a0b8) by bv_solve.
+  replace LET2 with (BV 64 (mapIoContextAddress defaultMap)) by bv_solve.
   replace LET3 with (BV 64 0x101d0) by bv_solve.
-  replace LET4 with (BV 64 0x2401a0d0) by bv_solve.
+  replace LET4 with (BV 64 (machineExitAddress defaultMap)) by bv_solve.
   zesu_liAStepGenericWrite.
   Unshelve.
   unshelve (repeat zesu_liAStepBeforeObservable).
@@ -181,7 +181,7 @@ Proof.
   { by unshelve iApply (instr_intro with "Hinstructions"). }
   iAssert (instr 0x101d0 None)%I as "#Hitrap".
   { by unshelve iApply (instr_intro with "Hinstructions"). }
-  iAssert (mmio_range 0x2401a0d0 8)%I as "#Hmmio".
+  iAssert (mmio_range (machineExitAddress defaultMap) 8)%I as "#Hmmio".
   { iApply (mmio_range_intro with "Hbacked"); [lia|lia|lia|].
     rewrite /zkvmExitInitialMemory dom_insert_L dom_empty_L.
     set_solver. }
@@ -198,7 +198,7 @@ Lemma zkvm_exit_exports_snapshot mstatusBits satp code labels threads
          seq_mem := zkvmExitInitialMemory |})
     labels (threads, globalState) ->
   labels =
-    SWriteMem (BV 64 0x2401a0d0) code writeSnapshot ::
+    SWriteMem (BV 64 (machineExitAddress defaultMap)) code writeSnapshot ::
     SInstrTrap (BV 64 0x101d0) snapshot :: tailLabels ->
   snapshot.(snap_regs) !! "x10" = Some (RVal_Bits code) /\
   read_mem_list snapshot.(snap_mem) 0x20000 1 = Some zkvmExitFrame.
@@ -259,7 +259,8 @@ Theorem level1ZkvmExit :
 Proof.
   exists 3%nat. split.
   - unfold level1ContractFuel.
-    pose proof (Nat.pow_gt_lin_r 2 160 ltac:(lia)) as Hbound. lia.
+    apply (Nat.lt_trans _ 160 _); [lia |].
+    apply Nat.pow_gt_lin_r. lia.
   - apply nativeContractBridge.
     + intros Sigma HG HT. apply zkvm_exit_state_correct.
     + exact zkvmExitTermination.

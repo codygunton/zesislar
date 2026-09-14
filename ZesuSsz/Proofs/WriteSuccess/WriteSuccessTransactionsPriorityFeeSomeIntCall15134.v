@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -148,7 +149,7 @@ Proof.
   iDestruct select (_ ∗ _)%I as "Hother".
   iRename select (reg_col zesu_ram_sys_regs)%I into "HsysFinal".
   iRename select (spec_trace _)%I into "HtraceFinal".
-  iRename select (mmio_range 0x2401a0c0 16)%I into "HmmioFinal".
+  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "HmmioFinal".
   iAssert (writeSuccessTransactionsMachine15148
       sp base transactions processed transaction)%I
     with "[-Hframe HmmioFinal HtraceFinal]" as "Hmachine".

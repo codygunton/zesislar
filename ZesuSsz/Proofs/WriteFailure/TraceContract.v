@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Generated.Level1.
@@ -14,10 +15,10 @@ Definition writeFailureFramedTraceExit `{!islaG Sigma} `{!threadG}
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (BV 64 0x177c8) ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 6) ∗
-   0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗
+   0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ ("x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ P ∗ True) ∗ True)%I.
 
 Definition writeFailureFramedTraceEntry `{!islaG Sigma} `{!threadG}
@@ -27,7 +28,7 @@ Definition writeFailureFramedTraceEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
    "x10" ↦ᵣ RVal_Bits old_x10 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
-   0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗
+   0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (BV 64 0x177c8) (BV 64 6) failureMemory tail) ∗
    P ∗ instr_pre 0x14d24 (writeFailureFramedTraceExit tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@writeFailureFramedTraceEntry) := I.
@@ -73,7 +74,7 @@ Definition writeFailureTailResources `{!islaG Sigma} `{!threadG}
      "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
      "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
      "x10" ↦ᵣ RVal_Bits old_x10 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
-     0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗
+     0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
      spec_trace (writeOutputEvents (BV 64 0x177c8) (BV 64 6) failureMemory tail) ∗
      P ∗ True)%I;
   islarisExit := fun _ bytes =>

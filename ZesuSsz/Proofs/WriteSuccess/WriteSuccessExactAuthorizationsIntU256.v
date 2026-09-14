@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -17,7 +18,7 @@ Lemma authorization_int_to_u256 `{!islaG Sigma} `{!threadG}
     (authorizationIntCallerFrame sp P) -∗
   instr_pre 0x155fc (authorizationU256Post sp bytes 32 (BV 64 0x155fc) tail
     ("x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗ P ∗ True)%I) -∗
-  authorizationU256Entry sp (BV 64 0x155e4) (BV 64 0x2401a0b8)
+  authorizationU256Entry sp (BV 64 0x155e4) (BV 64 (mapIoContextAddress defaultMap))
     bytes 32 (BV 64 0x155fc) tail
     ("x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗ P ∗ True)%I.
 Proof.

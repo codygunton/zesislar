@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeEntry.
@@ -32,7 +33,7 @@ Proof.
   iDestruct (big_sepL_take_drop _ _ 6 with "HafterBranch") as "[#Hprefix #HafterPrefix]".
   iDestruct (big_sepL_take_drop _ _ 1 with "HafterPrefix") as "[#HjumpCode #HafterJump]".
   iDestruct (big_sepL_take_drop _ _ 6 with "HafterJump") as "[#Hsuffix _]".
-  iPoseProof (optional_u64_some_exact_resume value sp ret (BV 64 0x2401a0b8)
+  iPoseProof (optional_u64_some_exact_resume value sp ret (BV 64 (mapIoContextAddress defaultMap))
     old_x6 old_x8 (sp - BV 64 25)%bv (BV 64 1) tail
     (optionalU64SomeExactBooleanScratch sp
       (optionalU64SomeExactSourceFrame pointer bytes P))

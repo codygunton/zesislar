@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_127 Require Import instrs.
@@ -39,20 +40,20 @@ Definition encoderU128ExactPost `{!islaG Sigma} `{!threadG}
     (low high sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 16) ∗
    bv_unsigned (sp - BV 64 32)%bv ↦ₘ∗ writeSuccessU128WordsPayload low high ∗
    (bv_unsigned sp - 16) ↦ₘ? 8 ∗ (bv_unsigned sp - 8) ↦ₘ ret ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Definition encoderU128ExactFrame `{!islaG Sigma} `{!threadG}
     (low high sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ("x2" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
    (bv_unsigned sp - 16) ↦ₘ? 8 ∗ (bv_unsigned sp - 8) ↦ₘ ret ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
@@ -63,11 +64,11 @@ Definition encoderU128ExactSuffixSpec `{!islaG Sigma} `{!threadG}
     (low high sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15d04) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 16) ∗
    bv_unsigned (sp - BV 64 32)%bv ↦ₘ∗ writeSuccessU128WordsPayload low high ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
    encoderU128ExactFrame low high sp ret tail P ∗ True)%I.
 
 Definition encoderU128ExactSpec `{!islaG Sigma} `{!threadG}
@@ -78,12 +79,12 @@ Definition encoderU128ExactSpec `{!islaG Sigma} `{!threadG}
     "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits low ∗ "x11" ↦ᵣ RVal_Bits high ∗
     (bv_unsigned sp - 32) ↦ₘ? 32 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
       (writeSuccessU128WordsPayload low high) tail) ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
@@ -97,7 +98,7 @@ Definition encoderU128ExactAtOutputSpec `{!islaG Sigma} `{!threadG}
     "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits low ∗ "x11" ↦ᵣ RVal_Bits high ∗
     bv_unsigned (sp - BV 64 32)%bv ↦ₘ∗ writeSuccessU128WordsPayload low high ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
       (writeSuccessU128WordsPayload low high) tail) ∗
     encoderU128ExactFrame low high sp ret tail P ∗ True)%I.
@@ -116,7 +117,7 @@ Definition encoderU128ExactAtOutputWordsSpec `{!islaG Sigma} `{!threadG}
     "x10" ↦ᵣ RVal_Bits low ∗ "x11" ↦ᵣ RVal_Bits high ∗
     bv_unsigned (sp - BV 64 32)%bv ↦ₘ low ∗
     (bv_unsigned (sp - BV 64 32)%bv + 8) ↦ₘ high ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
       (writeSuccessU128WordsPayload low high) tail) ∗
     encoderU128ExactFrame low high sp ret tail P ∗ True)%I.
@@ -143,23 +144,23 @@ Definition zesuEncoderU128PayloadCallSpec `{!islaG Sigma} `{!threadG} :
     "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
     ("x5" ↦ᵣ: fun r5 => ⌜valu_has_shape r5 (BitsShape 64)⌝) ∗
     "x10" ↦ᵣ RVal_Bits low ∗ "x11" ↦ᵣ RVal_Bits high ∗
-    (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
       (writeSuccessPrivateBytes (writeSuccessEncodeU128
         (bv_unsigned low + 2 ^ 64 * bv_unsigned high))) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
     instr_pre (bv_unsigned ret)
       (reg_col zesu_ram_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
        "x11" ↦ᵣ RVal_Bits (BV 64 16) ∗
-       (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range 0x2401a0c0 16 ∗
+       (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
        spec_trace tail ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderU128PayloadCallSpec) := I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_01 Require Import instrs.
@@ -13,11 +14,11 @@ Import ListNotations.
 (** This ABI contract exposes one fixed output payload to native callers. *)
 Definition zesuWriteOutputPayloadCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (zesu_c_call 0 (fun args _ RET => ∃ (payload : list (bv 8)) (tail : spec),
-    bv_unsigned (args !!! 0%nat) ↦ₘ∗ payload ∗ mmio_range 0x2401a0c0 16 ∗
+    bv_unsigned (args !!! 0%nat) ↦ₘ∗ payload ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (args !!! 0%nat) (args !!! 1%nat) payload tail) ∗
     ⌜Z.to_N (bv_unsigned (args !!! 1%nat)) = N.of_nat (length payload)⌝ ∗
     RET (fun _ => bv_unsigned (args !!! 0%nat) ↦ₘ∗ payload ∗
-      mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+      mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuWriteOutputPayloadCallSpec) := I.
 

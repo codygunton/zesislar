@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CounterZero.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -20,7 +21,7 @@ Definition authorizationInitialEntry `{!islaG Sigma} `{!threadG}
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
      (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)] ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 144 ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactAuthorizationEvents sp (row :: rest) tail) ∗
    authorizationInitialFrame sp base P ∗
    instr_pre 0x15620 (authorizationLoopExit sp base source tail

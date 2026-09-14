@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -145,7 +146,7 @@ Definition byteListsLoopExitFrame `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 16) ↦ₘ savedS0 ∗
    (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
    byteListItemResources itemBase items ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@byteListsLoopExitFrame) := I.
 
@@ -181,17 +182,17 @@ Definition byteListsLoopFrame `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
     byteListProcessedResources itemBase done ∗
     byteListItemResources (bv_unsigned pointer) (item :: rest) ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (byteListItemEvents sp (item :: rest) tail) ∗
     ⌜S (length rest) < 2 ^ 64⌝ ∗
     ⌜bv_unsigned pointer =
       (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     P ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1
@@ -221,7 +222,7 @@ Definition byteListsAfterCallSpec `{!islaG Sigma} `{!threadG}
     reg_col zesu_ram_sys_regs ∗ reg_col byteListsLoopOtherRegShapes ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15c4c) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S (length rest)))) ∗
     "x9" ↦ᵣ RVal_Bits (pointer + BV 64 8)%bv ∗
@@ -237,17 +238,17 @@ Definition byteListsAfterCallSpec `{!islaG Sigma} `{!threadG}
     bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
     ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
     byteListItemResources (bv_unsigned pointer + 16) rest ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (byteListItemEvents sp rest tail) ∗ P ∗
     ⌜S (length rest) < 2 ^ 64⌝ ∗
     ⌜bv_unsigned pointer =
       (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     □ instr_pre 0x15c3c (byteListsLoopSpec P) ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1
@@ -438,10 +439,8 @@ Proof.
     iDestruct select (byteListProcessedResources itemBase done) as "Hdone".
     iDestruct select (_ ↦ₘ byteListData item)%I as "Hdata".
     iDestruct select (_ ↦ₘ byteListSize item)%I as "Hsize".
-    have HdataAddress : bv_unsigned LET0 = bv_unsigned pointer by bv_solve.
-    have HsizeAddress : bv_unsigned LET5 = bv_unsigned pointer + 8 by bv_solve.
-    iEval (rewrite HdataAddress) in "Hdata".
-    iEval (rewrite HsizeAddress) in "Hsize".
+    zesu_normalize_memory_cell "Hdata" (bv_unsigned pointer).
+    zesu_normalize_memory_cell "Hsize" (bv_unsigned pointer + 8)%Z.
     iDestruct select
       (bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item)%I as "Hbytes".
     iSplitL "Hdone Hdata Hsize Hbytes".
@@ -498,10 +497,8 @@ Proof.
   iDestruct select (byteListProcessedResources itemBase done) as "Hdone".
   iDestruct select (_ ↦ₘ byteListData item)%I as "Hdata".
   iDestruct select (_ ↦ₘ byteListSize item)%I as "Hsize".
-  have HdataAddress : bv_unsigned LET0 = bv_unsigned pointer by bv_solve.
-  have HsizeAddress : bv_unsigned LET5 = bv_unsigned pointer + 8 by bv_solve.
-  iEval (rewrite HdataAddress) in "Hdata".
-  iEval (rewrite HsizeAddress) in "Hsize".
+  zesu_normalize_memory_cell "Hdata" (bv_unsigned pointer).
+  zesu_normalize_memory_cell "Hsize" (bv_unsigned pointer + 8).
   iDestruct select
     (bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item)%I as "Hbytes".
   iSplitL "Hdone Hdata Hsize Hbytes".
@@ -542,22 +539,22 @@ Definition zesuEncoderByteListsCallSpec `{!islaG Sigma} `{!threadG} :
     (fun args sp RET =>
       ∃ (items : list ByteListItem) (tail : spec),
       byteListItemResources (bv_unsigned (args !!! 0%nat)) items ∗
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
           (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
       ⌜bv_unsigned (args !!! 1%nat) = length items⌝ ∗
       ⌜length items < 2 ^ 64⌝ ∗
       ⌜bv_extract 0 3 (args !!! 0%nat) = BV 3 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
       ⌜bv_unsigned (args !!! 0%nat) + 16 * Z.of_nat (length items) <
-        0x40000000⌝ ∗
+        (machineRamEnd defaultMap)⌝ ∗
       ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned sp - 80⌝ ∗
-      ⌜bv_unsigned sp < 0x40000000⌝ ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 80⌝ ∗
+      ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
       RET (fun _ =>
         byteListItemResources (bv_unsigned (args !!! 0%nat)) items ∗
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderByteListsCallSpec) := I.
 
@@ -697,7 +694,7 @@ Definition byteListsPublicFrame `{!islaG Sigma} `{!threadG}
        (RVal_Bits savedS0 :: RVal_Bits savedS1 :: saved)
        ret callerSp
        (fun _ => byteListItemResources base items ∗
-         mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)) ∗ True)%I.
+         mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@byteListsPublicFrame) := I.
 
@@ -705,8 +702,8 @@ Lemma write_success_byte_lists_epilogue `{!islaG Sigma} `{!threadG}
     (callerSp ret savedS0 savedS1 finalPointer : bv 64)
     (saved : list valu) (base : Z) (items : list ByteListItem) (tail : spec)
     (Hcaller : bv_extract 0 4 callerSp = BV 4 0)
-    (Hmin : 0x20000000 <= bv_unsigned callerSp - 80)
-    (Hmax : bv_unsigned callerSp < 0x40000000)
+    (Hmin : (mapRamBase defaultMap) <= bv_unsigned callerSp - 80)
+    (Hmax : bv_unsigned callerSp < (machineRamEnd defaultMap))
     (Hret1 : bv_extract 0 1 ret = BV 1 0)
     (Hret : bv_extract 0 2 ret = BV 2 0) :
   ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
@@ -749,8 +746,8 @@ Lemma byte_lists_epilogue_pre `{!islaG Sigma} `{!threadG}
     (callerSp ret savedS0 savedS1 finalPointer : bv 64)
     (saved : list valu) (base : Z) (items : list ByteListItem) (tail : spec)
     (Hcaller : bv_extract 0 4 callerSp = BV 4 0)
-    (Hmin : 0x20000000 <= bv_unsigned callerSp - 80)
-    (Hmax : bv_unsigned callerSp < 0x40000000)
+    (Hmin : (mapRamBase defaultMap) <= bv_unsigned callerSp - 80)
+    (Hmax : bv_unsigned callerSp < (machineRamEnd defaultMap))
     (Hret1 : bv_extract 0 1 ret = BV 1 0)
     (Hret : bv_extract 0 2 ret = BV 2 0) :
   ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
@@ -793,17 +790,14 @@ Proof.
   all: try lia.
   Unshelve.
   rename select (bv_extract 0 4 sp = BV 4 0) into HspAligned.
-  rename select (0x20000000 <= bv_unsigned sp - 80) into HspMin.
-  rename select (bv_unsigned sp < 0x40000000) into HspMax.
+  rename select (_ <= bv_unsigned sp - 80) into HspMin.
+  rename select (bv_unsigned sp < _) into HspMax.
   rename select (bv_extract 0 1 ret = BV 1 0) into Hret1.
   rename select (bv_extract 0 2 ret = BV 2 0) into Hret2.
-  have -> : LET0 = (sp - BV 64 32)%bv by bv_solve.
-  have -> : LET2 = (sp - BV 64 8)%bv by bv_solve.
-  have -> : LET6 = (sp - BV 64 16)%bv by bv_solve.
-  have -> : LET10 = (sp - BV 64 24)%bv by bv_solve.
+  zesu_unfold_bv_bindings.
   iExists
     (byteListItemEvents (sp - BV 64 32)%bv items tail,
-     0x15c34%Z, LET0, b11, tt)ₗ.
+     0x15c34%Z, (sp - BV 64 32)%bv, b11, tt)ₗ.
   liARun.
   Unshelve. all: prepare_sidecond.
   all: try assumption.
@@ -818,9 +812,7 @@ Proof.
   iEval (simpl) in "Hreturn".
   iDestruct "Hreturn" as "(? & ?)".
   repeat iDestruct select (_ ∗ _)%I as "(? & ?)".
-  have -> : LET0 = (sp - BV 64 32)%bv by bv_solve.
-  have -> : LET14 = b11 by bv_solve.
-  have -> : LET16 = b10 by bv_solve.
+  zesu_unfold_bv_bindings.
   rename select (bv_unsigned b11 = length items) into Hcount.
   destruct items as [|item rest].
   - have Hb11 : b11 = BV 64 0.
@@ -838,7 +830,7 @@ Proof.
     repeat iClear select (instr 0x15c38 _).
     iClear "HcodeAgain".
     liARun.
-    have -> : LET25 = (b10 + BV 64 8)%bv by bv_solve.
+    zesu_unfold_bv_bindings.
     iPoseProof (byteListsCode_elim with "HsavedCode") as "#HbranchCodes".
     iEval (simpl) in "HbranchCodes".
     iDestruct "HbranchCodes" as "(? & ?)".
@@ -903,7 +895,7 @@ Proof.
     repeat iClear select (instr 0x15c38 _).
     iClear "HcodeAgain".
     liARun.
-    have -> : LET25 = (b10 + BV 64 8)%bv by bv_solve.
+    zesu_unfold_bv_bindings.
     iPoseProof (byteListsCode_elim with "HsavedCode") as "#HbranchCodes".
     iEval (simpl) in "HbranchCodes".
     iDestruct "HbranchCodes" as "(? & ?)".

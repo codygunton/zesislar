@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -11,7 +12,7 @@ Definition transactionLiveBranchFrame `{!islaG Sigma} `{!threadG}
   (reg_col writeSuccessTransactionsOtherRegShapes ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    transactionLiveScratch sp base (length transactions) ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactTransactionsEvents sp remaining tail) ∗
    ⌜transactionLoopSourceFacts sp base transactions processed remaining bytes⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionLiveBranchFrame) := I.

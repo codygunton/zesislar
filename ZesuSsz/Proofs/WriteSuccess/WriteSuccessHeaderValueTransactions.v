@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -25,7 +26,7 @@ Definition writeSuccessHeaderValueTransactionsSpec
    (bv_unsigned sp + 104) ↦ₘ? 16 ∗
    (bv_unsigned sp + 312) ↦ₘ∗ sourceBytes ∗
    (bv_unsigned sp + 1032) ↦ₘ? 864 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessHeaderEvents sp
        (writeSuccessValueEvents sp values

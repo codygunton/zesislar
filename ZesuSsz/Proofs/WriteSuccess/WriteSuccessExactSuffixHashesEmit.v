@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -18,7 +19,7 @@ Definition suffixEmitEntry `{!islaG Sigma} `{!threadG}
    "x5" ↦ᵣ RVal_Bits old5 ∗ "x10" ↦ᵣ RVal_Bits old_data ∗
    "x11" ↦ᵣ RVal_Bits old_size ∗
    bv_unsigned (sp + BV 64 1744)%bv ↦ₘ∗ row ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 32) row tail) ∗
    ⌜length row = 32%nat⌝ ∗ suffixEmitFrame sp P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixEmitEntry) := I.
@@ -27,11 +28,11 @@ Definition suffixEmitPost `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (row : list (bv 8)) (tail : spec)
     (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x158d4) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp + BV 64 1744)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 32) ∗
    bv_unsigned (sp + BV 64 1744)%bv ↦ₘ∗ row ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ suffixEmitFrame sp P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ suffixEmitFrame sp P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixEmitPost) := I.
 
 Lemma suffix_emit_correct `{!islaG Sigma} `{!threadG}

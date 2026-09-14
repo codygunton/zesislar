@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -15,8 +16,8 @@ Definition transactionSignatureRFrame `{!islaG Sigma} `{!threadG}
     (sp w0 w1 w2 w3 : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 216) ↦ₘ w0 ∗ (bv_unsigned sp + 200) ↦ₘ w1 ∗
    (bv_unsigned sp + 192) ↦ₘ w2 ∗ (bv_unsigned sp + 184) ↦ₘ w3 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 224 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 224 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureRFrame) := I.
 
 Definition transactionSignatureRPost `{!islaG Sigma} `{!threadG}
@@ -31,7 +32,7 @@ Definition transactionSignatureREntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
      (writeSuccessU256WordsPayload w0 w1 w2 w3) tail) ∗
    transactionSignatureRFrame sp w0 w1 w2 w3 P ∗

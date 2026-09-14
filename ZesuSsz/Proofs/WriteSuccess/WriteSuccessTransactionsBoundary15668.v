@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -18,8 +19,8 @@ Definition writeSuccessTransactionsPostFrame
       (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
       ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
       ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-      ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P))%I.
+      ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+      ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostFrame) := I.
@@ -42,8 +43,8 @@ Lemma write_success_transactions_post_handoff
        (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
        ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
        ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-       ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-       ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P) -∗
+       ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+       ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P) -∗
   writeSuccessTransactionsPostAt15668Spec P.
 Proof.
   iIntros "Hexit".

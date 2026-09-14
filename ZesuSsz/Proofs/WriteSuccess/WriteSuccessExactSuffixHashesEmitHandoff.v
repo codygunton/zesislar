@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.WordArrays.
 Import WordMatching.
 Require Import isla.riscv64.riscv64.
@@ -15,7 +16,7 @@ Definition suffixOutputResources `{!islaG Sigma} `{!threadG}
     (sp old_ra old5 : bv 64) (row : list (bv 8)) (tail : spec)
     (P : iProp Sigma) : iProp Sigma :=
   ("x1" ↦ᵣ RVal_Bits old_ra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 32) row tail) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixOutputResources) := I.
 
@@ -25,10 +26,10 @@ Definition suffixEmitCallerFrame `{!islaG Sigma} `{!threadG}
   ("x9" ↦ᵣ RVal_Bits pointer ∗
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> ["x12";"x13";"x14";"x15";"x16"]) ∗
    base ↦ₘ∗ source ∗ ⌜bv_unsigned pointer = (base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 32 <= length source)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length source) < 0x40000000)%Z⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 32 <= length source)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length source) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixEmitCallerFrame) := I.
 
 Lemma suffix_words_to_emit `{!islaG Sigma} `{!threadG}

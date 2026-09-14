@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -16,11 +17,11 @@ Definition transactionRecipientLoadEntry `{!islaG Sigma} `{!threadG}
    base ↦ₘ∗ bytes ∗ (bv_unsigned sp + 1664) ↦ₘ? 16 ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 268 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1680 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1680 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientLoadEntry) := I.
 
 Definition transactionRecipientLoadPost `{!islaG Sigma} `{!threadG}
@@ -36,11 +37,11 @@ Definition transactionRecipientLoadPost `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1672) ↦ₘ chainTag ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 268 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1680 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1680 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientLoadPost) := I.
 
 Lemma transactions_recipient_loads_correct `{!islaG Sigma} `{!threadG}

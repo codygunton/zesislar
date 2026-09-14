@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -9,16 +10,16 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition transactionChainNonceCaller `{!islaG Sigma} `{!threadG}
     (sp nonce : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 272) ↦ₘ nonce ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionChainNonceCaller) := I.
 
 Definition transactionChainSomeNonceFrame `{!islaG Sigma} `{!threadG}
     (sp old8 : bv 64) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
   ("x6" ↦ᵣ RVal_Bits (BV 64 0x15bfc) ∗ "x8" ↦ᵣ RVal_Bits old8 ∗
    bv_unsigned (sp + BV 64 1664)%bv ↦ₘ∗ bytes ∗ (bv_unsigned sp - 32) ↦ₘ? 16 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionChainSomeNonceFrame) := I.
 
 Lemma transactions_chain_some_to_nonce `{!islaG Sigma} `{!threadG}
@@ -30,7 +31,7 @@ Lemma transactions_chain_some_to_nonce `{!islaG Sigma} `{!threadG}
       (transactionChainNonceCaller sp nonce P)) -∗
   instr_pre 0x15108 (transactionNoncePost sp nonce tail
     (transactionChainSomeNonceFrame sp old8 bytes P)) -∗
-  transactionNonceEntry sp nonce (BV 64 0x150fc) (BV 64 0x2401a0b8) (BV 64 8) tail
+  transactionNonceEntry sp nonce (BV 64 0x150fc) (BV 64 (mapIoContextAddress defaultMap)) (BV 64 8) tail
     (transactionChainSomeNonceFrame sp old8 bytes P).
 Proof.
   iIntros "Hpost Hnext".
@@ -50,8 +51,8 @@ Definition transactionChainNoneNonceFrame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
   ("x6" ↦ᵣ RVal_Bits (BV 64 0x15c08) ∗
    bv_unsigned (sp + BV 64 1664)%bv ↦ₘ∗ bytes ∗ (bv_unsigned sp - 32) ↦ₘ? 16 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionChainNoneNonceFrame) := I.
 
 Lemma transactions_chain_none_to_nonce `{!islaG Sigma} `{!threadG}
@@ -61,7 +62,7 @@ Lemma transactions_chain_none_to_nonce `{!islaG Sigma} `{!threadG}
       (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned nonce))) tail)
     (transactionChainNonceCaller sp nonce P) -∗
   instr_pre 0x15108 (transactionNoncePost sp nonce tail (transactionChainNoneNonceFrame sp bytes P)) -∗
-  transactionNonceEntry sp nonce (BV 64 0x150fc) (BV 64 0x2401a0b8) (BV 64 1) tail
+  transactionNonceEntry sp nonce (BV 64 0x150fc) (BV 64 (mapIoContextAddress defaultMap)) (BV 64 1) tail
     (transactionChainNoneNonceFrame sp bytes P).
 Proof.
   iIntros "Hpost Hnext".
@@ -93,7 +94,7 @@ Lemma transactions_chain_some_nonce_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcode #Hint #Houtput #Hnext".
   iPoseProof (transactions_nonce_call_correct sp nonce (BV 64 0x150fc)
-    (BV 64 0x2401a0b8) (BV 64 8) tail (transactionChainSomeNonceFrame sp old8 bytes P)
+    (BV 64 (mapIoContextAddress defaultMap)) (BV 64 8) tail (transactionChainSomeNonceFrame sp old8 bytes P)
     with "Hcode Hint Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x150fc 0x150fc false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_chain_some_to_nonce with "Hpost Hnext").
@@ -115,7 +116,7 @@ Lemma transactions_chain_none_nonce_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcode #Hint #Houtput #Hnext".
   iPoseProof (transactions_nonce_call_correct sp nonce (BV 64 0x150fc)
-    (BV 64 0x2401a0b8) (BV 64 1) tail (transactionChainNoneNonceFrame sp bytes P)
+    (BV 64 (mapIoContextAddress defaultMap)) (BV 64 1) tail (transactionChainNoneNonceFrame sp bytes P)
     with "Hcode Hint Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x150fc 0x150fc false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_chain_none_to_nonce with "Hpost Hnext").

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -16,11 +17,11 @@ Definition zesuEncoderU256CallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (zesu_c_call 48
     (fun _ sp RET =>
       ∃ tail : spec,
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) tail) ∗
       RET (fun _ =>
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderU256CallSpec) := I.
 
@@ -30,7 +31,7 @@ Definition zesuEncoderU256CallerContinuation
   (instr_pre (bv_unsigned ret)
     (zesu_c_call_ret 48 saved ret sp
       (fun _ =>
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)) ∗ True)%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)) ∗ True)%I.
 
 Global Instance : LithiumUnfold
   (@zesuEncoderU256CallerContinuation) := I.
@@ -52,12 +53,12 @@ Definition zesuEncoderU256AtOutputCallSpec
     ⌜length saved = 12%nat⌝ ∗
     ⌜Forall (fun value => valu_has_shape value (BitsShape 64)) saved⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) tail) ∗
     zesuEncoderU256CallerContinuation sp ret saved tail ∗ True)%I.
@@ -71,14 +72,14 @@ Definition zesuEncoderU256AfterOutputSpec
     zesu_c_call_ret 0 saved (BV 64 0x15cd8)
       (sp - BV 64 48)%bv
       (fun _ =>
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True) ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True) ∗
     (bv_unsigned sp - 48) ↦ₘ? 40 ∗
     (bv_unsigned sp - 8) ↦ₘ ret ∗
     ⌜length saved = 12%nat⌝ ∗
     ⌜Forall (fun value => valu_has_shape value (BitsShape 64)) saved⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
@@ -105,12 +106,12 @@ Definition zesuEncoderU256WriteOutputEntrySpec
     ⌜length saved = 12%nat⌝ ∗
     ⌜Forall (fun value => valu_has_shape value (BitsShape 64)) saved⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 32) tail) ∗
     zesuEncoderU256CallerContinuation sp ret saved tail ∗

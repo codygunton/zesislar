@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import instrs.
@@ -26,12 +27,12 @@ Definition zesuEncoderIntCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
     "x10" ↦ᵣ RVal_Bits value ∗
     "x11" ↦ᵣ: fun r11 => ⌜valu_has_shape r11 (BitsShape 64)⌝ ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜0 <= ret < 2 ^ 64⌝ ∗
     ⌜bv_extract 0 1 (Z_to_bv 64 ret) = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 (Z_to_bv 64 ret) = BV 1 0⌝ ∗
@@ -39,11 +40,11 @@ Definition zesuEncoderIntCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
     instr_pre ret
       (reg_col zesu_ram_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 ret) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
        "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
        (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True) ∗ True)%I.
+       mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderIntCallSpec) := I.
 

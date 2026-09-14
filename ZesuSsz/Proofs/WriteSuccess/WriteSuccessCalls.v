@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_02 Require Import instrs.
@@ -24,10 +25,10 @@ Definition zesuMemcpyPublicSpec `{!islaG Sigma} `{!threadG}
     bv_unsigned src ↦ₘ∗ srcdata ∗
     bv_unsigned dst ↦ₘ? Z.of_nat (length srcdata) ∗
     ⌜bv_unsigned n = length srcdata⌝ ∗
-    ⌜(0x20000000 <= bv_unsigned src)%Z⌝ ∗
-    ⌜(bv_unsigned src + bv_unsigned n < 0x40000000)%Z⌝ ∗
-    ⌜(0x20000000 <= bv_unsigned dst)%Z⌝ ∗
-    ⌜(bv_unsigned dst + bv_unsigned n < 0x40000000)%Z⌝ ∗
+    ⌜((mapRamBase defaultMap) <= bv_unsigned src)%Z⌝ ∗
+    ⌜(bv_unsigned src + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
+    ⌜((mapRamBase defaultMap) <= bv_unsigned dst)%Z⌝ ∗
+    ⌜(bv_unsigned dst + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
@@ -96,12 +97,12 @@ Definition zesuMemcpyCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
       bv_unsigned (args !!! 1%nat) ↦ₘ∗ srcdata ∗
       bv_unsigned (args !!! 0%nat) ↦ₘ? bv_unsigned (args !!! 2%nat) ∗
       ⌜bv_unsigned (args !!! 2%nat) <= length srcdata⌝ ∗
-      ⌜0x20000000 <= bv_unsigned (args !!! 1%nat)⌝ ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 1%nat)⌝ ∗
       ⌜bv_unsigned (args !!! 1%nat) + bv_unsigned (args !!! 2%nat) <
-        0x40000000⌝ ∗
-      ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
+        (machineRamEnd defaultMap)⌝ ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
       ⌜bv_unsigned (args !!! 0%nat) + bv_unsigned (args !!! 2%nat) <
-        0x40000000⌝ ∗
+        (machineRamEnd defaultMap)⌝ ∗
       RET (fun _ =>
         bv_unsigned (args !!! 1%nat) ↦ₘ∗ srcdata ∗
         bv_unsigned (args !!! 0%nat) ↦ₘ∗
@@ -219,10 +220,10 @@ Definition zesuWriteOutputCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (zesu_c_call 0
     (fun args _ RET =>
       ∃ tail : spec,
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace (writeOutputEventsAny (args !!! 0%nat) (args !!! 1%nat) tail) ∗
       RET (fun _ =>
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuWriteOutputCallSpec) := I.
 

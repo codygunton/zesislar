@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
@@ -15,9 +16,9 @@ Definition writeSuccessSuffixOptionalU64159b8SomePost
    bv_unsigned ptr ↦ₘ value ∗
    (bv_unsigned ptr + 8) ↦ₘ tag ∗ ⌜tag <> BV 8 0⌝ ∗
    ⌜bv_extract 0 3 ptr = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned ptr⌝ ∗
-   ⌜bv_unsigned ptr + 8 < 0x40000000⌝ ∗
-   mmio_range 0x2401a0c0 16 ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned ptr⌝ ∗
+   ⌜bv_unsigned ptr + 8 < (machineRamEnd defaultMap)⌝ ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 16 - BV 64 16 + BV 64 7)%bv
      (BV 64 1)
      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail)) ∗
@@ -30,7 +31,7 @@ Definition writeSuccessSuffixOptionalU64159b8SomePost
        (fun _ =>
          bv_unsigned ptr ↦ₘ value ∗
          (bv_unsigned ptr + 8) ↦ₘ tag ∗
-         mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+         mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8SomePost) := I.

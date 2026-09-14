@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -32,11 +33,11 @@ Definition writeSuccessAccessListsStorageFrame
     ⌜total = writeSuccessAccessEntryStorageCount entry⌝ ∗
     ⌜total <> 0%nat⌝ ∗
     ⌜storageBytes = writeSuccessAccessEntryStorageBytes entry⌝ ∗
-    ⌜0x20000000 <=
+    ⌜(mapRamBase defaultMap) <=
       bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
     ⌜bv_unsigned (writeSuccessAccessEntryStoragePointer entry) +
       Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) <
-      0x40000000⌝ ∗
+      (machineRamEnd defaultMap)⌝ ∗
     ⌜tail = writeSuccessAccessListsEvents sp remaining finalTail⌝ ∗
     P ∗
     writeSuccessAccessListsInvariant sp accessBase entries processed

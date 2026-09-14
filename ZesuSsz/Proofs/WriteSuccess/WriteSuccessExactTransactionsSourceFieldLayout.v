@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactTransactionsGasLoads WriteSuccessExactTransactionsFlagLoads
@@ -50,10 +51,10 @@ Definition transactionFieldSourceRetained `{!islaG Sigma}
    (bv_unsigned sp + 240) ↦ₘ transactionRowWord bytes index 136 ∗
    (bv_unsigned sp + 1660) ↦ₘ? 4 ∗
    (bv_unsigned sp + 1680) ↦ₘ? 32 ∗ (bv_unsigned sp + 1784) ↦ₘ? 112 ∗
-   ⌜dataBytes <> [] -> 0x20000000 <= bv_unsigned (transactionRowWord bytes index 192) /\
-     bv_unsigned (transactionRowWord bytes index 192) + Z.of_nat (length dataBytes) < 0x40000000⌝ ∗
-   ⌜accessBytes <> [] -> 0x20000000 <= bv_unsigned (transactionRowWord bytes index 208) /\
-     bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < 0x40000000⌝ ∗
+   ⌜dataBytes <> [] -> (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 192) /\
+     bv_unsigned (transactionRowWord bytes index 192) + Z.of_nat (length dataBytes) < (machineRamEnd defaultMap)⌝ ∗
+   ⌜accessBytes <> [] -> (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 208) /\
+     bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < (machineRamEnd defaultMap)⌝ ∗
    Q ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionFieldSourceRetained) := I.
 

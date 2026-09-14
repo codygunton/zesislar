@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -8,13 +9,13 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition transactionNonceGasPriceCaller `{!islaG Sigma} `{!threadG}
     (sp low high : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ("x24" ↦ᵣ RVal_Bits high ∗ "x25" ↦ᵣ RVal_Bits low ∗
-   (bv_unsigned sp - 32) ↦ₘ? 16 ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ P ∗ True)%I.
+   (bv_unsigned sp - 32) ↦ₘ? 16 ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionNonceGasPriceCaller) := I.
 
 Definition transactionNonceGasPriceFrame `{!islaG Sigma} `{!threadG}
     (sp nonce : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 272) ↦ₘ nonce ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionNonceGasPriceFrame) := I.
 
 Lemma transactions_nonce_to_gas_price `{!islaG Sigma} `{!threadG}
@@ -23,7 +24,7 @@ Lemma transactions_nonce_to_gas_price `{!islaG Sigma} `{!threadG}
     (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16) (writeSuccessU128WordsPayload low high) tail)
     (transactionNonceGasPriceCaller sp low high P) -∗
   instr_pre 0x15118 (transactionGasPricePost sp low high tail (transactionNonceGasPriceFrame sp nonce P)) -∗
-  transactionGasPriceEntry sp low high (BV 64 0x15108) (BV 64 0x2401a0b8) tail
+  transactionGasPriceEntry sp low high (BV 64 0x15108) (BV 64 (mapIoContextAddress defaultMap)) tail
     (transactionNonceGasPriceFrame sp nonce P).
 Proof.
   iIntros "Hpost Hnext".
@@ -56,7 +57,7 @@ Lemma transactions_nonce_gas_price_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcode #Hencoder #Houtput #Hnext".
   iPoseProof (transactions_gas_price_call_correct sp low high (BV 64 0x15108)
-    (BV 64 0x2401a0b8) tail (transactionNonceGasPriceFrame sp nonce P)
+    (BV 64 (mapIoContextAddress defaultMap)) tail (transactionNonceGasPriceFrame sp nonce P)
     with "Hcode Hencoder Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x15108 0x15108 false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_nonce_to_gas_price with "Hpost Hnext").

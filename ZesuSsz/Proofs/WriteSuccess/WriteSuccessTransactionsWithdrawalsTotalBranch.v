@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -21,7 +22,7 @@ Definition writeSuccessTransactionsWithdrawalsTotalAt15690Spec
     "x2" ↦ᵣ RVal_Bits sp ∗ "x8" ↦ᵣ RVal_Bits pointer ∗
     "x9" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat count)) ∗
     "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
-    writeSuccessWithdrawalsScratch sp ∗ mmio_range 0x2401a0c0 16 ∗
+    writeSuccessWithdrawalsScratch sp ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessWithdrawalsEvents sp count tail) ∗
     writeSuccessTransactionsWithdrawalsTotalResources P sp pointer base count
       bytes tail ∗ True)%I.

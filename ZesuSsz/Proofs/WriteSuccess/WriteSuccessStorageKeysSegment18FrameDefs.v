@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -12,7 +13,7 @@ Definition writeSuccessStorageKeysLbuOuterFrame `{!islaG Sigma} `{!threadG}
     (tail : spec) : iProp Sigma :=
   ("x19" ↦ᵣ RVal_Bits x19 ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
-   writeSuccessStorageKeysScratch sp ∗ mmio_range 0x2401a0c0 16 ∗
+   writeSuccessStorageKeysScratch sp ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessStorageKeysEvents sp (S remaining) tail) ∗ P ∗
    writeSuccessFixedWidthArrayInvariant
      sp pointer base total processed remaining bytes ∗
@@ -35,8 +36,8 @@ Definition writeSuccessStorageKeysLbuState `{!islaG Sigma} `{!threadG}
      drop (S offset) (drop (32 * processed) bytes) ∗
    ⌜drop (32 * processed) bytes !! offset = Some byte⌝ ∗
    ⌜bv_unsigned pointer = (base + 32 * Z.of_nat processed)%Z⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer + Z.of_nat offset⌝ ∗
-   ⌜bv_unsigned pointer + Z.of_nat offset < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer + Z.of_nat offset⌝ ∗
+   ⌜bv_unsigned pointer + Z.of_nat offset < (machineRamEnd defaultMap)⌝ ∗
    writeSuccessStorageKeysLbuOuterFrame P x19 sp pointer base total processed
      remaining bytes tail)%I.
 
@@ -75,7 +76,7 @@ Definition writeSuccessStorageKeysLbuPrepared `{!islaG Sigma} `{!threadG}
       remaining bytes tail ∗
     ⌜length bytes = (32 * (processed + S remaining))%nat⌝ ∗
     ⌜bv_unsigned pointer = (base + 32 * Z.of_nat processed)%Z⌝ ∗
-    ⌜0x20000000 <= base⌝ ∗
-    ⌜base + Z.of_nat (length bytes) < 0x40000000⌝)%I.
+    ⌜(mapRamBase defaultMap) <= base⌝ ∗
+    ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessStorageKeysLbuPrepared) := I.

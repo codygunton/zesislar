@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -28,13 +29,13 @@ Definition writeSuccessTransactionsWithdrawalsTotalIntEntrySpec
     (bv_unsigned sp + 1120) ↦ₘ pointer ∗
     (bv_unsigned sp + 1128) ↦ₘ Z_to_bv 64 (Z.of_nat count) ∗
     (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessWithdrawalsEvents sp count tail)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessTransactionsWithdrawalsTotalResources P sp pointer base count
       bytes tail ∗ True)%I.
 

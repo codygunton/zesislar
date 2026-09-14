@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -44,7 +45,7 @@ Proof.
   all: iPoseProof "Hinvariant" as "#HinvariantCopy".
   all: iDestruct "HinvariantCopy" as
     "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
-  all: have HmaxSp : (bv_unsigned sp < 0x40000000)%Z by lia.
+  all: have HmaxSp : (bv_unsigned sp < (machineRamEnd defaultMap))%Z by lia.
   all: iPoseProof (write_success_transactions_valid_frame transaction
     with "Htransaction") as "[%Hvalid Htransaction]".
   all: have HdataPointer :
@@ -124,7 +125,7 @@ Proof.
        match WriteSuccessTransactionsSpec.writeSuccessTransactionData transaction with
        | [] => True
        | _ :: _ =>
-           ⌜0x20000000 <=
+           ⌜(mapRamBase defaultMap) <=
              bv_unsigned
                (WriteSuccessTransactionsSpec.writeSuccessTransactionDataPointer
                   transaction)⌝ ∗
@@ -134,7 +135,7 @@ Proof.
              Z.of_nat
                (length
                   (WriteSuccessTransactionsSpec.writeSuccessTransactionData
-                     transaction)) < 0x40000000⌝
+                     transaction)) < (machineRamEnd defaultMap)⌝
        end)%I with "[HdataOwn]" as "(HdataArray & HdataBounds)".
   { destruct
       (WriteSuccessTransactionsSpec.writeSuccessTransactionData transaction)
@@ -368,7 +369,7 @@ Proof.
       (match WriteSuccessTransactionsSpec.writeSuccessTransactionData transaction with
        | [] => True
        | _ :: _ =>
-           ⌜0x20000000 <=
+           ⌜(mapRamBase defaultMap) <=
              bv_unsigned
                (WriteSuccessTransactionsSpec.writeSuccessTransactionDataPointer
                   transaction)⌝ ∗
@@ -378,7 +379,7 @@ Proof.
              Z.of_nat
                (length
                   (WriteSuccessTransactionsSpec.writeSuccessTransactionData
-                     transaction)) < 0x40000000⌝
+                     transaction)) < (machineRamEnd defaultMap)⌝
        end ∗
        WriteSuccessTransactionsSpec.writeSuccessByteArrayOwn
          (WriteSuccessTransactionsSpec.writeSuccessTransactionAccessPointer transaction)

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactAuthorizationsInitial WriteSuccessExactAuthorizationsLoopSpec
@@ -18,7 +19,7 @@ Proof.
   rewrite instr_pre'_eq. iNext. iIntros "Hpost".
   iPoseProof (authorization_count_to_initial with "Hpost") as "Hinitial".
   iDestruct "Hinitial" as "(%Hfacts & Hinitial & _)".
-  iPoseProof (authorization_initial_closed sp (BV 64 0x15584) (BV 64 0x2401a0b8)
+  iPoseProof (authorization_initial_closed sp (BV 64 0x15584) (BV 64 (mapIoContextAddress defaultMap))
     base row rest source tail (authorizationFeeFrame sp low high rest P) Hfacts
     with "H74 Hloop") as "Hbody".
   iEval (rewrite instr_pre'_eq) in "Hbody".

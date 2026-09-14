@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -14,8 +15,8 @@ Definition storageKeysLoads8Entry `{!islaG Sigma} `{!threadG}
      (KindReg "x1", BitsShape 64); (KindReg "x21", BitsShape 64)] ∗
    "x22" ↦ᵣ RVal_Bits row ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 12 <= length bytes)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 12 <= length bytes)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysLoads8Entry) := I.
 
 Definition storageKeysLoads8Post `{!islaG Sigma} `{!threadG}
@@ -28,8 +29,8 @@ Definition storageKeysLoads8Post `{!islaG Sigma} `{!threadG}
    "x21" ↦ᵣ RVal_Bits (transactionRowByte bytes index 11) ∗
    "x22" ↦ᵣ RVal_Bits row ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 12 <= length bytes)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 12 <= length bytes)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysLoads8Post) := I.
 
 Lemma storage_keys_loads8_correct `{!islaG Sigma} `{!threadG}

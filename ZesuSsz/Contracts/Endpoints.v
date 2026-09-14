@@ -2,7 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Compliance.KnownBugs.
-Require Import ZesuSsz.Contracts.Machine.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Generated.Level1.
 
 Import ListNotations.

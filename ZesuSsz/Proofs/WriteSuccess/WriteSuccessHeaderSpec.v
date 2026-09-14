@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -16,8 +17,8 @@ Definition writeSuccessHeaderRegShapes : list (reg_kind * valu_shape) :=
     <$> writeSuccessHeaderRegisters.
 
 Definition writeSuccessHeaderEvent (data size : bv 64) (tail : spec) : spec :=
-  scons (SWriteMem (BV 64 0x2401a0c0) data)
-    (scons (SWriteMem (BV 64 0x2401a0c8) size) tail).
+  scons (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data)
+    (scons (SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size) tail).
 
 Definition writeSuccessHeaderEvents (sp : bv 64) (tail : spec) : spec :=
   writeSuccessHeaderEvent (BV 64 0x179c5) (BV 64 6)
@@ -69,7 +70,7 @@ Definition writeSuccessHeaderPost `{!islaG Sigma} `{!threadG}
    "x2" ↦ᵣ RVal_Bits sp ∗ (bv_unsigned sp + 104) ↦ₘ? 16 ∗
    (bv_unsigned sp + 312) ↦ₘ∗ bytes ∗
    (bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes ∗
-   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ P ∗ True)%I.
 
 Definition writeSuccessHeaderBeforeCopySpec `{!islaG Sigma} `{!threadG}
@@ -78,11 +79,11 @@ Definition writeSuccessHeaderBeforeCopySpec `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ reg_col writeSuccessHeaderRegShapes ∗
    "x2" ↦ᵣ RVal_Bits sp ∗ (bv_unsigned sp + 104) ↦ₘ? 16 ∗
    (bv_unsigned sp + 312) ↦ₘ∗ bytes ∗
-   (bv_unsigned sp + 1032) ↦ₘ? 864 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1032) ↦ₘ? 864 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace events ∗
    ⌜length bytes = 720%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x14e88 (writeSuccessHeaderPost sp bytes tail P) ∗ True)%I.
 
 Definition writeSuccessHeaderAfterCopySpec `{!islaG Sigma} `{!threadG}
@@ -92,11 +93,11 @@ Definition writeSuccessHeaderAfterCopySpec `{!islaG Sigma} `{!threadG}
    "x2" ↦ᵣ RVal_Bits sp ∗ (bv_unsigned sp + 104) ↦ₘ? 16 ∗
    (bv_unsigned sp + 312) ↦ₘ∗ bytes ∗
    (bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes ∗
-   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace events ∗
    ⌜length bytes = 720%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x14e88 (writeSuccessHeaderPost sp bytes tail P) ∗ True)%I.
 
 Definition writeSuccessHeaderSpec `{!islaG Sigma} `{!threadG}

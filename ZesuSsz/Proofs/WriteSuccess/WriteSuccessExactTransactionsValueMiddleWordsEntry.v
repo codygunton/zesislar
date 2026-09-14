@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteViews.
 Require Import ZesuSsz.Automation.ArrayPairViews.
 Require Import ZesuSsz.Automation.Resources.
@@ -44,7 +45,7 @@ Definition transactionRecipientMiddleStableFrame `{!islaG Sigma} `{!threadG}
     ("x10" ↦ᵣ RVal_Bits row ∗ base ↦ₘ∗ bytes ∗
      ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
      ⌜(index + 72 <= length bytes)%nat⌝ ∗
-     ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+     ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
      transactionRecipientAssemblyStackContents sp row chain chainTag bytes index P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientMiddleStableFrame) := I.
 
@@ -66,8 +67,8 @@ Definition transactionRecipientWordsRetained `{!islaG Sigma} `{!threadG}
    "x30" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned (default (BV 8 0) (bytes !! (index + 271)%nat)) * 65536)) ∗
    "x5" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned (default (BV 8 0) (bytes !! (index + 271)%nat)) * 65536 + bv_unsigned (default (BV 8 0) (bytes !! (index + 272)%nat)) * 16777216)) ∗
    (bv_unsigned sp + 128) ↦ₘ (transactionRowWord bytes index 64) ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 136 < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 136 < (machineRamEnd defaultMap)⌝ ∗
    transactionRecipientMiddleStableFrame sp row chain chainTag base bytes index P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientWordsRetained) := I.
 

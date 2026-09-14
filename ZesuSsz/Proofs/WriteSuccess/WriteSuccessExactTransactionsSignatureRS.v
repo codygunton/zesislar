@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -13,7 +14,7 @@ Definition transactionSignatureRSEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
      (writeSuccessU256WordsPayload r0 r1 r2 r3)
      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
@@ -41,7 +42,7 @@ Proof.
   iEval (rewrite instr_pre'_eq). iIntros "Hentry".
   iDestruct "Hentry" as "(Hsys & Hsp & H1 & H5 & Hregs & Hscratch & Hmmio & Htrace & Hframe & Hfinal & _)".
   iPoseProof (transactions_signature_s_call_correct sp s0 s1 s2 s3
-    (BV 64 0x15644) (BV 64 0x2401a0b8) tail
+    (BV 64 0x15644) (BV 64 (mapIoContextAddress defaultMap)) tail
     (transactionSignatureRFrame sp r0 r1 r2 r3 P)
     with "Hs Hencoder Houtput") as "Hscall".
   iAssert (instr_pre 0x15644 (transactionSignatureRPost sp r0 r1 r2 r3

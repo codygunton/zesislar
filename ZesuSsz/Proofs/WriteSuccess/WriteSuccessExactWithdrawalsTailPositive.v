@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactWithdrawalsLoopSpec WriteSuccessExactWithdrawalsTailBranches
@@ -19,7 +20,7 @@ Proof.
   iDestruct "Hpayload" as "(Hsp & H1 & H5 & H18 & Hregs & Hsource & Hcopy & Hscratch & Hmmio & Htrace & HP & %Hfacts & Hexit & _)".
   pose proof (withdrawal_facts_advance sp pointer base rows prefix row next rest source Hfacts) as HnewFacts.
   unfold withdrawalLoopSpec. iExists (prefix ++ [row]), next, rest,
-    (pointer + BV 64 48)%bv, (BV 64 0x156dc), (BV 64 0x2401a0b8).
+    (pointer + BV 64 48)%bv, (BV 64 0x156dc), (BV 64 (mapIoContextAddress defaultMap)).
   unfold withdrawalLoopPayload. iFrame. done.
 Qed.
 Print Assumptions withdrawal_tail_positive.

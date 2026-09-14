@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -17,11 +18,11 @@ Definition transactionFieldLoadEntry `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 200 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 280 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 280 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionFieldLoadEntry) := I.
 
 Definition transactionFieldLoadPost `{!islaG Sigma} `{!threadG}
@@ -38,11 +39,11 @@ Definition transactionFieldLoadPost `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 200 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 280 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 280 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionFieldLoadPost) := I.
 
 Lemma transactions_field_loads_correct `{!islaG Sigma} `{!threadG}

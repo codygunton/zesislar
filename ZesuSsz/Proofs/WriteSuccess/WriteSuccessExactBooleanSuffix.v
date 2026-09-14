@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_03 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -15,8 +16,8 @@ Lemma encoder_boolean_exact_suffix `{!islaG Sigma} `{!threadG}
      "x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
      (bv_unsigned sp - 8) ↦ₘ ret ∗
      ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-     ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-     ⌜bv_unsigned sp < 0x40000000⌝ ∗
+     ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+     ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
      ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
      ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
      ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗

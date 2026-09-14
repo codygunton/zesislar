@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactWithdrawalsInt WriteSuccessExactWithdrawalsSecondInt WriteSuccessExactWithdrawalsThirdInt
@@ -14,10 +15,10 @@ Definition withdrawalFieldsEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    "x11" ↦ᵣ RVal_Bits old11 ∗ reg_col [(KindReg "x10", BitsShape 64)] ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace (withdrawalExactPhaseEvents 0 sp bytes tail) ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace (withdrawalExactPhaseEvents 0 sp bytes tail) ∗
    ⌜length bytes = 48%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗
    "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@withdrawalFieldsEntry) := I.
 Definition withdrawalFieldsPost `{!islaG Sigma} `{!threadG}

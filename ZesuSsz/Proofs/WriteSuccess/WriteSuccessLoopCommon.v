@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -21,9 +22,9 @@ Definition writeSuccessFixedWidthArrayInvariant `{!islaG Sigma}
    ⌜bv_unsigned pointer = (base + 32 * Z.of_nat processed)%Z⌝ ∗
    ⌜(S remaining < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessFixedWidthArrayInvariant) := I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From Coq Require Import Lists.List.
@@ -12,8 +13,8 @@ Definition transactionRecipientCopyEntry `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1640) ↦ₘ first ∗
    (bv_unsigned sp + 1648) ↦ₘ second ∗ (bv_unsigned sp + 1656) ↦ₘ last ∗
    (bv_unsigned sp + 1744) ↦ₘ? 20 ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientCopyEntry) := I.
 
 Definition transactionRecipientCopyPost `{!islaG Sigma} `{!threadG}
@@ -25,8 +26,8 @@ Definition transactionRecipientCopyPost `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1648) ↦ₘ second ∗ (bv_unsigned sp + 1656) ↦ₘ last ∗
    (bv_unsigned sp + 1744) ↦ₘ first ∗
    (bv_unsigned sp + 1752) ↦ₘ second ∗ (bv_unsigned sp + 1760) ↦ₘ last ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientCopyPost) := I.
 
 Lemma transactions_recipient_copy_correct `{!islaG Sigma} `{!threadG}

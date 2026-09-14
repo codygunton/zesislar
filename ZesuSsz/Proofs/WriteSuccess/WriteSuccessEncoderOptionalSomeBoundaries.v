@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -10,7 +11,7 @@ Definition encoderOptionalSomeFinal `{!islaG Sigma} `{!threadG}
   (∃ final_x6 : bv 64,
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ RVal_Bits final_x6 ∗ "x8" ↦ᵣ RVal_Bits old_x8 ∗
     "x10" ↦ᵣ RVal_Bits ((sp - BV 64 16)%bv) ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
@@ -19,7 +20,7 @@ Definition encoderOptionalSomeFinal `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp - 24) ↦ₘ? 8 ∗
     (bv_unsigned sp - 16) ↦ₘ? 8 ∗
     (bv_unsigned sp - 8) ↦ₘ? 8 ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@encoderOptionalSomeFinal) := I.
 
@@ -27,15 +28,15 @@ Definition encoderOptionalSomeContext `{!islaG Sigma} `{!threadG}
     (data value sp ret : bv 64) (tag : bv 8) (old_x8 : bv 64)
     (events tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (bv_unsigned data ↦ₘ value ∗ (bv_unsigned data + 8) ↦ₘ tag ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace events ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace events ∗
    ⌜tag ≠ BV 8 0⌝ ∗
    ⌜bv_extract 0 3 data = BV 3 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned data)%Z⌝ ∗
-   ⌜(bv_unsigned data + 8 < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned data)%Z⌝ ∗
+   ⌜(bv_unsigned data + 8 < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 32)%Z⌝ ∗
-   ⌜(bv_unsigned sp < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 32)%Z⌝ ∗
+   ⌜(bv_unsigned sp < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
@@ -127,7 +128,7 @@ Definition encoderOptionalSomeAtResume `{!islaG Sigma} `{!threadG}
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15bec) ∗
     "x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ RVal_Bits old_x6 ∗ "x8" ↦ᵣ RVal_Bits value ∗
     "x10" ↦ᵣ RVal_Bits ((sp - BV 64 25)%bv) ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
@@ -147,7 +148,7 @@ Definition encoderOptionalSomeAtInt `{!islaG Sigma} `{!threadG}
   (∃ old_x8 : bv 64,
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ RVal_Bits (BV 64 0x15bfc) ∗
     "x8" ↦ᵣ RVal_Bits old_x8 ∗ "x10" ↦ᵣ RVal_Bits value ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗

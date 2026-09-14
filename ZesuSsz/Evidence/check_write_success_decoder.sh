@@ -73,7 +73,8 @@ EOF
 
 opam exec --switch="$switch_path" -- coqtop -quiet \
   -Q "$build_dir/default/InstrSpecs" InstrSpecs \
-  -R "$build_dir/default/ZesuSsz" ZesuSsz -batch -l "$query_file" \
+  -R "$build_dir/default/ZesuSsz" ZesuSsz \
+  -Q "$build_dir/default/MachineMap" ZesuMachineMap -batch -l "$query_file" \
   >"$output_file"
 
 if ! rg -q '^     = true$' "$output_file"; then

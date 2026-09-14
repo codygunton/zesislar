@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -89,8 +90,8 @@ Definition writeSuccessTransactionsAt151a4Block
       list WriteSuccessTransactionsSpec.writeSuccessTransaction)
     (bytes prefix suffix : list (bv 8)) (tail : spec) : iProp Sigma :=
   (⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-   ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-   ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+   ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
    WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff
      WriteSuccessTransactionsSpec.TransactionValue
      (writeSuccessTransactionsMachine151a4 sp base transactions processed
@@ -117,11 +118,11 @@ Definition writeSuccessTransactions151a4LoadState
    writeSuccessTransactions151a4Outer P sp base transaction transactions
      processed remaining bytes prefix suffix tail ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-   ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-   ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+   ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗ True)%I.
 
 Definition writeSuccessTransactions151a4LoadResult
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -135,8 +136,8 @@ Definition writeSuccessTransactions151a4LoadResult
    writeSuccessTransactions151a4Outer P sp base transaction transactions
      processed remaining bytes prefix suffix tail ∗
    ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-   ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-   ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+   ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactions151a4LoadState) := I.
 Global Instance : LithiumUnfold (@writeSuccessTransactions151a4LoadResult) := I.

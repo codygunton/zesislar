@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_06 Require Import instrs.
@@ -31,10 +32,10 @@ Definition encoderBytesExactPost `{!islaG Sigma} `{!threadG}
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits ret ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
    bv_unsigned data ↦ₘ∗ bytes ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
    encoderBytesExactOutputResources size sp ret old_s0 old_s1 stack2 P ∗
    True)%I.
 
@@ -52,8 +53,8 @@ Definition encoderBytesExactSuffixFrame `{!islaG Sigma} `{!threadG}
    ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
@@ -74,13 +75,13 @@ Definition encoderBytesExactSuffixSpec `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15c90) ∗
    "x2" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 48)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
    bv_unsigned (sp - BV 64 48)%bv ↦ₘ∗
      writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)) ∗
    (bv_unsigned sp - 40) ↦ₘ (BV 64 0x15c90) ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents data size bytes tail) ∗
    encoderBytesExactSuffixFrame data size sp ret bytes
      old_x6 old_s0 old_s1 stack2 tail P ∗ True)%I.
@@ -103,15 +104,15 @@ Definition encoderBytesExactSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp - 8) ↦ₘ stack5 ∗
     bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
         (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)))
         (writeOutputEvents data size bytes tail)) ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
     ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗

@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.ArrayCursors.
@@ -58,8 +59,8 @@ Ltac zesu_normalize_memory_addresses :=
       constr_eq pointer pointer2;
       let low := eval vm_compute in minimum in
       let high := eval vm_compute in maximum in
-      let ramLow := eval vm_compute in (0x20000000%Z) in
-      let ramHigh := eval vm_compute in (0x40000000%Z) in
+      let ramLow := eval vm_compute in ((mapRamBase defaultMap)%Z) in
+      let ramHigh := eval vm_compute in ((machineRamEnd defaultMap)%Z) in
       constr_eq low ramLow; constr_eq high ramHigh;
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
@@ -72,8 +73,8 @@ Ltac zesu_normalize_memory_addresses :=
 
 Ltac zesu_finish_ram_address :=
   match goal with
-  | Hlower : (0x20000000 <= bv_unsigned ?pointer)%Z,
-    Hupper : (bv_unsigned ?pointer + _ < 0x40000000)%Z |- _ =>
+  | Hlower : ((mapRamBase defaultMap) <= bv_unsigned ?pointer)%Z,
+    Hupper : (bv_unsigned ?pointer + _ < (machineRamEnd defaultMap))%Z |- _ =>
       lazymatch goal with
       | |- context[pointer] => solve [clear -Hlower Hupper; bv_solve]
       end
@@ -98,10 +99,10 @@ Ltac zesu_finish_pointer_alignment :=
 Ltac zesu_finish_ram_known :=
   lazymatch goal with
   | |- bv_unsigned ?pointer >= _ =>
-      solve [change (bv_unsigned pointer >= 0x20000000)%Z;
+      solve [change (bv_unsigned pointer >= (mapRamBase defaultMap))%Z;
         apply Z.le_ge; assumption]
   | |- bv_unsigned ?pointer < _ =>
-      solve [change (bv_unsigned pointer < 0x40000000)%Z; assumption]
+      solve [change (bv_unsigned pointer < (machineRamEnd defaultMap))%Z; assumption]
   end.
 
 Ltac zesu_finish_array_byte_lookup :=

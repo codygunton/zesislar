@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -12,8 +13,8 @@ Definition suffixLoads24Entry `{!islaG Sigma} `{!threadG}
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
    "x9" ↦ᵣ RVal_Bits pointer ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned pointer = base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 28 <= length bytes)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 28 <= length bytes)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixLoads24Entry) := I.
 
 Definition suffixLoads24Post `{!islaG Sigma} `{!threadG}
@@ -25,8 +26,8 @@ Definition suffixLoads24Post `{!islaG Sigma} `{!threadG}
    "x13" ↦ᵣ RVal_Bits (transactionRowByte bytes index 27) ∗
    "x9" ↦ᵣ RVal_Bits pointer ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned pointer = base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 28 <= length bytes)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 28 <= length bytes)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixLoads24Post) := I.
 
 Lemma suffix_loads24_correct `{!islaG Sigma} `{!threadG}

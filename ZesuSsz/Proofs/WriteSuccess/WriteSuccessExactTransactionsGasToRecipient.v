@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -35,7 +36,7 @@ Lemma transactions_gas_limit_to_recipient `{!islaG Sigma} `{!threadG}
           data size count old6 last bytes P))) -∗
   transactionRecipientBranchState sp tag (sp - BV 64 16)%bv
     (transactionRecipientBranchCallerFrame sp tag first second w0 w1 w2 w3
-      (BV 64 0x15154) (BV 64 0x2401a0b8) (BV 64 8) old12 old13 last
+      (BV 64 0x15154) (BV 64 (mapIoContextAddress defaultMap)) (BV 64 8) old12 old13 last
       (transactionDataAccessOutputTrace data size sp count bytes tail)
       (transactionValueDataAccessCaller data size sp count old6 feeLow bytes
         (transactionGasRecipientCarry sp gaslow gashigh feeTag feeHigh value nonce P))).

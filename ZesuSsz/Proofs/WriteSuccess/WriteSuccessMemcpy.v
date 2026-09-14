@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_02 Require Import instrs.
@@ -21,10 +22,10 @@ Definition zesuMemcpyLoopSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   ⌜bv_unsigned n = length srcdata⌝ ∗
   ⌜bv_unsigned n = length dstdata⌝ ∗
   ⌜(bv_unsigned i <= bv_unsigned n)%Z⌝ ∗
-  ⌜(0x20000000 <= bv_unsigned src)%Z⌝ ∗
-  ⌜(bv_unsigned src + bv_unsigned n < 0x40000000)%Z⌝ ∗
-  ⌜(0x20000000 <= bv_unsigned dst)%Z⌝ ∗
-  ⌜(bv_unsigned dst + bv_unsigned n < 0x40000000)%Z⌝ ∗
+  ⌜((mapRamBase defaultMap) <= bv_unsigned src)%Z⌝ ∗
+  ⌜(bv_unsigned src + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
+  ⌜((mapRamBase defaultMap) <= bv_unsigned dst)%Z⌝ ∗
+  ⌜(bv_unsigned dst + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
   ⌜take (Z.to_nat (bv_unsigned i)) dstdata =
     take (Z.to_nat (bv_unsigned i)) srcdata⌝ ∗
   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
@@ -72,8 +73,7 @@ Proof.
       ((bv_unsigned src + Z.to_nat (bv_unsigned i))%Z ↦ₘ srcbyte)%I
       into "HsrcbyteNow".
     iExists (P,
-      <[Z.to_nat ((bv_unsigned LET15 - bv_unsigned dst) `div` 1) := LET16]>
-        dstdata,
+      _,
       srcdata, tt)ₗ.
     red_li_prod.
     iSplitL "Hsrcclose HsrcbyteNow".
@@ -130,10 +130,10 @@ Definition zesuMemcpySpec `{!islaG Sigma} `{!threadG}
     bv_unsigned src ↦ₘ∗ srcdata ∗ bv_unsigned dst ↦ₘ∗ dstdata ∗
     ⌜bv_unsigned n = length srcdata⌝ ∗
     ⌜bv_unsigned n = length dstdata⌝ ∗
-    ⌜(0x20000000 <= bv_unsigned src)%Z⌝ ∗
-    ⌜(bv_unsigned src + bv_unsigned n < 0x40000000)%Z⌝ ∗
-    ⌜(0x20000000 <= bv_unsigned dst)%Z⌝ ∗
-    ⌜(bv_unsigned dst + bv_unsigned n < 0x40000000)%Z⌝ ∗
+    ⌜((mapRamBase defaultMap) <= bv_unsigned src)%Z⌝ ∗
+    ⌜(bv_unsigned src + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
+    ⌜((mapRamBase defaultMap) <= bv_unsigned dst)%Z⌝ ∗
+    ⌜(bv_unsigned dst + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗

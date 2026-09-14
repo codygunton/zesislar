@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.write_success_67.a1548c.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -10,7 +11,7 @@ Definition writeSuccessBlobHashesLbuIndexZeroSpec
   "x21" ↦ᵣ: (fun _ => True)%I ∗
   "x19" ↦ᵣ RVal_Bits base ∗
   bv_unsigned base ↦ₘ byte ∗
-  ⌜0x20000000 <= bv_unsigned base < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     "x21" ↦ᵣ RVal_Bits (bv_zero_extend 64 byte) ∗

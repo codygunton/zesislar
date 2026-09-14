@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -13,7 +14,7 @@ Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
 Lemma write_success_transactions_chunk_1515c_offset (sp : bv 64) :
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (sp + BV 64 1656)%bv = bv_unsigned sp + 1656.
 Proof.
   intro Hupper. apply bv_unsigned_add_no_wrap_64.
@@ -24,7 +25,7 @@ Qed.
 
 Lemma write_success_transactions_chunk_1515c_alignment (sp : bv 64) :
   bv_unsigned sp `mod` 16 = 0 ->
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_extract 0 2 (sp + BV 64 1656)%bv = BV 2 0.
 Proof.
   intros Halign Hupper. apply bv_eq.
@@ -36,13 +37,13 @@ Qed.
 
 Lemma write_success_transactions_chunk_1515c_ram_limit :
   bv_unsigned
-    (BV 64 536870912 + BV 64 536870912 - BV 64 4)%bv = 1073741820.
+    (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 4)%bv = (machineRamEnd defaultMap - 4).
 Proof. vm_compute. reflexivity. Qed.
 
 Lemma write_success_transactions_chunk_1515c_lower (sp : bv 64) :
-  (0x20000000 <= bv_unsigned sp - 48)%Z ->
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
-  bv_unsigned (sp + BV 64 1656)%bv >= bv_unsigned (BV 64 536870912).
+  ((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
+  bv_unsigned (sp + BV 64 1656)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)).
 Proof.
   intros Hlower Hupper.
   rewrite (write_success_transactions_chunk_1515c_offset sp Hupper).
@@ -50,9 +51,9 @@ Proof.
 Qed.
 
 Lemma write_success_transactions_chunk_1515c_upper (sp : bv 64) :
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (sp + BV 64 1656)%bv <=
-    bv_unsigned (BV 64 536870912 + BV 64 536870912 - BV 64 4).
+    bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 4).
 Proof.
   intro Hupper.
   rewrite (write_success_transactions_chunk_1515c_offset sp Hupper).
@@ -122,12 +123,12 @@ Proof.
     apply Z.mod_divide in HspAlign; [|lia].
     destruct HspAlign as [factor Hfactor].
     exists (2 * factor). lia. }
-  have Hlower1640 : (0x20000000 <= bv_unsigned sp + 1640)%Z by lia.
-  have Hupper1640 : (bv_unsigned sp + 1640 < 0x40000000)%Z by lia.
-  have Hlower1648 : (0x20000000 <= bv_unsigned sp + 1648)%Z by lia.
-  have Hupper1648 : (bv_unsigned sp + 1648 < 0x40000000)%Z by lia.
-  have Hlower1656 : (0x20000000 <= bv_unsigned sp + 1656)%Z by lia.
-  have Hupper1656 : (bv_unsigned sp + 1656 < 0x40000000)%Z by lia.
+  have Hlower1640 : ((mapRamBase defaultMap) <= bv_unsigned sp + 1640)%Z by lia.
+  have Hupper1640 : (bv_unsigned sp + 1640 < (machineRamEnd defaultMap))%Z by lia.
+  have Hlower1648 : ((mapRamBase defaultMap) <= bv_unsigned sp + 1648)%Z by lia.
+  have Hupper1648 : (bv_unsigned sp + 1648 < (machineRamEnd defaultMap))%Z by lia.
+  have Hlower1656 : ((mapRamBase defaultMap) <= bv_unsigned sp + 1656)%Z by lia.
+  have Hupper1656 : (bv_unsigned sp + 1656 < (machineRamEnd defaultMap))%Z by lia.
   all: liARun.
   Unshelve. all: prepare_sidecond.
   all: try (apply bv_eq; rewrite bv_and_unsigned; rewrite !bv_unsigned_BV;

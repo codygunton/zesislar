@@ -4,4 +4,4 @@
 (coq.theory
  (name InstrSpecs)
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
- (theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2))
+ (theories ZesuMachineMap isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2))

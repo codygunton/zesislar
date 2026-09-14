@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -19,7 +20,7 @@ Definition writeOutputEntry `{!islaG Sigma} `{!threadG}
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-    0x2401a0c0 ↦ₘ old_data ∗ 0x2401a0c8 ↦ₘ old_size ∗
+    (machineOutputAddress defaultMap) ↦ₘ old_data ∗ (machineOutputSizeAddress defaultMap) ↦ₘ old_size ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗ True)%I.
@@ -29,9 +30,9 @@ Global Instance : LithiumUnfold (@writeOutputEntry) := I.
 Definition writeOutputExit `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-   0x2401a0c0 ↦ₘ data ∗ 0x2401a0c8 ↦ₘ size ∗ P ∗ True)%I.
+   (machineOutputAddress defaultMap) ↦ₘ data ∗ (machineOutputSizeAddress defaultMap) ↦ₘ size ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeOutputExit) := I.
 
@@ -60,7 +61,7 @@ Definition writeOutputTraceSpec `{!islaG Sigma} `{!threadG}
     "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
     bv_unsigned data ↦ₘ∗ payload ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents data size payload tail) ∗
     ⌜Z.to_N (bv_unsigned size) = N.of_nat (length payload)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
@@ -69,10 +70,10 @@ Definition writeOutputTraceSpec `{!islaG Sigma} `{!threadG}
     instr_pre (bv_unsigned ret)
       (reg_col zesu_ram_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits ret ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
        bv_unsigned data ↦ₘ∗ payload ∗
-       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+       mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeOutputTraceSpec) := I.
 
@@ -86,17 +87,15 @@ Proof.
   move => * /=.
   iStartProof.
   unshelve (repeat zesu_liAStepNoWrite).
-  1-3: prepare_sidecond; try assumption; try bv_solve.
-  replace LET4 with (BV 64 0x2401a0c0) by
-    (unfold LET4, LET2, LET0; bv_solve).
+  all: try zesu_solve_pending_sidecond.
   zesu_liAStepGenericWrite.
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
-  1: prepare_sidecond; try assumption; try bv_solve.
-  replace LET8 with (BV 64 0x2401a0c8) by bv_solve.
+  all: try zesu_solve_pending_sidecond.
   zesu_liAStepSnapshotWriteAt (bv_unsigned data).
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
+  all: try zesu_solve_pending_sidecond.
   iExists ((fun snapshot =>
     read_mem_list snapshot.(snap_mem) (bv_unsigned data)
       (Z.to_N (bv_unsigned size)) = Some payload), tail, tt)ₗ.

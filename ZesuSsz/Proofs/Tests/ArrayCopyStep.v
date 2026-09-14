@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayCopyStep.
 Require Import isla.riscv64.riscv64.
 Lemma test_array_copy_step (base : Z) start (source : list (bv 8))
@@ -7,8 +8,8 @@ Lemma test_array_copy_step (base : Z) start (source : list (bv 8))
   bv_unsigned limit = Z.of_nat (length data) ->
   (start + length data <= length source)%nat ->
   (bv_unsigned i <= bv_unsigned limit)%Z -> i <> limit ->
-  (0x20000000 <= base)%Z ->
-  (base + Z.of_nat (length source) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z ->
+  (base + Z.of_nat (length source) < (machineRamEnd defaultMap))%Z ->
   take (Z.to_nat (bv_unsigned i)) data = take (Z.to_nat (bv_unsigned i)) (drop start source) ->
   source !! Z.to_nat ((bv_unsigned (src + i)%bv - base) `div` 1) = Some byte ->
   take (Z.to_nat (bv_unsigned (i + BV 64 1)%bv))

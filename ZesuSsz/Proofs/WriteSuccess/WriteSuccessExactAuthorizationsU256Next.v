@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratch.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -15,7 +16,7 @@ Lemma authorization_u256_to_next_u256 `{!islaG Sigma} `{!threadG}
         (transactionRowWord bytes nextOffset 8) (transactionRowWord bytes nextOffset 16)
         (transactionRowWord bytes nextOffset 24)) tail) P -∗
   instr_pre (bv_unsigned nextRet) (authorizationU256Post sp bytes nextOffset nextRet tail P) -∗
-  authorizationU256Entry sp ret (BV 64 0x2401a0b8) bytes nextOffset nextRet tail P.
+  authorizationU256Entry sp ret (BV 64 (mapIoContextAddress defaultMap)) bytes nextOffset nextRet tail P.
 Proof.
   iIntros "Hpost Hnext".
   iDestruct "Hpost" as

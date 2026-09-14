@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
@@ -16,10 +17,10 @@ Lemma write_success_transactions_access_entry_invariant
     (Hlength : length bytes = (40 * length entries)%nat)
     (Hbound : (length entries < 2 ^ 64)%nat)
     (HspAlign : bv_unsigned sp `mod` 16 = 0)
-    (HspLow : 0x20000000 <= bv_unsigned sp - 48)
-    (HspHigh : bv_unsigned sp + 1896 < 0x40000000)
-    (HbaseLow : 0x20000000 <= base)
-    (HbaseHigh : base + Z.of_nat (length bytes) < 0x40000000) :
+    (HspLow : (mapRamBase defaultMap) <= bv_unsigned sp - 48)
+    (HspHigh : bv_unsigned sp + 1896 < (machineRamEnd defaultMap))
+    (HbaseLow : (mapRamBase defaultMap) <= base)
+    (HbaseHigh : base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)) :
   ⊢ writeSuccessAccessListsInvariant sp base entries [] entries bytes [] bytes.
 Proof.
   rewrite /writeSuccessAccessListsInvariant.

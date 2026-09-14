@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.allocator_get Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -30,21 +31,21 @@ Definition allocator_get_resources `{!islaG Sigma} `{!threadG} :
       (bv_unsigned sp + 16) ↦ₘ? 8 ∗
       (bv_unsigned sp + 24) ↦ₘ? 8 ∗
       ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-      ⌜(0x20000000 ≤ bv_unsigned sp)%Z⌝ ∗
-      ⌜(bv_unsigned sp + 24 < 0x40000000)%Z⌝)%I;
+      ⌜((mapRamBase defaultMap) ≤ bv_unsigned sp)%Z⌝ ∗
+      ⌜(bv_unsigned sp + 24 < (machineRamEnd defaultMap))%Z⌝)%I;
   islarisExit := fun args outcome =>
     (∃ (sp stack0 stack8 : bv 64),
       ⌜bv_unsigned sp = allocatorStackPointer args⌝ ∗
-      ⌜outcome = Build_AllocatorGetOutcome 0x2401a0b0 0x177a8⌝ ∗
+      ⌜outcome = Build_AllocatorGetOutcome (mapIoContextAddress defaultMap - 8) 0x177a8⌝ ∗
       reg_col zesu_ram_sys_regs ∗
       "x2" ↦ᵣ RVal_Bits sp ∗
-      "x10" ↦ᵣ RVal_Bits (BV 64 0x2401a0b0) ∗
+      "x10" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap - 8)) ∗
       "x11" ↦ᵣ RVal_Bits (BV 64 0x177a8) ∗
       "x12" ↦ᵣ RVal_Bits stack0 ∗
       "x13" ↦ᵣ RVal_Bits stack8 ∗
       bv_unsigned sp ↦ₘ stack0 ∗
       (bv_unsigned sp + 8) ↦ₘ stack8 ∗
-      (bv_unsigned sp + 16) ↦ₘ (BV 64 0x2401a0b0) ∗
+      (bv_unsigned sp + 16) ↦ₘ (BV 64 (mapIoContextAddress defaultMap - 8)) ∗
       (bv_unsigned sp + 24) ↦ₘ (BV 64 0x177a8))%I
 |}.
 
@@ -63,7 +64,7 @@ Proof.
   | _ => zesu_liAStep
   end.
   liShow.
-  iExists (Build_AllocatorGetOutcome 0x2401a0b0 0x177a8, tt)ₗ.
+  iExists (Build_AllocatorGetOutcome (mapIoContextAddress defaultMap - 8) 0x177a8, tt)ₗ.
   red_li_prod.
   iSplit; first done.
   iExists sp, stack0, stack8.
@@ -113,7 +114,8 @@ Theorem level1AllocatorGet :
 Proof.
   exists 8%nat. split.
   - unfold level1ContractFuel.
-    pose proof (Nat.pow_gt_lin_r 2 160 ltac:(lia)) as Hbound. lia.
+    apply (Nat.lt_trans _ 160 _); [lia |].
+    apply Nat.pow_gt_lin_r. lia.
   - apply nativeContractBridge.
     + intros Sigma HG HT. apply allocator_get_state_correct.
     + exact allocatorGetTermination.

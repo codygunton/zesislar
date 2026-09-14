@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -11,8 +12,8 @@ Local Remove Hints IslaTraces.write_success_73.a15580_spec.a15580_spec_inst : ty
 Definition authorizationCountFrame `{!islaG Sigma} `{!threadG}
     (sp count : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 160) ↦ₘ count ∗ "x18" ↦ᵣ RVal_Bits count ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationCountFrame) := I.
 
 Definition authorizationCountPost `{!islaG Sigma} `{!threadG}
@@ -27,11 +28,11 @@ Definition authorizationCountEntry `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits old11 ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x18", BitsShape 64)] ∗
    (bv_unsigned sp + 160) ↦ₘ count ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned count))) tail) ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x15584 (authorizationCountPost sp count tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationCountEntry) := I.
 

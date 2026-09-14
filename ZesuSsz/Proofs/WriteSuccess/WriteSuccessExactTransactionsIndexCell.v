@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_29 Require Import instrs.
@@ -8,8 +9,8 @@ Definition transactionIndexCellEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits old_data ∗ "x11" ↦ᵣ RVal_Bits cursor ∗
    (bv_unsigned sp + 104) ↦ₘ base ∗ (bv_unsigned sp + 248) ↦ₘ? 8 ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 256 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 256 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionIndexCellEntry) := I.
 
 Definition transactionIndexCellPost `{!islaG Sigma} `{!threadG}
@@ -18,8 +19,8 @@ Definition transactionIndexCellPost `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits (base + cursor * BV 64 288)%bv ∗
    "x11" ↦ᵣ RVal_Bits base ∗
    (bv_unsigned sp + 104) ↦ₘ base ∗ (bv_unsigned sp + 248) ↦ₘ cursor ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 256 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 256 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionIndexCellPost) := I.
 
 Lemma transactions_index_cell_correct `{!islaG Sigma} `{!threadG}

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -42,19 +43,19 @@ Definition writeSuccessPost1594cCallEntrySpec
     (bv_unsigned sp + 56) ↦ₘ pointer2 ∗
     (bv_unsigned sp + 48) ↦ₘ count2 ∗
     byteListItemResources (bv_unsigned pointer) items ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
     ⌜bv_unsigned count = length items⌝ ∗
     ⌜length items < 2 ^ 64⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 80 /\
-      bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 56 < 0x40000000⌝ ∗ P)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 80 /\
+      bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 56 < (machineRamEnd defaultMap)⌝ ∗ P)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPost1594cCallEntrySpec) := I.
@@ -274,19 +275,19 @@ Definition writeSuccessPost1595cCallEntrySpec
     (bv_unsigned sp + 48) ↦ₘ count ∗
     (bv_unsigned sp + 64) ↦ₘ value ∗
     byteListItemResources (bv_unsigned pointer) items ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
     ⌜bv_unsigned count = length items⌝ ∗
     ⌜length items < 2 ^ 64⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 80 /\
-      bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 64 < 0x40000000⌝ ∗ P)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 80 /\
+      bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 64 < (machineRamEnd defaultMap)⌝ ∗ P)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPost1595cCallEntrySpec) := I.

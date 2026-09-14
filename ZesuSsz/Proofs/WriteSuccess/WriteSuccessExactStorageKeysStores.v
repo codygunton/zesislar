@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_61 Require Import instrs.
@@ -10,8 +11,8 @@ Definition storageKeysStoresEntry `{!islaG Sigma} `{!threadG}
    "x13" ↦ᵣ RVal_Bits c ∗ "x10" ↦ᵣ RVal_Bits d ∗
    (bv_unsigned sp + 1712) ↦ₘ old_a ∗ (bv_unsigned sp + 1720) ↦ₘ old_b ∗
    (bv_unsigned sp + 1728) ↦ₘ old_c ∗ (bv_unsigned sp + 1736) ↦ₘ old_d ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1744 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1744 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysStoresEntry) := I.
 
 Definition storageKeysStoresPost `{!islaG Sigma} `{!threadG}
@@ -21,8 +22,8 @@ Definition storageKeysStoresPost `{!islaG Sigma} `{!threadG}
    "x13" ↦ᵣ RVal_Bits c ∗ "x10" ↦ᵣ RVal_Bits d ∗
    (bv_unsigned sp + 1712) ↦ₘ a ∗ (bv_unsigned sp + 1720) ↦ₘ b ∗
    (bv_unsigned sp + 1728) ↦ₘ c ∗ (bv_unsigned sp + 1736) ↦ₘ d ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1744 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1744 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysStoresPost) := I.
 
 Lemma storage_keys_stores_correct `{!islaG Sigma} `{!threadG}

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -84,7 +85,7 @@ Proof.
   all: try (bv_simplify_arith; lia).
   all: try (replace (bv_unsigned (BV 64 40)) with 40 by vm_compute; lia).
   all: try (change
-    (base + 40 * Z.of_nat (length processed) + 40 < 1073741824)%Z;
+    (base + 40 * Z.of_nat (length processed) + 40 < (machineRamEnd defaultMap))%Z;
     rewrite H2 Nat2Z.inj_mul app_length in HbaseUpper;
     cbn in HbaseUpper;
     lia).

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Calls.
 Import FramedContinuations.
 Require Import isla.riscv64.riscv64.
@@ -35,8 +36,8 @@ Definition withdrawalCopyEntry `{!islaG Sigma} `{!threadG}
    base ↦ₘ∗ bytes ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
    ⌜bv_unsigned src = (base + Z.of_nat start)%Z⌝ ∗
    ⌜(start + 48 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗ ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗ ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗
    instr_pre 0x156a8 (withdrawalCopyPost sp src base start bytes P) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@withdrawalCopyEntry) := I.
 

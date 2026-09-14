@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -51,8 +52,8 @@ Definition writeSuccessNativeEventRemainder
       Z_to_bv 64 (Z.of_nat (length transactions))⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    byteListItemResources (bv_unsigned (writeSuccessValueWord values 9)) items ∗
    bv_unsigned withdrawalsBase ↦ₘ∗ withdrawalsBytes ∗
    ⌜writeSuccessTransactionsPost15674ByteListFacts sp
@@ -62,9 +63,9 @@ Definition writeSuccessNativeEventRemainder
    ⌜writeSuccessValueWord values 12 =
       Z_to_bv 64 (Z.of_nat withdrawalsCount)⌝ ∗
    ⌜length withdrawalsBytes = (48 * withdrawalsCount)%nat⌝ ∗
-   ⌜0x20000000 <= bv_unsigned withdrawalsBase⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned withdrawalsBase⌝ ∗
    ⌜bv_unsigned withdrawalsBase + Z.of_nat (length withdrawalsBytes) <
-      0x40000000⌝ ∗
+      (machineRamEnd defaultMap)⌝ ∗
    writeSuccessPostTransactionDataResources sp sourceBytes decodedBytes
      postData ∗ P ∗ True)%I.
 
@@ -81,16 +82,16 @@ Lemma write_success_native_carrier_payload_pack
   ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ -∗
   bv_unsigned withdrawalsBase ↦ₘ∗ withdrawalsBytes -∗
   ⌜length withdrawalsBytes = (48 * withdrawalsCount)%nat⌝ -∗
-  ⌜0x20000000 <= bv_unsigned withdrawalsBase⌝ -∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned withdrawalsBase⌝ -∗
   ⌜bv_unsigned withdrawalsBase + Z.of_nat (length withdrawalsBytes) <
-    0x40000000⌝ -∗
+    (machineRamEnd defaultMap)⌝ -∗
   writeSuccessTransactionsLoopCarrierPayload sp first second withdrawalsBase
     (Z_to_bv 64 (Z.of_nat withdrawalsCount)) items ∗
   bv_unsigned withdrawalsBase ↦ₘ∗ withdrawalsBytes ∗
   ⌜length withdrawalsBytes = (48 * withdrawalsCount)%nat⌝ ∗
-  ⌜0x20000000 <= bv_unsigned withdrawalsBase⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned withdrawalsBase⌝ ∗
   ⌜bv_unsigned withdrawalsBase + Z.of_nat (length withdrawalsBytes) <
-    0x40000000⌝.
+    (machineRamEnd defaultMap)⌝.
 Proof.
   iIntros "Hwords Hcall Hitems Hfacts Hbytes Hlength Hmin Hmax".
   rewrite /writeSuccessTransactionsLoopCarrierPayload.

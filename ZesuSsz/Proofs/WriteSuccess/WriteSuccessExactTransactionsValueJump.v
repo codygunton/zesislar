@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From Coq Require Import Lists.List.
@@ -12,8 +13,8 @@ Definition transactionValueJumpEntry `{!islaG Sigma} `{!threadG}
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
    (bv_unsigned sp + 128) ↦ₘ third ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 136 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 136 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionValueJumpEntry) := I.
 
 Definition transactionValueJumpPost `{!islaG Sigma} `{!threadG}
@@ -24,8 +25,8 @@ Definition transactionValueJumpPost `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits first ∗ "x11" ↦ᵣ RVal_Bits second ∗
    "x12" ↦ᵣ RVal_Bits third ∗ "x13" ↦ᵣ RVal_Bits fourth ∗
    (bv_unsigned sp + 128) ↦ₘ third ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 136 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 136 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionValueJumpPost) := I.
 
 Lemma transactions_value_jump_correct `{!islaG Sigma} `{!threadG}

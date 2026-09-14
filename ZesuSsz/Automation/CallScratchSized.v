@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayForget.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -6,7 +7,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Lemma call_scratch_reuse_sized `{!islaG Sigma}
     (sp ret : bv 64) (bytes : list (bv 8)) (payload_size : N) :
   length bytes = N.to_nat payload_size ->
-  (0x20000000 <= bv_unsigned sp - (Z.of_N payload_size + 16))%Z ->
+  ((mapRamBase defaultMap) <= bv_unsigned sp - (Z.of_N payload_size + 16))%Z ->
   (bv_unsigned (sp - Z_to_bv 64 (Z.of_N payload_size + 16))%bv ↦ₘ∗ bytes ∗
    (bv_unsigned sp - 16) ↦ₘ? 8 ∗ (bv_unsigned sp - 8) ↦ₘ ret ∗ True)%I -∗
   (bv_unsigned sp - (Z.of_N payload_size + 16)) ↦ₘ? (Z.of_N payload_size + 16)%Z.

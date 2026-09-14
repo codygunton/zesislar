@@ -1,4 +1,5 @@
 From Coq Require Import Lists.List.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -11,13 +12,13 @@ Proof. reflexivity. Qed.
 Lemma zesu_ld_uses_the_zesu_machine `{!islaG Sigma} `{!threadG}
     pc destination base offset :
   @zesu_ld_spec Sigma _ _ pc destination base offset =
-  @rv64_ld_spec Sigma _ _ zesu_sys_regs 0x20000000 0x40000000
+  @rv64_ld_spec Sigma _ _ zesu_sys_regs (mapRamBase defaultMap) (machineRamEnd defaultMap)
     pc destination base offset.
 Proof. reflexivity. Qed.
 
 Lemma zesu_sd_uses_the_zesu_machine `{!islaG Sigma} `{!threadG}
     pc source base offset :
   @zesu_sd_spec Sigma _ _ pc source base offset =
-  @rv64_sd_spec Sigma _ _ zesu_sys_regs 0x20000000 0x40000000
+  @rv64_sd_spec Sigma _ _ zesu_sys_regs (mapRamBase defaultMap) (machineRamEnd defaultMap)
     pc source base offset.
 Proof. reflexivity. Qed.

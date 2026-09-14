@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -19,8 +20,8 @@ Definition transactionFieldFlagRetained `{!islaG Sigma} `{!threadG}
    "x26" ↦ᵣ RVal_Bits (transactionRowWord bytes index 184) ∗
    "x8" ↦ᵣ RVal_Bits (transactionRowWord bytes index 192) ∗
    (bv_unsigned sp + 272) ↦ₘ (transactionRowWord bytes index 176) ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionFieldFlagRetained) := I.
 
 Lemma transactions_field_flag_entry `{!islaG Sigma} `{!threadG}

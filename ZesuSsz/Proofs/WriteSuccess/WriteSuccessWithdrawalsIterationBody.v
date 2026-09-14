@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsWithdrawalsLoop.
@@ -139,7 +140,7 @@ Definition writeSuccessWithdrawalsBackEdgeSpec `{!islaG Sigma} `{!threadG}
     base ↦ₘ∗ (prefix ++ take 48 suffix) ∗
     (bv_unsigned pointer + 48) ↦ₘ∗ drop 48 suffix ∗
     writeSuccessWithdrawalsScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessWithdrawalsEvents sp (S remaining) tail) ∗ P ∗
     writeSuccessWithdrawalsInvariant sp (pointer + BV 64 48)%bv base total
       (S processed) remaining bytes (prefix ++ take 48 suffix)
@@ -169,7 +170,7 @@ Definition writeSuccessWithdrawalsDecreasingBackEdgeSpec
     base ↦ₘ∗ (prefix ++ take 48 suffix) ∗
     (bv_unsigned pointer + 48) ↦ₘ∗ drop 48 suffix ∗
     writeSuccessWithdrawalsScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessWithdrawalsEvents sp (S remaining) tail) ∗ P ∗
     writeSuccessWithdrawalsInvariant sp (pointer + BV 64 48)%bv base total
       (S processed) remaining bytes (prefix ++ take 48 suffix)

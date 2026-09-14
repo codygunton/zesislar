@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -42,7 +43,7 @@ Definition writeSuccessTransactionsOptionalAddressSome1518cCallFrame
    "x11" ↦ᵣ RVal_Bits (BV 64 20) ∗
    writeSuccessTransactionsScratch15174
      sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
      (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
        (writeSuccessTransactionsEvents sp remaining tail))) ∗
@@ -86,8 +87,8 @@ Proof.
   iAssert (writeSuccessTransactionsOptionalAddressSome15190Frame P sp base
     transaction transactions processed remaining bytes prefix suffix tail ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝)%I
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝)%I
     with "[H34 Hscratch Hframe]" as "HscratchOut".
   { iApply (write_success_transactions_optional_address_some_1518c_call_scratch
       P sp base transaction transactions processed remaining bytes prefix suffix tail).
@@ -100,8 +101,8 @@ Proof.
   iSpecialize ("HretWand" with "Hnext").
   iSpecialize ("HretWand" with "Hframe15190").
   iRename "HretWand" into "HretPre".
-  have HstackLower : (0x20000000 <= bv_unsigned sp - 16)%Z by lia.
-  have HstackUpper : (bv_unsigned sp < 0x40000000)%Z by lia.
+  have HstackLower : ((mapRamBase defaultMap) <= bv_unsigned sp - 16)%Z by lia.
+  have HstackUpper : (bv_unsigned sp < (machineRamEnd defaultMap))%Z by lia.
   rewrite /writeSuccessTransactionsOptionalAddressSome1518cCallEntry.
   iFrame "Hsys Htmp H10 H11 H12 H13 H14 H15 H16 H17 H8 H9 H18 H19 H20 H21
     H22 H23 H24 H25 H26 H27 H1 H2 Hmmio Htrace HretPre".

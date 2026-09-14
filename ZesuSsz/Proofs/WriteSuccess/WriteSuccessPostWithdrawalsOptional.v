@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -55,12 +56,12 @@ Definition writeSuccessPostWithdrawalsAt1571c
     (bv_unsigned sp + 1000) ↦ₘ root ∗
     bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsAt1571c) := I.
@@ -72,7 +73,7 @@ Definition writeSuccessPostWithdrawalsAt15700
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15700) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
@@ -90,7 +91,7 @@ Definition writeSuccessPostWithdrawalsAt15700
     (bv_unsigned sp + 1000) ↦ₘ root ∗
     bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
          (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
@@ -99,9 +100,9 @@ Definition writeSuccessPostWithdrawalsAt15700
          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
            (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsAt15700) := I.
@@ -113,7 +114,7 @@ Definition writeSuccessPostWithdrawalsAt15718
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15714) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x10" ↦ᵣ RVal_Bits (sp + BV 64 1624)%bv ∗
     "x11" ↦ᵣ RVal_Bits optionalTag ∗
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
@@ -132,7 +133,7 @@ Definition writeSuccessPostWithdrawalsAt15718
     (bv_unsigned sp + 1000) ↦ₘ root ∗
     bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
          (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
@@ -141,9 +142,9 @@ Definition writeSuccessPostWithdrawalsAt15718
          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
            (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsAt15718) := I.
@@ -154,7 +155,7 @@ Definition writeSuccessPostWithdrawals15700State
     (bytes : list (bv 8)) (saved : list (bv 64)) (tail : spec)
     (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15700) ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
@@ -168,7 +169,7 @@ Definition writeSuccessPostWithdrawals15700State
    (bv_unsigned sp + 1160) ↦ₘ optionalTag ∗
    (bv_unsigned sp + 1168) ↦ₘ data ∗ (bv_unsigned sp + 1176) ↦ₘ size ∗
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
       spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
         (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
@@ -177,9 +178,9 @@ Definition writeSuccessPostWithdrawals15700State
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Definition writeSuccessPostWithdrawals15718State
     `{!islaG Sigma} `{!threadG}
@@ -187,7 +188,7 @@ Definition writeSuccessPostWithdrawals15718State
     (bytes : list (bv 8)) (saved : list (bv 64)) (tail : spec)
     (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15714) ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp + BV 64 1624)%bv ∗
    "x11" ↦ᵣ RVal_Bits optionalTag ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
@@ -203,7 +204,7 @@ Definition writeSuccessPostWithdrawals15718State
    (bv_unsigned sp + 1160) ↦ₘ optionalTag ∗
    (bv_unsigned sp + 1168) ↦ₘ data ∗ (bv_unsigned sp + 1176) ↦ₘ size ∗
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    ((⌜bv_extract 0 8 optionalTag = BV 8 0⌝ ∗
       spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
         (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))) ∨
@@ -212,9 +213,9 @@ Definition writeSuccessPostWithdrawals15718State
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
           (writeSuccessPostWithdrawalsRemainingEvents sp data size tail))))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawals15700State) := I.
@@ -246,12 +247,12 @@ Definition writeSuccessPostWithdrawals1571cState
    (bv_unsigned sp + 1160) ↦ₘ optionalTag ∗
    (bv_unsigned sp + 1168) ↦ₘ data ∗ (bv_unsigned sp + 1176) ↦ₘ size ∗
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawals1571cState) := I.
@@ -270,9 +271,9 @@ Definition writeSuccessPostWithdrawalsCallFrame
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
    ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsCallFrame) := I.
@@ -539,7 +540,7 @@ Proof.
   iAssert ("x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I
     with "[H5]" as "H5bits".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists (RVal_Bits (BV 64 0x2401a0b8)). iFrame. iPureIntro. cbn. done. }
+    iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))). iFrame. iPureIntro. cbn. done. }
   iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H5bits".
   iDestruct "H5bits" as (v5) "(H5map & %Hv5)".
   iAssert (reg_col ((fun register => (KindReg register, BitsShape 64)) <$>

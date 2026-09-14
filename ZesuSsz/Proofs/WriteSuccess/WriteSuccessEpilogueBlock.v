@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -64,8 +65,8 @@ Definition writeSuccessEpilogueSpec `{!islaG Sigma} `{!threadG}
     "x26" ↦ᵣ: (fun _ => "x27" ↦ᵣ: (fun _ =>
     writeSuccessEpilogueSavedSlots sp ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 1896⌝ ∗
-    ⌜bv_unsigned sp + 2000 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 1896⌝ ∗
+    ⌜bv_unsigned sp + 2000 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ra = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 ra = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ra = BV 2 0⌝ ∗

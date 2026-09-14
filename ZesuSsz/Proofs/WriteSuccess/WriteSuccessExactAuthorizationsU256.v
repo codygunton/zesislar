@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -16,8 +17,8 @@ Local Remove Hints IslaTraces.write_success_76.a155b8_spec.a155b8_spec_inst : ty
 Definition authorizationU256Frame `{!islaG Sigma}
     (sp : bv 64) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ ⌜length bytes = 144%nat⌝ ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationU256Frame) := I.
 
 Definition authorizationU256Post `{!islaG Sigma} `{!threadG}
@@ -36,14 +37,14 @@ Definition authorizationU256Entry `{!islaG Sigma} `{!threadG}
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ (bv_unsigned sp - 48) ↦ₘ? 48 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 32)
      (writeSuccessU256WordsPayload (transactionRowWord bytes offset 0)
        (transactionRowWord bytes offset 8) (transactionRowWord bytes offset 16)
        (transactionRowWord bytes offset 24)) tail) ∗
    ⌜length bytes = 144%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗
    instr_pre (bv_unsigned ret) (authorizationU256Post sp bytes offset ret tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationU256Entry) := I.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -16,7 +17,7 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTa
 Lemma write_success_transactions_withdrawals_tail_offset
     (sp : bv 64) (offset : Z) :
   (0 <= offset <= 1896)%Z ->
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (sp + Z_to_bv 64 offset)%bv = bv_unsigned sp + offset.
 Proof.
   intros Hoff Hupper.

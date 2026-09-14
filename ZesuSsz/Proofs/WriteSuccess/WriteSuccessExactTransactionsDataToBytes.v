@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -11,12 +12,12 @@ Definition transactionDataBytesFrame `{!islaG Sigma} `{!threadG}
   ("x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits old5 ∗ "x6" ↦ᵣ RVal_Bits old6 ∗
    "x9" ↦ᵣ RVal_Bits old9 ∗ (bv_unsigned sp - 48) ↦ₘ? 48 ∗
    bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)))
      (writeOutputEvents data size bytes tail)) ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ P ∗
    (∀ stack2 : bv 64, instr_pre 0x151c4
      (encoderBytesExactPost data size sp (BV 64 0x151c4) bytes old6 data old9 stack2
        tail ("x22" ↦ᵣ RVal_Bits size ∗ P ∗ True))) ∗ True)%I.

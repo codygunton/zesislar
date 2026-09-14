@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 
 Definition transactionGasRecipientSourceCore `{!islaG Sigma} `{!threadG}
@@ -13,6 +14,6 @@ Definition transactionGasRecipientSourceCore `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp - 48) ↦ₘ? 16 ∗ "x22" ↦ᵣ RVal_Bits size ∗
    bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
    (bv_unsigned sp + 264) ↦ₘ count ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionGasRecipientSourceCore) := I.

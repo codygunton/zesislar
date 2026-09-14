@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -11,7 +12,7 @@ Definition transactionsFirstFourLoadEntry `{!islaG Sigma} `{!threadG}
      (KindReg "x9", BitsShape 64); (KindReg "x23", BitsShape 64)] ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ ⌜length bytes = 288%nat⌝ ∗
    ⌜bv_unsigned pointer `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsFirstFourLoadEntry) := I.
 
 Definition transactionsFirstFourLoadPost `{!islaG Sigma} `{!threadG}
@@ -23,7 +24,7 @@ Definition transactionsFirstFourLoadPost `{!islaG Sigma} `{!threadG}
    "x23" ↦ᵣ RVal_Bits (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 24 bytes)))) ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ ⌜length bytes = 288%nat⌝ ∗
    ⌜bv_unsigned pointer `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsFirstFourLoadPost) := I.
 
 Lemma transactions_first_four_loads_correct `{!islaG Sigma} `{!threadG}

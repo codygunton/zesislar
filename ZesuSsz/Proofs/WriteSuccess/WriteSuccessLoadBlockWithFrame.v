@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsLoadBlock.
@@ -18,11 +19,11 @@ Definition writeSuccessLoadBlockWithFrameSpec
     bv_unsigned sp ↦ₘ? 312 ∗
     ⌜length values = 16%nat⌝ ∗
     ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned base + 720⌝ ∗
-    ⌜bv_unsigned base + 848 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned base + 720⌝ ∗
+    ⌜bv_unsigned base + 848 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-    ⌜bv_unsigned sp + 312 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+    ⌜bv_unsigned sp + 312 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x14e00 (
       reg_col zesu_instr_sys_regs ∗
       reg_col (writeSuccessLoadBlockResultRegisters values) ∗
@@ -80,11 +81,11 @@ Definition writeSuccessLoadMemoryWithFrame
    bv_unsigned sp ↦ₘ? 312 ∗
    ⌜length values = 16%nat⌝ ∗
    ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned base + 720⌝ ∗
-   ⌜bv_unsigned base + 848 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned base + 720⌝ ∗
+   ⌜bv_unsigned base + 848 < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 312 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 312 < (machineRamEnd defaultMap)⌝ ∗
    instr_pre 0x14e00
      (writeSuccessLoadTerminalWithFrame sp base values saved))%I.
 

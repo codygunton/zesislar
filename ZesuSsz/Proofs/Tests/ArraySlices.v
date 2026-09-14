@@ -1,11 +1,12 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArraySlices.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Import SliceMatching.
 
 Lemma test_array_slice_stack_index (sp : bv 64) :
-  bv_unsigned sp + 1784 < 0x40000000 ->
+  bv_unsigned sp + 1784 < (machineRamEnd defaultMap) ->
   array_region_start 8 (bv_unsigned (sp + BV 64 1744)%bv)
     (bv_unsigned (sp + BV 64 1760)%bv) = 16%nat.
 Proof.

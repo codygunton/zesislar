@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -20,9 +21,9 @@ Definition transactionRecipientPairSourceFrame `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1672) ↦ₘ chainTag ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 288 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
-   ⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1680 < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1680 < (machineRamEnd defaultMap))%Z⌝ ∗
    "x13" ↦ᵣ RVal_Bits (transactionRowByte bytes index 280) ∗
    ⌜(bv_unsigned row `mod` 8 = 0)%Z⌝ ∗ transactionFirstRecipientTail sp row bytes index P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientPairSourceFrame) := I.

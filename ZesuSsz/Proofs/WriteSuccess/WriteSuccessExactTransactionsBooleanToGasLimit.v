@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchBoolean.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
@@ -23,7 +24,7 @@ Lemma transactions_boolean_to_gas_limit `{!islaG Sigma} `{!threadG}
       ("x26" ↦ᵣ RVal_Bits value ∗ P ∗ True)) -∗
   instr_pre 0x15154 (transactionGasLimitPost sp value tail
     (transactionGasLimitCallerFrame sp low high tag P)) -∗
-  transactionGasLimitEntry sp value (BV 64 0x15148) (BV 64 0x2401a0b8) (BV 64 1) tail
+  transactionGasLimitEntry sp value (BV 64 0x15148) (BV 64 (mapIoContextAddress defaultMap)) (BV 64 1) tail
     (transactionGasLimitCallerFrame sp low high tag P).
 Proof.
   iIntros "Hpost Hnext".
@@ -61,7 +62,7 @@ Lemma transactions_boolean_gas_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcaller #Hint #Houtput #Hnext".
   iPoseProof (transactions_gas_limit_call_correct sp value (BV 64 0x15148)
-    (BV 64 0x2401a0b8) (BV 64 1) tail (transactionGasLimitCallerFrame sp low high tag P)
+    (BV 64 (mapIoContextAddress defaultMap)) (BV 64 1) tail (transactionGasLimitCallerFrame sp low high tag P)
     with "Hcaller Hint Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x15148 0x15148 false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_boolean_to_gas_limit with "Hpost Hnext").

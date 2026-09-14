@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratch.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -12,8 +13,8 @@ Definition authorizationAddressCallerFrame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   (reg_col [(KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationAddressCallerFrame) := I.
 
 Lemma authorization_u256_to_address `{!islaG Sigma} `{!threadG}
@@ -21,7 +22,7 @@ Lemma authorization_u256_to_address `{!islaG Sigma} `{!threadG}
   authorizationU256Post sp bytes 0 (BV 64 0x155bc)
     (writeOutputEvents (sp + BV 64 1856)%bv (BV 64 20) (take 20 (drop 112 bytes)) tail)
     ("x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗ P ∗ True)%I -∗
-  authorizationWholeOutputEntry sp (BV 64 0x155bc) (BV 64 0x2401a0b8)
+  authorizationWholeOutputEntry sp (BV 64 0x155bc) (BV 64 (mapIoContextAddress defaultMap))
     (sp - BV 64 48)%bv (BV 64 32) bytes tail (authorizationAddressCallerFrame sp P).
 Proof.
   iIntros "Hpost". iDestruct "Hpost" as

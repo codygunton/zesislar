@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -24,7 +25,7 @@ Definition writeSuccessTransactionsAt150ecJumpBlock
    "x1" ↦ᵣ RVal_Bits (BV 64 0x100e8) ∗
    writeSuccessTransactionsMachine150e8Rest
      sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
@@ -41,7 +42,7 @@ Definition writeSuccessTransactionsAt10190Block
    "x1" ↦ᵣ RVal_Bits (BV 64 0x150f0) ∗
    writeSuccessTransactionsMachine150e8Rest
      sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
@@ -117,7 +118,7 @@ Lemma write_success_transactions_at10190_block_unpack
   "x1" ↦ᵣ RVal_Bits (BV 64 0x150f0) ∗
   writeSuccessTransactionsMachine150e8Rest
     sp base transactions processed transaction ∗
-  mmio_range 0x2401a0c0 16 ∗
+  mmio_range (machineOutputAddress defaultMap) 16 ∗
   spec_trace
     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction

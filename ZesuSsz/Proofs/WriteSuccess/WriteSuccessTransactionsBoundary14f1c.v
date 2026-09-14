@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -49,7 +50,7 @@ Definition writeSuccessTransactionsCurrentPhaseFrame
      (writeSuccessTransactionData transaction) ∗
    writeSuccessTransactionRestOwn transaction ∗
    writeSuccessTransactionsOwn remaining ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents TransactionType sp transaction
        (writeSuccessTransactionsEvents sp remaining tail)) ∗ P ∗
@@ -84,11 +85,11 @@ Definition writeSuccessTransactionsLoadFactsPure
     (processed : list writeSuccessTransaction) (bytes : list (bv 8)) : Prop :=
   length (writeSuccessTransactionBytes transaction) = 288%nat /\
   (base + 288 * Z.of_nat (length processed)) `mod` 8 = 0 /\
-  0x20000000 <= base + 288 * Z.of_nat (length processed) /\
-  base + 288 * Z.of_nat (length processed) + 288 < 0x40000000 /\
+  (mapRamBase defaultMap) <= base + 288 * Z.of_nat (length processed) /\
+  base + 288 * Z.of_nat (length processed) + 288 < (machineRamEnd defaultMap) /\
   bv_unsigned sp `mod` 8 = 0 /\
-  0x20000000 <= bv_unsigned sp - 48 /\
-  bv_unsigned sp + 1896 < 0x40000000.
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 /\
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap).
 
 Definition writeSuccessTransactionsLoadFacts `{!islaG Sigma}
     (sp : bv 64) (base : Z) (transaction : writeSuccessTransaction)
@@ -96,11 +97,11 @@ Definition writeSuccessTransactionsLoadFacts `{!islaG Sigma}
     iProp Sigma :=
   (⌜length (writeSuccessTransactionBytes transaction) = 288%nat⌝ ∗
    ⌜(base + 288 * Z.of_nat (length processed)) `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= base + 288 * Z.of_nat (length processed)⌝ ∗
-   ⌜base + 288 * Z.of_nat (length processed) + 288 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= base + 288 * Z.of_nat (length processed)⌝ ∗
+   ⌜base + 288 * Z.of_nat (length processed) + 288 < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsLoadFacts) := I.
 
@@ -117,8 +118,8 @@ Qed.
 
 Lemma write_success_transactions_current_base_lower
     (base : Z) (processedLength : nat) :
-  0x20000000 <= base ->
-  0x20000000 <= base + 288 * Z.of_nat processedLength.
+  (mapRamBase defaultMap) <= base ->
+  (mapRamBase defaultMap) <= base + 288 * Z.of_nat processedLength.
 Proof. intros HbaseLower. assert (0 <= Z.of_nat processedLength) by lia. nia. Qed.
 
 Lemma write_success_transactions_current_end_upper
@@ -127,8 +128,8 @@ Lemma write_success_transactions_current_end_upper
   bytes = prefix ++ suffix ->
   length prefix = (288 * processedLength)%nat ->
   length suffix = (288 * S remainingLength)%nat ->
-  base + Z.of_nat (length bytes) < 0x40000000 ->
-  base + 288 * Z.of_nat processedLength + 288 < 0x40000000.
+  base + Z.of_nat (length bytes) < (machineRamEnd defaultMap) ->
+  base + 288 * Z.of_nat processedLength + 288 < (machineRamEnd defaultMap).
 Proof.
   intros HbytesApp HprefixLength HsuffixLength HbaseUpper.
   rewrite HbytesApp length_app HprefixLength HsuffixLength in HbaseUpper.
@@ -155,11 +156,11 @@ Lemma write_success_transactions_load_facts_pure
   length prefix = (288 * length processed)%nat ->
   length suffix = (288 * length (transaction :: remaining))%nat ->
   base `mod` 8 = 0 ->
-  0x20000000 <= base ->
-  base + Z.of_nat (length bytes) < 0x40000000 ->
+  (mapRamBase defaultMap) <= base ->
+  base + Z.of_nat (length bytes) < (machineRamEnd defaultMap) ->
   bv_unsigned sp `mod` 16 = 0 ->
-  0x20000000 <= bv_unsigned sp - 48 ->
-  bv_unsigned sp + 1896 < 0x40000000 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 ->
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap) ->
   writeSuccessTransactionsLoadFactsPure sp base transaction processed bytes.
 Proof.
   intros HtransactionLength HbytesApp HprefixLength HsuffixLength

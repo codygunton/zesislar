@@ -1,0 +1,9 @@
+; Keep the authored map in Contracts and compile it before InstrSpecs.
+(rule
+ (targets Machine.v)
+ (deps ../ZesuSsz/Contracts/Machine.v)
+ (action (copy ../ZesuSsz/Contracts/Machine.v Machine.v)))
+
+(coq.theory
+ (name ZesuMachineMap)
+ (modules Machine))

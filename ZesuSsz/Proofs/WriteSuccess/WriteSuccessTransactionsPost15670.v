@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -21,13 +22,13 @@ Definition writeSuccessTransactionsPostAt15674Spec
     writeSuccessTransactionsOwn transactions ∗
     writeSuccessTransactionsPostScratch15670 sp base (length transactions)
       first second ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
     ((bv_unsigned sp) ↦ₘ? 104 ∗
      (bv_unsigned sp + 1896) ↦ₘ? 104 ∗
      ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
      ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-     ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-     ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P) ∗ True)%I.
+     ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+     ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P) ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostAt15674Spec) := I.
@@ -52,7 +53,7 @@ Proof.
   all: try bv_solve.
   Unshelve.
   all: iExists (tail, bytes, transactions, base, tt)ₗ.
-  all: iRename select (mmio_range 0x2401a0c0 16)%I into "Hmmio".
+  all: iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
   all: iFrame.
   all: iSplit; [iExact "Hmmio"|].
   all: repeat iSplit; try iPureIntro; try assumption; try lia.

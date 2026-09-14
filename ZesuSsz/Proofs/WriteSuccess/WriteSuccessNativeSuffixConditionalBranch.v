@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_117 Require Import a15970.
@@ -71,7 +72,7 @@ Definition writeSuccessSuffix1596cLoadSpec
     "x2" ↦ᵣ RVal_Bits sp ∗
     "x8" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     (bv_unsigned sp + 72) ↦ₘ value ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 72 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 72 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x15970 (writeSuccessSuffix15970LoadedSpec P) ∗
     P (bv_sign_extend 64 value))%I.
 

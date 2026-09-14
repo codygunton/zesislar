@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_07 Require Import instrs.
@@ -47,7 +48,7 @@ Proof.
     (n8 stack8 Hn8) "Hstack8".
   cbn in Hn0, Hn8. subst n0 n8.
   iApply "Hint".
-  iExists (BV 64 0x2401a0b8), (BV 64 1), stack0, stack8.
+  iExists (BV 64 (mapIoContextAddress defaultMap)), (BV 64 1), stack0, stack8.
   iFrame "Hsys H1 H2 H5 H10 H11 Hstack0 Hstack8 Hmmio Htrace".
   repeat iSplit; try iPureIntro; try assumption; try bv_solve; try lia.
   iSplitL "HP"; first iFrame.

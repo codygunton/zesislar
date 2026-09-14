@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsValueBlock.
@@ -55,7 +56,7 @@ Definition writeSuccessValuePost `{!islaG Sigma} `{!threadG}
    bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
    (bv_unsigned sp + 104) ↦ₘ default (BV 64 0) (values !! 7%nat) ∗
    (bv_unsigned sp + 112) ↦ₘ default (BV 64 0) (values !! 8%nat) ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Definition writeSuccessValueSpec `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) : iProp Sigma :=
@@ -68,14 +69,14 @@ Definition writeSuccessValueSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 104) ↦ₘ? 16 ∗
     (bv_unsigned sp + 1032) ↦ₘ∗ values ∗
     bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessValueEvents sp values tail) ∗
     ⌜length values = 74%nat⌝ ∗
     ⌜bv_unsigned (writeSuccessValueWord values 5) = length payload⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     P ∗ instr_pre 0x14f04
       (writeSuccessValuePost sp values payload tail P))%I.
 

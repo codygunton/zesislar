@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -31,14 +32,14 @@ Definition writeSuccessTransactions151acSetupSpec
       (transactions processed remaining : list writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessTransactionsMachine151ac
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
         (writeSuccessTransactionsEvents sp remaining tail)) ∗
@@ -85,11 +86,11 @@ Definition writeSuccessTransactions151b0SetupSpec
       (transactions processed remaining : list writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessTransactionsMachine151b0
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
         (writeSuccessTransactionsEvents sp remaining tail)) ∗

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysSpec.
@@ -14,14 +15,14 @@ Definition storageKeysExactEntry `{!islaG Sigma} `{!threadG}
    "x22" ↦ᵣ RVal_Bits pointer ∗
    "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactStorageKeysEvents sp 0 (S remaining) bytes tail) ∗
    ⌜length bytes = (32 * S remaining)%nat⌝ ∗
    ⌜(S remaining < 2 ^ 64)%nat⌝ ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-   ⌜bv_unsigned pointer + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+   ⌜bv_unsigned pointer + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    instr_pre 0x153b4 (writeSuccessStorageKeysLoopExit x19 sp (bv_unsigned pointer)
      (S remaining) bytes tail P) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysExactEntry) := I.

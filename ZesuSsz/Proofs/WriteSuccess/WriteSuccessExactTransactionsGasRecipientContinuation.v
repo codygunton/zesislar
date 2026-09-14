@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -28,7 +29,7 @@ Lemma transactions_gas_recipient_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcode #Hnext".
   iPoseProof (transactions_recipient_data_access_region_correct sp tag first second w0 w1 w2 w3
-    data size count (BV 64 0x15154) (BV 64 0x2401a0b8) (BV 64 8) old12 old13
+    data size count (BV 64 0x15154) (BV 64 (mapIoContextAddress defaultMap)) (BV 64 8) old12 old13
     (sp - BV 64 16)%bv old6 feeLow last bytes tail
     (transactionGasRecipientCarry sp gaslow gashigh feeTag feeHigh value nonce P)
     with "Hcode Hnext") as "Hcallee".

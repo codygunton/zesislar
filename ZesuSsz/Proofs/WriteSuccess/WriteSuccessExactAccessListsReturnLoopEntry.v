@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsReturnCount.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsRegisterGroups.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
@@ -11,8 +12,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 
 Definition accessReturnRuntimeBounds `{!islaG Sigma}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
-  (⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+  (⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessReturnRuntimeBounds) := I.
 
 Definition accessReturnLoopFrame `{!islaG Sigma} `{!threadG}

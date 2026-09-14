@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -13,7 +14,7 @@ Definition writeSuccessTransactionsMachine15158 `{!islaG Sigma} `{!threadG}
    reg_col writeSuccessTransactions15154OtherRegShapes ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15154) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x8" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 192) ∗
    "x9" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 16) ∗
    "x10" ↦ᵣ RVal_Bits

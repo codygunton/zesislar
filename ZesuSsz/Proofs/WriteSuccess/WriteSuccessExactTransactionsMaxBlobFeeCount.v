@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchSized.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -12,8 +13,8 @@ Definition maxBlobFeeCountFrame `{!islaG Sigma} `{!threadG}
     (sp low high : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp - 32) ↦ₘ? 16 ∗
    (bv_unsigned sp + 144) ↦ₘ high ∗ (bv_unsigned sp + 152) ↦ₘ low ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@maxBlobFeeCountFrame) := I.
 
 Lemma max_blob_fee_to_count `{!islaG Sigma} `{!threadG}
@@ -23,9 +24,9 @@ Lemma max_blob_fee_to_count `{!islaG Sigma} `{!threadG}
        (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned count))) tail)
      (reg_col [(KindReg "x18", BitsShape 64)] ∗
       (bv_unsigned sp + 160) ↦ₘ count ∗
-      ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ P ∗ True)%I ∗
+      ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I ∗
    instr_pre 0x15584 (authorizationCountPost sp count tail (maxBlobFeeCountFrame sp low high P)) ∗ True)%I -∗
-  authorizationCountEntry sp count (BV 64 0x15574) (BV 64 0x2401a0b8)
+  authorizationCountEntry sp count (BV 64 0x15574) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 16) tail (maxBlobFeeCountFrame sp low high P).
 Proof.
   iIntros "(Hpost & Hnext & _)".

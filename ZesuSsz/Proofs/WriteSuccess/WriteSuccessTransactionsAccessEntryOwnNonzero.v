@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
@@ -26,11 +27,11 @@ Lemma write_success_transactions_access_entry_own_nonzero
   ⌜length (writeSuccessAccessEntriesBytes (entry :: entries)) =
     (40 * length (entry :: entries))%nat⌝ ∗
   ⌜(length (entry :: entries) < 2 ^ 64)%nat⌝ ∗
-  ⌜0x20000000 <=
+  ⌜(mapRamBase defaultMap) <=
     bv_unsigned (writeSuccessTransactionWord transaction 208)⌝ ∗
   ⌜bv_unsigned (writeSuccessTransactionWord transaction 208) +
     Z.of_nat (length (writeSuccessAccessEntriesBytes (entry :: entries))) <
-    0x40000000⌝ ∗
+    (machineRamEnd defaultMap)⌝ ∗
   ⌜writeSuccessTransactionWord transaction 208 =
     Z_to_bv 64
       (bv_unsigned (writeSuccessTransactionWord transaction 208))⌝ ∗

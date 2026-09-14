@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -50,7 +51,7 @@ Definition writeSuccessTransactions1558cFrame
     reg_col writeSuccessTransactions1558cOtherRegShapes ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15584) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗
     "x9" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 240) ∗
     "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
@@ -95,12 +96,12 @@ Lemma write_success_transaction_authorization_bounds
     `{!islaG Sigma} (transaction : writeSuccessTransaction) :
   ⌜writeSuccessTransactionAuthorizationBytes transaction <> []⌝ -∗
   writeSuccessTransactionOwn transaction -∗
-  ⌜0x20000000 <=
+  ⌜(mapRamBase defaultMap) <=
       bv_unsigned (writeSuccessTransactionAuthorizationPointer transaction)⌝ ∗
   ⌜bv_unsigned (writeSuccessTransactionAuthorizationPointer transaction) +
       Z.of_nat (length
         (writeSuccessTransactionAuthorizationBytes transaction)) <
-      0x40000000⌝ ∗
+      (machineRamEnd defaultMap)⌝ ∗
   writeSuccessTransactionOwn transaction.
 Proof.
   iIntros (Hnonempty)

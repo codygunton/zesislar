@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuMachineMap.Machine.
 
 (* Reject unrelated regions without expanding the caller's validity predicates.
    The upstream rules and their resource continuations remain unchanged. *)
@@ -11,6 +12,7 @@ Ltac zesu_nat_literal number :=
   end.
 
 Ltac zesu_region_bounds :=
+  cbv [mapRamBase mapRamSize machineRamEnd defaultMap] in *;
   first [repeat match goal with H : _ |- _ => clear H end; lia |
     repeat match goal with
     | H : ?T |- _ =>
@@ -128,3 +130,16 @@ Print Assumptions simplify_uninit_empty_goal.
 Definition simplify_uninit_empty_goal_inst := [instance @simplify_uninit_empty_goal with 0%N].
 Global Existing Instance simplify_uninit_empty_goal_inst.
 Global Remove Hints simpl_goal_uninit_0_inst : typeclass_instances.
+
+Lemma subsume_mem_word_address `{!islaG Sigma} A (a1 a2 : Z) n (word : bv n) G
+    `{!ZesuRegionBounds (a1 = a2)%Z} :
+  (∃ x : A, G x) ⊢ subsume (a1 ↦ₘ word) (fun _ : A => a2 ↦ₘ word) G.
+Proof.
+  iDestruct 1 as (x) "HG". iIntros "Hword".
+  have -> : a1 = a2 by exact zesu_region_bounds_proof.
+  iExists x. iFrame.
+Qed.
+Definition subsume_mem_word_address_inst := [instance @subsume_mem_word_address].
+
+Global Existing Instance subsume_mem_word_address_inst | 1.
+Print Assumptions subsume_mem_word_address.

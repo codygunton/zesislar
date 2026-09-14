@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -73,7 +74,7 @@ Definition writeSuccessTransactionsAt150f0SomeBlock
       BV 8 0⌝ ∗
    writeSuccessTransactionsMachine150f0
       sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -98,7 +99,7 @@ Definition writeSuccessTransactionsAt150f0NoneBlock
       BV 8 0⌝ ∗
    writeSuccessTransactionsMachine150f0
       sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -120,7 +121,7 @@ Definition writeSuccessTransactionsAt150f0ValidSpec
     ⌜WriteSuccessTransactionsSpec.writeSuccessTransactionValid transaction⌝ ∗
     writeSuccessTransactionsMachine150f0
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -145,7 +146,7 @@ Definition writeSuccessTransactionsAt150f0SomeSpec
       BV 8 0⌝ ∗
     writeSuccessTransactionsMachine150f0
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -170,7 +171,7 @@ Definition writeSuccessTransactionsAt150f0NoneSpec
       BV 8 0⌝ ∗
     writeSuccessTransactionsMachine150f0
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -243,7 +244,7 @@ Definition writeSuccessTransactionsAt150f8SomeBlock
       BV 8 0⌝ ∗
    writeSuccessTransactionsMachine150f8
       sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -268,7 +269,7 @@ Definition writeSuccessTransactionsAt150f8NoneBlock
       BV 8 0⌝ ∗
    writeSuccessTransactionsMachine150f8
       sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -293,7 +294,7 @@ Definition writeSuccessTransactionsAt150f8SomeSpec
       BV 8 0⌝ ∗
     writeSuccessTransactionsMachine150f8
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -318,7 +319,7 @@ Definition writeSuccessTransactionsAt150f8NoneSpec
       BV 8 0⌝ ∗
     writeSuccessTransactionsMachine150f8
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionChainId sp transaction
@@ -372,7 +373,7 @@ Definition writeSuccessTransactionsAt150fcFramedSpec
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     writeSuccessTransactionsMachine150fc
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
         WriteSuccessTransactionsSpec.TransactionNonce sp transaction

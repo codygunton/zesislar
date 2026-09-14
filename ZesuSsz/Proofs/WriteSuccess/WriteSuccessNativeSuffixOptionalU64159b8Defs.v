@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -17,7 +18,7 @@ Definition writeSuccessSuffixOptionalU64159b8Return
     (fun _ =>
       bv_unsigned ptr ↦ₘ value ∗
       (bv_unsigned ptr + 8) ↦ₘ tag ∗
-      mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)%I.
+      mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8Return) := I.
@@ -61,8 +62,8 @@ Definition writeSuccessSuffixOptionalU64159b8CallPrefix
    ⌜bv_extract 0 1 (BV 64 0x159bc) = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 (BV 64 0x159bc) = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 (BV 64 0x159bc) = BV 2 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32 /\
-     bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32 /\
+     bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    (bv_unsigned sp - 32) ↦ₘ? 32)%I.
 
 Global Instance : LithiumUnfold

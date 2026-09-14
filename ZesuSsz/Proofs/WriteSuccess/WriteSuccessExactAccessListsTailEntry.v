@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackAlignment.
 Require Import ZesuSsz.Automation.ArrayForget.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsTail.
@@ -29,16 +30,16 @@ Definition accessTailLoopFrame `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits data ∗ "x22" ↦ᵣ RVal_Bits pointer ∗ "x27" ↦ᵣ RVal_Bits (BV 64 0) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessAccessEntriesOwn entries ∗
    accessTailLoopScratch sp base (length entries) savedX22 ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace (writeSuccessExactAccessListsEvents sp remaining tail) ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace (writeSuccessExactAccessListsEvents sp remaining tail) ∗
    ⌜entries = processed ++ remaining⌝ ∗
    ⌜bytes = writeSuccessAccessEntriesBytes entries⌝ ∗
    ⌜length bytes = (40 * length entries)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessTailLoopFrame) := I.
 
 Lemma access_tail_loop_entry_resources `{!islaG Sigma} `{!threadG}

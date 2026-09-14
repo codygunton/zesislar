@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
@@ -107,7 +108,7 @@ Proof.
       remaining, bytes, tail.
     iFrame.
     iSplit.
-    + iRename select (mmio_range 0x2401a0c0 16) into "HmmioPost".
+    + iRename select (mmio_range (machineOutputAddress defaultMap) 16) into "HmmioPost".
       iExact "HmmioPost".
     + iSplit.
       * rewrite /writeSuccessFixedWidthArrayInvariant.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -78,8 +79,8 @@ Proof.
       ["x6"; "x7"; "x28"; "x29"; "x30"; "x31"]))%I
     with "[H6 H7 H28 H29 H30 H31]" as "Htmp".
   { rewrite /reg_col. cbn. iFrame. }
-  have Hbounds : 0x20000000 <= bv_unsigned sp - 48 /\
-      bv_unsigned sp < 0x40000000 by lia.
+  have Hbounds : (mapRamBase defaultMap) <= bv_unsigned sp - 48 /\
+      bv_unsigned sp < (machineRamEnd defaultMap) by lia.
   iEval (unfold writeSuccessTransactionPhaseEvents) in "Htrace".
   iExists sp, b5, b12, b13, b14, b15, b16, b17, transaction, remaining, tail.
   iFrame "Hsys H1".

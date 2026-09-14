@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -8,7 +9,7 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeBo
 
 Definition writeSuccessTransactionsPriorityFeeSomeBooleanMmio
     `{!islaG Sigma} `{!threadG} (_ : list (bv 64)) : iProp Sigma :=
-  mmio_range 0x2401a0c0 16.
+  mmio_range (machineOutputAddress defaultMap) 16.
 
 Definition writeSuccessTransactionsPriorityFeeSomeBooleanTrace
     `{!islaG Sigma} `{!threadG} (sp : bv 64)

@@ -1,6 +1,76 @@
-From Coq Require Import Lists.List ZArith.ZArith.
+From Coq Require Import Strings.String Lists.List ZArith.ZArith.
 
 Import ListNotations.
+
+(** Machine addresses come from the pinned ELF's section and symbol tables.
+    .text: [0x10120,0x171f8); .rodata: [0x17200,0x179cc);
+    .sdata: [0x19000,0x19010); heap_buffer: [0x1a000,0x2001a000);
+    input_buffer: [0x2001a000,0x2401a000); binary_fv_io_context:
+    [0x2401a0b8,0x2401a0d8). Evidence: readelf -S/-l and nm -n on
+    zesu-ssz-decode-bare-metal-rv64im-elf-d67f28c. The default ELF stays
+    frozen through CP5. CLINT and ROM lie outside RAM. *)
+Record MachineMap : Type := {
+  mapRamBase : Z; mapRamSize : Z;
+  mapTextBase : Z; mapTextEnd : Z;
+  mapRodataBase : Z; mapRodataEnd : Z;
+  mapDataBase : Z;
+  mapHeapBase : Z; mapHeapEnd : Z;
+  mapInputBufferAddress : Z; mapInputCapacity : Z;
+  mapIoContextAddress : Z;
+  mapStartPc : Z; mapReadInputPc : Z; mapWriteOutputPc : Z;
+  mapZkvmExitPc : Z; mapMemcpyPc : Z; mapMainPc : Z;
+  mapHeapTopAddress : Z; mapHeapPosAddress : Z;
+  mapRomBase : Z; mapRomSize : Z;
+  mapClintBase : Z; mapClintSize : Z;
+  mapHtifTohost : Z;
+  mapEnableWritableMisa : bool; mapEnableRvc : bool; mapEnableFdext : bool;
+  mapEnablePmp : bool; mapEnableDirtyUpdate : bool;
+  mapEnableMisalignedAccess : bool; mapMtvalHasIllegalInstBits : bool;
+  mapInsnsPerTick : Z;
+  mapPrivilege : string; mapMisa : Z; mapMtvec : Z;
+  mapMstatusMask : Z; mapMstatusValue : Z
+}.
+
+Definition defaultMap : MachineMap := {|
+  mapRamBase := 0; mapRamSize := 0x40000000;
+  mapTextBase := 0x10120; mapTextEnd := 0x171f8;
+  mapRodataBase := 0x17200; mapRodataEnd := 0x179cc;
+  mapDataBase := 0x19000;
+  mapHeapBase := 0x1a000; mapHeapEnd := 0x2001a000;
+  mapInputBufferAddress := 0x2001a000; mapInputCapacity := 0x04000000;
+  mapIoContextAddress := 0x2401a0b8;
+  mapStartPc := 0x10120; mapReadInputPc := 0x10140;
+  mapWriteOutputPc := 0x10190; mapZkvmExitPc := 0x101c4;
+  mapMemcpyPc := 0x101d4; mapMainPc := 0x14cb0;
+  mapHeapTopAddress := 0x19000; mapHeapPosAddress := 0x19008;
+  mapRomBase := 0x40002000; mapRomSize := 0x100;
+  mapClintBase := 0x40010000; mapClintSize := 0xc0000;
+  mapHtifTohost := 0x40001000;
+  mapEnableWritableMisa := true; mapEnableRvc := false; mapEnableFdext := false;
+  mapEnablePmp := false; mapEnableDirtyUpdate := false;
+  mapEnableMisalignedAccess := false; mapMtvalHasIllegalInstBits := false;
+  mapInsnsPerTick := 10;
+  mapPrivilege := "Machine"%string;
+  mapMisa := 0x8000000000001100; mapMtvec := 0;
+  mapMstatusMask := 0x20000; mapMstatusValue := 0
+|}.
+
+Definition machineRamEnd (machine : MachineMap) : Z :=
+  (mapRamBase machine + mapRamSize machine)%Z.
+Definition machinePc (offset : Z) : Z := (mapTextBase defaultMap + offset)%Z.
+Definition machineOutputAddress (machine : MachineMap) : Z :=
+  (mapIoContextAddress machine + 8)%Z.
+Definition machineOutputSizeAddress (machine : MachineMap) : Z :=
+  (mapIoContextAddress machine + 16)%Z.
+Definition machineExitAddress (machine : MachineMap) : Z :=
+  (mapIoContextAddress machine + 24)%Z.
+
+(** Reduce derived addresses when instruction automation simplifies resources. *)
+Arguments machineRamEnd _ /.
+Arguments machinePc _ /.
+Arguments machineOutputAddress _ /.
+Arguments machineOutputSizeAddress _ /.
+Arguments machineExitAddress _ /.
 
 (** A machine contract describes one binary region without selecting a proof method. *)
 Record RelationalMachineContract

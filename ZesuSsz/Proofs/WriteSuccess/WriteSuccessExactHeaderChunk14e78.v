@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -26,7 +27,7 @@ Proof.
   Unshelve.
   all: try prepare_sidecond; try assumption; try bv_solve; try lia; try iFrame.
   Unshelve. liShow.
-  iDestruct select (mmio_range 0x2401a0c0 16)%I as "Hmmio".
+  iDestruct select (mmio_range (machineOutputAddress defaultMap) 16)%I as "Hmmio".
   iDestruct select (spec_trace (writeOutputEvents (sp + BV 64 1556)%bv (BV 64 32) (writeSuccessHeaderPayload 524 32 bytes) tail))%I as "Htrace".
   iDestruct select ((bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes)%I as "Hcopy".
   iDestruct (mem_mapsto_array_region 8%N (bv_unsigned sp + 1032) (DfracOwn 1) (take 592 bytes) 524 32 with "Hcopy") as "[Hprefix [Hpayload Hsuffix]]".

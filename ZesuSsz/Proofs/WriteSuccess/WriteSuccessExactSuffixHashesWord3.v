@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_103 Require Import instrs.
@@ -11,10 +12,10 @@ Definition suffixWord3Entry `{!islaG Sigma} `{!threadG}
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> ["x10";"x11";"x12";"x13";"x14";"x15";"x16"]) ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1768) ↦ₘ? 8 ∗
    ⌜bv_unsigned pointer = (base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 32 <= length source)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length source) < 0x40000000)%Z⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 32 <= length source)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length source) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixWord3Entry) := I.
 
 Definition suffixWord3Post `{!islaG Sigma} `{!threadG}
@@ -24,10 +25,10 @@ Definition suffixWord3Post `{!islaG Sigma} `{!threadG}
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> ["x10";"x11";"x12";"x13";"x14";"x15";"x16"]) ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1768) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 24)%nat source)))) ∗
    ⌜bv_unsigned pointer = (base + Z.of_nat index)%Z⌝ ∗
-   ⌜(index + 32 <= length source)%nat⌝ ∗ ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length source) < 0x40000000)%Z⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(index + 32 <= length source)%nat⌝ ∗ ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length source) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixWord3Post) := I.
 
 Lemma suffix_word3_correct `{!islaG Sigma} `{!threadG}

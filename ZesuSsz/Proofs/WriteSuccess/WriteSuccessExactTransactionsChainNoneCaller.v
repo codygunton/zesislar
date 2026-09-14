@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -18,13 +19,13 @@ Definition transactionChainNoneCaller `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits olddata ∗ "x11" ↦ᵣ RVal_Bits old11 ∗
    (bv_unsigned sp - 32) ↦ₘ? 32 ∗ bv_unsigned (sp + BV 64 1664)%bv ↦ₘ∗ bytes ∗
    ⌜bytes !! 8%nat = Some (BV 8 0)⌝ ∗
-   ⌜0x20000000 <= bv_unsigned (sp + BV 64 1664)%bv⌝ ∗
-   ⌜bv_unsigned (sp + BV 64 1664)%bv + Z.of_nat (length bytes) < 0x40000000⌝ ∗
-   mmio_range 0x2401a0c0 16 ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + BV 64 1664)%bv⌝ ∗
+   ⌜bv_unsigned (sp + BV 64 1664)%bv + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
      (writeSuccessBooleanWordPayload (BV 64 0)) tail) ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionChainNoneCaller) := I.
 

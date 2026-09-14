@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -140,7 +141,7 @@ Proof.
   iAssert (reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
     tmp_registers))%I with "[H5 H6 H7 H28 H29 H30 H31]" as "Htmp".
   { cbn. iSplitL "H5".
-    - iExists (RVal_Bits (BV 64 0x2401a0b8)).
+    - iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))).
       iSplit; [iPureIntro; cbn; done | iFrame "H5"].
     - iFrame "H6 H7 H28 H29 H30 H31". }
   iEval (unfold writeSuccessTransactionsInvariant) in "Hinv".
@@ -150,7 +151,7 @@ Proof.
       %Halign & %HlowerBound & %HupperBound & HbaseAlign & HbaseLower &
       HbaseUpper & _)".
   have HstackBound :
-      0x20000000 <= bv_unsigned sp - 16 /\ bv_unsigned sp < 0x40000000.
+      (mapRamBase defaultMap) <= bv_unsigned sp - 16 /\ bv_unsigned sp < (machineRamEnd defaultMap).
   { split; [lia | lia]. }
   iAssert (writeSuccessTransactionsInvariant sp base transactions processed
     (transaction :: remaining) bytes prefix suffix)%I

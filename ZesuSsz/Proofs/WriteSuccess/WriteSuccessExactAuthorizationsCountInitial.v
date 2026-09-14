@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegCollections.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -30,7 +31,7 @@ Lemma authorization_count_to_initial `{!islaG Sigma} `{!threadG}
     (WriteSuccessExactAuthorizationsModel.writeSuccessExactAuthorizationEvents sp (row :: rest) tail)
     (maxBlobFeeCountFrame sp low high (authorizationInitialCaller sp low high base row rest source tail P)) -∗
   (⌜authorizationLoopFacts sp (Z_to_bv 64 base) base (row :: rest) [] row rest source⌝ ∗
-   authorizationInitialEntry sp (BV 64 0x15584) (BV 64 0x2401a0b8) base row rest source tail
+   authorizationInitialEntry sp (BV 64 0x15584) (BV 64 (mapIoContextAddress defaultMap)) base row rest source tail
      (authorizationFeeFrame sp low high rest P) ∗ True)%I.
 Proof.
   iIntros "Hpost".

@@ -1,11 +1,12 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessBlobHashesSpec WriteSuccessExactAccessListsRegisterGroups.
 
 Lemma access_blob_registers `{!islaG Sigma} `{!threadG} (sp old27 : bv 64) :
   ("x1" ↦ᵣ RVal_Bits (BV 64 0x153d0) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
    "x27" ↦ᵣ RVal_Bits old27 ∗ accessRegisterGroup ["x12"; "x13"; "x14"; "x15"] ∗
    accessRegisterGroup accessUnchangedRegisters ∗ True)%I -∗

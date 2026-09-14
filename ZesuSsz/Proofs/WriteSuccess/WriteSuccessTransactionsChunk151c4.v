@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -46,8 +47,8 @@ Proof.
     destruct Halign as [k Hk].
     apply Z.mod_divide; [lia|].
     exists (2 * k)%Z. lia. }
-  all: have Hmin264 : (0x20000000 <= bv_unsigned sp + 264)%Z by lia.
-  all: have Hmax264 : (bv_unsigned sp + 264 < 0x40000000)%Z by lia.
+  all: have Hmin264 : ((mapRamBase defaultMap) <= bv_unsigned sp + 264)%Z by lia.
+  all: have Hmax264 : (bv_unsigned sp + 264 < (machineRamEnd defaultMap))%Z by lia.
   all: liARun.
   all: iSplit; [|done].
   all: iIntros "Hpost".

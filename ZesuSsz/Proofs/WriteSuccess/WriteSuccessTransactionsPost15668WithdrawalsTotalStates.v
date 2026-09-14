@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -23,14 +24,14 @@ Definition writeSuccessTransactionsPost15668WithdrawalsTotalFrame
      (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second pointer
      (Z_to_bv 64 (Z.of_nat count)) items ∗
-   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
          (writeSuccessWithdrawalsEvents sp count tail)))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    writeSuccessTransactionsCarrierWithdrawalsTotalData P sp pointer
      transactionBase withdrawalBase transactions transactionBytes count
      withdrawalBytes tail first second items ∗ True)%I.

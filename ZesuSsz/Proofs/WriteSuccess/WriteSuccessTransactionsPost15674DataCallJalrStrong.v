@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -37,7 +38,7 @@ Definition writeSuccessTransactionsPost15674DataCallEntryFixedSpec
     writeSuccessTransactionsPuncturedScratch sp base total ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer remaining
       items ∗
-    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗ P ∗ True)%I.
 
@@ -61,7 +62,7 @@ Definition writeSuccessTransactionsPost15674DataCallReturnFixedSpec
     writeSuccessTransactionsPuncturedScratch sp base total ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer remaining
       items ∗
-    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold

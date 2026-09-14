@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_06 Require Import instrs.
@@ -25,8 +26,8 @@ Definition encoderBytesSuffixFrame `{!islaG Sigma} `{!threadG}
    bv_unsigned data ↦ₘ∗ bytes ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
@@ -34,7 +35,7 @@ Definition encoderBytesSuffixFrame `{!islaG Sigma} `{!threadG}
      (∃ (final_x6 : bv 64),
       reg_col zesu_ram_sys_regs ∗
       "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-      "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+      "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
       "x6" ↦ᵣ RVal_Bits final_x6 ∗
       "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
       "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
@@ -45,7 +46,7 @@ Definition encoderBytesSuffixFrame `{!islaG Sigma} `{!threadG}
       (bv_unsigned sp - 16) ↦ₘ old_s0 ∗
       (bv_unsigned sp - 8) ↦ₘ ret ∗
       bv_unsigned data ↦ₘ∗ bytes ∗
-      mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+      mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@encoderBytesSuffixFrame) := I.
 
@@ -56,12 +57,12 @@ Definition encoderBytesSuffixSpec `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15c90) ∗
    "x2" ↦ᵣ RVal_Bits (sp - BV 64 32)%bv ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits ((sp - BV 64 32) - BV 64 16)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
    (bv_unsigned (sp - BV 64 32) - 16) ↦ₘ size ∗
    (bv_unsigned (sp - BV 64 32) - 8) ↦ₘ (BV 64 0x15c90) ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny data size tail) ∗
    encoderBytesSuffixFrame data size sp ret bytes
      old_x6 old_s0 old_s1 stack2 tail P ∗ True)%I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsPayload.
@@ -7,13 +8,13 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
 
 Lemma write_success_transactions_withdrawals_total_base_range
     (base : Z) (byteCount : nat) :
-  (0x20000000 <= base)%Z ->
-  (base + Z.of_nat byteCount < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z ->
+  (base + Z.of_nat byteCount < (machineRamEnd defaultMap))%Z ->
   (0 <= base <= 2 ^ 64)%Z.
 Proof.
   intros Hlower Hupper.
   have HbyteCount : (0 <= Z.of_nat byteCount)%Z := Nat2Z.is_nonneg byteCount.
-  have HramUpper : (0x40000000 < 2 ^ 64)%Z by native_compute.
+  have HramUpper : ((machineRamEnd defaultMap) < 2 ^ 64)%Z by native_compute.
   lia.
 Qed.
 

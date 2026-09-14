@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -23,13 +24,13 @@ Definition authorizationIntEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    "x11" ↦ᵣ RVal_Bits old11 ∗ reg_col [(KindReg "x10", BitsShape 64)] ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
      (writeSuccessPrivateBytes (writeSuccessEncodeU64
        (bv_unsigned (transactionRowWord bytes 0 offset)))) tail) ∗
    ⌜length bytes = 144%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗
    instr_pre (bv_unsigned ret) (authorizationIntPost sp bytes ret tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationIntEntry) := I.
 

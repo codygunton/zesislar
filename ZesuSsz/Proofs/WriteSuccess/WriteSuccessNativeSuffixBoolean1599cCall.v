@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -32,7 +33,7 @@ Definition writeSuccessSuffixBoolean159a0CallPost
    "x10" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBoolean159a0CallPost) := I.
 
@@ -51,11 +52,11 @@ Definition writeSuccessSuffixBoolean1599cCallSpec
     "x10" ↦ᵣ RVal_Bits value ∗
     "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x159a0
       (writeSuccessSuffixBoolean159a0CallPost sp tail saved ∗ Q) ∗
     Q)%I.

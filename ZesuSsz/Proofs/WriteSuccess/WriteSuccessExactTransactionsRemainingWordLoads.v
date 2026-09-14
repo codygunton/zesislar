@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_29 Require Import instrs.
@@ -9,9 +10,9 @@ Definition transactionsRemainingWordLoadEntry `{!islaG Sigma} `{!threadG}
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$> ["x11"; "x12"; "x13"; "x26"; "x8"]) ∗ (bv_unsigned sp + 272) ↦ₘ? 8 ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ ⌜length bytes = 288%nat⌝ ∗
    ⌜bv_unsigned pointer `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsRemainingWordLoadEntry) := I.
 
 Definition transactionsRemainingWordLoadPost `{!islaG Sigma} `{!threadG}
@@ -25,9 +26,9 @@ Definition transactionsRemainingWordLoadPost `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 272) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 176 bytes))) ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ ⌜length bytes = 288%nat⌝ ∗
    ⌜bv_unsigned pointer `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsRemainingWordLoadPost) := I.
 
 Lemma transactions_remaining_word_loads_correct `{!islaG Sigma} `{!threadG}

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactAuthorizationsU256 WriteSuccessExactAuthorizationsThirdU256
@@ -25,7 +26,7 @@ Proof.
     with "[Hfinal]" as "Hnext".
   { iApply (instr_pre_wand 0x15614 0x15614 false true with "Hfinal"); [done | done |].
     iIntros "Hpost". iApply (authorization_u256_to_body_post with "Hpost"). }
-  iPoseProof (authorization_third_u256_correct sp (BV 64 0x155fc) (BV 64 0x2401a0b8)
+  iPoseProof (authorization_third_u256_correct sp (BV 64 0x155fc) (BV 64 (mapIoContextAddress defaultMap))
     bytes tail ("x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗ P ∗ True)%I
     with "Hcaller Hencoder Houtput") as "Hcallee".
   iApply (instr_pre_wand 0x155fc 0x155fc false false with "Hcallee"); [done | done |].

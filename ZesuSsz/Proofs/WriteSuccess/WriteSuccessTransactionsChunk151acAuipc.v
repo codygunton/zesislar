@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -30,9 +31,9 @@ Lemma write_success_transactions_151b4_ret_bits2 :
 Proof. bv_solve. Qed.
 
 Lemma write_success_transactions_151ac_call_bounds (sp : bv 64) :
-  0x20000000 <= bv_unsigned sp - 48 ->
-  bv_unsigned sp + 1896 < 0x40000000 ->
-  0x20000000 <= bv_unsigned sp - 48 /\ bv_unsigned sp < 0x40000000.
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 ->
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap) ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 /\ bv_unsigned sp < (machineRamEnd defaultMap).
 Proof. lia. Qed.
 
 Lemma write_success_transactions_15cb0_target_bits2 :
@@ -104,10 +105,10 @@ Proof.
   | H : bv_unsigned sp `mod` 16 = 0 |- _ => rename H into Halign
   end.
   lazymatch goal with
-  | H : 0x20000000 <= bv_unsigned sp - 48 |- _ => rename H into Hmin
+  | H : (mapRamBase defaultMap) <= bv_unsigned sp - 48 |- _ => rename H into Hmin
   end.
   lazymatch goal with
-  | H : bv_unsigned sp + 1896 < 0x40000000 |- _ => rename H into Hmax
+  | H : bv_unsigned sp + 1896 < (machineRamEnd defaultMap) |- _ => rename H into Hmax
   end.
   unfold TRACE_LET.
   do 8 liAStep.
@@ -210,7 +211,7 @@ Qed.
   all: pose proof write_success_transactions_151b4_ret_bit1 as HretBit1.
   all: pose proof write_success_transactions_151b4_ret_bits2 as HretBits2.
   all: have HcallBounds :
-      0x20000000 <= bv_unsigned sp - 48 /\ bv_unsigned sp < 0x40000000
+      (mapRamBase defaultMap) <= bv_unsigned sp - 48 /\ bv_unsigned sp < (machineRamEnd defaultMap)
     by exact (write_success_transactions_151ac_call_bounds sp Hmin Hmax).
   all: iAssert (((bv_unsigned sp - 48) ↦ₘ? 48 -∗
       writeSuccessTransactionsScratch1519c

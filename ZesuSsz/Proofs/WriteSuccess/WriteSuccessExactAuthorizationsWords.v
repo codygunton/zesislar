@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -16,8 +17,8 @@ Definition authorizationWordsEntry `{!islaG Sigma} `{!threadG}
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
    "x2" ↦ᵣ RVal_Bits sp ∗ (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗
    ⌜length bytes = 144%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationWordsEntry) := I.
 
 Definition authorizationWordsAtPost `{!islaG Sigma} `{!threadG}
@@ -29,8 +30,8 @@ Definition authorizationWordsAtPost `{!islaG Sigma} `{!threadG}
    "x13" ↦ᵣ RVal_Bits (transactionRowWord bytes offset 24) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗ (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗
    ⌜length bytes = 144%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationWordsAtPost) := I.
 
 Definition authorizationWordsPost `{!islaG Sigma} `{!threadG}

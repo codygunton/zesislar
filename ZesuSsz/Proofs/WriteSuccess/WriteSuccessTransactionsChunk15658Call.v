@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -66,7 +67,7 @@ Proof.
     (unfold WriteSuccessTransactionsSpec.writeSuccessTransactionsProcessedOwn).
   all: try iFrame "Hprocessed".
   all: try iFrame.
-  all: try (iDestruct select (mmio_range 0x2401a0c0 16) as "Hmmio";
+  all: try (iDestruct select (mmio_range (machineOutputAddress defaultMap) 16) as "Hmmio";
     iFrame "Hmmio").
   Unshelve. all: prepare_sidecond.
   all: try assumption.

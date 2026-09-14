@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.SnapshotSlices.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -22,7 +23,7 @@ Definition writeOutputWholeSpec `{!islaG Sigma} `{!threadG}
     "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
     base ↦ₘ∗ bytes ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents data size (take count (drop start bytes)) tail) ∗
     ⌜Z.to_N (bv_unsigned size) = N.of_nat count⌝ ∗
     ⌜bv_unsigned data = (base + Z.of_nat start)%Z⌝ ∗
@@ -33,10 +34,10 @@ Definition writeOutputWholeSpec `{!islaG Sigma} `{!threadG}
     instr_pre (bv_unsigned ret)
       (reg_col zesu_ram_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits ret ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
        base ↦ₘ∗ bytes ∗
-       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+       mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeOutputWholeSpec) := I.
 
@@ -51,13 +52,13 @@ Proof.
   iStartProof.
   unshelve (repeat zesu_liAStepNoWrite).
   1-3: prepare_sidecond; try assumption; try bv_solve.
-  replace LET4 with (BV 64 0x2401a0c0) by
+  replace LET4 with (BV 64 (machineOutputAddress defaultMap)) by
     (unfold LET4, LET2, LET0; bv_solve).
   zesu_liAStepGenericWrite.
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).
   1: prepare_sidecond; try assumption; try bv_solve.
-  replace LET8 with (BV 64 0x2401a0c8) by bv_solve.
+  replace LET8 with (BV 64 (machineOutputSizeAddress defaultMap)) by bv_solve.
   zesu_liAStepSnapshotWriteAt base.
   Unshelve.
   unshelve (repeat zesu_liAStepNoWrite).

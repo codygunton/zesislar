@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -14,11 +15,11 @@ Lemma write_success_access_lists_storage_invariant
       (32 * S count)%nat)
     (HcountBound : (S count < 2 ^ 64)%nat)
     (HstorageLow :
-      0x20000000 <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry))
+      (mapRamBase defaultMap) <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry))
     (HstorageHigh :
       bv_unsigned (writeSuccessAccessEntryStoragePointer entry) +
         Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) <
-        0x40000000) :
+        (machineRamEnd defaultMap)) :
   writeSuccessAccessListsInvariant sp base entries processed
     (entry :: remaining) bytes prefix suffix -∗
   writeSuccessFixedWidthArrayInvariant sp

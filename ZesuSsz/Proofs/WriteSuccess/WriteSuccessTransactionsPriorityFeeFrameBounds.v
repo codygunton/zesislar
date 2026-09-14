@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeCore.
@@ -13,8 +14,8 @@ Lemma write_success_transactions_priority_fee_frame_bounds
   writeSuccessTransactionsPriorityFeeFrame P sp base transaction
     transactions processed remaining bytes prefix suffix tail ∗
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-  ⌜bv_unsigned sp < 0x40000000⌝.
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+  ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝.
 Proof.
   iIntros "Hframe".
   iEval (unfold writeSuccessTransactionsPriorityFeeFrame) in "Hframe".

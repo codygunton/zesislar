@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsCopyEntry.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsCopyWhole.
@@ -49,10 +50,10 @@ Definition accessOutputLoopFrame `{!islaG Sigma} `{!threadG}
    ⌜length bytes = (40 * length entries)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessOutputLoopFrame) := I.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From Coq Require Import Lists.List.
@@ -10,8 +11,8 @@ Definition accessListsCopyJumpEntry `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits cursor ∗ "x1" ↦ᵣ RVal_Bits old_ra ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x12", BitsShape 64)] ∗
    (bv_unsigned sp + 256) ↦ₘ base ∗ (bv_unsigned sp + 272) ↦ₘ old_index ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessListsCopyJumpEntry) := I.
 
 Definition accessListsCopyJumpPost `{!islaG Sigma} `{!threadG}
@@ -21,8 +22,8 @@ Definition accessListsCopyJumpPost `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned base + 40 * bv_unsigned cursor)) ∗
    "x12" ↦ᵣ RVal_Bits (BV 64 40) ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15200) ∗
    (bv_unsigned sp + 256) ↦ₘ base ∗ (bv_unsigned sp + 272) ↦ₘ cursor ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 280 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 280 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessListsCopyJumpPost) := I.
 
 Lemma access_lists_copy_jump_correct `{!islaG Sigma} `{!threadG}

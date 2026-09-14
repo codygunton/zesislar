@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsChunk150f0Spec.
@@ -16,9 +17,9 @@ Lemma write_success_transactions_invariant_bound
   WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant
       sp base transactions processed (transaction :: remaining)
       bytes prefix suffix ∗
-  ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+  ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned sp - 48⌝.
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝.
 Proof.
   iIntros "#Hinv".
   iPoseProof "Hinv" as "#Hcopy".

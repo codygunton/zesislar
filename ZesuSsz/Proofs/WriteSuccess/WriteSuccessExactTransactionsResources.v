@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -15,17 +16,17 @@ Definition writeSuccessExactTransactionsBranchFrame
    "x2" ↦ᵣ RVal_Bits sp ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    writeSuccessTransactionsScratch sp base (length transactions) ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactTransactionsEvents sp remaining tail) ∗
    ⌜transactions = processed ++ remaining⌝ ∗
    ⌜bytes = writeSuccessTransactionsBytes transactions⌝ ∗
    ⌜length bytes = (288 * length transactions)%nat⌝ ∗
    ⌜(length transactions < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜base `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= base⌝ ∗
-   ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜base `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= base⌝ ∗
+   ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessExactTransactionsBranchFrame) := I.
 

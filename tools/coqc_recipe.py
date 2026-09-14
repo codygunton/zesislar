@@ -32,6 +32,12 @@ def trace_events(data: bytes):
         yield event
 
 
+def project_recipe(recipe):
+    return recipe is not None and any(
+        arg.startswith("ZesuSsz/") and arg.endswith(".v")
+        for arg in recipe["command"])
+
+
 def compiler_recipe(data: bytes):
     recipe = None
     for event in trace_events(data):
@@ -45,7 +51,7 @@ def compiler_recipe(data: bytes):
         if Path(program).name == "coqc" and any(arg.endswith(".v") for arg in args):
             candidate = {"command": [program, *args],
                          "working_dir": fields.get("dir", [None])[0]}
-            if recipe is None or "ZesuSsz" in args or "ZesuSsz" not in recipe["command"]:
+            if recipe is None or project_recipe(candidate) or not project_recipe(recipe):
                 recipe = candidate
     return recipe
 
@@ -55,8 +61,7 @@ def remember_recipe(build_dir: Path):
     cache = build_dir / "coqc_recipe.json"
     recipe = compiler_recipe(trace.read_bytes()) if trace.exists() else None
     cached = json.loads(cache.read_text()) if cache.exists() else None
-    if (cached is not None and "ZesuSsz" in cached["command"]
-            and recipe is not None and "ZesuSsz" not in recipe["command"]):
+    if project_recipe(cached) and recipe is not None and not project_recipe(recipe):
         return cached
     if recipe is not None:
         recipe["working_dir"] = recipe["working_dir"] or str(build_dir / "default")

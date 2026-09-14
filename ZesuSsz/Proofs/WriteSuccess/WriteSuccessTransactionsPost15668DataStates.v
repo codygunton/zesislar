@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -24,13 +25,13 @@ Definition writeSuccessTransactionsPost1566cDataSpec
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
       (Z_to_bv 64 (Z.of_nat count)) items ∗
-    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Definition writeSuccessTransactionsPost15670DataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -46,13 +47,13 @@ Definition writeSuccessTransactionsPost15670DataSpec
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
       (Z_to_bv 64 (Z.of_nat count)) items ∗
-    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Definition writeSuccessTransactionsPost15674DataSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -68,13 +69,13 @@ Definition writeSuccessTransactionsPost15674DataSpec
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second pointer
       (Z_to_bv 64 (Z.of_nat count)) items ∗
-    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
         (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsPost1566cDataSpec) := I.
 Global Instance : LithiumUnfold (@writeSuccessTransactionsPost15670DataSpec) := I.

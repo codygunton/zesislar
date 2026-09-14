@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -42,7 +43,7 @@ Definition writeSuccessTransactionsAt150f0CarrierEntryBlock
     (first second third fourth : bv 64) (items : list ByteListItem) : iProp Sigma :=
   (writeSuccessTransactionsMachine150f0CarrierCall
       sp base transactions processed transaction first second third fourth items ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
        (writeSuccessTransactionsEvents sp remaining
@@ -58,7 +59,7 @@ Definition writeSuccessTransactionsAt150f8CarrierCallBlockFixed
     (bytes prefix suffix : list (bv 8)) (tail : spec)
     (first second third fourth : bv 64) (items : list ByteListItem) : iProp Sigma :=
   (writeSuccessTransactionsMachine150f8CarrierCall sp transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
        (writeSuccessTransactionsEvents sp remaining

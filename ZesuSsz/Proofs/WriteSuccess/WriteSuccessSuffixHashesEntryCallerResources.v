@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -9,33 +10,33 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 Import ListNotations.
 
 Lemma write_success_suffix_ram_lower_904 (sp : bv 64)
-    (Hmin : 0x20000000 <= bv_unsigned sp)
+    (Hmin : (mapRamBase defaultMap) <= bv_unsigned sp)
     (Haddr : bv_unsigned (sp + BV 64 904)%bv = bv_unsigned sp + 904) :
-    bv_unsigned (sp + BV 64 904)%bv >= bv_unsigned (BV 64 0x20000000).
+    bv_unsigned (sp + BV 64 904)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)).
 Proof.
   rewrite Haddr bv_unsigned_BV. lia.
 Qed.
 
 Lemma write_success_suffix_ram_lower_912 (sp : bv 64)
-    (Hmin : 0x20000000 <= bv_unsigned sp)
+    (Hmin : (mapRamBase defaultMap) <= bv_unsigned sp)
     (Haddr : bv_unsigned (sp + BV 64 912)%bv = bv_unsigned sp + 912) :
-    bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 0x20000000).
+    bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)).
 Proof.
   rewrite Haddr bv_unsigned_BV. lia.
 Qed.
 
 Lemma write_success_suffix_ram_upper_904 (sp : bv 64)
-    (Hmax : bv_unsigned sp + 1896 < 0x40000000)
+    (Hmax : bv_unsigned sp + 1896 < (machineRamEnd defaultMap))
     (Haddr : bv_unsigned (sp + BV 64 904)%bv = bv_unsigned sp + 904) :
     bv_unsigned (sp + BV 64 904)%bv <=
-      bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv.
+      bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv.
 Proof. clear - Hmax Haddr. rewrite Haddr. bv_solve. Qed.
 
 Lemma write_success_suffix_ram_upper_912 (sp : bv 64)
-    (Hmax : bv_unsigned sp + 1896 < 0x40000000)
+    (Hmax : bv_unsigned sp + 1896 < (machineRamEnd defaultMap))
     (Haddr : bv_unsigned (sp + BV 64 912)%bv = bv_unsigned sp + 912) :
     bv_unsigned (sp + BV 64 912)%bv <=
-      bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv.
+      bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv.
 Proof. clear - Hmax Haddr. rewrite Haddr. bv_solve. Qed.
 
 Definition writeSuccessSuffixHashesEntrySpec
@@ -52,7 +53,7 @@ Definition writeSuccessSuffixHashesEntrySpec
     (bv_unsigned sp + 904) ↦ₘ pointer ∗
     (bv_unsigned sp + 912) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -77,7 +78,7 @@ Definition writeSuccessSuffixHashes15740Post
    (bv_unsigned sp + 904) ↦ₘ pointer ∗
    (bv_unsigned sp + 912) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -102,7 +103,7 @@ Definition writeSuccessSuffixHashesAt15740Spec
     (bv_unsigned sp + 904) ↦ₘ pointer ∗
     (bv_unsigned sp + 912) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -123,7 +124,7 @@ Definition writeSuccessSuffixHashes15740Frame
    "x9" ↦ᵣ RVal_Bits pointer ∗ base ↦ₘ∗ bytes ∗
    writeSuccessHashesScratch sp ∗
    (bv_unsigned sp + 904) ↦ₘ pointer ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -145,9 +146,9 @@ Definition writeSuccessSuffixHashes15740State
    bv_unsigned (sp + BV 64 912)%bv ↦ₘ
      Z_to_bv 64 (Z.of_nat (S remaining)) ∗
    ⌜bv_extract 0 3 (sp + BV 64 912)%bv = BV 3 0⌝ ∗
-   ⌜bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 0x20000000)⌝ ∗
+   ⌜bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap))⌝ ∗
    ⌜bv_unsigned (sp + BV 64 912)%bv <=
-     bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv⌝ ∗
+     bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv⌝ ∗
    writeSuccessSuffixHashes15740Frame P sp pointer base total processed
      remaining bytes tail)%I.
 

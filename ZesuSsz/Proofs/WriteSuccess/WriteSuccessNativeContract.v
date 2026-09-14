@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -186,12 +187,12 @@ Definition writeSuccessWitnessWellFormed {Decoded}
     Z_to_bv 64 (Z.of_nat (writeSuccessWithdrawalsCount witness)) /\
   length (writeSuccessWithdrawalsBytes witness) =
     (48 * writeSuccessWithdrawalsCount witness)%nat /\
-  (0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness))%Z /\
+  ((mapRamBase defaultMap) <= bv_unsigned (writeSuccessWithdrawalsBase witness))%Z /\
   (bv_unsigned (writeSuccessWithdrawalsBase witness) +
-    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000)%Z /\
+    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < (machineRamEnd defaultMap))%Z /\
   bv_unsigned (writeSuccessEntrySp witness) `mod` 16 = 0 /\
-  (0x20000880 <= bv_unsigned (writeSuccessEntrySp witness))%Z /\
-  (bv_unsigned (writeSuccessEntrySp witness) + 0x7d0 < 0x40000000)%Z.
+  ((mapRamBase defaultMap + 0x880) <= bv_unsigned (writeSuccessEntrySp witness))%Z /\
+  (bv_unsigned (writeSuccessEntrySp witness) + 0x7d0 < (machineRamEnd defaultMap))%Z.
 
 (** The existing trace assertions describe output stores.  A later theorem must
     define this relation from those stores to the public byte string. *)
@@ -231,9 +232,9 @@ Definition writeSuccessNativeDataResources `{!islaG Sigma}
     Z_to_bv 64 (Z.of_nat (writeSuccessWithdrawalsCount witness))⌝ ∗
   ⌜length (writeSuccessWithdrawalsBytes witness) =
     (48 * writeSuccessWithdrawalsCount witness)%nat⌝ ∗
-  ⌜0x20000000 <= bv_unsigned (writeSuccessWithdrawalsBase witness)⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned (writeSuccessWithdrawalsBase witness)⌝ ∗
   ⌜bv_unsigned (writeSuccessWithdrawalsBase witness) +
-    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < 0x40000000⌝ ∗
+    Z.of_nat (length (writeSuccessWithdrawalsBytes witness)) < (machineRamEnd defaultMap)⌝ ∗
   writeSuccessPostTransactionDataResources
     (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
     (writeSuccessDecodedBytes witness) (writeSuccessPostData witness) ∗
@@ -363,26 +364,26 @@ Definition writeSuccessProloguePayload `{!islaG Sigma} `{!threadG}
   ((bv_unsigned (writeSuccessEntrySp witness) - 0x7d0) ↦ₘ? 1896 ∗
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
      writeSuccessDecodedBytes witness ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessNativeTailEvents witness) ∗
    writeSuccessNativeDataResources witness ∗
    ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
    ⌜(bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
-      0x40000000)%Z⌝ ∗ True)%I.
+      (machineRamEnd defaultMap))%Z⌝ ∗ True)%I.
 
 Definition writeSuccessLegacyProloguePayload `{!islaG Sigma} `{!threadG}
     {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
   ((bv_unsigned (writeSuccessEntrySp witness) - 0x7d0) ↦ₘ? 1896 ∗
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
      writeSuccessDecodedBytes witness ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessNativeLegacyTailEvents witness) ∗
    writeSuccessNativeDataResources witness ∗
    ⌜length (writeSuccessDecodedBytes witness) = 848%nat⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned (writeSuccessDecodedPointer witness))%Z⌝ ∗
    ⌜(bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
-      0x40000000)%Z⌝ ∗ True)%I.
+      (machineRamEnd defaultMap))%Z⌝ ∗ True)%I.
 
 Definition writeSuccessNativeEntry `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
@@ -475,11 +476,11 @@ Proof.
      HwithdrawalLength & HwithdrawalMin & HwithdrawalMax & HspAlign & HspMin &
      HspMax).
   have HdecodedMin :
-      (0x20000000 <= bv_unsigned (writeSuccessDecodedPointer witness))%Z
+      ((mapRamBase defaultMap) <= bv_unsigned (writeSuccessDecodedPointer witness))%Z
     by lia.
   have HdecodedMax :
       (bv_unsigned (writeSuccessDecodedPointer witness) + 848 <
-       0x40000000)%Z by lia.
+       (machineRamEnd defaultMap))%Z by lia.
   have HspExtract :
       bv_extract 0 4 (writeSuccessEntrySp witness) = BV 4 0.
   { apply bv_eq. rewrite bv_extract_0_unsigned.

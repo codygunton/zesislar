@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
@@ -13,8 +14,8 @@ Import ZesuSsz.Automation.Calls.FramedContinuations.
 Definition accessCountWholeFrame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ ⌜length bytes = 40%nat⌝ ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1784 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1784 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessCountWholeFrame) := I.
 
 Definition accessCountWholePost `{!islaG Sigma} `{!threadG}
@@ -28,7 +29,7 @@ Definition accessCountWholeEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x1" ↦ᵣ RVal_Bits old_ra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    "x10" ↦ᵣ RVal_Bits old_data ∗ "x11" ↦ᵣ RVal_Bits old_size ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
      (writeSuccessPrivateBytes (writeSuccessEncodeU64
        (bv_unsigned (transactionRowWord bytes 0 8)))) tail) ∗

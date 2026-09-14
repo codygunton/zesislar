@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -46,7 +47,7 @@ Definition writeSuccessTransactions150f8SomeCallFrame
        (WriteSuccessTransactionsSpec.writeSuccessTransactionByte transaction 32)) ∗
    WriteSuccessTransactionsBoundary150e8.writeSuccessTransactionsScratch150e8
      sp base transactions processed transaction ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseEvents
        WriteSuccessTransactionsSpec.TransactionChainId sp transaction

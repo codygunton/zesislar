@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -176,7 +177,7 @@ Definition writeSuccessExactValuePost `{!islaG Sigma} `{!threadG}
    bv_unsigned (writeSuccessExactValueWord values 4) ↦ₘ∗ payload ∗
    (bv_unsigned sp + 104) ↦ₘ default (BV 64 0) (take 69 values !! 7%nat) ∗
    (bv_unsigned sp + 112) ↦ₘ default (BV 64 0) (take 69 values !! 8%nat) ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Definition writeSuccessExactValueSpec `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) : iProp Sigma :=
@@ -188,14 +189,14 @@ Definition writeSuccessExactValueSpec `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 104) ↦ₘ? 16 ∗
     writeSuccessExactValueMemory sp values ∗
     bv_unsigned (writeSuccessExactValueWord values 4) ↦ₘ∗ payload ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessExactValueEvents sp values payload tail) ∗
     ⌜length values = 74%nat⌝ ∗
     ⌜bv_unsigned (writeSuccessExactValueWord values 5) = length payload⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗
     instr_pre 0x14f04 (writeSuccessExactValuePost sp values payload tail P))%I.
 
 Global Instance : LithiumUnfold (@writeSuccessExactValueSpec) := I.
@@ -219,11 +220,11 @@ Definition writeSuccessExactValueBaseFeeReturnSpec
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x14ed4) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEvents (sp + 1588)%bv (BV 64 32)
         (writeSuccessValueBlockHash values)
@@ -244,7 +245,7 @@ Definition writeSuccessExactValueBaseFeeReturnSpec
     ⌜length values = 74%nat⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessExactValueBaseFeeReturnSpec) := I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads.
@@ -10,8 +11,8 @@ Definition accessListsStorageWholeBranchEntry `{!islaG Sigma} `{!threadG}
    "x10" ↦ᵣ RVal_Bits data ∗
    reg_col [(KindReg "x22", BitsShape 64); (KindReg "x27", BitsShape 64)] ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ ⌜length bytes = 40%nat⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1784 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1784 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessListsStorageWholeBranchEntry) := I.
 
 Definition accessListsStorageWholeBranchPost `{!islaG Sigma} `{!threadG}
@@ -21,8 +22,8 @@ Definition accessListsStorageWholeBranchPost `{!islaG Sigma} `{!threadG}
    "x22" ↦ᵣ RVal_Bits (transactionRowWord bytes 0 0) ∗
    "x27" ↦ᵣ RVal_Bits (transactionRowWord bytes 0 8) ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ bytes ∗ ⌜length bytes = 40%nat⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1784 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1784 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessListsStorageWholeBranchPost) := I.
 
 Lemma access_lists_storage_whole_branch_correct `{!islaG Sigma} `{!threadG}

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -20,8 +21,8 @@ Lemma write_success_transactions_optional_address_some_1518c_call_scratch
   writeSuccessTransactionsOptionalAddressSome15190Frame P sp base transaction
     transactions processed remaining bytes prefix suffix tail ∗
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-  ⌜bv_unsigned sp < 0x40000000⌝.
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+  ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝.
 Proof.
   iIntros "(H34 & Hscratch & Hframe)".
   iEval (unfold writeSuccessTransactionsOptionalAddressSomeFrame) in "Hframe".
@@ -50,8 +51,8 @@ Proof.
     with "[H34 Hscratch Hframe]" as "Hframe15190".
   { rewrite /writeSuccessTransactionsOptionalAddressSome15190Frame.
     iFrame "H34 Hscratch Hframe"; done. }
-  have HstackLower : (0x20000000 <= bv_unsigned sp - 16)%Z by lia.
-  have HstackUpper : (bv_unsigned sp < 0x40000000)%Z by lia.
+  have HstackLower : ((mapRamBase defaultMap) <= bv_unsigned sp - 16)%Z by lia.
+  have HstackUpper : (bv_unsigned sp < (machineRamEnd defaultMap))%Z by lia.
   iFrame "Hframe15190".
   iPureIntro. split; [exact Halign |]. split; [exact HstackLower | exact HstackUpper].
 Qed.

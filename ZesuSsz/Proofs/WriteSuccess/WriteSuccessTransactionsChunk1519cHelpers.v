@@ -1,9 +1,10 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 
 Lemma write_success_transactions_chunk_1519c_offset (sp : bv 64) :
-  (bv_unsigned sp < 0x40000000)%Z ->
+  (bv_unsigned sp < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (sp + BV 64 128)%bv = bv_unsigned sp + 128.
 Proof.
   intro Hupper. rewrite bv_add_unsigned. apply bv_wrap_small.
@@ -14,7 +15,7 @@ Qed.
 
 Lemma write_success_transactions_chunk_1519c_alignment (sp : bv 64) :
   (bv_unsigned sp `mod` 16 = 0)%Z ->
-  (bv_unsigned sp < 0x40000000)%Z ->
+  (bv_unsigned sp < (machineRamEnd defaultMap))%Z ->
   bv_extract 0 3 (sp + BV 64 128)%bv = BV 3 0.
 Proof.
   intros Halign Hupper. apply bv_eq.
@@ -25,9 +26,9 @@ Proof.
 Qed.
 
 Lemma write_success_transactions_chunk_1519c_lower (sp : bv 64) :
-  (0x20000000 <= bv_unsigned sp)%Z ->
-  (bv_unsigned sp < 0x40000000)%Z ->
-  (bv_unsigned (sp + BV 64 128)%bv >= bv_unsigned (BV 64 536870912))%Z.
+  ((mapRamBase defaultMap) <= bv_unsigned sp)%Z ->
+  (bv_unsigned sp < (machineRamEnd defaultMap))%Z ->
+  (bv_unsigned (sp + BV 64 128)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)))%Z.
 Proof.
   intros Hlower Hupper.
   rewrite (write_success_transactions_chunk_1519c_offset sp Hupper).
@@ -35,14 +36,14 @@ Proof.
 Qed.
 
 Lemma write_success_transactions_chunk_1519c_upper (sp : bv 64) :
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   (bv_unsigned (sp + BV 64 128)%bv <=
-    bv_unsigned (BV 64 536870912 + BV 64 536870912 - BV 64 8))%Z.
+    bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8))%Z.
 Proof.
   intro Hupper.
-  have Hoffset : (bv_unsigned sp < 0x40000000)%Z by lia.
+  have Hoffset : (bv_unsigned sp < (machineRamEnd defaultMap))%Z by lia.
   rewrite (write_success_transactions_chunk_1519c_offset sp Hoffset).
   rewrite bv_unsigned_BV.
-  change (bv_unsigned sp + 128 <= 1073741816)%Z.
+  change (bv_unsigned sp + 128 <= (machineRamEnd defaultMap - 8))%Z.
   lia.
 Qed.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -68,7 +69,7 @@ Definition writeSuccessTransactionsAuthorizationsEntryFrame
    writeSuccessTransactionsOwn processed ∗
    writeSuccessTransactionOwn transaction ∗
    writeSuccessTransactionsOwn remaining ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents TransactionAuthorizations sp
        transaction (writeSuccessTransactionsEvents sp remaining tail)) ∗
@@ -89,7 +90,7 @@ Definition writeSuccessTransactionsAt15584CoreSpec
     reg_col writeSuccessTransactions15584OtherRegShapes ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15584) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
     "x18" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 248) ∗
@@ -100,7 +101,7 @@ Definition writeSuccessTransactionsAt15584CoreSpec
     writeSuccessTransactionsAuthorizationsEntryFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 168 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 168 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_unsigned pointer =
       (bv_unsigned (writeSuccessTransactionWord transaction 224) +
        32 * Z.of_nat
@@ -131,7 +132,7 @@ Definition writeSuccessTransactionsAt1558cCoreSpec
     reg_col writeSuccessTransactions1558cOtherRegShapes ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15584) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗
     "x9" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 240) ∗
     "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
@@ -205,7 +206,7 @@ Proof.
       %HspMin & %HspMax & _)".
   have Halign8 : bv_unsigned sp `mod` 8 = 0 by lia.
   have HloadBounds :
-      0x20000000 <= bv_unsigned sp + 168 < 0x40000000 by lia.
+      (mapRamBase defaultMap) <= bv_unsigned sp + 168 < (machineRamEnd defaultMap) by lia.
   iEval (unfold writeSuccessTransactionsProcessedOwn) in "Hprocessed".
   iAssert (writeSuccessTransactionsAuthorizationsEntryFrame P sp base
       transaction transactions processed remaining bytes prefix suffix tail)
@@ -227,8 +228,8 @@ Lemma write_success_transactions_authorization_scratch_split
       list writeSuccessTransaction) (transaction : writeSuccessTransaction) :
   ⌜bv_unsigned sp `mod` 16 = 0⌝ -∗
   ⌜bv_unsigned sp `mod` 8 = 0⌝ -∗
-  ⌜0x20000000 <= bv_unsigned sp - 48⌝ -∗
-  ⌜bv_unsigned sp + 1896 < 0x40000000⌝ -∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ -∗
+  ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ -∗
   writeSuccessTransactionsScratch15564
       sp base transactions processed transaction -∗
   writeSuccessAuthorizationsScratch sp ∗

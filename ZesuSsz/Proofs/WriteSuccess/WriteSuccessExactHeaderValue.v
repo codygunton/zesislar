@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -35,8 +36,8 @@ Definition writeSuccessExactHeaderValueTransition `{!islaG Sigma}
    ⌜bv_unsigned (writeSuccessExactValueWord values 5) = length payload⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x14f04
      (writeSuccessExactValuePost sp values payload tail
        (writeSuccessExactHeaderValueFrame P sp bytes)))%I.
@@ -122,13 +123,13 @@ Definition writeSuccessExactHeaderValueSpec `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 104) ↦ₘ? 16 ∗
    (bv_unsigned sp + 312) ↦ₘ∗ bytes ∗
    (bv_unsigned sp + 1032) ↦ₘ? 864 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactHeaderEvents sp bytes
      (writeSuccessExactValueEvents sp values payload tail)) ∗
    ⌜length bytes = 720%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    writeSuccessNativeStaticResources ∗
    writeSuccessExactHeaderValueTransition P sp bytes values payload tail ∗
    True)%I.

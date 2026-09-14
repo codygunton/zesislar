@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -37,11 +38,11 @@ Definition writeSuccessTailOptionalSetupSpec
     (bv_unsigned sp - 32) ↦ₘ? 32 ∗
     (bv_unsigned sp + 296) ↦ₘ value ∗
     (bv_unsigned sp + 304) ↦ₘ tag ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 304 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 304 < (machineRamEnd defaultMap)⌝ ∗
     ((⌜bv_extract 0 8 tag = BV 8 0⌝ ∗
        spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail)) ∨
      (⌜bv_extract 0 8 tag <> BV 8 0⌝ ∗

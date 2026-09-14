@@ -1,14 +1,16 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import ZArith.ZArith.
 Lemma array_destination_dynamic_range (row offset limit : bv 64) (bytes : list (bv 8)) :
   bv_unsigned limit = Z.of_nat (length bytes) ->
   offset <> limit -> (bv_unsigned offset <= bv_unsigned limit)%Z ->
-  (0x20000000 <= bv_unsigned row)%Z ->
-  (bv_unsigned row + bv_unsigned limit < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= bv_unsigned row)%Z ->
+  (bv_unsigned row + bv_unsigned limit < (machineRamEnd defaultMap))%Z ->
   (bv_unsigned row <= bv_unsigned (row + offset)%bv <
     bv_unsigned row + Z.of_nat (length bytes))%Z.
 Proof.
   intros Hlimit Hne Hle Hlow Hhigh.
+  cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *.
   have HneZ : bv_unsigned offset <> bv_unsigned limit.
   { intros Heq. apply Hne. apply bv_eq. exact Heq. }
   bv_solve.

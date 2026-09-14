@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 
 Lemma array_cursor_base_index (row : bv 64) (base : Z) (index : nat) :
@@ -14,12 +15,13 @@ Lemma array_cursor_index (row offset : bv 64) (base : Z)
     (bytes : list (bv 8)) (index count : nat) :
   bv_unsigned row = (base + Z.of_nat index)%Z ->
   bv_unsigned offset = Z.of_nat count ->
-  (0x20000000 <= base)%Z ->
-  (base + Z.of_nat (length bytes) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z ->
+  (base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z ->
   (index + count <= length bytes)%nat ->
   Z.to_nat (bv_unsigned (row + offset)%bv - base) = (index + count)%nat.
 Proof.
   intros Hrow Hoffset Hmin Hmax Hbound.
+  cbv [machineRamEnd defaultMap mapRamBase mapRamSize] in Hmin, Hmax.
   have Hsum : bv_unsigned (row + offset)%bv =
       (bv_unsigned row + Z.of_nat count)%Z by bv_solve.
   rewrite Hsum Hrow. apply Nat2Z.inj.
@@ -38,8 +40,8 @@ Ltac zesu_normalize_array_cursor_base :=
 Ltac zesu_normalize_array_cursor_offset :=
   match goal with
   | Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
-    Hlower : (0x20000000 <= ?base)%Z,
-    Hupper : (?base + Z.of_nat (length ?bytes) < 0x40000000)%Z
+    Hlower : ((mapRamBase defaultMap) <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < (machineRamEnd defaultMap))%Z
       |- context[Z.to_nat (bv_unsigned (bv_add ?row ?offset) - ?base)] =>
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;

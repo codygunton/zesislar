@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteViews.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
@@ -13,8 +14,8 @@ Definition transactionRecipientAssemblyStackFrame `{!islaG Sigma} `{!threadG}
   ("x2" ↦ᵣ RVal_Bits sp ∗
    (bv_unsigned sp + 120) ↦ₘ (transactionRowByte bytes index 285) ∗
    (bv_unsigned sp + 1664) ↦ₘ chain ∗ (bv_unsigned sp + 1672) ↦ₘ chainTag ∗
-   ⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝ ∗ ⌜(0x20000000 <= bv_unsigned sp)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 128 < 0x40000000)%Z⌝ ∗
+   ⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝ ∗ ⌜((mapRamBase defaultMap) <= bv_unsigned sp)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 128 < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜(bv_unsigned row `mod` 8 = 0)%Z⌝ ∗
    transactionRecipientAssemblyFields sp row bytes index P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientAssemblyStackFrame) := I.
@@ -24,7 +25,7 @@ Definition transactionRecipientAssemblyDataFrame `{!islaG Sigma} `{!threadG}
   ("x10" ↦ᵣ RVal_Bits row ∗ base ↦ₘ∗ bytes ∗
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 272 <= length bytes)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗
    transactionRecipientAssemblyStackFrame sp row chain chainTag bytes index P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientAssemblyDataFrame) := I.
 

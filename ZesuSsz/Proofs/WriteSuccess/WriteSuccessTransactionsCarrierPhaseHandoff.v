@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -24,7 +25,7 @@ Lemma write_success_transactions_carrier_phase_handoff_pack
   writeSuccessTransactionsLoopCarrierPayload
     sp first second third fourth items -∗
   (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
-  mmio_range 0x2401a0c0 16 -∗
+  mmio_range (machineOutputAddress defaultMap) 16 -∗
   spec_trace
     (writeSuccessTransactionPhaseEvents phase sp transaction
       (writeSuccessTransactionsEvents sp remaining
@@ -67,7 +68,7 @@ Lemma write_success_transactions_carrier_phase_handoff_unpack
   writeSuccessTransactionsLoopCarrierPayload
     sp first second third fourth items ∗
   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-  mmio_range 0x2401a0c0 16 ∗
+  mmio_range (machineOutputAddress defaultMap) 16 ∗
   spec_trace
     (writeSuccessTransactionPhaseEvents phase sp transaction
       (writeSuccessTransactionsEvents sp remaining

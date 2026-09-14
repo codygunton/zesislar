@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -22,15 +23,15 @@ Definition writeSuccessTransactionsPriorityFeeSomeAt15124Spec
     "x10" ↦ᵣ RVal_Bits (BV 64 1) ∗
     "x11" ↦ᵣ RVal_Bits (BV 64 16) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeSuccessTransactionsPriorityFeeSomeBooleanEvents
         sp transaction remaining tail) ∗
     writeSuccessTransactionsPriorityFeeCallerFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold
   (@writeSuccessTransactionsPriorityFeeSomeAt15124Spec) := I.
@@ -42,7 +43,7 @@ Definition writeSuccessTransactionsPriorityFeeSomeAt15128Spec
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     writeSuccessTransactionsMachine150f0
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeSuccessTransactionsPriorityFeeSomeBooleanTail
         sp transaction remaining tail) ∗

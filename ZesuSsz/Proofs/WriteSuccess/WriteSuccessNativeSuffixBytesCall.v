@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -35,19 +36,19 @@ Definition writeSuccessPost1593cCallEntrySpec
     ⌜bv_extract 0 1 (BV 64 0x15940) = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 (BV 64 0x15940) = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 (BV 64 0x15940) = BV 2 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 80 /\
-      bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 80 /\
+      bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     (bv_unsigned sp - 80) ↦ₘ? 80 ∗
     byteListItemResources (bv_unsigned b10) items ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
     ⌜bv_unsigned b11 = length items⌝ ∗
     ⌜length items < 2 ^ 64⌝ ∗
     ⌜bv_extract 0 3 b10 = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned b10⌝ ∗
-    ⌜bv_unsigned b10 + 16 * Z.of_nat (length items) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned b10⌝ ∗
+    ⌜bv_unsigned b10 + 16 * Z.of_nat (length items) < (machineRamEnd defaultMap)⌝ ∗
     P)%I.
 
 Global Instance : LithiumUnfold
@@ -68,7 +69,7 @@ Definition writeSuccessPost1593cCallReturnSpec
     "x11" ↦ᵣ RVal_Bits r11 ∗
     (bv_unsigned sp - 80) ↦ₘ? 80 ∗
     byteListItemResources (bv_unsigned base) items ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPost1593cCallReturnSpec) := I.

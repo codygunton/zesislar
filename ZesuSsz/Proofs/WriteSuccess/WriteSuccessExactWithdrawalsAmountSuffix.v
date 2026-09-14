@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactWithdrawalsInt WriteSuccessExactWithdrawalsSecondInt WriteSuccessExactWithdrawalsThirdInt
@@ -20,7 +21,7 @@ Proof.
   intros Hlen. iStartProof. iIntros "#Hamount #Hint #Houtput Hfinal".
   iAssert (instr_pre 0x156dc (withdrawalIntPost sp bytes (BV 64 0x156dc) tail ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I)) with "[Hfinal]" as "Hnext".
   { iApply (instr_pre_wand 0x156dc 0x156dc false true with "Hfinal"); [done | done |]. iIntros "$". }
-  iPoseProof (withdrawal_third_int_correct sp (BV 64 0x156d0) (BV 64 0x2401a0b8)
+  iPoseProof (withdrawal_third_int_correct sp (BV 64 0x156d0) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 20) bytes tail ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I with "Hamount Hint Houtput") as "Hcallee".
   iApply (instr_pre_wand 0x156d0 0x156d0 false false with "Hcallee"); [done | done |].
   iIntros "Hpost". iEval (rewrite (withdrawal_phase_3 sp bytes tail Hlen)) in "Hpost".

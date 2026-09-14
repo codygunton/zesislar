@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -48,11 +49,11 @@ Definition writeSuccessAccessEntryStorageOwn `{!islaG Sigma}
   | S _ =>
       (bv_unsigned (writeSuccessAccessEntryStoragePointer entry) ↦ₘ∗
         writeSuccessAccessEntryStorageBytes entry ∗
-       ⌜0x20000000 <=
+       ⌜(mapRamBase defaultMap) <=
          bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
        ⌜bv_unsigned (writeSuccessAccessEntryStoragePointer entry) +
          Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) <
-         0x40000000⌝ ∗ True)%I
+         (machineRamEnd defaultMap)⌝ ∗ True)%I
   end.
 
 Global Instance writeSuccessAccessEntryStorageOwn_unfold :
@@ -176,11 +177,11 @@ Definition writeSuccessAccessListsInvariant `{!islaG Sigma}
    ⌜length suffix = (40 * length remaining)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
    ⌜entries <> [] ->
-      base + Z.of_nat (length bytes) < 0x40000000⌝ ∗ True)%I.
+      base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsInvariant) := I.
 
@@ -199,7 +200,7 @@ Definition writeSuccessAccessListsLoopExit `{!islaG Sigma} `{!threadG}
     base ↦ₘ∗ bytes ∗ writeSuccessAccessEntriesOwn entries ∗
     writeSuccessAccessListsScratch
       sp base (length entries) storedIndex savedX22 ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAccessListsLoopExit) := I.
 
@@ -222,7 +223,7 @@ Definition writeSuccessAccessListsLoopSpec `{!islaG Sigma} `{!threadG}
     writeSuccessAccessEntriesOwn remaining ∗
     writeSuccessAccessListsScratch
       sp base (length entries) storedIndex savedX22 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessAccessListsEvents sp remaining tail) ∗ P ∗
     writeSuccessAccessListsInvariant
       sp base entries processed remaining bytes prefix suffix ∗
@@ -251,7 +252,7 @@ Definition writeSuccessAccessListsCopiedSpec `{!islaG Sigma} `{!threadG}
     writeSuccessAccessEntriesOwn (entry :: remaining) ∗
     writeSuccessAccessListsCopiedScratch
       sp base (length entries) (length processed) entry savedX22 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeSuccessAccessListsPhaseEvents phase sp entry remaining tail) ∗ P ∗
     writeSuccessAccessListsInvariant
@@ -280,7 +281,7 @@ Definition writeSuccessAccessListsTailSpec `{!islaG Sigma} `{!threadG}
     writeSuccessAccessEntriesOwn (entry :: remaining) ∗
     writeSuccessAccessListsScratch sp base (length entries)
       (Z_to_bv 64 (Z.of_nat (length processed))) savedX22 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessAccessListsEvents sp remaining tail) ∗ P ∗
     writeSuccessAccessListsInvariant
       sp base entries processed (entry :: remaining) bytes prefix suffix ∗

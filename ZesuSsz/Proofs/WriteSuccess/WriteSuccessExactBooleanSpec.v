@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -22,10 +23,10 @@ Proof. destruct present; reflexivity. Qed.
 
 Definition encoderBooleanExactReturnedFrame `{!islaG Sigma} `{!threadG}
     (value sp : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  ("x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+  ("x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 9)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
    bv_unsigned (sp - BV 64 9)%bv ↦ₘ∗ writeSuccessBooleanWordPayload value ∗
-   (bv_unsigned sp - 16) ↦ₘ? 7 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 7 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ P ∗ True)%I.
 
 Definition encoderBooleanExactPost `{!islaG Sigma} `{!threadG}
@@ -38,7 +39,7 @@ Definition encoderBooleanExactPost `{!islaG Sigma} `{!threadG}
 Definition encoderBooleanExactFacts `{!islaG Sigma} `{!threadG}
     (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
    instr_pre (bv_unsigned ret) (encoderBooleanExactPost value sp ret tail P) ∗ True)%I.
@@ -46,7 +47,7 @@ Definition encoderBooleanExactFacts `{!islaG Sigma} `{!threadG}
 Definition encoderBooleanExactPrefixFrame `{!islaG Sigma} `{!threadG}
     (value sp ret old_x5 old_x11 : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ("x5" ↦ᵣ RVal_Bits old_x5 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
      (writeSuccessBooleanWordPayload value) tail) ∗
    encoderBooleanExactFacts value sp ret tail P ∗ True)%I.
@@ -57,7 +58,7 @@ Definition encoderBooleanExactSpec `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits value ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    encoderBooleanExactPrefixFrame value sp ret old_x5 old_x11 tail P ∗ True)%I.
 
 Definition encoderBooleanExactWordsSpec `{!islaG Sigma} `{!threadG}
@@ -81,7 +82,7 @@ Definition encoderBooleanExactAtOutputSpec `{!islaG Sigma} `{!threadG}
    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x10" ↦ᵣ RVal_Bits (bv_and value (BV 64 1)) ∗
    "x11" ↦ᵣ RVal_Bits old_x11 ∗
    bv_unsigned (sp - BV 64 9)%bv ↦ₘ∗ writeSuccessBooleanWordPayload value ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
      (writeSuccessBooleanWordPayload value) tail) ∗
    ("x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
@@ -90,10 +91,10 @@ Definition encoderBooleanExactAtOutputSpec `{!islaG Sigma} `{!threadG}
 Definition encoderBooleanExactSuffixSpec `{!islaG Sigma} `{!threadG}
     (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15bbc) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 9)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
    bv_unsigned (sp - BV 64 9)%bv ↦ₘ∗ writeSuccessBooleanWordPayload value ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
    ("x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
     encoderBooleanExactOutputFrame value sp ret tail P ∗ True) ∗ True)%I.
 
@@ -193,19 +194,19 @@ Definition zesuEncoderBooleanExactPayloadCallSpec `{!islaG Sigma} `{!threadG}
     ("x5" ↦ᵣ: fun r5 => ⌜valu_has_shape r5 (BitsShape 64)⌝) ∗
     "x10" ↦ᵣ RVal_Bits (if present then BV 64 1 else BV 64 0) ∗
     ("x11" ↦ᵣ: fun r11 => ⌜valu_has_shape r11 (BitsShape 64)⌝) ∗
-    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
       (writeSuccessPrivateBytes (writeSuccessEncodeU8 (if present then 1 else 0))) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
     instr_pre (bv_unsigned ret)
       (reg_col zesu_ram_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+       "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
        "x10" ↦ᵣ RVal_Bits (sp - BV 64 9)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
-       (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+       (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
        spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderBooleanExactPayloadCallSpec) := I.

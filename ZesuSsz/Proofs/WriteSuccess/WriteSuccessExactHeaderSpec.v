@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -32,12 +33,12 @@ Definition writeSuccessExactHeaderAfterCopySpec `{!islaG Sigma} `{!threadG}
      writeSuccessHeaderPayload offset width bytes ∗
    (bv_unsigned sp + 1032 + Z.of_nat (offset + width)) ↦ₘ∗
      drop (offset + width) (take 592 bytes) ∗
-   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace events ∗
    ⌜(offset + width <= 592)%nat⌝ ∗
    ⌜length bytes = 720%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x14e88 (writeSuccessHeaderPost sp bytes tail P) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessExactHeaderAfterCopySpec) := I.
@@ -91,7 +92,7 @@ Definition writeSuccessExactHeaderPost `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1032) ↦ₘ∗ take 524 (take 592 bytes) ∗
    (bv_unsigned sp + 1556) ↦ₘ∗ writeSuccessHeaderPayload 524 32 bytes ∗
    (bv_unsigned sp + 1588) ↦ₘ∗ drop 556 (take 592 bytes) ∗
-   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ ⌜length bytes = 720%nat⌝ ∗ P ∗ True)%I.
 
 Lemma writeSuccessExactHeaderPost_to_standard
@@ -141,11 +142,11 @@ Definition writeSuccessExactHeaderFinalSpec `{!islaG Sigma} `{!threadG}
    "x2" ↦ᵣ RVal_Bits sp ∗ (bv_unsigned sp + 104) ↦ₘ? 16 ∗
    (bv_unsigned sp + 312) ↦ₘ∗ bytes ∗
    (bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes ∗
-   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 272 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactHeaderEventsAfter1300 sp bytes tail) ∗
    ⌜length bytes = 720%nat⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x14e88 (writeSuccessExactHeaderPost sp bytes tail P) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessExactHeaderFinalSpec) := I.

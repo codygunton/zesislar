@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -26,11 +27,11 @@ Definition writeSuccessTransactionsPost15674ByteListFacts
   bv_unsigned second = length items /\
   length items < 2 ^ 64 /\
   bv_extract 0 3 first = BV 3 0 /\
-  0x20000000 <= bv_unsigned first /\
-  bv_unsigned first + 16 * Z.of_nat (length items) < 0x40000000 /\
+  (mapRamBase defaultMap) <= bv_unsigned first /\
+  bv_unsigned first + 16 * Z.of_nat (length items) < (machineRamEnd defaultMap) /\
   bv_extract 0 4 sp = BV 4 0 /\
-  0x20000000 <= bv_unsigned sp - 80 /\
-  bv_unsigned sp < 0x40000000.
+  (mapRamBase defaultMap) <= bv_unsigned sp - 80 /\
+  bv_unsigned sp < (machineRamEnd defaultMap).
 
 Definition writeSuccessTransactionsPost15674CallRet
     `{!islaG Sigma} `{!threadG}
@@ -39,7 +40,7 @@ Definition writeSuccessTransactionsPost15674CallRet
   zesu_c_call_ret 80 saved (BV 64 0x15678) sp
     (fun _ =>
       byteListItemResources (bv_unsigned first) items ∗
-      mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)%I.
+      mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPost15674CallRet) := I.
@@ -77,8 +78,8 @@ Definition writeSuccessTransactionsPost15674CallEntrySpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
@@ -109,8 +110,8 @@ Definition writeSuccessTransactionsPost15678Spec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace tail ∗
     P ∗ True)%I.
 
@@ -127,7 +128,7 @@ Definition writeSuccessTransactionsPost15674ReturnFrame
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    ⌜length saved = 12%nat⌝ ∗
    ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    P ∗ True ∗
    ((bv_unsigned sp - 48) ↦ₘ? 48 -∗
       writeSuccessTransactionsPostScratch15670 sp base (length transactions)

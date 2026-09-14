@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratch.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -10,11 +11,11 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition authorizationBodyPost `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15614) ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 48)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 32) ∗
    reg_col [(KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)] ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
    authorizationU256Frame sp bytes P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationBodyPost) := I.
 

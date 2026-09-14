@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_74 Require Import instrs.
@@ -9,8 +10,8 @@ Definition authorizationZeroPost `{!islaG Sigma} `{!threadG}
    "x8" ↦ᵣ RVal_Bits (sp + BV 64 1856)%bv ∗
    "x9" ↦ᵣ RVal_Bits pointer ∗ "x18" ↦ᵣ RVal_Bits (BV 64 0) ∗
    (bv_unsigned sp + 168) ↦ₘ pointer ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ spec_trace tail ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ spec_trace tail ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationZeroPost) := I.
 
 Definition authorizationZeroEntry `{!islaG Sigma} `{!threadG}
@@ -18,8 +19,8 @@ Definition authorizationZeroEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    reg_col [(KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64)] ∗
    "x18" ↦ᵣ RVal_Bits (BV 64 0) ∗ (bv_unsigned sp + 168) ↦ₘ pointer ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ spec_trace tail ∗ P ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ spec_trace tail ∗ P ∗
    instr_pre 0x15620 (authorizationZeroPost sp pointer tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@authorizationZeroEntry) := I.
 

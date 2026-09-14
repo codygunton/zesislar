@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -10,8 +11,8 @@ Lemma write_success_transactions_chunk_1519c_adapter
     (transactions processed remaining : list writeSuccessTransaction)
     (bytes prefix suffix : list (bv 8)) (tail : spec) :
   bv_unsigned sp `mod` 16 = 0 ->
-  0x20000000 <= bv_unsigned sp - 48 ->
-  bv_unsigned sp + 1896 < 0x40000000 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 ->
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap) ->
   writeSuccessTransactionPhaseHandoff TransactionValue
     (writeSuccessTransactionsMachine151a0
       sp base transactions processed transaction)
@@ -23,8 +24,8 @@ Lemma write_success_transactions_chunk_1519c_adapter
       list writeSuccessTransaction *ₗ writeSuccessTransaction *ₗ
       Z *ₗ bv 64 *ₗ (),
     ⌜bv_extract 0 3 (x.nextₗ.9ₗ + 128) = 0%bv⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (x.nextₗ.9ₗ + 128)⌝ ∗
-    ⌜bv_unsigned (x.nextₗ.9ₗ + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (x.nextₗ.9ₗ + 128)⌝ ∗
+    ⌜bv_unsigned (x.nextₗ.9ₗ + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
     writeSuccessTransactionPhaseHandoff TransactionValue
       (writeSuccessTransactionsMachine151a0
         x.nextₗ.9ₗ x.9ₗ x.7ₗ x.6ₗ x.8ₗ)

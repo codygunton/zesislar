@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -24,7 +25,7 @@ Lemma authorization_address_to_int `{!islaG Sigma} `{!threadG}
     (authorizationAddressCallerFrame sp P) -∗
   instr_pre 0x155d8 (authorizationIntPost sp bytes (BV 64 0x155d8) tail
     (authorizationIntCallerFrame sp P)) -∗
-  authorizationIntEntry sp (BV 64 0x155cc) (BV 64 0x2401a0b8)
+  authorizationIntEntry sp (BV 64 0x155cc) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 20) bytes 96 (BV 64 0x155d8) tail (authorizationIntCallerFrame sp P).
 Proof.
   intros Hlen. iIntros "Hpost Hnext".

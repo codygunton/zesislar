@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -16,11 +17,11 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition transactionIndexSourceData `{!islaG Sigma}
     (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed : nat)
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  (base ↦ₘ∗ bytes ∗ mmio_range 0x2401a0c0 16 ∗
+  (base ↦ₘ∗ bytes ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1)
      [default (BV 8 0) (bytes !! (288 * processed + 264)%nat)] tail) ∗
-   ⌜base `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= base⌝ ∗
-   ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜base `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= base⌝ ∗
+   ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    ⌜(288 * processed + 288 <= length bytes)%nat⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionIndexSourceData) := I.
 
@@ -31,7 +32,7 @@ Definition transactionIndexSourceCaller `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 120) ↦ₘ? 128 ∗ (bv_unsigned sp + 256) ↦ₘ? 24 ∗
    (bv_unsigned sp + 1640) ↦ₘ? 256 ∗
    transactionIndexSourceData sp base bytes processed tail P ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionIndexSourceCaller) := I.
 
 Lemma transactions_index_to_source `{!islaG Sigma} `{!threadG}

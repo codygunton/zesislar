@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Resources.
 Require Import ZesuSsz.Automation.NatPowerGoals.
 Require Import isla.riscv64.riscv64.
@@ -17,7 +18,7 @@ Definition transactionLiveBackEdgeFrame `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 120) ↦ₘ? 128 ∗
    (bv_unsigned sp + 256) ↦ₘ? 24 ∗
    (bv_unsigned sp + 1640) ↦ₘ? 256 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactTransactionsEvents sp rest tail) ∗
    ⌜transactionLoopSourceFacts sp base transactions processed (transaction :: rest) bytes⌝ ∗
    P ∗ True)%I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -48,8 +49,8 @@ Proof.
   all: iDestruct "HinvariantCopy" as
     "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
   all: have Halign8 := write_success_transactions_stack_aligned_8 sp Halign.
-  all: have Hmin272 : 0x20000000 <= bv_unsigned sp + 272 by lia.
-  all: have Hmax272 : bv_unsigned sp + 272 < 0x40000000 by lia.
+  all: have Hmin272 : (mapRamBase defaultMap) <= bv_unsigned sp + 272 by lia.
+  all: have Hmax272 : bv_unsigned sp + 272 < (machineRamEnd defaultMap) by lia.
   all: liARun.
   Unshelve.
   all: try prepare_sidecond.

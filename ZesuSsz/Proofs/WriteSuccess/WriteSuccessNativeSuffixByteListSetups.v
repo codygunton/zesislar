@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -29,8 +30,8 @@ Definition writeSuccessPost15940SetupSpec
     (bv_unsigned sp + 40) ↦ₘ pointer ∗
     (bv_unsigned sp + 32) ↦ₘ count ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 32⌝ ∗
-    ⌜bv_unsigned sp + 40 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 32⌝ ∗
+    ⌜bv_unsigned sp + 40 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x1594c (writeSuccessPost1594cSetupSpec P) ∗ P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPost15940SetupSpec) := I.
@@ -75,8 +76,8 @@ Definition writeSuccessPost15950SetupSpec
     (bv_unsigned sp + 56) ↦ₘ pointer ∗
     (bv_unsigned sp + 48) ↦ₘ count ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 48⌝ ∗
-    ⌜bv_unsigned sp + 56 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 48⌝ ∗
+    ⌜bv_unsigned sp + 56 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x1595c (writeSuccessPost1595cSetupSpec P) ∗ P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPost15950SetupSpec) := I.

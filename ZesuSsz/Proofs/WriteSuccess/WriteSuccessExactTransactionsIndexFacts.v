@@ -1,10 +1,11 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.ZArith Lists.List.
 
 Lemma transactions_index_cursor (base : Z) (bytes : list (bv 8)) (processed : nat) :
-  (0x20000000 <= base)%Z ->
-  (base + Z.of_nat (length bytes) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z ->
+  (base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z ->
   (288 * processed + 288 <= length bytes)%nat -> base `mod` 8 = 0 ->
   let row := (Z_to_bv 64 base + Z_to_bv 64 (Z.of_nat processed) * BV 64 288)%bv in
   bv_unsigned row = (base + Z.of_nat (288 * processed))%Z /\

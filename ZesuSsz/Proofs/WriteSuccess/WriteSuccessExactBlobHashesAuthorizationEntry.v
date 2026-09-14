@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -22,8 +23,8 @@ Definition blobAuthorizationCaller `{!islaG Sigma} `{!threadG}
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 144) ↦ₘ high ∗ (bv_unsigned sp + 152) ↦ₘ low ∗
    (bv_unsigned sp + 160) ↦ₘ count ∗ (bv_unsigned sp - 32) ↦ₘ? 32 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 176 < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 176 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x15584 (authorizationCountPost sp count tail
      (maxBlobFeeCountFrame sp low high (blobAuthorizationRetained sp base total bytes P))) ∗ True)%I.
 Global Instance : LithiumUnfold (@blobAuthorizationCaller) := I.

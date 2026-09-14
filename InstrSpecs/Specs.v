@@ -1,4 +1,5 @@
 (** Reusable instruction specifications.
+Require Import ZesuMachineMap.Machine.
 
     Each spec describes what one instruction does in terms of separation-logic
     resources — no Isla trace in sight. Mark each with [LithiumUnfold] so the
@@ -31,7 +32,7 @@ Definition rv64_sd_spec `{!islaG Σ} `{!threadG}
 Global Instance : LithiumUnfold (@rv64_sd_spec) := I.
 
 Definition zesu_sd_spec `{!islaG Σ} `{!threadG} :=
-  @rv64_sd_spec Σ _ _ zesu_sys_regs 0x20000000 0x40000000.
+  @rv64_sd_spec Σ _ _ zesu_sys_regs (mapRamBase defaultMap) (machineRamEnd defaultMap).
 
 Global Instance : LithiumUnfold (@zesu_sd_spec) := I.
 
@@ -52,7 +53,7 @@ Definition rv64_ld_spec `{!islaG Σ} `{!threadG}
 Global Instance : LithiumUnfold (@rv64_ld_spec) := I.
 
 Definition zesu_ld_spec `{!islaG Σ} `{!threadG} :=
-  @rv64_ld_spec Σ _ _ zesu_sys_regs 0x20000000 0x40000000.
+  @rv64_ld_spec Σ _ _ zesu_sys_regs (mapRamBase defaultMap) (machineRamEnd defaultMap).
 
 Global Instance : LithiumUnfold (@zesu_ld_spec) := I.
 
@@ -66,7 +67,7 @@ Definition zesu_ld_array_spec `{!islaG Σ} `{!threadG}
   ⌜(bv_unsigned base + offset = arrayBase + 8 * Z.of_nat index)%Z⌝ ∗
   ⌜values !! index = Some value⌝ ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     Rdst ↦ᵣ RVal_Bits value ∗ Rbase ↦ᵣ RVal_Bits base ∗
@@ -85,7 +86,7 @@ Definition zesu_ld_array_at_spec `{!islaG Σ} `{!threadG}
       bv_unsigned base + arrayOffset + 8 * Z.of_nat index)%Z⌝ ∗
   ⌜(index < length values)%nat⌝ ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     Rdst ↦ᵣ RVal_Bits (default (BV 64 0) (values !! index)) ∗
@@ -115,7 +116,7 @@ Definition zesu_ld_byte_array_at_spec `{!islaG Σ} `{!threadG}
   ⌜word = Z_to_bv 64
     (little_endian_to_bv 8 (take 8 (drop index values)))⌝ ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     Rdst ↦ᵣ RVal_Bits
@@ -143,7 +144,7 @@ Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
   ⌜word = Z_to_bv 64
     (little_endian_to_bv 8 (take 8 (drop index values)))⌝ ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     R ↦ᵣ RVal_Bits
@@ -168,7 +169,7 @@ Definition zesu_lbu_byte_array_at_spec `{!islaG Σ} `{!threadG}
   ⌜(offset = arrayOffset + Z.of_nat index)%Z⌝ ∗
   ⌜(index < length values)%nat⌝ ∗
   ⌜values !! index = Some byte⌝ ∗
-  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     Rdst ↦ᵣ RVal_Bits
@@ -275,7 +276,7 @@ Definition zesu_ld_same_spec `{!islaG Σ} `{!threadG}
   reg_col zesu_instr_sys_regs ∗
   R ↦ᵣ RVal_Bits base ∗ (bv_unsigned base + offset) ↦ₘ value ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned base + offset < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
   instr_pre (pc + 4) (
     reg_col zesu_instr_sys_regs ∗
     R ↦ᵣ RVal_Bits value ∗ (bv_unsigned base + offset) ↦ₘ value ∗ True).

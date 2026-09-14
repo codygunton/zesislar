@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -111,7 +112,7 @@ Definition writeSuccessTransactionsOptionalAddressSomeBooleanSetupSpec
     "x10" ↦ᵣ RVal_Bits (BV 64 1) ∗
     "x11" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 273) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1)
       (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
         (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
@@ -119,8 +120,8 @@ Definition writeSuccessTransactionsOptionalAddressSomeBooleanSetupSpec
     writeSuccessTransactionsOptionalAddressSomeCallerFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold
   (@writeSuccessTransactionsOptionalAddressSomeBooleanSetupSpec) := I.
@@ -132,7 +133,7 @@ Definition writeSuccessTransactionsOptionalAddressSomePostSpec
       (bytes prefix suffix : list (bv 8)) (tail : spec) (r10 r11 : bv 64),
     writeSuccessTransactionsMachine15180
       sp base transactions processed transaction r10 r11 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
       (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
@@ -177,7 +178,7 @@ Definition writeSuccessTransactionsOptionalAddressSomeAt1518cSpec
     "x11" ↦ᵣ RVal_Bits (BV 64 20) ∗
     writeSuccessTransactionsScratch15174
       sp base transactions processed transaction ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
       (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
         (writeSuccessTransactionsEvents sp remaining tail))) ∗

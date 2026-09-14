@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 
 Lemma storage_keys_counter_decrement remaining :
@@ -18,7 +19,7 @@ Qed.
 Print Assumptions storage_keys_counter_zero.
 
 Lemma storage_keys_pointer_advance (pointer : bv 64) base processed :
-  0 <= base -> base + 32 * Z.of_nat processed + 32 < 1073741824 ->
+  0 <= base -> base + 32 * Z.of_nat processed + 32 < (machineRamEnd defaultMap) ->
   bv_unsigned pointer = base + 32 * Z.of_nat processed ->
   bv_unsigned (pointer + BV 64 32)%bv = base + 32 * Z.of_nat (S processed).
 Proof. intros Hlow Hhigh Hposition. rewrite Nat2Z.inj_succ. bv_solve. Qed.

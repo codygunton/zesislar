@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -117,7 +118,7 @@ Definition writeSuccessTransactionsMachine1515c `{!islaG Sigma} `{!threadG}
    reg_col writeSuccessTransactions15154OtherRegShapes ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15154) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x8" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 192) ∗
    "x9" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 16) ∗
    "x10" ↦ᵣ RVal_Bits
@@ -296,8 +297,8 @@ Definition writeSuccessTransactionsAt151a0Spec `{!islaG Sigma} `{!threadG}
       (transactions processed remaining : list writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
     writeSuccessTransactionPhaseHandoff TransactionValue
       (writeSuccessTransactionsMachine151a0
         sp base transactions processed transaction)
@@ -312,8 +313,8 @@ Definition writeSuccessTransactionsAt151a4Spec `{!islaG Sigma} `{!threadG}
       (transactions processed remaining : list writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
     writeSuccessTransactionPhaseHandoff TransactionValue
       (writeSuccessTransactionsMachine151a4
         sp base transactions processed transaction)
@@ -328,8 +329,8 @@ Definition writeSuccessTransactionsAt151acSpec `{!islaG Sigma} `{!threadG}
       (transactions processed remaining : list writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
     writeSuccessTransactionPhaseHandoff TransactionValue
       (writeSuccessTransactionsMachine151ac
         sp base transactions processed transaction)

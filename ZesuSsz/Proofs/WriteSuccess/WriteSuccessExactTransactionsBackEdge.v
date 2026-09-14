@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_86 Require Import instrs.
@@ -11,8 +12,8 @@ Definition transactionBackEdgePost `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits total ∗ "x11" ↦ᵣ RVal_Bits (index + BV 64 1)%bv ∗
    (bv_unsigned sp + 112) ↦ₘ total ∗ (bv_unsigned sp + 248) ↦ₘ index ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 256 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 256 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionBackEdgePost) := I.
 
 Definition transactionBackEdgeEntry `{!islaG Sigma} `{!threadG}
@@ -20,8 +21,8 @@ Definition transactionBackEdgeEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64)] ∗
    (bv_unsigned sp + 112) ↦ₘ total ∗ (bv_unsigned sp + 248) ↦ₘ index ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 256 < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 256 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x14f04 (transactionBackEdgePost sp index total P) ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionBackEdgeEntry) := I.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchBoolean.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
@@ -21,7 +22,7 @@ Lemma transactions_boolean_to_priority_value `{!islaG Sigma} `{!threadG}
       ("x9" ↦ᵣ RVal_Bits low ∗ "x23" ↦ᵣ RVal_Bits high ∗ P ∗ True)) -∗
   instr_pre 0x15138 (transactionPriorityValuePost sp low high tail
     (transactionPriorityValueCallerFrame sp gaslow gashigh tag P)) -∗
-  transactionPriorityValueEntry sp low high (BV 64 0x15128) (BV 64 0x2401a0b8) tail
+  transactionPriorityValueEntry sp low high (BV 64 0x15128) (BV 64 (mapIoContextAddress defaultMap)) tail
     (transactionPriorityValueCallerFrame sp gaslow gashigh tag P).
 Proof.
   iIntros "Hpost Hnext".
@@ -65,7 +66,7 @@ Lemma transactions_boolean_fee_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcaller #Hu128 #Houtput #Hnext".
   iPoseProof (transactions_priority_value_call_correct sp low high (BV 64 0x15128)
-    (BV 64 0x2401a0b8) tail (transactionPriorityValueCallerFrame sp gaslow gashigh tag P)
+    (BV 64 (mapIoContextAddress defaultMap)) tail (transactionPriorityValueCallerFrame sp gaslow gashigh tag P)
     with "Hcaller Hu128 Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x15128 0x15128 false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_boolean_to_priority_value with "Hpost Hnext").

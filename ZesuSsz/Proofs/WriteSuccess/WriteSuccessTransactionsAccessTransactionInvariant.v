@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -10,8 +11,8 @@ Lemma write_success_transactions_access_transaction_invariant
   writeSuccessTransactionsInvariant sp base transactions processed
     remaining bytes prefix suffix -∗
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-  ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+  ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
   writeSuccessTransactionsInvariant sp base transactions processed
     remaining bytes prefix suffix.
 Proof.

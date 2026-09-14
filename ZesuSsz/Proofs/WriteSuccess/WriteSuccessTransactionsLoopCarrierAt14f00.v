@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -26,7 +27,7 @@ Definition writeSuccessTransactionsLoopCarrierAt14f00Spec
     writeSuccessTransactionsOwn remaining ∗
     writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
     writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
-    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessTransactionsEvents sp remaining
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items

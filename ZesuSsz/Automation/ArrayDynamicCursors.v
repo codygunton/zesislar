@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import ZArith.ZArith.
 
 Lemma array_cursor_dynamic_range (row offset limit : bv 64) base index count
@@ -7,11 +8,12 @@ Lemma array_cursor_dynamic_range (row offset limit : bv 64) base index count
   bv_unsigned limit = Z.of_nat count ->
   offset <> limit -> (bv_unsigned offset <= bv_unsigned limit)%Z ->
   (index + count <= length bytes)%nat ->
-  (0x20000000 <= base)%Z ->
-  (base + Z.of_nat (length bytes) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z ->
+  (base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z ->
   (base <= bv_unsigned (row + offset)%bv < base + Z.of_nat (length bytes))%Z.
 Proof.
   intros Hrow Hlimit Hne Hle Hbound Hlow Hhigh.
+  cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *.
   apply Nat2Z.inj_le in Hbound. rewrite Nat2Z.inj_add in Hbound.
   have Hoff : bv_unsigned offset < Z.of_nat count.
   { have HneZ : bv_unsigned offset <> bv_unsigned limit.

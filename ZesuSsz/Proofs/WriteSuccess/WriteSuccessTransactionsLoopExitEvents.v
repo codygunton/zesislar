@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -36,8 +37,8 @@ Definition writeSuccessTransactionsEventScratch
    ((bv_unsigned sp - 80) ↦ₘ? 32 ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝))%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsEventScratch) := I.
@@ -100,8 +101,8 @@ Lemma write_success_transactions_event_scratch_combine
     (first second third fourth : bv 64) (items : list ByteListItem)
     (Halign16 : bv_unsigned sp `mod` 16 = 0)
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
-    (Hlow : 0x20000000 <= bv_unsigned sp - 48)
-    (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
+    (Hlow : (mapRamBase defaultMap) <= bv_unsigned sp - 48)
+    (Hhigh : bv_unsigned sp + 1896 < (machineRamEnd defaultMap)) :
   writeSuccessTransactionsPuncturedScratch sp base (length transactions) -∗
   writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items -∗
   (bv_unsigned sp + 1744) ↦ₘ? 48 -∗
@@ -147,7 +148,7 @@ Definition writeSuccessTransactionsLoopExitEventsFrame
     (tail : spec) (first second : bv 64) (items : list ByteListItem)
     : iProp Sigma :=
   (writeSuccessTransactionsEventScratch sp base transactions first second items ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P)%I.
@@ -188,7 +189,7 @@ Definition writeSuccessTransactionsLoopEventsFrame
    writeSuccessTransactionsOwn processed ∗
    writeSuccessTransactionsOwn remaining ∗
    writeSuccessTransactionsEventScratch sp base transactions first second items ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining
      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
        (byteListItemEvents (sp - BV 64 32)%bv items
@@ -228,7 +229,7 @@ Definition writeSuccessTransactionPhaseEventsHandoff
    writeSuccessTransactionOwn transaction ∗
    writeSuccessTransactionsOwn remaining ∗
    writeSuccessTransactionsEventScratch sp base transactions first second items ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents phase sp transaction
        (writeSuccessTransactionsEvents sp remaining
@@ -261,7 +262,7 @@ Lemma write_success_transactions_loop_events_pack
   writeSuccessTransactionsOwn processed -∗
   writeSuccessTransactionsOwn remaining -∗
   writeSuccessTransactionsEventScratch sp base transactions first second items -∗
-  mmio_range 0x2401a0c0 16 -∗
+  mmio_range (machineOutputAddress defaultMap) 16 -∗
   spec_trace (writeSuccessTransactionsEvents sp remaining
     (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
       (byteListItemEvents (sp - BV 64 32)%bv items
@@ -297,7 +298,7 @@ Lemma write_success_transaction_phase_events_handoff_pack
   writeSuccessTransactionOwn transaction -∗
   writeSuccessTransactionsOwn remaining -∗
   writeSuccessTransactionsEventScratch sp base transactions first second items -∗
-  mmio_range 0x2401a0c0 16 -∗
+  mmio_range (machineOutputAddress defaultMap) 16 -∗
   spec_trace
     (writeSuccessTransactionPhaseEvents phase sp transaction
       (writeSuccessTransactionsEvents sp remaining
@@ -334,7 +335,7 @@ Definition writeSuccessTransactionsLoopCarrierExit
    writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
     (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗ P ∗ True)%I.
@@ -357,14 +358,14 @@ Definition writeSuccessTransactionsLoopExitEventsData
    writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Definition writeSuccessTransactionsLoopExitWithdrawalsData
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -393,7 +394,7 @@ Definition writeSuccessTransactionsLoopCarrierFrame
    writeSuccessTransactionsPuncturedScratch sp base (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining
      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
        (byteListItemEvents (sp - BV 64 32)%bv items
@@ -428,7 +429,7 @@ Definition writeSuccessTransactionPhaseCarrierHandoff
    writeSuccessTransactionsOwn remaining ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second third fourth items ∗
    (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents phase sp transaction
        (writeSuccessTransactionsEvents sp remaining
@@ -462,8 +463,8 @@ Lemma write_success_transactions_loop_carrier_exit_to_events_data
     (first second third fourth : bv 64) (items : list ByteListItem)
     (Halign16 : bv_unsigned sp `mod` 16 = 0)
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
-    (Hlow : 0x20000000 <= bv_unsigned sp - 48)
-    (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
+    (Hlow : (mapRamBase defaultMap) <= bv_unsigned sp - 48)
+    (Hhigh : bv_unsigned sp + 1896 < (machineRamEnd defaultMap)) :
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
     first second third fourth items -∗
   writeSuccessTransactionsLoopExitEventsData P sp base transactions bytes tail
@@ -486,8 +487,8 @@ Lemma write_success_transactions_loop_carrier_exit_to_events
     (first second : bv 64) (items : list ByteListItem)
     (Halign16 : bv_unsigned sp `mod` 16 = 0)
     (Halign8 : bv_unsigned sp `mod` 8 = 0)
-    (Hlow : 0x20000000 <= bv_unsigned sp - 48)
-    (Hhigh : bv_unsigned sp + 1896 < 0x40000000) :
+    (Hlow : (mapRamBase defaultMap) <= bv_unsigned sp - 48)
+    (Hhigh : bv_unsigned sp + 1896 < (machineRamEnd defaultMap)) :
   writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
     first second pointer (Z_to_bv 64 (Z.of_nat count)) items -∗
   writeSuccessTransactionsLoopExitWithdrawalsData P sp pointer base transactions

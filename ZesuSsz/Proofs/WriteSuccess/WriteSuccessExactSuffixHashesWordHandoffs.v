@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactSuffixHashesWord3 WriteSuccessExactSuffixHashesWord2
@@ -9,7 +10,7 @@ Definition suffixWordFrame3 `{!islaG Sigma} `{!threadG}
   ((bv_unsigned sp + 1744) ↦ₘ? 8 ∗
    (bv_unsigned sp + 1752) ↦ₘ? 8 ∗
    (bv_unsigned sp + 1760) ↦ₘ? 8 ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixWordFrame3) := I.
 
 Definition suffixWordFrame2 `{!islaG Sigma} `{!threadG}
@@ -17,7 +18,7 @@ Definition suffixWordFrame2 `{!islaG Sigma} `{!threadG}
   ((bv_unsigned sp + 1744) ↦ₘ? 8 ∗
    (bv_unsigned sp + 1752) ↦ₘ? 8 ∗
    (bv_unsigned sp + 1768) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 24)%nat source)))) ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixWordFrame2) := I.
 
 Definition suffixWordFrame1 `{!islaG Sigma} `{!threadG}
@@ -25,7 +26,7 @@ Definition suffixWordFrame1 `{!islaG Sigma} `{!threadG}
   ((bv_unsigned sp + 1744) ↦ₘ? 8 ∗
    (bv_unsigned sp + 1760) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 16)%nat source)))) ∗
    (bv_unsigned sp + 1768) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 24)%nat source)))) ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixWordFrame1) := I.
 
 Definition suffixWordFrame0 `{!islaG Sigma} `{!threadG}
@@ -33,7 +34,7 @@ Definition suffixWordFrame0 `{!islaG Sigma} `{!threadG}
   ((bv_unsigned sp + 1752) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 8)%nat source)))) ∗
    (bv_unsigned sp + 1760) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 16)%nat source)))) ∗
    (bv_unsigned sp + 1768) ↦ₘ (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + 24)%nat source)))) ∗
-   ⌜(bv_unsigned sp + 1776 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜(bv_unsigned sp + 1776 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@suffixWordFrame0) := I.
 
 Lemma suffix_word3_handoff `{!islaG Sigma} `{!threadG}

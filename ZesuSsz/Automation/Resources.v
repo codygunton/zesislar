@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 
 (* Resource algebra only. The final group retains every caller resource. *)
@@ -47,8 +48,8 @@ Ltac zesu_normalize_resource_addresses :=
       |- context[bv_unsigned (bv_add ?pointer ?offset)] =>
       let ramLow := eval vm_compute in low in
       let ramHigh := eval vm_compute in high in
-      let expectedLow := eval vm_compute in (0x20000000%Z) in
-      let expectedHigh := eval vm_compute in (0x40000000%Z) in
+      let expectedLow := eval vm_compute in ((mapRamBase defaultMap)%Z) in
+      let expectedHigh := eval vm_compute in ((machineRamEnd defaultMap)%Z) in
       constr_eq ramLow expectedLow; constr_eq ramHigh expectedHigh;
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;

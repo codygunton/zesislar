@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -19,7 +20,7 @@ Lemma optional_u64_some_public_return
       ret sp
       (fun _ =>
         bv_unsigned data ↦ₘ value ∗ (bv_unsigned data + 8) ↦ₘ tag ∗
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)) -∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)) -∗
   instr_pre (bv_unsigned ret)
     (encoderOptionalSomeFinal data value sp ret tag r8 tail
       (optionalU64SomePublicFrame r9 r12 r13 r14 r15 r16 r17

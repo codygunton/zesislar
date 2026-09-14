@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -30,33 +31,33 @@ Local Existing Instance subsume_instr_pre_wand_inst | 1.
           typeclasses eauto ] : typeclass_instances.
 
 Lemma write_success_suffix_ram_lower_904 (sp : bv 64)
-    (Hmin : 0x20000000 <= bv_unsigned sp)
+    (Hmin : (mapRamBase defaultMap) <= bv_unsigned sp)
     (Haddr : bv_unsigned (sp + BV 64 904)%bv = bv_unsigned sp + 904) :
-    bv_unsigned (sp + BV 64 904)%bv >= bv_unsigned (BV 64 0x20000000).
+    bv_unsigned (sp + BV 64 904)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)).
 Proof.
   rewrite Haddr bv_unsigned_BV. lia.
 Qed.
 
 Lemma write_success_suffix_ram_lower_912 (sp : bv 64)
-    (Hmin : 0x20000000 <= bv_unsigned sp)
+    (Hmin : (mapRamBase defaultMap) <= bv_unsigned sp)
     (Haddr : bv_unsigned (sp + BV 64 912)%bv = bv_unsigned sp + 912) :
-    bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 0x20000000).
+    bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)).
 Proof.
   rewrite Haddr bv_unsigned_BV. lia.
 Qed.
 
 Lemma write_success_suffix_ram_upper_904 (sp : bv 64)
-    (Hmax : bv_unsigned sp + 1896 < 0x40000000)
+    (Hmax : bv_unsigned sp + 1896 < (machineRamEnd defaultMap))
     (Haddr : bv_unsigned (sp + BV 64 904)%bv = bv_unsigned sp + 904) :
     bv_unsigned (sp + BV 64 904)%bv <=
-      bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv.
+      bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv.
 Proof. clear - Hmax Haddr. rewrite Haddr. bv_solve. Qed.
 
 Lemma write_success_suffix_ram_upper_912 (sp : bv 64)
-    (Hmax : bv_unsigned sp + 1896 < 0x40000000)
+    (Hmax : bv_unsigned sp + 1896 < (machineRamEnd defaultMap))
     (Haddr : bv_unsigned (sp + BV 64 912)%bv = bv_unsigned sp + 912) :
     bv_unsigned (sp + BV 64 912)%bv <=
-      bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv.
+      bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv.
 Proof. clear - Hmax Haddr. rewrite Haddr. bv_solve. Qed.
 
 Definition writeSuccessSuffixHashesEntrySpec
@@ -73,7 +74,7 @@ Definition writeSuccessSuffixHashesEntrySpec
     (bv_unsigned sp + 904) ↦ₘ pointer ∗
     (bv_unsigned sp + 912) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -98,7 +99,7 @@ Definition writeSuccessSuffixHashes15740Post
    (bv_unsigned sp + 904) ↦ₘ pointer ∗
    (bv_unsigned sp + 912) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -123,7 +124,7 @@ Definition writeSuccessSuffixHashesAt15740Spec
     (bv_unsigned sp + 904) ↦ₘ pointer ∗
     (bv_unsigned sp + 912) ↦ₘ Z_to_bv 64 (Z.of_nat (S remaining)) ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
         (writeSuccessHashesEvents sp (S remaining) tail)) ∗
@@ -173,11 +174,11 @@ Proof.
   { clear - HspAlign. bv_simplify_arith HspAlign; bv_solve. }
   have H912RamLower :
       bv_unsigned (sp + BV 64 912)%bv >=
-        bv_unsigned (BV 64 0x20000000) by
+        bv_unsigned (BV 64 (mapRamBase defaultMap)) by
     apply write_success_suffix_ram_lower_912; assumption.
   have H912RamUpper :
       bv_unsigned (sp + BV 64 912)%bv <=
-        bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv by
+        bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv by
     apply write_success_suffix_ram_upper_912; assumption.
   rewrite /InstrSpecs.Specs.zesu_ld_spec /InstrSpecs.Specs.rv64_ld_spec.
   iApply "Hld912".
@@ -267,18 +268,18 @@ Proof.
   { clear - HspAlign.
     bv_simplify_arith HspAlign; bv_solve. }
   have H904RamLower :
-      bv_unsigned (sp + BV 64 904)%bv >= bv_unsigned (BV 64 0x20000000) by
+      bv_unsigned (sp + BV 64 904)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)) by
     apply write_success_suffix_ram_lower_904; assumption.
   have H912RamLower :
-      bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 0x20000000) by
+      bv_unsigned (sp + BV 64 912)%bv >= bv_unsigned (BV 64 (mapRamBase defaultMap)) by
     apply write_success_suffix_ram_lower_912; assumption.
   have H904RamUpper :
       bv_unsigned (sp + BV 64 904)%bv <=
-        bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv by
+        bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv by
     apply write_success_suffix_ram_upper_904; assumption.
   have H912RamUpper :
       bv_unsigned (sp + BV 64 912)%bv <=
-        bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv by
+        bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv by
     apply write_success_suffix_ram_upper_912; assumption.
   rewrite /InstrSpecs.Specs.zesu_ld_spec /InstrSpecs.Specs.rv64_ld_spec.
   iApply "Hld904".

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Export.Executor.
 Require Import ZesuSsz.Export.Determinism.
 Require Import isla.opsem.
@@ -22,20 +23,20 @@ Definition executor_test_regs (pc : Z) : reg_map :=
      if Z.eqb pc 0x156bc then 0x156b8 else
      if Z.eqb pc 0x156cc then 0x106c8 else
      if Z.eqb pc 0x156d8 then 0x156d4 else 0x156e8))]>
-  (<["x5" := RVal_Bits (BV 64 0x2401a0b8)]>
+  (<["x5" := RVal_Bits (BV 64 (mapIoContextAddress defaultMap))]>
   (<["x9" := RVal_Bits (BV 64 1)]>
   (<["x15" := RVal_Bits (BV 64 0)]>
   (list_to_map
     ([
       ("rv_enable_pmp", RVal_Bool false);
       ("rv_enable_misaligned_access", RVal_Bool false);
-      ("rv_ram_base", RVal_Bits (BV 64 0x20000000));
-      ("rv_ram_size", RVal_Bits (BV 64 0x20000000));
-      ("rv_rom_base", RVal_Bits (BV 64 0x1000));
-      ("rv_rom_size", RVal_Bits (BV 64 0x100));
-      ("rv_clint_base", RVal_Bits (BV 64 0x2000000));
-      ("rv_clint_size", RVal_Bits (BV 64 0xc0000));
-      ("rv_htif_tohost", RVal_Bits (BV 64 0x40001000));
+      ("rv_ram_base", RVal_Bits (BV 64 (mapRamBase defaultMap)));
+      ("rv_ram_size", RVal_Bits (BV 64 (mapRamSize defaultMap)));
+      ("rv_rom_base", RVal_Bits (BV 64 (mapRomBase defaultMap)));
+      ("rv_rom_size", RVal_Bits (BV 64 (mapRomSize defaultMap)));
+      ("rv_clint_base", RVal_Bits (BV 64 (mapClintBase defaultMap)));
+      ("rv_clint_size", RVal_Bits (BV 64 (mapClintSize defaultMap)));
+      ("rv_htif_tohost", RVal_Bits (BV 64 (mapHtifTohost defaultMap)));
       ("cur_privilege", RVal_Enum "Machine");
       ("mstatus", RegVal_Struct [("bits", RVal_Bits (BV 64 0))]);
       ("satp", RVal_Bits (BV 64 0))
@@ -70,7 +71,7 @@ Definition ExecutorTest (pc : Z) (trace : isla_trace) (next : Z)
 
 Lemma executor_pilot_10190 : ExecutorTest 0x10190 a10190 0x10194 "x5" 0x2401a190.
 Proof. Time vm_compute. bv_solve. Qed.
-Lemma executor_pilot_10194 : ExecutorTest 0x10194 a10194 0x10198 "x5" (0x2401a0b8 - 216).
+Lemma executor_pilot_10194 : ExecutorTest 0x10194 a10194 0x10198 "x5" ((mapIoContextAddress defaultMap) - 216).
 Proof. Time vm_compute. bv_solve. Qed.
 Lemma executor_pilot_10198 : ExecutorTest 0x10198 a10198 0x1019c "x10" 0x20010000.
 Proof. Time vm_compute. bv_solve. Qed.
@@ -187,9 +188,9 @@ Lemma executor_store_15d14 : ExecutorStoreTest 0x15d14 a15d14 0x20010008 8 0x156
 Proof. Time vm_compute. bv_solve. Qed.
 Lemma executor_store_15d18 : ExecutorStoreTest 0x15d18 a15d18 0x20010000 8 0x20010000.
 Proof. Time vm_compute. bv_solve. Qed.
-Lemma executor_output_10198 : ExecutorOutputTest 0x10198 a10198 0x2401a0c0 0x20010000.
+Lemma executor_output_10198 : ExecutorOutputTest 0x10198 a10198 (machineOutputAddress defaultMap) 0x20010000.
 Proof. Time vm_compute. bv_solve. Qed.
-Lemma executor_output_1019c : ExecutorOutputTest 0x1019c a1019c 0x2401a0c8 0x20010000.
+Lemma executor_output_1019c : ExecutorOutputTest 0x1019c a1019c (machineOutputSizeAddress defaultMap) 0x20010000.
 Proof. Time vm_compute. bv_solve. Qed.
 
 Print Assumptions executor_pilot_10190.

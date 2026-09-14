@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
@@ -64,8 +65,8 @@ Definition writeOutputDescriptorEvents
     (snapshot : seq_snapshot)
     (descriptor : WriteOutputDescriptor) : list seq_label :=
   let '(data, size) := descriptor in
-  [SWriteMem (BV 64 0x2401a0c0) data snapshot;
-   SWriteMem (BV 64 0x2401a0c8) size snapshot].
+  [SWriteMem (BV 64 (machineOutputAddress defaultMap)) data snapshot;
+   SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size snapshot].
 
 Fixpoint writeOutputDescriptorsEvents
     (snapshot : seq_snapshot)
@@ -309,8 +310,8 @@ Proof. unfold writeOutputEventsAny, scons. auto. Qed.
 Lemma write_output_events_accept_descriptor_prefix
     (data size : bv 64) (tail : spec) snapshot :
   writeOutputEventsAny data size tail
-    [SWriteMem (BV 64 0x2401a0c0) data snapshot;
-     SWriteMem (BV 64 0x2401a0c8) size snapshot].
+    [SWriteMem (BV 64 (machineOutputAddress defaultMap)) data snapshot;
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size snapshot].
 Proof. unfold writeOutputEventsAny, scons. naive_solver. Qed.
 
 Lemma write_output_payload_observation
@@ -325,7 +326,7 @@ Proof.
   exists payload. split; [exact Hmemory |].
   split; [|reflexivity].
   rewrite Z_to_bv_unsigned. apply bv_wrap_small.
-  split; [lia |].
+  split; [apply Nat2Z.is_nonneg |].
   change (Z.of_nat (length payload) < 2 ^ 64)%Z.
   apply Nat2Z.inj_lt in Hlength.
   rewrite Nat2Z.inj_pow in Hlength. exact Hlength.

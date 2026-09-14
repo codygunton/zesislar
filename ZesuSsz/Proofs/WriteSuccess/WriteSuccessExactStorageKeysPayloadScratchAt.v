@@ -1,11 +1,12 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessStorageKeysSpec WriteSuccessExactStorageKeysPayloadScratch.
 
 Lemma storage_keys_payload_scratch_at `{!islaG Sigma}
     (sp : bv 64) (key : list (bv 8)) :
-  0x20000000 <= bv_unsigned sp -> bv_unsigned sp + 1744 < 0x40000000 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp -> bv_unsigned sp + 1744 < (machineRamEnd defaultMap) ->
   length key = 32%nat ->
   bv_unsigned (sp + BV 64 1712)%bv ↦ₘ∗ key -∗ writeSuccessStorageKeysScratch sp.
 Proof.

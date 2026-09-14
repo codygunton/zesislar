@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -10,8 +11,8 @@ Local Remove Hints IslaTraces.write_success_37.a15114_spec.a15114_spec_inst : ty
 Definition transactionGasPriceFrame `{!islaG Sigma} `{!threadG}
     (sp low high : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ("x24" ↦ᵣ RVal_Bits high ∗ "x25" ↦ᵣ RVal_Bits low ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionGasPriceFrame) := I.
 
 Definition transactionGasPricePost `{!islaG Sigma} `{!threadG}
@@ -25,11 +26,11 @@ Definition transactionGasPriceEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64)] ∗
    "x24" ↦ᵣ RVal_Bits high ∗ "x25" ↦ᵣ RVal_Bits low ∗
-   (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
      (writeSuccessU128WordsPayload low high) tail) ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x15118 (transactionGasPricePost sp low high tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionGasPriceEntry) := I.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Continuations.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsOutputEntry.
@@ -27,7 +28,7 @@ Lemma access_count_exact_loop_native `{!islaG Sigma} `{!threadG}
       (Z_to_bv 64 (Z.of_nat (length entries))) x22 x27 tail P)).
 Proof.
   iStartProof. iIntros "#Hcaller #Hencoder #Houtput Hnext".
-  iPoseProof (access_count_whole_correct sp (BV 64 0x15210) (BV 64 0x2401a0b8)
+  iPoseProof (access_count_whole_correct sp (BV 64 0x15210) (BV 64 (mapIoContextAddress defaultMap))
     (sp + BV 64 1760)%bv (BV 64 20) (writeSuccessAccessEntryBytes entry)
     (accessEntryAfterCountEvents sp entry rest tail)
     (accessCountLoopFrame sp base entries processed (entry :: rest) bytes storedIndex x19 savedX22

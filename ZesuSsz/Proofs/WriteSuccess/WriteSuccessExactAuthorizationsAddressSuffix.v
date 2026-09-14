@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactAuthorizationsU256 WriteSuccessExactAuthorizationsNonceSuffix
@@ -32,7 +33,7 @@ Proof.
   intros Hlen. iStartProof. iIntros "#Haddress #Hnonce #Hv #Hr #Hs #HencoderInt #HencoderU256 #Houtput Hfinal".
   iPoseProof (authorization_nonce_suffix_correct sp bytes tail P Hlen
     with "Hnonce Hv Hr Hs HencoderInt HencoderU256 Houtput Hfinal") as "Hlast".
-  iPoseProof (authorization_whole_output_correct sp (BV 64 0x155bc) (BV 64 0x2401a0b8)
+  iPoseProof (authorization_whole_output_correct sp (BV 64 0x155bc) (BV 64 (mapIoContextAddress defaultMap))
     (sp - BV 64 48)%bv (BV 64 32) bytes (authorizationExactPhaseEvents 2 sp bytes tail)
     (authorizationAddressCallerFrame sp P) with "Haddress Houtput Hlast") as "Hcallee".
   iApply (instr_pre_wand 0x155bc 0x155bc false false with "Hcallee"); [done | done |].

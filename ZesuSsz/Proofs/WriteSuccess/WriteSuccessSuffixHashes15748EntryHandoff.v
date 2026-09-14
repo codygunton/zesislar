@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
@@ -25,7 +26,7 @@ Lemma write_success_suffix_hashes_entry_15748_handoff
      "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
      "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
      (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-     mmio_range 0x2401a0c0 16 ∗
+     mmio_range (machineOutputAddress defaultMap) 16 ∗
      spec_trace
        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
          (writeSuccessHashesEvents sp (S remaining) tail)) ∗

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -23,7 +24,7 @@ Definition optionalU64SomeExactBooleanResumeFrame `{!islaG Sigma} `{!threadG}
   ("x6" ↦ᵣ RVal_Bits old_x6 ∗ "x8" ↦ᵣ RVal_Bits value ∗
    (bv_unsigned sp - 16) ↦ₘ old_x8 ∗ (bv_unsigned sp - 8) ↦ₘ ret ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗ instr_pre (bv_unsigned ret)
      (encoderIntExactFramedPost sp ret tail (optionalU64SomeExactIntFrame old_x8
@@ -36,10 +37,10 @@ Definition optionalU64SomeExactPost `{!islaG Sigma} `{!threadG}
     (sp ret old_x8 : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x6" ↦ᵣ RVal_Bits (BV 64 0x15bfc) ∗ "x8" ↦ᵣ RVal_Bits old_x8 ∗
    "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
-   (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@optionalU64SomeExactPost) := I.
@@ -62,7 +63,7 @@ Print Assumptions optional_u64_some_exact_scratch_cleanup.
 Lemma optional_u64_some_exact_boolean_resume_handoff `{!islaG Sigma} `{!threadG}
     (value sp ret old_x6 old_x8 : bv 64) (tail : spec) (P : iProp Sigma) :
   instr_body 0x15bec (optionalU64SomeExactResumeEntry value sp ret
-    (BV 64 0x2401a0b8) old_x6 old_x8 (sp - BV 64 25)%bv (BV 64 1) tail
+    (BV 64 (mapIoContextAddress defaultMap)) old_x6 old_x8 (sp - BV 64 25)%bv (BV 64 1) tail
     (optionalU64SomeExactBooleanScratch sp P)) -∗
   instr_body 0x15bec (encoderBooleanExactPost (BV 64 1) (sp - BV 64 16)%bv
     (BV 64 0x15bec)

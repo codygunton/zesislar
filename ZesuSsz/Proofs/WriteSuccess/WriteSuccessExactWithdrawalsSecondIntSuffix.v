@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactWithdrawalsInt WriteSuccessExactWithdrawalsSecondInt WriteSuccessExactWithdrawalsThirdInt
@@ -28,7 +29,7 @@ Proof.
   iAssert (instr_pre 0x156c0 (withdrawalIntPost sp bytes (BV 64 0x156c0)
     (withdrawalExactPhaseEvents 2 sp bytes tail) ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I)) with "[Hlast]" as "Hnext".
   { iApply (instr_pre_wand 0x156c0 0x156c0 false true with "Hlast"); [done | done |]. iIntros "$". }
-  iPoseProof (withdrawal_second_int_correct sp (BV 64 0x156b4) (BV 64 0x2401a0b8)
+  iPoseProof (withdrawal_second_int_correct sp (BV 64 0x156b4) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 8) bytes (withdrawalExactPhaseEvents 2 sp bytes tail) ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I
     with "Hsecond Hint Houtput") as "Hcallee".
   iApply (instr_pre_wand 0x156b4 0x156b4 false false with "Hcallee"); [done | done |].

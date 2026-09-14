@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -6,8 +7,8 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Lemma test_array_eight_low_first_cursor (pointer : bv 64) (base : Z)
     (bytes : list (bv 8)) (index : nat) (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) :
   bv_unsigned pointer = (base + Z.of_nat index)%Z ->
-  (0x20000000 <= base)%Z ->
-  (base + Z.of_nat (length bytes) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z ->
+  (base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z ->
   (index + 32 <= length bytes)%nat ->
   bytes !! Z.to_nat ((bv_unsigned (pointer + BV 64 24)%bv - base) `div` 1) = Some b0 ->
   bytes !! Z.to_nat ((bv_unsigned (pointer + BV 64 25)%bv - base) `div` 1) = Some b1 ->

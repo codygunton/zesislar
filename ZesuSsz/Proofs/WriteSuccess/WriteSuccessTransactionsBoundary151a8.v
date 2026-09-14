@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary1519c.
@@ -60,8 +61,8 @@ Definition writeSuccessTransactionsAt151a8Spec `{!islaG Sigma} `{!threadG}
         list WriteSuccessTransactionsSpec.writeSuccessTransaction)
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= 0x20000000 + 0x20000000 - 8⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
     WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff
       WriteSuccessTransactionsSpec.TransactionValue
       (writeSuccessTransactionsMachine151a8

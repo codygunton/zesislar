@@ -1,11 +1,12 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchBytes.
 Require Import isla.riscv64.riscv64.
 
 Lemma test_call_bytes_scratch_frame `{!islaG Sigma}
     (sp ret countret stack2 old9 old8 : bv 64) (bytes source : list (bv 8))
     (address : Z) (P : iProp Sigma) :
-  length bytes = 8%nat -> (0x20000000 <= bv_unsigned sp - 48)%Z ->
+  length bytes = 8%nat -> ((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z ->
   (bv_unsigned (sp - BV 64 48)%bv ↦ₘ∗ bytes ∗
    (bv_unsigned sp - 40) ↦ₘ countret ∗ (bv_unsigned sp - 32) ↦ₘ stack2 ∗
    (bv_unsigned sp - 24) ↦ₘ old9 ∗ (bv_unsigned sp - 16) ↦ₘ old8 ∗

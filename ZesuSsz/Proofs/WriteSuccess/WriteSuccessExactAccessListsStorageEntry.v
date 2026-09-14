@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsBranchEntry.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsStorageWholeBranch.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsCountEntry.
@@ -22,10 +23,10 @@ Definition accessStorageLoopFrame `{!islaG Sigma} `{!threadG}
   (base ↦ₘ∗ bytes ∗ writeSuccessAccessEntriesOwn processed ∗ writeSuccessAccessEntriesOwn rest ∗
    ⌜writeSuccessAccessEntryValid entry⌝ ∗
    ⌜writeSuccessAccessEntryStorageCount entry <> 0%nat ->
-     0x20000000 <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
+     (mapRamBase defaultMap) <= bv_unsigned (writeSuccessAccessEntryStoragePointer entry)⌝ ∗
    ⌜writeSuccessAccessEntryStorageCount entry <> 0%nat ->
      bv_unsigned (writeSuccessAccessEntryStoragePointer entry) +
-       Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) < 0x40000000⌝ ∗
+       Z.of_nat (length (writeSuccessAccessEntryStorageBytes entry)) < (machineRamEnd defaultMap)⌝ ∗
    (bv_unsigned sp + 1744) ↦ₘ∗ writeSuccessAccessEntryBytes entry ∗
    (bv_unsigned sp + 136) ↦ₘ savedX22 ∗
    (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base ∗
@@ -37,10 +38,10 @@ Definition accessStorageLoopFrame `{!islaG Sigma} `{!threadG}
    ⌜length bytes = (40 * length entries)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessStorageLoopFrame) := I.
 
 Lemma access_storage_loop_entry_resources `{!islaG Sigma} `{!threadG}

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -28,7 +29,7 @@ Definition writeSuccessTransactionsOptionalAddressNone15198CallRet
        (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32))]
     (BV 64 0x1519c) sp
     (fun _ =>
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
           (writeSuccessTransactionsEvents sp remaining tail)) ∗ True)%I.

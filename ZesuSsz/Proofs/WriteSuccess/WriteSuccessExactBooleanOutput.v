@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_03 Require Import instrs.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -17,11 +18,11 @@ Lemma encoder_boolean_exact_output `{!islaG Sigma} `{!threadG}
     tail ("x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ P ∗ True)) -∗
   instr_body 0x15bbc
     (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15bbc) ∗
-     "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+     "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
      "x10" ↦ᵣ RVal_Bits (sp - BV 64 9)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗
      bv_unsigned (sp - BV 64 9)%bv ↦ₘ∗
        [bv_extract 0 8 (bv_and value (BV 64 1))] ∗
-     mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+     mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
      ("x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ P ∗ True) ∗ True) -∗
   instr_body 0x15bac
     (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits ret ∗
@@ -29,7 +30,7 @@ Lemma encoder_boolean_exact_output `{!islaG Sigma} `{!threadG}
      "x11" ↦ᵣ RVal_Bits old_x11 ∗
      bv_unsigned (sp - BV 64 9)%bv ↦ₘ∗
        [bv_extract 0 8 (bv_and value (BV 64 1))] ∗
-     mmio_range 0x2401a0c0 16 ∗
+     mmio_range (machineOutputAddress defaultMap) 16 ∗
      spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
        [bv_extract 0 8 (bv_and value (BV 64 1))] tail) ∗
      ("x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ P ∗ True) ∗ True).

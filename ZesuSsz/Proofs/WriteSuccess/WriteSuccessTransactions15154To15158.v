@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -69,8 +70,8 @@ Proof.
     apply Z.mod_divide in HspAlign; [|lia].
     destruct HspAlign as [factor Hfactor].
     exists (2 * factor). lia. }
-  have Hlower120 : (0x20000000 <= bv_unsigned sp + 120)%Z by lia.
-  have Hupper120 : (bv_unsigned sp + 120 < 0x40000000)%Z by lia.
+  have Hlower120 : ((mapRamBase defaultMap) <= bv_unsigned sp + 120)%Z by lia.
+  have Hupper120 : (bv_unsigned sp + 120 < (machineRamEnd defaultMap))%Z by lia.
   all: liARun.
   Unshelve.
   all: try prepare_sidecond; try assumption.

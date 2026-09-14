@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -17,8 +18,8 @@ Definition transactionGasLoadEntry `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 32 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionGasLoadEntry) := I.
 
 Definition transactionGasLoadPost `{!islaG Sigma} `{!threadG}
@@ -33,8 +34,8 @@ Definition transactionGasLoadPost `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 32 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗
-   ⌜(base + Z.of_nat (length bytes) < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗
+   ⌜(base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionGasLoadPost) := I.
 
 Lemma transactions_gas_loads_correct `{!islaG Sigma} `{!threadG}

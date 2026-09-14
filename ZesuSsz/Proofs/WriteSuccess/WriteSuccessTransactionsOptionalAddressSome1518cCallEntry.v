@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -37,7 +38,7 @@ Definition writeSuccessTransactionsOptionalAddressSome1518cCallEntry
    "x27" ↦ᵣ RVal_Bits
      (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32)) ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x15190) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 20)
      (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
        (writeSuccessTransactionsEvents sp remaining tail))) ∗
@@ -56,12 +57,12 @@ Definition writeSuccessTransactionsOptionalAddressSome1518cCallEntry
         RVal_Bits (writeSuccessTransactionWord transaction 184);
         RVal_Bits (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32))]
        (BV 64 0x15190) sp
-       (fun _ => mmio_range 0x2401a0c0 16 ∗
+       (fun _ => mmio_range (machineOutputAddress defaultMap) 16 ∗
          spec_trace (writeSuccessTransactionPhaseEvents TransactionValue sp transaction
            (writeSuccessTransactionsEvents sp remaining tail)) ∗ True)) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Typeclasses Opaque writeSuccessTransactionsOptionalAddressSome1518cCallEntry.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntFramedCall.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
@@ -26,11 +27,11 @@ Definition accessReturnCountEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits old_ra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    "x10" ↦ᵣ RVal_Bits old_data ∗ "x11" ↦ᵣ RVal_Bits old_size ∗
    (bv_unsigned sp + 136) ↦ₘ savedX22 ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned savedX22))) tail) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp + 144 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp + 144 < (machineRamEnd defaultMap)⌝ ∗
    instr_pre 0x153d0 (accessReturnCountPost sp savedX22 tail P) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessReturnCountEntry) := I.
 

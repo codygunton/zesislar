@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -13,10 +14,10 @@ Definition blobOutputResources `{!islaG Sigma} `{!threadG}
    reg_col [(KindReg "x1", BitsShape 64)] ∗
    (bv_unsigned sp + 1680) ↦ₘ a ∗ (bv_unsigned sp + 1688) ↦ₘ b ∗
    (bv_unsigned sp + 1696) ↦ₘ c ∗ (bv_unsigned sp + 1704) ↦ₘ d ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1680)%bv (BV 64 32) key tail) ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1712 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1712 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@blobOutputResources) := I.
 
 Definition blobEmitCallerFrame `{!islaG Sigma} `{!threadG}

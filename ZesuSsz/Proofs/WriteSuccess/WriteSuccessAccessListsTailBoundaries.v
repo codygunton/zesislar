@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -28,7 +29,7 @@ Definition writeSuccessAccessListsTailFrame `{!islaG Sigma} `{!threadG}
    writeSuccessAccessEntryOwn entry ∗
    writeSuccessAccessEntriesOwn remaining ∗
    writeSuccessAccessListsTailScratchFrame sp base (length entries) savedX22 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessAccessListsEvents sp remaining tail) ∗ P ∗
    writeSuccessAccessListsInvariant sp base entries processed
      (entry :: remaining) bytes prefix suffix ∗
@@ -49,8 +50,8 @@ Definition writeSuccessAccessListsAt153b4SplitSpec
     (bv_unsigned sp + 272) ↦ₘ
       Z_to_bv 64 (Z.of_nat (length processed)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessAccessListsTailFrame x19 sp base entry entries processed
       remaining bytes prefix suffix savedX22 x10 x22 x27 tail P ∗ True)%I.
 
@@ -67,8 +68,8 @@ Definition writeSuccessAccessListsAt153b8Spec
     (bv_unsigned sp + 272) ↦ₘ
       Z_to_bv 64 (Z.of_nat (length processed)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessAccessListsTailFrame x19 sp base entry entries processed
       remaining bytes prefix suffix savedX22 x10 x22 x27 tail P ∗ True)%I.
 
@@ -85,8 +86,8 @@ Definition writeSuccessAccessListsAt153bcSpec
     (bv_unsigned sp + 272) ↦ₘ
       Z_to_bv 64 (Z.of_nat (length processed)) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessAccessListsTailFrame x19 sp base entry entries processed
       remaining bytes prefix suffix savedX22 x10 x22 x27 tail P ∗ True)%I.
 

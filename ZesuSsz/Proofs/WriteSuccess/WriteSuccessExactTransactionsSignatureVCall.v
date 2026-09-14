@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -11,8 +12,8 @@ Local Remove Hints IslaTraces.write_success_83.a15628_spec.a15628_spec_inst : ty
 Definition transactionSignatureVFrame `{!islaG Sigma} `{!threadG}
     (sp value : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 176) ↦ₘ value ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 184 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 184 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureVFrame) := I.
 
 Definition transactionSignatureVPost `{!islaG Sigma} `{!threadG}
@@ -26,11 +27,11 @@ Definition transactionSignatureVEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    "x11" ↦ᵣ RVal_Bits old11 ∗ reg_col [(KindReg "x10", BitsShape 64)] ∗
    (bv_unsigned sp + 176) ↦ₘ value ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail) ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 184 < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 184 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x1562c (transactionSignatureVPost sp value tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureVEntry) := I.
 

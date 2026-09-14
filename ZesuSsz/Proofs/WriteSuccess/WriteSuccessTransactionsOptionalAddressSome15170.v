@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -13,7 +14,7 @@ Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
 Lemma write_success_optional_some_15170_offset (sp : bv 64) :
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (sp + BV 64 1760)%bv = bv_unsigned sp + 1760.
 Proof.
   intro Hupper. apply bv_unsigned_add_no_wrap_64.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsTransactionsLoop.
@@ -28,7 +29,7 @@ Ltac write_success_optional_some_15168_trace_to_nil :=
   end.
 
 Lemma write_success_optional_some_15168_offset (sp : bv 64) :
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (sp + BV 64 1744)%bv = bv_unsigned sp + 1744.
 Proof.
   intro Hupper. apply bv_unsigned_add_no_wrap_64.
@@ -39,7 +40,7 @@ Qed.
 
 Lemma write_success_optional_some_15168_alignment (sp : bv 64) :
   bv_unsigned sp `mod` 16 = 0 ->
-  (bv_unsigned sp + 1896 < 0x40000000)%Z ->
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z ->
   bv_extract 0 3 (sp + BV 64 1744)%bv = BV 3 0.
 Proof.
   intros Halign Hupper. apply bv_eq.
@@ -51,7 +52,7 @@ Qed.
 
 Lemma write_success_optional_some_15168_ram_limit :
   bv_unsigned
-      (BV 64 536870912 + BV 64 536870912 - BV 64 8)%bv = 1073741816.
+      (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv = (machineRamEnd defaultMap - 8).
 Proof. vm_compute; reflexivity. Qed.
 
 Lemma write_success_transactions_optional_address_some_15168

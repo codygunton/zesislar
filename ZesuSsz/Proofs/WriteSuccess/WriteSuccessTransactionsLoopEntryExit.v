@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
@@ -48,7 +49,7 @@ Definition writeSuccessTransactionsLoopExitBranchFrame `{!islaG Sigma}
    (bv_unsigned sp + 112) ↦ₘ
       Z_to_bv 64 (Z.of_nat (length (processed ++ remaining))) ∗
    (bv_unsigned sp + 120) ↦ₘ? 1776 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessTransactionsEvents sp remaining tail) ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
@@ -64,7 +65,7 @@ Lemma write_success_transactions_loop_entry_exit
       P sp base processed remaining tail -∗
   writeSuccessTransactionsOwn (processed ++ remaining) ∗
   writeSuccessTransactionsScratch sp base (length (processed ++ remaining)) ∗
-  mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True.
+  mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True.
 Proof.
   iIntros "Hframe".
   have Hnil := write_success_transactions_loop_exit_remaining_nil

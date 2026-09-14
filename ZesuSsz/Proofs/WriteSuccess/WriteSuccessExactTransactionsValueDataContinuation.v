@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CodeLookup.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -20,7 +21,7 @@ Proof.
   iEval (rewrite /writeSuccessCompleteNativeCode) in "Hcode".
   iDestruct "Hcode" as "#(Hprologue & Hlookup & Hmain & Houtput & Hmemcpy & Hboolean & Hoptional & HbyteLists & Hbytes & Hint & Hu256 & Hu128)".
   iPoseProof (transactions_data_bytes_call_correct data size sp (BV 64 0x151b4)
-    (sp - BV 64 48)%bv (BV 64 32) (BV 64 0x2401a0b8) old6 old9 bytes tail
+    (sp - BV 64 48)%bv (BV 64 32) (BV 64 (mapIoContextAddress defaultMap)) old6 old9 bytes tail
     (transactionValueDataSourceFrame sp w0 w1 w2 w3 P)
     with "[] Hbytes Hint Houtput") as "Hcallee".
   { iApply instr_lookup_collect; last iExact "Hlookup".

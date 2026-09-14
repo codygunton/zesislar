@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec.
@@ -26,8 +27,8 @@ Definition optionalU64SomeExactBooleanJumpEntry `{!islaG Sigma} `{!threadG}
    (bv_unsigned callee_sp - 16) ↦ₘ? 16 ∗
    ⌜bv_extract 0 4 callee_sp = BV 4 0⌝ ∗
    ⌜bv_extract 0 3 callee_sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned callee_sp - 16⌝ ∗
-   ⌜bv_unsigned callee_sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned callee_sp - 16⌝ ∗
+   ⌜bv_unsigned callee_sp < (machineRamEnd defaultMap)⌝ ∗
    encoderBooleanExactPrefixFrame (BV 64 1) callee_sp (BV 64 0x15bec)
      old_x5 old_x11 tail P ∗ True)%I.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPriorityFeeSomeEvents.
@@ -12,10 +13,10 @@ Definition writeSuccessTransactionsPriorityFeeSomeBooleanAbiTail
    ⌜bv_extract 0 1 (BV 64 0x15128) = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 (BV 64 0x15128) = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 (BV 64 0x15128) = BV 2 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16 /\
-     bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16 /\
+     bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionsPriorityFeeSomeBooleanEvents
        sp transaction remaining tail) ∗
@@ -30,10 +31,10 @@ Lemma write_success_transactions_priority_fee_some_boolean_abi_tail
     (sp : bv 64) (transaction : writeSuccessTransaction)
     (remaining : list writeSuccessTransaction) (tail : spec)
     (Halign : bv_unsigned sp `mod` 16 = 0)
-    (Hlower : 0x20000000 <= bv_unsigned sp - 16)
-    (Hupper : bv_unsigned sp < 0x40000000) :
+    (Hlower : (mapRamBase defaultMap) <= bv_unsigned sp - 16)
+    (Hupper : bv_unsigned sp < (machineRamEnd defaultMap)) :
   (bv_unsigned sp - 16) ↦ₘ? 16 -∗
-  mmio_range 0x2401a0c0 16 -∗
+  mmio_range (machineOutputAddress defaultMap) 16 -∗
   spec_trace
     (writeSuccessTransactionsPriorityFeeSomeBooleanEvents
       sp transaction remaining tail) -∗

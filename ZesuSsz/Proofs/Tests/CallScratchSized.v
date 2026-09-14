@@ -1,11 +1,12 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchSized.
 Require Import isla.riscv64.riscv64.
 
 Lemma scratch_reuse_sized_keeps_frame `{!islaG Sigma}
     (sp ret : bv 64) (bytes : list (bv 8)) (size : N) (P : iProp Sigma) :
   length bytes = N.to_nat size ->
-  (0x20000000 <= bv_unsigned sp - (Z.of_N size + 16))%Z ->
+  ((mapRamBase defaultMap) <= bv_unsigned sp - (Z.of_N size + 16))%Z ->
   (bv_unsigned (sp - Z_to_bv 64 (Z.of_N size + 16))%bv ↦ₘ∗ bytes ∗
    (bv_unsigned sp - 16) ↦ₘ? 8 ∗ (bv_unsigned sp - 8) ↦ₘ ret ∗ P ∗ True)%I -∗
   ((bv_unsigned sp - (Z.of_N size + 16)) ↦ₘ? (Z.of_N size + 16) ∗ P ∗ True)%I.

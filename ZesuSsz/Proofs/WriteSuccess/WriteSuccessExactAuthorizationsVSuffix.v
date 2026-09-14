@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactAuthorizationsInt WriteSuccessExactAuthorizationsSecondInt
@@ -32,7 +33,7 @@ Proof.
     (authorizationExactPhaseEvents 4 sp bytes tail) (authorizationIntCallerFrame sp P)))
     with "[Hlast]" as "Hnext".
   { iApply (instr_pre_wand 0x155e4 0x155e4 false true with "Hlast"); [done | done |]. iIntros "$". }
-  iPoseProof (authorization_second_int_correct sp (BV 64 0x155d8) (BV 64 0x2401a0b8)
+  iPoseProof (authorization_second_int_correct sp (BV 64 0x155d8) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 8) bytes (authorizationExactPhaseEvents 4 sp bytes tail)
     (authorizationIntCallerFrame sp P) with "Hv HencoderInt Houtput") as "Hcallee".
   iApply (instr_pre_wand 0x155d8 0x155d8 false false with "Hcallee"); [done | done |].

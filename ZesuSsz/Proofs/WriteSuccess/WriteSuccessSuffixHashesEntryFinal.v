@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntCall.
@@ -54,7 +55,7 @@ Proof.
   iPoseProof (write_success_suffix_hashes_15744_raw
     (fun _ =>
       ((bv_unsigned sp - 16) ↦ₘ? 16 ∗
-       mmio_range 0x2401a0c0 16 ∗
+       mmio_range (machineOutputAddress defaultMap) 16 ∗
        spec_trace
          (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
            (writeSuccessHashesEvents sp (S remaining) tail)) ∗

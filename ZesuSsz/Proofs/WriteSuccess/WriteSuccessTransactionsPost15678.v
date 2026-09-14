@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -50,8 +51,8 @@ Definition writeSuccessTransactionsPostAt1567cSpec
     base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     byteListItemResources (bv_unsigned first) items ∗
     ⌜writeSuccessTransactionsPost15674ByteListFacts sp first second items⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPostAt1567cSpec) := I.
@@ -112,7 +113,7 @@ Proof.
     iExists _. iFrame. }
   iDestruct "Hfacts" as %Hfacts.
   iDestruct "HspUpper" as %HspUpper.
-  have HspLower : (0x20000000 <= bv_unsigned sp - 80)%Z.
+  have HspLower : ((mapRamBase defaultMap) <= bv_unsigned sp - 80)%Z.
   { destruct Hfacts as
       (HsecondLength & HitemsLength & HfirstAlign & HfirstLower &
        HfirstUpper & HspExtract & HspLower' & HspMax).

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -11,9 +12,9 @@ Definition transactionLoopSourceFacts (sp : bv 64) (base : Z)
   bytes = writeSuccessTransactionsBytes transactions /\
   length bytes = (288 * length transactions)%nat /\
   (length transactions < 2 ^ 64)%nat /\ bv_unsigned sp `mod` 16 = 0 /\
-  0x20000000 <= bv_unsigned sp - 48 /\ bv_unsigned sp + 1896 < 0x40000000 /\
-  base `mod` 8 = 0 /\ 0x20000000 <= base /\
-  base + Z.of_nat (length bytes) < 0x40000000.
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 /\ bv_unsigned sp + 1896 < (machineRamEnd defaultMap) /\
+  base `mod` 8 = 0 /\ (mapRamBase defaultMap) <= base /\
+  base + Z.of_nat (length bytes) < (machineRamEnd defaultMap).
 
 (** Only the transaction working ranges become uninitialized scratch.
     The caller retains its live stack copies through [P]. *)
@@ -36,7 +37,7 @@ Definition transactionLiveLoopState `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length processed))) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    transactionLiveScratch sp base (length transactions) ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactTransactionsEvents sp remaining tail) ∗
    ⌜transactionLoopSourceFacts sp base transactions processed remaining bytes⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionLiveLoopState) := I.
@@ -50,7 +51,7 @@ Definition transactionLiveLoopExit `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    transactionLiveScratch sp base (length transactions) ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionLiveLoopExit) := I.
 
 Lemma transactions_live_state_exit `{!islaG Sigma} `{!threadG}

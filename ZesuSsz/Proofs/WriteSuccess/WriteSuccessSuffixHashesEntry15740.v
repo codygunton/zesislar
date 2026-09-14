@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -50,11 +51,11 @@ Proof.
   { clear - HspAlign. bv_simplify_arith HspAlign; bv_solve. }
   have H912RamLower :
       bv_unsigned (sp + BV 64 912)%bv >=
-        bv_unsigned (BV 64 0x20000000) by
+        bv_unsigned (BV 64 (mapRamBase defaultMap)) by
     apply write_success_suffix_ram_lower_912; assumption.
   have H912RamUpper :
       bv_unsigned (sp + BV 64 912)%bv <=
-        bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000 - BV 64 8)%bv by
+        bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap) - BV 64 8)%bv by
     apply write_success_suffix_ram_upper_912; assumption.
   rewrite /InstrSpecs.Specs.zesu_ld_spec /InstrSpecs.Specs.rv64_ld_spec.
   iApply "Hld912".

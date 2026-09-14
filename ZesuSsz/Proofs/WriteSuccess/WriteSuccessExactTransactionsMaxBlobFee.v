@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -12,8 +13,8 @@ Local Remove Hints IslaTraces.write_success_72.a15570_spec.a15570_spec_inst : ty
 Definition maxBlobFeeFrame `{!islaG Sigma} `{!threadG}
     (sp low high : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 144) ↦ₘ high ∗ (bv_unsigned sp + 152) ↦ₘ low ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 160 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 160 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@maxBlobFeeFrame) := I.
 
 Definition maxBlobFeePost `{!islaG Sigma} `{!threadG}
@@ -27,11 +28,11 @@ Definition maxBlobFeeEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64)] ∗
    (bv_unsigned sp + 144) ↦ₘ high ∗ (bv_unsigned sp + 152) ↦ₘ low ∗
-   (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 32) ↦ₘ? 32 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
      (writeSuccessU128WordsPayload low high) tail) ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp + 160 < 0x40000000⌝ ∗ P ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp + 160 < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x15574 (maxBlobFeePost sp low high tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@maxBlobFeeEntry) := I.
 

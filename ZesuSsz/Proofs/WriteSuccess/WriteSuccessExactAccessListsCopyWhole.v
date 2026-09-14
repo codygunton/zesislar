@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Calls.
 Import FramedContinuations.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessMemcpyWholePublic.
@@ -37,10 +38,10 @@ Definition accessCopyWholeEntry `{!islaG Sigma} `{!threadG}
      (KindReg "x15", BitsShape 64)] ∗
    (bv_unsigned sp + 256) ↦ₘ base ∗ (bv_unsigned sp + 272) ↦ₘ old_index ∗
    bv_unsigned base ↦ₘ∗ bytes ∗ (bv_unsigned sp + 1744) ↦ₘ? 40 ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1784 < 0x40000000⌝ ∗
-   ⌜0x20000000 <= bv_unsigned base⌝ ∗
-   ⌜bv_unsigned base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1784 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned base⌝ ∗
+   ⌜bv_unsigned base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    ⌜(40 * Z.to_nat (bv_unsigned cursor) + 40 <= length bytes)%nat⌝ ∗
    instr_pre 0x15200 (accessCopyWholePost sp base cursor bytes P) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessCopyWholeEntry) := I.

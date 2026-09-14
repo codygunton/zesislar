@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsSpec.
@@ -17,8 +18,8 @@ Definition byteListsExactPublicCountReturnSpec `{!islaG Sigma} `{!threadG} :
       (bv_unsigned pointer) [] items tail ∗
     ⌜length saved = 10%nat⌝ ∗
     ⌜bv_extract 0 4 callerSp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned callerSp - 80⌝ ∗
-    ⌜bv_unsigned callerSp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned callerSp - 80⌝ ∗
+    ⌜bv_unsigned callerSp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@byteListsExactPublicCountReturnSpec) := I.

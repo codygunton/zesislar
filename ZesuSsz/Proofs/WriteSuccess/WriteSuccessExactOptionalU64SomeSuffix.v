@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_04 Require Import instrs.
@@ -27,7 +28,7 @@ Definition optionalU64SomeExactSuffixEntry `{!islaG Sigma} `{!threadG}
    "x11" ↦ᵣ RVal_Bits old_x11 ∗
    (bv_unsigned sp - 16) ↦ₘ old_x8 ∗ (bv_unsigned sp - 8) ↦ₘ ret ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    P ∗ instr_pre 0x15d10
      (optionalU64SomeExactSuffixPost value sp ret old_x5 old_x8 old_x11 P) ∗ True)%I.
 

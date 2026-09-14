@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteViews.
 Require Import ZesuSsz.Automation.Resources.
 Require Import ZesuSsz.Export.Snapshots.
@@ -14,7 +15,7 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Local Open Scope Z_scope.
 Definition transactionTypeSourceCaller `{!islaG Sigma} `{!threadG}
     (sp oldra : bv 64) (kind : bv 8) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  ("x1" ↦ᵣ RVal_Bits oldra ∗ mmio_range 0x2401a0c0 16 ∗
+  ("x1" ↦ᵣ RVal_Bits oldra ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 1) [kind] tail) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionTypeSourceCaller) := I.
 
@@ -45,8 +46,8 @@ Definition transactionTypeSourceRetained `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 264 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= base⌝ ∗ ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗ ⌜bv_unsigned sp + 1745 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= base⌝ ∗ ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗ ⌜bv_unsigned sp + 1745 < (machineRamEnd defaultMap)⌝ ∗
    "x19" ↦ᵣ RVal_Bits (transactionRowWord bytes index 224) ∗
    "x12" ↦ᵣ RVal_Bits (transactionRowWord bytes index 248) ∗
    "x22" ↦ᵣ RVal_Bits (transactionRowWord bytes index 200) ∗
@@ -83,8 +84,8 @@ Proof.
     /transactionTypeSourceCaller) in "Hpost".
   zesu_open_resource_groups.
   assert (Hdata : (bv_unsigned (sp + BV 64 1744)%bv = bv_unsigned sp + 1744)%Z).
-  { match goal with Hlow : (0x20000000 <= bv_unsigned sp)%Z,
-      Hhigh : (bv_unsigned sp + 1745 < 0x40000000)%Z |- _ => clear -Hlow Hhigh; bv_solve end. }
+  { match goal with Hlow : ((mapRamBase defaultMap) <= bv_unsigned sp)%Z,
+      Hhigh : (bv_unsigned sp + 1745 < (machineRamEnd defaultMap))%Z |- _ => clear -Hlow Hhigh; bv_solve end. }
   zesu_run. }
   iDestruct "Hentry" as (_) "[Hentry _]". iExact "Hentry".
 Qed.

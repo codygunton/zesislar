@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratchBytes.
 Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
@@ -9,7 +10,7 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition transactionDataAccessCaller `{!islaG Sigma} `{!threadG}
     (sp count : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 264) ↦ₘ count ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗ ⌜bv_unsigned sp + 272 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗ ⌜bv_unsigned sp + 272 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionDataAccessCaller) := I.
 
 Definition transactionDataAccessFrame `{!islaG Sigma} `{!threadG}
@@ -17,8 +18,8 @@ Definition transactionDataAccessFrame `{!islaG Sigma} `{!threadG}
   (("x6" ↦ᵣ: fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    "x8" ↦ᵣ RVal_Bits data ∗ "x9" ↦ᵣ RVal_Bits old9 ∗ "x22" ↦ᵣ RVal_Bits size ∗
    bv_unsigned data ↦ₘ∗ bytes ∗ (bv_unsigned sp - 48) ↦ₘ? 32 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 272 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 272 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionDataAccessFrame) := I.
 
 Lemma transactions_data_to_access_count `{!islaG Sigma} `{!threadG}
@@ -29,7 +30,7 @@ Lemma transactions_data_to_access_count `{!islaG Sigma} `{!threadG}
     ("x22" ↦ᵣ RVal_Bits size ∗ transactionDataAccessCaller sp count P ∗ True)%I -∗
   instr_pre 0x151d0 (transactionAccessCountPost sp count tail
     (transactionDataAccessFrame data size sp old9 bytes P)) -∗
-  transactionAccessCountEntry sp count (BV 64 0x151c4) (BV 64 0x2401a0b8) size tail
+  transactionAccessCountEntry sp count (BV 64 0x151c4) (BV 64 (mapIoContextAddress defaultMap)) size tail
     (transactionDataAccessFrame data size sp old9 bytes P).
 Proof.
   iIntros "Hpost Hnext".
@@ -65,7 +66,7 @@ Lemma transactions_data_access_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hcaller #Hint #Houtput #Hnext".
   iPoseProof (transactions_access_count_call_correct sp count (BV 64 0x151c4)
-    (BV 64 0x2401a0b8) size tail (transactionDataAccessFrame data size sp old9 bytes P)
+    (BV 64 (mapIoContextAddress defaultMap)) size tail (transactionDataAccessFrame data size sp old9 bytes P)
     with "Hcaller Hint Houtput") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x151c4 0x151c4 false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_data_to_access_count with "Hpost Hnext").

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -22,12 +23,12 @@ Definition writeSuccessSuffixInt15960To1596cSpec
     "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     (bv_unsigned sp + 64) ↦ₘ value ∗
     (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8) tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 64 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 64 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x1596c (writeSuccessSuffixInt1596cCallPost sp tail ∗ Q) ∗
     Q)%I.
 
@@ -40,7 +41,7 @@ Definition writeSuccessSuffixInt15960Frame
   ("x1" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    "x5" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
    "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
-   (bv_unsigned base - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned base - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (base - BV 64 16)%bv (BV 64 8) tail) ∗
    instr_pre 0x1596c (writeSuccessSuffixInt1596cCallPost base tail ∗ Q) ∗ Q)%I.
 
@@ -54,7 +55,7 @@ Definition writeSuccessSuffixInt15960RawSpec
     "x2" ↦ᵣ RVal_Bits base ∗
     (bv_unsigned base + 64) ↦ₘ value ∗
     ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned base + 64 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned base + 64 < (machineRamEnd defaultMap)⌝ ∗
     K base tail ∗
     instr_pre 0x15964
       (reg_col zesu_ram_sys_regs ∗

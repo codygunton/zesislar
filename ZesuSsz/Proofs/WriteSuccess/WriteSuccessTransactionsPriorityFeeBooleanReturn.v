@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
@@ -34,7 +35,7 @@ Lemma write_success_transactions_priority_fee_boolean_return
     (writeSuccessTransactionsPriorityFeeSavedValues transaction)
     (BV 64 0x15148) sp
     (fun _ =>
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeSuccessTransactionPhaseEvents TransactionGasLimit sp transaction
           (writeSuccessTransactionsEvents sp remaining tail)) ∗

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -38,12 +39,12 @@ Definition writeSuccessPostWithdrawalsAt15728
     (bv_unsigned sp + 1168) ↦ₘ data ∗
     (bv_unsigned sp + 1176) ↦ₘ size ∗
     (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-    ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
+    ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPostWithdrawalsAt15728) := I.
 
@@ -70,12 +71,12 @@ Definition writeSuccessPostWithdrawals15728State
    (bv_unsigned sp + 1160) ↦ₘ optionalTag ∗
    (bv_unsigned sp + 1168) ↦ₘ data ∗ (bv_unsigned sp + 1176) ↦ₘ size ∗
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range 0x2401a0c0 16 ∗
+   ⌜bv_unsigned size = length bytes⌝ ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessPostWithdrawalsRemainingEvents sp data size tail) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawals15728State) := I.
@@ -109,7 +110,7 @@ Definition writeSuccessPostWithdrawalsAt1572cState
     (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x1572c) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
@@ -126,12 +127,12 @@ Definition writeSuccessPostWithdrawalsAt1572cState
    (bv_unsigned sp + 1160) ↦ₘ optionalTag ∗
    (bv_unsigned sp + 1168) ↦ₘ data ∗ (bv_unsigned sp + 1176) ↦ₘ size ∗
    (bv_unsigned sp + 1000) ↦ₘ root ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp + BV 64 1000)%bv (BV 64 32) tail) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessPostWithdrawalsAt1572cState) := I.
@@ -147,7 +148,7 @@ Ltac prepare_post_withdrawals_bytes_call sp data size bytes tail
   try iEval (cbn) in "Hsaved";
   try iDestruct "Hsaved" as
     "(H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)";
-  try iRename select (mmio_range 0x2401a0c0 16) into "Hmmio";
+  try iRename select (mmio_range (machineOutputAddress defaultMap) 16) into "Hmmio";
   try iRename select ("x2" ↦ᵣ RVal_Bits sp)%I into "H2";
   try iRename select ("x5" ↦ᵣ RVal_Bits _)%I into "H5";
   try iRename select ("x6" ↦ᵣ RVal_Bits _)%I into "H6";

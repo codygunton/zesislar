@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.MemoryWords.
 Require Import ZesuSsz.Automation.Alignment.
 Require Import isla.riscv64.riscv64.
@@ -41,17 +42,17 @@ Definition byteListsExactLoopFrame `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
     byteListProcessedResources itemBase done ∗
     byteListItemResources (bv_unsigned pointer) (item :: rest) ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (byteListItemPayloadEvents sp (item :: rest) tail) ∗
     ⌜S (length rest) < 2 ^ 64⌝ ∗
     ⌜bv_unsigned pointer =
       (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     P ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1
@@ -81,7 +82,7 @@ Definition byteListsExactAfterCallSpec `{!islaG Sigma} `{!threadG}
     reg_col zesu_ram_sys_regs ∗ reg_col byteListsLoopOtherRegShapes ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15c4c) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S (length rest)))) ∗
     "x9" ↦ᵣ RVal_Bits (pointer + BV 64 8)%bv ∗
@@ -97,17 +98,17 @@ Definition byteListsExactAfterCallSpec `{!islaG Sigma} `{!threadG}
     bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
     ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
     byteListItemResources (bv_unsigned pointer + 16) rest ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (byteListItemPayloadEvents sp rest tail) ∗ P ∗
     ⌜S (length rest) < 2 ^ 64⌝ ∗
     ⌜bv_unsigned pointer =
       (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     □ instr_pre 0x15c3c (byteListsExactLoopSpec P) ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1
@@ -133,11 +134,11 @@ Definition byteListsExactEncoderFrame `{!islaG Sigma} `{!threadG}
    ⌜S (length rest) < 2 ^ 64⌝ ∗
    ⌜bv_unsigned pointer = (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
    ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-   ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+   ⌜bv_unsigned pointer + 16 * Z.of_nat (S (length rest)) < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗ P ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ P ∗
    instr_pre 0x15c58
      (byteListsLoopExit sp savedRa savedS0 savedS1
        (byteListEndPointer pointer (item :: rest)) itemBase
@@ -150,7 +151,7 @@ Definition encoderByteListsExactCallSpec `{!islaG Sigma} `{!threadG} :
     (fun args sp RET =>
       ∃ (items : list ByteListItem) (tail : spec),
       byteListItemResources (bv_unsigned (args !!! 0%nat)) items ∗
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
           (writeSuccessPrivateBytes
@@ -159,14 +160,14 @@ Definition encoderByteListsExactCallSpec `{!islaG Sigma} `{!threadG} :
       ⌜bv_unsigned (args !!! 1%nat) = length items⌝ ∗
       ⌜length items < 2 ^ 64⌝ ∗
       ⌜bv_extract 0 3 (args !!! 0%nat) = BV 3 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
       ⌜bv_unsigned (args !!! 0%nat) + 16 * Z.of_nat (length items) <
-        0x40000000⌝ ∗
+        (machineRamEnd defaultMap)⌝ ∗
       ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-      ⌜0x20000000 <= bv_unsigned sp - 80⌝ ∗
-      ⌜bv_unsigned sp < 0x40000000⌝ ∗
+      ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 80⌝ ∗
+      ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
       RET (fun _ =>
         byteListItemResources (bv_unsigned (args !!! 0%nat)) items ∗
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 Global Instance : LithiumUnfold (@encoderByteListsExactCallSpec) := I.
 

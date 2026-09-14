@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -35,15 +36,15 @@ Definition writeSuccessSuffixBytesAt158e0Carrier `{!islaG Sigma} `{!threadG}
     "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
     "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (writeOutputEventsAny data size tail)) ∗
     bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessSuffixBytes158e0CarrierFrame sp data size bytes P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158e0Carrier) := I.
@@ -54,16 +55,16 @@ Definition writeSuccessSuffixBytesAt158f0Carrier `{!islaG Sigma} `{!threadG}
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x158f0) ∗
     "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
     "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ bv_unsigned data ↦ₘ∗ bytes ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessSuffixBytes158e0CarrierFrame sp data size bytes P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt158f0Carrier) := I.
@@ -79,15 +80,15 @@ Definition writeSuccessSuffixBytesAt158e0CarrierData `{!islaG Sigma} `{!threadG}
    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
    "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
        (writeOutputEventsAny data size trace)) ∗
    bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
      ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
       "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
@@ -103,17 +104,17 @@ Definition writeSuccessSuffixBytesAt158f0CarrierExactData `{!islaG Sigma} `{!thr
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x158f0) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace trace ∗ bv_unsigned data ↦ₘ∗ bytes ∗
    ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
      ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
       "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
@@ -209,13 +210,13 @@ Definition writeSuccessSuffixBytesCarrierState `{!islaG Sigma} `{!threadG}
     "x2" ↦ᵣ RVal_Bits sp ∗ x5 ∗ x6 ∗
     "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
     (x10 data) ∗ (x11 size) ∗
-    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (event data size tail) ∗ bv_unsigned data ↦ₘ∗ bytes ∗
     ⌜bv_unsigned size = length bytes⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
       ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
        "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
@@ -233,13 +234,13 @@ Definition writeSuccessSuffixBytesCarrierExactState `{!islaG Sigma} `{!threadG}
    "x2" ↦ᵣ RVal_Bits sp ∗ x5 ∗ x6 ∗
    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace trace ∗ bv_unsigned data ↦ₘ∗ bytes ∗
    ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
      ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
       "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
@@ -257,13 +258,13 @@ Definition writeSuccessSuffixBytesCarrierDataState `{!islaG Sigma} `{!threadG}
    "x2" ↦ᵣ RVal_Bits sp ∗ x5 ∗ x6 ∗
    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
    (x10 data) ∗ (x11 size) ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace trace ∗ bv_unsigned data ↦ₘ∗ bytes ∗
    ⌜bv_unsigned size = length bytes⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
      ["x3"; "x4"; "x7"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
       "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
@@ -290,7 +291,7 @@ Definition writeSuccessSuffixBytesAt158f0CarrierData `{!islaG Sigma} `{!threadG}
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x158f0))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 920 P.
@@ -320,7 +321,7 @@ Definition writeSuccessSuffixBytesAt15930CarrierData `{!islaG Sigma} `{!threadG}
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierDataState sp data size oldS0 oldS1 bytes trace
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15930))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x10")
     (fun _ => writeSuccessSuffixBytesCarrierShapeReg "x11") 984 P.
@@ -335,7 +336,7 @@ Definition writeSuccessSuffixBytesAt15900CarrierExactData `{!islaG Sigma} `{!thr
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15900))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6") 936 P.
 
 Definition writeSuccessSuffixBytesAt15910CarrierExactData `{!islaG Sigma} `{!threadG}
@@ -343,7 +344,7 @@ Definition writeSuccessSuffixBytesAt15910CarrierExactData `{!islaG Sigma} `{!thr
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15910))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6") 952 P.
 
 Definition writeSuccessSuffixBytesAt15920CarrierExactData `{!islaG Sigma} `{!threadG}
@@ -351,7 +352,7 @@ Definition writeSuccessSuffixBytesAt15920CarrierExactData `{!islaG Sigma} `{!thr
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15920))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6") 968 P.
 
 Definition writeSuccessSuffixBytesAt15930CarrierExactData `{!islaG Sigma} `{!threadG}
@@ -359,7 +360,7 @@ Definition writeSuccessSuffixBytesAt15930CarrierExactData `{!islaG Sigma} `{!thr
     (trace : spec) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierExactState sp data size oldS0 oldS1 bytes trace
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15930))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6") 984 P.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytesAt15900CarrierExactData) := I.
@@ -371,7 +372,7 @@ Definition writeSuccessSuffixBytesAt158f0CarrierNext `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x158f0))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
     (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
@@ -393,7 +394,7 @@ Definition writeSuccessSuffixBytesAt15900CarrierExact `{!islaG Sigma} `{!threadG
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15900))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
     (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
@@ -415,7 +416,7 @@ Definition writeSuccessSuffixBytesAt15910CarrierExact `{!islaG Sigma} `{!threadG
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15910))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
     (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
@@ -437,7 +438,7 @@ Definition writeSuccessSuffixBytesAt15920CarrierExact `{!islaG Sigma} `{!threadG
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15920))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
     (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)
@@ -447,7 +448,7 @@ Definition writeSuccessSuffixBytesAt15930Carrier `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   writeSuccessSuffixBytesCarrierState sp
     (writeSuccessSuffixBytesCarrierExactReg "x1" (BV 64 0x15930))
-    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 0x2401a0b8))
+    (writeSuccessSuffixBytesCarrierExactReg "x5" (BV 64 (mapIoContextAddress defaultMap)))
     (writeSuccessSuffixBytesCarrierShapeReg "x6")
     (fun data => writeSuccessSuffixBytesCarrierExactReg "x10" data)
     (fun size => writeSuccessSuffixBytesCarrierExactReg "x11" size)

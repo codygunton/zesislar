@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.WordPayloads.
 Require Import ZesuSsz.Automation.CallScratchBoolean.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -14,8 +15,8 @@ Definition transactionRecipientOutputCallerFrame `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 1640) ↦ₘ first ∗
    (bv_unsigned sp + 1648) ↦ₘ second ∗ (bv_unsigned sp + 1656) ↦ₘ last ∗
    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientOutputCallerFrame) := I.
 
 Lemma transactions_recipient_boolean_to_output `{!islaG Sigma} `{!threadG}
@@ -24,7 +25,7 @@ Lemma transactions_recipient_boolean_to_output `{!islaG Sigma} `{!threadG}
     (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20)
       (words_20_payload first second last) tail)
     (transactionRecipientCopiedFrame sp first second last P) -∗
-  transactionRecipientOutputEntry sp (BV 64 0x15180) (BV 64 0x2401a0b8)
+  transactionRecipientOutputEntry sp (BV 64 0x15180) (BV 64 (mapIoContextAddress defaultMap))
     (sp - BV 64 9)%bv (BV 64 1) (words_20_payload first second last) tail
     (transactionRecipientOutputCallerFrame sp first second last P).
 Proof.

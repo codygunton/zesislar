@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackAlignment.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -24,7 +25,7 @@ Lemma blob_loop_entry_resources `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ reg_col writeSuccessBlobHashesOtherRegShapes ∗
    "x2" ↦ᵣ RVal_Bits sp ∗ "x19" ↦ᵣ RVal_Bits pointer ∗
    "x22" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
-   base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗ mmio_range 0x2401a0c0 16 ∗
+   base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactBlobHashesEvents sp processed (S remaining) bytes tail) ∗ P ∗
    writeSuccessFixedWidthArrayInvariant sp pointer base total processed remaining bytes ∗
    instr_pre 0x15564 (writeSuccessBlobHashesLoopExit sp base total bytes tail P) ∗ True)%I -∗

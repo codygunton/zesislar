@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.WordArrays.
 Require Import ZesuSsz.Automation.Resources.
 Import WordMatching.
@@ -12,7 +13,7 @@ Definition transactionLiveEmptyFrame `{!islaG Sigma} `{!threadG}
     (sp base : bv 64) tail (P : iProp Sigma) : iProp Sigma :=
   (reg_col writeSuccessTransactionsOtherRegShapes ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    transactionLiveScratch sp (bv_unsigned base) 0 ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionLiveEmptyFrame) := I.
 
 Definition transactionLiveEmptyEntry `{!islaG Sigma} `{!threadG}

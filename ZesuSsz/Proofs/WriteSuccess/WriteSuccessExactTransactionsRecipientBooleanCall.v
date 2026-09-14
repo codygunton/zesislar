@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From ZesuSsz.Proofs.WriteSuccess Require Import WriteSuccessExactBooleanSpec.
@@ -13,7 +14,7 @@ Definition transactionRecipientBooleanEntry `{!islaG Sigma} `{!threadG}
    "x1" ↦ᵣ RVal_Bits oldra ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x10" ↦ᵣ RVal_Bits (if present then olddata else BV 64 0) ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    encoderBooleanExactPrefixFrame (if present then BV 64 1 else BV 64 0) sp
      (if present then BV 64 0x15180 else BV 64 0x1519c) old5 old11 tail P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientBooleanEntry) := I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads.
@@ -14,10 +15,10 @@ Definition transactionSignatureSuffixEntry `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 120 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= base⌝ ∗
-   ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 208 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= base⌝ ∗
+   ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 208 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureSuffixEntry) := I.
 
 Definition transactionSignatureSuffixPost `{!islaG Sigma} `{!threadG}
@@ -32,10 +33,10 @@ Definition transactionSignatureSuffixPost `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 120 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= base⌝ ∗
-   ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 208 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= base⌝ ∗
+   ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 208 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureSuffixPost) := I.
 
 Lemma transactions_signature_suffix_correct `{!islaG Sigma} `{!threadG}

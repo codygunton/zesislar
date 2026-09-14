@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -30,11 +31,11 @@ Lemma transactions_priority_branch_continuation `{!islaG Sigma} `{!threadG}
 Proof.
   iIntros "#Hbranch #Hsome #Hnone #Hboolean #Houtput #HsomeNext #HnoneNext".
   iPoseProof (transactions_priority_boolean_call_correct true sp (BV 64 0x15118)
-    (sp - BV 64 32)%bv (BV 64 0x2401a0b8) (BV 64 16) someTail
+    (sp - BV 64 32)%bv (BV 64 (mapIoContextAddress defaultMap)) (BV 64 16) someTail
     (transactionPriorityBooleanCallerFrame sp low high tag P)
     with "Hsome Hboolean Houtput") as "HsomeBody".
   iPoseProof (transactions_priority_boolean_call_correct false sp (BV 64 0x15118)
-    (sp - BV 64 32)%bv (BV 64 0x2401a0b8) (BV 64 16) noneTail
+    (sp - BV 64 32)%bv (BV 64 (mapIoContextAddress defaultMap)) (BV 64 16) noneTail
     (transactionPriorityBooleanCallerFrame sp low high tag P)
     with "Hnone Hboolean Houtput") as "HnoneBody".
   iModIntro. iApply instr_pre_to_body. iNext.

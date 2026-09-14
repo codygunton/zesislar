@@ -1,6 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Export InstrSpecs.Machine.
-Require Export ZesuSsz.Contracts.Machine.
+Require Export ZesuMachineMap.Machine.
 
 Import ListNotations.
 

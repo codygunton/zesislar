@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
@@ -23,10 +24,10 @@ Definition writeSuccessTransactionsPost15678WithdrawalsTotalData
    ⌜length bytes = (48 * count)%nat⌝ ∗
    ⌜(count < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜0x20000000 <= withdrawalBase⌝ ∗
-   ⌜withdrawalBase + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= withdrawalBase⌝ ∗
+   ⌜withdrawalBase + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    instr_pre 0x156e8
      (writeSuccessWithdrawalsLoopExit sp withdrawalBase count bytes tail
        (preserved ∗ P)) ∗

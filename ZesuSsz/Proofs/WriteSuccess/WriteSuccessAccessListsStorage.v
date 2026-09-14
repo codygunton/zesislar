@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -61,7 +62,7 @@ Definition writeSuccessAccessListsTailPayload
     writeSuccessAccessEntriesOwn (entry :: remaining) ∗
     writeSuccessAccessListsScratch sp base (length entries)
       (Z_to_bv 64 (Z.of_nat (length processed))) savedX22 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessAccessListsEvents sp remaining tail) ∗ P ∗
     writeSuccessAccessListsInvariant sp base entries processed
       (entry :: remaining) bytes prefix suffix ∗
@@ -85,7 +86,7 @@ Lemma write_success_access_lists_zero_storage_to_tail
    writeSuccessAccessEntriesOwn remaining ∗
    writeSuccessAccessListsCopiedScratch
      sp base (length entries) (length processed) entry savedX22 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessStorageKeysEvents sp
        (writeSuccessAccessEntryStorageCount entry)

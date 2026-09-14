@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 
@@ -34,8 +35,8 @@ Lemma exact_transactions_row_cursor (base cursor : bv 64)
   bv_unsigned cursor = Z.of_nat index ->
   length bytes = (288 * total)%nat ->
   (index < total)%nat ->
-  (0x20000000 <= address)%Z ->
-  (address + Z.of_nat (length bytes) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= address)%Z ->
+  (address + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (base + cursor * BV 64 288)%bv =
     (address + Z.of_nat (288 * index)%nat)%Z.
 Proof.

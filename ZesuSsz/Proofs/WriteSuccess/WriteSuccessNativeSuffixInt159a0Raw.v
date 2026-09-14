@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_122 Require Import a159a0 a159a4.
@@ -14,7 +15,7 @@ Definition writeSuccessSuffixInt159a0RawPhaseSpec
     "x2" ↦ᵣ RVal_Bits base ∗
     (bv_unsigned base + 96) ↦ₘ saved ∗
     ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned base + 96 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned base + 96 < (machineRamEnd defaultMap)⌝ ∗
     K base saved ∗
     instr_pre 0x159a4
       (reg_col zesu_ram_sys_regs ∗
@@ -53,7 +54,7 @@ Definition writeSuccessSuffixInt159a4RawPhaseSpec
     "x2" ↦ᵣ RVal_Bits base ∗
     (bv_unsigned base + 80) ↦ₘ value ∗
     ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned base + 80 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned base + 80 < (machineRamEnd defaultMap)⌝ ∗
     K base value ∗
     instr_pre 0x159a8
       (reg_col zesu_ram_sys_regs ∗

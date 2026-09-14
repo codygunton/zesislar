@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
@@ -22,8 +23,8 @@ Lemma transactions_type_to_chain_some `{!islaG Sigma} `{!threadG}
     dataBytes accessBytes entries tail (Q : iProp Sigma) :
   bv_extract 0 8 tagWord <> BV 8 0 ->
   bv_unsigned sp `mod` 16 = 0 ->
-  0x20000000 <= bv_unsigned sp - 48 ->
-  bv_unsigned sp + 1896 < 0x40000000 ->
+  (mapRamBase defaultMap) <= bv_unsigned sp - 48 ->
+  bv_unsigned sp + 1896 < (machineRamEnd defaultMap) ->
   transactionTypeOutputPost (sp + BV 64 1744)%bv kind
     (writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
       (writeSuccessBooleanWordPayload (BV 64 1))
@@ -34,7 +35,7 @@ Lemma transactions_type_to_chain_some `{!islaG Sigma} `{!threadG}
        ((bv_unsigned sp - 48) ↦ₘ? 48 ∗
         transactionFieldSourceHeap bytes index dataBytes accessBytes entries ∗ Q ∗ True) ∗ True)%I) -∗
   transactionChainSomeCaller chain sp (BV 64 0x150f0) (sp + BV 64 1744)%bv
-    (BV 64 0x2401a0b8) (transactionRecipientSourceOld6 bytes index)
+    (BV 64 (mapIoContextAddress defaultMap)) (transactionRecipientSourceOld6 bytes index)
     (transactionRowWord bytes index 192) (BV 64 1) (bv_extract 0 8 tagWord)
     (transactionChainWordImage chain tagWord) tail
     (transactionSourceFieldCaller sp base bytes processed index dataBytes accessBytes entries Q).
@@ -65,10 +66,10 @@ Proof.
   { clear -HaccessLength; intros Hentries Hbytes; subst accessBytes;
     destruct entries; [done | cbn in HaccessLength; lia]. }
   have HaccessLow : entries <> [] ->
-    0x20000000 <= bv_unsigned (transactionRowWord bytes index 208).
+    (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 208).
   { intros Hentries. exact (proj1 (HaccessBounds (HaccessNonempty Hentries))). }
   have HaccessHigh : entries <> [] ->
-    bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < 0x40000000.
+    bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < (machineRamEnd defaultMap).
   { intros Hentries. exact (proj2 (HaccessBounds (HaccessNonempty Hentries))). }
   have HchainAddress : bv_unsigned (sp + BV 64 1664)%bv = bv_unsigned sp + 1664.
   { clear -Hlow Hhigh. bv_solve. }
@@ -87,7 +88,7 @@ Proof.
   iEval (unfold transactionFieldSourceRetained) in "Hframe".
   zesu_open_resource_groups.
   iAssert (∃ _ : unit, transactionChainSomeCaller chain sp (BV 64 0x150f0)
-    (sp + BV 64 1744)%bv (BV 64 0x2401a0b8) (transactionRecipientSourceOld6 bytes index)
+    (sp + BV 64 1744)%bv (BV 64 (mapIoContextAddress defaultMap)) (transactionRecipientSourceOld6 bytes index)
     (transactionRowWord bytes index 192) (BV 64 1) (bv_extract 0 8 tagWord)
     (transactionChainWordImage chain tagWord) tail
     (transactionSourceFieldCaller sp base bytes processed index dataBytes accessBytes entries Q) ∗ True)%I

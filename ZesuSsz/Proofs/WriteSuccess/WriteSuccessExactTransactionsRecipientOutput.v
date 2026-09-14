@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -13,16 +14,16 @@ Definition transactionRecipientOutputEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ "x1" ↦ᵣ RVal_Bits old_ra ∗
    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x10" ↦ᵣ RVal_Bits old_data ∗
    "x11" ↦ᵣ RVal_Bits old_size ∗ bv_unsigned (sp + BV 64 1744)%bv ↦ₘ∗ payload ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1744)%bv (BV 64 20) payload tail) ∗ ⌜length payload = 20%nat⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientOutputEntry) := I.
 
 Definition transactionRecipientOutputPost `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x15190) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗ "x10" ↦ᵣ RVal_Bits (sp + BV 64 1744)%bv ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗ "x10" ↦ᵣ RVal_Bits (sp + BV 64 1744)%bv ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 20) ∗ bv_unsigned (sp + BV 64 1744)%bv ↦ₘ∗ payload ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
    ("x2" ↦ᵣ RVal_Bits sp ∗ P ∗ True) ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientOutputPost) := I.
 

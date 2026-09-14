@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From IslaTraces.write_success_29 Require Import instrs.
@@ -9,9 +10,9 @@ Definition transactionsStackWordLoadEntry `{!islaG Sigma} `{!threadG}
    reg_col [(KindReg "x11", BitsShape 64)] ∗ (bv_unsigned sp + 224) ↦ₘ? 24 ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ ⌜length bytes = 288%nat⌝ ∗
    ⌜bv_unsigned pointer `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 248 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 248 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsStackWordLoadEntry) := I.
 
 Definition transactionsStackWordLoadPost `{!islaG Sigma} `{!threadG}
@@ -23,9 +24,9 @@ Definition transactionsStackWordLoadPost `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + 240) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 136 bytes))) ∗
    bv_unsigned pointer ↦ₘ∗ bytes ∗ ⌜length bytes = 288%nat⌝ ∗
    ⌜bv_unsigned pointer `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < 0x40000000⌝ ∗
-   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 248 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗ ⌜bv_unsigned pointer + 288 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 248 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionsStackWordLoadPost) := I.
 
 Lemma transactions_stack_word_loads_correct `{!islaG Sigma} `{!threadG}

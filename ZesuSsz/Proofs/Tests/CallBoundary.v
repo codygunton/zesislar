@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Calls.
 
@@ -40,22 +41,22 @@ Print Assumptions call_boundary_zero.
 
 Lemma call_boundary_optional_end (pointer : bv 64) :
   bv_extract 0 3 pointer = BV 3 0 ->
-  bv_unsigned pointer + 8 < 0x40000000 ->
-  bv_unsigned pointer + 9 < 0x40000000.
+  bv_unsigned pointer + 8 < (machineRamEnd defaultMap) ->
+  bv_unsigned pointer + 9 < (machineRamEnd defaultMap).
 Proof. intros Halign Hupper. zesu_finish. Qed.
 Print Assumptions call_boundary_optional_end.
 
 Lemma call_boundary_ram_lower (pointer : bv 64) :
-  0x20000000 <= bv_unsigned pointer ->
-  bv_unsigned pointer >= bv_unsigned (BV 64 0x20000000).
+  (mapRamBase defaultMap) <= bv_unsigned pointer ->
+  bv_unsigned pointer >= bv_unsigned (BV 64 (mapRamBase defaultMap)).
 Proof. intros Hlower. zesu_finish. Qed.
 Print Assumptions call_boundary_ram_lower.
 
 Lemma call_boundary_ram_add (pointer : bv 64) :
-  0x20000000 <= bv_unsigned pointer ->
-  bv_unsigned pointer + 24 < 0x40000000 ->
-  bv_unsigned (pointer + BV 64 8)%bv >= 0x20000000 /\
-  bv_unsigned (pointer + BV 64 24)%bv < 0x40000000.
+  (mapRamBase defaultMap) <= bv_unsigned pointer ->
+  bv_unsigned pointer + 24 < (machineRamEnd defaultMap) ->
+  bv_unsigned (pointer + BV 64 8)%bv >= (mapRamBase defaultMap) /\
+  bv_unsigned (pointer + BV 64 24)%bv < (machineRamEnd defaultMap).
 Proof. intros Hlower Hupper. split; zesu_finish. Qed.
 Print Assumptions call_boundary_ram_add.
 
@@ -67,7 +68,7 @@ Print Assumptions call_boundary_stack_alignment.
 
 Lemma call_boundary_ram_upper_aligned (pointer : bv 64) :
   bv_extract 0 3 pointer = BV 3 0 ->
-  bv_unsigned pointer < 0x40000000 ->
-  bv_unsigned pointer < bv_unsigned (BV 64 0x20000000 + BV 64 0x20000000)%bv.
+  bv_unsigned pointer < (machineRamEnd defaultMap) ->
+  bv_unsigned pointer < bv_unsigned (BV 64 (mapRamBase defaultMap) + BV 64 (mapRamSize defaultMap))%bv.
 Proof. intros Halign Hupper. zesu_finish. Qed.
 Print Assumptions call_boundary_ram_upper_aligned.

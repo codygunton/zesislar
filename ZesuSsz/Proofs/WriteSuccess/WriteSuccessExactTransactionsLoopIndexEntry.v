@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.UninitRegions.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -45,7 +46,7 @@ Proof.
   have Hsp8 : bv_unsigned sp `mod` 8 = 0.
   { clear -HspAlign. apply Z.mod_divide; first lia. apply Z.divide_trans with 16; first (exists 2; reflexivity).
     apply Z.mod_divide; [lia | exact HspAlign]. }
-  have HspLow : 0x20000000 <= bv_unsigned sp by (clear -Hlow; lia).
+  have HspLow : (mapRamBase defaultMap) <= bv_unsigned sp by (clear -Hlow; lia).
   iEval (rewrite (transactions_exact_type_tail sp transaction rest tail) -HtypeValid -Htype) in "Htrace".
   iAssert (∃ _ : unit, transactionIndexCellEntry sp (Z_to_bv 64 base)
     (Z_to_bv 64 (Z.of_nat (length processed)))

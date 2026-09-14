@@ -1,13 +1,14 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.opsem.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Proofs.ReadInput.ReadInput.
 
 Definition mainInputOfSnapshot (snapshot : seq_snapshot) : option ByteString :=
-  match read_mem_list snapshot.(snap_mem) 0x2401a0b8 8 with
+  match read_mem_list snapshot.(snap_mem) (mapIoContextAddress defaultMap) 8 with
   | Some sizeBytes =>
       (List.map bv_unsigned) <$>
-        read_mem_list snapshot.(snap_mem) 0x2001a000
+        read_mem_list snapshot.(snap_mem) (mapInputBufferAddress defaultMap)
           (Z.to_N (little_endian_to_bv 8 sizeBytes))
   | None => None
   end.
@@ -17,8 +18,8 @@ Lemma main_snapshot_input_bytes snapshot input :
   Forall (fun value => (0 <= value < 256)%Z) input.
 Proof.
   unfold mainInputOfSnapshot.
-  destruct (read_mem_list (snap_mem snapshot) 0x2401a0b8 8) as [sizeBytes|]; last discriminate.
-  destruct (read_mem_list (snap_mem snapshot) 0x2001a000
+  destruct (read_mem_list (snap_mem snapshot) (mapIoContextAddress defaultMap) 8) as [sizeBytes|]; last discriminate.
+  destruct (read_mem_list (snap_mem snapshot) (mapInputBufferAddress defaultMap)
     (Z.to_N (little_endian_to_bv 8 sizeBytes))) as [bytes|]; last discriminate.
   intros Hinput. inversion Hinput; subst input.
   apply Forall_map, Forall_forall. intros value Hin.

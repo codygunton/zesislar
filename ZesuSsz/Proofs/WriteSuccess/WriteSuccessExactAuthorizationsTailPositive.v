@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactAuthorizationsLoopSpec WriteSuccessExactAuthorizationsTail
@@ -22,7 +23,7 @@ Proof.
   iDestruct "Hpayload" as "(Hsp & H1 & H5 & H8 & Hregs & Hsource & Hcopy & Hscratch & Hmmio & Htrace & HP & %Hfacts & Hexit & _)".
   pose proof (authorization_facts_advance sp pointer base rows prefix row next rest source Hfacts) as HnewFacts.
   unfold authorizationLoopSpec. iExists (prefix ++ [row]), next, rest,
-    (pointer + BV 64 144)%bv, (BV 64 0x15614), (BV 64 0x2401a0b8).
+    (pointer + BV 64 144)%bv, (BV 64 0x15614), (BV 64 (mapIoContextAddress defaultMap)).
   unfold authorizationLoopPayload. iFrame. done.
 Qed.
 Print Assumptions authorization_tail_positive.

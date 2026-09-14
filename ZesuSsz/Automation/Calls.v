@@ -1,4 +1,5 @@
 From Coq Require Import Lists.List ZArith.ZArith.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -93,8 +94,8 @@ Definition zesu_call `{!islaG Sigma} `{!threadG} (stack_size : Z)
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
-  ⌜0x20000000 <= bv_unsigned sp - stack_size /\
-    bv_unsigned sp < 0x40000000⌝ ∗
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - stack_size /\
+    bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
   (bv_unsigned sp - stack_size) ↦ₘ? stack_size ∗
   P [b10; b11; b12; b13; b14; b15; b16; b17] sp (fun Q =>
     instr_pre (bv_unsigned ret)

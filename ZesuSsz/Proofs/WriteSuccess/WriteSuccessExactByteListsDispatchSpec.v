@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsSpec.
@@ -20,17 +21,17 @@ Definition byteListsExactDispatchFrame `{!islaG Sigma} `{!threadG}
     (bv_unsigned sp + 8) ↦ₘ savedS1 ∗
     byteListProcessedResources itemBase done ∗
     byteListItemResources (bv_unsigned pointer) items ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (byteListItemPayloadEvents sp items tail) ∗
     ⌜length items < 2 ^ 64⌝ ∗
     ⌜bv_unsigned pointer =
       (itemBase + 16 * Z.of_nat (length done))%Z⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     P ∗
     instr_pre 0x15c58
       (byteListsLoopExit sp savedRa savedS0 savedS1

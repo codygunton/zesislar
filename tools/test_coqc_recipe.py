@@ -31,9 +31,9 @@ class CompilerRecipeTests(unittest.TestCase):
 
     def test_project_recipe_survives_later_trace_compilation(self):
         project = ["process", "start", "1", ["prog", "/switch/bin/coqc"],
-                   ["process_args", ["-R", "ZesuSsz", "ZesuSsz", "Proof.v"]]]
+                   ["process_args", ["-R", "ZesuSsz", "ZesuSsz", "ZesuSsz/Proof.v"]]]
         trace = ["process", "start", "2", ["prog", "/switch/bin/coqc"],
-                 ["process_args", ["-R", "generated", "IslaTraces", "Trace.v"]]]
+                 ["process_args", ["-Q", "ZesuSsz", "ZesuSsz", "-R", "generated", "IslaTraces", "generated/Trace.v"]]]
         expected = compiler_recipe(csexp(project))
         self.assertEqual(compiler_recipe(csexp(project) + csexp(trace)), expected)
         with tempfile.TemporaryDirectory() as directory:

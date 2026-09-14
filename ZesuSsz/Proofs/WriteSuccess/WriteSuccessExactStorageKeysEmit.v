@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.WordArrays.
 Import WordMatching.
 Require Import isla.riscv64.riscv64.
@@ -28,19 +29,19 @@ Definition storageKeysEmitEntry `{!islaG Sigma} `{!threadG}
    storageKeysEmitFrame sp key P ∗
    (bv_unsigned sp + 1712) ↦ₘ a ∗ (bv_unsigned sp + 1720) ↦ₘ b ∗
    (bv_unsigned sp + 1728) ↦ₘ c ∗ (bv_unsigned sp + 1736) ↦ₘ d ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp + BV 64 1712)%bv (BV 64 32) key tail) ∗
    ⌜length key = 32%nat⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 1744 < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 1744 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysEmitEntry) := I.
 
 Definition storageKeysEmitPost `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (key : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x153a8) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp + BV 64 1712)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 32) ∗
-   bv_unsigned (sp + BV 64 1712)%bv ↦ₘ∗ key ∗ mmio_range 0x2401a0c0 16 ∗
+   bv_unsigned (sp + BV 64 1712)%bv ↦ₘ∗ key ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ storageKeysEmitFrame sp key P ∗ True)%I.
 Global Instance : LithiumUnfold (@storageKeysEmitPost) := I.
 

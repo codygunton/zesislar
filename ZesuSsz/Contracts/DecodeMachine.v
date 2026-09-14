@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -78,8 +79,8 @@ Definition mainDecodeMachineResources `{!islaG Sigma} `{!threadG}
      ⌜decodeReturnAddress args = 0x14cfc⌝ ∗
      ⌜length (decodeSavedRegisters args) = 12%nat⌝ ∗
      ⌜decodeStackPointer args `mod` 16 = 0⌝ ∗
-     ⌜0x20000880 <= decodeStackPointer args⌝ ∗
-     ⌜decodeStackPointer args + 0x7d0 < 0x40000000⌝ ∗
+     ⌜(mapRamBase defaultMap + 0x880) <= decodeStackPointer args⌝ ∗
+     ⌜decodeStackPointer args + 0x7d0 < (machineRamEnd defaultMap)⌝ ∗
      reg_col zesu_sys_regs ∗
      reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
        List.filter (fun register => negb (String.eqb register "x13")) writeSuccessOtherRegisters) ∗
@@ -101,7 +102,7 @@ Definition mainDecodeMachineResources `{!islaG Sigma} `{!threadG}
      (decodeStackPointer args + 880) ↦ₘ? 2 ∗
      writeSuccessScratch sp ∗
      (decodeStackPointer args - 0x7d0) ↦ₘ? 1896 ∗
-     mmio_range 0x2401a0c0 16 ∗ spec_trace (decodeTail args) ∗
+     mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace (decodeTail args) ∗
      decoderHeapEntry args ∗ preservedFrame args)%I;
   islarisExit := fun args outcome =>
     (let sp := Z_to_bv 64 (decodeStackPointer args) in
@@ -113,8 +114,8 @@ Definition mainDecodeMachineResources `{!islaG Sigma} `{!threadG}
        (Z_to_bv 64 (decodeSavedReturnAddress args)) (decodeFramePadding args) ∗
      ⌜length (decodeSavedRegisters args) = 12%nat⌝ ∗
      ⌜decodeStackPointer args `mod` 16 = 0⌝ ∗
-     ⌜0x20000880 <= decodeStackPointer args⌝ ∗
-     ⌜decodeStackPointer args + 0x7d0 < 0x40000000⌝ ∗
+     ⌜(mapRamBase defaultMap + 0x880) <= decodeStackPointer args⌝ ∗
+     ⌜decodeStackPointer args + 0x7d0 < (machineRamEnd defaultMap)⌝ ∗
      ⌜bv_unsigned sp = decodeStackPointer args⌝ ∗
      ⌜(bv_unsigned ((sp + BV 64 32)%bv) = decodeStackPointer args + 32)%Z⌝ ∗
      mainDecoderObjectResources args (decodeSavedRegisters args) successExitTail outcome ∗
@@ -124,6 +125,6 @@ Definition mainDecodeMachineResources `{!islaG Sigma} `{!threadG}
       end) ∗
      writeSuccessScratch sp ∗
      (decodeStackPointer args - 0x7d0) ↦ₘ? 1896 ∗
-     mmio_range 0x2401a0c0 16 ∗ spec_trace (decodeTail args) ∗
+     mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace (decodeTail args) ∗
      preservedFrame args)%I
 |}.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
@@ -17,7 +18,7 @@ Definition writeSuccessExactStorageKeysLoopSpec `{!islaG Sigma} `{!threadG}
     "x22" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessStorageKeysScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessExactStorageKeysEvents sp processed
       (S remaining) bytes tail) ∗ P ∗
     writeSuccessFixedWidthArrayInvariant

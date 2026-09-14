@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -42,13 +43,13 @@ Definition writeSuccessSuffixOptionalU64159b8NoneSpec
     (bv_unsigned sp - 32) ↦ₘ? 32 ∗
     bv_unsigned ptr ↦ₘ value ∗
     (bv_unsigned ptr + 8) ↦ₘ tag ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 3 ptr = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned ptr⌝ ∗
-    ⌜bv_unsigned ptr + 8 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned ptr⌝ ∗
+    ⌜bv_unsigned ptr + 8 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 8 tag = BV 8 0⌝ ∗
     spec_trace (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
     (∀ (b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64),

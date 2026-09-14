@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -30,7 +31,7 @@ Definition writeSuccessSuffixBytesAggregateEntry `{!islaG Sigma} `{!threadG}
     "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
     "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (writeOutputEventsAny d1 s1
@@ -48,9 +49,9 @@ Definition writeSuccessSuffixBytesAggregateEntry `{!islaG Sigma} `{!threadG}
     bv_unsigned d4 ↦ₘ∗ b4 ∗ ⌜bv_unsigned s4 = length b4⌝ ∗
     bv_unsigned d5 ↦ₘ∗ b5 ∗ ⌜bv_unsigned s5 = length b5⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
       writeSuccessSuffixBytesCarrierOtherRegisters) ∗
     (bv_unsigned sp + 920) ↦ₘ d1 ∗ (bv_unsigned sp + 928) ↦ₘ s1 ∗
@@ -67,11 +68,11 @@ Definition writeSuccessSuffixBytesAggregateExit `{!islaG Sigma} `{!threadG}
       (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec),
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15930) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
     "x10" ↦ᵣ RVal_Bits d5 ∗ "x11" ↦ᵣ RVal_Bits s5 ∗
-    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace tail ∗
     bv_unsigned d1 ↦ₘ∗ b1 ∗ ⌜bv_unsigned s1 = length b1⌝ ∗
     bv_unsigned d2 ↦ₘ∗ b2 ∗ ⌜bv_unsigned s2 = length b2⌝ ∗
@@ -79,9 +80,9 @@ Definition writeSuccessSuffixBytesAggregateExit `{!islaG Sigma} `{!threadG}
     bv_unsigned d4 ↦ₘ∗ b4 ∗ ⌜bv_unsigned s4 = length b4⌝ ∗
     bv_unsigned d5 ↦ₘ∗ b5 ∗ ⌜bv_unsigned s5 = length b5⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
       writeSuccessSuffixBytesCarrierOtherRegisters) ∗
     (bv_unsigned sp + 920) ↦ₘ d1 ∗ (bv_unsigned sp + 928) ↦ₘ s1 ∗
@@ -241,7 +242,7 @@ Proof.
   iAssert (("x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H5]" as "H5shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists (RVal_Bits (BV 64 0x2401a0b8)). iFrame. iPureIntro. bv_solve. }
+    iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))). iFrame. iPureIntro. bv_solve. }
   iAssert (("x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H10]" as "H10shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
@@ -307,7 +308,7 @@ Proof.
   iAssert (("x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H5]" as "H5shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists (RVal_Bits (BV 64 0x2401a0b8)). iFrame. iPureIntro. bv_solve. }
+    iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))). iFrame. iPureIntro. bv_solve. }
   iAssert (("x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H10]" as "H10shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
@@ -370,7 +371,7 @@ Proof.
   iAssert (("x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H5]" as "H5shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists (RVal_Bits (BV 64 0x2401a0b8)). iFrame. iPureIntro. bv_solve. }
+    iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))). iFrame. iPureIntro. bv_solve. }
   iAssert (("x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H10]" as "H10shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
@@ -426,7 +427,7 @@ Proof.
   iAssert (("x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H5]" as "H5shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-    iExists (RVal_Bits (BV 64 0x2401a0b8)). iFrame. iPureIntro. bv_solve. }
+    iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))). iFrame. iPureIntro. bv_solve. }
   iAssert (("x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝))%I)
     with "[H10]" as "H10shape".
   { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.

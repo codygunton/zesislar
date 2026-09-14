@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -37,7 +38,7 @@ Lemma write_success_access_lists_storage_loop_intro
    "x22" ↦ᵣ RVal_Bits pointer ∗
    "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S count))) ∗
    bv_unsigned pointer ↦ₘ∗ storageBytes ∗
-   writeSuccessStorageKeysScratch sp ∗ mmio_range 0x2401a0c0 16 ∗
+   writeSuccessStorageKeysScratch sp ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessStorageKeysEvents sp (S count) storageTail) ∗
    Frame ∗
    writeSuccessFixedWidthArrayInvariant sp pointer (bv_unsigned pointer)

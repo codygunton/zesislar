@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -46,8 +47,8 @@ Definition writeSuccessPost15934AggregateSpec
     (bv_unsigned sp + 24) ↦ₘ pointer ∗
     (bv_unsigned sp + 16) ↦ₘ count ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 16 < 0x40000000⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 24 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 16 < (machineRamEnd defaultMap)⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 24 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessPost1593cAggregateSpec sp pointer count P ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPost15934AggregateSpec) := I.
@@ -63,8 +64,8 @@ Definition writeSuccessPost15930AggregateSpec
     (bv_unsigned sp + 24) ↦ₘ pointer ∗
     (bv_unsigned sp + 16) ↦ₘ count ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 16 < 0x40000000⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 24 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 16 < (machineRamEnd defaultMap)⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 24 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessPost1593cAggregateSpec sp pointer count P ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessPost15930AggregateSpec) := I.

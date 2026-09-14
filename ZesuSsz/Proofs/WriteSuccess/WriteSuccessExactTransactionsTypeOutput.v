@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -13,16 +14,16 @@ Definition transactionTypeOutputEntry `{!islaG Sigma} `{!threadG}
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits old_ra ∗
    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x10" ↦ᵣ RVal_Bits data ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗ bv_unsigned data ↦ₘ∗ [kind] ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents data (BV 64 1) [kind] tail) ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionTypeOutputEntry) := I.
 
 Definition transactionTypeOutputPost `{!islaG Sigma} `{!threadG}
     (data : bv 64) (kind : bv 8) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x150f0) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗ "x10" ↦ᵣ RVal_Bits data ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗ "x10" ↦ᵣ RVal_Bits data ∗
    "x11" ↦ᵣ RVal_Bits (BV 64 1) ∗ bv_unsigned data ↦ₘ∗ [kind] ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionTypeOutputPost) := I.
 
 Lemma transactions_type_output_correct `{!islaG Sigma} `{!threadG}

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessBlobHashesSpec WriteSuccessExactStorageKeysRegisterGroups
@@ -7,7 +8,7 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Lemma blob_return_registers `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (key : list (bv 8)) :
   ("x1" ↦ᵣ RVal_Bits (BV 64 0x15558) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x10" ↦ᵣ RVal_Bits (sp + BV 64 1680)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 32) ∗
    "x12" ↦ᵣ RVal_Bits (storageKeyWord key 8) ∗
    "x13" ↦ᵣ RVal_Bits (storageKeyWord key 16) ∗

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.opsem.
 Require Import isla.spec.
@@ -8,8 +9,8 @@ Import ListNotations.
 
 Definition writeOutputEvents (data size : bv 64) (payload : list (bv 8))
     (tail : spec) : spec :=
-  scons (SWriteMem (BV 64 0x2401a0c0) data)
-    (scons_snap (SWriteMem (BV 64 0x2401a0c8) size)
+  scons (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data)
+    (scons_snap (SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size)
       (fun snapshot =>
         read_mem_list snapshot.(snap_mem) (bv_unsigned data)
           (Z.to_N (bv_unsigned size)) = Some payload)
@@ -61,8 +62,8 @@ Proof. intros Hin Hread. exists snapshot. auto. Qed.
 Lemma write_output_events_payload data size payload tail firstSnapshot
     writeSnapshot labels :
   writeOutputEvents data size payload tail
-    (SWriteMem (BV 64 0x2401a0c0) data firstSnapshot ::
-     SWriteMem (BV 64 0x2401a0c8) size writeSnapshot :: labels) ->
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot :: labels) ->
   read_mem_list writeSnapshot.(snap_mem) (bv_unsigned data)
     (Z.to_N (bv_unsigned size)) = Some payload.
 Proof.

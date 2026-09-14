@@ -78,6 +78,9 @@ $(DUMP):
 	nix build .#endpoint-entry-dump --out-link build/endpoint-entry-dump
 
 # --- install the isla config -------------------------------------------
+ZesuSsz/$(ISLA_CFG): ZesuSsz/Contracts/Machine.v tools/machine_config.py
+	$(PYTHON) tools/machine_config.py --config $@
+
 $(ISLA_ETC)/$(ISLA_CFG): ZesuSsz/$(ISLA_CFG)
 	install -m644 $< $@
 
@@ -258,6 +261,10 @@ build/endpoint-elf:
 	mkdir -p build
 	nix build .#endpoint-elf --out-link $@
 
+build/endpoint-cfg:
+	mkdir -p build
+	nix build .#endpoint-cfg --out-link $@
+
 .PHONY: cfg
 cfg:
 	nix build .#endpoint-cfg
@@ -276,6 +283,7 @@ regenerate-evm-sail-snapshot:
 
 .PHONY: check-evidence-tools
 check-evidence-tools:
+	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_parity.py

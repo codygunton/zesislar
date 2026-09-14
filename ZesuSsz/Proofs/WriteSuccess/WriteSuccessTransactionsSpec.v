@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -137,8 +138,8 @@ Definition writeSuccessByteArrayOwn `{!islaG Sigma}
   | [] => True
   | _ :: _ =>
       (bv_unsigned pointer ↦ₘ∗ bytes ∗
-       ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-       ⌜bv_unsigned pointer + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+       ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+       ⌜bv_unsigned pointer + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
        True)%I
   end.
 
@@ -419,11 +420,11 @@ Definition writeSuccessTransactionsInvariant `{!islaG Sigma}
    ⌜length suffix = (288 * length remaining)%nat⌝ ∗
    ⌜(length transactions < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    ⌜base `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= base⌝ ∗
-   ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= base⌝ ∗
+   ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsInvariant) := I.
 
@@ -440,7 +441,7 @@ Definition writeSuccessTransactionsLoopExit `{!islaG Sigma} `{!threadG}
      (Z_to_bv 64 (Z.of_nat (length transactions))) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
    writeSuccessTransactionsScratch sp base (length transactions) ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsLoopExit) := I.
 
@@ -461,7 +462,7 @@ Definition writeSuccessTransactionsLoopSpec `{!islaG Sigma} `{!threadG}
     writeSuccessTransactionsOwn processed ∗
     writeSuccessTransactionsOwn remaining ∗
     writeSuccessTransactionsScratch sp base (length transactions) ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessTransactionsEvents sp remaining tail) ∗ P ∗
     writeSuccessTransactionsInvariant
       sp base transactions processed remaining bytes prefix suffix ∗
@@ -482,7 +483,7 @@ Definition writeSuccessTransactionPhaseHandoff `{!islaG Sigma} `{!threadG}
    writeSuccessTransactionsProcessedOwn processed ∗
    writeSuccessTransactionOwn transaction ∗
    writeSuccessTransactionsOwn remaining ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeSuccessTransactionPhaseEvents phase sp transaction
        (writeSuccessTransactionsEvents sp remaining tail)) ∗ P ∗

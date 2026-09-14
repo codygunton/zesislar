@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -71,7 +72,7 @@ Definition writeSuccessBlobHashesLoopExit `{!islaG Sigma} `{!threadG}
     "x2" ↦ᵣ RVal_Bits sp ∗ "x19" ↦ᵣ RVal_Bits pointer ∗
     "x22" ↦ᵣ RVal_Bits (BV 64 0) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗
     ⌜bv_unsigned pointer = (base + 32 * Z.of_nat total)%Z⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessBlobHashesLoopExit) := I.
@@ -87,7 +88,7 @@ Definition writeSuccessBlobHashesLoopSpec `{!islaG Sigma} `{!threadG}
     "x19" ↦ᵣ RVal_Bits pointer ∗
     "x22" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessBlobHashesEvents sp (S remaining) tail) ∗ P ∗
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
@@ -107,7 +108,7 @@ Definition writeSuccessBlobHashesBodySpec `{!islaG Sigma} `{!threadG}
     "x19" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessBlobHashesEvents sp (S remaining) tail) ∗ P ∗
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
@@ -127,7 +128,7 @@ Definition writeSuccessBlobHashesTailSpec `{!islaG Sigma} `{!threadG}
     "x19" ↦ᵣ RVal_Bits pointer ∗
     "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
     base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessBlobHashesEvents sp remaining tail) ∗ P ∗
     writeSuccessFixedWidthArrayInvariant
       sp pointer base total processed remaining bytes ∗
@@ -140,9 +141,9 @@ Ltac close_write_success_blob_bad_address Hbad :=
   lazymatch goal with
   | [ Hptr : bv_unsigned ?pointer = _ |- _ ] =>
       exfalso;
-      assert (536870912 <= bv_unsigned pointer)%Z
+      assert ((mapRamBase defaultMap) <= bv_unsigned pointer)%Z
         as HpointerLower by (rewrite Hptr; nia);
-      assert (bv_unsigned pointer + 32 < 1073741824)%Z
+      assert (bv_unsigned pointer + 32 < (machineRamEnd defaultMap))%Z
         as HpointerUpper by (rewrite Hptr; nia);
       assert (0 <= bv_unsigned pointer + 32 < 18446744073709551616)%Z
         as HpointerRange by (rewrite Hptr; nia);
@@ -165,9 +166,9 @@ Ltac close_write_success_blob_address_branch :=
       close_write_success_blob_bad_address Hbad
   | [ Hbad : @eq (bv 64) _ (BV 64 1073745924) |- _ ] =>
       close_write_success_blob_bad_address Hbad
-  | [ Hbad : ~ bv_signed (BV 128 536870912) <= _ |- _ ] =>
+  | [ Hbad : ~ bv_signed (BV 128 (mapRamBase defaultMap)) <= _ |- _ ] =>
       close_write_success_blob_bad_address Hbad
-  | [ Hbad : ~ _ <= bv_signed (BV 128 1073741824) |- _ ] =>
+  | [ Hbad : ~ _ <= bv_signed (BV 128 (machineRamEnd defaultMap)) |- _ ] =>
       close_write_success_blob_bad_address Hbad
   end.
 

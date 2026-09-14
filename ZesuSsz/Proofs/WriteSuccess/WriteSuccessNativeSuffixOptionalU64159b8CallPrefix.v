@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -36,8 +37,8 @@ Definition writeSuccessSuffixOptionalU64159b8RawCallPrefix
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗
-   ⌜bv_unsigned sp < 0x40000000⌝)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗
+   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessSuffixOptionalU64159b8RawCallPrefix) := I.
@@ -66,7 +67,7 @@ Definition writeSuccessSuffixOptionalU64159b8CallPrefixSaved
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32 /\ bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32 /\ bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    (bv_unsigned sp - 32) ↦ₘ? 32)%I.
 
 Global Instance : LithiumUnfold

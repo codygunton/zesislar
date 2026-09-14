@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -19,7 +20,7 @@ Lemma transactions_signature_v_to_r `{!islaG Sigma} `{!threadG}
     (transactionSignatureVCaller sp r0 r1 r2 r3 P) -∗
   instr_pre 0x15644 (transactionSignatureRPost sp r0 r1 r2 r3 tail
     (transactionSignatureVFrame sp value P)) -∗
-  transactionSignatureREntry sp r0 r1 r2 r3 (BV 64 0x1562c) (BV 64 0x2401a0b8) tail
+  transactionSignatureREntry sp r0 r1 r2 r3 (BV 64 0x1562c) (BV 64 (mapIoContextAddress defaultMap)) tail
     (transactionSignatureVFrame sp value P).
 Proof.
   iIntros "Hpost Hnext".

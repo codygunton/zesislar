@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -27,15 +28,15 @@ Local Instance : LithiumUnfold (@writeSuccessLoadMemoryResources) := I.
 
 Definition writeSuccessCallerOutputEventsWithFrame
     (data size : bv 64) (tail : spec) : spec :=
-  scons (SWriteMem (BV 64 0x2401a0c0) data)
-    (scons (SWriteMem (BV 64 0x2401a0c8) size) tail).
+  scons (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data)
+    (scons (SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size) tail).
 
 Definition writeSuccessLoadResidual `{!islaG Sigma} (sp : bv 64)
   (sourceBytes : list (bv 8)) (events : spec) (P : iProp Sigma) :
     iProp Sigma :=
   ((bv_unsigned sp + 312) ↦ₘ∗ sourceBytes ∗
    (bv_unsigned sp + 1032) ↦ₘ? 864 ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace events ∗ P ∗ True)%I.
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace events ∗ P ∗ True)%I.
 
 Definition writeSuccessAtLoadWithFrame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (sourceBytes : list (bv 8)) (events : spec)
@@ -68,11 +69,11 @@ Definition writeSuccessAtLoadHeaderWithFrame `{!islaG Sigma} `{!threadG}
     bv_unsigned sp ↦ₘ? 312 ∗
     ⌜length loaded = 16%nat⌝ ∗
     ⌜bv_unsigned decoded `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned decoded + 720⌝ ∗
-    ⌜bv_unsigned decoded + 848 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned decoded + 720⌝ ∗
+    ⌜bv_unsigned decoded + 848 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-    ⌜bv_unsigned sp + 312 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+    ⌜bv_unsigned sp + 312 < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessLoadResidual sp sourceBytes events P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessAtLoadHeaderWithFrame) := I.
@@ -124,8 +125,8 @@ Definition writeSuccessLoadHeaderRemainder
       Z_to_bv 64 (Z.of_nat (length transactions))⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessLoadHeaderRemainder) := I.
 
@@ -153,8 +154,8 @@ Definition writeSuccessLoadHeaderHeapResources
       Z_to_bv 64 (Z.of_nat (length transactions))⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessLoadHeaderHeapResources) := I.
@@ -330,8 +331,8 @@ Lemma write_success_to_load_with_frame_events_extra
     (decodedBytes : list (bv 8)) (events : spec) (P : iProp Sigma)
     (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
     (Hspalign : bv_extract 0 4 sp = BV 4 0)
-    (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
-    (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
+    (Hspmin : ((mapRamBase defaultMap + 0x880) <= bv_unsigned sp)%Z)
+    (Hspmax : (bv_unsigned sp + 0x7d0 < (machineRamEnd defaultMap))%Z) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
@@ -346,11 +347,11 @@ Lemma write_success_to_load_with_frame_events_extra
        s8 s9 s10 s11
        ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
         bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace events ∗
         P ∗ ⌜length decodedBytes = 848%nat⌝ ∗
-        ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
-        ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
+        ⌜((mapRamBase defaultMap) <= bv_unsigned decoded)%Z⌝ ∗
+        ⌜(bv_unsigned decoded + 848 < (machineRamEnd defaultMap))%Z⌝ ∗
         True)%I).
 Proof.
   move => *.
@@ -576,8 +577,8 @@ Lemma write_success_to_load_with_frame_extra
     (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
     (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
     (Hspalign : bv_extract 0 4 sp = BV 4 0)
-    (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
-    (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
+    (Hspmin : ((mapRamBase defaultMap + 0x880) <= bv_unsigned sp)%Z)
+    (Hspmax : (bv_unsigned sp + 0x7d0 < (machineRamEnd defaultMap))%Z) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
@@ -596,12 +597,12 @@ Lemma write_success_to_load_with_frame_extra
        s8 s9 s10 s11
        ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
         bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace (writeSuccessCallerOutputEventsWithFrame
           (BV 64 0x179c5) (BV 64 6) tail) ∗
         P ∗ ⌜length decodedBytes = 848%nat⌝ ∗
-        ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
-        ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
+        ⌜((mapRamBase defaultMap) <= bv_unsigned decoded)%Z⌝ ∗
+        ⌜(bv_unsigned decoded + 848 < (machineRamEnd defaultMap))%Z⌝ ∗
         True)%I).
 Proof.
   move => *.
@@ -622,8 +623,8 @@ Lemma write_success_to_load_with_frame
     (decodedBytes : list (bv 8)) (tail : spec) (P : iProp Sigma)
     (Hdecoded : bv_unsigned decoded = (bv_unsigned sp + 0x20)%Z)
     (Hspalign : bv_extract 0 4 sp = BV 4 0)
-    (Hspmin : (0x20000880 <= bv_unsigned sp)%Z)
-    (Hspmax : (bv_unsigned sp + 0x7d0 < 0x40000000)%Z) :
+    (Hspmin : ((mapRamBase defaultMap + 0x880) <= bv_unsigned sp)%Z)
+    (Hspmax : (bv_unsigned sp + 0x7d0 < (machineRamEnd defaultMap))%Z) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   ([∗ list] instruction ∈ IslaTraces.write_success_02.instrs.instr_map,
@@ -641,12 +642,12 @@ Lemma write_success_to_load_with_frame
        s8 s9 s10 s11
        ((bv_unsigned sp - 0x7d0) ↦ₘ? 1896 ∗
         bv_unsigned decoded ↦ₘ∗ decodedBytes ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace (writeSuccessCallerOutputEventsWithFrame
           (BV 64 0x179c5) (BV 64 6) tail) ∗
         P ∗ ⌜length decodedBytes = 848%nat⌝ ∗
-        ⌜(0x20000000 <= bv_unsigned decoded)%Z⌝ ∗
-        ⌜(bv_unsigned decoded + 848 < 0x40000000)%Z⌝ ∗
+        ⌜((mapRamBase defaultMap) <= bv_unsigned decoded)%Z⌝ ∗
+        ⌜(bv_unsigned decoded + 848 < (machineRamEnd defaultMap))%Z⌝ ∗
         True)%I).
 Proof.
   move => *.

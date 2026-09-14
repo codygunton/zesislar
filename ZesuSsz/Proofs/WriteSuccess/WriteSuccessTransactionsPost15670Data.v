@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -30,7 +31,7 @@ Proof.
   all: try bv_solve.
   Unshelve.
   all: iExists (items, count, tail, bytes, transactions, base, pointer, tt)ₗ.
-  all: iRename select (mmio_range 0x2401a0c0 16)%I into "Hmmio".
+  all: iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   all: try iExact "Hmmio".

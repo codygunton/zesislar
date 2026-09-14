@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -14,7 +15,7 @@ Definition blobTailFrame `{!islaG Sigma} `{!threadG}
     (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col (list_delete 19%nat writeSuccessBlobHashesBodyOtherRegShapes) ∗
    "x2" ↦ᵣ RVal_Bits sp ∗ base ↦ₘ∗ bytes ∗ writeSuccessBlobHashesScratch sp ∗
-   mmio_range 0x2401a0c0 16 ∗ spec_trace (writeSuccessExactBlobHashesEvents sp (S processed) remaining bytes tail) ∗ P ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace (writeSuccessExactBlobHashesEvents sp (S processed) remaining bytes tail) ∗ P ∗
    writeSuccessFixedWidthArrayInvariant sp pointer base total processed remaining bytes ∗
    instr_pre 0x15564 (writeSuccessBlobHashesLoopExit sp base total bytes tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@blobTailFrame) := I.

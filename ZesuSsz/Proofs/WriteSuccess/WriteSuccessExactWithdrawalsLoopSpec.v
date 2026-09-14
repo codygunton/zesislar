@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -12,15 +13,15 @@ Definition withdrawalLoopFacts (sp pointer : bv 64) (base : Z)
   Forall (fun bytes => length bytes = 48%nat) rows /\ source = concat rows /\
   bv_unsigned pointer = (base + 48 * Z.of_nat (length prefix))%Z /\
   (Z.of_nat (S (length rest)) < 18446744073709551616)%Z /\
-  bv_unsigned sp `mod` 16 = 0 /\ (0x20000000 <= bv_unsigned sp - 48)%Z /\
-  (bv_unsigned sp + 1896 < 0x40000000)%Z /\
-  (0x20000000 <= base)%Z /\ (base + Z.of_nat (length source) < 0x40000000)%Z.
+  bv_unsigned sp `mod` 16 = 0 /\ ((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z /\
+  (bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z /\
+  ((mapRamBase defaultMap) <= base)%Z /\ (base + Z.of_nat (length source) < (machineRamEnd defaultMap))%Z.
 
 Definition withdrawalLoopExit `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (source : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-   "x1" ↦ᵣ RVal_Bits (BV 64 0x156dc) ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+   "x1" ↦ᵣ RVal_Bits (BV 64 0x156dc) ∗ "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
    "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (base + Z.of_nat (length source))) ∗
    "x9" ↦ᵣ RVal_Bits (BV 64 0) ∗
@@ -28,7 +29,7 @@ Definition withdrawalLoopExit `{!islaG Sigma} `{!threadG}
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
      (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)] ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@withdrawalLoopExit) := I.
 
@@ -41,7 +42,7 @@ Definition withdrawalLoopPayload `{!islaG Sigma} `{!threadG}
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
      (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)] ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactWithdrawalEvents sp (row :: rest) tail) ∗ P ∗
    ⌜withdrawalLoopFacts sp pointer base rows prefix row rest source⌝ ∗
    instr_pre 0x156e8 (withdrawalLoopExit sp base source tail P) ∗ True)%I.
@@ -75,7 +76,7 @@ Definition withdrawalCopyCallerFrame `{!islaG Sigma} `{!threadG}
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ("x5" ↦ᵣ RVal_Bits old5 ∗ "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
    "x9" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S (length rest)))) ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactWithdrawalEvents sp (row :: rest) tail) ∗ P ∗
    ⌜withdrawalLoopFacts sp pointer base rows prefix row rest source⌝ ∗
    instr_pre 0x156e8 (withdrawalLoopExit sp base source tail P) ∗ True)%I.
@@ -86,12 +87,12 @@ Definition withdrawalTailPayload `{!islaG Sigma} `{!threadG}
     (row : list (bv 8)) (rest : list (list (bv 8))) (source : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ("x2" ↦ᵣ RVal_Bits sp ∗ "x1" ↦ᵣ RVal_Bits (BV 64 0x156dc) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗ "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗ "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
    reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
      (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
      (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)] ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactWithdrawalEvents sp rest tail) ∗ P ∗
    ⌜withdrawalLoopFacts sp pointer base rows prefix row rest source⌝ ∗
    instr_pre 0x156e8 (withdrawalLoopExit sp base source tail P) ∗ True)%I.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackAlignment.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsControl.
@@ -26,17 +27,17 @@ Definition accessControlFrame `{!islaG Sigma} `{!threadG}
    "x22" ↦ᵣ RVal_Bits x22 ∗ "x27" ↦ᵣ RVal_Bits x27 ∗
    base ↦ₘ∗ bytes ∗ writeSuccessAccessEntriesOwn entries ∗
    accessControlScratch sp base storedIndex savedX22 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactAccessListsEvents sp remaining tail) ∗
    ⌜entries = processed ++ remaining⌝ ∗
    ⌜bytes = writeSuccessAccessEntriesBytes entries⌝ ∗
    ⌜length bytes = (40 * length entries)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessControlFrame) := I.
 

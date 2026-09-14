@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -29,7 +30,7 @@ Definition writeSuccessTransactions150fcCarrierReturn
       ⌜bv_to_little_endian 8 8
           (bv_unsigned (writeSuccessTransactionWord transaction 168)) =
         writeSuccessTransactionByte transaction 168 :: tagTail⌝ ∗
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeSuccessTransactionPhaseEvents TransactionNonce sp transaction
           (writeSuccessTransactionsEvents sp remaining
@@ -97,7 +98,7 @@ Lemma write_success_transactions_150fc_carrier_abi_continuation
           writeSuccessTransactionWord transaction 160 ∗
         (bv_unsigned sp + 1672) ↦ₘ
           writeSuccessTransactionByte transaction 168 ∗
-        mmio_range 0x2401a0c0 16 ∗
+        mmio_range (machineOutputAddress defaultMap) 16 ∗
         spec_trace
           (writeSuccessTransactionPhaseEvents TransactionNonce sp transaction
             (writeSuccessTransactionsEvents sp remaining

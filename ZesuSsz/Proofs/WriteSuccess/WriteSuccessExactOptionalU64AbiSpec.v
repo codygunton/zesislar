@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Calls.
 Require Import ZesuSsz.Export.Snapshots.
@@ -14,9 +15,9 @@ Definition zesuEncoderOptionalU64ExactSomeCallSpec
     (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
     ⌜tag <> BV 8 0⌝ ∗
     ⌜bv_extract 0 3 (args !!! 0%nat) = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
-    ⌜bv_unsigned (args !!! 0%nat) + 8 < 0x40000000⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
+    ⌜bv_unsigned (args !!! 0%nat) + 8 < (machineRamEnd defaultMap)⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
       (writeSuccessBooleanWordPayload (BV 64 1))
       (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
@@ -24,7 +25,7 @@ Definition zesuEncoderOptionalU64ExactSomeCallSpec
     RET (fun _ =>
       bv_unsigned (args !!! 0%nat) ↦ₘ value ∗
       (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
-      mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+      mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Definition zesuEncoderOptionalU64ExactNoneCallSpec
     `{!islaG Sigma} `{!threadG} : iProp Sigma :=
@@ -34,15 +35,15 @@ Definition zesuEncoderOptionalU64ExactNoneCallSpec
     (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
     ⌜tag = BV 8 0⌝ ∗
     ⌜bv_extract 0 3 (args !!! 0%nat) = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned (args !!! 0%nat)⌝ ∗
-    ⌜bv_unsigned (args !!! 0%nat) + 8 < 0x40000000⌝ ∗
-    mmio_range 0x2401a0c0 16 ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned (args !!! 0%nat)⌝ ∗
+    ⌜bv_unsigned (args !!! 0%nat) + 8 < (machineRamEnd defaultMap)⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
       (writeSuccessBooleanWordPayload (BV 64 0)) tail) ∗
     RET (fun _ =>
       bv_unsigned (args !!! 0%nat) ↦ₘ value ∗
       (bv_unsigned (args !!! 0%nat) + 8) ↦ₘ tag ∗
-      mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+      mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Definition zesuEncoderOptionalU64ExactPayloadCallSpec
     `{!islaG Sigma} `{!threadG} : iProp Sigma :=

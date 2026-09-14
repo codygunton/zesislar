@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import instrs.
@@ -22,11 +23,11 @@ Definition zesuEncoderBooleanCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma 
   (zesu_call 16
     (fun _ sp RET =>
       ∃ tail : spec,
-      mmio_range 0x2401a0c0 16 ∗
+      mmio_range (machineOutputAddress defaultMap) 16 ∗
       spec_trace
         (writeOutputEventsAny (sp - BV 64 9)%bv (BV 64 1) tail) ∗
       RET (fun _ =>
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I.
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I.
 
 Global Instance : LithiumUnfold (@zesuEncoderBooleanCallSpec) := I.
 

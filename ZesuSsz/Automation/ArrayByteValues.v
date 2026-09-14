@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ByteArrays.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -125,8 +126,8 @@ Ltac zesu_normalize_array_byte_lookups :=
   | Hlookup : ?bytes !! Z.to_nat
       ((bv_unsigned (bv_add ?row ?offset) - ?base) `div` 1) = Some ?byte,
     Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
-    Hlower : (0x20000000 <= ?base)%Z,
-    Hupper : (?base + Z.of_nat (length ?bytes) < 0x40000000)%Z |- _ =>
+    Hlower : ((mapRamBase defaultMap) <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < (machineRamEnd defaultMap))%Z |- _ =>
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let count := eval vm_compute in (Z.to_nat integer) in
@@ -146,8 +147,8 @@ Ltac zesu_normalize_array_byte_lookups :=
   | Hlookup : ?bytes !! Z.to_nat
       (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte,
     Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
-    Hlower : (0x20000000 <= ?base)%Z,
-    Hupper : (?base + Z.of_nat (length ?bytes) < 0x40000000)%Z |- _ =>
+    Hlower : ((mapRamBase defaultMap) <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < (machineRamEnd defaultMap))%Z |- _ =>
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let count := eval vm_compute in (Z.to_nat integer) in

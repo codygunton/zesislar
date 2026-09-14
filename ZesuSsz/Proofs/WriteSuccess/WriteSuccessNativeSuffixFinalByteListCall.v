@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -41,23 +42,23 @@ Definition writeSuccessFinalCallEntryFrame
     "x16" ↦ᵣ RVal_Bits b16 ∗ "x17" ↦ᵣ RVal_Bits b17 ∗
     (bv_unsigned sp - 80) ↦ₘ? 80 ∗
     byteListItemResources (bv_unsigned pointer) items ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
     ⌜bv_unsigned count = length items⌝ ∗
     ⌜length items < 2 ^ 64⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer⌝ ∗
-    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + 16 * Z.of_nat (length items) < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 80⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 80⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     (writeSuccessEpilogueSavedSlots sp (BV 64 0x159d8)
       s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11) ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 1896⌝ ∗
-    ⌜bv_unsigned sp + 2000 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 1896⌝ ∗
+    ⌜bv_unsigned sp + 2000 < (machineRamEnd defaultMap)⌝ ∗
     ⌜bv_extract 0 1 (BV 64 0x159d8) = BV 1 0⌝ ∗
     ⌜bv_extract 1 1 (BV 64 0x159d8) = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 (BV 64 0x159d8) = BV 2 0⌝ ∗

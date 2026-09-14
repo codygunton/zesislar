@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -24,8 +25,8 @@ Definition writeSuccessTransactionsPost15678DataSpec
     writeSuccessTransactionsPost15674DataCallReturnSpec
       (base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
        ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-       ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-       ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True))%I.
+       ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+       ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True))%I.
 
 Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPost15678DataSpec) := I.
@@ -77,8 +78,8 @@ Proof.
   apply valu_has_bits_shape in Hr27 as (a27 & ->).
   set (F := (base ↦ₘ∗ bytes ∗ writeSuccessTransactionsOwn transactions ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗ P ∗ True)%I).
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I).
   iEval (rewrite -instr_pre'_eq) in "Hcallee".
   iEval (rewrite -instr_pre'_eq) in "Hnext".
   iPoseProof (write_success_transactions_post_15674_data_call_jalr F with

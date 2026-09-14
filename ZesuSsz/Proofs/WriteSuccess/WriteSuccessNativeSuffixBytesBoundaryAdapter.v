@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisCode.
@@ -39,7 +40,7 @@ Definition writeSuccessSuffixBytesAggregateEntryZeroFrame
     "x9" ↦ᵣ RVal_Bits oldS1 ∗
     "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
         (writeOutputEventsAny d1 s1
@@ -57,9 +58,9 @@ Definition writeSuccessSuffixBytesAggregateEntryZeroFrame
     bv_unsigned d4 ↦ₘ∗ b4 ∗ ⌜bv_unsigned s4 = length b4⌝ ∗
     bv_unsigned d5 ↦ₘ∗ b5 ∗ ⌜bv_unsigned s5 = length b5⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
-    ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
       writeSuccessSuffixBytesCarrierOtherRegisters) ∗
     (bv_unsigned sp + 920) ↦ₘ d1 ∗ (bv_unsigned sp + 928) ↦ₘ s1 ∗

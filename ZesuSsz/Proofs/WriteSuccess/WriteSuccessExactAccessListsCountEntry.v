@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsOutputEntry.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsOutputWhole.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsCountWhole.
@@ -46,10 +47,10 @@ Definition accessCountLoopFrame `{!islaG Sigma} `{!threadG}
    ⌜length bytes = (40 * length entries)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessCountLoopFrame) := I.
 
@@ -64,7 +65,7 @@ Lemma access_count_loop_entry_resources `{!islaG Sigma} `{!threadG}
      (accessEntryAfterCountEvents sp entry rest tail)
      (accessCountLoopFrame sp base entries processed (entry :: rest) bytes storedIndex x19 savedX22
        (Z_to_bv 64 (Z.of_nat (length entries))) x22 x27 tail P)) ∗ True)%I -∗
-  accessCountWholeEntry sp (BV 64 0x15210) (BV 64 0x2401a0b8)
+  accessCountWholeEntry sp (BV 64 0x15210) (BV 64 (mapIoContextAddress defaultMap))
     (sp + BV 64 1760)%bv (BV 64 20) (writeSuccessAccessEntryBytes entry)
     (accessEntryAfterCountEvents sp entry rest tail)
     (accessCountLoopFrame sp base entries processed (entry :: rest) bytes storedIndex x19 savedX22

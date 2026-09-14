@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactTransactionsGasRecipientSource WriteSuccessExactTransactionsGasToRecipient.
@@ -18,8 +19,8 @@ Lemma gas_recipient_source_factor_preserves_resources `{!islaG Sigma} `{!threadG
    "x8" ↦ᵣ RVal_Bits data ∗ "x22" ↦ᵣ RVal_Bits size ∗ "x6" ↦ᵣ RVal_Bits old6 ∗
    bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
    (bv_unsigned sp + 264) ↦ₘ count ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1764 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Proof.
   unfold transactionGasRecipientSourceCaller, transactionGasRecipientSourceCore. iSplit.
   - iIntros "(H8 & H6 & Hcore & _)".

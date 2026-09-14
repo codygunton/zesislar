@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
@@ -14,7 +15,7 @@ Definition writeSuccessTransactionsAt10190FramedBlock
     (bytes prefix suffix : list (bv 8)) (tail : spec) : iProp Sigma :=
   (writeSuccessTransactions10190OpaqueMachineFrame
       sp base transaction transactions processed ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace
      (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
        (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction
@@ -53,7 +54,7 @@ Lemma write_success_transactions_10190_framed_unpack
     processed remaining bytes prefix suffix tail -∗
   writeSuccessTransactions10190OpaqueMachineFrame
       sp base transaction transactions processed ∗
-  mmio_range 0x2401a0c0 16 ∗
+  mmio_range (machineOutputAddress defaultMap) 16 ∗
   spec_trace
     (writeOutputEventsAny (sp + BV 64 1744)%bv (BV 64 1)
       (writeSuccessTransactionPhaseEvents TransactionChainId sp transaction

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
@@ -22,8 +23,8 @@ Lemma test_read_word_from_byte_array `{!islaG Sigma} `{!threadG}
     "x10" ↦ᵣ RVal_Bits base ∗
     "x16" ↦ᵣ: (fun _ => True) ∗
     ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned base ∧
-      bv_unsigned base + 288 <= 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned base ∧
+      bv_unsigned base + 288 <= (machineRamEnd defaultMap)⌝ ∗
     bv_unsigned base ↦ₘ∗ bytes ∗
     instr_pre 0x1504c (
       reg_col zesu_sys_regs ∗

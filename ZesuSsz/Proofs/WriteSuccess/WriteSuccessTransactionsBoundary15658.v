@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -50,7 +51,7 @@ Definition writeSuccessTransactionsAt15658Spec `{!islaG Sigma} `{!threadG}
     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
       ["x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25"; "x26"; "x27"]) ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
       (writeSuccessTransactionPhaseEvents TransactionS sp transaction
         (writeSuccessTransactionsEvents sp remaining tail)) ∗
@@ -59,8 +60,8 @@ Definition writeSuccessTransactionsAt15658Spec `{!islaG Sigma} `{!threadG}
        144 * Z.of_nat
          (length (writeSuccessTransactionAuthorizations transaction)))%Z⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
     writeSuccessTransactions15658Frame sp base transaction transactions
       processed remaining bytes prefix suffix tail P ∗ True)%I.
 

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -65,8 +66,8 @@ Proof.
       HbytesLength & HprefixLength & HsuffixLength & HtransactionsBound &
       %Halign & %HlowerBound & %HupperBound & HbaseAlign & HbaseLower &
       HbaseUpper & _)".
-  have HstackLower : (0x20000000 <= bv_unsigned sp - 16)%Z by lia.
-  have HstackUpper : (bv_unsigned sp < 0x40000000)%Z by lia.
+  have HstackLower : ((mapRamBase defaultMap) <= bv_unsigned sp - 16)%Z by lia.
+  have HstackUpper : (bv_unsigned sp < (machineRamEnd defaultMap))%Z by lia.
   iAssert (WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant
     sp base transactions processed (transaction :: remaining) bytes prefix suffix)%I
     with "[HtransactionsEq HbytesEq HprefixEq HsuffixEq HbytesAppend

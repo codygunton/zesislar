@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.StackAlignment.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsCountEntry.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsCountWhole.
@@ -19,20 +20,20 @@ Definition accessBranchLoopFrame `{!islaG Sigma} `{!threadG}
   (accessRegisterGroup ["x12"; "x13"; "x14"; "x15"] ∗ accessRegisterGroup accessUnchangedRegisters ∗
    "x19" ↦ᵣ RVal_Bits x19 ∗
    "x1" ↦ᵣ RVal_Bits (BV 64 0x1521c) ∗
-   "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗ "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗ "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
    base ↦ₘ∗ bytes ∗ writeSuccessAccessEntriesOwn entries ∗
    accessCountLoopScratch sp base (length entries) (length processed) savedX22 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace trace ∗
    ⌜entries = processed ++ remaining⌝ ∗
    ⌜bytes = writeSuccessAccessEntriesBytes entries⌝ ∗
    ⌜length bytes = (40 * length entries)%nat⌝ ∗
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
-   ⌜entries <> [] -> 0x20000000 <= base⌝ ∗
-   ⌜entries <> [] -> base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
+   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    P ∗ True)%I.
 Global Instance : LithiumUnfold (@accessBranchLoopFrame) := I.
 

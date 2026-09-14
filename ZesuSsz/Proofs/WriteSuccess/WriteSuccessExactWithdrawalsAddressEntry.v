@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -10,8 +11,8 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition withdrawalAddressCallerFrame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp - 16) ↦ₘ? 16 ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned sp - 48)%Z⌝ ∗
-   ⌜(bv_unsigned sp + 1896 < 0x40000000)%Z⌝ ∗ P ∗ True)%I.
+   ⌜((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z⌝ ∗
+   ⌜(bv_unsigned sp + 1896 < (machineRamEnd defaultMap))%Z⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@withdrawalAddressCallerFrame) := I.
 
 Lemma withdrawal_int_to_address_entry `{!islaG Sigma} `{!threadG}
@@ -19,7 +20,7 @@ Lemma withdrawal_int_to_address_entry `{!islaG Sigma} `{!threadG}
   withdrawalIntPost sp bytes (BV 64 0x156c0)
     (writeOutputEvents (sp + BV 64 1768)%bv (BV 64 20) (take 20 (drop 24 bytes)) tail)
     ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I -∗
-  withdrawalWholeOutputEntry sp (BV 64 0x156c0) (BV 64 0x2401a0b8)
+  withdrawalWholeOutputEntry sp (BV 64 0x156c0) (BV 64 (mapIoContextAddress defaultMap))
     (sp - BV 64 16)%bv (BV 64 8) bytes tail (withdrawalAddressCallerFrame sp P).
 Proof.
   iIntros "Hpost".
@@ -43,7 +44,7 @@ Lemma withdrawal_address_to_int_entry `{!islaG Sigma} `{!threadG}
     (withdrawalAddressCallerFrame sp P) -∗
   instr_pre 0x156dc (withdrawalIntPost sp bytes (BV 64 0x156dc) tail
     ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I) -∗
-  withdrawalIntEntry sp (BV 64 0x156d0) (BV 64 0x2401a0b8)
+  withdrawalIntEntry sp (BV 64 0x156d0) (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 20) bytes 16 (BV 64 0x156dc) tail
     ("x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗ P ∗ True)%I.
 Proof.

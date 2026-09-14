@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -12,8 +13,8 @@ Definition transactionRecipientMiddlePairEntry `{!islaG Sigma} `{!threadG}
    "x5" ↦ᵣ RVal_Bits (bv_zero_extend 64 b272) ∗
    (bv_unsigned sp + 128) ↦ₘ? 8 ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 136 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 136 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientMiddlePairEntry) := I.
 
 Definition transactionRecipientMiddlePairPost `{!islaG Sigma} `{!threadG}
@@ -25,8 +26,8 @@ Definition transactionRecipientMiddlePairPost `{!islaG Sigma} `{!threadG}
      (bv_unsigned b271 * 65536 + bv_unsigned b272 * 16777216)) ∗
    (bv_unsigned sp + 128) ↦ₘ word ∗
    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗
-   ⌜bv_unsigned sp + 136 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗
+   ⌜bv_unsigned sp + 136 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionRecipientMiddlePairPost) := I.
 
 Lemma transactions_recipient_middle_pair_correct `{!islaG Sigma} `{!threadG}

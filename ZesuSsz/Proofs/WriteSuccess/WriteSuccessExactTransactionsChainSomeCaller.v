@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
@@ -16,13 +17,13 @@ Definition optionalU64SomeExactCallerContext `{!islaG Sigma} `{!threadG}
     (pointer value sp ret old_x5 old_x6 old_x8 : bv 64)
     (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ("x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
-   mmio_range 0x2401a0c0 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
      (writeSuccessBooleanWordPayload (BV 64 1))
      (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
        (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail)) ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗ True)%I.
 
@@ -39,10 +40,10 @@ Definition transactionChainSomeCaller `{!islaG Sigma} `{!threadG}
    ⌜bytes !! 8%nat = Some tag⌝ ∗ ⌜tag <> BV 8 0⌝ ∗
    ⌜value = Z_to_bv 64 (little_endian_to_bv 8 (take 8 bytes))⌝ ∗
    ⌜(8 <= length bytes)%nat⌝ ∗ ⌜bv_extract 0 3 (sp + BV 64 1664)%bv = BV 3 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned (sp + BV 64 1664)%bv⌝ ∗
-   ⌜bv_unsigned (sp + BV 64 1664)%bv + Z.of_nat (length bytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + BV 64 1664)%bv⌝ ∗
+   ⌜bv_unsigned (sp + BV 64 1664)%bv + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 32⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
    optionalU64SomeExactCallerContext (sp + BV 64 1664)%bv value sp (BV 64 0x150fc)
      old5 old6 old8 bytes tail P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionChainSomeCaller) := I.

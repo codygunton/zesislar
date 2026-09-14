@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CounterZero.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -16,7 +17,7 @@ Definition withdrawalInitialEntry `{!islaG Sigma} `{!threadG}
      (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
      (KindReg "x15", BitsShape 64)] ∗
    base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
-   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessExactWithdrawalEvents sp (row :: rest) tail) ∗ P ∗
    instr_pre 0x156e8 (withdrawalLoopExit sp base source tail P) ∗ True)%I.
 Global Instance : LithiumUnfold (@withdrawalInitialEntry) := I.

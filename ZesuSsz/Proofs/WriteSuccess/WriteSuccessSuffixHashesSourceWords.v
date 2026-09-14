@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoop.
 
@@ -21,7 +22,7 @@ Lemma write_success_suffix_hashes_source_words
   reg_col
       writeSuccessHashesSourceRest -∗
   "x1" ↦ᵣ RVal_Bits (BV 64 0x15750) -∗
-  "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) -∗
+  "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) -∗
   "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv -∗
   "x11" ↦ᵣ RVal_Bits (BV 64 8) -∗
   reg_col writeSuccessHashesOtherRegShapes.
@@ -62,7 +63,7 @@ Proof.
      (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
      (KindReg "x31", BitsShape 64)]
     2%nat (KindReg "x5", BitsShape 64) ltac:(vm_compute; reflexivity)).
-  iExists (RVal_Bits (BV 64 0x2401a0b8)). iFrame "H5".
+  iExists (RVal_Bits (BV 64 (mapIoContextAddress defaultMap))). iFrame "H5".
   iSplit; [iPureIntro; cbn; constructor |].
   rewrite (reg_col_lookup
     [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64);

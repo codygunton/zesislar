@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.
@@ -20,8 +21,8 @@ Definition transactionSignatureAssemblyStorage `{!islaG Sigma} `{!threadG}
    ⌜(bv_unsigned row = base + Z.of_nat index)%Z⌝ ∗
    ⌜(index + 104 <= length bytes)%nat⌝ ∗
    ⌜bv_unsigned row `mod` 8 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= base⌝ ∗ ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp⌝ ∗ ⌜bv_unsigned sp + 224 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= base⌝ ∗ ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp⌝ ∗ ⌜bv_unsigned sp + 224 < (machineRamEnd defaultMap)⌝ ∗
    transactionRecipientAssemblyStackContents sp row chain chainTag bytes index P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureAssemblyStorage) := I.
 

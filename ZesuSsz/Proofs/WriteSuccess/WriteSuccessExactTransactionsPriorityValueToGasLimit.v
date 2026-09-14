@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsPriorityFeeGasCall.
 Require Import ZesuSsz.Automation.CallScratchSized.
 Require Import isla.riscv64.riscv64.
@@ -23,7 +24,7 @@ Lemma transactions_priority_value_to_gas_limit `{!islaG Sigma} `{!threadG}
       ("x26" ↦ᵣ RVal_Bits value ∗ P ∗ True) ∗ True)%I -∗
   instr_pre 0x15154 (transactionGasLimitPost sp value tail
     (transactionFeeGasLimitFrame sp gaslow gashigh tag low high P)) -∗
-  transactionGasLimitEntry sp value (BV 64 0x15138) (BV 64 0x2401a0b8) (BV 64 16) tail
+  transactionGasLimitEntry sp value (BV 64 0x15138) (BV 64 (mapIoContextAddress defaultMap)) (BV 64 16) tail
     (transactionFeeGasLimitFrame sp gaslow gashigh tag low high P).
 Proof.
   iIntros "Hpost Hnext".

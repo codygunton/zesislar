@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
@@ -13,7 +14,7 @@ Lemma withdrawal_int_next_entry `{!islaG Sigma} `{!threadG}
       (writeSuccessPrivateBytes (writeSuccessEncodeU64
         (bv_unsigned (transactionRowWord bytes 0 offset)))) tail) P -∗
   instr_pre (bv_unsigned ret) (withdrawalIntPost sp bytes ret tail P) -∗
-  withdrawalIntEntry sp oldret (BV 64 0x2401a0b8)
+  withdrawalIntEntry sp oldret (BV 64 (mapIoContextAddress defaultMap))
     (BV 64 8) bytes offset ret tail P.
 Proof.
   iIntros "Hpost Hnext".

@@ -1,11 +1,12 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 
 Lemma access_copy_processed_values {A} (base : Z)
     (entries processed remaining : list A) (bytes : list byte) :
   entries = processed ++ remaining -> length bytes = (40 * length entries)%nat ->
-  (0x20000000 <= base)%Z -> (base + Z.of_nat (length bytes) < 0x40000000)%Z ->
+  ((mapRamBase defaultMap) <= base)%Z -> (base + Z.of_nat (length bytes) < (machineRamEnd defaultMap))%Z ->
   bv_unsigned (Z_to_bv 64 (Z.of_nat (length processed))) = Z.of_nat (length processed) /\
   bv_unsigned (Z_to_bv 64 base) = base.
 Proof.
@@ -13,7 +14,7 @@ Proof.
   have Hproc : (Z.of_nat (length processed) <= Z.of_nat (length entries))%Z.
   { rewrite Hsplit app_length Nat2Z.inj_add. lia. }
   rewrite Hsize Nat2Z.inj_mul in Hhigh.
-  change (base + 40 * Z.of_nat (length entries) < 1073741824)%Z in Hhigh.
+  change (base + 40 * Z.of_nat (length entries) < (machineRamEnd defaultMap))%Z in Hhigh.
   split.
   - rewrite Z_to_bv_small; [reflexivity|unfold bv_modulus; cbn; lia].
   - rewrite Z_to_bv_small; [reflexivity|unfold bv_modulus; cbn; lia].

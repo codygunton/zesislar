@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -12,7 +13,7 @@ Definition writeSuccessBlobHashesLbuOuterFrame `{!islaG Sigma} `{!threadG}
     (tail : spec) : iProp Sigma :=
   ("x2" ↦ᵣ RVal_Bits sp ∗
    "x27" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
-   writeSuccessBlobHashesScratch sp ∗ mmio_range 0x2401a0c0 16 ∗
+   writeSuccessBlobHashesScratch sp ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeSuccessBlobHashesEvents sp (S remaining) tail) ∗ P ∗
    writeSuccessFixedWidthArrayInvariant
      sp pointer base total processed remaining bytes ∗
@@ -33,8 +34,8 @@ Definition writeSuccessBlobHashesLbuEntry `{!islaG Sigma} `{!threadG}
       remaining bytes tail ∗
     ⌜length bytes = (32 * (processed + S remaining))%nat⌝ ∗
     ⌜bv_unsigned pointer = (base + 32 * Z.of_nat processed)%Z⌝ ∗
-    ⌜0x20000000 <= base⌝ ∗
-    ⌜base + Z.of_nat (length bytes) < 0x40000000⌝)%I.
+    ⌜(mapRamBase defaultMap) <= base⌝ ∗
+    ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessBlobHashesLbuEntry) := I.
 
@@ -52,8 +53,8 @@ Definition writeSuccessBlobHashesLbuState `{!islaG Sigma} `{!threadG}
      drop (S offset) (drop (32 * processed) bytes) ∗
    ⌜drop (32 * processed) bytes !! offset = Some byte⌝ ∗
    ⌜bv_unsigned pointer = (base + 32 * Z.of_nat processed)%Z⌝ ∗
-   ⌜0x20000000 <= bv_unsigned pointer + Z.of_nat offset⌝ ∗
-   ⌜bv_unsigned pointer + Z.of_nat offset < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned pointer + Z.of_nat offset⌝ ∗
+   ⌜bv_unsigned pointer + Z.of_nat offset < (machineRamEnd defaultMap)⌝ ∗
    writeSuccessBlobHashesLbuOuterFrame P sp pointer base total processed
      remaining bytes tail)%I.
 
@@ -86,8 +87,8 @@ Lemma write_success_blob_hashes_prepare_lbu_array
   base ↦ₘ∗ bytes -∗
   ⌜length bytes = (32 * (processed + S remaining))%nat⌝ -∗
   ⌜bv_unsigned pointer = (base + 32 * Z.of_nat processed)%Z⌝ -∗
-  ⌜0x20000000 <= base⌝ -∗
-  ⌜base + Z.of_nat (length bytes) < 0x40000000⌝ -∗
+  ⌜(mapRamBase defaultMap) <= base⌝ -∗
+  ⌜base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ -∗
   ∃ byte : bv 8,
     (bv_unsigned pointer + Z.of_nat offset) ↦ₘ byte ∗
     base ↦ₘ∗ take (32 * processed) bytes ∗
@@ -95,8 +96,8 @@ Lemma write_success_blob_hashes_prepare_lbu_array
     (bv_unsigned pointer + Z.of_nat (S offset)) ↦ₘ∗
       drop (S offset) (drop (32 * processed) bytes) ∗
     ⌜drop (32 * processed) bytes !! offset = Some byte⌝ ∗
-    ⌜0x20000000 <= bv_unsigned pointer + Z.of_nat offset⌝ ∗
-    ⌜bv_unsigned pointer + Z.of_nat offset < 0x40000000⌝.
+    ⌜(mapRamBase defaultMap) <= bv_unsigned pointer + Z.of_nat offset⌝ ∗
+    ⌜bv_unsigned pointer + Z.of_nat offset < (machineRamEnd defaultMap)⌝.
 Proof.
   intros Hoff. iIntros "Harray" (Hlength Hpointer HbaseLower HbaseUpper).
   have Hidx : (32 * processed + offset < length bytes)%nat by lia.
@@ -180,7 +181,7 @@ Proof.
       (32 * processed + offset)%nat by lia.
     exact HbyteLookup. }
   have HaddressLower :
-      536870912 <= bv_unsigned pointer + Z.of_nat offset.
+      (mapRamBase defaultMap) <= bv_unsigned pointer + Z.of_nat offset.
   { rewrite Hpointer.
     have HprocessedNonnegative : (0 <= Z.of_nat processed)%Z :=
       Nat2Z.is_nonneg processed.
@@ -188,7 +189,7 @@ Proof.
       Nat2Z.is_nonneg offset.
     nia. }
   have HaddressUpper :
-      bv_unsigned pointer + Z.of_nat offset < 1073741824.
+      bv_unsigned pointer + Z.of_nat offset < (machineRamEnd defaultMap).
   { rewrite Hlength Nat2Z.inj_mul Nat2Z.inj_add Nat2Z.inj_succ
       in HbaseUpper.
     rewrite Hpointer.

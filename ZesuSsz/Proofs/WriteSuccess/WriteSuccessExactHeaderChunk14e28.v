@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -55,7 +56,7 @@ Proof.
     (writeSuccessExactHeaderEventsAfter1184 sp bytes tail).
   Unshelve. all: try prepare_sidecond; try assumption; try bv_solve; try lia; try iFrame.
   Unshelve. liShow.
-  iRename select (mmio_range 0x2401a0c0 16)%I into "Hmmio".
+  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
   iRename select (spec_trace (writeOutputEvents (sp + BV 64 1184)%bv (BV 64 32)
     (take 32 (drop 152 (take 592 bytes))) (writeSuccessExactHeaderEventsAfter1184 sp bytes tail)))%I into "Htrace".
   iRename select ((bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes)%I into "Hcopy".

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -30,8 +31,8 @@ Definition writeSuccessTransactionsCarrierWithdrawalsTotalData
    ⌜bv_unsigned pointer = withdrawalBase⌝ ∗
    ⌜length withdrawalBytes = (48 * count)%nat⌝ ∗
    ⌜(count < 2 ^ 64)%nat⌝ ∗
-   ⌜0x20000000 <= withdrawalBase⌝ ∗
-   ⌜withdrawalBase + Z.of_nat (length withdrawalBytes) < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= withdrawalBase⌝ ∗
+   ⌜withdrawalBase + Z.of_nat (length withdrawalBytes) < (machineRamEnd defaultMap)⌝ ∗
    instr_pre 0x156e8
      (writeSuccessWithdrawalsLoopExit sp withdrawalBase count withdrawalBytes tail
        (writeSuccessTransactionsPost15678PreservedScratch sp transactionBase
@@ -59,14 +60,14 @@ Definition writeSuccessTransactionsPost15674WithdrawalsTotalSpec
      (length transactions) ∗
    writeSuccessTransactionsLoopCarrierPayload sp first second pointer
      (Z_to_bv 64 (Z.of_nat count)) items ∗
-   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗
+   (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
      (byteListItemEvents (sp - BV 64 32)%bv items
        (writeOutputEventsAny (sp - BV 64 16)%bv (BV 64 8)
          (writeSuccessWithdrawalsEvents sp count tail)))) ∗
    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-   ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1896 < 0x40000000⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    writeSuccessTransactionsCarrierWithdrawalsTotalData P sp pointer
      transactionBase withdrawalBase transactions transactionBytes count
      withdrawalBytes tail first second items ∗ True)%I.
@@ -75,8 +76,8 @@ Global Instance : LithiumUnfold
     (@writeSuccessTransactionsPost15674WithdrawalsTotalSpec) := I.
 
 Lemma write_success_transactions_lower_48_to_16 (sp : bv 64) :
-  (0x20000000 <= bv_unsigned sp - 48)%Z ->
-  (0x20000000 <= bv_unsigned sp - 16)%Z.
+  ((mapRamBase defaultMap) <= bv_unsigned sp - 48)%Z ->
+  ((mapRamBase defaultMap) <= bv_unsigned sp - 16)%Z.
 Proof. lia. Qed.
 
 Lemma write_success_transactions_post_15674_withdrawals_total

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessMemcpyWholeLoopClosed.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -18,8 +19,8 @@ Definition memcpyWholeEntry `{!islaG Sigma} `{!threadG}
    ⌜bv_unsigned src = (base + Z.of_nat start)%Z⌝ ∗
    ⌜bv_unsigned n = Z.of_nat (length data)⌝ ∗
    ⌜(start + length data <= length source)%nat⌝ ∗
-   ⌜(0x20000000 <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length source) < 0x40000000)%Z⌝ ∗
-   ⌜(0x20000000 <= bv_unsigned dst)%Z⌝ ∗ ⌜(bv_unsigned dst + bv_unsigned n < 0x40000000)%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= base)%Z⌝ ∗ ⌜(base + Z.of_nat (length source) < (machineRamEnd defaultMap))%Z⌝ ∗
+   ⌜((mapRamBase defaultMap) <= bv_unsigned dst)%Z⌝ ∗ ⌜(bv_unsigned dst + bv_unsigned n < (machineRamEnd defaultMap))%Z⌝ ∗
    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
    instr_pre (bv_unsigned ret)

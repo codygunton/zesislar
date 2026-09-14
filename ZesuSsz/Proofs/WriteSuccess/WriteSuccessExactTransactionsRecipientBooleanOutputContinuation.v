@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CodeLookup.
 Require Import ZesuSsz.Automation.WordPayloads.
 Require Import isla.riscv64.riscv64.
@@ -23,7 +24,7 @@ Proof.
   iEval (rewrite /writeSuccessCompleteNativeCode) in "Hcode".
   iDestruct "Hcode" as "#(Hprologue & Hlookup & Hmain & Houtput & Hmemcpy & Hboolean & Hoptional & HbyteLists & Hbytes & Hint & Hu256 & Hu128)".
   iPoseProof (transactions_recipient_output_call_correct sp (BV 64 0x15180)
-    (BV 64 0x2401a0b8) (sp - BV 64 9)%bv (BV 64 1)
+    (BV 64 (mapIoContextAddress defaultMap)) (sp - BV 64 9)%bv (BV 64 1)
     (words_20_payload first second last) tail
     (transactionRecipientOutputCallerFrame sp first second last P)
     with "[] Houtput") as "Hcallee".

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Proofs.Main.Resources.
@@ -12,7 +13,7 @@ Definition mainFailureTerminalFrame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ("x1" ↦ᵣ RVal_Bits (BV 64 0x14d30) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
    "x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ "x11" ↦ᵣ RVal_Bits (BV 64 6) ∗
-   0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗ P)%I.
+   0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗ P)%I.
 
 Definition mainFailureFinishResources `{!islaG Sigma} `{!threadG}
     (tail : spec) (sp : bv 64) (P : iProp Sigma) :
@@ -22,11 +23,11 @@ Definition mainFailureFinishResources `{!islaG Sigma} `{!threadG}
      islarisCode _ _ (zkvmExitTailResources tail (mainFailureTerminalFrame sp P)))%I;
   islarisEntry := fun _ =>
     (mainCallRegisters sp (BV 64 0x14d24) (BV 64 0x177c8) (BV 64 6) ∗
-     "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+     "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
      "x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗
-     0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗
-     mmio_range 0x2401a0d0 8 ∗
-     spec_trace (scons (SWriteMem (BV 64 0x2401a0d0) (BV 64 0)) tail) ∗ P ∗ True)%I;
+     0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
+     mmio_range (machineExitAddress defaultMap) 8 ∗
+     spec_trace (scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) (BV 64 0)) tail) ∗ P ∗ True)%I;
   islarisExit := fun _ _ =>
     islarisExit _ _ (zkvmExitTailResources tail (mainFailureTerminalFrame sp P))
       {| zkvmExitCode := 0 |} tt
@@ -43,10 +44,10 @@ Proof.
   iPoseProof ("HnativeSpec" with "HexitCode") as "Hnative".
   rewrite instr_pre'_eq /instr_pre'_def /=.
   iIntros "[(Hregisters&H5&H6&Hmemory&Houtput&Hexit&Hspec&HP&_) Hreturn]".
-  let F := constr:(("x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+  let F := constr:(("x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
     "x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ 0x177c8 ↦ₘ∗ failureMemory ∗
-    mmio_range 0x2401a0c0 16 ∗ mmio_range 0x2401a0d0 8 ∗
-    spec_trace (scons (SWriteMem (BV 64 0x2401a0d0) (BV 64 0)) tail) ∗ P ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗ mmio_range (machineExitAddress defaultMap) 8 ∗
+    spec_trace (scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) (BV 64 0)) tail) ∗ P ∗
     instr_pre 0x101d0 (∃ outcome : unit,
       ⌜True⌝ ∗ islarisExit _ _ (zkvmExitTailResources tail (mainFailureTerminalFrame sp P))
         {| zkvmExitCode := 0 |} tt))%I) in
@@ -57,7 +58,7 @@ Proof.
     iApply ("Hnative" $! {| zkvmExitCode := 0 |}).
     rewrite /zkvmExitTailResources /mainFailureTerminalFrame /=.
     iSplitR "Hreturn"; last iExact "Hreturn".
-    iExists (BV 64 0), (BV 64 0x2401a0b8), (BV 64 0).
+    iExists (BV 64 0), (BV 64 (mapIoContextAddress defaultMap)), (BV 64 0).
     iFrame. iPureIntro. vm_compute. reflexivity. }
   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
   iApply "Hbody". iFrame.

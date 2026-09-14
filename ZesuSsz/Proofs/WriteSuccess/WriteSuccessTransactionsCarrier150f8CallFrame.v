@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -61,8 +62,8 @@ Lemma write_success_transactions_150f8_carrier_call_frame_enter
   (bv_unsigned sp + 1664) ↦ₘ writeSuccessTransactionWord transaction 160 ∗
   (bv_unsigned sp + 1672) ↦ₘ writeSuccessTransactionWord transaction 168 ∗
   ⌜length (writeSuccessTransactionBytes transaction) = 288%nat⌝ ∗
-  ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-  ⌜bv_unsigned sp + 1896 < 0x40000000⌝.
+  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+  ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝.
 Proof.
   iIntros "Hframe".
   iEval (unfold writeSuccessTransactions150ecCarrierCallFrame) in "Hframe".

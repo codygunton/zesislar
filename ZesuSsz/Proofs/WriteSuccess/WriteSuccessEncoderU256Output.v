@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_08 Require Import a15cc8 a15ccc a15cd0 a15cd4.
@@ -55,7 +56,7 @@ Proof.
       (BV 64 0x15cd8)
       (sp - BV 64 48)%bv
       (fun _ =>
-        mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ True)))%I
+        mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ True)))%I
     with "[Hnext Hframe HsavedRet Hcaller]" as "Hreturn".
   {
     iApply instr_pre_to_body. iNext.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.CallScratch.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -9,14 +10,14 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition transactionSignatureBackEdgeCaller `{!islaG Sigma} `{!threadG}
     (sp index total : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((bv_unsigned sp + 112) ↦ₘ total ∗ (bv_unsigned sp + 248) ↦ₘ index ∗
-   ⌜bv_unsigned sp + 256 < 0x40000000⌝ ∗ P ∗ True)%I.
+   ⌜bv_unsigned sp + 256 < (machineRamEnd defaultMap)⌝ ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureBackEdgeCaller) := I.
 
 Definition transactionSignatureBackEdgeFrame `{!islaG Sigma} `{!threadG}
     (sp value r0 r1 r2 r3 s0 s1 s2 s3 : bv 64) tail (P : iProp Sigma) : iProp Sigma :=
-  ("x1" ↦ᵣ RVal_Bits (BV 64 0x1565c) ∗ "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
+  ("x1" ↦ᵣ RVal_Bits (BV 64 0x1565c) ∗ "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
    "x12" ↦ᵣ RVal_Bits s2 ∗ "x13" ↦ᵣ RVal_Bits s3 ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗
+   (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
    transactionSignatureSFrame sp s0 s1 s2 s3
      (transactionSignatureRFrame sp r0 r1 r2 r3 (transactionSignatureVFrame sp value P)) ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionSignatureBackEdgeFrame) := I.

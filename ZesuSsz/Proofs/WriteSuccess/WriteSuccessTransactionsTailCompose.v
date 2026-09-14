@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -26,7 +27,7 @@ Lemma write_success_transactions_tail_compose
   writeSuccessTransactionsProcessedOwn processed -∗
   writeSuccessTransactionOwn transaction -∗
   writeSuccessTransactionsOwn remaining -∗
-  mmio_range 0x2401a0c0 16 -∗
+  mmio_range (machineOutputAddress defaultMap) 16 -∗
   spec_trace (writeSuccessTransactionsEvents sp remaining tail) -∗
   P -∗
   writeSuccessTransactionsInvariant sp base transactions processed
@@ -42,7 +43,7 @@ Lemma write_success_transactions_tail_compose
     writeSuccessTransactionsOwn x.6ₗ ∗
     writeSuccessTransactionsOwn x.5ₗ ∗
     writeSuccessTransactionsScratch sp x.7ₗ (length transactions) ∗
-    mmio_range 0x2401a0c0 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeSuccessTransactionsEvents sp x.5ₗ x.1ₗ) ∗ P ∗
     writeSuccessTransactionsInvariant sp x.7ₗ transactions x.6ₗ x.5ₗ
       x.4ₗ x.3ₗ x.2ₗ ∗

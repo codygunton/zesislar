@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import
@@ -26,7 +27,7 @@ Lemma write_success_transactions_chunk_151d0
       (writeSuccessAccessListsLoopExit sp base entries bytes tail x19 savedX22 P)) -∗
   ⌜(∀ (transaction : WriteSuccessTransactionsSpec.writeSuccessTransaction),
     WriteSuccessTransactionsSpec.writeSuccessTransactionValid transaction ->
-    (0x20000000 <=
+    ((mapRamBase defaultMap) <=
        bv_unsigned
          (WriteSuccessTransactionsSpec.writeSuccessTransactionAccessPointer
             transaction))%Z /\
@@ -36,7 +37,7 @@ Lemma write_success_transactions_chunk_151d0
        Z.of_nat
        (length
            (WriteSuccessTransactionsSpec.writeSuccessTransactionAccessBytes
-              transaction)) < 0x40000000)%Z)⌝ -∗
+              transaction)) < (machineRamEnd defaultMap))%Z)⌝ -∗
   (∀ x19, instr_body 0x151d4 (writeSuccessAccessListsLoopSpec x19 P)) -∗
   instr_body 0x151d0 (writeSuccessTransactionsAt151d0Spec P).
 Proof.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
@@ -20,7 +21,7 @@ Definition writeSuccessSuffixInt15960SetupSpec
     "x2" ↦ᵣ RVal_Bits sp ∗
     "x10" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     (bv_unsigned sp + 64) ↦ₘ value ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 64 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 64 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x15968 (writeSuccessSuffixInt15968SetupSpec P) ∗ P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixInt15960SetupSpec) := I.
@@ -101,7 +102,7 @@ Definition writeSuccessSuffixBytes15980SetupSpec
     "x10" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     (bv_unsigned sp + 8) ↦ₘ count ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 8 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 8 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x1598c (writeSuccessSuffixBytes1598cSetupSpec P) ∗ P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixBytes15980SetupSpec) := I.
@@ -136,8 +137,8 @@ Definition writeSuccessSuffixInt159a0SetupSpec
     "x10" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
     (bv_unsigned sp + 96) ↦ₘ saved ∗ (bv_unsigned sp + 80) ↦ₘ value ∗
     ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜0x20000000 <= bv_unsigned sp + 80⌝ ∗
-    ⌜bv_unsigned sp + 96 < 0x40000000⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp + 80⌝ ∗
+    ⌜bv_unsigned sp + 96 < (machineRamEnd defaultMap)⌝ ∗
     instr_pre 0x159ac (writeSuccessSuffixInt159acSetupSpec P) ∗ P)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessSuffixInt159a0SetupSpec) := I.
