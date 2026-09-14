@@ -106,6 +106,7 @@ Ltac zesu_finish_ram_known :=
   end.
 
 Ltac zesu_finish_array_byte_lookup :=
+  zesu_normalize_array_byte_lookups;
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
       let integer := eval vm_compute in (bv_unsigned offset) in
@@ -113,10 +114,11 @@ Ltac zesu_finish_array_byte_lookup :=
       let index := eval vm_compute in (Z.to_nat integer) in
       change (bytes !! index = Some byte) in Hlookup
   end;
-  match goal with
+  repeat match goal with
   | Hlookup : ?bytes !! ?index = Some ?byte
-    |- context[default _ (?bytes !! ?index)] => rewrite Hlookup; reflexivity
-  end.
+    |- context[default _ (?bytes !! ?index)] => rewrite Hlookup
+  end;
+  reflexivity.
 
 Ltac zesu_finish :=
   try autorewrite with zesu_indices;

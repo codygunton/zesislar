@@ -5,3 +5,5 @@ Require Export ZesuSsz.Automation.Calls.
 Require Export ZesuSsz.Automation.Finish.
 Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.UninitRegions.
+Require Export ZesuSsz.Automation.NatBitvectors.
+Require Export ZesuSsz.Automation.ArrayPacking.

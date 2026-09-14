@@ -16,8 +16,12 @@ Ltac zesu_solve_machine_bounds :=
   solve [zesu_normalize_binary_nat_hypotheses;
     zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve].
 Ltac zesu_solve_machine_linear :=
-  solve [zesu_normalize_binary_nat_hypotheses;
-    zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia].
+  first [solve [repeat match goal with
+           | Hnat : (_ <= _)%nat |- _ => clear Hnat
+           | Hnat : (_ < _)%nat |- _ => clear Hnat
+           end; zesu_normalize_machine_map; lia] |
+    solve [zesu_normalize_binary_nat_hypotheses;
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]].
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
 Tactic Notation "bv_solve" := zesu_solve_machine_bounds.

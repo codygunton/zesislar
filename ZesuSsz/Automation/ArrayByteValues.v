@@ -126,8 +126,9 @@ Ltac zesu_normalize_array_byte_lookups :=
   | Hlookup : ?bytes !! Z.to_nat
       ((bv_unsigned (bv_add ?row ?offset) - ?base) `div` 1) = Some ?byte,
     Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
-    Hlower : ((mapRamBase defaultMap) <= ?base)%Z,
-    Hupper : (?base + Z.of_nat (length ?bytes) < (machineRamEnd defaultMap))%Z |- _ =>
+    Hlower : (?minimum <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < ?maximum)%Z |- _ =>
+      zesu_require_machine_ram_bounds minimum maximum;
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let count := eval vm_compute in (Z.to_nat integer) in
@@ -147,8 +148,9 @@ Ltac zesu_normalize_array_byte_lookups :=
   | Hlookup : ?bytes !! Z.to_nat
       (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte,
     Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
-    Hlower : ((mapRamBase defaultMap) <= ?base)%Z,
-    Hupper : (?base + Z.of_nat (length ?bytes) < (machineRamEnd defaultMap))%Z |- _ =>
+    Hlower : (?minimum <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < ?maximum)%Z |- _ =>
+      zesu_require_machine_ram_bounds minimum maximum;
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let count := eval vm_compute in (Z.to_nat integer) in

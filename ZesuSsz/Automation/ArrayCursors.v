@@ -37,12 +37,20 @@ Ltac zesu_normalize_array_cursor_base :=
       rewrite Hindex; clear Hindex
   end.
 
+Ltac zesu_require_machine_ram_bounds minimum maximum :=
+  let low := eval vm_compute in minimum in
+  let high := eval vm_compute in maximum in
+  let expectedLow := eval vm_compute in (mapRamBase defaultMap) in
+  let expectedHigh := eval vm_compute in (machineRamEnd defaultMap) in
+  constr_eq low expectedLow; constr_eq high expectedHigh.
+
 Ltac zesu_normalize_array_cursor_offset :=
   match goal with
   | Hcursor : bv_unsigned ?row = (?base + Z.of_nat ?index)%Z,
-    Hlower : ((mapRamBase defaultMap) <= ?base)%Z,
-    Hupper : (?base + Z.of_nat (length ?bytes) < (machineRamEnd defaultMap))%Z
+    Hlower : (?minimum <= ?base)%Z,
+    Hupper : (?base + Z.of_nat (length ?bytes) < ?maximum)%Z
       |- context[Z.to_nat (bv_unsigned (bv_add ?row ?offset) - ?base)] =>
+      zesu_require_machine_ram_bounds minimum maximum;
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let count := eval vm_compute in (Z.to_nat integer) in
