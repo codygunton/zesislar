@@ -294,3 +294,53 @@ Proof.
 Qed.
 Print Assumptions trace_unused_reflect.
 Print Assumptions trace_unused_substitution.
+
+(** Reads preserve substitution and uniquely determine their witness. *)
+Lemma list_find_idx_substitution x replacement name fields :
+  list_find_idx (fun field : sail_name * valu => field.1 = name)
+    (map (fun '(key, value) => (key, subst_val_valu replacement x value)) fields) =
+  list_find_idx (fun field : sail_name * valu => field.1 = name) fields.
+Proof.
+  induction fields as [|[key value] fields IH]; simpl; [reflexivity|].
+  destruct (decide (key = name)); simpl; [reflexivity|]. rewrite IH. reflexivity.
+Qed.
+Lemma read_accessor_substitution x replacement al value :
+  read_accessor al (subst_val_valu replacement x value) =
+  (subst_val_valu replacement x <$> read_accessor al value).
+Proof.
+  revert value. induction al as [|[name] al IH]; intros value; simpl; [reflexivity|].
+  destruct value; simpl; try reflexivity.
+  unfold read_accessor at 1 2. cbn -[read_accessor].
+  rewrite list_find_idx_substitution.
+  destruct (list_find_idx (fun field : sail_name * valu => field.1 = name) l)
+    as [index|] eqn:Hindex; simpl; [|reflexivity].
+  rewrite list_lookup_fmap.
+  destruct (l !! index) as [[key field]|]; simpl; [apply IH|reflexivity].
+Qed.
+Print Assumptions read_accessor_substitution.
+
+Lemma read_symbol_substitution x pattern replacement found :
+  read_symbol x pattern (subst_val_valu replacement x pattern) = Some found ->
+  found = replacement.
+Proof.
+  revert pattern found. fix IH 1. intros pattern found. destruct pattern; simpl; try discriminate.
+  - destruct base_val5; simpl; try discriminate.
+    destruct (bool_decide (x = vvar5)) eqn:Hxy; [|discriminate].
+    apply bool_decide_eq_true in Hxy. subst vvar5. unfold eq_var_name.
+    rewrite Z.eqb_refl. intros [= <-]. reflexivity.
+  - induction l as [|[name value] rest IHlist]; simpl; [discriminate|].
+    rewrite String.eqb_refl.
+    destruct (read_symbol x value (subst_val_valu replacement x value))
+      as [result|] eqn:Hread.
+    + intros [= <-]. exact (IH value result Hread).
+    + exact IHlist.
+Qed.
+Print Assumptions read_symbol_substitution.
+
+Lemma read_symbol_pins x pattern actual replacement found :
+  read_symbol x pattern actual = Some found ->
+  subst_val_valu replacement x pattern = actual ->
+  found = replacement.
+Proof. intros Hread <-. exact (read_symbol_substitution x pattern replacement found Hread). Qed.
+Print Assumptions read_symbol_pins.
+

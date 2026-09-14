@@ -130,8 +130,8 @@ Proof.
   - repeat split; reflexivity.
 Qed.
 
-(** The declaration witness comes from a later read.  Struct fields use
-    the same accessor as the operational semantics. *)
+(** The declaration witness comes from a later read.  Struct fields match
+    by position and name. *)
 Fixpoint read_symbol (x : var_name) (pattern actual : valu) : option base_val :=
   match pattern with
   | RegVal_Base (Val_Symbolic y) =>
@@ -139,19 +139,21 @@ Fixpoint read_symbol (x : var_name) (pattern actual : valu) : option base_val :=
         match actual with RegVal_Base value => Some value | _ => None end
       else None
   | RegVal_Struct fields =>
-      let fix go fields :=
-        match fields with
-        | [] => None
-        | (name, value) :: rest =>
-            match read_accessor [Field name] actual with
-            | Some actual' =>
-                match read_symbol x value actual' with
-                | Some result => Some result
-                | None => go rest
-                end
-            | None => go rest
-            end
-        end in go fields
+      match actual with
+      | RegVal_Struct actual_fields =>
+          let fix go fields actual_fields :=
+            match fields, actual_fields with
+            | (name, value) :: rest, (actual_name, actual_value) :: actual_rest =>
+                if String.eqb name actual_name then
+                  match read_symbol x value actual_value with
+                  | Some result => Some result
+                  | None => go rest actual_rest
+                  end
+                else None
+            | _, _ => None
+            end in go fields actual_fields
+      | _ => None
+      end
   | _ => None
   end.
 
