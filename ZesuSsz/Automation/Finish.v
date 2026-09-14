@@ -88,7 +88,8 @@ Ltac zesu_finish_pointer_alignment :=
       end
   | Halign : bv_extract 0 _ ?pointer = _ |- _ =>
       lazymatch goal with
-      | |- context[pointer] => solve [clear -Halign; bv_solve]
+      | |- context[pointer] =>
+          solve [clear -Halign; bv_simplify_arith Halign; bv_solve]
       end
   end.
 
