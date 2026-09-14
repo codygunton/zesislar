@@ -70,6 +70,7 @@ def main():
                         help='The Machine.v record supplies Sail flags, which an ELF does not encode.')
     parser.add_argument('--record-name', default='defaultMap')
     parser.add_argument('--format', choices=['json', 'coq'], default='json')
+    parser.add_argument('--output-name', default='extractedMap', help='The emitted Coq definition name.')
     parser.add_argument('--check', action='store_true', help='Require exact equality with the policy record.')
     args = parser.parse_args()
     policy = read_record(args.policy_record, args.record_name)
@@ -77,7 +78,13 @@ def main():
     if args.check and any(policy.get(k) != v for k, v in addresses.items()):
         parser.error('The ELF address fields differ from the supplied record.')
     policy.update(addresses)
-    print(json.dumps(policy, indent=2) if args.format == 'json' else coq_literal(policy))
+    if args.format == 'json':
+        print(json.dumps(policy, indent=2))
+    else:
+        if not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*', args.output_name):
+            parser.error('The output name must be a Coq identifier.')
+        print('Require Import ZesuMachineMap.Machine.')
+        print(f'Definition {args.output_name} : MachineMap := ' + coq_literal(policy))
 
 if __name__ == '__main__':
     main()

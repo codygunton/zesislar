@@ -78,6 +78,11 @@ The old text base and the new text base therefore do not give the body relocatio
 The body delta is `0x7ffefee8`, which the tool obtains from `main`.
 The tool maps named symbols exactly before it applies that delta.
 It rejects a text symbol that violates the common body delta.
+The tool also rewrites `machinePc` offsets.
+Body offsets grow by eight because the new start file contains two stack instructions.
+The tool preserves the first two start offsets.
+It adjusts the call, spin, and padding offsets in the start file.
+Six offset cases pass the instruction check in dry-run mode.
 
 ## Phase 7 procedure
 
@@ -91,11 +96,12 @@ It rejects a text symbol that violates the common body delta.
 8. Regenerate the dumps and traces for the new ELF.
 9. Run `tools/relocate_pcs.py --dry-run --check` with both ELFs.
 10. Review every proposed rewrite.
-11. Resolve the synthetic instruction address in `Proofs/Tests/TraceResume.v` explicitly.
-12. Run the tool with `--apply --check` only after the check passes.
-13. Commit the address rewrite separately.
-14. Rebuild every proof.
-15. Run `check-iris` before CP6.
+11. Exclude `ZesuSsz/Contracts/Machine.v` from the address rewrite to preserve `defaultMap`.
+12. Resolve the synthetic instruction address in `Proofs/Tests/TraceResume.v` explicitly.
+13. Run the tool with `--apply --check` only after the check passes.
+14. Commit the address rewrite separately.
+15. Rebuild every proof.
+16. Run `check-iris` before CP6.
 
 The map tool obtains addresses from sections, symbols, and load segments.
 The ELF does not encode Sail flags.
@@ -103,7 +109,15 @@ The tool reads those flags directly from the explicit Coq policy record.
 Its `--check` option rejects any difference between ELF addresses and the supplied record.
 This input prevents a second copy of the policy constants.
 Its JSON output and Coq output round-trip to all 38 `defaultMap` fields.
+The Coq output imports `ZesuMachineMap.Machine`.
+Dune copies that module from `ZesuSsz/Contracts/Machine.v`.
+The `--output-name` option selects the emitted definition name.
 The record parser rejects expressions that it cannot evaluate.
+The emitted `zkvmMap` is an address preview.
+It preserves the supplied Sail policy.
+The pinned RAM policy does not cover the new ELF.
+Phase 7 requires a reviewed target policy before trace generation.
+The pinned configuration stays unchanged through CP5.
 
 The relocation tool defaults to a dry run.
 It prints every rewrite with its file and line.
@@ -115,9 +129,23 @@ It changes `.v` files, `.dump` files, and coverage files.
 It checks literal `instr`, `instr_pre`, and `instr_body` addresses against the new disassembly.
 It checks all files before it writes any file.
 It requires `--check` for `--apply`.
-The initial dry run reports 6,549 rewrites across 1,208 files.
+The initial dry run reports 11,639 candidate rewrites across 1,318 files.
 It reports one synthetic instruction address outside the disassembly.
 The tool accepts explicit `--exclude` paths for reviewed synthetic fixtures.
-A second dry run excludes only `ZesuSsz/Proofs/Tests/TraceResume.v`.
-That check passes with the same 6,549 rewrites.
+Both dry runs exclude `ZesuSsz/Contracts/Machine.v` to preserve the pinned map.
+The second dry run also excludes `ZesuSsz/Proofs/Tests/TraceResume.v`.
+The instruction check passes after the explicit fixture exclusion.
+The final local dry run reports 11,639 address rewrites across 1,318 files.
 The port track applies no rewrite.
+
+An identical-ELF dry run reports zero rewrites.
+Its instruction check passes.
+The tool rejects an unsupported start-size change.
+
+The tool preserves encoded words in the generated `Words` tables and `WordAt` definitions.
+A dry-run regression checks absolute PCs, machinePc offsets, and unchanged instruction words together.
+
+Ten tool regressions pass.
+The encoded-word tests include decimal values, 64-bit values, and multiline definitions.
+The unsupported relocation tests reject start growth and inconsistent function offsets.
+These checks use dry runs only.
