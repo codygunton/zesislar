@@ -28,7 +28,7 @@ Lemma write_success_transactions_chunk_151a0_to_151a4_return
     (bytes prefix suffix : list (bv 8)) (tail : spec) :
   ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ -∗
   ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ -∗
-  ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ -∗
+  ⌜bv_unsigned (sp + 128) <= machineRamEnd defaultMap - 8⌝ -∗
   writeSuccessTransactionsMachine151a4
     sp base transactions processed transaction -∗
   writeSuccessTransactions151a4Outer P sp base transaction transactions
@@ -42,7 +42,7 @@ Lemma write_success_transactions_chunk_151a0_to_151a4_return
       Z *ₗ bv 64 *ₗ (),
     ⌜bv_extract 0 3 (x.nextₗ.9ₗ + 128) = 0%bv⌝ ∗
     ⌜(mapRamBase defaultMap) <= bv_unsigned (x.nextₗ.9ₗ + 128)⌝ ∗
-    ⌜bv_unsigned (x.nextₗ.9ₗ + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
+    ⌜bv_unsigned (x.nextₗ.9ₗ + 128) <= machineRamEnd defaultMap - 8⌝ ∗
     WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff
       WriteSuccessTransactionsSpec.TransactionValue
       (writeSuccessTransactionsMachine151a4

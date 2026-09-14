@@ -62,7 +62,7 @@ Definition writeSuccessTransactionsAt151a8Spec `{!islaG Sigma} `{!threadG}
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
     ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= machineRamEnd defaultMap - 8⌝ ∗
     WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff
       WriteSuccessTransactionsSpec.TransactionValue
       (writeSuccessTransactionsMachine151a8

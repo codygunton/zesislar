@@ -33,7 +33,7 @@ Definition writeSuccessTransactions151acSetupSpec
       (bytes prefix suffix : list (bv 8)) (tail : spec),
     ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
     ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
-    ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
+    ⌜bv_unsigned (sp + 128) <= machineRamEnd defaultMap - 8⌝ ∗
     ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
     ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
     ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗

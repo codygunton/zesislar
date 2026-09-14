@@ -91,7 +91,7 @@ Definition writeSuccessTransactionsAt151a4Block
     (bytes prefix suffix : list (bv 8)) (tail : spec) : iProp Sigma :=
   (⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
-   ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
+   ⌜bv_unsigned (sp + 128) <= machineRamEnd defaultMap - 8⌝ ∗
    WriteSuccessTransactionsSpec.writeSuccessTransactionPhaseHandoff
      WriteSuccessTransactionsSpec.TransactionValue
      (writeSuccessTransactionsMachine151a4 sp base transactions processed
@@ -122,7 +122,7 @@ Definition writeSuccessTransactions151a4LoadState
    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
    ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
-   ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗ True)%I.
+   ⌜bv_unsigned (sp + 128) <= machineRamEnd defaultMap - 8⌝ ∗ True)%I.
 
 Definition writeSuccessTransactions151a4LoadResult
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma)
@@ -137,7 +137,7 @@ Definition writeSuccessTransactions151a4LoadResult
      processed remaining bytes prefix suffix tail ∗
    ⌜bv_extract 0 3 (sp + 128) = 0%bv⌝ ∗
    ⌜(mapRamBase defaultMap) <= bv_unsigned (sp + 128)⌝ ∗
-   ⌜bv_unsigned (sp + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗ True)%I.
+   ⌜bv_unsigned (sp + 128) <= machineRamEnd defaultMap - 8⌝ ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactions151a4LoadState) := I.
 Global Instance : LithiumUnfold (@writeSuccessTransactions151a4LoadResult) := I.

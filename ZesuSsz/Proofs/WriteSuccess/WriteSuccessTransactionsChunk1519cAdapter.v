@@ -25,7 +25,7 @@ Lemma write_success_transactions_chunk_1519c_adapter
       Z *ₗ bv 64 *ₗ (),
     ⌜bv_extract 0 3 (x.nextₗ.9ₗ + 128) = 0%bv⌝ ∗
     ⌜(mapRamBase defaultMap) <= bv_unsigned (x.nextₗ.9ₗ + 128)⌝ ∗
-    ⌜bv_unsigned (x.nextₗ.9ₗ + 128) <= (mapRamBase defaultMap) + (mapRamBase defaultMap) - 8⌝ ∗
+    ⌜bv_unsigned (x.nextₗ.9ₗ + 128) <= machineRamEnd defaultMap - 8⌝ ∗
     writeSuccessTransactionPhaseHandoff TransactionValue
       (writeSuccessTransactionsMachine151a0
         x.nextₗ.9ₗ x.9ₗ x.7ₗ x.6ₗ x.8ₗ)
