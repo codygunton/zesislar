@@ -57,6 +57,49 @@ Definition mainDecoderPreservedFrame `{!islaG Sigma}
    mainFailurePayloadAddress ↦ₘ∗ failureMemory ∗
    mmio_range (machineExitAddress defaultMap) 8)%I.
 
+Definition mainDecoderPreservedMemoryFrame `{!islaG Sigma}
+    (args : DecodeBoundaryArgs) : iProp Sigma :=
+  (⌜decodeInputAddress args = mapInputBufferAddress defaultMap⌝ ∗
+   ⌜decodeAllocatorStateAddress args = mainAllocatorStateAddress⌝ ∗
+   ⌜decodeAllocatorVtableAddress args = mainAllocatorVtableAddress⌝ ∗
+   ⌜(length (decodeInput args) <= maxSszInputSize)%nat⌝ ∗
+   (mapInputBufferAddress defaultMap) ↦ₘ∗ readInputMemory (decodeInput args) ∗
+   (mapIoContextAddress defaultMap) ↦ₘ
+     (Z_to_bv 64 (Z.of_nat (length (decodeInput args)))) ∗
+   mainAllocatorVtableAddress ↦ₘ∗ mainAllocatorVtableBytes ∗
+   mainFailurePayloadAddress ↦ₘ∗ failureMemory)%I.
+
+Lemma mainDecoderPreservedFrame_separate_exit `{!islaG Sigma} args :
+  mainDecoderPreservedFrame args ⊣⊢
+    (mainDecoderPreservedMemoryFrame args ∗
+     mmio_range (machineExitAddress defaultMap) 8)%I.
+Proof.
+  rewrite /mainDecoderPreservedFrame /mainDecoderPreservedMemoryFrame !assoc.
+  done.
+Qed.
+Print Assumptions mainDecoderPreservedFrame_separate_exit.
+
+Definition mainDecoderPreservedInputFrame `{!islaG Sigma}
+    (args : DecodeBoundaryArgs) : iProp Sigma :=
+  (⌜decodeInputAddress args = mapInputBufferAddress defaultMap⌝ ∗
+   ⌜decodeAllocatorStateAddress args = mainAllocatorStateAddress⌝ ∗
+   ⌜decodeAllocatorVtableAddress args = mainAllocatorVtableAddress⌝ ∗
+   ⌜(length (decodeInput args) <= maxSszInputSize)%nat⌝ ∗
+   (mapInputBufferAddress defaultMap) ↦ₘ∗ readInputMemory (decodeInput args) ∗
+   (mapIoContextAddress defaultMap) ↦ₘ
+     (Z_to_bv 64 (Z.of_nat (length (decodeInput args)))) ∗
+   mainAllocatorVtableAddress ↦ₘ∗ mainAllocatorVtableBytes)%I.
+
+Lemma mainDecoderPreservedMemoryFrame_separate_failure `{!islaG Sigma} args :
+  mainDecoderPreservedMemoryFrame args ⊣⊢
+    (mainDecoderPreservedInputFrame args ∗
+     mainFailurePayloadAddress ↦ₘ∗ failureMemory)%I.
+Proof.
+  rewrite /mainDecoderPreservedMemoryFrame /mainDecoderPreservedInputFrame !assoc.
+  done.
+Qed.
+Print Assumptions mainDecoderPreservedMemoryFrame_separate_failure.
+
 (** The decoder hypothesis uses this concrete physical handoff. *)
 Definition mainDecodeConcreteResources `{!islaG Sigma} `{!threadG}
     (decodeTail successExitTail : DecodeBoundaryArgs -> spec) :=
