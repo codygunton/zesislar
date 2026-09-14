@@ -1,5 +1,5 @@
 {
-  "islaConfig": "riscv64_zesu_write_success.toml",
+  "islaConfig": "riscv64_zesu.toml",
   "useLoadStoreSpecs": true,
   "instructionSpecs": {
     "0x15680": {

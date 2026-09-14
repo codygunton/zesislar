@@ -33,8 +33,8 @@ top = "0x80300000"
 stride = "0x10000"
 
 [symbolic_addrs]
-base = "0x80310000"
-top = "0x80410000"
+base = "0x30000000"
+top = "0x30100000"
 stride = "0x10"
 
 [registers.defaults]
@@ -45,8 +45,8 @@ rv_enable_pmp = false
 rv_enable_dirty_update = false
 rv_enable_misaligned_access = false
 rv_mtval_has_illegal_inst_bits = false
-rv_ram_base = "0x0000000080000000"
-rv_ram_size = "0x0000000004000000"
+rv_ram_base = "0x0000000020000000"
+rv_ram_size = "0x0000000020000000"
 rv_rom_base = "0x0000000000001000"
 rv_rom_size = "0x0000000000000100"
 rv_clint_base = "0x0000000002000000"
@@ -85,8 +85,11 @@ Barrier_RISCV_i = "Fence.i"
 
 [registers.reset]
 "misa.bits" = "0x8000000000001100"
+"mtvec.bits" = "0x0000000000000000"
 cur_privilege = "Machine"
 
 [constraints]
 # MPRV = 0: physical addressing, no virtual memory indirection.
-reset = [ "= (bvand mstatus.bits 0x0000000000020000) 0x0000000000000000" ]
+reset = [
+  "= (bvand mstatus.bits 0x0000000000020000) 0x0000000000000000"
+]

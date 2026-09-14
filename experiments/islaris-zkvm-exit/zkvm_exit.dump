@@ -1,5 +1,0 @@
-//@isla-config: riscv64_zesu_exit.toml
-   101c4:	2400a297          	auipc	t0,0x2400a
-   101c8:	ef428293          	addi	t0,t0,-268
-//@constraint: = x5 0x000000002401a0b8
-   101cc:	00a2bc23          	sd	a0,24(t0)

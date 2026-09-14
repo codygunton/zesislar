@@ -1,0 +1,23 @@
+{
+  "islaConfig": "riscv64_zesu.toml",
+  "ranges": [
+    [
+      "0x161c0",
+      "0x161d4"
+    ],
+    [
+      "0x10190",
+      "0x101a4"
+    ]
+  ],
+  "alignedReturnRegister": "x1",
+  "controlFlowRegisters": {
+    "ra": "x1",
+    "t1": "x6"
+  },
+  "constraintsByMemoryBase": {
+    "t0": [
+      "= x5 0x000000002401a0b8"
+    ]
+  }
+}

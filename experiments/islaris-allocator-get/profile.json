@@ -1,0 +1,12 @@
+{
+  "islaConfig": "riscv64_zesu.toml",
+  "ranges": [
+    [
+      "0x14ccc",
+      "0x14cec"
+    ]
+  ],
+  "memoryBaseRegisters": {
+    "sp": "x2"
+  }
+}
