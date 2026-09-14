@@ -147,7 +147,7 @@ Proof.
   all: iRename select
     (WriteSuccessTransactionsSpec.writeSuccessTransactionsOwn remaining)%I
     into "Hremaining".
-  all: iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  all: iRename select (mmio_range _ 16)%I into "Hmmio".
   all: iRename select (spec_trace _)%I into "Htrace".
   all: iEval (simpl) in "Htrace".
   all: iRename select P%I into "HP".
@@ -205,3 +205,5 @@ Proof.
   all: iPureIntro.
   all: assumption.
 Qed.
+
+Print Assumptions write_success_transactions_carrier_chunk_14ff0.
