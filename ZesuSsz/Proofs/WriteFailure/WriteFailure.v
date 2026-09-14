@@ -7,7 +7,6 @@ Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Export.Adequacy.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutput.
 
 Import ZesuSsz.Automation.Hooks.
 
