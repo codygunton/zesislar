@@ -592,3 +592,63 @@ Definition writeSuccessSemanticPremise {Decoded}
     writeSuccessWitnessWellFormed args witness ->
     outputRelation args witness bytes ->
     allows args bytes.
+
+(** Exact callers fix the trace tail and retain returned caller registers. *)
+Definition writeSuccessReturnedCallerRegisters `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (∃ a0 a1 a2 : bv 64,
+    "x10" ↦ᵣ RVal_Bits a0 ∗ "x11" ↦ᵣ RVal_Bits a1 ∗
+    "x12" ↦ᵣ RVal_Bits a2)%I.
+
+Definition writeSuccessExactTerminalMachine `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  (writeSuccessTerminalMachine witness ∗ writeSuccessReturnedCallerRegisters)%I.
+
+Definition writeSuccessFixedTailEntry `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (fixedTail : spec) (args : WriteSuccessArgs Decoded) : iProp Sigma :=
+  (∃ witness : writeSuccessNativeWitness Decoded,
+    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
+    ⌜writeSuccessTraceTail witness = fixedTail⌝ ∗
+    write_success_prologue_entry
+      (writeSuccessEntrySp witness) (writeSuccessDecodedPointer witness)
+      (writeSuccessReturnValue witness)
+      (writeSuccessSavedS0 witness) (writeSuccessSavedS1 witness)
+      (writeSuccessSavedS2 witness) (writeSuccessSavedS3 witness)
+      (writeSuccessSavedS4 witness) (writeSuccessSavedS5 witness)
+      (writeSuccessSavedS6 witness) (writeSuccessSavedS7 witness)
+      (writeSuccessSavedS8 witness) (writeSuccessSavedS9 witness)
+      (writeSuccessSavedS10 witness) (writeSuccessSavedS11 witness)
+      (writeSuccessProloguePayload witness))%I.
+
+Definition writeSuccessFixedTailTerminalResources `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (outputRelation : WriteSuccessOutputRelation Decoded) (fixedTail : spec)
+    (args : WriteSuccessArgs Decoded) (bytes : ByteString) : iProp Sigma :=
+  (∃ witness : writeSuccessNativeWitness Decoded,
+    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗
+    ⌜writeSuccessTraceTail witness = fixedTail⌝ ∗
+    ⌜outputRelation args witness bytes⌝ ∗
+    writeSuccessExactTerminalMachine witness ∗
+    writeSuccessNativeExitMemory witness ∗ spec_trace fixedTail)%I.
+
+Definition writeSuccessFixedTailResources {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (outputRelation : WriteSuccessOutputRelation Decoded) (fixedTail : spec)
+    `{!islaG Sigma} `{!threadG} :
+    IslarisContractResources (WriteSuccessArgs Decoded) ByteString := {|
+  islarisCode := writeSuccessNativeCode;
+  islarisEntry := writeSuccessFixedTailEntry fixedTail;
+  islarisExit := writeSuccessFixedTailTerminalResources outputRelation fixedTail
+|}.
+
+Definition writeSuccessFixedTailModel {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
+    (outputRelation : WriteSuccessOutputRelation Decoded) (fixedTail : spec)
+    (nextPc : Z -> Z -> Prop) :
+    IslarisContractModel (WriteSuccessArgs Decoded) ByteString := {|
+  islarisContractAllows := writeSuccessNativeAllows allows;
+  islarisContractStep := nextPc;
+  islarisContractResources := fun Sigma HG HT =>
+    @writeSuccessFixedTailResources Decoded _ outputRelation fixedTail Sigma HG HT
+|}.

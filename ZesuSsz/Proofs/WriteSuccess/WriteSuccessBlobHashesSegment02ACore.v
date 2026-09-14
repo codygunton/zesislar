@@ -108,7 +108,7 @@ Proof.
       remaining, bytes, tail.
     iFrame.
     iSplit.
-    + iRename select (mmio_range (machineOutputAddress defaultMap) 16) into "HmmioPost".
+    + iRename select (mmio_range _ 16) into "HmmioPost".
       iExact "HmmioPost".
     + iSplit.
       * rewrite /writeSuccessFixedWidthArrayInvariant.
@@ -119,3 +119,5 @@ Proof.
           (_ -∗ ∃ ins : option isla_trace, instr _ ins ∗ _)%I into "Hexit".
         iApply ("Hexit" with "HexitState").
 Qed.
+
+Print Assumptions write_success_blob_hashes_chunk0b_153dc_core.

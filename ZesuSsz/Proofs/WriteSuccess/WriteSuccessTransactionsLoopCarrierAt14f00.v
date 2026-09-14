@@ -61,15 +61,11 @@ Proof.
     writeSuccessTransactionsBytes processed,
     writeSuccessTransactionsBytes (processed ++ remaining), remaining,
     processed, processed ++ remaining, base, sp, tt)ₗ.
-  have HloadedValue :
-      LET3 = Z_to_bv 64 (Z.of_nat (length (processed ++ remaining))) by
-    bv_solve.
-  have HloadedAddress : bv_unsigned LET0 = bv_unsigned sp + 112 by
-    bv_solve.
-  iRename select ("x10" ↦ᵣ RVal_Bits LET3)%I into "H10Loaded".
-  iRename select (bv_unsigned LET0 ↦ₘ _)%I into "HtotalLoaded".
-  iEval (rewrite HloadedValue) in "H10Loaded".
-  iEval (rewrite HloadedAddress) in "HtotalLoaded".
+  zesu_unfold_bv_bindings.
+  iRename select ("x10" ↦ᵣ RVal_Bits
+    (Z_to_bv 64 (Z.of_nat (length (processed ++ remaining)))))%I into "H10Loaded".
+  iRename select (bv_unsigned (sp + BV 64 112)%bv ↦ₘ _)%I into "HtotalLoaded".
+  zesu_normalize_memory_cell "HtotalLoaded" (bv_unsigned sp + 112).
   destruct H0 as
     (HsecondLength & HitemsLength & HfirstAlign & HfirstLower & HfirstUpper &
      HspExtract & HspCallLower & HspMax).
@@ -82,3 +78,5 @@ Proof.
   repeat iSplit; try iPureIntro; try assumption; try reflexivity; try bv_solve;
     try done.
 Qed.
+
+Print Assumptions write_success_transactions_loop_carrier_14f00_load.

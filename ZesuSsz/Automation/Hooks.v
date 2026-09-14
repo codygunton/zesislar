@@ -6,6 +6,13 @@ Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuMachineMap.Machine.
 
+(** Give Lithium its separating-conjunction goal form. *)
+Ltac zesu_prepare_uninit_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (?address ↦ₘ? ?count)%I =>
+      iEval (rewrite -(right_id True%I _ (address ↦ₘ? count)%I))
+  end.
+
 (** Normalize the reviewed map before bitvector arithmetic. *)
 Ltac zesu_normalize_machine_map :=
   cbv [mapRamBase mapRamSize mapIoContextAddress mapTextBase

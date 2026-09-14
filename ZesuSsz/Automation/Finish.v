@@ -228,6 +228,7 @@ Ltac zesu_solve_instances :=
   end.
 
 Ltac zesu_run_pass :=
+  try zesu_prepare_uninit_goal;
   unshelve (time "zesu_run" repeat zesu_liAStep; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;

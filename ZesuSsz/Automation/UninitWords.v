@@ -22,3 +22,20 @@ Qed.
 Print Assumptions subsume_scratch_word.
 Definition subsume_scratch_word_inst := [instance @subsume_scratch_word].
 Global Existing Instance subsume_scratch_word_inst | 80.
+
+Lemma subsume_mem_word_uninit_exact `{!islaG Sigma} A (a1 a2 : Z) n
+    (word : bv n) count G
+    `{!ZesuRegionBounds (a1 = a2 /\ count = Z.of_N (n `div` 8)%N)%Z} :
+  (∃ x : A, G x) ⊢
+    subsume (a1 ↦ₘ word) (fun _ : A => a2 ↦ₘ? count) G.
+Proof.
+  iDestruct 1 as (x) "HG". iIntros "Hword".
+  have Hbounds : (a1 = a2 /\ count = Z.of_N (n `div` 8)%N)%Z
+    by exact zesu_region_bounds_proof.
+  destruct Hbounds as [-> ->].
+  iExists x. iFrame "HG".
+  iApply (mem_mapsto_mapsto_to_uninit with "Hword").
+Qed.
+Definition subsume_mem_word_uninit_exact_inst := [instance @subsume_mem_word_uninit_exact].
+Global Existing Instance subsume_mem_word_uninit_exact_inst | 0.
+Print Assumptions subsume_mem_word_uninit_exact.
