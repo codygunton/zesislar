@@ -102,6 +102,19 @@ Ltac zesu_finish_ram_known :=
       solve [change (bv_unsigned pointer < 0x40000000)%Z; assumption]
   end.
 
+Ltac zesu_finish_array_byte_lookup :=
+  repeat match goal with
+  | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
+      let index := eval vm_compute in (Z.to_nat integer) in
+      change (bytes !! index = Some byte) in Hlookup
+  end;
+  match goal with
+  | Hlookup : ?bytes !! ?index = Some ?byte
+    |- context[default _ (?bytes !! ?index)] => rewrite Hlookup; reflexivity
+  end.
+
 Ltac zesu_finish :=
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
@@ -120,6 +133,7 @@ Ltac zesu_finish :=
   try assumption;
   try zesu_finish_tag_bound;
   try zesu_finish_mask;
+  try zesu_finish_array_byte_lookup;
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
   try zesu_finish_ram_known;
