@@ -344,3 +344,71 @@ Lemma read_symbol_pins x pattern actual replacement found :
 Proof. intros Hread <-. exact (read_symbol_substitution x pattern replacement found Hread). Qed.
 Print Assumptions read_symbol_pins.
 
+
+(** Other substitutions preserve a concrete read witness. *)
+Lemma read_symbol_substitution_actual x pattern actual replacement y :
+  read_symbol x pattern (subst_val_valu replacement y actual) =
+  (subst_val_base_val replacement y <$> read_symbol x pattern actual).
+Proof.
+  revert pattern actual. fix IH 1. intros pattern actual.
+  destruct pattern; simpl; try reflexivity.
+  - destruct base_val5; simpl; try reflexivity.
+    destruct (bool_decide (x = vvar5)); [|reflexivity].
+    destruct actual; simpl; reflexivity.
+  - destruct actual; simpl; try reflexivity.
+    revert l0. induction l as [|[name value] rest IHlist]; intros [|[actual_name actual_value] actual_rest];
+      simpl; try reflexivity.
+    destruct (String.eqb name actual_name); [|reflexivity].
+    rewrite (IH value actual_value).
+    destruct (read_symbol x value actual_value); simpl; [reflexivity|apply IHlist].
+Qed.
+Print Assumptions read_symbol_substitution_actual.
+
+Definition base_ground (value : base_val) : Prop :=
+  match value with Val_Symbolic _ => False | _ => True end.
+Definition base_groundb (value : base_val) : bool :=
+  match value with Val_Symbolic _ => false | _ => true end.
+Lemma base_ground_reflect value : base_groundb value = true <-> base_ground value.
+Proof. destruct value; simpl; split; intros; try discriminate; try contradiction; try reflexivity; exact I. Qed.
+Lemma base_ground_substitution value replacement y :
+  base_ground value -> subst_val_base_val replacement y value = value.
+Proof. destruct value; simpl; intros H; [contradiction|reflexivity|reflexivity|reflexivity]. Qed.
+Lemma read_symbol_ground_substitution x pattern actual replacement y found :
+  read_symbol x pattern actual = Some found ->
+  base_ground found ->
+  read_symbol x pattern (subst_val_valu replacement y actual) = Some found.
+Proof.
+  intros Hread Hground. rewrite read_symbol_substitution_actual Hread. simpl.
+  rewrite (base_ground_substitution found replacement y Hground). reflexivity.
+Qed.
+Fixpoint substitute_values (substitutions : list (base_val * var_name)) (value : valu) : valu :=
+  match substitutions with
+  | [] => value
+  | (replacement, y) :: rest => substitute_values rest (subst_val_valu replacement y value)
+  end.
+Lemma read_symbol_ground_substitutions x pattern actual substitutions found :
+  read_symbol x pattern actual = Some found ->
+  base_ground found ->
+  read_symbol x pattern (substitute_values substitutions actual) = Some found.
+Proof.
+  revert actual. induction substitutions as [|[replacement y] rest IH]; intros actual Hread Hground;
+    simpl; [exact Hread|].
+  apply IH; [eapply read_symbol_ground_substitution; eassumption|exact Hground].
+Qed.
+Print Assumptions base_ground_reflect.
+Print Assumptions base_ground_substitution.
+Print Assumptions read_symbol_ground_substitution.
+Print Assumptions read_symbol_ground_substitutions.
+
+Lemma read_accessor_pins x replacement al pattern pattern' actual' found :
+  read_accessor al pattern = Some pattern' ->
+  read_accessor al (subst_val_valu replacement x pattern) = Some actual' ->
+  read_symbol x pattern' actual' = Some found ->
+  found = replacement.
+Proof.
+  intros Hpattern Hactual Hread.
+  rewrite read_accessor_substitution Hpattern in Hactual. simpl in Hactual.
+  injection Hactual as Heq. rewrite <-Heq in Hread.
+  exact (read_symbol_substitution x pattern' replacement found Hread).
+Qed.
+Print Assumptions read_accessor_pins.

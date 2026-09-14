@@ -370,3 +370,10 @@ Lemma read_symbol_requires_matching_field_name :
 Proof. vm_compute. reflexivity. Qed.
 Print Assumptions read_symbol_duplicate_field.
 Print Assumptions read_symbol_requires_matching_field_name.
+
+Lemma read_symbol_ground_repeated_substitutions :
+  read_symbol 7 (RegVal_Struct [("bits", RVal_Symbolic 7)])
+    (substitute_values [(Val_Bool false, 7); (Val_Bool false, 8)]
+      (RegVal_Struct [("bits", RVal_Bool true)])) = Some (Val_Bool true).
+Proof. vm_compute. reflexivity. Qed.
+Print Assumptions read_symbol_ground_repeated_substitutions.
