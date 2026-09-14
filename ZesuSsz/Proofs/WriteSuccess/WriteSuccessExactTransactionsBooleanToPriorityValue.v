@@ -47,3 +47,27 @@ Proof.
   iFrame. repeat iSplit; done.
 Qed.
 Print Assumptions transactions_boolean_to_priority_value.
+Lemma transactions_boolean_fee_continuation `{!islaG Sigma} `{!threadG}
+    (sp gaslow gashigh tag low high : bv 64) tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_40.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_127.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15138 (transactionPriorityValuePost sp low high tail
+    (transactionPriorityValueCallerFrame sp gaslow gashigh tag P)) -∗
+  □ instr_pre 0x15128 (encoderBooleanExactPost (BV 64 1) sp (BV 64 0x15128)
+    (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16)
+      (writeSuccessU128WordsPayload low high) tail)
+    (transactionPriorityBooleanCallerFrame sp gaslow gashigh tag
+      ("x9" ↦ᵣ RVal_Bits low ∗ "x23" ↦ᵣ RVal_Bits high ∗ P ∗ True))).
+Proof.
+  iIntros "#Hcaller #Hu128 #Houtput #Hnext".
+  iPoseProof (transactions_priority_value_call_correct sp low high (BV 64 0x15128)
+    (BV 64 0x2401a0b8) tail (transactionPriorityValueCallerFrame sp gaslow gashigh tag P)
+    with "Hcaller Hu128 Houtput") as "Hcallee".
+  iModIntro. iApply (instr_pre_wand 0x15128 0x15128 false true with "Hcallee"); [done | done |].
+  iIntros "Hpost". iApply (transactions_boolean_to_priority_value with "Hpost Hnext").
+Qed.
+Print Assumptions transactions_boolean_fee_continuation.
