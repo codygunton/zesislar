@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Automation.UninitRegions.
 Require Import isla.riscv64.riscv64.
 

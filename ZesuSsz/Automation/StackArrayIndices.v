@@ -20,7 +20,8 @@ Ltac zesu_normalize_stack_array_indices :=
  | |- context[Z.to_nat (bv_unsigned (bv_add ?sp ?offset) - (bv_unsigned ?sp + ?start))] =>
    let integer := eval vm_compute in (bv_unsigned offset) in
    let Hindex := fresh "HstackArrayIndex" in
-   assert (Hindex : (bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))%Z = (integer - start)%Z) by bv_solve;
+   assert (Hindex : (bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))%Z = (integer - start)%Z) by
+     (cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *; bv_solve);
    rewrite Hindex; clear Hindex
  end.
 

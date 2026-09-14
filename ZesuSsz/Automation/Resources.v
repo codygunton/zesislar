@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 
@@ -13,12 +14,6 @@ Proof.
   - iIntros "(Hsys & Htotal & Hcursor & Hrest & _)".
     iDestruct "Hrest" as "(Hregs & Hstack & Hframe)". iFrame.
 Qed.
-
-(* Open separating groups. Keep memory arrays and register collections whole. *)
-Ltac zesu_open_resource_groups :=
-  repeat first
-    [ iDestruct select (_ ∗ _)%I as "[? ?]"
-    | iDestruct select (⌜_⌝)%I as %? ].
 
 (* Expose register values. Preserve fixed values and all shape facts. *)
 Ltac zesu_open_bits_registers :=
