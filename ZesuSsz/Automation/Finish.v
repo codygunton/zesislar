@@ -6,6 +6,7 @@ Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Automation.ArraySlices.
 Require Import ZesuSsz.Contracts.IslarisMemory.
+Require Import ZesuSsz.Automation.PackedWordValues.
 Require Import ZesuSsz.Automation.NatBounds.
 From iris.proofmode Require Import environments.
 
@@ -280,7 +281,7 @@ Ltac zesu_pack_owned_register_goal :=
 Ltac zesu_run_pass :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first [zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_liAStep]; liShow;
+  unshelve (time "zesu_run" repeat first [zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume | zesu_liAStep]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
