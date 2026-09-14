@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
+  WriteSuccessExactTransactionsGasRecipientSource
   WriteSuccessExactTransactionsGasLimitCall WriteSuccessExactTransactionsPriorityValueToGasLimit
   WriteSuccessExactTransactionsGasPriceCall WriteSuccessExactTransactionsNonceToGasPrice
   WriteSuccessExactEncoderIntFramedCall WriteSuccessExactTransactionsRecipientDataAccessRegion
@@ -11,18 +12,9 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
 Definition transactionGasRecipientSourceCaller `{!islaG Sigma} `{!threadG}
     (sp tag first second w0 w1 w2 w3 old12 old13 data size count old6 : bv 64)
     (last : bv 32) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
-  ("x12" ↦ᵣ RVal_Bits old12 ∗ "x13" ↦ᵣ RVal_Bits old13 ∗
-   "x18" ↦ᵣ RVal_Bits w0 ∗ "x20" ↦ᵣ RVal_Bits w1 ∗
-   (bv_unsigned sp + 128) ↦ₘ w2 ∗ "x21" ↦ᵣ RVal_Bits w3 ∗
-   (bv_unsigned sp + 120) ↦ₘ tag ∗
-   (bv_unsigned sp + 1640) ↦ₘ first ∗ (bv_unsigned sp + 1648) ↦ₘ second ∗
-   (bv_unsigned sp + 1656) ↦ₘ last ∗ (bv_unsigned sp + 1744) ↦ₘ? 20 ∗
-   (bv_unsigned sp - 48) ↦ₘ? 16 ∗
-   "x8" ↦ᵣ RVal_Bits data ∗ "x22" ↦ᵣ RVal_Bits size ∗ "x6" ↦ᵣ RVal_Bits old6 ∗
-   bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
-   (bv_unsigned sp + 264) ↦ₘ count ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜0x20000000 <= bv_unsigned sp - 48⌝ ∗
-   ⌜bv_unsigned sp + 1764 < 0x40000000⌝ ∗ P ∗ True)%I.
+  ("x8" ↦ᵣ RVal_Bits data ∗ "x6" ↦ᵣ RVal_Bits old6 ∗
+   transactionGasRecipientSourceCore sp tag first second w0 w1 w2 w3 old12 old13
+     data size count last bytes P ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionGasRecipientSourceCaller) := I.
 
 Definition transactionGasRecipientCarry `{!islaG Sigma} `{!threadG}
@@ -54,7 +46,8 @@ Proof.
   iDestruct "Hfee" as "(H27 & H9 & H23 & Hmiddle & Hprice & _)".
   iDestruct "Hprice" as "(H24 & H25 & %HpriceAlign & %HpriceLow & %HpriceHigh & Hnonce & _)".
   iDestruct "Hnonce" as "(HnonceMemory & %HnonceAlign & %HnonceLow & %HnonceHigh & Hcaller & _)".
-  iDestruct "Hcaller" as "(H12 & H13 & H18 & H20 & Hword2 & H21 & Htag & Hsrc0 & Hsrc1 & Hsrc2 & Hdestination & Hlower & H8 & H22 & H6 & HdataBytes & %Hlen & Hcount & %Halign & %Hlow & %Hhigh & HP & _)".
+  iDestruct "Hcaller" as "(H8 & H6 & Hcore & _)".
+  iDestruct "Hcore" as "(H12 & H13 & H18 & H20 & Hword2 & H21 & Htag & Hsrc0 & Hsrc1 & Hsrc2 & Hdestination & Hlower & H22 & HdataBytes & %Hlen & Hcount & %Halign & %Hlow & %Hhigh & HP & _)".
   iAssert ((bv_unsigned sp - 32) ↦ₘ? 32)%I with "[Hmiddle Hupper]" as "Hscratch32".
   { iApply (mem_mapsto_uninit_combine 16 with "Hmiddle"); first lia.
     replace (bv_unsigned sp - 32 + 16)%Z with (bv_unsigned sp - 16)%Z by lia. iExact "Hupper". }
