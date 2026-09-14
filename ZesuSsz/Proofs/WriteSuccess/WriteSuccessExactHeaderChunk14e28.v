@@ -56,7 +56,8 @@ Proof.
     (writeSuccessExactHeaderEventsAfter1184 sp bytes tail).
   Unshelve. all: try prepare_sidecond; try assumption; try bv_solve; try lia; try iFrame.
   Unshelve. liShow.
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  zesu_unfold_bv_bindings.
+  iRename select (mmio_range _ 16)%I into "Hmmio".
   iRename select (spec_trace (writeOutputEvents (sp + BV 64 1184)%bv (BV 64 32)
     (take 32 (drop 152 (take 592 bytes))) (writeSuccessExactHeaderEventsAfter1184 sp bytes tail)))%I into "Htrace".
   iRename select ((bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes)%I into "Hcopy".

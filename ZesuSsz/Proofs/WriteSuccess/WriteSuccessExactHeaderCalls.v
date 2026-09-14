@@ -51,7 +51,8 @@ Proof.
   all: try iFrame.
   Unshelve.
   liShow.
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  zesu_unfold_bv_bindings.
+  iRename select (mmio_range _ 16)%I into "Hmmio".
   iRename select (spec_trace (writeOutputEvents (sp + BV 64 1216)%bv
     (BV 64 20) (writeSuccessHeaderPayload 184 20 bytes)
     (writeSuccessExactHeaderEventsAfter1216 sp bytes tail)))%I into "Htrace".
@@ -104,7 +105,8 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve. liShow.
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  zesu_unfold_bv_bindings.
+  iRename select (mmio_range _ 16)%I into "Hmmio".
   iRename select (spec_trace (writeOutputEvents (sp + BV 64 1236)%bv
     (BV 64 32) (writeSuccessHeaderPayload 204 32 bytes)
     (writeSuccessExactHeaderEventsAfter1236 sp bytes tail)))%I into "Htrace".
@@ -154,7 +156,8 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve. liShow.
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  zesu_unfold_bv_bindings.
+  iRename select (mmio_range _ 16)%I into "Hmmio".
   iRename select (spec_trace (writeOutputEvents (sp + BV 64 1268)%bv
     (BV 64 32) (writeSuccessHeaderPayload 236 32 bytes)
     (writeSuccessExactHeaderEventsAfter1268 sp bytes tail)))%I into "Htrace".
@@ -204,7 +207,8 @@ Proof.
   all: try lia.
   all: try iFrame.
   Unshelve. liShow.
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  zesu_unfold_bv_bindings.
+  iRename select (mmio_range _ 16)%I into "Hmmio".
   iRename select (spec_trace (writeOutputEvents (sp + BV 64 1300)%bv
     (BV 64 256) (writeSuccessHeaderPayload 268 256 bytes)
     (writeSuccessExactHeaderEventsAfter1300 sp bytes tail)))%I into "Htrace".

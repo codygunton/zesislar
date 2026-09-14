@@ -31,8 +31,11 @@ Proof.
   all: try bv_solve.
   Unshelve.
   all: iExists (items, count, tail, bytes, transactions, base, pointer, tt)ₗ.
-  all: iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  all: zesu_unfold_bv_bindings.
+  all: iRename select (mmio_range _ 16)%I into "Hmmio".
   all: iFrame.
   all: repeat iSplit; try iPureIntro; try assumption; try lia.
   all: try iExact "Hmmio".
 Qed.
+
+Print Assumptions write_success_transactions_post_15670_data.
