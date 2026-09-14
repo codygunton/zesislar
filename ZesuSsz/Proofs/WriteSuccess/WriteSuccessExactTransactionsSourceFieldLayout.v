@@ -30,9 +30,52 @@ Definition transactionFieldSourceHeap `{!islaG Sigma}
    ⌜(length entries < 2 ^ 64)%nat⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@transactionFieldSourceHeap) := I.
 
+Definition transactionFieldSourceSavedTail `{!islaG Sigma}
+    (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
+    (dataBytes accessBytes : list (bv 8)) (Q : iProp Sigma) : iProp Sigma :=
+  ((bv_unsigned sp + 168) ↦ₘ transactionRowWord bytes index 240 ∗
+   (bv_unsigned sp + 176) ↦ₘ transactionRowWord bytes index 256 ∗
+   (bv_unsigned sp + 184) ↦ₘ transactionRowWord bytes index 120 ∗
+   (bv_unsigned sp + 192) ↦ₘ transactionRowWord bytes index 112 ∗
+   (bv_unsigned sp + 200) ↦ₘ transactionRowWord bytes index 104 ∗
+   (bv_unsigned sp + 208) ↦ₘ transactionRowWord bytes index 128 ∗
+   (bv_unsigned sp + 216) ↦ₘ transactionRowWord bytes index 96 ∗
+   (bv_unsigned sp + 224) ↦ₘ transactionRowWord bytes index 152 ∗
+   (bv_unsigned sp + 232) ↦ₘ transactionRowWord bytes index 144 ∗
+   (bv_unsigned sp + 240) ↦ₘ transactionRowWord bytes index 136 ∗
+   (bv_unsigned sp + 1660) ↦ₘ? 4 ∗
+   (bv_unsigned sp + 1680) ↦ₘ? 32 ∗ (bv_unsigned sp + 1784) ↦ₘ? 112 ∗
+   ⌜dataBytes <> [] -> (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 192) /\
+     bv_unsigned (transactionRowWord bytes index 192) + Z.of_nat (length dataBytes) < (machineRamEnd defaultMap)⌝ ∗
+   ⌜accessBytes <> [] -> (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 208) /\
+     bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < (machineRamEnd defaultMap)⌝ ∗
+   Q ∗ True)%I.
+Global Instance : LithiumUnfold (@transactionFieldSourceSavedTail) := I.
+
+Definition transactionFieldSourceFeeRest `{!islaG Sigma}
+    (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
+    (dataBytes accessBytes : list (bv 8)) (Q : iProp Sigma) : iProp Sigma :=
+  (base ↦ₘ∗ bytes ∗
+   (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
+   (bv_unsigned sp + 248) ↦ₘ Z_to_bv 64 (Z.of_nat processed) ∗
+   transactionFieldSourceSavedTail sp base bytes processed index dataBytes accessBytes Q)%I.
+Global Instance : LithiumUnfold (@transactionFieldSourceFeeRest) := I.
+
 Definition transactionFieldSourceRetained `{!islaG Sigma}
     (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
     (dataBytes accessBytes : list (bv 8)) (Q : iProp Sigma) : iProp Sigma :=
+  (base ↦ₘ∗ bytes ∗
+   (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
+   (bv_unsigned sp + 248) ↦ₘ Z_to_bv 64 (Z.of_nat processed) ∗
+   (bv_unsigned sp + 144) ↦ₘ transactionRowWord bytes index 88 ∗
+   (bv_unsigned sp + 152) ↦ₘ transactionRowWord bytes index 80 ∗
+   (bv_unsigned sp + 160) ↦ₘ transactionRowWord bytes index 248 ∗
+   transactionFieldSourceSavedTail sp base bytes processed index dataBytes accessBytes Q)%I.
+Global Instance : LithiumUnfold (@transactionFieldSourceRetained) := I.
+
+Lemma transactions_source_retained_conjunction `{!islaG Sigma}
+    sp base bytes processed index dataBytes accessBytes (Q : iProp Sigma) :
+  transactionFieldSourceRetained sp base bytes processed index dataBytes accessBytes Q ⊣⊢
   (base ↦ₘ∗ bytes ∗
    (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base ∗
    (bv_unsigned sp + 248) ↦ₘ Z_to_bv 64 (Z.of_nat processed) ∗
@@ -56,7 +99,28 @@ Definition transactionFieldSourceRetained `{!islaG Sigma}
    ⌜accessBytes <> [] -> (mapRamBase defaultMap) <= bv_unsigned (transactionRowWord bytes index 208) /\
      bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < (machineRamEnd defaultMap)⌝ ∗
    Q ∗ True)%I.
-Global Instance : LithiumUnfold (@transactionFieldSourceRetained) := I.
+Proof. reflexivity. Qed.
+Print Assumptions transactions_source_retained_conjunction.
+
+Lemma transactions_source_fee_frame `{!islaG Sigma}
+    sp base bytes processed index dataBytes accessBytes (Q : iProp Sigma) :
+  transactionFieldSourceRetained sp base bytes processed index dataBytes accessBytes Q ⊣⊢
+  ((bv_unsigned sp + 144) ↦ₘ transactionRowWord bytes index 88 ∗
+   (bv_unsigned sp + 152) ↦ₘ transactionRowWord bytes index 80 ∗
+   (bv_unsigned sp + 160) ↦ₘ transactionRowWord bytes index 248 ∗
+   transactionFieldSourceFeeRest sp base bytes processed index dataBytes accessBytes Q).
+Proof.
+  unfold transactionFieldSourceRetained, transactionFieldSourceFeeRest.
+  iSplit.
+  - iIntros "(Hbytes & Hbase & Hindex & Hhigh & Hlow & Hcount & Hrest)".
+    iSplitL "Hhigh"; first iExact "Hhigh".
+    iSplitL "Hlow"; first iExact "Hlow".
+    iSplitL "Hcount"; first iExact "Hcount".
+    iFrame.
+  - iIntros "(Hhigh & Hlow & Hcount & Hbytes & Hbase & Hindex & Hrest)".
+    iFrame.
+Qed.
+Print Assumptions transactions_source_fee_frame.
 
 Definition transactionSourceFieldCore `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (base : Z) (bytes : list (bv 8)) (processed index : nat)
