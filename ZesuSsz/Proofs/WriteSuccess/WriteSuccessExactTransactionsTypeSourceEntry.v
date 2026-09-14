@@ -36,7 +36,7 @@ Global Instance : LithiumUnfold (@transactionTypeSourceRegisters) := I.
 Definition transactionTypeSourceRetained `{!islaG Sigma} `{!threadG}
     (sp row chain chainTag : bv 64) (base : Z) (bytes : list (bv 8)) (index : nat)
     (P : iProp Sigma) : iProp Sigma :=
-  (base ↦ₘ∗ bytes ∗
+  ("x2" ↦ᵣ RVal_Bits sp ∗ base ↦ₘ∗ bytes ∗
    "x13" ↦ᵣ RVal_Bits (Z_to_bv 64 (little_endian_to_bv 8 [(default (BV 8 0) (bytes !! (index + 273)%nat)); (default (BV 8 0) (bytes !! (index + 274)%nat)); (default (BV 8 0) (bytes !! (index + 275)%nat)); (default (BV 8 0) (bytes !! (index + 276)%nat)); (default (BV 8 0) (bytes !! (index + 277)%nat)); (default (BV 8 0) (bytes !! (index + 278)%nat)); (default (BV 8 0) (bytes !! (index + 279)%nat)); (default (BV 8 0) (bytes !! (index + 280)%nat))])) ∗
    "x14" ↦ᵣ RVal_Bits (bv_zero_extend 64 (Z_to_bv 32 (little_endian_to_bv 8 [(default (BV 8 0) (bytes !! (index + 281)%nat)); (default (BV 8 0) (bytes !! (index + 282)%nat)); (default (BV 8 0) (bytes !! (index + 283)%nat)); (default (BV 8 0) (bytes !! (index + 284)%nat))]))) ∗
    (bv_unsigned sp + 176) ↦ₘ (transactionRowWord bytes index 256) ∗
@@ -70,6 +70,13 @@ Lemma transactions_prepare_type_source_entry `{!islaG Sigma} `{!threadG}
     (transactionTypeSourceRetained sp row chain chainTag base bytes index P).
 Proof.
   iStartProof. iIntros "Hpost".
+  iAssert (∃ _ : unit, transactionTypeOutputEntry (sp + BV 64 1744)%bv oldra
+    (Z_to_bv 64 (bv_unsigned (default (BV 8 0) (bytes !! (index + 271)%nat)) * 65536 +
+      bv_unsigned (default (BV 8 0) (bytes !! (index + 272)%nat)) * 16777216))
+    (default (BV 8 0) (bytes !! (index + 264)%nat)) tail
+    (transactionTypeSourceRetained sp row chain chainTag base bytes index P) ∗ True)%I
+    with "[Hpost]" as "Hentry".
+  {
   iEval (rewrite /transactionPreparePost /transactionPrepareRetained /transactionPrepareRegisters
     /transactionStoredSignatureTail /transactionSignatureStackFrame /transactionRecipientAssemblyStackContents
     /transactionRecipientAssemblyFields /transactionSignatureFieldRetained /transactionGasSignatureRetained
@@ -78,10 +85,7 @@ Proof.
   assert (Hdata : (bv_unsigned (sp + BV 64 1744)%bv = bv_unsigned sp + 1744)%Z).
   { match goal with Hlow : (0x20000000 <= bv_unsigned sp)%Z,
       Hhigh : (bv_unsigned sp + 1745 < 0x40000000)%Z |- _ => clear -Hlow Hhigh; bv_solve end. }
-  rewrite /transactionTypeOutputEntry Hdata mem_mapsto_array_singleton
-    /transactionTypeSourceRetained /transactionTypeSourceRegisters /transactionStoredSignatureTail
-    /transactionSignatureStackFrame /transactionRecipientAssemblyStackContents /transactionRecipientAssemblyFields
-    /transactionSignatureFieldRetained /transactionGasSignatureRetained.
-  iFrame. repeat iSplit; try done; iPureIntro; lia.
+  zesu_run. }
+  iDestruct "Hentry" as (_) "[Hentry _]". iExact "Hentry".
 Qed.
 Print Assumptions transactions_prepare_type_source_entry.
