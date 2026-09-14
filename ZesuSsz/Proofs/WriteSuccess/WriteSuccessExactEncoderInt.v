@@ -113,7 +113,9 @@ Proof.
   all: try bv_solve.
   all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
   all: lazymatch goal with |- ?G => fail "side condition" G end.
-  Unshelve. iRename select (bv_unsigned LET6 ↦ₘ value)%I into "Hword".
+  Unshelve. zesu_unfold_bv_bindings.
+  iRename select (bv_unsigned (sp + BV 64 18446744073709551600 + BV 64 0)%bv ↦ₘ value)%I into "Hword".
+  zesu_normalize_memory_cell "Hword" (bv_unsigned (sp - BV 64 16)%bv).
   iDestruct (mem_mapsto_mapsto_to_byte_array with "Hword") as "Hpayload".
   set (payload := writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))).
   set (Q := encoderIntExactFrame value sp ret tail P).
@@ -126,7 +128,6 @@ Proof.
     iApply write_output_trace_correct. iExact "HoutputCode". }
   liARun.
   Unshelve. all: prepare_sidecond; try assumption; try bv_solve; try lia.
-  all: try (replace (bv_unsigned LET14) with 0x15d2c by vm_compute; liARun).
   all: try (eexists; eexists; split; [reflexivity | split; reflexivity]).
   all: try (rewrite /Z_to_little_endian /=;
     eexists; eexists; split; [reflexivity | split; reflexivity]).
