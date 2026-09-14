@@ -126,3 +126,19 @@ Use `rocq_compile_file` and `rocq_verify` for final proof verification.
 Run focused trace and proof targets during development.
 Run `make check-fast` before each commit.
 Run `make check-iris` before each checkpoint.
+
+## MCP discipline
+
+Use a stable scratch file for interactive MCP sessions.
+Keep `_build/default` linked to your private Dune artifacts.
+Refresh required artifacts before you start a session.
+Do not change a session's file while you use that session.
+After an automatic restart, try one fresh file session.
+Do not force a restart.
+
+Include health, interactive checks, final compilation, and statement verification in every proof commit report.
+The coordinator rejects a proof commit that lacks these results.
+Report an exact MCP failure before you switch to a shell proof tool.
+The coordinator approves and records each bounded fallback.
+Continue independent preparation while the coordinator reviews that failure.
+Shell commands can build dependencies and run project gates.
