@@ -48,3 +48,26 @@ Proof.
   iFrame. repeat iSplit; try done; iPureIntro; lia.
 Qed.
 Print Assumptions transactions_data_to_access_count.
+Lemma transactions_data_access_continuation `{!islaG Sigma} `{!threadG}
+    data size sp old6 old9 stack2 count bytes tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_51.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x151d0 (transactionAccessCountPost sp count tail
+    (transactionDataAccessFrame data size sp old9 bytes P)) -∗
+  □ instr_pre 0x151c4 (encoderBytesExactPost data size sp (BV 64 0x151c4) bytes old6 data old9 stack2
+    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned count))) tail)
+    ("x22" ↦ᵣ RVal_Bits size ∗ transactionDataAccessCaller sp count P ∗ True)).
+Proof.
+  iIntros "#Hcaller #Hint #Houtput #Hnext".
+  iPoseProof (transactions_access_count_call_correct sp count (BV 64 0x151c4)
+    (BV 64 0x2401a0b8) size tail (transactionDataAccessFrame data size sp old9 bytes P)
+    with "Hcaller Hint Houtput") as "Hcallee".
+  iModIntro. iApply (instr_pre_wand 0x151c4 0x151c4 false true with "Hcallee"); [done | done |].
+  iIntros "Hpost". iApply (transactions_data_to_access_count with "Hpost Hnext").
+Qed.
+Print Assumptions transactions_data_access_continuation.
