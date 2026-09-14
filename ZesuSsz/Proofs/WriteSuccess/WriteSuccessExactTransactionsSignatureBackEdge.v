@@ -52,3 +52,23 @@ Proof.
   iFrame. repeat iSplit; try done; iPureIntro; lia.
 Qed.
 Print Assumptions transactions_signature_to_back_edge.
+
+Lemma transactions_signature_back_edge_continuation `{!islaG Sigma} `{!threadG}
+    (sp value r0 r1 r2 r3 s0 s1 s2 s3 index total : bv 64) tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_86.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr 0x14f00 (Some IslaTraces.write_success_28.a14f00.a14f00) -∗
+  □ instr_pre 0x14f04 (transactionBackEdgePost sp index total
+    (transactionSignatureBackEdgeFrame sp value r0 r1 r2 r3 s0 s1 s2 s3 tail P)) -∗
+  □ instr_pre 0x1565c (transactionSignatureSPost sp s0 s1 s2 s3 tail
+    (transactionSignatureRFrame sp r0 r1 r2 r3
+      (transactionSignatureVFrame sp value (transactionSignatureBackEdgeCaller sp index total P)))).
+Proof.
+  iIntros "#Hcode #Hreload #Hhead".
+  iPoseProof (transactions_back_edge_correct sp index total
+    (transactionSignatureBackEdgeFrame sp value r0 r1 r2 r3 s0 s1 s2 s3 tail P)
+    with "Hcode Hreload") as "Hedge".
+  iModIntro. iApply (instr_pre_wand 0x1565c 0x1565c false true with "Hedge"); [done | done |].
+  iIntros "Hpost". iApply (transactions_signature_to_back_edge with "Hpost Hhead").
+Qed.
+Print Assumptions transactions_signature_back_edge_continuation.
