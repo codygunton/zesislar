@@ -42,7 +42,9 @@ Record DecodeBoundaryArgs : Type := {
   decodeInput : ByteString;
   decodeStackPointer : Z;
   decodeAllocatorStateAddress : Z;
-  decodeAllocatorVtableAddress : Z
+  decodeAllocatorVtableAddress : Z;
+  decodeSavedRegisters : list (bv 64);
+  decodeFramePadding : list (bv 8)
 }.
 
 Inductive DecodeBoundaryOutcome (Decoded : Type) : Type :=

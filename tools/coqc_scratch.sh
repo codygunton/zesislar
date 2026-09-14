@@ -53,13 +53,34 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
     output = Path(output_dir) / f"{source.stem}.vo"
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
-    result = subprocess.run(
+    process = subprocess.Popen(
         [command[0], *flags, "-o", str(output), str(source)],
         cwd=working_dir,
-        check=False,
     )
+    limit = None
+    while process.poll() is None:
+        elapsed = time.monotonic() - started
+        try:
+            status = Path(f"/proc/{process.pid}/status").read_text()
+            rss_kb = next(int(line.split()[1]) for line in status.splitlines()
+                          if line.startswith("VmRSS:"))
+        except (FileNotFoundError, ProcessLookupError, StopIteration):
+            rss_kb = 0
+        if elapsed > 300 or rss_kb > 6 * 1024 * 1024:
+            limit = "time" if elapsed > 300 else "memory"
+            process.terminate()
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+            break
+        time.sleep(0.25)
+    returncode = process.wait()
     elapsed_ms = round((time.monotonic() - started) * 1000)
     after = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
-    print(f"exit={result.returncode} ms={elapsed_ms} rss_kb={max(before, after)}")
-    raise SystemExit(result.returncode)
+    print(f"exit={returncode} ms={elapsed_ms} rss_kb={max(before, after)}")
+    if limit is not None:
+        print(f"proof limit exceeded: {limit}", file=sys.stderr)
+    raise SystemExit(returncode)
 PY

@@ -306,3 +306,60 @@ Proof. done. Qed.
 
 Print Assumptions write_success_interfaces_transactions_entry.
 Print Assumptions write_success_interfaces_output_return.
+
+(** Exact caller frame shared by the transactions and terminal chains. *)
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.Endpoints.
+From ZesuSsz.Proofs.WriteSuccess Require Import
+  WriteSuccessNativeContract WriteSuccessRepresentation
+  WriteSuccessExactValueSpec WriteSuccessValueBlock
+  WriteSuccessByteLists WriteSuccessTransactionsSpec
+  WriteSuccessTransactionsPost15674Boundary
+  WriteSuccessPostTransactionResources.
+
+Definition writeSuccessExactTailCaller `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  let sp := writeSuccessFrameSp witness in
+  let values := writeSuccessValues witness in
+  ((bv_unsigned sp - 80) ↦ₘ? 32 ∗
+   bv_unsigned sp ↦ₘ? 104 ∗ (bv_unsigned sp + 280) ↦ₘ? 32 ∗
+   (bv_unsigned sp + 312) ↦ₘ∗ writeSuccessSourceBytes witness ∗
+   writeSuccessExactValueMemory sp values ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 16 ∗
+   writeSuccessTerminalSavedSlots witness ∗
+   bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗ writeSuccessDecodedBytes witness ∗
+   bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ writeSuccessPayload witness ∗
+   byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
+     (writeSuccessRawTransactions witness) ∗
+   bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗ writeSuccessWithdrawalsBytes witness ∗
+   writeSuccessPostTransactionDataResources sp (writeSuccessSourceBytes witness)
+     (writeSuccessDecodedBytes witness) (writeSuccessPostData witness) ∗
+   writeSuccessNativeStaticResources ∗
+   writeSuccessTransactionsInvariant sp (writeSuccessTransactionBase witness)
+     (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) [] (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
+   ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
+Global Instance : LithiumUnfold (@writeSuccessExactTailCaller) := I.
+
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTrace.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputDescriptors.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
+Definition writeSuccessExactTailEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  let sp := writeSuccessFrameSp witness in
+  writeOutputPayloadsSpec
+    (writeSuccessByteListsDescriptors sp (writeSuccessRawTransactions witness) ++
+     writeSuccessAfterTransactionsDescriptors sp (writeSuccessWithdrawalsCount witness)
+       (writeSuccessPostData witness))
+    (drop (length (writeSuccessMainDescriptors sp (writeSuccessValues witness)
+       (writeSuccessTransactions witness)))
+      (writeSuccessExactPayloads (writeSuccessDecodedBytes witness)
+        (writeSuccessValues witness) (writeSuccessPayload witness)
+        (writeSuccessTransactions witness) (writeSuccessRawTransactions witness)
+        (writeSuccessWithdrawalsBytes witness) (writeSuccessWithdrawalsCount witness)
+        (writeSuccessPostData witness)))
+    (writeSuccessTraceTail witness).
