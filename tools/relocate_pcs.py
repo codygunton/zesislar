@@ -89,23 +89,32 @@ def main():
         lines = []
         word_table = False
         word_scalar = False
+        pending_tuple_value = False
         for line_number, line in enumerate(original.splitlines(keepends=True), 1):
             declaration = re.match(r'\s*Definition\s+(\w+)', line)
             if declaration:
                 word_table = declaration.group(1).endswith('Words')
                 word_scalar = bool(re.search(r'WordAt[0-9a-fA-F]+$', declaration.group(1)))
+                pending_tuple_value = False
             protected = {}
             def protect(match):
                 token = f'__ENCODED_WORD_{len(protected)}__'
                 protected[token] = match.group()
                 return token
             if word_table:
+                if pending_tuple_value:
+                    value = re.match(r'\s*(?:0x[0-9a-fA-F]+|[0-9]+)\b', line)
+                    if value:
+                        line = protect(value) + line[value.end():]
+                        pending_tuple_value = False
                 line = re.sub(r'(?<=,)\s*(?:0x[0-9a-fA-F]+|[0-9]+)\b', protect, line)
+                if re.search(r',\s*$', line):
+                    pending_tuple_value = True
             if word_scalar:
                 prefix, separator, value = line.partition(':=') if declaration else ('', '', line)
                 line = prefix + separator + re.sub(r'0x[0-9a-fA-F]+\b|(?<![\w])[0-9]+(?![\w])', protect, value)
             if (word_table or word_scalar) and re.search(r'\.\s*(?:\(\*.*\*\)\s*)?$', line):
-                word_table = word_scalar = False
+                word_table = word_scalar = pending_tuple_value = False
             def rewrite(match):
                 token = match.group()
                 value = int(token, 16) if token.startswith('0x') else int(token)

@@ -149,3 +149,7 @@ Ten tool regressions pass.
 The encoded-word tests include decimal values, 64-bit values, and multiline definitions.
 The unsupported relocation tests reject start growth and inconsistent function offsets.
 These checks use dry runs only.
+
+The word guard preserves tuple values across line breaks and blank lines.
+Four additional dry-run cases check hexadecimal and decimal tuple values.
+Each case preserves the encoded words and reports four address rewrites.
