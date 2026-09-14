@@ -94,6 +94,48 @@ Proof.
   exists (S n). eapply instruction_prefix_finish; eauto.
 Qed.
 
+Lemma executor_nsteps_append n (start boundary finish : cfg isla_lang) prefix
+    m tail :
+  @nsteps isla_lang n start prefix boundary ->
+  @nsteps isla_lang m boundary tail finish ->
+  @nsteps isla_lang (n + m) start (prefix ++ tail) finish.
+Proof.
+  intros Hprefix Htail. induction Hprefix.
+  - exact Htail.
+  - simpl. rewrite <- app_assoc. econstructor; eauto.
+Qed.
+
+Inductive CompletedInstructionRun : nat -> seq_local_state -> seq_global_state ->
+    list seq_label -> seq_local_state -> seq_global_state -> Prop :=
+| CompletedInstructionRunRefl theta sigma :
+    CompletedInstructionRun 0 theta sigma [] theta sigma
+| CompletedInstructionRunStep n theta sigma prefix boundary memory tail theta' sigma' :
+    CompletedInstructionSegment theta sigma prefix boundary memory ->
+    CompletedInstructionRun n boundary memory tail theta' sigma' ->
+    CompletedInstructionRun (S n) theta sigma (prefix ++ tail) theta' sigma'.
+
+Lemma completed_run_append n theta sigma prefix boundary memory
+    m tail theta' sigma' :
+  CompletedInstructionRun n theta sigma prefix boundary memory ->
+  CompletedInstructionRun m boundary memory tail theta' sigma' ->
+  CompletedInstructionRun (n + m) theta sigma (prefix ++ tail) theta' sigma'.
+Proof.
+  intros Hprefix Htail. induction Hprefix.
+  - exact Htail.
+  - simpl. rewrite <- app_assoc. econstructor; eauto.
+Qed.
+
+Lemma completed_run_nsteps instructions theta sigma labels theta' sigma' :
+  CompletedInstructionRun instructions theta sigma labels theta' sigma' ->
+  exists steps, @nsteps isla_lang steps ([theta], sigma) labels ([theta'], sigma').
+Proof.
+  induction 1.
+  - exists 0%nat. constructor.
+  - destruct (completed_instruction_nsteps _ _ _ _ _ H) as [first Hfirst].
+    destruct IHCompletedInstructionRun as [rest Hrest].
+    exists (first + rest)%nat. eapply executor_nsteps_append; eauto.
+Qed.
+
 Lemma executor_declare_bits n (value : bv n) x ann trace regs sigma :
   seq_step
     (instruction_boundary (Smt (DeclareConst x (Ty_BitVec n)) ann :t: trace) regs)
@@ -933,3 +975,7 @@ Print Assumptions executor_base_eqb_reflect.
 Print Assumptions executor_valu_eqb_reflect.
 Print Assumptions executor_option_valu_eqb_reflect.
 Print Assumptions executor_write_disjointb_reflect.
+
+Print Assumptions executor_nsteps_append.
+Print Assumptions completed_run_append.
+Print Assumptions completed_run_nsteps.
