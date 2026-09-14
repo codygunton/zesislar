@@ -4,6 +4,8 @@ Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
+Require Import ZesuSsz.Automation.ArraySlices.
+Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation.NatBounds.
 From iris.proofmode Require Import environments.
 
@@ -120,6 +122,40 @@ Ltac zesu_finish_array_byte_lookup :=
   end;
   reflexivity.
 
+Ltac zesu_normalize_equal_array_regions :=
+  repeat match goal with
+  | |- context[array_region_start 8 ?a ?b] =>
+    let Hsame := fresh "HregionSame" in
+    assert (Hsame : a = b) by bv_solve;
+    rewrite (array_region_start_equal a b Hsame); clear Hsame
+  end.
+Ltac zesu_normalize_known_list_lengths :=
+  repeat progress (rewrite ?length_take ?length_drop ?length_app);
+  repeat match goal with
+  | Hlen : length ?xs = ?n |- context[length ?xs] => rewrite Hlen
+  end;
+  cbn [Nat.min Nat.sub].
+Ltac zesu_finish_known_list_shape :=
+  lazymatch goal with
+  | |- envs_entails _ _ => fail 0
+  | |- context[array_region_start 8 _ _] => idtac
+  | |- context[length _] => idtac
+  | |- @eq (list _) _ _ => idtac
+  | _ => fail 0
+  end;
+  zesu_normalize_equal_array_regions;
+  cbn [drop];
+  first [solve [zesu_normalize_known_list_lengths; reflexivity] |
+    solve [repeat match goal with
+      | |- context[take ?n ?xs] =>
+        let Htake := fresh "Htake" in
+        assert (Htake : (length xs <= n)%nat) by
+          (zesu_normalize_known_list_lengths; lia);
+        rewrite (take_ge xs n Htake); clear Htake
+      end; reflexivity] |
+    solve [zesu_normalize_known_list_lengths; lia] |
+    solve [bv_solve]].
+
 Ltac zesu_finish :=
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
@@ -134,6 +170,7 @@ Ltac zesu_finish :=
   try autorewrite with zesu_indices;
   try iAssumption;
   try (timeout 2 zesu_normalize_array_cursors);
+  try (timeout 2 zesu_finish_known_list_shape);
   try reflexivity;
   try (timeout 2 (lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64

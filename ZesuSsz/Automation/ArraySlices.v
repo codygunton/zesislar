@@ -14,6 +14,12 @@ Proof.
 Qed.
 Print Assumptions array_slice_stack_index.
 
+Lemma array_region_start_equal (a b : Z) :
+  a = b -> array_region_start 8 a b = 0%nat.
+Proof. intros ->. unfold array_region_start. rewrite Z.sub_diag. reflexivity. Qed.
+
+Print Assumptions array_region_start_equal.
+
 Section exact_array.
   Context `{!islaG Sigma}.
   Lemma subsume_mem_array_exact A address n (bytes : list (bv n)) G :
@@ -85,13 +91,33 @@ Proof.
 Qed.
 Definition subsume_mem_array_restore_inst := [instance subsume_mem_array_restore].
 
+Lemma subsume_mem_array_restore_prefix A (base : Z)
+    (bytes : list (bv 8)) (start : nat) G :
+  (⌜(start <= length bytes)%nat⌝ ∗
+   (base + Z.of_nat start) ↦ₘ∗ drop start bytes ∗
+   (∃ x : A, G x))%I ⊢
+  subsume (base ↦ₘ∗ take start bytes) (fun _ : A => base ↦ₘ∗ bytes) G.
+Proof.
+  iIntros "(%Hbound & Hsuffix & Hcontinue) Hprefix".
+  iDestruct "Hcontinue" as (x) "HG". iExists x. iFrame "HG".
+  have Hstart : length (take start bytes) = start.
+  { rewrite length_take Nat.min_l; lia. }
+  iPoseProof (mem_mapsto_array_app_combine_at 8 base (DfracOwn 1)
+    (take start bytes) (drop start bytes) start Hstart with "Hprefix [Hsuffix]") as "Hwhole".
+  { cbn. rewrite Z.mul_1_l. iExact "Hsuffix". }
+  rewrite take_drop. iExact "Hwhole".
+Qed.
+Definition subsume_mem_array_restore_prefix_inst := [instance subsume_mem_array_restore_prefix].
+
 End exact_array.
+Print Assumptions subsume_mem_array_restore_prefix.
 Print Assumptions mem_array_slice_restore.
 Print Assumptions subsume_mem_array_restore.
 
 Module SliceMatching.
   #[export] Remove Hints subsume_mem_array_inst : typeclass_instances.
   #[export] Existing Instance subsume_mem_array_exact_inst | 0.
+  #[export] Existing Instance subsume_mem_array_restore_prefix_inst | 0.
   #[export] Existing Instance subsume_mem_array_restore_inst | 1.
   #[export] Existing Instance subsume_mem_array_slice_inst | 1.
   #[export] Existing Instance subsume_mem_array_region_inst | 2.
