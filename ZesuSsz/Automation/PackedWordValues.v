@@ -66,7 +66,16 @@ Ltac zesu_normalize_packed_word_subsume :=
   lazymatch goal with
   | |- envs_entails _ (subsume _ ?requested _) =>
       let target := eval cbv beta zeta in (requested tt) in
-      lazymatch target with (?address ↦ₘ{?q} ?value)%I =>
-        zesu_normalize_packed_word_value value
+      lazymatch target with
+      | (?address ↦ₘ{?q} ?value)%I => zesu_normalize_packed_word_value value
+      | (?register ↦ᵣ RVal_Bits ?value)%I => zesu_normalize_packed_word_value value
       end
+  end.
+
+Ltac zesu_finish_packed_word_equality :=
+  lazymatch goal with
+  | |- @eq (bv 64) ?left ?right =>
+      first [zesu_normalize_packed_word_value right |
+             zesu_normalize_packed_word_value left];
+      reflexivity
   end.
