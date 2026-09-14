@@ -76,3 +76,49 @@ Proof.
   iFrame. repeat iSplit; try done; iPureIntro; lia.
 Qed.
 Print Assumptions transactions_chain_none_to_nonce.
+
+Lemma transactions_chain_some_nonce_continuation `{!islaG Sigma} `{!threadG}
+    (sp nonce old8 : bv 64) bytes tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_36.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15108 (transactionNoncePost sp nonce tail (transactionChainSomeNonceFrame sp old8 bytes P)) -∗
+  □ instr_pre 0x150fc (optionalU64SomeExactPost sp (BV 64 0x150fc) old8
+    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned nonce))) tail)
+    (optionalU64SomeExactSourceFrame (sp + BV 64 1664)%bv bytes (transactionChainNonceCaller sp nonce P))).
+Proof.
+  iIntros "#Hcode #Hint #Houtput #Hnext".
+  iPoseProof (transactions_nonce_call_correct sp nonce (BV 64 0x150fc)
+    (BV 64 0x2401a0b8) (BV 64 8) tail (transactionChainSomeNonceFrame sp old8 bytes P)
+    with "Hcode Hint Houtput") as "Hcallee".
+  iModIntro. iApply (instr_pre_wand 0x150fc 0x150fc false true with "Hcallee"); [done | done |].
+  iIntros "Hpost". iApply (transactions_chain_some_to_nonce with "Hpost Hnext").
+Qed.
+
+Lemma transactions_chain_none_nonce_continuation `{!islaG Sigma} `{!threadG}
+    (sp nonce : bv 64) bytes tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_36.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15108 (transactionNoncePost sp nonce tail (transactionChainNoneNonceFrame sp bytes P)) -∗
+  □ instr_pre 0x150fc (optionalU64NoneExactCallPost (sp + BV 64 1664)%bv sp (BV 64 0x150fc) bytes
+    (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned nonce))) tail)
+    (transactionChainNonceCaller sp nonce P)).
+Proof.
+  iIntros "#Hcode #Hint #Houtput #Hnext".
+  iPoseProof (transactions_nonce_call_correct sp nonce (BV 64 0x150fc)
+    (BV 64 0x2401a0b8) (BV 64 1) tail (transactionChainNoneNonceFrame sp bytes P)
+    with "Hcode Hint Houtput") as "Hcallee".
+  iModIntro. iApply (instr_pre_wand 0x150fc 0x150fc false true with "Hcallee"); [done | done |].
+  iIntros "Hpost". iApply (transactions_chain_none_to_nonce with "Hpost Hnext").
+Qed.
+Print Assumptions transactions_chain_some_nonce_continuation.
+Print Assumptions transactions_chain_none_nonce_continuation.
