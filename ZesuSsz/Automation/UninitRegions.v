@@ -4,6 +4,12 @@ Require Import isla.riscv64.riscv64.
    The upstream rules and their resource continuations remain unchanged. *)
 Class ZesuRegionBounds (P : Prop) : Prop := zesu_region_bounds_proof : P.
 
+Ltac zesu_nat_literal number :=
+  lazymatch number with
+  | O => idtac
+  | S ?rest => zesu_nat_literal rest
+  end.
+
 Ltac zesu_region_bounds :=
   first [repeat match goal with H : _ |- _ => clear H end; lia |
     repeat match goal with
@@ -12,6 +18,10 @@ Ltac zesu_region_bounds :=
       | Z.le _ _ => fail
       | Z.lt _ _ => fail
       | @eq Z _ _ => fail
+      | @eq nat (length _) ?number =>
+          tryif zesu_nat_literal number then fail else clear H
+      | @eq nat ?number (length _) =>
+          tryif zesu_nat_literal number then fail else clear H
       | _ => clear H
       end
     end;
