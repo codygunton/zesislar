@@ -1,4 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.CodeLookup.
+Require Import InstrSpecs.Lookup.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCode.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -54,3 +57,23 @@ Proof.
     "Hbranch Hsome Hnone Hbool Houtput HsomeNext HnoneCommon").
 Qed.
 Print Assumptions transactions_priority_gas_region_correct.
+Lemma transactions_priority_gas_native_pre `{!islaG Sigma} `{!threadG}
+    (sp gaslow gashigh tag low high value : bv 64) tail (P : iProp Sigma) :
+  writeSuccessCompleteNativeCode -∗
+  □ instr_pre 0x15154 (transactionGasLimitPost sp value tail
+    (transactionFeeGasLimitFrame sp gaslow gashigh tag low high P)) -∗
+  □ instr_pre 0x15118 (transactionPriorityBranchState tag
+    (transactionGasPricePriorityFrame sp gaslow gashigh
+      (transactionPriorityGasTrace sp tag low high value tail)
+      ("x9" ↦ᵣ RVal_Bits low ∗ "x23" ↦ᵣ RVal_Bits high ∗
+       ("x26" ↦ᵣ RVal_Bits value ∗ P ∗ True) ∗ True))).
+Proof.
+  iIntros "#Hcode #Hnext".
+  iEval (rewrite /writeSuccessCompleteNativeCode) in "Hcode".
+  iDestruct "Hcode" as "#(Hprologue & Hlookup & Hmain & Houtput & Hmemcpy & Hboolean & Hoptional & HbyteLists & Hbytes & Hint & Hu256 & Hu128)".
+  iApply (transactions_priority_gas_region_correct with
+    "[] [] [] Hboolean [] Hu128 [] [] Hint Houtput Hnext").
+  all: iApply instr_lookup_collect; last iExact "Hlookup".
+  all: repeat constructor; reflexivity.
+Qed.
+Print Assumptions transactions_priority_gas_native_pre.
