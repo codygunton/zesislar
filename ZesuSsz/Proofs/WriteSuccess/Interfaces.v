@@ -365,6 +365,56 @@ Definition writeSuccessExactTailCaller `{!islaG Sigma} `{!threadG}
    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@writeSuccessExactTailCaller) := I.
 
+(** The load chain copies decoded bytes 720..847 into persistent stack words.
+    The suffix reads these words. The legacy free-stack adapter stays unchanged. *)
+Definition writeSuccessExactCopiedTailWords `{!islaG Sigma}
+    (sp : bv 64) (decodedBytes : list (bv 8)) : iProp Sigma :=
+  let words := writeSuccessPostTailWords decodedBytes in
+  ((bv_unsigned sp + 24) ↦ₘ writeSuccessPostWord words 0 ∗
+   (bv_unsigned sp + 16) ↦ₘ writeSuccessPostWord words 1 ∗
+   (bv_unsigned sp + 40) ↦ₘ writeSuccessPostWord words 2 ∗
+   (bv_unsigned sp + 32) ↦ₘ writeSuccessPostWord words 3 ∗
+   (bv_unsigned sp + 56) ↦ₘ writeSuccessPostWord words 4 ∗
+   (bv_unsigned sp + 48) ↦ₘ writeSuccessPostWord words 5 ∗
+   (bv_unsigned sp + 64) ↦ₘ writeSuccessPostWord words 6 ∗
+   (bv_unsigned sp + 72) ↦ₘ writeSuccessPostWord words 7 ∗
+   (bv_unsigned sp + 8) ↦ₘ writeSuccessPostWord words 8 ∗
+   (bv_unsigned sp + 80) ↦ₘ writeSuccessPostWord words 9 ∗
+   (bv_unsigned sp + 296) ↦ₘ writeSuccessPostWord words 10 ∗
+   (bv_unsigned sp + 304) ↦ₘ writeSuccessPostWord words 11 ∗
+   (bv_unsigned sp + 280) ↦ₘ writeSuccessPostWord words 12 ∗
+   (bv_unsigned sp + 288) ↦ₘ writeSuccessPostWord words 13 ∗
+   (bv_unsigned sp + 96) ↦ₘ writeSuccessPostWord words 14 ∗
+   (bv_unsigned sp + 88) ↦ₘ writeSuccessPostWord words 15)%I.
+Global Instance : LithiumUnfold (@writeSuccessExactCopiedTailWords) := I.
+
+Definition writeSuccessExactTailCallerWithCopiedWords `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  let sp := writeSuccessFrameSp witness in
+  let values := writeSuccessValues witness in
+  ((bv_unsigned sp - 80) ↦ₘ? 32 ∗
+   bv_unsigned sp ↦ₘ? 8 ∗
+   writeSuccessExactCopiedTailWords sp (writeSuccessDecodedBytes witness) ∗
+   (bv_unsigned sp + 312) ↦ₘ∗ writeSuccessSourceBytes witness ∗
+   writeSuccessExactValueMemory sp values ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 16 ∗
+   writeSuccessTerminalSavedSlots witness ∗
+   bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗ writeSuccessDecodedBytes witness ∗
+   bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ writeSuccessPayload witness ∗
+   byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
+     (writeSuccessRawTransactions witness) ∗
+   bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗ writeSuccessWithdrawalsBytes witness ∗
+   writeSuccessPostTransactionDataResources sp (writeSuccessSourceBytes witness)
+     (writeSuccessDecodedBytes witness) (writeSuccessPostData witness) ∗
+   writeSuccessNativeStaticResources ∗
+   writeSuccessTransactionsInvariant sp (writeSuccessTransactionBase witness)
+     (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) [] (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
+   ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
+Global Instance : LithiumUnfold (@writeSuccessExactTailCallerWithCopiedWords) := I.
+
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTrace.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputDescriptors.
