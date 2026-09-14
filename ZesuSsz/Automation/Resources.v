@@ -20,16 +20,30 @@ Ltac zesu_open_resource_groups :=
     [ iDestruct select (_ ∗ _)%I as "[? ?]"
     | iDestruct select (⌜_⌝)%I as %? ].
 
-(* Expose unknown 64-bit registers without changing their values or shapes. *)
+(* Expose register values. Preserve fixed values and all shape facts. *)
 Ltac zesu_open_bits_registers :=
-  repeat iSelect (reg_col ((KindReg _, BitsShape 64) :: _))%I
-    ltac:(fun H =>
-      iEval (rewrite reg_col_cons) in H;
-      iDestruct H as "[? ?]";
-      let actual := fresh "registerValue" in
+  repeat first
+    [ iSelect (reg_col ((KindReg _, BitsShape 64) :: _))%I
+        ltac:(fun H =>
+          iEval (rewrite reg_col_cons) in H;
+          iDestruct H as "[? ?]";
+          zesu_open_resource_groups)
+    | let actual := fresh "registerValue" in
       iDestruct select (∃ value, ⌜valu_has_shape value (BitsShape 64)⌝ ∗
         _ ↦ᵣₖ value)%I as (actual) "?";
-      zesu_open_resource_groups).
+      zesu_open_resource_groups
+    | let actual := fresh "registerValue" in
+      iDestruct select (∃ value, ⌜valu_has_shape value (BitsShape 64)⌝ ∗
+        _ ↦ᵣ value)%I as (actual) "?";
+      zesu_open_resource_groups
+    | let actual := fresh "registerValue" in
+      iDestruct select (∃ value, ⌜value = _⌝ ∗ _ ↦ᵣ value)%I
+        as (actual) "[%registerEquality ?]";
+      subst actual; zesu_open_resource_groups
+    | let actual := fresh "registerValue" in
+      iDestruct select (∃ value, ⌜valu_has_shape value _⌝ ∗ _ ↦ᵣ value)%I
+        as (actual) "?";
+      zesu_open_resource_groups ].
 
 Ltac zesu_pack_register register :=
   let instantiate H :=

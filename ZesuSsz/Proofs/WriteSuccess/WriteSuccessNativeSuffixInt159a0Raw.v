@@ -39,7 +39,7 @@ Proof.
     "(Hsys & H8 & H2 & Hsaved & %Halign & %Hrange & HK & Hnext)".
   iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H8".
   iDestruct "H8" as (r8) "(H8 & %Hshape8)".
-  liARun.
+  zesu_block.
   Unshelve. all: prepare_sidecond.
   all: try assumption; try bv_solve; try lia.
   Unshelve. all: try iFrame.
@@ -78,7 +78,7 @@ Proof.
     "(Hsys & H10 & H2 & Hvalue & %Halign & %Hrange & HK & Hnext)".
   iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H10".
   iDestruct "H10" as (r10) "(H10 & %Hshape10)".
-  liARun.
+  zesu_block.
   Unshelve. all: prepare_sidecond.
   all: try assumption; try bv_solve; try lia.
   Unshelve. all: try iFrame.

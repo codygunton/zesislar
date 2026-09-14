@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.ZArith.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.
@@ -17,3 +18,12 @@ Definition writeSuccessContractTarget {Decoded}
     (nextPc : Z -> Z -> Prop) : Prop :=
   IslarisContractCorrect 0x14d30 0x14d10
     (writeSuccessNativeModel allows outputRelation nextPc).
+
+(** The exact target preserves the caller trace and returned registers. *)
+Definition writeSuccessFixedTailContractTarget {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (allows : WriteSuccessArgs Decoded -> ByteString -> Prop)
+    (outputRelation : WriteSuccessOutputRelation Decoded)
+    (fixedTail : spec) (nextPc : Z -> Z -> Prop) : Prop :=
+  IslarisContractCorrect 0x14d30 0x14d10
+    (writeSuccessFixedTailModel allows outputRelation fixedTail nextPc).

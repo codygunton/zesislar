@@ -227,21 +227,67 @@ Ltac zesu_solve_instances :=
   | |- threadG => typeclasses eauto
   end.
 
+Ltac zesu_pack_shaped_register_value register :=
+  iSelect (register ↦ᵣ _)%I ltac:(fun H =>
+    let entry := iTypeOf H in
+    lazymatch entry with
+    | Some (_, _ ↦ᵣ ?value)%I =>
+        iExists (value, tt)ₗ; iFrame H;
+        first [done | solve [iPureIntro; first [assumption | done]] |
+          iSplit; [solve [iPureIntro; first [assumption | done]] |]]
+    end).
+
+Ltac zesu_pack_shaped_register_goal :=
+  first
+    [ lazymatch goal with
+      | |- envs_entails _
+          (∃ x : li_prod valu unit,
+            ⌜valu_has_shape (li_fst x) (BitsShape 64)⌝ ∗
+            ?register ↦ᵣ (li_fst x) ∗ _)%I =>
+          zesu_pack_shaped_register_value register
+      end
+    | lazymatch goal with
+      | |- envs_entails _
+          (∃ x : li_prod valu unit,
+            ⌜valu_has_shape (li_fst x) (BitsShape 64)⌝ ∗
+            ?register ↦ᵣ (li_fst x))%I =>
+          zesu_pack_shaped_register_value register
+      end ].
+
+Ltac zesu_pack_owned_word_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod (bv ?width) unit) ?body) =>
+    lazymatch body with
+    | context[(?address ↦ₘ{?q} (li_fst _))%I] =>
+      iSelect (address ↦ₘ{q} _)%I ltac:(fun H =>
+        let entry := iTypeOf H in
+        lazymatch entry with
+        | Some (_, (_ ↦ₘ{_} ?value)%I) =>
+            iExists (value, tt)ₗ; iFrame H; try done
+        end)
+    end
+  end.
+
+Ltac zesu_pack_owned_register_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod valu unit) ?body) =>
+    lazymatch body with
+    | context[(@reg_mapsto _ _ _ ?register ?fraction (li_fst _))] =>
+        zesu_pack_shaped_register_value register
+    end
+  end.
+
 Ltac zesu_run_pass :=
   try zesu_prepare_uninit_goal;
-  unshelve (time "zesu_run" repeat zesu_liAStep; liShow;
+  try zesu_normalize_find_mem_address;
+  unshelve (time "zesu_run" repeat first [zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_liAStep]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
 
 Ltac zesu_run :=
-  unshelve (zesu_run_pass;
-    try zesu_solve_instances;
-    zesu_run_pass;
-    try zesu_solve_instances;
-    zesu_finish);
-  try zesu_solve_instances;
-  zesu_run_pass;
+  unshelve (repeat progress
+    (zesu_run_pass; try zesu_solve_instances; zesu_finish));
   try zesu_solve_instances.
 
 Ltac zesu_block :=

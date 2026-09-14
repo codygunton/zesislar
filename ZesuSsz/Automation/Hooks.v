@@ -59,8 +59,35 @@ Ltac zesu_normalize_symbolic_mem_address :=
     end
   end.
 
+Ltac zesu_has_known_word_address expected spatial :=
+  lazymatch spatial with
+  | Esnoc ?rest _ ((?actual ↦ₘ{?q} ?word)%I) =>
+      first [constr_eq actual expected | zesu_has_known_word_address expected rest]
+  | Esnoc ?rest _ _ => zesu_has_known_word_address expected rest
+  end.
+Ltac zesu_normalize_known_word_address :=
+  repeat match goal with
+  | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
+  end;
+  lazymatch goal with
+  | |- envs_entails ?context
+      (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
+      let expanded := eval cbv beta zeta in pointer in
+      lazymatch expanded with bv_add ?base ?offset =>
+      is_var base;
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      let expected := constr:((bv_unsigned base + integer)%Z) in
+      let spatial := eval cbn [env_spatial] in (env_spatial context) in
+      zesu_has_known_word_address expected spatial;
+      let Heq := fresh "HknownWordAddress" in
+      assert (Heq : bv_unsigned pointer = expected) by bv_solve;
+      rewrite Heq; clear Heq
+      end
+  end.
 Ltac zesu_normalize_find_mem_address :=
-  zesu_normalize_symbolic_mem_address.
+  first [zesu_normalize_symbolic_mem_address | zesu_normalize_known_word_address].
+
 
 Ltac zesu_unfold_bv_bindings :=
   repeat match goal with
@@ -208,6 +235,7 @@ Ltac zesu_liAStepGenericWrite :=
 
 Ltac zesu_liAStep :=
  liEnsureInvariant;
+ try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
     zesu_normalize_find_mem_address
