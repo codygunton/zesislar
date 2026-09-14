@@ -43,8 +43,10 @@ def compiler_recipe(data: bytes):
         raw_args = fields.get("process_args", [])
         args = raw_args[0] if len(raw_args) == 1 and isinstance(raw_args[0], list) else raw_args
         if Path(program).name == "coqc" and any(arg.endswith(".v") for arg in args):
-            recipe = {"command": [program, *args],
-                      "working_dir": fields.get("dir", [None])[0]}
+            candidate = {"command": [program, *args],
+                         "working_dir": fields.get("dir", [None])[0]}
+            if recipe is None or "ZesuSsz" in args or "ZesuSsz" not in recipe["command"]:
+                recipe = candidate
     return recipe
 
 
@@ -52,6 +54,10 @@ def remember_recipe(build_dir: Path):
     trace = build_dir / "trace.csexp"
     cache = build_dir / "coqc_recipe.json"
     recipe = compiler_recipe(trace.read_bytes()) if trace.exists() else None
+    cached = json.loads(cache.read_text()) if cache.exists() else None
+    if (cached is not None and "ZesuSsz" in cached["command"]
+            and recipe is not None and "ZesuSsz" not in recipe["command"]):
+        return cached
     if recipe is not None:
         recipe["working_dir"] = recipe["working_dir"] or str(build_dir / "default")
         with tempfile.TemporaryDirectory(dir=build_dir, prefix=".coqc-recipe-") as directory:
@@ -59,4 +65,4 @@ def remember_recipe(build_dir: Path):
             pending.write_text(json.dumps(recipe) + "\n")
             pending.replace(cache)
         return recipe
-    return json.loads(cache.read_text()) if cache.exists() else None
+    return cached

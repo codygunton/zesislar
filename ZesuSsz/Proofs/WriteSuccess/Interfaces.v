@@ -135,6 +135,7 @@ From ZesuSsz.Proofs.WriteSuccess Require Export
   WriteSuccessTransactionsPriorityFeeSomeBoundary.
 
 From ZesuSsz.Proofs.WriteSuccess Require Export
+  WriteSuccessExactTransactionsLiveSpec
   WriteSuccessAccessListsSpec
   WriteSuccessAuthorizationsSpec
   WriteSuccessBlobHashesSpec
@@ -172,6 +173,17 @@ Definition writeSuccessTransactionsExitBoundary
     `{!islaG Sigma} `{!threadG} :=
   @writeSuccessTransactionsLoopExit Sigma _ _.
 Global Instance : LithiumUnfold (@writeSuccessTransactionsExitBoundary) := I.
+
+(** Exact transaction boundaries retain the caller's live stack resources. *)
+Definition writeSuccessExactTransactionsEntryBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @transactionLiveLoopState Sigma _ _.
+Global Instance : LithiumUnfold (@writeSuccessExactTransactionsEntryBoundary) := I.
+
+Definition writeSuccessExactTransactionsExitBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @transactionLiveLoopExit Sigma _ _.
+Global Instance : LithiumUnfold (@writeSuccessExactTransactionsExitBoundary) := I.
 
 Definition writeSuccessAccessListsBoundary `{!islaG Sigma} `{!threadG} :=
   @writeSuccessAccessListsLoopSpec Sigma _ _.

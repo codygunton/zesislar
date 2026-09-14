@@ -29,6 +29,20 @@ class CompilerRecipeTests(unittest.TestCase):
             self.assertEqual(expected["command"][-1], "Test.v")
             self.assertEqual(expected["working_dir"], "/private/default")
 
+    def test_project_recipe_survives_later_trace_compilation(self):
+        project = ["process", "start", "1", ["prog", "/switch/bin/coqc"],
+                   ["process_args", ["-R", "ZesuSsz", "ZesuSsz", "Proof.v"]]]
+        trace = ["process", "start", "2", ["prog", "/switch/bin/coqc"],
+                 ["process_args", ["-R", "generated", "IslaTraces", "Trace.v"]]]
+        expected = compiler_recipe(csexp(project))
+        self.assertEqual(compiler_recipe(csexp(project) + csexp(trace)), expected)
+        with tempfile.TemporaryDirectory() as directory:
+            build_dir = Path(directory)
+            (build_dir / "trace.csexp").write_bytes(csexp(project))
+            cached = remember_recipe(build_dir)
+            (build_dir / "trace.csexp").write_bytes(csexp(trace))
+            self.assertEqual(remember_recipe(build_dir), cached)
+
     def test_rejects_noncompiler_process(self):
         event = ["process", "start", "1", ["prog", "/bin/echo"],
                  ["process_args", ["coqc", "Test.v"]]]

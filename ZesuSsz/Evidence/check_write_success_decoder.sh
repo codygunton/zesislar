@@ -12,7 +12,7 @@ cd "$repo_root"
 python3 tools/build_record.py --build-dir "$build_dir" \
   --target WriteSuccessDecoderExamples -- \
   opam exec --switch="$switch_path" -- dune build --root . \
-  --build-dir "$build_dir" --cache=enabled -j32 \
+  --build-dir "$build_dir" --cache=enabled -j"${AGENT_JOBS:-32}" \
   ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.vo
 
 cat >"$query_file" <<'EOF'

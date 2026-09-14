@@ -87,7 +87,7 @@ Definition zesuSuccessArgs
     WriteSuccessArgs WriteSuccessObservation := {|
   successReturnAddress := 0x14d10;
   successStackPointer := decodeStackPointer args;
-  successDecodedAddress := decodeInputAddress args;
+  successDecodedAddress := (decodeStackPointer args + 32)%Z;
   successDecoded := observation;
   successInputSize := length (decodeInput args)
 |}.

@@ -24,6 +24,7 @@ CHECK_AGENT ?= push1
 AGENT_BUILD_DIR ?= $(CURDIR)/_build/agents/$(CHECK_AGENT)
 AGENT_JOBS ?= 32
 export AGENT_BUILD_DIR
+export AGENT_JOBS
 
 PROG      ?= entrypoints
 LOAD_ADDR ?= 0x10300000
@@ -46,6 +47,10 @@ READ_INPUT_DUMP      := experiments/islaris-read-input/read_input.dump
 READ_INPUT_TRACE_DIR := generated/isla-traces/read_input
 READ_INPUT_TRACE_COQ := IslaTraces.read_input
 READ_INPUT_ISLA_CFG  := riscv64_zesu_allocator.toml
+MAIN_DUMP      := experiments/islaris-main/main.dump
+MAIN_TRACE_DIR := generated/isla-traces/main
+MAIN_TRACE_COQ := IslaTraces.main
+
 WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
 WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
 WRITE_SUCCESS_TRACE_STAMP := generated/isla-traces/write_success.stamp
@@ -178,6 +183,23 @@ $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evid
 
 .PHONY: write-success-traces
 write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
+
+# Main traces use the pinned dump produced by the Evidence tooling.
+.PHONY: main-traces
+main-traces: $(MAIN_TRACE_DIR)/instrs.v
+
+$(MAIN_DUMP): build/endpoint-elf experiments/islaris-main/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
+	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --profile experiments/islaris-main/profile.json --output $@
+
+$(MAIN_TRACE_DIR)/instrs.v: $(MAIN_DUMP)
+	mkdir -p $(MAIN_TRACE_DIR)
+	$(OPAM) islaris $(MAIN_DUMP) -j16 -o $(MAIN_TRACE_DIR) \
+	  --coqdir=$(MAIN_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	  $(MAIN_TRACE_DIR)/dune
 
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
