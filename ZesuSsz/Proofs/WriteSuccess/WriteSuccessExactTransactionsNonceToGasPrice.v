@@ -41,3 +41,24 @@ Proof.
   iFrame. repeat iSplit; try done; iPureIntro; lia.
 Qed.
 Print Assumptions transactions_nonce_to_gas_price.
+Lemma transactions_nonce_gas_price_continuation `{!islaG Sigma} `{!threadG}
+    (sp nonce low high : bv 64) tail (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_37.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_127.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15118 (transactionGasPricePost sp low high tail (transactionNonceGasPriceFrame sp nonce P)) -∗
+  □ instr_pre 0x15108 (transactionNoncePost sp nonce
+    (writeOutputEvents (sp - BV 64 32)%bv (BV 64 16) (writeSuccessU128WordsPayload low high) tail)
+    (transactionNonceGasPriceCaller sp low high P)).
+Proof.
+  iIntros "#Hcode #Hencoder #Houtput #Hnext".
+  iPoseProof (transactions_gas_price_call_correct sp low high (BV 64 0x15108)
+    (BV 64 0x2401a0b8) tail (transactionNonceGasPriceFrame sp nonce P)
+    with "Hcode Hencoder Houtput") as "Hcallee".
+  iModIntro. iApply (instr_pre_wand 0x15108 0x15108 false true with "Hcallee"); [done | done |].
+  iIntros "Hpost". iApply (transactions_nonce_to_gas_price with "Hpost Hnext").
+Qed.
+Print Assumptions transactions_nonce_gas_price_continuation.
