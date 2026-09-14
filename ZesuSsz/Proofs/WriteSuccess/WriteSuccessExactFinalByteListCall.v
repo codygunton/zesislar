@@ -34,10 +34,10 @@ Definition writeSuccessExactFinalReturnedFrame `{!islaG Sigma} `{!threadG}
    byteListItemResources (bv_unsigned pointer) items ∗
    mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ Q)%I.
 
-Definition writeSuccessExactFinalCallEntryFrame
+Definition writeSuccessExactFinalCallFrameForTrace
     `{!islaG Sigma} `{!threadG}
     (sp pointer count : bv 64) (items : list ByteListItem) (tail : spec)
-  (savedReturn : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (savedReturn : bv 64) (P : iProp Sigma) (callTrace : spec) : iProp Sigma :=
   (∃ (b12 b13 b14 b15 b16 b17 : bv 64)
       (s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64),
     reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers) ∗
@@ -51,9 +51,7 @@ Definition writeSuccessExactFinalCallEntryFrame
     (bv_unsigned sp - 80) ↦ₘ? 80 ∗
     byteListItemResources (bv_unsigned pointer) items ∗
     mmio_range (machineOutputAddress defaultMap) 16 ∗
-    spec_trace
-      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
-        (byteListItemEvents (sp - BV 64 32)%bv items tail)) ∗
+    spec_trace callTrace ∗
     ⌜bv_unsigned count = length items⌝ ∗
     ⌜length items < 2 ^ 64⌝ ∗
     ⌜bv_extract 0 3 pointer = BV 3 0⌝ ∗
@@ -75,6 +73,14 @@ Definition writeSuccessExactFinalCallEntryFrame
       (writeSuccessEpiloguePost sp savedReturn
         s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11
         (writeSuccessExactFinalReturnedFrame sp pointer items tail P)))%I.
+
+Global Instance : LithiumUnfold (@writeSuccessExactFinalCallFrameForTrace) := I.
+Definition writeSuccessExactFinalCallEntryFrame `{!islaG Sigma} `{!threadG}
+    (sp pointer count : bv 64) (items : list ByteListItem) (tail : spec)
+    (savedReturn : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  writeSuccessExactFinalCallFrameForTrace sp pointer count items tail savedReturn P
+    (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+      (byteListItemEvents (sp - BV 64 32)%bv items tail)).
 
 Global Instance : LithiumUnfold (@writeSuccessExactFinalCallEntryFrame) := I.
 
