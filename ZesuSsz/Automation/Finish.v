@@ -3,6 +3,7 @@ Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
+Require Import ZesuSsz.Automation.NatBounds.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -139,6 +140,7 @@ Ltac zesu_finish :=
   try simpl;
   try done;
   try assumption;
+  zesu_normalize_nat_powers;
   try zesu_finish_tag_bound;
   try zesu_finish_mask;
   try zesu_finish_array_byte_lookup;
