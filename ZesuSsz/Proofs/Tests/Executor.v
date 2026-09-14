@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Export.Executor.
+Require Import ZesuSsz.Export.Determinism.
 Require Import isla.opsem.
 Require Import isla.riscv64.riscv64.
 Require Import IslaTraces.write_success_01.instrs.
@@ -349,3 +350,10 @@ Lemma two_cases_has_no_declarations_or_reads :
   trace_has_declaration_or_read two_cases = false.
 Proof. vm_compute. reflexivity. Qed.
 Print Assumptions two_cases_has_no_declarations_or_reads.
+
+Lemma executor_unused_declaration_10190 : trace_unusedb 2 a10190 = true.
+Proof. vm_compute. reflexivity. Qed.
+Lemma executor_used_pc_declaration_10190 : trace_unusedb 3 a10190 = false.
+Proof. vm_compute. reflexivity. Qed.
+Print Assumptions executor_unused_declaration_10190.
+Print Assumptions executor_used_pc_declaration_10190.
