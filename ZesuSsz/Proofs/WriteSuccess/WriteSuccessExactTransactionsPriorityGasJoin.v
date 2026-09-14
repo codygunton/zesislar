@@ -52,3 +52,25 @@ Proof.
     with "Hgas Hint Houtput HfalseNext").
 Qed.
 Print Assumptions transactions_absent_fee_gas_continuation.
+Lemma transactions_priority_boolean_frame_permutation `{!islaG Sigma} `{!threadG}
+    (word sp ret gaslow gashigh tag low high value : bv 64) tail (P : iProp Sigma) :
+  encoderBooleanExactPost word sp ret tail
+    (transactionPriorityBooleanCallerFrame sp gaslow gashigh tag
+      ("x9" ↦ᵣ RVal_Bits low ∗ "x23" ↦ᵣ RVal_Bits high ∗
+       ("x26" ↦ᵣ RVal_Bits value ∗ P ∗ True) ∗ True)) -∗
+  encoderBooleanExactPost word sp ret tail
+    (transactionPriorityBooleanCallerFrame sp gaslow gashigh tag
+      ("x26" ↦ᵣ RVal_Bits value ∗ ("x9" ↦ᵣ RVal_Bits low ∗ "x23" ↦ᵣ RVal_Bits high ∗ P ∗ True) ∗ True)).
+Proof.
+  iIntros "Hpost".
+  iDestruct "Hpost" as "(Hsys & H1 & Hsp & Hret & Hreturned & _)".
+  iDestruct "Hreturned" as "(H5 & H10 & H11 & Hpayload & Hgap & Hmmio & Htrace & Hcaller & _)".
+  iDestruct "Hcaller" as "(Htag & Hlower & Hgas & _)".
+  iDestruct "Hgas" as "(HgasHigh & HgasLow & %Halign & %Hlow & %Hhigh & Hfee & _)".
+  iDestruct "Hfee" as "(Hlowword & Hhighword & Hvalue & _)".
+  iDestruct "Hvalue" as "(H26 & HP & _)".
+  unfold encoderBooleanExactPost, encoderBooleanExactReturnedFrame,
+    transactionPriorityBooleanCallerFrame, transactionGasPriceFrame.
+  iFrame. repeat iSplit; done.
+Qed.
+Print Assumptions transactions_priority_boolean_frame_permutation.
