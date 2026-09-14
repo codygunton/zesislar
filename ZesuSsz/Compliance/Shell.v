@@ -59,6 +59,12 @@ Definition zesuObservationBugApplies : ZesuDecodeBugApplies :=
     zesuBugApplies bug input
       (DecodeSuccess (observationToStatelessInput observation)).
 
+Lemma zesuObservationBugApplies_agrees bug input outcome :
+  zesuObservationBugApplies bug input outcome <->
+  zesuBugApplies bug input (DecodeSuccess (observationToStatelessInput outcome)).
+Proof. reflexivity. Qed.
+Print Assumptions zesuObservationBugApplies_agrees.
+
 Definition DecodeMeaningModuloKnownBugs
     (runner : DecoderEvaluator) (model : DecoderModel)
     (inputRef : ByteString -> option StatelessInputRef)
