@@ -28,16 +28,16 @@ Definition write_failure_resources `{!islaG Sigma} `{!threadG} :
   islarisEntry := fun args =>
     (∃ (old_x5 old_x6 old_x10 old_x11 old_pointer old_length : bv 64),
       ⌜failureReturnAddress args = 0x14d24⌝ ∗
-      reg_col zesu_zero_based_sys_regs ∗
+      reg_col zesu_sys_regs ∗
       "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
       "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
       "x10" ↦ᵣ RVal_Bits old_x10 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
       0x177c8 ↦ₘ∗ failureMemory ∗
-      0x2401a0c0 ↦ₘ old_pointer ∗ 0x2401a0c8 ↦ₘ old_length)%I;
+      0x2401a0c0 ↦ₘ old_pointer ∗ 0x2401a0c8 ↦ₘ old_length ∗ True)%I;
   islarisExit := fun args bytes =>
     (⌜failureReturnAddress args = 0x14d24⌝ ∗
      ⌜bytes = failureObservation⌝ ∗
-     reg_col zesu_zero_based_sys_regs ∗
+     reg_col zesu_sys_regs ∗
      "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
      "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
      "x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗
@@ -45,7 +45,7 @@ Definition write_failure_resources `{!islaG Sigma} `{!threadG} :
      "x11" ↦ᵣ RVal_Bits (BV 64 6) ∗
      0x177c8 ↦ₘ∗ failureMemory ∗
      0x2401a0c0 ↦ₘ (BV 64 0x177c8) ∗
-     0x2401a0c8 ↦ₘ (BV 64 6))%I
+     0x2401a0c8 ↦ₘ (BV 64 6) ∗ True)%I
 |}.
 
 Definition writeFailureAllows
@@ -56,31 +56,15 @@ Theorem write_failure_state_correct `{!islaG Sigma} `{!threadG} :
   ⊢ IslarisContractSpec 0x161c0 0x14d24
     writeFailureAllows write_failure_resources.
 Proof.
-  rewrite /IslarisContractSpec /write_failure_resources /=.
-  iStartProof.
-  iIntros "(Hi1&Hi2&Hi3&Hi4&Hi5&Hi6&Hi7&Hi8&Hi9&Hi10)" (args).
-  repeat liAStep; liShow.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  Unshelve.
-  iExists (failureObservation, tt)ₗ.
-  red_li_prod.
-  iSplit; first done.
-  iSplit; first done.
-  iSplit; first done.
-  replace LET5 with (BV 64 0x101cc) by bv_solve.
-  replace LET2 with (BV 64 0x177c8) by bv_solve.
-  replace (bv_unsigned LET14) with 0x2401a0c0 by bv_solve.
-  replace LET12 with (BV 64 0x2401a0b8) by bv_solve.
-  replace (bv_unsigned LET18) with 0x2401a0c8 by bv_solve.
-  iFrame.
+  rewrite /IslarisContractSpec /write_failure_resources /writeFailureAllows /=.
+  zesu_block.
 Qed.
 
 Definition writeFailureOutputTraceSpec `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (payload : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   (∃ (old_x5 : bv 64),
-    reg_col zesu_zero_based_sys_regs ∗
+    reg_col zesu_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits ret ∗ "x5" ↦ᵣ RVal_Bits old_x5 ∗
     "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
     bv_unsigned data ↦ₘ∗ payload ∗ mmio_range 0x2401a0c0 16 ∗
@@ -90,11 +74,11 @@ Definition writeFailureOutputTraceSpec `{!islaG Sigma} `{!threadG}
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
     instr_pre (bv_unsigned ret)
-      (reg_col zesu_zero_based_sys_regs ∗
+      (reg_col zesu_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits ret ∗
        "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
        "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
-       mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
+       bv_unsigned data ↦ₘ∗ payload ∗ mmio_range 0x2401a0c0 16 ∗ spec_trace tail ∗ P ∗ True) ∗ True)%I.
 
 Global Instance : LithiumUnfold (@writeFailureOutputTraceSpec) := I.
 
@@ -103,7 +87,7 @@ Definition writeFailureTraceTail : spec :=
 
 Definition writeFailureTraceEntry `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (∃ (old_x5 old_x6 old_x10 old_x11 : bv 64),
-    reg_col zesu_zero_based_sys_regs ∗
+    reg_col zesu_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
     "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
     "x10" ↦ᵣ RVal_Bits old_x10 ∗ "x11" ↦ᵣ RVal_Bits old_x11 ∗
@@ -111,12 +95,12 @@ Definition writeFailureTraceEntry `{!islaG Sigma} `{!threadG} : iProp Sigma :=
     spec_trace (writeOutputEvents (BV 64 0x177c8) (BV 64 6)
       failureMemory writeFailureTraceTail) ∗
     instr_pre 0x14d24
-      (reg_col zesu_zero_based_sys_regs ∗
+      (reg_col zesu_sys_regs ∗
        "x1" ↦ᵣ RVal_Bits (BV 64 0x14d24) ∗
        "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
        "x10" ↦ᵣ RVal_Bits (BV 64 0x177c8) ∗
        "x11" ↦ᵣ RVal_Bits (BV 64 6) ∗
-       mmio_range 0x2401a0c0 16 ∗ spec_trace writeFailureTraceTail ∗
+       0x177c8 ↦ₘ∗ failureMemory ∗ mmio_range 0x2401a0c0 16 ∗ spec_trace writeFailureTraceTail ∗
        ("x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ True) ∗ True) ∗
     True)%I.
 
@@ -170,7 +154,7 @@ Definition writeFailureInitialRegs (mstatusBits satp : bv 64) : reg_map :=
   <[ "x6" := RVal_Bits (BV 64 0) ]> $
   <[ "x10" := RVal_Bits (BV 64 0) ]> $
   <[ "x11" := RVal_Bits (BV 64 0) ]> $
-  zesu_zero_sys_regs_map mstatusBits satp.
+  zesu_ram_sys_regs_map mstatusBits satp.
 
 Lemma write_failure_output_trace_correct `{!islaG Sigma} `{!threadG}
     (data size : bv 64) (payload : list (bv 8))
@@ -229,16 +213,16 @@ Proof.
   { unfold writeOutputEvents, scons. naive_solver. }
   iIntros (?) "#Hinstructions #Hbacked Hspec Hmemory /= !>".
   iSplitL => //. iIntros (?).
-  rewrite /writeFailureInitialRegs /zesu_zero_sys_regs_map.
+  rewrite /writeFailureInitialRegs /zesu_ram_sys_regs_map.
   repeat (rewrite big_sepM_insert; [|by vm_compute]).
   iIntros "(HPC&Hx1&Hx5&Hx6&Hx10&Hx11&Hpmp&Hmis&Hbase&Hsize&
-    Hrombase&Hromsize&Hclbase&Hclsize&Hhtif&Hpriv&Hmisa&Hmstatus&
+    Hrombase&Hromsize&Hclbase&Hclsize&Hhtif&Hpriv&Hmisa&Hmtvec&Hmstatus&
     Hsatp&_)".
   iApply wp_asm_thread_ctx. iIntros (?) "Hcontext".
-  iMod (zesu_zero_sys_regs_init with "Hcontext [Hpmp Hmis Hbase Hsize
-    Hrombase Hromsize Hclbase Hclsize Hhtif Hpriv Hmisa Hmstatus
+  iMod (zesu_ram_sys_regs_init with "Hcontext [Hpmp Hmis Hbase Hsize
+    Hrombase Hromsize Hclbase Hclsize Hhtif Hpriv Hmisa Hmtvec Hmstatus
     Hsatp]") as "[$ Hsystem]"; first done.
-  { rewrite /zesu_zero_sys_regs_map.
+  { rewrite /zesu_ram_sys_regs_map.
     repeat (rewrite big_sepM_insert; [|by vm_compute]).
     rewrite big_sepM_empty. iFrame. }
   iModIntro.
@@ -315,7 +299,7 @@ Proof.
     set_solver. }
   iSplit; last done.
   iApply (instr_pre_intro_None with "Htrap").
-  iIntros "(_&_&_&_&_&_&Htail&_ )".
+  iIntros "(_&_&_&_&_&_&_&Htail&_ )".
   iExists writeFailureTraceTail. iSplit.
   { iPureIntro. intros snapshot.
     unfold writeFailureTraceTail, scons.

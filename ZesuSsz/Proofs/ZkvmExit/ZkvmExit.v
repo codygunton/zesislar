@@ -12,9 +12,6 @@ Require Import ZesuSsz.Export.Snapshots.
 
 Import ZesuSsz.Automation.Hooks.
 
-Definition zesu_sys_regs : list (reg_kind * valu_shape) :=
-  zesu_zero_based_sys_regs.
-
 Definition zkvm_exit_resources `{!islaG Sigma} `{!threadG} :
     IslarisContractResources ZkvmExitArgs unit := {|
   islarisCode :=
@@ -27,14 +24,14 @@ Definition zkvm_exit_resources `{!islaG Sigma} `{!threadG} :
       reg_col zesu_sys_regs ∗
       "x5" ↦ᵣ RVal_Bits old_x5 ∗
       "x10" ↦ᵣ RVal_Bits code ∗
-      0x2401a0d0 ↦ₘ old_exit_code)%I;
+      0x2401a0d0 ↦ₘ old_exit_code ∗ True)%I;
   islarisExit := fun args _ =>
     (∃ (code : bv 64),
       ⌜bv_unsigned code = zkvmExitCode args⌝ ∗
       reg_col zesu_sys_regs ∗
       "x5" ↦ᵣ RVal_Bits (BV 64 0x2401a0b8) ∗
       "x10" ↦ᵣ RVal_Bits code ∗
-      0x2401a0d0 ↦ₘ code)%I
+      0x2401a0d0 ↦ₘ code ∗ True)%I
 |}.
 
 Definition zkvmExitAllows (_ : ZkvmExitArgs) (_ : unit) : Prop := True.
@@ -44,17 +41,9 @@ Theorem zkvm_exit_state_correct `{!islaG Sigma} `{!threadG} :
     zkvmExitAllows zkvm_exit_resources.
 Proof.
   rewrite /IslarisContractSpec /zkvm_exit_resources /=.
-  iStartProof.
-  iIntros "(Hi1&Hi2&Hi3)" (args).
-  repeat liAStep; liShow.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  Unshelve.
-  iExists (code, tt)ₗ.
-  red_li_prod.
-  replace LET2 with (BV 64 0x2401a0b8) by bv_solve.
-  replace (bv_unsigned LET4) with 0x2401a0d0 by bv_solve.
-  iFrame. done.
+  zesu_block.
+  liInst (λ x, x.1ₗ = code).
+  zesu_run.
 Qed.
 
 Definition zkvmExitFrame : list (bv 8) := [BV 8 0x42].
@@ -143,7 +132,7 @@ Definition zkvmExitInitialRegs
   <[ "PC" := RVal_Bits (BV 64 0x101c4) ]> $
   <[ "x5" := RVal_Bits (BV 64 0) ]> $
   <[ "x10" := RVal_Bits code ]> $
-  zesu_zero_sys_regs_map mstatusBits satp.
+  zesu_ram_sys_regs_map mstatusBits satp.
 
 Lemma zkvm_exit_adequate mstatusBits satp code labels threads globalState steps :
   Z.land (bv_unsigned mstatusBits) 0x20000 = 0 ->
@@ -161,15 +150,15 @@ Proof.
   { unfold zkvmExitTraceSpec, scons. naive_solver. }
   iIntros (?) "#Hinstructions #Hbacked Hspec Hmemory /= !>".
   iSplitL => //. iIntros (?).
-  rewrite /zkvmExitInitialRegs /zesu_zero_sys_regs_map.
+  rewrite /zkvmExitInitialRegs /zesu_ram_sys_regs_map.
   repeat (rewrite big_sepM_insert; [|by vm_compute]).
   iIntros "(HPC&Hx5&Hx10&Hpmp&Hmis&Hbase&Hsize&Hrombase&Hromsize&
-    Hclbase&Hclsize&Hhtif&Hpriv&Hmisa&Hmstatus&Hsatp&_)".
+    Hclbase&Hclsize&Hhtif&Hpriv&Hmisa&Hmtvec&Hmstatus&Hsatp&_)".
   iApply wp_asm_thread_ctx. iIntros (?) "Hcontext".
-  iMod (zesu_zero_sys_regs_init with "Hcontext [Hpmp Hmis Hbase Hsize
-    Hrombase Hromsize Hclbase Hclsize Hhtif Hpriv Hmisa Hmstatus Hsatp]")
+  iMod (zesu_ram_sys_regs_init with "Hcontext [Hpmp Hmis Hbase Hsize
+    Hrombase Hromsize Hclbase Hclsize Hhtif Hpriv Hmisa Hmtvec Hmstatus Hsatp]")
     as "[$ Hsystem]"; first done.
-  { rewrite /zesu_zero_sys_regs_map.
+  { rewrite /zesu_ram_sys_regs_map.
     repeat (rewrite big_sepM_insert; [|by vm_compute]).
     rewrite big_sepM_empty. iFrame. }
   iModIntro.
