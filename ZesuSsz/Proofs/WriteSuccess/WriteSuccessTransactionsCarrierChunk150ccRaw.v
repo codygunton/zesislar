@@ -100,7 +100,7 @@ Proof.
          (base + 288 * Z.of_nat (length processed))) = 256%nat.
   { rewrite write_success_15044_current_unsigned; lia. }
   iEval (rewrite Hstart256) in "Hprefix256 Hsuffix264".
-  rewrite Hstart256 write_success_15044_current_unsigned; try lia.
+  rewrite write_success_15044_current_unsigned; try lia.
   replace (base + 288 * Z.of_nat (length processed) + 0)%Z with
     (base + 288 * Z.of_nat (length processed))%Z by lia.
   iFrame "Hprefix256 Hsuffix264".
@@ -119,8 +119,8 @@ Proof.
   iRename select
     ((_ ↦ₘ Z_to_bv 64
       (little_endian_to_bv 8
-        (take 8 (drop 256 (writeSuccessTransactionBytes transaction)))))%I)
-    into "HwordFinal".
+        (take 8 (drop (Z.to_nat _) (writeSuccessTransactionBytes transaction)))))%I)
+    into "HwordFinal". iEval (rewrite (zesu_integer_array_byte_equality (base + 288 * Z.of_nat (length processed)) 256 (writeSuccessTransactionBytes transaction))) in "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 264 (writeSuccessTransactionBytes transaction))%I)
     into "HsuffixFinal".
@@ -135,7 +135,7 @@ Proof.
     (writeSuccessTransactions150ccCarrierPhase P sp base transaction
       transactions processed remaining bytes prefix suffix tail
       first second third fourth items)%I into "HframeFinal".
-  iEval (unfold writeSuccessTransactions150ccCarrierPhase) in "HframeFinal".
+  iEval (unfold writeSuccessTransactions150ccCarrierPhase) in "HframeFinal". iDestruct select ("x10" ↦ᵣ RVal_Bits _)%I as "HregActual". iEval (rewrite (zesu_integer_array_byte_equality (base + 288 * Z.of_nat (length processed)) 256 (writeSuccessTransactionBytes transaction))) in "HregActual".
   rewrite /writeSuccessTransactionsAt150d0CarrierSpec.
   iExists (items, fourth, third, second, first, tail, suffix, prefix, bytes,
     remaining, processed, transactions, transaction, base, sp, tt)ₗ.
