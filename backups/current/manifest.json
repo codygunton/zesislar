@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-15T19:48:36.270901+00:00",
+  "captured_utc": "2026-09-15T22:18:51.914178+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "7a0eb5d61ef4835c50c61c4f51e5a2ab563cfe48edb75c509feb3e7ee52a3c3a",
-      "bytes": 155004
+      "sha256": "3145da5a6f9ac6b5a21db7ebb08cc0fa3b5f9fb90d86e90012db4368a43cbb82",
+      "bytes": 157904
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -34,14 +34,14 @@
     {
       "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
       "snapshot": "progress/PUSH3_tail_PROGRESS.md",
-      "sha256": "6287032f0d2683a37926d3ca5f4e686b8aca83859163485131a0324d36cce35a",
-      "bytes": 74974
+      "sha256": "a96f049e4b35aab81549087837defb86b64fc836b439ba08e76b28f6cc7c996c",
+      "bytes": 76767
     },
     {
       "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
       "snapshot": "progress/PUSH3_tx_PROGRESS.md",
-      "sha256": "f45cdf41e5eb1589a9b21d6fa508774efb4adec630b9df8092d3ab291d8b734d",
-      "bytes": 70547
+      "sha256": "908c47409db37d16d8ab1ef6feed6a789035e5ff54d3f376afad1467966768c8",
+      "bytes": 72528
     },
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/check_spec_shapes.py",
@@ -64,8 +64,8 @@
     {
       "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailWithdrawalCountCall.v",
       "snapshot": "tail/WriteSuccessExactTailWithdrawalCountCall.v.txt",
-      "sha256": "dbe348fefde690fc5161027cb3a8cdf556dc75338b00f425a513f4e845d0ddd1",
-      "bytes": 2737
+      "sha256": "282f49ebb23b1dbf10efe6ac71ff86b3cbbf09ed74a5d8f0f442f9c34c60dcc5",
+      "bytes": 2323
     },
     {
       "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailWithdrawalCountComposition.v",
@@ -166,26 +166,26 @@
     {
       "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v",
       "snapshot": "main/WriteSuccessTransactionsChunk14f2c.v.txt",
-      "sha256": "1dfd88f4856aef3278ff34d37245ceabaeea9cbd8d26944213e8c85a081d0c4d",
-      "bytes": 7548
+      "sha256": "88cb83c22f7994e7dbefb0c0ed87ad27d92a9a91c07b8634048d6d61cc28549c",
+      "bytes": 7415
     },
     {
       "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v",
       "snapshot": "main/WriteSuccessTransactionsChunk14f34.v.txt",
-      "sha256": "914c7703b7e836c0b5d2bf999a35d288ab2408507c5f612f341f85e223b7759d",
-      "bytes": 7685
+      "sha256": "d4e2ada60704021cb93d57c9f65168170e5da44e0484fb32fbc96c498b24f38a",
+      "bytes": 7552
     },
     {
       "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v",
       "snapshot": "main/WriteSuccessTransactionsChunk14f3c.v.txt",
-      "sha256": "3d62c1d1d4f4766ae240d9f857bd48d437ceedac84e205542abcc88c44baec23",
-      "bytes": 7715
+      "sha256": "22415d29f4d71a2c84f9cd776c43f3228ee71f38a2575d14545b7f86ad848131",
+      "bytes": 7582
     },
     {
       "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v",
       "snapshot": "main/WriteSuccessTransactionsChunk14f44.v.txt",
-      "sha256": "0181e35d20bea28bc52e0ea06605d6a55e5362c5a9de340de5f961202c4f07df",
-      "bytes": 7751
+      "sha256": "38e9810f7a208e0eb86c1de5632747a12729a619d938c800a61ad5f9490ec18a",
+      "bytes": 7618
     },
     {
       "source": ".worktrees/islaris-native-auto/_build/agents/auto/partition44/partition44.json",
