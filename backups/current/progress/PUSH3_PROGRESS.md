@@ -198,6 +198,8 @@ The user's one-hour Step 1 scratch attribution found mixed causes. The unchanged
 
 Proposed plan section 7.3 wording, effective in this session: no ordinary merge follows a red full Iris gate; only measured repair commits enter a recovery preview. A commit touching Automation, InstrSpecs, Contracts, or Export requires a full Iris preview before merge. Auto adds a generic rule only when a manual step exceeds five lines or two sites need it; generic rules name no addresses, offsets, or predicates. Two consecutive red full gates stop integration and require a user report. Root added this wording to AGENTS.md locally and backed it up; the lead-owned plan file remains unchanged.
 
+The user amended the repair dispatch after Step 1: stop and wait for a go-ahead before Step 2. Root stopped Auto and Main, kept Tail and TX paused, terminated the remaining focused Dune build, and reset the isolated recovery preview to clean `68efa2db`. No repair commit merged into Root, and no new full Iris gate ran. Auto's incomplete AllLegacy draft and Main's seven uncommitted H7 file edits remain isolated; Root snapshots these as text copies on the backup branch. The attribution result and zero-file current CP3 dependency intersection are the Step 1 report. Step 2 and Step 4 await the user's go-ahead.
+
 ## Merged commits
 
 - `35f8312`: closed hash-loop split merged at `5ce975c4`. The merge preview passed check-fast with 32 workers.

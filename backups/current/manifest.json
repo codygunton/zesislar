@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-15T15:50:36.959439+00:00",
+  "captured_utc": "2026-09-15T15:55:55.705853+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "ffc299c590901401801ba1e5efd53b606a847f58fb2db3aed803f7b496bec3b6",
-      "bytes": 127123
+      "sha256": "12630ffbe561a90fe1638a444ef5bf88086c38dc37cc49032c00805e58d35222",
+      "bytes": 127737
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -138,6 +138,54 @@
       "snapshot": "tail/NativeSuffix15980AddressProbe.v.txt",
       "sha256": "67c8aa2a45e723482b2b6bc0559c5cff6d6eb81708abddacc32932ce836c8040",
       "bytes": 4083
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/ZesuSsz/Automation/AllLegacy.v",
+      "snapshot": "auto/AllLegacy.v.txt",
+      "sha256": "3f341ce610e680ac739be11dd1885b83c41d4448da48581e19373e7816f9359b",
+      "bytes": 988
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f20.v.txt",
+      "sha256": "286e5bcdf0ed3cc4c709c070c445634e3e3c04d77404698bc6c4228119b311bc",
+      "bytes": 7179
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f24.v.txt",
+      "sha256": "1c6df28b7efd8b362f0af2e25a7893c80f9a0f13093f2c704d57f1455fe87465",
+      "bytes": 7802
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f28.v.txt",
+      "sha256": "66bea17acbbdad181d961b1021856598e8bbe48408a3763eda9e83979e8900ca",
+      "bytes": 7680
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f2c.v.txt",
+      "sha256": "1dfd88f4856aef3278ff34d37245ceabaeea9cbd8d26944213e8c85a081d0c4d",
+      "bytes": 7548
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f34.v.txt",
+      "sha256": "914c7703b7e836c0b5d2bf999a35d288ab2408507c5f612f341f85e223b7759d",
+      "bytes": 7685
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f3c.v.txt",
+      "sha256": "3d62c1d1d4f4766ae240d9f857bd48d437ceedac84e205542abcc88c44baec23",
+      "bytes": 7715
+    },
+    {
+      "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v",
+      "snapshot": "main/WriteSuccessTransactionsChunk14f44.v.txt",
+      "sha256": "0181e35d20bea28bc52e0ea06605d6a55e5362c5a9de340de5f961202c4f07df",
+      "bytes": 7751
     }
   ]
 }
