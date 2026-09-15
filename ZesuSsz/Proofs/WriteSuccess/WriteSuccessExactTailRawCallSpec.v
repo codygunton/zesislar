@@ -22,14 +22,13 @@ Definition exactTailAfterRawEvents {Decoded}
       (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness))
     (map writeSuccessPrivateBytes (writeSuccessWithdrawalListFragments observation ++
       writeSuccessPostFragments observation)) (writeSuccessTraceTail witness).
-Definition exactTailRawCallFrame `{!islaG Sigma} `{!threadG}
+Definition exactTailRawCallMemoryFrame `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
     (P : iProp Sigma) : iProp Sigma :=
   let sp := writeSuccessFrameSp witness in
   let values := writeSuccessValues witness in
-  (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
-   writeSuccessTransactionBase witness ↦ₘ∗
+  (writeSuccessTransactionBase witness ↦ₘ∗
      WriteSuccessNativeContract.writeSuccessTransactionBytes witness ∗
    writeSuccessTransactionsOwn (writeSuccessTransactions witness) ∗
    (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 (writeSuccessTransactionBase witness) ∗
@@ -51,6 +50,14 @@ Definition exactTailRawCallFrame `{!islaG Sigma} `{!threadG}
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) []
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@exactTailRawCallMemoryFrame) := I.
+
+Definition exactTailRawCallFrame `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) : iProp Sigma :=
+  (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
+   exactTailRawCallMemoryFrame args witness P)%I.
 Global Instance : LithiumUnfold (@exactTailRawCallFrame) := I.
 
 Definition exactTailRawLoadFrame `{!islaG Sigma} `{!threadG}
