@@ -154,3 +154,98 @@ Proof.
 Qed.
 
 Print Assumptions zesu_encoder_int_payload_call_pre.
+
+Definition encoderIntExactReturn `{!islaG Sigma} `{!threadG}
+    (sp ret : bv 64) (tail : spec) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits ret ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
+   "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
+   "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
+   spec_trace tail ∗ True)%I.
+
+Definition zesuEncoderIntExactCallSpec `{!islaG Sigma} `{!threadG}
+    : iProp Sigma :=
+  (∃ (value sp ret : bv 64) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x10" ↦ᵣ RVal_Bits value ∗
+    "x5" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
+    "x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝) ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
+    spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+      (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail) ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜mapRamBase defaultMap <= bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
+    instr_pre (bv_unsigned ret) (encoderIntExactReturn sp ret tail) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@zesuEncoderIntExactCallSpec) := I.
+
+Lemma encoder_int_exact_entry_to_payload `{!islaG Sigma} `{!threadG} :
+  zesuEncoderIntExactCallSpec -∗ zesuEncoderIntPayloadCallSpec.
+Proof.
+  iStartProof. iIntros "Hexact".
+  iEval (unfold zesuEncoderIntExactCallSpec) in "Hexact".
+  iDestruct "Hexact" as (value sp ret tail)
+    "(Hsys & H1 & H2 & H10 & H5 & H11 & Hstack & Hmmio & Htrace &
+      %Halign & %Hlower & %Hupper & %Hret0 & %Hret1 & %Hret2 & Hreturn & _)".
+  iEval (unfold zesuEncoderIntPayloadCallSpec).
+  iExists value, sp, (bv_unsigned ret), tail.
+  all: try (rewrite Z_to_bv_bv_unsigned).
+  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H5".
+  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H11".
+  iDestruct "H5" as (r5) "[Hx5 %Hshape5]".
+  iDestruct "H11" as (r11) "[Hx11 %Hshape11]".
+  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def).
+  zesu_run.
+Qed.
+
+Print Assumptions encoder_int_exact_entry_to_payload.
+
+Lemma encoder_int_exact_body_from_payload `{!islaG Sigma} `{!threadG} :
+  instr_body 0x15d10 zesuEncoderIntPayloadCallSpec -∗
+  instr_body 0x15d10 zesuEncoderIntExactCallSpec.
+Proof.
+  iStartProof. iIntros "Hpayload".
+  iApply (instr_pre_wand 0x15d10 0x15d10 false false with "Hpayload");
+    [done | done |].
+  iIntros "Hexact".
+  iApply (encoder_int_exact_entry_to_payload with "Hexact").
+Qed.
+
+Print Assumptions encoder_int_exact_body_from_payload.
+
+Lemma zesu_encoder_int_exact_call_correct `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15d10 zesuEncoderIntExactCallSpec.
+Proof.
+  iStartProof. iIntros "HencoderCode HoutputCode".
+  iApply encoder_int_exact_body_from_payload.
+  iApply (zesu_encoder_int_payload_call_correct with "HencoderCode HoutputCode").
+Qed.
+
+Print Assumptions zesu_encoder_int_exact_call_correct.
+
+Lemma zesu_encoder_int_exact_call_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15d10 zesuEncoderIntExactCallSpec.
+Proof.
+  iStartProof. iIntros "#HencoderCode #HoutputCode". iModIntro.
+  iApply instr_pre_to_body. iNext.
+  iApply zesu_encoder_int_exact_call_correct; iAssumption.
+Qed.
+
+Print Assumptions zesu_encoder_int_exact_call_pre.

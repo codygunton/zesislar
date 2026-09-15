@@ -54,6 +54,43 @@ Proof.
   iExists value, sp, (bv_unsigned ret), tail. zesu_run.
 Qed.
 
+Lemma encoder_int_exact_return_frame `{!islaG Sigma} `{!threadG}
+    (sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
+  encoderIntExactReturn sp ret tail ∗ P -∗
+  encoderIntExactFramedPost sp ret tail P.
+Proof.
+  iStartProof. iIntros "[Hreturn HP]".
+  iEval (unfold encoderIntExactReturn) in "Hreturn".
+  iEval (unfold encoderIntExactFramedPost).
+  iDestruct "Hreturn" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  iFrame "∗".
+Qed.
+
+Print Assumptions encoder_int_exact_return_frame.
+
+Lemma encoder_int_exact_frame_adapter_from_closed `{!islaG Sigma} `{!threadG}
+    (value sp ret old_x5 old_x11 : bv 64)
+    (tail : spec) (P : iProp Sigma) :
+  instr_body 0x15d10 zesuEncoderIntExactCallSpec -∗
+  instr_body 0x15d10
+    (encoderIntExactFramedSpec value sp ret old_x5 old_x11 tail P).
+Proof.
+  iStartProof. iIntros "Hcallee".
+  iApply (instr_pre_wand 0x15d10 0x15d10 false false with "Hcallee");
+    [done | done |].
+  iIntros "Hentry". iDestruct "Hentry" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace &
+      %Halign & %Hmin & %Hmax & %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
+  iExists value, sp, ret, tail. zesu_run.
+  iSplit.
+  - iIntros "Hreturn". iApply encoder_int_exact_return_frame.
+    iFrame "Hreturn HP".
+  - done.
+Qed.
+
+Print Assumptions encoder_int_exact_frame_adapter_from_closed.
+
 Lemma encoder_int_exact_framed_correct `{!islaG Sigma} `{!threadG}
     (value sp ret old_x5 old_x11 : bv 64)
     (tail : spec) (P : iProp Sigma) :
@@ -64,8 +101,8 @@ Lemma encoder_int_exact_framed_correct `{!islaG Sigma} `{!threadG}
   instr_body 0x15d10 (encoderIntExactFramedSpec value sp ret old_x5 old_x11 tail P).
 Proof.
   iStartProof. iIntros "#Hencoder #Houtput".
-  iApply encoder_int_exact_frame_adapter.
-  iApply (zesu_encoder_int_payload_call_correct with "Hencoder Houtput").
+  iApply encoder_int_exact_frame_adapter_from_closed.
+  iApply (zesu_encoder_int_exact_call_correct with "Hencoder Houtput").
 Qed.
 
 Print Assumptions encoder_int_exact_frame_adapter.
