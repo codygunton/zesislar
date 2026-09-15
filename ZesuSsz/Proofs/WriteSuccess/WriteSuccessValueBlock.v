@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.InstrPre.
 Local Remove Hints subsume_instr_pre_zesu_inst : typeclass_instances.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -12,77 +13,15 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderCalls.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderBlock.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueSuffix.
 
 Import ListNotations.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
-Definition writeSuccessValueWord (values : list (bv 64)) (index : nat) :
-    bv 64 := default (BV 64 0) (values !! index).
-
-Definition writeSuccessValueEvents (sp : bv 64) (values : list (bv 64))
-    (tail : spec) : spec :=
-  writeOutputEventsAny (sp - 16)%bv (BV 64 8)
-    (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
-      (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
-        (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
-          (writeOutputEventsAny (sp - 48)%bv (BV 64 8)
-            (writeOutputEventsAny (writeSuccessValueWord values 4)
-              (writeSuccessValueWord values 5)
-              (writeOutputEventsAny (sp - 16)%bv (BV 64 8)
-                (writeOutputEventsAny (sp + 1588)%bv (BV 64 32)
-                (writeOutputEventsAny (sp - 16)%bv (BV 64 8) tail)))))))).
-
-Definition writeSuccessValueRegisters : list string :=
-  ["x1"; "x3"; "x4"; "x5"; "x6"; "x7"; "x8"; "x9";
-   "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
-   "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
-   "x26"; "x27"; "x28"; "x29"; "x30"; "x31"].
-
-Definition writeSuccessValueRegShapes : list (reg_kind * valu_shape) :=
-  (fun register => (KindReg register, BitsShape 64))
-    <$> writeSuccessValueRegisters.
-
-Definition writeSuccessValuePost `{!islaG Sigma} `{!threadG}
-    (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8))
-    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  (reg_col zesu_ram_sys_regs ∗
-   reg_col writeSuccessValueRegShapes ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗
-   "x10" ↦ᵣ RVal_Bits (default (BV 64 0) (values !! 8%nat)) ∗
-   "x11" ↦ᵣ RVal_Bits (BV 64 0) ∗
-   (bv_unsigned sp - 48) ↦ₘ? 48 ∗
-   (bv_unsigned sp + 1032) ↦ₘ∗ values ∗
-   bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
-   (bv_unsigned sp + 104) ↦ₘ default (BV 64 0) (values !! 7%nat) ∗
-   (bv_unsigned sp + 112) ↦ₘ default (BV 64 0) (values !! 8%nat) ∗
-   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
-
-Definition writeSuccessValueSpec `{!islaG Sigma} `{!threadG}
-    (P : iProp Sigma) : iProp Sigma :=
-  (∃ (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8))
-      (tail : spec),
-    reg_col zesu_ram_sys_regs ∗
-    reg_col writeSuccessHeaderRegShapes ∗
-    "x2" ↦ᵣ RVal_Bits sp ∗
-    (bv_unsigned sp - 48) ↦ₘ? 48 ∗
-    (bv_unsigned sp + 104) ↦ₘ? 16 ∗
-    (bv_unsigned sp + 1032) ↦ₘ∗ values ∗
-    bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ payload ∗
-    mmio_range (machineOutputAddress defaultMap) 16 ∗
-    spec_trace (writeSuccessValueEvents sp values tail) ∗
-    ⌜length values = 74%nat⌝ ∗
-    ⌜bv_unsigned (writeSuccessValueWord values 5) = length payload⌝ ∗
-    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
-    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
-    P ∗ instr_pre 0x14f04
-      (writeSuccessValuePost sp values payload tail P))%I.
-
-Local Instance : LithiumUnfold (@writeSuccessValueSpec) := I.
-Local Instance : LithiumUnfold (@writeSuccessValuePost) := I.
 
 #[local] Hint Rewrite Z_to_bv_add Z_to_bv_unsigned :
   lithium_rewrite isla_coq_rewrite.
@@ -112,21 +51,9 @@ Ltac run_write_success_values :=
       run_write_success_values
   end.
 
-Ltac run_write_success_value_returns :=
-  lazymatch goal with
-  | |- environments.envs_entails _ ((_ -∗ _) ∗ True) =>
-      iSplit; [|done];
-      liARun;
-      run_write_success_value_returns
-  | |- environments.envs_entails _
-      (subsume
-        (instr ?address
-          (IslaTraces.write_success_blocks.Index.lookup ?address)) _ _) =>
-      iEval (vm_compute [IslaTraces.write_success_blocks.Index.lookup]);
-      iApply subsume_instr_some_pre;
-      run_write_success_value_returns
-  | _ => idtac
-  end.
+
+Local Instance : LithiumUnfold (@writeSuccessValueSpec) := I.
+Local Instance : LithiumUnfold (@writeSuccessValuePost) := I.
 
 Lemma write_success_value_block `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :
@@ -139,49 +66,35 @@ Lemma write_success_value_block `{!islaG Sigma} `{!threadG}
 Proof.
   move => *.
   iStartProof.
-  iIntros "_ #Hlookup #Hcode #Houtput #Hint #Hbytes".
+  iIntros "#Hlookup #Hcode #Houtput #Hint #Hbytes".
   iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
     in "Hcode".
   liARun.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
+  all: try prepare_sidecond. all: try assumption.
   all: try (cbn; rewrite ?length_take ?length_drop; lia).
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  all: try bv_solve. all: try lia. all: try iFrame.
   Unshelve.
   all: try iFrame.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
+  all: try prepare_sidecond. all: try assumption.
+  all: try bv_solve. all: try lia.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
   Unshelve.
   all: try run_write_success_values.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  all: try prepare_sidecond. all: try assumption.
+  all: try bv_solve. all: try lia. all: try iFrame.
   Unshelve.
   all: try iEval (unfold LET_ID).
   run_write_success_value_returns.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
+  all: try prepare_sidecond. all: try assumption.
   all: try (cbn; rewrite ?length_take ?length_drop; lia).
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  all: try bv_solve. all: try lia. all: try iFrame.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
+  all: try prepare_sidecond. all: try assumption.
   all: try (cbn; rewrite ?length_take ?length_drop; lia).
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  all: try bv_solve. all: try lia. all: try iFrame.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
   Unshelve.
   iExists
@@ -191,44 +104,60 @@ Proof.
      payload, tt)ₗ.
   liARun.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
+  all: try prepare_sidecond. all: try assumption.
   all: try (cbn [writeSuccessValueWord]; lia).
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  all: try bv_solve. all: try lia. all: try iFrame.
   Unshelve.
   all: try iEval (unfold LET_ID).
   run_write_success_value_returns.
   Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
+  all: try prepare_sidecond. all: try assumption.
   all: try (cbn [writeSuccessValueWord]; lia).
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  all: try bv_solve. all: try lia. all: try iFrame.
   Unshelve.
   run_write_success_value_returns.
-  iExists tt.
-  iSplit; [|done].
-  iIntros "(HreturnedSys & HreturnedX1 & HreturnedX2 & HreturnedX5 & HreturnedX10 & HreturnedX11 & HreturnedScratch & HreturnedMmio & HreturnedTrace & _)".
+  iPoseProof (write_success_value_suffix sp values payload tail P with
+    "Hcode Houtput Hint Hbytes") as "#HvalueSuffixBody".
+  iExists tt. iSplit; [|done].
+  iIntros "(HreturnedSys & HreturnedX1 & HreturnedX2 & HreturnedX5 &
+    HreturnedX10 & HreturnedX11 & HreturnedScratch & HreturnedMmio &
+    HreturnedTrace & _)".
   iIntros "HreturnedPC".
-  do 225 liAStep.
-  unLET.
-  unfold LET_ID.
-  iEval (unfold zesuWriteOutputCallSpec, zesu_c_call).
-  liARun.
-  run_write_success_value_returns.
-  iExists tt.
-  iSplit; [|done].
-  iIntros "(? & ? & ? & ? & ? & ? & ? & ? & ? & _)".
-  iIntros "?".
-  iEval (unfold writeSuccessValueWord).
-  repeat liAStep.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
+  have Hret : Z_to_bv 64 (85712 + 4) = BV 64 0x14ed4 by bv_solve.
+  iEval (rewrite Hret) in "HreturnedX1 HreturnedPC".
+  iAssert (writeSuccessValueBaseFeeReturnSpec sp values payload tail P)%I
+    with "[-HreturnedPC]"
+    as "HsuffixEntry".
+  { rewrite /writeSuccessValueBaseFeeReturnSpec. iExists b8, b9.
+    iFrame "∗".
+    iRename select ("x6" ↦ᵣ RVal_Bits b10)%I into "Hx6".
+    iAssert (("x6" ↦ᵣ: fun r6 => ⌜valu_has_shape r6 (BitsShape 64)⌝))%I
+      with "[Hx6]" as "Hx6shape".
+    { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+      iExists (RVal_Bits b10). iSplit; first iExact "Hx6".
+      iPureIntro. cbn. reflexivity. }
+    iFrame "Hx6shape".
+    Unshelve. all: try zesu_finish.
+    all: repeat iSplit; try iPureIntro; try assumption; try zesu_finish.
+ }
+  iEval (rewrite instr_pre'_eq) in "HvalueSuffixBody".
+  iDestruct ("HvalueSuffixBody" with "HsuffixEntry") as (ins)
+    "[HsuffixInstr HsuffixBody]".
+  iEval (rewrite /instr_lookup_resources) in "Hcode".
+  iPoseProof ("Hcode" $! 85716 with "[]") as "#Hactual".
+  { iPureIntro. vm_compute. eexists. reflexivity. }
+  rewrite instr_eq /instr_def.
+  iDestruct "Hactual" as (tblActual instrBV1 Hb1 Hval1) "#HtblActual".
+  iDestruct "HsuffixInstr" as (tblSuffix instrBV2 Hb2 Hval2) "#HtblSuffix".
+  iDestruct (instr_table_agree with "HtblActual HtblSuffix") as %Hsame.
+  subst tblSuffix.
+  have Hb : instrBV1 = instrBV2 by (rewrite Hb1 in Hb2; simplify_eq).
+  subst instrBV2.
+  have Hins : ins = IslaTraces.write_success_blocks.Index.lookup 85716 by congruence.
+  iEval (rewrite Hins /=) in "HsuffixBody".
+  have Hpc : Z_to_bv 64 85716 = (85716%bv) by bv_solve.
+  iEval (rewrite Hpc) in "HsuffixBody".
+  iApply ("HsuffixBody" with "HreturnedPC").
 Qed.
+
+Print Assumptions write_success_value_block.
