@@ -91,8 +91,34 @@ def call_data(result: object) -> dict:
     return data
 
 
+def prefix_chunks(prefix: str, sentences_per_chunk: int) -> list[str]:
+    """Split at complete source lines, never inside a Rocq sentence."""
+    chunks: list[str] = []
+    lines: list[str] = []
+    sentences = 0
+    last_complete = False
+    for line in prefix.splitlines(keepends=True):
+        lines.append(line)
+        stripped = line.strip()
+        if not stripped:
+            continue
+        last_complete = stripped.endswith(".") or stripped in {"{", "}", "-", "+", "*"}
+        if last_complete:
+            sentences += 1
+        if sentences >= sentences_per_chunk:
+            chunks.append("".join(lines))
+            lines = []
+            sentences = 0
+    if lines:
+        if not last_complete:
+            raise ValueError("the prefix ends inside a Rocq sentence")
+        chunks.append("".join(lines))
+    return chunks
+
+
 async def proof_state(session: object, file: Path, workspace: Path,
-                      theorem: str | None, line: int, prefix: str) -> dict:
+                      theorem: str | None, line: int, prefix: str,
+                      sentences_per_chunk: int, prefix_timeout: int) -> dict:
     # A cursor in leading whitespace is before the failing sentence.
     position = await session.call_tool("rocq_start", {
         "file": str(file), "line": line - 1, "character": 0,
@@ -108,12 +134,19 @@ async def proof_state(session: object, file: Path, workspace: Path,
     started = call_data(await session.call_tool("rocq_start", {
         "file": str(file), "theorem": theorem, "workspace": str(workspace),
     }))
-    if not prefix.strip():
-        return started
-    return call_data(await session.call_tool("rocq_check", {
-        "from_state": started["state_id"], "body": prefix,
-        "workspace": str(workspace),
-    }))
+    state = started
+    for number, chunk in enumerate(prefix_chunks(prefix, sentences_per_chunk), start=1):
+        response = await session.call_tool("rocq_check", {
+            "from_state": state["state_id"], "body": chunk,
+            "workspace": str(workspace), "timeout": prefix_timeout,
+        })
+        try:
+            state = call_data(response)
+        except RuntimeError as error:
+            raise RuntimeError(f"prefix chunk {number} failed: {error}") from error
+        if state.get("proof_finished"):
+            raise RuntimeError(f"prefix chunk {number} finished the proof before the failing line")
+    return state
 
 
 async def test_candidates(session: object, state: dict, candidates: list[Candidate],
@@ -175,7 +208,8 @@ async def run(args: argparse.Namespace) -> int:
             if not health.get("ok") or not health.get("toolchain", {}).get("pet", {}).get("path"):
                 raise RuntimeError("rocq-mcp has no working pet toolchain")
             state = await proof_state(session, source, workspace, args.theorem,
-                                      args.line, prefix)
+                                      args.line, prefix,
+                                      args.prefix_sentences, args.prefix_timeout)
             if "state_id" not in state or "goals" not in state:
                 raise RuntimeError("rocq_start did not return a goal state")
             candidates = context_candidates(state["goals"])
@@ -210,7 +244,8 @@ async def run(args: argparse.Namespace) -> int:
                 copied = Path(temp) / source.name
                 copied.write_text(source.read_text())
                 fresh = await proof_state(session, copied, workspace, args.theorem,
-                                          args.line, prefix)
+                                          args.line, prefix,
+                                          args.prefix_sentences, args.prefix_timeout)
                 selector = f"match goal with H : ({winner.statement}) |- _ => rename H into {new} end"
                 validated = call_data(await session.call_tool("rocq_step_multi", {
                     "from_state": fresh["state_id"],
@@ -253,6 +288,10 @@ def main() -> int:
                         help="one tactic string with {candidate}; include the next tactic")
     parser.add_argument("--theorem", help="fallback theorem if file-position start fails")
     parser.add_argument("--prefix-file", help="prior tactic sentences for theorem fallback")
+    parser.add_argument("--prefix-sentences", type=int, default=5,
+                        help="complete Rocq sentences per fallback check")
+    parser.add_argument("--prefix-timeout", type=int, default=30,
+                        help="seconds allowed for each fallback check")
     parser.add_argument("--type-regex", help="filter compatible printed hypothesis types")
     parser.add_argument("--workspace", default=".")
     parser.add_argument("--mcp-command", default="rocq-mcp")
@@ -261,6 +300,8 @@ def main() -> int:
     parser.add_argument("--log", help="append a JSON line for the selected statement")
     parser.add_argument("--write", action="store_true", help="apply the tested source edit")
     args = parser.parse_args()
+    if args.prefix_sentences < 1 or args.prefix_timeout < 1:
+        parser.error("prefix bounds must be positive")
     try:
         return asyncio.run(run(args))
     except ExceptionGroup as error:
