@@ -3,8 +3,8 @@
 ## Remaining-work inventory
 
 Inventory origin: `272909a5`. Integration boundary: `382f1aca`. CP3, CP4, and CP5 remain open. The user approved the calling-convention correction and configuration unification.
-Current Root integration HEAD: `33471636`. PR9 remains open and pushed; the latest full `check-iris` preview is red on 41 frozen proof modules and adds zero failures.
-Repair phase: Auto's AllLegacy and exact R hygiene baseline are merged; TX owns 9 R and 28 active T files; Tail owns 2 R and 2 T files. Main and Exec wait for CP3. TX and Tail are rebasing once, then running their track gates before repair commits.
+Current Root integration HEAD: `a4e9c74e`. PR9 remains open and pushed; the latest complete Root `check-iris` gate failed on exactly 34 active frozen proof files and added zero failures.
+Repair phase: Auto's AllLegacy and exact R hygiene baseline are merged; TX owns 9 R and 24 active T files; Tail owns 1 active T file. Main and Exec wait for CP3. TX continues the late transaction loads; Tail repairs the final RawLoad numbered references.
 Ranges below include their start address and exclude their end address.
 The legacy coverage matrix reports 950/950 addresses. That count does not establish the exact contract composition.
 An existing block can require composition without another instruction proof.
@@ -218,6 +218,12 @@ Root's complete baseline `make check-iris CHECK_AGENT=orch AGENT_JOBS=32` at `68
 
 Auto's shared-file full `check-iris` preview at `68efa2db` plus `0e7675c4` exited 1 in 1,826.415 s/5,221,748 KiB. Its failure set equals the 41 active frozen files; outside=0 and newly closed=0. Root `f437dc89` differs from the preview base only in `AGENTS.md` and `tools/pin_hypotheses.py`; the `check-iris` target builds `@ZesuSsz/Proofs/all` and sees identical proof sources. Root restaged the exact Auto three-file diff on `f437dc89`; j32 preview check-fast passed in 0.504 s/154,416 KiB. Root merged Auto as `33471636`; Root j32 check-fast passed in 0.768 s/629,764 KiB, and PR9 is pushed. This is a repair merge under the 7.6 subset rule; the full gate remains red and no checkpoint is reported.
 
+Auto's paced theorem-prefix patch to `tools/pin_hypotheses.py` removed the combined-prefix MCP timeout on Chunk150a0Load.v:93. The exact private source SHA256 `18c13276dbbab4825472940c858db922d3678a91f0d37410341afd96b6fb36fa` passed a real no-write trial, synthetic unique/ambiguous trials, Python syntax, and Root j32 check-fast. Root committed it at `44af9f26` and pushed PR9; it changes no proof source. The Tail two-import net diff from source `7c6772f8` passed j32 preview check-fast and both direct proof targets. Root restaged it on `44af9f26`, ran j32 check-fast, committed only the two import lines at `c9f6ad76`, and pushed PR9. Tail's original two R statements compiled with MCP and assumptions `[]`; those two active R rows shrink below. The last full gate is still red; no checkpoint is reported.
+
+The combined isolated preview of Tail `fdb3956b` and TX `c6c6db06` on Root `c9f6ad76` changed exactly five frozen class-T proof modules. J32 preview check-fast and all five direct proof targets passed; each target printed Closed. Tail's original `block_15728` and TX's eight original block/wrapper statements verified with assumptions `[]` in their track audits. Root cherry-picked Tail as `aa245aaa` and TX as `a4e9c74e`; j32 Root check-fast passed after each, and PR9 is pushed/open. No ordinary queued B1 hook or RawLoad qualifier change entered Root. Five T rows shrink below; the last full Iris gate remains red and CP3–CP5 stay open.
+
+The complete Root `make check-iris CHECK_AGENT=orch AGENT_JOBS=32` gate at `a4e9c74e` exited 1 in 69.948 s/2,194,088 KiB with the shared Dune cache. Its 34 first-error file failures equal the current active list: outside=0, missing=0, R=9, T=25. Raw output is `_build/agents/orch/logs/CHECK_IRIS_REPAIR_AFTER7_2026-09-15_1355.log`. This is a red repair gate inside the approved 7.6 subset; Root reports no CP3–CP5 checkpoint and continues only measured repair merges.
+
 MCP fallback for TX's private CP3 boundary fixture: `rocq_compile_file` Closed, but scoped `rocq_verify` timed out after 90 s in shared-defs mode; a stable file-position session returned `proof_finished=true`, and theorem-mode start could not find `writeSuccessNativeWitness`. Root approved one bounded qualified Module M scratch audit of the original 0x15668-to-0x14f04 statement. That audit Closed under the global context in 82.085 s/2,100,448 KiB with Print Assumptions. The fixture remains private and uncommitted; production use still needs a green gate.
 
 TX used the reviewed MCP pin tool in no-write mode on original H7 copies at Chunk14f2c:103, Chunk14f3c:105, and Chunk14f44:105. The current context offered H4 (`bv_unsigned sp mod 8 = 0`), H5 (`0 ≤ bv_unsigned sp - 48`), and H6 (`bv_unsigned sp + 1896 < 1073741824`), but no candidate passed the following `rewrite; lia` tactic. The tool changed no source. Chunk14f34:105 returned an MCP timeout in theorem-prefix mode; it remains unresolved. Root requested the exact residual and one fresh-session trial before any local correction or fallback.
@@ -239,23 +245,16 @@ Tail repair integration deviation: the pushed Tail branch already contains the l
 
 TX repair integration deviation: its rebased branch contains the queued ordinary B1 count-entry hook `c018c2fe` before the four approved class-T source edits. Root will cherry-pick only the four-file repair commit during the red gate; it leaves the ordinary hook unmerged until a green full gate. This keeps the 7.3(5) repair exception narrow.
 
-- 01 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v:92`
 - 02 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v:89`
 - 03 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v:89`
-- 04 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v:85`
 - 05 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v:87`
 - 07 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v:139`
 - 09 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v:265`
 - 11 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v:277`
 - 12 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v:477`
-- 13 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v:103`
 - 14 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v:104`
 - 15 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v:92`
-- 16 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v:105`
-- 17 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v:202`
-- 18 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v:105`
 - 19 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v:93`
-- 20 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v:105`
 - 21 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v:93`
 - 22 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v:103`
 - 23 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v:105`
@@ -283,6 +282,10 @@ TX repair integration deviation: its rebased branch contains the queued ordinary
 
 ## Merged commits
 
+- `c6c6db06`: TX's four measured class-T unsigned repairs cherry-picked as Root `a4e9c74e`. Original statements have assumptions `[]`; j32 combined preview proof targets and Root check-fast passed. PR9 is pushed/open.
+- `fdb3956b`: Tail's class-T MMIO-owner correction cherry-picked as Root `aa245aaa`. Original statement has assumptions `[]`; j32 combined preview proof target and Root check-fast passed. PR9 is pushed/open.
+- `7c6772f8` net: Tail's two class-R import-only changes merged as Root `c9f6ad76`. Original statements and focused proof targets Closed; j32 preview and Root check-fast passed. PR9 is pushed/open.
+- `44af9f26`: Root applied Auto's paced MCP pin-tool patch. Exact no-write and synthetic candidate trials passed; Root check-fast passed; PR9 is pushed/open.
 - `0e7675c4`: Auto's frozen AllLegacy entry and exact R hygiene baseline merged at `33471636`. The full preview failed only on the 41 active frozen files; preview and Root check-fast passed. PR9 is pushed/open.
 - `35f8312`: closed hash-loop split merged at `5ce975c4`. The merge preview passed check-fast with 32 workers.
 - `1ccf34e`: exact post-transactions source load merged at `5ce975c4`. The theorem retains the 69-word array and closes under the global context.
