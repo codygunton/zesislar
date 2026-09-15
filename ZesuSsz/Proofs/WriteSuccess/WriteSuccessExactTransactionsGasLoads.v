@@ -7,6 +7,7 @@ From IslaTraces.write_success_29 Require Import instrs.
 
 Definition transactionRowWord (bytes : list (bv 8)) (index offset : nat) : bv 64 :=
   Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (index + offset)%nat bytes))).
+#[export] Hint Unfold transactionRowWord : zesu_selectors.
 
 Definition transactionGasLoadEntry `{!islaG Sigma} `{!threadG}
     (row : bv 64) (base : Z) (bytes : list (bv 8)) (index : nat)
@@ -49,4 +50,3 @@ Proof.
   all: unfold transactionRowWord; rewrite ?Nat.add_0_r; reflexivity.
 Qed.
 Print Assumptions transactions_gas_loads_correct.
-
