@@ -200,6 +200,57 @@ Proposed plan section 7.3 wording, effective in this session: no ordinary merge 
 
 The user amended the repair dispatch after Step 1: stop and wait for a go-ahead before Step 2. Root stopped Auto and Main, kept Tail and TX paused, terminated the remaining focused Dune build, and reset the isolated recovery preview to clean `68efa2db`. No repair commit merged into Root, and no new full Iris gate ran. Auto's incomplete AllLegacy draft and Main's seven uncommitted H7 file edits remain isolated; Root snapshots these as text copies on the backup branch. The attribution result and zero-file current CP3 dependency intersection are the Step 1 report. Step 2 and Step 4 await the user's go-ahead.
 
+The user gave the Step 2 go-ahead with both branches partitioned per module. Auto now classifies all 44 original `e05d855d` failure files by the same pre-A1 scratch test. Root will freeze their R/T classes under a dedicated Repair phase heading; only resolved entries may leave that list. During this phase, check-fast and no added Iris failure permit a track merge. A change under Automation, InstrSpecs, Contracts, or Export also needs a full Iris preview whose failing set is a subset of the frozen list. The strict red-gate and two-red stop amendments remain in force after the repair phase ends. Tail's 0x15980 residual is already Closed in pushed fd15a4df; Auto's RawPrefix scratch Closed in 109.870 s/2,602,648 KiB with one `zesu_run` pass at 52.589 s. Auto still owes the specific hot internal rule.
+
+## Repair phase
+
+Auto tested the 44 original failure modules at `e05d855d` with the pre-A1 hook and both old hint removals in scratch files. The verified partition is R=11 (rules) and T=33 (traces or RAM facts). The source matches Root for 41 files; three 14f20/14f24/14f28 files changed after the frozen gate. The active list below is frozen by file and class. Remove a line only after its module compiles and its repair merges without adding an Iris failure. The initial partition artifact is `.worktrees/islaris-native-auto/_build/agents/auto/partition44/partition44.json`.
+
+- 01 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v:92`
+- 02 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v:89`
+- 03 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v:89`
+- 04 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v:85`
+- 05 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v:87`
+- 06 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v:98`
+- 07 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v:139`
+- 08 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v:100`
+- 09 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v:265`
+- 10 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v:102`
+- 11 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v:277`
+- 12 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v:477`
+- 13 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v:103`
+- 14 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v:104`
+- 15 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v:92`
+- 16 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v:105`
+- 17 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v:202`
+- 18 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v:105`
+- 19 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v:93`
+- 20 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v:105`
+- 21 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v:93`
+- 22 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v:103`
+- 23 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v:105`
+- 24 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v:93`
+- 25 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeIntCall15134.v:152`
+- 26 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v:107`
+- 27 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v:93`
+- 28 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v:109`
+- 29 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v:53`
+- 30 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v:93`
+- 31 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v:134`
+- 32 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v:93`
+- 33 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v:93`
+- 34 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v:93`
+- 35 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v:139`
+- 36 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15190.v:56`
+- 37 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v:209`
+- 38 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v:39`
+- 39 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v:39`
+- 40 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v:39`
+- 41 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v:38`
+- 42 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15658Call.v:75`
+- 43 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153d0.v:123`
+- 44 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailRawLoad.v:46`
+
 ## Merged commits
 
 - `35f8312`: closed hash-loop split merged at `5ce975c4`. The merge preview passed check-fast with 32 workers.

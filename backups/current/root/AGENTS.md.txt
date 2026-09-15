@@ -141,19 +141,27 @@ The coordinator rejects a proof commit that lacks these results.
 Report an exact MCP failure before you switch to a shell proof tool.
 The coordinator approves and records each bounded fallback.
 Continue independent preparation while the coordinator reviews that failure.
+Shell commands can build dependencies and run project gates.
 
 ## Integration gates and rule threshold
 
-Do not merge an ordinary commit while the last full `make check-iris` gate is red.
-Only measured gate-repair commits can enter an isolated recovery preview.
+During the frozen-list repair phase, a track commit needs green `make check-fast`
+and a preview that adds no Iris failure before merge.
+If a commit touches `ZesuSsz/Automation/`, `InstrSpecs/`,
+`ZesuSsz/Contracts/`, or `ZesuSsz/Export/`, the full Iris preview's
+failure set must be a subset of the frozen list.
+The same criterion applies to repair commits.
+After the repair phase, do not merge an ordinary commit while the last full
+`make check-iris` gate is red.
+Only measured gate-repair commits can enter an isolated recovery preview then.
 Run full `make check-iris` in the preview before merging a commit that touches
 `ZesuSsz/Automation/`, `InstrSpecs/`, `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`.
 Keep the mandatory `make check-fast` check before each commit.
 Only a full green Iris gate on Root releases ordinary merges.
-If two consecutive full Iris gates are red, stop integration and report both failures to the user.
+After the repair phase, two consecutive red full Iris gates stop integration.
+Report both failures to the user.
 
 Auto adds a generic rule only when one manual step needs more than five lines
 or at least two proof sites need the same step.
 Generic rules must not name a machine address, an offset, or a contract predicate.
 Otherwise, the region owner writes the manual step in its proof.
-Shell commands can build dependencies and run project gates.

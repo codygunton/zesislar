@@ -16,9 +16,29 @@ Require Export ZesuSsz.Automation.ArrayPacking.
   subsume_instr_some_pre_inst : typeclass_instances.
 
 #[export] Remove Hints zesu_bv_sign_extend_64_idemp
-  bv_sign_extend_idemp zesu_bv_sign_extend_same
-  zesu_bv_unsigned_add_Z_64 zesu_bv_unsigned_add_no_wrap_64
-  zesu_bv_unsigned_Z_to_bv_small : isla_coq_rewrite lithium_rewrite.
+  bv_sign_extend_idemp zesu_bv_unsigned_Z_to_bv_small
+  : isla_coq_rewrite lithium_rewrite.
 #[export] Remove Hints Z_to_bv_add Z_to_bv_unsigned : lithium_rewrite.
+#[export] Remove Hints zesu_integer_array_byte_equality : core.
+#[export] Remove Hints zesu_integer_array_word_inhabited
+  : typeclass_instances.
 
+Ltac zesu_liAStep :=
+ liEnsureInvariant;
+ try progress (unfold TRACE_LET);
+ try liAIntroduceLetInGoal;
+ first [
+    zesu_normalize_find_mem_address
+  | zesu_liAWriteMem
+  | zesu_liAReadMem
+  | liAAsm
+  | liAExp
+  | liAOther
+  | liUnfoldEarly
+  | liStep
+  | liLetBindHint
+  | liUnfoldLate
+ ]; liSimpl.
+
+Ltac liAStep ::= zesu_liAStep.
 Ltac zesu_block ::= zesu_block_simpl.

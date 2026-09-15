@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-15T15:55:55.705853+00:00",
+  "captured_utc": "2026-09-15T16:31:12.547879+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "12630ffbe561a90fe1638a444ef5bf88086c38dc37cc49032c00805e58d35222",
-      "bytes": 127737
+      "sha256": "8dba5cd85af951365776bdd0d9367428f6c38586503f877044b2de832d745910",
+      "bytes": 132778
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -34,8 +34,8 @@
     {
       "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
       "snapshot": "progress/PUSH3_tail_PROGRESS.md",
-      "sha256": "e47a94b9f06e9f8de6a63425be9270a915a0f650ae1ead0e2b47353db85e930a",
-      "bytes": 67518
+      "sha256": "7c1fab3e0f7dfd7b151b7fdb0c0662bc70a003b53dcfd4356adbe43c25c4ad5f",
+      "bytes": 69909
     },
     {
       "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
@@ -130,8 +130,8 @@
     {
       "source": ".worktrees/islaris-native/AGENTS.md",
       "snapshot": "root/AGENTS.md.txt",
-      "sha256": "7fce53b9094507293c03a383a6d81eb0afedb66b7cf436956bd0448d0d6e5995",
-      "bytes": 8044
+      "sha256": "2d1fbde8e4345204d8b0b3f04e319d133cdb6893bb011e8906b59737ee06f80f",
+      "bytes": 8443
     },
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/NativeSuffix15980AddressProbe.v",
@@ -142,8 +142,8 @@
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Automation/AllLegacy.v",
       "snapshot": "auto/AllLegacy.v.txt",
-      "sha256": "3f341ce610e680ac739be11dd1885b83c41d4448da48581e19373e7816f9359b",
-      "bytes": 988
+      "sha256": "0eba27bc2442752b4e0e31aca481a07ba0ea637e207e7ddd832f703284bca0e5",
+      "bytes": 1382
     },
     {
       "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
@@ -186,6 +186,18 @@
       "snapshot": "main/WriteSuccessTransactionsChunk14f44.v.txt",
       "sha256": "0181e35d20bea28bc52e0ea06605d6a55e5362c5a9de340de5f961202c4f07df",
       "bytes": 7751
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/partition44/partition44.json",
+      "snapshot": "auto/partition44.json",
+      "sha256": "4333f0075347347ce0966a831a64d6032da8a3a0e20ab19bd33367379789cb1c",
+      "bytes": 46268
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/partition44/partition44.tsv",
+      "snapshot": "auto/partition44.tsv",
+      "sha256": "7bd18883c99ed9a0ac31a701cafbf7ed6720a3559c4d10f43fcb375237ec7a22",
+      "bytes": 9335
     }
   ]
 }
