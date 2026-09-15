@@ -1,5 +1,18 @@
 {
   "cut_commit": "0e4993a5",
+  "legacy_entry_files": [
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v"
+  ],
   "files": {
     "InstrSpecs/Specs.v": {
       "solve_zesu_ld_array_at": 1,
