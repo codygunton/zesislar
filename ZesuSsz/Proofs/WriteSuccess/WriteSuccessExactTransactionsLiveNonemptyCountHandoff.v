@@ -43,6 +43,8 @@ Definition transactionLiveNonemptyCountEntry `{!islaG Sigma} `{!threadG}
         transactionLiveAuthorizationRemainder sp base transactions processed
           transaction rest bytes P)%I)).
 
+Global Instance : LithiumUnfold (@transactionLiveNonemptyCountEntry) := I.
+
 Lemma transactions_live_nonempty_count_handoff `{!islaG Sigma} `{!threadG}
  sp base transactions processed transaction rest bytes tail row authRest (P : iProp Sigma) :
  writeSuccessTransactionAuthorizations transaction = row :: authRest ->
