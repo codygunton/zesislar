@@ -47,6 +47,34 @@ Ltac zesu_open_matching_resource_package :=
           end)
   end.
 
+(* Open a two-array package only when its first full array is requested. *)
+Ltac zesu_open_requested_exact_array_pair :=
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ∗ ?bytes)%I ∗ _)%I =>
+      zesu_expose_environment_alias;
+      iSelect ((address ↦ₘ∗ bytes) ∗ (_ ↦ₘ∗ _))%I
+        ltac:(fun H => iDestruct H as "[? ?]")
+  end.
+
+(* Open an exact array-and-pure package as one requested resource. *)
+Ltac zesu_open_matching_array_pure_bundle :=
+  lazymatch goal with
+  | |- envs_entails _ ((?array ∗ ⌜?requested⌝)%I ∗ _)%I =>
+      lazymatch array with
+      | (_ ↦ₘ∗ _)%I =>
+          zesu_expose_environment_alias;
+          iMatchHyp ltac:(fun H body =>
+            let head := get_head body in
+            tryif first [constr_eq head constr:(@bi_sep) |
+                         constr_eq head constr:(@bi_pure)] then fail else
+              let expanded := eval cbv beta zeta delta [head] in body in
+              constr_eq expanded constr:((array ∗ ⌜requested⌝)%I);
+              progress iEval (unfold head) in H;
+              iDestruct H as "[? ?]";
+              zesu_open_resource_groups)
+      end
+  end.
+
 (* Expose the machine collection only for the mstatus field request. *)
 Ltac zesu_open_requested_struct_sys_package :=
   zesu_expose_environment_alias;
