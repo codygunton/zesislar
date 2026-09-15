@@ -28,10 +28,14 @@ Proof.
   all: iIntros "Hoptional".
   all: try zesu_run.
   all: iEval (unfold exactTailWithdrawalBranchResources).
-  all: iMatchHyp ltac:(fun H body =>
-    let head := get_head body in
-    idtac "STATUS_AVAILABLE_HEAD" H head;
-    fail 0).
+  all: zesu_open_resource_groups.
+  all: iRename select (reg_col ((KindReg "x19", BitsShape 64) :: _))%I into "HsavedTail".
+  all: iEval (unfold encoderIntExactFramedPost).
+  all: iEval (unfold exactTailWithdrawalBranchFrame).
+  all: iEval (unfold exactTailWithdrawalCommonFrame).
+  all: try zesu_run.
+  all: iFrame "Hoptional".
+  all: try zesu_run.
   all: lazymatch goal with
     | |- environments.envs_entails _ (?first ∗ _)%I =>
         let head := get_head first in fail "STATUS_SET_X18_FIRST_HEAD" head

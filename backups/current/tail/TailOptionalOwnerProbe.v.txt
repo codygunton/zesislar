@@ -106,5 +106,16 @@ Proof.
       (bv_unsigned (writeSuccessPostWord
         (writeSuccessPostTailWords (writeSuccessDecodedBytes witness)) 14))
       (writeSuccessPostByteLists159c8 (writeSuccessPostData witness)))%I
-    ltac:(fun H => fail 1 "BYTE159C8_DIRECT_OWNER" H).
+    ltac:(fun H => iFrame H).
+  all: zesu_open_resource_groups.
+  all: iSelect (⌜writeSuccessWitnessWellFormed args witness⌝)%I
+    ltac:(fun H => fail 1 "HWF_DIRECT_OWNER" H).
+  all: try zesu_run.
+  all: lazymatch goal with
+    | |- environments.envs_entails _ (?first ∗ _)%I =>
+        let head := get_head first in fail "STATUS_AFTER_BYTE159C8" head first
+    | |- environments.envs_entails _ ?wanted =>
+        let head := get_head wanted in fail "STATUS_AFTER_BYTE159C8_WHOLE" head
+    | |- ?wanted => fail "STATUS_AFTER_BYTE159C8_COQ" wanted
+    end.
 Qed.

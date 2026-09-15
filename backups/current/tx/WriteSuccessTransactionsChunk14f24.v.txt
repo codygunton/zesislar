@@ -98,7 +98,7 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 16 -
        (base + 288 * Z.of_nat (length processed))) = 16%nat.
-  { match goal with H : bv_unsigned (Z_to_bv 64 ?v) = ?v |- context [bv_unsigned (Z_to_bv 64 ?v)] => rewrite H end. lia. }
+  { rewrite H7. lia. }
   iEval (rewrite Hstart) in "Hprefix16 Hsuffix24".
   rewrite ?Hstart.
   iEval (cbn) in "Hsuffix24".
@@ -108,7 +108,7 @@ Proof.
     (drop 24
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction))
     with "Hsuffix24") as "[Hempty24 Hsuffix24]".
-  match goal with H : bv_unsigned (Z_to_bv 64 ?v) = ?v |- context [bv_unsigned (Z_to_bv 64 ?v)] => rewrite H end. rewrite !Z.add_0_r.
+  rewrite H7 !Z.add_0_r.
   iFrame "Hprefix16 Hsuffix24".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.

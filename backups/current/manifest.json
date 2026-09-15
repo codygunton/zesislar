@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-15T18:28:13.508226+00:00",
+  "captured_utc": "2026-09-15T18:46:12.866602+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "75d9a101ee5dd9a653ce3a1813ed85b8c5249d787bfd6722d4b382061f72a463",
-      "bytes": 145917
+      "sha256": "760ee0f8968b6b46d5b4f476a8e41833335c780dfa6672cacab8b782adceaf79",
+      "bytes": 147065
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -34,14 +34,14 @@
     {
       "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
       "snapshot": "progress/PUSH3_tail_PROGRESS.md",
-      "sha256": "7d7ee7314c02db4947de347ca5bad57eefb993df106b3766137f01816780fc10",
-      "bytes": 72127
+      "sha256": "de742e60865134f499c749113d96a2e584d63d324209827f94592c69eba429a5",
+      "bytes": 72761
     },
     {
       "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
       "snapshot": "progress/PUSH3_tx_PROGRESS.md",
-      "sha256": "8e859ec541f004681e88e52897480459cd594297adcc8d46d477f5ffdbda964b",
-      "bytes": 66479
+      "sha256": "7dc3a2e336b0725815248f927642eedf704926ede8b40b443c5b0025c5352c5c",
+      "bytes": 67100
     },
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/check_spec_shapes.py",
@@ -112,8 +112,8 @@
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/TailOptionalOwnerProbe.v",
       "snapshot": "tail/TailOptionalOwnerProbe.v.txt",
-      "sha256": "86256615cda5417ce99e5d064feff0e3a7604cd26c771d3f3adce7de0d2af66b",
-      "bytes": 4841
+      "sha256": "ed4be58a085e68aa05379d27defe9cc871d2be274003f2ed3c2f01c18be45431",
+      "bytes": 5349
     },
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/CountCallSelectorProbe.v",
@@ -130,8 +130,8 @@
     {
       "source": ".worktrees/islaris-native/AGENTS.md",
       "snapshot": "root/AGENTS.md.txt",
-      "sha256": "bb39510a984424c1562d708d8c0a089a633ca746ad74c4f01fb7b56e9290b3cb",
-      "bytes": 8626
+      "sha256": "a303d1ebea0b362a6bad78417bfa7e525cb41dac91d5a3f53d63c7c9c3634f75",
+      "bytes": 9428
     },
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/NativeSuffix15980AddressProbe.v",
@@ -208,26 +208,26 @@
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/TailStatusSetX18Probe.v",
       "snapshot": "tail/TailStatusSetX18Probe.v.txt",
-      "sha256": "802966ed9cb08c0bcc849b3de66986b75a2c14ad7c82c64423fb50f885bffb49",
-      "bytes": 2271
+      "sha256": "23d34fa0fa0ae8bfdef17306a0f77440e3f77e4395911cd3e01394d1949fb177",
+      "bytes": 2496
     },
     {
       "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
       "snapshot": "tx/WriteSuccessTransactionsChunk14f20.v.txt",
-      "sha256": "286e5bcdf0ed3cc4c709c070c445634e3e3c04d77404698bc6c4228119b311bc",
-      "bytes": 7179
+      "sha256": "0fb27f7fdedd247c28702812af068921d89f727260ca04001e74ecf84e941f24",
+      "bytes": 6970
     },
     {
       "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v",
       "snapshot": "tx/WriteSuccessTransactionsChunk14f24.v.txt",
-      "sha256": "1c6df28b7efd8b362f0af2e25a7893c80f9a0f13093f2c704d57f1455fe87465",
-      "bytes": 7802
+      "sha256": "d28806ec10f931508b0211c76ed7386ed9aeedb2a0a769ef139d418d6c9ddae4",
+      "bytes": 7593
     },
     {
       "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v",
       "snapshot": "tx/WriteSuccessTransactionsChunk14f28.v.txt",
-      "sha256": "66bea17acbbdad181d961b1021856598e8bbe48408a3763eda9e83979e8900ca",
-      "bytes": 7680
+      "sha256": "56b7e572025a00e9b0517dc909dc730b9ac91a969d3ddeedb031cc1ad23a737b",
+      "bytes": 7471
     },
     {
       "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v",
