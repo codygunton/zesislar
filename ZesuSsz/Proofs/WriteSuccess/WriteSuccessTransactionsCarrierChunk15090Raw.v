@@ -100,7 +100,7 @@ Proof.
          (base + 288 * Z.of_nat (length processed))) = 128%nat.
   { rewrite write_success_15044_current_unsigned; lia. }
   iEval (rewrite Hstart128) in "Hprefix128 Hsuffix136".
-  rewrite Hstart128 write_success_15044_current_unsigned; try lia.
+  rewrite ?Hstart128 ?write_success_15044_current_unsigned; try lia.
   replace (base + 288 * Z.of_nat (length processed) + 0)%Z with
     (base + 288 * Z.of_nat (length processed))%Z by lia.
   iFrame "Hprefix128 Hsuffix136".
@@ -116,11 +116,9 @@ Proof.
   iRename select
     ((_ ↦ₘ∗ take 128 (writeSuccessTransactionBytes transaction))%I)
     into "HprefixFinal".
-  iRename select
-    ((_ ↦ₘ Z_to_bv 64
-      (little_endian_to_bv 8
-        (take 8 (drop 128 (writeSuccessTransactionBytes transaction)))))%I)
-    into "HwordFinal".
+  iRename select ((_ ↦ₘ Z_to_bv 64 (little_endian_to_bv 8
+    (take 8 (drop _ (writeSuccessTransactionBytes transaction)))))%I) into "HwordFinal";
+    iEval (rewrite (zesu_integer_array_byte_equality (base + 288 * Z.of_nat (length processed)) 128 (writeSuccessTransactionBytes transaction))) in "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 136 (writeSuccessTransactionBytes transaction))%I)
     into "HsuffixFinal".
@@ -143,12 +141,14 @@ Proof.
   iFrame "HframeFinal HarrayFinal".
   rewrite /writeSuccessTransactionsMachine15094Carrier /reg_col
     /writeSuccessTransactions15094CarrierScratch.
-  cbn. iFrame.
+  cbn. iRename select ("x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (little_endian_to_bv 8
+    (take 8 (drop _ (writeSuccessTransactionBytes transaction))))))%I into "HregisterFinal";
+    iEval (rewrite (zesu_integer_array_byte_equality (base + 288 * Z.of_nat (length processed)) 128 (writeSuccessTransactionBytes transaction))) in "HregisterFinal"; iFrame "HregisterFinal"; iFrame.
   rewrite /writeSuccessTransactionsLoadFacts.
   repeat iSplit; try iPureIntro; try assumption; try done.
-  all: destruct H0 as
-    (HitemsLength & HitemsBound & HfirstAlign & HfirstLower & HfirstUpper &
-      HspAlign & HspLower & HspUpper); assumption.
+  all: lazymatch goal with Hfacts :
+    WriteSuccessTransactionsPost15674Boundary.writeSuccessTransactionsPost15674ByteListFacts _ _ _ _ |- _ =>
+    destruct Hfacts as (HitemsLength & HitemsBound & HfirstAlign & HfirstLower & HfirstUpper & HspAlign & HspLower & HspUpper) end; assumption.
 Qed.
 Lemma write_success_transactions_carrier_chunk_15090
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
