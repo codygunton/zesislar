@@ -35,3 +35,20 @@ Lemma rewrites_selector_stack_index (sp : bv 64) :
     (bv_unsigned sp + 0)) = 8%nat.
 Proof. intros Hlower Hupper. zesu_finish_selectors. Qed.
 Print Assumptions rewrites_selector_stack_index.
+
+Lemma normalize_integer_array_handoff_from_bounds (current offset : Z) :
+  0 <= current -> current + 288 < 1073741824 ->
+  Z.to_nat (bv_unsigned (Z_to_bv 64 current) + offset - current) =
+    Z.to_nat offset.
+Proof.
+  intros. zesu_normalize_integer_array_handoff.
+Qed.
+
+Lemma normalize_integer_array_handoff_after_rewrite (current : Z) :
+  current + 0 = current.
+Proof.
+  zesu_normalize_integer_array_handoff.
+Qed.
+
+Print Assumptions normalize_integer_array_handoff_from_bounds.
+Print Assumptions normalize_integer_array_handoff_after_rewrite.
