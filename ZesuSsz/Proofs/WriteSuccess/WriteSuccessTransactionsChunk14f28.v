@@ -100,11 +100,11 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 24 -
        (base + 288 * Z.of_nat (length processed))) = 24%nat.
-  { rewrite H7. lia. }
+  { match goal with H : bv_unsigned (Z_to_bv 64 ?v) = ?v |- context [bv_unsigned (Z_to_bv 64 ?v)] => rewrite H end. lia. }
   iEval (rewrite Hstart) in "Hprefix24 Hsuffix32".
   rewrite ?Hstart.
   iEval (cbn) in "Hsuffix32".
-  rewrite H7 !Z.add_0_r.
+  match goal with H : bv_unsigned (Z_to_bv 64 ?v) = ?v |- context [bv_unsigned (Z_to_bv 64 ?v)] => rewrite H end. rewrite !Z.add_0_r.
   iFrame "Hprefix24 Hsuffix32".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
