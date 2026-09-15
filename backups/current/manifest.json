@@ -1,5 +1,5 @@
 {
-  "captured_utc": "2026-09-15T14:53:15.008865+00:00",
+  "captured_utc": "2026-09-15T14:54:44.322358+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
@@ -108,6 +108,24 @@
       "snapshot": "auto/A5SecondIntOrderProbe.v.txt",
       "sha256": "f27ab190bcdb825c46c04e0023f0624e43054f3374623a29e3ac9d1e655327f2",
       "bytes": 4602
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/_build/agents/tail/TailOptionalOwnerProbe.v",
+      "snapshot": "tail/TailOptionalOwnerProbe.v.txt",
+      "sha256": "86256615cda5417ce99e5d064feff0e3a7604cd26c771d3f3adce7de0d2af66b",
+      "bytes": 4841
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/_build/agents/tail/CountCallSelectorProbe.v",
+      "snapshot": "tail/CountCallSelectorProbe.v.txt",
+      "sha256": "23d8d4f5c493a189837dde8401c0ebacecda26b316572994e775e5b4af41d4a5",
+      "bytes": 3049
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/_build/agents/tail/PostDataConditionalAdapterProbe.v",
+      "snapshot": "tail/PostDataConditionalAdapterProbe.v.txt",
+      "sha256": "729a7e1b47aeaa4692c6d6e447b25e33da5a5ae03fcb0eb01cfef3a2a9eabe6d",
+      "bytes": 3220
     }
   ]
 }

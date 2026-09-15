@@ -1,0 +1,110 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import InstrSpecs.Machine.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountModel.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalsBranchSpec.
+
+Ltac auto_open_first_nested_array :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- environments.envs_entails _ (?requested ∗ _)%I =>
+      lazymatch requested with
+      | (_ ↦ₘ∗ _)%I =>
+      iMatchHyp ltac:(fun H body =>
+        let outerHead := get_head body in
+        let outer := eval cbv beta zeta delta [outerHead] in body in
+        lazymatch outer with
+        | (?inner ∗ _)%I =>
+            let innerHead := get_head inner in
+            let innerBody := eval cbv beta zeta delta [innerHead] in inner in
+            lazymatch innerBody with
+            | (?array ∗ ⌜_⌝)%I =>
+                constr_eq array requested;
+                progress iEval (unfold outerHead) in H;
+                iDestruct H as "[? ?]";
+                iMatchHyp ltac:(fun Hinner current =>
+                  let currentHead := get_head current in
+                  constr_eq currentHead innerHead;
+                  progress iEval (unfold innerHead) in Hinner;
+                  iDestruct Hinner as "[? ?]")
+            end
+        end)
+      end
+      end.
+
+Lemma exact_tail_status_branch_probe `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) :
+  writeSuccessCompleteNativeCode -∗
+  instr_body 0x15694 (exactTailWithdrawalsBranchNonzeroEntry args witness P) -∗
+  instr_body 0x156e8 (exactTailWithdrawalsBranchZeroEntry args witness P) -∗
+  instr_body 0x15690 (exactTailWithdrawalBranchResources args witness P).
+Proof.
+  iStartProof. iIntros "#Hnative Hnonzero Hzero".
+  iEval (rewrite /writeSuccessCompleteNativeCode) in "Hnative".
+  iDestruct "Hnative" as
+    "(#Hprologue & #Hlookup & #Hmain & #Houtput & #Hmemcpy & #Hboolean &
+      #Hoptional & #Hlists & #Hbytes & #Hint & #Hu256 & #Hu128)".
+  zesu_block. Unshelve.
+  all: zesu_open_resource_groups.
+  all: try zesu_run.
+  all: iEval (unfold exactTailWithdrawalsBranchZeroEntry).
+  all: iEval (unfold exactTailWithdrawalBranchResources).
+  all: zesu_open_resource_groups.
+  all: try zesu_run.
+  all: lazymatch goal with
+       | |- environments.envs_entails _ ((?a ↦ₘ∗ ?b)%I ∗ _)%I =>
+         first [zesu_open_requested_exact_array_pair | fail "PAIR_SELECTOR_FAILED" a]
+       | _ => idtac
+       end.
+  all: try zesu_run.
+  all: try zesu_open_matching_copied_word_package.
+  all: zesu_open_resource_groups.
+  all: try zesu_run.
+  all: iSelect
+    (writeSuccessPostTransactionDataResources
+      (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+      (writeSuccessDecodedBytes witness) (writeSuccessPostData witness))%I
+    ltac:(fun H =>
+      iEval (unfold writeSuccessPostTransactionDataResources) in H;
+      iDestruct H as "[Hdescriptor Hrest]";
+      iEval (unfold writeSuccessDescriptorResources) in "Hdescriptor";
+      iDestruct "Hdescriptor" as "[Harray Hpure]").
+  all: zesu_open_resource_groups.
+  all: repeat first [
+    iMatchHyp ltac:(fun H body =>
+      lazymatch body with
+      | writeSuccessHashesResources _ _ _ =>
+          iEval (unfold writeSuccessHashesResources) in H;
+          iDestruct H as "[? ?]"
+      end)
+    | iMatchHyp ltac:(fun H body =>
+      lazymatch body with
+      | writeSuccessDescriptorResources _ _ =>
+          iEval (unfold writeSuccessDescriptorResources) in H;
+          iDestruct H as "[? ?]"
+      end)].
+  all: zesu_open_resource_groups.
+  all: try zesu_run.
+  all: iSelect
+    (writeSuccessOptionalDescriptorResources
+      (writeSuccessPostConditional1596c (writeSuccessPostData witness))
+      (writeSuccessPostConditional1596cPayload (writeSuccessPostData witness)))%I
+    ltac:(fun H =>
+      iEval (unfold writeSuccessOptionalDescriptorResources) in H;
+      iFrame H).
+  all: iSelect
+    (byteListItemResources
+      (bv_unsigned (writeSuccessPostWord
+        (writeSuccessPostTailWords (writeSuccessDecodedBytes witness)) 14))
+      (writeSuccessPostByteLists159c8 (writeSuccessPostData witness)))%I
+    ltac:(fun H => fail 1 "BYTE159C8_DIRECT_OWNER" H).
+Qed.
