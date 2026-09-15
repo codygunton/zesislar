@@ -90,9 +90,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 240 -
        (base + 288 * Z.of_nat (length processed))) = 240%nat.
-  { rewrite H7. lia. }
+  { rewrite zesu_bv_unsigned_Z_to_bv_small; [lia | bv_solve]. }
   iEval (rewrite Hstart) in "Hprefix240 Hsuffix248".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?zesu_bv_unsigned_Z_to_bv_small ?Z.add_0_r; try bv_solve.
   iFrame "Hprefix240 Hsuffix248".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
@@ -110,9 +110,13 @@ Proof.
   iRename select
     ((_ ↦ₘ Z_to_bv 64
       (little_endian_to_bv 8
-        (take 8 (drop 240
+        (take 8 (drop (Z.to_nat _)
           (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
             transaction)))))%I) into "HwordFinal".
+  iEval (rewrite (zesu_integer_array_byte_equality
+    (base + 288 * Z.of_nat (length processed)) 240
+    (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction)))
+    in "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 248
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
@@ -129,6 +133,11 @@ Proof.
     (writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail)%I
     into "HframeFinal".
+  iRename select ("x12" ↦ᵣ RVal_Bits _)%I into "HregActual".
+  iEval (rewrite (zesu_integer_array_byte_equality
+    (base + 288 * Z.of_nat (length processed)) 240
+    (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction)))
+    in "HregActual".
   iAssert (writeSuccessTransactionsMachine150c0 sp base transactions
     processed transaction) with "[-HarrayFinal HframeFinal]"
     as "HmachineFinal".
