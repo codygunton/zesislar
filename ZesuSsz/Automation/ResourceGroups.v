@@ -15,6 +15,19 @@ Ltac zesu_open_resource_groups :=
     | (⌜_⌝)%I => iDestruct H as %?; try iClear H
     end).
 
+(* Split an instruction bundle only when its first PC is requested. *)
+Ltac zesu_open_requested_instr_bundle :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind ?address _) _) =>
+      iMatchHyp ltac:(fun H body =>
+        lazymatch body with
+        | (instr ?firstAddress _ ∗ _)%I =>
+            constr_eq firstAddress address;
+            iDestruct H as "[? ?]"
+        end)
+  end.
+
 (* Unfold only a package whose first resource is the current goal resource. *)
 Ltac zesu_open_matching_resource_package :=
   zesu_expose_environment_alias;

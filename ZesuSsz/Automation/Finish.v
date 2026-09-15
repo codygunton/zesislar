@@ -318,7 +318,7 @@ Ltac zesu_run_pass :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first [zesu_open_matching_resource_package | zesu_finish_pure_resources | zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume | zesu_liAStep]; liShow;
+  unshelve (time "zesu_run" repeat first [zesu_open_requested_instr_bundle | zesu_open_matching_resource_package | zesu_finish_pure_resources | zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume | zesu_liAStep]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
