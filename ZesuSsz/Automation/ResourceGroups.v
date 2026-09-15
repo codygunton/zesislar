@@ -97,6 +97,33 @@ Ltac zesu_open_matching_array_pure_bundle :=
       end
   end.
 
+(* Open only the first full array inside a nested resource package. *)
+Ltac zesu_open_requested_nested_array_package :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ∗ ?bytes)%I ∗ _)%I =>
+      let requested := constr:((address ↦ₘ∗ bytes)%I) in
+      iMatchHyp ltac:(fun H body =>
+        let outerHead := get_head body in
+        let outer := eval cbv beta zeta delta [outerHead] in body in
+        lazymatch outer with
+        | (?inner ∗ _)%I =>
+            let innerHead := get_head inner in
+            let innerBody := eval cbv beta zeta delta [innerHead] in inner in
+            lazymatch innerBody with
+            | (?first ∗ ⌜_⌝)%I =>
+                constr_eq first requested;
+                progress iEval (unfold outerHead) in H;
+                iDestruct H as "[? ?]";
+                iMatchHyp ltac:(fun Hinner current =>
+                  let currentHead := get_head current in
+                  constr_eq currentHead innerHead;
+                  progress iEval (unfold innerHead) in Hinner;
+                  iDestruct Hinner as "[? ?]")
+            end
+        end)
+  end.
+
 (* Expose the machine collection only for the mstatus field request. *)
 Ltac zesu_open_requested_struct_sys_package :=
   zesu_expose_environment_alias;
