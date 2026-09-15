@@ -9,6 +9,7 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f28.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f2c.
+Require Import ZesuSsz.Automation.All.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
@@ -101,7 +102,7 @@ Proof.
        (base + 288 * Z.of_nat (length processed))) = 24%nat.
   { rewrite H7. lia. }
   iEval (rewrite Hstart) in "Hprefix24 Hsuffix32".
-  rewrite Hstart.
+  rewrite ?Hstart.
   iEval (cbn) in "Hsuffix32".
   rewrite H7 !Z.add_0_r.
   iFrame "Hprefix24 Hsuffix32".
@@ -111,6 +112,7 @@ Proof.
   iFrame.
   repeat iSplit; try (iPureIntro; assumption).
   all: try done.
+  Unshelve. all: try zesu_run.
 Qed.
 
 Lemma write_success_transactions_chunk_14f28
@@ -163,7 +165,7 @@ Proof.
   iEval (rewrite instr_pre'_eq) in "Hbody".
   iApply "Hbody".
   rewrite /writeSuccessTransactionsAt14f28Block.
-  liARun.
+  zesu_run.
   Unshelve. all: prepare_sidecond.
   all: try assumption.
   all: rewrite ?write_success_14f28_current_unsigned; try lia.

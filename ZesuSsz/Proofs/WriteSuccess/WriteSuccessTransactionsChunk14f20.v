@@ -9,6 +9,7 @@ Require Import ZesuSsz.Contracts.IslarisCode.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f1c.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f20.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsBoundary14f24.
+Require Import ZesuSsz.Automation.All.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
@@ -97,7 +98,7 @@ Proof.
        (base + 288 * Z.of_nat (length processed))) = 8%nat.
   { rewrite H7. lia. }
   iEval (rewrite Hstart) in "Hprefix Hsuffix".
-  rewrite Hstart.
+  rewrite ?Hstart.
   iEval (cbn) in "Hsuffix".
   iDestruct (mem_mapsto_array_app 8%N
     (base + 288 * Z.of_nat (length processed) + 16) (DfracOwn 1)
