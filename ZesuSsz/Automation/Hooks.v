@@ -19,6 +19,22 @@ Ltac zesu_normalize_machine_map :=
     machineRamEnd machineOutputAddress machineOutputSizeAddress
     machineExitAddress machinePc defaultMap] in *.
 
+(** Name a machine bound after normalizing its reviewed map fields. *)
+Ltac zesu_name_machine_bound expected name :=
+  let normalizedExpected := eval cbv [mapRamBase mapRamSize
+    mapIoContextAddress mapTextBase machineRamEnd machineOutputAddress
+    machineOutputSizeAddress machineExitAddress machinePc defaultMap Z.add Z.sub]
+    in expected in
+  match goal with
+  | H : ?actual |- _ =>
+      let normalizedActual := eval cbv [mapRamBase mapRamSize
+        mapIoContextAddress mapTextBase machineRamEnd machineOutputAddress
+        machineOutputSizeAddress machineExitAddress machinePc defaultMap Z.add Z.sub]
+        in actual in
+      constr_eq normalizedActual normalizedExpected;
+      rename H into name
+  end.
+
 Ltac zesu_solve_machine_bounds :=
   solve [zesu_normalize_binary_nat_hypotheses;
     zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve].
