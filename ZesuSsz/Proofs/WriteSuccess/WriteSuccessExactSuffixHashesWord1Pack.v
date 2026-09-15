@@ -13,7 +13,7 @@ Lemma suffix_word1_pack_correct `{!islaG Sigma} `{!threadG}
   instr_body 0x15868 (suffixWord1Post sp pointer base source index P) -∗
   instr_body 0x15834 (suffixWord1Mid sp pointer base source index P).
 Proof.
-  zesu_block.
+  zesu_block_simpl.
   all: unfold suffixWordByte; rewrite zesu_assemble_8_bytes
     (zesu_take_8_drop source (index + 8)%nat ltac:(lia)).
   all: repeat rewrite <- Nat.add_assoc; reflexivity.

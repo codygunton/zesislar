@@ -13,6 +13,6 @@ Lemma suffix_word0_load_correct `{!islaG Sigma} `{!threadG}
   instr_body 0x15890 (suffixWord0Mid sp pointer base source index P) -∗
   instr_body 0x15868 (suffixWord0Entry sp pointer base source index P).
 Proof.
-  unfold suffixWord0Mid, suffixWordByte. zesu_block.
+  unfold suffixWord0Mid, suffixWordByte. zesu_block_simpl.
 Qed.
 Print Assumptions suffix_word0_load_correct.
