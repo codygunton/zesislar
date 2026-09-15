@@ -132,11 +132,11 @@ Proof.
   all: try apply write_success_14f5c_array_element_address; try lia.
   Unshelve.
   all: lazymatch goal with
-  | Hlength : length
+  | HtransactionBytesLength : length
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes ?transaction) =
       288%nat,
-    Hunsigned : bv_unsigned (Z_to_bv 64 ?current) = ?current |- _ =>
-      try rewrite Hunsigned;
+    HcurrentLower : 0 <= ?current, HcurrentUpper : ?current + 288 < _ |- _ =>
+      have HcurrentUnsigned : bv_unsigned (Z_to_bv 64 current) = current by (apply write_success_14f5c_current_unsigned; lia); try rewrite HcurrentUnsigned;
       rewrite /IslarisMemory.array_region_start;
       replace (current + 280 - current)%Z with 280%Z by lia; cbn;
       iExists
@@ -167,7 +167,7 @@ Proof.
         Z.to_nat (280 `div` Z.of_N (8 `div` 8)) = 280%nat);
       [ vm_compute; reflexivity | ];
       iEval (rewrite Hstart) in "Hprefix280 Hsuffix281";
-      try rewrite Hunsigned;
+      try rewrite HcurrentUnsigned;
       rewrite Z.add_0_r;
       iFrame "Hprefix280 Hsuffix281";
       repeat iSplit; try iPureIntro; try lia;

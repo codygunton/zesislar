@@ -263,14 +263,14 @@ Proof.
   all: try iFrame.
   Unshelve.
   all: lazymatch goal with
-  | Hlength : length
+  | HtransactionBytesLength : length
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes ?transaction) =
       288%nat,
-    Hunsigned : bv_unsigned (Z_to_bv 64 ?current) = ?current |- _ =>
-      try rewrite Hunsigned;
+    HcurrentLower : 0 <= ?current, HcurrentUpper : ?current + 288 < _ |- _ =>
+      have HcurrentUnsigned : bv_unsigned (Z_to_bv 64 current) = current by (apply write_success_current_unsigned; lia); try rewrite HcurrentUnsigned;
       rewrite /IslarisMemory.array_region_start;
       replace (current + 283 - current)%Z with 283%Z by lia; cbn;
-      iExists
+      first [ solve [change (current + 283 = current + 283)%Z; reflexivity] | iExists
         (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction,
          WriteSuccessTransactionsSpec.writeSuccessTransactionByte
            transaction 283, tt)ₗ;
@@ -296,8 +296,8 @@ Proof.
       iIntros "Hbefore Hafter";
       iFrame;
       repeat iSplit; try iPureIntro; try lia;
-      try apply write_success_transaction_byte_lookup; try lia;
-      liARun
+        try apply write_success_transaction_byte_lookup; try lia;
+        liARun ]
   end.
   Unshelve.
   all: try prepare_sidecond.
