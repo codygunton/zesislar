@@ -16,6 +16,36 @@ Proof.
 Qed.
 Print Assumptions zesu_bv_unsigned_Z_to_bv_small.
 
+(* This offset is integer arithmetic, without a bitvector conversion. *)
+Lemma zesu_integer_array_byte_equality (base offset : Z)
+    (bytes : list (bv 8)) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    (take 8 (drop (Z.to_nat (base + offset - base)) bytes))) =
+  Z_to_bv 64 (little_endian_to_bv 8
+    (take 8 (drop (Z.to_nat offset) bytes))).
+Proof.
+  replace (Z.to_nat (base + offset - base)) with (Z.to_nat offset)
+    by (f_equal; lia).
+  reflexivity.
+Qed.
+Print Assumptions zesu_integer_array_byte_equality.
+
+Global Instance zesu_integer_array_word_inhabited (base offset : Z)
+    (bytes : list (bv 8)) :
+  Inhabited
+    (RVal_Bits (Z_to_bv 64 (little_endian_to_bv 8
+      (take 8 (drop (Z.to_nat (base + offset - base)) bytes)))) =
+     RVal_Bits (Z_to_bv 64 (little_endian_to_bv 8
+      (take 8 (drop (Z.to_nat offset) bytes))))).
+Proof.
+  constructor.
+  rewrite (zesu_integer_array_byte_equality base offset bytes).
+  reflexivity.
+Qed.
+Print Assumptions zesu_integer_array_word_inhabited.
+
+#[export] Hint Resolve zesu_integer_array_byte_equality : core.
+
 Create HintDb zesu_selectors.
 
 #[export] Hint Rewrite zesu_bv_sign_extend_64_idemp

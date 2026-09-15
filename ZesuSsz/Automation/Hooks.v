@@ -278,6 +278,26 @@ Ltac zesu_liAStepGenericWrite :=
  try liAIntroduceLetInGoal;
  zesu_liAWriteMemFocused.
 
+(* Keep a map-bounded current-address witness before Lithium simplifies it. *)
+Ltac zesu_preserve_current_unsigned :=
+  lazymatch goal with
+  | |- bv_unsigned (Z_to_bv 64 ?current) = ?current -> _ =>
+          let ramBase := eval cbv [mapRamBase defaultMap] in
+            (mapRamBase defaultMap) in
+          let ramEnd := eval cbv [machineRamEnd mapRamSize mapRamBase
+            defaultMap Z.add] in (machineRamEnd defaultMap) in
+          match goal with
+          | Hlow : (?lower <= current)%Z,
+            Hhigh : (current + ?extent < ?upper)%Z |- _ =>
+              let reducedLower := eval cbv [mapRamBase defaultMap] in lower in
+              let reducedUpper := eval cbv [machineRamEnd mapRamSize mapRamBase
+                defaultMap Z.add] in upper in
+              constr_eq reducedLower ramBase;
+              constr_eq reducedUpper ramEnd;
+              intro H7
+          end
+  end.
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
@@ -291,6 +311,7 @@ Ltac zesu_liAStep :=
   | liAOther
   | liUnfoldEarly
   | zesu_liInstrPreMatch
+  | zesu_preserve_current_unsigned
   | liStep
   | liLetBindHint
   | liUnfoldLate
