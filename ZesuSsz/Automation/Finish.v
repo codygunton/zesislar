@@ -206,6 +206,7 @@ Ltac zesu_finish :=
   try (timeout 2 zesu_finish_known_list_shape);
   try (timeout 2 zesu_finish_pure_resources);
   try reflexivity;
+  try (timeout 2 zesu_finish_integer_word_image);
   try zesu_finish_packed_word_equality;
   try (timeout 2 (lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64

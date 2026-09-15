@@ -44,6 +44,14 @@ Proof.
 Qed.
 Print Assumptions zesu_integer_array_word_inhabited.
 
+(* Finish the exact byte-word image after the integer base cancels. *)
+Ltac zesu_finish_integer_word_image :=
+  lazymatch goal with
+  | |- RVal_Bits ?loaded = RVal_Bits ?expected =>
+      progress rewrite zesu_integer_array_byte_equality;
+      cbn; reflexivity
+  end.
+
 #[export] Hint Resolve zesu_integer_array_byte_equality : core.
 
 Create HintDb zesu_selectors.
