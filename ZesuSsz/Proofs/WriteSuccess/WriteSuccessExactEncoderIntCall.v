@@ -166,6 +166,8 @@ Definition encoderIntExactReturn `{!islaG Sigma} `{!threadG}
    mmio_range (machineOutputAddress defaultMap) 16 ∗
    spec_trace tail ∗ True)%I.
 
+Global Instance : LithiumUnfold (@encoderIntExactReturn) := I.
+
 Definition zesuEncoderIntExactCallSpec `{!islaG Sigma} `{!threadG}
     : iProp Sigma :=
   (∃ (value sp ret : bv 64) (tail : spec),
