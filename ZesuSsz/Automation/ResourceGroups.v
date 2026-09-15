@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import InstrSpecs.Machine.
 From iris.proofmode Require Import environments.
 
 (* Pure extraction removes its persistent source. Separation keeps both children. *)
@@ -44,6 +45,85 @@ Ltac zesu_open_matching_resource_package :=
               progress iEval (unfold head) in H;
               iDestruct H as "[? ?]"
           end)
+  end.
+
+(* Expose the machine collection only for the mstatus field request. *)
+Ltac zesu_open_requested_struct_sys_package :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _
+      (find_in_context (FindStructRegMapsTo "mstatus" "bits") _) =>
+      iMatchHyp ltac:(fun H body =>
+        let outerHead := get_head body in
+        tryif first [constr_eq outerHead constr:(@bi_sep) |
+                     constr_eq outerHead constr:(@bi_pure)] then fail else
+          let outer := eval cbv beta zeta delta [outerHead] in body in
+          lazymatch outer with
+          | (?inner ∗ _)%I =>
+              let innerHead := get_head inner in
+              let innerBody := eval cbv beta zeta delta [innerHead] in inner in
+              lazymatch innerBody with
+              | (reg_col ?shape ∗ _)%I =>
+                  constr_eq shape constr:(zesu_sys_regs);
+                  progress iEval (unfold outerHead) in H;
+                  iDestruct H as "[? ?]";
+                  iMatchHyp ltac:(fun Hinner current =>
+                    let currentHead := get_head current in
+                    constr_eq currentHead innerHead;
+                    progress iEval (unfold innerHead) in Hinner;
+                    iDestruct Hinner as "[? ?]")
+              end
+          end)
+  end.
+
+(* Branch frames preserve x9 behind their transparent common frame. *)
+Ltac zesu_open_requested_saved_x9_package :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindRegMapsTo "x9") _) =>
+      iMatchHyp ltac:(fun H body =>
+        let outerHead := get_head body in
+        tryif first [constr_eq outerHead constr:(@bi_sep) |
+                     constr_eq outerHead constr:(@bi_pure)] then fail else
+          let outer := eval cbv beta zeta delta [outerHead] in body in
+          let innerHead := get_head outer in
+          let inner := eval cbv beta zeta delta [innerHead] in outer in
+          lazymatch inner with
+          | (reg_col ?other ∗ reg_col ?saved ∗ reg_col ?global ∗
+              "x8" ↦ᵣ RVal_Bits ?old8 ∗ "x9" ↦ᵣ RVal_Bits ?old9 ∗ _)%I =>
+              constr_eq global constr:(
+                [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]);
+              progress iEval (unfold outerHead) in H;
+              progress iEval (unfold innerHead) in H;
+              iDestruct H as "[? ?]";
+              zesu_open_resource_groups
+          end)
+  end.
+
+(* Match the requested first frame resource through two transparent heads. *)
+Ltac zesu_open_matching_two_level_frame :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (?requested ∗ _)%I =>
+      lazymatch requested with
+      | reg_col _ =>
+      iMatchHyp ltac:(fun H body =>
+        let outerHead := get_head body in
+        tryif first [constr_eq outerHead constr:(@bi_sep) |
+                     constr_eq outerHead constr:(@bi_pure)] then fail else
+          let outer := eval cbv beta zeta delta [outerHead] in body in
+          let innerHead := get_head outer in
+          tryif first [constr_eq innerHead constr:(@bi_sep) |
+                       constr_eq innerHead constr:(@bi_pure)] then fail else
+            let inner := eval cbv beta zeta delta [innerHead] in outer in
+            lazymatch inner with
+            | (?first ∗ _)%I =>
+                constr_eq first requested;
+                progress iEval (unfold outerHead) in H;
+                progress iEval (unfold innerHead) in H;
+                iDestruct H as "[? ?]"
+            end)
+      end
   end.
 
 Ltac zesu_is_pure_resource body :=
