@@ -5,6 +5,8 @@ Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Automation.ArraySlices.
+Require Import ZesuSsz.Automation.Rewrites.
+Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
@@ -19,11 +21,15 @@ Ltac zesu_saturate_alignment :=
 
 Ltac zesu_finish_little_endian :=
   match goal with
-  | |- context[Z_to_little_endian _ _ _] =>
-      rewrite /Z_to_little_endian /=;
-      rewrite !Z.land_ones; [|lia..];
-      rewrite !Z.shiftr_div_pow2; [|lia..];
-      repeat eexists; repeat split; reflexivity
+  | |- context[Z_to_little_endian _ _ ?value] =>
+      first
+        [let reduced := eval vm_compute in value in
+         lazymatch reduced with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
+         solve [timeout 2 (vm_compute; reflexivity)]
+        |rewrite /Z_to_little_endian /=;
+         rewrite !Z.land_ones; [|lia..];
+         rewrite !Z.shiftr_div_pow2; [|lia..];
+         repeat eexists; repeat split; reflexivity]
   end.
 
 Ltac zesu_finish_tag_bound :=
@@ -35,6 +41,23 @@ Ltac zesu_finish_mask :=
   | |- bv_and _ _ = _ =>
       solve [apply bv_eq; rewrite bv_and_unsigned; simpl; assumption]
   end.
+
+Ltac zesu_finish_extract_alias :=
+  lazymatch goal with
+  | |- context[bv_extract _ _ _] => cbv zeta
+  end;
+  match goal with
+  | H : bv_extract ?start ?count ?value = ?bits
+    |- bv_extract ?start ?count ?alias = ?bits =>
+      change alias with value; exact H
+  end.
+
+Ltac zesu_finish_list_slice_length :=
+  lazymatch goal with
+  | |- context[length (take _ _)] => idtac
+  | |- context[length (drop _ _)] => idtac
+  end;
+  solve [cbn; rewrite ?length_take ?length_drop; lia].
 
 Ltac zesu_finish_constant :=
   lazymatch goal with
@@ -158,6 +181,13 @@ Ltac zesu_finish_known_list_shape :=
     solve [zesu_normalize_known_list_lengths; lia] |
     solve [bv_solve]].
 
+Ltac zesu_finish_selectors :=
+  lazymatch goal with
+  | |- @eq _ _ _ =>
+      timeout 2 (autounfold with zesu_selectors;
+        zesu_normalize_stack_array_indices; reflexivity)
+  end.
+
 Ltac zesu_finish :=
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
@@ -169,6 +199,7 @@ Ltac zesu_finish :=
         prepare_sidecond]
   | _ => unLET
   end;
+  try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
   try (timeout 2 zesu_normalize_array_cursors);
@@ -184,6 +215,8 @@ Ltac zesu_finish :=
   try simpl;
   try done;
   try assumption;
+  try zesu_finish_extract_alias;
+  try (timeout 2 zesu_finish_list_slice_length);
   zesu_normalize_nat_powers;
   try zesu_finish_tag_bound;
   try zesu_finish_mask;
@@ -282,9 +315,10 @@ Ltac zesu_pack_owned_register_goal :=
   end.
 
 Ltac zesu_run_pass :=
+  zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first [zesu_finish_pure_resources | zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume | zesu_liAStep]; liShow;
+  unshelve (time "zesu_run" repeat first [zesu_open_matching_resource_package | zesu_finish_pure_resources | zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal | zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume | zesu_liAStep]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -310,9 +344,27 @@ Ltac zesu_expose_code_lists :=
   end;
   cbn [big_opL take drop fst snd].
 
+Ltac zesu_reduce_introduced_code_lists :=
+  repeat iMatchHyp ltac:(fun H body =>
+    lazymatch body with
+    | context [big_opL _ _ _] =>
+        let reduced := eval cbn in body in
+        tryif constr_eq reduced body then fail else
+          iEval (cbn) in H
+    end).
+
 Ltac zesu_block :=
   iStartProof;
   zesu_expose_code_lists;
+  repeat first [progress iIntros (?) | progress iIntros "#?" |
+    progress iIntros "?"];
+  zesu_reduce_introduced_code_lists;
+  repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+  zesu_run.
+
+Ltac zesu_block_simpl :=
+  iStartProof;
+  simpl;
   repeat first [progress iIntros (?) | progress iIntros "#?" |
     progress iIntros "?"];
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";

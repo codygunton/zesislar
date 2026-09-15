@@ -44,6 +44,8 @@ Definition subsume_instr_pre_zesu_inst `{!islaG Sigma} `{!threadG} :=
   [instance subsume_instr_pre_zesu].
 Global Existing Instance subsume_instr_pre_zesu_inst | 0.
 
+Global Existing Instance subsume_instr_some_pre_inst | 20.
+
 Print Assumptions zesu_instr_pre_match_identity.
 Print Assumptions zesu_instr_pre_match_wand.
 Print Assumptions subsume_instr_pre_zesu.

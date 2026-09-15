@@ -8,6 +8,34 @@ From IslaTraces.write_success_32 Require Import a15048.
 
 Import ZesuSsz.Automation.Hooks.
 
+Lemma finish_extract_alias (value : bv 64) (bits : bv 1) :
+  bv_extract 0 1 value = bits ->
+  let alias := value in bv_extract 0 1 alias = bits.
+Proof.
+  intros Hbits. zesu_finish_extract_alias.
+Qed.
+Print Assumptions finish_extract_alias.
+
+Lemma finish_list_slice_length (xs : list nat) (count : nat) :
+  length (take count xs) <= length xs.
+Proof. zesu_finish_list_slice_length. Qed.
+Print Assumptions finish_list_slice_length.
+
+Lemma finish_little_endian_constant :
+  Z_to_little_endian 8 1 0 = [0%Z; 0%Z; 0%Z; 0%Z;
+    0%Z; 0%Z; 0%Z; 0%Z].
+Proof. zesu_finish_little_endian. Qed.
+Print Assumptions finish_little_endian_constant.
+
+Lemma finish_introduced_code_list `{!islaG Sigma} (P : iProp Sigma) :
+  ([∗ list] x ∈ [1%nat; 2%nat], P)%I -∗ P ∗ P.
+Proof.
+  iStartProof. iIntros "Hlist".
+  zesu_reduce_introduced_code_lists.
+  iDestruct "Hlist" as "[HP1 [HP2 _]]". iFrame.
+Qed.
+Print Assumptions finish_introduced_code_list.
+
 #[local] Hint Rewrite zesu_bv_sign_extend_same : isla_coq_rewrite.
 #[local] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
   : isla_coq_rewrite lithium_rewrite.

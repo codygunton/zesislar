@@ -3,6 +3,42 @@ Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Resources.
 
+Definition resource_groups_closed_package `{!islaG Sigma}
+    (address : Z) (word : bv 64) (P : iProp Sigma) : iProp Sigma :=
+  (address ↦ₘ word ∗ P ∗ True)%I.
+
+Lemma resource_groups_open_matching_package `{!islaG Sigma}
+    (address : Z) (word : bv 64) (P Q : iProp Sigma) :
+  resource_groups_closed_package address word P -∗ Q -∗
+  address ↦ₘ word ∗ Q ∗ P ∗ True.
+Proof.
+  iStartProof. iIntros "Hpackage HQ". zesu_run.
+Qed.
+Print Assumptions resource_groups_open_matching_package.
+
+Lemma resource_groups_assumption_first_pure `{!islaG Sigma} `{!threadG}
+    (fact : Prop) (P : iProp Sigma) :
+  fact -> P -∗ (P ∗ ⌜fact⌝ ∗ ⌜fact⌝ ∗ True)%I.
+Proof.
+  intros Hfact. iStartProof. iIntros "HP". iFrame.
+  zesu_finish_pure_resources.
+Qed.
+Print Assumptions resource_groups_assumption_first_pure.
+
+Lemma resource_groups_environment_alias `{!islaG Sigma}
+    (P : iProp Sigma) :
+  P -∗ P ∗ True.
+Proof.
+  iStartProof. iIntros "HP".
+  lazymatch goal with
+  | |- environments.envs_entails ?current ?requested =>
+      pose (IPM_JANNO := current);
+      change (environments.envs_entails IPM_JANNO requested)
+  end.
+  zesu_expose_environment_alias. iFrame.
+Qed.
+Print Assumptions resource_groups_environment_alias.
+
 Lemma resource_groups_array_frame `{!islaG Sigma}
     (address : Z) (bytes : list (bv 8)) (word : bv 64) (P : iProp Sigma) :
   (address ↦ₘ word ∗ (address + 8)%Z ↦ₘ∗ bytes ∗ P) -∗
