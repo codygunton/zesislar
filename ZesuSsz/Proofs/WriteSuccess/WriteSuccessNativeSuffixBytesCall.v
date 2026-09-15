@@ -75,6 +75,7 @@ Global Instance : LithiumUnfold
     (@writeSuccessPost1593cCallReturnSpec) := I.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
+Local Remove Hints subsume_instr_pre_zesu_inst : typeclass_instances.
 
 Lemma write_success_post_1593c_byte_lists_call
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

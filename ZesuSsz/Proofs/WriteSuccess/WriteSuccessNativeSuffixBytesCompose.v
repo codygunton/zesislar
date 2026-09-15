@@ -17,6 +17,7 @@ Definition writeSuccessSuffixBytesCarrierOtherRegisters : list string :=
    "x26"; "x27"; "x28"; "x29"; "x30"; "x31"].
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
+Local Remove Hints subsume_instr_pre_zesu_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
 Definition writeSuccessSuffixBytesAggregateEntry `{!islaG Sigma} `{!threadG}

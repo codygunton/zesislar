@@ -682,40 +682,52 @@
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBooleanSetupCompose.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0Carrier.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158f0.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15900.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15910.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15920.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCall.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCompose.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixIntPair.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixLoadBranchSegment.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixRoot.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterDispatcher.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -1201,7 +1213,8 @@
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueBlock.v": {
-      "Local Remove Hints subsume_instr_pre'_inst": 1
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueTransactions.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -1220,6 +1233,9 @@
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsTail.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpy.v": {
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     }
   }
 }

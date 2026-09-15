@@ -6,6 +6,7 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixScalarSetups.
 
 Local Remove Hints subsume_instr_pre'_inst : typeclass_instances.
+Local Remove Hints subsume_instr_pre_zesu_inst : typeclass_instances.
 Local Existing Instance subsume_instr_pre_wand_inst | 1.
 
 Definition writeSuccessSuffixBooleanSetupSource
