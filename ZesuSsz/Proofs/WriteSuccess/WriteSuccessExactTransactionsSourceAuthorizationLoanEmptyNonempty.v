@@ -10,6 +10,9 @@ Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactTransactionsSourceAuthorizationSpec.
+From ZesuSsz.Proofs.WriteSuccess Require Import
+  WriteSuccessExactTransactionsSourceAuthorizationBorrowEmptyNonempty
+  WriteSuccessExactTransactionsSourceAuthorizationRestoreEmptyNonempty.
 
 Lemma transactions_source_authorization_memory_emptynonempty `{!islaG Sigma} `{!threadG}
     sp base bytes processed index dataBytes accessBytes chainBytes entries
@@ -23,22 +26,14 @@ Lemma transactions_source_authorization_memory_emptynonempty `{!islaG Sigma} `{!
   transactionSourceAuthorizationLoan sp base bytes processed index dataBytes accessBytes
     chainBytes entries [] (auth :: authBytes) Q.
 Proof.
-  intros HstackHigh.
-  iStartProof; iIntros "Hframe";
-  iEval (unfold transactionSourceBlobFeeRetained) in "Hframe";
-  iDestruct "Hframe" as (pointer storedIndex)
-    "(H19 & H22 & Hregs & Hblob & Hcount & Haccess & Hown & HaccessBase & HaccessCount &
-      HaccessIndex & Hcopy & Hkeys & Hlower & Hrec0 & Hrec1 & Hrec2 & Htag & Hvalue &
-      Hdata & Hchain & Hmemory & _)";
-  iDestruct "Hkeys" as (key0 key1 key2 key3) "Hkeys";
-  iEval (unfold transactionFieldSourceFeeRest, writeSuccessByteArrayOwn) in "Hmemory Hblob";
-  let shapes := eval vm_compute in WriteSuccessExactBlobHashesAuthorizationEntry.blobAuthorizationRemainingShapes in
-  iEval (replace WriteSuccessExactBlobHashesAuthorizationEntry.blobAuthorizationRemainingShapes
-    with shapes by reflexivity) in "Hregs";
-  zesu_open_resource_groups;
-  zesu_open_bits_registers;
-  unfold transactionSourceAuthorizationLoan, transactionSourceAuthorizationBorrowed,
-    transactionSourceBlobFeeRetained, transactionFieldSourceFeeRest, writeSuccessByteArrayOwn;
-  cbn; zesu_run; try bv_solve.
+  intros HstackHigh. iIntros "Hframe".
+  iPoseProof (transactions_source_authorization_borrow_emptynonempty sp base bytes processed index
+    dataBytes accessBytes chainBytes entries auth authBytes Q HstackHigh
+    with "Hframe") as "[Hborrowed Hremaining]".
+  iSplitL "Hborrowed"; first iExact "Hborrowed".
+  unfold transactionSourceAuthorizationLoan. iIntros "Hborrowed".
+  iApply (transactions_source_authorization_restore_emptynonempty sp base bytes processed index
+    dataBytes accessBytes chainBytes entries auth authBytes Q
+    with "Hborrowed Hremaining").
 Qed.
 Print Assumptions transactions_source_authorization_memory_emptynonempty.
