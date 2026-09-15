@@ -294,9 +294,25 @@ Ltac zesu_run :=
     (zesu_run_pass; try zesu_solve_instances; zesu_finish));
   try zesu_solve_instances.
 
+Ltac zesu_expose_code_list instructions :=
+  lazymatch instructions with
+  | take _ ?tail => zesu_expose_code_list tail
+  | drop _ ?tail => zesu_expose_code_list tail
+  | ?left ++ ?right =>
+      first [zesu_expose_code_list left | zesu_expose_code_list right]
+  | _ => progress (unfold instructions)
+  end.
+
+Ltac zesu_expose_code_lists :=
+  repeat match goal with
+  | |- context [big_opL _ _ ?instructions] =>
+      zesu_expose_code_list instructions
+  end;
+  cbn [big_opL take drop fst snd].
+
 Ltac zesu_block :=
   iStartProof;
-  simpl;
+  zesu_expose_code_lists;
   repeat first [progress iIntros (?) | progress iIntros "#?" |
     progress iIntros "?"];
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
