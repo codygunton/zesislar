@@ -7,6 +7,7 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index HintsValueBlock.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Contracts.IslarisCode.
+Local Remove Hints subsume_instr_some_pre_inst : typeclass_instances.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccess.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallAbi.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
