@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Local Remove Hints subsume_instr_pre_zesu_inst : typeclass_instances.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -178,4 +179,3 @@ Proof.
   all: try lia.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
-

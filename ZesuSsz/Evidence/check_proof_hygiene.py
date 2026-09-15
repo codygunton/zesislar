@@ -33,6 +33,7 @@ FORBIDDEN_IDENTIFIERS = (
     "zesu_ld_array_at_spec",
     "solve_zesu_ld_array_at",
     "mem_mapsto_array_recombine_u64_read",
+    "Local Remove Hints subsume_instr_pre'_inst",
 )
 A1_MODULES = (
     "ZesuSsz.Contracts.InstructionBoundary",

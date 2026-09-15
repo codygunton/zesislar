@@ -11,22 +11,28 @@
       "mem_mapsto_array_recombine_u64_read": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v": {
-      "mem_mapsto_array_recombine_u64_read": 1
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk1521c.v": {
-      "mem_mapsto_array_recombine_u64_read": 2
+      "mem_mapsto_array_recombine_u64_read": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v": {
-      "mem_mapsto_array_recombine_u64_read": 1
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstU256.v": {
-      "mem_mapsto_array_recombine_u64_read": 4
+      "mem_mapsto_array_recombine_u64_read": 4,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v": {
-      "mem_mapsto_array_recombine_u64_read": 1
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSpec.v": {
-      "mem_mapsto_array_recombine_u64_read": 4
+      "mem_mapsto_array_recombine_u64_read": 4,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw94.v": {
       "zesu_lbu_byte_array_at_spec": 1
@@ -35,16 +41,20 @@
       "zesu_lbu_byte_array_at_spec": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ACore.v": {
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BCore.v": {
-      "zesu_lbu_byte_array_at_spec": 1
+      "zesu_lbu_byte_array_at_spec": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Core.v": {
-      "zesu_lbu_byte_array_at_spec": 1
+      "zesu_lbu_byte_array_at_spec": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15ACore.v": {
-      "zesu_lbu_byte_array_at_spec": 1
+      "zesu_lbu_byte_array_at_spec": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BCore.v": {
       "zesu_lbu_byte_array_at_spec": 1
@@ -158,267 +168,1058 @@
       "solve_zesu_ld_array_at": 2
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe0.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe4.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe8.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fec.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15018.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1501cRaw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15020Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15024Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15044Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15048Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15050Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15058Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15078Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15080Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15088Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15090Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1509cRaw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a0Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a8Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b4Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150bcRaw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c4Raw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ccRaw.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v": {
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f70.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f74.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f78.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f7c.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f80.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f84.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f88.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f8c.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f98.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f9c.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa0.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa4.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb0.v": {
-      "solve_zesu_ld_array_at": 2
+      "solve_zesu_ld_array_at": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe0.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe4.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe8.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fec.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15018.v": {
-      "zesu_lbu_byte_array_at_spec": 2
+      "zesu_lbu_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v": {
       "mem_mapsto_array_recombine_u64_read": 3,
-      "solve_zesu_ld_array_at": 3
+      "solve_zesu_ld_array_at": 3,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
       "solve_zesu_ld_array_at": 1,
-      "zesu_ld_byte_array_at_spec": 1
+      "zesu_ld_byte_array_at_spec": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
       "mem_mapsto_array_recombine_u64_read": 2,
       "solve_zesu_ld_array_at": 2,
-      "zesu_ld_byte_array_at_spec": 2
+      "zesu_ld_byte_array_at_spec": 2,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadArray.v": {
       "mem_mapsto_array_recombine_u64_read": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadCore.v": {
-      "zesu_ld_byte_array_at_spec": 1
+      "zesu_ld_byte_array_at_spec": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadArray.v": {
       "mem_mapsto_array_recombine_u64_read": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadCore.v": {
-      "zesu_ld_byte_array_at_spec": 1
+      "zesu_ld_byte_array_at_spec": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v": {
       "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1
+      "solve_zesu_ld_array_at": 1,
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/Tests/LegacyGuardedCalls.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk151dc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15200.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153b4Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153b8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153bc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopBody.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsSpec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorage.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsTail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsMemcpy.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsOutput.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsRest.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondU256.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsTail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsThirdU256.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2B.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2C.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2D.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesLoop.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment01A.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment01B.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02B.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment03.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment04.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment05.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment06.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment07.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment08.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment09.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment10.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment11.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment12.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13A.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13B.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment16.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment18.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment19.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment20.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSpec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessByteLists.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessContract.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderU256Output.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload158e0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload158e0At.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload158f0At.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload15900At.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload15910At.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload15920At.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueSuffix.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoop.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopSpec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopTail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopWord0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopWord1.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopWord2.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopWord3.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoopCommon.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBooleanSetupCompose.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0Carrier.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158f0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15900.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15910.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15920.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCall.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCompose.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixIntPair.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixLoadBranchSegment.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixRoot.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterDispatcher.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysLoop.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysOutput.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment01.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment02.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment03.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment04.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment05.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment06.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment07.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment08.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment09.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment10.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment11.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment12.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment13.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment14.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment15.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment16.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment17.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18Core.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18Tail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment19.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment20.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSpec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysTail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry15740.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Return.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions15154To15158.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions15158Branches.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessLists.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier10190Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8SomeCall.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f08.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fc8To14fe0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14ff0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15028Store.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150d8To150ec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ecCall.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ecJump.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150f0Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk10190Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f08Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f30.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f38.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f40.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f50.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f90.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fc8Prefix.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fc8To14fe0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14ff0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15028Prefix.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15048.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1505c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1508c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15094.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15098.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ac.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150dc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e4Phase.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e8Auipc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ecJump.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0NoneEntry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0SomeEntry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0Spec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8Jump.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8NoneCall.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8SomeCall.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8SomeEntry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcAuipc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcAuipcBlock.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcEntry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcLoadCore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15104Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15108.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15118.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15148.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154SomePrefix.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1519cTo151a0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a0To151a4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4LoadCore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4To151ac.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151acAuipc.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Defs.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Handoff.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0HandoffEmpty.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0HandoffNonempty.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Helpers.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Main.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153d0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15564.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15564Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15574.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15574Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15584.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15584Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1558cBranch.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15620.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15620Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1562cEntry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15640Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15644Entry.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15658Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoop.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierCompose.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCompose.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15194.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15198.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15168.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1516c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15170.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15174.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15178.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1517c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668Data.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566cData.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670Data.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Call.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Data.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalr.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalrStrong.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Events.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNone.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneCall.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneCoreProof.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneSetup.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSome.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeCall15124.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeCoreProof.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeIntCall15134.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeSetup15124.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsTail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueBlock.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueTransactions.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsIterationBody.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsMemcpy.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsSpec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsTail.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1
     }
   }
 }
