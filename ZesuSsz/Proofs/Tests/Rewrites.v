@@ -50,5 +50,16 @@ Proof.
   zesu_normalize_integer_array_handoff.
 Qed.
 
+Lemma normalize_integer_array_handoff_preserves_iris
+    `{!islaG Sigma} `{!threadG} (current : Z) :
+  (bv_unsigned (Z_to_bv 64 current) ↦ₘ? 8)%I -∗
+  (bv_unsigned (Z_to_bv 64 current) ↦ₘ? 8)%I.
+Proof.
+  iIntros "Hcurrent".
+  zesu_normalize_integer_array_handoff.
+  iExact "Hcurrent".
+Qed.
+
 Print Assumptions normalize_integer_array_handoff_from_bounds.
 Print Assumptions normalize_integer_array_handoff_after_rewrite.
+Print Assumptions normalize_integer_array_handoff_preserves_iris.

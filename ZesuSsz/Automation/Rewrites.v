@@ -57,18 +57,25 @@ Ltac zesu_normalize_integer_array_handoff :=
   repeat match goal with
   | Hstart : Z.to_nat ?source = ?target |- context[Z.to_nat ?source] =>
       rewrite Hstart
-  | Hunsigned : bv_unsigned (Z_to_bv 64 ?value) = ?value
-      |- context[bv_unsigned (Z_to_bv 64 ?value)] =>
-      rewrite Hunsigned
   end;
-  repeat match goal with
-  | |- context[bv_unsigned (Z_to_bv 64 ?value)] =>
-      let Hunsigned := fresh "Hunsigned" in
-      assert (Hunsigned : bv_unsigned (Z_to_bv 64 value) = value) by
-        (apply zesu_bv_unsigned_Z_to_bv_small; bv_solve);
-      rewrite Hunsigned; clear Hunsigned
+  lazymatch goal with
+  | |- envs_entails _ _ => idtac
+  | _ =>
+    repeat match goal with
+    | Hunsigned : bv_unsigned (Z_to_bv 64 ?value) = ?value
+        |- context[bv_unsigned (Z_to_bv 64 ?value)] =>
+        rewrite Hunsigned
+    end;
+    repeat match goal with
+    | |- context[bv_unsigned (Z_to_bv 64 ?value)] =>
+        let Hunsigned := fresh "Hunsigned" in
+        assert (Hunsigned : bv_unsigned (Z_to_bv 64 value) = value) by
+          (apply zesu_bv_unsigned_Z_to_bv_small; bv_solve);
+        rewrite Hunsigned; clear Hunsigned
+    end;
+    rewrite ?Z.add_0_r;
+    try lia
   end;
-  rewrite ?Z.add_0_r;
   try lia.
 
 #[export] Hint Resolve zesu_integer_array_byte_equality : core.
