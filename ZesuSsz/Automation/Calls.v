@@ -23,9 +23,7 @@ Definition subsume_instr_pre_guard_inst `{!islaG Sigma} `{!threadG} :=
    Legacy boundaries can require contravariant resource matching instead. *)
 
 Module FramedContinuations.
-  (** Callers import this module when their continuation also owns a frame.
-      Keep this search rule separate from identity-resource block matching. *)
-  #[export] Existing Instance subsume_instr_pre_wand_inst | 0.
+  (** Compatibility module for callers that imported the former local rule. *)
 End FramedContinuations.
 
 Lemma reg_col_exact_bv_to_bits `{!islaG Sigma} `{!threadG}

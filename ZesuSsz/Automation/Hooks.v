@@ -4,6 +4,7 @@ From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
+Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
 
 (** Give Lithium its separating-conjunction goal form. *)
@@ -123,6 +124,34 @@ Ltac zesu_solve_pending_sidecond :=
   lazymatch goal with
   | |- envs_entails _ _ => fail
   | _ => prepare_sidecond; first [assumption | bv_solve | lia]
+  end.
+
+Ltac zesu_tuple_witness T :=
+  lazymatch T with
+  | li_prod ?A ?B =>
+      let head := open_constr:(_ : A) in
+      let tail := zesu_tuple_witness B in constr:(li_pair head tail)
+  | unit => constr:(tt)
+  end.
+
+Ltac zesu_liInstrPreMatch :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ ?T ?body) =>
+      let witness := zesu_tuple_witness T in
+      let instantiated := eval cbv beta in (body witness) in
+      lazymatch instantiated with
+      | zesu_instr_pre_match _ _ _ =>
+          notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+      end
+  | |- envs_entails _ (zesu_instr_pre_match ?available ?requested _) =>
+      first
+        [ unify available requested with typeclass_instances;
+          notypeclasses refine
+            (tac_fast_apply
+              (zesu_instr_pre_match_identity _ _ _ eq_refl) _)
+        | assert_fails (has_evar requested);
+          notypeclasses refine
+            (tac_fast_apply (zesu_instr_pre_match_wand _ _ _) _) ]
   end.
 
 Ltac zesu_normalize_output_address :=
@@ -261,6 +290,7 @@ Ltac zesu_liAStep :=
   | liAExp
   | liAOther
   | liUnfoldEarly
+  | zesu_liInstrPreMatch
   | liStep
   | liLetBindHint
   | liUnfoldLate

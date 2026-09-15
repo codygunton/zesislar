@@ -329,14 +329,6 @@ Ltac zesu_finish_array_branch :=
         bv_simplify Htag; bv_simplify Hbranch; lia
     end].
 
-Ltac zesu_tuple_witness T :=
-  lazymatch T with
-  | li_prod ?A ?B =>
-      let head := open_constr:(_ : A) in
-      let tail := zesu_tuple_witness B in constr:(li_pair head tail)
-  | unit => constr:(tt)
-  end.
-
 Ltac zesu_instantiate_tuple :=
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ ?T _) =>
