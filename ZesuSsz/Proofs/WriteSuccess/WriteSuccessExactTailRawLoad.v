@@ -42,11 +42,17 @@ Proof.
   Unshelve. all: try zesu_finish.
   - have Hindex9 : Z.to_nat
       ((bv_unsigned sp + 1104 - (bv_unsigned sp + 1032)) `div` 8) = 9%nat by lia.
-    rewrite Hindex9 in H10. rewrite lookup_take in H10; last lia.
-    unfold WriteSuccessValueBlock.writeSuccessValueWord. rewrite H10. reflexivity.
+    match goal with H : (take 69 values !! Z.to_nat
+        ((bv_unsigned sp + 1104 - (bv_unsigned sp + 1032)) `div` 8) = Some vmem) |- _ =>
+      rename H into HvalueWord9 end.
+    rewrite Hindex9 in HvalueWord9. rewrite lookup_take in HvalueWord9; last lia.
+    unfold WriteSuccessValueSpec.writeSuccessValueWord. rewrite HvalueWord9. reflexivity.
   - have Hindex10 : Z.to_nat
       ((bv_unsigned sp + 1112 - (bv_unsigned sp + 1032)) `div` 8) = 10%nat by lia.
-    rewrite Hindex10 in H20. rewrite lookup_take in H20; last lia.
-    unfold WriteSuccessValueBlock.writeSuccessValueWord. rewrite H20. reflexivity.
+    match goal with H : (take 69 values !! Z.to_nat
+        ((bv_unsigned sp + 1112 - (bv_unsigned sp + 1032)) `div` 8) = Some vmem0) |- _ =>
+      rename H into HvalueWord10 end.
+    rewrite Hindex10 in HvalueWord10. rewrite lookup_take in HvalueWord10; last lia.
+    unfold WriteSuccessValueSpec.writeSuccessValueWord. rewrite HvalueWord10. reflexivity.
 Qed.
 Print Assumptions exact_tail_raw_load.
