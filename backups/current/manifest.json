@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-15T15:00:33.724719+00:00",
+  "captured_utc": "2026-09-15T15:42:23.526597+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "24d0d752ff4c4f0f43eb643bbf89c410f35cadb4740b4b8065acd64ec2cdf2c1",
-      "bytes": 123534
+      "sha256": "c5d34eb1743fa387c4ebadcabac498479cd16e6a1afa73eae82be4fe483e9076",
+      "bytes": 125301
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -126,6 +126,12 @@
       "snapshot": "tail/PostDataConditionalAdapterProbe.v.txt",
       "sha256": "729a7e1b47aeaa4692c6d6e447b25e33da5a5ae03fcb0eb01cfef3a2a9eabe6d",
       "bytes": 3220
+    },
+    {
+      "source": ".worktrees/islaris-native/AGENTS.md",
+      "snapshot": "root/AGENTS.md.txt",
+      "sha256": "7fce53b9094507293c03a383a6d81eb0afedb66b7cf436956bd0448d0d6e5995",
+      "bytes": 8044
     }
   ]
 }
