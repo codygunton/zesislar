@@ -149,7 +149,7 @@ Proof.
   iDestruct select (_ ∗ _)%I as "Hother".
   iRename select (reg_col zesu_ram_sys_regs)%I into "HsysFinal".
   iRename select (spec_trace _)%I into "HtraceFinal".
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "HmmioFinal".
+  iRename select (mmio_range (604086456 + 8) 16)%I into "HmmioFinal".
   iAssert (writeSuccessTransactionsMachine15148
       sp base transactions processed transaction)%I
     with "[-Hframe HmmioFinal HtraceFinal]" as "Hmachine".
