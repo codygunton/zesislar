@@ -104,12 +104,10 @@ Proof.
   lazymatch goal with
   | H : bv_unsigned sp `mod` 16 = 0 |- _ => rename H into Halign
   end.
-  lazymatch goal with
-  | H : (mapRamBase defaultMap) <= bv_unsigned sp - 48 |- _ => rename H into Hmin
-  end.
-  lazymatch goal with
-  | H : bv_unsigned sp + 1896 < (machineRamEnd defaultMap) |- _ => rename H into Hmax
-  end.
+  zesu_name_machine_bound
+    ((mapRamBase defaultMap) <= bv_unsigned sp - 48) Hmin.
+  zesu_name_machine_bound
+    (bv_unsigned sp + 1896 < (machineRamEnd defaultMap)) Hmax.
   unfold TRACE_LET.
   do 8 liAStep.
   unfold li_tactic, regcol_compute_hint.
@@ -163,8 +161,7 @@ Proof.
   all: rewrite /writeSuccessTransactionsMachine151b0 /reg_col.
   all: cbn. all: iFrame.
   all: repeat iSplit; try (iPureIntro; cbn; done).
-  all: rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
-  all: iExists (RVal_Bits b). all: iFrame. all: iPureIntro; cbn; done.
+  all: zesu_run.
 Qed.
 (**
   all: iRename select ("x1" ↦ᵣ RVal_Bits _)%I into "Hx1Current".
