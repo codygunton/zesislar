@@ -47,6 +47,28 @@ Ltac zesu_open_matching_resource_package :=
           end)
   end.
 
+(* Open a let-bound copied-word package only for its requested first word. *)
+Ltac zesu_open_matching_copied_word_package :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ ?value)%I ∗ _)%I =>
+      iMatchHyp ltac:(fun H body =>
+        let head := get_head body in
+        tryif first [constr_eq head constr:(@bi_sep) |
+                     constr_eq head constr:(@bi_pure)] then fail else
+          let symbolic := eval cbv beta delta [head] in body in
+          lazymatch symbolic with
+          | let words := ?tailWords in ?resources =>
+              let expanded := eval cbv beta zeta delta [head] in body in
+              lazymatch expanded with
+              | (?first ∗ _)%I =>
+                  constr_eq first constr:((address ↦ₘ value)%I);
+                  progress iEval (unfold head) in H;
+                  iDestruct H as "[? ?]"
+              end
+          end)
+  end.
+
 (* Open a two-array package only when its first full array is requested. *)
 Ltac zesu_open_requested_exact_array_pair :=
   lazymatch goal with
