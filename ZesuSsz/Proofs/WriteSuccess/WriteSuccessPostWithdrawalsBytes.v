@@ -148,7 +148,7 @@ Ltac prepare_post_withdrawals_bytes_call sp data size bytes tail
   try iEval (cbn) in "Hsaved";
   try iDestruct "Hsaved" as
     "(H8 & H9 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & _)";
-  try iRename select (mmio_range (machineOutputAddress defaultMap) 16) into "Hmmio";
+  iRename select (mmio_range _ 16) into "Hmmio";
   try iRename select ("x2" ↦ᵣ RVal_Bits sp)%I into "H2";
   try iRename select ("x5" ↦ᵣ RVal_Bits _)%I into "H5";
   try iRename select ("x6" ↦ᵣ RVal_Bits _)%I into "H6";
