@@ -1,0 +1,49 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountModel.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntFramedCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalsBranchSpec.
+
+Lemma exact_tail_status_set_x18_probe `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) :
+  writeSuccessCompleteNativeCode -∗
+  □ instr_pre 0x15690 (exactTailWithdrawalBranchResources args witness P) -∗
+  instr_body 0x1568c (exactTailWithdrawalCountReturn args witness P).
+Proof.
+  iStartProof. iIntros "#Hnative #Hnext".
+  iEval (rewrite /writeSuccessCompleteNativeCode) in "Hnative".
+  iDestruct "Hnative" as
+    "(#Hprologue & #Hlookup & #Hmain & #Houtput & #Hmemcpy & #Hboolean &
+      #Hoptional & #Hlists & #Hbytes & #Hint & #Hu256 & #Hu128)".
+  zesu_block. Unshelve.
+  all: zesu_open_resource_groups.
+  all: try zesu_run.
+  all: iIntros "Hoptional".
+  all: try zesu_run.
+  all: iEval (unfold exactTailWithdrawalBranchResources).
+  all: iMatchHyp ltac:(fun H body =>
+    let head := get_head body in
+    idtac "STATUS_AVAILABLE_HEAD" H head;
+    fail 0).
+  all: lazymatch goal with
+    | |- environments.envs_entails _ (?first ∗ _)%I =>
+        let head := get_head first in fail "STATUS_SET_X18_FIRST_HEAD" head
+    | |- environments.envs_entails _ ?wanted =>
+        lazymatch wanted with
+        | (?antecedent -∗ ?rest)%I =>
+            let next := get_head rest in
+            fail "STATUS_SET_X18_WAND" antecedent next
+        | _ =>
+            let head := get_head wanted in fail "STATUS_SET_X18_WHOLE_HEAD" head
+        end
+    | |- ?wanted =>
+        let head := get_head wanted in fail "STATUS_SET_X18_COQ_HEAD" head
+    end.
+Qed.

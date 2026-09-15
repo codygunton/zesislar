@@ -1,17 +1,17 @@
 {
-  "captured_utc": "2026-09-15T16:31:12.547879+00:00",
+  "captured_utc": "2026-09-15T16:55:00.723133+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "8dba5cd85af951365776bdd0d9367428f6c38586503f877044b2de832d745910",
-      "bytes": 132778
+      "sha256": "90fcfb74d3d87ae8c5e291ae769c346a8259c311160555e9218a5fab681870e5",
+      "bytes": 135003
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
       "snapshot": "progress/PUSH3_auto_PROGRESS.md",
-      "sha256": "0abf0070e03cbb6d95c514dd06866cd96aa2d11ee3e2dc2a76a0d42861d031de",
-      "bytes": 4880
+      "sha256": "7e9d1313e66c9a64c3732619397f68bdc7c9a4dd147e0b6fab9d8cf9cce31218",
+      "bytes": 5550
     },
     {
       "source": "docs/ai/plan/PUSH3_exec_PROGRESS.md",
@@ -130,8 +130,8 @@
     {
       "source": ".worktrees/islaris-native/AGENTS.md",
       "snapshot": "root/AGENTS.md.txt",
-      "sha256": "2d1fbde8e4345204d8b0b3f04e319d133cdb6893bb011e8906b59737ee06f80f",
-      "bytes": 8443
+      "sha256": "bb39510a984424c1562d708d8c0a089a633ca746ad74c4f01fb7b56e9290b3cb",
+      "bytes": 8626
     },
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/NativeSuffix15980AddressProbe.v",
@@ -198,6 +198,60 @@
       "snapshot": "auto/partition44.tsv",
       "sha256": "7bd18883c99ed9a0ac31a701cafbf7ed6720a3559c4d10f43fcb375237ec7a22",
       "bytes": 9335
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v",
+      "snapshot": "tail/WriteSuccessPostWithdrawalsBytes.v.txt",
+      "sha256": "9074c9b51fbf539ed61faec8ed3f0e5765e1cf4c74a1b22e1322da4cfd002fe3",
+      "bytes": 10995
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/_build/agents/tail/TailStatusSetX18Probe.v",
+      "snapshot": "tail/TailStatusSetX18Probe.v.txt",
+      "sha256": "802966ed9cb08c0bcc849b3de66986b75a2c14ad7c82c64423fb50f885bffb49",
+      "bytes": 2271
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f20.v.txt",
+      "sha256": "286e5bcdf0ed3cc4c709c070c445634e3e3c04d77404698bc6c4228119b311bc",
+      "bytes": 7179
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f24.v.txt",
+      "sha256": "1c6df28b7efd8b362f0af2e25a7893c80f9a0f13093f2c704d57f1455fe87465",
+      "bytes": 7802
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f28.v.txt",
+      "sha256": "66bea17acbbdad181d961b1021856598e8bbe48408a3763eda9e83979e8900ca",
+      "bytes": 7680
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f2c.v.txt",
+      "sha256": "88cb83c22f7994e7dbefb0c0ed87ad27d92a9a91c07b8634048d6d61cc28549c",
+      "bytes": 7415
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f34.v.txt",
+      "sha256": "d4e2ada60704021cb93d57c9f65168170e5da44e0484fb32fbc96c498b24f38a",
+      "bytes": 7552
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f3c.v.txt",
+      "sha256": "22415d29f4d71a2c84f9cd776c43f3228ee71f38a2575d14545b7f86ad848131",
+      "bytes": 7582
+    },
+    {
+      "source": ".worktrees/islaris-native-tx/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v",
+      "snapshot": "tx/WriteSuccessTransactionsChunk14f44.v.txt",
+      "sha256": "38e9810f7a208e0eb86c1de5632747a12729a619d938c800a61ad5f9490ec18a",
+      "bytes": 7618
     }
   ]
 }

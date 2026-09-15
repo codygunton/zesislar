@@ -13,6 +13,9 @@ Do not use execution evidence as a proof premise.
 
 Prove machine code with Islaris and Lithium. Start every proof module with
 `Require Import ZesuSsz.Automation.All.` Prove blocks with `zesu_block`.
+During the frozen-list repair, only class-R baseline modules may replace that
+import line with `Require Import ZesuSsz.Automation.AllLegacy.`
+The hygiene checker forbids AllLegacy in every new proof module.
 State entry and exit resources in `IslarisContractResources` and the
 theorem with `IslarisContractCorrect`. State observable output through
 `writeOutputEvents` with its payload. Export machine facts only through
@@ -158,7 +161,7 @@ Run full `make check-iris` in the preview before merging a commit that touches
 `ZesuSsz/Automation/`, `InstrSpecs/`, `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`.
 Keep the mandatory `make check-fast` check before each commit.
 Only a full green Iris gate on Root releases ordinary merges.
-After the repair phase, two consecutive red full Iris gates stop integration.
+Two consecutive red full Iris gates stop integration.
 Report both failures to the user.
 
 Auto adds a generic rule only when one manual step needs more than five lines

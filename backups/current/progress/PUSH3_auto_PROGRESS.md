@@ -72,3 +72,12 @@ Root approved a private cache audit that moved `_build/agents/auto` to a dated `
 Auto rebuilt the three original A5 targets once with Dune `--cache=disabled` in the required Auto build path.
 The clean graph confirmed the two authorization closures and the unchanged WithdrawalsRest cap.
 Required focused and mandatory gates still use the shared Dune cache with `--cache=enabled`.
+
+## Sep15 recovery attribution
+
+Auto tested all 44 frozen `e05d855d` failure files with the pre-A1 `liAStep` hook and two local instance removals.
+Eleven original modules closed; 33 still failed at their frozen proof lines.
+Auto kept the [44-row result](/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/partition44.json) in its private build directory.
+The complete `ExactByteListsPublicRawPrefix` timing scratch closed in 144.056 seconds and used 2,503,596 KiB at peak.
+Its `zesu_finish` tactic used 82.225 seconds across 12 calls; its longest call used 20.750 seconds.
+Its `zesu_liAStep` tactic used 14.056 seconds across 1,743 calls.
