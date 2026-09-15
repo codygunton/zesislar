@@ -81,3 +81,20 @@ Proof.
   zesu_normalize_machine_map. lia.
 Qed.
 Print Assumptions exact_tail_withdrawal_count_word.
+
+Lemma exact_tail_withdrawal_count_zero_iff {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) :
+  writeSuccessWitnessWellFormed args witness ->
+  (writeSuccessValueWord (writeSuccessValues witness) 12 = BV 64 0 <->
+   writeSuccessWithdrawalsCount witness = 0%nat).
+Proof.
+  intros Hwf.
+  have Hcount := exact_tail_withdrawal_count_word args witness Hwf.
+  split.
+  - intros Hzero. rewrite Hzero in Hcount.
+    have HunsignedZero : bv_unsigned (BV 64 0) = 0 by bv_solve.
+    rewrite HunsignedZero in Hcount. lia.
+  - intros Hzero. rewrite Hzero in Hcount. bv_solve.
+Qed.
+Print Assumptions exact_tail_withdrawal_count_zero_iff.
