@@ -186,6 +186,10 @@ A generated-trace compiler recipe can omit the project load path. The exec agent
 
 The decoder evidence check hardcoded 32 workers. The orchestrator changed it to use exported AGENT_JOBS. Each track can now keep its assigned 16-worker limit.
 
+### Red Iris gate and integration hold on 2026-09-15
+
+The 07:47 complete Iris gate failed on 44 older proof files. Root continued merging despite plan section 7.3(2), which requires every merged commit to keep every lemma closed. Root did run the full gate on the six-hour schedule and did not report a checkpoint while the gate was red. At the user's 10:58 review, Root stopped all integrations, including the otherwise healthy queued TX and Tail commits. Auto and the proof owners will identify the A1 or A4 causes per file and apply only the measured legacy-wand or rewrite opt-out from the activated Round2 fallback table. Root will rerun complete `make check-iris` and resume merges only after that gate is green. A green focused preview alone cannot release this hold; CP3–CP5 remain open.
+
 ## Merged commits
 
 - `35f8312`: closed hash-loop split merged at `5ce975c4`. The merge preview passed check-fast with 32 workers.
