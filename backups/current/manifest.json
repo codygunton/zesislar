@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-15T18:07:27.168294+00:00",
+  "captured_utc": "2026-09-15T18:28:13.508226+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "d2eb909d574a2d33d465f013c8ffa20d369e72b868b7da179bf2bd936eaab0c5",
-      "bytes": 142887
+      "sha256": "75d9a101ee5dd9a653ce3a1813ed85b8c5249d787bfd6722d4b382061f72a463",
+      "bytes": 145917
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -34,14 +34,14 @@
     {
       "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
       "snapshot": "progress/PUSH3_tail_PROGRESS.md",
-      "sha256": "18c2a63f707e1510cad1c139530222f9d875012a57cfc95614858a113b31b764",
-      "bytes": 71175
+      "sha256": "7d7ee7314c02db4947de347ca5bad57eefb993df106b3766137f01816780fc10",
+      "bytes": 72127
     },
     {
       "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
       "snapshot": "progress/PUSH3_tx_PROGRESS.md",
-      "sha256": "302db366b57702d0900c4b46831ed6445e3cc7195556da2c5be77a6bf759652d",
-      "bytes": 65855
+      "sha256": "8e859ec541f004681e88e52897480459cd594297adcc8d46d477f5ffdbda964b",
+      "bytes": 66479
     },
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/check_spec_shapes.py",

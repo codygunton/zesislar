@@ -3,8 +3,8 @@
 ## Remaining-work inventory
 
 Inventory origin: `272909a5`. Integration boundary: `382f1aca`. CP3, CP4, and CP5 remain open. The user approved the calling-convention correction and configuration unification.
-Current Root integration HEAD: `a4e9c74e`. PR9 remains open and pushed; the latest complete Root `check-iris` gate failed on exactly 34 active frozen proof files and added zero failures.
-Repair phase: Auto's AllLegacy and exact R hygiene baseline are merged; TX owns 9 R and 24 active T files; Tail owns 1 active T file. Main and Exec wait for CP3. TX continues the late transaction loads; Tail repairs the final RawLoad numbered references.
+Current Root integration HEAD: `5a5cc021`. PR9 remains open and pushed; the latest complete Root `check-iris` gate failed on 34 frozen proof files and added zero failures. Focused repairs closed two more, leaving 32 active.
+Repair phase: Auto's AllLegacy and exact R hygiene baseline are merged; TX owns all 32 active files (9 R and 23 T). Tail's frozen repair scope is closed, and it works on CP3 tail composition. Main and Exec wait for CP3.
 Ranges below include their start address and exclude their end address.
 The legacy coverage matrix reports 950/950 addresses. That count does not establish the exact contract composition.
 An existing block can require composition without another instruction proof.
@@ -152,18 +152,18 @@ The checked legacy block alone does not discharge that work.
 9. CP5: test all 45 pilot addresses with `vm_compute` and `bv_solve`. Record each result below five seconds.
 10. CP5: prove control invariants, ranks, and `zesuTerminates`. Run both gates and record the checkpoint.
 
-I will update this inventory at CP3, CP4, and CP5.
+I update this inventory after each merged repair and at CP3, CP4, and CP5.
 
 
 ## Track status
 
-- tx: zero/nonempty iteration, three original H7 pilots, universal Hstep, and persistent 0x14f04 outer Löb export are merged. The 0x15668 continuation, older carrier pilots, and complete Contract.v handoff remain open. The B1 count-entry LithiumUnfold hook passed MCP and awaits focused/fast gates.
-- tail: the full prefix, count-zero lemma, exact B2 encoder-int contract, and shared copied Word0 selector are merged. The guarded first-array opener is merged, but the rebased actual Tail goal still needs a narrow requested-term correction. The six descriptor sizes and optional1596c remain private. The capped WithdrawalsRest needs its 0x156b4 return split. The terminal 0x15668 continuation and exact exit remain open.
+- tx: the exact iteration kernel and outer 0x14f04 Löb export are merged. Four H7 carrier repairs and 150a0Load are merged with original statements Closed. Nine R imports and 23 T repairs remain active; TX prepares the grouped R imports after two AccessLists boundary artifact refreshes. The queued B1 count-entry hook stays outside Root during the red gate. The 0x15668 continuation and Contract.v handoff remain open.
+- tail: the exact prefix, count-zero, and B2 encoder-int contract are merged. Its two R imports, MMIO owner, and RawLoad selectors close all Tail frozen repair files. The private 0x1568c probe identifies the saved x19–x27 reg_col tail and a separate x18 owner; it now tests the BranchFrame handoff. The 0x156b4 withdrawal-return split and terminal continuation remain open.
 - main: Phase 4b.2 is merged. The whole-program factory takes decoder and writer hypotheses. Phase 4b.3 awaits CP3.
 - exec: soundness, syntactic determinism, scoped trace audit, and 45 pilot proofs are merged. Phase 5.3 awaits CP3.
 - port: preparation and tools are merged. Both loader checks pass. Binary PR 104 remains open. The default ELF remains frozen.
-- auto: Phase 0, A1, A3, A2, A6, and A4 and the guarded first PostData whole-array opener are merged. The owner fixture closes under MCP, but the rebased Tail goal requires a narrow requested-term correction. A private A5 guard closes two original authorizations; WithdrawalsRest needs a sound capped-module split. B1 checker unit tests pass, but TX/Tail must add two LithiumUnfold hooks before its flat baseline can merge. Optional1596c and six-package pure openers remain private.
-- orch: integration is at `68efa2db`; Root merged the guarded first-array opener and Tail's B1 hook. The 07:47 periodic Iris gate on e05 failed on 44 older files after 1,874.466 s/5,199,368 KiB. Three H7 pilots have since merged, but no complete new Iris gate has established a new error count. Tail exit composition, old tuple typing, Contract.v, and the mandatory green Iris gate still block CP3; no checkpoint passed.
+- auto: Phase 0, A1, A3, A2, A6, A4, and the guarded whole-array opener are merged. AllLegacy closes the 11 initial class-R source fixtures; the exact R hygiene baseline is merged. The MCP pin tool and paced prefix patch are pushed. Auto profiled the 300 s RawPrefix module, found `zesu_finish` hot, and routes residuals to existing generic lemmas when a local step is short. B1 checker and A5 remain outside the red-gate repair.
+- orch: integration is at `5a5cc021`, pushed on open PR9. The latest complete Root Iris gate at `a4e9c74e` failed on exactly 34 frozen files and added zero failures; focused RawLoad and 150a0Load then closed two more, leaving 32 active. Root merged only measured repairs and keeps queued ordinary hooks outside Root. Tail exit composition, Contract.v, and the mandatory green Iris gate still block CP3; no checkpoint passed.
 
 ## Plan deviations
 
@@ -224,6 +224,15 @@ The combined isolated preview of Tail `fdb3956b` and TX `c6c6db06` on Root `c9f6
 
 The complete Root `make check-iris CHECK_AGENT=orch AGENT_JOBS=32` gate at `a4e9c74e` exited 1 in 69.948 s/2,194,088 KiB with the shared Dune cache. Its 34 first-error file failures equal the current active list: outside=0, missing=0, R=9, T=25. Raw output is `_build/agents/orch/logs/CHECK_IRIS_REPAIR_AFTER7_2026-09-15_1355.log`. This is a red repair gate inside the approved 7.6 subset; Root reports no CP3–CP5 checkpoint and continues only measured repair merges.
 
+Tail's exact RawLoad source `72711d91` changed two repaired bullets to statement-based HvalueWord9/HvalueWord10 selectors and corrected the two `WriteSuccessValueSpec` qualifiers. The final net diff from Root `a4e9c74e` touches only `WriteSuccessExactTailRawLoad.v`, with no H10/H20 reference in its repaired lines. The patched MCP theorem prefix failed at chunk 3 because the pet died. Tail used the approved bounded single-lemma scratch fallback to test both compatible lookup statements and their following tactics; each matching offset passed and the other failed. Original theorem MCP compile and scoped verify returned assumptions `[]`; j16 focused and mandatory fast passed. Root's isolated j32 check-fast and direct RawLoad proof target passed Closed. Root committed the exact net file as `ffe820b9`, ran j32 check-fast, and pushed PR9. Tail Row44 shrinks below; production hypothesis rewrites count is now 2.
+
+TX's exact 150a0Load class-T source `730334fc` changes only its old H7 arithmetic at lines 93/95, the current+208 whole-word selector and offset rewrite at lines 113/116, and x12 selection/offset rewrite at lines 133/134. Its original `_block` and wrapper statements verified with assumptions `[]`; production MCP compile, j16 focused55.796 s/2,982,792 KiB, and mandatory fast1.999 s/605,772 KiB passed. Root j32 preview check-fast and direct 150a0Load target passed, then Root cherry-picked it as `5a5cc021`, ran j32 check-fast, and pushed PR9. No new rule, array split, frame restatement, or pin-tool production rewrite entered this module. Row21 shrinks below; the active set is R=9/T=23. The last complete Root Iris gate predates these two focused closures and remains red.
+
+Production pin-rewrite log, with the documented MCP pet-failure fallback:
+
+- `WriteSuccessExactTailRawLoad.v:45`, old `H10`: selected ``take 69 values !! Z.to_nat ((bv_unsigned sp + 1104 - (bv_unsigned sp + 1032)) `div` 8) = Some vmem``; new name `HvalueWord9`.
+- `WriteSuccessExactTailRawLoad.v:49`, old `H20`: selected ``take 69 values !! Z.to_nat ((bv_unsigned sp + 1112 - (bv_unsigned sp + 1032)) `div` 8) = Some vmem0``; new name `HvalueWord10`.
+
 MCP fallback for TX's private CP3 boundary fixture: `rocq_compile_file` Closed, but scoped `rocq_verify` timed out after 90 s in shared-defs mode; a stable file-position session returned `proof_finished=true`, and theorem-mode start could not find `writeSuccessNativeWitness`. Root approved one bounded qualified Module M scratch audit of the original 0x15668-to-0x14f04 statement. That audit Closed under the global context in 82.085 s/2,100,448 KiB with Print Assumptions. The fixture remains private and uncommitted; production use still needs a green gate.
 
 TX used the reviewed MCP pin tool in no-write mode on original H7 copies at Chunk14f2c:103, Chunk14f3c:105, and Chunk14f44:105. The current context offered H4 (`bv_unsigned sp mod 8 = 0`), H5 (`0 ≤ bv_unsigned sp - 48`), and H6 (`bv_unsigned sp + 1896 < 1073741824`), but no candidate passed the following `rewrite; lia` tactic. The tool changed no source. Chunk14f34:105 returned an MCP timeout in theorem-prefix mode; it remains unresolved. Root requested the exact residual and one fresh-session trial before any local correction or fallback.
@@ -238,6 +247,8 @@ Approved private class-T deviations, not yet merged:
 - `WriteSuccessTransactionsChunk14f44.v:105/107`: make the same measured name-free replacement.
 
 Auto's no-write pin-tool trial at frozen `WriteSuccessTransactionsChunk150a0Load.v:93` timed out in the combined theorem prefix, so it changed no source. Auto then used a stable Rocq MCP session on the unchanged prefix. `rocq_step_multi` tested context H0–H6 with the next `rewrite; lia`; none passed. The existing `zesu_bv_unsigned_Z_to_bv_small` lemma closed the missing current-pointer equality at lines 93 and 95, and the following spatial tactic passed. TX owns production validation of the unchanged block and wrapper statements; this is a proposed two-line class-T deviation, not a pin-tool production rewrite.
+
+TX's bounded original 150a0Load trials found the current+208 word and x12 owner with unnormalized byte offsets. Existing `zesu_integer_array_byte_equality current 208 transactionBytes` normalized both whole-array words; two statement-based selectors identified their owners. The complete ignored proof Closed in 55.057 s/2,980,080 KiB, `rocq_compile_file` passed, and the original block/wrapper statements verified with assumptions `[]`. Root approved one focused production class-T commit before TX's nine class-R imports; no production source has changed yet.
 
 Class-R scope decision: Tail's queued `fd15a4df` closes the 0x15980 residual but changes five proof lines in `WriteSuccessNativeSuffixBytes15980Segment.v:85`. Root will not merge that proof edit during the import-only class-R repair. Auto's original-source C04 fixture Closed under AllLegacy in 11.029 s/1,000,104 KiB with no proof-line change. Tail keeps the closed proof as a later CP3 option.
 
@@ -255,7 +266,6 @@ TX repair integration deviation: its rebased branch contains the queued ordinary
 - 14 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v:104`
 - 15 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v:92`
 - 19 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v:93`
-- 21 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v:93`
 - 22 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v:103`
 - 23 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v:105`
 - 24 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v:93`
@@ -278,10 +288,11 @@ TX repair integration deviation: its rebased branch contains the queued ordinary
 - 41 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v:38`
 - 42 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15658Call.v:75`
 - 43 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153d0.v:123`
-- 44 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailRawLoad.v:46`
 
 ## Merged commits
 
+- `730334fc`: TX's measured 150a0Load class-T repair cherry-picked as Root `5a5cc021`. Original statements have assumptions `[]`; j32 preview focused proof and both fast gates passed. PR9 is pushed/open.
+- `72711d91` net: Tail's class-T RawLoad qualifier and two statement selectors merged as Root `ffe820b9`. Original statement has assumptions `[]`; j32 preview focused proof and both fast gates passed. PR9 is pushed/open.
 - `c6c6db06`: TX's four measured class-T unsigned repairs cherry-picked as Root `a4e9c74e`. Original statements have assumptions `[]`; j32 combined preview proof targets and Root check-fast passed. PR9 is pushed/open.
 - `fdb3956b`: Tail's class-T MMIO-owner correction cherry-picked as Root `aa245aaa`. Original statement has assumptions `[]`; j32 combined preview proof target and Root check-fast passed. PR9 is pushed/open.
 - `7c6772f8` net: Tail's two class-R import-only changes merged as Root `c9f6ad76`. Original statements and focused proof targets Closed; j32 preview and Root check-fast passed. PR9 is pushed/open.
