@@ -53,7 +53,7 @@ Proof.
   iRename select ("x2" ↦ᵣ _)%I into "H2".
   iRename select (writeSuccessTransactionsOptionalAddressSomeFrame P _ _ _ _ _ _ _ _ _ _)
     into "Hframe".
-  iRename select (mmio_range (machineOutputAddress defaultMap) 16)%I into "Hmmio".
+  iRename select (mmio_range _ 16)%I into "Hmmio".
   iRename select (spec_trace _)%I into "Htrace".
   iEval (unfold writeSuccessTransactionsOptionalAddressSomeFrame) in "Hframe".
   iDestruct "Hframe" as

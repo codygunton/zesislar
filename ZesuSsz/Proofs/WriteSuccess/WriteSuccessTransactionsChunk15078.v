@@ -474,9 +474,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 112 -
        (base + 288 * Z.of_nat (length processed))) = 112%nat.
-  { rewrite H7. lia. }
+  { rewrite write_success_15078_current_unsigned; lia. }
   iEval (rewrite Hstart) in "Hprefix112 Hsuffix120".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?write_success_15078_current_unsigned ?Z.add_0_r; try lia.
   iFrame "Hprefix112 Hsuffix120".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
@@ -500,9 +500,9 @@ Proof.
   iRename select
     ((_ ↦ₘ Z_to_bv 64
       (little_endian_to_bv 8
-        (take 8 (drop 112
+        (take 8 (drop (Z.to_nat _)
           (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
-            transaction)))))%I) into "HwordFinal".
+            transaction)))))%I) into "HwordFinal". iEval (rewrite (zesu_integer_array_byte_equality (base + 288 * Z.of_nat (length processed)) 112 (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction))) in "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 120
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
@@ -869,9 +869,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 104 -
        (base + 288 * Z.of_nat (length processed))) = 104%nat.
-  { rewrite H7. lia. }
+  { rewrite write_success_15078_current_unsigned; lia. }
   iEval (rewrite Hstart) in "Hprefix104 Hsuffix112".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?write_success_15078_current_unsigned ?Z.add_0_r; try lia.
   iFrame "Hprefix104 Hsuffix112".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
@@ -895,9 +895,9 @@ Proof.
   iRename select
     ((_ ↦ₘ Z_to_bv 64
       (little_endian_to_bv 8
-        (take 8 (drop 104
+        (take 8 (drop (Z.to_nat _)
           (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
-            transaction)))))%I) into "HwordFinal".
+            transaction)))))%I) into "HwordFinal". iEval (rewrite (zesu_integer_array_byte_equality (base + 288 * Z.of_nat (length processed)) 104 (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes transaction))) in "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 112
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
