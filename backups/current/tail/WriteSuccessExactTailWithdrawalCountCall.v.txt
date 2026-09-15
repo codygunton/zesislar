@@ -1,0 +1,55 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import IslaTraces.write_success_88.a15688_spec.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Contracts.IslarisCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntFramedCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountModel.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueBlock.
+Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.
+Open Scope Z_scope.
+
+Lemma exact_tail_withdrawal_count_call `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) :
+  writeSuccessCompleteNativeCode -∗
+  instr_body 0x15688 (exactTailWithdrawalCountCallEntry args witness P).
+Proof.
+  iStartProof. iIntros "#Hnative".
+  iEval (rewrite /writeSuccessCompleteNativeCode) in "Hnative".
+  iDestruct "Hnative" as
+    "(#Hprologue & #Hlookup & #Hmain & #Houtput & #Hmemcpy & #Hboolean &
+      #Hoptional & #Hlists & #Hbytes & #Hint & #Hu256 & #Hu128)".
+  iPoseProof "Hlookup" as "#Hlookup15688".
+  iEval (rewrite /instr_lookup_resources) in "Hlookup15688".
+  iPoseProof ("Hlookup15688" $! 0x15688 with "[]") as "#Hinstr15688".
+  { iPureIntro. rewrite IslaTraces.write_success_blocks.Index.lookup_a15688. done. }
+  iEval (rewrite IslaTraces.write_success_blocks.Index.lookup_a15688)
+    in "Hinstr15688".
+  rewrite instr_pre'_eq. iIntros "Hentry".
+  iEval (rewrite /exactTailWithdrawalCountCallEntry) in "Hentry".
+  iDestruct "Hentry" as (old5 old11)
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace &
+      %Halign & %Hlower & %Hupper & %Hcount & Hframe & Hreturn & _)".
+  iPoseProof (encoder_int_exact_framed_correct
+    (writeSuccessValueWord (writeSuccessValues witness) 12)
+    (writeSuccessFrameSp witness) (BV 64 0x1568c) old5 old11
+    (exactTailAfterWithdrawalCountEvents witness)
+    (exactTailWithdrawalCountFrame args witness P)
+    with "Hint Houtput") as "Hcallee".
+  iEval (rewrite exact_tail_after_raw_count) in "Htrace".
+  replace (bv_wrap 64 87688) with 87688 by bv_solve.
+  zesu_run.
+  Unshelve. all: unLET.
+  all: try (rewrite Hcount).
+  all: try reflexivity.
+  all: try bv_solve.
+  all: try done.
+Qed.
+Print Assumptions exact_tail_withdrawal_count_call.

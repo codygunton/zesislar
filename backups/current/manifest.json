@@ -1,0 +1,83 @@
+{
+  "captured_utc": "2026-09-15T14:39:07.296357+00:00",
+  "items": [
+    {
+      "source": "docs/ai/plan/PUSH3_PROGRESS.md",
+      "snapshot": "progress/PUSH3_PROGRESS.md",
+      "sha256": "b8b0b225277f3dbe4a1a6823e877630fe8b04197b0ee300c6d5744ac9181a162",
+      "bytes": 121668
+    },
+    {
+      "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
+      "snapshot": "progress/PUSH3_auto_PROGRESS.md",
+      "sha256": "0abf0070e03cbb6d95c514dd06866cd96aa2d11ee3e2dc2a76a0d42861d031de",
+      "bytes": 4880
+    },
+    {
+      "source": "docs/ai/plan/PUSH3_exec_PROGRESS.md",
+      "snapshot": "progress/PUSH3_exec_PROGRESS.md",
+      "sha256": "17ea2c930e71cb67d5216db773fedf52bff3682b8b1cfe4c23d0cea184fbaaab",
+      "bytes": 23816
+    },
+    {
+      "source": "docs/ai/plan/PUSH3_main_PROGRESS.md",
+      "snapshot": "progress/PUSH3_main_PROGRESS.md",
+      "sha256": "d303a67a533b4a1ac69b93be9ed76f112eaafec7164608b552e8f52fb73e7959",
+      "bytes": 34149
+    },
+    {
+      "source": "docs/ai/plan/PUSH3_port_PROGRESS.md",
+      "snapshot": "progress/PUSH3_port_PROGRESS.md",
+      "sha256": "bbd6a1c5c3e2a9bf3d1df2222f313b4d3d53d599fb48ce02f538250ae32dcad9",
+      "bytes": 7719
+    },
+    {
+      "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
+      "snapshot": "progress/PUSH3_tail_PROGRESS.md",
+      "sha256": "d46546d0c8601c73d1432f8f23364e5fccb3bf37858a35aacfadb14fb2fc5468",
+      "bytes": 64786
+    },
+    {
+      "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
+      "snapshot": "progress/PUSH3_tx_PROGRESS.md",
+      "sha256": "04068b504be55f7c28b90853d33709df92b48045f566a1952e1a545bcec2b973",
+      "bytes": 63393
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/check_spec_shapes.py",
+      "snapshot": "auto/check_spec_shapes.py.txt",
+      "sha256": "5ba53b4833c20bc087978a1f990351910ea2e748f6192e83643e87a016d68884",
+      "bytes": 5876
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/spec_shape_baseline.json",
+      "snapshot": "auto/spec_shape_baseline.json.txt",
+      "sha256": "a57127bd66c234fbfcbb05e179c1d0e9ee887be6cd08b264a19c1701315ea8b7",
+      "bytes": 45786
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/test_check_spec_shapes.py",
+      "snapshot": "auto/test_check_spec_shapes.py.txt",
+      "sha256": "c6bcce80a08b87d82729cb4337a9596532a090c85af4610602d84f4a1a3a9fab",
+      "bytes": 4089
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailWithdrawalCountCall.v",
+      "snapshot": "tail/WriteSuccessExactTailWithdrawalCountCall.v.txt",
+      "sha256": "dbe348fefde690fc5161027cb3a8cdf556dc75338b00f425a513f4e845d0ddd1",
+      "bytes": 2737
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailWithdrawalCountComposition.v",
+      "snapshot": "tail/WriteSuccessExactTailWithdrawalCountComposition.v.txt",
+      "sha256": "cee7744fc0acdedeca7cf6eb6b2cfb83c5b57e848c7812bd1a76cf813433bd5d",
+      "bytes": 1799
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/_build/agents/tail/WithdrawalsFirstReturnHandoffDraft.v",
+      "snapshot": "tail/WithdrawalsFirstReturnHandoffDraft.v.txt",
+      "sha256": "0e3de892d47a9c4e80b00e2d1c576aca0c88b387fb716c5b472527c25622fe8d",
+      "bytes": 2147
+    }
+  ]
+}

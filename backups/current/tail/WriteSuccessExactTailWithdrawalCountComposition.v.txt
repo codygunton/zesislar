@@ -1,0 +1,33 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailRawCallReturnSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalLoadComposition.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalLoadSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailWithdrawalCountCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
+
+Lemma exact_tail_raw_return_through_withdrawal_count
+    `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) :
+  writeSuccessCompleteNativeCode -∗
+  □ instr_pre 0x1568c (exactTailWithdrawalCountReturn args witness P) -∗
+  instr_body 0x15678 (exactTailRawCallReturn args witness P).
+Proof.
+  iStartProof. iIntros "#Hnative #Hafter".
+  iPoseProof (exact_tail_withdrawal_count_call args witness P with "Hnative")
+    as "Hcount".
+  iAssert (instr_body 0x15688 (exactTailWithdrawalLoadPost args witness P))%I
+    with "[Hcount]" as "Hnext".
+  { iApply (instr_pre_wand 0x15688 0x15688 false false with "Hcount");
+      [done | reflexivity |].
+    iIntros "Hload".
+    iApply (exact_tail_withdrawal_count_entry with "Hload Hafter"). }
+  iApply (exact_tail_raw_return_through_withdrawal_load with "Hnative Hnext").
+Qed.
+Print Assumptions exact_tail_raw_return_through_withdrawal_count.

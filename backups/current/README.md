@@ -1,0 +1,1 @@
+Backup snapshots for the Islaris-native work. Progress files and unfinished drafts are text copies. They do not become proof modules. The lead-owned PLAN files and PROJECTS.md are excluded. This branch does not change the open compliance PR.

@@ -1,0 +1,167 @@
+#!/usr/bin/env python3
+"""Ratchet the resource shape of handwritten Islaris helper specifications."""
+
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[2]
+BASELINE = Path(__file__).with_name("spec_shape_baseline.json")
+METRICS = (
+    "uninferable_existentials",
+    "predicates_without_unfold",
+    "disjunctive_specs",
+    "frame_parameters_in_closed_specs",
+)
+DEFINITION = re.compile(
+    r"\bDefinition\s+(\w+)\b"
+    r"(?P<signature>(?:(?!\b(?:Definition|Lemma|Theorem|Fixpoint)\b).)*?)"
+    r":\s*iProp\s+Sigma\s*:=", re.S
+)
+BINDER_GROUP = re.compile(r"\((\w+(?:\s+\w+)*)\s*:\s*[^)]+\)")
+
+
+def remove_comments(source: str) -> str:
+    """Remove nested Rocq comments and retain offsets for definition spans."""
+    result = list(source)
+    depth = 0
+    offset = 0
+    while offset < len(source):
+        pair = source[offset:offset + 2]
+        if pair == "(*":
+            depth += 1
+            result[offset:offset + 2] = "  "
+            offset += 2
+            continue
+        if pair == "*)" and depth:
+            depth -= 1
+            result[offset:offset + 2] = "  "
+            offset += 2
+            continue
+        if depth:
+            result[offset] = " " if source[offset] != "\n" else "\n"
+        offset += 1
+    return "".join(result)
+
+
+def definitions(source: str) -> list[tuple[str, str, str]]:
+    clean = remove_comments(source)
+    result = []
+    for match in DEFINITION.finditer(clean):
+        end = re.search(r"\.(?=\s*(?:\n|$))", clean[match.end():])
+        if end is None:
+            continue
+        body = clean[match.end():match.end() + end.start()]
+        result.append((match.group(1), match.group("signature"), body))
+    return result
+
+
+def resource_parts(body: str) -> list[str]:
+    """Split the outer separating chain without splitting predicate arguments."""
+    existence = body.find("∃")
+    if existence >= 0:
+        comma = body.find(",", existence)
+        if comma >= 0:
+            body = body[comma + 1:]
+    depths = []
+    depth = 0
+    for offset, char in enumerate(body):
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif char == "∗" and (offset == 0 or body[offset - 1] != "ₘ"):
+            depths.append((offset, depth))
+    if not depths:
+        return [body]
+    outer = min(level for _, level in depths)
+    cuts = [offset for offset, level in depths if level == outer]
+    return [body[start:end] for start, end in zip([0] + [cut + 1 for cut in cuts], cuts + [len(body)])]
+
+
+def existential_binders(body: str) -> list[str]:
+    existence = body.find("∃")
+    if existence < 0:
+        return []
+    comma = body.find(",", existence)
+    if comma < 0:
+        return []
+    return [binder for group in BINDER_GROUP.finditer(body[existence:comma])
+            for binder in group.group(1).split()]
+
+
+def binder_shape(binder: str, parts: list[str], unfolded: set[str]) -> str:
+    token = re.compile(r"\b" + re.escape(binder) + r"\b")
+    for part in parts:
+        if not token.search(part):
+            continue
+        if "⌜" in part and "⌝" in part:
+            return "pure_only"
+        if re.search(r"↦ᵣ\s+RVal_Bits\s+" + re.escape(binder) + r"\b", part):
+            return "inferable"
+        if re.search(r"↦ₘ(?:∗|\?)?\s+" + re.escape(binder) + r"\b", part):
+            return "inferable"
+        if re.search(r"spec_trace\s+" + re.escape(binder) + r"\b", part):
+            return "inferable"
+        if "spec_trace" in part and re.search(
+            r"(?:writeOutputEvents|writeOutputEventsAny)\b[\s\S]*\b"
+            + re.escape(binder) + r"\b\s*\)", part
+        ):
+            return "inferable"
+        names = re.findall(r"\b([A-Za-z]\w*)\b", part[:token.search(part).start()])
+        if names and names[-1] not in unfolded and names[-1] not in {
+            "RVal_Bits", "Z_to_bv", "bv_unsigned", "Z", "of_nat",
+            "spec_trace", "writeOutputEvents", "writeOutputEventsAny"
+        }:
+            return "opaque_predicate"
+        return "under_function"
+    return "under_function"
+
+
+def shape_counts(source: str, unfolded: set[str]) -> dict[str, int]:
+    specs = definitions(source)
+    counts = dict.fromkeys(METRICS, 0)
+    for name, signature, body in specs:
+        counts["predicates_without_unfold"] += name not in unfolded
+        counts["disjunctive_specs"] += "∨" in body
+        counts["frame_parameters_in_closed_specs"] += bool(
+            name.endswith(("CallSpec", "BodySpec")) and
+            re.search(r"\(\w+\s*:\s*iProp\s+Sigma\)", signature)
+        )
+        parts = resource_parts(body)
+        counts["uninferable_existentials"] += sum(
+            binder_shape(binder, parts, unfolded) != "inferable"
+            for binder in existential_binders(body)
+        )
+    return counts
+
+
+def failures(name: str, counts: dict[str, int], baseline: dict) -> list[str]:
+    allowed = baseline.get(name, {})
+    return [f"{name}: {metric}: {count} > {allowed.get(metric, 0)}"
+            for metric, count in counts.items() if count > allowed.get(metric, 0)]
+
+
+def main() -> int:
+    baseline = json.loads(BASELINE.read_text())
+    paths = subprocess.check_output(
+        ["git", "ls-files", "ZesuSsz/*.v"], cwd=ROOT, text=True
+    ).splitlines()
+    texts = {name: (ROOT / name).read_text() for name in paths}
+    unfolded = set().union(*(
+        set(re.findall(r"LithiumUnfold\s+\(@(\w+)\)", source))
+        for source in texts.values()
+    ))
+    errors = [error for name, source in texts.items()
+              if name.startswith(("ZesuSsz/Contracts/", "ZesuSsz/Proofs/"))
+              for error in failures(name, shape_counts(source, unfolded), baseline)]
+    for error in errors:
+        print(error, file=sys.stderr)
+    return int(bool(errors))
+
+
+if __name__ == "__main__":
+    sys.exit(main())
