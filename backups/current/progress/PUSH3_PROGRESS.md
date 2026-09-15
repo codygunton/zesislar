@@ -3,8 +3,8 @@
 ## Remaining-work inventory
 
 Inventory origin: `272909a5`. Integration boundary: `382f1aca`. CP3, CP4, and CP5 remain open. The user approved the calling-convention correction and configuration unification.
-Current Root integration HEAD: `68efa2db`. PR9 remains open and pushed; the 07:47 complete `check-iris` gate is red on older proof modules.
-Repair phase: Auto owns AllLegacy and the exact R hygiene baseline; TX owns 9 R and 31 T files; Tail owns 2 R and 2 T files. Main and Exec wait for CP3. Root is running a complete Iris baseline before the shared repair merge.
+Current Root integration HEAD: `f437dc89`. PR9 remains open and pushed; the 12:29 complete `check-iris` baseline is red on 41 frozen proof modules.
+Repair phase: Auto owns AllLegacy and the exact R hygiene baseline; TX owns 9 R and 28 active T files; Tail owns 2 R and 2 T files. Main and Exec wait for CP3. Root's complete baseline found 41 active failures and no new failures. Root is running the full Iris preview before the shared Auto merge.
 Ranges below include their start address and exclude their end address.
 The legacy coverage matrix reports 950/950 addresses. That count does not establish the exact contract composition.
 An existing block can require composition without another instruction proof.
@@ -205,13 +205,20 @@ The user gave the Step 2 go-ahead with both branches partitioned per module. Aut
 
 ## Repair phase
 
-The lead added `DISPATCH_PUSH3_REPAIR_2026-09-15.md` and plan section 7.6 with the 7.3(5–8) rules. Auto develops `tools/pin_hypotheses.py` privately; Root applies its exact patch because Root owns `tools/`. For each class-T numbered rewrite, the MCP tool tries compatible context hypotheses, confirms the next tactic, inserts a statement-based select and a descriptive name, and logs the file, line, old name, and selected statement. A non-unique candidate list goes to the region owner. Verified rewrite count: 0 before the tool patch. Tail's `Hmmio` name and RawLoad qualifier errors are class T without numbered references; their failing-line, name-independent corrections remain scoped locally.
+The lead added `DISPATCH_PUSH3_REPAIR_2026-09-15.md` and plan section 7.6 with the 7.3(5–8) rules. Auto developed `tools/pin_hypotheses.py` privately; Root applied the reviewed exact-byte patch at `f437dc89` because Root owns `tools/`. The tool's SHA256 is `594e58a971b6578e885599e56cee7a86ce5a555ba97d3617cafe4d0a6f902146`. It uses rocq-mcp to test each compatible candidate with the next tactic, validates a pure-Coq statement selector, and logs file, line, old name, and selected statement. Ambiguous or timed-out candidates remain unresolved. Auto's unique, ambiguous, actual 14f2c no-winner, log, mode, and Closed-compile trials passed; Root's Python syntax and j16 check-fast passed. Production numbered rewrites: 0 before track tool use. Tail's `Hmmio` name and RawLoad qualifier errors are class T without numbered references; their failing-line, name-independent corrections remain scoped locally.
 
 Auto tested the 44 original failure modules at `e05d855d` with the pre-A1 hook and both old hint removals in scratch files. The verified partition is R=11 (rules) and T=33 (traces or RAM facts). The source matches Root for 41 files; three 14f20/14f24/14f28 files changed after the frozen gate. The active list below is frozen by file and class. Remove a line only after its module compiles and its repair merges without adding an Iris failure. The initial partition artifact is `.worktrees/islaris-native-auto/_build/agents/auto/partition44/partition44.json`.
 
-All 11 frozen class-R original sources compiled after only the All-to-AllLegacy import substitution. No original proof residual or 300 s/6 GiB cap occurred. Auto's mandatory j16 check-fast precedes its shared repair commit; Root will run a full Iris preview before that merge.
+All 11 frozen class-R original sources compiled after only the All-to-AllLegacy import substitution. No original proof residual or 300 s/6 GiB cap occurred. Auto's mandatory j16 check-fast passed before its shared repair commit; Root will run a full Iris preview before that merge.
+
+Auto's three-file AllLegacy/hygiene repair commit `0e7675c4` is pushed and staged in the isolated Root preview. The j16 Auto check-fast is green; Root has not merged it. Backup branch `islaris-native-backup` is pushed at `5dacdb15` with the frozen matrix, current progress, and private TX/Tail repair candidates. PR9 stays open and pushed at `68efa2db`.
+Root's `f437dc89` commit changes only `AGENTS.md` and `tools/pin_hypotheses.py`, so the staged Auto full Iris preview has the same proof source as a preview on the new Root head. Root will restage Auto on `f437dc89` and rerun check-fast before merging. The PR9 branch is pushed at `f437dc89` and remains open.
+
+Root's complete baseline `make check-iris CHECK_AGENT=orch AGENT_JOBS=32` at `68efa2db` exited 1 in 1,874.082 s/5,199,756 KiB. Its 41 file failures are all inside the frozen 44; it added zero failures. The three closed files are Chunk14f20, Chunk14f24, and Chunk14f28, all previously repaired and merged by `3358e803`. Their active rows shrink below, so the initial R=11/T=33 partition is now active R=11/T=30. No checkpoint is reported while the full gate is red. The specific plan 7.6 repair criterion permits red previews only when failures stay within this shrinking active set. Root treats the general 7.3(8) two-red stop as applying outside that approved subset exception; a repair preview that adds a failure stops integration and gets a user report.
 
 MCP fallback for TX's private CP3 boundary fixture: `rocq_compile_file` Closed, but scoped `rocq_verify` timed out after 90 s in shared-defs mode; a stable file-position session returned `proof_finished=true`, and theorem-mode start could not find `writeSuccessNativeWitness`. Root approved one bounded qualified Module M scratch audit of the original 0x15668-to-0x14f04 statement. That audit Closed under the global context in 82.085 s/2,100,448 KiB with Print Assumptions. The fixture remains private and uncommitted; production use still needs a green gate.
+
+TX used the reviewed MCP pin tool in no-write mode on original H7 copies at Chunk14f2c:103, Chunk14f3c:105, and Chunk14f44:105. The current context offered H4 (`bv_unsigned sp mod 8 = 0`), H5 (`0 ≤ bv_unsigned sp - 48`), and H6 (`bv_unsigned sp + 1896 < 1073741824`), but no candidate passed the following `rewrite; lia` tactic. The tool changed no source. Chunk14f34:105 returned an MCP timeout in theorem-prefix mode; it remains unresolved. Root requested the exact residual and one fresh-session trial before any local correction or fallback.
 
 Class-R scope decision: Tail's queued `fd15a4df` closes the 0x15980 residual but changes five proof lines in `WriteSuccessNativeSuffixBytes15980Segment.v:85`. Root will not merge that proof edit during the import-only class-R repair. Auto's original-source C04 fixture Closed under AllLegacy in 11.029 s/1,000,104 KiB with no proof-line change. Tail keeps the closed proof as a later CP3 option.
 
@@ -220,11 +227,8 @@ Class-R scope decision: Tail's queued `fd15a4df` closes the 0x15980 residual but
 - 03 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v:89`
 - 04 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v:85`
 - 05 | R | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v:87`
-- 06 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v:98`
 - 07 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v:139`
-- 08 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v:100`
 - 09 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v:265`
-- 10 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v:102`
 - 11 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v:277`
 - 12 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v:477`
 - 13 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v:103`
