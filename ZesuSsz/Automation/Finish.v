@@ -325,7 +325,8 @@ Ltac zesu_run_pass :=
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
-     zesu_liAStep | zesu_open_matching_two_level_frame]; liShow;
+     zesu_liAStep | zesu_open_matching_two_level_frame |
+     zesu_extract_matching_descriptor_pure]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).

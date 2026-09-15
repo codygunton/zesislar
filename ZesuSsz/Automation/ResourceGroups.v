@@ -133,6 +133,33 @@ Ltac zesu_is_pure_resource body :=
       zesu_is_pure_resource left; zesu_is_pure_resource right
   end.
 
+(* Take an exact pure descriptor fact while retaining its array owner. *)
+Ltac zesu_extract_descriptor_pure requested :=
+  iMatchHyp ltac:(fun H body =>
+    let head := get_head body in
+    tryif first [constr_eq head constr:(@bi_sep) |
+                 constr_eq head constr:(@bi_pure)] then fail else
+      let unfolded := eval cbv beta zeta delta [head] in body in
+      lazymatch unfolded with
+      | (?array ∗ ⌜?actual⌝)%I =>
+          lazymatch array with
+          | (_ ↦ₘ∗ _)%I =>
+              constr_eq actual requested;
+              progress iEval (unfold head) in H;
+              iDestruct H as "[? ?]";
+              zesu_open_resource_groups
+          end
+      end).
+
+Ltac zesu_extract_matching_descriptor_pure :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (⌜?requested⌝)%I =>
+      zesu_extract_descriptor_pure requested
+  | |- envs_entails _ (⌜?requested⌝ ∗ _)%I =>
+      zesu_extract_descriptor_pure requested
+  end.
+
 Ltac zesu_promote_folded_pure_resources :=
   repeat iMatchHyp ltac:(fun H body =>
     let head := get_head body in
