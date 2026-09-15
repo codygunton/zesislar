@@ -125,6 +125,44 @@ Proof.
   - rewrite writeSuccessObservationDecodeEncode; [reflexivity | exact Hvalid].
 Qed.
 
+Lemma main_contract_outcome_of_trace_failure firstSnapshot writeSnapshot
+    labels tail :
+  writeOutputEvents (BV 64 0x177c8) (BV 64 6) failureMemory tail
+      (SWriteMem (BV 64 (machineOutputAddress defaultMap)) (BV 64 0x177c8)
+         firstSnapshot ::
+       SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) (BV 64 6)
+         writeSnapshot :: labels) ->
+  mainContractOutcomeOfTrace
+      (SWriteMem (BV 64 (machineOutputAddress defaultMap)) (BV 64 0x177c8)
+         firstSnapshot ::
+       SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) (BV 64 6)
+         writeSnapshot :: labels) = Some DecodeFailure.
+Proof.
+  intros Hevents. rewrite /mainContractOutcomeOfTrace.
+  erewrite main_output_of_trace_events; [| exact Hevents].
+  change (mainOutcomeOfBytes failureObservation = Some DecodeFailure).
+  exact main_outcome_of_failure.
+Qed.
+
+Lemma main_contract_outcome_of_trace_success data size payload firstSnapshot
+    writeSnapshot labels tail observation :
+  writeOutputEvents data size payload tail
+      (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+       SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+       labels) ->
+  List.map bv_unsigned payload = writeSuccessEncodeObservation observation ->
+  writeSuccessObservationValid observation ->
+  mainContractOutcomeOfTrace
+      (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+       SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+       labels) =
+    Some (DecodeSuccess (observationToStatelessInput observation)).
+Proof.
+  intros Hevents Hpayload Hvalid. rewrite /mainContractOutcomeOfTrace.
+  erewrite main_output_of_trace_events; [| exact Hevents].
+  rewrite Hpayload. apply main_outcome_of_success. exact Hvalid.
+Qed.
+
 Theorem main_whole_from_fixed_tail_contract
     (allows : DecodeBoundaryArgs -> DecodeBoundaryOutcome WriteSuccessObservation -> Prop)
     (writeAllows : WriteSuccessArgs WriteSuccessObservation -> ByteString -> Prop)
@@ -157,4 +195,6 @@ Print Assumptions main_contract_trace_input_bytes.
 Print Assumptions main_contract_outcome_of_trace_prefix.
 Print Assumptions main_outcome_of_failure.
 Print Assumptions main_outcome_of_success.
+Print Assumptions main_contract_outcome_of_trace_failure.
+Print Assumptions main_contract_outcome_of_trace_success.
 Print Assumptions main_whole_from_fixed_tail_contract.
