@@ -1,5 +1,5 @@
 {
-  "captured_utc": "2026-09-15T14:47:32.430266+00:00",
+  "captured_utc": "2026-09-15T14:53:15.008865+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
@@ -78,6 +78,36 @@
       "snapshot": "tail/WithdrawalsFirstReturnHandoffDraft.v.txt",
       "sha256": "0e3de892d47a9c4e80b00e2d1c576aca0c88b387fb716c5b472527c25622fe8d",
       "bytes": 2147
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/A5FirstIntProblem.v",
+      "snapshot": "auto/A5FirstIntProblem.v.txt",
+      "sha256": "1ba1a7c4125c78ba82cfb9830bcbc4a622f801d490ba3a82c1c65a91863e48ba",
+      "bytes": 1056
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/A5SecondIntProblem.v",
+      "snapshot": "auto/A5SecondIntProblem.v.txt",
+      "sha256": "7d104039ba086e76d5b5f3c438ff64d2111e14d4b7534d59443c4451717ed55d",
+      "bytes": 1059
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/A5FirstIntGuardedHint.v",
+      "snapshot": "auto/A5FirstIntGuardedHint.v.txt",
+      "sha256": "fe13ee34d6687561073e162ac64d6810234419f58b82b8acb4e1ba1f62848ade",
+      "bytes": 5083
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/A5SecondIntGuardedHint.v",
+      "snapshot": "auto/A5SecondIntGuardedHint.v.txt",
+      "sha256": "3b295443cb21f42f0bb1ea4dc5632a21fbd593d0bd51eaf9bb2078d7c65c5d88",
+      "bytes": 5091
+    },
+    {
+      "source": ".worktrees/islaris-native-auto/_build/agents/auto/A5SecondIntOrderProbe.v",
+      "snapshot": "auto/A5SecondIntOrderProbe.v.txt",
+      "sha256": "f27ab190bcdb825c46c04e0023f0624e43054f3374623a29e3ac9d1e655327f2",
+      "bytes": 4602
     }
   ]
 }
