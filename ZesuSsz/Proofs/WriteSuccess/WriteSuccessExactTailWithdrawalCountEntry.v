@@ -75,7 +75,8 @@ Proof.
       HbaseWord HcountWord Hfree120 Hfree1640 Hspfree Hcopied Hsource Hupper
       HsavedSlots Hdecoded Hpayload Hwithdrawals HpostData Hstatic Hinvariant HP]"
     as "HcountFrame".
-  { rewrite /exactTailWithdrawalCountFrame. iFrame. iPureIntro. exact Hwf. }
+  { rewrite /exactTailWithdrawalCountFrame /exactTailWithdrawalCommonFrame.
+    iFrame. iPureIntro. exact Hwf. }
   iAssert (instr_pre (bv_unsigned (BV 64 0x1568c))
     (exactTailWithdrawalCountReturn args witness P))%I with "[Hnext]"
     as "HnextExact".

@@ -21,14 +21,15 @@ Definition exactTailWithdrawalCountOtherCallerShapes : list (reg_kind * valu_sha
   ["x12"; "x13"; "x14"; "x15"; "x16"; "x17";
    "x6"; "x7"; "x28"; "x29"; "x30"; "x31"].
 
-Definition exactTailWithdrawalCountFrame `{!islaG Sigma} `{!threadG}
+Definition exactTailWithdrawalCommonFrame `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
-    (P : iProp Sigma) : iProp Sigma :=
+    (P : iProp Sigma) (savedShapes : list (reg_kind * valu_shape))
+    : iProp Sigma :=
   let sp := writeSuccessFrameSp witness in
   let values := writeSuccessValues witness in
   (reg_col exactTailWithdrawalCountOtherCallerShapes ∗
-   reg_col exactTailWithdrawalLoadSavedShapes ∗
+   reg_col savedShapes ∗
    reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
    "x8" ↦ᵣ RVal_Bits (writeSuccessValueWord values 11) ∗
    "x9" ↦ᵣ RVal_Bits (writeSuccessValueWord values 12) ∗
@@ -57,6 +58,22 @@ Definition exactTailWithdrawalCountFrame `{!islaG Sigma} `{!threadG}
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) []
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ P ∗ True)%I.
+Definition exactTailWithdrawalCountFrame `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) : iProp Sigma :=
+  exactTailWithdrawalCommonFrame args witness P
+    exactTailWithdrawalLoadSavedShapes.
+
+Definition exactTailWithdrawalBranchFrame `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) : iProp Sigma :=
+  exactTailWithdrawalCommonFrame args witness P
+    (tl exactTailWithdrawalLoadSavedShapes).
+
+Global Instance : LithiumUnfold (@exactTailWithdrawalCommonFrame) := I.
+Global Instance : LithiumUnfold (@exactTailWithdrawalBranchFrame) := I.
 Global Instance : LithiumUnfold (@exactTailWithdrawalCountFrame) := I.
 
 Definition exactTailWithdrawalCountReturn `{!islaG Sigma} `{!threadG}
