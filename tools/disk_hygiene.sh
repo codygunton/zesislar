@@ -3,7 +3,6 @@ set -euo pipefail
 
 common_dir=$(git rev-parse --path-format=absolute --git-common-dir)
 base_dir=$(dirname "$common_dir")
-integration_dir="$base_dir/.worktrees/islaris-native"
 before_bytes=$(df --output=avail -B1 /home | tail -n 1 | tr -d ' ')
 
 remove_worktree() {
@@ -47,9 +46,15 @@ done
 
 git -C "$base_dir" worktree prune
 
-stale_builds=(push1 push2 nightly orch-preview orch-repair orch-repair2 orch-contract backup tx-step8 tail-repair-step8)
-for name in "${stale_builds[@]}"; do
-  rm -rf "$integration_dir/_build/agents/$name"
+stale_builds=(push1 push2 nightly orch-preview orch-repair orch-repair2 orch-contract backup tx-step8 tail-repair tail-repair-step8)
+mapfile -t worktree_paths < <(
+  git -C "$base_dir" worktree list --porcelain |
+    sed -n 's/^worktree //p'
+)
+for worktree_path in "${worktree_paths[@]}"; do
+  for name in "${stale_builds[@]}"; do
+    rm -rf "$worktree_path/_build/agents/$name"
+  done
 done
 
 if command -v dune >/dev/null 2>&1; then
