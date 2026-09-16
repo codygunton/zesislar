@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-16T00:19:08.317073+00:00",
+  "captured_utc": "2026-09-16T03:22:43.833211+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "6de60fa1ec6f5d755cde1a47de53ec9c02ccd484f54a8debdfc67066ca975a65",
-      "bytes": 160325
+      "sha256": "acb4afbde19775526bc5552642b95b4feed76ebe6827716e451e217d2b9f6553",
+      "bytes": 165704
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -142,8 +142,8 @@
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Automation/AllLegacy.v",
       "snapshot": "auto/AllLegacy.v.txt",
-      "sha256": "0eba27bc2442752b4e0e31aca481a07ba0ea637e207e7ddd832f703284bca0e5",
-      "bytes": 1382
+      "sha256": "2e3cd07b3fee5485b536ee966f53a26089947ba055b79f29539c3231a999cb15",
+      "bytes": 1024
     },
     {
       "source": ".worktrees/islaris-native-main/ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
