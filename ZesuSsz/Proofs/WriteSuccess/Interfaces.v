@@ -628,6 +628,10 @@ Definition writeSuccessExactTailFirstBranchState
     "x12" ↦ᵣ RVal_Bits b12 ∗ "x13" ↦ᵣ RVal_Bits b13 ∗
     "x14" ↦ᵣ RVal_Bits b14 ∗ "x15" ↦ᵣ RVal_Bits b15 ∗
     "x18" ↦ᵣ RVal_Bits b18 ∗
+    ⌜bv_unsigned (writeSuccessFrameSp witness) `mod` 16 = 0⌝ ∗
+    ⌜mapRamBase defaultMap <= bv_unsigned (writeSuccessFrameSp witness)⌝ ∗
+    ⌜bv_unsigned (writeSuccessFrameSp witness) + 1896 <
+      machineRamEnd defaultMap⌝ ∗
     writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ True)%I.
 Global Instance : LithiumUnfold
   (@writeSuccessExactTailFirstBranchState) := I.
