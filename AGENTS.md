@@ -180,3 +180,6 @@ Auto adds a generic rule only when one manual step needs more than five lines
 or at least two proof sites need the same step.
 Generic rules must not name a machine address, an offset, or a contract predicate.
 Otherwise, the region owner writes the manual step in its proof.
+For each handwritten contract and proof file, `check_spec_shapes.py` ratchets
+uninferable existentials, missing `LithiumUnfold` instances, disjunctive specs,
+and frame parameters in closed specs.
