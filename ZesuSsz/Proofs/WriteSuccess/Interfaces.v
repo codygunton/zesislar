@@ -266,6 +266,33 @@ Definition writeSuccessEpilogueBoundary `{!islaG Sigma} `{!threadG} :=
   @writeSuccessEpilogueSpec Sigma _ _.
 Global Instance : LithiumUnfold (@writeSuccessEpilogueBoundary) := I.
 
+Definition writeSuccessExactEpilogueAddSpSpec
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64),
+    reg_col zesu_ram_sys_regs ∗ reg_col writeSuccessOtherRegShapes ∗
+    "x1" ↦ᵣ RVal_Bits ra ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x8" ↦ᵣ RVal_Bits s0 ∗ "x9" ↦ᵣ RVal_Bits s1 ∗
+    "x18" ↦ᵣ RVal_Bits s2 ∗ "x19" ↦ᵣ RVal_Bits s3 ∗
+    "x20" ↦ᵣ RVal_Bits s4 ∗ "x21" ↦ᵣ RVal_Bits s5 ∗
+    "x22" ↦ᵣ RVal_Bits s6 ∗ "x23" ↦ᵣ RVal_Bits s7 ∗
+    "x24" ↦ᵣ RVal_Bits s8 ∗ "x25" ↦ᵣ RVal_Bits s9 ∗
+    "x26" ↦ᵣ RVal_Bits s10 ∗ "x27" ↦ᵣ RVal_Bits s11 ∗
+    writeSuccessEpilogueSavedSlots
+      sp ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 ∗
+    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗
+    ⌜mapRamBase defaultMap <= bv_unsigned sp + 1896⌝ ∗
+    ⌜bv_unsigned sp + 2000 < machineRamEnd defaultMap⌝ ∗
+    ⌜bv_extract 0 1 ra = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ra = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ra = BV 2 0⌝ ∗ P ∗
+    instr_pre
+      (bv_unsigned
+        (bv_or (bv_and (ra + 0)%bv (BV 64 18446744073709551614))
+          (BV 64 0)))
+      (writeSuccessEpiloguePost
+        sp ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 P) ∗ True)%I.
+Global Instance : LithiumUnfold (@writeSuccessExactEpilogueAddSpSpec) := I.
+
 Definition writeOutputEntryBoundary `{!islaG Sigma} `{!threadG} :=
   @writeOutputExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@writeOutputEntryBoundary) := I.
@@ -493,3 +520,64 @@ Definition writeSuccessExactTailEvents {Decoded}
         (writeSuccessWithdrawalsBytes witness) (writeSuccessWithdrawalsCount witness)
         (writeSuccessPostData witness)))
     (writeSuccessTraceTail witness).
+
+Definition writeSuccessExactPostWithdrawalsPayloads {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : list (list (bv 8)) :=
+  drop
+    (length (writeSuccessMainDescriptors
+      (writeSuccessFrameSp witness) (writeSuccessValues witness)
+      (writeSuccessTransactions witness)) +
+     length (writeSuccessByteListsDescriptors
+      (writeSuccessFrameSp witness) (writeSuccessRawTransactions witness)) +
+     length (writeSuccessWithdrawalsDescriptors
+      (writeSuccessFrameSp witness) (writeSuccessWithdrawalsCount witness)))
+    (writeSuccessExactPayloads (writeSuccessDecodedBytes witness)
+      (writeSuccessValues witness) (writeSuccessPayload witness)
+      (writeSuccessTransactions witness) (writeSuccessRawTransactions witness)
+      (writeSuccessWithdrawalsBytes witness)
+      (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)).
+
+Definition writeSuccessExactPostWithdrawalsEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  writeOutputPayloadsSpec
+    (writeSuccessPost156e8Descriptors
+      (writeSuccessFrameSp witness) (writeSuccessPostData witness))
+    (writeSuccessExactPostWithdrawalsPayloads witness)
+    (writeSuccessTraceTail witness).
+
+Definition writeSuccessExactPostWithdrawalsCallerFrame
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  let sp := writeSuccessFrameSp witness in
+  let values := writeSuccessValues witness in
+  (reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+      ["x3"; "x4"; "x6"; "x7"; "x16"; "x17";
+       "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25"; "x26";
+       "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   (bv_unsigned sp - 80) ↦ₘ? 32 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 32 ∗
+   bv_unsigned sp ↦ₘ? 8 ∗
+   writeSuccessExactCopiedTailWords sp (writeSuccessDecodedBytes witness) ∗
+   (bv_unsigned sp + 312) ↦ₘ∗ writeSuccessSourceBytes witness ∗
+   writeSuccessExactValueMemory sp values ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 16 ∗
+   writeSuccessTerminalSavedSlots witness ∗
+   bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
+     writeSuccessDecodedBytes witness ∗
+   bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗
+     writeSuccessPayload witness ∗
+   byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
+     (writeSuccessRawTransactions witness) ∗
+   writeSuccessPostTransactionDataResources sp
+     (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness)
+     (writeSuccessPostData witness) ∗
+   writeSuccessNativeStaticResources ∗
+   writeSuccessTransactionsInvariant sp (writeSuccessTransactionBase witness)
+     (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) []
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
+   ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactPostWithdrawalsCallerFrame) := I.
