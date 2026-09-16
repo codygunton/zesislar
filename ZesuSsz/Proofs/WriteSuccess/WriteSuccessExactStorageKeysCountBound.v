@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Lemma storage_keys_count_bound remaining :
   (S remaining < 2 ^ 64)%nat ->

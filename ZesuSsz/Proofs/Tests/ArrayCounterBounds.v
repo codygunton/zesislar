@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Automation.ArrayCounterBounds.
 Require Import isla.riscv64.riscv64.
 Lemma test_array_counter_index (offset limit : bv 64) (bytes : list (bv 8)) :

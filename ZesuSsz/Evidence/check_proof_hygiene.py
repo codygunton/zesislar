@@ -14,6 +14,8 @@ BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
+LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
+LEGACY_HOOKS_PATH = "ZesuSsz/Automation/Legacy/Hooks.v"
 PROOFS_PREFIX = "ZesuSsz/Proofs/"
 SHELL_ALLOWLIST = {"ZesuSsz/Compliance/Shell.v"}
 GENERATED_PREFIX = "generated/"
@@ -25,6 +27,9 @@ PLACEHOLDER = re.compile(
 HOOK_REDEFINITION = re.compile(
     r"\b(?:Ltac\s+\w+\s*::=|(?:liAStep|liAAsm|liStep)\s*::=)"
 )
+LEGACY_HOOK_LINES = {
+    "Ltac liAStep ::= zesu_liAStep.",
+}
 FORBIDDEN_IDENTIFIERS = (
     "IslaInstructionSegment",
     "writeSuccessTraceAssumptions",
@@ -168,6 +173,7 @@ def proof_size_ratchet_failures(
 def main() -> None:
     baseline_data = json.loads(BASELINE_PATH.read_text())
     baseline = baseline_data["files"]
+    legacy_entries = set(baseline_data["legacy_entry_files"])
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
     failures: list[str] = []
@@ -194,11 +200,19 @@ def main() -> None:
         if name != HOOKS_PATH:
             for number, line in enumerate(lines, 1):
                 if HOOK_REDEFINITION.search(line):
-                    failures.append(f"Lithium hook redefinition: {name}:{number}")
+                    if (name != LEGACY_HOOKS_PATH or
+                            line.strip() not in LEGACY_HOOK_LINES):
+                        failures.append(f"Lithium hook redefinition: {name}:{number}")
 
         if name.startswith(PROOFS_PREFIX):
-            if "Require Import ZesuSsz.Automation.All." not in text:
+            normal_entry = "Require Import ZesuSsz.Automation.All." in text
+            legacy_entry = "Require Import ZesuSsz.Automation.AllLegacy." in text
+            if not normal_entry and not (name in legacy_entries and legacy_entry):
                 failures.append(f"missing Automation.All import: {name}")
+            if legacy_entry and name not in legacy_entries:
+                failures.append(f"unapproved Automation.AllLegacy import: {name}")
+            if normal_entry and legacy_entry:
+                failures.append(f"both Automation entries imported: {name}")
             if (path.name not in A2_EXCEPTIONS and
                     any(fnmatch.fnmatch(path.name, pattern) for pattern in A2_PATTERNS)):
                 failures.append(f"Appendix A.2 file remains: {name}")

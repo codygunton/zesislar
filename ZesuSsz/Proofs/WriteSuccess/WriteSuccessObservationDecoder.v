@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Bool.Bool Lists.List ZArith.ZArith Lia.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.

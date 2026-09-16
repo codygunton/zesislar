@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Definition transactionChainWordImage (value tagWord : bv 64) : list (bv 8) :=

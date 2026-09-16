@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 
@@ -141,6 +141,11 @@ From ZesuSsz.Proofs.WriteSuccess Require Export
   WriteSuccessBlobHashesSpec
   WriteSuccessByteLists
   WriteSuccessCalls
+  WriteSuccessExactBooleanClosedCall
+  WriteSuccessExactByteListsClosedCall
+  WriteSuccessExactEncoderBytes
+  WriteSuccessExactEncoderOptionalU64Call
+  WriteSuccessExactWriteOutputCall
   WriteSuccessEncoderBooleanCall
   WriteSuccessEncoderBytesCallCore
   WriteSuccessEncoderIntCall
@@ -149,6 +154,8 @@ From ZesuSsz.Proofs.WriteSuccess Require Export
   WriteSuccessEpilogueBlock
   WriteSuccessHeaderSpec
   WriteSuccessNativeSuffixBytes158e0
+  WriteSuccessNativeSuffixConditionalBranch
+  WriteSuccessNativeSuffixOptionalU64159b8
   WriteSuccessNativeSuffixIntPair
   WriteSuccessPrologueSpec
   WriteSuccessStorageKeysSpec
@@ -223,12 +230,32 @@ Definition writeSuccessTailBoundary `{!islaG Sigma} `{!threadG} :=
   @writeSuccessSuffixAt158e0 Sigma _ _.
 Global Instance : LithiumUnfold (@writeSuccessTailBoundary) := I.
 
+Definition writeSuccessTailFieldsEntryBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @writeSuccessSuffixAt158e0 Sigma _ _.
+Global Instance : LithiumUnfold (@writeSuccessTailFieldsEntryBoundary) := I.
+
+Definition writeSuccessTailFirstBranchBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @writeSuccessSuffix1596cLoadSpec Sigma _ _.
+Global Instance : LithiumUnfold (@writeSuccessTailFirstBranchBoundary) := I.
+
+Definition writeSuccessTailSecondBranchBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @writeSuccessSuffixOptionalU64159b8Spec Sigma _ _.
+Global Instance : LithiumUnfold (@writeSuccessTailSecondBranchBoundary) := I.
+
+Definition writeSuccessTailFieldsExitBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @writeSuccessEpilogueSpec Sigma _ _.
+Global Instance : LithiumUnfold (@writeSuccessTailFieldsExitBoundary) := I.
+
 Definition writeSuccessEpilogueBoundary `{!islaG Sigma} `{!threadG} :=
   @writeSuccessEpilogueSpec Sigma _ _.
 Global Instance : LithiumUnfold (@writeSuccessEpilogueBoundary) := I.
 
 Definition writeOutputEntryBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuWriteOutputCallSpec Sigma _ _.
+  @writeOutputExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@writeOutputEntryBoundary) := I.
 
 Definition memcpyEntryBoundary `{!islaG Sigma} `{!threadG} :=
@@ -236,19 +263,19 @@ Definition memcpyEntryBoundary `{!islaG Sigma} `{!threadG} :=
 Global Instance : LithiumUnfold (@memcpyEntryBoundary) := I.
 
 Definition encoderBooleanEntryBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderBooleanCallSpec Sigma _ _.
+  @zesuEncoderBooleanExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderBooleanEntryBoundary) := I.
 
 Definition encoderOptionalEntryBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderOptionalU64CallSpec Sigma _ _.
+  @zesuEncoderOptionalU64ExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderOptionalEntryBoundary) := I.
 
 Definition encoderByteListsEntryBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderByteListsCallSpec Sigma _ _.
+  @zesuEncoderByteListsExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderByteListsEntryBoundary) := I.
 
 Definition encoderBytesEntryBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderBytesCallSpec Sigma _ _.
+  @zesuEncoderBytesExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderBytesEntryBoundary) := I.
 
 Definition encoderU256EntryBoundary `{!islaG Sigma} `{!threadG} :=
@@ -262,7 +289,7 @@ Global Instance : LithiumUnfold (@encoderIntEntryBoundary) := I.
 (* Each call specification quantifies over RET and contains its exact return
    resources. These aliases expose that return interface without copying it. *)
 Definition writeOutputReturnBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuWriteOutputCallSpec Sigma _ _.
+  @writeOutputExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@writeOutputReturnBoundary) := I.
 
 Definition memcpyReturnBoundary `{!islaG Sigma} `{!threadG} :=
@@ -270,19 +297,19 @@ Definition memcpyReturnBoundary `{!islaG Sigma} `{!threadG} :=
 Global Instance : LithiumUnfold (@memcpyReturnBoundary) := I.
 
 Definition encoderBooleanReturnBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderBooleanCallSpec Sigma _ _.
+  @zesuEncoderBooleanExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderBooleanReturnBoundary) := I.
 
 Definition encoderOptionalReturnBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderOptionalU64CallSpec Sigma _ _.
+  @zesuEncoderOptionalU64ExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderOptionalReturnBoundary) := I.
 
 Definition encoderByteListsReturnBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderByteListsCallSpec Sigma _ _.
+  @zesuEncoderByteListsExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderByteListsReturnBoundary) := I.
 
 Definition encoderBytesReturnBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderBytesCallSpec Sigma _ _.
+  @zesuEncoderBytesExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderBytesReturnBoundary) := I.
 
 Definition encoderU256ReturnBoundary `{!islaG Sigma} `{!threadG} :=
@@ -301,14 +328,14 @@ Proof. done. Qed.
 
 Lemma write_success_interfaces_output_return
     `{!islaG Sigma} `{!threadG} :
-  writeOutputReturnBoundary ⊣⊢ zesuWriteOutputCallSpec.
+  writeOutputReturnBoundary ⊣⊢ writeOutputExactCallSpec.
 Proof. done. Qed.
 
 Print Assumptions write_success_interfaces_transactions_entry.
 Print Assumptions write_success_interfaces_output_return.
 
 (** Exact caller frame shared by the transactions and terminal chains. *)
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
 From ZesuSsz.Proofs.WriteSuccess Require Import
@@ -317,6 +344,25 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessByteLists WriteSuccessTransactionsSpec
   WriteSuccessTransactionsPost15674Boundary
   WriteSuccessPostTransactionResources.
+
+Definition writeSuccessExitMemoryFrame `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  writeSuccessNativeExitMemory witness.
+Global Instance : LithiumUnfold (@writeSuccessExitMemoryFrame) := I.
+
+Definition writeSuccessExactEpilogueExit `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  (writeSuccessExitMemoryFrame witness ∗
+   spec_trace (writeSuccessTraceTail witness))%I.
+
+Lemma writeSuccessExactEpilogueExit_unfold `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) :
+  writeSuccessExactEpilogueExit witness ⊣⊢
+    (writeSuccessExitMemoryFrame witness ∗
+     spec_trace (writeSuccessTraceTail witness))%I.
+Proof. done. Qed.
+
+Global Opaque writeSuccessExactEpilogueExit.
 
 Definition writeSuccessExactCallerRemainder `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}

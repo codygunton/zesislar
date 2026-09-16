@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Lemma transactions_source_slice (bytes : list (bv 8)) (index offset width : nat) :

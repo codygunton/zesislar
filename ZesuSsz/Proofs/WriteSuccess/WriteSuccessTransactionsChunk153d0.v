@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -120,7 +120,7 @@ Proof.
     all: iRename select (reg_col zesu_ram_sys_regs)%I into "Hsys".
     all: iRename select ("x1" ↦ᵣ RVal_Bits (BV 64 0x153d0))%I into "Hx1".
     all: iRename select ("x2" ↦ᵣ RVal_Bits sp)%I into "Hx2".
-    all: iRename select ("x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)))%I into "Hx5".
+    all: iRename select ("x5" ↦ᵣ RVal_Bits _)%I into "Hx5".
     all: iRename select ("x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv)%I into "Hx10".
     all: iRename select ("x11" ↦ᵣ RVal_Bits (BV 64 8))%I into "Hx11".
     all: iRename select

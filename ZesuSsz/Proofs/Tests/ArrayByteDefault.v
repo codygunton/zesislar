@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Lemma test_array_byte_default_literal (bytes : list (bv 8)) (byte : bv 8) :

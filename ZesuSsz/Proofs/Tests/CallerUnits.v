@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Lemma test_caller_group_equivalence {Sigma : gFunctors} (A B C D : iProp Sigma) :

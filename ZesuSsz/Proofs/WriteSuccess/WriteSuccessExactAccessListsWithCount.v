@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsLoopNative.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsReturnLoopNative.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsReturnLoopEntry.

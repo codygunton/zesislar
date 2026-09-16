@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Automation.ArrayCopyComplete.
 Require Import isla.riscv64.riscv64.
 Lemma test_array_copy_complete (count : bv 64) (data wanted : list (bv 8)) :

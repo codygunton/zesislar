@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
@@ -89,9 +89,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 72 -
        (base + 288 * Z.of_nat (length processed))) = 72%nat.
-  { rewrite H7. lia. }
+  { rewrite Z_to_bv_unsigned; rewrite bv_wrap_small; [lia | bv_solve]. }
   iEval (rewrite Hstart) in "Hprefix72 Hsuffix80".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?Z_to_bv_unsigned ?bv_wrap_small ?Z.add_0_r; try bv_solve.
   iFrame "Hprefix72 Hsuffix80".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
@@ -112,12 +112,7 @@ Proof.
     ((_ ↦ₘ∗ take 72
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
         transaction))%I) into "HprefixFinal".
-  iRename select
-    ((_ ↦ₘ Z_to_bv 64
-      (little_endian_to_bv 8
-        (take 8 (drop 72
-          (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
-            transaction)))))%I) into "HwordFinal".
+  iRename select (_ ↦ₘ _)%I into "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 80
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes

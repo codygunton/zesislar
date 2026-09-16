@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Automation.ArrayPairViews.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import isla.riscv64.riscv64.

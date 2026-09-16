@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
@@ -90,9 +90,10 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 216 -
        (base + 288 * Z.of_nat (length processed))) = 216%nat.
-  { rewrite H7. lia. }
+  { rewrite write_success_150a8_current_unsigned; try lia; try bv_solve. }
   iEval (rewrite Hstart) in "Hprefix216 Hsuffix224".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?write_success_150a8_current_unsigned ?Z.add_0_r;
+    try bv_solve; try lia.
   iFrame "Hprefix216 Hsuffix224".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
@@ -108,11 +109,8 @@ Proof.
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
         transaction))%I) into "HprefixFinal".
   iRename select
-    ((_ ↦ₘ Z_to_bv 64
-      (little_endian_to_bv 8
-        (take 8 (drop 216
-          (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
-            transaction)))))%I) into "HwordFinal".
+    (((base + 288 * Z.of_nat (length processed) + 216) ↦ₘ _)%I)
+    into "HwordFinal".
   iRename select
     ((_ ↦ₘ∗ drop 224
       (WriteSuccessTransactionsSpec.writeSuccessTransactionBytes
@@ -129,6 +127,7 @@ Proof.
     (writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail)%I
     into "HframeFinal".
+  iRename select ("x12" ↦ᵣ RVal_Bits _)%I into "Hx12Actual".
   iAssert (writeSuccessTransactionsMachine150ac sp base transactions
     processed transaction) with "[-HarrayFinal HframeFinal]"
     as "HmachineFinal".

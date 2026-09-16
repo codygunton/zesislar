@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysNativeEntry.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysLoopClosed.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysLoopBody.

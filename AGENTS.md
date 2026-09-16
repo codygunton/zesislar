@@ -13,6 +13,11 @@ Do not use execution evidence as a proof premise.
 
 Prove machine code with Islaris and Lithium. Start every proof module with
 `Require Import ZesuSsz.Automation.All.` Prove blocks with `zesu_block`.
+During the frozen-list repair, only class-R baseline modules may replace that
+import line with `Require Import ZesuSsz.Automation.AllLegacy.`
+The hygiene checker forbids AllLegacy in every new proof module.
+Only `Automation/AllLegacy.v` may restore the two measured pre-A1 tactic
+overrides during this repair. New hook definitions stay in `Hooks.v`.
 State entry and exit resources in `IslarisContractResources` and the
 theorem with `IslarisContractCorrect`. State observable output through
 `writeOutputEvents` with its payload. Export machine facts only through
@@ -142,3 +147,36 @@ Report an exact MCP failure before you switch to a shell proof tool.
 The coordinator approves and records each bounded fallback.
 Continue independent preparation while the coordinator reviews that failure.
 Shell commands can build dependencies and run project gates.
+
+## Integration gates and rule threshold
+
+During the frozen-list repair phase, a track commit needs green `make check-fast`
+and a preview that adds no Iris failure before merge.
+For a failing numbered class-T hypothesis, run `tools/pin_hypotheses.py`
+through rocq-mcp before editing the proof line.
+Test each compatible hypothesis with the next tactic, then select the
+statement and rename it to a descriptive name.
+Log the file, line, old name, and selected statement for every rewrite.
+Send a non-unique candidate list to the region owner; leave no numbered
+hypothesis in a repaired line.
+If a commit touches `ZesuSsz/Automation/`, `InstrSpecs/`,
+`ZesuSsz/Contracts/`, or `ZesuSsz/Export/`, the full Iris preview's
+failure set must be a subset of the frozen list.
+The same criterion applies to repair commits.
+After the repair phase, do not merge an ordinary commit while the last full
+`make check-iris` gate is red.
+Only measured gate-repair commits can enter an isolated recovery preview then.
+Run full `make check-iris` in the preview before merging a commit that touches
+`ZesuSsz/Automation/`, `InstrSpecs/`, `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`.
+Keep the mandatory `make check-fast` check before each commit.
+After the repair phase, only a full green Iris gate on Root releases ordinary merges.
+During the approved frozen-list repair, a red full preview may proceed only
+when its failing set is within the shrinking active list.
+Any added failure stops integration and requires a user report.
+After the repair phase, two consecutive red full Iris gates stop integration.
+Report both failures to the user.
+
+Auto adds a generic rule only when one manual step needs more than five lines
+or at least two proof sites need the same step.
+Generic rules must not name a machine address, an offset, or a contract predicate.
+Otherwise, the region owner writes the manual step in its proof.

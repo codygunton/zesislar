@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
@@ -102,8 +102,11 @@ Proof.
       tt)ₗ.
   iIntros "Hprefix176 Hsuffix184".
   cbn.
-  rename select
-    (bv_unsigned (Z_to_bv 64 _) = _) into HcurrentUnsigned.
+  have HcurrentUnsigned :
+    bv_unsigned (Z_to_bv 64
+      (base + 288 * Z.of_nat (length processed))) =
+    base + 288 * Z.of_nat (length processed).
+  { rewrite write_success_14f4c_current_unsigned; try lia; try bv_solve. }
   have Hstart :
     Z.to_nat
       (bv_unsigned (Z_to_bv 64
@@ -111,7 +114,7 @@ Proof.
        (base + 288 * Z.of_nat (length processed))) = 176%nat.
   { rewrite HcurrentUnsigned. lia. }
   iEval (rewrite Hstart) in "Hprefix176 Hsuffix184".
-  rewrite Hstart HcurrentUnsigned !Z.add_0_r.
+  rewrite ?Hstart ?HcurrentUnsigned !Z.add_0_r.
   iFrame "Hprefix176 Hsuffix184".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.

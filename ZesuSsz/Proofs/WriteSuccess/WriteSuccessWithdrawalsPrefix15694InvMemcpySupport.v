@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lia Lists.List ZArith.ZArith.
 Require Import isla.opsem.
 

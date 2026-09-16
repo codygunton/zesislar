@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
@@ -102,9 +102,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 152 -
        (base + 288 * Z.of_nat (length processed))) = 152%nat.
-  { rewrite H7. lia. }
+  { rewrite ZesuSsz.Automation.Rewrites.zesu_bv_unsigned_Z_to_bv_small; [lia | bv_solve]. }
   iEval (rewrite Hstart) in "Hprefix152 Hsuffix160".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?ZesuSsz.Automation.Rewrites.zesu_bv_unsigned_Z_to_bv_small ?Z.add_0_r; try bv_solve.
   iFrame "Hprefix152 Hsuffix160".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.

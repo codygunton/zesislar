@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Automation.RegPacking.
 Require Import ZesuSsz.Automation.Resources.
 Require Import isla.riscv64.riscv64.

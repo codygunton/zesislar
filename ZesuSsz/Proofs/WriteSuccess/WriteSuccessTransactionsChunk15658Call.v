@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -67,10 +67,10 @@ Proof.
     (unfold WriteSuccessTransactionsSpec.writeSuccessTransactionsProcessedOwn).
   all: try iFrame "Hprocessed".
   all: try iFrame.
-  all: try (iDestruct select (mmio_range (machineOutputAddress defaultMap) 16) as "Hmmio";
-    iFrame "Hmmio").
   Unshelve. all: prepare_sidecond.
   all: try assumption.
   all: try bv_solve.
   all: try lia.
+  Unshelve. all: iMatchHyp ltac:(fun H body =>
+    lazymatch body with | mmio_range _ 16 => iFrame H end).
 Qed.
