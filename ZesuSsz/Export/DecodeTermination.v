@@ -35,6 +35,10 @@ Definition physicalInstructionBoundary (pc : Z)
   seq_pc_reg theta = "PC" /\ seq_nb_state theta = false /\
   physicalRegister64 (seq_regs theta) "PC" (Z_to_bv 64 pc) /\
   seq_instrs sigma !! Z_to_bv 64 pc = Some (seq_trace theta).
+Definition physicalDecoderEntryBoundary (pc : Z)
+    (theta : seq_local_state) : Prop :=
+  seq_pc_reg theta = "PC" /\ seq_nb_state theta = false /\
+  physicalRegister64 (seq_regs theta) "PC" (Z_to_bv 64 pc).
 Definition physicalNativeStaticMemory (sigma : seq_global_state) : Prop :=
   physicalMemoryBytes sigma (mapRodataBase defaultMap + 0x7c5)
     (writeSuccessPrivateBytes [90; 83; 83; 90; 1; 1]).
@@ -294,7 +298,7 @@ Definition physicalMainDecodeEntry (program : gmap addr isla_trace)
     (initial : spec) (prefix : list seq_label) (args : DecodeBoundaryArgs)
     (theta : seq_local_state) (sigma : seq_global_state) : Prop :=
   let sp := Z_to_bv 64 (decodeStackPointer args) in
-  seq_instrs sigma = program /\ physicalInstructionBoundary (machinePc 0x2048) theta sigma /\
+  seq_instrs sigma = program /\ physicalDecoderEntryBoundary (machinePc 0x2048) theta /\
   physicalMainDecodeBounds args /\
   physicalFootprintSeparated (physicalMainCommonFootprint args ++ physicalMainHeapFootprint) /\
   physicalRegisterShapes (seq_regs theta) zesu_sys_regs /\
@@ -340,7 +344,10 @@ Definition physicalMainDecodeExit (program : gmap addr isla_trace)
        physicalFootprintSeparated (physicalMainCommonFootprint args ++ physicalMainHeapFootprint)
    end) /\ traceResidual initial prefix (decodeTail args).
 
-Definition decodeTerminationHypothesis (program : gmap addr isla_trace) : Prop :=
+Definition decodeTerminationHypothesis
+    (approvedProgram : gmap addr isla_trace) : Prop :=
+  forall (program : gmap addr isla_trace),
+    approvedProgram ⊆ program ->
   forall (decodeTail successExitTail : DecodeBoundaryArgs -> spec)
     (initial : spec) (prefix : list seq_label) (args : DecodeBoundaryArgs)
     (theta : seq_local_state) (sigma : seq_global_state),
@@ -356,5 +363,6 @@ Definition scopedCodeAgreement (program : gmap addr isla_trace)
   Forall (fun entry => program !! Z_to_bv 64 entry.1 = Some entry.2) code.
 Print Assumptions decodeTerminationHypothesis.
 
+Print Assumptions physicalDecoderEntryBoundary.
 Print Assumptions physicalMainDecodeEntry.
 Print Assumptions physicalMainDecodeExit.
