@@ -106,7 +106,7 @@ Proof.
     bv_unsigned (Z_to_bv 64
       (base + 288 * Z.of_nat (length processed))) =
     base + 288 * Z.of_nat (length processed).
-  { rewrite zesu_bv_unsigned_Z_to_bv_small; try lia; try bv_solve. }
+  { rewrite write_success_14f4c_current_unsigned; try lia; try bv_solve. }
   have Hstart :
     Z.to_nat
       (bv_unsigned (Z_to_bv 64
