@@ -60,12 +60,29 @@ Proof.
 Qed.
 Print Assumptions write_failure_framed_trace_correct.
 
+Lemma write_failure_canonical_framed_trace_correct
+    `{!islaG Sigma} `{!threadG}
+    (tail : spec) (P : iProp Sigma) :
+  ([∗ list] i ∈ writeFailureFramedPrefixInstrs,
+    instr i.1 (Some i.2)) -∗
+  ([∗ list] i ∈ writeFailureCanonicalOutputInstrs,
+    instr i.1 (Some i.2)) -∗
+  instr_body 0x161c0 (writeFailureFramedTraceEntry tail P).
+Proof.
+  iIntros "Hprefix Houtput".
+  iApply (write_failure_framed_prefix_correct tail P with "Hprefix").
+  iApply (write_failure_canonical_output_trace_correct
+    (BV 64 0x177c8) (BV 64 6) failureMemory tail
+    ("x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ P ∗ True)%I with "Houtput").
+Qed.
+Print Assumptions write_failure_canonical_framed_trace_correct.
+
 Definition writeFailureTailResources `{!islaG Sigma} `{!threadG}
     (tail : spec) (P : iProp Sigma) :
     IslarisContractResources WriteFailureArgs ByteString := {|
   islarisCode :=
     (([∗ list] i ∈ writeFailureFramedPrefixInstrs, instr i.1 (Some i.2)) ∗
-     ([∗ list] i ∈ skipn 5 IslaTraces.write_failure.instrs.instr_map,
+     ([∗ list] i ∈ writeFailureCanonicalOutputInstrs,
        instr i.1 (Some i.2)))%I;
   islarisEntry := fun args =>
     (⌜failureReturnAddress args = 0x14d24⌝ ∗
@@ -96,7 +113,8 @@ Theorem write_failure_tail_state_correct `{!islaG Sigma} `{!threadG}
 Proof.
   rewrite /IslarisContractSpec /writeFailureTailResources /=.
   iIntros "[Hprefix Houtput]" (args).
-  iPoseProof (write_failure_framed_trace_correct tail P with "Hprefix Houtput") as "Hbody".
+  iPoseProof (write_failure_canonical_framed_trace_correct tail P
+    with "Hprefix Houtput") as "Hbody".
   rewrite instr_pre'_eq.
   iIntros "Hcontract".
   iApply "Hbody".

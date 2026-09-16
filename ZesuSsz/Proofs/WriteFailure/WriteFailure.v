@@ -3,6 +3,8 @@ Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_failure Require Import instrs.
+Require Import IslaTraces.write_success_01.a10198.
+Require Import IslaTraces.write_success_01.a1019c.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Generated.Level1.
 Require Import ZesuSsz.Contracts.Endpoints.
@@ -17,14 +19,23 @@ Definition failureObservation : ByteString :=
 Definition failureMemory : list (bv 8) :=
   [BV 8 0x5a; BV 8 0x53; BV 8 0x53; BV 8 0x5a; BV 8 0x01; BV 8 0x00].
 
+Definition writeFailureCanonicalOutputInstrs : list (Z * isla_trace) := [
+  (0x10190, a10190); (0x10194, a10194);
+  (0x10198, IslaTraces.write_success_01.a10198.a10198);
+  (0x1019c, IslaTraces.write_success_01.a1019c.a1019c);
+  (0x101a0, a101a0)
+].
+
 Definition write_failure_resources `{!islaG Sigma} `{!threadG} :
     IslarisContractResources WriteFailureArgs ByteString := {|
   islarisCode :=
     (instr 0x161c0 (Some a161c0) ∗ instr 0x161c4 (Some a161c4) ∗
      instr 0x161c8 (Some a161c8) ∗ instr 0x161cc (Some a161cc) ∗
      instr 0x161d0 (Some a161d0) ∗ instr 0x10190 (Some a10190) ∗
-     instr 0x10194 (Some a10194) ∗ instr 0x10198 (Some a10198) ∗
-     instr 0x1019c (Some a1019c) ∗ instr 0x101a0 (Some a101a0))%I;
+     instr 0x10194 (Some a10194) ∗
+     instr 0x10198 (Some IslaTraces.write_success_01.a10198.a10198) ∗
+     instr 0x1019c (Some IslaTraces.write_success_01.a1019c.a1019c) ∗
+     instr 0x101a0 (Some a101a0))%I;
   islarisEntry := fun args =>
     (∃ (old_x5 old_x6 old_x10 old_x11 old_pointer old_length : bv 64),
       ⌜failureReturnAddress args = 0x14d24⌝ ∗
@@ -135,8 +146,8 @@ Definition writeFailureInstrTable : gmap addr isla_trace :=
   <[ BV 64 0x161d0 := a161d0 ]> $
   <[ BV 64 0x10190 := a10190 ]> $
   <[ BV 64 0x10194 := a10194 ]> $
-  <[ BV 64 0x10198 := a10198 ]> $
-  <[ BV 64 0x1019c := a1019c ]> $
+  <[ BV 64 0x10198 := IslaTraces.write_success_01.a10198.a10198 ]> $
+  <[ BV 64 0x1019c := IslaTraces.write_success_01.a1019c.a1019c ]> $
   <[ BV 64 0x101a0 := a101a0 ]> $ ∅.
 
 Definition writeFailureInitialMemory : mem_map :=
@@ -193,6 +204,47 @@ Proof.
   all: try bv_solve.
   all: lazymatch goal with |- ?G => fail "side condition" G end.
 Qed.
+
+Lemma write_failure_canonical_output_trace_correct
+    `{!islaG Sigma} `{!threadG}
+    (data size : bv 64) (payload : list (bv 8))
+    (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ writeFailureCanonicalOutputInstrs,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x10190
+    (writeFailureOutputTraceSpec data size (BV 64 0x14d24)
+      payload tail P).
+Proof.
+  move => * /=.
+  iStartProof.
+  unshelve (repeat zesu_liAStepNoWrite).
+  Unshelve. all: try zesu_solve_pending_sidecond.
+  Unshelve.
+  zesu_liAStepGenericWrite.
+  Unshelve.
+  unshelve (repeat zesu_liAStepNoWrite).
+  Unshelve. all: try zesu_solve_pending_sidecond.
+  Unshelve.
+  zesu_liAStepSnapshotWriteAt (bv_unsigned data).
+  Unshelve.
+  unshelve (repeat zesu_liAStepNoWrite).
+  all: try zesu_solve_pending_sidecond.
+  iExists ((fun snapshot =>
+    read_mem_list snapshot.(snap_mem) (bv_unsigned data)
+      (Z.to_N (bv_unsigned size)) = Some payload), tail, tt)ₗ.
+  iSplit.
+  { iPureIntro. intros snapshot Hmemory.
+    inversion Hmemory as [|[address bytes] claims Hhead Htail]; subst.
+    rewrite H0. exact Hhead. }
+  iSplit; first (iPureIntro; reflexivity).
+  unshelve (repeat zesu_liAStepNoWrite).
+  Unshelve. all: prepare_sidecond.
+  all: try assumption.
+  all: try bv_solve.
+  all: lazymatch goal with |- ?G => fail "side condition" G end.
+Qed.
+
+Print Assumptions write_failure_canonical_output_trace_correct.
 
 Lemma write_failure_adequate mstatusBits satp labels threads globalState steps :
   Z.land (bv_unsigned mstatusBits) 0x20000 = 0 ->
@@ -264,9 +316,11 @@ Proof.
   { by unshelve iApply (instr_intro with "Hinstructions"). }
   iAssert (instr 0x10194 (Some a10194))%I as "#Hi7".
   { by unshelve iApply (instr_intro with "Hinstructions"). }
-  iAssert (instr 0x10198 (Some a10198))%I as "#Hi8".
+  iAssert (instr 0x10198
+    (Some IslaTraces.write_success_01.a10198.a10198))%I as "#Hi8".
   { by unshelve iApply (instr_intro with "Hinstructions"). }
-  iAssert (instr 0x1019c (Some a1019c))%I as "#Hi9".
+  iAssert (instr 0x1019c
+    (Some IslaTraces.write_success_01.a1019c.a1019c))%I as "#Hi9".
   { by unshelve iApply (instr_intro with "Hinstructions"). }
   iAssert (instr 0x101a0 (Some a101a0))%I as "#Hi10".
   { by unshelve iApply (instr_intro with "Hinstructions"). }
@@ -274,10 +328,9 @@ Proof.
     (writeFailureOutputTraceSpec (BV 64 0x177c8) (BV 64 6) (BV 64 0x14d24)
       failureMemory writeFailureTraceTail
       ("x6" ↦ᵣ RVal_Bits (BV 64 0x101cc) ∗ True)))%I as "Houtput".
-  { iApply write_failure_output_trace_correct.
+  { iApply write_failure_canonical_output_trace_correct.
     Unshelve. all: try apply _.
-    unfold IslaTraces.write_failure.instrs.instr_map.
-    cbn [skipn].
+    unfold writeFailureCanonicalOutputInstrs.
     repeat rewrite big_sepL_cons.
     rewrite big_sepL_nil. cbn [fst snd].
     iFrame "Hi6 Hi7 Hi8 Hi9 Hi10". }
