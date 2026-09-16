@@ -1,5 +1,5 @@
 {
-  "captured_utc": "2026-09-16T03:22:43.833211+00:00",
+  "captured_utc": "2026-09-16T03:54:35.731331+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
@@ -16,8 +16,8 @@
     {
       "source": "docs/ai/plan/PUSH3_exec_PROGRESS.md",
       "snapshot": "progress/PUSH3_exec_PROGRESS.md",
-      "sha256": "17ea2c930e71cb67d5216db773fedf52bff3682b8b1cfe4c23d0cea184fbaaab",
-      "bytes": 23816
+      "sha256": "92917b787b8773a0ed976d033ec13ef42091b43a95898f0a4c04465e98c386a5",
+      "bytes": 25985
     },
     {
       "source": "docs/ai/plan/PUSH3_main_PROGRESS.md",
@@ -202,8 +202,8 @@
     {
       "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v",
       "snapshot": "tail/WriteSuccessPostWithdrawalsBytes.v.txt",
-      "sha256": "9074c9b51fbf539ed61faec8ed3f0e5765e1cf4c74a1b22e1322da4cfd002fe3",
-      "bytes": 10995
+      "sha256": "ad3be1758059cf83e3b78dee2642fe99989251dc15759d60efd2d56833e0f39e",
+      "bytes": 11001
     },
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/TailStatusSetX18Probe.v",

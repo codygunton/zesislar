@@ -423,3 +423,15 @@ MCP compiles that scratch in full mode.
 No named global decoder assumption exists in this worker commit.
 Root must fix the explicit program before it publishes that assumption.
 The final `zesuTerminates` theorem still waits for CP3.
+
+## Approved Phase 5.3 decoder-boundary deviation (2026-09-15)
+
+**Before.** `decodeTerminationHypothesis program := ∀ decodeTail successExitTail initial prefix args theta sigma, physicalMainDecodeEntry program ... theta sigma → ∃ steps labels theta' sigma' outcome, nsteps steps ([theta], sigma) labels ([theta'], sigma') ∧ physicalMainDecodeExit program ... (prefix ++ labels) ... theta' sigma'`. `physicalMainDecodeEntry` required `seq_instrs sigma = program ∧ physicalInstructionBoundary (machinePc 0x2048) theta sigma`, including a decoder lookup.
+
+**After.** `decodeTerminationHypothesis approvedProgram := ∀ program, approvedProgram ⊆ program → ∀ decodeTail successExitTail initial prefix args theta sigma, physicalMainDecodeEntry program ... theta sigma → ∃ steps labels theta' sigma' outcome, nsteps steps ([theta], sigma) labels ([theta'], sigma') ∧ physicalMainDecodeExit program ... (prefix ++ labels) ... theta' sigma'`. The entry now requires `seq_instrs sigma = program ∧ physicalDecoderEntryBoundary (machinePc 0x2048) theta`. This boundary retains `seq_pc_reg theta = "PC"`, `seq_nb_state theta = false`, and the fixed PC register. All remaining resources are unchanged.
+
+**Reason.** The approved 998-address program intentionally omits decoder instructions. Decoder termination must run under an extending map without requiring a lookup from the approved map.
+
+**Equivalence note.** Any former entry implies the new entry by dropping only its lookup conjunct. The exit predicate remains `physicalMainDecodeExit`. `main_to_decode_entry_state_correct` is unchanged. `zesuCompliance` is unchanged. The Phase 5 composition lemmas carry the named `decodeTerminates` and the map inclusion premise. CP5 must review this deviation.
+
+Exec commit `7e75743a` implements this statement. MCP compiled `DecodeTermination.v`, `Termination.v`, and `DecoderComposition.v`. MCP verified `zesu_run_through_decode_termination` with assumptions `[]`. Every affected `Print Assumptions` line is `Closed under the global context`. Exec `check-fast` passed. A full `check-iris` preview is required before merge because this commit changes `Export/`.
