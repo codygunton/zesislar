@@ -1,7 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
-From ZesuSsz.Proofs.WriteSuccess Require Import Interfaces
+From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessNativeContract WriteSuccessRepresentation WriteSuccessTransactionsSpec
   WriteSuccessExactTransactionsLiveSpec WriteSuccessExactValueSpec
   WriteSuccessPostTransactionResources WriteSuccessOutputDescriptors
