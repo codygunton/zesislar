@@ -616,6 +616,23 @@ Proof.
   eexists. reflexivity.
 Qed.
 
+Lemma exact_post_withdrawals_first_tail_explicit {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) :
+  writeSuccessExactPostWithdrawalsEvents witness =
+    writeOutputEvents (writeSuccessFrameSp witness - BV 64 16)%bv
+      (BV 64 8)
+      (writeSuccessPrivateBytes (writeSuccessEncodeU64
+        (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 13))))
+      (exactPostWithdrawalsFirstTail witness).
+Proof.
+  rewrite /writeSuccessExactPostWithdrawalsEvents
+    exact_post_withdrawals_payloads.
+  cbn [writeSuccessPost156e8Descriptors writeSuccessPostFragments
+    writeSuccessExactObservation writeSuccessNativeObservation
+    exactPostWithdrawalsFirstTail writeOutputPayloadsSpec].
+  reflexivity.
+Qed.
+
 Definition writeSuccessExactPostPayloadsAt {Decoded}
     (descriptors : list WriteOutputDescriptor)
     (witness : writeSuccessNativeWitness Decoded) : list (list (bv 8)) :=
@@ -838,3 +855,4 @@ Global Instance : LithiumUnfold
 
 Print Assumptions exact_post_withdrawals_payloads.
 Print Assumptions exact_post_withdrawals_first_tail.
+Print Assumptions exact_post_withdrawals_first_tail_explicit.
