@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-16T13:32:17.350737+00:00",
+  "captured_utc": "2026-09-16T14:29:00.650188+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "9f7d2eda71d1e266b93f10909e58a1f75e7f29b55d3d1b1fba7171fc0035941e",
-      "bytes": 169273
+      "sha256": "d47265322bc4cb13ab2eec4ae4f4ce612ccdf3a1bd657e1dc9f62e852feb4f54",
+      "bytes": 172001
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -34,8 +34,8 @@
     {
       "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
       "snapshot": "progress/PUSH3_tail_PROGRESS.md",
-      "sha256": "554e240e1682eae9986bfcb0f1abb0a2fe78f03b5aeb3b2370820d69e8f839a9",
-      "bytes": 78098
+      "sha256": "d2ec2cc430088ca375b63dfcd9b20d2217b2934ca645440902112c32b1846196",
+      "bytes": 78966
     },
     {
       "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
@@ -130,8 +130,8 @@
     {
       "source": ".worktrees/islaris-native/AGENTS.md",
       "snapshot": "root/AGENTS.md.txt",
-      "sha256": "a303d1ebea0b362a6bad78417bfa7e525cb41dac91d5a3f53d63c7c9c3634f75",
-      "bytes": 9428
+      "sha256": "e5da84e92b18f6d98ec4c563b84d4745ef017a9cc22b76814c7b3d930cf9789a",
+      "bytes": 9624
     },
     {
       "source": ".worktrees/islaris-native-tail/_build/agents/tail/NativeSuffix15980AddressProbe.v",
@@ -256,8 +256,8 @@
     {
       "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEpilogueSegment.v",
       "snapshot": "tail/WriteSuccessExactEpilogueSegment.v.txt",
-      "sha256": "d11763c2155bb1df65e5eb4f9f1694e8b9dd725c2487228334efc15550e995e4",
-      "bytes": 779
+      "sha256": "6d914862cdd3cd3053492b344283a4602d0faa120622121b985ab3e3aac6c9f7",
+      "bytes": 1049
     }
   ]
 }

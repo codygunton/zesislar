@@ -638,3 +638,17 @@ After: `write_output_exact_call_correct` proves `instr_body 0x10190 writeOutputE
 Reason: each tail segment must apply the call contract from concrete resources without supplying a framed theorem's parameters manually.
 Equivalence: `write_output_whole_entry_to_exact` embeds every former framed entry into the closed entry. `write_output_whole_body_from_exact` recovers the former instruction body from the closed body. `write_output_whole_correct_from_exact` recovers the former public proof from the closed provider. The former statement remains unchanged.
 Evidence: MCP compile passed. Module M verification returned assumptions `[]` for all three theorems. The focused j16 build and mandatory `check-fast` passed.
+
+2026-09-16 B1 write_output closed-shape correction.
+Before: `writeOutputExactCallSpec` existentially bound `start`, `count`, and the
+frame `P`. The strict checker reported three uninferable values.
+After: the closed spec computes `start` as
+`Z.to_nat (bv_unsigned data - base)`, computes `count` as
+`Z.to_nat (bv_unsigned size)`, and fixes the closed return frame to `True`.
+Reason: all closed-spec values must follow from concrete entry resources.
+Equivalence: `write_output_whole_entry_to_exact` derives the two computed values
+from the old pure facts and moves the caller frame into `instr_pre_wand`.
+The parameterized `writeOutputWholeSpec` and all three adapter theorem statements
+remain unchanged. MCP closed every theorem and printed `Closed under the global
+context`. The strict B1 checker reports zero for all four metrics. The j16
+`check-fast` gate passed.
