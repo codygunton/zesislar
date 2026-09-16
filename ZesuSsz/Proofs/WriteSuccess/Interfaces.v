@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntCall.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 
 From ZesuSsz.Proofs.WriteSuccess Require Export
@@ -326,7 +327,7 @@ Definition encoderU256EntryBoundary `{!islaG Sigma} `{!threadG} :=
 Global Instance : LithiumUnfold (@encoderU256EntryBoundary) := I.
 
 Definition encoderIntEntryBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderIntCallSpec Sigma _ _.
+  @zesuEncoderIntExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderIntEntryBoundary) := I.
 
 (* Each call specification quantifies over RET and contains its exact return
@@ -360,7 +361,7 @@ Definition encoderU256ReturnBoundary `{!islaG Sigma} `{!threadG} :=
 Global Instance : LithiumUnfold (@encoderU256ReturnBoundary) := I.
 
 Definition encoderIntReturnBoundary `{!islaG Sigma} `{!threadG} :=
-  @zesuEncoderIntCallSpec Sigma _ _.
+  @zesuEncoderIntExactCallSpec Sigma _ _.
 Global Instance : LithiumUnfold (@encoderIntReturnBoundary) := I.
 
 Lemma write_success_interfaces_transactions_entry
