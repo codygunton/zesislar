@@ -15,6 +15,7 @@ SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
+LEGACY_HOOKS_PATH = "ZesuSsz/Automation/Legacy/Hooks.v"
 PROOFS_PREFIX = "ZesuSsz/Proofs/"
 SHELL_ALLOWLIST = {"ZesuSsz/Compliance/Shell.v"}
 GENERATED_PREFIX = "generated/"
@@ -28,7 +29,6 @@ HOOK_REDEFINITION = re.compile(
 )
 LEGACY_HOOK_LINES = {
     "Ltac liAStep ::= zesu_liAStep.",
-    "Ltac zesu_block ::= zesu_block_simpl.",
 }
 FROZEN_LEGACY_ENTRIES = frozenset({
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v",
@@ -215,7 +215,8 @@ def main() -> None:
         if name != HOOKS_PATH:
             for number, line in enumerate(lines, 1):
                 if HOOK_REDEFINITION.search(line):
-                    if name != LEGACY_PATH or line.strip() not in LEGACY_HOOK_LINES:
+                    if (name != LEGACY_HOOKS_PATH or
+                            line.strip() not in LEGACY_HOOK_LINES):
                         failures.append(f"Lithium hook redefinition: {name}:{number}")
 
         if name.startswith(PROOFS_PREFIX):
