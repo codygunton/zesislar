@@ -9,13 +9,14 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 (** Compose the completed main prefix and endpoint suffix through the named
     decoder termination hypothesis.  This lemma does not use decoder traces. *)
 Lemma zesu_run_through_decode_termination
-    (program : gmap addr isla_trace)
+    (approvedProgram program : gmap addr isla_trace)
     (decodeTail successExitTail : DecodeBoundaryArgs -> spec)
     (initial : spec) (emitted before : list seq_label) (args : DecodeBoundaryArgs)
     (instructions : nat) (start boundary : seq_local_state)
     (memory decoderMemory : seq_global_state)
     (terminal : list seq_label -> seq_local_state -> seq_global_state -> Prop)
-    (decodeTerminates : decodeTerminationHypothesis program) :
+    (Hprogram : approvedProgram ⊆ program)
+    (decodeTerminates : decodeTerminationHypothesis approvedProgram) :
   CompletedInstructionRun instructions start memory before boundary decoderMemory ->
   physicalMainDecodeEntry program decodeTail successExitTail initial
     (emitted ++ before) args boundary decoderMemory ->
@@ -40,7 +41,7 @@ Proof.
         prefix args outcome localState globalState)
     emitted before instructions start boundary memory decoderMemory terminal).
   - intros prefix localState globalState Hentry'.
-    exact (decodeTerminates decodeTail successExitTail initial prefix args
+    exact (decodeTerminates program Hprogram decodeTail successExitTail initial prefix args
       localState globalState Hentry').
   - exact Hbefore.
   - exact Hentry.
