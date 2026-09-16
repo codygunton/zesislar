@@ -102,9 +102,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 160 -
        (base + 288 * Z.of_nat (length processed))) = 160%nat.
-  { rewrite zesu_bv_unsigned_Z_to_bv_small; [lia | bv_solve]. }
+  { rewrite ZesuSsz.Automation.Rewrites.zesu_bv_unsigned_Z_to_bv_small; [lia | bv_solve]. }
   iEval (rewrite Hstart) in "Hprefix160 Hsuffix168".
-  rewrite ?Hstart ?zesu_bv_unsigned_Z_to_bv_small ?Z.add_0_r; try bv_solve.
+  rewrite ?Hstart ?ZesuSsz.Automation.Rewrites.zesu_bv_unsigned_Z_to_bv_small ?Z.add_0_r; try bv_solve.
   iFrame "Hprefix160 Hsuffix168".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
