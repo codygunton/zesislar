@@ -1,6 +1,9 @@
 Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Export.Snapshots.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 
 From ZesuSsz.Proofs.WriteSuccess Require Export
   WriteSuccessAccessListsBoundary151dc
@@ -571,6 +574,28 @@ Definition writeSuccessExactTailSecondBranchEvents {Decoded}
     (writeSuccessExactPostPayloadsAt descriptors witness)
     (writeSuccessTraceTail witness).
 
+Definition writeSuccessExactTailAfterConditionalEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  let descriptors := writeSuccessPost159a0Descriptors
+    (writeSuccessFrameSp witness) (writeSuccessPostData witness) in
+  writeOutputPayloadsSpec descriptors
+    (writeSuccessExactPostPayloadsAt descriptors witness)
+    (writeSuccessTraceTail witness).
+
+Definition writeSuccessExactTailThirdBranchEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  let descriptors := writeSuccessPost159bcDescriptors
+    (writeSuccessFrameSp witness) (writeSuccessPostData witness) in
+  writeOutputPayloadsSpec descriptors
+    (writeSuccessExactPostPayloadsAt descriptors witness)
+    (writeSuccessTraceTail witness).
+
+Definition writeSuccessExactTailOptional159b0Bytes {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : list (bv 8) :=
+  let words := writeSuccessPostTailWords (writeSuccessDecodedBytes witness) in
+  bv_to_little_endian 8 8 (bv_unsigned (writeSuccessPostWord words 10)) ++
+  bv_to_little_endian 8 8 (bv_unsigned (writeSuccessPostWord words 11)).
+
 Definition writeSuccessExactPostWithdrawalsMemoryFrame
     `{!islaG Sigma} `{!threadG} {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
@@ -636,13 +661,110 @@ Definition writeSuccessExactTailFirstBranchState
 Global Instance : LithiumUnfold
   (@writeSuccessExactTailFirstBranchState) := I.
 
+Definition writeSuccessExactTailPost159b0Frame
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  let sp := writeSuccessFrameSp witness in
+  let words := writeSuccessPostTailWords (writeSuccessDecodedBytes witness) in
+  let values := writeSuccessValues witness in
+  (reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+      ["x3"; "x4"; "x7"; "x9"; "x12"; "x13"; "x14"; "x15";
+       "x16"; "x17"; "x18"; "x19"; "x20"; "x21"; "x22"; "x23";
+       "x24"; "x25"; "x26"; "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   (bv_unsigned sp - 80) ↦ₘ? 32 ∗
+   (bv_unsigned sp - 48) ↦ₘ? 16 ∗
+   bv_unsigned sp ↦ₘ? 8 ∗
+   (bv_unsigned sp + 24) ↦ₘ writeSuccessPostWord words 0 ∗
+   (bv_unsigned sp + 16) ↦ₘ writeSuccessPostWord words 1 ∗
+   (bv_unsigned sp + 40) ↦ₘ writeSuccessPostWord words 2 ∗
+   (bv_unsigned sp + 32) ↦ₘ writeSuccessPostWord words 3 ∗
+   (bv_unsigned sp + 56) ↦ₘ writeSuccessPostWord words 4 ∗
+   (bv_unsigned sp + 48) ↦ₘ writeSuccessPostWord words 5 ∗
+   (bv_unsigned sp + 64) ↦ₘ writeSuccessPostWord words 6 ∗
+   (bv_unsigned sp + 72) ↦ₘ writeSuccessPostWord words 7 ∗
+   (bv_unsigned sp + 8) ↦ₘ writeSuccessPostWord words 8 ∗
+   (bv_unsigned sp + 80) ↦ₘ writeSuccessPostWord words 9 ∗
+   (bv_unsigned sp + 280) ↦ₘ writeSuccessPostWord words 12 ∗
+   (bv_unsigned sp + 288) ↦ₘ writeSuccessPostWord words 13 ∗
+   (bv_unsigned sp + 96) ↦ₘ writeSuccessPostWord words 14 ∗
+   (bv_unsigned sp + 88) ↦ₘ writeSuccessPostWord words 15 ∗
+   (bv_unsigned sp + 312) ↦ₘ∗ writeSuccessSourceBytes witness ∗
+   writeSuccessExactValueMemory sp values ∗
+   (bv_unsigned sp + 1624) ↦ₘ? 16 ∗
+   writeSuccessTerminalSavedSlots witness ∗
+   bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗
+     writeSuccessDecodedBytes witness ∗
+   bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗
+     writeSuccessPayload witness ∗
+   byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
+     (writeSuccessRawTransactions witness) ∗
+   writeSuccessPostTransactionDataResources sp
+     (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness)
+     (writeSuccessPostData witness) ∗
+   writeSuccessNativeStaticResources ∗
+   writeSuccessTransactionsInvariant sp (writeSuccessTransactionBase witness)
+     (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) []
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
+   ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactTailPost159b0Frame) := I.
+
 Definition writeSuccessExactTailSecondBranchState
     `{!islaG Sigma} `{!threadG} {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
     (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
-  writeSuccessSuffixOptionalU64159b8Spec
-    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
-     writeSuccessExactPostWithdrawalsMemoryFrame args witness ∗ True).
+  let sp := writeSuccessFrameSp witness in
+  let words := writeSuccessPostTailWords (writeSuccessDecodedBytes witness) in
+  let pointer := (sp + BV 64 296)%bv in
+  let low := writeSuccessPostWord words 10 in
+  let high := writeSuccessPostWord words 11 in
+  let bytes := writeSuccessExactTailOptional159b0Bytes witness in
+  let tail := writeSuccessExactTailThirdBranchEvents witness in
+  (∃ old_x5 old_x6 old_x8 old_x11 : bv 64,
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits (BV 64 0x159b4) ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗
+    "x6" ↦ᵣ RVal_Bits old_x6 ∗
+    "x8" ↦ᵣ RVal_Bits old_x8 ∗
+    "x10" ↦ᵣ RVal_Bits pointer ∗
+    "x11" ↦ᵣ RVal_Bits old_x11 ∗
+    (bv_unsigned sp - 32) ↦ₘ? 32 ∗
+    (bv_unsigned sp + 296) ↦ₘ low ∗
+    (bv_unsigned sp + 304) ↦ₘ high ∗
+    ⌜encoderOptionalU64Valid pointer bytes⌝ ∗
+    ⌜encoderOptionalU64Outcome bytes =
+      writeSuccessPostOptional159b0 (writeSuccessPostData witness)⌝ ∗
+    ⌜mapRamBase defaultMap <= bv_unsigned pointer⌝ ∗
+    ⌜bv_unsigned pointer + Z.of_nat (length bytes) < machineRamEnd defaultMap⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
+    spec_trace (writeSuccessExactTailSecondBranchEvents witness) ∗
+    ⌜writeSuccessExactTailSecondBranchEvents witness =
+      match encoderOptionalU64Outcome bytes with
+      | Some value =>
+          writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
+            (writeSuccessBooleanWordPayload (BV 64 1))
+            (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+              (writeSuccessPrivateBytes
+                (writeSuccessEncodeU64 (bv_unsigned value))) tail)
+      | None =>
+          writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
+            (writeSuccessBooleanWordPayload (BV 64 0)) tail
+      end⌝ ∗
+    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+    ⌜mapRamBase defaultMap <= bv_unsigned sp - 32⌝ ∗
+    ⌜bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
+    ⌜bv_extract 0 1 (BV 64 0x159bc) = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 (BV 64 0x159bc) = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 (BV 64 0x159bc) = BV 2 0⌝ ∗
+    instr_pre 0x159bc
+      (encoderOptionalU64ExactReturn pointer sp (BV 64 0x159bc) old_x8
+        bytes tail (encoderOptionalU64Outcome bytes) ∗
+       writeSuccessExactTailPost159b0Frame args witness) ∗
+    writeSuccessExactTailPost159b0Frame args witness ∗ True)%I.
 Global Instance : LithiumUnfold
   (@writeSuccessExactTailSecondBranchState) := I.
