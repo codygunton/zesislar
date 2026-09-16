@@ -157,6 +157,7 @@ From ZesuSsz.Proofs.WriteSuccess Require Export
   WriteSuccessHeaderSpec
   WriteSuccessNativeSuffixBytes158e0
   WriteSuccessNativeSuffixConditionalBranch
+  WriteSuccessNativeSuffixInt15968Call
   WriteSuccessNativeSuffixOptionalU64159b8
   WriteSuccessNativeSuffixIntPair
   WriteSuccessPrologueSpec
@@ -545,18 +546,14 @@ Definition writeSuccessExactPostWithdrawalsEvents {Decoded}
     (writeSuccessExactPostWithdrawalsPayloads witness)
     (writeSuccessTraceTail witness).
 
-Definition writeSuccessExactPostWithdrawalsCallerFrame
+Definition writeSuccessExactPostWithdrawalsMemoryFrame
     `{!islaG Sigma} `{!threadG} {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
     (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
   let sp := writeSuccessFrameSp witness in
   let values := writeSuccessValues witness in
-  (reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
-      ["x3"; "x4"; "x6"; "x7"; "x16"; "x17";
-       "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25"; "x26";
-       "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
-   (bv_unsigned sp - 80) ↦ₘ? 32 ∗
+  ((bv_unsigned sp - 80) ↦ₘ? 32 ∗
    (bv_unsigned sp - 48) ↦ₘ? 32 ∗
    bv_unsigned sp ↦ₘ? 8 ∗
    writeSuccessExactCopiedTailWords sp (writeSuccessDecodedBytes witness) ∗
@@ -580,4 +577,43 @@ Definition writeSuccessExactPostWithdrawalsCallerFrame
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
 Global Instance : LithiumUnfold
+  (@writeSuccessExactPostWithdrawalsMemoryFrame) := I.
+
+Definition writeSuccessExactPostWithdrawalsCallerFrame
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  (reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+      ["x3"; "x4"; "x6"; "x7"; "x16"; "x17";
+       "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25"; "x26";
+       "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
+   writeSuccessExactPostWithdrawalsMemoryFrame args witness)%I.
+Global Instance : LithiumUnfold
   (@writeSuccessExactPostWithdrawalsCallerFrame) := I.
+
+Definition writeSuccessExactTailFirstBranchState
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) (tail : spec) : iProp Sigma :=
+  (∃ b8 b9 b12 b13 b14 b15 b18 : bv 64,
+    writeSuccessSuffixInt1596cCallPost (writeSuccessFrameSp witness) tail ∗
+    "x8" ↦ᵣ RVal_Bits b8 ∗ "x9" ↦ᵣ RVal_Bits b9 ∗
+    "x12" ↦ᵣ RVal_Bits b12 ∗ "x13" ↦ᵣ RVal_Bits b13 ∗
+    "x14" ↦ᵣ RVal_Bits b14 ∗ "x15" ↦ᵣ RVal_Bits b15 ∗
+    "x18" ↦ᵣ RVal_Bits b18 ∗
+    writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ True)%I.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactTailFirstBranchState) := I.
+
+Definition writeSuccessExactTailSecondBranchState
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  writeSuccessSuffixOptionalU64159b8Spec
+    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
+     writeSuccessExactPostWithdrawalsMemoryFrame args witness ∗ True).
+Global Instance : LithiumUnfold
+  (@writeSuccessExactTailSecondBranchState) := I.
