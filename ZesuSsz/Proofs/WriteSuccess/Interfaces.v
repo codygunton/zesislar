@@ -146,6 +146,7 @@ From ZesuSsz.Proofs.WriteSuccess Require Export
   WriteSuccessExactEncoderBytes
   WriteSuccessExactEncoderOptionalU64Call
   WriteSuccessExactTailRawLoadSpec
+  WriteSuccessExactWithdrawalsLoopSpec
   WriteSuccessExactWriteOutputCall
   WriteSuccessEncoderBooleanCall
   WriteSuccessEncoderBytesCallCore
@@ -227,6 +228,11 @@ Definition writeSuccessPostWithdrawalsBoundary
     `{!islaG Sigma} `{!threadG} :=
   @writeSuccessSuffixAt156e8 Sigma _ _.
 Global Instance : LithiumUnfold (@writeSuccessPostWithdrawalsBoundary) := I.
+
+Definition writeSuccessExactPostWithdrawalsBoundary
+    `{!islaG Sigma} `{!threadG} := @withdrawalLoopExit Sigma _ _.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactPostWithdrawalsBoundary) := I.
 
 Definition writeSuccessSuffixHashesBoundary `{!islaG Sigma} `{!threadG} :=
   @writeSuccessSuffixHashes15744Spec Sigma _ _.
