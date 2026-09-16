@@ -265,6 +265,163 @@ Qed.
 
 Print Assumptions encoder_bytes_exact_call_pre.
 
+Definition encoderBytesExactReturn `{!islaG Sigma} `{!threadG}
+    (data size sp ret : bv 64) (bytes : list (bv 8))
+    (old_x6 old_s0 old_s1 stack2 : bv 64) (tail : spec) : iProp Sigma :=
+  encoderBytesExactPost data size sp ret bytes
+    old_x6 old_s0 old_s1 stack2 tail True%I.
+
+Definition zesuEncoderBytesExactCallSpec `{!islaG Sigma} `{!threadG}
+    : iProp Sigma :=
+  (∃ (data size sp ret : bv 64) (bytes : list (bv 8))
+      (old_x5 old_x6 old_s0 old_s1
+       stack0 stack1 stack2 stack3 stack4 stack5 : bv 64) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
+    "x8" ↦ᵣ RVal_Bits old_s0 ∗ "x9" ↦ᵣ RVal_Bits old_s1 ∗
+    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+    (bv_unsigned sp - 48) ↦ₘ stack0 ∗
+    (bv_unsigned sp - 40) ↦ₘ stack1 ∗
+    (bv_unsigned sp - 32) ↦ₘ stack2 ∗
+    (bv_unsigned sp - 24) ↦ₘ stack3 ∗
+    (bv_unsigned sp - 16) ↦ₘ stack4 ∗
+    (bv_unsigned sp - 8) ↦ₘ stack5 ∗
+    bv_unsigned data ↦ₘ∗ bytes ∗
+    ⌜bv_unsigned size = length bytes⌝ ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
+    spec_trace
+      (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
+        (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)))
+        (writeOutputEvents data size bytes tail)) ∗
+    ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗
+    ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
+    ⌜mapRamBase defaultMap <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
+    ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+    ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
+    instr_pre (bv_unsigned ret)
+      (encoderBytesExactReturn data size sp ret bytes
+        old_x6 old_s0 old_s1 stack2 tail) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@encoderBytesExactReturn) := I.
+Global Instance : LithiumUnfold (@zesuEncoderBytesExactCallSpec) := I.
+
+Lemma encoder_bytes_exact_entry_to_framed `{!islaG Sigma} `{!threadG} :
+  zesuEncoderBytesExactCallSpec -∗
+  ∃ (data size sp ret : bv 64) (bytes : list (bv 8)) (tail : spec),
+    encoderBytesExactSpec data size sp ret bytes tail True%I.
+Proof.
+  iStartProof. iIntros "Hexact".
+  iEval (unfold zesuEncoderBytesExactCallSpec) in "Hexact".
+  iDestruct "Hexact" as
+    (data size sp ret bytes old_x5 old_x6 old_s0 old_s1
+      stack0 stack1 stack2 stack3 stack4 stack5 tail)
+    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack0 &
+      Hstack1 & Hstack2 & Hstack3 & Hstack4 & Hstack5 & Hbytes & %Hsize &
+      Hmmio & Htrace & %Hsp4 & %Hsp3 & %Hlower & %Hupper & %Hret0 &
+      %Hret1 & %Hret2 & Hreturn & _)".
+  iExists data, size, sp, ret, bytes, tail.
+  iEval (unfold encoderBytesExactSpec).
+  iExists old_x5, old_x6, old_s0, old_s1,
+    stack0, stack1, stack2, stack3, stack4, stack5.
+  iEval (unfold encoderBytesExactReturn) in "Hreturn".
+  iFrame.
+  repeat iSplit; iPureIntro; assumption.
+Qed.
+
+Print Assumptions encoder_bytes_exact_entry_to_framed.
+
+Lemma encoder_bytes_exact_entry_from_framed `{!islaG Sigma} `{!threadG} :
+  (∃ (data size sp ret : bv 64) (bytes : list (bv 8)) (tail : spec),
+    encoderBytesExactSpec data size sp ret bytes tail True%I) -∗
+  zesuEncoderBytesExactCallSpec.
+Proof.
+  iStartProof. iIntros "Hframed".
+  iDestruct "Hframed" as (data size sp ret bytes tail) "Hframed".
+  iEval (unfold encoderBytesExactSpec) in "Hframed".
+  iDestruct "Hframed" as
+    (old_x5 old_x6 old_s0 old_s1 stack0 stack1 stack2 stack3 stack4 stack5)
+    "(Hsys & H1 & H2 & H5 & H6 & H8 & H9 & H10 & H11 & Hstack0 &
+      Hstack1 & Hstack2 & Hstack3 & Hstack4 & Hstack5 & Hbytes & %Hsize &
+      Hmmio & Htrace & %Hsp4 & %Hsp3 & %Hlower & %Hupper & %Hret0 &
+      %Hret1 & %Hret2 & Hreturn)".
+  iEval (unfold zesuEncoderBytesExactCallSpec).
+  iExists data, size, sp, ret, bytes, old_x5, old_x6, old_s0, old_s1,
+    stack0, stack1, stack2, stack3, stack4, stack5, tail.
+  iEval (unfold encoderBytesExactReturn).
+  iFrame.
+  iDestruct "Hreturn" as "[_ Hreturn]".
+  repeat (iSplit; first (iPureIntro; assumption)).
+  iFrame.
+Qed.
+
+Lemma encoder_bytes_exact_entry_equiv `{!islaG Sigma} `{!threadG} :
+  zesuEncoderBytesExactCallSpec ⊣⊢
+  (∃ (data size sp ret : bv 64) (bytes : list (bv 8)) (tail : spec),
+    encoderBytesExactSpec data size sp ret bytes tail True%I).
+Proof.
+  iSplit.
+  - iApply encoder_bytes_exact_entry_to_framed.
+  - iApply encoder_bytes_exact_entry_from_framed.
+Qed.
+
+Print Assumptions encoder_bytes_exact_entry_equiv.
+
+Lemma encoder_bytes_exact_body_from_framed `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15c6c zesuEncoderBytesExactCallSpec.
+Proof.
+  iStartProof. iIntros "HbytesCode HintCode HoutputCode".
+  rewrite instr_pre'_eq. iIntros "Hexact".
+  iDestruct (encoder_bytes_exact_entry_to_framed with "Hexact") as
+    (data size sp ret bytes tail) "Hframed".
+  iPoseProof (encoder_bytes_exact_correct data size sp ret bytes tail True%I
+    with "HbytesCode HintCode HoutputCode") as "Hbody".
+  rewrite instr_pre'_eq. iApply ("Hbody" with "Hframed").
+Qed.
+
+Print Assumptions encoder_bytes_exact_body_from_framed.
+
+Lemma zesu_encoder_bytes_exact_call_correct `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15c6c zesuEncoderBytesExactCallSpec.
+Proof.
+  iStartProof. iIntros "HbytesCode HintCode HoutputCode".
+  iApply (encoder_bytes_exact_body_from_framed with
+    "HbytesCode HintCode HoutputCode").
+Qed.
+
+Print Assumptions zesu_encoder_bytes_exact_call_correct.
+
+Lemma zesu_encoder_bytes_exact_call_pre `{!islaG Sigma} `{!threadG} :
+  ([∗ list] instruction ∈ IslaTraces.write_success_06.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15c6c zesuEncoderBytesExactCallSpec.
+Proof.
+  iStartProof. iIntros "#HbytesCode #HintCode #HoutputCode". iModIntro.
+  iApply instr_pre_to_body. iNext.
+  iApply (zesu_encoder_bytes_exact_call_correct with
+    "HbytesCode HintCode HoutputCode").
+Qed.
+
+Print Assumptions zesu_encoder_bytes_exact_call_pre.
+
 Lemma encoder_bytes_uninit_48_to_words `{!islaG Sigma} (sp : bv 64) :
   (bv_unsigned sp - 48) ↦ₘ? 48 -∗
   ∃ w0 w1 w2 w3 w4 w5 : bv 64,
