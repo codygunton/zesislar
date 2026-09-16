@@ -355,6 +355,15 @@ Definition writeSuccessExactEpilogueExit `{!islaG Sigma} `{!threadG}
   (writeSuccessExitMemoryFrame witness ∗
    spec_trace (writeSuccessTraceTail witness))%I.
 
+Lemma writeSuccessExactEpilogueExit_unfold `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) :
+  writeSuccessExactEpilogueExit witness ⊣⊢
+    (writeSuccessExitMemoryFrame witness ∗
+     spec_trace (writeSuccessTraceTail witness))%I.
+Proof. done. Qed.
+
+Global Opaque writeSuccessExactEpilogueExit.
+
 Definition writeSuccessExactCallerRemainder `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
