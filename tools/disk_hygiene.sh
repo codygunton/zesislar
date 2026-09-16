@@ -38,6 +38,7 @@ transient_worktrees=(
   islaris-native-orch-contract
   islaris-native-backup
   islaris-native-tx-step8
+  islaris-native-tail-repair-step8
 )
 
 for name in "${historical_worktrees[@]}" "${transient_worktrees[@]}"; do
