@@ -114,7 +114,7 @@ Proof.
   all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
   all: lazymatch goal with |- ?G => fail "side condition" G end.
   Unshelve. zesu_unfold_bv_bindings.
-  iRename select (bv_unsigned (sp + BV 64 18446744073709551600 + BV 64 0)%bv ↦ₘ value)%I into "Hword".
+  iRename select (_ ↦ₘ value)%I into "Hword".
   zesu_normalize_memory_cell "Hword" (bv_unsigned (sp - BV 64 16)%bv).
   iDestruct (mem_mapsto_mapsto_to_byte_array with "Hword") as "Hpayload".
   set (payload := writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))).
