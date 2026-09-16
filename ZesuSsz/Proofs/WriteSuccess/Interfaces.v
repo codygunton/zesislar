@@ -411,8 +411,7 @@ Definition writeSuccessExactCallerRemainder `{!islaG Sigma} `{!threadG}
     (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
   let sp := writeSuccessFrameSp witness in
   let values := writeSuccessValues witness in
-  (⌜writeSuccessWitnessWellFormed args witness⌝ ∗
-   (bv_unsigned sp - 80) ↦ₘ? 32 ∗
+  ((bv_unsigned sp - 80) ↦ₘ? 32 ∗
    writeSuccessTerminalSavedSlots witness ∗
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗ writeSuccessDecodedBytes witness ∗
    byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
@@ -423,7 +422,8 @@ Definition writeSuccessExactCallerRemainder `{!islaG Sigma} `{!threadG}
    writeSuccessTransactionsInvariant sp (writeSuccessTransactionBase witness)
      (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) []
-     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗ True)%I.
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
+   ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@writeSuccessExactCallerRemainder) := I.
 
 Definition writeSuccessExactTailCaller `{!islaG Sigma} `{!threadG}
@@ -578,7 +578,8 @@ Definition writeSuccessExactPostWithdrawalsMemoryFrame
     (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
   let sp := writeSuccessFrameSp witness in
   let values := writeSuccessValues witness in
-  ((bv_unsigned sp - 80) ↦ₘ? 32 ∗
+  (⌜writeSuccessWitnessWellFormed args witness⌝ ∗
+   (bv_unsigned sp - 80) ↦ₘ? 32 ∗
    (bv_unsigned sp - 48) ↦ₘ? 32 ∗
    bv_unsigned sp ↦ₘ? 8 ∗
    writeSuccessExactCopiedTailWords sp (writeSuccessDecodedBytes witness) ∗
@@ -599,8 +600,7 @@ Definition writeSuccessExactPostWithdrawalsMemoryFrame
    writeSuccessTransactionsInvariant sp (writeSuccessTransactionBase witness)
      (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
      (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) []
-     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗
-   ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
+     (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗ True)%I.
 Global Instance : LithiumUnfold
   (@writeSuccessExactPostWithdrawalsMemoryFrame) := I.
 
