@@ -435,3 +435,15 @@ The final `zesuTerminates` theorem still waits for CP3.
 **Equivalence note.** Any former entry implies the new entry by dropping only its lookup conjunct. The exit predicate remains `physicalMainDecodeExit`. `main_to_decode_entry_state_correct` is unchanged. `zesuCompliance` is unchanged. The Phase 5 composition lemmas carry the named `decodeTerminates` and the map inclusion premise. CP5 must review this deviation.
 
 Exec commit `7e75743a` implements this statement. MCP compiled `DecodeTermination.v`, `Termination.v`, and `DecoderComposition.v`. MCP verified `zesu_run_through_decode_termination` with assumptions `[]`. Every affected `Print Assumptions` line is `Closed under the global context`. Exec `check-fast` passed. A full `check-iris` preview is required before merge because this commit changes `Export/`.
+
+## B4 Encoder.optionalU64 closed-call deviation (2026-09-16)
+
+**Before.** The only closed helper was `zesuEncoderOptionalU64ExactPayloadCallSpec := zesuEncoderOptionalU64ExactSomeCallSpec ∨ zesuEncoderOptionalU64ExactNoneCallSpec`. Its branch specs hid the return through `zesu_c_call`. The framed lemmas required explicit caller parameters.
+
+**After.** `zesuEncoderOptionalU64ExactCallSpec` existentially binds `pointer`, `sp`, `ret`, saved registers, `tag`, `bytes`, `tail`, and `outcome : option (bv 64)`. Exact resources fix these values by unification. The spec exposes the branch-specific events through `spec_trace` and ends in `instr_pre (bv_unsigned ret) (encoderOptionalU64ExactReturn pointer sp ret old_x8 bytes tail outcome) ∗ True`. `zesu_encoder_optional_u64_exact_call_correct` and `_pre` provide the closed body and persistent call spec.
+
+**Reason.** B4 needs a closed helper that Lithium can apply without manual caller instantiation or a disjunctive spec.
+
+**Equivalence note.** `encoder_optional_u64_exact_body_from_framed` derives the closed body from both existing framed branch lemmas. `encoder_optional_u64_exact_some_adapter_from_closed` and `_none_adapter_from_closed` derive the former framed entry shapes from the closed spec. The return-frame lemmas preserve each caller frame. Existing public statements remain unchanged.
+
+Commits `bfee6c4e` and `717140eb` implement this deviation. MCP compile passed. MCP verification returned assumptions `[]`. All seven `Print Assumptions` lines are `Closed under the global context`. The focused target and mandatory Exec `check-fast` passed.

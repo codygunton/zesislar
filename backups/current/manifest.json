@@ -1,29 +1,29 @@
 {
-  "captured_utc": "2026-09-16T03:54:35.731331+00:00",
+  "captured_utc": "2026-09-16T05:19:41.320576+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "acb4afbde19775526bc5552642b95b4feed76ebe6827716e451e217d2b9f6553",
-      "bytes": 165704
+      "sha256": "f18c0d45d91d31daad72d9f58e9a0ff80457a2b49b4f6786c437a17d4b966061",
+      "bytes": 167954
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
       "snapshot": "progress/PUSH3_auto_PROGRESS.md",
-      "sha256": "7e9d1313e66c9a64c3732619397f68bdc7c9a4dd147e0b6fab9d8cf9cce31218",
-      "bytes": 5550
+      "sha256": "098601a77338f9d81f04a91e128e5876e5feaffca3765f4f866c99465ff2fe11",
+      "bytes": 6822
     },
     {
       "source": "docs/ai/plan/PUSH3_exec_PROGRESS.md",
       "snapshot": "progress/PUSH3_exec_PROGRESS.md",
-      "sha256": "92917b787b8773a0ed976d033ec13ef42091b43a95898f0a4c04465e98c386a5",
-      "bytes": 25985
+      "sha256": "c03adde6619d00b89b4782de79d0d40ece06d83d037280e6e2192ef62909ff21",
+      "bytes": 27600
     },
     {
       "source": "docs/ai/plan/PUSH3_main_PROGRESS.md",
       "snapshot": "progress/PUSH3_main_PROGRESS.md",
-      "sha256": "d303a67a533b4a1ac69b93be9ed76f112eaafec7164608b552e8f52fb73e7959",
-      "bytes": 34149
+      "sha256": "3ed542588bbedbcb06b2168c4f501236ec1b451aadcec4d6f908d0c6fa2ad290",
+      "bytes": 35446
     },
     {
       "source": "docs/ai/plan/PUSH3_port_PROGRESS.md",
@@ -34,14 +34,14 @@
     {
       "source": "docs/ai/plan/PUSH3_tail_PROGRESS.md",
       "snapshot": "progress/PUSH3_tail_PROGRESS.md",
-      "sha256": "a96f049e4b35aab81549087837defb86b64fc836b439ba08e76b28f6cc7c996c",
-      "bytes": 76767
+      "sha256": "554e240e1682eae9986bfcb0f1abb0a2fe78f03b5aeb3b2370820d69e8f839a9",
+      "bytes": 78098
     },
     {
       "source": "docs/ai/plan/PUSH3_tx_PROGRESS.md",
       "snapshot": "progress/PUSH3_tx_PROGRESS.md",
-      "sha256": "908c47409db37d16d8ab1ef6feed6a789035e5ff54d3f376afad1467966768c8",
-      "bytes": 72528
+      "sha256": "f3a7243b7be5c676a995c6395c41e9f367c554438a66631cc8e7736a33600827",
+      "bytes": 73699
     },
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/check_spec_shapes.py",

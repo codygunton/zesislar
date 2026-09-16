@@ -304,3 +304,15 @@ The worker continues the independent allocator handoff.
 - Phase 4b.3 awaits CP3. Root owns writer instantiation, adequacy integration, and compliance files.
 
 2026-09-15 Phase 4b.2 verification against Root `445e0eb3`: Main rebased safely. The branch had no unpublished commit and remained clean. The exact prefix, success status glue, concrete failure branch, and whole Iris theorem all passed a focused private Dune build with `--cache=enabled -j16`: 327104 ms, 2691940 KiB peak RSS. Every printed Main assumption line was `Closed under the global context`. MCP compiled `Prefix.v`, `SuccessStatusGlue.v`, `FailureAfterConcreteDecode.v`, and `Main.v`. MCP verified `main_prefix_state_correct`, `main_success_status_glue_state_correct`, `main_failure_after_concrete_decode_state_correct`, `main_whole_state_correct`, and `main_whole_correct`. Each exact statement audit reported `assumptions: []`. `make check-fast CHECK_AGENT=main AGENT_JOBS=16` passed: 64954 ms, 2566048 KiB peak RSS. No proof residual, source change, trace generation, or new commit occurred. Phase 4b.2 is complete. Phase 4b.3 and zesuCompliance wait for CP3 and Root's writer instantiation and shared Compliance integration.
+
+## B4 Encoder.byteLists closed-provider deviation (2026-09-16)
+
+**Before.** `encoderByteListsExactCallSpec` was the only exact byte-list call predicate. It already reduced through `zesu_c_call` to `ret : bv 64`, fixed caller resources, `spec_trace ... tail`, and `instr_pre (bv_unsigned ret) (zesu_call_ret ...)`.
+
+**After.** Add the name `zesuEncoderByteListsExactCallSpec := encoderByteListsExactCallSpec`, its body and persistent providers, and `encoder_byte_lists_exact_closed_equiv`. The existing public predicate and theorem statements remain unchanged.
+
+**Reason.** Tail segment proofs need the standard B2 closed-provider interface. Reuse avoids a duplicate resource predicate.
+
+**Equivalence note.** `encoder_byte_lists_exact_closed_equiv` proves the new predicate equivalent to the existing predicate by definitional reduction. It is closed under the global context.
+
+Commit `d86dde6b` implements this deviation. MCP health and interactive start/check/step passed. Four `Print Assumptions` lines are `Closed under the global context`. The focused j16 target and mandatory Main `check-fast` passed. MCP final compile and verify encountered an `_CoqProject` load-path defect at the first import; the production Dune compile passed. Root will repeat the MCP final audit after integration.

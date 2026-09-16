@@ -81,3 +81,15 @@ Auto kept the [44-row result](/home/cody/zesislar/.worktrees/islaris-native-auto
 The complete `ExactByteListsPublicRawPrefix` timing scratch closed in 144.056 seconds and used 2,503,596 KiB at peak.
 Its `zesu_finish` tactic used 82.225 seconds across 12 calls; its longest call used 20.750 seconds.
 Its `zesu_liAStep` tactic used 14.056 seconds across 1,743 calls.
+
+## B4 Encoder.bytes closed-call deviation (2026-09-16)
+
+**Before.** `encoderBytesExactCallSpec := ∃ data size sp ret bytes tail P, encoderBytesExactSpec data size sp ret bytes tail P` allowed an existential caller frame `P` and exposed no named closed return.
+
+**After.** Additive `zesuEncoderBytesExactCallSpec := ∃ data size sp ret bytes old_x5 old_x6 old_s0 old_s1 stack0 stack1 stack2 stack3 stack4 stack5 tail, <exact entry resources> ∗ instr_pre (bv_unsigned ret) (encoderBytesExactReturn data size sp ret bytes old_x6 old_s0 old_s1 stack2 tail) ∗ True`. `encoderBytesExactReturn` fixes `P := True` in the existing exact post.
+
+**Reason.** B4 requires a closed Encoder.bytes call boundary with `ret : bv 64`, resources fixed by unification, and a named return.
+
+**Equivalence note.** `encoder_bytes_exact_entry_equiv` proves the new entry is equivalent to `∃ data size sp ret bytes tail, encoderBytesExactSpec data size sp ret bytes tail True`. The prior open-`P` interface remains unchanged for existing callers.
+
+Commit `c6ffe09a` implements this deviation after the local dependency cherry-pick `c6b8a4b6`, which matches approved repair `033460c3`. MCP compile printed seven Closed lines. The focused j16 target and mandatory Auto `check-fast` passed.

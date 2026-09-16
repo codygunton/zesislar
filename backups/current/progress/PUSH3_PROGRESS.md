@@ -3,8 +3,8 @@
 ## Remaining-work inventory
 
 Inventory origin: `272909a5`. Integration boundary: `382f1aca`. CP3, CP4, and CP5 remain open. The user approved the calling-convention correction and configuration unification.
-Current Root integration HEAD: `b090cb8a`. PR9 remains open and pushed; the latest complete Iris preview failed on exactly 23 frozen T proof files and added zero failures. Eight focused class-T repairs closed since that preview.
-Repair phase: All 11 initial R modules are closed by AllLegacy imports. TX owns all 15 active T files; Tail's frozen repair scope is closed and it works on CP3 tail composition. Main and Exec wait for CP3.
+Current Root integration HEAD: `2d4fd16a`. PR9 remains open and pushed. The repair j32 Iris gate is green. The B4 post-merge gate is running.
+Repair phase: complete. The original partition was R=11 and T=33. The step-8 gate reduced the true frozen set to 17 modules. All frozen modules are closed, and the frozen list is empty.
 Ranges below include their start address and exclude their end address.
 The legacy coverage matrix reports 950/950 addresses. That count does not establish the exact contract composition.
 An existing block can require composition without another instruction proof.
@@ -317,22 +317,6 @@ Class-R scope decision: Tail's queued `fd15a4df` closes the 0x15980 residual but
 Tail repair integration deviation: the pushed Tail branch already contains the later CP3 proof edit `fd15a4df`, while the frozen class-R repair permits only import changes. AllLegacy makes the rebased `fd15a4df` epilogue redundant and its suffix module fails with zero focused goals. Tail keeps its one worktree and branch, makes one coherent commit that reverses the redundant private proof edit and applies the two R imports, then proves the original statements. Root integrates only the final net two import lines from that commit, plus focused class-T commits, and leaves the old `fd15a4df` commit out of Root history. This keeps class-R proof text unchanged on Root.
 
 TX repair integration deviation: its rebased branch contains the queued ordinary B1 count-entry hook `c018c2fe` before the four approved class-T source edits. Root will cherry-pick only the four-file repair commit during the red gate; it leaves the ordinary hook unmerged until a green full gate. This keeps the 7.3(5) repair exception narrow.
-
-- 07 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v:139`
-- 09 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v:265`
-- 11 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v:277`
-- 12 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v:477`
-- 27 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v:93`
-- 30 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v:93`
-- 31 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v:134`
-- 32 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v:93`
-- 33 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v:93`
-- 34 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v:93`
-- 35 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v:139`
-- 36 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15190.v:56`
-- 37 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v:209`
-- 42 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15658Call.v:75`
-- 43 | T | `ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153d0.v:123`
 
 ## Merged commits
 
@@ -987,3 +971,19 @@ The preceding integrated Iris gate fails in 1,778.795 seconds with 4,820,760 KiB
 - Merged TX's persistent exact outer Löb export `4cdeb42a` as Root `20d8970f`: the public statement consumes complete Code and `□ instr_pre 0x15668 (transactionLiveLoopExit ...)`, and proves `□ instr_pre 0x14f04 (transactionLiveLoopState ...)` with no new premise. Plan deviation: a proposed `instr_body 0x14f04` export could not follow from the existing Löb theorem's persistent pre, because `instr_pre_to_body` derives pre from a guarded body; Root approved the plan 3.3 persistent-pre interface without changing live predicates or the frozen contract. MCP compiler and qualified original-statement Print Assumptions Closed; full shared_defs verify timed out at 120 s, so the scoped audit passed in 77.330 s/1,896,652 KiB. TX j16 grouped focused153.614 s/1,923,528 KiB and mandatory fast0.486 s/141,056 KiB passed; Root j32 preview fast0.675 s/147,352 KiB, focused93.321 s/1,929,616 KiB, and precommit fast0.531 s/149,652 KiB passed. PR9 is pushed/open. Tail still must supply the exact 0x15668 continuation, Root must compose Contract.v, and the last full Iris gate is red; CP3–CP5 remain open.
 - Merged Auto's guarded first PostData whole-array opener `9b386b5d` as Root `78245eba`: the original-owner fixture is Closed under MCP, and scoped original-statement verification lists no assumptions. Root j32 preview fast213.633 s/2,687,844 KiB, adjacent focused target1.722 s/1,094,544 KiB, and precommit fast207.756 s/2,686,424 KiB passed. Private Tail probes advance status and CountCall past the first array without splitting arrays; the rebased actual goal now needs a narrow requested-term correction. PR9 is pushed/open; CP3–CP5 remain open.
 - Merged Tail's exact encoder-return B1 `LithiumUnfold` hook `44f2db39` as Root `68efa2db`: the exact return and framed caller original statements stay unchanged and MCP Closed with scoped assumptions `[]`. Tail j16 focused80.483 s/4,116,180 KiB and mandatory fast0.635 s/139,288 KiB passed. Root j32 preview fast, focused Call+Framed, and precommit fast passed; the one-instance change is pushed on PR9. CP3–CP5 remain open.
+
+### Acceleration phase (plan 7.6 items 12-14)
+
+- The platform permits three active sub-agents plus Root. The five B4 adapters therefore start in slot order. Auto owns `Encoder.bytes`, Exec owns `Encoder.optionalU64`, and Tail owns `write_output`. Main's `Encoder.byteLists` and TX's `Encoder.boolean` start when slots finish.
+- Tail stopped new per-call-site blocks. Tail requested four tail-segment aliases, the exact `write_output` boundary aliases, and one shared exit memory frame in `Interfaces.v`. Root accepted the request and will apply it after Tail commits `WriteSuccessExactWriteOutputCall.v`.
+- Exec `7e75743a` implements the approved decoder map-extension boundary. Its exact Before, After, Reason, and equivalence note are in `PUSH3_exec_PROGRESS.md`. The commit passed MCP compilation, scoped MCP verification with assumptions `[]`, and Exec `check-fast`. Its mandatory full preview remains queued behind the repair gate.
+- Auto needed the approved ExactEncoderInt repair before the B4 bytes adapter. Root approved local dependency commit `033460c3`, which is already in the first repair preview and will merge before B4.
+- Repair batch 3a previewed Root's five repairs alone. The full j32 gate failed in exactly the other 12 frozen modules and added no failure. Root merged `033460c3` as `c48f88d9` and pushed PR9. The frozen list shrank from 17 to 12.
+- Auto profiled all six Carrier Raw modules before any split. The four parallel runs for `14f6c`, `14f98`, `14f9c`, and `14fa0` reached the 300-second cap. Isolated `14fa4` and `14fb0` closed in 164.695 and 177.439 seconds. Broad `iFrame` and `Qed` dominated both completed profiles. No tactic added during the repair phase was hot. Auto made no split because the available pre-repair evidence does not prove a greater-than-200-second baseline for these proof bodies.
+- Repair batch 3b merged Auto `b3fcfa58`, TX `86e8f5d7`, and Tail `1d71e16` as Root `97b222aa`, `ea505fb7`, and `cb533332`. The batch repaired the final 12 frozen modules. Preview `check-fast` and the full j32 Iris gate passed. Root `check-fast` passed, and Root `check-iris` passed in 2,020.380 seconds with 5,239,508 KiB peak task memory. Batch totals: cut 0, repaired 12, four agents active during repair production, and 32 parallel gate compiles at peak. The frozen list is empty. The complete repair total is 17 modules. The original partition count remains R=11/T=33.
+- Auto `c6ffe09a` merged as Root `b9bec1f2`: the closed `Encoder.bytes` spec and equivalence adapter compile with seven Closed assumption lines.
+- Main `d86dde6b` merged as Root `9eec9eba`: the closed `Encoder.byteLists` spec and adapter compile with four Closed assumption lines. Root repeated the final MCP compilation successfully after integration.
+- TX `e0fb4d53` merged as Root `f20880d1`: the closed `Encoder.boolean` spec and framed adapter compile with six Closed assumption lines and MCP verification assumptions `[]`.
+- Exec `bfee6c4e` and `717140eb` merged as Root `390d7111` and `4dafbbbb`: the closed `Encoder.optionalU64` spec and both framed return adapters compile with seven Closed assumption lines and MCP verification assumptions `[]`.
+- Tail `1fa38848` merged as Root `a5a5f2af`: the closed `write_output` spec and adapters compile with three Closed assumption lines.
+- Root `2d4fd16a` exports all five B4 specs through `Interfaces.v`, changes their entry and return aliases to the closed specs, and adds the four Tail segment aliases and shared exit memory frame. Preview `check-fast`, the focused interface target, MCP compilation, and Root `check-fast` pass. PR9 is pushed and open.
