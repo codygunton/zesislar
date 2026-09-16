@@ -1,0 +1,96 @@
+import unittest
+
+from check_spec_shapes import (
+    binder_shape,
+    definitions,
+    existential_binders,
+    failures,
+    resource_parts,
+    shape_counts,
+)
+
+
+class SpecShapeTests(unittest.TestCase):
+    def test_register_binder_is_inferable_before_pure_use(self):
+        spec = ('Definition exact `{!islaG Sigma} : iProp Sigma := '
+                '(∃ (ret : bv 64), "x1" ↦ᵣ RVal_Bits ret ∗ '
+                '⌜bv_unsigned ret = 0⌝ ∗ True)%I.')
+        counts = shape_counts(spec, {"exact"})
+        self.assertEqual(counts["uninferable_existentials"], 0)
+
+    def test_hidden_register_binder_is_under_function(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (ret : Z), "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 ret) ∗ '
+                'True)%I.')
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 1)
+        self.assertEqual(binder_shape("ret", resource_parts(definitions(spec)[0][2]),
+                                      {"exact"}), "under_function")
+
+    def test_array_and_trace_tail_binders_are_inferable(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (bytes : list (bv 8)) (tail : spec), '
+                'base ↦ₘ∗ bytes ∗ '
+                'spec_trace (writeOutputEvents address size payload tail) ∗ '
+                'True)%I.')
+        self.assertEqual(existential_binders(definitions(spec)[0][2]),
+                         ["bytes", "tail"])
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 0)
+
+    def test_direct_trace_tail_is_inferable(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (tail : spec), spec_trace tail ∗ True)%I.')
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 0)
+
+    def test_memory_address_binder_is_inferable(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (base : Z), base ↦ₘ? 8 ∗ True)%I.')
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 0)
+
+    def test_pure_first_occurrence_does_not_infer_memory(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (bytes : list (bv 8)), '
+                '⌜length bytes = 8⌝ ∗ base ↦ₘ∗ bytes ∗ True)%I.')
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 1)
+        self.assertEqual(binder_shape("bytes", resource_parts(definitions(spec)[0][2]),
+                                      {"exact"}), "pure_only")
+
+    def test_opaque_resource_and_disjunction_are_counted(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (ret : bv 64), hidden_resource ret ∗ True ∨ False)%I.')
+        counts = shape_counts(spec, set())
+        self.assertEqual(counts["predicates_without_unfold"], 1)
+        self.assertEqual(counts["disjunctive_specs"], 1)
+        self.assertEqual(counts["uninferable_existentials"], 1)
+        self.assertEqual(binder_shape("ret", resource_parts(definitions(spec)[0][2]),
+                                      set()), "opaque_predicate")
+
+    def test_closed_spec_frame_is_counted(self):
+        spec = ('Definition exactCallSpec (P : iProp Sigma) '
+                ': iProp Sigma := (instr_pre ret P ∗ True)%I.')
+        self.assertEqual(shape_counts(spec, {"exactCallSpec"})[
+            "frame_parameters_in_closed_specs"], 1)
+
+    def test_nested_comments_do_not_create_specs(self):
+        spec = ('(* Definition fake : iProp Sigma := (True ∨ False)%I. '
+                '(* nested ∃ (ghost : nat) *) *) '
+                'Definition exact : iProp Sigma := (True)%I.')
+        counts = shape_counts(spec, {"exact"})
+        self.assertEqual(counts["disjunctive_specs"], 0)
+        self.assertEqual(counts["uninferable_existentials"], 0)
+
+    def test_new_file_has_zero_baseline(self):
+        count = dict(uninferable_existentials=1,
+                     predicates_without_unfold=0,
+                     disjunctive_specs=0,
+                     frame_parameters_in_closed_specs=0)
+        self.assertEqual(len(failures("new.v", count, {})), 1)
+        self.assertEqual(failures("old.v", count, {"old.v": count}), [])
+
+
+if __name__ == "__main__":
+    unittest.main()
