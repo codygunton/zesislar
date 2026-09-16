@@ -3,7 +3,7 @@
 ## Remaining-work inventory
 
 Inventory origin: `272909a5`. Integration boundary: `382f1aca`. CP3, CP4, and CP5 remain open. The user approved the calling-convention correction and configuration unification.
-Current Root integration HEAD: `2d4fd16a`. PR9 remains open and pushed. The repair j32 Iris gate is green. The B4 post-merge gate is running.
+Current Root integration HEAD: `47efea46`. PR9 remains open and pushed. The repair and B4 post-merge j32 Iris gates are green.
 Repair phase: complete. The original partition was R=11 and T=33. The step-8 gate reduced the true frozen set to 17 modules. All frozen modules are closed, and the frozen list is empty.
 Ranges below include their start address and exclude their end address.
 The legacy coverage matrix reports 950/950 addresses. That count does not establish the exact contract composition.
@@ -987,3 +987,8 @@ The preceding integrated Iris gate fails in 1,778.795 seconds with 4,820,760 KiB
 - Exec `bfee6c4e` and `717140eb` merged as Root `390d7111` and `4dafbbbb`: the closed `Encoder.optionalU64` spec and both framed return adapters compile with seven Closed assumption lines and MCP verification assumptions `[]`.
 - Tail `1fa38848` merged as Root `a5a5f2af`: the closed `write_output` spec and adapters compile with three Closed assumption lines.
 - Root `2d4fd16a` exports all five B4 specs through `Interfaces.v`, changes their entry and return aliases to the closed specs, and adds the four Tail segment aliases and shared exit memory frame. Preview `check-fast`, the focused interface target, MCP compilation, and Root `check-fast` pass. PR9 is pushed and open.
+- The B4 post-merge Root `check-iris` passes in 825.080 seconds with 4,803,544 KiB peak task memory. Tail starts the seven segment lemmas in reverse continuation order.
+- TX `dcf32fdd` merged as Root `b6011b63`: `transactionLiveNonemptyCountEntry` now has its required `LithiumUnfold` instance. Preview and Root `check-fast` pass. PR9 is pushed and open.
+- Exec `49f21afe` merged as Root `b32629a6`: the closed OptionalU64 spec computes its outcome from inferred bytes, and all B1 shape metrics are zero. Seven assumption lines are Closed, MCP verification reports assumptions `[]`, and focused, preview, and Root fast gates pass. PR9 is pushed and open.
+- Root `0123ad8d` adds the opaque `writeSuccessExactEpilogueExit` boundary requested by Tail. It contains exactly the shared exit memory frame and trace tail. It has no `LithiumUnfold` instance, so `zesu_block` does not expand the native exit frame. Focused interface, MCP, and Root fast gates pass. PR9 is pushed and open.
+- Root sealed `writeSuccessExactEpilogueExit` after proof-mode unification still expanded its transparent definition. The explicit unfold lemma preserves composition. Interfaces compiles Closed through Rocq MCP, and Root `check-fast` passes. The direct 15-instruction `zesu_block` still reaches the 300-second limit, so Tail profiles it before any split.

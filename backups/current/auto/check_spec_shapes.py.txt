@@ -102,6 +102,8 @@ def binder_shape(binder: str, parts: list[str], unfolded: set[str]) -> str:
             return "pure_only"
         if re.search(r"↦ᵣ\s+RVal_Bits\s+" + re.escape(binder) + r"\b", part):
             return "inferable"
+        if re.search(r"\b" + re.escape(binder) + r"\s*↦ₘ(?:∗|\?)?", part):
+            return "inferable"
         if re.search(r"↦ₘ(?:∗|\?)?\s+" + re.escape(binder) + r"\b", part):
             return "inferable"
         if re.search(r"spec_trace\s+" + re.escape(binder) + r"\b", part):

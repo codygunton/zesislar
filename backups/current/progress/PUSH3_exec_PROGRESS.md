@@ -447,3 +447,13 @@ Exec commit `7e75743a` implements this statement. MCP compiled `DecodeTerminatio
 **Equivalence note.** `encoder_optional_u64_exact_body_from_framed` derives the closed body from both existing framed branch lemmas. `encoder_optional_u64_exact_some_adapter_from_closed` and `_none_adapter_from_closed` derive the former framed entry shapes from the closed spec. The return-frame lemmas preserve each caller frame. Existing public statements remain unchanged.
 
 Commits `bfee6c4e` and `717140eb` implement this deviation. MCP compile passed. MCP verification returned assumptions `[]`. All seven `Print Assumptions` lines are `Closed under the global context`. The focused target and mandatory Exec `check-fast` passed.
+
+## B2 OptionalU64 closed-shape repair (2026-09-16)
+
+**Before.** `zesuEncoderOptionalU64ExactCallSpec` existentially bound `tag : bv 8` and `outcome : option (bv 64)`. Pure lookup and branch facts fixed both values. The shape checker classified both values as `pure_only`.
+
+**After.** `encoderOptionalU64Outcome bytes` computes the branch and decoded value from `bytes !! 8`. `encoderOptionalU64Valid pointer bytes` rejects a missing tag and keeps the nonzero-branch length and alignment facts. The closed specification now binds only values fixed directly by register, memory, or trace resources.
+
+**Reason.** The B2 zero baseline requires every closed-spec existential to be fixed by resource unification. The byte array already determines the tag and outcome.
+
+**Equivalence note.** A zero tag selects the unchanged `None` trace and return resources. A nonzero tag selects the unchanged encoded-value trace and `Some` return resources. Both adapters still derive the old framed entry shapes. The closed body still follows from the same framed branch lemmas.

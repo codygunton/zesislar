@@ -44,6 +44,12 @@ class SpecShapeTests(unittest.TestCase):
         self.assertEqual(shape_counts(spec, {"exact"})[
             "uninferable_existentials"], 0)
 
+    def test_memory_address_binder_is_inferable(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ (base : Z), base ↦ₘ? 8 ∗ True)%I.')
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 0)
+
     def test_pure_first_occurrence_does_not_infer_memory(self):
         spec = ('Definition exact : iProp Sigma := '
                 '(∃ (bytes : list (bv 8)), '

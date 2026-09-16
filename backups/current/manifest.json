@@ -1,11 +1,11 @@
 {
-  "captured_utc": "2026-09-16T05:19:41.320576+00:00",
+  "captured_utc": "2026-09-16T13:32:17.350737+00:00",
   "items": [
     {
       "source": "docs/ai/plan/PUSH3_PROGRESS.md",
       "snapshot": "progress/PUSH3_PROGRESS.md",
-      "sha256": "f18c0d45d91d31daad72d9f58e9a0ff80457a2b49b4f6786c437a17d4b966061",
-      "bytes": 167954
+      "sha256": "9f7d2eda71d1e266b93f10909e58a1f75e7f29b55d3d1b1fba7171fc0035941e",
+      "bytes": 169273
     },
     {
       "source": "docs/ai/plan/PUSH3_auto_PROGRESS.md",
@@ -16,8 +16,8 @@
     {
       "source": "docs/ai/plan/PUSH3_exec_PROGRESS.md",
       "snapshot": "progress/PUSH3_exec_PROGRESS.md",
-      "sha256": "c03adde6619d00b89b4782de79d0d40ece06d83d037280e6e2192ef62909ff21",
-      "bytes": 27600
+      "sha256": "ddf7f9b87d957503da964f2d8600b265524318f4355588b148cfd87e3a249c07",
+      "bytes": 28661
     },
     {
       "source": "docs/ai/plan/PUSH3_main_PROGRESS.md",
@@ -46,8 +46,8 @@
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/check_spec_shapes.py",
       "snapshot": "auto/check_spec_shapes.py.txt",
-      "sha256": "5ba53b4833c20bc087978a1f990351910ea2e748f6192e83643e87a016d68884",
-      "bytes": 5876
+      "sha256": "336e2b17ace43aee1a87b54e9eaf3a6fe3c0fdde8d701a082d514c9e6f164164",
+      "bytes": 5988
     },
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/spec_shape_baseline.json",
@@ -58,8 +58,8 @@
     {
       "source": ".worktrees/islaris-native-auto/ZesuSsz/Evidence/test_check_spec_shapes.py",
       "snapshot": "auto/test_check_spec_shapes.py.txt",
-      "sha256": "c6bcce80a08b87d82729cb4337a9596532a090c85af4610602d84f4a1a3a9fab",
-      "bytes": 4089
+      "sha256": "38a695dccaa781743355a2901c3ab822e142a274e10c9844e5e4130cfcbfd271",
+      "bytes": 4362
     },
     {
       "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailWithdrawalCountCall.v",
@@ -252,6 +252,12 @@
       "snapshot": "tx/WriteSuccessTransactionsChunk14f44.v.txt",
       "sha256": "38e9810f7a208e0eb86c1de5632747a12729a619d938c800a61ad5f9490ec18a",
       "bytes": 7618
+    },
+    {
+      "source": ".worktrees/islaris-native-tail/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEpilogueSegment.v",
+      "snapshot": "tail/WriteSuccessExactEpilogueSegment.v.txt",
+      "sha256": "d11763c2155bb1df65e5eb4f9f1694e8b9dd725c2487228334efc15550e995e4",
+      "bytes": 779
     }
   ]
 }
