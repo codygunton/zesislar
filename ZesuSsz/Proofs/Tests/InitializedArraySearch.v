@@ -41,3 +41,28 @@ Proof.
 Qed.
 
 Print Assumptions test_initialized_array_read_preparer.
+
+Lemma test_initialized_take_lookup_value
+    (base : Z) (values : list (bv 64)) (word : bv 64) :
+  take 69 values !!
+      Z.to_nat ((base + 1136 - (base + 1032)) `div` 8) = Some word ->
+  word = default (BV 64 0) (values !! 13%nat).
+Proof.
+  intros Hlookup. zesu_normalize_initialized_array_value.
+Qed.
+
+Print Assumptions test_initialized_take_lookup_value.
+
+Definition test_initialized_word (values : list (bv 64)) (index : nat) :=
+  default (BV 64 0) (values !! index).
+
+Lemma test_initialized_take_lookup_selector
+    (base : Z) (values : list (bv 64)) (word : bv 64) :
+  take 69 values !!
+      Z.to_nat ((base + 1136 - (base + 1032)) `div` 8) = Some word ->
+  word = test_initialized_word values 13%nat.
+Proof.
+  intros Hlookup. zesu_normalize_initialized_array_value.
+Qed.
+
+Print Assumptions test_initialized_take_lookup_selector.

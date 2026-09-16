@@ -147,6 +147,69 @@ Ltac zesu_finish_array_byte_lookup :=
   end;
   reflexivity.
 
+Ltac zesu_normalize_initialized_array_value :=
+  let normalize Hlookup count values index target :=
+      let Hindex := fresh "HlookupIndex" in
+      assert (Hindex : index = target) by first [bv_solve | lia];
+      rewrite Hindex in Hlookup; clear Hindex;
+      rewrite lookup_take in Hlookup; [idtac | lia] in
+  first
+    [ match goal with
+      | Hlookup : take ?count ?values !! ?index = Some ?word
+        |- context [default ?fallback (?values !! ?target)] =>
+          normalize Hlookup count values index target;
+          rewrite Hlookup; cbn [default]; reflexivity
+      end
+    | match goal with
+      | Hlookup : take ?count ?values !! ?index = Some ?word
+        |- ?goalWord = ?selector ?candidateValues ?target =>
+          constr_eq goalWord word;
+          constr_eq candidateValues values;
+          let selected := constr:(selector candidateValues target) in
+          let unfolded := eval cbv beta delta [selector] in selected in
+          lazymatch unfolded with
+          | default ?fallback (candidateValues !! target) =>
+              normalize Hlookup count values index target;
+              change (word = default fallback (candidateValues !! target));
+              rewrite Hlookup; reflexivity
+          end
+      end
+    | match goal with
+      | Hlookup : take ?count ?values !! ?index = Some ?word
+        |- ?selector ?candidateValues ?target = ?goalWord =>
+          constr_eq goalWord word;
+          constr_eq candidateValues values;
+          let selected := constr:(selector candidateValues target) in
+          let unfolded := eval cbv beta delta [selector] in selected in
+          lazymatch unfolded with
+          | default ?fallback (candidateValues !! target) =>
+              normalize Hlookup count values index target;
+              change (default fallback (candidateValues !! target) = word);
+              rewrite Hlookup; reflexivity
+          end
+      end
+    | match goal with
+      | Hlookup : take ?count ?values !! ?index = Some ?word
+        |- context [bv_unsigned ?goalWord] =>
+          constr_eq goalWord word;
+          multimatch goal with
+          | |- context [bv_unsigned (?selector ?candidateValues ?target)] =>
+              constr_eq candidateValues values;
+              let selected := constr:(selector candidateValues target) in
+              let unfolded := eval cbv beta delta [selector] in selected in
+              lazymatch unfolded with
+              | default ?fallback (candidateValues !! target) =>
+                  normalize Hlookup count values index target;
+                  let Hword := fresh "HinitializedValue" in
+                  assert (Hword : word = selected) by
+                    (change (word = default fallback
+                      (candidateValues !! target));
+                     rewrite Hlookup; reflexivity);
+                  rewrite Hword; clear Hword
+              end
+          end
+      end ].
+
 Ltac zesu_normalize_equal_array_regions :=
   repeat match goal with
   | |- context[array_region_start 8 ?a ?b] =>
