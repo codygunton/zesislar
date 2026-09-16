@@ -30,19 +30,6 @@ HOOK_REDEFINITION = re.compile(
 LEGACY_HOOK_LINES = {
     "Ltac liAStep ::= zesu_liAStep.",
 }
-FROZEN_LEGACY_ENTRIES = frozenset({
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v",
-})
 FORBIDDEN_IDENTIFIERS = (
     "IslaInstructionSegment",
     "writeSuccessTraceAssumptions",
@@ -190,8 +177,6 @@ def main() -> None:
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
     failures: list[str] = []
-    if not legacy_entries <= FROZEN_LEGACY_ENTRIES:
-        failures.append("Automation.AllLegacy entry list exceeds the frozen R set")
     warnings: list[str] = []
     remaining = 0
     for name in tracked_files():

@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysModel.
 Require Import isla.riscv64.riscv64.
 From ZesuSsz.Proofs.WriteSuccess Require Import WriteSuccessRepresentation WriteSuccessOutputSemantic.

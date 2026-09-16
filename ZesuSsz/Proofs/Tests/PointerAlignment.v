@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Lemma finish_pointer_alignment_narrow (sp : bv 64) :

@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import ZesuSsz.Contracts.IslarisMemory.

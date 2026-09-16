@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsControlNative.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsExit.

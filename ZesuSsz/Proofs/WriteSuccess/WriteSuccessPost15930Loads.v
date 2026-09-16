@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 Require Import IslaTraces.write_success_113.a15930_spec.

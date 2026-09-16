@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 
@@ -308,7 +308,7 @@ Print Assumptions write_success_interfaces_transactions_entry.
 Print Assumptions write_success_interfaces_output_return.
 
 (** Exact caller frame shared by the transactions and terminal chains. *)
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Endpoints.
 From ZesuSsz.Proofs.WriteSuccess Require Import

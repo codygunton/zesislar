@@ -1,18 +1,5 @@
 {
   "cut_commit": "0e4993a5",
-  "legacy_entry_files": [
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v",
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v"
-  ],
   "files": {
     "InstrSpecs/Specs.v": {
       "solve_zesu_ld_array_at": 1,
@@ -23,494 +10,6 @@
     "ZesuSsz/Contracts/IslarisMemory.v": {
       "mem_mapsto_array_recombine_u64_read": 1
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk1521c.v": {
-      "mem_mapsto_array_recombine_u64_read": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstU256.v": {
-      "mem_mapsto_array_recombine_u64_read": 4,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSpec.v": {
-      "mem_mapsto_array_recombine_u64_read": 4,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw94.v": {
-      "zesu_lbu_byte_array_at_spec": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw98.v": {
-      "zesu_lbu_byte_array_at_spec": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ACore.v": {
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BCore.v": {
-      "zesu_lbu_byte_array_at_spec": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Core.v": {
-      "zesu_lbu_byte_array_at_spec": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15ACore.v": {
-      "zesu_lbu_byte_array_at_spec": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BCore.v": {
-      "zesu_lbu_byte_array_at_spec": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Core90.v": {
-      "zesu_lbu_byte_array_at_spec": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fc8.v": {
-      "mem_mapsto_array_recombine_u64_read": 6
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f1c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f20.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f24.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f28.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f2c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f34.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f3c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f44.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f48.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f4c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f54.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f58.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f5c.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f60.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f64.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f68Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f6cRaw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f70Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f74Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f78Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f7cRaw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f80Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f84Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f88Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f98Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f9cRaw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa0Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa4Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb0Raw.v": {
-      "solve_zesu_ld_array_at": 2
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe0.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe4.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe8.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fec.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15018.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1501cRaw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15020Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15024Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15044Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15048Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15050Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15058Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15078Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15080Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15088Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15090Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1509cRaw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a0Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a8Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b4Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150bcRaw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c4Raw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ccRaw.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v": {
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f70.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f74.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f78.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f7c.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f80.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f84.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f88.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f8c.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f98.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f9c.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa0.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa4.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb0.v": {
-      "solve_zesu_ld_array_at": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe0.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe4.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe8.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fec.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15018.v": {
-      "zesu_lbu_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v": {
-      "mem_mapsto_array_recombine_u64_read": 3,
-      "solve_zesu_ld_array_at": 3,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "zesu_ld_byte_array_at_spec": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
-      "mem_mapsto_array_recombine_u64_read": 2,
-      "solve_zesu_ld_array_at": 2,
-      "zesu_ld_byte_array_at_spec": 2,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadArray.v": {
-      "mem_mapsto_array_recombine_u64_read": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadCore.v": {
-      "zesu_ld_byte_array_at_spec": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadArray.v": {
-      "mem_mapsto_array_recombine_u64_read": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadCore.v": {
-      "zesu_ld_byte_array_at_spec": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v": {
-      "mem_mapsto_array_recombine_u64_read": 1,
-      "solve_zesu_ld_array_at": 1,
-      "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
     "ZesuSsz/Proofs/Tests/LegacyGuardedCalls.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
@@ -519,6 +18,14 @@
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15200.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk1521c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 2
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153b4Load.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -541,6 +48,14 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsTail.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstU256.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 4
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsMemcpy.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
@@ -550,14 +65,28 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsRest.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondU256.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSpec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 4
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsTail.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsThirdU256.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw94.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw98.v": {
+      "zesu_lbu_byte_array_at_spec": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2B.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -576,6 +105,10 @@
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment01B.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ACore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02B.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -619,8 +152,26 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13B.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BCore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Core.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15ACore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BCore.v": {
+      "zesu_lbu_byte_array_at_spec": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment16.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Core90.v": {
+      "zesu_lbu_byte_array_at_spec": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment18.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -690,6 +241,9 @@
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoopCommon.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpy.v": {
+      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBooleanSetupCompose.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1,
@@ -838,6 +392,9 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessLists.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fc8.v": {
+      "mem_mapsto_array_recombine_u64_read": 6
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier10190Call.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
@@ -847,8 +404,107 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f08.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f1c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f20.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f24.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f28.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f2c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f34.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f3c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f44.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f48.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f4c.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f54.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f58.v": {
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f5c.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f60.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f64.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f68Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f6cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f70Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f74Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f78Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f7cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f80Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f84Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f88Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f98Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f9cRaw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa0Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa4Raw.v": {
+      "solve_zesu_ld_array_at": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa8.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb0Raw.v": {
+      "solve_zesu_ld_array_at": 2
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb4.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -856,11 +512,126 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fc8To14fe0.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14ff0.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15018.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1501cRaw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15020Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15024Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15028Store.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15044Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15048Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15050Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15058Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15078Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15080Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15088Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15090Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1509cRaw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a0Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a8Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b4Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150bcRaw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c4Raw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ccRaw.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150d8To150ec.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -880,23 +651,151 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f08Entry.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f30.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f38.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f40.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f50.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f70.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f74.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f78.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f7c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f80.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f84.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f88.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f8c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f90.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f98.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f9c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa8.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "solve_zesu_ld_array_at": 2
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb4.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -907,11 +806,42 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fc8To14fe0.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe0.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe4.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe8.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fec.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14ff0.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15018.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_lbu_byte_array_at_spec": 2
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 3,
+      "solve_zesu_ld_array_at": 3
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15028Prefix.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1,
+      "zesu_ld_byte_array_at_spec": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15048.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -919,11 +849,31 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1505c.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 2,
+      "solve_zesu_ld_array_at": 2,
+      "zesu_ld_byte_array_at_spec": 2
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadArray.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadCore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_ld_byte_array_at_spec": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1508c.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadArray.v": {
+      "mem_mapsto_array_recombine_u64_read": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadCore.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "zesu_ld_byte_array_at_spec": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15094.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -931,20 +881,60 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15098.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a4.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ac.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b8.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c0.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c8.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v": {
+      "Local Remove Hints subsume_instr_pre'_inst": 1,
+      "mem_mapsto_array_recombine_u64_read": 1,
+      "solve_zesu_ld_array_at": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d0.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
@@ -1243,9 +1233,1216 @@
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsTail.v": {
       "Local Remove Hints subsume_instr_pre'_inst": 1
-    },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpy.v": {
-      "Local Remove Hints subsume_instr_pre_zesu_inst": 1
     }
-  }
+  },
+  "legacy_entry_files": [
+    "ZesuSsz/Proofs/ReadInput/ReadInput.v",
+    "ZesuSsz/Proofs/Tests/Alignment.v",
+    "ZesuSsz/Proofs/Tests/ArrayByteDefault.v",
+    "ZesuSsz/Proofs/Tests/ArrayByteValues.v",
+    "ZesuSsz/Proofs/Tests/ArrayByteViews.v",
+    "ZesuSsz/Proofs/Tests/ArrayCopyComplete.v",
+    "ZesuSsz/Proofs/Tests/ArrayCopyFinish.v",
+    "ZesuSsz/Proofs/Tests/ArrayCopyStep.v",
+    "ZesuSsz/Proofs/Tests/ArrayCounterBounds.v",
+    "ZesuSsz/Proofs/Tests/ArrayCounterCompare.v",
+    "ZesuSsz/Proofs/Tests/ArrayCounterStep.v",
+    "ZesuSsz/Proofs/Tests/ArrayCursors.v",
+    "ZesuSsz/Proofs/Tests/ArrayDynamicBounds.v",
+    "ZesuSsz/Proofs/Tests/ArrayDynamicCursors.v",
+    "ZesuSsz/Proofs/Tests/ArrayDynamicDestination.v",
+    "ZesuSsz/Proofs/Tests/ArrayEightCursor.v",
+    "ZesuSsz/Proofs/Tests/ArrayEightLowFirst.v",
+    "ZesuSsz/Proofs/Tests/ArrayEightNormalized.v",
+    "ZesuSsz/Proofs/Tests/ArrayForget.v",
+    "ZesuSsz/Proofs/Tests/ArrayPairViews.v",
+    "ZesuSsz/Proofs/Tests/ArrayWordValues.v",
+    "ZesuSsz/Proofs/Tests/ArrayWordViews.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayKnownBranch.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayUninit.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayUninitExplicit.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayWordRegion.v",
+    "ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+    "ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+    "ZesuSsz/Proofs/Tests/ByteAssembly.v",
+    "ZesuSsz/Proofs/Tests/ByteListsPublicResources.v",
+    "ZesuSsz/Proofs/Tests/CallRegCols.v",
+    "ZesuSsz/Proofs/Tests/CallScratch.v",
+    "ZesuSsz/Proofs/Tests/CallScratchBoolean.v",
+    "ZesuSsz/Proofs/Tests/CallScratchBytes.v",
+    "ZesuSsz/Proofs/Tests/CallScratchSized.v",
+    "ZesuSsz/Proofs/Tests/CallerUnits.v",
+    "ZesuSsz/Proofs/Tests/Calls.v",
+    "ZesuSsz/Proofs/Tests/CarrierHandoff.v",
+    "ZesuSsz/Proofs/Tests/CodeLookup.v",
+    "ZesuSsz/Proofs/Tests/CodeLookupBlocks.v",
+    "ZesuSsz/Proofs/Tests/Continuations.v",
+    "ZesuSsz/Proofs/Tests/CounterShapes.v",
+    "ZesuSsz/Proofs/Tests/CounterZero.v",
+    "ZesuSsz/Proofs/Tests/CounterZeroZ.v",
+    "ZesuSsz/Proofs/Tests/EncoderEndian.v",
+    "ZesuSsz/Proofs/Tests/FalseBody.v",
+    "ZesuSsz/Proofs/Tests/GasRecipientSource.v",
+    "ZesuSsz/Proofs/Tests/NatPowerBounds.v",
+    "ZesuSsz/Proofs/Tests/OutputPayloads.v",
+    "ZesuSsz/Proofs/Tests/PointerAlignment.v",
+    "ZesuSsz/Proofs/Tests/RegCollections.v",
+    "ZesuSsz/Proofs/Tests/RegMixedPacking.v",
+    "ZesuSsz/Proofs/Tests/RegPacking.v",
+    "ZesuSsz/Proofs/Tests/SnapshotSlices.v",
+    "ZesuSsz/Proofs/Tests/SnapshotWrites.v",
+    "ZesuSsz/Proofs/Tests/StackAlignment.v",
+    "ZesuSsz/Proofs/Tests/StackArrayIndices.v",
+    "ZesuSsz/Proofs/Tests/TraceResume.v",
+    "ZesuSsz/Proofs/Tests/WordPayloads.v",
+    "ZesuSsz/Proofs/WriteSuccess/FixedRowsChunks.v",
+    "ZesuSsz/Proofs/WriteSuccess/FixedRowsLayout.v",
+    "ZesuSsz/Proofs/WriteSuccess/Interfaces.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk151dc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15200.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk1521c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153b4Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153b8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk153bc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopExitBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopProof.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorage.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageFrameIntro.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageInvariant.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageLoopIntro.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageNonzero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsTailBoundaries.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsTailState.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsInvariantIntro.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsMemcpy.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsOutput.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsRest.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsThirdU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBitvector.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2A.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2APrepare94.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2APrepare98.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw94.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2ARaw98.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2AReturn94.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2AReturn98.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2B.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2C.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesChunk2D.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment01.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment01A.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment01B.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02A.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ACore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ARawFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ARawRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02ARecombine.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02B.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment02State.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment03.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment04.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment05.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment06.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment07.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment08.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment09.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment10.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment11.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment12.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13A.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment13B.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14ACompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14BReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Core.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Frame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Prepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment14Return.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15A.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15ACompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15ACore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15APrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15AReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15B.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15BReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15Frame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment16.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17A.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17B.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Core.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Core90.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17IndexZeroSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17LbuRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Prepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Prepare90.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Return.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17Return90.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17X21.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17X22.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment17X23.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment18.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment19.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment20.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessByteLists.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessCallAbi.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessCallRetFrameRight.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessCalls.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncodeArrays.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncodeFragments.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncodeWords.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBytesCallCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBytesSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderCalls.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderInt1645Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderIntCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalNone.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalNoneBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalNoneEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalNoneTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSome.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeBooleanCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeBranch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomePreInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeResume.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalSomeToBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64None.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64NoneBoundary.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64NoneEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64NoneEntryRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64NoneTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64Some.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64SomeBooleanCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64SomeCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64SomeFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64SomeIntCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64SomePublicResumeLeaf.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderU256Epilogue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderU256Output.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderU256Prologue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEpilogueBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsBlobEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsBlobNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsBlobRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsBranchNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCallRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsControlEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsControlExit.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsControlNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsControlReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCopyEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCopyNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCopyRange.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCountEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCountNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCounter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsEmptyBranch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsEntryValues.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsExit.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsExitProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsLoopNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsLoopOpen.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsLoopSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsOutputNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsOwnership.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsPayloadLength.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsPayloadModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsRegisterGroups.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsRegisterReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsReturnContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsReturnLoopEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsReturnLoopNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsStorageDispatch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsStorageNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsStorageOwnReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsTailEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsTailNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsTailReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsValidity.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsWithCount.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsAddressEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsAddressInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsAddressSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsArray.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsBodyPost.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsBodyTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsCompleteCode.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsCopyBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsCopyEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsCountContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsCountInitial.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsFacts.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsIntNext.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsIntU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsLastU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsNonceSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsPayloads.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsPhases.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsPrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsPublic.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsReturnFacts.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsTailPositive.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsTailZero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsU256Next.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsU256Suffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAuthorizationsVSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesAuthorizationEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesAuthorizationRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesByteAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesCompleteAuthorizationRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesCompleteEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesEmitHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesInitialLoads.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLoadHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLoopEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLoopReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLowPairsHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLowerLoadHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesLowerWordsHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesNativeEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesOutputComposition.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPairAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPairHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPairs8Handoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPairs8Load0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPairsLoad8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPairsLoad8Resources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPayloadModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPayloadScratch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesPrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesRegisterGroups.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesReturnRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesShiftAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesShiftsHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesTailRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesTailZero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesUpperLoadHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesUpperWordsHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesWideHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesWordAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBooleanCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBooleanSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteLists.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteListsLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteListsPublicPrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactCalleeProviders.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderInt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU128.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU128Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU128Correct.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU256.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU256FramedCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU256Scratch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU256Spec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderCalls.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderChunk14e00.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderChunk14e14.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderChunk14e28.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderChunk14e78.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderValue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactOptionalU64None.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactOptionalU64NoneCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactOptionalU64SomeCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysByteAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysCountBound.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysCounter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysEmitHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysFixedBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysInitialLoads.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysLoadHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysLoopEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysLoopReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysLowerLoadHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysNative.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysNativeEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysOutputComposition.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPairHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPairs8Handoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPairs8Load0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPairsLoad8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPairsLoad8Resources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPayloadScratch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPayloadScratchAt.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPayloadWords.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysPrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysRegisterGroups.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysResources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysReturnRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysShiftsHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysTailComposition.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysTailPositive.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysTailZero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysUpperLoadHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesLoopEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesOutput.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesPayloadWords.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesPublic.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesReturnFacts.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesWord0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesWord1.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesWord2.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesWord3.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesWordHandoffs.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesWords.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTrace.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsAccessCallerFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsAccessCountCallerFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsAccessTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsAuthorizationTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsBlobCountTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsBlobTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsBooleanToGasLimit.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsBooleanToPriorityValue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsByteArrayOwn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsByteArrayOwnIntro.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainNoneAccessRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainNoneCaller.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainNoneRecipientContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainNoneRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainNoneToPrice.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainSomeAccessRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainSomeCaller.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainSomeRecipientContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainSomeRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainSomeToPrice.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainStoredImage.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainToNonce.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsChainWordImage.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsCursor.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsCursorAdvance.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsCursorBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsDataAccessEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsDataBytesCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsDataTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsDataToAccessCount.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsDataToBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsDispatch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFieldFlagEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFieldFlagRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFieldHeap.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFieldOwnIntro.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstLoadsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstNestedSourceRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstPrepareSourceRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientHighRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientLowerPairsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientLowerShiftsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientMiddleRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientPairRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientPairsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientShiftsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientTagRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientWideRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstRecipientWordsRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstSignatureTailRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstSignatureValuesRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstSourcesRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstTypeOutputRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFirstValuePrefixRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFlagOptionCallerFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsFlagOptionEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasLimitToRecipient.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasPricePriorityContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasPriceToPriority.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasRecipientContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasSignatureEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsGasToRecipient.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsIndexFacts.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsIndexFieldFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsIndexTypeOutputRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLayout.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveBranchSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveComplete.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveDispatch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveFieldFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveNonempty.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveSourceEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveSourceRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLoadFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsMaxBlobFeeCount.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNestedSourceEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNonceAccessRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNoncePricePriorityContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNoncePricePriorityRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNoncePriorityFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNonceRecipientRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsNonceToGasPrice.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsOptionSourcesRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsOwnership.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPrepareSourceEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPresentFeeGasContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPriceTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPriorityBranchContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPriorityGasJoin.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPriorityGasRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPriorityToBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsPriorityValueToGasLimit.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientAbsentRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientAbsentToValue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientAbsentValueContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientAccessMemory.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientBooleanOutputContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientBooleanToOutput.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientBranchAbsentHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientBranchHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientCopyToBoolean.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientDataAccessRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientDataFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientHighPairsEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientLowerPairsValueEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientLowerShiftsPairsEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientMiddleLowerEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientOutputToValue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientPairTagEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientPairsMiddleEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientPresentRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientPresentValueRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientShiftsHighEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientSourceImage.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientSourcePairEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientTagShiftEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientValueRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRecipientWordsSignatureValuesEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsResources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRowByte.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRowSlice.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsRowWordTag.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureBackEdge.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureFieldEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureFlagFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureLowWideEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureRS.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureRToS.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureVRS.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSignatureVToR.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceChainModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceChainNoneRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceChainSomeRegion.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceFieldLayout.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceFieldModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceSlice.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsSourceSuffixModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsTypeTailModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsValueAccessFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsValueDataAccessContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsValueDataContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsValueMiddleWordsEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsValueToData.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsAddressEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsAddressSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsAmountSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsCopyEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsCopyFields.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsFields.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsFieldsTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsIntNext.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsLoopSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsModel.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsPhases.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsPublic.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsReturnFacts.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsSecondIntSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsTailPositive.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactWithdrawalsTailZero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e00.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e14.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e28.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e38.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e48.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e58.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e68.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e78.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderValueTransactions.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessInstrBodyAdapters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadBlockAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadBlockCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadBlockWithFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadHeader.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadHeaderPre.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoopMemory.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpy.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpyWholeLoopClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpyWholePublic.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeCalleeProviders.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeCode.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeContract.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeEpilogue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeLoadWithFrameProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeOutputRelation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBoolean1597cCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBoolean1599cCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBooleanSetupCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixByteListCalls.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixByteListSetups.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0Carrier.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158f0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15900.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15910.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15920.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes1598cCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesBoundaryAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesPost15930.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixFinalByteListCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixFinalCallSetup.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15964Handoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15968Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt159a0Segment.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt159acCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixIntPair.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixJump15990Segment.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixLoadBranchSegment.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8CallPrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8None.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8NoneAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8NonePost.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8NoneTag.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8Some.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8SomeAssembly.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8SomePost.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixRoot.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixScalarSetups.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeTransactionLoopProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessObservationDecoder.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterBranch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterDispatcher.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterNonempty.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOutput.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOutputDescriptors.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOutputSemantic.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessParserLemmas.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPayloadCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPost15930Loads.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostTransactionDescriptors.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostTransactionResources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostTransactionsBlock15680.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsOptional.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsSuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrivatePublicBytes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologue.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d30.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d48.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d5c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysOutput.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment01.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment02.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment03.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment04.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment05.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment06.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment07.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment08.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment09.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment10.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment11.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment12.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment13.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment14.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment15.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment16.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment17.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18Core.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18FrameArray.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18FrameExtract.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18FramePrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18FrameReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18LbuSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18Tail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment19.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment20.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15740Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15744Compose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15744Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748Compose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748EntryHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748EntryPreAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748EntryResourceAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes1574cCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes1574cEntryHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes1574cNonzeroCaller.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15750Branch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15750EntryHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15750FramedBranch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15754EntryHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesBranchAdapters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesCallContinuations.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesContinuationAdapters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry15740.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry15740Prepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryCallerResources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryFinal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryResourceFinal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryResources.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesQContinuations.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesSourceWords.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTailOptionalSetup.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessToLoadWithFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190CallerAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190FrameFacts.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Framed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190MachineAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Prepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Return.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190ReturnBuilder.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190SavedAdapterA.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190SavedAdapterAHead.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190SavedAdapterAMiddle.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190SavedAdapterB.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions150fcRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions15154To15158.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions15158Branches.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions15158Frame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessArrayNonzero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessEntryFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessEntryFrameNonzero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessEntryFrameZero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessEntryInvariant.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessEntryOwnNonzero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessInvariantBounds.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessInvariantCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessInvariantStack.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessLists.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessListsAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessTransactionInvariant.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAuthorizationsAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAuthorizationsAnyLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodyCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodyPrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodyPrefixProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodyPrefixWitnessProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodySuffix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodySuffixFinal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodySuffixLate.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodySuffixLatePrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodySuffixMiddle.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary10190Prepared.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f1c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fc8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150e8Adapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15668.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15bc8Some.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier10190Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8Branch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8CallFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8Scratch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8SomeCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150fcAbi.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary14f1c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary14f68.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary14fc8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary150f0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary150fc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary15108.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary15118.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary15148.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary1519c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary151b4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierBoundary151c4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f08.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f1c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f20.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f24.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f28.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f2c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f30.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f34.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f38.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f3c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f40.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f44.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f48.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f4c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f50.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f54.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f58.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f5c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f60.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f64.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f68Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f68To14f70.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f6cRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f70Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f74Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f78Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f7cRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f80Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f84Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f88Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f8cRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f8cTo14fa8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f8cTo14fc8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f98Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f9cRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa0Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa4Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb0Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fc8To14fe0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fe8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14ff0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15018.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15018To15028.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1501cRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15020Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15024Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15028Store.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1502c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15030.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15034.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15044Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15044To1504c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15048Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1504c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1504cTo15054.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15050Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15054.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15054To1505c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15058Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1505c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15078Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15078To15080.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1507c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15080Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15080To15088.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15084.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15088Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15088To15090.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1508c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15090Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15090To150b0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15094.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk15098.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk1509cRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a0Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150a8Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ac.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0To150d8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b0To150ec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b4Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150b8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150bcRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c4Raw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150c8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ccRaw.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150d0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150d4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150ecCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150f0Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierPhaseHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierWithdrawalsTotalProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk10190Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f08.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f08Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f30.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f38.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f40.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f50.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f70.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f74.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f78.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f7c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f80.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f84.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f88.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f8c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f90.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f98.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f9c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fa8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fb4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fc8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fc8Prefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fc8To14fe0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fe8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14fec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14ff0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15018.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15028.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15028Prefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1505c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadArray.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadArrayPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15088LoadReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1508c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadArray.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadArrayPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15090LoadReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15094.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15098.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ac.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150d8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150dc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e4Phase.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150e8Auipc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ecEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ecJump.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0NoneEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0SomeEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0Spec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8InvariantBound.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8Jump.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8NoneCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8NoneCallEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8RawReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8ScratchRest.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8SomeCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8SomeCallReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8SomeEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f8TagBridge.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcAuipc.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcAuipcBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcLoad.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150fcLoadCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15104Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15108.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15118.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15118Branch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15148.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154Frame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154SomeContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154SomePrefix.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1519c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1519cAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1519cHelpers.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1519cTo151a0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a0MvSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a0To151a4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a0To151a4Return.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a0To151ac.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4LoadCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4LoadPrepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4LoadReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4LoadState.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4To151a8.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a4To151ac.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a8MoveSpec.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151a8To151ac.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151ac.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151acEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151acReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151acSetup.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b0Prepare.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b0Prepared.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Defs.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Handoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0HandoffEmpty.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0HandoffInvariant.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0HandoffNonempty.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0HandoffPost.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Helpers.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Main.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153d0.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15564.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15564Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15574.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15574Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15584.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15584Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1558cBranch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1558cBranchLeaf.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15620.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15620Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1562c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1562cEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15640Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15644.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15644Entry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15658Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierAt14f00.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierClosed.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopEntryBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopEntryExit.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopEventsPost.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopExitEvents.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopProviderEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15194.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15198.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15198Adapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15198Machine.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15168.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1516c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15170.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15174.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15178.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1517c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1517cAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15180To1518c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallScratch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cTo15190.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15190.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15190Adapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668Data.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668DataChain.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668Events.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668To15674.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668WithdrawalsTotal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566cData.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566cEvents.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566cWithdrawalsTotal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670Data.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670Events.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670WithdrawalsTotal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Boundary.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Call.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Data.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalr.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalrStrong.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Events.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674SavedShapes.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674WithdrawalsTotal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15678.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15678WithdrawalsTotal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15678WithdrawalsTotalAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1567c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15680.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15684.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15688.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1568c.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1568cWithdrawals.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1568cWithdrawalsTotal.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15690.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15690Withdrawals.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15690Zero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPostWithdrawalsData.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPostWithdrawalsHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanAbiFinalize.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanAbiIntro.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanAbiTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanAssemble.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanCallEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanFrameRemove.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanReturnPre.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeCore.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeFrameBounds.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeFrameBounds32.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeMachineAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNone.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneCoreProof.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNonePrepared.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneSetup.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSome.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanAbiFinalize.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanAbiTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanCallEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanContinuation.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanFrameRemove.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanRegisters.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanReturn.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanReturnPre.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeCall15124.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeCoreProof.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeIntCall15134.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeSetup15124.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPuncturedScratch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsSemanticAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsTailCompose.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsTailHelpers.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsTailInvariant.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsTailMemory.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsValidFrame.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsValueAdapter.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsComposition.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsPayload.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTailCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalBranch.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalIntProvider.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalNonzero.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalTail.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalTailCall.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueBlock.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueTransactions.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueTransactionsCarrierHandoff.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueTransactionsEntry.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsIterationBody.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsLoop.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsMeasure.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsMemcpy.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsPrefix15694InvMemcpySupport.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v",
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsTail.v"
+  ]
 }

@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessAccessListsSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessStorageKeysSpec.
 Require Import isla.riscv64.riscv64.

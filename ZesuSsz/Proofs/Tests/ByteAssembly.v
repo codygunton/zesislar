@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Lemma test_byte_assembly (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) :

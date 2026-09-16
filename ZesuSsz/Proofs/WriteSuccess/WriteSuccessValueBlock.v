@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Automation.InstrPre.
 Local Remove Hints subsume_instr_pre_zesu_inst : typeclass_instances.
 Require Import ZesuMachineMap.Machine.

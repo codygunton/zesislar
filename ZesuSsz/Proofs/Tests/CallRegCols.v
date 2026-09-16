@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 

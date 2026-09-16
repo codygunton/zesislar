@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactTransactionsPriorityToBoolean WriteSuccessExactBooleanSpec WriteSuccessObservation WriteSuccessOutputSemantic.

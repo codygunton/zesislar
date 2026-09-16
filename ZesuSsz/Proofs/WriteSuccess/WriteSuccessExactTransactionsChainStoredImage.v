@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import isla.riscv64.riscv64.
 
 Definition transactionChainStoredImage (value : bv 64) (tag : bv 8) : list (bv 8) :=

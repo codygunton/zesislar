@@ -1,4 +1,4 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.AllLegacy.
 Require Import ZesuSsz.Automation.CounterZero.
 Require Import isla.riscv64.riscv64.
 Lemma test_counter_zero remaining :
