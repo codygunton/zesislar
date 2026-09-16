@@ -13,6 +13,11 @@ Ltac zesu_nat_literal number :=
 
 Ltac zesu_region_bounds :=
   cbv [mapRamBase mapRamSize machineRamEnd defaultMap] in *;
+  rewrite ?length_take;
+  repeat match goal with
+  | Hlength : length ?values = ?size |- context [length ?values] =>
+      rewrite Hlength
+  end;
   first [repeat match goal with H : _ |- _ => clear H end; lia |
     repeat match goal with
     | H : ?T |- _ =>
