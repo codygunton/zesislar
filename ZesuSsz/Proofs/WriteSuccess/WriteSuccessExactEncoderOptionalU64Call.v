@@ -30,29 +30,39 @@ Definition encoderOptionalU64ExactReturn `{!islaG Sigma} `{!threadG}
       ("x8" ↦ᵣ RVal_Bits old_x8)
   end.
 
+Definition encoderOptionalU64Outcome (bytes : list (bv 8)) : option (bv 64) :=
+  match bytes !! 8%nat with
+  | Some tag =>
+      if decide (tag = BV 8 0) then None
+      else Some (Z_to_bv 64 (little_endian_to_bv 8 (take 8 bytes)))
+  | None => None
+  end.
+
+Definition encoderOptionalU64Valid (pointer : bv 64)
+    (bytes : list (bv 8)) : Prop :=
+  match bytes !! 8%nat with
+  | Some tag =>
+      if decide (tag = BV 8 0) then True
+      else (8 <= length bytes)%nat /\ bv_extract 0 3 pointer = BV 3 0
+  | None => False
+  end.
+
 Definition zesuEncoderOptionalU64ExactCallSpec
     `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (∃ (pointer sp ret old_x5 old_x6 old_x8 old_x11 : bv 64)
-      (tag : bv 8) (bytes : list (bv 8)) (tail : spec)
-      (outcome : option (bv 64)),
+      (bytes : list (bv 8)) (tail : spec),
     reg_col zesu_ram_sys_regs ∗
     "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
     "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x6" ↦ᵣ RVal_Bits old_x6 ∗
     "x8" ↦ᵣ RVal_Bits old_x8 ∗ "x10" ↦ᵣ RVal_Bits pointer ∗
     "x11" ↦ᵣ RVal_Bits old_x11 ∗
     (bv_unsigned sp - 32) ↦ₘ? 32 ∗ bv_unsigned pointer ↦ₘ∗ bytes ∗
-    ⌜bytes !! 8%nat = Some tag⌝ ∗
-    ⌜match outcome with
-      | Some value => tag <> BV 8 0 /\
-          value = Z_to_bv 64 (little_endian_to_bv 8 (take 8 bytes)) /\
-          (8 <= length bytes)%nat /\ bv_extract 0 3 pointer = BV 3 0
-      | None => tag = BV 8 0
-      end⌝ ∗
+    ⌜encoderOptionalU64Valid pointer bytes⌝ ∗
     ⌜mapRamBase defaultMap <= bv_unsigned pointer⌝ ∗
     ⌜bv_unsigned pointer + Z.of_nat (length bytes) < machineRamEnd defaultMap⌝ ∗
     mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace
-      (match outcome with
+      (match encoderOptionalU64Outcome bytes with
        | Some value =>
            writeOutputEvents (sp - BV 64 25)%bv (BV 64 1)
              (writeSuccessBooleanWordPayload (BV 64 1))
@@ -70,7 +80,8 @@ Definition zesuEncoderOptionalU64ExactCallSpec
     ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
     ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
     instr_pre (bv_unsigned ret)
-      (encoderOptionalU64ExactReturn pointer sp ret old_x8 bytes tail outcome) ∗
+      (encoderOptionalU64ExactReturn pointer sp ret old_x8 bytes tail
+        (encoderOptionalU64Outcome bytes)) ∗
     True)%I.
 
 Global Instance : LithiumUnfold (@encoderOptionalU64ExactReturn) := I.
@@ -92,27 +103,33 @@ Proof.
   rewrite instr_pre'_eq. iIntros "Hentry".
   iEval (unfold zesuEncoderOptionalU64ExactCallSpec) in "Hentry".
   iDestruct "Hentry" as
-    (pointer sp ret old_x5 old_x6 old_x8 old_x11 tag bytes tail outcome)
+    (pointer sp ret old_x5 old_x6 old_x8 old_x11 bytes tail)
     "(Hsys & H1 & H2 & H5 & H6 & H8 & H10 & H11 & Hstack & Hsource &
-      %Htag & %Houtcome & %Hlower & %Hupper & Hmmio & Htrace &
+      %Hvalid & %Hlower & %Hupper & Hmmio & Htrace &
       %Hsp4 & %Hmin & %Hmax & %Hret0 & %Hret1 & %Hret2 & Hreturn & _)".
-  destruct outcome as [value|].
-  - destruct Houtcome as (Hnonzero & Hvalue & Hlength & Hpointer).
-    iSpecialize ("Hsome" $! pointer value sp ret old_x5 old_x6 old_x8
-      old_x11 tag bytes tail True%I).
-    rewrite instr_pre'_eq. iApply "Hsome".
-    rewrite /optionalU64SomeExactCallEntry
-      /optionalU64SomeExactCallContext /encoderOptionalU64ExactReturn /=.
-    zesu_run.
-    all: try (bv_simplify Hsp4; bv_solve).
-    iSplit; first (rewrite instr_pre'_eq; iExact "Hreturn"). done.
-  - subst tag.
-    iSpecialize ("Hnone" $! pointer sp ret old_x5 old_x6 old_x11 bytes tail
-      ("x8" ↦ᵣ RVal_Bits old_x8)%I).
-    rewrite instr_pre'_eq. iApply "Hnone".
-    rewrite /optionalU64NoneExactCallEntry /encoderOptionalU64ExactReturn /=.
-    zesu_run.
-    iSplit; first (rewrite instr_pre'_eq; iExact "Hreturn"). done.
+  destruct (bytes !! 8%nat) as [tag|] eqn:Htag.
+  - rewrite /encoderOptionalU64Valid Htag in Hvalid.
+    iEval (rewrite /encoderOptionalU64Outcome Htag /=) in "Htrace Hreturn".
+    destruct (decide (tag = BV 8 0)) as [Hzero|Hnonzero].
+    + subst tag.
+      iSpecialize ("Hnone" $! pointer sp ret old_x5 old_x6 old_x11 bytes tail
+        ("x8" ↦ᵣ RVal_Bits old_x8)%I).
+      rewrite instr_pre'_eq. iApply "Hnone".
+      rewrite /optionalU64NoneExactCallEntry
+        /encoderOptionalU64ExactReturn /=.
+      zesu_run.
+      iSplit; first (rewrite instr_pre'_eq; iExact "Hreturn"). done.
+    + destruct Hvalid as (Hlength & Hpointer).
+      set (value := Z_to_bv 64 (little_endian_to_bv 8 (take 8 bytes))).
+      iSpecialize ("Hsome" $! pointer value sp ret old_x5 old_x6 old_x8
+        old_x11 tag bytes tail True%I).
+      rewrite instr_pre'_eq. iApply "Hsome".
+      rewrite /optionalU64SomeExactCallEntry
+        /optionalU64SomeExactCallContext /encoderOptionalU64ExactReturn /=.
+      zesu_run.
+      all: try (bv_simplify Hsp4; bv_solve).
+      iSplit; first (rewrite instr_pre'_eq; iExact "Hreturn"). done.
+  - rewrite /encoderOptionalU64Valid Htag in Hvalid. contradiction.
 Qed.
 
 Lemma zesu_encoder_optional_u64_exact_call_correct
@@ -190,8 +207,11 @@ Proof.
   iDestruct "Hcontext" as
     "(H5 & H6 & Hmmio & Htrace & %HcontextSp4 & %Halign & %HcontextMin &
       %HcontextMax & %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
-  iExists pointer, sp, ret, old_x5, old_x6, old_x8, old_x11, tag, bytes,
-    tail, (Some value).
+  subst value.
+  iExists pointer, sp, ret, old_x5, old_x6, old_x8, old_x11, bytes, tail.
+  rewrite /encoderOptionalU64Outcome /encoderOptionalU64Valid Htag.
+  destruct (decide (tag = BV 8 0)); [contradiction|].
+  simpl.
   zesu_run.
   iSplit.
   - iIntros "Hreturn".
@@ -235,8 +255,8 @@ Proof.
       %Hlower & %Hupper & Hmmio & Htrace & %Hsp4 & %Hsp3 & %Hmin & %Hmax &
       %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
   iDestruct "HP" as "[H8 HP]".
-  iExists pointer, sp, ret, old_x5, old_x6, old_x8, old_x11, (BV 8 0),
-    bytes, tail, None.
+  iExists pointer, sp, ret, old_x5, old_x6, old_x8, old_x11, bytes, tail.
+  rewrite /encoderOptionalU64Outcome /encoderOptionalU64Valid Htag /=.
   zesu_run.
   iSplit.
   - iIntros "Hreturn".
