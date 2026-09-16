@@ -546,6 +546,31 @@ Definition writeSuccessExactPostWithdrawalsEvents {Decoded}
     (writeSuccessExactPostWithdrawalsPayloads witness)
     (writeSuccessTraceTail witness).
 
+Definition writeSuccessExactPostPayloadsAt {Decoded}
+    (descriptors : list WriteOutputDescriptor)
+    (witness : writeSuccessNativeWitness Decoded) : list (list (bv 8)) :=
+  drop
+    (length (writeSuccessPost156e8Descriptors
+      (writeSuccessFrameSp witness) (writeSuccessPostData witness)) -
+     length descriptors)
+    (writeSuccessExactPostWithdrawalsPayloads witness).
+
+Definition writeSuccessExactTailFirstBranchEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  let descriptors := writeSuccessPost1596cDescriptors
+    (writeSuccessFrameSp witness) (writeSuccessPostData witness) in
+  writeOutputPayloadsSpec descriptors
+    (writeSuccessExactPostPayloadsAt descriptors witness)
+    (writeSuccessTraceTail witness).
+
+Definition writeSuccessExactTailSecondBranchEvents {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  let descriptors := writeSuccessPost159b0Descriptors
+    (writeSuccessFrameSp witness) (writeSuccessPostData witness) in
+  writeOutputPayloadsSpec descriptors
+    (writeSuccessExactPostPayloadsAt descriptors witness)
+    (writeSuccessTraceTail witness).
+
 Definition writeSuccessExactPostWithdrawalsMemoryFrame
     `{!islaG Sigma} `{!threadG} {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
