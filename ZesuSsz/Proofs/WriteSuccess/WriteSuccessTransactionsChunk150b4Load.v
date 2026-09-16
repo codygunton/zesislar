@@ -90,9 +90,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 232 -
        (base + 288 * Z.of_nat (length processed))) = 232%nat.
-  { rewrite H7. lia. }
+  { rewrite ZesuSsz.Automation.Rewrites.zesu_bv_unsigned_Z_to_bv_small; [lia | bv_solve]. }
   iEval (rewrite Hstart) in "Hprefix232 Hsuffix240".
-  rewrite Hstart H7 !Z.add_0_r.
+  rewrite ?Hstart ?ZesuSsz.Automation.Rewrites.zesu_bv_unsigned_Z_to_bv_small ?Z.add_0_r; try bv_solve.
   iFrame "Hprefix232 Hsuffix240".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
@@ -129,6 +129,7 @@ Proof.
     (writeSuccessTransactionsCurrentPhaseFrame P sp base transaction
       transactions processed remaining bytes prefix suffix tail)%I
     into "HframeFinal".
+  iRename select ("x12" ↦ᵣ RVal_Bits _)%I into "HregActual".
   iAssert (writeSuccessTransactionsMachine150b8 sp base transactions
     processed transaction) with "[-HarrayFinal HframeFinal]"
     as "HmachineFinal".
@@ -172,3 +173,5 @@ Proof.
   repeat split; try assumption.
   apply write_success_150b4_current_unsigned; lia.
 Qed.
+
+Print Assumptions write_success_transactions_chunk_150b4_load.
