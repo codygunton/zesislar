@@ -288,6 +288,7 @@ check-evidence-tools:
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_parity.py
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
+	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py
 	bash ZesuSsz/Evidence/check_write_success_decoder.sh
 
 .PHONY: check-proof-hygiene

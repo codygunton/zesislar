@@ -363,6 +363,7 @@ Lemma writeSuccessExactEpilogueExit_unfold `{!islaG Sigma} `{!threadG}
 Proof. done. Qed.
 
 Global Opaque writeSuccessExactEpilogueExit.
+Global Instance : LithiumUnfold (@writeSuccessExactEpilogueExit) := I.
 
 Definition writeSuccessExactCallerRemainder `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
