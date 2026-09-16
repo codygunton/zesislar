@@ -1,0 +1,64 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionResources.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+
+Definition exactTailPostDataConditionalFirst `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (sourceBytes decodedBytes : list (bv 8))
+    (data : WriteSuccessPostTransactionData) : iProp Sigma :=
+  let source := writeSuccessPostSourceWords sourceBytes in
+  let tail := writeSuccessPostTailWords decodedBytes in
+  (writeSuccessOptionalDescriptorResources
+     (writeSuccessPostConditional1596c data)
+     (writeSuccessPostConditional1596cPayload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes1571c data)
+     (writeSuccessPostBytes1571cPayload data) ∗
+   writeSuccessHashesResources (writeSuccessPostWord source 74)
+     (writeSuccessPostHashesCount data) (writeSuccessPostHashesPayload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes158e0 data)
+     (writeSuccessPostBytes158e0Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes158f0 data)
+     (writeSuccessPostBytes158f0Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes15900 data)
+     (writeSuccessPostBytes15900Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes15910 data)
+     (writeSuccessPostBytes15910Payload data) ∗
+   writeSuccessDescriptorResources (writeSuccessPostBytes15920 data)
+     (writeSuccessPostBytes15920Payload data) ∗
+   byteListItemResources (bv_unsigned (writeSuccessPostWord tail 0))
+     (writeSuccessPostByteLists15930 data) ∗
+   byteListItemResources (bv_unsigned (writeSuccessPostWord tail 2))
+     (writeSuccessPostByteLists15940 data) ∗
+   byteListItemResources (bv_unsigned (writeSuccessPostWord tail 4))
+     (writeSuccessPostByteLists15950 data) ∗
+   byteListItemResources (bv_unsigned (writeSuccessPostWord tail 14))
+     (writeSuccessPostByteLists159c8 data) ∗
+   ⌜writeSuccessPostTransactionDataFacts sp sourceBytes decodedBytes data⌝)%I.
+
+Lemma exact_tail_post_data_conditional_adapter `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (sourceBytes decodedBytes : list (bv 8))
+    (data : WriteSuccessPostTransactionData) :
+  exactTailPostDataConditionalFirst sp sourceBytes decodedBytes data -∗
+  writeSuccessPostTransactionDataResources sp sourceBytes decodedBytes data.
+Proof.
+  iStartProof. iIntros "Hparts".
+  iEval (rewrite /exactTailPostDataConditionalFirst) in "Hparts".
+  iDestruct "Hparts" as "[Hfirst Hrest]".
+  iDestruct "Hrest" as "[Hdescriptor Hothers]".
+  iEval (rewrite /writeSuccessPostTransactionDataResources).
+  iFrame "Hdescriptor".
+  zesu_run.
+  all: zesu_open_resource_groups.
+  all: try zesu_open_matching_resource_package.
+  all: zesu_open_resource_groups.
+  all: do 3 zesu_liAStep.
+  all: zesu_open_matching_array_pure_bundle.
+  all: do 3 zesu_liAStep.
+  all: repeat (zesu_open_matching_array_pure_bundle; do 3 zesu_liAStep).
+  all: try zesu_run.
+  all: iFrame "Hfirst".
+  all: try zesu_run.
+  Unshelve.
+Qed.
+Print Assumptions exact_tail_post_data_conditional_adapter.

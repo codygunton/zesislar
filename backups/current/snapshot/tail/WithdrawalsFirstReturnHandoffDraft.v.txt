@@ -1,0 +1,46 @@
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessWithdrawalsSpec.
+
+Definition withdrawalsFirstLoadedScratch `{!islaG Sigma}
+    (sp : bv 64) (current : list (bv 8)) : iProp Sigma :=
+  let address := bv_unsigned sp + 1744 in
+  let offset := Z.to_nat (address - address) in
+  (address ↦ₘ∗ take offset current ∗
+   (address + (offset + 8)%nat) ↦ₘ∗ drop (offset + 8)%nat current ∗
+   address ↦ₘ Z_to_bv 64
+     (little_endian_to_bv 8 (take 8 (drop offset current))) ∗
+   ⌜length current = 48%nat⌝)%I.
+
+Definition withdrawalsFirstReturnResources `{!islaG Sigma} `{!threadG}
+    (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp pointer : bv 64) (base : Z) (processed remaining : nat)
+      (prefix suffix current : list (bv 8)) (tail : spec),
+    reg_col zesu_ram_sys_regs ∗
+    reg_col writeSuccessWithdrawalsOtherRegShapes ∗
+    "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (0x156b0 + 4)) ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
+    "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗
+    "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+    "x8" ↦ᵣ RVal_Bits pointer ∗
+    "x9" ↦ᵣ RVal_Bits (Z_to_bv 64 (Z.of_nat (S remaining))) ∗
+    "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
+    base ↦ₘ∗ prefix ∗ bv_unsigned pointer ↦ₘ∗ suffix ∗
+    withdrawalsFirstLoadedScratch sp current ∗
+    (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+    mmio_range (machineOutputAddress defaultMap) 16 ∗
+    spec_trace (writeSuccessWithdrawalsPhaseEvents
+      WithdrawalsSecondInt sp remaining tail) ∗
+    writeSuccessWithdrawalsInvariant sp pointer base
+      (processed + S remaining)%nat processed remaining
+      (prefix ++ suffix) prefix suffix ∗
+    instr_pre 0x156e8
+      (writeSuccessWithdrawalsLoopExit sp base
+         (processed + S remaining)%nat (prefix ++ suffix) tail P) ∗
+    instr_body 0x156dc (writeSuccessWithdrawalsTailSpec P) ∗
+    P ∗ True)%I.
+
+Check withdrawalsFirstLoadedScratch.
+Check withdrawalsFirstReturnResources.

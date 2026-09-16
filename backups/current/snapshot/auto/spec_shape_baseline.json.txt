@@ -1,0 +1,1204 @@
+{
+  "ZesuSsz/Contracts/DecodeHeap.v": {
+    "predicates_without_unfold": 6
+  },
+  "ZesuSsz/Contracts/DecodeMachine.v": {
+    "predicates_without_unfold": 3
+  },
+  "ZesuSsz/Contracts/Endpoints.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/AllocatorAdapter.v": {
+    "predicates_without_unfold": 2
+  },
+  "ZesuSsz/Proofs/Main/FailureFinish.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/FailureOutcome.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/PrefixResources.v": {
+    "predicates_without_unfold": 6
+  },
+  "ZesuSsz/Proofs/Main/ReturnedRegisters.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/SuccessFinish.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/SuccessResources.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/SuccessWitnessBridge.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Main/TerminalFrames.v": {
+    "predicates_without_unfold": 3
+  },
+  "ZesuSsz/Proofs/Main/WholeResources.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/Tests/ResourceGroups.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsBoundary151dc.v": {
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsBoundary15224.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsLoopContinuation.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsSpec.v": {
+    "uninferable_existentials": 25
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorage.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsStorageFrame.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsTailBoundaries.v": {
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 39
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSpec.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 18
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSegment15Frame.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessBlobHashesSpec.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessByteLists.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 17
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessCalls.v": {
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBoolean.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBytes.v": {
+    "uninferable_existentials": 11
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderBytesCallCore.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderCalls.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderInt1645Call.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderIntCall.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalNoneBoundaries.v": {
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderOptionalU64Spec.v": {
+    "disjunctive_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEncoderU256Spec.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEpilogueBlock.v": {
+    "uninferable_existentials": 16
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsLoopSpec.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBlobHashesSpec.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactBooleanSpec.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteListsDispatchSpec.v": {
+    "uninferable_existentials": 18
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteListsPublicRawReturnSpec.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteListsPublicSpec.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactByteListsSpec.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "uninferable_existentials": 17
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactCopiedPrefixLoads.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderBoolean.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderBytes.v": {
+    "uninferable_existentials": 18
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderIntCall.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderU256FramedCall.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactFinalByteListCall.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactFinalPayloadCall.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactFinalPayloadSequence.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactFinalPayloadSetup.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactFinalSetup.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactHeaderSpec.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactOptionalU64AbiSpec.v": {
+    "disjunctive_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactPrefix.v": {
+    "predicates_without_unfold": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactPrefixCalls.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysSpec.v": {
+    "uninferable_existentials": 5
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixByteListPayload1594c.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixByteListPayload1595c.v": {
+    "uninferable_existentials": 5
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayload158e0.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixBytesPayloadSpec.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesLoopSpec.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactSuffixHashesOutput.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailWithdrawalsBranchSpec.v": {
+    "predicates_without_unfold": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveZeroBlobBridge.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTransactionsLiveZeroGuard.v": {
+    "predicates_without_unfold": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueSpec.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHashesLoopSpec.v": {
+    "uninferable_existentials": 5
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderSpec.v": {
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadBlockAdapter.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadBlockWithFrame.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessLoadHeader.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessMemcpy.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeCode.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeContract.v": {
+    "predicates_without_unfold": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBoolean1597cCall.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBoolean1599cCall.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixByteListCalls.v": {
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158e0Carrier.v": {
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 5
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158f0.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15900.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15910.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15920.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes1598cCall.v": {
+    "frame_parameters_in_closed_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesBoundaryAdapter.v": {
+    "uninferable_existentials": 29
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCall.v": {
+    "uninferable_existentials": 5
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCompose.v": {
+    "predicates_without_unfold": 6,
+    "uninferable_existentials": 18
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesPost15930.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixConditionalBranch.v": {
+    "disjunctive_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixFinalByteListCall.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15960Raw.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15960Segment.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15968Call.v": {
+    "frame_parameters_in_closed_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt159acCall.v": {
+    "frame_parameters_in_closed_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixIntPair.v": {
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixOptionalU64159b8.v": {
+    "disjunctive_specs": 1,
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixRoot.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterBranch.v": {
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessOuterNonempty.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsOptional.v": {
+    "disjunctive_specs": 5,
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSegment18FrameDefs.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessStorageKeysSpec.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes1574cCall.v": {
+    "frame_parameters_in_closed_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryCallerResources.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTailOptionalSetup.v": {
+    "disjunctive_specs": 1,
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessToLoadWithFrame.v": {
+    "uninferable_existentials": 29
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Framed.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190MachineAdapter.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactions10190Return.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAccessListsAdapter.v": {
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsAuthorizationsAdapter.v": {
+    "disjunctive_specs": 1,
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 26
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBodyPrefixWitnessProvider.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary10190.v": {
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary10190Prepared.v": {
+    "predicates_without_unfold": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f1c.v": {
+    "predicates_without_unfold": 3,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f20.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f24.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f28.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f2c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f30.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f34.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f38.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f3c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f40.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f44.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f48.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f4c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f50.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f54.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f58.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f5c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f60.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f64.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f70.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f74.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f78.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f7c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f80.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f84.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f88.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f8c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f90.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f98.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14f9c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fa0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fa4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fa8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fb0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fb4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fc8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fe0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary14fe0Loads.v": {
+    "uninferable_existentials": 19
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1501c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15028.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15044.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15048.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1505c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15078.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15088.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1508c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15090.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15094.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15098.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1509c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150a0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150a4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150a8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150ac.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150b0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150b4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150b8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150bc.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150c0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150c4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150c8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150cc.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150d0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150d4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150d8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150dc.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150e0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150e4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150e8.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150e8Phase.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150ec.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150ecCall.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150f0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary150fc.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15100.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15104.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15108.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15118.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15148.v": {
+    "uninferable_existentials": 30
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15154.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15158.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1519c.v": {
+    "uninferable_existentials": 60
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary151a8.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary151b4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary151c4.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary151d0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary153c0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary153d0.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15564.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15570.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15574.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15580.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15584.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15620.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15628.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1562c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15640.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15644.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15658.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary1565c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15668.v": {
+    "uninferable_existentials": 5
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundary15bc8Some.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 11
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsBoundarySpec.v": {
+    "uninferable_existentials": 20
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8Branch.v": {
+    "uninferable_existentials": 31
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150f8CallFrame.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrier150fcAbi.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 16
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierCall150ec.v": {
+    "frame_parameters_in_closed_specs": 2,
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 29
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk150f0Entry.v": {
+    "frame_parameters_in_closed_specs": 1,
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierPostLbu14f8c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f1c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f20.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f24.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f28.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f2c.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f30.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f34.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f38.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f3c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f40.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f44.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f48.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f4c.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f50.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f54.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f58.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f5c.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f60.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f64.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f68.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f6c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f70.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f74.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f78.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f7c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f80.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f84.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f88.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f8c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f90.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f98.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f9c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fa0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fa4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fa8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fb0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fb4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fc8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fe0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14fe4.v": {
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15018.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState1501c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15020.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15024.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15028.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15030.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15034.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15044.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15048.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState1504c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15050.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15054.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15058.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState1505c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15078.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState1507c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15080.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15084.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15088.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState1508c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15090.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15094.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState15098.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState1509c.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150a0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150a4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150a8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150ac.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150b0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150b4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150b8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150bc.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150c0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150c4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150c8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150cc.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150d0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150d4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150d8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150dc.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150e0.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150e4.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150e8.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState150ec.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v": {
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 20
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1505c.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
+    "uninferable_existentials": 30
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150f0Spec.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 62
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15118Branch.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15154Frame.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151acSetup.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 20
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b0Prepared.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 11
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151d0Defs.v": {
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1558cBranch.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1558cBranchLeaf.v": {
+    "disjunctive_specs": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierAt14f00.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopCarrierEntry.v": {
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopEventsPost.v": {
+    "uninferable_existentials": 12
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopExitEvents.v": {
+    "uninferable_existentials": 26
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopProvider.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsLoopProviderEntry.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressNone15198Boundary.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15170Handoff.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15174Handoff.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15178Handoff.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1517cBoundary.v": {
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 27
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallEntry.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome1518cCallFrame.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15190Boundary.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSomeHandoff.v": {
+    "uninferable_existentials": 30
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668DataStates.v": {
+    "uninferable_existentials": 16
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15668Events.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566c.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1566cEvents.v": {
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670.v": {
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15670Events.v": {
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Boundary.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Data.v": {
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalr.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalrStrong.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674Events.v": {
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15678.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1567c.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15680.v": {
+    "uninferable_existentials": 7
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15684.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15688.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost1568cWithdrawals.v": {
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPostWithdrawalsData.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanAbiTail.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanCallRet.v": {
+    "predicates_without_unfold": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeBooleanRegisters.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeCore.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 28
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNoneBoundary.v": {
+    "predicates_without_unfold": 2,
+    "uninferable_existentials": 8
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeNonePrepared.v": {
+    "uninferable_existentials": 10
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanAbiTail.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanCallEntry.v": {
+    "uninferable_existentials": 9
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBooleanCallRet.v": {
+    "predicates_without_unfold": 2
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeBoundary.v": {
+    "uninferable_existentials": 19
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsSemanticAdapter.v": {
+    "predicates_without_unfold": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsSpec.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 6
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsValueAdapter.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsProvider.v": {
+    "uninferable_existentials": 7
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTailState.v": {
+    "uninferable_existentials": 17
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalBranch.v": {
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalIntProvider.v": {
+    "uninferable_existentials": 3
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsWithdrawalsTotalTailState.v": {
+    "uninferable_existentials": 14
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueSpec.v": {
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessValueTransactions.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 1
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsIterationBody.v": {
+    "uninferable_existentials": 18
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsSpec.v": {
+    "uninferable_existentials": 18
+  }
+}

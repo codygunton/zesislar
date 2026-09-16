@@ -1,0 +1,1180 @@
+{
+  "frozen_gate_head": "e05d855d",
+  "source_match_count": 41,
+  "source_changed_count": 3,
+  "count": 44,
+  "classes": {
+    "R": 11,
+    "T": 33
+  },
+  "old_rules": "ad0c029d^ zesu_liAStep plus two Local Remove Hints",
+  "rows": [
+    {
+      "index": 1,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsRest.v",
+      "line": 92,
+      "error": "In environment",
+      "scratch": "_build/agents/auto/partition44/P01_WriteSuccessWithdrawalsRest.v",
+      "source_sha256": "e19e641316fe0e8d4f9afeebc946c1704b5eeab76061053aba3dc22befbc4bed",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 0,
+          "elapsed_ms": 54804,
+          "peak_kb": 2222652,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P01_tail.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 54804,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 2,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsSecondInt.v",
+      "line": 89,
+      "error": "In environment",
+      "scratch": "_build/agents/auto/partition44/P02_WriteSuccessAuthorizationsSecondInt.v",
+      "source_sha256": "43f25fdb5e0f63835a97010ec1264df78c6ae84dd963636f551f4b79c7d47920",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 0,
+          "elapsed_ms": 18769,
+          "peak_kb": 1231536,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P02_tail.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 18769,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 3,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAuthorizationsFirstInt.v",
+      "line": 89,
+      "error": "In environment",
+      "scratch": "_build/agents/auto/partition44/P03_WriteSuccessAuthorizationsFirstInt.v",
+      "source_sha256": "611f565fa5d81e9d76bb983014da6bc1faadbbc0cd1d3fe64f9cc3b2cee00a7e",
+      "current_matches_frozen": true,
+      "class": "R",
+      "scratch_exit": 0,
+      "elapsed_ms": 14769,
+      "peak_kb": 1236012,
+      "first_residual": null,
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 0,
+          "elapsed_ms": 14769,
+          "peak_kb": 1236012,
+          "first_residual": null,
+          "log": "_build/agents/auto/partition44/03_tail.log"
+        }
+      ],
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 4,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v",
+      "line": 85,
+      "error": "Tactic failure: 15980 segment residual",
+      "scratch": "_build/agents/auto/partition44/P04_WriteSuccessNativeSuffixBytes15980Segment.v",
+      "source_sha256": "a4a2ce4ce48e4f4f136207c6a0a969745fba85ccd25c3ae1c5ed7ea239b934fa",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 0,
+          "elapsed_ms": 5507,
+          "peak_kb": 995580,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P04_tail.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 5507,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 5,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsChunk15210.v",
+      "line": 87,
+      "error": "Tactic failure: iSplit:",
+      "scratch": "_build/agents/auto/partition44/P05_WriteSuccessAccessListsChunk15210.v",
+      "source_sha256": "78dd97396af46936850f1f9fefa44872d9f7e64be7abfb68b9c3e173c5dad137",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 0,
+          "elapsed_ms": 12764,
+          "peak_kb": 1106740,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P05_tail.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 12764,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 6,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v",
+      "line": 98,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P06_WriteSuccessTransactionsChunk14f20.v",
+      "source_sha256": "5a797aaf11dbf344a8a6934963615762f725e88ffc0bc6e9f1fcabd6ff662489",
+      "current_matches_frozen": false,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1025620,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P06_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 119
+    },
+    {
+      "index": 7,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v",
+      "line": 139,
+      "error": "not a rewritable relation: (iProp Sigma) in rule H7",
+      "scratch": "_build/agents/auto/partition44/P07_WriteSuccessTransactionsChunk14f1c.v",
+      "source_sha256": "415dcf587ec0f5bec07bfa892ab50219ace336f14ce5db0f10097c3c6b9b4eb2",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1025852,
+          "first_residual": "not a rewritable relation: (iProp Sigma) in rule H7",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P07_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "not a rewritable relation: (iProp Sigma) in rule H7",
+      "scratch_first_error_line": 160
+    },
+    {
+      "index": 8,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v",
+      "line": 100,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P08_WriteSuccessTransactionsChunk14f24.v",
+      "source_sha256": "b4cf2ddd057b4b7f87821dd0965506a3b342577263b5f93637fbfe6e23a8167a",
+      "current_matches_frozen": false,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1026212,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P08_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 121
+    },
+    {
+      "index": 9,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f68.v",
+      "line": 265,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P09_WriteSuccessTransactionsChunk14f68.v",
+      "source_sha256": "2f0c8bca50246d466132011f8a1fe367e17a1dfcf503c3eaa10739d993bc835f",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 2754,
+          "peak_kb": 1037648,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P09_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 2754,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 286
+    },
+    {
+      "index": 10,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v",
+      "line": 102,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P10_WriteSuccessTransactionsChunk14f28.v",
+      "source_sha256": "2f1fc2a126b855abe38bf7ca46b8dd474ad3be1bb248eb2c59215f86ad57f099",
+      "current_matches_frozen": false,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1026924,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P10_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 123
+    },
+    {
+      "index": 11,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v",
+      "line": 277,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P11_WriteSuccessTransactionsChunk1501c.v",
+      "source_sha256": "fa9b8571bf5876a7c8f79a7637c1dd7828e57a3719bcdbde375e0b53328c6843",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 2004,
+          "peak_kb": 1033400,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P11_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 2004,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 298
+    },
+    {
+      "index": 12,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v",
+      "line": 477,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P12_WriteSuccessTransactionsChunk15078.v",
+      "source_sha256": "e67447983c1b9fe88141957efd9f2599f7330afe863ed39a45df56acd9439372",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3505,
+          "peak_kb": 1057740,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P12_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3505,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 498
+    },
+    {
+      "index": 13,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v",
+      "line": 103,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P13_WriteSuccessTransactionsChunk14f2c.v",
+      "source_sha256": "c6159f0e56aa00bc48a8a5cbf4a0514c340a0eb513d3785d3c096b937be69c01",
+      "current_matches_frozen": true,
+      "class": "T",
+      "scratch_exit": 1,
+      "elapsed_ms": 1502,
+      "peak_kb": 1030292,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1502,
+          "peak_kb": 1030292,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "_build/agents/auto/partition44/13.log"
+        }
+      ],
+      "scratch_first_error_line": 124
+    },
+    {
+      "index": 14,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactValueBlock.v",
+      "line": 104,
+      "error": "Tactic failure: iApply: cannot apply",
+      "scratch": "_build/agents/auto/partition44/P14_WriteSuccessExactValueBlock.v",
+      "source_sha256": "3396a9216bff24337fc6a1d0ed262db9ec0c70dcaa21f4474d643f64f43b4d2e",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 971096,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P14_tail.log"
+        },
+        {
+          "recipe": "auto",
+          "scratch_exit": 0,
+          "elapsed_ms": 31534,
+          "peak_kb": 1869108,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P14_auto.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 31534,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 15,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v",
+      "line": 92,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P15_WriteSuccessTransactionsChunk15044Load.v",
+      "source_sha256": "1bc7703c16c452efbbf64972365ee22f08a24b2a6ffc964672719fb189c4e97c",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3505,
+          "peak_kb": 1028096,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P15_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3505,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 113
+    },
+    {
+      "index": 16,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v",
+      "line": 105,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P16_WriteSuccessTransactionsChunk14f34.v",
+      "source_sha256": "4d4da6ce7bf41c2d1f4e916670cf10c63883954324b8cd6bf08596a217831f8a",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1754,
+          "peak_kb": 1031724,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P16_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1754,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 126
+    },
+    {
+      "index": 17,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v",
+      "line": 202,
+      "error": "Tactic failure: iFrame: \"Hmmio\" not found.",
+      "scratch": "_build/agents/auto/partition44/P17_WriteSuccessPostWithdrawalsBytes.v",
+      "source_sha256": "3b478016596435cd8ec3bbe723b631e6c4a68792ab794460ca8549bb85955153",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 1,
+          "elapsed_ms": 751,
+          "peak_kb": 956008,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P17_tail.log"
+        },
+        {
+          "recipe": "auto",
+          "scratch_exit": 1,
+          "elapsed_ms": 751,
+          "peak_kb": 973156,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P17_auto.log"
+        },
+        {
+          "recipe": "root",
+          "scratch_exit": 1,
+          "elapsed_ms": 751,
+          "peak_kb": 963180,
+          "first_residual": "Compiled library ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixRoot (in file /home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/default/ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixRoot.vo) makes inconsistent assu",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P17_root.log"
+        },
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1002,
+          "peak_kb": 968896,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P17_tx.log"
+        },
+        {
+          "recipe": "auto+PostWithdrawalsOptional_refresh",
+          "scratch_exit": 1,
+          "elapsed_ms": 12013,
+          "peak_kb": 1462732,
+          "first_residual": "Tactic failure: iFrame: \"Hmmio\" not found.",
+          "log": "_build/agents/auto/partition44/P17_auto_refreshed.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 12013,
+      "first_residual": "Tactic failure: iFrame: \"Hmmio\" not found.",
+      "peak_kb": 1462732,
+      "dependency_refresh": "WriteSuccessPostWithdrawalsOptional.vo",
+      "scratch_first_error_line": 223
+    },
+    {
+      "index": 18,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v",
+      "line": 105,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P18_WriteSuccessTransactionsChunk14f3c.v",
+      "source_sha256": "b62a28a986c0ebb30f32bff1eb1951266af30ba7c71692fcbe8c810980820c05",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1032024,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P18_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 126
+    },
+    {
+      "index": 19,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P19_WriteSuccessTransactionsChunk1509cLoad.v",
+      "source_sha256": "a1a5d755cd193dbc78146a992810e0c6c643165f68417955a0f8b54f4cd0ec18",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3756,
+          "peak_kb": 1043288,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P19_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3756,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 20,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v",
+      "line": 105,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P20_WriteSuccessTransactionsChunk14f44.v",
+      "source_sha256": "5b68f42fa4414c7293a66f3301086062a62330d1a271889d89a85709fcbe38db",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 2004,
+          "peak_kb": 1037412,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P20_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 2004,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 126
+    },
+    {
+      "index": 21,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P21_WriteSuccessTransactionsChunk150a0Load.v",
+      "source_sha256": "774184cd97f6f7fdf387655795d50669d79acc141d93c25250ed780647099d07",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3755,
+          "peak_kb": 1040344,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P21_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3755,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 22,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v",
+      "line": 103,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P22_WriteSuccessTransactionsChunk14f48.v",
+      "source_sha256": "935b0303f3d1ef300edfdac7f3d9a31b874b033367251faf74232bd95e49cd0a",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1752,
+          "peak_kb": 1041392,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P22_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1752,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 124
+    },
+    {
+      "index": 23,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v",
+      "line": 105,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P23_WriteSuccessTransactionsChunk14f4c.v",
+      "source_sha256": "b6f2f5501127bdcbf9c9e96d8b1d05548c7b04333ee345d9e8c6c52374cf9622",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1040424,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P23_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 126
+    },
+    {
+      "index": 24,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P24_WriteSuccessTransactionsChunk150a8Load.v",
+      "source_sha256": "521ca87888828b0bd94a9e609561fc34c2f0ce344a7ab5d7e2fb8e2787768357",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3756,
+          "peak_kb": 1043172,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P24_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3756,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 25,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPriorityFeeSomeIntCall15134.v",
+      "line": 152,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P25_WriteSuccessTransactionsPriorityFeeSomeIntCall15134.v",
+      "source_sha256": "eadc3e0eaa6a9fa3ac039f52d515cbe642b9b3d12d3f5064e59554f88f306ccb",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 1011628,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P25_tx.log"
+        },
+        {
+          "recipe": "tail",
+          "scratch_exit": 1,
+          "elapsed_ms": 1002,
+          "peak_kb": 1002004,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P25_tail.log"
+        },
+        {
+          "recipe": "auto",
+          "scratch_exit": 1,
+          "elapsed_ms": 10513,
+          "peak_kb": 1412532,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P25_auto.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 10513,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 173
+    },
+    {
+      "index": 26,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v",
+      "line": 107,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P26_WriteSuccessTransactionsChunk14f54.v",
+      "source_sha256": "dbd36b5ec23ada728d362a3d919452d8a7c68bdc4ea218e9ddebb009f3b48b04",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1044008,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P26_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 128
+    },
+    {
+      "index": 27,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P27_WriteSuccessTransactionsChunk150b0Load.v",
+      "source_sha256": "8a96706826d50fcfe28be97caa3a7fba61489c50d1561e4de8bad729b9c35a5b",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3756,
+          "peak_kb": 1051008,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P27_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3756,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 28,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v",
+      "line": 109,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P28_WriteSuccessTransactionsChunk14f58.v",
+      "source_sha256": "40e35ba792526ccfc20260e47135929748e2fa00f8f4d5e1894c3e69e560647e",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1753,
+          "peak_kb": 1044444,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P28_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 1753,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 130
+    },
+    {
+      "index": 29,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151c4.v",
+      "line": 53,
+      "error": "Tactic failure: iSplit:",
+      "scratch": "_build/agents/auto/partition44/P29_WriteSuccessTransactionsChunk151c4.v",
+      "source_sha256": "8ac2b24c5097349d99462b68bb0cdbaf9cbc1dc0c59c44799bf275b7f4a53407",
+      "current_matches_frozen": true,
+      "class": "R",
+      "scratch_exit": 0,
+      "elapsed_ms": 43299,
+      "peak_kb": 2466992,
+      "first_residual": null,
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 0,
+          "elapsed_ms": 43299,
+          "peak_kb": 2466992,
+          "first_residual": null,
+          "log": "_build/agents/auto/partition44/29.log"
+        }
+      ],
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 30,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P30_WriteSuccessTransactionsChunk150b4Load.v",
+      "source_sha256": "aefd65e11c4939910fc45925364b055f692e420b13c71d00d6d3f861e79e4022",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3756,
+          "peak_kb": 1051204,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P30_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3756,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 31,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f5c.v",
+      "line": 134,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P31_WriteSuccessTransactionsChunk14f5c.v",
+      "source_sha256": "63af3e6095875e004ad4776f45118448f964c96e2d87ca02e9692cb4de6a2918",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 2253,
+          "peak_kb": 1047728,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P31_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 2253,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 155
+    },
+    {
+      "index": 32,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P32_WriteSuccessTransactionsChunk150bcLoad.v",
+      "source_sha256": "888b63b03b10b073cd80aee48a589c717b8389a89108c3d90a1073d5d80cba85",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3755,
+          "peak_kb": 1056720,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P32_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3755,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 33,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P33_WriteSuccessTransactionsChunk150c4Load.v",
+      "source_sha256": "826d60148e8ca6b22418b0105ed7c188809ff7e7cce85022a11f2a07f3a4d79f",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 4005,
+          "peak_kb": 1051200,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P33_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 4005,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 34,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v",
+      "line": 93,
+      "error": "The variable H7 was not found in the current environment.",
+      "scratch": "_build/agents/auto/partition44/P34_WriteSuccessTransactionsChunk150ccLoad.v",
+      "source_sha256": "4e4e6dda16a46c89bf30dab8b78d4f447666ea6dc453286bbca66b25a0516937",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 4006,
+          "peak_kb": 1049736,
+          "first_residual": "The variable H7 was not found in the current environment.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P34_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 4006,
+      "first_residual": "The variable H7 was not found in the current environment.",
+      "scratch_first_error_line": 114
+    },
+    {
+      "index": 35,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f60.v",
+      "line": 139,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P35_WriteSuccessTransactionsChunk14f60.v",
+      "source_sha256": "94a928614e928844c9a01d415c3d84d2c604302a1980274efd87f68b45530711",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 2004,
+          "peak_kb": 1047740,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P35_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 2004,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 160
+    },
+    {
+      "index": 36,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15190.v",
+      "line": 56,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P36_WriteSuccessTransactionsOptionalAddressSome15190.v",
+      "source_sha256": "7f61c6dd088b41beb44c37e790505db21a2561ed56704b409ab4297636509c1c",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 3757,
+          "peak_kb": 1061876,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P36_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3757,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 77
+    },
+    {
+      "index": 37,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f64.v",
+      "line": 209,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P37_WriteSuccessTransactionsChunk14f64.v",
+      "source_sha256": "fffde35364bb9d9c38535cc91a0e28518bb753857d049de1aaea5161a4dd0588",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 4007,
+          "peak_kb": 1074208,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P37_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 4007,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 230
+    },
+    {
+      "index": 38,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153c0.v",
+      "line": 39,
+      "error": "Tactic failure: iSplit:",
+      "scratch": "_build/agents/auto/partition44/P38_WriteSuccessTransactionsChunk153c0.v",
+      "source_sha256": "0997a7a556e6889ab098d279e528ba3f9073dbccdc1419ed4e8e28e962725632",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 0,
+          "elapsed_ms": 9759,
+          "peak_kb": 1264680,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P38_tx.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 9759,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 39,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15570Call.v",
+      "line": 39,
+      "error": "Tactic failure: iSplit:",
+      "scratch": "_build/agents/auto/partition44/P39_WriteSuccessTransactionsChunk15570Call.v",
+      "source_sha256": "b66c6b821fedf6b9d2c7005194fde5ac89a254772ce248a67b14a7f5880f558f",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 0,
+          "elapsed_ms": 18769,
+          "peak_kb": 1762496,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P39_tx.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 18769,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 40,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15580Call.v",
+      "line": 39,
+      "error": "Tactic failure: iSplit:",
+      "scratch": "_build/agents/auto/partition44/P40_WriteSuccessTransactionsChunk15580Call.v",
+      "source_sha256": "5bfea1c2fc08db723f9e83925e41a7d855f83321a6ff26fb527c66f1410eaff9",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 0,
+          "elapsed_ms": 18772,
+          "peak_kb": 1715588,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P40_tx.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 18772,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 41,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15628Call.v",
+      "line": 38,
+      "error": "Tactic failure: iSplit:",
+      "scratch": "_build/agents/auto/partition44/P41_WriteSuccessTransactionsChunk15628Call.v",
+      "source_sha256": "db4a493754da126f7faded1444a71e19e55552027fc7845d34d40387439c9cb6",
+      "current_matches_frozen": true,
+      "class": "R",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 0,
+          "elapsed_ms": 18777,
+          "peak_kb": 1812812,
+          "first_residual": null,
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P41_tx.log"
+        }
+      ],
+      "scratch_exit": 0,
+      "elapsed_ms": 18777,
+      "first_residual": null,
+      "scratch_first_error_line": null
+    },
+    {
+      "index": 42,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15658Call.v",
+      "line": 75,
+      "error": "Warning: The proof has remaining shelved goals",
+      "scratch": "_build/agents/auto/partition44/P42_WriteSuccessTransactionsChunk15658Call.v",
+      "source_sha256": "c95a40f09bc09ed0b252db34f55242339e2628d063c492c3048d954671e6fa39",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 12262,
+          "peak_kb": 1247596,
+          "first_residual": "Some unresolved existential variables remain",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P42_tx.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 12262,
+      "first_residual": "Some unresolved existential variables remain",
+      "scratch_first_error_line": 96
+    },
+    {
+      "index": 43,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk153d0.v",
+      "line": 123,
+      "error": "No matching clauses for match.",
+      "scratch": "_build/agents/auto/partition44/P43_WriteSuccessTransactionsChunk153d0.v",
+      "source_sha256": "ad7c38ac0e269ab2ce26fb77353823d2a12a4d6d6ccc1c0dcb7b237c63b29079",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 987024,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P43_tx.log"
+        },
+        {
+          "recipe": "tail",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 979476,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P43_tail.log"
+        },
+        {
+          "recipe": "auto",
+          "scratch_exit": 1,
+          "elapsed_ms": 3505,
+          "peak_kb": 1051308,
+          "first_residual": "No matching clauses for match.",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P43_auto.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 3505,
+      "first_residual": "No matching clauses for match.",
+      "scratch_first_error_line": 144
+    },
+    {
+      "index": 44,
+      "file": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailRawLoad.v",
+      "line": 46,
+      "error": "The reference WriteSuccessValueBlock.writeSuccessValueWord",
+      "scratch": "_build/agents/auto/partition44/P44_WriteSuccessExactTailRawLoad.v",
+      "source_sha256": "68744f83ba51eb7c585f05b8ecb51701e0d9707bf0aada321cfb9f6647e2fb99",
+      "current_matches_frozen": true,
+      "class": "T",
+      "attempts": [
+        {
+          "recipe": "tail",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 1195828,
+          "first_residual": "The reference subsume_instr_some_pre_inst was not found in the current",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P44_tail.log"
+        },
+        {
+          "recipe": "auto",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 1205268,
+          "first_residual": "The reference subsume_instr_some_pre_inst was not found in the current",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P44_auto.log"
+        },
+        {
+          "recipe": "root",
+          "scratch_exit": 1,
+          "elapsed_ms": 751,
+          "peak_kb": 979924,
+          "first_residual": "Compiled library ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailRawLoadSpec (in file /home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/default/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailRawLoadSpec.vo) makes inconsist",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P44_root.log"
+        },
+        {
+          "recipe": "tx",
+          "scratch_exit": 1,
+          "elapsed_ms": 1001,
+          "peak_kb": 979288,
+          "first_residual": "Cannot find a physical path bound to logical path",
+          "log": "/home/cody/zesislar/.worktrees/islaris-native-auto/_build/agents/auto/partition44/P44_tx.log"
+        },
+        {
+          "recipe": "auto+IslarisCode_name_open",
+          "scratch_exit": 1,
+          "elapsed_ms": 11015,
+          "peak_kb": 1522244,
+          "first_residual": "The reference WriteSuccessValueBlock.writeSuccessValueWord was not found in the current environment.",
+          "log": "_build/agents/auto/partition44/P44_auto_importfix.log"
+        }
+      ],
+      "scratch_exit": 1,
+      "elapsed_ms": 11015,
+      "first_residual": "The reference WriteSuccessValueBlock.writeSuccessValueWord was not found in the current environment.",
+      "peak_kb": 1522244,
+      "overlay_name_import": "Require Import ZesuSsz.Contracts.IslarisCode.",
+      "scratch_first_error_line": 68
+    }
+  ]
+}
