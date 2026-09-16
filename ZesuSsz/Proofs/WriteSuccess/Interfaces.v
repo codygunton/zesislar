@@ -350,6 +350,11 @@ Definition writeSuccessExitMemoryFrame `{!islaG Sigma} `{!threadG}
   writeSuccessNativeExitMemory witness.
 Global Instance : LithiumUnfold (@writeSuccessExitMemoryFrame) := I.
 
+Definition writeSuccessExactEpilogueExit `{!islaG Sigma} `{!threadG}
+    {Decoded} (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  (writeSuccessExitMemoryFrame witness ∗
+   spec_trace (writeSuccessTraceTail witness))%I.
+
 Definition writeSuccessExactCallerRemainder `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
