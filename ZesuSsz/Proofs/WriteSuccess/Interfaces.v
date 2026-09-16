@@ -506,6 +506,7 @@ Definition writeSuccessExactTailCallerWithCopiedWords `{!islaG Sigma} `{!threadG
 Global Instance : LithiumUnfold (@writeSuccessExactTailCallerWithCopiedWords) := I.
 
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTrace.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailPayloads.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputDescriptors.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
@@ -541,6 +542,43 @@ Definition writeSuccessExactPostWithdrawalsPayloads {Decoded}
       (writeSuccessWithdrawalsBytes witness)
       (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness)).
 
+Lemma exact_post_withdrawals_payloads {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) :
+  let observation := writeSuccessExactObservation
+    (writeSuccessDecodedBytes witness) (writeSuccessValues witness)
+    (writeSuccessPayload witness) (writeSuccessTransactions witness)
+    (writeSuccessRawTransactions witness) (writeSuccessWithdrawalsBytes witness)
+    (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness) in
+  writeSuccessExactPostWithdrawalsPayloads witness =
+    map writeSuccessPrivateBytes (writeSuccessPostFragments observation).
+Proof.
+  cbn zeta. unfold writeSuccessExactPostWithdrawalsPayloads.
+  rewrite -Nat.add_assoc -drop_drop.
+  rewrite exact_tail_payload_suffix !map_app.
+  have Hraw : length (writeSuccessByteListsDescriptors
+      (writeSuccessFrameSp witness) (writeSuccessRawTransactions witness)) =
+      length (map writeSuccessPrivateBytes (writeSuccessRawTransactionFragments
+        (writeSuccessExactObservation (writeSuccessDecodedBytes witness)
+          (writeSuccessValues witness) (writeSuccessPayload witness)
+          (writeSuccessTransactions witness) (writeSuccessRawTransactions witness)
+          (writeSuccessWithdrawalsBytes witness) (writeSuccessWithdrawalsCount witness)
+          (writeSuccessPostData witness)))).
+  { rewrite map_length. symmetry.
+    apply writeSuccessNativeByteListsFragments_length. }
+  rewrite -drop_drop Hraw drop_app_length.
+  have Hwithdrawals : length (writeSuccessWithdrawalsDescriptors
+      (writeSuccessFrameSp witness) (writeSuccessWithdrawalsCount witness)) =
+      length (map writeSuccessPrivateBytes (writeSuccessWithdrawalListFragments
+        (writeSuccessExactObservation (writeSuccessDecodedBytes witness)
+          (writeSuccessValues witness) (writeSuccessPayload witness)
+          (writeSuccessTransactions witness) (writeSuccessRawTransactions witness)
+          (writeSuccessWithdrawalsBytes witness) (writeSuccessWithdrawalsCount witness)
+          (writeSuccessPostData witness)))).
+  { rewrite map_length. symmetry.
+    apply writeSuccessNativeWithdrawalFragments_length. }
+  rewrite Hwithdrawals drop_app_length. reflexivity.
+Qed.
+
 Definition writeSuccessExactPostWithdrawalsEvents {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : spec :=
   writeOutputPayloadsSpec
@@ -548,6 +586,34 @@ Definition writeSuccessExactPostWithdrawalsEvents {Decoded}
       (writeSuccessFrameSp witness) (writeSuccessPostData witness))
     (writeSuccessExactPostWithdrawalsPayloads witness)
     (writeSuccessTraceTail witness).
+
+Definition exactPostWithdrawalsFirstTail {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) : spec :=
+  let observation := writeSuccessExactObservation
+    (writeSuccessDecodedBytes witness) (writeSuccessValues witness)
+    (writeSuccessPayload witness) (writeSuccessTransactions witness)
+    (writeSuccessRawTransactions witness) (writeSuccessWithdrawalsBytes witness)
+    (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness) in
+  writeOutputPayloadsSpec
+    (tl (writeSuccessPost156e8Descriptors
+      (writeSuccessFrameSp witness) (writeSuccessPostData witness)))
+    (tl (map writeSuccessPrivateBytes (writeSuccessPostFragments observation)))
+    (writeSuccessTraceTail witness).
+
+Lemma exact_post_withdrawals_first_tail {Decoded}
+    (witness : writeSuccessNativeWitness Decoded) :
+  exists payload,
+    writeSuccessExactPostWithdrawalsEvents witness =
+      writeOutputEvents (writeSuccessFrameSp witness - BV 64 16)%bv
+        (BV 64 8) payload (exactPostWithdrawalsFirstTail witness).
+Proof.
+  rewrite /writeSuccessExactPostWithdrawalsEvents
+    exact_post_withdrawals_payloads.
+  cbn [writeSuccessPost156e8Descriptors writeSuccessPostFragments
+    writeSuccessExactObservation writeSuccessNativeObservation
+    exactPostWithdrawalsFirstTail writeOutputPayloadsSpec].
+  eexists. reflexivity.
+Qed.
 
 Definition writeSuccessExactPostPayloadsAt {Decoded}
     (descriptors : list WriteOutputDescriptor)
@@ -768,3 +834,6 @@ Definition writeSuccessExactTailSecondBranchState
     writeSuccessExactTailPost159b0Frame args witness ∗ True)%I.
 Global Instance : LithiumUnfold
   (@writeSuccessExactTailSecondBranchState) := I.
+
+Print Assumptions exact_post_withdrawals_payloads.
+Print Assumptions exact_post_withdrawals_first_tail.
