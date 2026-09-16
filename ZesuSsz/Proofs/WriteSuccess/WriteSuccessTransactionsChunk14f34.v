@@ -102,9 +102,9 @@ Proof.
       (bv_unsigned (Z_to_bv 64
         (base + 288 * Z.of_nat (length processed))) + 144 -
        (base + 288 * Z.of_nat (length processed))) = 144%nat.
-  { rewrite zesu_bv_unsigned_Z_to_bv_small; [lia | bv_solve]. }
+  { rewrite Z_to_bv_unsigned; rewrite bv_wrap_small; [lia | bv_solve]. }
   iEval (rewrite Hstart) in "Hprefix144 Hsuffix152".
-  rewrite ?Hstart ?zesu_bv_unsigned_Z_to_bv_small ?Z.add_0_r; try bv_solve.
+  rewrite ?Hstart ?Z_to_bv_unsigned ?bv_wrap_small ?Z.add_0_r; try bv_solve.
   iFrame "Hprefix144 Hsuffix152".
   repeat iSplit; try iPureIntro; try lia; try done.
   liARun.
