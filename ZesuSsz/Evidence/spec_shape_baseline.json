@@ -730,6 +730,22 @@
     "predicates_without_unfold": 1,
     "uninferable_existentials": 15
   },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierPostLbu14f9c.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierPostLbu14fa0.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierPostLbu14fa4.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 15
+  },
+  "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierPostLbu14fb0.v": {
+    "predicates_without_unfold": 1,
+    "uninferable_existentials": 15
+  },
   "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierState14f1c.v": {
     "uninferable_existentials": 15
   },

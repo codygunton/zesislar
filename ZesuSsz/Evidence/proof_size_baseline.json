@@ -552,19 +552,19 @@
       "max_renames": 0,
       "rename_proofs": 0
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f9cRaw.v": {
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14f9cHead.v": {
       "long_proofs": 1,
       "max_proof_lines": 103,
       "max_renames": 0,
       "rename_proofs": 0
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa0Raw.v": {
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa0Head.v": {
       "long_proofs": 1,
       "max_proof_lines": 103,
       "max_renames": 0,
       "rename_proofs": 0
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa4Raw.v": {
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fa4Head.v": {
       "long_proofs": 1,
       "max_proof_lines": 103,
       "max_renames": 0,
@@ -576,7 +576,7 @@
       "max_renames": 9,
       "rename_proofs": 1
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb0Raw.v": {
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsCarrierChunk14fb0Head.v": {
       "long_proofs": 1,
       "max_proof_lines": 103,
       "max_renames": 0,
