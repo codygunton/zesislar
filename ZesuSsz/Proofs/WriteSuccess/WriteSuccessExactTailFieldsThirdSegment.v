@@ -20,15 +20,16 @@ Lemma write_success_exact_tail_fields_third_segment
     (writeSuccessExactTailSecondBranchState args witness).
 Proof.
   zesu_block. iIntros.
-  iRename select ((bv_unsigned (writeSuccessFrameSp witness) + 296) ↦ₘ _)%I into "Hlow".
-  iRename select ((bv_unsigned (writeSuccessFrameSp witness) + 304) ↦ₘ _)%I into "Hhigh".
-  iEval (replace (bv_unsigned (writeSuccessFrameSp witness) + 304)%Z with
-    (bv_unsigned (writeSuccessFrameSp witness) + 296 + 8)%Z by lia) in "Hhigh".
-  iDestruct (mem_mapsto_u64_pair_to_byte_array with "Hlow Hhigh") as "Hbytes".
+  rewrite /subsume; iIntros "Hwords".
+  iPoseProof (IslarisMemory.mem_mapsto_u64_array_to_bytes with "Hwords") as "Hbytes".
+  iEval (cbn [IslarisMemory.bytes_of_u64s]) in "Hbytes".
+  iEval (replace (bv_unsigned (writeSuccessFrameSp witness) + 296)%Z with
+    (bv_unsigned (writeSuccessFrameSp witness + BV 64 296)) by bv_solve) in "Hbytes".
+  iExists (writeSuccessExactTailThirdBranchEvents witness,
+    writeSuccessExactTailOptional159b0Bytes witness, tt)ₗ.
+  iSplitL "Hbytes"; first iExact "Hbytes".
   zesu_run. all: try bv_solve.
-  rename select (writeSuccessExactTailSecondBranchEvents witness = _) into Hevents.
-  iExists (writeSuccessExactTailThirdBranchEvents witness, tt)ₗ.
-  rewrite -Hevents.
+  all: try (rewrite H10; done).
   iRename select (instr_pre 0x159bc _)%I into "Hreturn".
   zesu_run.
   rewrite /subsume; iIntros "_"; iExists tt; iSplit; last done.

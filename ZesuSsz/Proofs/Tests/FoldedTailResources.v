@@ -19,8 +19,9 @@ Lemma folded_count_frame_first_resource `{!islaG Sigma} `{!threadG}
   reg_col exactTailWithdrawalCountOtherCallerShapes ∗ True.
 Proof.
   iStartProof. iIntros "Hframe".
-  zesu_open_matching_two_level_frame.
-  zesu_run.
+  iEval (rewrite exactTailWithdrawalCountFrame_unfold
+    /exactTailWithdrawalCommonFrame) in "Hframe".
+  iDestruct "Hframe" as "(Hcaller & _)". iFrame.
 Qed.
 Print Assumptions folded_count_frame_first_resource.
 
