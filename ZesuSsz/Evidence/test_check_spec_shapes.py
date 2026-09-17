@@ -75,6 +75,18 @@ class SpecShapeTests(unittest.TestCase):
         self.assertEqual(shape_counts(spec, {"exactCallSpec"})[
             "frame_parameters_in_closed_specs"], 1)
 
+    def test_sealed_predicate_satisfies_unfold_metric(self):
+        sealed = ('Definition exact : iProp Sigma := (True)%I.\n'
+                  'Lemma exact_unfold : exact ⊣⊢ (True)%I.\n'
+                  'Proof. done. Qed.\n'
+                  'Global Opaque exact.')
+        missing_lemma = ('Definition hidden : iProp Sigma := (True)%I.\n'
+                         'Global Opaque hidden.')
+        self.assertEqual(shape_counts(sealed, set())[
+            "predicates_without_unfold"], 0)
+        self.assertEqual(shape_counts(missing_lemma, set())[
+            "predicates_without_unfold"], 1)
+
     def test_nested_comments_do_not_create_specs(self):
         spec = ('(* Definition fake : iProp Sigma := (True ∨ False)%I. '
                 '(* nested ∃ (ghost : nat) *) *) '
