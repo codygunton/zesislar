@@ -42,11 +42,24 @@ Proof.
     "(Hsys & H8 & H10 & Hstack & Hmmio & Htrace & Hframe)".
   iEval (rewrite /writeSuccessSuffixHashesEntryFrame) in "Hframe".
   iDestruct "Hframe" as
-    "(H1 & H2 & H5 & H11 & Hother & H9 & Hbytes & Hscratch & HP &
-      %HspAlign & %HspMin & %HspMax & Hinvariant & Hexit & _)".
+    "(Hregs & H2 & H9 & Hscratch & %Hbounds & Hcaller & _)".
+  iEval (rewrite !reg_col_cons reg_col_nil) in "Hregs".
+  iDestruct "Hregs" as "(H1 & H5 & H11 & _)".
+  destruct Hbounds as (HspAlign & HspMin & HspMax).
+  iAssert ("x1" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝))%I
+    with "[H1]" as "H1".
+  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+    iDestruct "H1" as (v Hv) "H1". iExists v. iFrame. done. }
+  iAssert ("x5" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝))%I
+    with "[H5]" as "H5".
+  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+    iDestruct "H5" as (v Hv) "H5". iExists v. iFrame. done. }
+  iAssert ("x11" ↦ᵣ: (fun r => ⌜valu_has_shape r (BitsShape 64)⌝))%I
+    with "[H11]" as "H11".
+  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+    iDestruct "H11" as (v Hv) "H11". iExists v. iFrame. done. }
   iEval (rewrite /writeSuccessSuffixHashes15748Q).
   iEval (rewrite /writeSuccessSuffixHashesEntryLoopFrame).
-  iFrame "Hsys H1 H8 H2 H5 H10 H11 Hstack Hmmio Htrace Hother H9
-    Hbytes Hscratch HP Hinvariant Hexit".
+  iFrame "Hsys H1 H8 H2 H5 H10 H11 Hstack Hmmio Htrace H9 Hscratch Hcaller".
   iPureIntro; repeat split; try assumption; try lia.
 Qed.

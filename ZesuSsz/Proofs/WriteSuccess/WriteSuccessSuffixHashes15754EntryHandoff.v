@@ -33,8 +33,9 @@ Proof.
   iDestruct "Hrest" as
     "(H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & HtraceQ & HQ)".
   iEval (rewrite /writeSuccessSuffixHashesEntryLoopFrame) in "HQ".
-  iDestruct "HQ" as
-    "(Hother & H9 & Hbytes & Hscratch & HP & Hinvariant & Hexit & _)".
+  iDestruct "HQ" as "(H9 & Hscratch & Hcaller & _)".
+  iEval (rewrite writeSuccessSuffixHashesCallerBundle_unfold) in "Hcaller".
+  iDestruct "Hcaller" as "(Hother & Hbytes & HP & Hinvariant & Hexit)".
   iEval (rewrite /writeSuccessHashesLoopSpec).
   iExists sp, pointer, base, total, processed, remaining, bytes, tail.
   iPoseProof (write_success_suffix_hashes_source_words sp
