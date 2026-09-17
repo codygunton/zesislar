@@ -236,7 +236,21 @@ Definition writeSuccessPostWithdrawalsBoundary
 Global Instance : LithiumUnfold (@writeSuccessPostWithdrawalsBoundary) := I.
 
 Definition writeSuccessExactPostWithdrawalsBoundary
-    `{!islaG Sigma} `{!threadG} := @withdrawalLoopExit Sigma _ _.
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (base : Z)
+    (source : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (∃ returnAddress : bv 64,
+   reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+   "x1" ↦ᵣ RVal_Bits returnAddress ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
+   "x18" ↦ᵣ RVal_Bits (sp + BV 64 1768)%bv ∗
+   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (base + Z.of_nat (length source))) ∗
+   "x9" ↦ᵣ RVal_Bits (BV 64 0) ∗
+   reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
+     (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
+     (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)] ∗
+   base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold
   (@writeSuccessExactPostWithdrawalsBoundary) := I.
 
