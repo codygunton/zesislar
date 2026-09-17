@@ -315,6 +315,40 @@ Ltac zesu_pack_owned_register_goal :=
     end
   end.
 
+Ltac zesu_prepare_initialized_array_read :=
+  lazymatch goal with
+  | |- envs_entails _
+      (⌜_⌝ ∗ ∃ i : nat,
+        ⌜Z.of_nat i = ?offset⌝ ∗ ⌜(i < length ?values)%nat⌝ ∗
+        ∃ Heq : ?width = ?width, _)%I =>
+      constr_eq width 64%N;
+      let valuesType := type of values in
+      constr_eq valuesType (list (bv 64));
+      let index := constr:(Z.to_nat offset) in
+      iSplit; [iPureIntro; bv_solve |];
+      iExists index; iSplit;
+        [iPureIntro; rewrite Z2Nat.id; bv_solve |];
+      iSplit;
+        [iPureIntro; rewrite ?length_take;
+         repeat match goal with
+         | Hlength : length ?source = ?size |- context [length ?source] =>
+             rewrite Hlength
+         end;
+         lia |];
+      iExists eq_refl
+  end.
+
+Ltac zesu_finish_initialized_array_read :=
+  lazymatch goal with
+  | |- envs_entails _
+      (∀ _ : bv _, ⌜_⌝ -∗ ⌜_⌝ -∗ (_ ↦ₘ∗ ?values) -∗ WPasm _)%I =>
+      let valuesType := type of values in
+      constr_eq valuesType (list (bv 64));
+      do 2 zesu_liAStep;
+      let Hlookup := fresh "Hlookup" in intro Hlookup;
+      do 3 zesu_liAStep
+  end.
+
 Ltac zesu_run_pass :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
@@ -326,6 +360,8 @@ Ltac zesu_run_pass :=
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
+     zesu_prepare_initialized_array_read |
+     zesu_finish_initialized_array_read |
      zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure]; liShow;
     try zesu_finish_closed_wand;
