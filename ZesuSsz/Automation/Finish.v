@@ -373,6 +373,11 @@ Ltac zesu_run :=
     (zesu_run_pass; try zesu_solve_instances; zesu_finish));
   try zesu_solve_instances.
 
+(* Rotate one exact array owner through folded resource packages. *)
+Ltac zesu_rotate_descriptor_resources :=
+  repeat first
+    [progress zesu_open_requested_array_path | progress zesu_run].
+
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with
   | take _ ?tail => zesu_expose_code_list tail

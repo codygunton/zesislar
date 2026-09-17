@@ -89,12 +89,54 @@ Ltac zesu_open_matching_array_pure_bundle :=
             let head := get_head body in
             tryif first [constr_eq head constr:(@bi_sep) |
                          constr_eq head constr:(@bi_pure)] then fail else
-              let expanded := eval cbv beta zeta delta [head] in body in
-              constr_eq expanded constr:((array ∗ ⌜requested⌝)%I);
+              let expanded := eval cbv beta iota zeta delta [head] in body in
+              let normalized := eval cbn in expanded in
+              constr_eq normalized constr:((array ∗ ⌜requested⌝)%I);
               progress iEval (unfold head) in H;
               iDestruct H as "[? ?]";
               zesu_open_resource_groups)
       end
+  end.
+
+(* Find an exact resource below folded separating-conjunction packages.
+   The search only inspects definitions. It unfolds one matching path in
+   the proof context, so unrelated folded packages remain unchanged. *)
+Ltac zesu_contains_folded_resource fuel requested body :=
+  first [constr_eq body requested |
+    let normalizedFuel := eval cbv in fuel in
+    lazymatch normalizedFuel with
+    | O => fail 1
+    | S ?rest =>
+        lazymatch body with
+        | (?left ∗ ?right)%I =>
+            first [zesu_contains_folded_resource rest requested left |
+                   zesu_contains_folded_resource rest requested right]
+        | _ =>
+            let head := get_head body in
+            tryif first [constr_eq head constr:(@bi_sep) |
+                         constr_eq head constr:(@bi_pure)] then fail 1 else
+              let expanded := eval cbv beta iota zeta delta [head] in body in
+              let normalized := eval cbn in expanded in
+              tryif constr_eq normalized body then fail 1 else
+                zesu_contains_folded_resource rest requested normalized
+        end
+    end].
+
+Ltac zesu_open_requested_array_path :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ∗ ?bytes)%I ∗ _)%I =>
+      let requested := constr:((address ↦ₘ∗ bytes)%I) in
+      first [zesu_open_matching_array_pure_bundle |
+        iMatchHyp ltac:(fun H body =>
+          let head := get_head body in
+          tryif first [constr_eq head constr:(@bi_sep) |
+                       constr_eq head constr:(@bi_pure)] then fail else
+            let expanded := eval cbv beta iota zeta delta [head] in body in
+            let normalized := eval cbn in expanded in
+            zesu_contains_folded_resource constr:(32) requested normalized;
+            progress iEval (unfold head; cbn) in H;
+            zesu_open_resource_groups)]
   end.
 
 (* Open only the first full array inside a nested resource package. *)

@@ -16,6 +16,31 @@ Proof.
 Qed.
 Print Assumptions resource_groups_open_matching_package.
 
+Definition resource_groups_array_leaf `{!islaG Sigma}
+    (address : Z) (bytes : list (bv 8)) : iProp Sigma :=
+  (address ↦ₘ∗ bytes ∗ ⌜length bytes = length bytes⌝)%I.
+Global Instance : LithiumUnfold (@resource_groups_array_leaf) := I.
+
+Definition resource_groups_array_middle `{!islaG Sigma}
+    (address : Z) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
+  (P ∗ resource_groups_array_leaf address bytes ∗ True)%I.
+Global Instance : LithiumUnfold (@resource_groups_array_middle) := I.
+
+Definition resource_groups_array_outer `{!islaG Sigma}
+    (address : Z) (bytes : list (bv 8)) (P Q : iProp Sigma) : iProp Sigma :=
+  (Q ∗ resource_groups_array_middle address bytes P ∗ True)%I.
+Global Instance : LithiumUnfold (@resource_groups_array_outer) := I.
+
+Lemma resource_groups_open_requested_array_path `{!islaG Sigma}
+    (address : Z) (bytes : list (bv 8)) (P Q : iProp Sigma) :
+  resource_groups_array_outer address bytes P Q -∗
+  address ↦ₘ∗ bytes ∗ ⌜length bytes = length bytes⌝ ∗ P ∗ Q ∗ True.
+Proof.
+  iStartProof. iIntros "Houter".
+  zesu_rotate_descriptor_resources.
+Qed.
+Print Assumptions resource_groups_open_requested_array_path.
+
 Lemma resource_groups_assumption_first_pure `{!islaG Sigma} `{!threadG}
     (fact : Prop) (P : iProp Sigma) :
   fact -> P -∗ (P ∗ ⌜fact⌝ ∗ ⌜fact⌝ ∗ True)%I.
