@@ -13,6 +13,16 @@ Ltac zesu_nat_literal number :=
 
 Ltac zesu_region_bounds :=
   cbv [mapRamBase mapRamSize machineRamEnd defaultMap] in *;
+  repeat lazymatch goal with
+  | |- context [length (take ?count ?values)] =>
+      let valuesType := type of values in
+      constr_eq valuesType (list (bv 64));
+      rewrite length_take;
+      lazymatch goal with
+      | Hlength : length values = ?size |- _ => rewrite Hlength
+      | Hlength : ?size = length values |- _ => rewrite <- Hlength
+      end
+  end;
   first [repeat match goal with H : _ |- _ => clear H end; lia |
     repeat match goal with
     | H : ?T |- _ =>
