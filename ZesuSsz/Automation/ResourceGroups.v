@@ -255,23 +255,3 @@ Ltac zesu_finish_pure_resources :=
         [solve [iPureIntro; assumption] | solve [done] | iSplit |
          solve [iPureIntro; first [lia | bv_solve]]]]
   end.
-
-(* Introduce a pure resource package before the pure finisher inspects it. *)
-Ltac zesu_intros_pure_wand :=
-  lazymatch goal with
-  | |- envs_entails _
-      (@bi_wand _ ((⌜_⌝ ∗ ⌜_⌝ ∗ ?antecedentTail)%I) _) =>
-      let antecedent :=
-        lazymatch goal with
-        | |- envs_entails _ (@bi_wand _ ?antecedent _) => antecedent
-        end in
-      zesu_is_pure_resource antecedent;
-      let HpureGroup := fresh "HzesuPureWand" in
-      iIntros (HpureGroup);
-      repeat match type of HpureGroup with
-      | _ /\ _ =>
-          let Hpure := fresh "HzesuPure" in
-          destruct HpureGroup as [Hpure HpureGroup]
-      end;
-      try clear HpureGroup
-  end.

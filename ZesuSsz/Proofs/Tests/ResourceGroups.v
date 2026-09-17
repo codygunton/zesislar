@@ -25,14 +25,6 @@ Proof.
 Qed.
 Print Assumptions resource_groups_assumption_first_pure.
 
-Lemma resource_groups_pure_wand_intro `{!islaG Sigma}
-    (left right : Prop) (P : iProp Sigma) :
-  P -∗ (⌜left⌝ ∗ ⌜right⌝ ∗ True -∗ P).
-Proof.
-  iStartProof. iIntros "HP". zesu_intros_pure_wand. iExact "HP".
-Qed.
-Print Assumptions resource_groups_pure_wand_intro.
-
 Lemma resource_groups_environment_alias `{!islaG Sigma}
     (P : iProp Sigma) :
   P -∗ P ∗ True.
