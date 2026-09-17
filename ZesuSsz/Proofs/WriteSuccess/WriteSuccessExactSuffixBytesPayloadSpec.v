@@ -16,26 +16,29 @@ Definition exactSuffixBytesPayloadFrame `{!islaG Sigma} `{!threadG}
    (bv_unsigned sp + sizeOffset) ↦ₘ size ∗ P ∗ True)%I.
 Global Instance : LithiumUnfold (@exactSuffixBytesPayloadFrame) := I.
 
+Definition exactSuffixBytesPayloadEntryRegisters `{!islaG Sigma} `{!threadG}
+    (sp oldS0 oldS1 : bv 64) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+     ["x1"; "x5"; "x6"; "x10"; "x11"]) ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ "x8" ↦ᵣ RVal_Bits oldS0 ∗
+   "x9" ↦ᵣ RVal_Bits oldS1)%I.
+Global Instance : LithiumUnfold (@exactSuffixBytesPayloadEntryRegisters) := I.
+
 Definition exactSuffixBytesPayloadEntryAt `{!islaG Sigma} `{!threadG}
     (dataOffset sizeOffset : Z) (sp data size oldS0 oldS1 : bv 64)
     (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  (reg_col zesu_ram_sys_regs ∗
-    "x1" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
-    "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+  (exactSuffixBytesPayloadEntryRegisters sp oldS0 oldS1 ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)
       (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)))
       (writeOutputEvents data size bytes tail)) ∗
-    bv_unsigned data ↦ₘ∗ bytes ∗ ⌜bv_unsigned size = length bytes⌝ ∗
-    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜mapRamBase defaultMap <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
-    ⌜bv_unsigned sp + 1896 < machineRamEnd defaultMap⌝ ∗
+    bv_unsigned data ↦ₘ∗ bytes ∗
+    ⌜bv_unsigned size = length bytes /\
+      bv_unsigned sp `mod` 16 = 0 /\
+      mapRamBase defaultMap <= bv_unsigned sp - 48 /\
+      bv_unsigned sp < machineRamEnd defaultMap /\
+      bv_unsigned sp + 1896 < machineRamEnd defaultMap⌝ ∗
     exactSuffixBytesPayloadFrame dataOffset sizeOffset sp data size bytes P ∗ True)%I.
 Global Instance : LithiumUnfold (@exactSuffixBytesPayloadEntryAt) := I.
 
@@ -45,21 +48,26 @@ Definition exactSuffixBytesPayloadEntry `{!islaG Sigma} `{!threadG}
     exactSuffixBytesPayloadEntryAt dataOffset sizeOffset sp data size oldS0 oldS1 bytes tail P)%I.
 Global Instance : LithiumUnfold (@exactSuffixBytesPayloadEntry) := I.
 
+Definition exactSuffixBytesPayloadReturnRegisters `{!islaG Sigma} `{!threadG}
+    (returnPc sp data size oldS0 oldS1 : bv 64) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits returnPc ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
+   reg_col [(KindReg "x6", BitsShape 64)] ∗
+   "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
+   "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size)%I.
+Global Instance : LithiumUnfold (@exactSuffixBytesPayloadReturnRegisters) := I.
+
 Definition exactSuffixBytesPayloadReturnAt `{!islaG Sigma} `{!threadG}
     (returnPc : bv 64) (dataOffset sizeOffset : Z) (sp data size oldS0 oldS1 : bv 64)
     (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  (reg_col zesu_ram_sys_regs ∗ "x1" ↦ᵣ RVal_Bits returnPc ∗
-    "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
-    "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
-    "x8" ↦ᵣ RVal_Bits oldS0 ∗ "x9" ↦ᵣ RVal_Bits oldS1 ∗
-    "x10" ↦ᵣ RVal_Bits data ∗ "x11" ↦ᵣ RVal_Bits size ∗
+  (exactSuffixBytesPayloadReturnRegisters returnPc sp data size oldS0 oldS1 ∗
     (bv_unsigned sp - 48) ↦ₘ? 48 ∗ bv_unsigned data ↦ₘ∗ bytes ∗
     mmio_range (machineOutputAddress defaultMap) 16 ∗ spec_trace tail ∗
-    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜mapRamBase defaultMap <= bv_unsigned sp - 48⌝ ∗
-    ⌜bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
-    ⌜bv_unsigned sp + 1896 < machineRamEnd defaultMap⌝ ∗
+    ⌜bv_unsigned sp `mod` 16 = 0 /\
+      mapRamBase defaultMap <= bv_unsigned sp - 48 /\
+      bv_unsigned sp < machineRamEnd defaultMap /\
+      bv_unsigned sp + 1896 < machineRamEnd defaultMap⌝ ∗
     exactSuffixBytesPayloadFrame dataOffset sizeOffset sp data size bytes P ∗ True)%I.
 Global Instance : LithiumUnfold (@exactSuffixBytesPayloadReturnAt) := I.
 

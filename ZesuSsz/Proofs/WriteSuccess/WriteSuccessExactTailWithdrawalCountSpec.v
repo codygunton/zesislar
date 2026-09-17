@@ -66,6 +66,17 @@ Definition exactTailWithdrawalCountFrame `{!islaG Sigma} `{!threadG}
   exactTailWithdrawalCommonFrame args witness P
     exactTailWithdrawalLoadSavedShapes.
 
+Lemma exactTailWithdrawalCountFrame_unfold `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
+    (P : iProp Sigma) :
+  exactTailWithdrawalCountFrame args witness P ⊣⊢
+    exactTailWithdrawalCommonFrame args witness P
+      exactTailWithdrawalLoadSavedShapes.
+Proof. done. Qed.
+
+Global Opaque exactTailWithdrawalCountFrame.
+
 Definition exactTailWithdrawalBranchFrame `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)
@@ -75,7 +86,6 @@ Definition exactTailWithdrawalBranchFrame `{!islaG Sigma} `{!threadG}
 
 Global Instance : LithiumUnfold (@exactTailWithdrawalCommonFrame) := I.
 Global Instance : LithiumUnfold (@exactTailWithdrawalBranchFrame) := I.
-Global Instance : LithiumUnfold (@exactTailWithdrawalCountFrame) := I.
 
 Definition exactTailWithdrawalCountReturn `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
@@ -92,18 +102,17 @@ Definition exactTailWithdrawalCountCallEntry `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) : iProp Sigma :=
   let sp := writeSuccessFrameSp witness in
   let count := writeSuccessValueWord (writeSuccessValues witness) 12 in
-  (∃ old5 old11 : bv 64,
-    reg_col zesu_ram_sys_regs ∗
+  (reg_col zesu_ram_sys_regs ∗
+    reg_col [(KindReg "x5", BitsShape 64); (KindReg "x11", BitsShape 64)] ∗
     "x1" ↦ᵣ RVal_Bits (BV 64 0x15684) ∗ "x2" ↦ᵣ RVal_Bits sp ∗
-    "x5" ↦ᵣ RVal_Bits old5 ∗ "x10" ↦ᵣ RVal_Bits count ∗
-    "x11" ↦ᵣ RVal_Bits old11 ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+    "x10" ↦ᵣ RVal_Bits count ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
     mmio_range (machineOutputAddress defaultMap) 16 ∗
     spec_trace (exactTailAfterRawEvents witness) ∗
-    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-    ⌜mapRamBase defaultMap <= bv_unsigned sp - 16⌝ ∗
-    ⌜bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
-    ⌜bv_unsigned count = Z.of_nat (writeSuccessWithdrawalsCount witness)⌝ ∗
+    ⌜bv_unsigned sp `mod` 16 = 0 /\
+      mapRamBase defaultMap <= bv_unsigned sp - 16 /\
+      bv_unsigned sp < machineRamEnd defaultMap /\
+      bv_unsigned count = Z.of_nat (writeSuccessWithdrawalsCount witness)⌝ ∗
     exactTailWithdrawalCountFrame args witness P ∗
     instr_pre (bv_unsigned (BV 64 0x1568c))
-      (exactTailWithdrawalCountReturn args witness P) ∗ True)%I.
+      (exactTailWithdrawalCountReturn args witness P))%I.
 Global Instance : LithiumUnfold (@exactTailWithdrawalCountCallEntry) := I.

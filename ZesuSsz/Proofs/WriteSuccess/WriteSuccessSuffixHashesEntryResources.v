@@ -26,26 +26,49 @@ Proof.
   cbn in HzeroUnsigned. lia.
 Qed.
 
+Definition writeSuccessSuffixHashesCallerBundle
+    `{!islaG Sigma} `{!threadG}
+    (sp pointer : bv 64) (base : Z)
+    (total processed remaining : nat) (bytes : list (bv 8))
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col writeSuccessHashesSourceRest ∗ base ↦ₘ∗ bytes ∗ P ∗
+   writeSuccessFixedWidthArrayInvariant
+     sp pointer base total processed remaining bytes ∗
+   instr_pre 0x158e0
+     (writeSuccessHashesLoopExit sp base total bytes tail
+       ((bv_unsigned sp - 16) ↦ₘ? 16 ∗ P)))%I.
+
+Lemma writeSuccessSuffixHashesCallerBundle_unfold
+    `{!islaG Sigma} `{!threadG}
+    (sp pointer : bv 64) (base : Z)
+    (total processed remaining : nat) (bytes : list (bv 8))
+    (tail : spec) (P : iProp Sigma) :
+  writeSuccessSuffixHashesCallerBundle sp pointer base total processed remaining
+      bytes tail P ⊣⊢
+    (reg_col writeSuccessHashesSourceRest ∗ base ↦ₘ∗ bytes ∗ P ∗
+     writeSuccessFixedWidthArrayInvariant
+       sp pointer base total processed remaining bytes ∗
+     instr_pre 0x158e0
+       (writeSuccessHashesLoopExit sp base total bytes tail
+         ((bv_unsigned sp - 16) ↦ₘ? 16 ∗ P)))%I.
+Proof. done. Qed.
+
+Global Opaque writeSuccessSuffixHashesCallerBundle.
+
 Definition writeSuccessSuffixHashesEntryFrame
     `{!islaG Sigma} `{!threadG}
     (sp pointer : bv 64) (base : Z)
     (total processed remaining : nat) (bytes : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  ("x1" ↦ᵣ: (fun r1 => ⌜valu_has_shape r1 (BitsShape 64)⌝) ∗
-   "x2" ↦ᵣ RVal_Bits sp ∗
-   "x5" ↦ᵣ: (fun r5 => ⌜valu_has_shape r5 (BitsShape 64)⌝) ∗
-   "x11" ↦ᵣ: (fun r11 => ⌜valu_has_shape r11 (BitsShape 64)⌝) ∗
-   reg_col writeSuccessHashesSourceRest ∗
-   "x9" ↦ᵣ RVal_Bits pointer ∗
-   base ↦ₘ∗ bytes ∗ writeSuccessHashesScratch sp ∗ P ∗
-   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
-   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
-   ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
-   writeSuccessFixedWidthArrayInvariant
-     sp pointer base total processed remaining bytes ∗
-   instr_pre 0x158e0
-     (writeSuccessHashesLoopExit sp base total bytes tail
-       ((bv_unsigned sp - 16) ↦ₘ? 16 ∗ P)) ∗ True)%I.
+  (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x5", BitsShape 64);
+      (KindReg "x11", BitsShape 64)] ∗
+   "x2" ↦ᵣ RVal_Bits sp ∗ "x9" ↦ᵣ RVal_Bits pointer ∗
+   writeSuccessHashesScratch sp ∗
+   ⌜bv_unsigned sp `mod` 16 = 0 /\
+     mapRamBase defaultMap <= bv_unsigned sp - 16 /\
+     bv_unsigned sp < machineRamEnd defaultMap⌝ ∗
+   writeSuccessSuffixHashesCallerBundle sp pointer base total processed remaining
+     bytes tail P ∗ True)%I.
 
 Global Instance : LithiumUnfold
   (@writeSuccessSuffixHashesEntryFrame) := I.
@@ -55,14 +78,9 @@ Definition writeSuccessSuffixHashesEntryLoopFrame
     (sp pointer : bv 64) (base : Z)
     (total processed remaining : nat) (bytes : list (bv 8))
     (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  (reg_col writeSuccessHashesSourceRest ∗
-   "x9" ↦ᵣ RVal_Bits pointer ∗
-   base ↦ₘ∗ bytes ∗ writeSuccessHashesScratch sp ∗ P ∗
-   writeSuccessFixedWidthArrayInvariant
-     sp pointer base total processed remaining bytes ∗
-   instr_pre 0x158e0
-     (writeSuccessHashesLoopExit sp base total bytes tail
-       ((bv_unsigned sp - 16) ↦ₘ? 16 ∗ P)) ∗ True)%I.
+  ("x9" ↦ᵣ RVal_Bits pointer ∗ writeSuccessHashesScratch sp ∗
+   writeSuccessSuffixHashesCallerBundle sp pointer base total processed remaining
+     bytes tail P ∗ True)%I.
 
 Global Instance : LithiumUnfold
   (@writeSuccessSuffixHashesEntryLoopFrame) := I.
