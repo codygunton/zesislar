@@ -76,6 +76,7 @@ Proof.
   all: try (cbv [mapRamBase machineRamEnd mapRamSize defaultMap]
     in HstackLow, HstackHigh; lia).
   all: try assumption.
+  all: try zesu_run.
   all: iFrame.
   all: iPureIntro; unfold writeSuccessWitnessWellFormed in Hwf; tauto.
 Qed.
