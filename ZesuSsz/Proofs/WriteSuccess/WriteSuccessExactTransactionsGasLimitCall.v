@@ -4,7 +4,8 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
-  WriteSuccessExactEncoderIntFramedCall WriteSuccessObservation WriteSuccessOutputSemantic.
+  WriteSuccessExactEncoderIntCall WriteSuccessExactEncoderIntFramedCall
+  WriteSuccessObservation WriteSuccessOutputSemantic.
 From IslaTraces.write_success_43 Require Import instrs.
 Local Remove Hints IslaTraces.write_success_43.a15150_spec.a15150_spec_inst : typeclass_instances.
 
@@ -38,17 +39,9 @@ Lemma transactions_gas_limit_call_correct `{!islaG Sigma} `{!threadG}
     sp value oldra old5 old11 tail (P : iProp Sigma) :
   ([∗ list] instruction ∈ IslaTraces.write_success_43.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
-    instr instruction.1 (Some instruction.2))%I -∗
-  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
-    instr instruction.1 (Some instruction.2))%I -∗
+  □ instr_pre 0x15d10 zesuEncoderIntExactCallSpec -∗
   instr_body 0x15148 (transactionGasLimitEntry sp value oldra old5 old11 tail P).
 Proof.
-  iStartProof. iIntros "#Hcaller #Hencoder #Houtput".
-  iPoseProof (encoder_int_exact_framed_correct value sp (BV 64 0x15154) old5 old11 tail
-    (transactionGasLimitFrame sp value P) with "Hencoder Houtput") as "Hcallee".
-  iEval (rewrite /IslaTraces.write_success_43.instrs.instr_map /=) in "Hcaller".
-  iDestruct "Hcaller" as "#(H0 & H1 & H2 & _)".
-  zesu_run. Unshelve. all: unLET. all: try bv_solve.
+  move => *. zesu_block.
 Qed.
 Print Assumptions transactions_gas_limit_call_correct.

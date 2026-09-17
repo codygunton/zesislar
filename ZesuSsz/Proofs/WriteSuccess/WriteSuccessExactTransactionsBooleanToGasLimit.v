@@ -7,6 +7,7 @@ Require Import ZesuSsz.Export.Snapshots.
 From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactTransactionsPriorityToBoolean WriteSuccessExactTransactionsGasLimitCall
   WriteSuccessExactTransactionsGasPriceCall WriteSuccessExactBooleanSpec
+  WriteSuccessExactEncoderIntCall
   WriteSuccessObservation WriteSuccessOutputSemantic.
 
 Definition transactionGasLimitCallerFrame `{!islaG Sigma} `{!threadG}
@@ -61,9 +62,10 @@ Lemma transactions_boolean_gas_continuation `{!islaG Sigma} `{!threadG}
       ("x26" ↦ᵣ RVal_Bits value ∗ P ∗ True))).
 Proof.
   iIntros "#Hcaller #Hint #Houtput #Hnext".
+  iPoseProof (zesu_encoder_int_exact_call_pre with "Hint Houtput") as "#HcalleePre".
   iPoseProof (transactions_gas_limit_call_correct sp value (BV 64 0x15148)
     (BV 64 (mapIoContextAddress defaultMap)) (BV 64 1) tail (transactionGasLimitCallerFrame sp low high tag P)
-    with "Hcaller Hint Houtput") as "Hcallee".
+    with "Hcaller HcalleePre") as "Hcallee".
   iModIntro. iApply (instr_pre_wand 0x15148 0x15148 false true with "Hcallee"); [done | done |].
   iIntros "Hpost". iApply (transactions_boolean_to_gas_limit with "Hpost Hnext").
 Qed.

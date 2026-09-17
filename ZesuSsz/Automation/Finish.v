@@ -239,9 +239,18 @@ Ltac zesu_finish_framed_wand :=
         | |- envs_entails (Envs _ _ ?counter) _ => constr:(IAnon counter)
         end in
       iSplit;
-      [iIntros "?"; rewrite ?Z_to_bv_bv_unsigned;
-       timeout 5 (iFrame "∗");
-       iEval (rewrite !bi.sep_True) in Hpost; iExact Hpost | done]
+      [first
+        [solve [iIntros "?"; rewrite ?Z_to_bv_bv_unsigned;
+          timeout 5 (iFrame "∗");
+          iEval (rewrite !bi.sep_True) in Hpost; iExact Hpost]
+        |solve [iMatchHyp ltac:(fun _ body =>
+           lazymatch body with instr _ _ => idtac end);
+          iIntros "?";
+          unshelve (repeat zesu_liAStep; liShow);
+          zesu_open_matching_resource_package;
+          zesu_open_resource_groups;
+          unshelve (repeat zesu_liAStep; liShow); zesu_finish]]
+      | done]
   end.
 
 Ltac zesu_finish_closed_wand :=
@@ -263,6 +272,15 @@ Ltac zesu_solve_instances :=
   | |- heapG _ => typeclasses eauto
   | |- islaG _ => typeclasses eauto
   | |- threadG => typeclasses eauto
+  end.
+
+(* Infer a trace tail when its first obligation becomes reflexive. *)
+Ltac zesu_infer_reflexive_spec_tail :=
+  lazymatch goal with
+  | |- envs_entails _ (∃ _ : li_prod spec unit, _)%I =>
+      let tail := open_constr:(_ : spec) in
+      iExists (tail, tt)ₗ;
+      iSplit; [iPureIntro; reflexivity |]
   end.
 
 Ltac zesu_pack_shaped_register_value register :=
@@ -360,6 +378,7 @@ Ltac zesu_run_pass :=
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
+     zesu_infer_reflexive_spec_tail |
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
      zesu_liAStep | zesu_open_matching_two_level_frame |
