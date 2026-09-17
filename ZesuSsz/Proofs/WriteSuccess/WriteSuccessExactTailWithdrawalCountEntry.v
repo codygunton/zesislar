@@ -39,12 +39,8 @@ Proof.
   iDestruct "Hcaller" as
     "(H12 & H13 & H14 & H15 & H16 & H17 & H5 & H6 & H7 & H28 & H29 &
       H30 & H31 & _)".
-  iDestruct "H5" as (r5) "[%Hr5 H5]".
-  apply valu_has_bits_shape in Hr5. destruct Hr5 as (old5 & ->).
   iEval (cbn) in "H11".
   iDestruct "H11" as "[H11 _]".
-  iDestruct "H11" as (r11) "[%Hr11 H11]".
-  apply valu_has_bits_shape in Hr11. destruct Hr11 as (old11 & ->).
   iDestruct (mem_mapsto_uninit_split 64 with "Hstack") as
     "[Hstack64 Hstack16]"; first lia.
   have HstackAddress :
@@ -70,13 +66,18 @@ Proof.
   iAssert (reg_col exactTailWithdrawalCountOtherCallerShapes)%I with
     "[H12 H13 H14 H15 H16 H17 H6 H7 H28 H29 H30 H31]" as "HcallerOther".
   { rewrite /exactTailWithdrawalCountOtherCallerShapes. cbn. iFrame. }
+  iAssert (reg_col [(KindReg "x5", BitsShape 64);
+                    (KindReg "x11", BitsShape 64)])%I
+    with "[H5 H11]" as "HscratchRegs".
+  { cbn. iFrame. }
   iAssert (exactTailWithdrawalCountFrame args witness P)%I with
     "[HcallerOther Hsaved Hother H8 H9 Hvalues Hstack64 Hitems Hremainder Hbase
       Hown
       HbaseWord HcountWord Hfree120 Hfree1640 Hspfree Hcopied Hsource Hupper
       HsavedSlots Hdecoded Hpayload Hwithdrawals HpostData Hstatic Hinvariant HP]"
     as "HcountFrame".
-  { rewrite /exactTailWithdrawalCountFrame /exactTailWithdrawalCommonFrame.
+  { rewrite exactTailWithdrawalCountFrame_unfold
+      /exactTailWithdrawalCommonFrame.
     iFrame. iPureIntro. exact Hwf. }
   iAssert (instr_pre (bv_unsigned (BV 64 0x1568c))
     (exactTailWithdrawalCountReturn args witness P))%I with "[Hnext]"
@@ -84,8 +85,7 @@ Proof.
   { replace (bv_unsigned (BV 64 0x1568c)) with 0x1568c by bv_solve.
     iExact "Hnext". }
   rewrite /exactTailWithdrawalCountCallEntry.
-  iExists old5, old11.
-  iFrame "Hsys H1 H2 H5 H10 H11 Hstack16 Hmmio Htrace HcountFrame HnextExact".
-  repeat iSplit; iPureIntro; assumption.
+  iFrame "Hsys HscratchRegs H1 H2 H10 Hstack16 Hmmio Htrace HcountFrame HnextExact".
+  iPureIntro. repeat split; assumption.
 Qed.
 Print Assumptions exact_tail_withdrawal_count_entry.
