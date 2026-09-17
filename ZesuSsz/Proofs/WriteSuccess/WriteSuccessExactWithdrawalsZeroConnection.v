@@ -27,27 +27,21 @@ Lemma write_success_exact_withdrawals_zero
   instr_body 0x156e8
     (exactTailWithdrawalsBranchZeroEntry args witness P).
 Proof.
-  have [Hcount [Hall Hconcat]] :=
-    write_success_exact_withdrawal_rows_facts args witness Hwf.
+  have [Hcount [Hall Hconcat]] := write_success_exact_withdrawal_rows_facts args witness Hwf.
   have [HstackLow HstackHigh] := exact_tail_stack_call_bounds args witness Hwf.
   iStartProof. iIntros "Hpost".
-  iApply (instr_pre_wand 0x156e8 0x156e8 false false with "Hpost");
-    [done | reflexivity |].
+  iApply (instr_pre_wand 0x156e8 0x156e8 false false with "Hpost"); [done | reflexivity |].
   iIntros "Hentry".
   iEval (rewrite /exactTailWithdrawalsBranchZeroEntry
-    /exactTailWithdrawalBranchResources /encoderIntExactFramedPost
-    /exactTailWithdrawalBranchFrame /exactTailWithdrawalCommonFrame
-    /exactTailWithdrawalValueRemainder /writeSuccessExactCopiedTailWords
+    /exactTailWithdrawalBranchResources /encoderIntExactFramedPost /exactTailWithdrawalBranchFrame
+    /exactTailWithdrawalCommonFrame /exactTailWithdrawalValueRemainder /writeSuccessExactCopiedTailWords
     /WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources
     /WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
     /WriteSuccessPostTransactionResources.writeSuccessHashesResources
-    /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources)
-    in "Hentry".
-  iEval (rewrite
-    /WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
+    /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources) in "Hentry".
+  iEval (rewrite /WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
     /WriteSuccessPostTransactionResources.writeSuccessHashesResources
-    /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources)
-    in "Hentry".
+    /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources) in "Hentry".
   iDestruct "Hentry" as "[Hentry %Hzero]".
   have HbaseWord : writeSuccessValueWord (writeSuccessValues witness) 11 =
       writeSuccessWithdrawalsBase witness by
@@ -61,18 +55,15 @@ Proof.
   have Hevents := exact_tail_after_withdrawal_count_rows args witness Hwf.
   rewrite HrowsNil /= in Hevents.
   iEval (rewrite Hevents HbaseWord HcountWord HbytesNil) in "Hentry".
-  iEval (rewrite /writeSuccessExactPostWithdrawalsBoundary
-    /writeSuccessExactPostWithdrawalsCallerFrame
+  iEval (rewrite /writeSuccessExactPostWithdrawalsBoundary /writeSuccessExactPostWithdrawalsCallerFrame
     /writeSuccessExactPostWithdrawalsMemoryFrame /writeSuccessExactValueMemory).
-  iExists (BV 64 0x1568c).
-  rewrite HbytesNil /=.
+  iExists (BV 64 0x1568c). rewrite HbytesNil /=.
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
   repeat iDestruct select (⌜_⌝)%I as %?.
   zesu_run.
   all: try zesu_open_matching_copied_word_package; zesu_run.
   all: try zesu_open_matching_resource_package; zesu_run.
-  all: try (cbv [mapRamBase machineRamEnd mapRamSize defaultMap]
-    in HstackLow, HstackHigh; lia).
+  all: try (cbv [mapRamBase machineRamEnd mapRamSize defaultMap] in HstackLow, HstackHigh; lia).
   all: try assumption.
   all: iFrame.
   all: iPureIntro; unfold writeSuccessWitnessWellFormed in Hwf; tauto.
