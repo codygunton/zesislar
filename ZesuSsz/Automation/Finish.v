@@ -349,6 +349,27 @@ Ltac zesu_finish_initialized_array_read :=
       do 3 zesu_liAStep
   end.
 
+Ltac zesu_normalize_one_initialized_array_lookup :=
+  match goal with
+  | Hloaded : ?values !! ?loadedIndex = Some ?loaded,
+    Hknown : ?values !! ?knownIndex = Some ?known |- _ =>
+      tryif constr_eq loaded known then fail 1 else
+      let valuesType := type of values in
+      constr_eq valuesType (list (bv 64));
+      let Hindex := fresh "HinitializedArrayIndex" in
+      assert (Hindex : loadedIndex = knownIndex) by
+        (repeat match goal with
+         | Heq : ?left = ?right |- context[left] => rewrite Heq
+         end;
+         simpl; lia);
+      rewrite Hindex Hknown in Hloaded;
+      injection Hloaded; intros; subst loaded; clear Hindex
+  end.
+
+Ltac zesu_normalize_initialized_array_lookup :=
+  zesu_normalize_one_initialized_array_lookup;
+  repeat zesu_normalize_one_initialized_array_lookup.
+
 Ltac zesu_run_pass :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
@@ -362,6 +383,7 @@ Ltac zesu_run_pass :=
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
+     zesu_normalize_initialized_array_lookup |
      zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure]; liShow;
     try zesu_finish_closed_wand;

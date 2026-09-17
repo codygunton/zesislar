@@ -77,6 +77,7 @@ Proof.
     in HstackLow, HstackHigh; lia).
   all: try assumption.
   all: iFrame.
+  all: try zesu_run.
   all: iPureIntro; unfold writeSuccessWitnessWellFormed in Hwf; tauto.
 Qed.
 

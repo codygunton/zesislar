@@ -41,3 +41,17 @@ Proof.
 Qed.
 
 Print Assumptions test_initialized_array_read_preparer.
+
+Lemma test_initialized_array_lookup_normalization
+    (values : list (bv 64)) (loaded expected : bv 64)
+    (loadedIndex knownIndex : nat) :
+  loadedIndex = knownIndex ->
+  values !! loadedIndex = Some loaded ->
+  values !! knownIndex = Some expected ->
+  loaded = expected.
+Proof.
+  intros Hindex Hloaded Hknown.
+  zesu_normalize_initialized_array_lookup. reflexivity.
+Qed.
+
+Print Assumptions test_initialized_array_lookup_normalization.
