@@ -59,6 +59,14 @@ def definitions(source: str) -> list[tuple[str, str, str]]:
     return result
 
 
+def sealed_predicates(source: str) -> set[str]:
+    """Find predicates with an explicit opaque boundary and unfold lemma."""
+    clean = remove_comments(source)
+    opaque = set(re.findall(r"\bGlobal\s+Opaque\s+(\w+)\s*\.", clean))
+    unfold_lemmas = set(re.findall(r"\bLemma\s+(\w+)_unfold\b", clean))
+    return opaque & unfold_lemmas
+
+
 def resource_parts(body: str) -> list[str]:
     """Split the outer separating chain without splitting predicate arguments."""
     existence = body.find("∃")
@@ -125,9 +133,12 @@ def binder_shape(binder: str, parts: list[str], unfolded: set[str]) -> str:
 
 def shape_counts(source: str, unfolded: set[str]) -> dict[str, int]:
     specs = definitions(source)
+    sealed = sealed_predicates(source)
     counts = dict.fromkeys(METRICS, 0)
     for name, signature, body in specs:
-        counts["predicates_without_unfold"] += name not in unfolded
+        counts["predicates_without_unfold"] += (
+            name not in unfolded and name not in sealed
+        )
         counts["disjunctive_specs"] += "∨" in body
         counts["frame_parameters_in_closed_specs"] += bool(
             name.endswith(("CallSpec", "BodySpec")) and
