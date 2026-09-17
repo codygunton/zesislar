@@ -33,6 +33,7 @@ Definition exactTailWithdrawalCommonFrame `{!islaG Sigma} `{!threadG}
    reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗
    "x8" ↦ᵣ RVal_Bits (writeSuccessValueWord values 11) ∗
    "x9" ↦ᵣ RVal_Bits (writeSuccessValueWord values 12) ∗
+   (bv_unsigned sp + 1032) ↦ₘ∗ take 69 values ∗
    (bv_unsigned sp - 80) ↦ₘ? 64 ∗
    byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
      (writeSuccessRawTransactions witness) ∗

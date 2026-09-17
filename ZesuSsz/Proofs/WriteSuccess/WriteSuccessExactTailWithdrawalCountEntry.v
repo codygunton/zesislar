@@ -71,7 +71,8 @@ Proof.
     "[H12 H13 H14 H15 H16 H17 H6 H7 H28 H29 H30 H31]" as "HcallerOther".
   { rewrite /exactTailWithdrawalCountOtherCallerShapes. cbn. iFrame. }
   iAssert (exactTailWithdrawalCountFrame args witness P)%I with
-    "[HcallerOther Hsaved Hother H8 H9 Hstack64 Hitems Hremainder Hbase Hown
+    "[HcallerOther Hsaved Hother H8 H9 Hvalues Hstack64 Hitems Hremainder Hbase
+      Hown
       HbaseWord HcountWord Hfree120 Hfree1640 Hspfree Hcopied Hsource Hupper
       HsavedSlots Hdecoded Hpayload Hwithdrawals HpostData Hstatic Hinvariant HP]"
     as "HcountFrame".
