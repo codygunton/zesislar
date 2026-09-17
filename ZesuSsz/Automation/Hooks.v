@@ -20,6 +20,17 @@ Ltac zesu_normalize_machine_map :=
     machineRamEnd machineOutputAddress machineOutputSizeAddress
     machineExitAddress machinePc defaultMap] in *.
 
+Ltac zesu_has_initialized_array_root root spatial :=
+  lazymatch spatial with
+  | Esnoc ?rest _ ((?address ↦ₘ∗ _)%I) =>
+      first [lazymatch address with
+             | bv_unsigned ?actualRoot => constr_eq actualRoot root
+             | (bv_unsigned ?actualRoot + _)%Z => constr_eq actualRoot root
+             end
+            | zesu_has_initialized_array_root root rest]
+  | Esnoc ?rest _ _ => zesu_has_initialized_array_root root rest
+  end.
+
 (** Name a machine bound after normalizing its reviewed map fields. *)
 Ltac zesu_name_machine_bound expected name :=
   let normalizedExpected := eval cbv [mapRamBase mapRamSize
@@ -60,10 +71,16 @@ Ltac zesu_normalize_symbolic_mem_address :=
     let expanded := eval cbv beta zeta in pointer in
     lazymatch expanded with
     | bv_add ?base ?offset =>
-      lazymatch base with
-      | bv_add ?root ?displacement => is_var root
-      | bv_sub ?root ?displacement => is_var root
-      end;
+      first [lazymatch base with
+             | bv_add ?root ?displacement => is_var root
+             | bv_sub ?root ?displacement => is_var root
+             end
+            | is_var base;
+              lazymatch goal with
+              | |- envs_entails ?context _ =>
+                  let spatial := eval cbn [env_spatial] in (env_spatial context) in
+                  zesu_has_initialized_array_root base spatial
+              end];
       let integer := eval vm_compute in (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let Heq := fresh "HmemoryAddress" in
