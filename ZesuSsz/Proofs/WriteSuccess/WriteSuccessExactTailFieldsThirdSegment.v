@@ -31,13 +31,12 @@ Proof.
   rewrite -Hevents.
   iRename select (instr_pre 0x159bc _)%I into "Hreturn".
   zesu_run.
-  rewrite /subsume. iIntros "_". iExists tt. iSplit; last done.
-  iEval (replace (Z_to_bv 64 88504 + 4)%bv with (BV 64 88508) by bv_solve).
-  iEval (replace (bv_unsigned (BV 64 88508)) with 88508 by bv_solve).
+  rewrite /subsume; iIntros "_"; iExists tt; iSplit; last done.
+  iEval (replace (Z_to_bv 64 88504 + 4)%bv with (BV 64 88508) by bv_solve);
+    iEval (replace (bv_unsigned (BV 64 88508)) with 88508 by bv_solve).
   iApply (instr_pre_wand 88508 88508 true true with "Hreturn");
-    [done | reflexivity |].
-  iIntros "Hrequested". iFrame.
-  repeat iSplit; iPureIntro; assumption.
+    [done | reflexivity |]; iIntros "Hrequested"; iFrame;
+    repeat iSplit; iPureIntro; assumption.
 Qed.
 
 Print Assumptions write_success_exact_tail_fields_third_segment.
