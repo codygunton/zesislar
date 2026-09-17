@@ -50,21 +50,14 @@ Proof.
   iApply (instr_pre_wand 0x158e0 0x158e0 false false with "Htail");
     [done | reflexivity |].
   iIntros "Hentry".
-  rewrite /suffixLoopExit /suffixTailFieldsCaller
-    /writeSuccessExactTailFieldsEntryBoundary
-    /exactSuffixBytesPayloadEntryAt /exactSuffixBytesPayloadFrame.
+  rewrite /suffixLoopExit /suffixTailFieldsCaller /writeSuccessExactTailFieldsEntryBoundary
+    /exactSuffixBytesPayloadEntryAt /exactSuffixBytesPayloadEntryRegisters /exactSuffixBytesPayloadFrame.
   iDestruct "Hentry" as
     "(Hsys & H2 & H1 & H5 & H8 & H9 & Hregs & Hhash & Hscratch &
       Hmmio & Htrace & Hcaller & _)".
   iDestruct "Hcaller" as
     "(H6 & Hother & Hstack & HdataSlot & HsizeSlot & Hdata & %Hlength &
       %Halign & %Hlow & %Hhigh & %Htop & HP & _)".
-  iAssert ("x1" ↦ᵣ: (fun value =>
-      ⌜valu_has_shape value (BitsShape 64)⌝))%I with "[H1]" as "H1".
-  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def. iExists _. iFrame. done. }
-  iAssert ("x5" ↦ᵣ: (fun value =>
-      ⌜valu_has_shape value (BitsShape 64)⌝))%I with "[H5]" as "H5".
-  { rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def. iExists _. iFrame. done. }
   iEval (rewrite !reg_col_cons reg_col_nil) in "Hregs".
   iDestruct "Hregs" as
     "(H10 & H11 & H12 & H13 & H14 & H15 & H16 & _)".
@@ -72,20 +65,27 @@ Proof.
   iDestruct "Hother" as
     "(H3 & H4 & H7 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 &
       H25 & H26 & H27 & H28 & H29 & H30 & H31 & _)".
+  iAssert (reg_col [(KindReg "x1", BitsShape 64);
+      (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64);
+      (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64)])%I
+    with "[H1 H5 H6 H10 H11]" as "HentryRegs".
+  { rewrite !reg_col_cons reg_col_nil.
+    iSplitL "H1"; first (iExists _; iFrame; done).
+    iSplitL "H5"; first (iExists _; iFrame; done).
+    rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def.
+    iDestruct "H6" as (v6) "(H6 & %Hv6)".
+    iSplitL "H6"; first (iExists v6; iFrame; done).
+    iFrame "H10 H11". }
   iAssert (reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
       WriteSuccessExactSuffixBytesPayload158e0.exactSuffixBytesOtherRegisters))%I
     with "[H3 H4 H7 H12 H13 H14 H15 H16 H17 H18 H19 H20 H21 H22 H23
       H24 H25 H26 H27 H28 H29 H30 H31]" as "HfinalRegs".
   { rewrite /WriteSuccessExactSuffixBytesPayload158e0.exactSuffixBytesOtherRegisters.
     iEval (rewrite !reg_col_cons reg_col_nil). iFrame. }
-  iFrame "Hsys H1 H2 H5 H6 H8 H9 Hstack Hmmio Htrace Hdata
+  iFrame "Hsys HentryRegs H2 H8 H9 Hstack Hmmio Htrace Hdata
     HdataSlot HsizeSlot Hhash Hscratch HP HfinalRegs".
-  rewrite !reg_mapsto_pred_eq /reg_mapsto_pred_def.
-  iDestruct "H10" as (v10) "(%Hv10 & H10)".
-  iDestruct "H11" as (v11) "(%Hv11 & H11)".
-  iSplitL "H10"; first (iExists v10; iFrame; done).
-  iSplitL "H11"; first (iExists v11; iFrame; done).
-  repeat iSplit; try iPureIntro; try assumption; try done.
+  iSplit; first (iPureIntro; repeat split; assumption).
+  done.
 Qed.
 
 Print Assumptions write_success_exact_suffix_hashes_tail_connection.
