@@ -513,11 +513,29 @@ Definition writeSuccessExactTailCallerWithCopiedWords `{!islaG Sigma} `{!threadG
    ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@writeSuccessExactTailCallerWithCopiedWords) := I.
 
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
+Definition writeSuccessExactTailRemainingDescriptorSlots `{!islaG Sigma}
+    `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  let sp := writeSuccessFrameSp witness in
+  let post := writeSuccessPostData witness in
+  ((bv_unsigned sp + 936) ↦ₘ fst (writeSuccessPostBytes158f0 post) ∗
+   (bv_unsigned sp + 944) ↦ₘ snd (writeSuccessPostBytes158f0 post) ∗
+   (bv_unsigned sp + 952) ↦ₘ fst (writeSuccessPostBytes15900 post) ∗
+   (bv_unsigned sp + 960) ↦ₘ snd (writeSuccessPostBytes15900 post) ∗
+   (bv_unsigned sp + 968) ↦ₘ fst (writeSuccessPostBytes15910 post) ∗
+   (bv_unsigned sp + 976) ↦ₘ snd (writeSuccessPostBytes15910 post) ∗
+   (bv_unsigned sp + 984) ↦ₘ fst (writeSuccessPostBytes15920 post) ∗
+   (bv_unsigned sp + 992) ↦ₘ snd (writeSuccessPostBytes15920 post) ∗
+   writeSuccessExactTailCallerWithCopiedWords args witness)%I.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactTailRemainingDescriptorSlots) := I.
+
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTrace.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailPayloads.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputDescriptors.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionDescriptors.
 Definition writeSuccessExactTailEvents {Decoded}
     (witness : writeSuccessNativeWitness Decoded) : spec :=
   let sp := writeSuccessFrameSp witness in
