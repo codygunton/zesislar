@@ -4,6 +4,7 @@ Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactSuffixBytesPayloadSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
 
 From ZesuSsz.Proofs.WriteSuccess Require Export
@@ -251,6 +252,12 @@ Definition writeSuccessTailFieldsEntryBoundary
     `{!islaG Sigma} `{!threadG} :=
   @writeSuccessSuffixAt158e0 Sigma _ _.
 Global Instance : LithiumUnfold (@writeSuccessTailFieldsEntryBoundary) := I.
+
+Definition writeSuccessExactTailFieldsEntryBoundary
+    `{!islaG Sigma} `{!threadG} :=
+  @exactSuffixBytesPayloadEntryAt Sigma _ _ 920 928.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactTailFieldsEntryBoundary) := I.
 
 Definition writeSuccessTailFirstBranchBoundary
     `{!islaG Sigma} `{!threadG} :=
