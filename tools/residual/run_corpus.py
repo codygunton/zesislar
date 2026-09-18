@@ -14,8 +14,9 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -189,31 +190,33 @@ def main() -> int:
 
     counts: dict[str, int] = {}
     started = time.monotonic()
+    lock = threading.Lock()
     finished = 0
-    for start in range(0, len(pending), arguments.jobs):
-        batch = pending[start:start + arguments.jobs]
+
+    def probe(module: Path, lemma: str) -> dict:
         wait_for_machine(arguments.coqc_cap, arguments.load_cap)
-        with ThreadPoolExecutor(max_workers=arguments.jobs) as pool:
-            results = [(module, lemma,
-                        pool.submit(probe_one, module, lemma, arguments.tier,
-                                    commit, arguments.build_dir,
-                                    arguments.scratch))
-                       for module, lemma in batch]
-            records = []
-            for module, lemma, future in results:
-                try:
-                    records.append(future.result())
-                except Exception as failure:  # record the gap, keep going
-                    records.append(failure_record(module, lemma,
-                                                  arguments.tier, commit,
-                                                  failure))
-        corpus.append(records, arguments.corpus)
-        for record in records:
-            counts[record["outcome"]] = counts.get(record["outcome"], 0) + 1
-        finished += len(records)
-        rate = finished / max(1e-9, time.monotonic() - started) * 60
-        print(f"{finished}/{len(pending)} {json.dumps(counts)} "
-              f"{rate:.1f}/min", file=sys.stderr, flush=True)
+        try:
+            return probe_one(module, lemma, arguments.tier, commit,
+                             arguments.build_dir, arguments.scratch)
+        except Exception as failure:  # record the gap, keep the run going
+            return failure_record(module, lemma, arguments.tier, commit,
+                                  failure)
+
+    # A rolling pool, not fixed batches: one probe that runs to the 300 second
+    # limit must not hold back the other workers.
+    with ThreadPoolExecutor(max_workers=arguments.jobs) as pool:
+        futures = {pool.submit(probe, module, lemma): (module, lemma)
+                   for module, lemma in pending}
+        for future in as_completed(futures):
+            record = future.result()
+            with lock:
+                corpus.append([record], arguments.corpus)
+                counts[record["outcome"]] = counts.get(record["outcome"], 0) + 1
+                finished += 1
+                if finished % 25 == 0 or finished == len(pending):
+                    rate = finished / max(1e-9, time.monotonic() - started) * 60
+                    print(f"{finished}/{len(pending)} {json.dumps(counts)} "
+                          f"{rate:.1f}/min", file=sys.stderr, flush=True)
     return 0
 
 
