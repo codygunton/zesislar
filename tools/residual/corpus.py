@@ -10,7 +10,8 @@ CORPUS = Path("ZesuSsz/Evidence/residuals/corpus.jsonl")
 FIELDS = ["module", "lemma", "commit", "tier", "outcome", "seconds", "rss_mib",
           "zesu_run_seconds", "goal_count", "goal_heads", "goal_text",
           "goal_sha256", "label_lines", "label_class", "pred_class",
-          "label_classes", "pred_detail", "solver", "error_kind",
+          "population", "label_classes", "pred_detail", "solver",
+          "error_kind",
           "probe_variant", "error_lines"]
 
 

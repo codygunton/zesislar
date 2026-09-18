@@ -15,9 +15,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import corpus  # noqa: E402
 
 OUTCOMES = ["closed", "residual", "timeout", "error"]
-LABELS = ["L1", "L2", "L3", "L4", "L5", "Lother"]
-PREDICTIONS = ["C1", "C2", "C3", "C4", "C5", "unknown", "n/a"]
-LABEL_TO_CLASS = {"L1": "C1", "L2": "C2", "L3": "C3", "L4": "C4", "L5": "C5"}
+LABELS = ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "Lother"]
+PREDICTIONS = ["C1", "C2", "C3", "C4", "C6", "C7", "C8",
+               "unknown", "n/a"]
+# Section 9 merged the old class C5, payload, into class C2, memory.
+LABEL_TO_CLASS = {"L1": "C1", "L2": "C2", "L3": "C3", "L4": "C4",
+                  "L5": "C2", "L6": "C6", "L7": "C7", "L8": "C8"}
 
 
 def percent(part: int, whole: int) -> str:
@@ -129,9 +132,14 @@ def worktrees() -> int:
     return len([line for line in output.split("\n") if line.strip()])
 
 
-def report(records: list[dict], tier: int | None) -> list[str]:
+def report(records: list[dict], tier: int | None,
+           group: str = "iris", modules: set[str] | None = None) -> list[str]:
     if tier is not None:
         records = [r for r in records if r.get("tier") == tier]
+    if group != "all":
+        records = [r for r in records if r.get("population", "iris") == group]
+    if modules:
+        records = [r for r in records if r["module"] in modules]
     counts = collections.Counter(r.get("outcome") for r in records)
     ranked = classified(records)
     probed = len(records)
@@ -172,9 +180,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus", type=Path, default=corpus.CORPUS)
     parser.add_argument("--tier", type=int, default=None)
+    parser.add_argument("--population", default="iris",
+                        help="statistics population, or 'all'")
+    parser.add_argument("--modules", type=Path, default=None,
+                        help="restrict to the modules listed in this file")
     parser.add_argument("--no-confusion", action="store_true")
     arguments = parser.parse_args()
-    lines = report(corpus.read(arguments.corpus), arguments.tier)
+    modules = None
+    if arguments.modules:
+        modules = {Path(name).name for name in
+                   arguments.modules.read_text().split() if name.strip()}
+    lines = report(corpus.read(arguments.corpus), arguments.tier,
+                   arguments.population, modules)
     for line in lines:
         if arguments.no_confusion and (line.startswith("label")
                                        or line.startswith("L")):

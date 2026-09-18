@@ -12,6 +12,7 @@ import classify  # noqa: E402
 import goals  # noqa: E402
 import label  # noqa: E402
 import modules  # noqa: E402
+import population  # noqa: E402
 
 MODULE = """Require Import ZesuSsz.Automation.All.
 
@@ -150,6 +151,10 @@ class Label(unittest.TestCase):
         self.assertEqual(label.label_proof(
             ["iApply find_in_context_mem_mapsto_semantic."])[0], "L2")
 
+    def test_an_events_witness_stays_class_one(self):
+        self.assertEqual(label.label_proof(
+            ["iExists (writeOutputEvents x, tt)L."])[0], "L1")
+
     def test_a_sealed_unfold_is_class_three(self):
         self.assertEqual(label.label_proof(
             ['iEval (rewrite bundle_unfold) in "H".'])[0], "L3")
@@ -161,9 +166,9 @@ class Label(unittest.TestCase):
         self.assertNotIn("L4", label.label_proof(
             ["iDestruct select (_ ∗ _) as \"[A B]\".", "bv_solve."])[1])
 
-    def test_a_payload_is_class_five(self):
+    def test_a_payload_is_class_two(self):
         self.assertEqual(label.label_proof(
-            ["iApply write_success_payload_at_split."])[0], "L5")
+            ["iApply write_success_payload_at_split."])[0], "L2")
 
     def test_an_unmatched_proof_is_other(self):
         self.assertEqual(label.label_proof(["iPoseProof foo as \"H\"."])[0],
@@ -174,31 +179,27 @@ class Classify(unittest.TestCase):
     def predict(self, text):
         return classify.classify(text).pred_class
 
-    def test_an_events_existential_is_class_one(self):
+    def test_a_trace_witness_is_class_one(self):
         self.assertEqual(self.predict(
             "  ============================\n"
-            "  ∃ events : list event, spec_trace events"), "C1")
+            "  ∃ x : spec *ₗ (), ⌜scons (SWriteMem a) snil ⊆ scons_snap x⌝"),
+            "C1")
 
     def test_a_word_wanted_from_an_array_is_class_two(self):
         self.assertEqual(self.predict(
             ' "Harray" : base ↦ₘ∗ bytes\n'
             " --------------------------------------∗\n"
-            " find_in_context (FindDirect (λ a, a ↦ₘ v))"), "C2")
+            " find_in_context (FindMemMapsTo a) (λ v, v)"), "C2")
 
-    def test_a_sealed_head_is_class_three(self):
+    def test_an_array_slice_is_class_two(self):
         self.assertEqual(self.predict(
             " --------------------------------------∗\n"
-            " writeSuccessSuffixHashesCallerBundle sp base"), "C3")
+            " address ↦ₘ∗ take 18 values"), "C2")
 
-    def test_a_pure_bitvector_goal_is_class_four(self):
+    def test_a_byte_list_witness_is_class_two(self):
         self.assertEqual(self.predict(
-            "  sp : bv 64\n  ============================\n"
-            "  bv_unsigned (sp + BV 64 8) = bv_unsigned sp + 8"), "C4")
-
-    def test_a_payload_goal_is_class_five(self):
-        self.assertEqual(self.predict(
-            " --------------------------------------∗\n"
-            " writeSuccessPayload base bytes"), "C5")
+            "  ============================\n"
+            "  ∃ y : list (bv 8) *ₗ (), True"), "C2")
 
     def test_an_unfold_equivalence_is_class_three(self):
         self.assertEqual(self.predict(
@@ -206,30 +207,39 @@ class Classify(unittest.TestCase):
             "  uPred_equiv' (writeSuccessSuffixHashesCallerBundle base)"
             " (base ↦ₘ∗ source)"), "C3")
 
-    def test_a_side_condition_inside_an_iris_goal_is_class_four(self):
+    def test_a_side_condition_is_class_four(self):
         self.assertEqual(self.predict(
             '  "Hx" : "x1" ↦ᵣ RVal_Bits v\n'
             "  ============================\n"
             "  bv_or (bv_zero_extend 64 v ≪ 8) w = bv_or a b"), "C4")
 
-    def test_a_byte_list_witness_is_class_five(self):
+    def test_a_frame_over_a_folded_context_is_class_six(self):
         self.assertEqual(self.predict(
-            "  ============================\n"
-            "  ∃ y : list (bv 8) *ₗ (), True"), "C5")
+            " _ : exactTailWithdrawalsBranchZeroEntry args witness P\n"
+            " --------------------------------------∗\n"
+            ' reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp'), "C6")
 
-    def test_an_instruction_lookup_stays_unknown(self):
+    def test_a_frame_over_an_atomized_context_is_unknown(self):
         prediction = classify.classify(
+            ' _ : "x9" ↦ᵣ RVal_Bits v\n'
+            " --------------------------------------∗\n"
+            ' reg_col shapes ∗ "x2" ↦ᵣ RVal_Bits sp')
+        self.assertEqual(prediction.pred_class, "unknown")
+        self.assertIn("atomized", prediction.detail["shape"])
+
+    def test_an_instruction_lookup_is_class_seven(self):
+        prediction = classify.classify(
+            " _ : writeSuccessCompleteNativeCode\n"
             " --------------------------------------□\n"
             " find_in_context (FindInstrKind 87656 false) (λ ik, True)")
-        self.assertEqual(prediction.pred_class, "unknown")
-        self.assertEqual(prediction.detail["shape"], "instruction lookup")
+        self.assertEqual(prediction.pred_class, "C7")
+        self.assertTrue(prediction.detail["bundle"])
 
-    def test_a_register_collection_stays_unknown(self):
-        prediction = classify.classify(
+    def test_a_bare_match_is_class_eight(self):
+        self.assertEqual(self.predict(
             " --------------------------------------∗\n"
-            " reg_col writeSuccessStorageKeysOtherRegShapes")
-        self.assertEqual(prediction.pred_class, "unknown")
-        self.assertEqual(prediction.detail["shape"], "register collection")
+            " match writeSuccessTransactionData t with\n"
+            " | [] => True\n | _ :: _ => False\n end -∗ True"), "C8")
 
     def test_a_closed_probe_has_no_prediction(self):
         self.assertEqual(classify.classify("", "closed").pred_class, "n/a")
@@ -237,6 +247,38 @@ class Classify(unittest.TestCase):
     def test_every_goal_gets_a_class(self):
         prediction = classify.classify(capture.count_goals(SHOW_OUTPUT)[1])
         self.assertEqual(prediction.detail["classes"], ["C4", "C2"])
+
+
+class Population(unittest.TestCase):
+    def test_a_trivial_unfold_lemma_is_its_own_population(self):
+        self.assertEqual(population.population(
+            "Interfaces.v", "bundle_unfold", ["done."]), "unfold")
+
+    def test_a_refused_statement_is_pure(self):
+        self.assertEqual(population.population(
+            "WriteSuccessThing.v", "helper", ["lia."], "not_bi"), "pure")
+
+    def test_a_model_module_is_pure(self):
+        self.assertEqual(population.population(
+            "WriteSuccessExactValueModel.v", "value_model", ["done."]), "pure")
+
+    def test_everything_else_is_iris(self):
+        self.assertEqual(population.population(
+            "WriteSuccessThing.v", "thing_correct", ["iFrame."]), "iris")
+
+
+class Labels(unittest.TestCase):
+    def test_a_code_step_is_label_seven(self):
+        self.assertEqual(label.label_proof(["zesu_expose_code_lists."])[0],
+                         "L7")
+
+    def test_a_named_unfold_is_label_six(self):
+        self.assertEqual(label.label_proof(
+            ['iEval (rewrite /writeSuccessTailFrame) in "H".'])[0], "L6")
+
+    def test_plain_glue_is_not_label_six(self):
+        self.assertNotIn("L6", label.label_proof(
+            ['iEval (rewrite lookup_app) in "H".'])[1])
 
 
 if __name__ == "__main__":

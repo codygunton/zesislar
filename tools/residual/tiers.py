@@ -14,6 +14,10 @@ from pathlib import Path
 
 PROOF_GLOB = "ZesuSsz/Proofs/WriteSuccess/*.v"
 ADDED_SINCE = "2026-09-10"
+# The rule-15 era: the modules written after the rule-15 automation
+# landed. 2026-09-15 is the boundary that gives the 54 records the
+# lead counted in the section 9 review.
+RULE_15_SINCE = "2026-09-15"
 MODIFIED_SINCE = "2026-09-14"
 NEWEST_ADDED = 50
 SWEEP_FILES = 100
@@ -65,3 +69,18 @@ def recently_modified(repository: Path) -> set[str]:
 def tier_one_modules(repository: Path) -> list[str]:
     paths = set(newest_added(repository)) | recently_modified(repository)
     return sorted(path for path in paths if (repository / path).exists())
+
+
+def rule_15_modules(repository: Path) -> list[str]:
+    """The modules added in the rule-15 era, the harness's real population."""
+    order: list[str] = []
+    seen: set[str] = set()
+    for commit in commits([f"--since={RULE_15_SINCE}", "--diff-filter=A"],
+                          repository):
+        if len(commit.files) > SWEEP_FILES:
+            continue
+        for path in commit.files:
+            if path not in seen and (repository / path).exists():
+                seen.add(path)
+                order.append(path)
+    return sorted(order)
