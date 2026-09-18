@@ -71,10 +71,105 @@ Proof.
     /WriteSuccessPostTransactionResources.writeSuccessHashesResources
     /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources)
     in "Hresources".
-  repeat iDestruct select (_ ∗ _)%I as "[? ?]".
+  iDestruct "Hresources" as "[Hresources Hx18]".
+  iDestruct "Hresources" as
+    "[Hsys [Hx1 [Hx2 [Hx5 [Hx10 [Hx11 [HcallStack [Hmmio [Htrace [Hresources _]]]]]]]]]]".
+  iDestruct "Hresources" as
+    "[HcallerRegs1 [HcallerRegs2 [HcallerRegs3 Hresources]]]".
+  iDestruct "Hresources" as "[Hx8 [Hx9 Hresources]]".
+  repeat iDestruct "Hresources" as "[? Hresources]".
+  repeat iDestruct select (∃ _, _)%I as (?) "?".
   repeat iDestruct select (⌜_⌝)%I as %?.
+  iRename select (P)%I into "HP".
+  iRename select ((bv_unsigned (writeSuccessFrameSp witness) + 1640) ↦ₘ? 256)%I
+    into "Hstack1640".
+  iEval (simpl [exactTailWithdrawalCountOtherCallerShapes]) in "HcallerRegs1".
+  iDestruct "HcallerRegs1" as "[Hx12 [Hx13 [Hx14 [Hx15 HcallerRegs1]]]]".
+  iRename select ((bv_unsigned (writeSuccessFrameSp witness) - 80) ↦ₘ? 64)%I
+    into "Hstack64".
+  iDestruct (mem_mapsto_uninit_split 32 with "Hstack64")
+    as "[HstackLow32 HstackHigh32]"; first lia.
+  iAssert (writeSuccessExactTailCallerBundle args witness)%I
+    with "[-HpostPre Hsys Hx1 Hx2 Hx5 Hx10 Hx11 HcallStack Hmmio Htrace Hx18
+      Hx8 Hx9 HP Hstack1640 Hx12 Hx13 Hx14 Hx15
+      HcallerRegs1 HcallerRegs2 HcallerRegs3 HstackHigh32]"
+    as "HtailCaller".
+  { iApply (bi.equiv_entails_1_2 _ _
+      (writeSuccessExactTailCallerBundle_unfold args witness)).
+    rewrite /writeSuccessExactTailCallerWithCopiedWords
+      /writeSuccessExactCopiedTailWords /writeSuccessExactValueMemory
+      /WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources
+      /WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
+      /WriteSuccessPostTransactionResources.writeSuccessHashesResources
+      /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources.
+    repeat first [zesu_open_matching_copied_word_package |
+      zesu_open_matching_resource_package].
+    iFrame. iFrame "%". }
+  iAssert ((writeSuccessExactPostWithdrawalsCallerFrameRaw args witness) ∗
+      bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗
+        writeSuccessWithdrawalsBytes witness)%I
+    with "[HtailCaller HcallerRegs1 HcallerRegs2 HcallerRegs3 HstackHigh32]"
+    as "[HcallerRaw Hwithdrawals]".
+  { iEval (rewrite writeSuccessExactTailCallerBundle_unfold
+      /writeSuccessExactTailCallerWithCopiedWords) in "HtailCaller".
+    repeat iDestruct "HtailCaller" as "[? HtailCaller]".
+    iDestruct select (bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗
+      writeSuccessWithdrawalsBytes witness)%I as "Hwithdrawals".
+    iSplitR "Hwithdrawals"; last iFrame.
+    iEval (rewrite /reg_col) in "HcallerRegs1 HcallerRegs2 HcallerRegs3".
+    rewrite /writeSuccessExactPostWithdrawalsCallerFrameRaw
+      /writeSuccessExactPostWithdrawalsMemoryFrame /writeSuccessExactValueMemory
+      /writeSuccessExactCopiedTailWords
+      /WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources
+      /WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
+      /WriteSuccessPostTransactionResources.writeSuccessHashesResources
+      /WriteSuccessPostTransactionResources.writeSuccessOptionalDescriptorResources
+      /reg_col.
+    repeat first [zesu_open_matching_copied_word_package |
+      zesu_open_matching_resource_package].
+    iEval (simpl) in "HcallerRegs1 HcallerRegs2 HcallerRegs3". simpl.
+    have HstackHalf : bv_unsigned (writeSuccessFrameSp witness) - 80 + 32 =
+        bv_unsigned (writeSuccessFrameSp witness) - 48 by lia.
+    iEval (rewrite HstackHalf /=) in "HstackHigh32".
+    iRename select (writeSuccessTerminalSavedSlots witness)%I into "Hterminal".
+    iEval (rewrite /writeSuccessTerminalSavedSlots) in "Hterminal".
+    iRename select (writeSuccessTransactionsInvariant _ _ _ _ _ _ _ _)%I
+      into "HtxInvariant".
+    iEval (rewrite /writeSuccessTransactionsInvariant) in "HtxInvariant".
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]".
+    repeat iDestruct select (∃ _, _)%I as (?) "?".
+    repeat iDestruct select (⌜_⌝)%I as %?.
+    iFrame. iFrame "%". }
+  iAssert (writeSuccessExactPostWithdrawalsCallerFrame args witness)%I
+    with "[HcallerRaw]" as "Hcaller".
+  { iApply (bi.equiv_entails_1_2 _ _
+      (writeSuccessExactPostWithdrawalsCallerFrame_unfold args witness)).
+    iFrame. }
+  iDestruct (mem_mapsto_uninit_split 104 with "Hstack1640")
+    as "[_ Hstack1744Tail]"; first lia.
+  iDestruct (mem_mapsto_uninit_split 48 with "Hstack1744Tail")
+    as "[Hstack1744 _]"; first lia.
+  have Hstack1744Address : bv_unsigned (writeSuccessFrameSp witness) + 1640 + 104 =
+      bv_unsigned (writeSuccessFrameSp witness) + 1744 by lia.
+  iEval (rewrite Hstack1744Address) in "Hstack1744".
+  iAssert (instr_pre 0x156e8
+      (withdrawalLoopExit (writeSuccessFrameSp witness)
+        (bv_unsigned (writeSuccessWithdrawalsBase witness))
+        (writeSuccessWithdrawalsBytes witness)
+        (writeSuccessExactPostWithdrawalsEvents witness)
+        (writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ P)))%I
+    with "[HpostPre]" as "HloopExit".
+  { iApply (instr_pre_wand 0x156e8 0x156e8 true true with "HpostPre");
+      [done | reflexivity |].
+    iIntros "Hexit".
+    rewrite /withdrawalLoopExit /writeSuccessExactPostWithdrawalsBoundary
+      /writeSuccessExactPostWithdrawalsRegisters
+      writeSuccessExactPostWithdrawalsUntouched_unfold /reg_col.
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]".
+    repeat iDestruct select (∃ _, _)%I as (?) "?".
+    repeat iDestruct select (⌜_⌝)%I as %?.
+    simpl. iFrame. iPureIntro. done. }
   iEval (rewrite /withdrawalLoopSpec /withdrawalLoopPayload
-    /writeSuccessExactPostWithdrawalsCallerFrame
     /writeSuccessExactPostWithdrawalsMemoryFrame /writeSuccessExactValueMemory).
   rewrite HbaseWord HcountWord Hcount Htail.
   iExists [], row, rest,
@@ -86,6 +181,8 @@ Proof.
   all: try (cbv [mapRamBase machineRamEnd mapRamSize defaultMap]
     in HstackLow, HstackHigh; lia).
   all: try assumption.
+  all: iFrame.
+  all: rewrite big_sepL_nil.
   all: iFrame.
   all: iPureIntro; try exact Hfacts.
   all: unfold writeSuccessWitnessWellFormed in Hwf.
