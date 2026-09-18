@@ -90,16 +90,29 @@ Proof.
     rewrite HbytesNil.
     iFrame.
     iFrame "%". }
-  iAssert (writeSuccessExactPostWithdrawalsCallerFrameRaw args witness)%I
-    with "[HtailCaller HcallerRegs1 HcallerRegs2 HcallerRegs3 HstackHigh32]"
-    as "HcallerRaw".
-  { iEval (rewrite writeSuccessExactTailCallerBundle_unfold
-      /writeSuccessExactTailCallerWithCopiedWords) in "HtailCaller".
+  iEval (rewrite writeSuccessExactTailCallerBundle_unfold
+    /writeSuccessExactTailCallerWithCopiedWords) in "HtailCaller".
+  iDestruct "HtailCaller" as
+    "[HtailStackLow [HtailSp [Hcopied HtailCaller]]]".
+  iAssert (((bv_unsigned (writeSuccessFrameSp witness) + 72) ↦ₘ
+      WriteSuccessPostTransactionResources.writeSuccessPostWord
+        (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+          (writeSuccessDecodedBytes witness)) 7) ∗
+      writeSuccessExactCopiedTailWordsWithout7
+        (writeSuccessFrameSp witness) (writeSuccessDecodedBytes witness))%I
+    with "[Hcopied]" as "[Hword7 HcopiedRest]".
+  { iEval (rewrite /writeSuccessExactCopiedTailWords) in "Hcopied".
+    rewrite /writeSuccessExactCopiedTailWordsWithout7.
+    repeat iDestruct "Hcopied" as "[? Hcopied]". iFrame. }
+  iAssert (writeSuccessExactPostWithdrawalsCallerFrameRestRaw args witness)%I
+    with "[HtailStackLow HtailSp HcopiedRest HtailCaller
+      HcallerRegs1 HcallerRegs2 HcallerRegs3 HstackHigh32]"
+    as "HcallerRestRaw".
+  {
     repeat iDestruct "HtailCaller" as "[? HtailCaller]".
     iEval (rewrite /reg_col) in "HcallerRegs1 HcallerRegs2 HcallerRegs3".
-    rewrite /writeSuccessExactPostWithdrawalsCallerFrameRaw
+    rewrite /writeSuccessExactPostWithdrawalsCallerFrameRestRaw
       /writeSuccessExactPostWithdrawalsMemoryFrame /writeSuccessExactValueMemory
-      /writeSuccessExactCopiedTailWords
       /WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources
       /WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
       /WriteSuccessPostTransactionResources.writeSuccessHashesResources
@@ -121,6 +134,9 @@ Proof.
     repeat iDestruct select (⌜_⌝)%I as %?.
     iFrame. iFrame "%".
   }
+  iAssert (writeSuccessExactPostWithdrawalsCallerFrameRaw args witness)%I
+    with "[Hword7 HcallerRestRaw]" as "HcallerRaw".
+  { rewrite /writeSuccessExactPostWithdrawalsCallerFrameRaw. iFrame. }
   iAssert (writeSuccessExactPostWithdrawalsCallerFrame args witness)%I
     with "[HcallerRaw]" as "Hcaller".
   { iApply (bi.equiv_entails_1_2 _ _ (writeSuccessExactPostWithdrawalsCallerFrame_unfold args witness)); iFrame. }
