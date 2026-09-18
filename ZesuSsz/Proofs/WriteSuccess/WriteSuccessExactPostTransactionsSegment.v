@@ -99,12 +99,17 @@ Proof.
     all: lazymatch goal with | |- environments.envs_entails _ (exactTailWithdrawalsBranchZeroEntry _ _ _) => iApply (exact_tail_withdrawal_branch_zero_adapter args witness P Hwf with "Hresources"); iPureIntro; assumption | |- environments.envs_entails _ (exactTailWithdrawalsBranchNonzeroEntry _ _ _) => iApply (exact_tail_withdrawal_branch_nonzero_adapter args witness P Hwf with "Hresources"); iPureIntro; assumption end. }
   iAssert (instr_body 0x1568c (exactTailWithdrawalCountReturn args witness P))%I with "[]" as "#Hreturn".
   { exact_post_transactions_open_native_code. iAssert (□ instr_pre 0x15690 (exactTailWithdrawalBranchResources args witness P))%I with "[]" as "#Hnext"; [iModIntro; iApply instr_pre_to_body; iNext; iExact "Hstatus"|].
-    zesu_block. Unshelve. all: zesu_open_resource_groups; try zesu_run. all: iIntros "Hoptional"; try zesu_run.
+    zesu_block. Unshelve. all: zesu_open_resource_groups; try zesu_run.
+    all: iRename select (exactTailWithdrawalCountFrame args witness P)%I into "HcountFrame"; iEval (rewrite exactTailWithdrawalCountFrame_unfold /exactTailWithdrawalCommonFrame) in "HcountFrame"; zesu_open_resource_groups; try zesu_run.
     all: iEval (unfold exactTailWithdrawalBranchResources); iRename select (reg_col ((KindReg "x19", BitsShape 64) :: _))%I into "HsavedTail"; try zesu_run.
-    all: iFrame "Hoptional"; try zesu_run. }
+    all: iDestruct select (((bv_unsigned (writeSuccessFrameSp witness) + 1588) ↦ₘ∗ _ ∗ (bv_unsigned (writeSuccessFrameSp witness) + 1620) ↦ₘ∗ _)%I) as "[? ?]"; iFrame; iPureIntro; exact Hwf. }
   iAssert (instr_body 0x15688 (exactTailWithdrawalCountCallEntry args witness P))%I with "[]" as "#Hcount".
   { exact_post_transactions_open_native_code. iPoseProof "Hlookup" as "#Hlookup15688"; iEval (rewrite /instr_lookup_resources) in "Hlookup15688"; iPoseProof ("Hlookup15688" $! 0x15688 with "[]") as "#Hinstr15688"; [iPureIntro; rewrite IslaTraces.write_success_blocks.Index.lookup_a15688; done|].
-    iEval (rewrite IslaTraces.write_success_blocks.Index.lookup_a15688) in "Hinstr15688"; rewrite instr_pre'_eq; iIntros "Hentry"; iEval (rewrite /exactTailWithdrawalCountCallEntry) in "Hentry"; iDestruct "Hentry" as (old5 old11) "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & %Halign' & %Hlower' & %Hupper' & %Hcount' & HcountFrame & Hnext & _)".
+    iEval (rewrite IslaTraces.write_success_blocks.Index.lookup_a15688) in "Hinstr15688"; rewrite instr_pre'_eq; iIntros "Hentry"; iEval (rewrite /exactTailWithdrawalCountCallEntry) in "Hentry"; iDestruct "Hentry" as "(Hsys & Hscratch & H1 & H2 & H10 & Hstack & Hmmio & Htrace & %Hfacts & HcountFrame & Hnext)".
+    destruct Hfacts as [Halign' [Hlower' [Hupper' Hcount']]].
+    iEval (rewrite !reg_col_cons reg_col_nil) in "Hscratch"; iDestruct "Hscratch" as "(H5 & H11 & _)".
+    iDestruct "H5" as (v5 Hv5) "H5"; apply valu_has_bits_shape in Hv5 as (old5 & ->).
+    iDestruct "H11" as (v11 Hv11) "H11"; apply valu_has_bits_shape in Hv11 as (old11 & ->).
     iPoseProof (encoder_int_exact_framed_correct (writeSuccessValueWord (writeSuccessValues witness) 12) (writeSuccessFrameSp witness) (BV 64 0x1568c) old5 old11 (exactTailAfterWithdrawalCountEvents witness) (exactTailWithdrawalCountFrame args witness P) with "Hint Houtput") as "Hcallee".
     iEval (rewrite exact_tail_after_raw_count) in "Htrace"; replace (bv_wrap 64 87688) with 87688 by bv_solve; zesu_run. Unshelve. all: unLET. all: try (rewrite Hcount'). all: try reflexivity. all: try bv_solve. all: try done. all: iFrame. }
   iAssert (instr_body 0x15688 (exactTailWithdrawalLoadPost args witness P))%I with "[]" as "#Hload".
