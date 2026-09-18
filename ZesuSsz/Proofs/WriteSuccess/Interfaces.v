@@ -519,6 +519,27 @@ Definition writeSuccessExactCopiedTailWords `{!islaG Sigma}
    (bv_unsigned sp + 88) ↦ₘ writeSuccessPostWord words 15)%I.
 Global Instance : LithiumUnfold (@writeSuccessExactCopiedTailWords) := I.
 
+Definition writeSuccessExactCopiedTailWordsWithout7 `{!islaG Sigma}
+    (sp : bv 64) (decodedBytes : list (bv 8)) : iProp Sigma :=
+  let words := writeSuccessPostTailWords decodedBytes in
+  ((bv_unsigned sp + 24) ↦ₘ writeSuccessPostWord words 0 ∗
+   (bv_unsigned sp + 16) ↦ₘ writeSuccessPostWord words 1 ∗
+   (bv_unsigned sp + 40) ↦ₘ writeSuccessPostWord words 2 ∗
+   (bv_unsigned sp + 32) ↦ₘ writeSuccessPostWord words 3 ∗
+   (bv_unsigned sp + 56) ↦ₘ writeSuccessPostWord words 4 ∗
+   (bv_unsigned sp + 48) ↦ₘ writeSuccessPostWord words 5 ∗
+   (bv_unsigned sp + 64) ↦ₘ writeSuccessPostWord words 6 ∗
+   (bv_unsigned sp + 8) ↦ₘ writeSuccessPostWord words 8 ∗
+   (bv_unsigned sp + 80) ↦ₘ writeSuccessPostWord words 9 ∗
+   (bv_unsigned sp + 296) ↦ₘ writeSuccessPostWord words 10 ∗
+   (bv_unsigned sp + 304) ↦ₘ writeSuccessPostWord words 11 ∗
+   (bv_unsigned sp + 280) ↦ₘ writeSuccessPostWord words 12 ∗
+   (bv_unsigned sp + 288) ↦ₘ writeSuccessPostWord words 13 ∗
+   (bv_unsigned sp + 96) ↦ₘ writeSuccessPostWord words 14 ∗
+   (bv_unsigned sp + 88) ↦ₘ writeSuccessPostWord words 15)%I.
+Global Instance : LithiumUnfold
+  (@writeSuccessExactCopiedTailWordsWithout7) := I.
+
 Definition writeSuccessExactTailCallerWithCopiedWords `{!islaG Sigma} `{!threadG}
     {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
@@ -762,7 +783,8 @@ Definition writeSuccessExactPostWithdrawalsMemoryFrame
    (bv_unsigned sp - 80) ↦ₘ? 32 ∗
    (bv_unsigned sp - 48) ↦ₘ? 32 ∗
    bv_unsigned sp ↦ₘ? 8 ∗
-   writeSuccessExactCopiedTailWords sp (writeSuccessDecodedBytes witness) ∗
+   writeSuccessExactCopiedTailWordsWithout7 sp
+     (writeSuccessDecodedBytes witness) ∗
    (bv_unsigned sp + 312) ↦ₘ∗ writeSuccessSourceBytes witness ∗
    writeSuccessExactValueMemory sp values ∗
    (bv_unsigned sp + 1624) ↦ₘ? 16 ∗
@@ -784,7 +806,7 @@ Definition writeSuccessExactPostWithdrawalsMemoryFrame
 Global Instance : LithiumUnfold
   (@writeSuccessExactPostWithdrawalsMemoryFrame) := I.
 
-Definition writeSuccessExactPostWithdrawalsCallerFrameRaw
+Definition writeSuccessExactPostWithdrawalsCallerFrameRestRaw
     `{!islaG Sigma} `{!threadG} {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
     (args : WriteSuccessArgs Decoded)
@@ -795,7 +817,38 @@ Definition writeSuccessExactPostWithdrawalsCallerFrameRaw
        "x27"; "x28"; "x29"; "x30"; "x31"]) ∗
    writeSuccessExactPostWithdrawalsMemoryFrame args witness)%I.
 Global Instance : LithiumUnfold
+  (@writeSuccessExactPostWithdrawalsCallerFrameRestRaw) := I.
+
+Definition writeSuccessExactPostWithdrawalsCallerFrameRaw
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  let sp := writeSuccessFrameSp witness in
+  let words := writeSuccessPostTailWords (writeSuccessDecodedBytes witness) in
+  ((bv_unsigned sp + 72) ↦ₘ writeSuccessPostWord words 7 ∗
+   writeSuccessExactPostWithdrawalsCallerFrameRestRaw args witness)%I.
+Global Instance : LithiumUnfold
   (@writeSuccessExactPostWithdrawalsCallerFrameRaw) := I.
+
+Definition writeSuccessExactPostWithdrawalsCallerFrameRest
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) : iProp Sigma :=
+  writeSuccessExactPostWithdrawalsCallerFrameRestRaw args witness.
+
+Lemma writeSuccessExactPostWithdrawalsCallerFrameRest_unfold
+    `{!islaG Sigma} `{!threadG} {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) :
+  writeSuccessExactPostWithdrawalsCallerFrameRest args witness ⊣⊢
+    writeSuccessExactPostWithdrawalsCallerFrameRestRaw args witness.
+Proof. done. Qed.
+
+Global Opaque writeSuccessExactPostWithdrawalsCallerFrameRest.
+
 Definition writeSuccessExactPostWithdrawalsCallerFrame
     `{!islaG Sigma} `{!threadG} {Decoded}
     `{!WriteSuccessMemoryRepresentation Decoded}
@@ -825,7 +878,10 @@ Definition writeSuccessExactTailFirstBranchState
    ⌜bv_unsigned (writeSuccessFrameSp witness) `mod` 16 = 0 /\
      mapRamBase defaultMap <= bv_unsigned (writeSuccessFrameSp witness) /\
      bv_unsigned (writeSuccessFrameSp witness) + 1896 < machineRamEnd defaultMap⌝ ∗
-   writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ True)%I.
+   (bv_unsigned (writeSuccessFrameSp witness) + 72) ↦ₘ
+     writeSuccessPostWord
+       (writeSuccessPostTailWords (writeSuccessDecodedBytes witness)) 7 ∗
+   writeSuccessExactPostWithdrawalsCallerFrameRest args witness ∗ True)%I.
 Global Instance : LithiumUnfold
   (@writeSuccessExactTailFirstBranchState) := I.
 
