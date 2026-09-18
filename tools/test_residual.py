@@ -200,6 +200,37 @@ class Classify(unittest.TestCase):
             " --------------------------------------∗\n"
             " writeSuccessPayload base bytes"), "C5")
 
+    def test_an_unfold_equivalence_is_class_three(self):
+        self.assertEqual(self.predict(
+            "  base : Z\n  ============================\n"
+            "  uPred_equiv' (writeSuccessSuffixHashesCallerBundle base)"
+            " (base ↦ₘ∗ source)"), "C3")
+
+    def test_a_side_condition_inside_an_iris_goal_is_class_four(self):
+        self.assertEqual(self.predict(
+            '  "Hx" : "x1" ↦ᵣ RVal_Bits v\n'
+            "  ============================\n"
+            "  bv_or (bv_zero_extend 64 v ≪ 8) w = bv_or a b"), "C4")
+
+    def test_a_byte_list_witness_is_class_five(self):
+        self.assertEqual(self.predict(
+            "  ============================\n"
+            "  ∃ y : list (bv 8) *ₗ (), True"), "C5")
+
+    def test_an_instruction_lookup_stays_unknown(self):
+        prediction = classify.classify(
+            " --------------------------------------□\n"
+            " find_in_context (FindInstrKind 87656 false) (λ ik, True)")
+        self.assertEqual(prediction.pred_class, "unknown")
+        self.assertEqual(prediction.detail["shape"], "instruction lookup")
+
+    def test_a_register_collection_stays_unknown(self):
+        prediction = classify.classify(
+            " --------------------------------------∗\n"
+            " reg_col writeSuccessStorageKeysOtherRegShapes")
+        self.assertEqual(prediction.pred_class, "unknown")
+        self.assertEqual(prediction.detail["shape"], "register collection")
+
     def test_a_closed_probe_has_no_prediction(self):
         self.assertEqual(classify.classify("", "closed").pred_class, "n/a")
 

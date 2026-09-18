@@ -71,6 +71,27 @@ def agreement(records: list[dict]) -> tuple[int, int, int]:
     return first, anywhere, len(labeled)
 
 
+def agreement_within_classes(records: list[dict]) -> tuple[int, int]:
+    """Agreement counting only records the classifier placed in a class.
+
+    A label can never match a residual goal whose class C1 to C5 does not
+    cover, so this figure separates a wrong class from a missing class.
+    """
+    labeled = [r for r in classified(records)
+               if r.get("label_class") in LABEL_TO_CLASS
+               and r["pred_class"] != "unknown"]
+    hits = sum(1 for r in labeled
+               if r["pred_class"] == LABEL_TO_CLASS[r["label_class"]])
+    return hits, len(labeled)
+
+
+def unknown_shapes(records: list[dict]) -> str:
+    counts = collections.Counter(
+        (r.get("pred_detail") or {}).get("shape", "other")
+        for r in records if r.get("pred_class") == "unknown")
+    return " ".join(f"{name} {count}" for name, count in counts.most_common())
+
+
 def error_kinds(records: list[dict]) -> str:
     counts = collections.Counter(r.get("error_kind") or "none"
                                  for r in records
@@ -117,6 +138,7 @@ def report(records: list[dict], tier: int | None) -> list[str]:
     seconds = [float(r.get("seconds", 0.0)) for r in records]
     median, p90 = quantiles(seconds)
     first, anywhere, labeled = agreement(records)
+    within, ranked_labeled = agreement_within_classes(records)
     unknown = sum(1 for r in ranked if r.get("pred_class") == "unknown")
     goals = [r["goal_count"] for r in ranked if r.get("goal_count")]
     not_bi = sum(1 for r in records if r.get("error_kind") == "not_bi")
@@ -132,7 +154,10 @@ def report(records: list[dict], tier: int | None) -> list[str]:
         "pred_class  " + distribution(records, "pred_class", PREDICTIONS),
         "label_class " + distribution(records, "label_class", LABELS),
         f"agreement first goal {first}/{labeled} {percent(first, labeled)}; "
-        f"any goal {anywhere}/{labeled} {percent(anywhere, labeled)}",
+        f"any goal {anywhere}/{labeled} {percent(anywhere, labeled)}; "
+        f"within classes {within}/{ranked_labeled} "
+        f"{percent(within, ranked_labeled)}",
+        f"unknown shapes: {unknown_shapes(records) or 'none'}",
         f"unknown {unknown}/{len(ranked)} {percent(unknown, len(ranked))}; "
         f"C4 solver: {solvers(records) or 'none'}",
         "unknown heads: " + ", ".join(
