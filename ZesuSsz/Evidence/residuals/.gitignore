@@ -1,3 +1,4 @@
 # The plain corpus is a build product of run_corpus.py; the tracked copy is
 # corpus.jsonl.gz. Rebuild it with: gunzip -k corpus.jsonl.gz
 corpus.jsonl
+replay.jsonl
