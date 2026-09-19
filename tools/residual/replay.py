@@ -38,6 +38,25 @@ AUTOMATION = "zesu_block"
 STEP_SECONDS = 30
 MARKER = re.compile(r"^(?P<kind>CLOSES|STOP|FAILED|GOAL) (?P<index>\d+)"
                     r"(?P<rest>.*)$")
+MESSAGE = re.compile(r"^(?P<kind>ERRMSG|RAN) (?P<index>\d+)"
+                     r"(?:\s*\|\s*(?P<text>.*))?$")
+# Ltac1 cannot hand a tactic's error text to the script, and `Fail` prints
+# nothing in batch mode. Ltac2 can catch the exception and print it, so the
+# message probe reports why the automation stopped at each state.
+MESSAGE_PREAMBLE = [
+    "From Ltac2 Require Import Ltac2.",
+    'Set Default Proof Mode "Classic".',
+    "Ltac2 zesu_report (name : string) (run : unit -> unit) :=",
+    "  match Control.case run with",
+    '  | Val _ => Message.print (Message.concat (Message.of_string "RAN ")',
+    "                             (Message.of_string name))",
+    "  | Err e => Message.print (Message.concat",
+    '               (Message.concat (Message.of_string "ERRMSG ")',
+    '                  (Message.of_string name))',
+    '               (Message.concat (Message.of_string " | ")',
+    "                  (Message.of_exn e)))",
+    "  end.",
+]
 TIMEOUT_EXIT = 124
 DEFAULT_SECONDS = 300
 
@@ -76,18 +95,29 @@ def check_line(index: int, seconds: int = STEP_SECONDS) -> str:
             f"|idtac \"FAILED {index}\"].")
 
 
-def replay_text(module: Path, lemma: str) -> tuple[str, list[str], list[str]]:
+def message_line(index: int, seconds: int = STEP_SECONDS) -> str:
+    """Ask why the automation stops here, without disturbing the state."""
+    return (f"all: assert_succeeds (ltac2:(zesu_report \"{index}\" "
+            f"(fun () => ltac1:(once (timeout {seconds} {AUTOMATION})))))."
+            )
+
+
+def replay_text(module: Path, lemma: str,
+                messages: bool = False) -> tuple[str, list[str], list[str]]:
     """The replay source, the opener sentences, and the step sentences."""
     proof = find_proof(module, lemma)
     opener, steps = opener_and_steps("\n".join(proof.body))
     lines = module.read_text().split("\n")
-    source = ["Set Printing Width 200."] + lines[:proof.proof_line] + ["Proof."]
+    source = ["Set Printing Width 200."] + lines[:proof.proof_line]
+    if messages:
+        source.extend(MESSAGE_PREAMBLE)
+    source.append("Proof.")
     source.append(f'idtac "{BEGIN}".')
     source.extend(opener)
-    source.append(check_line(0))
+    source.append(message_line(0) if messages else check_line(0))
     for index, sentence in enumerate(steps, start=1):
         source.append(sentence)
-        source.append(check_line(index))
+        source.append(message_line(index) if messages else check_line(index))
     source.append("Abort.")
     source.extend(f"End {name}." for name in reversed(proof.open_blocks))
     source.append(f'Goal True. idtac "{END}". Abort.')
@@ -114,6 +144,7 @@ class Replay:
     n_sentences: int = 0
     closes_at: int | None = None
     steps_reached: int = 0
+    messages: dict = field(default_factory=dict)
     steps: list[Step] = field(default_factory=list)
     error_lines: list[str] = field(default_factory=list)
 
@@ -148,6 +179,35 @@ def parse_markers(output: str, count: int) -> list[Step]:
     return [steps[index] for index in sorted(steps)]
 
 
+def parse_messages(output: str) -> dict:
+    """The failure message the automation raised at each step, by index.
+
+    A Rocq message wraps over several lines, so a line-based read keeps
+    only its first line and loses the goal the message names. The text runs
+    until the next marker.
+    """
+    found: dict[str, str] = {}
+    current: str | None = None
+    chunk: list[str] = []
+    for line in output.split("\n"):
+        marked = MESSAGE.match(line.strip())
+        if marked is None:
+            if current is not None:
+                chunk.append(line.strip())
+            continue
+        if current is not None:
+            found[current] = " ".join(part for part in chunk if part).strip()
+        if marked.group("kind") == "RAN":
+            found[marked.group("index")] = ""
+            current, chunk = None, []
+            continue
+        current = marked.group("index")
+        chunk = [(marked.group("text") or "").strip()]
+    if current is not None:
+        found[current] = " ".join(part for part in chunk if part).strip()
+    return found
+
+
 def first_closing(steps: list[Step]) -> int | None:
     """The first state from which the automation finished the whole proof."""
     for step in steps:
@@ -159,10 +219,11 @@ def first_closing(steps: list[Step]) -> int | None:
 
 def run(module: Path, lemma: str, build_dir: Path, scratch: Path,
         probe_dir: Path, goal_dir: Path,
-        timeout: int = DEFAULT_SECONDS) -> Replay:
-    source, opener, steps = replay_text(module, lemma)
+        timeout: int = DEFAULT_SECONDS, messages: bool = False) -> Replay:
+    source, opener, steps = replay_text(module, lemma, messages)
     probe_dir.mkdir(parents=True, exist_ok=True)
-    probe = probe_dir / f"{module.stem}__{lemma}__replay.v"
+    suffix = "__messages" if messages else "__replay"
+    probe = probe_dir / f"{module.stem}__{lemma}{suffix}.v"
     probe.write_text(source)
     started = time.monotonic()
     process = subprocess.run(
@@ -197,6 +258,12 @@ def run(module: Path, lemma: str, build_dir: Path, scratch: Path,
     # probe diverged at one state or simply ran out of budget late in a long
     # proof, which are different faults with different remedies.
     marked = output.split(BEGIN, 1)[-1].split(END, 1)[0]
+    if messages:
+        # The probe output is the record here, so keep it beside the goals.
+        goal_dir.mkdir(parents=True, exist_ok=True)
+        (goal_dir / f"{probe.stem}.log").write_text(output)
+        result.messages = parse_messages(marked)
+        return result
     result.steps = parse_markers(marked, len(steps) + 1)
     for step in result.steps:
         if step.index:
@@ -238,6 +305,7 @@ def record(result: Replay) -> dict:
             "rss_mib": result.rss_mib, "n_lines": result.n_lines,
             "n_sentences": result.n_sentences, "closes_at": result.closes_at,
             "steps_reached": result.steps_reached,
+            "messages": result.messages,
             "steps": steps, "error_lines": result.error_lines}
 
 

@@ -24,10 +24,16 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from replay_report import goal_shape, read, replayed  # noqa: E402
+from tiers import rule_15_modules  # noqa: E402
 
 OUTPUT = Path("ZesuSsz/Evidence/residuals/AUTOMATION_BACKLOG.md")
 MIN_PROOFS = 3
 SAMPLE_LINES = 5
+RESUME_SENTENCES = 6
+# Section 12 item 4: the instruction fetch and its `find_in_context` are one
+# gap. Both stop because the code resources sit folded in the context.
+MERGED = "code resources folded"
+CODE_SIGNATURES = ("find_in_context(FindInstrKind)", "∃ : option isla_trace")
 
 REMEDY = {
     "C1": ("Compute the events term in the postcondition and close the trace"
@@ -49,6 +55,11 @@ REMEDY = {
               "auto", "half day"),
     "unknown": ("No class covers this shape yet. Read the sample below"
                 " before proposing a rule.", "lead", "unknown"),
+    MERGED: ("Register the code bundle names in `zesu_expose_code_lists` so"
+             " the instruction fetch sees the code resources, instead of"
+             " leaving `instr_lookup_resources`, `spec_instr_resources` and"
+             " `writeSuccessCompleteNativeCode` folded in the context.",
+             "auto", "hour"),
     "closed": ("The automation already finishes here; the line is dead"
                " weight.", "orchestrator", "hour"),
 }
@@ -61,13 +72,38 @@ class Gap:
     signature: str
     lines: int = 0
     proofs: set = field(default_factory=set)
+    recent_lines: int = 0
+    recent_proofs: set = field(default_factory=set)
     sample: str = ""
     sentences: list = field(default_factory=list)
     tactics: collections.Counter = field(default_factory=collections.Counter)
 
 
+def merge_signature(shape: str, text: str) -> tuple[str, str]:
+    """Fold the two instruction-fetch shapes into one gap."""
+    if any(text.startswith(mark) for mark in CODE_SIGNATURES):
+        return MERGED, MERGED
+    return shape, text
+
+
+def resume_sentences(steps: dict, start: int, closes_at: int | None) -> list[str]:
+    """Every sentence from the stop to the first step the automation closed.
+
+    The author's next sentence alone does not say what unblocked the
+    automation; the block up to the resume point does.
+    """
+    last = closes_at if closes_at is not None else max(steps, default=start)
+    text = []
+    for index in range(start, min(last, start + RESUME_SENTENCES - 1) + 1):
+        sentence = (steps.get(index) or {}).get("sentence")
+        if sentence:
+            text.append(sentence)
+    return text
+
+
 def gaps(records: list[dict]) -> list[Gap]:
     """One entry per (class, conclusion signature) the hand lines answered."""
+    recent = {Path(name).name for name in rule_15_modules(Path("."))}
     found: dict[tuple[str, str], Gap] = {}
     for record in replayed(records):
         steps = {step["index"]: step for step in record["steps"]}
@@ -82,14 +118,18 @@ def gaps(records: list[dict]) -> list[Gap]:
             if shape in SKIP_SHAPES:
                 continue
             marks = (before or {}).get("signatures") or ["(no goal)"]
-            key = (shape, marks[0])
-            gap = found.setdefault(key, Gap(shape, marks[0]))
+            shape, mark = merge_signature(shape, marks[0])
+            key = (shape, mark)
+            gap = found.setdefault(key, Gap(shape, mark))
             gap.lines += 1
             gap.proofs.add((record["module"], record["lemma"]))
             gap.tactics[line.get("tactic", "?")] += 1
+            if record["module"] in recent:
+                gap.recent_lines += 1
+                gap.recent_proofs.add((record["module"], record["lemma"]))
             if not gap.sentences:
-                gap.sentences = [line.get("sentence")
-                                 or line.get("tactic", "")]
+                gap.sentences = resume_sentences(steps, index,
+                                                 record["closes_at"])
             if not gap.sample and (before or {}).get("samples"):
                 gap.sample = before["samples"][0]
     return sorted(found.values(), key=lambda gap: -gap.lines)
@@ -98,7 +138,8 @@ def gaps(records: list[dict]) -> list[Gap]:
 def row(rank: int, gap: Gap) -> str:
     _, owner, size = REMEDY.get(gap.shape, REMEDY["unknown"])
     return (f"| {rank} | {gap.shape} | `{gap.signature}` | {len(gap.proofs)} "
-            f"| {gap.lines} | {size} | {owner} |")
+            f"| {gap.lines} | {len(gap.recent_proofs)} | {gap.recent_lines} "
+            f"| {size} | {owner} |")
 
 
 def detail(gap: Gap) -> list[str]:
@@ -110,9 +151,10 @@ def detail(gap: Gap) -> list[str]:
             f"Tactics used: {tactics}.", "",
             "Sample conclusion:", "", "```"]
     text += gap.sample.split("\n")[:SAMPLE_LINES]
-    text += ["```", "", "Hand sentence that closed it:", "", "```"]
-    sentence = gap.sentences[0] if gap.sentences else "(not recorded)"
-    text += sentence.split("\n")[:SAMPLE_LINES]
+    text += ["```", "",
+             "Sentences from the stop to the first step the automation"
+             " closed:", "", "```"]
+    text += (gap.sentences or ["(not recorded)"])
     text += ["```", "", f"Proposed rule: {remedy}", ""]
     return text
 
@@ -137,10 +179,25 @@ def document(records: list[dict], title: str, limit: int) -> str:
             f"dead weight today. Needed hand lines: "
             f"{sum(gap.lines for gap in ranked)} over {len(ranked)} patterns,",
             f"{len(main)} of them in three proofs or more.", "",
-            "| rank | class | conclusion signature | proofs | lines | size | owner |",
-            "| --- | --- | --- | --- | --- | --- | --- |"]
+            "Ranked by hand lines over the whole replayed population. The"
+            " rule-15-era columns count the same rows inside the modules"
+            " written after the rule-15 automation landed, which is the"
+            " population the harness must serve; a second table ranks by"
+            " those.", "",
+            "| rank | class | conclusion signature | proofs | lines |"
+            " r15 proofs | r15 lines | size | owner |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
     for rank, gap in enumerate(main[:limit], start=1):
         text.append(row(rank, gap))
+    recent = sorted((gap for gap in main if gap.recent_lines),
+                    key=lambda gap: -gap.recent_lines)
+    text += ["", "## Ranked by rule-15-era hand lines", "",
+             "| rank | class | conclusion signature | r15 proofs | r15 lines |"
+             " all lines |", "| --- | --- | --- | --- | --- | --- |"]
+    for rank, gap in enumerate(recent[:limit], start=1):
+        text.append(f"| {rank} | {gap.shape} | `{gap.signature}` | "
+                    f"{len(gap.recent_proofs)} | {gap.recent_lines} | "
+                    f"{gap.lines} |")
     text += ["", "## The rows in detail", ""]
     for gap in main[:limit]:
         text += detail(gap)

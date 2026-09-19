@@ -30,6 +30,7 @@ from tiers import rule_15_modules  # noqa: E402
 
 PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
 SET_FILE = Path("ZesuSsz/Evidence/residuals/benchmark_set.txt")
+RULE_15_SET = Path("ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt")
 RESULT_DIR = Path("ZesuSsz/Evidence/residuals/benchmark")
 AUTOMATION = "ZesuSsz/Automation"
 # A source tree of its own, so nothing under the worktree is ever rewritten.
@@ -49,6 +50,23 @@ def freeze(repository: Path, output: Path = SET_FILE) -> list[tuple[str, str]]:
     chosen.sort()
     output.write_text("\n".join(f"{module}:{lemma}"
                                 for module, lemma in chosen) + "\n")
+    return chosen
+
+
+def freeze_rule_15(repository: Path, output: Path = RULE_15_SET) -> list:
+    """The benchmark set restricted to the rule-15 era.
+
+    The whole set answers "did this rule help the corpus". This one answers
+    "did it help the population the harness must serve", which is the
+    question the compliance plan asks.
+    """
+    modules = {Path(name).name for name in rule_15_modules(repository)}
+    chosen = sorted((record["module"], record["lemma"])
+                    for record in corpus.read()
+                    if record.get("population") == "iris"
+                    and record["module"] in modules)
+    output.write_text("\n".join(f"{module}:{lemma}"
+                                 for module, lemma in chosen) + "\n")
     return chosen
 
 
@@ -185,6 +203,10 @@ def main() -> int:
                         help="the commit whose ZesuSsz/Automation to measure")
     parser.add_argument("--freeze", action="store_true",
                         help="rewrite benchmark_set.txt first")
+    parser.add_argument("--set", type=Path, default=SET_FILE,
+                        help="the frozen lemma set to measure")
+    parser.add_argument("--name", default="",
+                        help="suffix for the stored baseline")
     parser.add_argument("--jobs", type=int, default=12)
     parser.add_argument("--seconds", type=int, default=300)
     parser.add_argument("--limit", type=int, default=None)
@@ -194,7 +216,8 @@ def main() -> int:
     commit = subprocess.run(["git", "rev-parse", arguments.automation],
                             cwd=repository, capture_output=True, text=True,
                             check=True).stdout.strip()
-    pairs = freeze(repository) if arguments.freeze else read_set()
+    pairs = (freeze(repository) if arguments.freeze
+             else read_set(arguments.set))
     if arguments.limit:
         pairs = pairs[:arguments.limit]
     print(f"benchmark {commit[:12]}: {len(pairs)} lemmas", file=sys.stderr,
@@ -211,11 +234,15 @@ def main() -> int:
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     result = {"automation": commit, "summary": summary(rows), "rows": rows}
-    earlier = sorted(RESULT_DIR.glob("*.json"))
+    stem = commit[:12] + (f"-{arguments.name}" if arguments.name else "")
+    earlier = sorted(RESULT_DIR.glob(f"*{arguments.name}.json")
+                     if arguments.name else
+                     [path for path in RESULT_DIR.glob("*.json")
+                      if "-" not in path.stem])
     before = None
     if earlier:
         before = json.loads(earlier[-1].read_text())["summary"]
-    (RESULT_DIR / f"{commit[:12]}.json").write_text(json.dumps(result))
+    (RESULT_DIR / f"{stem}.json").write_text(json.dumps(result))
     for line in delta(result["summary"], before):
         print(line)
     return 0

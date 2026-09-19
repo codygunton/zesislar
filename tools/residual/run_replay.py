@@ -57,6 +57,10 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--seconds", type=int, default=300,
                         help="probe time limit")
+    parser.add_argument("--messages", action="store_true",
+                        help="ask why the automation stops, not what it left")
+    parser.add_argument("--only-errors", action="store_true",
+                        help="only the proofs whose replay has a failed step")
     parser.add_argument("--redo", action="store_true",
                         help="replace records whose outcome is timeout")
     parser.add_argument("--build-dir", type=Path,
@@ -74,6 +78,12 @@ def main() -> int:
         modules = {Path(name).name for name in
                    arguments.modules.read_text().split() if name.strip()}
     wanted = iris_proofs(corpus.read(arguments.corpus), modules, arguments.tier)
+    if arguments.only_errors:
+        failing = {(r["module"], r["lemma"])
+                   for r in corpus.read(REPLAY)
+                   if any(step.get("failed") for step in r.get("steps", []))}
+        wanted = [item for item in wanted
+                  if (item[0].name, item[1]) in failing]
     if arguments.sample and arguments.sample < len(wanted):
         import random
         random.Random(arguments.seed).shuffle(wanted)
@@ -112,7 +122,7 @@ def main() -> int:
         try:
             result = replay.run(module, lemma, arguments.build_dir,
                                 arguments.scratch, probe_dir, goal_dir,
-                                arguments.seconds)
+                                arguments.seconds, arguments.messages)
             entry = replay.record(result)
         except Exception as failure:
             entry = {"module": module.name, "lemma": lemma, "outcome": "error",
@@ -121,6 +131,7 @@ def main() -> int:
                      "error_lines": [f"{type(failure).__name__}: {failure}"]}
         entry["commit"] = commit
         entry["population"] = "iris"
+        entry["probe"] = "messages" if arguments.messages else "replay"
         return entry
 
     with ThreadPoolExecutor(max_workers=arguments.jobs) as pool:
