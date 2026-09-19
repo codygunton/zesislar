@@ -18,6 +18,7 @@ import argparse
 import hashlib
 import json
 import re
+import os
 import subprocess
 import sys
 import time
@@ -33,25 +34,43 @@ from sentences import opener_and_steps  # noqa: E402
 BEGIN = "REPLAY-BEGIN"
 END = "REPLAY-END"
 AUTOMATION = "zesu_block"
+# Seconds one automation call may take at one state.
+STEP_SECONDS = 30
 MARKER = re.compile(r"^(?P<kind>CLOSES|STOP|FAILED|GOAL) (?P<index>\d+)"
                     r"(?P<rest>.*)$")
 TIMEOUT_EXIT = 124
+DEFAULT_SECONDS = 300
+
+
+def limit_env(seconds: int) -> dict:
+    """`coqc_scratch.sh` reads its own time limit from the environment."""
+    environment = dict(os.environ)
+    environment["ZESU_COQC_SECONDS"] = str(seconds)
+    return environment
 GOAL_HEAD = 8 * 1024
 # A sentence may open with a goal selector; the tactic is what follows.
 SELECTOR = re.compile(r"^\s*(?:all|\d+(?:-\d+)?(?:\s*,\s*\d+)*)\s*:\s*")
 TACTIC_HEAD = re.compile(r"^\(*\s*(?P<head>[A-Za-z_][\w']*|[-+*{}]+)")
 
 
-def check_line(index: int) -> str:
+def check_line(index: int, seconds: int = STEP_SECONDS) -> str:
     """The probe that asks whether the automation finishes from here.
+
+    Two guards make the walk affordable. `once` stops Ltac backtracking into
+    the automation when the outer test fails: without it a single failing
+    check explores every alternative inside `zesu_run` and never returns.
+    `timeout` bounds one call, so a slow state costs its own budget and not
+    the whole proof.
 
     Branch order matters. The first branch answers the question and costs one
     run of the automation. The second only runs when the first failed, and it
-    prints what the automation left. The third catches an automation error.
+    prints what the automation left. The third records a state where the
+    automation raised or ran past its budget.
     """
+    call = f"once (timeout {seconds} {AUTOMATION})"
     return (f"all: first "
-            f"[assert_succeeds (solve [{AUTOMATION}]); idtac \"CLOSES {index}\" "
-            f"|assert_succeeds ({AUTOMATION}; liShow; "
+            f"[assert_succeeds ({call}; fail); idtac \"CLOSES {index}\" "
+            f"|assert_succeeds ({call}; try liShow; "
             f"lazymatch goal with |- ?g => idtac \"GOAL {index}\" g end); "
             f"idtac \"STOP {index}\" "
             f"|idtac \"FAILED {index}\"].")
@@ -94,6 +113,7 @@ class Replay:
     n_lines: int = 0
     n_sentences: int = 0
     closes_at: int | None = None
+    steps_reached: int = 0
     steps: list[Step] = field(default_factory=list)
     error_lines: list[str] = field(default_factory=list)
 
@@ -138,15 +158,17 @@ def first_closing(steps: list[Step]) -> int | None:
 
 
 def run(module: Path, lemma: str, build_dir: Path, scratch: Path,
-        probe_dir: Path, goal_dir: Path, timeout: int = 300) -> Replay:
+        probe_dir: Path, goal_dir: Path,
+        timeout: int = DEFAULT_SECONDS) -> Replay:
     source, opener, steps = replay_text(module, lemma)
     probe_dir.mkdir(parents=True, exist_ok=True)
     probe = probe_dir / f"{module.stem}__{lemma}__replay.v"
     probe.write_text(source)
     started = time.monotonic()
     process = subprocess.run(
-        ["timeout", str(timeout), "nice", "-n", "10", "bash", str(scratch),
-         str(probe), str(build_dir)], capture_output=True, text=True)
+        ["timeout", str(timeout + 30), "nice", "-n", "10", "bash",
+         str(scratch), str(probe), str(build_dir)],
+        capture_output=True, text=True, env=limit_env(timeout))
     wall = time.monotonic() - started
     output = process.stdout + "\n" + process.stderr
 
@@ -171,6 +193,9 @@ def run(module: Path, lemma: str, build_dir: Path, scratch: Path,
             result.error_lines = output.strip().split("\n")[-8:]
         return result
 
+    # A timeout still carries the steps it reached. Those say whether the
+    # probe diverged at one state or simply ran out of budget late in a long
+    # proof, which are different faults with different remedies.
     marked = output.split(BEGIN, 1)[-1].split(END, 1)[0]
     result.steps = parse_markers(marked, len(steps) + 1)
     for step in result.steps:
@@ -181,6 +206,9 @@ def run(module: Path, lemma: str, build_dir: Path, scratch: Path,
             digest = hashlib.sha256(text.encode()).hexdigest()
             (goal_dir / f"{digest}.txt").write_text(text)
     result.closes_at = first_closing(result.steps)
+    result.steps_reached = sum(
+        1 for step in result.steps
+        if step.closes or step.failed or step.goals)
     return result
 
 
@@ -209,6 +237,7 @@ def record(result: Replay) -> dict:
             "outcome": result.outcome, "seconds": result.seconds,
             "rss_mib": result.rss_mib, "n_lines": result.n_lines,
             "n_sentences": result.n_sentences, "closes_at": result.closes_at,
+            "steps_reached": result.steps_reached,
             "steps": steps, "error_lines": result.error_lines}
 
 

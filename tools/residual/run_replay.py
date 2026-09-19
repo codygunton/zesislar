@@ -55,6 +55,10 @@ def main() -> int:
     parser.add_argument("--coqc-cap", type=int, default=40)
     parser.add_argument("--load-cap", type=float, default=60.0)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--seconds", type=int, default=300,
+                        help="probe time limit")
+    parser.add_argument("--redo", action="store_true",
+                        help="replace records whose outcome is timeout")
     parser.add_argument("--build-dir", type=Path,
                         default=Path("_build/agents/corpus"))
     parser.add_argument("--scratch", type=Path,
@@ -75,7 +79,18 @@ def main() -> int:
         random.Random(arguments.seed).shuffle(wanted)
         wanted = wanted[:arguments.sample]
 
-    done = {(r["module"], r["lemma"]) for r in corpus.read(arguments.output)}
+    existing = corpus.read(arguments.output)
+    if arguments.redo:
+        # Drop only the timeouts this run would reprobe. A wider sweep would
+        # delete records of a set this invocation never visits.
+        scope = {(module.name, lemma) for module, lemma in wanted}
+        keep = [r for r in existing
+                if r["outcome"] != "timeout"
+                or (r["module"], r["lemma"]) not in scope]
+        arguments.output.write_text(
+            "".join(json.dumps(r) + "\n" for r in keep))
+        existing = keep
+    done = {(r["module"], r["lemma"]) for r in existing}
     pending = [item for item in wanted if (item[0].name, item[1]) not in done]
     costs = module_costs(arguments.build_dir)
     default = sorted(s for s, _ in costs.values())[len(costs) // 2] if costs else 0
@@ -96,7 +111,8 @@ def main() -> int:
         wait_for_machine(arguments.coqc_cap, arguments.load_cap)
         try:
             result = replay.run(module, lemma, arguments.build_dir,
-                                arguments.scratch, probe_dir, goal_dir)
+                                arguments.scratch, probe_dir, goal_dir,
+                                arguments.seconds)
             entry = replay.record(result)
         except Exception as failure:
             entry = {"module": module.name, "lemma": lemma, "outcome": "error",

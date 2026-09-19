@@ -13,6 +13,7 @@ import argparse
 import hashlib
 import json
 import re
+import os
 import subprocess
 import sys
 import time
@@ -50,6 +51,14 @@ NO_GOALS = re.compile(r"No more goals|This subproof is complete")
 TACTIC_TIME = re.compile(r"Tactic call zesu_run ran for (?P<seconds>[0-9.]+) secs")
 MAX_RSS = re.compile(r"Maximum resident set size \(kbytes\): (?P<kb>\d+)")
 TIMEOUT_EXIT = 124
+DEFAULT_SECONDS = 300
+
+
+def limit_env(seconds: int) -> dict:
+    """`coqc_scratch.sh` reads its own time limit from the environment."""
+    environment = dict(os.environ)
+    environment["ZESU_COQC_SECONDS"] = str(seconds)
+    return environment
 GOAL_TEXT_HEAD = 8 * 1024
 
 
@@ -153,9 +162,10 @@ def gnu_time() -> list[str]:
 
 def run_probe(probe: Path, build_dir: Path, scratch: Path,
               timeout: int = 300) -> tuple[int, str, str]:
-    command = [*gnu_time(), "timeout", str(timeout), "nice", "-n", "10",
+    command = [*gnu_time(), "timeout", str(timeout + 30), "nice", "-n", "10",
                "bash", str(scratch), str(probe), str(build_dir)]
-    process = subprocess.run(command, capture_output=True, text=True)
+    process = subprocess.run(command, capture_output=True, text=True,
+                             env=limit_env(timeout))
     return process.returncode, process.stdout, process.stderr
 
 
@@ -174,7 +184,8 @@ def error_lines(output: str) -> list[str]:
 
 def capture(module: Path, lemma: str, build_dir: Path,
             scratch: Path, probe_dir: Path, solver: bool = False,
-            variant: str = "standard") -> Capture:
+            variant: str = "standard",
+            seconds: int = DEFAULT_SECONDS) -> Capture:
     source, label_lines = probe_text(module, lemma, solver, variant)
     probe_dir.mkdir(parents=True, exist_ok=True)
     suffix = ("__solver" if solver else "") + (
@@ -182,7 +193,7 @@ def capture(module: Path, lemma: str, build_dir: Path,
     probe = probe_dir / f"{module.stem}__{lemma}{suffix}.v"
     probe.write_text(source)
     started = time.monotonic()
-    code, stdout, stderr = run_probe(probe, build_dir, scratch)
+    code, stdout, stderr = run_probe(probe, build_dir, scratch, seconds)
     wall = time.monotonic() - started
     output = stdout + "\n" + stderr
 

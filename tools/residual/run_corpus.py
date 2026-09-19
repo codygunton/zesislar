@@ -84,10 +84,11 @@ def tier_lemmas(tier: int, repository: Path) -> list[tuple[Path, str]]:
 
 
 def probe_one(module: Path, lemma: str, tier: int, commit: str,
-              build_dir: Path, scratch: Path) -> dict:
+              build_dir: Path, scratch: Path, seconds: int = 300) -> dict:
     probe_dir = build_dir / "residuals" / "probes"
     goal_dir = build_dir / "residuals"
-    result = capture(module, lemma, build_dir, scratch, probe_dir)
+    result = capture(module, lemma, build_dir, scratch, probe_dir,
+                     seconds=seconds)
     label_class, label_classes = label_proof(
         [line for line in (raw.strip() for raw in result.label_lines) if line])
     if result.error_kind == "not_bi":
@@ -165,6 +166,10 @@ def main() -> int:
     parser.add_argument("--load-cap", type=float, default=LOAD_CAP,
                         help="wait while the 1-minute load is above this")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--seconds", type=int, default=300,
+                        help="probe time limit")
+    parser.add_argument("--redo", action="store_true",
+                        help="replace records whose outcome is timeout")
     parser.add_argument("--build-dir", type=Path,
                         default=Path("_build/agents/corpus"))
     parser.add_argument("--scratch", type=Path,
@@ -176,10 +181,22 @@ def main() -> int:
 
     repository = Path.cwd()
     commit = current_commit(repository)
-    done = corpus.keys(corpus.read(arguments.corpus))
+    existing = corpus.read(arguments.corpus)
+    done = corpus.keys(existing)
 
     wanted = ([parse_only(name) for name in arguments.only] if arguments.only
               else tier_lemmas(arguments.tier, repository))
+    if arguments.redo:
+        # Drop only the timeouts this run would reprobe, never a record of a
+        # set this invocation does not visit.
+        scope = {(module.name, lemma) for module, lemma in wanted}
+        keep = [r for r in existing
+                if r["outcome"] != "timeout"
+                or (r["module"], r["lemma"]) not in scope]
+        Path(arguments.corpus).write_text(
+            "".join(json.dumps(corpus.order(r)) + "\n" for r in keep))
+        existing = keep
+        done = corpus.keys(existing)
     pending = [(module, lemma) for module, lemma in wanted
                if corpus.Key(module.name, lemma, commit) not in done]
     pending = cheapest_first(pending, arguments.build_dir)
@@ -197,7 +214,8 @@ def main() -> int:
         wait_for_machine(arguments.coqc_cap, arguments.load_cap)
         try:
             return probe_one(module, lemma, arguments.tier, commit,
-                             arguments.build_dir, arguments.scratch)
+                             arguments.build_dir, arguments.scratch,
+                             arguments.seconds)
         except Exception as failure:  # record the gap, keep the run going
             return failure_record(module, lemma, arguments.tier, commit,
                                   failure)

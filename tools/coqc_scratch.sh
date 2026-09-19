@@ -49,6 +49,11 @@ for argument in command[1:]:
         continue
     flags.append(argument)
 
+# The module limits of AGENTS.md, overridable for a measurement that needs
+# longer. Both default to the limits every caller had before.
+time_limit = float(os.environ.get("ZESU_COQC_SECONDS", 300))
+memory_limit_kb = int(os.environ.get("ZESU_COQC_MEMORY_MIB", 6 * 1024)) * 1024
+
 with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
     output = Path(output_dir) / f"{source.stem}.vo"
     started = time.monotonic()
@@ -66,8 +71,8 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
                           if line.startswith("VmRSS:"))
         except (FileNotFoundError, ProcessLookupError, StopIteration):
             rss_kb = 0
-        if elapsed > 300 or rss_kb > 6 * 1024 * 1024:
-            limit = "time" if elapsed > 300 else "memory"
+        if elapsed > time_limit or rss_kb > memory_limit_kb:
+            limit = "time" if elapsed > time_limit else "memory"
             process.terminate()
             try:
                 process.wait(timeout=2)
