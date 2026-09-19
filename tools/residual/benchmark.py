@@ -24,6 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import corpus  # noqa: E402
 from capture import capture  # noqa: E402
 from classify import classify  # noqa: E402
+from goals import conclusion_text  # noqa: E402
+from signature import signature  # noqa: E402
 from tiers import rule_15_modules  # noqa: E402
 
 PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
@@ -53,6 +55,23 @@ def freeze(repository: Path, output: Path = SET_FILE) -> list[tuple[str, str]]:
 def read_set(path: Path = SET_FILE) -> list[tuple[str, str]]:
     return [tuple(line.split(":", 1)) for line in path.read_text().split("\n")
             if line.strip()]
+
+
+def automation_matches(repository: Path, commit: str) -> bool:
+    """The commit's `Automation/` is byte for byte the worktree's.
+
+    Then the worktree's own build already measures that automation, and a
+    second tree would cost an hour to rebuild for the same answer.
+    """
+    stored = subprocess.run(["git", "rev-parse", f"{commit}:{AUTOMATION}"],
+                            cwd=repository, capture_output=True, text=True)
+    here = subprocess.run(["git", "rev-parse", f"HEAD:{AUTOMATION}"],
+                          cwd=repository, capture_output=True, text=True)
+    dirty = subprocess.run(["git", "status", "--porcelain", AUTOMATION],
+                           cwd=repository, capture_output=True, text=True)
+    return (stored.returncode == 0 and here.returncode == 0
+            and stored.stdout.strip() == here.stdout.strip()
+            and not dirty.stdout.strip())
 
 
 def source_tree(repository: Path, commit: str, tree: Path = TREE) -> Path:
@@ -99,18 +118,32 @@ def build(root: Path, jobs: int) -> None:
 def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
             seconds: int) -> list[dict]:
     from concurrent.futures import ThreadPoolExecutor
-    build_dir = (root / "_build").resolve()
+    build_dir = ((root / "_build") if root.name != "residual-corpus"
+                 else root / "_build" / "agents" / "corpus").resolve()
     probe_dir = build_dir / "residuals" / "probes"
     scratch = root / "tools" / "coqc_scratch.sh"
+
+    goal_dir = build_dir / "residuals"
 
     def one(module: str, lemma: str) -> dict:
         result = capture(root / PROOF_DIR / module, lemma,
                          build_dir.resolve(),
                          scratch, probe_dir, seconds=seconds)
+        if result.goal_sha256:
+            goal_dir.mkdir(parents=True, exist_ok=True)
+            (goal_dir / f"{result.goal_sha256}.txt").write_text(
+                result.full_goal_text)
         prediction = classify(result.goal_text,
                               "residual" if result.goal_text else result.outcome)
+        signature_text = ""
+        if result.goal_text:
+            signature_text = signature(conclusion_text(result.goal_text)[1])
+        # The digest lets a later baseline be reclassified from the stored
+        # text, with no rebuild, the way iteration 3 reclassified the replay.
         return {"module": module, "lemma": lemma, "outcome": result.outcome,
-                "seconds": result.seconds, "pred_class": prediction.pred_class}
+                "seconds": result.seconds, "pred_class": prediction.pred_class,
+                "signature": signature_text,
+                "goal_sha256": result.goal_sha256}
 
     with ThreadPoolExecutor(max_workers=jobs) as pool:
         return list(pool.map(lambda pair: one(*pair), pairs))
@@ -167,8 +200,13 @@ def main() -> int:
     print(f"benchmark {commit[:12]}: {len(pairs)} lemmas", file=sys.stderr,
           flush=True)
 
-    root = source_tree(repository, commit)
-    build(root, arguments.jobs)
+    if automation_matches(repository, commit):
+        print("automation identical to this worktree: reusing its build",
+              file=sys.stderr, flush=True)
+        root = repository
+    else:
+        root = source_tree(repository, commit)
+        build(root, arguments.jobs)
     rows = measure(root, pairs, arguments.jobs, arguments.seconds)
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)

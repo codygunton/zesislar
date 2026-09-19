@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
 """E2: why the expensive probes are expensive.
 
-Three causes look the same from outside: a frame too large to carry, a
-search that blows up on few conjuncts, and a finisher that costs more than
-the search. The entry predicate of the lemma separates the first from the
-other two, and the `zesu_run` timings separate those.
+Iteration 2 counted the top-level conjuncts of the entry predicate's
+definition text. A folded predicate counts as one, so that measure said
+"median 1" and meant nothing. The frame the proof search actually sees is
+the context the probe captured, after the block automation introduced and
+atomized the precondition, so this reads the stored goal text instead.
+
+How the three causes are told apart, in order:
+
+- frame size: more than `WIDE_FRAME` hypotheses in the captured context.
+- finisher cost: the timed `zesu_run` passes account for less than half of
+  the automation time, so the rest went to `zesu_finish` and instance
+  resolution, which run outside that timer.
+- search blowup: the timed passes account for half or more.
+
+Automation time is the probe's wall time less the module's own compile
+cost, which the Dune trace supplies; the probe recompiles the module up to
+the target `Proof.` before the automation runs at all.
 """
 
 from __future__ import annotations
@@ -12,7 +25,6 @@ from __future__ import annotations
 import argparse
 import collections
 import json
-import re
 import statistics
 import sys
 from pathlib import Path
@@ -20,149 +32,104 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import corpus  # noqa: E402
-from classify import separated  # noqa: E402
-from modules import find_proof  # noqa: E402
+from costs import module_costs  # noqa: E402
+from goals import context_size, conclusion_text  # noqa: E402
 
-PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
+GOALS = Path("_build/agents/corpus/residuals")
 SLOW_SECONDS = 120.0
 WIDE_FRAME = 12
-INSTR_BODY = re.compile(r"instr_body\s+(?P<address>0x[0-9a-fA-F]+|\d+)")
-MAPSTO = re.compile(r"↦ₘ|↦ᵣ")
+FINISHER_SHARE = 0.5
 
 
-def statement(module: Path, lemma: str) -> str:
-    proof = find_proof(module, lemma)
-    lines = module.read_text().split("\n")
-    return "\n".join(lines[proof.declaration_line:proof.proof_line])
+def stored_context(record: dict, goals: Path) -> str:
+    digest = record.get("goal_sha256")
+    if not digest:
+        return ""
+    stored = goals / f"{digest}.txt"
+    return conclusion_text(stored.read_text())[0] if stored.exists() else ""
 
 
-def entry_predicate(text: str) -> str:
-    """The spec `instr_body` receives, as a balanced term.
-
-    Everything after the address up to the matching close paren. Taking the
-    rest of the statement instead would count the conjuncts of the frame and
-    of the postcondition together.
-    """
-    found = INSTR_BODY.search(text)
-    if found is None:
-        return text
-    rest = text[found.end():].lstrip()
-    if not rest.startswith("("):
-        return rest.split("\n")[0]
-    depth = 0
-    for index, character in enumerate(rest):
-        if character == "(":
-            depth += 1
-        elif character == ")":
-            depth -= 1
-            if depth == 0:
-                return rest[1:index]
-    return rest
-
-
-def conjuncts(text: str) -> int:
-    """Top-level separating conjuncts of the entry predicate."""
-    count = 1
-    depth = 0
-    index = 0
-    while index < len(text):
-        character = text[index]
-        if text.startswith("↦ₘ∗", index):
-            index += 3
-            continue
-        if character in "([{⌜⎡":
-            depth += 1
-        elif character in ")]}⌝⎤":
-            depth = max(0, depth - 1)
-        elif character == "∗" and depth == 0:
-            count += 1
-        index += 1
-    return count
-
-
-def cause(frame: int, seconds: float, run_seconds: list[float]) -> str:
-    """Frame size, search blowup, or finisher cost."""
-    if frame > WIDE_FRAME:
-        return "frame size"
+def measure(record: dict, goals: Path, costs: dict) -> dict:
+    context = stored_context(record, goals)
+    frame, points = context_size(context)
+    run_seconds = [float(v) for v in record.get("zesu_run_seconds", [])]
+    seconds = float(record.get("seconds", 0.0))
+    prefix = costs.get(record["module"], (0.0, 0))[0]
+    automation = max(0.0, seconds - prefix)
     inside = sum(run_seconds)
-    if inside and inside < 0.5 * seconds:
-        return "finisher cost"
-    return "search blowup"
-
-
-def measure(record: dict) -> dict:
-    module = PROOF_DIR / record["module"]
-    try:
-        text = statement(module, record["lemma"])
-    except Exception:
-        text = ""
-    entry = entry_predicate(text)
-    run_seconds = [float(value) for value in record.get("zesu_run_seconds", [])]
-    frame = conjuncts(entry)
+    if not context:
+        # A probe that never reached `Show` stored no goal, so its frame is
+        # unknown and no cause can be assigned to it honestly.
+        cause = "not measured"
+    elif frame > WIDE_FRAME:
+        cause = "frame size"
+    elif automation > 0 and inside < FINISHER_SHARE * automation:
+        cause = "finisher cost"
+    else:
+        cause = "search blowup"
     return {"module": record["module"], "lemma": record["lemma"],
-            "outcome": record["outcome"],
-            "seconds": float(record.get("seconds", 0.0)),
-            "rss_mib": record.get("rss_mib", 0),
-            "conjuncts": frame,
-            "mapsto": len(MAPSTO.findall(entry)),
-            "instructions": len(run_seconds),
-            "zesu_run_total": round(sum(run_seconds), 2),
-            "seconds_per_instruction": (
-                round(float(record.get("seconds", 0.0)) / len(run_seconds), 2)
-                if run_seconds else None),
-            "separated_entry": separated(entry),
-            "cause": cause(frame, float(record.get("seconds", 0.0)),
-                           run_seconds)}
+            "outcome": record["outcome"], "seconds": round(seconds, 1),
+            "module_seconds": round(prefix, 1),
+            "automation_seconds": round(automation, 1),
+            "zesu_run_total": round(inside, 2), "passes": len(run_seconds),
+            "frame": frame, "mapsto": points,
+            "has_context": bool(context), "cause": cause}
 
 
-def report(records: list[dict]) -> list[str]:
-    slow = [r for r in records
+def expensive(records: list[dict]) -> list[dict]:
+    return [r for r in records
             if r.get("population") == "iris"
             and (r["outcome"] == "timeout"
                  or float(r.get("seconds", 0.0)) >= SLOW_SECONDS)]
-    rows = [measure(record) for record in slow]
-    lines = [f"expensive probes {len(rows)}: "
-             + " ".join(f"{name} {count}" for name, count in
-                        collections.Counter(r["outcome"] for r in rows).most_common())]
-    if not rows:
-        return lines
-    lines.append("cause: " + " ".join(
+
+
+def report(rows: list[dict]) -> list[str]:
+    lines = [f"expensive probes {len(rows)}: " + " ".join(
         f"{name} {count}" for name, count in
-        collections.Counter(r["cause"] for r in rows).most_common()))
-    for field in ("conjuncts", "mapsto", "instructions",
-                  "seconds_per_instruction"):
-        values = sorted(r[field] for r in rows if r[field] is not None)
+        collections.Counter(r["outcome"] for r in rows).most_common()),
+        f"context captured for {sum(1 for r in rows if r['has_context'])}"
+        f" of {len(rows)}; a probe that timed out has none",
+        "cause, over the probes with a captured context: " + " ".join(
+            f"{name} {count}" for name, count in
+            collections.Counter(r["cause"] for r in rows
+                                if r["has_context"]).most_common()),
+        f"cause rule: frame over {WIDE_FRAME} hypotheses; else timed"
+        f" zesu_run passes under {FINISHER_SHARE:.0%} of automation time"
+        f" is finisher cost, else search blowup"]
+    measured = [r for r in rows if r["has_context"]]
+    for field in ("frame", "mapsto", "passes", "automation_seconds"):
+        values = sorted(r[field] for r in (measured if field in
+                                           {"frame", "mapsto"} else rows))
         if not values:
             lines.append(f"{field}: not measured")
             continue
         lines.append(f"{field}: median {statistics.median(values):.1f} "
                      f"p90 {values[int(0.9 * len(values))]:.1f} "
                      f"max {values[-1]:.1f}")
-    worst = collections.Counter()
-    for row in rows:
-        worst[row["module"]] += 1
-    lines.append("ten worst modules (expensive probes each):")
+    worst = collections.Counter(r["module"] for r in measured)
+    lines.append("ten worst modules:")
     for name, count in worst.most_common(10):
-        sample = next(r for r in rows if r["module"] == name)
-        lines.append(f"  {count:3d}  {name:<56s} conjuncts {sample['conjuncts']:3d}"
-                     f"  cause {sample['cause']}")
+        sample = next(r for r in measured if r["module"] == name)
+        lines.append(f"  {count:3d}  {name:<52s} frame {sample['frame']:3d}"
+                     f"  {sample['cause']}")
     return lines
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus", type=Path, default=corpus.CORPUS)
+    parser.add_argument("--goals", type=Path, default=GOALS)
+    parser.add_argument("--build-dir", type=Path,
+                        default=Path("_build/agents/corpus"))
     parser.add_argument("--json", type=Path, default=None)
     arguments = parser.parse_args()
-    records = corpus.read(arguments.corpus)
+    costs = module_costs(arguments.build_dir)
+    rows = [measure(record, arguments.goals, costs)
+            for record in expensive(corpus.read(arguments.corpus))]
     if arguments.json:
-        slow = [measure(r) for r in records
-                if r.get("population") == "iris"
-                and (r["outcome"] == "timeout"
-                     or float(r.get("seconds", 0.0)) >= SLOW_SECONDS)]
         arguments.json.write_text(
-            "\n".join(json.dumps(row) for row in slow) + "\n")
-    for line in report(records):
+            "".join(json.dumps(row) + "\n" for row in rows))
+    for line in report(rows):
         print(line)
     return 0
 

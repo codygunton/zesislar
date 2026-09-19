@@ -16,6 +16,8 @@ GOAL_SEPARATOR = re.compile(r"^goal \d+ is:$")
 HEAD_NAME = re.compile(r"([A-Za-z_][A-Za-z0-9_.']*)")
 HEAD_OPENERS = re.compile(r"^[⌜\"'(\[⎡]+")
 HEAD_LIMIT = 200
+HYPOTHESIS_LINE = re.compile(r'^\s*(?:_|"[^"]*"|[A-Za-z_][\w\'’]*)\s*:\s*\S')
+MEMORY_ARROW = re.compile(r"↦[ₘᵣ]")
 HEAD_NAME_LIMIT = 48
 
 
@@ -65,3 +67,28 @@ def head_constant(text: str) -> str:
     if found:
         return found.group(1)
     return " ".join(stripped.split())[:HEAD_NAME_LIMIT]
+
+
+def conclusion_text(text: str) -> tuple[str, str]:
+    """The context and the conclusion of a printed goal.
+
+    Rocq prints a goal as the Coq context, a `====` rule, the Iris
+    hypotheses, a `---□` or `---∗` rule, and last the conclusion. Reading
+    the head of the text instead of the part below the last rule reads a
+    hypothesis, which is what iteration 2 did whenever the 8 KiB head cut
+    the rule away.
+    """
+    block = split_goals(text)[0] if split_goals(text) else text
+    return split_goal(block)
+
+
+def context_size(context: str) -> tuple[int, int]:
+    """Hypotheses in the context, and how many of them are memory points.
+
+    This is the frame the proof search actually sees, after the block
+    automation introduced and atomized the precondition.
+    """
+    lines = [line for line in context.split("\n") if line.strip()]
+    hypotheses = [line for line in lines if HYPOTHESIS_LINE.match(line)]
+    points = sum(len(MEMORY_ARROW.findall(line)) for line in hypotheses)
+    return len(hypotheses), points
