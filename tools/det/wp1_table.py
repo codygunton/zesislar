@@ -51,6 +51,7 @@ def row_of(record: dict, frames: dict, counted: dict) -> dict:
     labels = record.get("labels", {})
     key = (record["module"], record["lemma"])
     run = one("run", labels)
+    total = one("block", labels)
     search = sum_labels(labels, "alt:")
     step = one("zesu_liAStep", labels)
     finisher = sum_labels(labels, "fin:")
@@ -61,7 +62,7 @@ def row_of(record: dict, frames: dict, counted: dict) -> dict:
         "instructions": record.get("instructions", 0),
         "labelled_seconds": record.get("wall", 0.0),
         "plain_seconds": counted.get(key, {}).get("wall", 0.0),
-        "intro": one("intro", labels), "run": run,
+        "intro": round(max(0.0, total - run), 2), "run": run,
         "search": search, "step": step, "battery": round(search - step, 2),
         "lithium": one("liStep", labels), "asm": one("liAAsm", labels),
         "lookup": one("liFindInContext", labels),

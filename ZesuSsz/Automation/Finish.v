@@ -188,17 +188,53 @@ Ltac zesu_finish_selectors :=
         zesu_normalize_stack_array_indices; reflexivity)
   end.
 
-Ltac zesu_finish :=
+(* The finisher, dispatched on the head of the goal.
+
+   It used to be a linear battery: about forty `try` entries that every
+   goal ran through in order, whatever its head. WP1 measured what that
+   costs. Over sixteen profiled block proofs `zesu_finish` was 62.6 percent
+   of the automation's seconds, and `bv_solve` inside it was 36.9 percent
+   at 5.9 seconds per call -- a solver that cannot close an Iris
+   entailment, run on Iris entailments. The forty entries themselves were
+   not the cost: the alternatives that fail cost 0 to 12 seconds per proof.
+
+   So the structure is now one normalization pass, then a dispatch on the
+   head, then a fallback chain for heads the dispatch does not know. Every
+   entry stays reachable from every head it can close, and keeps its old
+   relative order there, so the finisher closes no fewer goals than before.
+   The two branches carry `time` labels in the WP1 probes, so the split can
+   be measured. *)
+
+Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
-  try (timeout 2 zesu_normalize_memory_addresses);
+  try (timeout 2 zesu_normalize_memory_addresses).
+
+Ltac zesu_finish_shelved :=
+  first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+    prepare_sidecond].
+
+(* An Iris entailment. The entries the dispatch leaves out here are the
+   ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
+   and `bv_solve`. Everything that can act on an entailment keeps its old
+   position relative to the others. *)
+Ltac zesu_finish_entailment :=
+  try autorewrite with zesu_indices;
   try iAssumption;
-  lazymatch goal with
-  | |- SHELVED_SIDECOND _ =>
-      first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
-        prepare_sidecond]
-  | _ => unLET
-  end;
+  try (timeout 2 zesu_normalize_array_cursors);
+  try (timeout 2 zesu_finish_pure_resources);
+  try simpl;
+  try done;
+  try assumption;
+  (* Both of these work on the Coq context, not on the conclusion, so an
+     entailment needs them as much as a pure goal does: they prepare the
+     hypotheses that a later side condition is solved from, and leaving
+     them out stops `repeat progress` one step early. *)
+  zesu_normalize_nat_powers;
+  try zesu_saturate_alignment.
+
+(* Anything else: the old chain, in the old order. *)
+Ltac zesu_finish_pure_goal :=
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -231,6 +267,25 @@ Ltac zesu_finish :=
   try lia;
   try bv_solve;
   try zesu_finish_little_endian.
+
+Ltac zesu_finish_dispatch :=
+  lazymatch goal with
+  | |- envs_entails _ _ => zesu_finish_entailment
+  | |- @bi_entails _ _ _ => zesu_finish_entailment
+  | _ => zesu_finish_pure_goal
+  end.
+
+Ltac zesu_finish :=
+  zesu_finish_normalize;
+  lazymatch goal with
+  | |- envs_entails _ _ => try iAssumption
+  | _ => idtac
+  end;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ => zesu_finish_shelved
+  | _ => unLET
+  end;
+  zesu_finish_dispatch.
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with
@@ -398,14 +453,22 @@ Ltac zesu_reduce_introduced_code_lists :=
           iEval (cbn) in H
     end).
 
+(* A pure goal is not a refusal any more.
+
+   `iStartProof` fails on a goal that is not a bi assertion, and the corpus
+   counted 443 hand lines written only because `zesu_block` stopped there:
+   shelved side conditions and shapes like `bv_and b N = N`. The finisher
+   handles those, so the block automation hands them to it instead of
+   failing. *)
 Ltac zesu_block :=
-  iStartProof;
-  zesu_expose_code_lists;
-  repeat first [progress iIntros (?) | progress iIntros "#?" |
-    progress iIntros "?"];
-  zesu_reduce_introduced_code_lists;
-  repeat iDestruct select (_ ∗ _)%I as "[? ?]";
-  zesu_run.
+  tryif iStartProof then (
+    zesu_expose_code_lists;
+    repeat first [progress iIntros (?) | progress iIntros "#?" |
+      progress iIntros "?"];
+    zesu_reduce_introduced_code_lists;
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+    zesu_run)
+  else zesu_finish.
 
 Ltac zesu_block_simpl :=
   iStartProof;

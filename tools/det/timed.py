@@ -57,11 +57,26 @@ def hooks_for(module: Path) -> Path:
     return (LEGACY_HOOKS if source_for(module) == LEGACY else CURRENT_HOOKS)
 
 
+COMMENT = re.compile(r"\(\*.*?\*\)\s*\Z", re.S)
+
+
 def body_of(text: str, name: str) -> str:
+    """The body of one `Ltac`, without the comment that follows it.
+
+    The slice runs to the next `Ltac`, so a comment written between two
+    tactics lands after the terminating full stop and would be spliced
+    inside the generated copy.
+    """
     found = re.search(rf"^Ltac {name} :=(.*?)(?=^Ltac |\Z)", text, re.S | re.M)
     if not found:
         raise KeyError(f"the automation defines no {name}")
-    return found.group(1).rstrip().rstrip(".")
+    body = found.group(1)
+    while True:
+        stripped = COMMENT.sub("", body).rstrip()
+        if stripped == body.rstrip():
+            break
+        body = stripped
+    return body.rstrip().rstrip(".")
 
 
 def split_top(text: str, separator: str) -> list[str]:
@@ -141,9 +156,34 @@ def timed_tactics(module: Path, labels: bool = True) -> str:
     """
     source = source_for(module)
     text = source.read_text()
-    finish = ("Ltac zesu_finish_timed :=\n  "
-              + timed_clauses(body_of(text, "zesu_finish"), "fin", labels)
-              + ".\n")
+    # The finisher is a dispatch now, so its branches carry the labels and
+    # the dispatch itself only routes. The legacy automation still has one
+    # flat body, which the same code labels as a single branch.
+    branches = [name for name in ("zesu_finish_normalize",
+                                  "zesu_finish_entailment",
+                                  "zesu_finish_pure_goal")
+                if f"Ltac {name} :=" in text]
+    finish = ""
+    for name in branches:
+        kind = {"zesu_finish_normalize": "nrm",
+                "zesu_finish_entailment": "ent",
+                "zesu_finish_pure_goal": "fin"}[name]
+        finish += (f"Ltac {name}_timed :=\n  "
+                   + timed_clauses(body_of(text, name), kind, labels) + ".\n")
+    if branches and "Ltac zesu_finish_dispatch :=" in text:
+        dispatch = body_of(text, "zesu_finish_dispatch")
+        for name in branches:
+            dispatch = re.sub(rf"\b{name}\b(?!_)", f"{name}_timed", dispatch)
+        finish += f"Ltac zesu_finish_dispatch_timed :={dispatch}.\n"
+        branches = branches + ["zesu_finish_dispatch"]
+    body = body_of(text, "zesu_finish")
+    if branches:
+        for name in branches:
+            body = re.sub(rf"\b{name}\b(?!_)", f"{name}_timed", body)
+        finish += f"Ltac zesu_finish_timed :={body}.\n"
+    else:
+        finish += ("Ltac zesu_finish_timed :=\n  "
+                   + timed_clauses(body, "fin", labels) + ".\n")
     hooks = hooks_for(module).read_text()
     step = timed_alternatives(body_of(hooks, "zesu_liAStep"),
                               r"first\s*\[(.*?)\]", "li", False, labels)
@@ -160,12 +200,15 @@ def timed_tactics(module: Path, labels: bool = True) -> str:
     run = re.sub(r"\bzesu_finish\b(?!_)", "zesu_finish_timed", run)
     run_tactic = f"Ltac zesu_run_timed :={run}.\n"
     block = body_of(text, "zesu_block")
-    block = block.replace("zesu_run", "zesu_run_timed")
-    head, _, tail = block.rpartition("zesu_run_timed")
+    block = re.sub(r"\bzesu_run\b(?!_)", "zesu_run_timed", block)
     if labels:
+        # The block tactic's shape is not fixed -- it is a `tryif` now -- so
+        # the labels wrap the run where it is named and the whole block
+        # around it. The introduction phase is the difference.
+        block = re.sub(r"\bzesu_run_timed\b",
+                       'time "phase:run" (zesu_run_timed)', block)
         block_tactic = (f"Ltac zesu_block_timed :=\n"
-                        f'  time "phase:intro" ({head.strip().rstrip(";")});\n'
-                        f'  time "phase:run" (zesu_run_timed{tail}).\n')
+                        f'  time "phase:block" ({block.strip()}).\n')
     else:
         block_tactic = f"Ltac zesu_block_timed :=\n  {block.strip()}.\n"
     lithium = timed_lithium_step() if labels else ""
