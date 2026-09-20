@@ -294,13 +294,20 @@ Ltac zesu_run :=
     (zesu_run_pass; try zesu_solve_instances; zesu_finish));
   try zesu_solve_instances.
 
+(* A pure goal is not a refusal any more, as in the current automation.
+   `iStartProof` fails on a goal that is not a bi assertion, and the corpus
+   counted 443 hand lines written only because the block automation stopped
+   there; 327 of its 388 such records are in modules pinned to this legacy
+   automation. Handing the goal to the finisher only adds a fallback where
+   the tactic used to fail, so no proof that worked before can change. *)
 Ltac zesu_block :=
-  iStartProof;
-  simpl;
-  repeat first [progress iIntros (?) | progress iIntros "#?" |
-    progress iIntros "?"];
-  repeat iDestruct select (_ ∗ _)%I as "[? ?]";
-  zesu_run.
+  tryif iStartProof then (
+    simpl;
+    repeat first [progress iIntros (?) | progress iIntros "#?" |
+      progress iIntros "?"];
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+    zesu_run)
+  else zesu_finish.
 
 Ltac zesu_run_until boundary :=
   first [boundary tt |

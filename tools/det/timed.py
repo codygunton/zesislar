@@ -47,36 +47,67 @@ COUNTER = f"""Ltac zesu_count_instr :=
 """
 
 
+def root_of(module: Path) -> Path:
+    """The source tree the module belongs to.
+
+    The A/B runner probes the same lemma in two trees whose automation
+    differs, so the copy has to be generated from the tree the probe will
+    compile against, not from the working directory.
+    """
+    for candidate in [module.resolve()] + list(module.resolve().parents):
+        if (candidate / CURRENT).exists():
+            return candidate
+    return Path.cwd()
+
+
 def source_for(module: Path) -> Path:
     """The automation the module actually uses."""
     text = module.read_text()
-    return LEGACY if "Automation.AllLegacy" in text else CURRENT
+    return root_of(module) / (LEGACY if "Automation.AllLegacy" in text
+                              else CURRENT)
 
 
 def hooks_for(module: Path) -> Path:
-    return (LEGACY_HOOKS if source_for(module) == LEGACY else CURRENT_HOOKS)
+    root = root_of(module)
+    return root / (LEGACY_HOOKS if source_for(module) == root / LEGACY
+                   else CURRENT_HOOKS)
 
 
-COMMENT = re.compile(r"\(\*.*?\*\)\s*\Z", re.S)
+def strip_comments(text: str) -> str:
+    """Remove Coq comments, which nest, keeping string literals intact.
+
+    The generated copy never needs a comment, and leaving them in is a
+    trap: a comment written between two clauses of a tactic looks like the
+    end of the tactic to any regular expression that hunts for one.
+    """
+    out, depth, index = [], 0, 0
+    while index < len(text):
+        if text.startswith("(*", index):
+            depth += 1
+            index += 2
+            continue
+        if text.startswith("*)", index) and depth:
+            depth -= 1
+            index += 2
+            continue
+        if not depth and text[index] == '"':
+            end = text.find('"', index + 1)
+            end = len(text) if end < 0 else end + 1
+            out.append(text[index:end])
+            index = end
+            continue
+        if not depth:
+            out.append(text[index])
+        index += 1
+    return "".join(out)
 
 
 def body_of(text: str, name: str) -> str:
-    """The body of one `Ltac`, without the comment that follows it.
-
-    The slice runs to the next `Ltac`, so a comment written between two
-    tactics lands after the terminating full stop and would be spliced
-    inside the generated copy.
-    """
+    """The body of one `Ltac`, comments already gone."""
     found = re.search(rf"^Ltac {name} :=(.*?)(?=^Ltac |\Z)", text, re.S | re.M)
     if not found:
         raise KeyError(f"the automation defines no {name}")
-    body = found.group(1)
-    while True:
-        stripped = COMMENT.sub("", body).rstrip()
-        if stripped == body.rstrip():
-            break
-        body = stripped
-    return body.rstrip().rstrip(".")
+    return found.group(1).rstrip().rstrip(".")
 
 
 def split_top(text: str, separator: str) -> list[str]:
@@ -142,7 +173,7 @@ def timed_lithium_step() -> str:
     """A copy of Lithium's `liStep` with one label per alternative."""
     if not LITHIUM.exists():
         return ""
-    body = body_of(LITHIUM.read_text(), "liStep")
+    body = body_of(strip_comments(LITHIUM.read_text()), "liStep")
     labelled = timed_alternatives(body, r"first\s*\[(.*?)\]", "lis", False)
     return f"Ltac liStep ::={labelled}.\n"
 
@@ -155,7 +186,7 @@ def timed_tactics(module: Path, labels: bool = True) -> str:
     how many instructions a block steps without changing what it costs.
     """
     source = source_for(module)
-    text = source.read_text()
+    text = strip_comments(source.read_text())
     # The finisher is a dispatch now, so its branches carry the labels and
     # the dispatch itself only routes. The legacy automation still has one
     # flat body, which the same code labels as a single branch.
@@ -184,7 +215,7 @@ def timed_tactics(module: Path, labels: bool = True) -> str:
     else:
         finish += ("Ltac zesu_finish_timed :=\n  "
                    + timed_clauses(body, "fin", labels) + ".\n")
-    hooks = hooks_for(module).read_text()
+    hooks = strip_comments(hooks_for(module).read_text())
     step = timed_alternatives(body_of(hooks, "zesu_liAStep"),
                               r"first\s*\[(.*?)\]", "li", False, labels)
     step_tactic = f"Ltac zesu_liAStep_timed :={step}.\n"
@@ -224,7 +255,7 @@ def requires(module: Path) -> list[str]:
                if line.startswith(("Require ", "From "))]
     names = (["ZesuSsz.Automation.Legacy.Finish",
               "ZesuSsz.Automation.Legacy.Hooks"]
-             if source_for(module) == LEGACY else
+             if source_for(module) == root_of(module) / LEGACY else
              ["ZesuSsz.Automation.Finish", "ZesuSsz.Automation.Hooks"])
     return (["From iris.proofmode Require Import environments.",
              "Require Import isla.isla."]

@@ -134,10 +134,11 @@ def build(root: Path, jobs: int) -> None:
 
 
 def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
-            seconds: int) -> list[dict]:
+            seconds: int, build_dir: Path | None = None) -> list[dict]:
     from concurrent.futures import ThreadPoolExecutor
-    build_dir = ((root / "_build") if root.name != "residual-corpus"
-                 else root / "_build" / "agents" / "corpus").resolve()
+    build_dir = (build_dir.resolve() if build_dir is not None else
+                 ((root / "_build") if root.name != "residual-corpus"
+                  else root / "_build" / "agents" / "corpus").resolve())
     probe_dir = build_dir / "residuals" / "probes"
     scratch = root / "tools" / "coqc_scratch.sh"
 
@@ -210,6 +211,9 @@ def main() -> int:
     parser.add_argument("--jobs", type=int, default=12)
     parser.add_argument("--seconds", type=int, default=300)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--build-dir", type=Path, default=None,
+                        help="the build tree the probes compile against; "
+                             "needed when the worktree builds elsewhere")
     arguments = parser.parse_args()
 
     repository = Path.cwd()
@@ -230,7 +234,8 @@ def main() -> int:
     else:
         root = source_tree(repository, commit)
         build(root, arguments.jobs)
-    rows = measure(root, pairs, arguments.jobs, arguments.seconds)
+    rows = measure(root, pairs, arguments.jobs, arguments.seconds,
+                   arguments.build_dir if root == repository else None)
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     result = {"automation": commit, "summary": summary(rows), "rows": rows}
