@@ -28,6 +28,17 @@ from goals import conclusion_text  # noqa: E402
 from signature import signature  # noqa: E402
 from tiers import rule_15_modules  # noqa: E402
 
+GUARD = Path(__file__).resolve().parents[1] / "resource_guard.sh"
+
+
+def guard_jobs(requested: int) -> int:
+    """Never start more jobs than memory allows (plan section 4)."""
+    if not GUARD.exists():
+        return requested
+    allowed = int(subprocess.run([str(GUARD), "jobs"], capture_output=True,
+                                 text=True).stdout.strip() or 1)
+    return min(requested, allowed)
+
 PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
 SET_FILE = Path("ZesuSsz/Evidence/residuals/benchmark_set.txt")
 RULE_15_SET = Path("ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt")
@@ -233,8 +244,11 @@ def main() -> int:
         root = repository
     else:
         root = source_tree(repository, commit)
-        build(root, arguments.jobs)
-    rows = measure(root, pairs, arguments.jobs, arguments.seconds,
+        build(root, guard_jobs(arguments.jobs))
+    jobs = guard_jobs(arguments.jobs)
+    print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
+          flush=True)
+    rows = measure(root, pairs, jobs, arguments.seconds,
                    arguments.build_dir if root == repository else None)
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)

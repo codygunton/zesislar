@@ -30,20 +30,33 @@ from goals import context_size  # noqa: E402
 
 PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
 SCRATCH = Path("tools/coqc_scratch.sh")
-# The machine-wide limit the user set on 2026-09-19: 48 concurrent `coqc`.
-# The load gate is the second half of that rule.
-LOAD_LIMIT = 80.0
-COQC_LIMIT = 48
+GUARD = Path(__file__).resolve().parents[1] / "resource_guard.sh"
+
+
+def guard_jobs(requested: int | None = None) -> int:
+    """The concurrency memory allows, never more than asked for.
+
+    Threads are a ceiling; memory is the binding limit. The guard computes
+    min(48, floor(0.8 * MemAvailable / 6 GiB)).
+    """
+    if not GUARD.exists():
+        return requested or 8
+    allowed = int(subprocess.run([str(GUARD), "jobs"], capture_output=True,
+                                 text=True).stdout.strip() or 1)
+    return min(requested, allowed) if requested else allowed
 
 
 def wait_for_room() -> None:
+    """Block until the guard says another job may start."""
+    if GUARD.exists():
+        subprocess.run([str(GUARD), "wait"])
+        return
     while True:
         running = subprocess.run(["pgrep", "-c", "coqc"], capture_output=True,
                                  text=True).stdout.strip()
-        load = os.getloadavg()[0]
-        if int(running or 0) < COQC_LIMIT and load < LOAD_LIMIT:
+        if int(running or 0) < 48 and os.getloadavg()[0] < 80:
             return
-        time.sleep(15)
+        time.sleep(5)
 
 
 def module_path(name: str) -> Path:
@@ -120,7 +133,10 @@ def main() -> int:
                 if record.get("reached_end"):
                     done.add((record["module"], record["lemma"],
                               record["shape"]))
-    with concurrent.futures.ThreadPoolExecutor(arguments.jobs) as pool:
+    jobs = guard_jobs(arguments.jobs)
+    print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
+          flush=True)
+    with concurrent.futures.ThreadPoolExecutor(jobs) as pool:
         futures = {
             pool.submit(run_one, module, lemma, arguments.shape,
                         arguments.build_dir, arguments.seconds):

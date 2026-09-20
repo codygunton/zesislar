@@ -140,7 +140,10 @@ def main() -> int:
     work = [(arm, module, lemma) for module, lemma in targets
             for arm in ("before", "after")]
     arguments.out.parent.mkdir(parents=True, exist_ok=True)
-    with concurrent.futures.ThreadPoolExecutor(arguments.jobs) as pool:
+    jobs = run_profile.guard_jobs(arguments.jobs)
+    print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
+          flush=True)
+    with concurrent.futures.ThreadPoolExecutor(jobs) as pool:
         futures = {pool.submit(probe, arm, *arms[arm], module, lemma,
                                arguments.seconds): (arm, module, lemma)
                    for arm, module, lemma in work}

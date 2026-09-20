@@ -58,8 +58,16 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
     output = Path(output_dir) / f"{source.stem}.vo"
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+    # The cgroup fence of the resource guard. Sampling `VmRSS` below cannot
+    # stop a compile that allocates faster than the poll; a scope with
+    # `MemoryMax` lets the kernel kill the one job instead of the machine.
+    # On 2026-09-20 a 48-job gate without it took the server out of memory.
+    guard = Path(sys.argv[4]).parent / "resource_guard.sh"
+    launcher = ([str(guard), "scope", f"coqc-{source.stem[:40]}", "--"]
+                if guard.exists() and os.environ.get("ZESU_GUARD", "1") != "0"
+                else [])
     process = subprocess.Popen(
-        [command[0], *flags, "-o", str(output), str(source)],
+        [*launcher, command[0], *flags, "-o", str(output), str(source)],
         cwd=working_dir,
     )
     limit = None
