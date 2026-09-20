@@ -43,14 +43,14 @@ Proof.
   - have Hindex9 : Z.to_nat
       ((bv_unsigned sp + 1104 - (bv_unsigned sp + 1032)) `div` 8) = 9%nat by lia.
     match goal with H : (take 69 values !! Z.to_nat
-        ((bv_unsigned sp + 1104 - (bv_unsigned sp + 1032)) `div` 8) = Some vmem) |- _ =>
+        ((bv_unsigned sp + 1104 - (bv_unsigned sp + 1032)) `div` 8) = Some _) |- _ =>
       rename H into HvalueWord9 end.
     rewrite Hindex9 in HvalueWord9. rewrite lookup_take in HvalueWord9; last lia.
     unfold WriteSuccessValueSpec.writeSuccessValueWord. rewrite HvalueWord9. reflexivity.
   - have Hindex10 : Z.to_nat
       ((bv_unsigned sp + 1112 - (bv_unsigned sp + 1032)) `div` 8) = 10%nat by lia.
     match goal with H : (take 69 values !! Z.to_nat
-        ((bv_unsigned sp + 1112 - (bv_unsigned sp + 1032)) `div` 8) = Some vmem0) |- _ =>
+        ((bv_unsigned sp + 1112 - (bv_unsigned sp + 1032)) `div` 8) = Some _) |- _ =>
       rename H into HvalueWord10 end.
     rewrite Hindex10 in HvalueWord10. rewrite lookup_take in HvalueWord10; last lia.
     unfold WriteSuccessValueSpec.writeSuccessValueWord. rewrite HvalueWord10. reflexivity.

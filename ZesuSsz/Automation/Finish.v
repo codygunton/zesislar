@@ -210,6 +210,17 @@ Ltac zesu_finish_normalize :=
   try (timeout 2 zesu_normalize_memory_constants);
   try (timeout 2 zesu_normalize_memory_addresses).
 
+(* Filled in by ZesuSsz.Automation.TraceTail, which cannot be imported here
+   without a cycle. Until then it fails and the finisher moves on. *)
+Ltac zesu_finish_trace_tail_hook := fail.
+
+(* Reserved for the `li_prod` existential splitter of
+   ZesuSsz.Automation.TraceTail. It is NOT in the search list: wired in, it
+   made `check-iris` exceed the 200 GiB batch cap twice, at 25 and at 32
+   jobs. The splitter is correct but it opens a search the interpreter does
+   not close, so it needs a bound before it can run in the automation. *)
+Ltac zesu_open_li_prod_hook := fail.
+
 Ltac zesu_finish_shelved :=
   first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
     prepare_sidecond].
@@ -254,6 +265,7 @@ Ltac zesu_finish_pure_goal :=
   try assumption;
   try zesu_finish_extract_alias;
   try (timeout 2 zesu_finish_list_slice_length);
+  try zesu_finish_trace_tail_hook;
   zesu_normalize_nat_powers;
   try zesu_finish_tag_bound;
   try zesu_finish_mask;
