@@ -5,8 +5,9 @@
 # replay or benchmark batch, and never two gates at once. Rule 1: it runs
 # inside a systemd scope with a hard memory cap, so an over-large module
 # is killed by the kernel instead of taking the server down. Concurrency
-# comes from the guard, so the cap and the job count agree: 32 jobs at the
-# 6 GiB module limit is 192 GiB inside a 200 GiB scope.
+# comes from the guard's `gate-jobs`, which sizes the count to the cap with
+# margin: 25 jobs at the 6 GiB module limit is 150 GiB inside a 200 GiB
+# scope. 32 jobs was measured to reach the cap and the gate was killed.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/../.." && pwd)
@@ -24,7 +25,7 @@ if [ "$live" -gt 0 ]; then
   exit 3
 fi
 
-jobs=$($guard jobs)
+jobs=$($guard gate-jobs)
 $guard reset-peak
 setsid nohup $guard watch >/dev/null 2>&1 &
 watcher=$!

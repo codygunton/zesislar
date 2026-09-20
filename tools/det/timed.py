@@ -178,7 +178,8 @@ def timed_lithium_step() -> str:
     return f"Ltac liStep ::={labelled}.\n"
 
 
-def timed_tactics(module: Path, labels: bool = True) -> str:
+def timed_tactics(module: Path, labels: bool = True,
+                  extra_alternatives: tuple[str, ...] = ()) -> str:
     """`zesu_block_timed`: the block automation with a label on every entry.
 
     With `labels` false the copy keeps only the instruction counter, which
@@ -222,6 +223,13 @@ def timed_tactics(module: Path, labels: bool = True) -> str:
     run_pass = timed_alternatives(body_of(text, "zesu_run_pass"),
                                   r"repeat first\s*\[(.*?)\]", "alt", True,
                                   labels)
+    # A candidate rule is tried in a probe before a gate is paid for: the
+    # probe path fences each job in a 6 GiB scope, so a rule that opens an
+    # unbounded search kills its own probe instead of the machine.
+    for index, alternative in enumerate(extra_alternatives):
+        entry = (f'time "new:{index:02d}_{alternative}" ({alternative})'
+                 if labels else alternative)
+        run_pass = run_pass.replace("]; liShow", f" |\n     {entry}]; liShow", 1)
     run_pass = re.sub(r"\bzesu_liAStep\b(?!_)", "zesu_liAStep_timed", run_pass)
     run_pass = run_pass.replace("zesu_finish)", "zesu_finish_timed)")
     run_pass = re.sub(r"\bzesu_finish\b(?!_)", "zesu_finish_timed", run_pass)

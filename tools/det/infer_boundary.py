@@ -36,6 +36,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "residual"))
 
 import probes  # noqa: E402
+import timed  # noqa: E402
 from classify import classify  # noqa: E402
 from goals import conclusion_text, context_size  # noqa: E402
 from modules import find_proof  # noqa: E402
@@ -107,14 +108,26 @@ def statement_without(lines: list[str], exit_address: str) -> list[str]:
 
 
 def probe_source(module: Path, lemma: str, exit_address: str,
-                 driver: list[str]) -> str:
+                 driver: list[str], rule: str = "",
+                 alternatives: tuple[str, ...] = ()) -> str:
     proof = find_proof(module, lemma)
     lines = module.read_text().split("\n")
     statement = with_standard_code(statement_without(
         lines[proof.declaration_line:proof.proof_line], exit_address))
     statement = [line.replace(lemma, "infer_boundary") for line in statement]
     normalized = str(int(exit_address, 16))
-    body = [f'idtac "{probes.BEGIN}".', "try intros.", "try zesu_block."]
+    block = "zesu_block"
+    preamble: list[str] = []
+    if rule or alternatives:
+        # The candidate rule and a copy of the search list that calls it,
+        # both local to this probe: nothing is installed into the
+        # automation until a probe says the rule is affordable.
+        block = "zesu_block_timed"
+        preamble = (timed.requires(module) + rule.split("\n")
+                    + timed.timed_tactics(module, labels=False,
+                                          extra_alternatives=alternatives
+                                          ).split("\n"))
+    body = [f'idtac "{probes.BEGIN}".', "try intros.", f"try {block}."]
     body += driver
     body += [
         # Arriving at the exit shows as the goal asking for the instruction
@@ -128,7 +141,8 @@ def probe_source(module: Path, lemma: str, exit_address: str,
     source = (["Set Printing Width 200.", "Require Import isla.isla.",
                "From iris.proofmode Require Import environments.",
                "From IslaTraces.write_success_blocks Require Import Index."]
-              + lines[:proof.declaration_line] + statement + ["Proof."]
+              + lines[:proof.declaration_line] + preamble + statement
+              + ["Proof."]
               + body + probes.END_MARKER
               + [f"End {name}." for name in reversed(proof.open_blocks)] + [""])
     return "\n".join(source)
@@ -149,9 +163,11 @@ def run(source: str, name: str, build_dir: Path, seconds: int) -> str:
 
 
 def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
-          driver: list[str], seconds: int) -> dict:
+          driver: list[str], seconds: int, rule: str = "",
+          alternatives: tuple[str, ...] = ()) -> dict:
     started = time.monotonic()
-    output = run(probe_source(module, lemma, exit_address, driver),
+    output = run(probe_source(module, lemma, exit_address, driver, rule,
+                              alternatives),
                  f"{module.stem}__{lemma}", build_dir, seconds)
     text = probes.marked(output)
     record = {"module": module.name, "lemma": lemma, "exit": exit_address,
@@ -184,6 +200,10 @@ def main() -> int:
     parser.add_argument("--drivers", type=Path, default=None,
                         help="directory of <lemma>.tac driver files")
     parser.add_argument("--seconds", type=int, default=900)
+    parser.add_argument("--rule", type=Path, default=None,
+                        help="a candidate rule to compile into the probe")
+    parser.add_argument("--alt", action="append", default=[],
+                        help="a tactic to append to the probe's search list")
     parser.add_argument("--out", type=Path, required=True)
     arguments = parser.parse_args()
     records = []
@@ -201,7 +221,9 @@ def main() -> int:
                 driver = [row for row in candidate.read_text().split("\n")
                           if row.strip()]
         record = infer(path, lemma, exit_address.strip(),
-                       arguments.build_dir, driver, arguments.seconds)
+                       arguments.build_dir, driver, arguments.seconds,
+                       arguments.rule.read_text() if arguments.rule else "",
+                       tuple(arguments.alt))
         records.append(record)
         print(f"{record['outcome']:8s} {record['seconds']:7.1f}s "
               f"frame {record.get('frame', 0):3d}  "

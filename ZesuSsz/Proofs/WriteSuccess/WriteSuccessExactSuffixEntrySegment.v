@@ -40,11 +40,6 @@ Proof.
   zesu_expose_code_lists; zesu_reduce_introduced_code_lists.
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
   zesu_run.
-  iExists (WriteSuccessEvents.writeOutputEventsAny
-    (sp + BV 64 1744)%bv (BV 64 32)
-    (writeSuccessHashesEvents sp remaining tail), tt)ₗ.
-  zesu_run.
-  1: (unfold subseteq, spec_subseteq, scons, scons_snap; naive_solver).
   have Hret :
       (Z_to_bv 64 0x1574c + BV 64 4)%bv = BV 64 0x15750 by bv_solve.
   rewrite Hret bv_unsigned_BV; cbn.

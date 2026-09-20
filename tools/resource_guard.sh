@@ -66,6 +66,21 @@ guard_jobs() {
   echo "$limit"
 }
 
+# A gate is one cgroup running many `coqc` that Dune starts itself, so the
+# kernel cannot kill one job inside it: it kills the gate. The job count
+# must therefore fit the batch cap with margin, not just the machine.
+# Measured 2026-09-20: 32 jobs reached the 200 GiB cap and the gate was
+# killed, machine peak 209 GiB.
+gate_jobs() {
+  local cap fits allowed
+  cap=${BATCH_LIMIT%G}
+  fits=$(( (cap * 3 / 4) / MODULE_LIMIT_GIB ))
+  allowed=$(guard_jobs)
+  (( fits < allowed )) && allowed=$fits
+  (( allowed < 1 )) && allowed=1
+  echo "$allowed"
+}
+
 live_scopes() {
   systemctl --user list-units --type=scope --state=active --plain --no-legend \
     "${SCOPE_PREFIX}-*" 2>/dev/null | awk '{print $1}'
@@ -158,6 +173,7 @@ report() {
 
 case "${1:-report}" in
   jobs)   guard_jobs ;;
+  gate-jobs) gate_jobs ;;
   reset-peak) echo 0 > "$PEAK" ;;
   peak)   awk '{printf "%d", $1 / 1073741824}' "$PEAK" 2>/dev/null; echo ;;
   wait)   guard_wait ;;
@@ -165,5 +181,5 @@ case "${1:-report}" in
   scope)  shift; run_scope "$@" ;;
   batch)  shift; run_batch "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|wait|watch|scope NAME -- CMD|batch NAME -- CMD|report|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs|wait|watch|scope NAME -- CMD|batch NAME -- CMD|report|peak|reset-peak}" >&2; exit 2 ;;
 esac
