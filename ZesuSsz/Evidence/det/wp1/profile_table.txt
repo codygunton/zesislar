@@ -1,0 +1,43 @@
+frame  mp  ins   plain     lbl  intro  search    step    lith    asm battery  finish   look   rest  lemma
+   13   0    0     4.7    10.1    0.7     0.7     0.7     0.5    0.0     0.0     1.1    0.4    0.1  write_success_exact_post_transactions_se
+   20   1    0    10.2    22.8    0.0     0.7     0.6     0.4    0.0     0.0     2.0    0.0    0.2  write_output_whole_body_from_exact
+   22   0    0    18.9    43.1    0.0    11.1    10.2     6.3    0.0     0.9    21.1    0.3    1.0  encoder_byte_lists_exact_body_from_frame
+   34   0    1    11.5    26.4    0.2    12.6    12.1     9.5    0.0     0.5     6.1    0.6    0.6  write_success_exact_tail_fields_third_se
+   38   7    3    16.2    36.3    0.1     7.7     7.0     5.7    0.1     0.7    18.8    0.2    0.7  write_success_exact_suffix_entry_segment
+   39  13    1    18.3    17.7    0.2     4.2     4.2     3.2    0.0     0.0     6.1    0.1    0.2  write_success_transactions_post_15670_da
+   56   6    3    12.7    20.4    0.5     8.5     7.9     4.5    0.4     0.6     4.8    1.5    1.3  write_output_exact_call_correct
+   65   8   11    32.6    86.5    0.6    32.3    30.6    18.5    1.3     1.7    28.4    6.9    3.9  zesu_encoder_boolean_exact_call_correct
+   67  49    0    27.1    31.5    0.2    13.4    13.3     1.8    0.0     0.1    10.2    0.0    0.4  write_success_transactions_carrier_chunk
+   75  15   11    46.8    90.2    1.2    37.2    35.4    22.7    1.4     1.8    40.4   11.3    3.9  encoder_bytes_exact_suffix_correct
+   83  16   10    62.8   133.6    0.5    35.0    33.3    21.9    1.1     1.6    63.6    9.9    3.6  encoder_bytes_int_exact_call_pre
+   84  25    9    60.0   136.9    1.5    35.8    35.8    22.0    1.0     0.0    90.7    5.2    1.5  byte_lists_exact_public_prefix_correct
+   86  41   24     0.0   490.2    0.2   120.1   120.1    78.2    3.2     0.0   359.9   19.8    3.3  write_success_transactions_chunk_14fc8
+   90  68    0    40.6    44.8    0.2    17.4    17.4     7.5    0.0     0.0    20.5    0.0    0.4  write_success_transactions_carrier_chunk
+   91  16   19   107.1   232.4    1.9    85.6    81.1    54.6    2.4     4.5    91.7   25.3    7.1  encoder_bytes_exact_correct
+  125  25   19   184.9   362.1    4.3   124.5   115.2    76.5    2.8     9.2   213.1   26.9    8.5  zesu_encoder_byte_lists_exact_call_corre
+
+entries by seconds over the profiled lemmas (16 lemmas):
+    1561.84s       16 calls        0 failed  phase:run
+     347.55s    13964 calls       25 failed  alt:11_zesu_liAStep
+     303.54s       74 calls       24 failed  fin:31_bv_solve
+     273.26s       24 calls        8 failed  fin:27_bv_solve
+     222.65s    10430 calls      233 failed  li:09_liStep
+     177.55s     5689 calls        8 failed  alt:05_zesu_liAStep
+     110.86s     4310 calls       99 failed  li:07_liStep
+     108.55s     4559 calls     3083 failed  lis:08_liFindInContext
+      69.42s       74 calls       24 failed  fin:30_lia
+      62.58s       98 calls       32 failed  fin:04_SHELVED_SIDECOND
+      57.75s       24 calls        8 failed  fin:26_lia
+      57.09s    14433 calls    11213 failed  lis:03_liWand
+      56.68s     9425 calls     7396 failed  lis:05_liImpl
+      52.71s     3083 calls     1939 failed  lis:11_liTactic
+      45.37s       24 calls        8 failed  fin:08_zesu_finish_known_list_shape
+      30.69s     6345 calls     4559 failed  lis:07_liSideCond
+      29.53s       74 calls       24 failed  fin:16_done
+      29.01s       98 calls       32 failed  fin:03_iAssumption
+      24.06s    14792 calls    14740 failed  li:06_liUnfoldEarly
+      20.14s       74 calls       24 failed  fin:24_zesu_finish_constant
+      20.03s       74 calls       24 failed  fin:07_iAssumption
+      16.92s       24 calls        8 failed  fin:14_done
+      13.47s    19599 calls    16241 failed  li:03_liAAsm
+      12.33s       16 calls        0 failed  phase:intro

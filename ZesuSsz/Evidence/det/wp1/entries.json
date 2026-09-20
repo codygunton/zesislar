@@ -1,0 +1,562 @@
+{
+ "phase:run": {
+  "seconds": 1561.843,
+  "calls": 16,
+  "failures": 0
+ },
+ "alt:11_zesu_liAStep": {
+  "seconds": 347.548,
+  "calls": 13964,
+  "failures": 25
+ },
+ "fin:31_bv_solve": {
+  "seconds": 303.543,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:27_bv_solve": {
+  "seconds": 273.258,
+  "calls": 24,
+  "failures": 8
+ },
+ "li:09_liStep": {
+  "seconds": 222.655,
+  "calls": 10430,
+  "failures": 233
+ },
+ "alt:05_zesu_liAStep": {
+  "seconds": 177.554,
+  "calls": 5689,
+  "failures": 8
+ },
+ "li:07_liStep": {
+  "seconds": 110.859,
+  "calls": 4310,
+  "failures": 99
+ },
+ "lis:08_liFindInContext": {
+  "seconds": 108.551,
+  "calls": 4559,
+  "failures": 3083
+ },
+ "fin:30_lia": {
+  "seconds": 69.42,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:04_SHELVED_SIDECOND": {
+  "seconds": 62.575,
+  "calls": 98,
+  "failures": 32
+ },
+ "fin:26_lia": {
+  "seconds": 57.748,
+  "calls": 24,
+  "failures": 8
+ },
+ "lis:03_liWand": {
+  "seconds": 57.087,
+  "calls": 14433,
+  "failures": 11213
+ },
+ "lis:05_liImpl": {
+  "seconds": 56.683,
+  "calls": 9425,
+  "failures": 7396
+ },
+ "lis:11_liTactic": {
+  "seconds": 52.709,
+  "calls": 3083,
+  "failures": 1939
+ },
+ "fin:08_zesu_finish_known_list_shape": {
+  "seconds": 45.367,
+  "calls": 24,
+  "failures": 8
+ },
+ "lis:07_liSideCond": {
+  "seconds": 30.686,
+  "calls": 6345,
+  "failures": 4559
+ },
+ "fin:16_done": {
+  "seconds": 29.529,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:03_iAssumption": {
+  "seconds": 29.014,
+  "calls": 98,
+  "failures": 32
+ },
+ "li:06_liUnfoldEarly": {
+  "seconds": 24.06,
+  "calls": 14792,
+  "failures": 14740
+ },
+ "fin:24_zesu_finish_constant": {
+  "seconds": 20.143,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:07_iAssumption": {
+  "seconds": 20.032,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:14_done": {
+  "seconds": 16.922,
+  "calls": 24,
+  "failures": 8
+ },
+ "li:03_liAAsm": {
+  "seconds": 13.471,
+  "calls": 19599,
+  "failures": 16241
+ },
+ "phase:intro": {
+  "seconds": 12.334,
+  "calls": 16,
+  "failures": 0
+ },
+ "fin:25_zesu_saturate_alignment": {
+  "seconds": 12.155,
+  "calls": 24,
+  "failures": 8
+ },
+ "alt:03_zesu_open_matching_resource_package": {
+  "seconds": 10.15,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:29_zesu_saturate_alignment": {
+  "seconds": 9.21,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:06_iAssumption": {
+  "seconds": 9.095,
+  "calls": 24,
+  "failures": 8
+ },
+ "lis:04_liExist": {
+  "seconds": 7.522,
+  "calls": 11213,
+  "failures": 9425
+ },
+ "fin:20_zesu_finish_constant": {
+  "seconds": 6.001,
+  "calls": 24,
+  "failures": 8
+ },
+ "lis:01_liSep": {
+  "seconds": 5.327,
+  "calls": 14593,
+  "failures": 14433
+ },
+ "lis:06_liForall": {
+  "seconds": 5.069,
+  "calls": 7396,
+  "failures": 6345
+ },
+ "alt:01_zesu_open_requested_struct_sys_package": {
+  "seconds": 4.942,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:00_autorewrite": {
+  "seconds": 4.317,
+  "calls": 98,
+  "failures": 32
+ },
+ "alt:00_zesu_open_requested_instr_bundle": {
+  "seconds": 4.173,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "li:00_zesu_normalize_find_mem_address": {
+  "seconds": 3.687,
+  "calls": 19653,
+  "failures": 19639
+ },
+ "fin:06_autorewrite": {
+  "seconds": 3.509,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:05_autorewrite": {
+  "seconds": 2.315,
+  "calls": 24,
+  "failures": 8
+ },
+ "alt:02_zesu_open_requested_saved_x9_package": {
+  "seconds": 2.116,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "li:04_liAExp": {
+  "seconds": 1.946,
+  "calls": 16241,
+  "failures": 14832
+ },
+ "fin:28_zesu_finish_pointer_alignment": {
+  "seconds": 1.151,
+  "calls": 74,
+  "failures": 24
+ },
+ "lis:00_liExtensible": {
+  "seconds": 0.993,
+  "calls": 14740,
+  "failures": 14593
+ },
+ "lis:17_liUnfoldLetGoal": {
+  "seconds": 0.829,
+  "calls": 1938,
+  "failures": 332
+ },
+ "fin:01_zesu_normalize_memory_constants": {
+  "seconds": 0.316,
+  "calls": 98,
+  "failures": 32
+ },
+ "fin:24_zesu_finish_pointer_alignment": {
+  "seconds": 0.28,
+  "calls": 24,
+  "failures": 8
+ },
+ "li:09_liUnfoldLate": {
+  "seconds": 0.247,
+  "calls": 11,
+  "failures": 8
+ },
+ "fin:22_zesu_finish_mask": {
+  "seconds": 0.226,
+  "calls": 74,
+  "failures": 24
+ },
+ "li:07_zesu_liInstrPreMatch": {
+  "seconds": 0.221,
+  "calls": 10430,
+  "failures": 10430
+ },
+ "fin:07_zesu_normalize_array_cursors": {
+  "seconds": 0.215,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:19_zesu_finish_list_slice_length": {
+  "seconds": 0.194,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:23_zesu_finish_array_byte_lookup": {
+  "seconds": 0.184,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:02_zesu_normalize_memory_addresses": {
+  "seconds": 0.175,
+  "calls": 98,
+  "failures": 32
+ },
+ "fin:19_zesu_finish_array_byte_lookup": {
+  "seconds": 0.175,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:08_zesu_normalize_array_cursors": {
+  "seconds": 0.165,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:15_simpl": {
+  "seconds": 0.159,
+  "calls": 74,
+  "failures": 24
+ },
+ "li:01_zesu_liAWriteMem": {
+  "seconds": 0.153,
+  "calls": 19639,
+  "failures": 19610
+ },
+ "fin:18_zesu_finish_mask": {
+  "seconds": 0.115,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:13_simpl": {
+  "seconds": 0.112,
+  "calls": 24,
+  "failures": 8
+ },
+ "li:05_liAOther": {
+  "seconds": 0.109,
+  "calls": 14832,
+  "failures": 14792
+ },
+ "fin:28_zesu_finish_little_endian": {
+  "seconds": 0.096,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:18_zesu_finish_extract_alias": {
+  "seconds": 0.091,
+  "calls": 74,
+  "failures": 24
+ },
+ "alt:06_zesu_pack_shaped_register_goal": {
+  "seconds": 0.087,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "li:11_liUnfoldLate": {
+  "seconds": 0.078,
+  "calls": 29,
+  "failures": 25
+ },
+ "fin:32_zesu_finish_little_endian": {
+  "seconds": 0.075,
+  "calls": 74,
+  "failures": 24
+ },
+ "alt:10_zesu_finish_initialized_array_read": {
+  "seconds": 0.066,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:11_reflexivity": {
+  "seconds": 0.065,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:21_apply": {
+  "seconds": 0.063,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:17_assumption": {
+  "seconds": 0.061,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:25_apply": {
+  "seconds": 0.053,
+  "calls": 74,
+  "failures": 24
+ },
+ "li:02_zesu_liAReadMem": {
+  "seconds": 0.043,
+  "calls": 19610,
+  "failures": 19599
+ },
+ "fin:21_zesu_finish_tag_bound": {
+  "seconds": 0.04,
+  "calls": 74,
+  "failures": 24
+ },
+ "alt:04_zesu_finish_pure_resources": {
+  "seconds": 0.032,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:10_reflexivity": {
+  "seconds": 0.032,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:15_assumption": {
+  "seconds": 0.031,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:17_zesu_finish_tag_bound": {
+  "seconds": 0.027,
+  "calls": 24,
+  "failures": 8
+ },
+ "alt:09_zesu_prepare_initialized_array_read": {
+  "seconds": 0.027,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:05_zesu_finish_selectors": {
+  "seconds": 0.02,
+  "calls": 74,
+  "failures": 24
+ },
+ "lis:12_liPersistent": {
+  "seconds": 0.018,
+  "calls": 1939,
+  "failures": 1938
+ },
+ "li:10_liLetBindHint": {
+  "seconds": 0.016,
+  "calls": 233,
+  "failures": 29
+ },
+ "lis:15_liAccu": {
+  "seconds": 0.014,
+  "calls": 1938,
+  "failures": 1938
+ },
+ "alt:07_zesu_pack_owned_word_goal": {
+  "seconds": 0.013,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:09_zesu_finish_known_list_shape": {
+  "seconds": 0.012,
+  "calls": 74,
+  "failures": 24
+ },
+ "lis:02_liAnd": {
+  "seconds": 0.011,
+  "calls": 14433,
+  "failures": 14433
+ },
+ "fin:20_zesu_normalize_nat_powers": {
+  "seconds": 0.01,
+  "calls": 74,
+  "failures": 24
+ },
+ "li:08_liLetBindHint": {
+  "seconds": 0.01,
+  "calls": 99,
+  "failures": 11
+ },
+ "fin:13_zesu_finish_packed_word_equality": {
+  "seconds": 0.009,
+  "calls": 74,
+  "failures": 24
+ },
+ "alt:12_zesu_open_matching_two_level_frame": {
+  "seconds": 0.008,
+  "calls": 25,
+  "failures": 25
+ },
+ "alt:00_zesu_finish_pure_resources": {
+  "seconds": 0.006,
+  "calls": 5689,
+  "failures": 5689
+ },
+ "alt:03_zesu_pack_owned_word_goal": {
+  "seconds": 0.004,
+  "calls": 5689,
+  "failures": 5689
+ },
+ "alt:13_zesu_extract_matching_descriptor_pure": {
+  "seconds": 0.003,
+  "calls": 25,
+  "failures": 25
+ },
+ "fin:27_zesu_finish_ram_address": {
+  "seconds": 0.003,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:23_zesu_finish_ram_address": {
+  "seconds": 0.003,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:11_zesu_finish_packed_word_equality": {
+  "seconds": 0.002,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:16_zesu_normalize_nat_powers": {
+  "seconds": 0.002,
+  "calls": 24,
+  "failures": 8
+ },
+ "alt:08_zesu_normalize_packed_word_subsume": {
+  "seconds": 0.001,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "fin:26_zesu_finish_ram_known": {
+  "seconds": 0.001,
+  "calls": 74,
+  "failures": 24
+ },
+ "alt:05_zesu_pack_owned_register_goal": {
+  "seconds": 0.0,
+  "calls": 13964,
+  "failures": 13964
+ },
+ "li:08_zesu_preserve_current_unsigned": {
+  "seconds": 0.0,
+  "calls": 10430,
+  "failures": 10430
+ },
+ "lis:09_liCase": {
+  "seconds": 0.0,
+  "calls": 3083,
+  "failures": 3083
+ },
+ "lis:10_liTrace": {
+  "seconds": 0.0,
+  "calls": 3083,
+  "failures": 3083
+ },
+ "lis:13_liTrue": {
+  "seconds": 0.0,
+  "calls": 1938,
+  "failures": 1938
+ },
+ "lis:14_liFalse": {
+  "seconds": 0.0,
+  "calls": 1938,
+  "failures": 1938
+ },
+ "lis:16_liDoneEvar": {
+  "seconds": 0.0,
+  "calls": 1938,
+  "failures": 1938
+ },
+ "fin:10_zesu_finish_pure_resources": {
+  "seconds": 0.0,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:12_zesu_finish_integer_word_image": {
+  "seconds": 0.0,
+  "calls": 74,
+  "failures": 24
+ },
+ "fin:14_eq": {
+  "seconds": 0.0,
+  "calls": 74,
+  "failures": 24
+ },
+ "alt:01_zesu_pack_owned_register_goal": {
+  "seconds": 0.0,
+  "calls": 5689,
+  "failures": 5689
+ },
+ "alt:02_zesu_pack_shaped_register_goal": {
+  "seconds": 0.0,
+  "calls": 5689,
+  "failures": 5689
+ },
+ "alt:04_zesu_normalize_packed_word_subsume": {
+  "seconds": 0.0,
+  "calls": 5689,
+  "failures": 5689
+ },
+ "fin:09_zesu_finish_pure_resources": {
+  "seconds": 0.0,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:12_eq": {
+  "seconds": 0.0,
+  "calls": 24,
+  "failures": 8
+ },
+ "fin:22_zesu_finish_ram_known": {
+  "seconds": 0.0,
+  "calls": 24,
+  "failures": 8
+ }
+}
