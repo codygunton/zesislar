@@ -19,7 +19,13 @@
 
 set -uo pipefail
 
+# The hard per-job cap: what one `coqc` scope may use before the kernel
+# kills it. This is the module limit and does not change.
 MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-6}
+# What a job actually costs, which is what the job count should be sized
+# against. Measured 2026-09-20: a clean `check-iris` at 25 jobs peaks at
+# 75 GiB, so 3.0 GiB per job. 4 GiB carries margin over that.
+JOB_GIB=${ZESU_JOB_GIB:-4}
 BATCH_LIMIT=${ZESU_BATCH_LIMIT:-200G}
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
 LAUNCH_PERCENT=${ZESU_LAUNCH_PERCENT:-70}
@@ -60,7 +66,7 @@ load_one() { awk '{printf "%d", $1}' /proc/loadavg; }
 guard_jobs() {
   local total used available limit
   read -r total used available < <(memory)
-  limit=$(( (available * 8 / 10) / (MODULE_LIMIT_GIB * GIB) ))
+  limit=$(( (available * 8 / 10) / (JOB_GIB * GIB) ))
   (( limit < 1 )) && limit=1
   (( limit > MAX_JOBS )) && limit=$MAX_JOBS
   echo "$limit"
@@ -69,12 +75,13 @@ guard_jobs() {
 # A gate is one cgroup running many `coqc` that Dune starts itself, so the
 # kernel cannot kill one job inside it: it kills the gate. The job count
 # must therefore fit the batch cap with margin, not just the machine.
-# Measured 2026-09-20: 32 jobs reached the 200 GiB cap and the gate was
-# killed, machine peak 209 GiB.
+# Measured 2026-09-20: with a rule that opened an unbounded search, 32
+# jobs reached the 200 GiB cap and the gate was killed at a machine peak
+# of 209 GiB; a clean gate at 25 jobs peaks at 75 GiB.
 gate_jobs() {
   local cap fits allowed
   cap=${BATCH_LIMIT%G}
-  fits=$(( (cap * 3 / 4) / MODULE_LIMIT_GIB ))
+  fits=$(( (cap * 3 / 4) / JOB_GIB ))
   allowed=$(guard_jobs)
   (( fits < allowed )) && allowed=$fits
   (( allowed < 1 )) && allowed=1
