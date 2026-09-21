@@ -107,6 +107,39 @@ def statement_without(lines: list[str], exit_address: str) -> list[str]:
     return out
 
 
+def spec_source(spec: dict, rule: str = "",
+                alternatives: tuple[str, ...] = ()) -> str:
+    """A probe for a segment that has no module yet.
+
+    An open segment is described by its entry address and the predicate
+    that holds there, both of which its interface already names. The
+    probe states `instr_body ENTRY (predicate)` with the standard code
+    premise and nothing else, and runs the automation: where it stops is
+    the segment's first debt.
+    """
+    imports = [f"Require Import {name}." for name in spec["imports"]]
+    statement = ([f"Lemma infer_boundary {spec['binders']} :"]
+                 + CODE_PREMISES
+                 + [f"  instr_body {spec['entry']}", f"    ({spec['spec']})."])
+    preamble: list[str] = []
+    block = "zesu_block"
+    if rule or alternatives:
+        block = "zesu_block_timed"
+        module = PROOF_DIR / spec["like"]
+        preamble = (timed.requires(module) + rule.split("\n")
+                    + timed.timed_tactics(module, labels=False,
+                                          extra_alternatives=alternatives
+                                          ).split("\n"))
+    body = [f'idtac "{probes.BEGIN}".', "try intros.", f"try {block}.",
+            "all: try liShow.", "Show.", "Abort."]
+    return "\n".join(
+        ["Set Printing Width 200.", "Require Import isla.isla.",
+         "From iris.proofmode Require Import environments.",
+         "From IslaTraces.write_success_blocks Require Import Index."]
+        + imports + preamble + statement + ["Proof."] + body
+        + probes.END_MARKER + [""])
+
+
 def probe_source(module: Path, lemma: str, exit_address: str,
                  driver: list[str], rule: str = "",
                  alternatives: tuple[str, ...] = ()) -> str:
@@ -193,8 +226,10 @@ def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--set", type=Path, required=True,
+    parser.add_argument("--set", type=Path, default=None,
                         help="one MODULE:LEMMA:EXIT per line")
+    parser.add_argument("--specs", type=Path, default=None,
+                        help="a JSON list of open-segment descriptions")
     parser.add_argument("--build-dir", type=Path,
                         default=Path("_build/agents/det"))
     parser.add_argument("--drivers", type=Path, default=None,
@@ -207,7 +242,36 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     arguments = parser.parse_args()
     records = []
-    for line in arguments.set.read_text().split("\n"):
+    for spec in (json.loads(arguments.specs.read_text())
+                 if arguments.specs else []):
+        started = time.monotonic()
+        output = run(spec_source(spec,
+                                 arguments.rule.read_text()
+                                 if arguments.rule else "",
+                                 tuple(arguments.alt)),
+                     spec["name"], arguments.build_dir, arguments.seconds)
+        record = {"lemma": spec["name"], "entry": spec["entry"],
+                  "seconds": round(time.monotonic() - started, 1)}
+        text = probes.marked(output)
+        if probes.END not in output:
+            record["outcome"] = "error"
+            record["error_lines"] = [line for line in output.split("\n")
+                                     if line.strip().startswith("Error")][:4]
+        else:
+            context, conclusion = conclusion_text(text)
+            frame, points = context_size(context)
+            record.update({"outcome": "stalled", "frame": frame,
+                           "mapsto": points, "conclusion": conclusion,
+                           "pred_class": classify(text, "residual").pred_class,
+                           "signature": signature(conclusion)})
+        records.append(record)
+        print(f"{record['outcome']:8s} {record['seconds']:7.1f}s "
+              f"frame {record.get('frame', 0):3d}  "
+              f"{record.get('pred_class', ''):<8} "
+              f"{record.get('signature', (record.get('error_lines') or [''])[0])[:44]}"
+              f"  {spec['name']}", flush=True)
+    for line in ((arguments.set.read_text().split("\n"))
+                 if arguments.set else []):
         if line.count(":") < 2:
             continue
         name, lemma, exit_address = line.split(":", 2)
