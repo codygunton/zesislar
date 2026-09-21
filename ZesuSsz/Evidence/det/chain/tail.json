@@ -1,0 +1,32 @@
+{
+  "name": "writeSuccessTail",
+  "comment": "The tail chain: four segments between two frozen predicates. 0x158e0 is the exit of the suffix hashes loop and 0x15a0c is the epilogue's exit, and both are merged and stay as they are. The three junctions between them -- 0x1596c, 0x159b8, 0x159d8 -- are hand-written boundaries today and are inferred here.",
+  "like": "WriteSuccessExactSuffixHashesTailConnection.v",
+  "imports": [
+    "ZesuSsz.Automation.All",
+    "ZesuSsz.Automation.Sets.v2",
+    "ZesuSsz.Contracts.Endpoints",
+    "ZesuSsz.Contracts.IslarisCode",
+    "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+  ],
+  "binders": "`{!islaG Sigma} `{!threadG} (sp data size : bv 64) (hashBase : Z) (hashBytes bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "boundary_arguments": "sp data size hashBase hashBytes bytes tail P",
+  "ends": {
+    "entry": {
+      "address": "0x158e0",
+      "spec": "writeSuccessExactTailFieldsEntryBoundary sp data size (BV 64 0) (Z_to_bv 64 (hashBase + Z.of_nat (length hashBytes))) bytes tail (hashBase \u21a6\u2098\u2217 hashBytes \u2217 P)"
+    },
+    "exit": {
+      "address": "0x15a0c",
+      "spec": "writeSuccessExactEpilogueExit"
+    }
+  },
+  "junctions": [
+    "0x1596c",
+    "0x159b8",
+    "0x159d8"
+  ]
+}

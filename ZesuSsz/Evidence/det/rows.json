@@ -1,0 +1,72 @@
+[
+  {
+    "row": 1,
+    "item": "Generator: callee premises from jal/jalr targets",
+    "state": "done",
+    "left": "",
+    "note": "4 premises for post-withdrawals, 9 for tail fields 1, 4 for tail fields 2; matches the hand draft exactly"
+  },
+  {
+    "row": 2,
+    "item": "Chain generation: inferred boundaries at every internal junction",
+    "state": "built, not run",
+    "left": "run it; blocked on the C1 handover tail in post-withdrawals",
+    "note": "tools/det/chain.py, gen_boundary.py, gen_segment.py --specs; two chain specs written"
+  },
+  {
+    "row": 3,
+    "item": "The three open segments closed as generated modules",
+    "state": "none closed",
+    "left": "post-withdrawals is past the seal chain and the array load and stops at C1; tail fields 1 and 2 not re-probed since the new rules",
+    "note": ""
+  },
+  {
+    "row": 4,
+    "item": "Rules for the stall classes",
+    "state": "C1 trace-tail, SpecTable, C2 byte view, C3 sealed, C2 word-in-array, C6 arithmetic built",
+    "left": "C1 handover tail (SpecPrefix.v) to wire and probe; C6 and C8 wait for chaining",
+    "note": "census says chaining, not rules, takes most of C6 and C8"
+  },
+  {
+    "row": 5,
+    "item": "WP6 to the frontier",
+    "state": "census done",
+    "left": "run the loop once chaining has moved the classes",
+    "note": "ZesuSsz/Evidence/det/wp6/shapes.jsonl"
+  },
+  {
+    "row": 6,
+    "item": "Rule set versioning v1 and v2",
+    "state": "written",
+    "left": "demonstrate zero changed outcomes on v1 modules",
+    "note": "the class guard on the C6 step is what makes that demonstrable"
+  },
+  {
+    "row": 7,
+    "item": "Harness and hygiene ratchet",
+    "state": "done",
+    "left": "",
+    "note": "make probe/infer/gen-segment/gen-module/chain/benchmark/handlines/report/gate/guard-report; ratchet baselined at 32 lemmas"
+  },
+  {
+    "row": 8,
+    "item": "Gate and guard in the live Makefile",
+    "state": "done",
+    "left": "",
+    "note": "every Dune gate inside a guard batch; check-iris gained the uncached checkers; the batch scope is re-entrant"
+  },
+  {
+    "row": 9,
+    "item": "Tools guide",
+    "state": "done",
+    "left": "",
+    "note": "docs/ai/plan/AUTOMATION_TOOLS.md, one page per tool plus the workflow"
+  },
+  {
+    "row": 10,
+    "item": "Final handoff",
+    "state": "draft",
+    "left": "fill sections 3 and 4 as rows 2 and 3 land",
+    "note": "docs/ai/plan/DETERMINISM_HANDOFF_FINAL.md"
+  }
+]

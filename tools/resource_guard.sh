@@ -161,9 +161,15 @@ run_scope() {
 run_batch() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  # One batch scope is enough. A gate calls `make`, and `make` wraps its
+  # own build in a batch too; nesting a scope inside a scope either fails
+  # or halves the cap for no gain.
+  if [ -n "${ZESU_IN_BATCH:-}" ]; then
+    exec "$@"
+  fi
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
   echo "$unit.scope" >> "$REGISTRY"
-  exec systemd-run --user --scope --quiet --unit="$unit" \
+  exec env ZESU_IN_BATCH=1 systemd-run --user --scope --quiet --unit="$unit" \
     -p "MemoryMax=${BATCH_LIMIT}" -p MemorySwapMax=0 -- "$@"
 }
 

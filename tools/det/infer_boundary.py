@@ -272,7 +272,8 @@ def main() -> int:
             context, conclusion = conclusion_text(text)
             frame, points = context_size(context)
             record.update({"outcome": "stalled", "frame": frame,
-                           "mapsto": points, "conclusion": conclusion,
+                           "mapsto": points, "context": context,
+                           "conclusion": conclusion,
                            "pred_class": classify(text, "residual").pred_class,
                            "signature": signature(conclusion)})
         records.append(record)

@@ -1,0 +1,84 @@
+{"pred_class": "unknown", "shape": "\u2203 x : spec *\u2097", "records": 55, "class_total": 317}
+{"pred_class": "unknown", "shape": "\u2203 x : list WriteSuccessByteLists.ByteListItem *\u2097", "records": 18, "class_total": 317}
+{"pred_class": "unknown", "shape": "reg_col writeSuccessBlobHashesBodyOtherRegShapes", "records": 9, "class_total": 317}
+{"pred_class": "unknown", "shape": "find_in_context (FindRegMapsTo \"xN\")", "records": 8, "class_total": 317}
+{"pred_class": "unknown", "shape": "reg_col writeSuccessTransactionsOtherRegShapes \u2217 \"xN\" \u21a6\u1d63 R", "records": 7, "class_total": 317}
+{"pred_class": "unknown", "shape": "zesuEncoderOptionalUNSomeCallSpec \u2228 zesuEncoderOptionalUNN", "records": 7, "class_total": 317}
+{"pred_class": "unknown", "shape": "(reg_col zesu_ram_sys_regs \u2217 \"xN\" \u21a6\u1d63 RVal_Bits (Z_to_bv N ", "records": 6, "class_total": 317}
+{"pred_class": "unknown", "shape": "\u2203 x : isla_trace, lookup N = Some x", "records": 6, "class_total": 317}
+{"pred_class": "unknown", "shape": "find_in_context (FindStructRegMapsTo \"mstatus\" \"bits\")", "records": 6, "class_total": 317}
+{"pred_class": "unknown", "shape": "find_in_context (FindRegMapsTo \"rv_enable_pmp\")", "records": 6, "class_total": 317}
+{"pred_class": "unknown", "shape": "(count - N)%bv \u2260 N%bv", "records": 6, "class_total": 317}
+{"pred_class": "unknown", "shape": "(bv_unsigned sp - N) \u21a6\u2098? N \u2217", "records": 6, "class_total": 317}
+{"pred_class": "C1", "shape": "\u2203 y : spec *\u2097 (),", "records": 93, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 y : spec *\u2097 list (bv N) *\u2097 nat *\u2097 nat *\u2097 Z *\u2097 (), y.N\u2097 \u21a6", "records": 66, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 Z *\u2097 bv N *\u2097 bv N *\u2097 (), \u231c(Z_to_bv N N + N)%", "records": 24, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 list (bv N) *\u2097 Z *\u2097 bv N *\u2097 bv N *\u2097 bv N *\u2097 ", "records": 17, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 list (bv N) *\u2097 nat *\u2097 nat *\u2097 nat *\u2097 Z *\u2097 bv ", "records": 13, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 (),", "records": 11, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 list (bv N) *\u2097 list (bv N) *\u2097 list (bv N) *\u2097", "records": 9, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 list (bv N) *\u2097 (), bv_unsigned (sp + N) \u21a6\u2098\u2217 ", "records": 7, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 x : spec *\u2097 Z *\u2097 bv N *\u2097 bv N *\u2097 (), \u231cret = Z_to_bv N x.", "records": 3, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 y : spec *\u2097 list (bv N) *\u2097 list (bv N) *\u2097 list (bv N) *\u2097", "records": 3, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 y : list WriteSuccessByteLists.ByteListItem *\u2097 nat *\u2097 sp", "records": 2, "class_total": 274}
+{"pred_class": "C1", "shape": "\u2203 y : list ByteListItem *\u2097 spec *\u2097 list (bv N) *\u2097 list wri", "records": 2, "class_total": 274}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 \"xN\" \u21a6\u1d63 RVal_Bits sp \u2217 \"xN\" \u21a6\u1d63", "records": 41, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 reg_col [(KindReg \"xN\", BitsSh", "records": 27, "class_total": 225}
+{"pred_class": "C6", "shape": "\u2203 x : spec *\u2097", "records": 23, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 \"xN\" \u21a6\u1d63 RVal_Bits (bv_zero_ext", "records": 10, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217", "records": 9, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 \"xN\" \u21a6\u1d63 RVal_Bits N%bv \u2217 \"xN\" ", "records": 8, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col [(KindReg \"xN\", BitsShape N); (KindReg \"xN\", BitsS", "records": 8, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 reg_col writeSuccessTransactio", "records": 5, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 \"xN\" \u21a6\u1d63 RVal_Bits (Z_to_bv N (", "records": 4, "class_total": 225}
+{"pred_class": "C6", "shape": "\u2203 y : bv N *\u2097 (), \"xN\" \u21a6\u1d63 RVal_Bits y.N\u2097 \u2217 (bv_unsigned y.", "records": 4, "class_total": 225}
+{"pred_class": "C6", "shape": "reg_col zesu_ram_sys_regs \u2217 writeSuccessSuffixBytesCarrier", "records": 3, "class_total": 225}
+{"pred_class": "C6", "shape": "(reg_col zesu_ram_sys_regs \u2217 \"xN\" \u21a6\u1d63 RVal_Bits (Z_to_bv N ", "records": 3, "class_total": 225}
+{"pred_class": "C2", "shape": "\u2203 y : list (bv N) *\u2097 (),", "records": 54, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 x : spec *\u2097", "records": 14, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 x : list (bv N) *\u2097 bv N *\u2097 bv N *\u2097 (), \"xN\" \u21a6\u1d63: (\u03bb _ : v", "records": 10, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 x : bv N *\u2097 spec *\u2097 list (bv N) *\u2097 nat *\u2097 nat *\u2097 nat *\u2097 ", "records": 10, "class_total": 207}
+{"pred_class": "C2", "shape": "writeSuccessTransactionsBytes processed = writeSuccessTran", "records": 7, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 x : list ByteListItem *\u2097", "records": 6, "class_total": 207}
+{"pred_class": "C2", "shape": "address \u21a6\u2098\u2217 values", "records": 5, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 x : spec *\u2097 list (bv N) *\u2097 list (bv N) *\u2097 list (bv N) *\u2097", "records": 4, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 y : bv N *\u2097 bv N *\u2097 bv N *\u2097 (),", "records": 3, "class_total": 207}
+{"pred_class": "C2", "shape": "\u2203 x : bv N *\u2097 bv N *\u2097 bv N *\u2097 list (list (bv N)) *\u2097 list (", "records": 3, "class_total": 207}
+{"pred_class": "C2", "shape": "(Z.to_nat (bv_unsigned (Z_to_bv N (base + N * length proce", "records": 3, "class_total": 207}
+{"pred_class": "C2", "shape": "base \u21a6\u2098\u2217 bytes", "records": 3, "class_total": 207}
+{"pred_class": "C8", "shape": "match WriteSuccessTransactionsSpec.writeSuccessTransaction", "records": 89, "class_total": 182}
+{"pred_class": "C8", "shape": "match writeSuccessTransactionData transaction with", "records": 82, "class_total": 182}
+{"pred_class": "C8", "shape": "match writeSuccessAccessEntryStorageCount entry with", "records": 4, "class_total": 182}
+{"pred_class": "C8", "shape": "match writeSuccessTransactionTo transaction with", "records": 3, "class_total": 182}
+{"pred_class": "C8", "shape": "match WriteSuccessPostTransactionDescriptors.writeSuccessP", "records": 2, "class_total": 182}
+{"pred_class": "C8", "shape": "match bytes with", "records": 2, "class_total": 182}
+{"pred_class": "C4", "shape": "bv_unsigned (Z_to_bv N (base + N * length processed)) + N ", "records": 33, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_zero_extend N vmem = transactionRowByte bytes index N", "records": 25, "class_total": 175}
+{"pred_class": "C4", "shape": "N \u2264 bv_unsigned sp - N", "records": 9, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_zero_extend N vmemN = transactionRowByte bytes index N", "records": 8, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_unsigned pointer + N = base + N * IslarisMemory.array_r", "records": 7, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_unsigned sp `mod` N = N", "records": 6, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_or (Z_to_bv N (bv_unsigned c * N + bv_unsigned d * N)) ", "records": 6, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_or (bv_zero_extend N vmem \u226a N) (bv_zero_extend N vmemN)", "records": 4, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_extract N (N - N) (sp + N) = N%bv", "records": 4, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_unsigned pointer \u2264 bv_unsigned (N + N - N)", "records": 4, "class_total": 175}
+{"pred_class": "C4", "shape": "bv_or (bv_zero_extend N b \u226a N) (bv_zero_extend N a) = Z_to", "records": 4, "class_total": 175}
+{"pred_class": "C4", "shape": "(Z.to_nat ((bv_unsigned src + N - bv_unsigned src) `div` N", "records": 3, "class_total": 175}
+{"pred_class": "C7", "shape": "find_in_context (FindInstrKind N false)", "records": 89, "class_total": 136}
+{"pred_class": "C7", "shape": "find_in_context (FindInstrKind N true)", "records": 39, "class_total": 136}
+{"pred_class": "C7", "shape": "find_in_context (FindInstrKind (if present then N else N) ", "records": 5, "class_total": 136}
+{"pred_class": "C7", "shape": "find_in_context (FindInstrKind (bv_unsigned ra) true)", "records": 1, "class_total": 136}
+{"pred_class": "C7", "shape": "find_in_context (FindInstrKind (if initial then N else N) ", "records": 1, "class_total": 136}
+{"pred_class": "C7", "shape": "find_in_context (FindInstrKind (bv_unsigned (bv_or (bv_and", "records": 1, "class_total": 136}
+{"pred_class": "C3", "shape": "(fix byteListItemResources (SigmaN : gFunctors) (islaGN : ", "records": 2, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessTransactionsAtNPreparedBlock P sp base transac", "records": 2, "class_total": 14}
+{"pred_class": "C3", "shape": "exactTailWithdrawalsBranchZeroEntry args witness P", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "exactTailWithdrawalsBranchNonzeroEntry args witness P", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "byteListsCode", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessExactHeaderPost sp bytes tail P", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessLoadBlockSpec", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessTransactionsAtNFramedBlock P sp base transacti", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessTransactionsNOpaqueMachineFrame sp base transa", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessTransactionsNecCarrierCallFrame P sp base tran", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessTransactionsLoopProviderResources P", "records": 1, "class_total": 14}
+{"pred_class": "C3", "shape": "writeSuccessTransactionsOptionalAddressSomeNcCallEntry P s", "records": 1, "class_total": 14}
