@@ -11,9 +11,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation"
     ],
-    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness)",
     "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ P)",
-    "exit": "0x158e0"
+    "exit": "0x15744"
   },
   {
     "name": "write_success_exact_tail_fields_first_segment",
