@@ -77,8 +77,28 @@ Ltac zesu_open_opaque_tail :=
     iEval (rewrite (zesu_sealed_opaque_unfold
                      (ZesuSealedOpaqueTail := instance))) in H).
 
+(* A transparent bundle is not a seal: `LithiumUnfold` says the search may
+   look inside it anywhere, and Lithium does so in the goal. In the
+   context it does not, because the split step matches `_ ∗ _`
+   syntactically and a definition applied to its arguments is not that.
+   So a lookup can fail with the word one delta step away.
+
+   The chain under post-withdrawals is four such steps deep:
+   `…CallerFrameRaw`, `…CallerFrameRestRaw`, `…MemoryFrame`,
+   `writeSuccessExactValueMemory`, and only the last one names the array
+   the block reads from. Unfolding them at block entry is the eager
+   opening rule 20 forbids; unfolding one of them after a lookup has
+   already failed is the same laziness the sealed tiers have. *)
+Ltac zesu_open_transparent_bundle :=
+  iMatchHyp ltac:(fun H body =>
+    let head := get_head body in
+    let _ := constr:(_ : LithiumUnfold head) in
+    iEval (progress unfold head; cbv zeta) in H).
+
 Ltac zesu_open_sealed_covering address :=
-  first [zesu_open_declared_cover address | zesu_open_opaque_tail].
+  first [zesu_open_declared_cover address
+        |zesu_open_opaque_tail
+        |zesu_open_transparent_bundle].
 
 Ltac zesu_open_sealed_for_lookup :=
   lazymatch goal with
@@ -89,7 +109,7 @@ Ltac zesu_open_sealed_for_lookup :=
      coverage to check against. Only the opaque tier applies here, and it
      is still lazy: the goal has already stalled. *)
   | |- envs_entails _ (@bi_exist _ (li_prod (bv 64) unit) _) =>
-      zesu_open_opaque_tail
+      first [zesu_open_opaque_tail | zesu_open_transparent_bundle]
   end;
   (* An opened seal arrives as one conjunction. The block's introduction
      phase splits what it is given at entry; a seal opened later has to
