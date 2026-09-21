@@ -1,0 +1,4 @@
+{"module": "WriteSuccessExactTailFieldsThirdSegment.v", "lemma": "write_success_exact_tail_fields_third_segment", "before": 19, "after": 19, "removed": 0}
+{"module": "WriteSuccessExactSuffixEntrySegment.v", "lemma": "write_success_exact_suffix_entry_segment", "before": 33, "after": 28, "removed": 5}
+{"module": "WriteSuccessExactPostTransactionsSegment.v", "lemma": "write_success_exact_post_transactions_segment", "before": 34, "after": 34, "removed": 0}
+{"module": "WriteSuccessExactEpilogueSegment.v", "lemma": "write_success_exact_epilogue_segment", "before": 14, "after": 14, "removed": 0}
