@@ -1,0 +1,29 @@
+{
+  "comment": "Call target to closed contract. A generated segment carries one persistent `instr_pre` premise per distinct target its range calls, so the block never steps into a callee. The targets come from the jal/jalr of the disassembly; the contracts are the closed B2/B4 specs, chosen as the ones the merged segments use.",
+  "contracts": {
+    "0x15d10": {
+      "name": "zesuEncoderIntExactCallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntCall"
+    },
+    "0x15bc8": {
+      "name": "zesuEncoderOptionalU64ExactCallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderOptionalU64Call"
+    },
+    "0x15c10": {
+      "name": "encoderByteListsExactCallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactByteListsSpec"
+    },
+    "0x15c6c": {
+      "name": "encoderBytesExactCallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderBytes"
+    },
+    "0x15b9c": {
+      "name": "zesuEncoderBooleanExactCallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanClosedCall"
+    },
+    "0x10190": {
+      "name": "writeOutputExactCallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWriteOutputCall"
+    }
+  }
+}

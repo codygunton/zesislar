@@ -39,6 +39,7 @@ import probes  # noqa: E402
 import timed  # noqa: E402
 from classify import classify  # noqa: E402
 from goals import conclusion_text, context_size  # noqa: E402
+from call_sites import premises as call_premises  # noqa: E402
 from modules import find_proof  # noqa: E402
 from signature import signature  # noqa: E402
 
@@ -117,9 +118,16 @@ def spec_source(spec: dict, rule: str = "",
     premise and nothing else, and runs the automation: where it stops is
     the segment's first debt.
     """
-    imports = [f"Require Import {name}." for name in spec["imports"]]
+    # One persistent premise per call the range makes, so the block never
+    # steps into a callee and asks for an instruction the index does not
+    # hold. The targets come from the disassembly, the contracts from the
+    # closed B2/B4 list.
+    calls, call_modules, unknown = call_premises(int(spec["entry"], 16),
+                                                 int(spec["exit"], 16))
+    imports = [f"Require Import {name}."
+               for name in list(spec["imports"]) + call_modules]
     statement = ([f"Lemma infer_boundary {spec['binders']} :"]
-                 + CODE_PREMISES
+                 + CODE_PREMISES + calls
                  + [f"  instr_body {spec['entry']}", f"    ({spec['spec']})."])
     preamble: list[str] = []
     block = "zesu_block"
@@ -251,6 +259,9 @@ def main() -> int:
                                  tuple(arguments.alt)),
                      spec["name"], arguments.build_dir, arguments.seconds)
         record = {"lemma": spec["name"], "entry": spec["entry"],
+                  "exit": spec["exit"],
+                  "call_premises": len(call_premises(
+                      int(spec["entry"], 16), int(spec["exit"], 16))[0]),
                   "seconds": round(time.monotonic() - started, 1)}
         text = probes.marked(output)
         if probes.END not in output:

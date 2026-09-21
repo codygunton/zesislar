@@ -6,9 +6,11 @@ Two items for the orchestrator, independent of each other.
    7.6.2 item 3.
 2. **The hygiene checker reads the working tree.** A correctness fix to
    the gate, worth taking first.
+3. **The spec table (C4).** Registers what Islaris defines and never
+   registers. Opt-in, not exported.
 
-Both are written, gated and measured on branch `determinism`; nothing
-here has been merged into `islaris-native`.
+All three are written, gated and measured on branch `determinism`;
+nothing here has been merged into `islaris-native`.
 
 # Item 1: the trace tail a call returns with (C1)
 
@@ -181,3 +183,103 @@ forbidden-name occurrences, both warnings.
 
 Independent of item 1, and it can go first. It touches one Python
 function and one shell script; no `.v` file changes, so no gate risk.
+
+# Item 3: the spec table (C4)
+
+`dc3a110f` — `ZesuSsz/Automation/SpecTable.v`, with
+`ZesuSsz/Proofs/Tests/SpecTable.v`. Independent of items 1 and 2.
+
+## The gap
+
+`InstrSpecs/Lookup.v` defines
+`find_in_context_instr_body_lookup_resources_inst` and never registers
+it. So `spec_instr_resources`, which every segment carries, is dead
+weight for the proof search: it can find the raw instruction at an
+address but never its specification. Of the seven write-success segments
+this is the class that blocks the most — three of them stop asking
+`∃ : isla_trace` where the table holds the answer.
+
+## Why not simply register Islaris's instance
+
+It fires, and the epilogue's frame falls from 101 to 23. But its premise
+`⌜lookup address = Some body⌝` is left as a goal, and when `body` is
+already constrained from elsewhere the equation is false and the search
+stalls on it:
+
+```
+body_lookup 87876 = Some (mmio_range (604086456 + 8) 16)
+```
+
+So the lookup moves into typeclass resolution instead:
+
+```coq
+Class ZesuSpecAt (address : Z) (body : iProp Sigma) : Prop :=
+  zesu_spec_at : Index.body_lookup address = Some body.
+Global Hint Extern 1 (ZesuSpecAt _ _) =>
+  (unfold ZesuSpecAt; reflexivity) : typeclass_instances.
+```
+
+Resolution either computes the entry or fails at once, and the search
+falls through to the raw instruction exactly as before. The instance sits
+at priority 10, ahead of Islaris's raw-instruction instance at 11: an
+address that has a specification should be entered through it.
+
+## Measured
+
+With it compiled into the probe (not installed):
+
+| segment | frame before | frame after | run before | run after |
+|---|---|---|---|---|
+| epilogue | 101 | 23 | 68 s | 6 s |
+| tail fields 1 | 35 | 19 | | |
+| tail fields 2 | 34 | 24 | | |
+
+The epilogue now reaches `∃ x, lookup (bv_unsigned ra) = Some x` — the
+caller's return address, which is the segment's exit rather than a stall.
+
+Benchmark, both frozen baselines, with it compiled into every probe:
+
+| set | metric | baseline | with the spec table |
+|---|---|---|---|
+| full, 305 | C1 row | 56 | **40** |
+| full | closed | 2 | 2 |
+| full | errors | 0 | 7 |
+| rule-15, 48 | C1 row | 10 | 9 |
+| rule-15 | closed | 2 | 2 |
+| rule-15 | errors | 0 | 0 |
+
+Sixteen lemmas leave the C1 row on the full set. The seven errors are not
+the rule failing: a corpus probe compiles the whole module up to the
+target `Proof.`, so it recompiles the *hand* proofs that sit earlier in
+the same module, and importing the instance changes the state those hand
+lines expect — `iSpecialize: cannot instantiate …` in
+`WriteSuccessExactHeaderChunk14e78.v` and four siblings in
+`WriteSuccessNativeSuffixBytes158e0Carrier.v`. A generated module has no
+earlier hand proof, which is the case the rule is for.
+
+## Why it is opt-in
+
+A `find_in_context` instance changes the proof search for every module
+that imports it, and this one has been measured on the segments and the
+corpus probes, not on the repository. It is not exported from
+`Automation/All.v`; a module opts in with
+
+```coq
+Require Import ZesuSsz.Automation.SpecTable.
+```
+
+which is what a generated module does. The seven probe errors above are
+what installing it globally would look like, module by module, and each
+would be a hand proof to repair.
+
+## Tests
+
+`ZesuSsz/Proofs/Tests/SpecTable.v`: the table resolves by computation for
+an address it holds (0x15668, the post-transactions entry), and yields
+`None` for one it does not (0x10190), so the search falls through.
+
+## Merge order
+
+Independent. Take it after item 2 and before or after item 1. It adds one
+module and one test module; no existing `.v` file changes, so a gate
+failure would be a new proof failing, not a repair.
