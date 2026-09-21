@@ -78,10 +78,19 @@ CP1_ENFORCED = True
 
 
 def tracked_files() -> list[str]:
+    """Every file the repository would carry, tracked or not yet added.
+
+    `git ls-files` alone lists only tracked files, so a new module escapes
+    every rule here until it is committed. A `Ltac … ::=` outside
+    `Hooks.v` survived two commits that way. `--others
+    --exclude-standard` adds the files that are new but not ignored, which
+    is what a reviewer would see.
+    """
     output = subprocess.check_output(
-        ["git", "ls-files"], cwd=ROOT, text=True
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+        cwd=ROOT, text=True
     )
-    return output.splitlines()
+    return sorted(set(output.splitlines()))
 
 
 def forbidden_counts(text: str) -> dict[str, int]:

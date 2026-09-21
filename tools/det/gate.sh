@@ -25,6 +25,21 @@ if [ "$live" -gt 0 ]; then
   exit 3
 fi
 
+# The checkers run unconditionally, before any step Dune can satisfy from
+# its cache. A cached `check-fast` reported success while a hygiene
+# violation stood for two commits: a gate the cache answers is not a gate.
+# Every report names this run.
+echo "uncached checks: hygiene, parity, spec shapes, evidence tests"
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py' 2>&1 | tail -1
+PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover \
+  -s ZesuSsz/Evidence -p 'test_*.py' 2>&1 | tail -1
+python3 ZesuSsz/Evidence/check_parity.py
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+python3 ZesuSsz/Evidence/check_spec_shapes.py
+bash ZesuSsz/Evidence/check_write_success_decoder.sh
+echo "uncached checks passed"
+
 jobs=$($guard gate-jobs)
 $guard reset-peak
 setsid nohup $guard watch >/dev/null 2>&1 &
