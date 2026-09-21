@@ -145,7 +145,8 @@ def build(root: Path, jobs: int) -> None:
 
 
 def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
-            seconds: int, build_dir: Path | None = None) -> list[dict]:
+            seconds: int, build_dir: Path | None = None,
+            imports: tuple[str, ...] = ()) -> list[dict]:
     from concurrent.futures import ThreadPoolExecutor
     build_dir = (build_dir.resolve() if build_dir is not None else
                  ((root / "_build") if root.name != "residual-corpus"
@@ -158,7 +159,8 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
     def one(module: str, lemma: str) -> dict:
         result = capture(root / PROOF_DIR / module, lemma,
                          build_dir.resolve(),
-                         scratch, probe_dir, seconds=seconds)
+                         scratch, probe_dir, seconds=seconds,
+                         imports=imports)
         if result.goal_sha256:
             goal_dir.mkdir(parents=True, exist_ok=True)
             (goal_dir / f"{result.goal_sha256}.txt").write_text(
@@ -222,6 +224,10 @@ def main() -> int:
     parser.add_argument("--jobs", type=int, default=12)
     parser.add_argument("--seconds", type=int, default=300)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--import", dest="imports", action="append",
+                        default=[],
+                        help="a module every probe requires, for measuring "
+                             "a rule that is built but not exported")
     parser.add_argument("--build-dir", type=Path, default=None,
                         help="the build tree the probes compile against; "
                              "needed when the worktree builds elsewhere")
@@ -249,7 +255,8 @@ def main() -> int:
     print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
           flush=True)
     rows = measure(root, pairs, jobs, arguments.seconds,
-                   arguments.build_dir if root == repository else None)
+                   arguments.build_dir if root == repository else None,
+                   tuple(arguments.imports))
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     result = {"automation": commit, "summary": summary(rows), "rows": rows}

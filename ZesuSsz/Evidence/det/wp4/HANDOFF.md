@@ -1,8 +1,16 @@
-# Handoff WP4: the trace tail a call returns with (C1)
+# Handoff WP4
 
-Replaces compliance plan 7.6.2 item 3 for the orchestrator. The rule is
-written, gated and measured on branch `determinism`; nothing here has been
-merged into `islaris-native`.
+Two items for the orchestrator, independent of each other.
+
+1. **The trace tail a call returns with (C1).** Replaces compliance plan
+   7.6.2 item 3.
+2. **The hygiene checker reads the working tree.** A correctness fix to
+   the gate, worth taking first.
+
+Both are written, gated and measured on branch `determinism`; nothing
+here has been merged into `islaris-native`.
+
+# Item 1: the trace tail a call returns with (C1)
 
 ## Hand-written lines per segment
 
@@ -117,3 +125,59 @@ the failure the orchestrator would otherwise meet first.
 `7a95dcaf` (the gate rule and the widened hygiene checker) is independent
 and can go before or after; it is worth taking first, because it is what
 catches a `Ltac … ::=` in a module that is new but not yet committed.
+
+# Item 2: the hygiene checker reads the working tree
+
+`7a95dcaf` — "Gate rule: the checkers run uncached, and they see new
+files". Take this one first: it is what makes the rest of the gate
+trustworthy, and it is independent of item 1.
+
+## The defect
+
+`ZesuSsz/Evidence/check_proof_hygiene.py` collected the files it scans
+with `git ls-files`, which lists only *tracked* files. A module that is
+new but not yet committed is invisible to every rule in the checker —
+the placeholder check, the forbidden-name check, the size baseline, the
+`Automation.All` import rule, and the Lithium hook-redefinition rule.
+
+That is not hypothetical. A `Ltac … ::=` outside `Hooks.v` stood in a new
+module for two commits on this branch. The checker had nothing to say
+about it until the module was committed, and by then a `check-fast` that
+Dune answered from its cache had already reported success twice.
+
+## The fix
+
+```python
+["git", "ls-files", "--cached", "--others", "--exclude-standard"]
+```
+
+`--others --exclude-standard` adds the files that are new but not
+ignored, which is what a reviewer sees. `_build`, `build` and the
+generated trace directories stay out through `.gitignore`, so nothing
+else changes. One call site, `tracked_files()`.
+
+## The second half: a cached gate is not a gate
+
+`tools/det/gate.sh` now runs the checkers itself — proof hygiene, parity,
+spec shapes, the decoder cases, and both unit suites — before any step
+Dune can satisfy from its cache, and prints `uncached checks passed`.
+Every report on this branch names that run. The orchestrator's gate
+should do the same; the two-line shape is:
+
+```
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+… the other checkers …
+echo "uncached checks passed"
+```
+
+## Effect on the current tree
+
+Running the widened checker over this branch finds no new failure beyond
+the one it was meant to catch, which is already fixed. It reports the
+same two baselines it reported before: 298 proof-size violations and 591
+forbidden-name occurrences, both warnings.
+
+## Merge order
+
+Independent of item 1, and it can go first. It touches one Python
+function and one shell script; no `.v` file changes, so no gate risk.

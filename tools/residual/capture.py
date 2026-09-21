@@ -99,11 +99,19 @@ class Capture:
 
 
 def probe_text(module: Path, lemma: str, solver: bool = False,
-               variant: str = "standard") -> tuple[str, list[str]]:
-    """Return the probe source for `lemma` and the hand lines it replaces."""
+               variant: str = "standard",
+               imports: tuple[str, ...] = ()) -> tuple[str, list[str]]:
+    """Return the probe source for `lemma` and the hand lines it replaces.
+
+    `imports` names modules the probe should require on top of the ones
+    the proof module already has. A rule that is built but not exported
+    from `Automation/All.v` is measured that way: the corpus sees it
+    without it being installed for every proof in the repository.
+    """
     proof = find_proof(module, lemma)
     lines = module.read_text().split("\n")
-    prefix = lines[:proof.proof_line] + ["Proof."]
+    header = [f"Require Import {name}." for name in imports]
+    prefix = header + lines[:proof.proof_line] + ["Proof."]
     trailer = [f"End {name}." for name in reversed(proof.open_blocks)]
     body = probe_body(solver, variant) + END_MARKER
     source = ["Set Printing Width 200."] + prefix + body + trailer + [""]
@@ -185,8 +193,9 @@ def error_lines(output: str) -> list[str]:
 def capture(module: Path, lemma: str, build_dir: Path,
             scratch: Path, probe_dir: Path, solver: bool = False,
             variant: str = "standard",
-            seconds: int = DEFAULT_SECONDS) -> Capture:
-    source, label_lines = probe_text(module, lemma, solver, variant)
+            seconds: int = DEFAULT_SECONDS,
+            imports: tuple[str, ...] = ()) -> Capture:
+    source, label_lines = probe_text(module, lemma, solver, variant, imports)
     probe_dir.mkdir(parents=True, exist_ok=True)
     suffix = ("__solver" if solver else "") + (
         "" if variant == "standard" else f"__{variant}")
