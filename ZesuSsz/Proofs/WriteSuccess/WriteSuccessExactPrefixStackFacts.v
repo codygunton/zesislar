@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.Endpoints.
@@ -30,3 +31,20 @@ Proof.
   - rewrite Hframe. lia.
 Qed.
 Print Assumptions exact_prefix_stack_facts.
+
+(* The registration the finisher's C6 step looks for. Stated once here,
+   beside the lemma it wraps: every segment that carries the witness's
+   well-formedness gets the frame pointer's alignment, its offset from the
+   entry pointer and its upper bound, and no segment spends a line on
+   them. *)
+Global Instance zesu_derived_prefix_stack_facts {Decoded}
+    `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) :
+  ZesuDerivedFacts (writeSuccessWitnessWellFormed args witness)
+    (bv_unsigned (writeSuccessEntrySp witness) =
+       (bv_unsigned (writeSuccessFrameSp witness) + 2000)%Z /\
+     bv_unsigned (writeSuccessFrameSp witness) `mod` 16 = 0 /\
+     bv_unsigned (writeSuccessFrameSp witness) + 1896 <
+       machineRamEnd defaultMap) :=
+  exact_prefix_stack_facts args witness.

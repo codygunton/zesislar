@@ -11,6 +11,7 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
+Require Import ZesuSsz.Automation.PureFacts.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -267,6 +268,11 @@ Ltac zesu_finish_pure_goal :=
   try zesu_saturate_alignment;
   try lia;
   try bv_solve;
+  (* C6, last: the goal is arithmetic and everything above has refused it,
+     so the facts it needs are still folded inside a hypothesis. Unfold
+     them and ask once more. `solve` keeps the step honest: it either
+     closes the goal or leaves it exactly as it was. *)
+  try (timeout 5 (solve [zesu_witness_arith_if_enabled]));
   try zesu_finish_little_endian.
 
 Ltac zesu_finish_dispatch :=
