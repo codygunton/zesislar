@@ -9,22 +9,22 @@
   {
     "row": 2,
     "item": "Chain generation: inferred boundaries at every internal junction",
-    "state": "built; the trace half now inferred by loop",
-    "left": "run the chain once a segment reaches a junction; infer_trace.py grows a boundary's trace one event a round",
-    "note": "tools/det/chain.py, gen_boundary.py, gen_segment.py --specs; two chain specs written"
+    "state": "built; trace inference runs and restates a loaded word itself",
+    "left": "chain.py stops at its first stalled hop, so the tail chain's later junctions were probed directly; it advances on its own once the call-return pattern lands",
+    "note": "tail chain mapped end to end: hop 0 and 1 need the call-return pattern, hop 2 a rule for a trace under `match`, hop 3 nothing (it is the chain end, `∃ x : isla_trace, lookup ra = Some x` with ra symbolic)"
   },
   {
     "row": 3,
     "item": "The three open segments closed as generated modules",
     "state": "none closed",
-    "left": "post-withdrawals frame 96 at C1; tail fields 1 frame 53 at a call-return subsume; tail fields 2 frame 44 at C1 against a bare trace variable",
-    "note": ""
+    "left": "post-withdrawals: rewrite a loaded word by its defining lookup; tail fields 1 and 2: one branch in zesu_enter_call_return for a wand ending in zesu_ld_spec; tail fields third: a trace under `match encoderOptionalU64Outcome`",
+    "note": "2026-09-22 under rule set v2: post-withdrawals frame 97 C1 with its boundary now compiling; tail fields 1 frame 37, tail fields 2 frame 35 after one inferred event, both at `(… -∗ zesu_ld_spec …) ∗ True`; tail fields third frame 30, epilogue frame 23 at its chain end"
   },
   {
     "row": 4,
     "item": "Rules for the stall classes",
-    "state": "C1 trace-tail, SpecTable, C2 byte view, C3 sealed word and register, C2 word-in-array, C6 arithmetic, C1 handover tail, C7 lookup reduction, C7 call return",
-    "left": "benchmark one arm per rule on both baselines; C6 register tuples and C8 bare matches wait for chaining",
+    "state": "nine rules built and measured on both baselines",
+    "left": "no rule closes a corpus lemma; spectable moves C1 by 15 and spectail by 2, and three arms' deltas belong to their support module, not the rule (controls in DETERMINISM_PROGRESS.md)",
     "note": "census says chaining, not rules, takes most of C6 and C8"
   },
   {
@@ -37,9 +37,9 @@
   {
     "row": 6,
     "item": "Rule set versioning v1 and v2",
-    "state": "written; one switch class per step, so each rule is measurable alone",
-    "left": "run `make bench-rules`: the v1 arm is the zero-regression demonstration and every other arm is one rule's delta",
-    "note": "the class guard on the C6 step is what makes that demonstrable"
+    "state": "done: v1 and v2, one switch class per step, demonstrated",
+    "left": "",
+    "note": "v1 arm against the frozen ccf505e81f85 changes one outcome in 305 and one in 48, both improvements; Tests/RuleSetV1.v and RuleSetV2.v make the gate run both passes"
   },
   {
     "row": 7,

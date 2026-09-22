@@ -54,7 +54,13 @@ def records(directory: Path) -> list[tuple[float, dict]]:
                 continue
             record["source_file"] = str(path)
             out.append((when, record))
-    return out
+    # Oldest first. `newest_by_lemma` merges a lemma's records and keeps
+    # the newest value of each field, and it skips a record older than
+    # the one it holds. Iterating in filename order therefore loses a
+    # field whenever an older file sorts after a newer one: adding
+    # `tail_hops.jsonl` dropped the hand-line column for two segments
+    # that way. Sorting by time makes the join order-independent.
+    return sorted(out, key=lambda pair: pair[0])
 
 
 def newest_by_lemma(rows: list[tuple[float, dict]]) -> dict[str, dict]:
