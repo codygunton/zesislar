@@ -178,6 +178,51 @@ def timed_lithium_step() -> str:
     return f"Ltac liStep ::={labelled}.\n"
 
 
+def timed_pass(text: str, labels: bool,
+               extra_alternatives: tuple[str, ...] = ()) -> str:
+    """Timed copies of the search list and of every pass that runs it.
+
+    The current automation names the list once (`zesu_run_pass_steps`) and
+    wraps it twice, as rule set v1 and as rule set v2, with
+    `zesu_run_pass` choosing between them by one class lookup. The copy
+    reproduces that shape, so a probe that imports rule set v2 measures
+    the v2 list and a probe that does not measures v1. The legacy
+    automation has one flat `zesu_run_pass` and takes the second branch.
+
+    A candidate rule is tried in a probe before a gate is paid for, so
+    `extra_alternatives` goes into the list itself, where both passes see
+    it. The probe path fences each job in a 6 GiB scope, so a rule that
+    opens an unbounded search kills its own probe instead of the machine.
+    """
+    def with_extras(body: str, close: str) -> str:
+        for index, alternative in enumerate(extra_alternatives):
+            entry = (f'time "new:{index:02d}_{alternative}" ({alternative})'
+                     if labels else alternative)
+            cut = body.rindex(close)
+            body = body[:cut] + f" |\n     {entry}" + body[cut:]
+        return body
+
+    def renamed(body: str) -> str:
+        for name in ("zesu_run_pass_steps", "zesu_run_pass_v1",
+                     "zesu_run_pass_v2", "zesu_liAStep", "zesu_finish"):
+            body = re.sub(rf"\b{name}\b(?!_)", f"{name}_timed", body)
+        return body
+
+    if "Ltac zesu_run_pass_steps :=" not in text:
+        flat = timed_alternatives(body_of(text, "zesu_run_pass"),
+                                  r"repeat first\s*\[(.*?)\]", "alt", True,
+                                  labels)
+        flat = with_extras(flat, "]; liShow")
+        return f"Ltac zesu_run_pass_timed :={renamed(flat)}.\n"
+
+    steps = timed_alternatives(body_of(text, "zesu_run_pass_steps"),
+                               r"first\s*\[(.*?)\]", "alt", True, labels)
+    out = f"Ltac zesu_run_pass_steps_timed :={renamed(with_extras(steps, ']'))}.\n"
+    for name in ("zesu_run_pass_v1", "zesu_run_pass_v2", "zesu_run_pass"):
+        out += f"Ltac {name}_timed :={renamed(body_of(text, name))}.\n"
+    return out
+
+
 def timed_tactics(module: Path, labels: bool = True,
                   extra_alternatives: tuple[str, ...] = ()) -> str:
     """`zesu_block_timed`: the block automation with a label on every entry.
@@ -220,22 +265,9 @@ def timed_tactics(module: Path, labels: bool = True,
     step = timed_alternatives(body_of(hooks, "zesu_liAStep"),
                               r"first\s*\[(.*?)\]", "li", False, labels)
     step_tactic = f"Ltac zesu_liAStep_timed :={step}.\n"
-    run_pass = timed_alternatives(body_of(text, "zesu_run_pass"),
-                                  r"repeat first\s*\[(.*?)\]", "alt", True,
-                                  labels)
-    # A candidate rule is tried in a probe before a gate is paid for: the
-    # probe path fences each job in a 6 GiB scope, so a rule that opens an
-    # unbounded search kills its own probe instead of the machine.
-    for index, alternative in enumerate(extra_alternatives):
-        entry = (f'time "new:{index:02d}_{alternative}" ({alternative})'
-                 if labels else alternative)
-        run_pass = run_pass.replace("]; liShow", f" |\n     {entry}]; liShow", 1)
-    run_pass = re.sub(r"\bzesu_liAStep\b(?!_)", "zesu_liAStep_timed", run_pass)
-    run_pass = run_pass.replace("zesu_finish)", "zesu_finish_timed)")
-    run_pass = re.sub(r"\bzesu_finish\b(?!_)", "zesu_finish_timed", run_pass)
-    pass_tactic = f"Ltac zesu_run_pass_timed :={run_pass}.\n"
+    pass_tactic = timed_pass(text, labels, extra_alternatives)
     run = body_of(text, "zesu_run")
-    run = run.replace("zesu_run_pass", "zesu_run_pass_timed")
+    run = re.sub(r"\bzesu_run_pass\b", "zesu_run_pass_timed", run)
     run = re.sub(r"\bzesu_finish\b(?!_)", "zesu_finish_timed", run)
     run_tactic = f"Ltac zesu_run_timed :={run}.\n"
     block = body_of(text, "zesu_block")

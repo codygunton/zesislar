@@ -12,6 +12,9 @@ Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
+(* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
+   module declares one tactic and installs no instance and no hint,
+   so importing it changes nothing for a rule set v1 module. *)
 Require Import ZesuSsz.Automation.V2Steps.
 From iris.proofmode Require Import environments.
 
@@ -412,11 +415,20 @@ Ltac zesu_finish_initialized_array_read :=
       do 3 zesu_liAStep
   end.
 
-Ltac zesu_run_pass :=
-  zesu_expose_environment_alias;
-  try zesu_prepare_uninit_goal;
-  try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first
+(* The search list of rule set v1: the alternatives every merged proof in
+   this repository was built against. A rule set v2 step does not belong
+   in this list, and that is measured, not stylistic. With one v2 step
+   added here, `check-iris` failed three times on
+   `WriteSuccessExactByteListsPublicResources.v`, always at the same
+   line, always with "Timeout!", and that file took 8 minutes 41 seconds
+   to compile alone. With the step in `zesu_run_pass_v2` instead, the
+   same file compiles in 24.3 seconds, against 30.0 seconds on
+   `origin/islaris-native`; `make pass-cost` reproduces both, three
+   interleaved runs each. An alternative in this list is tried on every
+   step where all the others fail, and this automation wraps several of
+   its own tactics in `timeout`. *)
+Ltac zesu_run_pass_steps :=
+  first
     [zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -427,11 +439,42 @@ Ltac zesu_run_pass :=
      zesu_finish_initialized_array_read |
      zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure |
-     zesu_open_trace_exist |
-     zesu_rule_set_v2_steps]; liShow;
+     zesu_open_trace_exist].
+
+Ltac zesu_run_pass_v1 :=
+  zesu_expose_environment_alias;
+  try zesu_prepare_uninit_goal;
+  try zesu_normalize_find_mem_address;
+  unshelve (time "zesu_run" repeat zesu_run_pass_steps; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
+
+Ltac zesu_run_pass_v2 :=
+  zesu_expose_environment_alias;
+  try zesu_prepare_uninit_goal;
+  try zesu_normalize_find_mem_address;
+  unshelve (time "zesu_run" repeat first
+    [zesu_run_pass_steps | zesu_rule_set_v2_steps]; liShow;
+    try zesu_finish_closed_wand;
+    try zesu_finish_framed_wand;
+    zesu_finish).
+
+(* Which set a module runs is decided by what it imports, and it is
+   decided once per pass rather than once per step. `Automation/Sets/v2.v`
+   exports the one `ZesuRuleSetV2` instance; `All.v` and
+   `Automation/Sets/v1.v` do not, so a module that imports either runs
+   `zesu_run_pass_v1`, which is the tactic it ran before, and pays one
+   failed class lookup per pass for the question.
+
+   The selection is a `tryif` and not a redefinition of `zesu_run_pass`
+   in `Sets/v2.v`: the hygiene checker refuses a tactic redefinition
+   outside `Automation/Hooks.v`, and `Hooks.v` is imported by every
+   module, so an override written there would not be opt-in. Ltac1
+   cannot name `zesu_run_pass_v2` before it is defined, so the dispatch
+   and the v2 body both live here. *)
+Ltac zesu_run_pass :=
+  tryif zesu_rule_set_v2_on then zesu_run_pass_v2 else zesu_run_pass_v1.
 
 Ltac zesu_run :=
   unshelve (repeat progress

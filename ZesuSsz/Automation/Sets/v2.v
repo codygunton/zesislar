@@ -9,7 +9,16 @@
 
    A generated module imports this set. A merged module keeps v1 until
    its own measurement says otherwise. The demonstration the bundle owes
-   is that v1 modules have zero changed outcomes. *)
+   is that v1 modules have zero changed outcomes.
+
+   What selects the set is `Switch.v` below: it is the one
+   `ZesuRuleSetV2` instance, and `zesu_run_pass` in `Finish.v` asks for
+   it once per pass. With the instance the pass runs
+   `zesu_run_pass_v2`, which is v1's search list plus
+   `zesu_rule_set_v2_steps`; without it the pass runs
+   `zesu_run_pass_v1`, which is v1's search list alone. Importing
+   `All.v` or `Sets/v1.v` cannot reach this instance, so a merged proof
+   runs the same alternatives it ran before. *)
 
 Require Export ZesuSsz.Automation.Sets.v1.
 

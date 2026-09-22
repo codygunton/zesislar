@@ -5,18 +5,20 @@
    class with one instance, in `Switch.v`, which only rule set v2
    imports.
 
-   The dispatch matters as much as the guard. Asking for the class on
-   every interpreter step is not free: `check-iris` was green before
-   these steps were added and then failed on
-   `WriteSuccessExactByteListsPublicResources.v` with "Timeout!", the
-   same file at the same line, on a loaded machine and on a quiet one.
-   The proof has a wall-clock `timeout` in it and a class lookup per
-   step, over a proof that runs for minutes, is enough to spend it.
+   This tactic is reached from `zesu_run_pass_v2` and from nowhere else.
+   It is not in rule set v1's search list, and that is measured: with it
+   there, `check-iris` failed three times on
+   `WriteSuccessExactByteListsPublicResources.v` at the same line with
+   "Timeout!", under three different guards -- four separately guarded
+   steps, one alternative with a class lookup, and one alternative that
+   matched the goal shape before the class lookup. The cost is the
+   alternative itself, on a proof that carries a wall-clock `timeout`,
+   not the guard in front of it.
 
-   So the shape comes first. One `lazymatch` on the goal decides whether
-   any of these steps could apply, and only then is the switch asked
-   for. For the overwhelming majority of goals the cost is one failed
-   match. *)
+   The shape still comes first inside v2. One `lazymatch` on the goal
+   decides whether any of these steps could apply, and only then is the
+   switch asked for, so a v2 module pays one failed match on the
+   overwhelming majority of goals. *)
 
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.

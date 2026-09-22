@@ -404,6 +404,15 @@ bench-rules:
 	  --commit $(if $(COMMIT),$(COMMIT),HEAD) --jobs $(DET_JOBS) \
 	  --out $(DET_BUILD_DIR)/bench-rules.md
 
+# What one module costs here against another commit. Row 6's zero-cost
+# demonstration for rule set v1.
+#   make pass-cost BEFORE=origin/islaris-native
+.PHONY: pass-cost
+pass-cost:
+	$(GUARD_BATCH) pass-cost -- $(PYTHON) tools/det/pass_cost.py \
+	  $(if $(BEFORE),--before $(BEFORE),) $(if $(MODULE),--module $(MODULE),) \
+	  --jobs $(DET_JOBS)
+
 # Hand-written lines per segment, before and after. The primary metric.
 #   make handlines BEFORE=<sha>
 .PHONY: handlines
