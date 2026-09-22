@@ -40,6 +40,18 @@ class RewriteTests(unittest.TestCase):
 
 
 class AssumptionTests(unittest.TestCase):
+    def test_scratch_uses_qualified_lemma(self) -> None:
+        source = audit.scratch_text("WriteSuccessEncoderOptionalNoneBoolean.v",
+                                    ["encoder_optional_none_boolean"])
+        qualified = ("ZesuSsz.Proofs.WriteSuccess."
+                     "WriteSuccessEncoderOptionalNoneBoolean")
+        self.assertIn(f"Require Import {qualified}.\n", source)
+        self.assertIn(
+            f"Print Assumptions {qualified}.encoder_optional_none_boolean.\n",
+            source,
+        )
+        self.assertNotIn("Print Assumptions encoder_optional_none_boolean.", source)
+
     def test_capture_normalizes_whitespace(self) -> None:
         content = ("A6_BEGIN_0000\nClosed   under the global context\n"
                    "A6_END_0000\nA6_BEGIN_0001\nAxioms:\n x :   True\n"

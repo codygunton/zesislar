@@ -41,13 +41,14 @@ def proof_module(module: str) -> str:
 
 
 def scratch_text(module: str, lemmas: list[str]) -> str:
-    lines = [f"Require Import {proof_module(module)}.", ""]
+    qualified_module = proof_module(module)
+    lines = [f"Require Import {qualified_module}.", ""]
     for number, lemma in enumerate(lemmas):
         for command in (
             "Goal True.",
             f'  idtac "A6_BEGIN_{number:04d}".',
             "Abort.",
-            f"Print Assumptions {lemma}.",
+            f"Print Assumptions {qualified_module}.{lemma}.",
             "Goal True.",
             f'  idtac "A6_END_{number:04d}".',
             "Abort.",
