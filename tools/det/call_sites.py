@@ -20,13 +20,15 @@ import re
 from pathlib import Path
 
 DUMPS = Path("experiments/islaris-write-success/generated")
+CALL_INDEX = Path("ZesuSsz/Evidence/det/call_sites.json")
 CONTRACTS = Path("ZesuSsz/Evidence/det/call_contracts.json")
 CALL = re.compile(r"^\s*([0-9a-f]+):\s+[0-9a-f]+\s+(jal|jalr)\s+(.*)$")
 COMMENTED = re.compile(r"#\s*([0-9a-f]+)\s*<([^>]*)>")
 DIRECT = re.compile(r"(?:ra,)?\s*([0-9a-f]+)\s*<([^>]*)>")
 
 
-def call_sites(dumps: Path = DUMPS) -> dict[int, tuple[int | None, str]]:
+def call_sites(dumps: Path = DUMPS,
+               index: Path = CALL_INDEX) -> dict[int, tuple[int | None, str]]:
     found: dict[int, tuple[int | None, str]] = {}
     for dump in sorted(dumps.glob("block_*.dump")):
         for line in dump.read_text().split("\n"):
@@ -38,7 +40,17 @@ def call_sites(dumps: Path = DUMPS) -> dict[int, tuple[int | None, str]]:
             found[int(match.group(1), 16)] = (
                 (int(where.group(1), 16), where.group(2)) if where
                 else (None, rest.strip()[:40]))
-    return found
+    if found:
+        return found
+    # Generated dumps are ignored by Git. The checked-in index keeps a
+    # clean checkout usable without silently dropping all call premises.
+    if not index.exists():
+        raise FileNotFoundError(f"no block dumps in {dumps} and no call index at {index}")
+    entries = json.loads(index.read_text())["calls"]
+    return {int(row["site"], 16):
+            (int(row["target"], 16) if row["target"] else None,
+             row["symbol"])
+            for row in entries}
 
 
 def contracts(path: Path = CONTRACTS) -> dict[int, dict]:
@@ -47,11 +59,12 @@ def contracts(path: Path = CONTRACTS) -> dict[int, dict]:
 
 
 def premises(entry: int, exit_address: int, dumps: Path = DUMPS,
-             table: Path = CONTRACTS) -> tuple[list[str], list[str], list[int]]:
+             table: Path = CONTRACTS,
+             index: Path = CALL_INDEX) -> tuple[list[str], list[str], list[int]]:
     """The `instr_pre` premises, the modules they need, and the unknowns."""
     known = contracts(table)
     targets, unknown = [], []
-    for site, (target, _) in sorted(call_sites(dumps).items()):
+    for site, (target, _) in sorted(call_sites(dumps, index).items()):
         if not entry <= site < exit_address or target is None:
             continue
         if target in known and target not in targets:
