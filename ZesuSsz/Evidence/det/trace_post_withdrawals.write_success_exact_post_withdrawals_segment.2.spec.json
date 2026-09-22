@@ -1,0 +1,19 @@
+[
+  {
+    "name": "write_success_exact_post_withdrawals_segment_trace2",
+    "entry": "0x156e8",
+    "like": "WriteSuccessExactWithdrawalsNativeConnection.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness) (tail : spec)",
+    "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) ((Snapshots.writeOutputEvents (writeSuccessEntrySp witness - (2000 + 16)) 8 [Z_to_bv 8 (bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `mod` 256); Z_to_bv 8 ((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (default (BV 64 0) (take 69 (writeSuccessValues witness) !! Z.to_nat ((bv_unsigned (writeSuccessFrameSp witness + 1136) - (bv_unsigned (writeSuccessFrameSp witness) + 1032)) `div` 8))) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] tail)) (writeSuccessExactPostWithdrawalsCallerFrame args witness \u2217 P)",
+    "exit": "0x15744"
+  }
+]

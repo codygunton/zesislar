@@ -24,6 +24,7 @@ def _load(name: str):
 
 gen_boundary = _load("gen_boundary")
 report = _load("report")
+infer_trace = _load("infer_trace")
 
 
 GOAL_BLOCK = """
@@ -118,6 +119,35 @@ class Report(unittest.TestCase):
         rows = [(1.0, {"lemma": "x", "frame": 5}),
                 (2.0, {"lemma": "x", "frame": 9})]
         self.assertEqual(report.newest_by_lemma(rows)["x"]["frame"], 9)
+
+
+class DefiningLookup(unittest.TestCase):
+    """A loaded word, written in terms the boundary can state.
+
+    Post-withdrawals' first event mentions `vmem`, which the segment
+    does not bind, and the same context says which element of which
+    list it is. Everything on the left of that hypothesis is bound, so
+    the boundary can state the value the way
+    `WriteSuccessExactTailWithdrawalCountEntry.v` already states
+    indices 11 and 12 of the same list.
+    """
+
+    CONTEXT = (
+        "  vmem : bv 64\n"
+        "  H2 : -1 < bv_unsigned vmem < bv_modulus 64\n"
+        "  Hlookup : take 69 (writeSuccessValues witness) "
+        "!! Z.to_nat (13) = Some vmem"
+    )
+
+    def test_reads_the_defining_hypothesis(self):
+        self.assertEqual(
+            infer_trace.defining_lookup(self.CONTEXT, "vmem"),
+            "default (BV 64 0) "
+            "(take 69 (writeSuccessValues witness) !! Z.to_nat (13))")
+
+    def test_no_hypothesis_is_not_a_guess(self):
+        self.assertIsNone(infer_trace.defining_lookup(self.CONTEXT, "other"))
+        self.assertIsNone(infer_trace.defining_lookup("", "vmem"))
 
 
 if __name__ == "__main__":

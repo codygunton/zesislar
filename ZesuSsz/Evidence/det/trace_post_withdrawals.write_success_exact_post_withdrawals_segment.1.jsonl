@@ -1,1 +1,1 @@
-{"lemma": "write_success_exact_post_withdrawals_segment_trace1", "entry": "0x156e8", "exit": "0x15744", "call_premises": 4, "seconds": 3.3, "outcome": "error", "error_lines": ["Error: The reference vmem was not found in the current environment."]}
+{"lemma": "write_success_exact_post_withdrawals_segment_trace1", "entry": "0x156e8", "exit": "0x15744", "call_premises": 4, "seconds": 1.8, "outcome": "error", "error_lines": ["Error: The reference vmem was not found in the current environment."]}

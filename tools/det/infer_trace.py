@@ -58,6 +58,36 @@ UNBOUND = re.compile(r"The reference (?P<name>[A-Za-z_][A-Za-z0-9_']*) "
 HANDOVER = re.compile(r"spec_trace\s*\(\s*(?P<events>.+?)\s+x\.1ₗ\s*\)", re.S)
 
 
+def defining_lookup(context: str, name: str) -> str | None:
+    """`name` written in terms the boundary can state, or None.
+
+    A block names the word it loaded, and the same context carries the
+    hypothesis that says where the word came from:
+
+        Hlookup : take 69 (writeSuccessValues witness)
+                    !! Z.to_nat (…) = Some vmem
+
+    Everything on the left is bound by the segment, so the boundary can
+    state the value as the project already states its siblings, with
+    `default (BV 64 0) (… !! …)`. `WriteSuccessExactTailWithdrawalCountEntry.v`
+    writes exactly that for indices 11 and 12 of this list.
+    """
+    pattern = re.compile(
+        r"!!\s*(?P<index>.+?)\s*=\s*Some\s+" + re.escape(name) + r"\s*$")
+    for line in (context or "").split("\n"):
+        found = pattern.search(line.strip())
+        if not found:
+            continue
+        head = line.strip()[:found.start()]
+        # Drop the hypothesis name, keep the list expression.
+        listing = head.split(":", 1)[1] if ":" in head.split("!!")[0] else head
+        listing = listing.strip()
+        if not listing:
+            continue
+        return f"default (BV 64 0) ({listing} !! {found['index'].strip()})"
+    return None
+
+
 def probe(spec: dict, out: Path, build_dir: Path, rule: Path | None,
           alternatives: list[str], seconds: int) -> dict:
     spec_file = out.with_suffix(".spec.json")
@@ -122,6 +152,7 @@ def main() -> int:
         prefix = "{tail}"
         events: list[str] = []
         record: dict = {}
+        context = ""
         for round_number in range(arguments.rounds):
             declared = prefix.format(tail=binder)
             attempt = dict(spec)
@@ -137,17 +168,43 @@ def main() -> int:
                   f"{record.get('signature', '')}", flush=True)
             if record.get("outcome") == "reached":
                 break
+            context = record.get("context") or context
             unbound = sorted({match["name"] for line in
                               record.get("error_lines", [])
                               for match in [UNBOUND.search(line)] if match})
             if unbound:
                 # The previous round read a real event off the goal and
-                # this round proves the boundary cannot state it. Name
-                # what is missing; guessing a replacement is the
-                # boundary's design, not this tool's.
+                # this round says the boundary cannot state it. Before
+                # giving up, look the name up where the block defined
+                # it: a loaded word comes with the hypothesis that says
+                # which element of which list it is, and every part of
+                # that is bound by the segment.
+                rewritten = prefix
+                resolved = []
+                for name in unbound:
+                    definition = defining_lookup(context, name)
+                    if definition is None:
+                        continue
+                    rewritten = re.sub(rf"\b{re.escape(name)}\b",
+                                       f"({definition})", rewritten)
+                    resolved.append(name)
+                if resolved:
+                    print(f"  {', '.join(resolved)} is a lookup the block "
+                          f"already has; stating it in the boundary's own "
+                          f"terms and retrying", flush=True)
+                    prefix = rewritten
+                    if events:
+                        last = events[-1]
+                        for name in resolved:
+                            last = re.sub(
+                                rf"\b{re.escape(name)}\b",
+                                f"({defining_lookup(context, name)})", last)
+                        events[-1] = last
+                    continue
                 print(f"  the event mentions {', '.join(unbound)}, which "
-                      f"the segment does not bind: the boundary has to "
-                      f"say where that value comes from", flush=True)
+                      f"the segment does not bind and the context does "
+                      f"not define: the boundary has to say where that "
+                      f"value comes from", flush=True)
                 break
             event = next_event(record.get("conclusion", ""), declared)
             if event is None:
