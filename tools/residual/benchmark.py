@@ -86,51 +86,53 @@ def read_set(path: Path = SET_FILE) -> list[tuple[str, str]]:
             if line.strip()]
 
 
-def automation_matches(repository: Path, commit: str) -> bool:
-    """The commit's `Automation/` is byte for byte the worktree's.
-
-    Then the worktree's own build already measures that automation, and a
-    second tree would cost an hour to rebuild for the same answer.
-    """
-    stored = subprocess.run(["git", "rev-parse", f"{commit}:{AUTOMATION}"],
-                            cwd=repository, capture_output=True, text=True)
-    here = subprocess.run(["git", "rev-parse", f"HEAD:{AUTOMATION}"],
-                          cwd=repository, capture_output=True, text=True)
-    dirty = subprocess.run(["git", "status", "--porcelain", AUTOMATION],
-                           cwd=repository, capture_output=True, text=True)
-    return (stored.returncode == 0 and here.returncode == 0
-            and stored.stdout.strip() == here.stdout.strip()
-            and not dirty.stdout.strip())
+# Derived inputs the build needs that git does not carry. The Isla traces
+# are 12 MiB generated from the pinned ELF and are the same for every
+# commit on this branch, so they are copied rather than regenerated.
+DERIVED = ("generated", "build")
 
 
 def source_tree(repository: Path, commit: str, tree: Path = TREE) -> Path:
-    """A build tree whose `Automation/` comes from `commit`, proofs unchanged.
+    """An immutable checkout of `commit`, with its own build directory.
 
-    The worktree's own sources are hard linked, so the copy is cheap and the
-    originals cannot be written through it by accident: the export replaces
-    whole files rather than editing them.
+    Plan 9.1, after the arm that measured nothing: a benchmark arm never
+    reads the working tree. The first v2 arm did -- the tree's
+    `Automation/` was byte for byte the commit's, so the runner reused
+    the worktree's own build -- and then the worktree was edited while
+    the arm ran. Every probe failed to build, all 305 rows landed in the
+    `n/a` class, and the arm was worthless.
+
+    So the tree comes from `git archive` and nothing in it is a link to
+    anything the worktree can write. The derived inputs git does not
+    carry are copied in; they are outputs of the pinned ELF, not
+    sources.
     """
     root = tree / commit[:12]
+    marker = root / ".arm-commit"
+    if marker.exists() and marker.read_text().strip() == commit:
+        # The tree is already this commit's, built and never written
+        # since. Measuring ten rules at one commit should cost one
+        # build, not ten.
+        return root
     if root.exists():
         shutil.rmtree(root)
     root.mkdir(parents=True)
-    for entry in sorted(repository.iterdir()):
-        if entry.name in {"_build", "build", ".git", "docs"}:
-            continue
-        target = root / entry.name
-        if entry.is_dir():
-            shutil.copytree(entry, target, copy_function=os.link,
-                            dirs_exist_ok=True)
-        else:
-            os.link(entry, target)
-    exported = root / AUTOMATION
-    shutil.rmtree(exported)
-    exported.mkdir(parents=True)
-    archive = subprocess.run(["git", "archive", commit, AUTOMATION],
+    archive = subprocess.run(["git", "archive", commit],
                              cwd=repository, capture_output=True, check=True)
-    subprocess.run(["tar", "-x", "-C", str(root), "--strip-components=0"],
+    subprocess.run(["tar", "-x", "-C", str(root)],
                    input=archive.stdout, check=True)
+    for name in DERIVED:
+        source = repository / name
+        if not source.exists():
+            continue
+        shutil.copytree(source, root / name, dirs_exist_ok=True,
+                        symlinks=True)
     return root
+
+
+def mark_built(root: Path, commit: str) -> None:
+    """Record that this tree is this commit's and has been built."""
+    (root / ".arm-commit").write_text(commit + "\n")
 
 
 def build(root: Path, jobs: int) -> None:
@@ -229,6 +231,9 @@ def main() -> int:
                         help="a module every probe requires, for measuring "
                              "a rule that is built but not exported")
     parser.add_argument("--build-dir", type=Path, default=None,
+                        # Kept for callers that still pass it; an arm now
+                        # always builds inside its own checkout, so the
+                        # value is ignored. Plan 9.1.
                         help="the build tree the probes compile against; "
                              "needed when the worktree builds elsewhere")
     arguments = parser.parse_args()
@@ -244,18 +249,17 @@ def main() -> int:
     print(f"benchmark {commit[:12]}: {len(pairs)} lemmas", file=sys.stderr,
           flush=True)
 
-    if automation_matches(repository, commit):
-        print("automation identical to this worktree: reusing its build",
-              file=sys.stderr, flush=True)
-        root = repository
-    else:
-        root = source_tree(repository, commit)
+    # Always an immutable checkout. There is no path here that reads the
+    # working tree: that is plan 9.1 and it is the whole point.
+    root = source_tree(repository, commit)
+    print(f"arm tree {root}", file=sys.stderr, flush=True)
+    if not (root / ".arm-commit").exists():
         build(root, guard_jobs(arguments.jobs))
+        mark_built(root, commit)
     jobs = guard_jobs(arguments.jobs)
     print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
           flush=True)
-    rows = measure(root, pairs, jobs, arguments.seconds,
-                   arguments.build_dir if root == repository else None,
+    rows = measure(root, pairs, jobs, arguments.seconds, None,
                    tuple(arguments.imports))
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)

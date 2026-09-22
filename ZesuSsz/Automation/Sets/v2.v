@@ -17,11 +17,15 @@ Require Export ZesuSsz.Automation.Sets.v1.
    Lemmas, and the hook entries that use them, are in `Hooks.v`. *)
 Require Export ZesuSsz.Automation.TraceTailLemmas.
 
-(* C6 and the arithmetic a folded hypothesis hides. `WitnessArith.v` is
-   the instance that turns the finisher's step on; without it the step
-   is a failed class lookup and v1's outcomes are unchanged. *)
+(* C6 and the arithmetic a folded hypothesis hides. `Switch.v` is the
+   one instance that turns every such step on; without it each step is a
+   failed class lookup and v1's outcomes are unchanged. *)
 Require Export ZesuSsz.Automation.PureFacts.
-Require Export ZesuSsz.Automation.WitnessArith.
+Require Export ZesuSsz.Automation.Switch.
+Require Export ZesuSsz.Automation.SpecPrefix.
+Require Export ZesuSsz.Automation.LookupReduce.
+Require Export ZesuSsz.Automation.CallReturn.
+Require Export ZesuSsz.Automation.V2Steps.
 
 (* C3: open a sealed predicate lazily, and only the one that holds the
    address. *)

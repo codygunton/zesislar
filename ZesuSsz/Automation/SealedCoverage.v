@@ -20,7 +20,8 @@
    `tools/det/gen_coverage.py` emits them for `Interfaces.v`, and the
    segment generator emits one for every boundary it produces. *)
 
-Require Import ZesuSsz.Automation.Finish.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
 From Coq Require Import Lists.List Strings.String.
@@ -71,6 +72,21 @@ Ltac zesu_open_declared_cover address :=
         end
     end).
 
+(* The register half of the same declaration. A bundle says which
+   registers it holds, so a register lookup that failed can open the one
+   bundle that holds it and leave every other sealed. *)
+Ltac zesu_open_declared_cover_register register :=
+  iMatchHyp ltac:(fun H sealed =>
+    let instance := constr:(_ : ZesuSealed sealed _ _ _) in
+    lazymatch type of instance with
+    | ZesuSealed _ _ _ ?registers =>
+        lazymatch eval vm_compute in
+          (existsb (String.eqb register) registers) with
+        | true =>
+            iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance))) in H
+        end
+    end).
+
 Ltac zesu_open_opaque_tail :=
   iMatchHyp ltac:(fun H sealed =>
     let instance := constr:(_ : ZesuSealedOpaqueTail sealed _) in
@@ -95,6 +111,22 @@ Ltac zesu_open_transparent_bundle :=
     let _ := constr:(_ : LithiumUnfold head) in
     iEval (progress unfold head; cbv zeta) in H).
 
+(* The same tier, aimed. A register lookup names no range, so the
+   untargeted tier has nothing to steer by and opens whichever bundle
+   comes first: measured on tail fields 2, that took the frame from 47
+   to 139 and the probe from 21 seconds to 105. Opening only a bundle
+   that turns out to hold the register keeps the frame where it was:
+   `iMatchHyp` backtracks the unfold when the guard fails, so a bundle
+   that does not hold it is left exactly as it was. *)
+Ltac zesu_open_transparent_bundle_with_register register :=
+  iMatchHyp ltac:(fun H body =>
+    let head := get_head body in
+    let _ := constr:(_ : LithiumUnfold head) in
+    iEval (progress unfold head; cbv zeta) in H;
+    lazymatch goal with
+    | |- context [(register ↦ᵣ _)%I] => idtac
+    end).
+
 Ltac zesu_open_sealed_covering address :=
   first [zesu_open_declared_cover address
         |zesu_open_opaque_tail
@@ -104,6 +136,13 @@ Ltac zesu_open_sealed_for_lookup :=
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
       zesu_open_sealed_covering address
+  (* A register lookup fails for the same reason a word lookup does: the
+     register is inside a bundle nobody opened. The declared coverage
+     names the registers as well as the ranges. *)
+  | |- envs_entails _ (find_in_context (FindRegMapsTo ?register) _) =>
+      first [zesu_open_declared_cover_register register
+            |zesu_open_transparent_bundle_with_register register
+            |zesu_open_opaque_tail]
   (* A handover states the word through the bound variable, so the
      address cannot be read out from under the binder and there is no
      coverage to check against. Only the opaque tier applies here, and it
@@ -115,3 +154,6 @@ Ltac zesu_open_sealed_for_lookup :=
      phase splits what it is given at entry; a seal opened later has to
      be split here, or the resources inside stay invisible. *)
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
+
+Ltac zesu_open_sealed_for_lookup_if_enabled :=
+  zesu_rule_set_v2_on; zesu_open_sealed_for_lookup.

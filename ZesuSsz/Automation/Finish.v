@@ -12,6 +12,7 @@ Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.V2Steps.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -426,7 +427,8 @@ Ltac zesu_run_pass :=
      zesu_finish_initialized_array_read |
      zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure |
-     zesu_open_trace_exist]; liShow;
+     zesu_open_trace_exist |
+     zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).

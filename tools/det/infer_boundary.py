@@ -108,6 +108,46 @@ def statement_without(lines: list[str], exit_address: str) -> list[str]:
     return out
 
 
+TRACE_NAME = "zesuInferredTrace"
+SHELVE_TERM_GOALS = """all: try (lazymatch goal with
+  | |- ?goal =>
+      lazymatch type of goal with
+      | Prop => fail
+      | _ => shelve
+      end
+  end)."""
+
+
+def with_inferred_trace(spec: dict) -> tuple[list[str], str, list[str], list[str]]:
+    """Turn the segment's trace into a Coq evar the automation fills in.
+
+    A block that calls out has to show its events are included in the
+    trace the boundary declares. When the boundary declares a bare
+    variable the inclusion carries no information, and when it declares
+    a folded project definition no reduction reaches the write at its
+    head. Either way the block stops, and the answer is not a rule: it
+    is that the boundary should have named the events the block emits.
+
+    So the probe stops declaring them. It states the trace as an
+    existential, `eexists` makes it an evar, and every inclusion the
+    block raises is then closed by `reflexivity`, which instantiates the
+    evar with exactly the events emitted so far. What the evar holds at
+    the exit is the trace the boundary should state.
+
+    Returns the binders, the spec with the trace replaced, and the
+    prologue and epilogue lines of the statement.
+    """
+    target = spec.get("infer_trace")
+    if not target:
+        return [spec["binders"]], spec["spec"], [], []
+    binders = spec["binders"]
+    for shape in (f"({target} : spec)", f"({target} : spec) "):
+        binders = binders.replace(shape, "")
+    body = spec["spec"].replace(target, TRACE_NAME)
+    return ([binders.strip()], body,
+            [f"  ∃ {TRACE_NAME} : spec,", "  ⊢ ("], ["  )."])
+
+
 def spec_source(spec: dict, rule: str = "",
                 alternatives: tuple[str, ...] = ()) -> str:
     """A probe for a segment that has no module yet.
@@ -126,9 +166,12 @@ def spec_source(spec: dict, rule: str = "",
                                                  int(spec["exit"], 16))
     imports = [f"Require Import {name}."
                for name in list(spec["imports"]) + call_modules]
-    statement = ([f"Lemma infer_boundary {spec['binders']} :"]
+    binders, body, opening, closing = with_inferred_trace(spec)
+    statement = ([f"Lemma infer_boundary {binders[0]} :"] + opening
                  + CODE_PREMISES + calls
-                 + [f"  instr_body {spec['entry']}", f"    ({spec['spec']})."])
+                 + [f"  instr_body {spec['entry']}",
+                    f"    ({body})" + ("" if closing else ".")]
+                 + closing)
     preamble: list[str] = []
     block = "zesu_block"
     if rule or alternatives:
@@ -138,8 +181,16 @@ def spec_source(spec: dict, rule: str = "",
                     + timed.timed_tactics(module, labels=False,
                                           extra_alternatives=alternatives
                                           ).split("\n"))
-    body = [f'idtac "{probes.BEGIN}".', "try intros.", f"try {block}.",
-            "all: try liShow.", "Show.", "Abort."]
+    body = [f'idtac "{probes.BEGIN}".', "try intros.",
+            "try eexists." if spec.get("infer_trace") else "idtac.",
+            f"try {block}.",
+            "all: try liShow.",
+            # `unshelve` brings the search's own term evars to the front,
+            # and a probe that prints one of those has reported nothing.
+            # Shelve anything that is not a proposition, so `Show` prints
+            # the goal the automation actually stopped on.
+            SHELVE_TERM_GOALS,
+            "Show.", "Abort."]
     return "\n".join(
         ["Set Printing Width 200.", "Require Import isla.isla.",
          "From iris.proofmode Require Import environments.",

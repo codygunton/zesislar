@@ -271,6 +271,11 @@ def main() -> None:
         if not name.endswith(".v"):
             continue
         path = ROOT / name
+        if not path.exists():
+            # `git ls-files --cached` still lists a file that has been
+            # deleted in the working tree. A reviewer sees the deletion,
+            # so the checker does too.
+            continue
         text = path.read_text()
         lines = text.splitlines()
 

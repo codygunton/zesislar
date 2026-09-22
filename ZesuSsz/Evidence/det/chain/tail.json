@@ -28,5 +28,7 @@
     "0x1596c",
     "0x159b8",
     "0x159d8"
-  ]
+  ],
+  "trace_binder": "tail",
+  "trace_term": "tail"
 }

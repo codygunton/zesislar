@@ -49,6 +49,30 @@ def probe(spec: dict, out: Path, build_dir: Path, rule: Path | None,
     return json.loads(text.split("\n")[-1]) if text else {"outcome": "error"}
 
 
+def infer_trace(spec: dict, out: Path, build_dir: Path, rule: Path | None,
+                alternatives: list[str], seconds: int, rounds: int) -> dict:
+    """Grow the segment's declared trace until the block stops asking.
+
+    A boundary has two halves. The resource half is read from the
+    context at the exit; the trace half cannot be, because the block
+    never gets to the exit while the trace it is handed does not match
+    what it emits. So the trace is inferred first, one event a round.
+    """
+    spec_file = out.with_suffix(".trace.spec.json")
+    spec_file.write_text(json.dumps([spec], indent=2) + "\n")
+    command = [sys.executable, str(HERE / "infer_trace.py"),
+               "--specs", str(spec_file), "--out", str(out),
+               "--build-dir", str(build_dir), "--seconds", str(seconds),
+               "--rounds", str(rounds)]
+    if rule:
+        command += ["--rule", str(rule)]
+    for alternative in alternatives:
+        command += ["--alt", alternative]
+    subprocess.run(command, check=False)
+    text = out.read_text().strip() if out.exists() else ""
+    return json.loads(text.split("\n")[-1]) if text else {}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--chain", type=Path, required=True)
@@ -59,6 +83,9 @@ def main() -> int:
     parser.add_argument("--rule", type=Path, default=None)
     parser.add_argument("--alt", action="append", default=[])
     parser.add_argument("--seconds", type=int, default=1800)
+    parser.add_argument("--trace-rounds", type=int, default=12,
+                        help="0 skips trace inference and uses the spec "
+                             "as written")
     arguments = parser.parse_args()
 
     chain = json.loads(arguments.chain.read_text())
@@ -75,6 +102,23 @@ def main() -> int:
         spec = {"name": name, "entry": start, "exit": stop,
                 "like": chain["like"], "imports": chain["imports"],
                 "binders": chain["binders"], "spec": entry_spec}
+        # `trace_term` is what the boundary declares today and what the
+        # inference replaces; `trace_binder` is the free tail the grown
+        # trace ends in. For an internal junction they are the same
+        # variable; at a chain end the term is the frozen definition.
+        trace_term = (chain.get("trace_term") if index == 0
+                      else chain.get("trace_binder"))
+        if arguments.trace_rounds and trace_term:
+            grown = infer_trace(
+                dict(spec, infer_trace=trace_term),
+                arguments.out_dir / f"{name}.trace.jsonl",
+                arguments.build_dir, arguments.rule, arguments.alt,
+                arguments.seconds, arguments.trace_rounds)
+            if grown.get("inferred_trace"):
+                spec = dict(spec, spec=spec["spec"].replace(
+                    trace_term, grown["inferred_trace"]))
+                print(f"{name}: {grown['rounds']} trace events inferred",
+                      flush=True)
         record = probe(spec, arguments.out_dir / f"{name}.jsonl",
                        arguments.build_dir, arguments.rule, arguments.alt,
                        arguments.seconds)

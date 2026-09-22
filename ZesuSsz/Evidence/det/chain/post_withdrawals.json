@@ -25,5 +25,7 @@
   },
   "junctions": [
     "0x15744"
-  ]
+  ],
+  "trace_binder": "tail",
+  "trace_term": "writeSuccessExactPostWithdrawalsEvents witness"
 }

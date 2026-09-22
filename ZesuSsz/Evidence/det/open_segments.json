@@ -9,10 +9,11 @@
       "ZesuSsz.Contracts.IslarisCode",
       "ZesuSsz.Proofs.WriteSuccess.Interfaces",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation"
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
     ],
     "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness)",
-    "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ P)",
+    "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness \u2217 P)",
     "exit": "0x15744"
   },
   {
@@ -25,10 +26,11 @@
       "ZesuSsz.Contracts.IslarisCode",
       "ZesuSsz.Proofs.WriteSuccess.Interfaces",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation"
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
     ],
     "binders": "`{!islaG Sigma} `{!threadG} (sp data size : bv 64) (hashBase : Z) (hashBytes bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
-    "spec": "writeSuccessExactTailFieldsEntryBoundary sp data size (BV 64 0) (Z_to_bv 64 (hashBase + Z.of_nat (length hashBytes))) bytes tail (hashBase ↦ₘ∗ hashBytes ∗ P)",
+    "spec": "writeSuccessExactTailFieldsEntryBoundary sp data size (BV 64 0) (Z_to_bv 64 (hashBase + Z.of_nat (length hashBytes))) bytes tail (hashBase \u21a6\u2098\u2217 hashBytes \u2217 P)",
     "exit": "0x1596c"
   },
   {
@@ -41,9 +43,10 @@
       "ZesuSsz.Contracts.IslarisCode",
       "ZesuSsz.Proofs.WriteSuccess.Interfaces",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation"
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
     ],
-    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (tail : spec)",
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (tail : spec) (Hwf : writeSuccessWitnessWellFormed args witness)",
     "spec": "writeSuccessExactTailFirstBranchState args witness tail",
     "exit": "0x159b8"
   }

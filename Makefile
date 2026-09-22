@@ -389,12 +389,20 @@ gen-module:
 benchmark:
 	@test -n "$(COMMIT)" || { echo "usage: make benchmark COMMIT=<sha>"; exit 2; }
 	$(GUARD_BATCH) benchmark -- $(PYTHON) tools/residual/benchmark.py \
-	  --automation $(COMMIT) --build-dir $(DET_BUILD_DIR) \
+	  --automation $(COMMIT) \
 	  --jobs $(DET_JOBS) $(foreach m,$(IMPORTS),--import $(m))
 	$(GUARD_BATCH) benchmark-rule15 -- $(PYTHON) tools/residual/benchmark.py \
-	  --automation $(COMMIT) --build-dir $(DET_BUILD_DIR) \
+	  --automation $(COMMIT) \
 	  --set ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt \
 	  --name rule15 --jobs $(DET_JOBS) $(foreach m,$(IMPORTS),--import $(m))
+
+# One arm per rule, on both baselines, and the delta table.
+#   make bench-rules COMMIT=<sha>
+.PHONY: bench-rules
+bench-rules:
+	$(GUARD_BATCH) bench-rules -- $(PYTHON) tools/det/bench_rules.py \
+	  --commit $(if $(COMMIT),$(COMMIT),HEAD) --jobs $(DET_JOBS) \
+	  --out $(DET_BUILD_DIR)/bench-rules.md
 
 # Hand-written lines per segment, before and after. The primary metric.
 #   make handlines BEFORE=<sha>

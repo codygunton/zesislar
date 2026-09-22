@@ -87,8 +87,14 @@ Ltac zesu_witness_arith :=
    goals are focused". Rule set v1 has to keep its outcomes exactly, so
    the step asks for an instance that only v2 provides. Resolving a class
    with no instance costs one failed lookup. *)
-Class ZesuWitnessArithEnabled : Prop := zesu_witness_arith_enabled : True.
+(* One switch for every step of this kind, not one per rule. Each of them
+   makes the search close something it used to leave open, and a goal
+   that closes earlier breaks a proof that had a line for it. Rule set v1
+   must keep its outcomes exactly; rule set v2 provides the instance. *)
+Class ZesuRuleSetV2 : Prop := zesu_rule_set_v2 : True.
+
+Ltac zesu_rule_set_v2_on :=
+  let _ := constr:(_ : ZesuRuleSetV2) in idtac.
 
 Ltac zesu_witness_arith_if_enabled :=
-  let _ := constr:(_ : ZesuWitnessArithEnabled) in
-  zesu_witness_arith.
+  zesu_rule_set_v2_on; zesu_witness_arith.
