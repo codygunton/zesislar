@@ -87,14 +87,27 @@ Ltac zesu_witness_arith :=
    goals are focused". Rule set v1 has to keep its outcomes exactly, so
    the step asks for an instance that only v2 provides. Resolving a class
    with no instance costs one failed lookup. *)
-(* One switch for every step of this kind, not one per rule. Each of them
-   makes the search close something it used to leave open, and a goal
-   that closes earlier breaks a proof that had a line for it. Rule set v1
-   must keep its outcomes exactly; rule set v2 provides the instance. *)
+(* Two levels of switch, because they answer two questions.
+
+   `ZesuRuleSetV2` selects the pass: `zesu_run_pass` in `Finish.v` asks
+   for it once per pass and runs `zesu_run_pass_v2` when it resolves.
+   Each of these steps makes the search close something it used to leave
+   open, and a goal that closes earlier breaks a proof that had a line
+   for it, so rule set v1 must never reach an instance of it.
+
+   Each step also has a class of its own, so that one benchmark arm can
+   measure one rule. `Automation/Switch.v` provides them all;
+   `Automation/Switches/<step>.v` provides one, beside the
+   `ZesuRuleSetV2` instance that the pass needs in either case. *)
 Class ZesuRuleSetV2 : Prop := zesu_rule_set_v2 : True.
 
 Ltac zesu_rule_set_v2_on :=
   let _ := constr:(_ : ZesuRuleSetV2) in idtac.
 
+Class ZesuStepWitnessArith : Prop := zesu_step_witness_arith : True.
+
+Ltac zesu_step_witness_arith_on :=
+  let _ := constr:(_ : ZesuStepWitnessArith) in idtac.
+
 Ltac zesu_witness_arith_if_enabled :=
-  zesu_rule_set_v2_on; zesu_witness_arith.
+  zesu_step_witness_arith_on; zesu_witness_arith.

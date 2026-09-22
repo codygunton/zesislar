@@ -61,5 +61,13 @@ Ltac zesu_close_spec_tail :=
   end;
   iSplit; [iPureIntro; timeout 5 zesu_spec_tail_reflexivity |].
 
+(* The switch for this one rule. `Automation/Switch.v` provides it
+   with every other v2 step; `Automation/Switches/…` provides it
+   alone, which is how one benchmark arm measures one rule. *)
+Class ZesuStepSpecTail : Prop := zesu_step_spec_tail : True.
+
+Ltac zesu_step_spec_tail_on :=
+  let _ := constr:(_ : ZesuStepSpecTail) in idtac.
+
 Ltac zesu_close_spec_tail_if_enabled :=
-  zesu_rule_set_v2_on; zesu_close_spec_tail.
+  zesu_step_spec_tail_on; zesu_close_spec_tail.

@@ -155,5 +155,13 @@ Ltac zesu_open_sealed_for_lookup :=
      be split here, or the resources inside stay invisible. *)
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
 
+(* The switch for this one rule. `Automation/Switch.v` provides it
+   with every other v2 step; `Automation/Switches/…` provides it
+   alone, which is how one benchmark arm measures one rule. *)
+Class ZesuStepSealedOpen : Prop := zesu_step_sealed_open : True.
+
+Ltac zesu_step_sealed_open_on :=
+  let _ := constr:(_ : ZesuStepSealedOpen) in idtac.
+
 Ltac zesu_open_sealed_for_lookup_if_enabled :=
-  zesu_rule_set_v2_on; zesu_open_sealed_for_lookup.
+  zesu_step_sealed_open_on; zesu_open_sealed_for_lookup.

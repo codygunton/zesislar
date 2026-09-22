@@ -32,5 +32,13 @@ Ltac zesu_enter_call_return :=
       iSplit; [iIntros "?" | done]
   end.
 
+(* The switch for this one rule. `Automation/Switch.v` provides it
+   with every other v2 step; `Automation/Switches/…` provides it
+   alone, which is how one benchmark arm measures one rule. *)
+Class ZesuStepCallReturn : Prop := zesu_step_call_return : True.
+
+Ltac zesu_step_call_return_on :=
+  let _ := constr:(_ : ZesuStepCallReturn) in idtac.
+
 Ltac zesu_enter_call_return_if_enabled :=
-  zesu_rule_set_v2_on; zesu_enter_call_return.
+  zesu_step_call_return_on; zesu_enter_call_return.

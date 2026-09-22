@@ -41,5 +41,13 @@ Ltac zesu_reduce_instr_lookup :=
       end
   end.
 
+(* The switch for this one rule. `Automation/Switch.v` provides it
+   with every other v2 step; `Automation/Switches/…` provides it
+   alone, which is how one benchmark arm measures one rule. *)
+Class ZesuStepLookupReduce : Prop := zesu_step_lookup_reduce : True.
+
+Ltac zesu_step_lookup_reduce_on :=
+  let _ := constr:(_ : ZesuStepLookupReduce) in idtac.
+
 Ltac zesu_reduce_instr_lookup_if_enabled :=
-  zesu_rule_set_v2_on; zesu_reduce_instr_lookup.
+  zesu_step_lookup_reduce_on; zesu_reduce_instr_lookup.
