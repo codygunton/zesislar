@@ -5,6 +5,7 @@ from check_proof_hygiene import (
     forbidden_counts,
     proof_size_ratchet_failures,
     ratchet_failures,
+    record_ratchet_failures,
 )
 
 
@@ -52,6 +53,22 @@ class ProofHygieneTests(unittest.TestCase):
         self.assertEqual(
             len(proof_size_ratchet_failures("Test.v", messages, baseline)), 1
         )
+
+    def test_residual_record_ratchet(self):
+        entries = [("new_block", "instr_body 0x1 spec", 3)]
+        self.assertEqual(
+            len(record_ratchet_failures("new.v", entries, set(), [])), 1)
+        self.assertEqual(
+            record_ratchet_failures("new.v", entries, {"new_block"}, []), [])
+        self.assertEqual(
+            record_ratchet_failures(
+                "new.v", entries, set(), ["new.v:new_block"]), [])
+
+    def test_residual_record_ratchet_ignores_clean_proofs(self):
+        entries = [("clean_block", "instr_body 0x1 spec", 0),
+                   ("not_a_block", "some other statement", 9)]
+        self.assertEqual(
+            record_ratchet_failures("new.v", entries, set(), []), [])
 
 
 if __name__ == "__main__":

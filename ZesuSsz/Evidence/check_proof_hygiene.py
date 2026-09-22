@@ -10,8 +10,14 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools" / "residual"))
+from modules import parse_module
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
+RECORD_BASELINE_PATH = Path(__file__).with_name("residual_record_baseline.json")
+RESIDUAL_CORPUS = ROOT / "ZesuSsz" / "Evidence" / "residuals" / "corpus.jsonl"
+DET_EVIDENCE = ROOT / "ZesuSsz" / "Evidence" / "det"
+LEMMA_RECORD = re.compile(r'"lemma"\s*:\s*"([^"]+)"')
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
@@ -78,10 +84,84 @@ CP1_ENFORCED = True
 
 
 def tracked_files() -> list[str]:
+    """Every file the repository would carry, tracked or not yet added.
+
+    `git ls-files` alone lists only tracked files, so a new module escapes
+    every rule here until it is committed. A `Ltac … ::=` outside
+    `Hooks.v` survived two commits that way. `--others
+    --exclude-standard` adds the files that are new but not ignored, which
+    is what a reviewer would see.
+    """
     output = subprocess.check_output(
-        ["git", "ls-files"], cwd=ROOT, text=True
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+        cwd=ROOT, text=True
     )
-    return output.splitlines()
+    return sorted(set(output.splitlines()))
+
+
+def recorded_lemmas() -> set[str]:
+    """Every lemma that has a residual record on disk.
+
+    A hand line is a debt, and a debt has to be visible: the record says
+    what the automation refused and which class it belongs to, so the
+    line becomes a ticket instead of a habit. The corpus is the store the
+    replay writes; the `det` evidence adds the records the probes write.
+    """
+    names: set[str] = set()
+    for path in [RESIDUAL_CORPUS, *sorted(DET_EVIDENCE.rglob("*.jsonl"))]:
+        if not path.exists():
+            continue
+        with path.open() as handle:
+            for line in handle:
+                match = LEMMA_RECORD.search(line)
+                if match:
+                    names.add(match.group(1))
+    return names
+
+
+def record_ratchet_failures(
+    name: str,
+    entries: list[tuple[str, str, int]],
+    recorded: set[str],
+    baseline: list[str],
+) -> list[str]:
+    """The ratchet itself, over (lemma, statement, hand-line count)."""
+    failures = []
+    for lemma, statement, hand in entries:
+        if "instr_body" not in statement or hand == 0:
+            continue
+        if lemma in recorded or f"{name}:{lemma}" in baseline:
+            continue
+        failures.append(
+            f"hand lines with no residual record: {name}: {lemma}: "
+            f"{hand} lines"
+        )
+    return failures
+
+
+def residual_record_failures(
+    name: str, text: str, recorded: set[str], baseline: list[str]
+) -> list[str]:
+    """A new lemma with hand lines needs a residual record.
+
+    The ratchet is one-way: everything that has hand lines today is in the
+    baseline, and a lemma added after it either closes with the block
+    automation alone or arrives with the record that explains why it
+    cannot.
+    """
+    path = ROOT / name
+    try:
+        proofs = parse_module(path)
+    except (OSError, ValueError):
+        return []
+    lines = text.splitlines()
+    entries = [
+        (proof.name,
+         "\n".join(lines[proof.declaration_line:proof.proof_line]),
+         len(proof.hand_lines))
+        for proof in proofs
+    ]
+    return record_ratchet_failures(name, entries, recorded, baseline)
 
 
 def forbidden_counts(text: str) -> dict[str, int]:
@@ -176,6 +256,9 @@ def main() -> None:
     legacy_entries = set(baseline_data["legacy_entry_files"])
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
+    record_baseline = (json.loads(RECORD_BASELINE_PATH.read_text())["lemmas"]
+                       if RECORD_BASELINE_PATH.exists() else [])
+    recorded = recorded_lemmas()
     failures: list[str] = []
     warnings: list[str] = []
     remaining = 0
@@ -185,6 +268,11 @@ def main() -> None:
         if not name.endswith(".v"):
             continue
         path = ROOT / name
+        if not path.exists():
+            # `git ls-files --cached` still lists a file that has been
+            # deleted in the working tree. A reviewer sees the deletion,
+            # so the checker does too.
+            continue
         text = path.read_text()
         lines = text.splitlines()
 
@@ -216,6 +304,8 @@ def main() -> None:
             if (path.name not in A2_EXCEPTIONS and
                     any(fnmatch.fnmatch(path.name, pattern) for pattern in A2_PATTERNS)):
                 failures.append(f"Appendix A.2 file remains: {name}")
+            failures.extend(residual_record_failures(
+                name, text, recorded, record_baseline))
             size_messages = proof_size_warnings(name, lines)
             if CP1_ENFORCED:
                 warnings.extend(size_messages)
