@@ -11,6 +11,11 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
+Require Import ZesuSsz.Automation.PureFacts.
+(* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
+   module declares one tactic and installs no instance and no hint,
+   so importing it changes nothing for a rule set v1 module. *)
+Require Import ZesuSsz.Automation.V2Steps.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -188,7 +193,24 @@ Ltac zesu_finish_selectors :=
         zesu_normalize_stack_array_indices; reflexivity)
   end.
 
-Ltac zesu_finish :=
+(* The finisher, dispatched on the head of the goal.
+
+   It used to be a linear battery: about forty `try` entries that every
+   goal ran through in order, whatever its head. WP1 measured what that
+   costs. Over sixteen profiled block proofs `zesu_finish` was 62.6 percent
+   of the automation's seconds, and `bv_solve` inside it was 36.9 percent
+   at 5.9 seconds per call -- a solver that cannot close an Iris
+   entailment, run on Iris entailments. The forty entries themselves were
+   not the cost: the alternatives that fail cost 0 to 12 seconds per proof.
+
+   So the structure is now one normalization pass, then a dispatch on the
+   head, then a fallback chain for heads the dispatch does not know. Every
+   entry stays reachable from every head it can close, and keeps its old
+   relative order there, so the finisher closes no fewer goals than before.
+   The two branches carry `time` labels in the WP1 probes, so the split can
+   be measured. *)
+
+Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
   try (timeout 2 zesu_normalize_memory_addresses);
@@ -231,6 +253,97 @@ Ltac zesu_finish :=
   try lia;
   try bv_solve;
   try zesu_finish_little_endian.
+
+Ltac zesu_finish_normalize :=
+  try autorewrite with zesu_indices;
+  try (timeout 2 zesu_normalize_memory_constants);
+  try (timeout 2 zesu_normalize_memory_addresses).
+
+Ltac zesu_finish_shelved :=
+  first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+    prepare_sidecond].
+
+(* An Iris entailment. The entries the dispatch leaves out here are the
+   ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
+   and `bv_solve`. Everything that can act on an entailment keeps its old
+   position relative to the others. *)
+Ltac zesu_finish_entailment :=
+  try autorewrite with zesu_indices;
+  try iAssumption;
+  try (timeout 2 zesu_normalize_array_cursors);
+  try (timeout 2 zesu_finish_pure_resources);
+  try simpl;
+  try done;
+  try assumption;
+  (* Both of these work on the Coq context, not on the conclusion, so an
+     entailment needs them as much as a pure goal does: they prepare the
+     hypotheses that a later side condition is solved from, and leaving
+     them out stops `repeat progress` one step early. *)
+  zesu_normalize_nat_powers;
+  try zesu_saturate_alignment.
+
+(* Anything else: the old chain, in the old order. *)
+Ltac zesu_finish_pure_goal :=
+  try zesu_finish_selectors;
+  try autorewrite with zesu_indices;
+  try iAssumption;
+  try (timeout 2 zesu_normalize_array_cursors);
+  try (timeout 2 zesu_finish_known_list_shape);
+  try (timeout 2 zesu_finish_pure_resources);
+  try reflexivity;
+  try (timeout 2 zesu_finish_integer_word_image);
+  try zesu_finish_packed_word_equality;
+  try (timeout 2 (lazymatch goal with
+    | |- @eq (bv 64) _ (Z_to_bv 64
+        (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
+        solve [zesu_array_eight_value]
+    end));
+  try simpl;
+  try done;
+  try assumption;
+  try zesu_finish_extract_alias;
+  try (timeout 2 zesu_finish_list_slice_length);
+  try zesu_finish_trace_tail;
+  zesu_normalize_nat_powers;
+  try zesu_finish_tag_bound;
+  try zesu_finish_mask;
+  try zesu_finish_array_byte_lookup;
+  try zesu_finish_constant;
+  try (apply Z.le_ge; assumption);
+  try zesu_finish_ram_known;
+  try zesu_finish_ram_address;
+  try zesu_finish_pointer_alignment;
+  try zesu_saturate_alignment;
+  try lia;
+  try bv_solve;
+  (* C6, last: the goal is arithmetic and everything above has refused it,
+     so the facts it needs are still folded inside a hypothesis. Unfold
+     them and ask once more. `solve` keeps the step honest: it either
+     closes the goal or leaves it exactly as it was. *)
+  try (timeout 5 (solve [zesu_witness_arith_if_enabled]));
+  try zesu_finish_little_endian.
+
+Ltac zesu_finish_dispatch :=
+  lazymatch goal with
+  | |- envs_entails _ _ => zesu_finish_entailment
+  | |- @bi_entails _ _ _ => zesu_finish_entailment
+  | _ => zesu_finish_pure_goal
+  end.
+
+Ltac zesu_finish_v2 :=
+  zesu_finish_normalize;
+  lazymatch goal with
+  | |- envs_entails _ _ => try iAssumption
+  | _ => idtac
+  end;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ => zesu_finish_shelved
+  | _ => unLET
+  end;
+  zesu_finish_dispatch.
+
+Ltac zesu_finish :=
+  tryif zesu_rule_set_v2_on then zesu_finish_v2 else zesu_finish_v1.
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with
@@ -349,7 +462,32 @@ Ltac zesu_finish_initialized_array_read :=
       do 3 zesu_liAStep
   end.
 
-Ltac zesu_run_pass :=
+(* The search list of rule set v1: the alternatives every merged proof in
+   this repository was built against. A rule set v2 step does not belong
+   in this list, and that is measured, not stylistic. With one v2 step
+   added here, `check-iris` failed three times on
+   `WriteSuccessExactByteListsPublicResources.v`, always at the same
+   line, always with "Timeout!", and that file took 8 minutes 41 seconds
+   to compile alone. With the step in `zesu_run_pass_v2` instead, the
+   same file compiles in 24.3 seconds, against 30.0 seconds on
+   `origin/islaris-native`; `make pass-cost` reproduces both, three
+   interleaved runs each. An alternative in this list is tried on every
+   step where all the others fail, and this automation wraps several of
+   its own tactics in `timeout`. *)
+Ltac zesu_run_pass_steps :=
+  first
+    [zesu_open_requested_instr_bundle |
+     zesu_open_requested_struct_sys_package |
+     zesu_open_requested_saved_x9_package |
+     zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
+     zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
+     zesu_prepare_initialized_array_read |
+     zesu_finish_initialized_array_read |
+     zesu_liAStep | zesu_open_matching_two_level_frame |
+     zesu_extract_matching_descriptor_pure].
+
+Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
@@ -367,6 +505,32 @@ Ltac zesu_run_pass :=
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
+
+Ltac zesu_run_pass_v2 :=
+  zesu_expose_environment_alias;
+  try zesu_prepare_uninit_goal;
+  try zesu_normalize_find_mem_address;
+  unshelve (time "zesu_run" repeat first
+    [zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    try zesu_finish_closed_wand;
+    try zesu_finish_framed_wand;
+    zesu_finish).
+
+(* Which set a module runs is decided by what it imports, and it is
+   decided once per pass rather than once per step. `Automation/Sets/v2.v`
+   exports the one `ZesuRuleSetV2` instance; `All.v` and
+   `Automation/Sets/v1.v` do not, so a module that imports either runs
+   `zesu_run_pass_v1`, which is the tactic it ran before, and pays one
+   failed class lookup per pass for the question.
+
+   The selection is a `tryif` and not a redefinition of `zesu_run_pass`
+   in `Sets/v2.v`: the hygiene checker refuses a tactic redefinition
+   outside `Automation/Hooks.v`, and `Hooks.v` is imported by every
+   module, so an override written there would not be opt-in. Ltac1
+   cannot name `zesu_run_pass_v2` before it is defined, so the dispatch
+   and the v2 body both live here. *)
+Ltac zesu_run_pass :=
+  tryif zesu_rule_set_v2_on then zesu_run_pass_v2 else zesu_run_pass_v1.
 
 Ltac zesu_run :=
   unshelve (repeat progress
@@ -398,7 +562,14 @@ Ltac zesu_reduce_introduced_code_lists :=
           iEval (cbn) in H
     end).
 
-Ltac zesu_block :=
+(* A pure goal is not a refusal any more.
+
+   `iStartProof` fails on a goal that is not a bi assertion, and the corpus
+   counted 443 hand lines written only because `zesu_block` stopped there:
+   shelved side conditions and shapes like `bv_and b N = N`. The finisher
+   handles those, so the block automation hands them to it instead of
+   failing. *)
+Ltac zesu_block_v1 :=
   iStartProof;
   zesu_expose_code_lists;
   repeat first [progress iIntros (?) | progress iIntros "#?" |
@@ -406,6 +577,19 @@ Ltac zesu_block :=
   zesu_reduce_introduced_code_lists;
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
   zesu_run.
+
+Ltac zesu_block_v2 :=
+  tryif iStartProof then (
+    zesu_expose_code_lists;
+    repeat first [progress iIntros (?) | progress iIntros "#?" |
+      progress iIntros "?"];
+    zesu_reduce_introduced_code_lists;
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+    zesu_run)
+  else zesu_finish.
+
+Ltac zesu_block :=
+  tryif zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1.
 
 Ltac zesu_block_simpl :=
   iStartProof;

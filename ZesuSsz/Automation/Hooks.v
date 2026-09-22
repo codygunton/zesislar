@@ -4,6 +4,7 @@ From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
+Require Import ZesuSsz.Automation.TraceTailLemmas.
 Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
 
@@ -335,3 +336,51 @@ Ltac zesu_liAStep :=
  ]; liSimpl.
 
 Ltac liAStep ::= zesu_liAStep.
+
+(* C1: the trace tail a call returns with.
+
+   The corpus calls this the line every segment proof repeats. A call
+   returns with its events still open, so the block is asked for a spec `x`
+   with `scons_snap event accept x ⊆ scons event tail`. The witness is
+   always the caller's tail, the second argument of the `scons` on the
+   right. About 70 proofs and 300 hand lines in the backlog (rows 8, 12,
+   13, 16, 18) are this one step.
+
+   Supplying the witness when the existential is opened is not optional.
+   Splitting `∃ x : spec *ₗ (), body x` into evars and letting Lithium
+   continue does not return: with the spec open, `instr_pre … ?x` matches
+   anything in the context. A probe with that rule ran 171 s and was killed
+   at its 6 GiB cap, and wired into the automation it took `check-iris`
+   past the 200 GiB batch cap twice, against 75 GiB without it. The tail
+   does not mention the bound variable, so it reads out from under the
+   binder; the inclusion is discharged in the same step, so the search
+   never sees a half-instantiated spec. *)
+Ltac zesu_close_trace_inclusion :=
+  iPureIntro; exact (zesu_scons_snap_subseteq_scons _ _ _).
+
+Ltac zesu_open_trace_exist :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod spec unit) _) =>
+      match goal with
+      | |- context [scons _ ?tail] =>
+          iExists (tail, tt)ₗ;
+          try (iSplit; [zesu_close_trace_inclusion |])
+      end
+  end.
+
+(* The same step reached as a side condition rather than at the
+   existential. The events are compared syntactically and the open spec
+   must be an evar: a `unify` on these terms runs a conversion check over
+   the whole event history, and the first version did not finish the
+   suffix-entry segment in forty minutes. *)
+Ltac zesu_finish_trace_tail :=
+  lazymatch goal with
+  | |- scons_snap ?event _ ?open ⊆ scons ?expected ?tail =>
+      is_evar open; constr_eq event expected;
+      unify open tail;
+      exact (zesu_scons_snap_subseteq_scons _ _ _)
+  | |- scons ?event ?open ⊆ scons ?expected ?tail =>
+      is_evar open; constr_eq event expected;
+      unify open tail;
+      exact (zesu_scons_subseteq_scons _ _)
+  end.
