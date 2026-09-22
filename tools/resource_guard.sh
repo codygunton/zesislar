@@ -78,12 +78,27 @@ guard_jobs() {
 # Measured 2026-09-20: with a rule that opened an unbounded search, 32
 # jobs reached the 200 GiB cap and the gate was killed at a machine peak
 # of 209 GiB; a clean gate at 25 jobs peaks at 75 GiB.
+#
+# A gate also has a ceiling that memory does not see. On 2026-09-22
+# `check-iris` at 37 jobs failed with `Error: Timeout!` on
+# `WriteSuccessExactByteListsPublicResources.v` and
+# `WriteSuccessExactTailRawLoad.v`, and passed on the identical tree
+# sixteen minutes later; both modules compile alone in 24.3 s and 10.5 s.
+# A Coq `timeout` is wall clock, this automation wraps its own tactics in
+# one, and 37 concurrent `coqc` processes spend those budgets on memory
+# traffic. Thirty-six spinning processes at load 31 do not reproduce it,
+# so the resource is bandwidth, which the memory formula cannot count.
+# Lead's ruling 2026-09-22: gates run alone at 24 jobs, the timeouts stay
+# as they are, and a red gate is re-run once before it is believed.
+GATE_MAX_JOBS=${ZESU_GATE_MAX_JOBS:-24}
+
 gate_jobs() {
   local cap fits allowed
   cap=${BATCH_LIMIT%G}
   fits=$(( (cap * 3 / 4) / JOB_GIB ))
   allowed=$(guard_jobs)
   (( fits < allowed )) && allowed=$fits
+  (( GATE_MAX_JOBS < allowed )) && allowed=$GATE_MAX_JOBS
   (( allowed < 1 )) && allowed=1
   echo "$allowed"
 }
