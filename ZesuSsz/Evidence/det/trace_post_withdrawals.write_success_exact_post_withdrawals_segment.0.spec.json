@@ -1,0 +1,19 @@
+[
+  {
+    "name": "write_success_exact_post_withdrawals_segment_trace0",
+    "entry": "0x156e8",
+    "like": "WriteSuccessExactWithdrawalsNativeConnection.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness) (tail : spec)",
+    "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (tail) (writeSuccessExactPostWithdrawalsCallerFrame args witness \u2217 P)",
+    "exit": "0x15744"
+  }
+]

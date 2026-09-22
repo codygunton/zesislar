@@ -44,6 +44,13 @@ HERE = Path(__file__).resolve().parent
 # handover. The hole is always the first component of the `li_prod`.
 INCLUSION = re.compile(r"⌜(?P<events>.+?)\s+(?P<hole>x\.1ₗ)\s+⊆\s+(?P<declared>.+?)⌝",
                        re.S)
+# Coq's verdict when the inferred event mentions something the segment
+# does not bind. The block emits its events in terms of what it holds at
+# the stall, and some of that is a value it loaded, which Coq named
+# locally: `vmem` and friends. Such an event is real and the boundary
+# still cannot state it, so the round is a ticket, not an error.
+UNBOUND = re.compile(r"The reference (?P<name>[A-Za-z_][A-Za-z0-9_']*) "
+                     r"was not found")
 # The other half of the same story. Where a call asks for an inclusion,
 # a handover to the next boundary asks for the trace resource itself,
 # with the continuation left as the hole: `spec_trace (E x.1ₗ)`. The
@@ -130,6 +137,18 @@ def main() -> int:
                   f"{record.get('signature', '')}", flush=True)
             if record.get("outcome") == "reached":
                 break
+            unbound = sorted({match["name"] for line in
+                              record.get("error_lines", [])
+                              for match in [UNBOUND.search(line)] if match})
+            if unbound:
+                # The previous round read a real event off the goal and
+                # this round proves the boundary cannot state it. Name
+                # what is missing; guessing a replacement is the
+                # boundary's design, not this tool's.
+                print(f"  the event mentions {', '.join(unbound)}, which "
+                      f"the segment does not bind: the boundary has to "
+                      f"say where that value comes from", flush=True)
+                break
             event = next_event(record.get("conclusion", ""), declared)
             if event is None:
                 print("  not an inclusion against this round's trace; "
@@ -146,6 +165,10 @@ def main() -> int:
             prefix = prefix.format(tail=event)
         results.append({"lemma": spec["name"], "rounds": len(events),
                         "events": events,
+                        "unbound": sorted({
+                            match["name"] for line in
+                            record.get("error_lines", [])
+                            for match in [UNBOUND.search(line)] if match}),
                         "outcome": record.get("outcome"),
                         "frame": record.get("frame"),
                         "pred_class": record.get("pred_class"),
