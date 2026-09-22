@@ -413,6 +413,15 @@ pass-cost:
 	  $(if $(BEFORE),--before $(BEFORE),) $(if $(MODULE),--module $(MODULE),) \
 	  --jobs $(DET_JOBS)
 
+# Two stored arms, lemma by lemma. Row 6's "zero changed outcomes" is a
+# per-lemma claim and a summary cannot show it.
+#   make outcomes BEFORE=ccf505e81f85 AFTER=9ebff0c63502-v1
+.PHONY: outcomes
+outcomes:
+	@test -n "$(BEFORE)" -a -n "$(AFTER)" || \
+	  { echo "usage: make outcomes BEFORE=<arm> AFTER=<arm>"; exit 2; }
+	$(PYTHON) tools/det/outcomes_diff.py $(BEFORE) $(AFTER)
+
 # Hand-written lines per segment, before and after. The primary metric.
 #   make handlines BEFORE=<sha>
 .PHONY: handlines
