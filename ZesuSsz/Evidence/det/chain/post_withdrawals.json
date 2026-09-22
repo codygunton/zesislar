@@ -1,0 +1,31 @@
+{
+  "name": "writeSuccessPostWithdrawals",
+  "comment": "The post-withdrawals chain: two segments between two frozen predicates. 0x156e8 is the exit of the post-transactions segment and 0x15754 is the hashes loop's entry; both are merged and stay as they are. The one junction between them, 0x15744, is a hand-written boundary today and is inferred here.",
+  "like": "WriteSuccessExactWithdrawalsNativeConnection.v",
+  "imports": [
+    "ZesuSsz.Automation.All",
+    "ZesuSsz.Contracts.Endpoints",
+    "ZesuSsz.Contracts.IslarisCode",
+    "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+  ],
+  "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness)",
+  "boundary_arguments": "args witness P",
+  "ends": {
+    "entry": {
+      "address": "0x156e8",
+      "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness \u2217 P)"
+    },
+    "exit": {
+      "address": "0x15754",
+      "spec": "writeSuccessHashesLoopSpec"
+    }
+  },
+  "junctions": [
+    "0x15744"
+  ],
+  "trace_binder": "tail",
+  "trace_term": "writeSuccessExactPostWithdrawalsEvents witness"
+}

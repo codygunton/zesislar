@@ -1,0 +1,53 @@
+[
+  {
+    "name": "write_success_exact_post_withdrawals_segment",
+    "entry": "0x156e8",
+    "like": "WriteSuccessExactWithdrawalsNativeConnection.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness)",
+    "spec": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness \u2217 P)",
+    "exit": "0x15744"
+  },
+  {
+    "name": "write_success_exact_tail_fields_first_segment",
+    "entry": "0x158e0",
+    "like": "WriteSuccessExactSuffixHashesTailConnection.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} (sp data size : bv 64) (hashBase : Z) (hashBytes bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "spec": "writeSuccessExactTailFieldsEntryBoundary sp data size (BV 64 0) (Z_to_bv 64 (hashBase + Z.of_nat (length hashBytes))) bytes tail (hashBase \u21a6\u2098\u2217 hashBytes \u2217 P)",
+    "exit": "0x1596c"
+  },
+  {
+    "name": "write_success_exact_tail_fields_second_segment",
+    "entry": "0x1596c",
+    "like": "WriteSuccessExactTailFieldsThirdSegment.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (tail : spec) (Hwf : writeSuccessWitnessWellFormed args witness)",
+    "spec": "writeSuccessExactTailFirstBranchState args witness tail",
+    "exit": "0x159b8"
+  }
+]

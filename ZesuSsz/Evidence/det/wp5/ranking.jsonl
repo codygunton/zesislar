@@ -1,0 +1,7 @@
+{"kind": "merged", "lemma": "write_success_exact_tail_fields_third_segment", "class": "C2", "signature": "subsume \u21a6\u2098\u2217 \u21a6\u2098\u2217", "segments_with_signature": 1}
+{"kind": "merged", "lemma": "write_success_exact_suffix_entry_segment", "class": "C3", "signature": "subsume (\u2026) (\u2026)", "segments_with_signature": 1}
+{"kind": "merged", "lemma": "write_success_exact_post_transactions_segment", "class": "C8", "signature": "\u2217[11] match \u2217 \u21a6\u2098\u2217 \u2217 (\u2026)\u2026", "segments_with_signature": 1}
+{"kind": "merged", "lemma": "write_success_exact_epilogue_segment", "class": "C4", "signature": "\u2203 : isla_trace", "segments_with_signature": 3}
+{"kind": "open", "lemma": "write_success_exact_post_withdrawals_segment", "class": "C4", "signature": "bv_extract = _", "segments_with_signature": 1}
+{"kind": "open", "lemma": "write_success_exact_tail_fields_first_segment", "class": "unknown", "signature": "\u2203 : isla_trace", "segments_with_signature": 3}
+{"kind": "open", "lemma": "write_success_exact_tail_fields_second_segment", "class": "unknown", "signature": "\u2203 : isla_trace", "segments_with_signature": 3}

@@ -18,11 +18,21 @@ export ISLA_REPO
 export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
+
+# The resource guard. Every Dune gate and every batch runs inside one
+# 200 GiB cgroup scope, and every `coqc` inside its own 6 GiB scope. On
+# 2026-09-20 a gate at 48 jobs times the 6 GiB module limit asked for
+# 288 GiB of 251 GiB and the server rebooted. The buildout gate uses
+# exactly 24 jobs under the guard.
+GUARD ?= $(CURDIR)/tools/resource_guard.sh
+GUARD_BATCH = $(if $(wildcard $(GUARD)),$(GUARD) batch,env ZESU_NO_GUARD=1)
+GATE_JOBS := 24
+
 CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/agents/check-local
-CHECK_LOCAL_JOBS ?= 32
-CHECK_AGENT ?= push1
+CHECK_LOCAL_JOBS ?= $(GATE_JOBS)
+CHECK_AGENT ?= infra
 AGENT_BUILD_DIR ?= $(CURDIR)/_build/agents/$(CHECK_AGENT)
-AGENT_JOBS ?= 32
+AGENT_JOBS ?= $(GATE_JOBS)
 export AGENT_BUILD_DIR
 export AGENT_JOBS
 
@@ -283,6 +293,7 @@ regenerate-evm-sail-snapshot:
 
 .PHONY: check-evidence-tools
 check-evidence-tools:
+	@echo "uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
@@ -295,20 +306,148 @@ check-evidence-tools:
 check-proof-hygiene:
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 
+# The checkers run unconditionally, before any step Dune can satisfy from
+# its cache: a cached `check-fast` once reported success while a hygiene
+# violation stood for two commits. Every report names this run.
 .PHONY: check-fast
 check-fast: check-evidence-tools
-	$(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
+	$(GUARD_BATCH) check-fast -- \
+	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
 	  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all \
 	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
 
 .PHONY: check-iris
-check-iris:
-	$(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
+check-iris: check-evidence-tools
+	$(GUARD_BATCH) check-iris -- \
+	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
 	  @ZesuSsz/Proofs/all
+
+# One gate, alone: `gate.sh` refuses to start while any job scope is
+# alive, runs the uncached checkers itself, and logs the run.
+TARGET ?= check-iris
+.PHONY: gate
+gate:
+	bash tools/det/gate.sh $(TARGET)
+
+# --- the segment harness ------------------------------------------------
+#
+# The five commands a proof of a straight-line segment needs. Every one of
+# them runs inside the resource guard. `docs/ai/plan/AUTOMATION_TOOLS.md`
+# is the guide.
+
+DET_BUILD_DIR ?= $(CURDIR)/_build/agents/infra
+DET_JOBS := $(shell test -x $(GUARD) && $(GUARD) jobs 2>/dev/null || echo 8)
+RULE ?=
+ALT ?=
+
+# Where a proof search stops, and why: the residual capture and its class.
+#   make probe MODULE=WriteSuccessExactEpilogueSegment.v LEMMA=...
+.PHONY: probe
+probe:
+	@test -n "$(MODULE)" -a -n "$(LEMMA)" || \
+	  { echo "usage: make probe MODULE=<file.v> LEMMA=<lemma>"; exit 2; }
+	$(GUARD_BATCH) probe -- $(PYTHON) tools/residual/show_probe.py \
+	  $(MODULE) $(LEMMA) \
+	  --build-dir $(DET_BUILD_DIR)
+
+# The exit boundary of a segment, or its first debt.
+#   make infer SET=ZesuSsz/Evidence/det/boundary_set.txt
+.PHONY: infer
+infer:
+	$(GUARD_BATCH) infer -- $(PYTHON) tools/det/infer_boundary.py \
+	  --set $(SET) --build-dir $(DET_BUILD_DIR) \
+	  $(if $(RULE),--rule $(RULE),) $(if $(ALT),--alt $(ALT),) \
+	  --out $(DET_BUILD_DIR)/infer.jsonl
+
+# One segment, from an address range to a probed module.
+#   make gen-segment ENTRY=0x156e8 EXIT=0x15744
+.PHONY: gen-segment
+gen-segment:
+	@test -n "$(ENTRY)" -a -n "$(EXIT)" || \
+	  { echo "usage: make gen-segment ENTRY=0x… EXIT=0x…"; exit 2; }
+	$(GUARD_BATCH) gen-segment -- $(PYTHON) tools/det/segment.py \
+	  --entry $(ENTRY) --exit $(EXIT) $(if $(NAME),--name $(NAME),) \
+	  --spec-out $(DET_BUILD_DIR)/segment.json \
+	  --out $(DET_BUILD_DIR)/segment.jsonl
+
+# Regenerate the module of a segment that already has one.
+#   make gen-module SET=ZesuSsz/Evidence/det/boundary_set.txt
+.PHONY: gen-module
+gen-module:
+	$(GUARD_BATCH) gen-module -- $(PYTHON) tools/det/gen_segment.py \
+	  --set $(SET) --build-dir $(DET_BUILD_DIR) --compile \
+	  --report $(DET_BUILD_DIR)/generated.jsonl
+
+# Both baselines, for a commit's automation. IMPORTS adds a module that is
+# built but not exported, to size its effect before it is installed.
+#   make benchmark COMMIT=HEAD
+.PHONY: benchmark
+benchmark:
+	@test -n "$(COMMIT)" || { echo "usage: make benchmark COMMIT=<sha>"; exit 2; }
+	$(GUARD_BATCH) benchmark -- $(PYTHON) tools/residual/benchmark.py \
+	  --automation $(COMMIT) \
+	  --jobs $(DET_JOBS) $(foreach m,$(IMPORTS),--import $(m))
+	$(GUARD_BATCH) benchmark-rule15 -- $(PYTHON) tools/residual/benchmark.py \
+	  --automation $(COMMIT) \
+	  --set ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt \
+	  --name rule15 --jobs $(DET_JOBS) $(foreach m,$(IMPORTS),--import $(m))
+
+# One arm per rule, on both baselines, and the delta table.
+#   make bench-rules COMMIT=<sha>
+.PHONY: bench-rules
+bench-rules:
+	$(GUARD_BATCH) bench-rules -- $(PYTHON) tools/det/bench_rules.py \
+	  --commit $(if $(COMMIT),$(COMMIT),HEAD) --jobs $(DET_JOBS) \
+	  --out $(DET_BUILD_DIR)/bench-rules.md
+
+# What one module costs here against another commit. Row 6's zero-cost
+# demonstration for rule set v1.
+#   make pass-cost BEFORE=origin/islaris-native
+.PHONY: pass-cost
+pass-cost:
+	$(GUARD_BATCH) pass-cost -- $(PYTHON) tools/det/pass_cost.py \
+	  $(if $(BEFORE),--before $(BEFORE),) $(if $(MODULE),--module $(MODULE),) \
+	  --jobs $(DET_JOBS)
+
+# Two stored arms, lemma by lemma. Row 6's "zero changed outcomes" is a
+# per-lemma claim and a summary cannot show it.
+#   make outcomes BEFORE=ccf505e81f85 AFTER=9ebff0c63502-v1
+.PHONY: outcomes
+outcomes:
+	@test -n "$(BEFORE)" -a -n "$(AFTER)" || \
+	  { echo "usage: make outcomes BEFORE=<arm> AFTER=<arm>"; exit 2; }
+	$(PYTHON) tools/det/outcomes_diff.py $(BEFORE) $(AFTER)
+
+# Hand-written lines per segment, before and after. The primary metric.
+#   make handlines BEFORE=<sha>
+.PHONY: handlines
+handlines:
+	$(PYTHON) tools/det/handlines.py \
+	  --set ZesuSsz/Evidence/det/boundary_set.txt --before $(BEFORE)
+
+# A chain of segments, junction by junction. The two ends keep their
+# frozen predicates; every junction between them is inferred.
+#   make chain CHAIN=ZesuSsz/Evidence/det/chain/tail.json
+.PHONY: chain
+chain:
+	@test -n "$(CHAIN)" || { echo "usage: make chain CHAIN=<file.json>"; exit 2; }
+	$(GUARD_BATCH) chain -- $(PYTHON) tools/det/chain.py --chain $(CHAIN) \
+	  --build-dir $(DET_BUILD_DIR) $(if $(RULE),--rule $(RULE),) \
+	  $(if $(ALT),--alt $(ALT),)
+
+# The segment table and the residual classes, from the records on disk.
+.PHONY: report
+report:
+	$(PYTHON) tools/det/report.py
+
+# What the guard has to say: memory, batch peak, kills.
+.PHONY: guard-report
+guard-report:
+	@$(GUARD) report
 
 .PHONY: check-level1-rocq
 check-level1-rocq:
@@ -324,7 +463,8 @@ check-viewer:
 
 .PHONY: check-local
 check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
-	$(PYTHON) tools/build_record.py --build-dir $(CHECK_LOCAL_BUILD_DIR) \
+	$(GUARD_BATCH) check-local -- \
+	  $(PYTHON) tools/build_record.py --build-dir $(CHECK_LOCAL_BUILD_DIR) \
 	  --target check-local -- $(OPAM) dune build --root . \
 	  --build-dir $(CHECK_LOCAL_BUILD_DIR) --cache=enabled \
 	  -j $(CHECK_LOCAL_JOBS) @all
