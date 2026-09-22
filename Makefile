@@ -27,7 +27,11 @@ OPAM := opam exec --switch=$(OPAM_SWITCH) --
 # checkout without the guard.
 GUARD ?= $(CURDIR)/tools/resource_guard.sh
 GUARD_BATCH = $(if $(wildcard $(GUARD)),$(GUARD) batch,env ZESU_NO_GUARD=1)
-GATE_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs 2>/dev/null || echo 32)
+GATE_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs 2>/dev/null || echo 24)
+FAST_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs check-fast 2>/dev/null || echo 48)
+# `check-iris` runs alone across agents: it holds /tmp/zesu-gate.lock, and
+# every guard holds its launches while the lock is live.
+GUARD_LOCKED = $(if $(wildcard $(GUARD)),$(GUARD) locked $(1) --,)
 
 CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/agents/check-local
 CHECK_LOCAL_JOBS ?= $(GATE_JOBS)
@@ -314,13 +318,13 @@ check-fast: check-evidence-tools
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
-	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
+	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
 	  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all \
 	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
 
 .PHONY: check-iris
 check-iris: check-evidence-tools
-	$(GUARD_BATCH) check-iris -- \
+	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \

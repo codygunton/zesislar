@@ -57,7 +57,16 @@ def busy_reason(coqc_cap: int, load_cap: float) -> str | None:
     return None
 
 
+GUARD = Path(__file__).resolve().parents[1] / "resource_guard.sh"
+
+
 def wait_for_machine(coqc_cap: int, load_cap: float) -> None:
+    """The resource guard's `wait` decides (plan section 4): memory, coqc
+    machine-wide, load5, blocked processes, the gate lock, the launch ramp.
+    The local caps are the fallback for a checkout without the guard."""
+    if GUARD.exists():
+        subprocess.run([str(GUARD), "wait"], check=False)
+        return
     while True:
         reason = busy_reason(coqc_cap, load_cap)
         if reason is None:

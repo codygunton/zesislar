@@ -135,12 +135,24 @@ def mark_built(root: Path, commit: str) -> None:
     (root / ".arm-commit").write_text(commit + "\n")
 
 
+def wait_for_room() -> None:
+    """Block until the guard lets one more job start (plan section 4)."""
+    if GUARD.exists():
+        subprocess.run([str(GUARD), "wait"], check=False)
+
+
 def build(root: Path, jobs: int) -> None:
-    """Build the tree. The build dir must be absolute: make runs in `root`."""
+    """Build the tree. The build dir must be absolute: make runs in `root`.
+
+    Populating a new arm's build directory from the Dune cache is the disk
+    burst that spiked load on 2026-09-22, so it runs in the idle IO class.
+    It is batch work, not a gate: ZESU_ARM keeps it off the gate lock."""
+    wait_for_room()
     done = subprocess.run(
-        ["nice", "-n", "10", "make", "check-iris",
+        ["ionice", "-c3", "nice", "-n", "10", "make", "check-iris",
          f"AGENT_BUILD_DIR={root.resolve() / '_build'}", f"AGENT_JOBS={jobs}"],
-        cwd=root, capture_output=True, text=True)
+        cwd=root, capture_output=True, text=True,
+        env={**os.environ, "ZESU_ARM": "1"})
     if done.returncode:
         tail = (done.stderr or done.stdout).strip().split("\n")[-25:]
         raise SystemExit("benchmark build failed:\n" + "\n".join(tail))
@@ -159,6 +171,7 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
     goal_dir = build_dir / "residuals"
 
     def one(module: str, lemma: str) -> dict:
+        wait_for_room()
         result = capture(root / PROOF_DIR / module, lemma,
                          build_dir.resolve(),
                          scratch, probe_dir, seconds=seconds,
