@@ -371,6 +371,7 @@ gen-segment:
 	  { echo "usage: make gen-segment ENTRY=0x… EXIT=0x…"; exit 2; }
 	$(GUARD_BATCH) gen-segment -- $(PYTHON) tools/det/segment.py \
 	  --entry $(ENTRY) --exit $(EXIT) $(if $(NAME),--name $(NAME),) \
+	  --build-dir $(DET_BUILD_DIR) \
 	  --spec-out $(DET_BUILD_DIR)/segment.json \
 	  --out $(DET_BUILD_DIR)/segment.jsonl
 

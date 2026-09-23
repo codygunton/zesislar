@@ -17,7 +17,7 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashesBranchAdapter
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750EntryHandoff.
 Require Import IslaTraces.write_success_102.a15750.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
-Require Import ZesuSsz.Automation.WordArrayBytes.
+Require Import ZesuSsz.Automation.Sets.v2.
 
 Lemma write_success_exact_suffix_entry_segment_generated
     `{!islaG Sigma} `{!threadG}

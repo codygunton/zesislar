@@ -1,0 +1,440 @@
+{
+  "source": "pinned writeSuccess block dumps on origin/determinism c06508ab",
+  "calls": [
+    {
+      "site": "0x14d7c",
+      "target": "0x101d4",
+      "symbol": "memcpy"
+    },
+    {
+      "site": "0x14e10",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e24",
+      "target": "0x101d4",
+      "symbol": "memcpy"
+    },
+    {
+      "site": "0x14e34",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e44",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e54",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e64",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e74",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e84",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14e90",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x14e9c",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x14ea8",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x14eb4",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x14ec4",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x14ed0",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x14ee0",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x14ef8",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x150ec",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x150f8",
+      "target": "0x15bc8",
+      "symbol": "ssz_decode_observation.Encoder.optionalU64"
+    },
+    {
+      "site": "0x15104",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x15114",
+      "target": "0x15ce4",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1645"
+    },
+    {
+      "site": "0x15124",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x15134",
+      "target": "0x15ce4",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1645"
+    },
+    {
+      "site": "0x15144",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x15150",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x1517c",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x1518c",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x15198",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x151b0",
+      "target": "0x15cb0",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1658"
+    },
+    {
+      "site": "0x151c0",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x151cc",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x151fc",
+      "target": "0x101d4",
+      "symbol": "memcpy"
+    },
+    {
+      "site": "0x1520c",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x15218",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x153a4",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x153cc",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x15554",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x15570",
+      "target": "0x15ce4",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1645"
+    },
+    {
+      "site": "0x15580",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x155a0",
+      "target": "0x101d4",
+      "symbol": "memcpy"
+    },
+    {
+      "site": "0x155b8",
+      "target": "0x15cb0",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1658"
+    },
+    {
+      "site": "0x155c8",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x155d4",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x155e0",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x155f8",
+      "target": "0x15cb0",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1658"
+    },
+    {
+      "site": "0x15610",
+      "target": "0x15cb0",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1658"
+    },
+    {
+      "site": "0x15628",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x15640",
+      "target": "0x15cb0",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1658"
+    },
+    {
+      "site": "0x15658",
+      "target": "0x15cb0",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1658"
+    },
+    {
+      "site": "0x15674",
+      "target": "0x15c10",
+      "symbol": "ssz_decode_observation.Encoder.byteLists"
+    },
+    {
+      "site": "0x15688",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x156a4",
+      "target": "0x101d4",
+      "symbol": "memcpy"
+    },
+    {
+      "site": "0x156b0",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x156bc",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x156cc",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x156d8",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x156f0",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x156fc",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x15718",
+      "target": "0x15bc8",
+      "symbol": "ssz_decode_observation.Encoder.optionalU64"
+    },
+    {
+      "site": "0x15728",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x15738",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x1574c",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x158d0",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x158ec",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x158fc",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x1590c",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x1591c",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x1592c",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x1593c",
+      "target": "0x15c10",
+      "symbol": "ssz_decode_observation.Encoder.byteLists"
+    },
+    {
+      "site": "0x1594c",
+      "target": "0x15c10",
+      "symbol": "ssz_decode_observation.Encoder.byteLists"
+    },
+    {
+      "site": "0x1595c",
+      "target": "0x15c10",
+      "symbol": "ssz_decode_observation.Encoder.byteLists"
+    },
+    {
+      "site": "0x15968",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x1597c",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x1598c",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x1599c",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x159ac",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x159b8",
+      "target": "0x15bc8",
+      "symbol": "ssz_decode_observation.Encoder.optionalU64"
+    },
+    {
+      "site": "0x159c4",
+      "target": "0x15bc8",
+      "symbol": "ssz_decode_observation.Encoder.optionalU64"
+    },
+    {
+      "site": "0x159d4",
+      "target": "0x15c10",
+      "symbol": "ssz_decode_observation.Encoder.byteLists"
+    },
+    {
+      "site": "0x15bb8",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x15be8",
+      "target": "0x15b9c",
+      "symbol": "ssz_decode_observation.Encoder.boolean"
+    },
+    {
+      "site": "0x15c30",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x15c48",
+      "target": "0x15c6c",
+      "symbol": "ssz_decode_observation.Encoder.bytes"
+    },
+    {
+      "site": "0x15c8c",
+      "target": "0x15d10",
+      "symbol": "ssz_decode_observation.Encoder.int__anon_1525"
+    },
+    {
+      "site": "0x15cd4",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x15d00",
+      "target": "0x10190",
+      "symbol": "write_output"
+    },
+    {
+      "site": "0x15d28",
+      "target": "0x10190",
+      "symbol": "write_output"
+    }
+  ]
+}
