@@ -162,6 +162,7 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
             seconds: int, build_dir: Path | None = None,
             imports: tuple[str, ...] = ()) -> list[dict]:
     from concurrent.futures import ThreadPoolExecutor
+    root = root.resolve()
     build_dir = (build_dir.resolve() if build_dir is not None else
                  ((root / "_build") if root.name != "residual-corpus"
                   else root / "_build" / "agents" / "corpus").resolve())
@@ -175,7 +176,7 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
         result = capture(root / PROOF_DIR / module, lemma,
                          build_dir.resolve(),
                          scratch, probe_dir, seconds=seconds,
-                         imports=imports)
+                         imports=imports, cwd=root)
         if result.goal_sha256:
             goal_dir.mkdir(parents=True, exist_ok=True)
             (goal_dir / f"{result.goal_sha256}.txt").write_text(
