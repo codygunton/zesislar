@@ -12,6 +12,7 @@ Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.MarkedRawInstruction.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
@@ -511,7 +512,8 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_select_marked_raw_if_enabled | zesu_run_pass_steps |
+     zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
