@@ -81,8 +81,4 @@ Lemma write_success_transactions_carrier_phase_handoff_unpack
   instr_pre writeSuccessTransactionsLoopExitAddress
     (writeSuccessTransactionsLoopCarrierExit P sp base transactions bytes tail
       first second third fourth items) ∗ True.
-Proof.
-  iIntros "Hhandoff".
-  iEval (unfold writeSuccessTransactionPhaseCarrierHandoff) in "Hhandoff".
-  iExact "Hhandoff".
-Qed.
+Proof. move => *. zesu_block. Qed.

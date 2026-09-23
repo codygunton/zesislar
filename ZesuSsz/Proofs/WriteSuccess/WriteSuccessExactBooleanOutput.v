@@ -34,10 +34,6 @@ Lemma encoder_boolean_exact_output `{!islaG Sigma} `{!threadG}
      spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)
        [bv_extract 0 8 (bv_and value (BV 64 1))] tail) ∗
      ("x2" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ P ∗ True) ∗ True).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: lazymatch goal with |- ?G => fail "Boolean output residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions encoder_boolean_exact_output.

@@ -29,10 +29,5 @@ Lemma access_lists_storage_whole_count_jump_correct `{!islaG Sigma} `{!threadG}
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d10 (accessListsStorageWholeCountJumpPost sp bytes P) -∗
   instr_body 0x15210 (accessListsStorageWholeCountJumpEntry sp old_ra old_data bytes P).
-Proof.
-  zesu_block.
-  all: have Hoffset : bv_unsigned (sp + BV 64 1752)%bv -
-    (bv_unsigned sp + 1744) = 8 by bv_solve.
-  all: rewrite Hoffset; unfold transactionRowWord; cbn; done.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions access_lists_storage_whole_count_jump_correct.

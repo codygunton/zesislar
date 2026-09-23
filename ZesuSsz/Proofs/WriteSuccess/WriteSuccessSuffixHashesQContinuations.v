@@ -60,9 +60,4 @@ Lemma write_success_suffix_hashes_q15744
   (reg_col zesu_ram_sys_regs ∗
    "x1" ↦ᵣ: (fun r1 => ⌜valu_has_shape r1 (BitsShape 64)⌝) ∗
    writeSuccessSuffixHashes15748Q sp value tail Q).
-Proof.
-  iIntros "(Hsys & H8 & H10 & Hrest)".
-  iEval (rewrite /writeSuccessSuffixHashes15744Q) in "Hrest".
-  iDestruct "Hrest" as "(H1 & Hrest)".
-  iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.

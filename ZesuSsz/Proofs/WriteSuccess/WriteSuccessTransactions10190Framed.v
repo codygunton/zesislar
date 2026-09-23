@@ -61,9 +61,6 @@ Lemma write_success_transactions_10190_framed_unpack
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
   writeSuccessTransactions150ecCallFrame P sp base transaction
     transactions processed remaining bytes prefix suffix tail ∗ True.
-Proof.
-  rewrite /writeSuccessTransactionsAt10190FramedBlock.
-  iIntros "Hframe". iExact "Hframe".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Opaque writeSuccessTransactionsAt10190FramedBlock.

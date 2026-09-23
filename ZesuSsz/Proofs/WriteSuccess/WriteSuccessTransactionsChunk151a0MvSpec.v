@@ -22,12 +22,7 @@ Lemma write_success_transactions_151a0_mv_spec
     `{!islaG Sigma} `{!threadG} (pc : Z) :
   instr pc (Some IslaTraces.write_success_49.a151a0.a151a0) ⊢
   instr_body pc (writeSuccessTransactions151a0MvSpec pc).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeSuccessTransactions151a0MvSpec_inst
     `{!islaG Sigma} `{!threadG} (pc : Z) :=
