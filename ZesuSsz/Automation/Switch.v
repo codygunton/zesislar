@@ -2,7 +2,7 @@
 
    `PureFacts.v` declares `ZesuRuleSetV2`, which selects
    `zesu_run_pass_v2`, and each step declares a class of its own. This
-   file is the union: it imports the five `Switches/` modules, so
+   file is the union: it imports the `Switches/` modules, so
    importing it turns on the whole set. `Automation/Sets/v2.v` imports
    it, and a module that does not sees one failed class lookup per pass
    and nothing else.
@@ -23,3 +23,4 @@ Require Export ZesuSsz.Automation.Switches.SpecTail.
 Require Export ZesuSsz.Automation.Switches.LookupReduce.
 Require Export ZesuSsz.Automation.Switches.CallReturn.
 Require Export ZesuSsz.Automation.Switches.SealedOpen.
+Require Export ZesuSsz.Automation.Switches.CarrierArray.

@@ -35,6 +35,7 @@ Require Export ZesuSsz.Automation.Switches.WitnessArith.
 Require Export ZesuSsz.Automation.Switches.SpecTail.
 Require Export ZesuSsz.Automation.Switches.LookupReduce.
 Require Export ZesuSsz.Automation.Switches.SealedOpen.
+Require Export ZesuSsz.Automation.Switches.CarrierArray.
 Require Export ZesuSsz.Automation.SpecPrefix.
 Require Export ZesuSsz.Automation.LookupReduce.
 Require Export ZesuSsz.Automation.V2Steps.

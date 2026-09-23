@@ -34,6 +34,7 @@ Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
 Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.CarrierArray.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
@@ -57,4 +58,8 @@ Ltac zesu_rule_set_v2_steps :=
   (* C1: the trace tail a handover leaves open. *)
   | |- envs_entails _ (@bi_exist _ (li_prod spec _) _) =>
       zesu_close_spec_tail_if_enabled
+  (* A split byte array in a transaction carrier handoff. *)
+  | |- envs_entails _
+      (@bi_exist _ (bv 64) (fun _ => @bi_exist _ Z _)) =>
+      zesu_carrier_array_handoff_if_enabled
   end.

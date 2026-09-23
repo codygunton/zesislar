@@ -1,4 +1,6 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Switches.CarrierArray.
+Require Import ZesuSsz.Automation.V2Steps.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierState14fa0.
@@ -51,14 +53,7 @@ Lemma transaction_carrier_14fa0_split_restores_exact `{!islaG Sigma} `{!threadG}
   writeSuccessTransactionsAt14fa0CarrierSpec P.
 Proof.
   iIntros "Hsplit".
-  iDestruct "Hsplit" as
-    (sp base transaction transactions processed remaining bytes prefix suffix
-      tail first second third fourth items)
-    "(Hmachine & HarraySplit & Hframe & Hfacts & _)".
-  iPoseProof (transaction_carrier_post_lbu_array_restore with "HarraySplit")
-    as "Harray".
-  iExists sp, base, transaction, transactions, processed, remaining,
-    bytes, prefix, suffix, tail, first, second, third, fourth, items.
-  iFrame.
+  iEval (unfold writeSuccessTransactionsAt14fa0CarrierSpec).
+  zesu_rule_set_v2_steps.
 Qed.
 Print Assumptions transaction_carrier_14fa0_split_restores_exact.
