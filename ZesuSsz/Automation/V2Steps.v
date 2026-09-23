@@ -30,6 +30,7 @@ Require Import InstrSpecs.Specs.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SpecPrefix.
+Require Import ZesuSsz.Automation.LoadedTrace.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
@@ -68,5 +69,6 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_open_sealed_for_lookup_if_enabled
   (* C1: the trace tail a handover leaves open. *)
   | |- envs_entails _ (@bi_exist _ (li_prod spec _) _) =>
-      zesu_close_spec_tail_if_enabled
+      first [zesu_close_loaded_trace_if_enabled
+            | zesu_close_spec_tail_if_enabled]
   end.
