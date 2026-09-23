@@ -50,7 +50,8 @@ class GuardLockTest(unittest.TestCase):
         self.environment["PATH"] = f"{self.bin}:{os.environ['PATH']}"
         self.environment["GUARD_TEST_USED_GIB"] = "40"
         self.environment["GUARD_TEST_SYSTEMCTL_LOG"] = str(base / "systemctl.log")
-        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM"):
+        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
+                     "ZESU_BATCH_LIMIT"):
             self.environment.pop(name, None)
 
     def tearDown(self):
@@ -61,9 +62,20 @@ class GuardLockTest(unittest.TestCase):
                               text=True, env=self.environment)
 
     def test_subprocesses_do_not_inherit_guard_bypass_flags(self):
-        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM"):
+        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
+                     "ZESU_BATCH_LIMIT"):
             with self.subTest(name=name):
                 self.assertNotIn(name, self.environment)
+
+    def test_batch_fence_under_gate_environment(self):
+        environment = {**os.environ, "ZESU_GUARD": "0", "ZESU_IN_GATE": "1",
+                       "ZESU_IN_BATCH": "1", "ZESU_ARM": "1",
+                       "ZESU_BATCH_LIMIT": "120G"}
+        result = subprocess.run(
+            [sys.executable, "-m", "unittest",
+             "tools.test_guard.GuardLockTest.test_scope_and_batch_memory_fences"],
+            capture_output=True, text=True, env=environment, cwd=TOOLS.parent)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_stale_lock_is_removed_and_reported(self):
         self.lock.write_text("holder=gone pid=999999999 start=x\n")
