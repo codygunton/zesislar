@@ -115,7 +115,7 @@
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessByteLists.v": {
-      "long_proofs": 2,
+      "long_proofs": 3,
       "max_proof_lines": 169,
       "max_renames": 0,
       "rename_proofs": 0
@@ -123,6 +123,12 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessCalls.v": {
       "long_proofs": 1,
       "max_proof_lines": 89,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessContract.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 83,
       "max_renames": 0,
       "rename_proofs": 0
     },
@@ -153,6 +159,12 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessEpilogueBlock.v": {
       "long_proofs": 1,
       "max_proof_lines": 63,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactEncoderBoolean.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 79,
       "max_renames": 0,
       "rename_proofs": 0
     },
@@ -295,7 +307,7 @@
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry.v": {
-      "long_proofs": 1,
+      "long_proofs": 2,
       "max_proof_lines": 100,
       "max_renames": 0,
       "rename_proofs": 0
@@ -315,6 +327,12 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryResourceFinal.v": {
       "long_proofs": 1,
       "max_proof_lines": 43,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessToLoadWithFrame.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 215,
       "max_renames": 0,
       "rename_proofs": 0
     },
@@ -768,62 +786,74 @@
       "max_renames": 0,
       "rename_proofs": 0
     },
-    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v": {
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f1c.v": {
       "long_proofs": 1,
-      "max_proof_lines": 48,
+      "max_proof_lines": 117,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f20.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 53,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f24.v": {
+      "long_proofs": 2,
+      "max_proof_lines": 53,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f28.v": {
-      "long_proofs": 1,
+      "long_proofs": 2,
       "max_proof_lines": 49,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f2c.v": {
-      "long_proofs": 1,
-      "max_proof_lines": 43,
+      "long_proofs": 2,
+      "max_proof_lines": 50,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f34.v": {
-      "long_proofs": 1,
-      "max_proof_lines": 44,
+      "long_proofs": 2,
+      "max_proof_lines": 50,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f3c.v": {
-      "long_proofs": 1,
-      "max_proof_lines": 44,
+      "long_proofs": 2,
+      "max_proof_lines": 50,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f44.v": {
-      "long_proofs": 1,
-      "max_proof_lines": 45,
+      "long_proofs": 2,
+      "max_proof_lines": 50,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f48.v": {
-      "long_proofs": 1,
-      "max_proof_lines": 52,
+      "long_proofs": 2,
+      "max_proof_lines": 55,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f4c.v": {
-      "long_proofs": 1,
-      "max_proof_lines": 54,
+      "long_proofs": 2,
+      "max_proof_lines": 55,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f54.v": {
-      "long_proofs": 1,
+      "long_proofs": 2,
       "max_proof_lines": 56,
       "max_renames": 0,
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk14f58.v": {
-      "long_proofs": 1,
+      "long_proofs": 2,
       "max_proof_lines": 57,
       "max_renames": 0,
       "rename_proofs": 0
@@ -991,25 +1021,25 @@
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1501c.v": {
-      "long_proofs": 2,
-      "max_proof_lines": 88,
+      "long_proofs": 3,
+      "max_proof_lines": 96,
       "max_renames": 6,
       "rename_proofs": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15044Load.v": {
-      "long_proofs": 0,
-      "max_proof_lines": 0,
+      "long_proofs": 1,
+      "max_proof_lines": 115,
       "max_renames": 19,
       "rename_proofs": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1505c.v": {
-      "long_proofs": 1,
+      "long_proofs": 2,
       "max_proof_lines": 263,
       "max_renames": 18,
       "rename_proofs": 1
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk15078.v": {
-      "long_proofs": 3,
+      "long_proofs": 4,
       "max_proof_lines": 118,
       "max_renames": 19,
       "rename_proofs": 2
@@ -1044,9 +1074,27 @@
       "max_renames": 0,
       "rename_proofs": 0
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk1509cLoad.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 84,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a0Load.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 82,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a4.v": {
       "long_proofs": 1,
       "max_proof_lines": 68,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150a8Load.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 82,
       "max_renames": 0,
       "rename_proofs": 0
     },
@@ -1056,9 +1104,27 @@
       "max_renames": 0,
       "rename_proofs": 0
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b0Load.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 84,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b4Load.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 84,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150b8.v": {
       "long_proofs": 1,
       "max_proof_lines": 63,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150bcLoad.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 84,
       "max_renames": 0,
       "rename_proofs": 0
     },
@@ -1068,9 +1134,21 @@
       "max_renames": 0,
       "rename_proofs": 0
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c4Load.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 84,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150c8.v": {
       "long_proofs": 1,
       "max_proof_lines": 63,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk150ccLoad.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 83,
       "max_renames": 0,
       "rename_proofs": 0
     },
@@ -1170,6 +1248,12 @@
       "max_renames": 0,
       "rename_proofs": 0
     },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151acAuipc.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 69,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsChunk151b4.v": {
       "long_proofs": 1,
       "max_proof_lines": 490,
@@ -1249,8 +1333,8 @@
       "rename_proofs": 0
     },
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsOptionalAddressSome15168.v": {
-      "long_proofs": 0,
-      "max_proof_lines": 0,
+      "long_proofs": 1,
+      "max_proof_lines": 181,
       "max_renames": 59,
       "rename_proofs": 1
     },
@@ -1347,6 +1431,12 @@
     "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674DataCallJalrStrong.v": {
       "long_proofs": 1,
       "max_proof_lines": 217,
+      "max_renames": 0,
+      "rename_proofs": 0
+    },
+    "ZesuSsz/Proofs/WriteSuccess/WriteSuccessTransactionsPost15674WithdrawalsTotal.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 89,
       "max_renames": 0,
       "rename_proofs": 0
     },
