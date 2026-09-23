@@ -1,5 +1,8 @@
 Require Import ZesuSsz.Automation.All.
 From Coq Require Import ZArith.ZArith Lia.
+Require Import ZesuSsz.Export.WriteSuccessControl.
+Require Import ZesuSsz.Export.Executor.
+Require Import ZesuSsz.Export.Determinism.
 Require Import isla.opsem.
 
 Open Scope nat_scope.
@@ -63,7 +66,26 @@ Proof.
   reflexivity.
 Qed.
 
+Lemma writeSuccessWithdrawalsRankSuccessorUnique pc trace regs sigma
+    labels1 theta1 sigma1 labels2 theta2 sigma2 :
+  writeSuccessControlBoundary pc trace regs sigma ->
+  executor_deterministicb trace regs sigma = true ->
+  CompletedInstructionSegment (instruction_boundary trace regs) sigma
+    labels1 theta1 sigma1 ->
+  CompletedInstructionSegment (instruction_boundary trace regs) sigma
+    labels2 theta2 sigma2 ->
+  writeSuccessWithdrawalsMachineRank theta1 =
+    writeSuccessWithdrawalsMachineRank theta2.
+Proof.
+  intros Hboundary Hdet Hfirst Hsecond.
+  destruct (writeSuccess_completed_successor_unique _ _ _ _ _ _ _ _ _ _
+    Hboundary Hdet Hfirst Hsecond) as [Hregs _].
+  unfold writeSuccessWithdrawalsMachineRank.
+  rewrite Hregs. reflexivity.
+Qed.
+
 Print Assumptions writeSuccessWithdrawalsRankFromCounter.
 Print Assumptions writeSuccessWithdrawalsRankMatchesSuffix.
 Print Assumptions writeSuccessWithdrawalsBackEdgeRank.
 Print Assumptions writeSuccessWithdrawalsRankZeroAtExit.
+Print Assumptions writeSuccessWithdrawalsRankSuccessorUnique.
