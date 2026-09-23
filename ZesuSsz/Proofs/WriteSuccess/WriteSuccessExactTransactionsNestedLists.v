@@ -48,5 +48,5 @@ Lemma transactions_nested_lists_correct `{!islaG Sigma} `{!threadG}
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x150b0 (transactionNestedListsPost sp row recipient base bytes index P) -∗
   instr_body 0x15098 (transactionNestedListsEntry sp row recipient base bytes index P).
-Proof. zesu_block. all: unfold transactionRowWord; reflexivity. Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_nested_lists_correct.

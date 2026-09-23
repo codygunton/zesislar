@@ -21,5 +21,5 @@ Lemma withdrawal_tail_correct `{!islaG Sigma} `{!threadG}
   ([∗ list] instruction ∈ IslaTraces.write_success_95.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x156dc (withdrawalTailEntry pointer count P).
-Proof. zesu_block. all: bv_solve. Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions withdrawal_tail_correct.
