@@ -112,6 +112,34 @@ Definition WriteSuccessControlFacts (theta : seq_local_state) : Prop :=
     seq_regs theta !! "x2" = Some (RVal_Bits sp) /\
     seq_regs theta !! "x1" = Some (RVal_Bits ra).
 
+Lemma writeSuccess_control_facts_at_boundary pc trace regs sigma sp ra :
+  writeSuccessControlBoundary pc trace regs sigma ->
+  regs !! "x2" = Some (RVal_Bits sp) ->
+  regs !! "x1" = Some (RVal_Bits ra) ->
+  WriteSuccessControlFacts (instruction_boundary trace regs).
+Proof.
+  intros [Hregion [Hpc _]] Hsp Hra.
+  exists pc, sp, ra. simpl. auto.
+Qed.
+
+Lemma writeSuccess_control_facts_unique pc trace regs sigma
+    labels1 theta1 sigma1 labels2 theta2 sigma2 :
+  writeSuccessControlBoundary pc trace regs sigma ->
+  executor_deterministicb trace regs sigma = true ->
+  CompletedInstructionSegment (instruction_boundary trace regs) sigma
+    labels1 theta1 sigma1 ->
+  CompletedInstructionSegment (instruction_boundary trace regs) sigma
+    labels2 theta2 sigma2 ->
+  WriteSuccessControlFacts theta1 ->
+  WriteSuccessControlFacts theta2.
+Proof.
+  intros Hboundary Hdet Hfirst Hsecond Hfacts.
+  destruct (writeSuccess_completed_successor_unique _ _ _ _ _ _ _ _ _ _
+    Hboundary Hdet Hfirst Hsecond) as [Hregs _].
+  unfold WriteSuccessControlFacts in *.
+  rewrite <- Hregs. exact Hfacts.
+Qed.
+
 (** This is the outstanding Phase 5.3 obligation.  The caller supplies
     [remaining] by reading machine counters.  The rank must decrease on
     every completed instruction that stays in the execution range. *)
@@ -148,3 +176,5 @@ Print Assumptions writeSuccess_completed_successor_unique.
 Print Assumptions writeSuccess_execution_count_within_fuel.
 Print Assumptions writeSuccess_fuel_bound_within_level1.
 Print Assumptions writeSuccess_fuel_input_indexed.
+Print Assumptions writeSuccess_control_facts_at_boundary.
+Print Assumptions writeSuccess_control_facts_unique.
