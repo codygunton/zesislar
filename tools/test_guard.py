@@ -23,7 +23,15 @@ class GuardLockTest(unittest.TestCase):
         self.environment = {**os.environ,
                             "ZESU_GATE_LOCK": str(self.lock),
                             "ZESU_GUARD_STATE": str(base / "state"),
-                            "ZESU_RAMP_FILE": str(base / "ramp")}
+                            "ZESU_RAMP_FILE": str(base / "ramp"),
+                            "ZESU_POPULATING_PREFIX": str(base / "pop"),
+                            # The live machine must not hold or kill here.
+                            "ZESU_LAUNCH_GIB": "100000",
+                            "ZESU_HOLD_GIB": "100000",
+                            "ZESU_KILL_GIB": "100000",
+                            "ZESU_MAX_COQC": "100000",
+                            "ZESU_MAX_LOAD": "100000",
+                            "ZESU_MAX_BLOCKED": "100000"}
         for name in ("ZESU_IN_GATE", "ZESU_ARM"):
             self.environment.pop(name, None)
 
@@ -58,6 +66,35 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(done.returncode, 0)
         self.assertIn("holder=", done.stdout)
         self.assertFalse(self.lock.exists())
+
+    def test_memory_lines_are_absolute(self):
+        self.environment["ZESU_LAUNCH_GIB"] = "0"
+        self.assertIn("launch line 0", self.guard("hold").stdout)
+        self.environment["ZESU_HOLD_GIB"] = "0"
+        self.assertIn("at the 0 GiB hold", self.guard("hold").stdout)
+
+    def test_ramp_only_while_populating(self):
+        def six_launches():
+            started = time.monotonic()
+            waits = [subprocess.Popen([str(GUARD), "wait"],
+                                      env=self.environment)
+                     for _ in range(6)]
+            for process in waits:
+                process.wait()
+            return time.monotonic() - started
+
+        self.environment["ZESU_DISK_BUSY_PERCENT"] = "1000"
+        self.assertLess(six_launches(), 2.0)
+        holder = subprocess.Popen(["sleep", "30"])
+        marker = Path(self.directory.name) / f"pop.{holder.pid}"
+        try:
+            marker.write_text("x")
+            self.assertGreaterEqual(six_launches(), 2.4)
+        finally:
+            holder.kill()
+            holder.wait()
+        self.guard("wait")
+        self.assertFalse(marker.exists())
 
     def test_gate_jobs_caps(self):
         self.assertLessEqual(int(self.guard("gate-jobs").stdout), 24)

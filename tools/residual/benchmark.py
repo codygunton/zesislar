@@ -148,11 +148,18 @@ def build(root: Path, jobs: int) -> None:
     burst that spiked load on 2026-09-22, so it runs in the idle IO class.
     It is batch work, not a gate: ZESU_ARM keeps it off the gate lock."""
     wait_for_room()
-    done = subprocess.run(
-        ["ionice", "-c3", "nice", "-n", "10", "make", "check-iris",
-         f"AGENT_BUILD_DIR={root.resolve() / '_build'}", f"AGENT_JOBS={jobs}"],
-        cwd=root, capture_output=True, text=True,
-        env={**os.environ, "ZESU_ARM": "1"})
+    # While this marker lives, every guard ramps its launches.
+    marker = Path(f"/tmp/zesu-populating.{os.getpid()}")
+    marker.write_text(str(root))
+    try:
+        done = subprocess.run(
+            ["ionice", "-c3", "nice", "-n", "10", "make", "check-iris",
+             f"AGENT_BUILD_DIR={root.resolve() / '_build'}",
+             f"AGENT_JOBS={jobs}"],
+            cwd=root, capture_output=True, text=True,
+            env={**os.environ, "ZESU_ARM": "1"})
+    finally:
+        marker.unlink(missing_ok=True)
     if done.returncode:
         tail = (done.stderr or done.stdout).strip().split("\n")[-25:]
         raise SystemExit("benchmark build failed:\n" + "\n".join(tail))

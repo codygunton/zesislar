@@ -6,8 +6,9 @@
 # agent. The gate takes /tmp/zesu-gate.lock (holder, PID, start); every
 # guard holds its launches while the lock is live, and the gate waits for
 # the `coqc` already running to drain before it starts. Rule 1: it runs
-# inside a systemd scope with a hard memory cap. Jobs come from the
-# guard's `gate-jobs`: 48 for check-fast, 24 for check-iris.
+# inside a 120 GiB systemd scope (ZESU_IO=gate), so 48 GiB of the machine
+# stay free for other users. Jobs come from the guard's `gate-jobs`: 48
+# for check-fast, 24 for check-iris.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/../.." && pwd)
@@ -56,14 +57,18 @@ release() {
 trap release EXIT
 echo "gate lock: $(cat /tmp/zesu-gate.lock)"
 
-# Other agents' guards now hold; wait for their running `coqc` to finish.
+# Other agents' guards now hold; wait for their running `coqc` to finish
+# and for memory to fall below the guard's launch line (150 GiB used).
 drain=${ZESU_GATE_DRAIN_SECONDS:-1800}
 floor=${ZESU_GATE_DRAIN_COQC:-0}
+launch=${ZESU_LAUNCH_GIB:-150}
+used() { free -b | awk '/^Mem:/ {printf "%d", ($2 - $7) / 1073741824}'; }
 waited=0
-while (( $(pgrep -c -x coqc || true) > floor )) && (( waited < drain )); do
+while { (( $(pgrep -c -x coqc || true) > floor )) || (( $(used) >= launch )); } \
+      && (( waited < drain )); do
   sleep 10; waited=$(( waited + 10 ))
 done
-echo "drain: waited $waited s; coqc machine-wide $(pgrep -c -x coqc || true)"
+echo "drain: waited $waited s; coqc machine-wide $(pgrep -c -x coqc || true); used $(used) GiB"
 
 jobs=$($guard gate-jobs "$target")
 $guard reset-peak

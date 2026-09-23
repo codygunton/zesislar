@@ -19,14 +19,16 @@ export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
 
-# The resource guard. Every Dune gate and every batch runs inside one
-# 200 GiB cgroup scope, and every `coqc` inside its own 6 GiB scope. On
+# The resource guard. Every batch runs inside one 150 GiB cgroup scope,
+# every gate inside one 120 GiB scope, and every `coqc` inside its own
+# 6 GiB scope; 48 GiB stay free for other users (plan section 4). On
 # 2026-09-20 a gate at 48 jobs times the 6 GiB module limit asked for
 # 288 GiB of 251 GiB and the server rebooted. `gate-jobs` sizes the job
 # count to the cap with margin; the literal stays as the fallback for a
 # checkout without the guard.
 GUARD ?= $(CURDIR)/tools/resource_guard.sh
 GUARD_BATCH = $(if $(wildcard $(GUARD)),$(GUARD) batch,env ZESU_NO_GUARD=1)
+GUARD_GATE = $(if $(wildcard $(GUARD)),env ZESU_IO=gate $(GUARD) batch,env ZESU_NO_GUARD=1)
 GATE_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs 2>/dev/null || echo 24)
 FAST_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs check-fast 2>/dev/null || echo 48)
 # `check-iris` runs alone across agents: it holds /tmp/zesu-gate.lock, and
@@ -315,7 +317,7 @@ check-proof-hygiene:
 # violation stood for two commits. Every report names this run.
 .PHONY: check-fast
 check-fast: check-evidence-tools
-	$(GUARD_BATCH) check-fast -- \
+	$(GUARD_GATE) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
@@ -324,7 +326,7 @@ check-fast: check-evidence-tools
 
 .PHONY: check-iris
 check-iris: check-evidence-tools
-	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
+	$(call GUARD_LOCKED,check-iris) $(GUARD_GATE) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
