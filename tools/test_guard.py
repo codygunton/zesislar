@@ -50,7 +50,7 @@ class GuardLockTest(unittest.TestCase):
         self.environment["PATH"] = f"{self.bin}:{os.environ['PATH']}"
         self.environment["GUARD_TEST_USED_GIB"] = "40"
         self.environment["GUARD_TEST_SYSTEMCTL_LOG"] = str(base / "systemctl.log")
-        for name in ("ZESU_IN_GATE", "ZESU_ARM"):
+        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM"):
             self.environment.pop(name, None)
 
     def tearDown(self):
@@ -59,6 +59,11 @@ class GuardLockTest(unittest.TestCase):
     def guard(self, *arguments):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
                               text=True, env=self.environment)
+
+    def test_subprocesses_do_not_inherit_guard_bypass_flags(self):
+        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM"):
+            with self.subTest(name=name):
+                self.assertNotIn(name, self.environment)
 
     def test_stale_lock_is_removed_and_reported(self):
         self.lock.write_text("holder=gone pid=999999999 start=x\n")
