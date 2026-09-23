@@ -306,6 +306,38 @@ class Labels(unittest.TestCase):
             ['iEval (rewrite lookup_app) in "H".'])[1])
 
 
+class Reprobe(unittest.TestCase):
+    def test_an_error_is_replaced_by_its_alone_result(self):
+        rows = [{"module": "A.v", "lemma": "a", "outcome": "residual",
+                 "seconds": 5.0, "pred_class": "C1", "signature": "s",
+                 "goal_sha256": "x"},
+                {"module": "B.v", "lemma": "b", "outcome": "error",
+                 "seconds": 206.0, "pred_class": "n/a", "signature": "",
+                 "goal_sha256": ""}]
+        calls = []
+
+        def alone(root, pairs, jobs, seconds, build_dir, imports):
+            calls.append((pairs, jobs, imports))
+            return [{"module": "B.v", "lemma": "b", "outcome": "residual",
+                     "seconds": 135.0, "pred_class": "C4",
+                     "signature": "bv_or = bv_or", "goal_sha256": "y"}]
+
+        original = benchmark.measure
+        benchmark.measure = alone
+        try:
+            result = benchmark.reprobe_alone(Path("."), rows, 300, ("M",))
+        finally:
+            benchmark.measure = original
+        self.assertEqual(calls, [([("B.v", "b")], 1, ("M",))])
+        self.assertIs(result[0], rows[0])
+        self.assertEqual(result[1]["outcome"], "residual")
+        self.assertTrue(result[1]["reprobed"])
+        self.assertEqual(result[1]["batch"]["outcome"], "error")
+        summary = benchmark.summary(result)
+        self.assertEqual((summary["reprobed"], summary["reprobe_changed"]),
+                         (1, 1))
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -355,6 +387,38 @@ class ImmutableArmTree(unittest.TestCase):
 
     def test_no_path_reuses_the_working_tree(self):
         self.assertFalse(hasattr(benchmark, "automation_matches"))
+
+
+class Reprobe(unittest.TestCase):
+    def test_an_error_is_replaced_by_its_alone_result(self):
+        rows = [{"module": "A.v", "lemma": "a", "outcome": "residual",
+                 "seconds": 5.0, "pred_class": "C1", "signature": "s",
+                 "goal_sha256": "x"},
+                {"module": "B.v", "lemma": "b", "outcome": "error",
+                 "seconds": 206.0, "pred_class": "n/a", "signature": "",
+                 "goal_sha256": ""}]
+        calls = []
+
+        def alone(root, pairs, jobs, seconds, build_dir, imports):
+            calls.append((pairs, jobs, imports))
+            return [{"module": "B.v", "lemma": "b", "outcome": "residual",
+                     "seconds": 135.0, "pred_class": "C4",
+                     "signature": "bv_or = bv_or", "goal_sha256": "y"}]
+
+        original = benchmark.measure
+        benchmark.measure = alone
+        try:
+            result = benchmark.reprobe_alone(Path("."), rows, 300, ("M",))
+        finally:
+            benchmark.measure = original
+        self.assertEqual(calls, [([("B.v", "b")], 1, ("M",))])
+        self.assertIs(result[0], rows[0])
+        self.assertEqual(result[1]["outcome"], "residual")
+        self.assertTrue(result[1]["reprobed"])
+        self.assertEqual(result[1]["batch"]["outcome"], "error")
+        summary = benchmark.summary(result)
+        self.assertEqual((summary["reprobed"], summary["reprobe_changed"]),
+                         (1, 1))
 
 
 if __name__ == "__main__":

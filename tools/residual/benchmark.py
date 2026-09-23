@@ -203,6 +203,46 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
         return list(pool.map(lambda pair: one(*pair), pairs))
 
 
+# Lead's policy, 2026-09-23: a lemma whose batch outcome is an error or a
+# timeout is probed again alone, and the alone result is the stored
+# outcome. The automation's tactics carry wall-clock timeouts, and a 48-wide
+# batch spends them on memory traffic: `suffix_word2_load_correct` was an
+# error at 206 s in the batch and a residual at 135 s alone, same goal.
+REPROBE = {"error", "timeout"}
+BATCH_FIELDS = ("outcome", "seconds", "pred_class", "signature", "goal_sha256")
+
+
+def reprobe_alone(root: Path, rows: list[dict], seconds: int,
+                  imports: tuple[str, ...] = ()) -> list[dict]:
+    """Rows with each error or timeout replaced by its alone result.
+
+    The alone probes run one at a time after the batch. A replaced row is
+    flagged `reprobed` and keeps the batch result under `batch`.
+    """
+    result = []
+    for row in rows:
+        if row["outcome"] not in REPROBE:
+            result.append(row)
+            continue
+        alone = measure(root, [(row["module"], row["lemma"])], 1, seconds,
+                        None, imports)[0]
+        alone["reprobed"] = True
+        alone["batch"] = {name: row.get(name) for name in BATCH_FIELDS}
+        print(f"reprobed {row['module']}:{row['lemma']}: batch "
+              f"{row['outcome']} {row['seconds']:.0f} s, alone "
+              f"{alone['outcome']} {alone['seconds']:.0f} s",
+              file=sys.stderr, flush=True)
+        result.append(alone)
+    return result
+
+
+def reprobe_line(rows: list[dict]) -> str:
+    again = [row for row in rows if row.get("reprobed")]
+    moved = [row for row in again if row["outcome"] != row["batch"]["outcome"]]
+    return (f"reprobed alone {len(again)} (error or timeout in the batch); "
+            f"{len(moved)} changed outcome")
+
+
 def summary(rows: list[dict]) -> dict:
     seconds = sorted(row["seconds"] for row in rows)
     return {"probed": len(rows),
@@ -211,12 +251,17 @@ def summary(rows: list[dict]) -> dict:
             "closed_fraction": round(
                 sum(1 for r in rows if r["outcome"] == "closed")
                 / max(1, len(rows)), 4),
-            "median_seconds": round(statistics.median(seconds), 2) if seconds else 0}
+            "median_seconds": round(statistics.median(seconds), 2) if seconds else 0,
+            "reprobed": sum(1 for r in rows if r.get("reprobed")),
+            "reprobe_changed": sum(1 for r in rows if r.get("reprobed")
+                                   and r["outcome"] != r["batch"]["outcome"])}
 
 
 def delta(now: dict, before: dict | None, classifier: str = CLASSIFIER,
           before_classifier: str | None = None) -> list[str]:
     lines = [f"classifier v{classifier}",
+             f"reprobed alone {now.get('reprobed', 0)}, "
+             f"{now.get('reprobe_changed', 0)} changed outcome",
              f"probed {now['probed']}  closed "
              f"{100 * now['closed_fraction']:.1f}%  median "
              f"{now['median_seconds']:.1f} s",
@@ -255,6 +300,9 @@ def main() -> int:
                         default=[],
                         help="a module every probe requires, for measuring "
                              "a rule that is built but not exported")
+    parser.add_argument("--no-reprobe", action="store_true",
+                        help="keep batch errors and timeouts as they are "
+                             "(the policy is to re-probe them alone)")
     parser.add_argument("--build-dir", type=Path, default=None,
                         # Kept for callers that still pass it; an arm now
                         # always builds inside its own checkout, so the
@@ -286,10 +334,14 @@ def main() -> int:
           flush=True)
     rows = measure(root, pairs, jobs, arguments.seconds, None,
                    tuple(arguments.imports))
+    if not arguments.no_reprobe:
+        rows = reprobe_alone(root, rows, arguments.seconds,
+                             tuple(arguments.imports))
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     result = {"automation": commit, "summary": summary(rows), "rows": rows,
-              "classifier": CLASSIFIER}
+              "classifier": CLASSIFIER, "imports": list(arguments.imports),
+              "seconds": arguments.seconds}
     stem = commit[:12] + (f"-{arguments.name}" if arguments.name else "")
     earlier = sorted(RESULT_DIR.glob(f"*{arguments.name}.json")
                      if arguments.name else
