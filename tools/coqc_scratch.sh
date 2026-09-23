@@ -51,6 +51,8 @@ for argument in command[1:]:
 
 with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
     output = Path(output_dir) / f"{source.stem}.vo"
+    subprocess.run([str(Path(sys.argv[4]) / "resource_guard.sh"), "wait"],
+                   check=True)
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
     process = subprocess.Popen(
