@@ -26,35 +26,4 @@ Lemma write_success_transactions_chunk_150fc_load_core
     transaction transactions processed remaining bytes prefix suffix tail) -∗
   instr_body 0x150fc (writeSuccessTransactions150fcLoadEntry P sp base
     transaction transactions processed remaining bytes prefix suffix tail).
-Proof.
-  move => *.
-  iStartProof.
-  iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  Unshelve.
-  all: repeat iIntros "?".
-  all: iRename select (writeSuccessTransactionOwn transaction) into
-    "HtransactionOwn".
-  all: iDestruct select (_ ∗ _)%I as
-    "(Hremaining & Hmmio & Htrace & HP & Hinvariant & Hexit & _)".
-  all: iPoseProof "Hinvariant" as "#HinvariantCopy".
-  all: iDestruct "HinvariantCopy" as
-    "(_ & _ & _ & _ & _ & _ & _ & _ & _ & %Halign & %Hmin & %Hmax & _)".
-  all: have Halign8 := write_success_transactions_stack_aligned_8 sp Halign.
-  all: have Hmin272 : (mapRamBase defaultMap) <= bv_unsigned sp + 272 by lia.
-  all: have Hmax272 : bv_unsigned sp + 272 < (machineRamEnd defaultMap) by lia.
-  all: liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-Qed.
+Proof. move => *. zesu_block. Qed.

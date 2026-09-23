@@ -101,20 +101,7 @@ Lemma write_success_transactions_carrier_chunk_150f0_entry_block
     (writeSuccessTransactionsAt150f0CarrierEntryBlock P sp base transaction
       transactions processed remaining bytes prefix suffix tail
       first second third fourth items).
-Proof.
-  move => *.
-  iStartProof.
-  iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve. all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  Unshelve. all: try exact inhabitant.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_carrier_chunk_150f0_entry
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :

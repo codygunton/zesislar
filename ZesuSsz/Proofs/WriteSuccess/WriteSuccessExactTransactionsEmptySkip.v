@@ -28,18 +28,5 @@ Lemma transactions_live_empty_skip_correct `{!islaG Sigma} `{!threadG}
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15668 (transactionLiveLoopExit sp (bv_unsigned base) [] [] tail P) -∗
   instr_body 0x14f04 (transactionLiveEmptyEntry sp base tail P).
-Proof.
-  iStartProof. iIntros "#Hcode Hexit".
-  rewrite /transactionLiveEmptyEntry.
-  iApply (exact_transactions_branch_correct with "Hcode").
-  - rewrite instr_pre'_eq /instr_pre'_def /=.
-    iIntros "(_ & %Hneq & _)". done.
-  - iApply (instr_pre_wand with "Hexit"); [done | done |].
-    iIntros "(Hstate & _ & _)".
-    iDestruct "Hstate" as "(Hsys & H10 & H11 & Hframe & _)".
-    iDestruct "Hframe" as "(Hregs & Hsp & Hscratch & Hmmio & Htrace & HP & _)".
-    iEval (unfold transactionLiveScratch) in "Hscratch".
-    zesu_open_resource_groups.
-    rewrite /transactionLiveLoopExit /writeSuccessTransactionsOwn /=. zesu_run.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_live_empty_skip_correct.

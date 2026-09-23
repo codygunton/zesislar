@@ -28,19 +28,4 @@ Lemma write_success_suffix_int_15960_raw_phase
     `{!islaG Sigma} `{!threadG} (K : bv 64 -> spec -> iProp Sigma) :
   instr 0x15960 (Some IslaTraces.write_success_116.a15960.a15960) -∗
   instr_body 0x15960 (writeSuccessSuffixInt15960RawPhaseSpec K).
-Proof.
-  iStartProof. iIntros "Hinstr".
-  iApply (instr_pre_intro_Some with "Hinstr").
-  iIntros "Hentry HPC".
-  iEval (rewrite /writeSuccessSuffixInt15960RawPhaseSpec) in "Hentry".
-  iDestruct "Hentry" as (value base tail)
-    "(Hsys & H10 & H2 & Hvalue & %Halign & %Hrange & HK & Hnext)".
-  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H10".
-  iDestruct "H10" as (r10) "(H10 & %Hshape10)".
-  zesu_block.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: try iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.

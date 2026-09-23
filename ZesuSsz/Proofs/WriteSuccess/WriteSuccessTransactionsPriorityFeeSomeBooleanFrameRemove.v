@@ -20,18 +20,4 @@ Lemma write_success_transactions_priority_fee_some_boolean_frame_remove
   instr_pre 0x15128
     (writeSuccessTransactionsPriorityFeeSomeBooleanCallRet
       sp transaction remaining tail).
-Proof.
-  iIntros "Hret Hframe".
-  iEval (unfold writeSuccessTransactionsPriorityFeeSomeBooleanFramedCallRet)
-    in "Hret".
-  rewrite /writeSuccessTransactionsPriorityFeeSomeBooleanCallRet.
-  iApply (write_success_call_ret_frame_right2 16
-    (writeSuccessTransactionsPriorityFeeSavedValues transaction)
-    (BV 64 0x15128) sp
-    writeSuccessTransactionsPriorityFeeSomeBooleanMmio
-    (writeSuccessTransactionsPriorityFeeSomeBooleanTrace
-      sp transaction remaining tail)
-    (writeSuccessTransactionsPriorityFeeCallerFrame P sp base transaction
-      transactions processed remaining bytes prefix suffix tail)
-    with "Hret Hframe").
-Qed.
+Proof. move => *. zesu_block. Qed.

@@ -90,39 +90,4 @@ Lemma write_success_suffix_root_output
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
   instr_body 0x1573c (writeSuccessSuffixAt1573c P) -∗
   instr_body 0x1572c (writeSuccessSuffixAt1572c P).
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hlookup #Hcode #Houtput Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  Unshelve.
-  all: try iExists (tail, 0x1573c, sp, root, tt)ₗ.
-  all: try cbn.
-  all: try unLET.
-  all: try iFrame.
-  all: try bv_solve.
-  all: try lia.
-  all: try liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try rewrite bv_sign_extend_64_idemp.
-  all: try bv_solve.
-  all: try lia.
-  all: iSplit; last done.
-  all: iIntros "Hpost".
-  all: iDestruct "Hpost" as
-    "(Hsys & Htmp & Hsaved & H10 & H11 & H2 & Hstack & Hmmio & Htrace & _)".
-  all: iEval (rewrite /writeSuccessSuffixAt1573c).
-  all: iExists sp, root, tail.
-  all: iFrame.
-  all: repeat iSplit; try iPureIntro; try assumption; try lia.
-  Unshelve.
-  all: lazymatch goal with |- ?G => fail "suffix root residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

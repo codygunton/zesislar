@@ -32,33 +32,13 @@ Lemma write_success_transactions_post_15690_nonzero_spec
     `{!islaG Sigma} `{!threadG} :
   instr 0x15690 (Some IslaTraces.write_success_89.a15690.a15690) -∗
   instr_body 0x15690 (writeSuccessTransactionsPost15690NonzeroSpec 0x15690).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  all: try (apply bv_eq; rewrite bv_and_unsigned; rewrite bv_unsigned_BV;
-    assumption).
-  all: try (exfalso; apply H; bv_solve).
-  Unshelve. all: try liARun.
-  all: try iFrame.
-  all: try prepare_sidecond.
-  all: try bv_solve.
-  Unshelve. all: try (exfalso; apply H0; reflexivity).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_post_15690_branch_spec
     `{!islaG Sigma} `{!threadG} :
   instr 0x15690 (Some IslaTraces.write_success_89.a15690.a15690) -∗
   instr_body 0x15690 (writeSuccessTransactionsPost15690BranchSpec 0x15690).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  all: try (apply bv_eq; rewrite bv_and_unsigned; rewrite bv_unsigned_BV;
-    assumption).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_post_15690_branch
     `{!islaG Sigma} `{!threadG} (data : bv 64) :
@@ -69,27 +49,4 @@ Lemma write_success_transactions_post_15690_branch
     (reg_col zesu_ram_sys_regs ∗ "x9" ↦ᵣ RVal_Bits data ∗ True) -∗
   instr_body 0x15690
     (reg_col zesu_ram_sys_regs ∗ "x9" ↦ᵣ RVal_Bits data ∗ True).
-Proof.
-  iStartProof. iIntros "#Hlookup Hzero Hnext".
-  iPoseProof "Hlookup" as "#Hlookup15690".
-  iEval (rewrite /instr_lookup_resources) in "Hlookup15690".
-  iPoseProof ("Hlookup15690" $! 0x15690 with "[]") as "#Hinstr15690".
-  { iPureIntro.
-    rewrite IslaTraces.write_success_blocks.Index.lookup_a15690.
-    done. }
-  iEval (rewrite IslaTraces.write_success_blocks.Index.lookup_a15690)
-    in "Hinstr15690".
-  iPoseProof (write_success_transactions_post_15690_branch_spec
-    with "Hinstr15690") as "Hbranch".
-  rewrite instr_pre'_eq. iIntros "Hentry".
-  iDestruct "Hentry" as "(Hsys & H9 & _)".
-  iEval (rewrite /writeSuccessTransactionsPost15690BranchSpec).
-  iApply "Hbranch".
-  iExists data.
-  iFrame "Hsys H9".
-  iSplitL "Hzero".
-  - iEval (rewrite -instr_pre'_eq) in "Hzero".
-    iExact "Hzero".
-  - iEval (rewrite -instr_pre'_eq) in "Hnext".
-    iExact "Hnext".
-Qed.
+Proof. move => *. zesu_block. Qed.

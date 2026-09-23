@@ -33,25 +33,4 @@ Lemma write_success_suffix_int_15964_handoff
     `{!islaG Sigma} `{!threadG} (Q : iProp Sigma) :
   instr 0x15964 (Some IslaTraces.write_success_116.a15964.a15964) -∗
   instr_body 0x15964 (writeSuccessSuffixInt15964HandoffSpec Q).
-Proof.
-  iStartProof. iIntros "Hinstr".
-  iApply (instr_pre_intro_Some with "Hinstr").
-  iIntros "Hentry HPC".
-  iEval (rewrite /writeSuccessSuffixInt15964HandoffSpec) in "Hentry".
-  iDestruct "Hentry" as
-    (sp value tail)
-    "(Hsys & H1 & H2 & H10 & H5 & H11 & Hstack & Hmmio & Htrace &
-      %Halign & %Hmin & %Hmax & Hcall & Hreturn & HQ)".
-  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H1".
-  iDestruct "H1" as (r1) "(H1 & %Hshape1)".
-  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H5".
-  iDestruct "H5" as (r5) "(H5 & %Hshape5)".
-  iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "H11".
-  iDestruct "H11" as (r11) "(H11 & %Hshape11)".
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: try iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.
