@@ -22,12 +22,6 @@ Lemma encoder_boolean_exact_prefix `{!islaG Sigma} `{!threadG}
      ⌜bv_extract 0 4 sp = BV 4 0⌝ ∗ ⌜bv_extract 0 3 sp = BV 3 0⌝ ∗
      ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
      ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗ P ∗ True).
-Proof.
-  zesu_block.
-  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try bv_solve.
-  all: lazymatch goal with |- ?G => fail "Boolean prefix residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions encoder_boolean_exact_prefix.

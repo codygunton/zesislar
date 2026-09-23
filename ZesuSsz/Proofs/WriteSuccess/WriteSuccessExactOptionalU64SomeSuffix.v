@@ -43,10 +43,6 @@ Lemma optional_u64_some_exact_suffix `{!islaG Sigma} `{!threadG}
   instr_body 0x15bec
     (optionalU64SomeExactSuffixEntry value sp ret old_x5 old_x6 old_x8
       old_x10 old_x11 P).
-Proof.
-  zesu_block.
-  Unshelve. all: try zesu_finish.
-  Unshelve. all: try (bv_simplify select (bv_extract 0 4 sp = _); bv_solve).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions optional_u64_some_exact_suffix.

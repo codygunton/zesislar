@@ -12,9 +12,4 @@ Lemma write_success_transactions_access_invariant_bounds
   R -∗
   ⌜entries <> [] -> (mapRamBase defaultMap) <= base⌝ ∗
   ⌜entries <> [] -> base + Z.of_nat (length bytes) < (machineRamEnd defaultMap)⌝ ∗ R.
-Proof.
-  iIntros "HR".
-  iSplit; [iPureIntro; intros _; exact HbaseLow|].
-  iSplit; [iPureIntro; intros _; exact HbaseHigh|].
-  iExact "HR".
-Qed.
+Proof. move => *. zesu_block. Qed.

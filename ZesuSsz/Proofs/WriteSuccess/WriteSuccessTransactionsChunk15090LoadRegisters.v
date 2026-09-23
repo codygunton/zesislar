@@ -16,9 +16,4 @@ Lemma write_success_transactions_chunk_15090_load_registers
         transaction 128)) -∗
   writeSuccessTransactionsMachine15094
     sp base transactions processed transaction.
-Proof.
-  rewrite /writeSuccessTransactionsMachine15090WithX15
-    /writeSuccessTransactionsMachine15094.
-  iIntros "Hmachine".
-  iExact "Hmachine".
-Qed.
+Proof. move => *. zesu_block. Qed.

@@ -35,9 +35,5 @@ Lemma storage_keys_output_correct `{!islaG Sigma} `{!threadG}
     (BV 64 0x153a8) payload tail ("x2" ↦ᵣ RVal_Bits sp ∗ P ∗ True)) -∗
   instr_body 0x153a8 (storageKeysOutputPost sp payload tail P) -∗
   instr_body 0x15398 (storageKeysOutputEntry sp old_ra old_x5 old_data old_size payload tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: unfold storageKeysOutputPost; reflexivity.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions storage_keys_output_correct.

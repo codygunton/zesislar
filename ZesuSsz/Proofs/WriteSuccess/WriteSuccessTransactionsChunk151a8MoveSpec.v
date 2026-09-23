@@ -21,9 +21,4 @@ Lemma write_success_transactions_151a8_move_spec
     `{!islaG Sigma} `{!threadG} (pc : Z) :
   instr pc (Some a151a8) ⊢
   instr_body pc (writeSuccessTransactions151a8MoveSpec pc).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve; try lia.
-Qed.
+Proof. move => *. zesu_block. Qed.

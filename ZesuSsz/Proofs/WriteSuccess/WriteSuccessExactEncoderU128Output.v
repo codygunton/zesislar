@@ -16,10 +16,6 @@ Lemma encoder_u128_exact_output_correct `{!islaG Sigma} `{!threadG}
     (encoderU128ExactFrame low high sp ret tail P)) -∗
   instr_body 0x15d04 (encoderU128ExactSuffixSpec low high sp ret tail P) -∗
   instr_body 0x15cf4 (encoderU128ExactAtOutputSpec low high sp ret tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: lazymatch goal with |- ?G => fail "u128 output residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions encoder_u128_exact_output_correct.

@@ -34,10 +34,7 @@ Lemma transactions_type_output_correct `{!islaG Sigma} `{!threadG}
     (BV 64 0x150f0) [kind] tail P) -∗
   instr_body 0x150f0 (transactionTypeOutputPost data kind tail P) -∗
   instr_body 0x150e8 (transactionTypeOutputEntry data old_ra old_x5 kind tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_type_output_correct.
 Lemma transactions_type_output_call_correct `{!islaG Sigma} `{!threadG}
     data oldra old5 kind tail (P : iProp Sigma) :
