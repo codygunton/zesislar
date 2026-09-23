@@ -41,14 +41,7 @@ Lemma write_success_transactions_chunk_1558c_zero_leaf
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr 0x1558c (Some a1558c) -∗
   instr_body 0x1558c (writeSuccessTransactionsAt1558cZeroLeafSpec P).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  Unshelve. all: try iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_chunk_1558c_nonzero_leaf
     `{!islaG Sigma} `{!threadG} (count : bv 64)
@@ -56,18 +49,7 @@ Lemma write_success_transactions_chunk_1558c_nonzero_leaf
   instr 0x1558c (Some a1558c) -∗
   instr_body 0x1558c
     (writeSuccessTransactionsAt1558cNonzeroLeafSpec count P).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try match goal with
-  | |- _ => exfalso; apply Hcount; bv_solve
-  end.
-  all: try bv_solve.
-  Unshelve. all: try iFrame.
-  all: try (iExFalso; iPureIntro; apply Hcount; bv_solve).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_chunk_1558c_branch_leaf
     `{!islaG Sigma} `{!threadG} (P : bv 64 -> iProp Sigma) :

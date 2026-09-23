@@ -108,14 +108,7 @@ Global Instance : LithiumUnfold (@writeSuccessReturnAnySpec) := I.
 Lemma write_success_return_any_block `{!islaG Sigma} `{!threadG} :
   instr 0x15a10 (Some IslaTraces.write_success_126.a15a10.a15a10) -∗
   instr_body 0x15a10 writeSuccessReturnAnySpec.
-Proof.
-  iStartProof.
-  repeat liAStep; liShow.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try rewrite bv_sign_extend_64_idemp.
-  all: bv_solve.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_epilogue_block `{!islaG Sigma} `{!threadG}
     (P : iProp Sigma) :

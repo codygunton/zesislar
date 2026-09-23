@@ -23,16 +23,4 @@ Lemma write_success_transactions_post_15670_withdrawals_total
     (writeSuccessTransactionsPost15670WithdrawalsTotalSpec P sp pointer
       transactionBase withdrawalBase transactions transactionBytes count
       withdrawalBytes tail first second items).
-Proof.
-  move => *. iStartProof. iIntros "#Hlookup Hnext".
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  Unshelve.
-  all: try exact inhabitant.
-  all: try bv_solve.
-  Unshelve.
-Qed.
+Proof. move => *. zesu_block. Qed.

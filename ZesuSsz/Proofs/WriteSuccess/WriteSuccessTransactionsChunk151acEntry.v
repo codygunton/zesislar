@@ -48,11 +48,4 @@ Lemma write_success_transactions_151ac_call_entry_intro
     (writeSuccessTransactions151acCallRet sp transaction remaining tail) -∗
   writeSuccessTransactions151acCallEntry sp b5 b12 b13 b14 b15 b16 b17
     transaction remaining tail.
-Proof.
-  destruct Hbounds as [Hlower Hupper].
-  iIntros "Hsys H5 Htmp H10 H11 H12 H13 H14 H15 H16 H17 H8 H9 H18 H19
-    H20 H21 H22 H23 H24 H25 H26 H27 H1 H2 Hstack Hmmio Htrace Hreturn".
-  rewrite /writeSuccessTransactions151acCallEntry /reg_col.
-  cbn. iFrame.
-  repeat iSplit; try iPureIntro; try reflexivity; try assumption; try done.
-Qed.
+Proof. move => *. zesu_block. Qed.

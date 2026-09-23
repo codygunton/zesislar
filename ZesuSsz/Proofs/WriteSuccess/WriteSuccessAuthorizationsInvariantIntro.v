@@ -9,15 +9,7 @@ Import ListNotations.
 Lemma write_success_pure_sep_3 `{!islaG Sigma}
     (p1 p2 p3 : Prop) (R : iProp Sigma) :
   p1 -> p2 -> p3 -> R -∗ ⌜p1⌝ ∗ ⌜p2⌝ ∗ ⌜p3⌝ ∗ R.
-Proof.
-  intros Hp1 Hp2 Hp3.
-  iStartProof.
-  iIntros "HR".
-  iSplit; first (iPureIntro; exact Hp1).
-  iSplit; first (iPureIntro; exact Hp2).
-  iSplit; first (iPureIntro; exact Hp3).
-  iExact "HR".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_pure_sep_12 `{!islaG Sigma}
     (p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 : Prop) :
@@ -25,15 +17,7 @@ Lemma write_success_pure_sep_12 `{!islaG Sigma}
   p12 ->
   ⊢@{iPropI Sigma} ⌜p1⌝ ∗ ⌜p2⌝ ∗ ⌜p3⌝ ∗ ⌜p4⌝ ∗ ⌜p5⌝ ∗ ⌜p6⌝ ∗
     ⌜p7⌝ ∗ ⌜p8⌝ ∗ ⌜p9⌝ ∗ ⌜p10⌝ ∗ ⌜p11⌝ ∗ ⌜p12⌝ ∗ True.
-Proof.
-  intros Hp1 Hp2 Hp3 Hp4 Hp5 Hp6 Hp7 Hp8 Hp9 Hp10 Hp11 Hp12.
-  iStartProof.
-  iApply (write_success_pure_sep_3 p1 p2 p3 _ Hp1 Hp2 Hp3).
-  iApply (write_success_pure_sep_3 p4 p5 p6 _ Hp4 Hp5 Hp6).
-  iApply (write_success_pure_sep_3 p7 p8 p9 _ Hp7 Hp8 Hp9).
-  iApply (write_success_pure_sep_3 p10 p11 p12 _ Hp10 Hp11 Hp12).
-  done.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_authorizations_invariant_zero_intro
     `{!islaG Sigma} (sp pointer : bv 64) (remaining : nat)

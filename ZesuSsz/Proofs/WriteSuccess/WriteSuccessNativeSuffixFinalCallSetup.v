@@ -39,15 +39,4 @@ Lemma write_success_post_159c8_final_call_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x159c8 (writeSuccessPost159c8SetupSpec P).
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hlookup".
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  Unshelve.
-  all: iFrame.
-  all: lazymatch goal with |- ?G => fail "final call setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

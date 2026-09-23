@@ -64,12 +64,5 @@ Lemma transactions_signature_back_edge_continuation `{!islaG Sigma} `{!threadG}
   □ instr_pre 0x1565c (transactionSignatureSPost sp s0 s1 s2 s3 tail
     (transactionSignatureRFrame sp r0 r1 r2 r3
       (transactionSignatureVFrame sp value (transactionSignatureBackEdgeCaller sp index total P)))).
-Proof.
-  iIntros "#Hcode #Hreload #Hhead".
-  iPoseProof (transactions_back_edge_correct sp index total
-    (transactionSignatureBackEdgeFrame sp value r0 r1 r2 r3 s0 s1 s2 s3 tail P)
-    with "Hcode Hreload") as "Hedge".
-  iModIntro. iApply (instr_pre_wand 0x1565c 0x1565c false true with "Hedge"); [done | done |].
-  iIntros "Hpost". iApply (transactions_signature_to_back_edge with "Hpost Hhead").
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_signature_back_edge_continuation.

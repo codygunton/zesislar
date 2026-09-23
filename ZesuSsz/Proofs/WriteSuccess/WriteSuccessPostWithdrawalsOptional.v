@@ -352,16 +352,7 @@ Lemma block_15700 `{!islaG Sigma} `{!threadG}
   instr_body 0x15700
     (writeSuccessPostWithdrawals15700State sp optionalValue optionalTag
       data size root bytes saved tail P).
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve.
-  all: try zesu_finish.
-  all: lazymatch goal with |- ?G => fail "block_15700 residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions block_15700.
 

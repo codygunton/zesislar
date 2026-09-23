@@ -82,11 +82,4 @@ Lemma write_success_suffix_1596c_load
     `{!islaG Sigma} `{!threadG} (P : bv 64 -> iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x1596c (writeSuccessSuffix1596cLoadSpec P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try unLET; try rewrite bv_sign_extend_64_idemp;
-    try bv_solve; try lia.
-  Unshelve. all: zesu_run.
-  all: lazymatch goal with |- ?G => fail "1596c load residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
