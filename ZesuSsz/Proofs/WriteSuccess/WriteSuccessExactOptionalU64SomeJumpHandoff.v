@@ -53,18 +53,6 @@ Lemma optional_u64_some_exact_jump_handoff `{!islaG Sigma} `{!threadG}
   instr_body 0x15be8 (optionalU64SomeExactPrefixPost pointer value sp ret old_x8
     old_x11 bytes (optionalU64SomeExactCallContext pointer value sp ret old_x5
       old_x6 old_x8 bytes tail P)).
-Proof.
-  iStartProof. iIntros "Hjump Hresume".
-  iApply (instr_pre_wand 0x15be8 0x15be8 false false with "Hjump");
-    [done | done |].
-  iIntros "Hentry". iDestruct "Hentry" as
-    "(Hsys & H1 & H2 & H8 & H10 & H11 & Hsource & Hlow & Hs0 & Hra & Hcontext & _)".
-  iDestruct "Hcontext" as
-    "(H5 & H6 & Hmmio & Htrace & %Hsp4 & %Halign & %Hmin & %Hmax &
-      %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
-  zesu_run.
-  Unshelve. all: try zesu_finish.
-  Unshelve. all: try (bv_simplify Hsp4; bv_solve).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions optional_u64_some_exact_jump_handoff.

@@ -15,16 +15,4 @@ Lemma encoder_optional_some_branch `{!islaG Sigma} `{!threadG}
     (encoderOptionalSomeAtSomeBody data value sp ret tag tail P) -∗
   instr_body 0x15bcc
     (encoderOptionalSomeAtBranch data value sp ret tag tail P).
-Proof.
-  move => * /=.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try (intros Hzero; contradiction).
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: try exact inhabitant.
-  all: iExFalso; iPureIntro; contradiction.
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

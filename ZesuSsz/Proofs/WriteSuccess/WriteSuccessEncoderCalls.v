@@ -24,15 +24,7 @@ Lemma zesu_encoder_int_any_pre `{!islaG Sigma} `{!threadG} :
   ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15d10 zesuEncoderIntAny.
-Proof.
-  iStartProof. iIntros "#HintCode #HoutputCode". iModIntro.
-  iApply instr_pre_to_body. iNext.
-  rewrite instr_pre'_eq. iIntros "Hspec".
-  iDestruct "Hspec" as (value sp ret tail) "Hspec".
-  iPoseProof (encoder_int_correct value sp ret tail True%I
-    with "HintCode HoutputCode") as "Hbody".
-  rewrite instr_pre'_eq. iApply ("Hbody" with "Hspec").
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition zesuEncoderBytesAny `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (∃ (data size sp ret : bv 64) (bytes : list (bv 8)) (tail : spec),
@@ -70,12 +62,4 @@ Lemma zesu_encoder_boolean_any_pre `{!islaG Sigma} `{!threadG} :
   ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x15b9c zesuEncoderBooleanAny.
-Proof.
-  iStartProof. iIntros "#HbooleanCode #HoutputCode". iModIntro.
-  iApply instr_pre_to_body. iNext.
-  rewrite instr_pre'_eq. iIntros "Hspec".
-  iDestruct "Hspec" as (value sp ret tail) "Hspec".
-  iPoseProof (encoder_boolean_correct value sp ret tail True%I
-    with "HbooleanCode HoutputCode") as "Hbody".
-  rewrite instr_pre'_eq. iApply ("Hbody" with "Hspec").
-Qed.
+Proof. move => *. zesu_block. Qed.

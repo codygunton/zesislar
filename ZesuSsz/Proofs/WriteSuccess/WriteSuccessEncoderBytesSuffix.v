@@ -82,19 +82,7 @@ Lemma encoder_bytes_suffix_correct `{!islaG Sigma} `{!threadG}
   instr_body 0x15c90
     (encoderBytesSuffixSpec data size sp ret bytes
       old_x6 old_s0 old_s1 stack2 tail P).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try rewrite bv_sign_extend_idemp.
-  all: try bv_solve.
-  all: try lia.
-  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma encoder_bytes_suffix_pre `{!islaG Sigma} `{!threadG}
     (data size sp ret : bv 64) (bytes : list (bv 8))

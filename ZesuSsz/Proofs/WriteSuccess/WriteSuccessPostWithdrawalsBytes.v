@@ -91,15 +91,7 @@ Lemma block_1571c `{!islaG Sigma} `{!threadG}
     optionalTag data size root bytes saved tail P) -∗
   instr_body 0x1571c (writeSuccessPostWithdrawals1571cState sp optionalValue
     optionalTag data size root bytes saved tail P).
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve. all: try zesu_finish.
-  all: lazymatch goal with |- ?G => fail "block_1571c residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions block_1571c.
 

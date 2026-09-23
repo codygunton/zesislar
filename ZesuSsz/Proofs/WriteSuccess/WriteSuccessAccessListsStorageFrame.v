@@ -63,18 +63,7 @@ Global Instance : LithiumUnfold
 Lemma write_success_byte_array_to_uninit `{!islaG Sigma}
     (base : Z) (bytes : list (bv 8)) :
   base ↦ₘ∗ bytes -∗ base ↦ₘ? Z.of_nat (length bytes).
-Proof.
-  iIntros "Hbytes".
-  iPoseProof (mem_mapsto_byte_array_to_mapsto base (DfracOwn 1) bytes
-    with "Hbytes") as "Hword".
-  iPoseProof (mem_mapsto_mapsto_to_uninit with "Hword") as "Huninit".
-  have Hsize :
-      Z.of_N ((Z.to_N (Z.of_nat (length bytes)) * 8) `div` 8) =
-      Z.of_nat (length bytes).
-  { rewrite N.div_mul; [rewrite Z2N.id; lia | lia]. }
-  iEval (rewrite Hsize) in "Huninit".
-  iExact "Huninit".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_access_lists_storage_exit
     `{!islaG Sigma} `{!threadG} (x19 : bv 64) (P : iProp Sigma)
