@@ -27,6 +27,20 @@ Fixpoint zesuReadLeAt
 Definition zesuReadU32At := zesuReadLeAt 4.
 Definition zesuReadU64At := zesuReadLeAt 8.
 
+(** A variable SSZ list stores four bytes per offset.  The first offset is
+    the table length, so dividing it by four gives the item count. *)
+Definition zesuVariableListCount
+    (bytes : ByteString) (start span : nat) : option Z :=
+  if Nat.eqb span 0 then Some 0 else
+  match zesuReadU32At bytes start with
+  | Some first =>
+      if (Z.eqb (Z.modulo first 4) 0) &&
+         (Z.leb 4 first) && (Z.leb first (Z.of_nat span))
+      then Some (Z.div first 4)
+      else None
+  | None => None
+  end.
+
 Definition zesuBugPayload (input : ByteString) : ByteString :=
   match zesuReadU32At input 0 with
   | Some declared =>
@@ -55,7 +69,10 @@ Record ZesuBugLayout : Type := {
   bugActivationTimestamp : option Z;
   bugExtraDataBytes : nat;
   bugPublicKeyBytes : nat;
-  bugVersionedHashBytes : nat
+  bugVersionedHashBytes : nat;
+  bugWithdrawalBytes : option nat;
+  bugTransactionCount : option Z;
+  bugWitnessHeaderCount : option Z
 }.
 
 (** The endpoint can only return [DecodeSuccess] after its decoder validates
@@ -84,9 +101,9 @@ Definition zesuBugLayout (input : ByteString) : option ZesuBugLayout :=
           let activeForkStart :=
             (chainStart + Z.to_nat activeForkOffset)%nat in
           match zesuReadU32At bytes requestsStart,
-                zesuReadU32At bytes (payloadStart + 436),
-                zesuReadU32At bytes (payloadStart + 504),
-                zesuReadU64At bytes (payloadStart + 404),
+            zesuReadU32At bytes (payloadStart + 436),
+            zesuReadU32At bytes (payloadStart + 504),
+            zesuReadU64At bytes (payloadStart + 404),
                 zesuReadU64At bytes (payloadStart + 428),
                 zesuReadU32At bytes activeForkStart with
           | Some requestFixedLength, Some payloadFixedLength,
@@ -94,6 +111,8 @@ Definition zesuBugLayout (input : ByteString) : option ZesuBugLayout :=
             Some activationOffset =>
               let activationStart :=
                 (activeForkStart + Z.to_nat activationOffset)%nat in
+              let transactionsStart :=
+                (payloadStart + Z.to_nat transactionsOffset)%nat in
               match zesuReadU32At bytes activationStart,
                     zesuReadU32At bytes (activationStart + 4) with
               | Some blockOffset, Some timestampOffset =>
@@ -118,7 +137,34 @@ Definition zesuBugLayout (input : ByteString) : option ZesuBugLayout :=
                                   Z.to_nat payloadFixedLength;
                               bugPublicKeyBytes := length bytes - keysStart;
                               bugVersionedHashBytes :=
-                                requestsStart - hashesStart |}
+                                requestsStart - hashesStart;
+                              bugWithdrawalBytes :=
+                                match zesuReadU32At bytes (payloadStart + 508),
+                                      zesuReadU32At bytes (payloadStart + 528) with
+                                | Some withdrawalsOffset, Some accessListOffset =>
+                                    Some (Z.to_nat accessListOffset -
+                                      Z.to_nat withdrawalsOffset)%nat
+                                | _, _ => None
+                                end;
+                              bugTransactionCount :=
+                                match zesuReadU32At bytes (payloadStart + 508) with
+                                | Some withdrawalsOffset =>
+                                    zesuVariableListCount bytes transactionsStart
+                                      (Z.to_nat withdrawalsOffset -
+                                        Z.to_nat transactionsOffset)%nat
+                                | None => None
+                                end;
+                              bugWitnessHeaderCount :=
+                                match zesuReadU32At bytes
+                                    (2 + Z.to_nat witnessOffset + 8) with
+                                | Some headersOffset =>
+                                    let headersStart :=
+                                      (2 + Z.to_nat witnessOffset +
+                                        Z.to_nat headersOffset)%nat in
+                                    zesuVariableListCount bytes headersStart
+                                      (chainStart - headersStart)%nat
+                                | None => None
+                                end |}
                   | _, _ => None
                   end
               | _, _ => None
@@ -207,6 +253,37 @@ Definition versionedHashCountApplies
   | _, _ => False
   end.
 
+(** The reference accepts at most 16 fixed-width, 44-byte withdrawals. *)
+Definition withdrawalCountApplies
+    (input : ByteString) (actual : DecodeOutcome) : Prop :=
+  match zesuBugLayout input, actual with
+  | Some layout, DecodeSuccess _ =>
+      exists bytes, bugWithdrawalBytes layout = Some bytes /\
+        Nat.modulo bytes 44 = 0%nat /\
+        (16 * 44 < bytes)%nat
+  | _, _ => False
+  end.
+
+(** The reference accepts at most 2^20 transaction offsets. *)
+Definition transactionCountApplies
+    (input : ByteString) (actual : DecodeOutcome) : Prop :=
+  match zesuBugLayout input, actual with
+  | Some layout, DecodeSuccess _ =>
+      exists count, bugTransactionCount layout = Some count /\
+        1048576 < count
+  | _, _ => False
+  end.
+
+(** The reference accepts at most 2^8 witness-header offsets. *)
+Definition witnessHeaderCountApplies
+    (input : ByteString) (actual : DecodeOutcome) : Prop :=
+  match zesuBugLayout input, actual with
+  | Some layout, DecodeSuccess _ =>
+      exists count, bugWitnessHeaderCount layout = Some count /\
+        256 < count
+  | _, _ => False
+  end.
+
 Definition zesuBugApplies : BugApplies :=
   fun bug =>
     match bug with
@@ -217,6 +294,9 @@ Definition zesuBugApplies : BugApplies :=
     | ExtraDataLength => extraDataLengthApplies
     | PublicKeyCount => publicKeyCountApplies
     | VersionedHashCount => versionedHashCountApplies
+    | WithdrawalCount => withdrawalCountApplies
+    | TransactionCount => transactionCountApplies
+    | WitnessHeaderCount => witnessHeaderCountApplies
     end.
 
 (** Compliance compares complete decode outcomes. *)
@@ -228,6 +308,93 @@ Fixpoint zesuEncodeLe (width : nat) (value : Z) : ByteString :=
   | S rest =>
       Z.modulo value 256 :: zesuEncodeLe rest (Z.div value 256)
   end.
+
+(** These byte inputs expose one count above each reference bound.
+    They witness the raw count fields only.  They do not establish that the
+    pinned Zesu decoder returns [DecodeSuccess] for these inputs. *)
+Definition zesuCountPayload
+    (transactions withdrawals : ByteString) : ByteString :=
+  let withdrawalOffset := (540 + length transactions)%nat in
+  let accessOffset := (withdrawalOffset + length withdrawals)%nat in
+  repeat 0 436 ++ zesuEncodeLe 4 540 ++ repeat 0 64 ++
+  zesuEncodeLe 4 540 ++
+  zesuEncodeLe 4 (Z.of_nat withdrawalOffset) ++ repeat 0 16 ++
+  zesuEncodeLe 4 (Z.of_nat accessOffset) ++ repeat 0 8 ++
+  transactions ++ withdrawals.
+
+Definition zesuCountWitnessInput
+    (transactions withdrawals headers : ByteString) : ByteString :=
+  let payload := zesuCountPayload transactions withdrawals in
+  let request :=
+    zesuEncodeLe 4 44 ++
+    zesuEncodeLe 4 (Z.of_nat (44 + length payload)%nat) ++ repeat 0 32 ++
+    zesuEncodeLe 4 (Z.of_nat (76 + length payload)%nat) ++
+    payload ++ repeat 0 32 ++ concat (repeat (zesuEncodeLe 4 20) 5) in
+  let witness :=
+    zesuEncodeLe 4 12 ++ zesuEncodeLe 4 12 ++
+    zesuEncodeLe 4 12 ++ headers in
+  let witnessOffset := (16 + length request)%nat in
+  let chainOffset := (witnessOffset + length witness)%nat in
+  [15; 1] ++ zesuEncodeLe 4 16 ++
+  zesuEncodeLe 4 (Z.of_nat witnessOffset) ++
+  zesuEncodeLe 4 (Z.of_nat chainOffset) ++
+  zesuEncodeLe 4 (Z.of_nat (chainOffset + 40)%nat) ++
+  request ++ witness ++
+  zesuEncodeLe 8 1 ++ zesuEncodeLe 4 12 ++
+  zesuEncodeLe 4 4 ++ zesuEncodeLe 4 8 ++ zesuEncodeLe 4 16 ++
+  zesuEncodeLe 8 0 ++ zesuEncodeLe 8 0.
+
+Definition withdrawalCountWitnessInput : ByteString :=
+  zesuCountWitnessInput [] (repeat 0 (17 * 44)%nat) [].
+
+Definition transactionCountWitnessBytes : ByteString :=
+  zesuEncodeLe 4 4194308 ++ repeat 0 4194304.
+
+Definition transactionCountWitnessInput : ByteString :=
+  zesuCountWitnessInput transactionCountWitnessBytes [] [].
+
+Definition witnessHeaderCountWitnessBytes : ByteString :=
+  zesuEncodeLe 4 1028 ++ repeat 0 1024.
+
+Definition witnessHeaderCountWitnessInput : ByteString :=
+  zesuCountWitnessInput [] [] witnessHeaderCountWitnessBytes.
+
+Lemma withdrawalCountWitnessSpan :
+  (16 * 44 < length (repeat 0 (17 * 44)%nat))%nat.
+Proof. rewrite repeat_length. lia. Qed.
+
+Lemma transactionCountWitnessLength :
+  length transactionCountWitnessBytes = 4194308%nat.
+Proof.
+  unfold transactionCountWitnessBytes.
+  rewrite app_length, repeat_length.
+  reflexivity.
+Qed.
+
+Lemma transactionCountWitnessField :
+  zesuVariableListCount transactionCountWitnessBytes 0
+    (length transactionCountWitnessBytes) = Some 1048577.
+Proof.
+  rewrite transactionCountWitnessLength.
+  unfold zesuVariableListCount.
+  replace (Nat.eqb 4194308 0) with false by reflexivity.
+  replace (zesuReadU32At transactionCountWitnessBytes 0)
+    with (Some 4194308) by reflexivity.
+  replace (Z.eqb (Z.modulo 4194308 4) 0) with true by reflexivity.
+  replace (Z.leb 4 4194308) with true by reflexivity.
+  replace (Z.leb 4194308 (Z.of_nat 4194308)) with true
+    by (vm_compute; reflexivity).
+  reflexivity.
+Qed.
+
+Lemma witnessHeaderCountWitnessField :
+  zesuVariableListCount witnessHeaderCountWitnessBytes 0
+    (length witnessHeaderCountWitnessBytes) = Some 257.
+Proof.
+  unfold witnessHeaderCountWitnessBytes.
+  rewrite app_length, repeat_length.
+  reflexivity.
+Qed.
 
 Definition zesuNonBugPayload : ByteString :=
   repeat 0 436 ++ zesuEncodeLe 4 540 ++ repeat 0 64 ++
@@ -264,7 +431,10 @@ Definition zesuExpectedNonBugLayout : ZesuBugLayout :=
      bugActivationTimestamp := Some 0;
      bugExtraDataBytes := 0;
      bugPublicKeyBytes := 0;
-     bugVersionedHashBytes := 32 |}.
+     bugVersionedHashBytes := 32;
+     bugWithdrawalBytes := Some 0%nat;
+     bugTransactionCount := Some 0;
+     bugWitnessHeaderCount := Some 0 |}.
 
 Lemma chainIdNonVacuityLayout :
   zesuBugLayout chainIdNonVacuityInput = Some zesuExpectedNonBugLayout.

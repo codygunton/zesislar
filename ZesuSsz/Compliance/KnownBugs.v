@@ -24,10 +24,17 @@ Inductive KnownBug : Type :=
 | PublicKeyCount
 (* Zesu computes an unbounded hash count at [ssz.zig:228].  The reference
    bound is 2^12 hashes at [evm_decoder.v:7156]. *)
-| VersionedHashCount.
+| VersionedHashCount
+(* The reference permits at most 2^4 withdrawals [evm_decoder.v:7152]. *)
+| WithdrawalCount
+(* The reference permits at most 2^20 transactions [evm_decoder.v:7150]. *)
+| TransactionCount
+(* The reference permits at most 2^8 witness headers [evm_decoder.v:7166]. *)
+| WitnessHeaderCount.
 
 (** This fixed list prevents later proofs from adding exceptions. *)
 Definition knownBugs : list KnownBug :=
   [ ChainIdZeroNormalization; LegacyRequestTableArity; LegacyPayloadSize;
     FutureForkActivation; ExtraDataLength; PublicKeyCount;
-    VersionedHashCount ].
+    VersionedHashCount; WithdrawalCount; TransactionCount;
+    WitnessHeaderCount ].
