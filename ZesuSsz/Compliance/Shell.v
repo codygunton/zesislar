@@ -11,9 +11,12 @@ Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Compliance.ObservationBridge.
 Require Import ZesuSsz.Compliance.Targets.
 Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Generated.Level1.
+Require Import ZesuSsz.Proofs.Main.SnapshotInput.
 Require Import ZesuSsz.Proofs.WriteFailure.WriteFailure.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
 
 Import ListNotations.
@@ -39,9 +42,123 @@ Definition zesuInitialGlobal : seq_global_state := {|
 Definition zesuInitial : cfg isla_lang :=
   ([zesuInitialLocal], zesuInitialGlobal).
 
-(** Phase 2.3 defines these projections from snapshot labels. *)
-Definition zesuOutcomeOfTrace (_ : list seq_label) : option DecodeOutcome := None.
-Definition zesuInputOfTrace (_ : list seq_label) : option ByteString := None.
+Fixpoint zesuOutputPayloadsOfTrace
+    (labels : list seq_label) : option (list ByteString) :=
+  match labels with
+  | [] => Some []
+  | label :: rest =>
+      match label, rest with
+      | SWriteMem address data _,
+          SWriteMem sizeAddress size snapshot :: remaining =>
+          if decide (address = BV 64 (machineOutputAddress defaultMap) /\
+                     sizeAddress = BV 64 (machineOutputSizeAddress defaultMap)) then
+            match read_mem_list snapshot.(snap_mem) (bvn_unsigned data)
+                    (Z.to_N (bvn_unsigned size)),
+                  zesuOutputPayloadsOfTrace remaining with
+            | Some bytes, Some payloads =>
+                Some (List.map bv_unsigned bytes :: payloads)
+            | _, _ => None
+            end
+          else zesuOutputPayloadsOfTrace rest
+      | _, _ => zesuOutputPayloadsOfTrace rest
+      end
+  end.
+
+Definition zesuOutputBytesOfTrace (labels : list seq_label) : option ByteString :=
+  (@List.concat Z) <$> zesuOutputPayloadsOfTrace labels.
+
+Lemma zesuOutputPayloadsOfTrace_write data size firstSnapshot writeSnapshot
+    labels payload payloads :
+  read_mem_list writeSnapshot.(snap_mem) (bvn_unsigned data)
+    (Z.to_N (bvn_unsigned size)) = Some payload ->
+  zesuOutputPayloadsOfTrace labels = Some payloads ->
+  zesuOutputPayloadsOfTrace
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) = Some (List.map bv_unsigned payload :: payloads).
+Proof.
+  intros Hread Hrest. simpl.
+  rewrite Hread Hrest. reflexivity.
+Qed.
+
+Lemma zesuOutputBytesOfTrace_write data size firstSnapshot writeSnapshot
+    labels payload :
+  read_mem_list writeSnapshot.(snap_mem) (bvn_unsigned data)
+    (Z.to_N (bvn_unsigned size)) = Some payload ->
+  zesuOutputPayloadsOfTrace labels = Some [] ->
+  zesuOutputBytesOfTrace
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) = Some (List.map bv_unsigned payload).
+Proof.
+  intros Hread Hrest. unfold zesuOutputBytesOfTrace.
+  rewrite (zesuOutputPayloadsOfTrace_write _ _ _ _ _ _ _ Hread Hrest).
+  simpl. rewrite app_nil_r. reflexivity.
+Qed.
+
+Lemma zesuOutputBytesOfTrace_write_events data size payload tail
+    firstSnapshot writeSnapshot labels :
+  writeOutputEvents data size payload tail
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) ->
+  zesuOutputPayloadsOfTrace labels = Some [] ->
+  zesuOutputBytesOfTrace
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) = Some (List.map bv_unsigned payload).
+Proof.
+  intros Hspec Hrest.
+  apply zesuOutputBytesOfTrace_write; last exact Hrest.
+  eapply write_output_events_payload. exact Hspec.
+Qed.
+
+Definition zesuOutcomeOfTrace (labels : list seq_label) : option DecodeOutcome :=
+  match zesuOutputBytesOfTrace labels with
+  | Some bytes =>
+      if decide (bytes = failureObservation) then Some DecodeFailure
+      else option_map
+        (fun observation => DecodeSuccess (observationToStatelessInput observation))
+        (writeSuccessDecodeObservation bytes)
+  | None => None
+  end.
+
+Definition zesuInputOfTrace : list seq_label -> option ByteString :=
+  mainInputOfTrace.
+
+Lemma zesuInputOfTrace_bytes labels input :
+  zesuInputOfTrace labels = Some input ->
+  Forall (fun value => (0 <= value < 256)%Z) input.
+Proof. apply main_trace_input_bytes. Qed.
+Print Assumptions zesuInputOfTrace_bytes.
+
+Lemma zesuOutcomeOfTrace_failure labels :
+  zesuOutputBytesOfTrace labels = Some failureObservation ->
+  zesuOutcomeOfTrace labels = Some DecodeFailure.
+Proof.
+  intros Hbytes. unfold zesuOutcomeOfTrace. rewrite Hbytes.
+  destruct (decide (failureObservation = failureObservation));
+    [reflexivity | contradiction].
+Qed.
+Print Assumptions zesuOutcomeOfTrace_failure.
+
+Lemma zesuOutcomeOfTrace_success labels observation :
+  writeSuccessObservationValid observation ->
+  zesuOutputBytesOfTrace labels =
+    Some (writeSuccessEncodeObservation observation) ->
+  zesuOutcomeOfTrace labels =
+    Some (DecodeSuccess (observationToStatelessInput observation)).
+Proof.
+  intros Hvalid Hbytes. unfold zesuOutcomeOfTrace. rewrite Hbytes.
+  destruct (decide
+    (writeSuccessEncodeObservation observation = failureObservation))
+    as [Heq|Hneq].
+  - unfold writeSuccessEncodeObservation, failureObservation in Heq.
+    simpl in Heq. discriminate.
+  - rewrite (writeSuccessObservationDecodeEncode observation Hvalid).
+    reflexivity.
+Qed.
+Print Assumptions zesuOutcomeOfTrace_success.
 
 Definition zesuEndpoint : EndpointSemantics := {|
   endpointRuns := fun input outcome =>
@@ -186,6 +303,44 @@ Lemma zesuDecodeFailureHandoff runner model inputRef applies Sigma HG HT args :
   islarisEntry _ _ (@write_failure_resources Sigma HG HT)
       {| failureReturnAddress := 0x14d24 |}.
 Proof. reflexivity. Qed.
+
+Definition zesuDecodeOutcome
+    (outcome : DecodeBoundaryOutcome WriteSuccessObservation) : DecodeOutcome :=
+  match outcome with
+  | DecodeBoundaryFailure => DecodeFailure
+  | DecodeBoundarySuccess observation =>
+      DecodeSuccess (observationToStatelessInput observation)
+  end.
+
+Lemma zesuDecodeMeaningReference
+    runner model inputRef args outcome expected :
+  DecodeMeaningModuloKnownBugs runner model inputRef
+    zesuObservationBugApplies args outcome ->
+  referenceRuns (EvmSailReference runner model inputRef)
+    (decodeInput args) expected ->
+  OutcomeEquivalentModulo zesuBugApplies zesuEquivalent
+    (decodeInput args) (zesuDecodeOutcome outcome) expected.
+Proof.
+  intros (ref & Href & Hmeaning) (expectedRef & HexpectedRef & Hexpected).
+  rewrite Href in HexpectedRef. inversion HexpectedRef; subst expectedRef.
+  destruct outcome as [|observation]; simpl in *.
+  - destruct expected as [decoded|]; simpl in *.
+    + exfalso. unfold ReferenceRejects, ReferenceDecodes in *.
+      pose proof (evaluates_functional runner _ _ _ _ _ Hmeaning Hexpected)
+        as Hresults. discriminate.
+    + left. reflexivity.
+  - destruct Hmeaning as [Hsame|[bug [Hin Hbug]]].
+    + destruct expected as [decoded|]; simpl in *.
+      * left. unfold zesuEquivalent. f_equal.
+        unfold ReferenceDecodes in *.
+        pose proof (evaluates_functional runner _ _ _ _ _ Hsame Hexpected)
+          as Hresults. inversion Hresults. reflexivity.
+      * exfalso. unfold ReferenceDecodes, ReferenceRejects in *.
+        pose proof (evaluates_functional runner _ _ _ _ _ Hsame Hexpected)
+          as Hresults. discriminate.
+    + right. exists bug. split; first exact Hin. exact Hbug.
+Qed.
+Print Assumptions zesuDecodeMeaningReference.
 
 Theorem zesuCompliance
     (runner : DecoderEvaluator) (model : DecoderModel)
