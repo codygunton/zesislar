@@ -74,8 +74,8 @@ Proof.
   rewrite Nat.pow_add_r. nia.
 Qed.
 
-(** The dynamic budget allows one execution-range sweep per input byte.
-    Phase 5 still needs a rank proof for the nested loops. *)
+(** This is a candidate numeric budget indexed by input size.
+    The open rank invariant must prove that it bounds dynamic execution. *)
 Definition writeSuccessFuelBound (inputSize : nat) : nat :=
   S (writeSuccessExecutionInstructionCount * S inputSize).
 
