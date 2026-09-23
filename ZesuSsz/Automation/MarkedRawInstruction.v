@@ -1,6 +1,7 @@
 (* Select the raw trace at one marked PC. Other PCs keep their table entry. *)
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Lookup.
+From iris.proofmode Require Import environments.
 
 Class ZesuRawInstructionAt (lookup : Z -> option isla_trace)
     (address : Z) : Prop :=
@@ -21,9 +22,19 @@ Section marked_raw_instruction.
     iPureIntro. exact zesu_raw_instruction_exists.
   Qed.
 
-  Definition find_in_context_zesu_marked_raw_inst address :=
-    [instance find_in_context_zesu_marked_raw address with FICSyntactic].
-  Global Existing Instance find_in_context_zesu_marked_raw_inst | 9.
 End marked_raw_instruction.
 
 Print Assumptions find_in_context_zesu_marked_raw.
+
+Class ZesuStepMarkedRawInstruction : Prop := zesu_step_marked_raw_instruction : True.
+
+Ltac zesu_select_marked_raw_if_enabled :=
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind ?address ?later) ?continuation) =>
+      let _ := constr:(_ : ZesuStepMarkedRawInstruction) in
+      let marker := constr:(_ : ZesuRawInstructionAt _ address) in
+      lazymatch type of marker with
+      | ZesuRawInstructionAt ?lookup _ =>
+          iApply (find_in_context_zesu_marked_raw address lookup later continuation)
+      end
+  end.

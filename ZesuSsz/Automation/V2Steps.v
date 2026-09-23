@@ -34,9 +34,13 @@ Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
 Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.MarkedRawInstruction.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
+  (* Select one marked raw instruction before its table specification. *)
+  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>
+      zesu_select_marked_raw_if_enabled
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>
       zesu_reduce_instr_lookup_if_enabled
