@@ -11,14 +11,15 @@
    its own measurement says otherwise. The demonstration the bundle owes
    is that v1 modules have zero changed outcomes.
 
-   What selects the set is `Switch.v` below: it is the one
-   `ZesuRuleSetV2` instance, and `zesu_run_pass` in `Finish.v` asks for
+   Each selected switch below provides a `ZesuRuleSetV2` instance,
+   and `zesu_run_pass` in `Finish.v` asks for
    it once per pass. With the instance the pass runs
    `zesu_run_pass_v2`, which is v1's search list plus
    `zesu_rule_set_v2_steps`; without it the pass runs
    `zesu_run_pass_v1`, which is v1's search list alone. Importing
    `All.v` or `Sets/v1.v` cannot reach this instance, so a merged proof
-   runs the same alternatives it ran before. *)
+   runs the same alternatives it ran before. The C7 call-return switch
+   remains available for a measured segment but is absent from this set. *)
 
 Require Export ZesuSsz.Automation.Sets.v1.
 
@@ -30,10 +31,12 @@ Require Export ZesuSsz.Automation.TraceTailLemmas.
    one instance that turns every such step on; without it each step is a
    failed class lookup and v1's outcomes are unchanged. *)
 Require Export ZesuSsz.Automation.PureFacts.
-Require Export ZesuSsz.Automation.Switch.
+Require Export ZesuSsz.Automation.Switches.WitnessArith.
+Require Export ZesuSsz.Automation.Switches.SpecTail.
+Require Export ZesuSsz.Automation.Switches.LookupReduce.
+Require Export ZesuSsz.Automation.Switches.SealedOpen.
 Require Export ZesuSsz.Automation.SpecPrefix.
 Require Export ZesuSsz.Automation.LookupReduce.
-Require Export ZesuSsz.Automation.CallReturn.
 Require Export ZesuSsz.Automation.V2Steps.
 
 (* C3: open a sealed predicate lazily, and only the one that holds the
