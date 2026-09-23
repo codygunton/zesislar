@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SpecTable.
 Require Import ZesuSsz.Automation.MarkedRawInstruction.
+Require Import ZesuSsz.Automation.Switches.MarkedRawInstruction.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 
@@ -11,6 +12,10 @@ Proof. unfold ZesuRawInstructionAt. rewrite Index.lookup_a156e8. eexists. reflex
 Definition sealed_array_frame `{!islaG Sigma} `{!threadG}
     (sp : bv 64) (words : list (bv 64)) : iProp Sigma :=
   ((bv_unsigned sp + 1032) ↦ₘ∗ words)%I.
+Lemma sealed_array_frame_unfold `{!islaG Sigma} `{!threadG}
+    (sp : bv 64) (words : list (bv 64)) :
+  sealed_array_frame sp words ⊣⊢ ((bv_unsigned sp + 1032) ↦ₘ∗ words)%I.
+Proof. done. Qed.
 Global Opaque sealed_array_frame.
 
 Lemma marked_raw_preserves_sealed_array `{!islaG Sigma} `{!threadG}
