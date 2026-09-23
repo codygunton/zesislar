@@ -26,11 +26,13 @@
 
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
+Require Import InstrSpecs.Specs.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SpecPrefix.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
+Require Import ZesuSsz.Automation.CallReturnSpecTable.
 Require Import ZesuSsz.Automation.SealedCoverage.
 
 Ltac zesu_rule_set_v2_steps :=
@@ -43,6 +45,8 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_enter_call_return_if_enabled
   | |- envs_entails _ ((_ -∗ WPasm _) ∗ True)%I =>
       zesu_enter_call_return_if_enabled
+  | |- envs_entails _ ((_ -∗ zesu_ld_spec _ _ _ _) ∗ True)%I =>
+      zesu_enter_call_return_spec_table_if_enabled
   (* C3: a sealed bundle, opened for the lookup that failed. *)
   | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled
