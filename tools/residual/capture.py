@@ -169,11 +169,11 @@ def gnu_time() -> list[str]:
 
 
 def run_probe(probe: Path, build_dir: Path, scratch: Path,
-              timeout: int = 300) -> tuple[int, str, str]:
+              timeout: int = 300, cwd: Path | None = None) -> tuple[int, str, str]:
     command = [*gnu_time(), "timeout", str(timeout + 30), "nice", "-n", "10",
                "bash", str(scratch), str(probe), str(build_dir)]
     process = subprocess.run(command, capture_output=True, text=True,
-                             env=limit_env(timeout))
+                             env=limit_env(timeout), cwd=cwd)
     return process.returncode, process.stdout, process.stderr
 
 
@@ -194,7 +194,7 @@ def capture(module: Path, lemma: str, build_dir: Path,
             scratch: Path, probe_dir: Path, solver: bool = False,
             variant: str = "standard",
             seconds: int = DEFAULT_SECONDS,
-            imports: tuple[str, ...] = ()) -> Capture:
+            imports: tuple[str, ...] = (), cwd: Path | None = None) -> Capture:
     source, label_lines = probe_text(module, lemma, solver, variant, imports)
     probe_dir.mkdir(parents=True, exist_ok=True)
     suffix = ("__solver" if solver else "") + (
@@ -202,7 +202,7 @@ def capture(module: Path, lemma: str, build_dir: Path,
     probe = probe_dir / f"{module.stem}__{lemma}{suffix}.v"
     probe.write_text(source)
     started = time.monotonic()
-    code, stdout, stderr = run_probe(probe, build_dir, scratch, seconds)
+    code, stdout, stderr = run_probe(probe, build_dir, scratch, seconds, cwd)
     wall = time.monotonic() - started
     output = stdout + "\n" + stderr
 
