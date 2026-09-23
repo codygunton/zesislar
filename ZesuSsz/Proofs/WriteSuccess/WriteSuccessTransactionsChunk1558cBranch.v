@@ -28,12 +28,12 @@ Definition writeSuccessTransactions1558cHeld
 Lemma write_success_transactions_1558c_held_intro
     `{!islaG Sigma} (P : iProp Sigma) :
   P -∗ writeSuccessTransactions1558cHeld P.
-Proof. iIntros "HP". iExact "HP". Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_1558c_held_elim
     `{!islaG Sigma} (P : iProp Sigma) :
   writeSuccessTransactions1558cHeld P -∗ P.
-Proof. iIntros "HP". iExact "HP". Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Opaque writeSuccessTransactions1558cHeld.
 
