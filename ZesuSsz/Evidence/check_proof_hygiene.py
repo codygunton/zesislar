@@ -195,8 +195,11 @@ def proof_size_warnings(name: str, lines: list[str]) -> list[str]:
         if proof_start is None:
             statement_has_instr_body = statement_has_instr_body or "instr_body" in line
             if re.match(r"^\s*Proof\.", line):
-                proof_start = number
-                rename_count = 0
+                if re.search(r"\bQed\.", line):
+                    statement_has_instr_body = False
+                else:
+                    proof_start = number
+                    rename_count = 0
             elif re.match(r"^\s*(?:Definition|Lemma|Theorem|Corollary)\b", line):
                 statement_has_instr_body = "instr_body" in line
             continue

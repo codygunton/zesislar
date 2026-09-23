@@ -3,6 +3,7 @@ import unittest
 from check_proof_hygiene import (
     PLACEHOLDER,
     forbidden_counts,
+    proof_size_warnings,
     proof_size_ratchet_failures,
     ratchet_failures,
     record_ratchet_failures,
@@ -53,6 +54,35 @@ class ProofHygieneTests(unittest.TestCase):
         self.assertEqual(
             len(proof_size_ratchet_failures("Test.v", messages, baseline)), 1
         )
+
+    def test_one_line_proof_does_not_extend_into_next_proof(self):
+        lines = [
+            "Lemma first : instr_body 0x1 spec.",
+            "Proof. move => *. zesu_block. Qed.",
+            "Lemma second : instr_body 0x2 spec.",
+            "Proof.",
+            *["  iFrame."] * 42,
+            "Qed.",
+        ]
+        self.assertEqual(
+            proof_size_warnings("Test.v", lines),
+            ["instr_body proof has 42 lines: Test.v:4"],
+        )
+
+    def test_new_long_hand_proof_fails_after_one_line_proof(self):
+        lines = [
+            "Lemma first : instr_body 0x1 spec.",
+            "Proof. move => *. zesu_block. Qed.",
+            "Lemma new_hand : instr_body 0x2 spec.",
+            "Proof.",
+            *["  iFrame."] * 41,
+            "Qed.",
+        ]
+        warnings = proof_size_warnings("New.v", lines)
+        self.assertEqual(
+            warnings, ["instr_body proof has 41 lines: New.v:4"]
+        )
+        self.assertTrue(proof_size_ratchet_failures("New.v", warnings, {}))
 
     def test_residual_record_ratchet(self):
         entries = [("new_block", "instr_body 0x1 spec", 3)]
