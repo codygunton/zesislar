@@ -37,7 +37,7 @@ sys.path.insert(0, str(HERE.parent / "residual"))
 
 import probes  # noqa: E402
 import timed  # noqa: E402
-from classify import classify  # noqa: E402
+from classify import VERSION as CLASSIFIER, classify  # noqa: E402
 from goals import conclusion_text, context_size  # noqa: E402
 from call_sites import premises as call_premises  # noqa: E402
 from modules import find_proof  # noqa: E402
@@ -279,6 +279,7 @@ def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
         return record
     record["outcome"] = "stalled"
     record["pred_class"] = classify(text, "residual").pred_class
+    record["classifier"] = CLASSIFIER
     record["signature"] = signature(conclusion)
     return record
 
@@ -326,6 +327,7 @@ def main() -> int:
                            "mapsto": points, "context": context,
                            "conclusion": conclusion,
                            "pred_class": classify(text, "residual").pred_class,
+                           "classifier": CLASSIFIER,
                            "signature": signature(conclusion)})
         records.append(record)
         print(f"{record['outcome']:8s} {record['seconds']:7.1f}s "

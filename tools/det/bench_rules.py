@@ -62,6 +62,11 @@ def summary_of(commit: str, name: str) -> dict | None:
     return json.loads(path.read_text())["summary"]
 
 
+def arm_classifier(commit: str, name: str) -> str:
+    path = RESULTS / f"{commit[:12]}-{name}.json"
+    return json.loads(path.read_text()).get("classifier", "1")
+
+
 def table(commit: str, suffix: str) -> list[str]:
     base = summary_of(commit, f"v1{suffix}")
     if base is None:
@@ -69,8 +74,12 @@ def table(commit: str, suffix: str) -> list[str]:
     classes = sorted({name for arm, _ in ARMS
                       for name in (summary_of(commit, f"{arm}{suffix}")
                                    or {}).get("classes", {})})
+    versions = sorted({arm_classifier(commit, f"{arm}{suffix}")
+                       for arm, _ in ARMS
+                       if summary_of(commit, f"{arm}{suffix}") is not None})
     head = "| arm | closed | median s | " + " | ".join(classes) + " |"
-    rows = [head, "|" + "---|" * (len(classes) + 3)]
+    rows = [f"classifier v{', v'.join(versions)}", "",
+            head, "|" + "---|" * (len(classes) + 3)]
     for arm, _ in ARMS:
         now = summary_of(commit, f"{arm}{suffix}")
         if now is None:

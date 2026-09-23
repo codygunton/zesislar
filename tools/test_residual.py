@@ -230,6 +230,28 @@ class Classify(unittest.TestCase):
         self.assertEqual(prediction.pred_class, "unknown")
         self.assertIn("atomized", prediction.detail["shape"])
 
+    def test_a_return_wand_is_class_nine(self):
+        prediction = classify.classify(
+            " _ : P\n"
+            " --------------------------------------∗\n"
+            " (encoderBooleanClosedReturn value sp ret tail\n"
+            "  -∗ encoderBooleanExactPost value sp ret tail P) ∗ True")
+        self.assertEqual(prediction.pred_class, "C9")
+        self.assertEqual(prediction.detail["continuation"],
+                         "encoderBooleanExactPost")
+
+    def test_a_return_wand_over_a_folded_context_is_still_class_nine(self):
+        self.assertEqual(self.predict(
+            " _ : exactTailWithdrawalsBranchZeroEntry args witness P\n"
+            " --------------------------------------∗\n"
+            ' (reg_col zesu_ram_sys_regs ∗ "x2" ↦ᵣ RVal_Bits sp ∗ True'
+            " -∗ writeSuccessSuffixAt158f0 P) ∗ True"), "C9")
+
+    def test_a_wand_without_the_true_tail_is_not_class_nine(self):
+        self.assertNotEqual(self.predict(
+            " --------------------------------------∗\n"
+            " (A -∗ writeSuccessSuffixAt158f0 P) ∗ B"), "C9")
+
     def test_an_instruction_lookup_is_class_seven(self):
         prediction = classify.classify(
             " _ : writeSuccessCompleteNativeCode\n"

@@ -22,14 +22,24 @@ from pathlib import Path
 RESULTS = Path("ZesuSsz/Evidence/residuals/benchmark")
 
 
-def rows_of(name: str) -> dict[str, dict]:
+def arm_of(name: str) -> dict:
     path = Path(name)
     if not path.exists():
         path = RESULTS / (name if name.endswith(".json") else f"{name}.json")
     if not path.exists():
         raise SystemExit(f"no arm on record at {path}")
+    return json.loads(path.read_text())
+
+
+def rows_of(name: str) -> dict[str, dict]:
     return {f"{row['module']}:{row['lemma']}": row
-            for row in json.loads(path.read_text())["rows"]}
+            for row in arm_of(name)["rows"]}
+
+
+def classifier_of(name: str) -> str:
+    """The classifier version an arm was classified with; 1 before it was
+    recorded."""
+    return arm_of(name).get("classifier", "1")
 
 
 def main() -> int:
@@ -49,9 +59,13 @@ def main() -> int:
     only_before = sorted(set(before) - set(after))
     only_after = sorted(set(after) - set(before))
 
+    versions = (classifier_of(arguments.before), classifier_of(arguments.after))
     print(f"{arguments.before} -> {arguments.after}: "
           f"{len(shared)} lemmas in both, {len(only_before)} dropped, "
-          f"{len(only_after)} added")
+          f"{len(only_after)} added; classifier v{versions[0]} -> v{versions[1]}")
+    if versions[0] != versions[1] and "pred_class" in fields:
+        print("warning: the arms were classified with different versions; "
+              "reclassify one with tools/residual/reclassify.py")
     changed = 0
     for field in fields:
         moved = [key for key in shared

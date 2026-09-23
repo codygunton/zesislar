@@ -9,7 +9,15 @@ Classes follow the table of section 9, which replaces the classes of
 compliance plan 7.6.1:
 
   C1 trace witness, C2 memory (the old C2 and C5 merged), C3 sealed unfold,
-  C4 pure arithmetic, C6 folded hypothesis, C7 code bundle, C8 bare match.
+  C4 pure arithmetic, C6 folded hypothesis, C7 code bundle, C8 bare match,
+  C9 return wand.
+
+Version 2 (2026-09-23) adds C9: the conclusion is `(R -∗ K) ∗ True`, the
+callee has returned and the caller must show its continuation `K` from
+the return resources `R` (ticket T5). It is read before every class but
+C7 and C8, because the shape is structural: the three version-1 C6 goals
+and the one C3 goal of this shape stall at the return, not at their
+folded context. Every table prints the version it was classified with.
 
 Iteration 1 keyed on the head of the conclusion alone and left 46 percent
 unknown. The cause of a residual usually sits in the context, so the rules
@@ -88,9 +96,14 @@ CODE_BUNDLE = re.compile(r"writeSuccessCompleteNativeCode|spec_instr_resources"
 # C8 bare match: a case split on a spec field, left to the proof.
 CASE_SPLIT = re.compile(r"^match\b")
 
+# C9 return wand: `(R -∗ K) ∗ True`, with any head for `K`.
+TRUE_TAIL = re.compile(r"^\s*∗\s*True\s*$")
+
+VERSION = "2"
+
 OPENERS = "([{⌜⎡"
 CLOSERS = ")]}⌝⎤"
-CLASSES = ["C1", "C2", "C3", "C4", "C6", "C7", "C8"]
+CLASSES = ["C1", "C2", "C3", "C4", "C6", "C7", "C8", "C9"]
 
 
 @dataclass
@@ -141,6 +154,37 @@ def separated(text: str) -> bool:
             return True
         index += 1
     return False
+
+
+def return_wand(goal: str) -> str | None:
+    """The head of `K` when the goal is `(R -∗ K) ∗ True`, else None."""
+    text = goal.strip()
+    if not text.startswith("("):
+        return None
+    depth, close = 0, None
+    for index, character in enumerate(text):
+        if character in OPENERS:
+            depth += 1
+        elif character in CLOSERS:
+            depth -= 1
+            if depth == 0:
+                close = index
+                break
+    if close is None or not TRUE_TAIL.match(text[close + 1:]):
+        return None
+    inner = text[1:close]
+    # The last wand at the top level of the parenthesis splits R from K.
+    depth, split = 0, None
+    for index, character in enumerate(inner):
+        if character in OPENERS:
+            depth += 1
+        elif character in CLOSERS:
+            depth = max(0, depth - 1)
+        elif depth == 0 and inner.startswith("-∗", index):
+            split = index
+    if split is None:
+        return None
+    return head_constant(inner[split + 2:].strip()) or "?"
 
 
 def find_kind(goal: str) -> str | None:
@@ -247,6 +291,11 @@ def classify_goal(block: str) -> Prediction:
 
     if CASE_SPLIT.match(goal.strip()):
         return Prediction("C8", detail)
+
+    continuation = return_wand(goal)
+    if continuation:
+        detail["continuation"] = continuation
+        return Prediction("C9", detail)
 
     if binder and TRACE_BINDER.search(binder) and TRACE_EVIDENCE.search(goal):
         return Prediction("C1", detail)

@@ -20,7 +20,11 @@ from __future__ import annotations
 import argparse
 import json
 from collections import defaultdict
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "residual"))
+from classify import VERSION as CLASSIFIER  # noqa: E402
 
 EVIDENCE = Path("ZesuSsz/Evidence/det")
 MERGED_SET = EVIDENCE / "boundary_set.txt"
@@ -124,6 +128,14 @@ def class_table(by_lemma: dict[str, dict], names: list[str]) -> list[str]:
     return lines
 
 
+def classifier_line(by_lemma: dict[str, dict], names: list[str]) -> str:
+    """The classifier versions the records were classified with."""
+    versions = sorted({str(by_lemma[lemma].get("classifier", "1"))
+                       for lemma in names if lemma in by_lemma})
+    return (f"classifier v{', v'.join(versions) or '-'} (records); "
+            f"current v{CLASSIFIER}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence", type=Path, default=EVIDENCE)
@@ -133,7 +145,8 @@ def main() -> int:
     names = segments()
     text = "\n".join(["## The bundle's ten rows", ""] + row_table()
                      + ["", "## Segments", ""] + segment_table(by_lemma, names)
-                     + ["", "## Residual classes still blocking a segment", ""]
+                     + ["", "## Residual classes still blocking a segment", "",
+                        classifier_line(by_lemma, names), ""]
                      + class_table(by_lemma, names) + [""])
     print(text)
     if arguments.out:

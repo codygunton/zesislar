@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import corpus  # noqa: E402
 from capture import capture  # noqa: E402
-from classify import classify  # noqa: E402
+from classify import VERSION as CLASSIFIER, classify  # noqa: E402
 from goals import conclusion_text  # noqa: E402
 from signature import signature  # noqa: E402
 from tiers import rule_15_modules  # noqa: E402
@@ -214,8 +214,10 @@ def summary(rows: list[dict]) -> dict:
             "median_seconds": round(statistics.median(seconds), 2) if seconds else 0}
 
 
-def delta(now: dict, before: dict | None) -> list[str]:
-    lines = [f"probed {now['probed']}  closed "
+def delta(now: dict, before: dict | None, classifier: str = CLASSIFIER,
+          before_classifier: str | None = None) -> list[str]:
+    lines = [f"classifier v{classifier}",
+             f"probed {now['probed']}  closed "
              f"{100 * now['closed_fraction']:.1f}%  median "
              f"{now['median_seconds']:.1f} s",
              "outcomes " + json.dumps(now["outcomes"], sort_keys=True),
@@ -223,6 +225,9 @@ def delta(now: dict, before: dict | None) -> list[str]:
     if before is None:
         lines.append("no earlier run to compare")
         return lines
+    if before_classifier != classifier:
+        lines.append(f"(earlier run classified with v{before_classifier}; "
+                     "class deltas mix classifier versions)")
     lines.append(f"delta closed {100 * (now['closed_fraction'] - before['closed_fraction']):+.1f} "
                  f"points; median seconds "
                  f"{now['median_seconds'] - before['median_seconds']:+.1f}")
@@ -283,17 +288,19 @@ def main() -> int:
                    tuple(arguments.imports))
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
-    result = {"automation": commit, "summary": summary(rows), "rows": rows}
+    result = {"automation": commit, "summary": summary(rows), "rows": rows,
+              "classifier": CLASSIFIER}
     stem = commit[:12] + (f"-{arguments.name}" if arguments.name else "")
     earlier = sorted(RESULT_DIR.glob(f"*{arguments.name}.json")
                      if arguments.name else
                      [path for path in RESULT_DIR.glob("*.json")
                       if "-" not in path.stem])
-    before = None
+    before, before_classifier = None, None
     if earlier:
-        before = json.loads(earlier[-1].read_text())["summary"]
+        stored = json.loads(earlier[-1].read_text())
+        before, before_classifier = stored["summary"], stored.get("classifier", "1")
     (RESULT_DIR / f"{stem}.json").write_text(json.dumps(result))
-    for line in delta(result["summary"], before):
+    for line in delta(result["summary"], before, CLASSIFIER, before_classifier):
         print(line)
     return 0
 
