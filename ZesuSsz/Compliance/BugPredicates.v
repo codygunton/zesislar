@@ -167,12 +167,19 @@ Definition zesuBugLayout (input : ByteString) : option ZesuBugLayout :=
                               bugVersionedHashBytes :=
                                 requestsStart - hashesStart;
                               bugWithdrawalBytes :=
-                                match zesuReadU32At bytes (payloadStart + 508),
-                                      zesuReadU32At bytes (payloadStart + 528) with
-                                | Some withdrawalsOffset, Some accessListOffset =>
-                                    Some (Z.to_nat accessListOffset -
-                                      Z.to_nat withdrawalsOffset)%nat
-                                | _, _ => None
+                                match zesuReadU32At bytes (payloadStart + 508) with
+                                | Some withdrawalsOffset =>
+                                    if Z.eqb payloadFixedLength 528 then
+                                      Some (hashesStart - payloadStart -
+                                        Z.to_nat withdrawalsOffset)%nat
+                                    else
+                                      match zesuReadU32At bytes (payloadStart + 528) with
+                                      | Some accessListOffset =>
+                                          Some (Z.to_nat accessListOffset -
+                                            Z.to_nat withdrawalsOffset)%nat
+                                      | None => None
+                                      end
+                                | None => None
                                 end;
                               bugTransactionCount :=
                                 match zesuReadU32At bytes (payloadStart + 508) with
@@ -407,6 +414,33 @@ Definition witnessHeaderCountWitnessBytes : ByteString :=
 Definition witnessHeaderCountWitnessInput : ByteString :=
   zesuCountWitnessInput [] [] witnessHeaderCountWitnessBytes.
 
+(** The V3 extra-data bytes look like a V4 access-list offset, but V3 uses
+    the end of the payload as the withdrawal end. *)
+Definition v3WithdrawalSentinelPayload : ByteString :=
+  repeat 0 436 ++ zesuEncodeLe 4 528 ++ repeat 0 64 ++
+  zesuEncodeLe 4 532 ++ zesuEncodeLe 4 532 ++ repeat 0 16 ++
+  zesuEncodeLe 4 1280.
+
+Definition v3WithdrawalSentinelInput : ByteString :=
+  let payload := v3WithdrawalSentinelPayload in
+  let request :=
+    zesuEncodeLe 4 44 ++
+    zesuEncodeLe 4 (Z.of_nat (44 + length payload)%nat) ++ repeat 0 32 ++
+    zesuEncodeLe 4 (Z.of_nat (76 + length payload)%nat) ++
+    payload ++ repeat 0 32 ++ concat (repeat (zesuEncodeLe 4 20) 5) in
+  let witness :=
+    zesuEncodeLe 4 12 ++ zesuEncodeLe 4 12 ++ zesuEncodeLe 4 12 in
+  let witnessOffset := (16 + length request)%nat in
+  let chainOffset := (witnessOffset + length witness)%nat in
+  [15; 1] ++ zesuEncodeLe 4 16 ++
+  zesuEncodeLe 4 (Z.of_nat witnessOffset) ++
+  zesuEncodeLe 4 (Z.of_nat chainOffset) ++
+  zesuEncodeLe 4 (Z.of_nat (chainOffset + 40)%nat) ++
+  request ++ witness ++
+  zesuEncodeLe 8 1 ++ zesuEncodeLe 4 12 ++
+  zesuEncodeLe 4 4 ++ zesuEncodeLe 4 8 ++ zesuEncodeLe 4 16 ++
+  zesuEncodeLe 8 0 ++ zesuEncodeLe 8 0.
+
 Lemma withdrawalCountWitnessSpan :
   (16 * 44 < length (repeat 0 (17 * 44)%nat))%nat.
 Proof. rewrite repeat_length. lia. Qed.
@@ -464,6 +498,24 @@ Lemma witnessHeaderCountWitnessLayout :
     zesuBugLayout witnessHeaderCountWitnessInput = Some layout /\
     bugWitnessHeaderCount layout = Some 257.
 Proof. native_compute. eexists; split; reflexivity. Qed.
+
+Lemma v3WithdrawalSentinelLayout :
+  exists layout,
+    zesuBugLayout v3WithdrawalSentinelInput = Some layout /\
+    bugWithdrawalBytes layout = Some 0%nat.
+Proof. native_compute. eexists; split; reflexivity. Qed.
+
+Lemma v3WithdrawalSentinelRejectsCount decoded :
+  ~ withdrawalCountApplies v3WithdrawalSentinelInput
+      (DecodeSuccess decoded).
+Proof.
+  unfold withdrawalCountApplies.
+  destruct v3WithdrawalSentinelLayout as [layout [Hlayout Hbytes]].
+  rewrite Hlayout.
+  intros [bytes [Hcount [_ Hlarge]]].
+  rewrite Hbytes in Hcount.
+  inversion Hcount; lia.
+Qed.
 
 Lemma transactionCountWitnessPayloadOffsets :
   zesuReadU32At transactionCountWitnessInput 566 = Some 540 /\
