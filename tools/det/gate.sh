@@ -74,7 +74,7 @@ started=$(date -Is)
 echo "gate $target with $jobs jobs; $($guard report)"
 mkdir -p "$(dirname "$log")"
 set +e
-ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate $guard batch "gate-${target}" -- \
+ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
   make "$target" AGENT_BUILD_DIR="$root/_build/agents/infra" FAST_JOBS="$jobs" \
   AGENT_JOBS="$jobs" > "$log" 2>&1
 status=$?
