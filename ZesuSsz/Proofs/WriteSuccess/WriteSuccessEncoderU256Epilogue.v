@@ -19,24 +19,4 @@ Lemma zesu_encoder_u256_epilogue `{!islaG Sigma} `{!threadG} :
   instr 0x15cdc (Some IslaTraces.write_success_08.a15cdc.a15cdc) -∗
   instr 0x15ce0 (Some IslaTraces.write_success_08.a15ce0.a15ce0) -∗
   instr_body 0x15cd8 zesuEncoderU256AfterOutputSpec.
-Proof.
-  iStartProof.
-  iIntros "#H28 #H2c #H30".
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try iFrame.
-  all: try rewrite bv_sign_extend_idemp.
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: try liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try iFrame.
-  all: try rewrite bv_sign_extend_idemp.
-  all: try bv_solve.
-  all: try lia.
-  all: simpl.
-Qed.
+Proof. move => *. zesu_block. Qed.

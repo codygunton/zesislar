@@ -172,15 +172,7 @@ Lemma encoder_u128_exact_suffix_correct `{!islaG Sigma} `{!threadG}
   ([∗ list] instruction ∈ IslaTraces.write_success_127.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d04 (encoderU128ExactSuffixSpec low high sp ret tail P).
-Proof.
-  move => * /=. iStartProof. liARun.
-  Unshelve. all: prepare_sidecond; try assumption; try bv_solve; try lia.
-  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try bv_solve.
-  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
-  all: lazymatch goal with |- ?G => fail "u128 suffix residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions writeSuccessPrivateEncodeU64.
 Print Assumptions writeSuccessU128WordsPayload_encoder.

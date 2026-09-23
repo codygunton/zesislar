@@ -202,8 +202,4 @@ Lemma write_success_transactions_150f0_carrier_scratch_unpack
   (bv_unsigned sp + 1680) ↦ₘ? 64 ∗
   (bv_unsigned sp + 1744) ↦ₘ writeSuccessTransactionByte transaction 264 ∗
   (bv_unsigned sp + 1745) ↦ₘ? 151.
-Proof.
-  iIntros "Hscratch".
-  iEval (rewrite /writeSuccessTransactions150f0CarrierScratch) in "Hscratch".
-  iExact "Hscratch".
-Qed.
+Proof. move => *. zesu_block. Qed.

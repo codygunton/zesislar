@@ -44,6 +44,7 @@ PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
 GENERATED_DIR = Path("ZesuSsz/Evidence/det/wp5/generated")
 SCRATCH = Path("tools/coqc_scratch.sh")
 REQUIRED = "Require Import ZesuSsz.Automation.All."
+V2_IMPORT = "Require Import ZesuSsz.Automation.Sets.v2."
 
 
 OPENER = ("Require ", "From ", "Import ", "Open Scope")
@@ -70,6 +71,8 @@ def source_imports(lines: list[str]) -> list[str]:
             current = []
     if REQUIRED not in wanted:
         wanted.insert(0, REQUIRED)
+    if V2_IMPORT not in wanted:
+        wanted.append(V2_IMPORT)
     return wanted
 
 

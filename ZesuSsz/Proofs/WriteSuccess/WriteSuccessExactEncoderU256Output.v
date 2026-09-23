@@ -16,10 +16,6 @@ Lemma encoder_u256_exact_output_correct `{!islaG Sigma} `{!threadG}
     (encoderU256ExactFrame w0 w1 w2 w3 sp ret tail P)) -∗
   instr_body 0x15cd8 (encoderU256ExactSuffixSpec w0 w1 w2 w3 sp ret tail P) -∗
   instr_body 0x15cc8 (encoderU256ExactAtOutputSpec w0 w1 w2 w3 sp ret tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: lazymatch goal with |- ?G => fail "u256 output residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions encoder_u256_exact_output_correct.

@@ -17,9 +17,4 @@ Lemma write_success_suffix_hashes_15750_nonzero_framed
   instr_pre 0x15750
     (writeSuccessSuffixHashes1574cCallPost sp value tail ∗
      "x8" ↦ᵣ RVal_Bits value ∗ Q).
-Proof.
-  iIntros "Hbody Hcall H8 HQ".
-  iApply (write_success_suffix_hashes_15750_nonzero_call_continuation
-    sp value tail Q Hvalue with "Hbody").
-  iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.

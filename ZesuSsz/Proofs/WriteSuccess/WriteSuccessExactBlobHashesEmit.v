@@ -57,9 +57,5 @@ Lemma blob_emit_correct `{!islaG Sigma} `{!threadG}
     (BV 64 0x15558) key tail (blobEmitFrame sp key P)) -∗
   instr_body 0x15558 (blobEmitPost sp key tail P) -∗
   instr_body 0x15538 (blobEmitEntry sp old_ra old5 old_size a b c d key tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: try (unfold blobEmitPost; reflexivity).
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions blob_emit_correct.

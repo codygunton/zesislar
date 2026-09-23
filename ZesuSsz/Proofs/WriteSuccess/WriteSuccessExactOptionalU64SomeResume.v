@@ -47,17 +47,7 @@ Lemma optional_u64_some_exact_resume_handoff `{!islaG Sigma} `{!threadG}
     (optionalU64SomeExactIntEntry value sp ret old_x5 old_x8 old_x11 tail P) -∗
   instr_body 0x15d10 (optionalU64SomeExactSuffixPost value sp ret old_x5 old_x8
     old_x11 (optionalU64SomeExactResumeContext value sp ret old_x8 tail P)).
-Proof.
-  iStartProof. iIntros "Hcallee".
-  iApply (instr_pre_wand 0x15d10 0x15d10 false false with "Hcallee");
-    [done | done |].
-  iIntros "Hentry". iDestruct "Hentry" as
-    "(Hsys & H1 & H2 & H5 & H6 & H8 & H10 & H11 & Hs0 & Hra & Hcontext & _)".
-  iDestruct "Hcontext" as
-    "(Hmmio & Htrace & %Halign & %Hmin & %Hmax & %Hret0 & %Hret1 & %Hret2 &
-      HP & Hnext & _)".
-  zesu_run.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma optional_u64_some_exact_resume `{!islaG Sigma} `{!threadG}
     (value sp ret old_x5 old_x6 old_x8 old_x10 old_x11 : bv 64)

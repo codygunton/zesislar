@@ -201,7 +201,8 @@ def spec_source(spec: dict, rule: str = "",
 
 def probe_source(module: Path, lemma: str, exit_address: str,
                  driver: list[str], rule: str = "",
-                 alternatives: tuple[str, ...] = ()) -> str:
+                 alternatives: tuple[str, ...] = (),
+                 extra_imports: tuple[str, ...] = ()) -> str:
     proof = find_proof(module, lemma)
     lines = module.read_text().split("\n")
     statement = with_standard_code(statement_without(
@@ -233,7 +234,9 @@ def probe_source(module: Path, lemma: str, exit_address: str,
     source = (["Set Printing Width 200.", "Require Import isla.isla.",
                "From iris.proofmode Require Import environments.",
                "From IslaTraces.write_success_blocks Require Import Index."]
-              + lines[:proof.declaration_line] + preamble + statement
+              + lines[:proof.declaration_line]
+              + [f"Require Import {name}." for name in extra_imports]
+              + preamble + statement
               + ["Proof."]
               + body + probes.END_MARKER
               + [f"End {name}." for name in reversed(proof.open_blocks)] + [""])
@@ -256,10 +259,11 @@ def run(source: str, name: str, build_dir: Path, seconds: int) -> str:
 
 def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
           driver: list[str], seconds: int, rule: str = "",
-          alternatives: tuple[str, ...] = ()) -> dict:
+          alternatives: tuple[str, ...] = (),
+          extra_imports: tuple[str, ...] = ()) -> dict:
     started = time.monotonic()
     output = run(probe_source(module, lemma, exit_address, driver, rule,
-                              alternatives),
+                              alternatives, extra_imports),
                  f"{module.stem}__{lemma}", build_dir, seconds)
     text = probes.marked(output)
     record = {"module": module.name, "lemma": lemma, "exit": exit_address,

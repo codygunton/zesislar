@@ -15,27 +15,22 @@
 #   gate-jobs [TARGET]   the concurrency a gate may use: check-fast 48,
 #                        check-iris (and any other gate) 24
 #   wait                 block until one more job may start
-#   watch                the polling loop; kills the youngest scope at 90 %
+#   watch                the polling loop; kills the youngest scope at 200 GiB
 #   scope NAME -- CMD    run CMD in its own 6 GiB scope, registered
-#   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
+#   batch NAME -- CMD    run CMD in the batch scope, 150 GiB, swap off
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   report               one line of guard state and Prometheus figures
 #   window ARGS          `tools/det/prom.py window ARGS`
 #
-# Memory budget (user rule 2026-09-22 21:00): 48 GiB of the 251 stay free
-# for other users. In absolute terms, machine-wide used memory: launch
-# below 150 GiB, hold at 180, kill the youngest job scope at 200. Fences:
-# batch scope 150G, gate scope 120G, each `coqc` 6G, swap off.
-#
 # A job may start when all of these hold, checked machine-wide:
-#   memory used below 150 GiB;
+#   memory used below 150 GiB (hold at 180 GiB; kill at 200 GiB);
 #   at most 48 `coqc` processes, counted for every agent, not only ours;
 #   load5 at most 80 and at most 16 blocked processes;
 #   no gate holds /tmp/zesu-gate.lock.
 # While an arm populates its build directory, or while a disk is more than
-# 80 % busy, launches also keep a ramp of two per second across guards;
-# otherwise they fill the width as slots free up.
+# 80 % busy, launches also keep a ramp of two per second across guards
+# (plan section 4.3, amended); otherwise they fill the width at once.
 
 set -uo pipefail
 
@@ -49,21 +44,20 @@ MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-6}
 # is available.
 JOB_GIB=${ZESU_JOB_GIB:-3}
 BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
-GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
-LAUNCH_GIB=${ZESU_LAUNCH_GIB:-150}
-HOLD_GIB=${ZESU_HOLD_GIB:-180}
-KILL_GIB=${ZESU_KILL_GIB:-200}
-DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
-# An arm's build writes a marker `<prefix>.<pid>` while it populates its
-# build directory from the Dune cache; the ramp applies while one is live.
-POPULATING_PREFIX=${ZESU_POPULATING_PREFIX:-/tmp/zesu-populating}
+LAUNCH_USED_GIB=${ZESU_LAUNCH_USED_GIB:-150}
+HOLD_USED_GIB=${ZESU_HOLD_USED_GIB:-180}
+KILL_USED_GIB=${ZESU_KILL_USED_GIB:-200}
 MAX_COQC=${ZESU_MAX_COQC:-48}
 MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
 # Two launches per second, shared by every guard of every agent.
 RAMP_MS=${ZESU_RAMP_MS:-500}
 RAMP_FILE=${ZESU_RAMP_FILE:-/tmp/zesu-guard-ramp}
+DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
+# An arm's build writes a marker `<prefix>.<pid>` while it populates its
+# build directory from the Dune cache; the ramp applies while one is live.
+POPULATING_PREFIX=${ZESU_POPULATING_PREFIX:-/tmp/zesu-populating}
 GATE_LOCK=${ZESU_GATE_LOCK:-/tmp/zesu-gate.lock}
 FAST_MAX_JOBS=${ZESU_FAST_MAX_JOBS:-48}
 PROM=$(dirname "$0")/det/prom.py
@@ -85,11 +79,9 @@ memory() { free -b | awk '/^Mem:/ {print $2, $3, $7}'; }
 
 # Used means total minus available, the figure Prometheus reports
 # (`MemTotal - MemAvailable`), so the thresholds and the reports agree.
-used_gib() {
-  local total available
-  read -r total _ available < <(memory)
-  echo $(( (total - available) / GIB ))
-}
+used_bytes() { local total available; read -r total _ available < <(memory); echo $(( total - available )); }
+
+used_gib() { echo $(( $(used_bytes) / GIB )); }
 
 # `pgrep -c` prints 0 and exits non-zero when nothing matches, so a
 # `|| echo 0` fallback would print the count twice. `pgrep` sees every
@@ -217,12 +209,11 @@ ramp() {
   exec 9>&-
 }
 
-# jobs = min(MAX_JOBS, floor((hold line - used) / job size)), at least 1:
-# the jobs a batch starts now must fit under the 180 GiB hold, so the
-# 48 GiB reserved for other users is never reached by a full batch.
+# jobs = min(MAX_JOBS, floor(0.8 * MemAvailable / measured job cost)), at least 1.
 guard_jobs() {
-  local limit
-  limit=$(( (HOLD_GIB - $(used_gib)) / JOB_GIB ))
+  local total used available limit
+  read -r total used available < <(memory)
+  limit=$(( (available * 8 / 10) / (JOB_GIB * GIB) ))
   (( limit < 1 )) && limit=1
   (( limit > MAX_JOBS )) && limit=$MAX_JOBS
   echo "$limit"
@@ -247,7 +238,6 @@ guard_jobs() {
 # `check-fast` builds no proof module and runs at 48 (plan section 4).
 # The memory formula stays as the ceiling for both.
 GATE_MAX_JOBS=${ZESU_GATE_MAX_JOBS:-24}
-
 gate_jobs() {
   local target=${1:-check-iris} cap allowed
   cap=$GATE_MAX_JOBS
@@ -289,10 +279,10 @@ kill_youngest() {
 # are not held by its own lock.
 hold_reason() {
   local used coqc load blocked holder
-  used=$(used_gib); coqc=$(coqc_count)
+  used=$(used_bytes); coqc=$(coqc_count)
   load=$(load_five); blocked=$(blocked_count)
-  if (( used >= HOLD_GIB )); then echo "memory ${used} GiB, at the ${HOLD_GIB} GiB hold"
-  elif (( used >= LAUNCH_GIB )); then echo "memory ${used} GiB, launch line ${LAUNCH_GIB}"
+  if (( used >= HOLD_USED_GIB * GIB )); then echo "memory hold $(( used / GIB )) GiB"
+  elif (( used >= LAUNCH_USED_GIB * GIB )); then echo "memory launch $(( used / GIB )) GiB"
   elif (( coqc >= MAX_COQC )); then echo "coqc $coqc machine-wide"
   elif (( load > MAX_LOAD )); then echo "load5 $load"
   elif (( blocked > MAX_BLOCKED )); then echo "blocked $blocked"
@@ -306,7 +296,7 @@ hold_reason() {
 guard_wait() {
   local reason held="" since
   while :; do
-    (( $(used_gib) >= KILL_GIB )) && kill_youngest > /dev/null
+    (( $(used_bytes) >= KILL_USED_GIB * GIB )) && kill_youngest > /dev/null
     reason=$(hold_reason)
     if [ -z "$reason" ]; then
       [ -n "$held" ] && note "RESUME after $(( $(date +%s) - since )) s: $held"
@@ -330,15 +320,31 @@ record_peak() {
 }
 
 guard_watch() {
-  local used held=""
+  local used
   note "watch start: total $(free -g | awk '/^Mem:/{print $2}') GiB"
   while :; do
-    used=$(used_gib)
+    used=$(used_bytes)
     record_peak
-    if (( used >= HOLD_GIB )) && [ -z "$held" ]; then
-      note "HOLD memory $used GiB at the $HOLD_GIB GiB hold"; held=1
-    elif (( used < LAUNCH_GIB )); then held=""; fi
-    (( used >= KILL_GIB )) && kill_youngest > /dev/null
+    (( used >= KILL_USED_GIB * GIB )) && kill_youngest > /dev/null
+    sleep "$POLL_SECONDS"
+  done
+}
+
+# A direct scope or batch call must obey the launch limit too. Batch runners
+# may also call `wait` for load, blocked-process, and gate-lock checks.
+wait_for_memory_budget() {
+  local used held=0
+  while :; do
+    used=$(used_bytes)
+    (( used >= KILL_USED_GIB * GIB )) && kill_youngest > /dev/null
+    if (( used < LAUNCH_USED_GIB * GIB )); then
+      (( held )) && note "RESUME memory launch at $(( used / GIB )) GiB"
+      return 0
+    fi
+    if (( ! held )); then
+      note "HOLD memory launch at $(( used / GIB )) GiB"
+      held=1
+    fi
     sleep "$POLL_SECONDS"
   done
 }
@@ -346,6 +352,7 @@ guard_watch() {
 run_scope() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  wait_for_memory_budget
   local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
   echo "$unit.scope" >> "$REGISTRY"
   exec systemd-run --user --scope --quiet --unit="$unit" \
@@ -362,12 +369,11 @@ run_batch() {
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
     exec "$@"
   fi
+  wait_for_memory_budget
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
   echo "$unit.scope" >> "$REGISTRY"
-  local limit=$BATCH_LIMIT
-  [ "${ZESU_IO:-batch}" = gate ] && limit=$GATE_LIMIT
   exec env ZESU_IN_BATCH=1 systemd-run --user --scope --quiet --unit="$unit" \
-    -p "MemoryMax=${limit}" -p MemorySwapMax=0 -- $(io_class) "$@"
+    -p "MemoryMax=${BATCH_LIMIT}" -p MemorySwapMax=0 -- $(io_class) "$@"
 }
 
 # Batch work runs in the idle IO class so that populating a build
@@ -384,8 +390,8 @@ report() {
   local peak holder
   peak=$(cat "$PEAK" 2>/dev/null); peak=${peak:-0}
   holder=$(lock_live 2>/dev/null) || holder=none
-  printf 'guard: used %s GiB (launch <%s, hold %s, kill %s); coqc %s machine-wide; load5 %s; blocked %s; jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
-    "$(used_gib)" "$LAUNCH_GIB" "$HOLD_GIB" "$KILL_GIB" "$(coqc_count)" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
+  printf 'guard: coqc %s machine-wide; load5 %s; blocked %s; jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
+    "$(coqc_count)" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
     $(( peak / GIB )) "$holder" \
     "$(grep -c ' HOLD ' "$LOG" 2>/dev/null | head -1)" \
     "$(grep -c ' KILL ' "$LOG" 2>/dev/null | head -1)"

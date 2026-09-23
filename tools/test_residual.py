@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "residual"))
 
@@ -419,6 +420,35 @@ class Reprobe(unittest.TestCase):
         summary = benchmark.summary(result)
         self.assertEqual((summary["reprobed"], summary["reprobe_changed"]),
                          (1, 1))
+
+
+class RelativeArmRecipe(unittest.TestCase):
+    def test_concurrent_probes_use_the_immutable_tree_cwd(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "arm"
+            proof_dir = root / benchmark.PROOF_DIR
+            proof_dir.mkdir(parents=True)
+            for name in ("First.v", "Second.v"):
+                (proof_dir / name).write_text(
+                    "Lemma test_lemma : True.\nProof. done. Qed.\n")
+            recipe = root / "_build" / "default" / "trace.csexp"
+            recipe.parent.mkdir(parents=True)
+            recipe.write_text("immutable-tree\n")
+            scratch = root / "tools" / "coqc_scratch.sh"
+            scratch.parent.mkdir()
+            scratch.write_text(
+                "#!/bin/sh\n"
+                "test \"$(cat _build/default/trace.csexp)\" = immutable-tree || exit 9\n"
+                "printf 'RESIDUAL-BEGIN\\nNo more goals.\\nRESIDUAL-END\\n'\n")
+            caller_cwd = Path.cwd()
+            with patch.object(benchmark, "wait_for_room"):
+                rows = benchmark.measure(
+                    root, [("First.v", "test_lemma"),
+                           ("Second.v", "test_lemma")],
+                    jobs=2, seconds=5)
+            self.assertEqual([row["outcome"] for row in rows],
+                             ["closed", "closed"])
+            self.assertEqual(Path.cwd(), caller_cwd)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,11 @@
 """Tests for the determinism branch's segment tools."""
 
 import sys
+import json
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import importlib.util
 
@@ -25,6 +28,8 @@ def _load(name: str):
 gen_boundary = _load("gen_boundary")
 report = _load("report")
 infer_trace = _load("infer_trace")
+call_sites = _load("call_sites")
+segment = _load("segment")
 
 
 GOAL_BLOCK = """
@@ -148,6 +153,53 @@ class DefiningLookup(unittest.TestCase):
     def test_no_hypothesis_is_not_a_guess(self):
         self.assertIsNone(infer_trace.defining_lookup(self.CONTEXT, "other"))
         self.assertIsNone(infer_trace.defining_lookup("", "vmem"))
+
+
+class CallSites(unittest.TestCase):
+    def test_checked_in_index_supplies_calls_without_ignored_dumps(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "missing"
+            lines, modules, unknown = call_sites.premises(
+                0x15744, 0x15754, dumps=missing)
+        self.assertEqual(lines,
+                         ["  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗"])
+        self.assertEqual(modules, ["ZesuSsz.Proofs.WriteSuccess.Interfaces"])
+        self.assertEqual(unknown, [])
+
+    def test_existing_dump_takes_precedence_over_index(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "block_1.dump").write_text(
+                "   1574c: 5c8080e7 jalr 1480(ra) # 15d10 <encoder_int>\n")
+            (root / "index.json").write_text(json.dumps({"calls": []}))
+            found = call_sites.call_sites(root, root / "index.json")
+        self.assertEqual(found[0x1574c], (0x15d10, "encoder_int"))
+
+
+class ExistingSegment(unittest.TestCase):
+    def test_exact_range_finds_the_suffix_module(self):
+        path, lemma = segment.existing_segment(0x15744, 0x15754)
+        self.assertEqual(path.name, "WriteSuccessExactSuffixEntrySegment.v")
+        self.assertEqual(lemma, "write_success_exact_suffix_entry_segment")
+        self.assertIsNone(segment.existing_segment(0x15748, 0x15754))
+
+    def test_generation_reports_probe_outcome_and_class(self):
+        path, lemma = segment.existing_segment(0x15744, 0x15754)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = {"seconds": 3.8, "outcome": "stalled",
+                      "pred_class": "C3", "signature": "subsume (…) (…)"}
+            with patch.object(segment, "infer", return_value=result) as probe:
+                record = segment.generate_existing(
+                    path, lemma, 0x15754, root / "generated",
+                    root / "probe.jsonl", root / "build", 30)
+            source = Path(record["generated"]).read_text()
+            self.assertIn("Require Import ZesuSsz.Automation.Sets.v2.", source)
+            self.assertEqual(probe.call_args.kwargs["extra_imports"],
+                             ("ZesuSsz.Automation.Sets.v2",))
+            self.assertIn("Proof. move => *. zesu_block. Qed.", source)
+            self.assertEqual(json.loads((root / "probe.jsonl").read_text())
+                             ["pred_class"], "C3")
 
 
 if __name__ == "__main__":

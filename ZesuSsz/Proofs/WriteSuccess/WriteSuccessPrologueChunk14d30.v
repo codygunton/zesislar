@@ -19,15 +19,4 @@ Lemma write_success_prologue_chunk_14d30 `{!islaG Sigma} `{!threadG}
   instr_body 0x14d30
     (write_success_prologue_entry sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7
        s8 s9 s10 s11 P ∗ Q).
-Proof.
-  move => * /=.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try (bv_simplify_arith H1).
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: try exact inhabitant.
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

@@ -43,15 +43,7 @@ Lemma write_output_correct `{!islaG Sigma} `{!threadG}
   instr_body 0x10190
     (writeOutputEntry data size ret P ∗
      instr_pre (bv_unsigned ret) (writeOutputExit data size ret P) ∗ True).
-Proof.
-  move => * /=.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeOutputTraceSpec `{!islaG Sigma} `{!threadG}
     (data size ret : bv 64) (payload : list (bv 8))

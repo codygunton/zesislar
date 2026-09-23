@@ -53,12 +53,7 @@ Lemma write_success_transactions_withdrawals_payload_combine
     processed remaining bytes prefix suffix tail -∗
   writeSuccessTransactionsWithdrawalsPayload P sp pointer base total processed
     remaining bytes prefix suffix tail.
-Proof.
-  iIntros "Hpointer Hcount Hresources".
-  rewrite /writeSuccessTransactionsWithdrawalsResources
-    /writeSuccessTransactionsWithdrawalsPayload.
-  iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_withdrawals_value_word_11
     (values : list (bv 64)) :

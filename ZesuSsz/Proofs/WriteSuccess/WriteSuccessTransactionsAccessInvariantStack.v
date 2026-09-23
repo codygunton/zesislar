@@ -13,10 +13,4 @@ Lemma write_success_transactions_access_invariant_stack
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗
   ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗ R.
-Proof.
-  iIntros "HR".
-  iSplit; [iPureIntro; exact Halign|].
-  iSplit; [iPureIntro; lia|].
-  iSplit; [iPureIntro; exact Hhigh|].
-  iExact "HR".
-Qed.
+Proof. move => *. zesu_block. Qed.

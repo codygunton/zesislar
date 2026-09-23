@@ -23,12 +23,11 @@ OPAM := opam exec --switch=$(OPAM_SWITCH) --
 # every gate inside one 120 GiB scope, and every `coqc` inside its own
 # 6 GiB scope; 48 GiB stay free for other users (plan section 4). On
 # 2026-09-20 a gate at 48 jobs times the 6 GiB module limit asked for
-# 288 GiB of 251 GiB and the server rebooted. `gate-jobs` sizes the job
-# count to the cap with margin; the literal stays as the fallback for a
-# checkout without the guard.
+# 288 GiB of 251 GiB and the server rebooted. The buildout gate uses
+# exactly 24 jobs under the guard.
 GUARD ?= $(CURDIR)/tools/resource_guard.sh
 GUARD_BATCH = $(if $(wildcard $(GUARD)),$(GUARD) batch,env ZESU_NO_GUARD=1)
-GUARD_GATE = $(if $(wildcard $(GUARD)),env ZESU_IO=gate $(GUARD) batch,env ZESU_NO_GUARD=1)
+GUARD_GATE = $(if $(wildcard $(GUARD)),env ZESU_IO=gate ZESU_BATCH_LIMIT=120G $(GUARD) batch,env ZESU_NO_GUARD=1)
 GATE_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs 2>/dev/null || echo 24)
 FAST_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs check-fast 2>/dev/null || echo 48)
 # `check-iris` runs alone across agents: it holds /tmp/zesu-gate.lock, and
@@ -37,7 +36,7 @@ GUARD_LOCKED = $(if $(wildcard $(GUARD)),$(GUARD) locked $(1) --,)
 
 CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/agents/check-local
 CHECK_LOCAL_JOBS ?= $(GATE_JOBS)
-CHECK_AGENT ?= push1
+CHECK_AGENT ?= infra
 AGENT_BUILD_DIR ?= $(CURDIR)/_build/agents/$(CHECK_AGENT)
 AGENT_JOBS ?= $(GATE_JOBS)
 export AGENT_BUILD_DIR
@@ -300,6 +299,7 @@ regenerate-evm-sail-snapshot:
 
 .PHONY: check-evidence-tools
 check-evidence-tools:
+	@echo "uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
@@ -345,7 +345,7 @@ gate:
 # them runs inside the resource guard. `docs/ai/plan/AUTOMATION_TOOLS.md`
 # is the guide.
 
-DET_BUILD_DIR ?= $(CURDIR)/_build/agents/det
+DET_BUILD_DIR ?= $(CURDIR)/_build/agents/infra
 DET_JOBS := $(shell test -x $(GUARD) && $(GUARD) jobs 2>/dev/null || echo 8)
 RULE ?=
 ALT ?=
@@ -356,8 +356,8 @@ ALT ?=
 probe:
 	@test -n "$(MODULE)" -a -n "$(LEMMA)" || \
 	  { echo "usage: make probe MODULE=<file.v> LEMMA=<lemma>"; exit 2; }
-	$(GUARD_BATCH) probe -- $(PYTHON) tools/residual/capture.py \
-	  ZesuSsz/Proofs/WriteSuccess/$(MODULE) $(LEMMA) \
+	$(GUARD_BATCH) probe -- $(PYTHON) tools/residual/show_probe.py \
+	  $(MODULE) $(LEMMA) \
 	  --build-dir $(DET_BUILD_DIR)
 
 # The exit boundary of a segment, or its first debt.
@@ -377,6 +377,7 @@ gen-segment:
 	  { echo "usage: make gen-segment ENTRY=0x… EXIT=0x…"; exit 2; }
 	$(GUARD_BATCH) gen-segment -- $(PYTHON) tools/det/segment.py \
 	  --entry $(ENTRY) --exit $(EXIT) $(if $(NAME),--name $(NAME),) \
+	  --build-dir $(DET_BUILD_DIR) \
 	  --spec-out $(DET_BUILD_DIR)/segment.json \
 	  --out $(DET_BUILD_DIR)/segment.jsonl
 

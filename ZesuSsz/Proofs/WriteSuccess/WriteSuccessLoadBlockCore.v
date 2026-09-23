@@ -76,23 +76,7 @@ Lemma write_success_load_block_correct `{!islaG Sigma} `{!threadG} :
   instr_body_lookup_resources
     IslaTraces.write_success_blocks.Index.body_lookup -∗
   instr_body 0x14d80 writeSuccessLoadBlockSpec.
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hcode".
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try (cbn; lia).
-  all: try bv_solve.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try (cbn; lia).
-  all: try bv_solve.
-  Unshelve.
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Opaque writeSuccessLoadBlockSpec.
 

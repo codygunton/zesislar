@@ -24,10 +24,4 @@ Lemma write_success_blob_hashes_a1548c_index_zero_spec
     `{!islaG Sigma} `{!threadG} (pc : Z) :
   instr pc (Some IslaTraces.write_success_67.a1548c.a1548c) ⊢
   instr_body pc (writeSuccessBlobHashesLbuIndexZeroSpec pc).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  all: try lia.
-Qed.
+Proof. move => *. zesu_block. Qed.

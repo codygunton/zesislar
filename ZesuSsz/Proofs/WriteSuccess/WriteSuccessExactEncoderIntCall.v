@@ -82,12 +82,7 @@ Lemma zesu_encoder_int_payload_suffix_correct `{!islaG Sigma} `{!threadG}
   ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d2c (zesuEncoderIntPayloadSuffixSpec value sp ret tail).
-Proof.
-  move => * /=. iStartProof. liARun.
-  Unshelve. all: prepare_sidecond; try assumption; try bv_solve; try lia.
-  all: try (change
-    (bv_extract 0 2 (Z_to_bv 64 ret) = BV 2 0); assumption).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions zesu_encoder_int_payload_suffix_correct.
 

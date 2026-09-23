@@ -210,6 +210,50 @@ Ltac zesu_finish_selectors :=
    The two branches carry `time` labels in the WP1 probes, so the split can
    be measured. *)
 
+Ltac zesu_finish_v1 :=
+  try autorewrite with zesu_indices;
+  try (timeout 2 zesu_normalize_memory_constants);
+  try (timeout 2 zesu_normalize_memory_addresses);
+  try iAssumption;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ =>
+      first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+        prepare_sidecond]
+  | _ => unLET
+  end;
+  try zesu_finish_selectors;
+  try autorewrite with zesu_indices;
+  try iAssumption;
+  try (timeout 2 zesu_normalize_array_cursors);
+  try (timeout 2 zesu_finish_known_list_shape);
+  try (timeout 2 zesu_finish_pure_resources);
+  try reflexivity;
+  try (timeout 2 zesu_finish_integer_word_image);
+  try zesu_finish_packed_word_equality;
+  try (timeout 2 (lazymatch goal with
+    | |- @eq (bv 64) _ (Z_to_bv 64
+        (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
+        solve [zesu_array_eight_value]
+    end));
+  try simpl;
+  try done;
+  try assumption;
+  try zesu_finish_extract_alias;
+  try (timeout 2 zesu_finish_list_slice_length);
+  zesu_normalize_nat_powers;
+  try zesu_finish_tag_bound;
+  try zesu_finish_mask;
+  try zesu_finish_array_byte_lookup;
+  try zesu_finish_constant;
+  try (apply Z.le_ge; assumption);
+  try zesu_finish_ram_known;
+  try zesu_finish_ram_address;
+  try zesu_finish_pointer_alignment;
+  try zesu_saturate_alignment;
+  try lia;
+  try bv_solve;
+  try zesu_finish_little_endian.
+
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
@@ -286,7 +330,7 @@ Ltac zesu_finish_dispatch :=
   | _ => zesu_finish_pure_goal
   end.
 
-Ltac zesu_finish :=
+Ltac zesu_finish_v2 :=
   zesu_finish_normalize;
   lazymatch goal with
   | |- envs_entails _ _ => try iAssumption
@@ -297,6 +341,9 @@ Ltac zesu_finish :=
   | _ => unLET
   end;
   zesu_finish_dispatch.
+
+Ltac zesu_finish :=
+  tryif zesu_rule_set_v2_on then zesu_finish_v2 else zesu_finish_v1.
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with
@@ -438,14 +485,23 @@ Ltac zesu_run_pass_steps :=
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
      zesu_liAStep | zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure |
-     zesu_open_trace_exist].
+     zesu_extract_matching_descriptor_pure].
 
 Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat zesu_run_pass_steps; liShow;
+  unshelve (time "zesu_run" repeat first
+    [zesu_open_requested_instr_bundle |
+     zesu_open_requested_struct_sys_package |
+     zesu_open_requested_saved_x9_package |
+     zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
+     zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
+     zesu_prepare_initialized_array_read |
+     zesu_finish_initialized_array_read |
+     zesu_liAStep | zesu_open_matching_two_level_frame |
+     zesu_extract_matching_descriptor_pure]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -455,7 +511,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_run_pass_steps | zesu_rule_set_v2_steps]; liShow;
+    [zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -513,7 +569,16 @@ Ltac zesu_reduce_introduced_code_lists :=
    shelved side conditions and shapes like `bv_and b N = N`. The finisher
    handles those, so the block automation hands them to it instead of
    failing. *)
-Ltac zesu_block :=
+Ltac zesu_block_v1 :=
+  iStartProof;
+  zesu_expose_code_lists;
+  repeat first [progress iIntros (?) | progress iIntros "#?" |
+    progress iIntros "?"];
+  zesu_reduce_introduced_code_lists;
+  repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+  zesu_run.
+
+Ltac zesu_block_v2 :=
   tryif iStartProof then (
     zesu_expose_code_lists;
     repeat first [progress iIntros (?) | progress iIntros "#?" |
@@ -522,6 +587,9 @@ Ltac zesu_block :=
     repeat iDestruct select (_ ∗ _)%I as "[? ?]";
     zesu_run)
   else zesu_finish.
+
+Ltac zesu_block :=
+  tryif zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1.
 
 Ltac zesu_block_simpl :=
   iStartProof;

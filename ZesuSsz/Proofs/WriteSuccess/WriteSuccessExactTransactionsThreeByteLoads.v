@@ -30,10 +30,5 @@ Lemma transactions_three_byte_loads_correct `{!islaG Sigma} `{!threadG}
     instr instruction.1 (Some instruction.2))%I -∗
   □ instr_pre 0x14f68 (transactionsThreeByteLoadPost pointer bytes P) -∗
   instr_body 0x14f5c (transactionsThreeByteLoadEntry pointer bytes P).
-Proof.
-  iStartProof. iIntros "#Hcode #Hnext".
-  iEval (rewrite /IslaTraces.write_success_29.instrs.instr_map /=) in "Hcode".
-  iDestruct "Hcode" as "#(H0 & H1 & H2 & _)".
-  zesu_run.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_three_byte_loads_correct.

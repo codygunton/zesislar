@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "residual"))
+from modules import parse_module
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 RECORD_BASELINE_PATH = Path(__file__).with_name("residual_record_baseline.json")
@@ -129,7 +130,7 @@ def record_ratchet_failures(
     for lemma, statement, hand in entries:
         if "instr_body" not in statement or hand == 0:
             continue
-        if lemma in recorded or lemma in baseline:
+        if lemma in recorded or f"{name}:{lemma}" in baseline:
             continue
         failures.append(
             f"hand lines with no residual record: {name}: {lemma}: "
@@ -148,10 +149,6 @@ def residual_record_failures(
     automation alone or arrives with the record that explains why it
     cannot.
     """
-    try:
-        from modules import parse_module  # noqa: PLC0415
-    except ImportError:
-        return []
     path = ROOT / name
     try:
         proofs = parse_module(path)
@@ -198,8 +195,11 @@ def proof_size_warnings(name: str, lines: list[str]) -> list[str]:
         if proof_start is None:
             statement_has_instr_body = statement_has_instr_body or "instr_body" in line
             if re.match(r"^\s*Proof\.", line):
-                proof_start = number
-                rename_count = 0
+                if re.search(r"\bQed\.", line):
+                    statement_has_instr_body = False
+                else:
+                    proof_start = number
+                    rename_count = 0
             elif re.match(r"^\s*(?:Definition|Lemma|Theorem|Corollary)\b", line):
                 statement_has_instr_body = "instr_body" in line
             continue

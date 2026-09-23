@@ -49,10 +49,5 @@ Lemma access_lists_output_correct `{!islaG Sigma} `{!threadG}
     (BV 64 0x15210) (take 20 (drop 16 bytes)) tail (accessListsOutputFrame sp bytes P)) -∗
   instr_body 0x15210 (accessListsOutputPost sp bytes tail P) -∗
   instr_body 0x15200 (accessListsOutputEntry sp old_ra old5 old_data old_size bytes tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: try (unfold accessListsOutputPost; reflexivity).
-  all: rewrite length_take length_drop; rewrite H0; reflexivity.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions access_lists_output_correct.

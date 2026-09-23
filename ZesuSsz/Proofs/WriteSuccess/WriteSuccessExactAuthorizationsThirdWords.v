@@ -14,8 +14,5 @@ Lemma authorization_third_words_correct `{!islaG Sigma} `{!threadG} sp bytes (P 
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x1560c (authorizationWordsAtPost sp bytes 64 P) -∗
   instr_body 0x155fc (authorizationWordsEntry sp bytes P).
-Proof.
-  zesu_block.
-  all: unfold transactionRowWord; zesu_normalize_stack_array_indices; reflexivity.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions authorization_third_words_correct.

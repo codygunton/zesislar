@@ -54,19 +54,7 @@ Lemma zesu_encoder_int_call_correct `{!islaG Sigma} `{!threadG} :
   ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d10 zesuEncoderIntCallSpec.
-Proof.
-  move => * /=.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try rewrite bv_sign_extend_idemp.
-  all: try bv_solve.
-  all: try lia.
-  all: try (change
-    (bv_extract 0 2 (Z_to_bv 64 ret) = BV 2 0); assumption).
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma zesu_encoder_int_call_pre `{!islaG Sigma} `{!threadG} :
   ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,

@@ -62,10 +62,7 @@ Lemma write_success_transactions_151c4_carrier_scratch_pack
     sp base total processed transaction first second third fourth items -∗
   writeSuccessTransactions151c4CarrierScratch
     sp base total processed transaction first second third fourth items.
-Proof.
-  iIntros "Hscratch".
-  iExact "Hscratch".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_151c4_carrier_scratch_unpack
     `{!islaG Sigma} `{!threadG}
@@ -76,7 +73,4 @@ Lemma write_success_transactions_151c4_carrier_scratch_unpack
     sp base total processed transaction first second third fourth items -∗
   writeSuccessTransactions151b4CarrierScratch
     sp base total processed transaction first second third fourth items.
-Proof.
-  iIntros "Hscratch".
-  iExact "Hscratch".
-Qed.
+Proof. move => *. zesu_block. Qed.
