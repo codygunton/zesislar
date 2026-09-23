@@ -45,17 +45,4 @@ Lemma write_success_hashes_loop_exit_frame
     (writeSuccessHashesLoopExit sp base total bytes tail P) -∗
   instr_pre 0x158e0
     (writeSuccessHashesLoopExit sp base total bytes tail (F ∗ P)).
-Proof.
-  iIntros "Hexit".
-  iApply (instr_pre_wand 0x158e0 0x158e0 true true with "Hexit");
-    [done | reflexivity |].
-  iIntros "HexitFP".
-  rewrite /writeSuccessHashesLoopExit.
-  iDestruct "HexitFP" as (pointer)
-    "(Hsys & Hregs & H2 & H8 & H9 & Hbytes & Hscratch & Hmmio & Htrace &
-      HFP & %Hpointer & _)".
-  iDestruct "HFP" as "(_ & HP)".
-  iExists pointer.
-  iFrame "Hsys Hregs H2 H8 H9 Hbytes Hscratch Hmmio Htrace HP".
-  iPureIntro. split; [exact Hpointer | done].
-Qed.
+Proof. move => *. zesu_block. Qed.

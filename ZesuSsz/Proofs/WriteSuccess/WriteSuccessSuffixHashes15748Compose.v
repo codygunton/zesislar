@@ -41,28 +41,4 @@ Lemma write_success_suffix_hashes_15748_nonzero_compose
     (writeSuccessSuffixHashes1574cNonzeroSpec sp value tail Q) -∗
   instr_body 0x15748
     (writeSuccessSuffixHashes15748NonzeroSpec sp value tail Q).
-Proof.
-  iIntros "Hinstr Hcaller".
-  iAssert (instr_pre 0x1574c
-    (writeSuccessSuffixHashes1574cNonzeroSpec sp value tail Q))%I
-    with "[Hcaller]" as "HcallerPre".
-  { iApply instr_pre_to_body. iNext. iExact "Hcaller". }
-  iPoseProof (write_success_suffix_hashes_15748_raw
-    (writeSuccessSuffixHashes15748Q sp value tail Q)
-    with "Hinstr") as "Hraw".
-  iApply (instr_pre_wand 0x15748 0x15748 false false with "Hraw");
-    [done | reflexivity |].
-  iIntros "Htarget".
-  iEval (rewrite /writeSuccessSuffixHashes15748NonzeroSpec) in "Htarget".
-  iDestruct "Htarget" as "(Hsys & H1 & Hrest & _)".
-  iEval (rewrite /writeSuccessSuffixHashes15748Spec).
-  iFrame "Hsys H1 Hrest".
-  iSplitL.
-  { iApply (instr_pre_wand with "HcallerPre");
-      [done | reflexivity |].
-    iIntros "Hstate".
-    iApply (write_success_suffix_hashes_15748_nonzero_adapter
-      sp value tail Q).
-    iExact "Hstate". }
-  done.
-Qed.
+Proof. move => *. zesu_block. Qed.

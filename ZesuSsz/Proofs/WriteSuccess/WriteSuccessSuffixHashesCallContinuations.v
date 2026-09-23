@@ -37,25 +37,7 @@ Lemma write_success_suffix_hashes_15750_nonzero_call_continuation
   instr_pre 0x15750
     (writeSuccessSuffixHashes1574cCallPost sp value tail ∗
      "x8" ↦ᵣ RVal_Bits value ∗ Q).
-Proof.
-  iIntros "Hnext Hframe".
-  iApply (write_success_suffix_hashes_15750_nonzero_pre_adapter
-    value (writeSuccessSuffixHashes15750NonzeroQ sp value tail Q)
-    (writeSuccessSuffixHashes1574cCallPost sp value tail ∗
-      "x8" ↦ᵣ RVal_Bits value ∗ Q) Hvalue).
-  - iIntros "Hstate".
-    iDestruct "Hstate" as "(Hcall & H8 & HQ)".
-    iEval (unfold writeSuccessSuffixHashes15750NonzeroQ) in "HQ".
-    iEval (unfold writeSuccessSuffixHashes1574cCallPost) in "Hcall".
-    iDestruct "Hcall" as
-      "(Hsys & Hx1 & Hx2 & Hx5 & Hx10 & Hx11 & Hstack & Hmmio & Htrace & _)".
-    have H15750 : Z_to_bv 64 0x15750 = BV 64 0x15750 by bv_solve.
-    rewrite /writeSuccessSuffixHashes15750NonzeroState.
-    rewrite /writeSuccessSuffixHashes15750NonzeroQ.
-    rewrite <- H15750.
-    iFrame.
-  - iExact "Hnext".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_suffix_hashes_15750_zero_call_continuation
     `{!islaG Sigma} `{!threadG}
@@ -68,23 +50,4 @@ Lemma write_success_suffix_hashes_15750_zero_call_continuation
   instr_pre 0x15750
     (writeSuccessSuffixHashes1574cCallPost sp (BV 64 0) tail ∗
      "x8" ↦ᵣ RVal_Bits (BV 64 0) ∗ Q).
-Proof.
-  iIntros "Hnext Hframe".
-  iApply (write_success_suffix_hashes_15750_zero_pre_adapter
-    (writeSuccessSuffixHashes15750ZeroQ sp tail Q)
-    (writeSuccessSuffixHashes1574cCallPost sp (BV 64 0) tail ∗
-      "x8" ↦ᵣ RVal_Bits (BV 64 0) ∗ Q)).
-  - iIntros "Hstate".
-    iDestruct "Hstate" as "(Hcall & H8 & HQ)".
-    iEval (unfold writeSuccessSuffixHashes15750ZeroQ) in "HQ".
-    iEval (unfold writeSuccessSuffixHashes1574cCallPost) in "Hcall".
-    iDestruct "Hcall" as
-      "(Hsys & Hx1 & Hx2 & Hx5 & Hx10 & Hx11 & Hstack & Hmmio & Htrace & _)".
-    have H15750 : Z_to_bv 64 0x15750 = BV 64 0x15750 by bv_solve.
-    iEval (rewrite H15750) in "Hx1".
-    rewrite /writeSuccessSuffixHashes15750ZeroState.
-    cbn [writeSuccessSuffixHashes15750ZeroQ
-      writeSuccessSuffixHashes15750NonzeroQ].
-    iFrame.
-  - iExact "Hnext".
-Qed.
+Proof. move => *. zesu_block. Qed.

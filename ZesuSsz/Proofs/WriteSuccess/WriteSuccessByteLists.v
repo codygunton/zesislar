@@ -107,7 +107,7 @@ Qed.
 
 Lemma byteListProcessedResources_nil `{!islaG Sigma} (address : Z) :
   ⊢ byteListProcessedResources address [].
-Proof. rewrite /byteListProcessedResources /=. done. Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Opaque byteListProcessedResources.
 
@@ -588,7 +588,7 @@ Lemma byteListsCode_elim `{!islaG Sigma} :
   byteListsCode -∗
   ([∗ list] instruction ∈ IslaTraces.write_success_05.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I.
-Proof. iIntros "Hcode". iExact "Hcode". Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Opaque byteListsCode.
 
@@ -604,37 +604,12 @@ Global Instance : LithiumUnfold (@byteListsEmptyBranchSpec) := I.
 Lemma byte_lists_empty_branch `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   instr_body 0x15c38 (byteListsEmptyBranchSpec P).
-Proof.
-  iStartProof.
-  repeat (liAStep; close_infeasible_bv_branches).
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try close_infeasible_bv_branches.
-  all: try match goal with
-  | Hneq : ?count <> 0%bv |- _ => exfalso; apply Hneq; bv_solve
-  end.
-  all: try bv_solve.
-  all: try iFrame.
-  Unshelve.
-  all: try iFrame.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try close_infeasible_bv_branches.
-  all: try match goal with
-  | Hneq : ?count <> 0%bv |- _ => exfalso; apply Hneq; bv_solve
-  end.
-  all: try bv_solve.
-  all: try iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma byte_lists_empty_branch_pre `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   □ instr_pre 0x15c38 (byteListsEmptyBranchSpec P).
-Proof.
-  iStartProof. iIntros "#Hcode". iModIntro.
-  iApply instr_pre_to_body. iNext. iApply byte_lists_empty_branch.
-  iExact "Hcode".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition byteListsNonemptyBranchSpec `{!islaG Sigma} `{!threadG}
     (count : bv 64) (P : iProp Sigma) : iProp Sigma :=
@@ -649,39 +624,13 @@ Lemma byte_lists_nonempty_branch `{!islaG Sigma} `{!threadG}
     (count : bv 64) (P : iProp Sigma) :
   instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   instr_body 0x15c38 (byteListsNonemptyBranchSpec count P).
-Proof.
-  iStartProof.
-  repeat (liAStep; close_infeasible_bv_branches).
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try close_infeasible_bv_branches.
-  all: try match goal with
-  | Hneq : ?count <> 0%bv |- _ => exfalso; apply Hneq; bv_solve
-  end.
-  all: try bv_solve.
-  all: try iFrame.
-  Unshelve.
-  all: try iFrame.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try close_infeasible_bv_branches.
-  all: try match goal with
-  | Hneq : ?count <> 0%bv |- _ => exfalso; apply Hneq; bv_solve
-  end.
-  all: try bv_solve.
-  all: try iFrame.
-  Unshelve.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma byte_lists_nonempty_branch_pre `{!islaG Sigma} `{!threadG}
     (count : bv 64) (P : iProp Sigma) :
   instr 0x15c38 (Some IslaTraces.write_success_05.a15c38.a15c38) -∗
   □ instr_pre 0x15c38 (byteListsNonemptyBranchSpec count P).
-Proof.
-  iStartProof. iIntros "#Hcode". iModIntro.
-  iApply instr_pre_to_body. iNext.
-  iApply byte_lists_nonempty_branch. iExact "Hcode".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition byteListsPublicFrame `{!islaG Sigma} `{!threadG}
     (callerSp ret savedS0 savedS1 : bv 64) (saved : list valu)

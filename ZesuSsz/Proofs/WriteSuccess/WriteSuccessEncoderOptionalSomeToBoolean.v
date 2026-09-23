@@ -15,17 +15,4 @@ Lemma encoder_optional_some_to_boolean `{!islaG Sigma} `{!threadG}
     (encoderOptionalSomeAtBoolean data value sp ret tag tail P) -∗
   instr_body 0x15bd0
     (encoderOptionalSomeAtSomeBody data value sp ret tag tail P).
-Proof.
-  move => * /=.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try (bv_simplify_arith select (bv_extract 0 3 data = _)).
-  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: try exact inhabitant.
-  all: lazymatch goal with |- ?G => fail "side condition" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

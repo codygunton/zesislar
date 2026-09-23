@@ -36,28 +36,6 @@ Lemma write_success_transactions_carrier_chunk_150ec_jump_block
   instr_body 0x150ec (writeSuccessTransactionsAt150ecCarrierCallBlock P sp base
     transaction transactions processed remaining bytes prefix suffix tail
     first second third fourth items).
-Proof.
-  move => *.
-  iStartProof.
-  iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve. all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  all: try (unfold writeSuccessTransactionsCarrierOutputTail; iFrame).
-  Unshelve. all: repeat iIntros "?"; liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  all: try (unfold writeSuccessTransactionsCarrierOutputTail; iFrame).
-  Unshelve. all: try exact inhabitant.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions write_success_transactions_carrier_chunk_150ec_jump_block.
