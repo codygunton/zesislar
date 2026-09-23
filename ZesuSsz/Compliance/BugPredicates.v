@@ -27,6 +27,34 @@ Fixpoint zesuReadLeAt
 Definition zesuReadU32At := zesuReadLeAt 4.
 Definition zesuReadU64At := zesuReadLeAt 8.
 
+Lemma zesuReadLeAt_app_left width (prefix suffix : ByteString) offset :
+  (offset + width <= length prefix)%nat ->
+  zesuReadLeAt width (prefix ++ suffix) offset =
+    zesuReadLeAt width prefix offset.
+Proof.
+  revert offset.
+  induction width as [|width IH]; intros offset Hbound; cbn.
+  - reflexivity.
+  - rewrite nth_error_app1 by lia.
+    rewrite IH by lia.
+    reflexivity.
+Qed.
+
+Lemma zesuReadLeAt_app_right width (prefix suffix : ByteString) offset :
+  (length prefix <= offset)%nat ->
+  zesuReadLeAt width (prefix ++ suffix) offset =
+    zesuReadLeAt width suffix (offset - length prefix)%nat.
+Proof.
+  revert offset.
+  induction width as [|width IH]; intros offset Hbound; cbn.
+  - reflexivity.
+  - rewrite nth_error_app2 by lia.
+    rewrite IH by lia.
+    replace (S offset - length prefix)%nat with
+      (S (offset - length prefix))%nat by lia.
+    reflexivity.
+Qed.
+
 (** A variable SSZ list stores four bytes per offset.  The first offset is
     the table length, so dividing it by four gives the item count. *)
 Definition zesuVariableListCount
@@ -350,8 +378,28 @@ Definition withdrawalCountWitnessInput : ByteString :=
 Definition transactionCountWitnessBytes : ByteString :=
   zesuEncodeLe 4 4194308 ++ repeat 0 4194304.
 
+(* Literal container offsets keep the four-megabyte list symbolic. *)
+Definition transactionCountWitnessPrefix : ByteString :=
+  [15; 1] ++ zesuEncodeLe 4 16 ++
+  zesuEncodeLe 4 4194960 ++ zesuEncodeLe 4 4194972 ++
+  zesuEncodeLe 4 4195012 ++
+  zesuEncodeLe 4 44 ++ zesuEncodeLe 4 4194892 ++ repeat 0 32 ++
+  zesuEncodeLe 4 4194924 ++
+  repeat 0 436 ++ zesuEncodeLe 4 540 ++ repeat 0 64 ++
+  zesuEncodeLe 4 540 ++ zesuEncodeLe 4 4194848 ++
+  repeat 0 16 ++ zesuEncodeLe 4 4194848 ++ repeat 0 8.
+
+Definition transactionCountWitnessSuffix : ByteString :=
+  repeat 0 32 ++
+  concat (repeat (zesuEncodeLe 4 20) 5) ++
+  zesuEncodeLe 4 12 ++ zesuEncodeLe 4 12 ++ zesuEncodeLe 4 12 ++
+  zesuEncodeLe 8 1 ++ zesuEncodeLe 4 12 ++
+  zesuEncodeLe 4 4 ++ zesuEncodeLe 4 8 ++ zesuEncodeLe 4 16 ++
+  zesuEncodeLe 8 0 ++ zesuEncodeLe 8 0.
+
 Definition transactionCountWitnessInput : ByteString :=
-  zesuCountWitnessInput transactionCountWitnessBytes [] [].
+  transactionCountWitnessPrefix ++
+    (transactionCountWitnessBytes ++ transactionCountWitnessSuffix).
 
 Definition witnessHeaderCountWitnessBytes : ByteString :=
   zesuEncodeLe 4 1028 ++ repeat 0 1024.
@@ -368,6 +416,15 @@ Lemma transactionCountWitnessLength :
 Proof.
   unfold transactionCountWitnessBytes.
   rewrite app_length, repeat_length.
+  reflexivity.
+Qed.
+
+Lemma transactionCountWitnessPrefixLength :
+  length transactionCountWitnessPrefix = 602%nat.
+Proof.
+  unfold transactionCountWitnessPrefix.
+  repeat rewrite app_length.
+  repeat rewrite repeat_length.
   reflexivity.
 Qed.
 
@@ -393,6 +450,61 @@ Lemma witnessHeaderCountWitnessField :
 Proof.
   unfold witnessHeaderCountWitnessBytes.
   rewrite app_length, repeat_length.
+  reflexivity.
+Qed.
+
+Lemma withdrawalCountWitnessLayout :
+  exists layout,
+    zesuBugLayout withdrawalCountWitnessInput = Some layout /\
+    bugWithdrawalBytes layout = Some 748%nat.
+Proof. native_compute. eexists; split; reflexivity. Qed.
+
+Lemma witnessHeaderCountWitnessLayout :
+  exists layout,
+    zesuBugLayout witnessHeaderCountWitnessInput = Some layout /\
+    bugWitnessHeaderCount layout = Some 257.
+Proof. native_compute. eexists; split; reflexivity. Qed.
+
+Lemma transactionCountWitnessPayloadOffsets :
+  zesuReadU32At transactionCountWitnessInput 566 = Some 540 /\
+  zesuReadU32At transactionCountWitnessInput 570 = Some 4194848.
+Proof.
+  unfold transactionCountWitnessInput, zesuReadU32At.
+  split.
+  - rewrite zesuReadLeAt_app_left
+      by (rewrite transactionCountWitnessPrefixLength; lia).
+    reflexivity.
+  - rewrite zesuReadLeAt_app_left
+      by (rewrite transactionCountWitnessPrefixLength; lia).
+    reflexivity.
+Qed.
+
+Lemma transactionCountWitnessInputFirstOffset :
+  zesuReadU32At transactionCountWitnessInput 602 = Some 4194308.
+Proof.
+  unfold transactionCountWitnessInput, zesuReadU32At.
+  rewrite zesuReadLeAt_app_right
+    by (rewrite transactionCountWitnessPrefixLength; lia).
+  rewrite transactionCountWitnessPrefixLength.
+  replace (602 - 602)%nat with 0%nat by lia.
+  rewrite (zesuReadLeAt_app_left 4 transactionCountWitnessBytes
+    transactionCountWitnessSuffix 0)
+    by (rewrite transactionCountWitnessLength;
+        apply Nat.leb_le; vm_compute; reflexivity).
+  reflexivity.
+Qed.
+
+Lemma transactionCountWitnessInputCount :
+  zesuVariableListCount transactionCountWitnessInput 602 4194308 =
+    Some 1048577.
+Proof.
+  unfold zesuVariableListCount.
+  replace (Nat.eqb 4194308 0) with false by reflexivity.
+  rewrite transactionCountWitnessInputFirstOffset.
+  replace (Z.eqb (Z.modulo 4194308 4) 0) with true by reflexivity.
+  replace (Z.leb 4 4194308) with true by reflexivity.
+  replace (Z.leb 4194308 (Z.of_nat 4194308)) with true
+    by (vm_compute; reflexivity).
   reflexivity.
 Qed.
 
