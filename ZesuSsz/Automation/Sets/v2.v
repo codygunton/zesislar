@@ -53,6 +53,7 @@ Require Export ZesuSsz.Automation.SealedCoverage.
    `StackArrayLookup.v` and not this. The conflict is in the final
    handoff's frontier. *)
 Require Export ZesuSsz.Automation.SpecTable.
+Require Export ZesuSsz.Automation.Switches.MarkedRawInstruction.
 
 (* C2: a word array satisfies a wanted byte array. *)
 Require Export ZesuSsz.Automation.WordArrayBytes.
