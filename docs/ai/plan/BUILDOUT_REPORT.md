@@ -63,6 +63,10 @@ The seven final-v2 probes ran with the B1 switch set. A5 probed suffix entry und
 | Tail fields 3 | 0x159b8→0x159d8 | 5.0 s | Stalled | C1: `∃ x : spec *ₗ list (bv 8) *ₗ (), ⌜encoderOptionalU64Valid (writeSuccessFrameSp witness + 296) x.2ₗ⌝ ∗` | Pending | N/A (open) |
 | Epilogue | 0x159d8→0x15a0c | 5.8 s | Stalled | C4: `∃ x : isla_trace, Index.lookup (bv_unsigned ra) = Some x` | Pending | N/A (open) |
 
+The suffix-entry C6 goal is the `encoderIntExactReturn` handoff at 0x15750. Its call premise at 0x15d10 uses `encoderIntEntryBoundary`, an alias of `zesuEncoderIntExactCallSpec`. The chain infers its only junction at 0x15744 and keeps the merged hashes-loop boundary at 0x15754 frozen.
+
+A focused post-withdrawals probe on c4d44f8d rebuilt its dependencies in a private directory. With v2 and four closed call premises, it stalled in 3.3 s at frame 26 on C6, the existing `sp + 1136` load existential below. The outcome and goal head match the B2 row; this probe did not reach 0x15744.
+
 No B2 generated segment is closed or committed yet. The set of closed segments is empty, so no closed-segment hand-line count applies.
 
 The final-v2 probe recorded these exact residual goal heads. Each block is the complete conclusion from the probe record.
@@ -278,6 +282,8 @@ After one inferred Boolean output event, tail fields 2 stalled in 7.3 s at the T
 
 Post-withdrawals B3 inference omitted the closed spec table and found one output event. It reached zero junctions. Thus, chain generation had no starting junction and B3 stopped. Round 2 stopped in 46.3 s at frame 97, class C1, on the loaded-word trace inclusion. The exact round-2 goal follows.
 
+A focused B3 retry with v2 and the four closed call premises stopped in 3.8 s at frame 27 on the same C6 `sp + 1136` load. Round 0 inferred zero events. It reached no junction, so `chain.py` had no starting junction.
+
 <details><summary>Post-withdrawals B3 round 2: C1, frame 97</summary>
 
 ```coq
@@ -356,6 +362,8 @@ The T2-a opt-in arm is rejected for merge. Across 305 full-set rows, two closed 
 The fixed-harness v2 reruns for T1-b and T2-a each import `Sets.v2` plus the candidate switch. Against frozen `1dedcaa2` v2, both 305-row arms had 279 residual, two closed, and 24 expected hand-module errors. Each changed zero outcomes, one class (suffix entry C3→C6), and three full-set signatures and goal hashes. Their 48-row arms each had 46 residual and two closed; each changed zero outcomes, one class, and one signature and goal hash. The class and signature moves were already present in the post-B1 v2 arm, so neither candidate added a new proof outcome.
 
 The T2-b fixed-harness v2 arms used commit `c4d44f8d` and its opt-in switch. The 305-row arm had 279 residual, two closed, and 24 expected hand-module errors; its median was 6.3 s. The 48-row arm had 46 residual and two closed; its median was 5.0 s. Against frozen `1dedcaa2` v2, both arms changed zero outcomes. The full set had the suffix-entry C3→C6 move and three signature and goal-hash changes; the 48-row set had the suffix-entry class, signature, and hash change. These changes match the post-B1 baseline, so T2-b added no candidate-specific residual movement.
+
+The external `c4d44f8d` baseline arms completed in the determinism worktree. V1 had 302 residual, two closed, and one timeout on 305 rows (median 11.02 s); its rule-15 set had 45 residual, two closed, and one timeout on 48 rows (median 9.77 s). V2 had 279 residual, two closed, and 24 errors on 305 rows (median 7.01 s); its rule-15 set had 46 residual and two closed on 48 rows (median 7.77 s). From v1 to v2, 24 full-set residuals became errors and the epilogue timeout became a residual. The rule-15 outcome change was only that timeout-to-residual move. No closed outcome changed. The full set changed 37 classes and signatures and 63 goal hashes; rule-15 changed four of each. These counts come from the four `c4d44f8da061*.json` arm records.
 
 The switched T3-a fixed-harness v2 arms used commit `4399fd2d`. The 305-row arm had 279 residual, two closed, and 24 expected hand-module errors; its median was 5.3 s. The 48-row arm had 46 residual and two closed; its median was 5.1 s. Against frozen `1dedcaa2` v2, both arms changed zero outcomes. The full set had the suffix-entry C3→C6 move and three signature and goal-hash changes; the 48-row set had the suffix-entry class, signature, and hash change. These changes match the post-B1 baseline, so T3-a added no candidate-specific corpus movement.
 
