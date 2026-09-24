@@ -23,3 +23,4 @@ Require Export ZesuSsz.Automation.Switches.SpecTail.
 Require Export ZesuSsz.Automation.Switches.LookupReduce.
 Require Export ZesuSsz.Automation.Switches.CallReturn.
 Require Export ZesuSsz.Automation.Switches.SealedOpen.
+Require Export ZesuSsz.Automation.Switches.FourWordScratch.

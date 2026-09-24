@@ -34,6 +34,7 @@ Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
 Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.FourWordScratch.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
@@ -54,6 +55,11 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_open_sealed_for_lookup_if_enabled
   | |- envs_entails _ (@bi_exist _ (li_prod (bv 64) unit) _) =>
       zesu_open_sealed_for_lookup_if_enabled
+  (* The four saved stack words of the storage-key scratch frame. *)
+  | |- envs_entails _ (@bi_exist _
+      (li_prod (bv 64) (li_prod (bv 64) (li_prod (bv 64)
+        (li_prod (bv 64) unit)))) _) =>
+      zesu_pack_four_word_scratch_if_enabled
   (* C1: the trace tail a handover leaves open. *)
   | |- envs_entails _ (@bi_exist _ (li_prod spec _) _) =>
       zesu_close_spec_tail_if_enabled
