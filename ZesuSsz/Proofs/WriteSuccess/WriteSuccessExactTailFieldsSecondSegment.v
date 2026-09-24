@@ -1,0 +1,29 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Contracts.IslarisCode.
+From ZesuSsz.Proofs.WriteSuccess Require Import
+  Interfaces WriteSuccessNativeContract WriteSuccessRepresentation.
+Require Import ZesuSsz.Automation.Sets.v2.
+
+Lemma write_success_exact_tail_fields_second_segment
+    `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15b9c encoderBooleanEntryBoundary -∗
+  □ instr_pre 0x15c6c encoderBytesEntryBoundary -∗
+  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗
+  instr_body 0x159b8
+    (writeSuccessExactTailSecondBranchState args witness) -∗
+  instr_body 0x1596c
+    (writeSuccessExactTailFirstBranchState args witness
+      (writeSuccessExactTailFirstBranchEvents witness)).
+Proof.
+  zesu_block.
+Qed.
+
+Print Assumptions write_success_exact_tail_fields_second_segment.
