@@ -13,6 +13,7 @@ set -euo pipefail
 root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$root"
 guard=tools/resource_guard.sh
+gate_lock=${ZESU_GATE_LOCK:-/tmp/zesu-gate.lock}
 target=${1:-check-iris}
 log=${2:-_build/agents/infra/gate-$target.log}
 
@@ -45,16 +46,16 @@ echo "uncached checks passed"
 $guard lock-status >/dev/null
 if ! ( set -C; printf 'holder=%s pid=%s start=%s\n' \
          "${COORD_AGENT:-$USER}:gate-$target:$root" $$ "$(date -Is)" \
-         > /tmp/zesu-gate.lock ) 2>/dev/null; then
-  echo "refusing: a gate holds /tmp/zesu-gate.lock: $(cat /tmp/zesu-gate.lock)" >&2
+         > "$gate_lock" ) 2>/dev/null; then
+  echo "refusing: a gate holds $gate_lock: $(cat "$gate_lock")" >&2
   exit 3
 fi
 release() {
-  grep -q "pid=$$ " /tmp/zesu-gate.lock 2>/dev/null && rm -f /tmp/zesu-gate.lock
+  grep -q "pid=$$ " "$gate_lock" 2>/dev/null && rm -f "$gate_lock"
   kill "${watcher:-}" 2>/dev/null || true
 }
 trap release EXIT
-echo "gate lock: $(cat /tmp/zesu-gate.lock)"
+echo "gate lock: $(cat "$gate_lock")"
 
 # Other agents' guards now hold; wait for their running `coqc` to finish.
 drain=${ZESU_GATE_DRAIN_SECONDS:-1800}
@@ -66,6 +67,12 @@ done
 echo "drain: waited $waited s; coqc machine-wide $(pgrep -c -x coqc || true)"
 
 jobs=$($guard gate-jobs "$target")
+slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs" --drain-floor "$floor") || exit 3
+read -r jobs own other <<< "$slots"
+if (( jobs < 1 )); then
+  echo "refusing: no coqc slot remains after drain" >&2
+  exit 3
+fi
 $guard reset-peak
 setsid nohup $guard watch >/dev/null 2>&1 &
 watcher=$!
@@ -74,10 +81,45 @@ started=$(date -Is)
 echo "gate $target with $jobs jobs; $($guard report)"
 mkdir -p "$(dirname "$log")"
 set +e
-ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
+setsid env ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
   make "$target" AGENT_BUILD_DIR="$root/_build/agents/infra" FAST_JOBS="$jobs" \
-  AGENT_JOBS="$jobs" > "$log" 2>&1
-status=$?
+  AGENT_JOBS="$jobs" > "$log" 2>&1 &
+gate_pid=$!
+status=0
+poll=${ZESU_GATE_CAP_POLL_SECONDS:-30}
+gate_running() {
+  local state
+  state=$(ps -o stat= -p "$gate_pid" 2>/dev/null) || return 1
+  [[ -n "$state" && "$state" != Z* ]]
+}
+stop_gate() {
+  kill -- "-$gate_pid" 2>/dev/null || true
+  systemctl --user list-units --type=scope --state=active --plain \
+    --no-legend "${ZESU_SCOPE_PREFIX:-zesudet}-batch-gate-${target}-*" 2>/dev/null |
+    awk '{print $1}' | while IFS= read -r unit; do
+      systemctl --user stop "$unit" >/dev/null 2>&1 || true
+    done
+}
+while gate_running; do
+  sleep "$poll"
+  gate_running || break
+  if ! slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs"); then
+    echo "gate stopped: coqc slot check failed" >&2
+    stop_gate
+    status=3
+    break
+  fi
+  read -r available own other <<< "$slots"
+  if (( available < jobs )); then
+    echo "gate stopped: width $jobs exceeds $available slots with $other other coqc" >&2
+    stop_gate
+    status=3
+    break
+  fi
+done
+wait "$gate_pid"
+gate_status=$?
+if (( status == 0 )); then status=$gate_status; fi
 set -e
 echo "gate $target exit $status; $(grep -c 'Timeout!' "$log" || true) Timeout!; batch peak $($guard peak) GiB"
 $guard window --since "$started" || true

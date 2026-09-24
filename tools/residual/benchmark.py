@@ -14,12 +14,17 @@ import collections
 import json
 import os
 import shutil
+import signal
 import statistics
 import subprocess
 import sys
+import tempfile
+import threading
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "det"))
 
 import corpus  # noqa: E402
 from capture import capture  # noqa: E402
@@ -27,6 +32,7 @@ from classify import classify  # noqa: E402
 from goals import conclusion_text  # noqa: E402
 from signature import signature  # noqa: E402
 from tiers import rule_15_modules  # noqa: E402
+import coqc_slots  # noqa: E402
 
 GUARD = Path(__file__).resolve().parents[1] / "resource_guard.sh"
 
@@ -138,24 +144,90 @@ def mark_built(root: Path, commit: str) -> None:
 def wait_for_room() -> None:
     """Block until the guard lets one more job start (plan section 4)."""
     if GUARD.exists():
-        subprocess.run([str(GUARD), "wait"], check=False)
+        subprocess.run([str(GUARD), "wait"], check=True)
 
 
-def build(root: Path, jobs: int) -> None:
+def launch_width(root: Path, requested: int) -> int:
+    """Size one launch after the guard releases it."""
+    while True:
+        wait_for_room()
+        allowed, _, _ = coqc_slots.width(guard_jobs(requested), root)
+        if allowed:
+            return allowed
+        time.sleep(5)
+
+
+def build(root: Path, requested: int) -> None:
     """Build the tree. The build dir must be absolute: make runs in `root`.
 
     Populating a new arm's build directory from the Dune cache is the disk
     burst that spiked load on 2026-09-22, so it runs in the idle IO class.
     It is batch work, not a gate: ZESU_ARM keeps it off the gate lock."""
-    wait_for_room()
-    done = subprocess.run(
-        ["ionice", "-c3", "nice", "-n", "10", "make", "check-iris",
-         f"AGENT_BUILD_DIR={root.resolve() / '_build'}", f"AGENT_JOBS={jobs}"],
-        cwd=root, capture_output=True, text=True,
-        env={**os.environ, "ZESU_ARM": "1"})
-    if done.returncode:
-        tail = (done.stderr or done.stdout).strip().split("\n")[-25:]
+    jobs = launch_width(root, requested)
+    with tempfile.TemporaryFile(mode="w+") as output:
+        process = subprocess.Popen(
+            ["ionice", "-c3", "nice", "-n", "10", "make", "check-iris",
+             f"AGENT_BUILD_DIR={root.resolve() / '_build'}", f"AGENT_JOBS={jobs}"],
+            cwd=root, stdout=output, stderr=subprocess.STDOUT,
+            start_new_session=True, env={**os.environ, "ZESU_ARM": "1"})
+        while True:
+            try:
+                status = process.wait(timeout=30)
+                break
+            except subprocess.TimeoutExpired:
+                current, _, other = coqc_slots.width(jobs, root)
+                if current < jobs:
+                    os.killpg(process.pid, signal.SIGTERM)
+                    process.wait()
+                    raise SystemExit(
+                        f"benchmark build stopped: width {jobs} exceeds "
+                        f"{current} slots with {other} other coqc")
+        output.seek(0)
+        lines = output.read().strip().split("\n")
+    if status:
+        tail = lines[-25:]
         raise SystemExit("benchmark build failed:\n" + "\n".join(tail))
+
+
+class ProbeWidth:
+    """Reduce new probe launches when other coqc processes appear."""
+
+    def __init__(self, maximum: int, root: Path):
+        self.maximum = maximum
+        self.root = root
+        self.condition = threading.Condition()
+        self.stop = threading.Event()
+        self.active = 0
+        self.allowed = maximum
+        self.watcher = threading.Thread(target=self.watch, daemon=True)
+
+    def watch(self) -> None:
+        while not self.stop.wait(30):
+            with self.condition:
+                self.allowed = coqc_slots.width(self.maximum, self.root)[0]
+                self.condition.notify_all()
+
+    def acquire(self) -> None:
+        with self.condition:
+            while True:
+                self.allowed = coqc_slots.width(self.maximum, self.root)[0]
+                if self.active < self.allowed:
+                    self.active += 1
+                    return
+                self.condition.wait(timeout=30)
+
+    def release(self) -> None:
+        with self.condition:
+            self.active -= 1
+            self.condition.notify_all()
+
+    def __enter__(self):
+        self.watcher.start()
+        return self
+
+    def __exit__(self, *_):
+        self.stop.set()
+        self.watcher.join()
 
 
 def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
@@ -173,10 +245,14 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
 
     def one(module: str, lemma: str) -> dict:
         wait_for_room()
-        result = capture(root / PROOF_DIR / module, lemma,
-                         build_dir.resolve(),
-                         scratch, probe_dir, seconds=seconds,
-                         imports=imports, cwd=root)
+        width.acquire()
+        try:
+            result = capture(root / PROOF_DIR / module, lemma,
+                             build_dir.resolve(),
+                             scratch, probe_dir, seconds=seconds,
+                             imports=imports, cwd=root)
+        finally:
+            width.release()
         if result.goal_sha256:
             goal_dir.mkdir(parents=True, exist_ok=True)
             (goal_dir / f"{result.goal_sha256}.txt").write_text(
@@ -193,8 +269,9 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
                 "signature": signature_text,
                 "goal_sha256": result.goal_sha256}
 
-    with ThreadPoolExecutor(max_workers=jobs) as pool:
-        return list(pool.map(lambda pair: one(*pair), pairs))
+    with ProbeWidth(jobs, root) as width:
+        with ThreadPoolExecutor(max_workers=jobs) as pool:
+            return list(pool.map(lambda pair: one(*pair), pairs))
 
 
 def summary(rows: list[dict]) -> dict:
@@ -268,9 +345,9 @@ def main() -> int:
     root = source_tree(repository, commit)
     print(f"arm tree {root}", file=sys.stderr, flush=True)
     if not (root / ".arm-commit").exists():
-        build(root, guard_jobs(arguments.jobs))
+        build(root, arguments.jobs)
         mark_built(root, commit)
-    jobs = guard_jobs(arguments.jobs)
+    jobs = launch_width(root, arguments.jobs)
     print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
           flush=True)
     rows = measure(root, pairs, jobs, arguments.seconds, None,
