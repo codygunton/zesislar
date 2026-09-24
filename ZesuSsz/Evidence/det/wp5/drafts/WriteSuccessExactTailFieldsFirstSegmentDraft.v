@@ -1,0 +1,28 @@
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Sets.v2.
+Require Import ZesuSsz.Proofs.WriteSuccess.InterfacesCoverage.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Contracts.IslarisCode.
+From ZesuSsz.Proofs.WriteSuccess Require Import
+  Interfaces WriteSuccessNativeContract WriteSuccessRepresentation
+  WriteSuccessExactPrefixStackFacts.
+
+Lemma write_success_exact_tail_fields_first_segment_draft
+    `{!islaG Sigma} `{!threadG}
+    (sp data size : bv 64) (hashBase : Z)
+    (hashBytes bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15c6c encoderBytesEntryBoundary -∗
+  □ instr_pre 0x15c10 encoderByteListsEntryBoundary -∗
+  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗
+  instr_body 0x1596c (writeSuccessTailFirstBranchBoundary (fun _ => P)) -∗
+  instr_body 0x158e0
+    (writeSuccessExactTailFieldsEntryBoundary sp data size (BV 64 0)
+      (Z_to_bv 64 (hashBase + Z.of_nat (length hashBytes))) bytes tail
+      (hashBase ↦ₘ∗ hashBytes ∗ P)).
+Proof. move => *. zesu_block. Qed.
+
+Print Assumptions write_success_exact_tail_fields_first_segment_draft.
