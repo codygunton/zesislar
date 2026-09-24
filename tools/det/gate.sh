@@ -3,9 +3,11 @@
 #
 # Plan section 4 rule 4: a gate never shares the machine with a probe,
 # replay or benchmark batch, and never two gates at once, across every
-# agent. The gate takes /tmp/zesu-gate.lock (holder, PID, start); every
-# guard holds its launches while the lock is live, and the gate waits for
-# the `coqc` already running to drain before it starts. Rule 1: it runs
+# agent. A gate has priority over new batches (amended 2026-09-24): it
+# takes /tmp/zesu-gate.lock in the `wanted` state first, so every guard
+# starts no new arm, batch, or probe; a running arm completes, the gate
+# waits for its job scopes, marks the lock `held`, and waits for the
+# `coqc` still running to drain before it starts. Rule 1: it runs
 # inside a 120 GiB systemd scope (ZESU_IO=gate), so 48 GiB of the machine
 # stay free for other users. Jobs come from the guard's `gate-jobs`: 48
 # for check-fast, 24 for check-iris.
@@ -17,14 +19,15 @@ guard=tools/resource_guard.sh
 target=${1:-check-iris}
 log=${2:-_build/agents/infra/gate-$target.log}
 
-live=$(systemctl --user list-units --type=scope --state=active --plain \
-  --no-legend 'zesudet-*' 2>/dev/null | wc -l)
-if [ "$live" -gt 0 ]; then
-  echo "refusing: $live job scopes are alive; gates run alone" >&2
-  systemctl --user list-units --type=scope --state=active --plain \
-    --no-legend 'zesudet-*' >&2
-  exit 3
-fi
+# The lock is wanted from here to exit: no new batch starts behind it.
+$guard lock-status >/dev/null
+$guard lock-want $$ "${COORD_AGENT:-$USER}:gate-$target:$root" || exit $?
+release() {
+  grep -q "pid=$$ " /tmp/zesu-gate.lock 2>/dev/null && rm -f /tmp/zesu-gate.lock
+  kill "${watcher:-}" 2>/dev/null || true
+}
+trap release EXIT
+echo "gate lock: $(cat /tmp/zesu-gate.lock)"
 
 # The checkers run unconditionally, before any step Dune can satisfy from
 # its cache. A cached `check-fast` reported success while a hygiene
@@ -41,20 +44,8 @@ python3 ZesuSsz/Evidence/check_spec_shapes.py
 bash ZesuSsz/Evidence/check_write_success_decoder.sh
 echo "uncached checks passed"
 
-# The lock is held from here to exit. `run_locked` would hold it too, but
-# the drain below must run inside it.
-$guard lock-status >/dev/null
-if ! ( set -C; printf 'holder=%s pid=%s start=%s\n' \
-         "${COORD_AGENT:-$USER}:gate-$target:$root" $$ "$(date -Is)" \
-         > /tmp/zesu-gate.lock ) 2>/dev/null; then
-  echo "refusing: a gate holds /tmp/zesu-gate.lock: $(cat /tmp/zesu-gate.lock)" >&2
-  exit 3
-fi
-release() {
-  grep -q "pid=$$ " /tmp/zesu-gate.lock 2>/dev/null && rm -f /tmp/zesu-gate.lock
-  kill "${watcher:-}" 2>/dev/null || true
-}
-trap release EXIT
+# Running arms and batches complete; then the lock is held.
+$guard lock-hold $$ || exit $?
 echo "gate lock: $(cat /tmp/zesu-gate.lock)"
 
 # Other agents' guards now hold; wait for their running `coqc` to finish

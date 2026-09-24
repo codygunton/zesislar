@@ -20,6 +20,9 @@
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
+#   lock-want PID HOLDER take the lock for a gate script, state wanted
+#   lock-hold PID        wait for running job scopes to finish, then mark
+#                        the lock held
 #   report               one line of guard state and Prometheus figures
 #   window ARGS          `tools/det/prom.py window ARGS`
 #
@@ -32,7 +35,12 @@
 #   memory used below 150 GiB;
 #   at most 48 `coqc` processes, counted for every agent, not only ours;
 #   load5 at most 80 and at most 16 blocked processes;
-#   no gate holds /tmp/zesu-gate.lock.
+#   no gate holds or wants /tmp/zesu-gate.lock.
+# A gate has priority over new batches (plan section 4 item 4, amended
+# 2026-09-24): it writes the lock in the `wanted` state before its build,
+# and no new arm, batch, scope, or probe starts while the lock exists in
+# either state. Jobs inside a running batch go on, so a running arm
+# completes; the gate waits for it and then marks the lock `held`.
 # While an arm populates its build directory, or while a disk is more than
 # 80 % busy, launches also keep a ramp of two per second across guards;
 # otherwise they fill the width as slots free up.
@@ -105,9 +113,10 @@ blocked_count() { awk '/^procs_blocked/ {print $2}' /proc/stat; }
 
 # --- the gate lock ---------------------------------------------------------
 #
-# "A gate runs alone" is mechanical across agents: a gate writes its holder,
-# PID, and start time to the lock, and every guard holds launches while the
-# lock is live. A lock whose PID is dead is removed and reported.
+# "A gate runs alone" is mechanical across agents: a gate writes its state,
+# holder, PID, and start time to the lock, and every guard holds new
+# launches while the lock is live, wanted or held. A lock whose PID is dead
+# is removed and reported.
 
 lock_pid() { sed -n 's/.*pid=\([0-9]*\).*/\1/p' "$GATE_LOCK" 2>/dev/null; }
 
@@ -128,9 +137,9 @@ lock_live() {
 lock_acquire() {
   local holder=$1 pid=$2 current
   while :; do
-    if ( set -C; printf 'holder=%s pid=%s start=%s\n' "$holder" "$pid" \
-           "$(date -Is)" > "$GATE_LOCK" ) 2>/dev/null; then
-      note "LOCK taken by $holder pid $pid"
+    if ( set -C; printf 'state=wanted holder=%s pid=%s start=%s\n' \
+           "$holder" "$pid" "$(date -Is)" > "$GATE_LOCK" ) 2>/dev/null; then
+      note "LOCK wanted by $holder pid $pid"
       return 0
     fi
     if current=$(lock_live); then
@@ -138,6 +147,26 @@ lock_acquire() {
       return 3
     fi
   done
+}
+
+# wanted -> held, once the running batches have finished. Gives up after
+# ZESU_GATE_SCOPE_WAIT seconds (4 h) and releases the lock.
+lock_hold() {
+  local pid=$1 limit=${ZESU_GATE_SCOPE_WAIT:-14400} start=$SECONDS live
+  local noted=""
+  # Running job scopes, ours and other agents'. A gate waits for them.
+  while live=$(live_scopes | wc -l); (( live > 0 )); do
+    if (( SECONDS - start >= limit )); then
+      echo "refusing: $live job scopes still alive after $(( SECONDS - start )) s" >&2
+      lock_release "$pid"; return 3
+    fi
+    [ -z "$noted" ] && note "LOCK wanted: waiting for $live job scopes" && noted=1
+    sleep "$POLL_SECONDS"
+  done
+  local waited=$(( SECONDS - start ))
+  [ "$(lock_pid)" = "$pid" ] || return 3
+  sed -i 's/^state=wanted /state=held /' "$GATE_LOCK"
+  note "LOCK held by pid $pid after $waited s"
 }
 
 lock_release() {
@@ -153,6 +182,7 @@ run_locked() {
   if [ -n "${ZESU_IN_GATE:-}${ZESU_ARM:-}" ]; then exec "$@"; fi
   lock_acquire "${COORD_AGENT:-$USER}:$name:$PWD" $$ || exit $?
   trap 'lock_release $$' EXIT
+  lock_hold $$ || exit $?
   ZESU_IN_GATE=1 "$@"
 }
 
@@ -296,7 +326,8 @@ hold_reason() {
   elif (( coqc >= MAX_COQC )); then echo "coqc $coqc machine-wide"
   elif (( load > MAX_LOAD )); then echo "load5 $load"
   elif (( blocked > MAX_BLOCKED )); then echo "blocked $blocked"
-  elif [ -z "${ZESU_IN_GATE:-}" ] && holder=$(lock_live 2>/dev/null); then
+  elif [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ] \
+       && holder=$(lock_live 2>/dev/null); then
     echo "gate lock: $holder"
   fi
 }
@@ -343,6 +374,19 @@ guard_watch() {
   done
 }
 
+# A new scope or batch waits while a gate wants or holds the lock. Work
+# inside a running batch or gate is not new and goes on.
+wait_for_gate() {
+  [ -n "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ] && return 0
+  local holder held=""
+  while holder=$(lock_live 2>/dev/null); do
+    [ -z "$held" ] && note "HOLD launch for gate: $holder" && held=1
+    sleep "$POLL_SECONDS"
+  done
+  [ -n "$held" ] && note "RESUME launch after gate"
+  return 0
+}
+
 # A direct `scope` or `batch` call obeys the launch line too; `wait`
 # adds the other checks for runners that pace their own jobs.
 wait_for_memory_budget() {
@@ -362,6 +406,7 @@ wait_for_memory_budget() {
 run_scope() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  wait_for_gate
   wait_for_memory_budget
   local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
   echo "$unit.scope" >> "$REGISTRY"
@@ -379,6 +424,7 @@ run_batch() {
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
     exec "$@"
   fi
+  wait_for_gate
   wait_for_memory_budget
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
   echo "$unit.scope" >> "$REGISTRY"
@@ -421,8 +467,11 @@ case "${1:-report}" in
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;
   lock-status) lock_live || echo "no gate lock" ;;
+  # A gate script passes its own PID, so the lock lives as long as the gate.
+  lock-want) lock_acquire "$3" "$2" ;;
+  lock-hold) lock_hold "$2" ;;
   hold)   r=$(hold_reason); echo "${r:-none}" ;;
   window) shift; python3 "$PROM" window "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
 esac
