@@ -64,6 +64,12 @@ WRITE_FAILURE_TRACE_COQ := IslaTraces.write_failure
 MAIN_DUMP      := build/islaris-dumps/main.dump
 MAIN_TRACE_DIR := generated/isla-traces/main
 MAIN_TRACE_COQ := IslaTraces.main
+STARTUP_DUMP := build/islaris-dumps/startup.dump
+STARTUP_TRACE_DIR := generated/isla-traces/startup
+STARTUP_TRACE_COQ := IslaTraces.startup
+DECODER_DUMP_DIR := experiments/islaris-decoder/generated
+DECODER_DUMP_STAMP := $(DECODER_DUMP_DIR)/.stamp
+DECODER_TRACE_STAMP := generated/isla-traces/decoder.stamp
 
 WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
 WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
@@ -111,7 +117,37 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	       $(TRACE_DIR)/dune
 
 .PHONY: traces
-traces: $(MAIN_TRACE_DIR)/instrs.v $(WRITE_FAILURE_TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
+traces: $(MAIN_TRACE_DIR)/instrs.v $(STARTUP_TRACE_DIR)/instrs.v $(DECODER_TRACE_STAMP) $(WRITE_FAILURE_TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
+
+$(DECODER_DUMP_STAMP): build/endpoint-elf experiments/islaris-decoder/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
+	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --profile experiments/islaris-decoder/profile.json \
+	  --split-output-dir $(DECODER_DUMP_DIR)
+	touch $@
+
+$(DECODER_TRACE_STAMP): $(DECODER_DUMP_STAMP) $(ISLA_ETC)/$(ISLA_CFG)
+	@find $(DECODER_DUMP_DIR) -maxdepth 1 -type f -name 'block_*.dump' \
+	  -print0 | sort -z | xargs -0 -n 1 -P 2 sh -c ' \
+	    set -e; \
+	    dump_file=$$1; \
+	    block_number=$${dump_file##*block_}; \
+	    block_number=$${block_number%.dump}; \
+	    trace_dir=generated/isla-traces/decoder_$$block_number; \
+	    mkdir -p $$trace_dir; \
+	    if ! $(OPAM) islaris $$dump_file -j1 -o $$trace_dir \
+	      --coqdir=IslaTraces.decoder_$$block_number --arch=riscv64 \
+	      >$$trace_dir/generation.log 2>&1; then \
+	      tail -n 30 $$trace_dir/generation.log; exit 1; \
+	    fi; \
+	    sed -i -e "/(package islaris)/d" \
+	      -e "s/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/" \
+	      $$trace_dir/dune \
+	  ' sh
+	touch $@
+
+.PHONY: decoder-traces
+decoder-traces: $(DECODER_TRACE_STAMP)
 
 $(ZKVM_EXIT_TRACE_DIR)/instrs.v: $(ZKVM_EXIT_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	mkdir -p $(ZKVM_EXIT_TRACE_DIR)
@@ -194,6 +230,22 @@ write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
 # Main traces use the pinned dump produced by the Evidence tooling.
 .PHONY: main-traces
 main-traces: $(MAIN_TRACE_DIR)/instrs.v
+
+.PHONY: startup-traces
+startup-traces: $(STARTUP_TRACE_DIR)/instrs.v
+
+$(STARTUP_DUMP): build/endpoint-elf experiments/islaris-startup/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
+	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --profile experiments/islaris-startup/profile.json --output $@
+
+$(STARTUP_TRACE_DIR)/instrs.v: $(STARTUP_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
+	mkdir -p $(STARTUP_TRACE_DIR)
+	$(OPAM) islaris $(STARTUP_DUMP) -j2 -o $(STARTUP_TRACE_DIR) \
+	  --coqdir=$(STARTUP_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	  $(STARTUP_TRACE_DIR)/dune
 
 $(MAIN_DUMP): build/endpoint-elf experiments/islaris-main/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \

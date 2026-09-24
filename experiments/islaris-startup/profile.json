@@ -1,0 +1,6 @@
+{
+  "islaConfig": "riscv64_zesu.toml",
+  "ranges": [["0x10120", "0x1012c"]],
+  "alignedProgramCounter": "PC",
+  "controlFlowRegisters": {"ra": "x1"}
+}

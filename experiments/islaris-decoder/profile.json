@@ -1,0 +1,9 @@
+{
+  "islaConfig": "riscv64_zesu.toml",
+  "alignedProgramCounter": "PC",
+  "controlFlowRegisters": {"ra": "x1"},
+  "ranges": [],
+  "splitRanges": [
+    {"start": "0x12168", "end": "0x14cb0", "maxInstructions": 32}
+  ]
+}

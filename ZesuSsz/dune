@@ -13,7 +13,7 @@
    Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryFinal))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
-   isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit
+   isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit IslaTraces.startup
    IslaTraces.write_failure IslaTraces.main
    IslaTraces.allocator_get IslaTraces.read_input
    IslaTraces.write_success_00 IslaTraces.write_success_01 IslaTraces.write_success_02 IslaTraces.write_success_03
@@ -49,4 +49,39 @@
    IslaTraces.write_success_120 IslaTraces.write_success_121 IslaTraces.write_success_122 IslaTraces.write_success_123
    IslaTraces.write_success_124 IslaTraces.write_success_125 IslaTraces.write_success_126 IslaTraces.write_success_127
    IslaTraces.write_success_blocks
-   lithium iris stdpp RecordUpdate Ltac2))
+   IslaTraces.decoder_00 IslaTraces.decoder_01 IslaTraces.decoder_02 IslaTraces.decoder_03 IslaTraces.decoder_04 IslaTraces.decoder_05 IslaTraces.decoder_06 IslaTraces.decoder_07
+   IslaTraces.decoder_08 IslaTraces.decoder_09 IslaTraces.decoder_10 IslaTraces.decoder_11 IslaTraces.decoder_12 IslaTraces.decoder_13 IslaTraces.decoder_14 IslaTraces.decoder_15
+   IslaTraces.decoder_16 IslaTraces.decoder_17 IslaTraces.decoder_18 IslaTraces.decoder_19 IslaTraces.decoder_20 IslaTraces.decoder_21 IslaTraces.decoder_22 IslaTraces.decoder_23
+   IslaTraces.decoder_24 IslaTraces.decoder_25 IslaTraces.decoder_26 IslaTraces.decoder_27 IslaTraces.decoder_28 IslaTraces.decoder_29 IslaTraces.decoder_30 IslaTraces.decoder_31
+   IslaTraces.decoder_32 IslaTraces.decoder_33 IslaTraces.decoder_34 IslaTraces.decoder_35 IslaTraces.decoder_36 IslaTraces.decoder_37 IslaTraces.decoder_38 IslaTraces.decoder_39
+   IslaTraces.decoder_40 IslaTraces.decoder_41 IslaTraces.decoder_42 IslaTraces.decoder_43 IslaTraces.decoder_44 IslaTraces.decoder_45 IslaTraces.decoder_46 IslaTraces.decoder_47
+   IslaTraces.decoder_48 IslaTraces.decoder_49 IslaTraces.decoder_50 IslaTraces.decoder_51 IslaTraces.decoder_52 IslaTraces.decoder_53 IslaTraces.decoder_54 IslaTraces.decoder_55
+   IslaTraces.decoder_56 IslaTraces.decoder_57 IslaTraces.decoder_58 IslaTraces.decoder_59 IslaTraces.decoder_60 IslaTraces.decoder_61 IslaTraces.decoder_62 IslaTraces.decoder_63
+   IslaTraces.decoder_64 IslaTraces.decoder_65 IslaTraces.decoder_66 IslaTraces.decoder_67 IslaTraces.decoder_68 IslaTraces.decoder_69 IslaTraces.decoder_70 IslaTraces.decoder_71
+   IslaTraces.decoder_72 IslaTraces.decoder_73 IslaTraces.decoder_74 IslaTraces.decoder_75 IslaTraces.decoder_76 IslaTraces.decoder_77 IslaTraces.decoder_78 IslaTraces.decoder_79
+   IslaTraces.decoder_80 IslaTraces.decoder_81 IslaTraces.decoder_82 IslaTraces.decoder_83 IslaTraces.decoder_84 IslaTraces.decoder_85 IslaTraces.decoder_86 IslaTraces.decoder_87
+   IslaTraces.decoder_88 IslaTraces.decoder_89 IslaTraces.decoder_90 IslaTraces.decoder_91 IslaTraces.decoder_92 IslaTraces.decoder_93 IslaTraces.decoder_94 IslaTraces.decoder_95
+   IslaTraces.decoder_96 IslaTraces.decoder_97 IslaTraces.decoder_98 IslaTraces.decoder_99 IslaTraces.decoder_100 IslaTraces.decoder_101 IslaTraces.decoder_102 IslaTraces.decoder_103
+   IslaTraces.decoder_104 IslaTraces.decoder_105 IslaTraces.decoder_106 IslaTraces.decoder_107 IslaTraces.decoder_108 IslaTraces.decoder_109 IslaTraces.decoder_110 IslaTraces.decoder_111
+   IslaTraces.decoder_112 IslaTraces.decoder_113 IslaTraces.decoder_114 IslaTraces.decoder_115 IslaTraces.decoder_116 IslaTraces.decoder_117 IslaTraces.decoder_118 IslaTraces.decoder_119
+   IslaTraces.decoder_120 IslaTraces.decoder_121 IslaTraces.decoder_122 IslaTraces.decoder_123 IslaTraces.decoder_124 IslaTraces.decoder_125 IslaTraces.decoder_126 IslaTraces.decoder_127
+   IslaTraces.decoder_128 IslaTraces.decoder_129 IslaTraces.decoder_130 IslaTraces.decoder_131 IslaTraces.decoder_132 IslaTraces.decoder_133 IslaTraces.decoder_134 IslaTraces.decoder_135
+   IslaTraces.decoder_136 IslaTraces.decoder_137 IslaTraces.decoder_138 IslaTraces.decoder_139 IslaTraces.decoder_140 IslaTraces.decoder_141 IslaTraces.decoder_142 IslaTraces.decoder_143
+   IslaTraces.decoder_144 IslaTraces.decoder_145 IslaTraces.decoder_146 IslaTraces.decoder_147 IslaTraces.decoder_148 IslaTraces.decoder_149 IslaTraces.decoder_150 IslaTraces.decoder_151
+   IslaTraces.decoder_152 IslaTraces.decoder_153 IslaTraces.decoder_154 IslaTraces.decoder_155 IslaTraces.decoder_156 IslaTraces.decoder_157 IslaTraces.decoder_158 IslaTraces.decoder_159
+   IslaTraces.decoder_160 IslaTraces.decoder_161 IslaTraces.decoder_162 IslaTraces.decoder_163 IslaTraces.decoder_164 IslaTraces.decoder_165 IslaTraces.decoder_166 IslaTraces.decoder_167
+   IslaTraces.decoder_168 IslaTraces.decoder_169 IslaTraces.decoder_170 IslaTraces.decoder_171 IslaTraces.decoder_172 IslaTraces.decoder_173 IslaTraces.decoder_174 IslaTraces.decoder_175
+   IslaTraces.decoder_176 IslaTraces.decoder_177 IslaTraces.decoder_178 IslaTraces.decoder_179 IslaTraces.decoder_180 IslaTraces.decoder_181 IslaTraces.decoder_182 IslaTraces.decoder_183
+   IslaTraces.decoder_184 IslaTraces.decoder_185 IslaTraces.decoder_186 IslaTraces.decoder_187 IslaTraces.decoder_188 IslaTraces.decoder_189 IslaTraces.decoder_190 IslaTraces.decoder_191
+   IslaTraces.decoder_192 IslaTraces.decoder_193 IslaTraces.decoder_194 IslaTraces.decoder_195 IslaTraces.decoder_196 IslaTraces.decoder_197 IslaTraces.decoder_198 IslaTraces.decoder_199
+   IslaTraces.decoder_200 IslaTraces.decoder_201 IslaTraces.decoder_202 IslaTraces.decoder_203 IslaTraces.decoder_204 IslaTraces.decoder_205 IslaTraces.decoder_206 IslaTraces.decoder_207
+   IslaTraces.decoder_208 IslaTraces.decoder_209 IslaTraces.decoder_210 IslaTraces.decoder_211 IslaTraces.decoder_212 IslaTraces.decoder_213 IslaTraces.decoder_214 IslaTraces.decoder_215
+   IslaTraces.decoder_216 IslaTraces.decoder_217 IslaTraces.decoder_218 IslaTraces.decoder_219 IslaTraces.decoder_220 IslaTraces.decoder_221 IslaTraces.decoder_222 IslaTraces.decoder_223
+   IslaTraces.decoder_224 IslaTraces.decoder_225 IslaTraces.decoder_226 IslaTraces.decoder_227 IslaTraces.decoder_228 IslaTraces.decoder_229 IslaTraces.decoder_230 IslaTraces.decoder_231
+   IslaTraces.decoder_232 IslaTraces.decoder_233 IslaTraces.decoder_234 IslaTraces.decoder_235 IslaTraces.decoder_236 IslaTraces.decoder_237 IslaTraces.decoder_238 IslaTraces.decoder_239
+   IslaTraces.decoder_240 IslaTraces.decoder_241 IslaTraces.decoder_242 IslaTraces.decoder_243 IslaTraces.decoder_244 IslaTraces.decoder_245 IslaTraces.decoder_246 IslaTraces.decoder_247
+   IslaTraces.decoder_248 IslaTraces.decoder_249 IslaTraces.decoder_250 IslaTraces.decoder_251 IslaTraces.decoder_252 IslaTraces.decoder_253 IslaTraces.decoder_254 IslaTraces.decoder_255
+   IslaTraces.decoder_256 IslaTraces.decoder_257 IslaTraces.decoder_258 IslaTraces.decoder_259 IslaTraces.decoder_260 IslaTraces.decoder_261 IslaTraces.decoder_262 IslaTraces.decoder_263
+   IslaTraces.decoder_264 IslaTraces.decoder_265 IslaTraces.decoder_266 IslaTraces.decoder_267 IslaTraces.decoder_268 IslaTraces.decoder_269 IslaTraces.decoder_270 IslaTraces.decoder_271
+   IslaTraces.decoder_272 IslaTraces.decoder_273 IslaTraces.decoder_274 IslaTraces.decoder_275 IslaTraces.decoder_276 IslaTraces.decoder_277
+  lithium iris stdpp RecordUpdate Ltac2))
