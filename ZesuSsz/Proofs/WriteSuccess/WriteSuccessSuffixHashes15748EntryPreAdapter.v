@@ -21,12 +21,4 @@ Lemma write_success_suffix_hashes_15748_entry_pre_adapter
   instr_pre 0x15748
     (writeSuccessSuffixHashes15748EntrySource
       P sp pointer base total processed remaining bytes tail).
-Proof.
-  iIntros "Htarget".
-  iApply (instr_pre_wand 0x15748 0x15748 true true with "Htarget");
-    [done | reflexivity |].
-  iIntros "Hsource".
-  iApply (write_success_suffix_hashes_15748_entry_resource_adapter
-    P sp pointer base total processed remaining bytes tail).
-  iExact "Hsource".
-Qed.
+Proof. move => *. zesu_block. Qed.

@@ -63,17 +63,7 @@ Lemma write_success_transactions_chunk_150ec_jump_block
     transaction transactions processed remaining bytes prefix suffix tail) -∗
   instr_body 0x150ec (writeSuccessTransactionsAt150ecJumpBlock P sp base
     transaction transactions processed remaining bytes prefix suffix tail).
-Proof.
-  move => *.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  Unshelve. all: repeat iIntros "?"; liARun.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_transactions_chunk_150ec_jump
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
@@ -125,9 +115,6 @@ Lemma write_success_transactions_at10190_block_unpack
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
   writeSuccessTransactions150ecCallFrame P sp base transaction
     transactions processed remaining bytes prefix suffix tail ∗ True.
-Proof.
-  rewrite /writeSuccessTransactionsAt10190Block.
-  iIntros "Hblock". iExact "Hblock".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Opaque writeSuccessTransactionsAt10190Block.

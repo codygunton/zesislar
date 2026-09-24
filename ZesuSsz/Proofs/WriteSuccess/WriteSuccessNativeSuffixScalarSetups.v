@@ -30,13 +30,7 @@ Lemma write_success_suffix_int_15960_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x15960 (writeSuccessSuffixInt15960SetupSpec P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try bv_solve; try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15960 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeSuccessSuffixBooleanSetupTarget
     `{!islaG Sigma} `{!threadG} (returnBase value : bv 64)
@@ -63,13 +57,7 @@ Lemma write_success_suffix_boolean_15974_setup
   instr_body 0x15974
     (writeSuccessSuffixBooleanSetupEntry 0x1597c
       (BV 64 0x15978) (BV 64 1) P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try bv_solve; try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15974 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma write_success_suffix_boolean_15994_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
@@ -77,13 +65,7 @@ Lemma write_success_suffix_boolean_15994_setup
   instr_body 0x15994
     (writeSuccessSuffixBooleanSetupEntry 0x1599c
       (BV 64 0x15998) (BV 64 0) P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try bv_solve; try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15994 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeSuccessSuffixBytes1598cSetupSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -111,13 +93,7 @@ Lemma write_success_suffix_bytes_15980_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x15980 (writeSuccessSuffixBytes15980SetupSpec P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try bv_solve; try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15980 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeSuccessSuffixInt159acSetupSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -147,13 +123,7 @@ Lemma write_success_suffix_int_159a0_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x159a0 (writeSuccessSuffixInt159a0SetupSpec P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try bv_solve; try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "159a0 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeSuccessSuffixJump15990Spec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -165,10 +135,4 @@ Lemma write_success_suffix_jump_15990
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x15990 (writeSuccessSuffixJump15990Spec P).
-Proof.
-  move => *. iStartProof. iIntros "_ #Hlookup". liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption; try bv_solve; try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15990 jump residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

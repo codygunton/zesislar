@@ -37,30 +37,4 @@ Lemma write_success_transactions_chunk_15100_auipc_block
     transaction transactions processed remaining bytes prefix suffix tail) -∗
   instr_body 0x15100 (writeSuccessTransactionsAt15100Block P sp base
     transaction transactions processed remaining bytes prefix suffix tail).
-Proof.
-  move => *.
-  iStartProof.
-  iIntros "_ #Hlookup #Hcode Hnext".
-  iEval (unfold IslaTraces.write_success_blocks.Index.spec_instr_resources)
-    in "Hcode".
-  liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-  Unshelve.
-  all: repeat iIntros "?".
-  all: iRename select (writeSuccessTransactionOwn transaction) into
-    "HtransactionOwn".
-  all: iDestruct select (_ ∗ _)%I as
-    "(Hremaining & Hmmio & Htrace & HP & Hinvariant & Hexit & _)".
-  all: liARun.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.

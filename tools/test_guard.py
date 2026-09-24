@@ -73,6 +73,13 @@ class GuardLockTest(unittest.TestCase):
         self.environment["ZESU_HOLD_GIB"] = "0"
         self.assertIn("at the 0 GiB hold", self.guard("hold").stdout)
 
+    def test_direct_batch_waits_at_the_launch_line(self):
+        self.environment["ZESU_LAUNCH_GIB"] = "0"
+        done = subprocess.run(
+            ["timeout", "0.3", str(GUARD), "batch", "t", "--", "true"],
+            capture_output=True, text=True, env=self.environment)
+        self.assertEqual(done.returncode, 124)
+
     def test_ramp_only_while_populating(self):
         def six_launches():
             started = time.monotonic()

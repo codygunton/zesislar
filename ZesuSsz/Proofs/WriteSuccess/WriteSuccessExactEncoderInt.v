@@ -83,15 +83,7 @@ Lemma encoder_int_exact_suffix_correct `{!islaG Sigma} `{!threadG}
   ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15d2c (encoderIntExactSuffixSpec value sp ret tail P).
-Proof.
-  move => * /=. iStartProof. liARun.
-  Unshelve. all: prepare_sidecond; try assumption; try bv_solve; try lia.
-  all: try (bv_simplify_arith select (bv_extract 0 4 sp = _)).
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try bv_solve.
-  all: try (change (bv_extract 0 2 ret = BV 2 0); assumption).
-  all: lazymatch goal with |- ?G => fail "suffix residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Lemma encoder_int_exact_correct `{!islaG Sigma} `{!threadG}
     (value sp ret : bv 64) (tail : spec) (P : iProp Sigma) :

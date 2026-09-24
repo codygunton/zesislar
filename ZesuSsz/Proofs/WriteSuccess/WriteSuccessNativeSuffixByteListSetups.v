@@ -40,17 +40,7 @@ Lemma write_success_post_15940_byte_list_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x15940 (writeSuccessPost15940SetupSpec P).
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hlookup".
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15940 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Definition writeSuccessPost1595cSetupSpec
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
@@ -86,14 +76,4 @@ Lemma write_success_post_15950_byte_list_setup
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   instr_body 0x15950 (writeSuccessPost15950SetupSpec P).
-Proof.
-  move => *.
-  iStartProof. iIntros "_ #Hlookup".
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  Unshelve. all: iFrame.
-  all: lazymatch goal with |- ?G => fail "15950 setup residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.

@@ -38,15 +38,4 @@ Lemma write_success_header_chunk_14e38 `{!islaG Sigma} `{!threadG}
   instr_body 0x14e38
     (writeSuccessHeaderAfterCopySpec sp bytes
       (writeSuccessHeaderEventsAfter1184 sp tail) tail P).
-Proof.
-  move => *.
-  iStartProof.
-  iIntros "_ #Hlookup #Hcode #Houtput Hnext".
-  run_header_output.
-  Unshelve.
-  all: try prepare_sidecond.
-  all: try assumption.
-  all: try bv_solve.
-  all: try lia.
-  all: try iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.

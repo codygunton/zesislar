@@ -343,9 +343,26 @@ guard_watch() {
   done
 }
 
+# A direct `scope` or `batch` call obeys the launch line too; `wait`
+# adds the other checks for runners that pace their own jobs.
+wait_for_memory_budget() {
+  local used held=""
+  while :; do
+    used=$(used_gib)
+    (( used >= KILL_GIB )) && kill_youngest > /dev/null
+    if (( used < LAUNCH_GIB )); then
+      [ -n "$held" ] && note "RESUME memory launch at $used GiB"
+      return 0
+    fi
+    [ -z "$held" ] && note "HOLD memory launch at $used GiB" && held=1
+    sleep "$POLL_SECONDS"
+  done
+}
+
 run_scope() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  wait_for_memory_budget
   local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
   echo "$unit.scope" >> "$REGISTRY"
   exec systemd-run --user --scope --quiet --unit="$unit" \
@@ -362,6 +379,7 @@ run_batch() {
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
     exec "$@"
   fi
+  wait_for_memory_budget
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
   echo "$unit.scope" >> "$REGISTRY"
   local limit=$BATCH_LIMIT

@@ -49,10 +49,7 @@ Lemma optional_u64_none_exact_tail `{!islaG Sigma} `{!threadG}
     tail (optionalU64NoneBooleanFrame P)) -∗
   instr_body 0x15c04
     (optionalU64NoneExactTailEntry sp ret old_x5 old_x6 old_x10 old_x11 tail P).
-Proof.
-  zesu_block.
-  Unshelve. all: try zesu_finish.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions optional_u64_none_exact_tail.
 Print Assumptions optional_u64_none_exact_payload.

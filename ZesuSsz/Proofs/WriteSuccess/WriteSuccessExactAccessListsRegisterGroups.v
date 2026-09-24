@@ -16,24 +16,5 @@ Lemma access_copy_register_groups `{!islaG Sigma} `{!threadG} :
     "x1" ↦ᵣ RVal_Bits old_ra ∗ "x5" ↦ᵣ RVal_Bits old5 ∗
     accessRegisterGroup ["x12"; "x13"; "x14"; "x15"] ∗
     accessRegisterGroup accessUnchangedRegisters ∗ True.
-Proof.
-  iIntros "Hregs".
-  iAssert (accessRegisterGroup ["x1"] ∗ accessRegisterGroup ["x5"] ∗
-    accessRegisterGroup ["x12"; "x13"; "x14"; "x15"] ∗
-    accessRegisterGroup accessUnchangedRegisters)%I with "[Hregs]" as "Hgroups".
-  { unfold accessRegisterGroup, reg_col. rewrite -!big_sepL_app.
-    iApply (big_sepL_submseteq with "Hregs").
-    cbn [writeSuccessAccessListsOtherRegShapes writeSuccessAccessListsOtherRegisters
-      accessUnchangedRegisters fmap]. solve_submseteq. }
-  iDestruct "Hgroups" as "(Hra & H5 & Htmp & Hrest)".
-  iEval (unfold accessRegisterGroup) in "Hra".
-  iEval (unfold accessRegisterGroup) in "H5".
-  iEval (rewrite reg_col_cons reg_col_nil) in "Hra".
-  iEval (rewrite reg_col_cons reg_col_nil) in "H5".
-  iDestruct "Hra" as "((%vra & %Hra & Hra) & _)".
-  iDestruct "H5" as "((%v5 & %H5 & H5) & _)".
-  destruct (valu_has_bits_shape _ _ Hra) as [old_ra ->].
-  destruct (valu_has_bits_shape _ _ H5) as [old5 ->].
-  iExists old_ra, old5. iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions access_copy_register_groups.

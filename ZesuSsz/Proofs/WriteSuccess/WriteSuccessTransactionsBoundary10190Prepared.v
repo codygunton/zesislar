@@ -45,10 +45,7 @@ Lemma write_success_transactions_10190_machine_frame_unpack
   "x1" ↦ᵣ RVal_Bits (BV 64 0x150f0) ∗
   writeSuccessTransactionsMachine150e8Rest
     sp base transactions processed transaction ∗ True.
-Proof.
-  rewrite /writeSuccessTransactions10190OpaqueMachineFrame.
-  iIntros "Hmachine". iExact "Hmachine".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Typeclasses Opaque writeSuccessTransactions10190OpaqueMachineFrame.
 Global Opaque writeSuccessTransactions10190OpaqueMachineFrame.
@@ -148,10 +145,7 @@ Lemma write_success_transactions_10190_prepared_unpack
         (writeSuccessTransactionsEvents sp remaining tail))) ∗
   writeSuccessTransactions10190ReturnBuilder
     sp base transaction transactions processed remaining tail ∗ True.
-Proof.
-  rewrite /writeSuccessTransactionsAt10190PreparedBlock.
-  iIntros "Hprepared". iExact "Hprepared".
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Global Instance : LithiumUnfold (@writeSuccessTransactionsAt10190PreparedBlock) := I.
 Global Opaque writeSuccessTransactionsAt10190PreparedBlock.

@@ -46,5 +46,5 @@ Lemma transactions_signature_tail_correct `{!islaG Sigma} `{!threadG}
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15098 (transactionSignatureTailPost sp row base bytes index P) -∗
   instr_body 0x15088 (transactionSignatureTailEntry sp row base bytes index P).
-Proof. zesu_block. all: unfold transactionRowWord; reflexivity. Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_signature_tail_correct.

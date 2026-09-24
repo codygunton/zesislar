@@ -21,12 +21,4 @@ Lemma write_success_suffix_hashes_15744_raw
     `{!islaG Sigma} `{!threadG} (Q : bv 64 -> iProp Sigma) :
   instr 0x15744 (Some IslaTraces.write_success_101.a15744.a15744) -∗
   instr_body 0x15744 (writeSuccessSuffixHashes15744Spec Q).
-Proof.
-  iStartProof. iIntros "Hinstr".
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  all: try iFrame.
-  all: try (iIntros "HQ"; iExact "HQ").
-  Unshelve. all: iFrame.
-Qed.
+Proof. move => *. zesu_block. Qed.

@@ -24,11 +24,4 @@ Lemma write_success_storage_keys_segment18_lbu_spec
     `{!islaG Sigma} `{!threadG} (pc : Z) :
   instr pc (Some IslaTraces.write_success_60.a152e8.a152e8) ⊢
   instr_body pc (writeSuccessStorageKeysLbuSpec pc).
-Proof.
-  iStartProof.
-  liARun.
-  Unshelve. all: prepare_sidecond.
-  all: try bv_solve.
-  all: try lia.
-  Show Existentials.
-Qed.
+Proof. move => *. zesu_block. Qed.

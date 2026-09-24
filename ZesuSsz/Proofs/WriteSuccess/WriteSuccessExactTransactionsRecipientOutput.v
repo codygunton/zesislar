@@ -35,11 +35,7 @@ Lemma transactions_recipient_output_correct `{!islaG Sigma} `{!threadG}
     (BV 64 0x15190) payload tail ("x2" ↦ᵣ RVal_Bits sp ∗ P ∗ True)) -∗
   instr_body 0x15190 (transactionRecipientOutputPost sp payload tail P) -∗
   instr_body 0x15180 (transactionRecipientOutputEntry sp old_ra old_x5 old_data old_size payload tail P).
-Proof.
-  zesu_block.
-  all: try (eexists; eexists; repeat split; reflexivity).
-  all: unfold transactionRecipientOutputPost; reflexivity.
-Qed.
+Proof. move => *. zesu_block. Qed.
 Print Assumptions transactions_recipient_output_correct.
 Lemma transactions_recipient_output_call_correct `{!islaG Sigma} `{!threadG}
     sp oldra old5 olddata oldsize payload tail (P : iProp Sigma) :

@@ -70,16 +70,6 @@ Lemma optional_u64_some_exact_boolean_resume_handoff `{!islaG Sigma} `{!threadG}
     (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
       (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail)
     (optionalU64SomeExactBooleanResumeFrame value sp ret old_x6 old_x8 tail P)).
-Proof.
-  iStartProof. iIntros "Hresume".
-  iApply (instr_pre_wand 0x15bec 0x15bec false false with "Hresume");
-    [done | done |].
-  iIntros "Hentry". iDestruct "Hentry" as "(Hsys & H1 & H2 & Hra & Hreturned & _)".
-  iDestruct "Hreturned" as "(H5 & H10 & H11 & Hbyte & Hlow & Hmmio & Htrace & Hframe & _)".
-  iDestruct "Hframe" as
-    "(H6 & H8 & Hs0 & Hsaved & %Hsp4 & %Halign & %Hmin & %Hmax &
-      %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
-  zesu_run.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions optional_u64_some_exact_boolean_resume_handoff.

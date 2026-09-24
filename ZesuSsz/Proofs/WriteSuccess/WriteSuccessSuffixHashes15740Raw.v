@@ -7,8 +7,4 @@ Lemma write_success_suffix_hashes_a15740_raw
   instr 0x15740 (Some IslaTraces.write_success_101.a15740.a15740) -∗
   instr_body 0x15740
     (InstrSpecs.Specs.zesu_ld_spec 0x15740 "x8" "x2" 912).
-Proof.
-  iIntros "Hinstr".
-  iApply (IslaTraces.write_success_101.a15740_spec.a15740_spec
-    0x15740 with "Hinstr").
-Qed.
+Proof. move => *. zesu_block. Qed.

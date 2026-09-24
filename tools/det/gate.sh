@@ -15,7 +15,7 @@ root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$root"
 guard=tools/resource_guard.sh
 target=${1:-check-iris}
-log=${2:-_build/agents/det/gate-$target.log}
+log=${2:-_build/agents/infra/gate-$target.log}
 
 live=$(systemctl --user list-units --type=scope --state=active --plain \
   --no-legend 'zesudet-*' 2>/dev/null | wc -l)
@@ -79,8 +79,8 @@ started=$(date -Is)
 echo "gate $target with $jobs jobs; $($guard report)"
 mkdir -p "$(dirname "$log")"
 set +e
-ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate $guard batch "gate-${target}" -- \
-  make "$target" AGENT_BUILD_DIR="$root/_build/agents/det" FAST_JOBS="$jobs" \
+ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
+  make "$target" AGENT_BUILD_DIR="$root/_build/agents/infra" FAST_JOBS="$jobs" \
   AGENT_JOBS="$jobs" > "$log" 2>&1
 status=$?
 set -e

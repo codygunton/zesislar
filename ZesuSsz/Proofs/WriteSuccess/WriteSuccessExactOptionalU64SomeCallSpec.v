@@ -40,18 +40,6 @@ Lemma optional_u64_some_exact_call_entry `{!islaG Sigma} `{!threadG}
       sp ret old_x5 old_x6 old_x8 bytes tail P)) -∗
   instr_body 0x15bc8 (optionalU64SomeExactCallEntry pointer value sp ret old_x5
     old_x6 old_x8 old_x11 tag bytes tail P).
-Proof.
-  iStartProof. iIntros "Hbranch Hjump".
-  iApply (instr_pre_wand 0x15bc8 0x15bc8 false false with "Hbranch");
-    [done | done |].
-  iIntros "Hentry". iDestruct "Hentry" as
-    "(Hsys & H1 & H2 & H8 & H10 & H11 & Hsource & Hstack & %Htag & %Hnonzero &
-      %Hvalue & %Hlength & %Hpointer & %Hlower & %Hupper & %Hsp4 & %Hmin & %Hmax &
-      Hcontext & _)".
-  iDestruct "Hcontext" as
-    "(H5 & H6 & Hmmio & Htrace & %HcontextSp4 & %Halign & %HcontextMin &
-      %HcontextMax & %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
-  zesu_run.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions optional_u64_some_exact_call_entry.

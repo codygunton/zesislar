@@ -134,19 +134,7 @@ Lemma encoder_boolean_exact_suffix_spec_correct `{!islaG Sigma} `{!threadG}
   ([∗ list] instruction ∈ drop 8 IslaTraces.write_success_03.instrs.instr_map,
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15bbc (encoderBooleanExactSuffixSpec value sp ret tail P).
-Proof.
-  iStartProof. iIntros "#Hcode".
-  iPoseProof (encoder_boolean_exact_suffix sp ret
-    (encoderBooleanExactReturnedFrame value sp tail P) with "Hcode") as "Hbody".
-  iApply (instr_pre_wand 0x15bbc 0x15bbc false false with "Hbody"); [done | done |].
-  iIntros "Hentry". iDestruct "Hentry" as
-    "(Hsys & H1 & H5 & H10 & H11 & Hpayload & Hmmio & Htrace & Hframe & _)".
-  iDestruct "Hframe" as "(H2 & (Hlow & Hra & Hfacts & _) & _)".
-  iDestruct "Hfacts" as
-    "(%Halign & %Hmin & %Hmax & %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
-  rewrite /encoderBooleanExactReturnedFrame /encoderBooleanExactPost.
-  iFrame. repeat iSplit; done.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions encoder_boolean_exact_suffix_spec_correct.
 

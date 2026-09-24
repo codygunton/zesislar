@@ -47,11 +47,6 @@ Lemma optional_u64_some_exact_prefix `{!islaG Sigma} `{!threadG}
     instr instruction.1 (Some instruction.2))%I -∗
   instr_body 0x15bd0
     (optionalU64SomeExactPrefixEntry pointer value sp ret old_x8 old_x11 bytes P).
-Proof.
-  zesu_block.
-  Unshelve. all: try zesu_finish.
-  Unshelve. all: try (bv_simplify select (bv_extract 0 4 sp = _); bv_solve).
-  Unshelve. all: try (bv_simplify select (bv_extract 0 3 pointer = _); bv_solve).
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions optional_u64_some_exact_prefix.

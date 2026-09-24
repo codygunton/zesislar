@@ -25,11 +25,6 @@ Lemma encoder_boolean_exact_suffix `{!islaG Sigma} `{!threadG}
        (reg_col zesu_ram_sys_regs ∗
         "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
         (bv_unsigned sp - 8) ↦ₘ ret ∗ P ∗ True) ∗ True).
-Proof.
-  zesu_block.
-  all: try (bv_simplify_arith select (bv_extract 0 3 sp = _)).
-  all: try bv_solve.
-  all: lazymatch goal with |- ?G => fail "Boolean suffix residual" G end.
-Qed.
+Proof. move => *. zesu_block. Qed.
 
 Print Assumptions encoder_boolean_exact_suffix.
