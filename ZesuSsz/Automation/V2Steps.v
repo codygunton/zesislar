@@ -32,9 +32,14 @@ Require Import ZesuSsz.Automation.SpecPrefix.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.ExistentialArrayRestore.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) =>
+      first [zesu_restore_existential_array_if_enabled |
+             zesu_open_sealed_for_lookup_if_enabled |
+             zesu_close_spec_tail_if_enabled]
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>
       zesu_reduce_instr_lookup_if_enabled
