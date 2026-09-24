@@ -32,6 +32,7 @@ Require Import ZesuSsz.Automation.SpecPrefix.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.OutcomeHandoff.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
@@ -52,5 +53,6 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_open_sealed_for_lookup_if_enabled
   (* C1: the trace tail a handover leaves open. *)
   | |- envs_entails _ (@bi_exist _ (li_prod spec _) _) =>
-      zesu_close_spec_tail_if_enabled
+      first [zesu_outcome_handoff_if_enabled
+            | zesu_close_spec_tail_if_enabled]
   end.
