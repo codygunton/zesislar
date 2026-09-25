@@ -59,3 +59,9 @@ Require Export ZesuSsz.Automation.WordArrayBytes.
 
 (* C2: the word a block loads lives inside an array the block holds. *)
 Require Export ZesuSsz.Automation.StackArrayLookup.
+
+(* Support facts as automation input (evidence row 12). Measured as a
+   default here; the import policy is not decided, and an automation
+   module that exports a proof module is the question it raises. *)
+Require Export ZesuSsz.Proofs.WriteSuccess.InterfacesCoverage.
+Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts.
