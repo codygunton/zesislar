@@ -137,11 +137,88 @@ class GuardLockTest(unittest.TestCase):
                              0)
             done = self.guard("lock-hold", str(holder.pid))
             self.assertEqual(done.returncode, 3)
-            self.assertIn("job scopes still alive", done.stderr)
+            self.assertIn("job scopes or launches still alive", done.stderr)
             self.assertFalse(self.lock.exists())
         finally:
             holder.kill()
             holder.wait()
+
+    def test_registered_launch_blocks_gate_transition(self):
+        started = Path(self.directory.name) / "launch-started"
+        fake_systemd = self.bin / "systemd-run"
+        fake_systemd.write_text(
+            "#!/bin/sh\n"
+            f"touch '{started}'\n"
+            "sleep 1\n"
+        )
+        self.environment["ZESU_GATE_SCOPE_WAIT"] = "0"
+        launch = subprocess.Popen(
+            [str(GUARD), "batch", "arm", "--", "true"],
+            env=self.environment, stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, text=True,
+        )
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            for _ in range(100):
+                if started.exists():
+                    break
+                time.sleep(0.01)
+            self.assertTrue(started.exists())
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            done = self.guard("lock-hold", str(holder.pid))
+            self.assertEqual(done.returncode, 3)
+            self.assertIn("job scopes or launches still alive", done.stderr)
+            self.assertFalse(self.lock.exists())
+        finally:
+            launch.wait(timeout=3)
+            holder.kill()
+            holder.wait()
+
+    def test_running_arm_starts_scope_while_gate_wants(self):
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            environment = {**self.environment, "ZESU_IN_BATCH": "1"}
+            done = subprocess.run(
+                ["timeout", "1", str(GUARD), "scope", "arm-job", "--", "true"],
+                capture_output=True, text=True, env=environment,
+            )
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertIn("MemoryMax=6G", done.stdout)
+            self.assertTrue(self.lock.read_text().startswith("state=wanted "))
+        finally:
+            holder.kill()
+            holder.wait()
+
+    def test_lock_release_uses_configured_path_and_owner(self):
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            self.assertEqual(self.guard("lock-release", "1").returncode, 0)
+            self.assertTrue(self.lock.exists())
+            self.assertEqual(self.guard("lock-release", str(holder.pid)).returncode,
+                             0)
+            self.assertFalse(self.lock.exists())
+        finally:
+            holder.kill()
+            holder.wait()
+
+    def test_peak_uses_total_minus_available(self):
+        self.environment["GUARD_TEST_USED_GIB"] = "75"
+        self.environment["ZESU_GUARD_POLL"] = "0.05"
+        subprocess.run(["timeout", "0.2", str(GUARD), "watch"],
+                       capture_output=True, env=self.environment)
+        peak = self.guard("peak")
+        self.assertEqual(peak.stdout.strip(), "75")
+
+    def test_gate_refuses_to_build_after_drain_timeout(self):
+        gate = (TOOLS / "det" / "gate.sh").read_text()
+        self.assertIn("if (( coqc > floor || memory >= launch )); then", gate)
+        self.assertIn("refusing: gate drain timed out", gate)
+        self.assertIn("$guard lock-release $$", gate)
 
     def test_gate_jobs_caps(self):
         self.assertLessEqual(int(self.guard("gate-jobs").stdout), 24)

@@ -23,11 +23,11 @@ log=${2:-_build/agents/infra/gate-$target.log}
 $guard lock-status >/dev/null
 $guard lock-want $$ "${COORD_AGENT:-$USER}:gate-$target:$root" || exit $?
 release() {
-  grep -q "pid=$$ " /tmp/zesu-gate.lock 2>/dev/null && rm -f /tmp/zesu-gate.lock
+  $guard lock-release $$
   kill "${watcher:-}" 2>/dev/null || true
 }
 trap release EXIT
-echo "gate lock: $(cat /tmp/zesu-gate.lock)"
+echo "gate lock: $($guard lock-status)"
 
 # The checkers run unconditionally, before any step Dune can satisfy from
 # its cache. A cached `check-fast` reported success while a hygiene
@@ -46,20 +46,26 @@ echo "uncached checks passed"
 
 # Running arms and batches complete; then the lock is held.
 $guard lock-hold $$ || exit $?
-echo "gate lock: $(cat /tmp/zesu-gate.lock)"
+echo "gate lock: $($guard lock-status)"
 
 # Other agents' guards now hold; wait for their running `coqc` to finish
 # and for memory to fall below the guard's launch line (150 GiB used).
 drain=${ZESU_GATE_DRAIN_SECONDS:-1800}
-floor=${ZESU_GATE_DRAIN_COQC:-0}
-launch=${ZESU_LAUNCH_GIB:-150}
-used() { free -b | awk '/^Mem:/ {printf "%d", ($2 - $7) / 1073741824}'; }
+floor=0
+launch=$(( ${ZESU_LAUNCH_GIB:-150} * 1073741824 ))
+used() { free -b | awk '/^Mem:/ {printf "%.0f", $2 - $7}'; }
 waited=0
 while { (( $(pgrep -c -x coqc || true) > floor )) || (( $(used) >= launch )); } \
       && (( waited < drain )); do
   sleep 10; waited=$(( waited + 10 ))
 done
-echo "drain: waited $waited s; coqc machine-wide $(pgrep -c -x coqc || true); used $(used) GiB"
+coqc=$(pgrep -c -x coqc || true)
+memory=$(used)
+echo "drain: waited $waited s; coqc machine-wide $coqc; used $(( memory / 1073741824 )) GiB"
+if (( coqc > floor || memory >= launch )); then
+  echo "refusing: gate drain timed out with $coqc coqc and $(( memory / 1073741824 )) GiB used" >&2
+  exit 3
+fi
 
 jobs=$($guard gate-jobs "$target")
 $guard reset-peak
