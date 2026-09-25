@@ -14,7 +14,7 @@
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit
-   IslaTraces.write_failure IslaTraces.main
+   IslaTraces.write_failure IslaTraces.main IslaTraces.startup
    IslaTraces.allocator_get IslaTraces.read_input
    IslaTraces.write_success_00 IslaTraces.write_success_01 IslaTraces.write_success_02 IslaTraces.write_success_03
    IslaTraces.write_success_04 IslaTraces.write_success_05 IslaTraces.write_success_06 IslaTraces.write_success_07
