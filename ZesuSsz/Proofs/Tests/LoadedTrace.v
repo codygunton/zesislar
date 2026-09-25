@@ -60,3 +60,20 @@ Qed.
 Print Assumptions zesu_scons_snap_loaded_lookup.
 Print Assumptions loaded_word_exact_eight_bytes.
 Print Assumptions loaded_word_exact_eight_bytes_inline.
+
+(* Two loaded words; the inclusion names the second. *)
+Lemma loaded_word_second_of_two (words : list (bv 64)) (first second : nat)
+    (fallback w0 w1 : bv 64) (event : seq_event) (addr : Z) (tail : spec) :
+  words !! first = Some w0 ->
+  words !! second = Some w1 ->
+  scons_snap event
+    (λ snapshot, read_mem_list (snap_mem snapshot) addr 8 =
+      Some (loaded_word_bytes8 w1)) tail ⊆
+  scons_snap event
+    (λ snapshot, read_mem_list (snap_mem snapshot) addr 8 =
+      Some (loaded_word_bytes8 (default fallback (words !! second)))) tail.
+Proof.
+  intros Hlookup Hlookup0.
+  zesu_close_loaded_lookup.
+Qed.
+Print Assumptions loaded_word_second_of_two.

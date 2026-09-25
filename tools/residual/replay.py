@@ -102,13 +102,19 @@ def message_line(index: int, seconds: int = STEP_SECONDS) -> str:
             )
 
 
-def replay_text(module: Path, lemma: str,
-                messages: bool = False) -> tuple[str, list[str], list[str]]:
-    """The replay source, the opener sentences, and the step sentences."""
+def replay_text(module: Path, lemma: str, messages: bool = False,
+                imports: tuple[str, ...] = ()
+                ) -> tuple[str, list[str], list[str]]:
+    """The replay source, the opener sentences, and the step sentences.
+
+    `imports` are required ahead of the module's own, as a benchmark arm
+    does, so a replay can measure rule set v2 on a v1 module."""
     proof = find_proof(module, lemma)
     opener, steps = opener_and_steps("\n".join(proof.body))
     lines = module.read_text().split("\n")
-    source = ["Set Printing Width 200."] + lines[:proof.proof_line]
+    source = (["Set Printing Width 200."]
+              + [f"Require Import {name}." for name in imports]
+              + lines[:proof.proof_line])
     if messages:
         source.extend(MESSAGE_PREAMBLE)
     source.append("Proof.")
@@ -219,8 +225,9 @@ def first_closing(steps: list[Step]) -> int | None:
 
 def run(module: Path, lemma: str, build_dir: Path, scratch: Path,
         probe_dir: Path, goal_dir: Path,
-        timeout: int = DEFAULT_SECONDS, messages: bool = False) -> Replay:
-    source, opener, steps = replay_text(module, lemma, messages)
+        timeout: int = DEFAULT_SECONDS, messages: bool = False,
+        imports: tuple[str, ...] = ()) -> Replay:
+    source, opener, steps = replay_text(module, lemma, messages, imports)
     probe_dir.mkdir(parents=True, exist_ok=True)
     suffix = "__messages" if messages else "__replay"
     probe = probe_dir / f"{module.stem}__{lemma}{suffix}.v"

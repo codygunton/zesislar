@@ -69,15 +69,26 @@ def main() -> int:
                         default=Path("tools/coqc_scratch.sh"))
     parser.add_argument("--corpus", type=Path, default=corpus.CORPUS)
     parser.add_argument("--output", type=Path, default=REPLAY)
+    parser.add_argument("--commit", default=None,
+                        help="the commit the build directory holds, when it "
+                             "is not origin/islaris-native")
+    parser.add_argument("--set", type=Path, default=None,
+                        help="a frozen `module:lemma` set instead of a tier")
+    parser.add_argument("--import", dest="imports", action="append",
+                        default=[], help="a module every replay requires")
     arguments = parser.parse_args()
 
     repository = Path.cwd()
-    commit = current_commit(repository)
+    commit = arguments.commit or current_commit(repository)
     modules = None
     if arguments.modules:
         modules = {Path(name).name for name in
                    arguments.modules.read_text().split() if name.strip()}
     wanted = iris_proofs(corpus.read(arguments.corpus), modules, arguments.tier)
+    if arguments.set:
+        chosen = {tuple(line.split(":", 1))
+                  for line in arguments.set.read_text().split() if line}
+        wanted = [item for item in wanted if (item[0].name, item[1]) in chosen]
     if arguments.only_errors:
         failing = {(r["module"], r["lemma"])
                    for r in corpus.read(REPLAY)
@@ -122,7 +133,8 @@ def main() -> int:
         try:
             result = replay.run(module, lemma, arguments.build_dir,
                                 arguments.scratch, probe_dir, goal_dir,
-                                arguments.seconds, arguments.messages)
+                                arguments.seconds, arguments.messages,
+                                tuple(arguments.imports))
             entry = replay.record(result)
         except Exception as failure:
             entry = {"module": module.name, "lemma": lemma, "outcome": "error",
@@ -132,6 +144,7 @@ def main() -> int:
         entry["commit"] = commit
         entry["population"] = "iris"
         entry["probe"] = "messages" if arguments.messages else "replay"
+        entry["imports"] = list(arguments.imports)
         return entry
 
     with ThreadPoolExecutor(max_workers=arguments.jobs) as pool:

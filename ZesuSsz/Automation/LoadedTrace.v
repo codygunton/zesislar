@@ -16,8 +16,11 @@ Proof.
   reflexivity.
 Qed.
 
+(* Every loaded word, not the first: a block that loads several words
+   holds one `Hlookup` per word, and the inclusion names one of them.
+   `match` backtracks over the hypotheses until one fits the payload. *)
 Ltac zesu_close_loaded_lookup :=
-  lazymatch goal with
+  match goal with
   | Hlookup : ?words !! ?index = Some ?loaded
     |- scons_snap ?event ?payload ?tail ⊆ _ =>
       lazymatch goal with
