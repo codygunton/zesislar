@@ -12,7 +12,8 @@ From ZesuSsz.Proofs.WriteSuccess Require Import
   WriteSuccessExactTransactionsSourceAuthorizationSpec.
 
 From ZesuSsz.Proofs.WriteSuccess Require Import
-  WriteSuccessExactTransactionsSourceAuthorizationLoanRemainder.
+  WriteSuccessExactTransactionsSourceAuthorizationLoanRemainder
+  WriteSuccessExactTransactionsSourceAuthorizationRestoreResources.
 
 Lemma transactions_source_authorization_restore_nonemptynonempty `{!islaG Sigma} `{!threadG}
     sp base bytes processed index dataBytes accessBytes chainBytes entries
@@ -31,14 +32,19 @@ Proof.
   iDestruct "Hremaining" as (pointer storedIndex) "(%HstackHigh & Hremaining)".
   iDestruct "Hremaining" as
     "(H19 & H22 & Hregs & Hblob & Hcount & Haccess & Hentries & HaccessBase & HaccessCount & HaccessIndex & Hkeys & Hremaining)".
-  iDestruct "Hkeys" as (key0 key1 key2 key3) "Hkeys".
-  iEval (unfold transactionSourceAuthorizationBorrowed, writeSuccessByteArrayOwn) in "Hborrowed".
-  iEval (unfold writeSuccessByteArrayOwn) in "Hblob".
-  iEval (cbn) in "Hregs".
-  zesu_open_resource_groups; zesu_open_bits_registers.
+  iDestruct "Hremaining" as "(Hlast & Hremaining)".
+  iEval (unfold transactionSourceAuthorizationBorrowed) in "Hborrowed".
+  iDestruct "Hborrowed" as "(Hpair & Hquad & Hauth & Hscratch & Hlower & HauthPtr & _)".
+  iPoseProof (transactions_source_authorization_restore_scratch sp with
+    "Hscratch Hlast") as "[Hscratch40 Hscratch112]".
+  iPoseProof (transactions_source_authorization_restore_registers with
+    "Hpair Hquad Hregs") as "Hregs".
+  iEval (unfold writeSuccessByteArrayOwn) in "Hauth Hblob".
+  zesu_open_resource_groups.
   unfold transactionSourceBlobFeeRetained, transactionFieldSourceFeeRest, writeSuccessByteArrayOwn.
   let shapes := eval vm_compute in WriteSuccessExactBlobHashesAuthorizationEntry.blobAuthorizationRemainingShapes in
   replace WriteSuccessExactBlobHashesAuthorizationEntry.blobAuthorizationRemainingShapes with shapes by reflexivity.
-  cbn; zesu_run; try bv_solve; try zesu_handoff.
+  cbn. iExists pointer, storedIndex. iFrame; try (iPureIntro; eauto).
+  repeat split; simpl in *; try lia; try assumption.
 Qed.
 Print Assumptions transactions_source_authorization_restore_nonemptynonempty.
