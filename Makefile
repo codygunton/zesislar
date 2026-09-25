@@ -390,19 +390,43 @@ gen-module:
 	  --set $(SET) --build-dir $(DET_BUILD_DIR) --compile \
 	  --report $(DET_BUILD_DIR)/generated.jsonl
 
-# Both baselines, for a commit's automation. IMPORTS adds a module that is
-# built but not exported, to size its effect before it is installed.
-#   make benchmark COMMIT=HEAD
+# The push trigger: run it for every push to origin/islaris-native or
+# origin/islaris-native-infra that changes ZesuSsz/Automation/ or
+# ZesuSsz/Proofs/ (a push that changes neither equals its parent by
+# construction). Four immutable arms of COMMIT: v1 (no import) and v2
+# (Sets/v2.v alone), each on the full set (305) and the rule-15 set (48),
+# with the re-probe policy, then the per-lemma diff of each against its
+# baseline. A result is two blocks: v1 against the frozen V1_BASE, and v2
+# against V2_BASE; after a clean root the v2 arm becomes the next V2_BASE.
+# BENCH_JOBS stays at 32: the guard's slot cap stops a wider arm build
+# while another agent runs coqc. IMPORTS adds modules to every arm, to
+# size a rule that is built but not exported; WIP=1 builds a WIP tip
+# without ZesuSsz/Proofs/Tests.
+#   make benchmark COMMIT=<sha>
+#   make benchmark COMMIT=<sha> IMPORTS=ZesuSsz.Automation.Switches.X
+V1_BASE ?= ccf505e81f85
+V2_BASE ?= 434db04166fa-v2
+BENCH_JOBS ?= 32
+BENCH_SET_RULE15 := ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt
+BENCH_FLAGS = --automation $(COMMIT) --jobs $(BENCH_JOBS) \
+  $(if $(WIP),--without-tests,) $(foreach m,$(IMPORTS),--import $(m))
 .PHONY: benchmark
 benchmark:
 	@test -n "$(COMMIT)" || { echo "usage: make benchmark COMMIT=<sha>"; exit 2; }
 	$(GUARD_BATCH) benchmark -- $(PYTHON) tools/residual/benchmark.py \
-	  --automation $(COMMIT) \
-	  --jobs $(DET_JOBS) $(foreach m,$(IMPORTS),--import $(m))
+	  $(BENCH_FLAGS)
 	$(GUARD_BATCH) benchmark-rule15 -- $(PYTHON) tools/residual/benchmark.py \
-	  --automation $(COMMIT) \
-	  --set ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt \
-	  --name rule15 --jobs $(DET_JOBS) $(foreach m,$(IMPORTS),--import $(m))
+	  $(BENCH_FLAGS) --set $(BENCH_SET_RULE15) --name rule15
+	$(GUARD_BATCH) benchmark-v2 -- $(PYTHON) tools/residual/benchmark.py \
+	  $(BENCH_FLAGS) --name v2 --import ZesuSsz.Automation.Sets.v2
+	$(GUARD_BATCH) benchmark-v2-rule15 -- $(PYTHON) tools/residual/benchmark.py \
+	  $(BENCH_FLAGS) --set $(BENCH_SET_RULE15) --name v2-rule15 \
+	  --import ZesuSsz.Automation.Sets.v2
+	@c=$$(git rev-parse $(COMMIT) | cut -c1-12); \
+	$(PYTHON) tools/det/outcomes_diff.py $(V1_BASE) $$c; \
+	$(PYTHON) tools/det/outcomes_diff.py $(V1_BASE)-rule15 $$c-rule15; \
+	$(PYTHON) tools/det/outcomes_diff.py $(V2_BASE) $$c-v2; \
+	$(PYTHON) tools/det/outcomes_diff.py $(V2_BASE)-rule15 $$c-v2-rule15
 
 # One arm per rule, on both baselines, and the delta table.
 #   make bench-rules COMMIT=<sha>
