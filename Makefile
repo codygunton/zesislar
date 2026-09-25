@@ -315,7 +315,7 @@ regenerate-evm-sail-snapshot:
 	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
 
 .PHONY: check-evidence-tools
-check-evidence-tools:
+check-evidence-tools: startup-traces
 	@echo "uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
