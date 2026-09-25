@@ -172,6 +172,19 @@ def build(root: Path, jobs: int) -> None:
              f"AGENT_JOBS={jobs}"],
             cwd=root, capture_output=True, text=True,
             env={**os.environ, "ZESU_ARM": "1"})
+        if not done.returncode:
+            # `check-iris` compiles only the Automation modules a proof
+            # imports. A candidate's switch is imported by nothing but its
+            # probes (and, on a WIP tip, by the tests an arm leaves out), so
+            # the whole Automation directory is built too.
+            done = subprocess.run(
+                ["ionice", "-c3", "nice", "-n", "10", "opam", "exec",
+                 f"--switch={Path.home() / 'islaris'}", "--", "dune",
+                 "build", "--root", ".",
+                 f"--build-dir={root.resolve() / '_build'}",
+                 "--cache=enabled", f"-j{jobs}", "@ZesuSsz/Automation/all"],
+                cwd=root, capture_output=True, text=True,
+                env={**os.environ, "ZESU_ARM": "1"})
     finally:
         marker.unlink(missing_ok=True)
     if done.returncode:
@@ -353,6 +366,9 @@ def main() -> int:
           flush=True)
     rows = measure(root, pairs, jobs, arguments.seconds, None,
                    tuple(arguments.imports))
+    if not any(row["outcome"] in ("closed", "residual") for row in rows):
+        # Every probe failed: a missing import or build, not a measurement.
+        raise SystemExit(f"every probe failed ({len(rows)}); arm not stored")
     if not arguments.no_reprobe:
         rows = reprobe_alone(root, rows, arguments.seconds,
                              tuple(arguments.imports))
