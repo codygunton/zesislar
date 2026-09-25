@@ -1,0 +1,1 @@
+{"lemma": "write_success_exact_post_withdrawals_segment", "rounds": 0, "events": [], "unbound": [], "outcome": "stalled", "frame": 97, "pred_class": "C6", "signature": "\u2203 : bv N *\u2097 ()", "inferred_trace": "tail"}
