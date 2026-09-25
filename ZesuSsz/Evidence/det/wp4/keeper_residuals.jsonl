@@ -1,0 +1,1 @@
+{"module":"OutcomeHandoffExact.v","lemma":"test_outcome_handoff_exact_tf3","class":"C1","hand_lines":28,"residual":"After the v2 outcome handoff, the goal required the event inclusion, six alignment and range facts, and the return instr_pre; the proof uses the named event equation, bv_solve, and instr_pre_wand."}

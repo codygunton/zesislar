@@ -34,9 +34,16 @@ Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
 Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.ExistentialArrayRestore.
+Require Import ZesuSsz.Automation.OutcomeHandoff.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) =>
+      first [zesu_outcome_handoff_if_enabled
+            | zesu_restore_existential_array_if_enabled
+            | zesu_open_sealed_for_lookup_if_enabled
+            | zesu_close_spec_tail_if_enabled]
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>
       zesu_reduce_instr_lookup_if_enabled
@@ -54,7 +61,4 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_open_sealed_for_lookup_if_enabled
   | |- envs_entails _ (@bi_exist _ (li_prod (bv 64) unit) _) =>
       zesu_open_sealed_for_lookup_if_enabled
-  (* C1: the trace tail a handover leaves open. *)
-  | |- envs_entails _ (@bi_exist _ (li_prod spec _) _) =>
-      zesu_close_spec_tail_if_enabled
   end.
