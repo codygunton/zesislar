@@ -33,6 +33,7 @@ Require Import ZesuSsz.Automation.SpecPrefix.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
+Require Import ZesuSsz.Automation.ReturnWand.
 Require Import ZesuSsz.Automation.SealedCoverage.
 
 Ltac zesu_rule_set_v2_steps :=
@@ -40,13 +41,20 @@ Ltac zesu_rule_set_v2_steps :=
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>
       zesu_reduce_instr_lookup_if_enabled
-  (* C7: the continuation a returning call leaves. *)
+  (* C7: the continuation a returning call leaves. C9 covers the same
+     goals with any conclusion, so each branch falls back to it. *)
   | |- envs_entails _ ((_ -∗ _ -∗ WPasm _) ∗ True)%I =>
-      zesu_enter_call_return_if_enabled
+      first [zesu_enter_call_return_if_enabled |
+             zesu_enter_return_wand_if_enabled]
   | |- envs_entails _ ((_ -∗ WPasm _) ∗ True)%I =>
-      zesu_enter_call_return_if_enabled
+      first [zesu_enter_call_return_if_enabled |
+             zesu_enter_return_wand_if_enabled]
   | |- envs_entails _ ((_ -∗ zesu_ld_spec _ _ _ _) ∗ True)%I =>
-      zesu_enter_call_return_spec_table_if_enabled
+      first [zesu_enter_call_return_spec_table_if_enabled |
+             zesu_enter_return_wand_if_enabled]
+  (* C9: a return wand whose conclusion is anything else. *)
+  | |- envs_entails _ ((_ -∗ _) ∗ True)%I =>
+      zesu_enter_return_wand_if_enabled
   (* C3: a sealed bundle, opened for the lookup that failed. *)
   | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled
