@@ -12,8 +12,14 @@ Require Import ZesuSsz.Compliance.ObservationBridge.
 Require Import ZesuSsz.Compliance.Targets.
 Require Import ZesuSsz.Contracts.Endpoints.
 Require Import ZesuSsz.Generated.Level1.
+Require Import ZesuSsz.Compliance.Program.
+Require Import ZesuSsz.Compliance.Initial.
+Require Import ZesuSsz.Proofs.Main.DecodeTail.
+Require Import ZesuSsz.Proofs.Main.WholeResources.
+Require Import ZesuSsz.Export.Snapshots.
 Require Import ZesuSsz.Proofs.WriteFailure.WriteFailure.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservationDecoder.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
 
 Import ListNotations.
@@ -24,30 +30,91 @@ Definition mainExitPc : Z := ZesuSsz.Generated.Level1.decodeInputEntry.
 Definition decodeEntryPc : Z := ZesuSsz.Generated.Level1.decodeInputEntry.
 Definition decodeExitPc : Z := 0x14cfc.
 
-Definition zesuInitialLocal : seq_local_state := {|
-  seq_trace := tnil;
-  seq_regs := <["PC" := RVal_Bits (BV 64 mainEntryPc)]> ∅;
-  seq_pc_reg := "PC";
-  seq_nb_state := false
-|}.
+Fixpoint zesuOutputPayloadsOfTrace
+    (labels : list seq_label) : option (list ByteString) :=
+  match labels with
+  | [] => Some []
+  | label :: rest =>
+      match label, rest with
+      | SWriteMem address data _,
+          SWriteMem sizeAddress size snapshot :: remaining =>
+          if decide (address = BV 64 (machineOutputAddress defaultMap) /\
+                     sizeAddress = BV 64 (machineOutputSizeAddress defaultMap)) then
+            match read_mem_list snapshot.(snap_mem) (bvn_unsigned data)
+                    (Z.to_N (bvn_unsigned size)),
+                  zesuOutputPayloadsOfTrace remaining with
+            | Some bytes, Some payloads =>
+                Some (List.map bv_unsigned bytes :: payloads)
+            | _, _ => None
+            end
+          else zesuOutputPayloadsOfTrace rest
+      | _, _ => zesuOutputPayloadsOfTrace rest
+      end
+  end.
 
-Definition zesuInitialGlobal : seq_global_state := {|
-  seq_instrs := ∅;
-  seq_mem := ∅
-|}.
+Definition zesuOutputBytesOfTrace (labels : list seq_label) : option ByteString :=
+  (@List.concat Z) <$> zesuOutputPayloadsOfTrace labels.
 
-Definition zesuInitial : cfg isla_lang :=
-  ([zesuInitialLocal], zesuInitialGlobal).
+Lemma zesuOutputPayloadsOfTrace_write data size firstSnapshot writeSnapshot
+    labels payload payloads :
+  read_mem_list writeSnapshot.(snap_mem) (bvn_unsigned data)
+    (Z.to_N (bvn_unsigned size)) = Some payload ->
+  zesuOutputPayloadsOfTrace labels = Some payloads ->
+  zesuOutputPayloadsOfTrace
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) = Some (List.map bv_unsigned payload :: payloads).
+Proof.
+  intros Hread Hrest. simpl.
+  rewrite Hread Hrest. reflexivity.
+Qed.
 
-(** Phase 2.3 defines these projections from snapshot labels. *)
-Definition zesuOutcomeOfTrace (_ : list seq_label) : option DecodeOutcome := None.
-Definition zesuInputOfTrace (_ : list seq_label) : option ByteString := None.
+Lemma zesuOutputBytesOfTrace_write data size firstSnapshot writeSnapshot
+    labels payload :
+  read_mem_list writeSnapshot.(snap_mem) (bvn_unsigned data)
+    (Z.to_N (bvn_unsigned size)) = Some payload ->
+  zesuOutputPayloadsOfTrace labels = Some [] ->
+  zesuOutputBytesOfTrace
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) = Some (List.map bv_unsigned payload).
+Proof.
+  intros Hread Hrest. unfold zesuOutputBytesOfTrace.
+  rewrite (zesuOutputPayloadsOfTrace_write _ _ _ _ _ _ _ Hread Hrest).
+  simpl. rewrite app_nil_r. reflexivity.
+Qed.
 
-Definition zesuEndpoint : EndpointSemantics := {|
+Lemma zesuOutputBytesOfTrace_write_events data size payload tail
+    firstSnapshot writeSnapshot labels :
+  writeOutputEvents data size payload tail
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) ->
+  zesuOutputPayloadsOfTrace labels = Some [] ->
+  zesuOutputBytesOfTrace
+    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
+     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot ::
+     labels) = Some (List.map bv_unsigned payload).
+Proof.
+  intros Hspec Hrest.
+  apply zesuOutputBytesOfTrace_write; last exact Hrest.
+  eapply write_output_events_payload. exact Hspec.
+Qed.
+
+Definition zesuOutcomeOfTrace (labels : list seq_label) : option DecodeOutcome :=
+  match zesuOutputBytesOfTrace labels with
+  | Some bytes =>
+      if decide (bytes = failureObservation) then Some DecodeFailure
+      else option_map
+        (fun observation => DecodeSuccess (observationToStatelessInput observation))
+        (writeSuccessDecodeObservation bytes)
+  | None => None
+  end.
+
+Definition zesuEndpoint (P : AdmissibleProgram) : EndpointSemantics := {|
   endpointRuns := fun input outcome =>
     exists n kappa cfg',
-      nsteps n zesuInitial kappa cfg' /\
-      zesuInputOfTrace kappa = Some input /\
+      nsteps n (zesuInitial P input) kappa cfg' /\
       zesuOutcomeOfTrace kappa = Some outcome
 |}.
 
@@ -190,11 +257,27 @@ Proof. reflexivity. Qed.
 Theorem zesuCompliance
     (runner : DecoderEvaluator) (model : DecoderModel)
     (inputRef : ByteString -> option StatelessInputRef)
-    (mainOk : IslarisContractCorrect mainEntryPc mainExitPc
-      (zesuMainContract runner model inputRef zesuObservationBugApplies))
-    (decodeOk : IslarisContractCorrect decodeEntryPc decodeExitPc
-      (zesuDecodeContract runner model inputRef zesuObservationBugApplies)) :
-  ComplianceModuloKnownBugs zesuEndpoint
+    (P : AdmissibleProgram)
+    (decodeOk : IslarisContractCorrect 0x12168 0x14cfc
+      (mainConcreteDecodeModel
+        (DecodeMeaningModuloKnownBugs runner model inputRef
+          zesuObservationBugApplies)
+        (mainDecodeUnionTail
+          (DecodeMeaningModuloKnownBugs runner model inputRef
+            zesuObservationBugApplies)
+          (fun _ => scons (SWriteMem
+            (BV 64 (machineExitAddress defaultMap)) (BV 64 0)) snil)
+          (fun _ => scons (SWriteMem
+            (BV 64 (machineExitAddress defaultMap)) (BV 64 0)) snil))
+        (fun _ => scons (SWriteMem
+          (BV 64 (machineExitAddress defaultMap)) (BV 64 0)) snil)))
+    (writeOk : IslarisContractCorrect 0x14d30 0x14d10
+      (writeSuccessFixedTailModel zesuWriteSuccessAllows
+        zesuWriteSuccessOutputRelation
+        (scons (SWriteMem
+          (BV 64 (machineExitAddress defaultMap)) (BV 64 0)) snil)
+        (fun _ nextPc => nextPc = 0x14d10))) :
+  ComplianceModuloKnownBugs (zesuEndpoint P)
     (EvmSailReference runner model inputRef) zesuBugApplies zesuEquivalent.
 Admitted.
 
