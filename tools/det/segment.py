@@ -54,8 +54,8 @@ def existing_segment(entry: int, exit_address: int,
         proof = find_proof(path, lemma)
         source = "\n".join(path.read_text().splitlines()[
             proof.declaration_line:proof.proof_line])
-        match = re.search(r"\binstr_body\s+0x([0-9a-fA-F]+)", source)
-        if match and int(match.group(1), 16) == entry:
+        matches = re.findall(r"\binstr_body\s+0x([0-9a-fA-F]+)", source)
+        if matches and int(matches[-1], 16) == entry:
             return path, lemma
     return None
 
@@ -157,6 +157,7 @@ def main() -> int:
     return subprocess.run(
         [sys.executable, str(HERE / "infer_boundary.py"),
          "--specs", str(arguments.spec_out), "--out", str(arguments.out),
+         "--build-dir", str(arguments.build_dir),
          "--seconds", str(arguments.seconds)]).returncode
 
 

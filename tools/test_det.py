@@ -166,6 +166,11 @@ class CallSites(unittest.TestCase):
         self.assertEqual(modules, ["ZesuSsz.Proofs.WriteSuccess.Interfaces"])
         self.assertEqual(unknown, [])
 
+    def test_post_transactions_memcpy_has_closed_entry_boundary(self):
+        _lines, modules, unknown = call_sites.premises(0x15668, 0x156e8)
+        self.assertIn("ZesuSsz.Proofs.WriteSuccess.Interfaces", modules)
+        self.assertEqual(unknown, [])
+
     def test_existing_dump_takes_precedence_over_index(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -182,6 +187,28 @@ class ExistingSegment(unittest.TestCase):
         self.assertEqual(path.name, "WriteSuccessExactSuffixEntrySegment.v")
         self.assertEqual(lemma, "write_success_exact_suffix_entry_segment")
         self.assertIsNone(segment.existing_segment(0x15748, 0x15754))
+
+    def test_exit_premise_before_entry_finds_the_third_tail_module(self):
+        path, lemma = segment.existing_segment(0x159b8, 0x159d8)
+        self.assertEqual(path.name, "WriteSuccessExactTailFieldsThirdSegment.v")
+        self.assertEqual(lemma, "write_success_exact_tail_fields_third_segment")
+
+    def test_open_probe_uses_requested_build_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch.object(sys, "argv", ["segment.py", "--entry", "0x156e8",
+                                            "--exit", "0x15744", "--spec", "True",
+                                            "--binders", "(P : iProp Sigma)",
+                                            "--probe", "--build-dir", str(root / "build"),
+                                            "--spec-out", str(root / "spec.json"),
+                                            "--out", str(root / "result.jsonl")]), \
+                 patch.object(segment, "call_premises", return_value=([], [], [])), \
+                 patch.object(segment.subprocess, "run") as probe:
+                probe.return_value.returncode = 0
+                self.assertEqual(segment.main(), 0)
+            command = probe.call_args.args[0]
+            self.assertEqual(command[command.index("--build-dir") + 1],
+                             str(root / "build"))
 
     def test_generation_reports_probe_outcome_and_class(self):
         path, lemma = segment.existing_segment(0x15744, 0x15754)
