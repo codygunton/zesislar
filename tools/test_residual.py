@@ -386,6 +386,26 @@ class ImmutableArmTree(unittest.TestCase):
         self.assertEqual((tree / "generated" / "trace.txt").read_text(),
                          "derived\n")
 
+    def test_a_wip_tree_builds_without_its_tests(self):
+        tests = self.repository / "ZesuSsz" / "Proofs" / "Tests"
+        tests.mkdir(parents=True)
+        (tests / "Broken.v").write_text("Fail.\n")
+        subprocess.run(["git", "add", "ZesuSsz"], cwd=self.repository,
+                       check=True)
+        subprocess.run(["git", "commit", "-q", "-m", "two"],
+                       cwd=self.repository, check=True)
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=self.repository,
+            capture_output=True, text=True, check=True).stdout.strip()
+        arms = self.directory / "arm"
+        tree = benchmark.source_tree(self.repository, commit, arms,
+                                     without_tests=True)
+        self.assertFalse((tree / benchmark.TESTS_DIR).exists())
+        benchmark.mark_built(tree, commit, without_tests=True)
+        # The same commit with its tests is a different tree.
+        tree = benchmark.source_tree(self.repository, commit, arms)
+        self.assertTrue((tree / benchmark.TESTS_DIR / "Broken.v").exists())
+
     def test_no_path_reuses_the_working_tree(self):
         self.assertFalse(hasattr(benchmark, "automation_matches"))
 

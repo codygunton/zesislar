@@ -92,7 +92,18 @@ def read_set(path: Path = SET_FILE) -> list[tuple[str, str]]:
 DERIVED = ("generated", "build")
 
 
-def source_tree(repository: Path, commit: str, tree: Path = TREE) -> Path:
+# A WIP tip may carry a test module that does not build yet, and an arm
+# needs the whole tree built. For WIP tips the arm builds without this
+# directory (lead's ruling 2026-09-24) and the arm file says so.
+TESTS_DIR = "ZesuSsz/Proofs/Tests"
+
+
+def tree_marker(commit: str, without_tests: bool) -> str:
+    return commit + (f" without {TESTS_DIR}" if without_tests else "")
+
+
+def source_tree(repository: Path, commit: str, tree: Path = TREE,
+                without_tests: bool = False) -> Path:
     """An immutable checkout of `commit`, with its own build directory.
 
     Plan 9.1, after the arm that measured nothing: a benchmark arm never
@@ -109,7 +120,8 @@ def source_tree(repository: Path, commit: str, tree: Path = TREE) -> Path:
     """
     root = tree / commit[:12]
     marker = root / ".arm-commit"
-    if marker.exists() and marker.read_text().strip() == commit:
+    if (marker.exists()
+            and marker.read_text().strip() == tree_marker(commit, without_tests)):
         # The tree is already this commit's, built and never written
         # since. Measuring ten rules at one commit should cost one
         # build, not ten.
@@ -127,12 +139,14 @@ def source_tree(repository: Path, commit: str, tree: Path = TREE) -> Path:
             continue
         shutil.copytree(source, root / name, dirs_exist_ok=True,
                         symlinks=True)
+    if without_tests:
+        shutil.rmtree(root / TESTS_DIR, ignore_errors=True)
     return root
 
 
-def mark_built(root: Path, commit: str) -> None:
+def mark_built(root: Path, commit: str, without_tests: bool = False) -> None:
     """Record that this tree is this commit's and has been built."""
-    (root / ".arm-commit").write_text(commit + "\n")
+    (root / ".arm-commit").write_text(tree_marker(commit, without_tests) + "\n")
 
 
 def wait_for_room() -> None:
@@ -304,6 +318,9 @@ def main() -> int:
     parser.add_argument("--no-reprobe", action="store_true",
                         help="keep batch errors and timeouts as they are "
                              "(the policy is to re-probe them alone)")
+    parser.add_argument("--without-tests", action="store_true",
+                        help=f"build the arm tree without {TESTS_DIR}; for "
+                             "WIP tips only, recorded in the arm file")
     parser.add_argument("--build-dir", type=Path, default=None,
                         # Kept for callers that still pass it; an arm now
                         # always builds inside its own checkout, so the
@@ -325,11 +342,12 @@ def main() -> int:
 
     # Always an immutable checkout. There is no path here that reads the
     # working tree: that is plan 9.1 and it is the whole point.
-    root = source_tree(repository, commit)
+    root = source_tree(repository, commit,
+                       without_tests=arguments.without_tests)
     print(f"arm tree {root}", file=sys.stderr, flush=True)
     if not (root / ".arm-commit").exists():
         build(root, guard_jobs(arguments.jobs))
-        mark_built(root, commit)
+        mark_built(root, commit, arguments.without_tests)
     jobs = guard_jobs(arguments.jobs)
     print(f"resource guard allows {jobs} concurrent jobs", file=sys.stderr,
           flush=True)
@@ -343,6 +361,8 @@ def main() -> int:
     result = {"automation": commit, "summary": summary(rows), "rows": rows,
               "classifier": CLASSIFIER, "imports": list(arguments.imports),
               "seconds": arguments.seconds}
+    if arguments.without_tests:
+        result["excluded"] = [TESTS_DIR]
     stem = commit[:12] + (f"-{arguments.name}" if arguments.name else "")
     earlier = sorted(RESULT_DIR.glob(f"*{arguments.name}.json")
                      if arguments.name else

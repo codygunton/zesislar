@@ -41,7 +41,9 @@ def main() -> int:
     imports = tuple(arguments.imports if arguments.imports is not None
                     else stored.get("imports", []))
     seconds = arguments.seconds or stored.get("seconds", 300)
-    root = benchmark.source_tree(ROOT, stored["automation"])
+    root = benchmark.source_tree(
+        ROOT, stored["automation"],
+        without_tests=benchmark.TESTS_DIR in stored.get("excluded", []))
     if not (root / ".arm-commit").exists():
         raise SystemExit(f"arm tree {root} is not built; run the arm first")
     already = [row for row in stored["rows"] if row.get("reprobed")]
