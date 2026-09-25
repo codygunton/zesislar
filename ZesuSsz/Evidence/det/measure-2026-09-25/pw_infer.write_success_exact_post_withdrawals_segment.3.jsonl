@@ -1,0 +1,1 @@
+{"lemma": "write_success_exact_post_withdrawals_segment_trace3", "entry": "0x156e8", "exit": "0x15744", "call_premises": 4, "seconds": 8.0, "outcome": "error", "error_lines": ["Error: The reference vmem0 was not found in the current environment."]}

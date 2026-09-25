@@ -41,6 +41,9 @@
   "ZesuSsz/Proofs/Tests/ResourceGroups.v": {
     "predicates_without_unfold": 1
   },
+  "ZesuSsz/Proofs/Tests/ReturnWand.v": {
+    "predicates_without_unfold": 1
+  },
   "ZesuSsz/Proofs/WriteSuccess/WriteSuccessAccessListsBoundary151dc.v": {
     "uninferable_existentials": 9
   },

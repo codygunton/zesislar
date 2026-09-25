@@ -104,14 +104,19 @@ def probe(spec: dict, out: Path, build_dir: Path, rule: Path | None,
     return json.loads(text.split("\n")[-1]) if text else {"outcome": "error"}
 
 
-def next_event(conclusion: str, declared: str) -> str | None:
+def next_event(conclusion: str, declared: str,
+               binder: str | None = None) -> str | None:
     """The events the stalled inclusion asks for, with the hole freed.
 
     Returns `<events> {tail}`, a format string, or None when the goal is
-    not an inclusion against the trace this round declared.
+    not an inclusion against the trace this round declared. Once the
+    block has matched the events already declared, what is left of the
+    declared trace is the bare binder, so an inclusion against the binder
+    is the next event too.
     """
     match = INCLUSION.search(conclusion or "")
-    if match is not None and match.group("declared").strip() != declared.strip():
+    if match is not None and match.group("declared").strip() not in (
+            declared.strip(), binder):
         match = None
     if match is None:
         match = HANDOVER.search(conclusion or "")
@@ -206,7 +211,7 @@ def main() -> int:
                       f"not define: the boundary has to say where that "
                       f"value comes from", flush=True)
                 break
-            event = next_event(record.get("conclusion", ""), declared)
+            event = next_event(record.get("conclusion", ""), declared, binder)
             if event is None:
                 print("  not an inclusion against this round's trace; "
                       "the stall is a different ticket", flush=True)
