@@ -129,13 +129,20 @@ It changes `.v` files, `.dump` files, and coverage files.
 It checks literal `instr`, `instr_pre`, and `instr_body` addresses against the new disassembly.
 It checks all files before it writes any file.
 It requires `--check` for `--apply`.
-The initial dry run reports 11,639 candidate rewrites across 1,318 files.
+The initial dry run on the earlier proof tree reports 11,639 candidate rewrites across 1,318 files.
 It reports one synthetic instruction address outside the disassembly.
 The tool accepts explicit `--exclude` paths for reviewed synthetic fixtures.
 Both dry runs exclude `ZesuSsz/Contracts/Machine.v` to preserve the pinned map.
 The second dry run also excludes `ZesuSsz/Proofs/Tests/TraceResume.v`.
 The instruction check passes after the explicit fixture exclusion.
-The final local dry run reports 11,639 address rewrites across 1,318 files.
+The earlier local dry run reports 11,639 address rewrites across 1,318 files.
+The dry run at infrastructure commit `c4d44f8d` reports 12,100 rewrites across 1,470 files.
+It uses the pinned ELF at `/nix/store/6p2b45b0k1403dqimlprgnllw68y6wyi-zesu-ssz-decode-bare-metal-rv64im-elf-d67f28c/bin/zesu-ssz-decode`.
+It uses the zkVM ELF at `/nix/store/4xrdwkcz8vn966rgr1jkqd802jmlblv5-zesu-ssz-decode-zkvm-rv64im-elf-d67f28c/bin/zesu-ssz-decode`.
+The command uses `--root .`, `--dry-run`, and `--check`.
+It supplies `--objdump /nix/store/9rpirq24zvy6qmjfhfigaynsiglyc2il-riscv64-unknown-linux-gnu-binutils-2.46/bin/riscv64-unknown-linux-gnu-objdump`.
+It excludes `ZesuSsz/Contracts/Machine.v` and `ZesuSsz/Proofs/Tests/TraceResume.v`.
+The instruction check reports zero errors.
 The port track applies no rewrite.
 
 An identical-ELF dry run reports zero rewrites.

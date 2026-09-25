@@ -23,11 +23,11 @@ log=${2:-_build/agents/infra/gate-$target.log}
 $guard lock-status >/dev/null
 $guard lock-want $$ "${COORD_AGENT:-$USER}:gate-$target:$root" || exit $?
 release() {
-  grep -q "pid=$$ " /tmp/zesu-gate.lock 2>/dev/null && rm -f /tmp/zesu-gate.lock
+  $guard lock-release $$
   kill "${watcher:-}" 2>/dev/null || true
 }
 trap release EXIT
-echo "gate lock: $(cat /tmp/zesu-gate.lock)"
+echo "gate lock: $($guard lock-status)"
 
 # The checkers run unconditionally, before any step Dune can satisfy from
 # its cache. A cached `check-fast` reported success while a hygiene
@@ -46,22 +46,34 @@ echo "uncached checks passed"
 
 # Running arms and batches complete; then the lock is held.
 $guard lock-hold $$ || exit $?
-echo "gate lock: $(cat /tmp/zesu-gate.lock)"
+echo "gate lock: $($guard lock-status)"
 
 # Other agents' guards now hold; wait for their running `coqc` to finish
 # and for memory to fall below the guard's launch line (150 GiB used).
 drain=${ZESU_GATE_DRAIN_SECONDS:-1800}
-floor=${ZESU_GATE_DRAIN_COQC:-0}
-launch=${ZESU_LAUNCH_GIB:-150}
-used() { free -b | awk '/^Mem:/ {printf "%d", ($2 - $7) / 1073741824}'; }
+floor=0
+launch=$(( ${ZESU_LAUNCH_GIB:-150} * 1073741824 ))
+used() { free -b | awk '/^Mem:/ {printf "%.0f", $2 - $7}'; }
 waited=0
 while { (( $(pgrep -c -x coqc || true) > floor )) || (( $(used) >= launch )); } \
       && (( waited < drain )); do
   sleep 10; waited=$(( waited + 10 ))
 done
-echo "drain: waited $waited s; coqc machine-wide $(pgrep -c -x coqc || true); used $(used) GiB"
+coqc=$(pgrep -c -x coqc || true)
+memory=$(used)
+echo "drain: waited $waited s; coqc machine-wide $coqc; used $(( memory / 1073741824 )) GiB"
+if (( coqc > floor || memory >= launch )); then
+  echo "refusing: gate drain timed out with $coqc coqc and $(( memory / 1073741824 )) GiB used" >&2
+  exit 3
+fi
 
 jobs=$($guard gate-jobs "$target")
+slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs" --drain-floor "$floor") || exit 3
+read -r jobs own other <<< "$slots"
+if (( jobs < 1 )); then
+  echo "refusing: no coqc slot remains after drain" >&2
+  exit 3
+fi
 $guard reset-peak
 setsid nohup $guard watch >/dev/null 2>&1 &
 watcher=$!
@@ -70,10 +82,45 @@ started=$(date -Is)
 echo "gate $target with $jobs jobs; $($guard report)"
 mkdir -p "$(dirname "$log")"
 set +e
-ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
+setsid env ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
   make "$target" AGENT_BUILD_DIR="$root/_build/agents/infra" FAST_JOBS="$jobs" \
-  AGENT_JOBS="$jobs" > "$log" 2>&1
-status=$?
+  AGENT_JOBS="$jobs" > "$log" 2>&1 &
+gate_pid=$!
+status=0
+poll=${ZESU_GATE_CAP_POLL_SECONDS:-30}
+gate_running() {
+  local state
+  state=$(ps -o stat= -p "$gate_pid" 2>/dev/null) || return 1
+  [[ -n "$state" && "$state" != Z* ]]
+}
+stop_gate() {
+  kill -- "-$gate_pid" 2>/dev/null || true
+  systemctl --user list-units --type=scope --state=active --plain \
+    --no-legend "${ZESU_SCOPE_PREFIX:-zesudet}-batch-gate-${target}-*" 2>/dev/null |
+    awk '{print $1}' | while IFS= read -r unit; do
+      systemctl --user stop "$unit" >/dev/null 2>&1 || true
+    done
+}
+while gate_running; do
+  sleep "$poll"
+  gate_running || break
+  if ! slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs"); then
+    echo "gate stopped: coqc slot check failed" >&2
+    stop_gate
+    status=3
+    break
+  fi
+  read -r available own other <<< "$slots"
+  if (( available < jobs )); then
+    echo "gate stopped: width $jobs exceeds $available slots with $other other coqc" >&2
+    stop_gate
+    status=3
+    break
+  fi
+done
+wait "$gate_pid"
+gate_status=$?
+if (( status == 0 )); then status=$gate_status; fi
 set -e
 echo "gate $target exit $status; $(grep -c 'Timeout!' "$log" || true) Timeout!; batch peak $($guard peak) GiB"
 $guard window --since "$started" || true

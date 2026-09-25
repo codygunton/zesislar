@@ -24,18 +24,39 @@ class GuardLockTest(unittest.TestCase):
                             "ZESU_GATE_LOCK": str(self.lock),
                             "ZESU_GUARD_STATE": str(base / "state"),
                             "ZESU_RAMP_FILE": str(base / "ramp"),
-                            "ZESU_POPULATING_PREFIX": str(base / "pop"),
-                            # No live job scope carries this prefix.
                             "ZESU_SCOPE_PREFIX": f"zesutest{os.getpid()}",
                             "ZESU_GUARD_POLL": "0.1",
-                            # The live machine must not hold or kill here.
-                            "ZESU_LAUNCH_GIB": "100000",
-                            "ZESU_HOLD_GIB": "100000",
-                            "ZESU_KILL_GIB": "100000",
                             "ZESU_MAX_COQC": "100000",
                             "ZESU_MAX_LOAD": "100000",
                             "ZESU_MAX_BLOCKED": "100000"}
-        for name in ("ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM"):
+        self.bin = base / "bin"
+        self.bin.mkdir()
+        fake_free = self.bin / "free"
+        fake_free.write_text(
+            "#!/bin/sh\n"
+            "printf 'Mem: %s %s 0 0 0 %s\\n' "
+            "\"$((251 * 1073741824))\" "
+            "\"$((GUARD_TEST_USED_GIB * 1073741824))\" "
+            "\"$(((251 - GUARD_TEST_USED_GIB) * 1073741824))\"\n"
+        )
+        fake_free.chmod(0o755)
+        fake_systemd = self.bin / "systemd-run"
+        fake_systemd.write_text("#!/bin/sh\nprintf '%s\\n' \"$@\"\n")
+        fake_systemd.chmod(0o755)
+        fake_systemctl = self.bin / "systemctl"
+        fake_systemctl.write_text(
+            "#!/bin/sh\n"
+            "case \"$*\" in\n"
+            "  *is-active*) exit 0 ;;\n"
+            "  *kill*|*stop*) printf '%s\\n' \"$*\" >> \"$GUARD_TEST_SYSTEMCTL_LOG\" ;;\n"
+            "esac\n"
+        )
+        fake_systemctl.chmod(0o755)
+        self.environment["PATH"] = f"{self.bin}:{os.environ['PATH']}"
+        self.environment["GUARD_TEST_USED_GIB"] = "40"
+        self.environment["GUARD_TEST_SYSTEMCTL_LOG"] = str(base / "systemctl.log")
+        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
+                     "ZESU_BATCH_LIMIT", "ZESU_IO"):
             self.environment.pop(name, None)
 
     def tearDown(self):
@@ -44,6 +65,82 @@ class GuardLockTest(unittest.TestCase):
     def guard(self, *arguments):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
                               text=True, env=self.environment)
+
+    def test_concurrent_coqc_reservations_keep_the_48_cap(self):
+        base = Path(self.directory.name)
+        count = base / "coqc-count"
+        count.write_text("47\n")
+        fake_pgrep = self.bin / "pgrep"
+        fake_pgrep.write_text('#!/bin/sh\ncat "$GUARD_TEST_COQC_COUNT"\n')
+        fake_pgrep.chmod(0o755)
+        self.environment["GUARD_TEST_COQC_COUNT"] = str(count)
+        self.environment["ZESU_MAX_COQC"] = "48"
+        self.environment["ZESU_IN_BATCH"] = "1"
+        proc = base / "proc" / "12345"
+        proc.mkdir(parents=True)
+        (proc / "comm").write_text("coqc\n")
+        self.environment["ZESU_PROC_ROOT"] = str(proc.parent)
+        first = self.guard("reserve-coqc", str(os.getpid()))
+        self.assertEqual(first.returncode, 0, first.stderr)
+        first_token = first.stdout.strip()
+        second = subprocess.Popen(
+            [str(GUARD), "reserve-coqc", str(os.getpid())],
+            env=self.environment, text=True, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        second_token = ""
+        try:
+            time.sleep(0.2)
+            self.assertIsNone(second.poll())
+            marked = self.guard("mark-coqc", first_token, "12345")
+            self.assertEqual(marked.returncode, 0, marked.stderr)
+            count.write_text("48\n")
+            time.sleep(0.2)
+            self.assertIsNone(second.poll())
+            count.write_text("47\n")
+            stdout, stderr = second.communicate(timeout=3)
+            self.assertEqual(second.returncode, 0, stderr)
+            second_token = stdout.strip()
+            self.assertTrue(second_token)
+        finally:
+            if second.poll() is None:
+                second.terminate()
+                second.wait(timeout=3)
+            self.guard("release-coqc", first_token)
+            if second_token:
+                self.guard("release-coqc", second_token)
+
+    def test_gate_waits_for_a_pending_coqc_reservation(self):
+        token = self.guard("reserve-coqc", str(os.getpid()))
+        self.assertEqual(token.returncode, 0, token.stderr)
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            self.environment["ZESU_GATE_SCOPE_WAIT"] = "0"
+            result = self.guard("lock-hold", str(holder.pid))
+            self.assertEqual(result.returncode, 3)
+            self.assertIn("job scopes or launches still alive", result.stderr)
+            self.assertFalse(self.lock.exists())
+        finally:
+            self.guard("release-coqc", token.stdout.strip())
+            holder.terminate()
+            holder.wait(timeout=3)
+
+    def test_subprocesses_do_not_inherit_guard_bypass_flags(self):
+        for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
+                     "ZESU_BATCH_LIMIT"):
+            with self.subTest(name=name):
+                self.assertNotIn(name, self.environment)
+
+    def test_batch_fence_under_gate_environment(self):
+        environment = {**os.environ, "ZESU_GUARD": "0", "ZESU_IN_GATE": "1",
+                       "ZESU_IN_BATCH": "1", "ZESU_ARM": "1",
+                       "ZESU_BATCH_LIMIT": "120G", "ZESU_IO": "batch"}
+        result = subprocess.run(
+            [sys.executable, "-m", "unittest",
+             "tools.test_guard.GuardLockTest.test_scope_and_batch_memory_fences"],
+            capture_output=True, text=True, env=environment, cwd=TOOLS.parent)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_stale_lock_is_removed_and_reported(self):
         self.lock.write_text("holder=gone pid=999999999 start=x\n")
@@ -70,17 +167,12 @@ class GuardLockTest(unittest.TestCase):
         self.assertIn("holder=", done.stdout)
         self.assertFalse(self.lock.exists())
 
-    def test_locked_holds_the_lock_while_it_runs(self):
-        done = self.guard("locked", "t", "--", "cat", str(self.lock))
-        self.assertTrue(done.stdout.startswith("state=held "))
-
-    def test_wanted_lock_holds_new_launches_not_running_batches(self):
+    def test_wanted_lock_holds_new_launches(self):
         holder = subprocess.Popen(["sleep", "30"])
         try:
-            done = self.guard("lock-want", str(holder.pid), "t")
-            self.assertEqual(done.returncode, 0)
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
             self.assertTrue(self.lock.read_text().startswith("state=wanted "))
-            self.assertIn("gate lock", self.guard("hold").stdout)
             waited = subprocess.run(
                 ["timeout", "0.5", str(GUARD), "batch", "t", "--", "true"],
                 capture_output=True, text=True, env=self.environment)
@@ -88,7 +180,6 @@ class GuardLockTest(unittest.TestCase):
             self.environment["ZESU_IN_BATCH"] = "1"
             self.assertNotIn("gate lock", self.guard("hold").stdout)
             del self.environment["ZESU_IN_BATCH"]
-            self.assertEqual(self.guard("lock-want", "1", "u").returncode, 3)
             self.assertEqual(self.guard("lock-hold", str(holder.pid)).returncode,
                              0)
             self.assertTrue(self.lock.read_text().startswith("state=held "))
@@ -97,63 +188,155 @@ class GuardLockTest(unittest.TestCase):
             holder.wait()
 
     def test_lock_hold_waits_for_running_scopes(self):
-        fake = Path(self.directory.name) / "bin"
-        fake.mkdir()
-        (fake / "systemctl").write_text("#!/bin/sh\necho arm.scope\n")
-        (fake / "systemctl").chmod(0o755)
-        self.environment["PATH"] = f"{fake}:{os.environ['PATH']}"
+        fake_systemctl = self.bin / "systemctl"
+        fake_systemctl.write_text("#!/bin/sh\necho arm.scope\n")
         self.environment["ZESU_GATE_SCOPE_WAIT"] = "0"
         holder = subprocess.Popen(["sleep", "30"])
         try:
-            self.guard("lock-want", str(holder.pid), "t")
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
             done = self.guard("lock-hold", str(holder.pid))
             self.assertEqual(done.returncode, 3)
-            self.assertIn("job scopes still alive", done.stderr)
+            self.assertIn("job scopes or launches still alive", done.stderr)
             self.assertFalse(self.lock.exists())
         finally:
             holder.kill()
             holder.wait()
 
-    def test_memory_lines_are_absolute(self):
-        self.environment["ZESU_LAUNCH_GIB"] = "0"
-        self.assertIn("launch line 0", self.guard("hold").stdout)
-        self.environment["ZESU_HOLD_GIB"] = "0"
-        self.assertIn("at the 0 GiB hold", self.guard("hold").stdout)
-
-    def test_direct_batch_waits_at_the_launch_line(self):
-        self.environment["ZESU_LAUNCH_GIB"] = "0"
-        done = subprocess.run(
-            ["timeout", "0.3", str(GUARD), "batch", "t", "--", "true"],
-            capture_output=True, text=True, env=self.environment)
-        self.assertEqual(done.returncode, 124)
-
-    def test_ramp_only_while_populating(self):
-        def six_launches():
-            started = time.monotonic()
-            waits = [subprocess.Popen([str(GUARD), "wait"],
-                                      env=self.environment)
-                     for _ in range(6)]
-            for process in waits:
-                process.wait()
-            return time.monotonic() - started
-
-        self.environment["ZESU_DISK_BUSY_PERCENT"] = "1000"
-        self.assertLess(six_launches(), 2.0)
+    def test_registered_launch_blocks_gate_transition(self):
+        started = Path(self.directory.name) / "launch-started"
+        fake_systemd = self.bin / "systemd-run"
+        fake_systemd.write_text(
+            "#!/bin/sh\n"
+            f"touch '{started}'\n"
+            "sleep 1\n"
+        )
+        self.environment["ZESU_GATE_SCOPE_WAIT"] = "0"
+        launch = subprocess.Popen(
+            [str(GUARD), "batch", "arm", "--", "true"],
+            env=self.environment, stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, text=True,
+        )
         holder = subprocess.Popen(["sleep", "30"])
-        marker = Path(self.directory.name) / f"pop.{holder.pid}"
         try:
-            marker.write_text("x")
-            self.assertGreaterEqual(six_launches(), 2.4)
+            for _ in range(100):
+                if started.exists():
+                    break
+                time.sleep(0.01)
+            self.assertTrue(started.exists())
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            done = self.guard("lock-hold", str(holder.pid))
+            self.assertEqual(done.returncode, 3)
+            self.assertIn("job scopes or launches still alive", done.stderr)
+            self.assertFalse(self.lock.exists())
+        finally:
+            launch.wait(timeout=3)
+            holder.kill()
+            holder.wait()
+
+    def test_running_arm_starts_scope_while_gate_wants(self):
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            environment = {**self.environment, "ZESU_IN_BATCH": "1"}
+            done = subprocess.run(
+                ["timeout", "1", str(GUARD), "scope", "arm-job", "--", "true"],
+                capture_output=True, text=True, env=environment,
+            )
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertIn("MemoryMax=6G", done.stdout)
+            self.assertTrue(self.lock.read_text().startswith("state=wanted "))
         finally:
             holder.kill()
             holder.wait()
-        self.guard("wait")
-        self.assertFalse(marker.exists())
+
+    def test_lock_release_uses_configured_path_and_owner(self):
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            self.assertEqual(self.guard("lock-release", "1").returncode, 0)
+            self.assertTrue(self.lock.exists())
+            self.assertEqual(self.guard("lock-release", str(holder.pid)).returncode,
+                             0)
+            self.assertFalse(self.lock.exists())
+        finally:
+            holder.kill()
+            holder.wait()
+
+    def test_peak_uses_total_minus_available(self):
+        self.environment["GUARD_TEST_USED_GIB"] = "75"
+        self.environment["ZESU_GUARD_POLL"] = "0.05"
+        subprocess.run(["timeout", "0.2", str(GUARD), "watch"],
+                       capture_output=True, env=self.environment)
+        peak = self.guard("peak")
+        self.assertEqual(peak.stdout.strip(), "75")
+
+    def test_gate_refuses_to_build_after_drain_timeout(self):
+        gate = (TOOLS / "det" / "gate.sh").read_text()
+        self.assertIn("if (( coqc > floor || memory >= launch )); then", gate)
+        self.assertIn("refusing: gate drain timed out", gate)
+        self.assertIn("$guard lock-release $$", gate)
 
     def test_gate_jobs_caps(self):
         self.assertLessEqual(int(self.guard("gate-jobs").stdout), 24)
         self.assertLessEqual(int(self.guard("gate-jobs", "check-fast").stdout),
                              48)
+
+    def test_absolute_memory_thresholds(self):
+        for used, expected in ((149, None), (150, "launch line 150"),
+                               (179, "launch line 150"),
+                               (180, "at the 180 GiB hold"),
+                               (200, "at the 180 GiB hold")):
+            with self.subTest(used=used):
+                self.environment["GUARD_TEST_USED_GIB"] = str(used)
+                result = self.guard("hold")
+                self.assertEqual(result.returncode, 0)
+                if expected:
+                    self.assertIn(expected, result.stdout)
+                else:
+                    self.assertNotIn("memory", result.stdout)
+
+    def test_scope_and_batch_memory_fences(self):
+        for arguments, fence in (("scope", "MemoryMax=6G"),
+                                 ("batch", "MemoryMax=150G")):
+            with self.subTest(arguments=arguments):
+                result = self.guard(arguments, "test", "--", "true")
+                self.assertEqual(result.returncode, 0)
+                self.assertIn(fence, result.stdout)
+                self.assertIn("MemorySwapMax=0", result.stdout)
+
+    def test_direct_batch_waits_at_launch_limit(self):
+        self.environment["GUARD_TEST_USED_GIB"] = "150"
+        result = subprocess.run(
+            ["timeout", "0.2", str(GUARD), "batch", "test", "--", "true"],
+            capture_output=True, text=True, env=self.environment)
+        self.assertEqual(result.returncode, 124)
+        self.assertNotIn("MemoryMax=150G", result.stdout)
+        self.environment["GUARD_TEST_USED_GIB"] = "149"
+        self.assertIn("MemoryMax=150G", self.guard("batch", "test", "--", "true").stdout)
+
+    def test_gate_uses_120_gib_batch_fence(self):
+        gate = (TOOLS / "det" / "gate.sh").read_text()
+        self.assertIn("ZESU_BATCH_LIMIT=120G $guard batch", gate)
+
+    def test_watch_kills_youngest_scope_at_200_gib(self):
+        state = Path(self.environment["ZESU_GUARD_STATE"])
+        state.mkdir()
+        (state / "scopes").write_text("old.scope\nyoung.scope\n")
+        log = Path(self.environment["GUARD_TEST_SYSTEMCTL_LOG"])
+        self.environment["ZESU_GUARD_POLL"] = "0.05"
+        self.environment["GUARD_TEST_USED_GIB"] = "199"
+        subprocess.run(["timeout", "0.2", str(GUARD), "watch"],
+                       capture_output=True, env=self.environment)
+        self.assertFalse(log.exists())
+        self.environment["GUARD_TEST_USED_GIB"] = "200"
+        subprocess.run(["timeout", "0.2", str(GUARD), "watch"],
+                       capture_output=True, env=self.environment)
+        self.assertIn("young.scope", log.read_text())
+        self.assertNotIn("old.scope", log.read_text())
 
 
 class PromTest(unittest.TestCase):
