@@ -333,7 +333,7 @@ check-proof-hygiene:
 # its cache: a cached `check-fast` once reported success while a hygiene
 # violation stood for two commits. Every report names this run.
 .PHONY: check-fast
-check-fast: check-evidence-tools startup-traces
+check-fast: startup-traces check-evidence-tools
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
@@ -342,7 +342,7 @@ check-fast: check-evidence-tools startup-traces
 	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
 
 .PHONY: check-iris
-check-iris: check-evidence-tools startup-traces
+check-iris: startup-traces check-evidence-tools
 	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
