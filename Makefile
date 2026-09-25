@@ -64,6 +64,9 @@ WRITE_FAILURE_TRACE_COQ := IslaTraces.write_failure
 MAIN_DUMP      := build/islaris-dumps/main.dump
 MAIN_TRACE_DIR := generated/isla-traces/main
 MAIN_TRACE_COQ := IslaTraces.main
+STARTUP_DUMP      := build/islaris-dumps/startup.dump
+STARTUP_TRACE_DIR := generated/isla-traces/startup
+STARTUP_TRACE_COQ := IslaTraces.startup
 
 WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
 WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
@@ -111,7 +114,7 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	       $(TRACE_DIR)/dune
 
 .PHONY: traces
-traces: $(MAIN_TRACE_DIR)/instrs.v $(WRITE_FAILURE_TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
+traces: $(STARTUP_TRACE_DIR)/instrs.v $(MAIN_TRACE_DIR)/instrs.v $(WRITE_FAILURE_TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
 
 $(ZKVM_EXIT_TRACE_DIR)/instrs.v: $(ZKVM_EXIT_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	mkdir -p $(ZKVM_EXIT_TRACE_DIR)
@@ -191,7 +194,23 @@ $(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evid
 .PHONY: write-success-traces
 write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
 
-# Main traces use the pinned dump produced by the Evidence tooling.
+# Startup traces use the pinned dump produced by the Evidence tooling.
+.PHONY: startup-traces
+startup-traces: $(STARTUP_TRACE_DIR)/instrs.v
+
+$(STARTUP_DUMP): build/endpoint-elf experiments/islaris-startup/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
+	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
+	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --profile experiments/islaris-startup/profile.json --output $@
+
+$(STARTUP_TRACE_DIR)/instrs.v: $(STARTUP_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
+	mkdir -p $(STARTUP_TRACE_DIR)
+	$(OPAM) islaris $(STARTUP_DUMP) -j 3 -o $(STARTUP_TRACE_DIR) \
+	  --coqdir=$(STARTUP_TRACE_COQ) --arch=riscv64
+	sed -i -e '/(package islaris)/d' \
+	  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
+	  $(STARTUP_TRACE_DIR)/dune
+
 .PHONY: main-traces
 main-traces: $(MAIN_TRACE_DIR)/instrs.v
 
@@ -314,7 +333,7 @@ check-proof-hygiene:
 # its cache: a cached `check-fast` once reported success while a hygiene
 # violation stood for two commits. Every report names this run.
 .PHONY: check-fast
-check-fast: check-evidence-tools
+check-fast: check-evidence-tools startup-traces
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
@@ -323,7 +342,7 @@ check-fast: check-evidence-tools
 	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
 
 .PHONY: check-iris
-check-iris: check-evidence-tools
+check-iris: check-evidence-tools startup-traces
 	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
