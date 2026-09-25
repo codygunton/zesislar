@@ -66,6 +66,66 @@ class GuardLockTest(unittest.TestCase):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
                               text=True, env=self.environment)
 
+    def test_concurrent_coqc_reservations_keep_the_48_cap(self):
+        base = Path(self.directory.name)
+        count = base / "coqc-count"
+        count.write_text("47\n")
+        fake_pgrep = self.bin / "pgrep"
+        fake_pgrep.write_text('#!/bin/sh\ncat "$GUARD_TEST_COQC_COUNT"\n')
+        fake_pgrep.chmod(0o755)
+        self.environment["GUARD_TEST_COQC_COUNT"] = str(count)
+        self.environment["ZESU_MAX_COQC"] = "48"
+        self.environment["ZESU_IN_BATCH"] = "1"
+        proc = base / "proc" / "12345"
+        proc.mkdir(parents=True)
+        (proc / "comm").write_text("coqc\n")
+        self.environment["ZESU_PROC_ROOT"] = str(proc.parent)
+        first = self.guard("reserve-coqc", str(os.getpid()))
+        self.assertEqual(first.returncode, 0, first.stderr)
+        first_token = first.stdout.strip()
+        second = subprocess.Popen(
+            [str(GUARD), "reserve-coqc", str(os.getpid())],
+            env=self.environment, text=True, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        second_token = ""
+        try:
+            time.sleep(0.2)
+            self.assertIsNone(second.poll())
+            marked = self.guard("mark-coqc", first_token, "12345")
+            self.assertEqual(marked.returncode, 0, marked.stderr)
+            count.write_text("48\n")
+            time.sleep(0.2)
+            self.assertIsNone(second.poll())
+            count.write_text("47\n")
+            stdout, stderr = second.communicate(timeout=3)
+            self.assertEqual(second.returncode, 0, stderr)
+            second_token = stdout.strip()
+            self.assertTrue(second_token)
+        finally:
+            if second.poll() is None:
+                second.terminate()
+                second.wait(timeout=3)
+            self.guard("release-coqc", first_token)
+            if second_token:
+                self.guard("release-coqc", second_token)
+
+    def test_gate_waits_for_a_pending_coqc_reservation(self):
+        token = self.guard("reserve-coqc", str(os.getpid()))
+        self.assertEqual(token.returncode, 0, token.stderr)
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            self.environment["ZESU_GATE_SCOPE_WAIT"] = "0"
+            result = self.guard("lock-hold", str(holder.pid))
+            self.assertEqual(result.returncode, 3)
+            self.assertIn("job scopes or launches still alive", result.stderr)
+            self.assertFalse(self.lock.exists())
+        finally:
+            self.guard("release-coqc", token.stdout.strip())
+            holder.terminate()
+            holder.wait(timeout=3)
+
     def test_subprocesses_do_not_inherit_guard_bypass_flags(self):
         for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
                      "ZESU_BATCH_LIMIT"):

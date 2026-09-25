@@ -67,6 +67,7 @@ DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
 # build directory from the Dune cache; the ramp applies while one is live.
 POPULATING_PREFIX=${ZESU_POPULATING_PREFIX:-/tmp/zesu-populating}
 MAX_COQC=${ZESU_MAX_COQC:-48}
+PROC_ROOT=${ZESU_PROC_ROOT:-/proc}
 MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
 # Two launches per second, shared by every guard of every agent.
@@ -81,11 +82,13 @@ SCOPE_PREFIX=${ZESU_SCOPE_PREFIX:-zesudet}
 STATE_DIR=${ZESU_GUARD_STATE:-${XDG_RUNTIME_DIR:-/tmp}/zesu-guard}
 REGISTRY="$STATE_DIR/scopes"
 LAUNCHES="$STATE_DIR/launches"
+COQC_RESERVATIONS="$STATE_DIR/coqc-reservations"
 PEAK="$STATE_DIR/peak"
 LOG="$STATE_DIR/guard.log"
 
 mkdir -p "$STATE_DIR"
 mkdir -p "$LAUNCHES"
+mkdir -p "$COQC_RESERVATIONS"
 touch "$REGISTRY" "$LOG" "$PEAK"
 
 GIB=$((1024 * 1024 * 1024))
@@ -175,7 +178,7 @@ lock_hold() {
   local pid=$1 limit=${ZESU_GATE_SCOPE_WAIT:-14400} start=$SECONDS live
   local noted=""
   # A registered launch can precede its systemd scope. Wait for both.
-  while live=$(( $(live_scopes | wc -l) + $(live_launches | wc -l) )); (( live > 0 )); do
+  while live=$(( $(live_scopes | wc -l) + $(live_launches | wc -l) + $(live_reservations | wc -l) )); (( live > 0 )); do
     if (( SECONDS - start >= limit )); then
       echo "refusing: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
       lock_release "$pid"; return 3
@@ -227,6 +230,86 @@ live_launches() {
     if kill -0 "$pid" 2>/dev/null; then echo "$marker"
     else rm -f "$marker"; fi
   done
+}
+
+# A scratch compiler keeps a reservation until its child exits. Before
+# the child appears in /proc, the reservation uses one additional slot.
+# Once /proc counts the child, the reservation does not count it twice.
+live_reservations() {
+  local marker owner
+  for marker in "$COQC_RESERVATIONS"/*; do
+    [ -e "$marker" ] || continue
+    owner=${marker##*/}; owner=${owner%%.*}
+    if kill -0 "$owner" 2>/dev/null; then echo "$marker"
+    else rm -f "$marker"; fi
+  done
+}
+
+pending_reservations() {
+  local marker child pending=0
+  while IFS= read -r marker; do
+    child=$(cat "$marker" 2>/dev/null) || child=""
+    if ! [[ "$child" =~ ^[0-9]+$ ]] || \
+       [ "$(cat "$PROC_ROOT/$child/comm" 2>/dev/null)" != coqc ]; then
+      pending=$(( pending + 1 ))
+    fi
+  done < <(live_reservations)
+  echo "$pending"
+}
+
+# The gate mutex also serializes scratch reservations. Concurrent waiters
+# cannot both admit at 47 coqc, and a wanted gate cannot miss a launch.
+reserve_coqc() {
+  local owner=$1 marker holder count pending
+  [[ "$owner" =~ ^[0-9]+$ ]] || return 2
+  while kill -0 "$owner" 2>/dev/null; do
+    exec 7>>"$GATE_MUTEX"
+    flock 7
+    holder=""
+    if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ]; then
+      holder=$(lock_live_unlocked 2>/dev/null) || holder=""
+    fi
+    count=$(coqc_count)
+    pending=$(pending_reservations)
+    if [ -z "$holder" ] && (( count + pending < MAX_COQC )); then
+      marker=$(mktemp "$COQC_RESERVATIONS/$owner.XXXXXXXX")
+      printf 'pending\n' > "$marker"
+      flock -u 7
+      exec 7>&-
+      echo "$marker"
+      return 0
+    fi
+    flock -u 7
+    exec 7>&-
+    sleep "$POLL_SECONDS"
+  done
+  return 3
+}
+
+reservation_path() {
+  [[ "$(dirname "$1")" == "$COQC_RESERVATIONS" && -f "$1" ]]
+}
+
+mark_coqc() {
+  local marker=$1 child=$2
+  [[ "$child" =~ ^[0-9]+$ ]] || return 2
+  exec 7>>"$GATE_MUTEX"
+  flock 7
+  if ! reservation_path "$marker"; then
+    flock -u 7; exec 7>&-; return 2
+  fi
+  printf '%s\n' "$child" > "$marker"
+  flock -u 7
+  exec 7>&-
+}
+
+release_coqc() {
+  local marker=$1
+  exec 7>>"$GATE_MUTEX"
+  flock 7
+  if reservation_path "$marker"; then rm -f "$marker"; fi
+  flock -u 7
+  exec 7>&-
 }
 
 run_locked() {
@@ -532,6 +615,9 @@ case "${1:-report}" in
   reset-peak) echo 0 > "$PEAK" ;;
   peak)   awk '{printf "%d", $1 / 1073741824}' "$PEAK" 2>/dev/null; echo ;;
   wait)   guard_wait ;;
+  reserve-coqc) reserve_coqc "$2" ;;
+  mark-coqc) mark_coqc "$2" "$3" ;;
+  release-coqc) release_coqc "$2" ;;
   watch)  guard_watch ;;
   scope)  shift; run_scope "$@" ;;
   batch)  shift; run_batch "$@" ;;
@@ -544,5 +630,5 @@ case "${1:-report}" in
   hold)   r=$(hold_reason); echo "${r:-none}" ;;
   window) shift; python3 "$PROM" window "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|reserve-coqc PID|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
 esac

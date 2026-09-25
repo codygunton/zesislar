@@ -51,32 +51,48 @@ for argument in command[1:]:
 
 with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
     output = Path(output_dir) / f"{source.stem}.vo"
+    guard = str(Path(sys.argv[4]) / "resource_guard.sh")
+    subprocess.run([guard, "wait"], check=True)
+    reservation = subprocess.run(
+        [guard, "reserve-coqc", str(os.getpid())], check=True,
+        capture_output=True, text=True).stdout.strip()
+    if not reservation:
+        raise SystemExit("resource guard returned no coqc reservation")
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
-    process = subprocess.Popen(
-        [command[0], *flags, "-o", str(output), str(source)],
-        cwd=working_dir,
-    )
-    limit = None
-    while process.poll() is None:
-        elapsed = time.monotonic() - started
-        try:
-            status = Path(f"/proc/{process.pid}/status").read_text()
-            rss_kb = next(int(line.split()[1]) for line in status.splitlines()
-                          if line.startswith("VmRSS:"))
-        except (FileNotFoundError, ProcessLookupError, StopIteration):
-            rss_kb = 0
-        if elapsed > 300 or rss_kb > 6 * 1024 * 1024:
-            limit = "time" if elapsed > 300 else "memory"
-            process.terminate()
+    process = None
+    try:
+        process = subprocess.Popen(
+            [command[0], *flags, "-o", str(output), str(source)],
+            cwd=working_dir,
+        )
+        subprocess.run([guard, "mark-coqc", reservation, str(process.pid)],
+                       check=True)
+        limit = None
+        while process.poll() is None:
+            elapsed = time.monotonic() - started
             try:
-                process.wait(timeout=2)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
-            break
-        time.sleep(0.25)
-    returncode = process.wait()
+                status = Path(f"/proc/{process.pid}/status").read_text()
+                rss_kb = next(int(line.split()[1]) for line in status.splitlines()
+                              if line.startswith("VmRSS:"))
+            except (FileNotFoundError, ProcessLookupError, StopIteration):
+                rss_kb = 0
+            if elapsed > 300 or rss_kb > 6 * 1024 * 1024:
+                limit = "time" if elapsed > 300 else "memory"
+                process.terminate()
+                try:
+                    process.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+                break
+            time.sleep(0.25)
+        returncode = process.wait()
+    finally:
+        if process is not None and process.poll() is None:
+            process.terminate()
+            process.wait()
+        subprocess.run([guard, "release-coqc", reservation], check=True)
     elapsed_ms = round((time.monotonic() - started) * 1000)
     after = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
     print(f"exit={returncode} ms={elapsed_ms} rss_kb={max(before, after)}")

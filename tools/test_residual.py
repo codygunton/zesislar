@@ -1,5 +1,7 @@
 """Tests for the residual corpus tools."""
 
+import json
+import os
 import shutil
 import subprocess
 import sys
@@ -355,7 +357,10 @@ class RelativeArmRecipe(unittest.TestCase):
                 "test \"$(cat _build/default/trace.csexp)\" = immutable-tree || exit 9\n"
                 "printf 'RESIDUAL-BEGIN\\nNo more goals.\\nRESIDUAL-END\\n'\n")
             caller_cwd = Path.cwd()
-            with patch.object(benchmark, "wait_for_room"):
+            with patch.object(benchmark, "SCRATCH", scratch), \
+                 patch.object(benchmark, "wait_for_room"), \
+                 patch.object(benchmark.coqc_slots, "width",
+                              return_value=(2, 0, 0)):
                 rows = benchmark.measure(
                     root, [("First.v", "test_lemma"),
                            ("Second.v", "test_lemma")],
@@ -363,6 +368,63 @@ class RelativeArmRecipe(unittest.TestCase):
             self.assertEqual([row["outcome"] for row in rows],
                              ["closed", "closed"])
             self.assertEqual(Path.cwd(), caller_cwd)
+
+
+class ScratchCompilerGuard(unittest.TestCase):
+    def test_wait_precedes_compiler_and_failed_wait_stops_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            scratch = tools / "coqc_scratch.sh"
+            shutil.copy2(Path(__file__).resolve().parent / "coqc_scratch.sh",
+                         scratch)
+            (tools / "coqc_recipe.py").write_text(
+                "import json\n"
+                "def remember_recipe(build_dir):\n"
+                "    return json.loads((build_dir / 'recipe.json').read_text())\n")
+            guard = tools / "resource_guard.sh"
+            guard.write_text(
+                '#!/bin/sh\n'
+                'case "$1" in\n'
+                '  wait) echo wait >> "$SCRATCH_EVENTS"; '
+                'exit "${SCRATCH_GUARD_STATUS:-0}" ;;\n'
+                '  reserve-coqc) echo reserve >> "$SCRATCH_EVENTS"; '
+                'echo token ;;\n'
+                '  mark-coqc) echo mark >> "$SCRATCH_EVENTS" ;;\n'
+                '  release-coqc) echo release >> "$SCRATCH_EVENTS" ;;\n'
+                'esac\n')
+            guard.chmod(0o755)
+            compiler = root / "coqc"
+            compiler.write_text('#!/bin/sh\necho coqc >> "$SCRATCH_EVENTS"\n')
+            compiler.chmod(0o755)
+            source = root / "Probe.v"
+            source.write_text("Lemma probe : True. Proof. exact I. Qed.\n")
+            build = root / "build"
+            build.mkdir()
+            (build / "trace.csexp").write_text("trace\n")
+            (build / "recipe.json").write_text(json.dumps({
+                "command": [str(compiler), "Original.v"],
+                "working_dir": str(root),
+            }))
+            events = root / "events"
+            env = dict(os.environ, SCRATCH_EVENTS=str(events))
+            command = ["bash", str(scratch), str(source), str(build)]
+            passed = subprocess.run(command, env=env, capture_output=True,
+                                    text=True, check=False)
+            self.assertEqual(passed.returncode, 0, passed.stderr)
+            recorded = events.read_text().splitlines()
+            self.assertEqual(recorded[:2], ["wait", "reserve"])
+            self.assertEqual(recorded[-1], "release")
+            self.assertEqual(set(recorded),
+                             {"wait", "reserve", "mark", "coqc", "release"})
+            events.unlink()
+            failed = subprocess.run(command,
+                                    env=dict(env, SCRATCH_GUARD_STATUS="17"),
+                                    capture_output=True, text=True,
+                                    check=False)
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertEqual(events.read_text().splitlines(), ["wait"])
 
 
 if __name__ == "__main__":
