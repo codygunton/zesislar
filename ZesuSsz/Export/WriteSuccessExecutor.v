@@ -73,19 +73,28 @@ Proof.
   unfold writeSuccessFuelBound, writeSuccessFuelOfInput,
     writeSuccessExecutionInstructionCount, level1ContractFuel,
     maxSszInputSize.
-  rewrite Nat2Z.inj_succ Nat2Z.inj_mul.
-  rewrite !Nat2Z.inj_pow.
+  remember (64 * 1024 * 1024)%nat as base eqn:Hbase.
+  remember (950 * Nat.pow (S base) 5)%nat as large eqn:Hlarge.
+  change (Z.of_nat (S large) < Z.of_nat (Nat.pow 2 160))%Z.
   rewrite Nat2Z.inj_succ.
+  subst large.
+  rewrite Nat2Z.inj_mul.
+  rewrite !Nat2Z.inj_pow.
+  change (Z.of_nat 950) with 950%Z.
+  rewrite Nat2Z.inj_succ.
+  subst base.
   rewrite !Nat2Z.inj_mul.
-  vm_compute. lia.
+  vm_compute. reflexivity.
 Qed.
 
 Lemma write_success_input_fuel_bounded :
   InputIndexedBound writeSuccessFuelOfInput.
 Proof.
   intros size Hsize.
+  apply Nat2Z.inj_lt.
   eapply Nat.le_lt_trans.
-  - apply write_success_fuel_mono. exact Hsize.
+  - apply write_success_fuel_mono.
+    apply Nat2Z.inj_le. exact Hsize.
   - exact write_success_fuel_bound_level1.
 Qed.
 
