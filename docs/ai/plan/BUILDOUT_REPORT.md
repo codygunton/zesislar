@@ -1,6 +1,6 @@
 # Builder buildout report
 
-Status: draft at pushed root `40cdc060` on 2026-09-25. Phase A and B1 are measured. B2 records seven stalled probes, and B3 records its stop. B4 has two selected rules. B5 remains open while the current-root benchmark and plan section 14 step 5 rulings remain pending.
+Status: draft at pushed root `40cdc060` on 2026-09-25. Phase A and B1 are measured. B2 records seven stalled probes, and B3 records its stop. B4 has two selected rules. The lead ruled on plan section 14 step 5. B5 remains open while current-root v2 arms and seven B2 probes remain pending.
 
 ## Phase A
 
@@ -390,6 +390,12 @@ The candidate arm files are `6ccb7607d797-v2-ur1.json`, `6ccb7607d797-v2-ur1-rul
 
 The guarded v1 arm on `40cdc060` kept all 305 and 48 outcomes unchanged against `b4761100`. It reported two closed rows on each set. The 24-job `check-iris` preview passed with zero timeouts and a 94 GiB batch peak. The guard held the gate from 11:25:26 to 12:05:01 on 2026-09-25, a 39 min 35 s run. The log is `.worktrees/islaris-native/_build/agents/orch/logs/v2-keepers-preview-40cdc060.log`. The arm log is `v2-keepers-v1-arm-40cdc060.log` beside it. The gate time comes from `/run/user/1000/zesu-guard/guard.log`. The preceding Export fuel fix at `4d03f0eb` passed `check-fast`; its module took 4.079 s and 673 MiB in isolation.
 
+## Plan section 14 step 5: compliance boundary
+
+The lead parked three proposed `KnownBug` constructors for the withdrawal, transaction, and witness-header list-count limits. Their required computed paired mismatch tests cannot run. `Shell.zesuOutcomeOfTrace` returns `None` for every trace, and the `EvmSailAdapter` evaluators are abstract. No new constructor is accepted or merged.
+
+The lead approved the endpoint repair with a symbolic pinned ELF and a real output projection. Its statement keeps named `decodeOk` and `writeOk` premises. The repair also requires pinned-code and non-vacuity lemmas. The writer's proof work remains in flight; this report records no preview or merge for that repair.
+
 ## B5: report status and remaining evidence
 
 | Required item | Current record | Pending work |
@@ -401,8 +407,8 @@ The guarded v1 arm on `40cdc060` kept all 305 and 48 outcomes unchanged against 
 | Closed segment hand lines | No B2 generated segment closed. | Record hand lines and `Print Assumptions` for any later closed segment. |
 | 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; the `40cdc060` preview took 39 min 35 s. | Record a current-root gate after the remaining ordered merges. |
 | Tickets | T1 loaded-word inclusion, T2 return-to-load, T3 `sp + 1136` memory, and T4 optional outcome remain. | Add the plan section 15 T5 return-wand ticket and the post-withdrawals T3-then-T1 path to the final ticket review. |
-| Compliance boundary | No statement decision is recorded here. | Send plan section 14 step 5 before/after statements to the lead and record the rulings before any preview or merge. |
+| Compliance boundary | The lead parked three new `KnownBug` constructors. The lead approved the endpoint repair under the conditions above. | Finish the approved endpoint repair and its proof checks. Keep the parked constructors out of the merge. |
 
 The current segment inputs are `ZesuSsz/Evidence/det/open_segments.json` and `ZesuSsz/Evidence/det/chain/post_withdrawals.json`. The recorded stalls are in `ZesuSsz/Evidence/det/wp4/stalls.jsonl`. The old draft report came from branch `builder-roota-pw` at `7ae0c1dc`. Branch `builder-report0` at `0be3adf6` holds earlier benchmark JSON. The draft branches `builder-seg-pw` (`b64d405d`), `builder-seg-tf1` (`3ced1187`), and `builder-seg-tf2` (`3dc4ddc0`) do not contain closed segment proofs. They stay parked for Phase C.
 
-This report is a draft. Plan section 14 step 5 and the current-root benchmark remain open, so the B5 stop and review have not occurred.
+This report is a draft. Current-root v2 arms on both frozen sets and all seven B2 probes remain open, so the B5 stop and review have not occurred.
