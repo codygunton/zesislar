@@ -23,7 +23,12 @@ class GuardLockTest(unittest.TestCase):
         self.environment = {**os.environ,
                             "ZESU_GATE_LOCK": str(self.lock),
                             "ZESU_GUARD_STATE": str(base / "state"),
-                            "ZESU_RAMP_FILE": str(base / "ramp")}
+                            "ZESU_RAMP_FILE": str(base / "ramp"),
+                            "ZESU_SCOPE_PREFIX": f"zesutest{os.getpid()}",
+                            "ZESU_GUARD_POLL": "0.1",
+                            "ZESU_MAX_COQC": "100000",
+                            "ZESU_MAX_LOAD": "100000",
+                            "ZESU_MAX_BLOCKED": "100000"}
         self.bin = base / "bin"
         self.bin.mkdir()
         fake_free = self.bin / "free"
@@ -51,7 +56,7 @@ class GuardLockTest(unittest.TestCase):
         self.environment["GUARD_TEST_USED_GIB"] = "40"
         self.environment["GUARD_TEST_SYSTEMCTL_LOG"] = str(base / "systemctl.log")
         for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
-                     "ZESU_BATCH_LIMIT"):
+                     "ZESU_BATCH_LIMIT", "ZESU_IO"):
             self.environment.pop(name, None)
 
     def tearDown(self):
@@ -70,7 +75,7 @@ class GuardLockTest(unittest.TestCase):
     def test_batch_fence_under_gate_environment(self):
         environment = {**os.environ, "ZESU_GUARD": "0", "ZESU_IN_GATE": "1",
                        "ZESU_IN_BATCH": "1", "ZESU_ARM": "1",
-                       "ZESU_BATCH_LIMIT": "120G"}
+                       "ZESU_BATCH_LIMIT": "120G", "ZESU_IO": "batch"}
         result = subprocess.run(
             [sys.executable, "-m", "unittest",
              "tools.test_guard.GuardLockTest.test_scope_and_batch_memory_fences"],
@@ -102,16 +107,52 @@ class GuardLockTest(unittest.TestCase):
         self.assertIn("holder=", done.stdout)
         self.assertFalse(self.lock.exists())
 
+    def test_wanted_lock_holds_new_launches(self):
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            self.assertTrue(self.lock.read_text().startswith("state=wanted "))
+            waited = subprocess.run(
+                ["timeout", "0.5", str(GUARD), "batch", "t", "--", "true"],
+                capture_output=True, text=True, env=self.environment)
+            self.assertEqual(waited.returncode, 124)
+            self.environment["ZESU_IN_BATCH"] = "1"
+            self.assertNotIn("gate lock", self.guard("hold").stdout)
+            del self.environment["ZESU_IN_BATCH"]
+            self.assertEqual(self.guard("lock-hold", str(holder.pid)).returncode,
+                             0)
+            self.assertTrue(self.lock.read_text().startswith("state=held "))
+        finally:
+            holder.kill()
+            holder.wait()
+
+    def test_lock_hold_waits_for_running_scopes(self):
+        fake_systemctl = self.bin / "systemctl"
+        fake_systemctl.write_text("#!/bin/sh\necho arm.scope\n")
+        self.environment["ZESU_GATE_SCOPE_WAIT"] = "0"
+        holder = subprocess.Popen(["sleep", "30"])
+        try:
+            self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
+                             0)
+            done = self.guard("lock-hold", str(holder.pid))
+            self.assertEqual(done.returncode, 3)
+            self.assertIn("job scopes still alive", done.stderr)
+            self.assertFalse(self.lock.exists())
+        finally:
+            holder.kill()
+            holder.wait()
+
     def test_gate_jobs_caps(self):
         self.assertLessEqual(int(self.guard("gate-jobs").stdout), 24)
         self.assertLessEqual(int(self.guard("gate-jobs", "check-fast").stdout),
                              48)
 
     def test_absolute_memory_thresholds(self):
-        for used, expected in ((149, None), (150, "memory launch 150 GiB"),
-                               (179, "memory launch 179 GiB"),
-                               (180, "memory hold 180 GiB"),
-                               (200, "memory hold 200 GiB")):
+        for used, expected in ((149, None), (150, "launch line 150"),
+                               (179, "launch line 150"),
+                               (180, "at the 180 GiB hold"),
+                               (200, "at the 180 GiB hold")):
             with self.subTest(used=used):
                 self.environment["GUARD_TEST_USED_GIB"] = str(used)
                 result = self.guard("hold")

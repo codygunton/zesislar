@@ -330,8 +330,9 @@ check-iris: check-evidence-tools
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
 	  @ZesuSsz/Proofs/all
 
-# One gate, alone: `gate.sh` refuses to start while any job scope is
-# alive, runs the uncached checkers itself, and logs the run.
+# One gate, alone: `gate.sh` wants the gate lock first, so no new batch
+# starts, waits for running job scopes to finish, runs the uncached
+# checkers itself, and logs the run.
 TARGET ?= check-iris
 .PHONY: gate
 gate:
