@@ -23,26 +23,23 @@ From iris.proofmode Require Import environments proofmode.
 Require ZesuSsz.Automation.Finish.
 Require ZesuSsz.Automation.Legacy.Finish.
 
-(* A pure goal: closed by the finisher, or shelved as a residual. *)
-Ltac zesu_nr_keep finish := first [solve [finish] | shelve].
-
-Ltac zesu_nr_step pass finish solve_instances :=
-  tryif assert_succeeds iStartProof
-  then (pass; try solve_instances;
-        tryif assert_succeeds iStartProof then finish
-        else zesu_nr_keep finish)
-  else zesu_nr_keep finish.
-
-Ltac zesu_nr_run pass finish solve_instances :=
-  unshelve (repeat progress (zesu_nr_step pass finish solve_instances));
-  try solve_instances.
-
-Ltac zesu_nr_intros :=
-  repeat first [progress iIntros (?) | progress iIntros "#?" |
-    progress iIntros "?"];
-  repeat iDestruct select (_ ∗ _)%I as "[? ?]".
+(* Ltac1 runs a zero-argument tactic passed as an argument at the call
+   site, so each entry spells its own steps rather than taking the
+   pass and the finisher as arguments. *)
 
 (* The current automation, rule set v1 or v2 as the module's imports say. *)
+Ltac zesu_nr_keep :=
+  first [solve [ZesuSsz.Automation.Finish.zesu_finish] | shelve].
+
+Ltac zesu_nr_step :=
+  tryif assert_succeeds iStartProof
+  then (ZesuSsz.Automation.Finish.zesu_run_pass;
+        try ZesuSsz.Automation.Finish.zesu_solve_instances;
+        tryif assert_succeeds iStartProof
+        then ZesuSsz.Automation.Finish.zesu_finish
+        else zesu_nr_keep)
+  else zesu_nr_keep.
+
 Ltac zesu_block_nr :=
   tryif iStartProof then (
     ZesuSsz.Automation.Finish.zesu_expose_code_lists;
@@ -50,17 +47,29 @@ Ltac zesu_block_nr :=
       progress iIntros "?"];
     ZesuSsz.Automation.Finish.zesu_reduce_introduced_code_lists;
     repeat iDestruct select (_ ∗ _)%I as "[? ?]";
-    zesu_nr_run ltac:(ZesuSsz.Automation.Finish.zesu_run_pass)
-                ltac:(ZesuSsz.Automation.Finish.zesu_finish)
-                ltac:(ZesuSsz.Automation.Finish.zesu_solve_instances))
+    unshelve (repeat progress zesu_nr_step);
+    try ZesuSsz.Automation.Finish.zesu_solve_instances)
   else first [solve [ZesuSsz.Automation.Finish.zesu_finish] | idtac].
 
 (* The legacy automation, for a module that imports `AllLegacy`. *)
+Ltac zesu_nr_keep_legacy :=
+  first [solve [ZesuSsz.Automation.Legacy.Finish.zesu_finish] | shelve].
+
+Ltac zesu_nr_step_legacy :=
+  tryif assert_succeeds iStartProof
+  then (ZesuSsz.Automation.Legacy.Finish.zesu_run_pass;
+        try ZesuSsz.Automation.Legacy.Finish.zesu_solve_instances;
+        tryif assert_succeeds iStartProof
+        then ZesuSsz.Automation.Legacy.Finish.zesu_finish
+        else zesu_nr_keep_legacy)
+  else zesu_nr_keep_legacy.
+
 Ltac zesu_block_nr_legacy :=
   tryif iStartProof then (
     simpl;
-    zesu_nr_intros;
-    zesu_nr_run ltac:(ZesuSsz.Automation.Legacy.Finish.zesu_run_pass)
-                ltac:(ZesuSsz.Automation.Legacy.Finish.zesu_finish)
-                ltac:(ZesuSsz.Automation.Legacy.Finish.zesu_solve_instances))
+    repeat first [progress iIntros (?) | progress iIntros "#?" |
+      progress iIntros "?"];
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+    unshelve (repeat progress zesu_nr_step_legacy);
+    try ZesuSsz.Automation.Legacy.Finish.zesu_solve_instances)
   else first [solve [ZesuSsz.Automation.Legacy.Finish.zesu_finish] | idtac].
