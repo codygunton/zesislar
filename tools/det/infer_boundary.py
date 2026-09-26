@@ -38,7 +38,7 @@ sys.path.insert(0, str(HERE.parent / "residual"))
 import probes  # noqa: E402
 import timed  # noqa: E402
 from classify import classify  # noqa: E402
-from goals import conclusion_text, context_size  # noqa: E402
+from goals import conclusion_text, context_size, split_goals, split_goal  # noqa: E402
 from call_sites import premises as call_premises  # noqa: E402
 from modules import find_proof  # noqa: E402
 from signature import signature  # noqa: E402
@@ -46,6 +46,8 @@ from signature import signature  # noqa: E402
 PROOF_DIR = Path("ZesuSsz/Proofs/WriteSuccess")
 SCRATCH = Path("tools/coqc_scratch.sh")
 REACHED = "BOUNDARY-REACHED"
+RAW_BEGIN = "BOUNDARY-ALL-GOALS-BEGIN"
+RAW_END = "BOUNDARY-ALL-GOALS-END"
 
 
 # Islaris already resolves an instruction fetch from `instr_lookup_resources`
@@ -189,6 +191,7 @@ def spec_source(spec: dict, rule: str = "",
             # and a probe that prints one of those has reported nothing.
             # Shelve anything that is not a proposition, so `Show` prints
             # the goal the automation actually stopped on.
+            f'all: idtac "{RAW_BEGIN}".', "Show.", f'all: idtac "{RAW_END}".',
             SHELVE_TERM_GOALS,
             "Show.", "Abort."]
     return "\n".join(
@@ -230,7 +233,9 @@ def probe_source(module: Path, lemma: str, exit_address: str,
          | |- envs_entails _ (instr_body {normalized} _) => idtac "{REACHED}"
          | |- context [instr_pre {normalized}] => idtac "{REACHED}"
          end).''',
-        "all: try liShow.", "Show.", "Abort."]
+        "all: try liShow.",
+        f'all: idtac "{RAW_BEGIN}".', "Show.", f'all: idtac "{RAW_END}".',
+        SHELVE_TERM_GOALS, "Show.", "Abort."]
     source = (["Set Printing Width 200.", "Require Import isla.isla.",
                "From iris.proofmode Require Import environments.",
                "From IslaTraces.write_success_blocks Require Import Index."]
@@ -257,6 +262,22 @@ def run(source: str, name: str, build_dir: Path, seconds: int) -> str:
     return done.stdout + "\n" + done.stderr
 
 
+def goal_record(text: str) -> tuple[str, dict]:
+    """Keep all goals before shelving, then select the Prop residual."""
+    all_goals = text
+    selected = text
+    if RAW_BEGIN in text and RAW_END in text:
+        before, rest = text.split(RAW_BEGIN, 1)
+        all_goals, after = rest.rsplit(RAW_END, 1)
+        all_goals = all_goals.replace(RAW_BEGIN, "").replace(RAW_END, "")
+        selected = before + after
+    return selected, {
+        "raw_goals": text,
+        "goals": [{"context": context, "conclusion": conclusion}
+                  for context, conclusion in map(split_goal, split_goals(all_goals))],
+    }
+
+
 def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
           driver: list[str], seconds: int, rule: str = "",
           alternatives: tuple[str, ...] = (),
@@ -265,8 +286,8 @@ def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
     output = run(probe_source(module, lemma, exit_address, driver, rule,
                               alternatives, extra_imports),
                  f"{module.stem}__{lemma}", build_dir, seconds)
-    text = probes.marked(output)
-    record = {"module": module.name, "lemma": lemma, "exit": exit_address,
+    text, details = goal_record(probes.marked(output))
+    record = {**details, "module": module.name, "lemma": lemma, "exit": exit_address,
               "seconds": round(time.monotonic() - started, 1),
               "driver_lines": len(driver)}
     if probes.END not in output:
@@ -318,7 +339,8 @@ def main() -> int:
                   "call_premises": len(call_premises(
                       int(spec["entry"], 16), int(spec["exit"], 16))[0]),
                   "seconds": round(time.monotonic() - started, 1)}
-        text = probes.marked(output)
+        text, details = goal_record(probes.marked(output))
+        record.update(details)
         if probes.END not in output:
             record["outcome"] = "error"
             record["error_lines"] = [line for line in output.split("\n")

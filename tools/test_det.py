@@ -30,6 +30,7 @@ report = _load("report")
 infer_trace = _load("infer_trace")
 call_sites = _load("call_sites")
 segment = _load("segment")
+infer_boundary = _load("infer_boundary")
 
 
 GOAL_BLOCK = """
@@ -227,6 +228,51 @@ class ExistingSegment(unittest.TestCase):
             self.assertIn("Proof. move => *. zesu_block. Qed.", source)
             self.assertEqual(json.loads((root / "probe.jsonl").read_text())
                              ["pred_class"], "C3")
+
+
+class ProbeGoals(unittest.TestCase):
+    def test_existing_probe_shelves_term_goals_before_show(self):
+        path, lemma = segment.existing_segment(0x159b8, 0x159d8)
+        source = infer_boundary.probe_source(path, lemma, "0x159d8", [])
+        self.assertIn(infer_boundary.SHELVE_TERM_GOALS, source)
+        self.assertIn(f'all: idtac "{infer_boundary.RAW_BEGIN}".', source)
+        self.assertIn(f'all: idtac "{infer_boundary.RAW_END}".', source)
+        self.assertLess(source.index(infer_boundary.SHELVE_TERM_GOALS),
+                        source.rindex("\nShow."))
+
+    def test_closed_probe_needs_no_goal_for_raw_markers(self):
+        path, lemma = segment.existing_segment(0x159b8, 0x159d8)
+        source = infer_boundary.probe_source(path, lemma, "0x159d8", [])
+        self.assertNotIn('1: idtac "BOUNDARY-ALL-GOALS', source)
+        output = (infer_boundary.probes.BEGIN + "No more goals.\n"
+                  + infer_boundary.probes.END)
+        with patch.object(infer_boundary, "run", return_value=output):
+            record = infer_boundary.infer(path, lemma, "0x159d8", Path("unused"), [], 30)
+        self.assertNotEqual(record["outcome"], "error")
+        self.assertEqual(record["raw_goals"], "No more goals.\n")
+
+    def test_shelving_keeps_term_and_prop_goals_in_raw_record(self):
+        raw = "2 goals\n=====\nspec\ngoal 2 is:\nsubsume left right"
+        text = (infer_boundary.RAW_BEGIN + infer_boundary.RAW_BEGIN + raw
+                + infer_boundary.RAW_END + infer_boundary.RAW_END
+                + "1 goal\n=====\nsubsume left right")
+        selected, record = infer_boundary.goal_record(text)
+        self.assertEqual(record["raw_goals"], text)
+        self.assertEqual([g["conclusion"] for g in record["goals"]],
+                         ["spec", "subsume left right"])
+        self.assertEqual(infer_boundary.conclusion_text(selected)[1],
+                         "subsume left right")
+
+    def test_record_preserves_second_goal(self):
+        path, lemma = segment.existing_segment(0x159b8, 0x159d8)
+        text = GOAL_BLOCK + "\ngoal 2 is:\n  subsume left right\n"
+        output = infer_boundary.probes.BEGIN + text + infer_boundary.probes.END
+        with patch.object(infer_boundary, "run", return_value=output):
+            record = infer_boundary.infer(path, lemma, "0x159d8", Path("unused"), [], 30)
+        self.assertEqual(record["raw_goals"], text)
+        self.assertEqual(len(record["goals"]), 2)
+        self.assertEqual(record["goals"][0]["conclusion"], "instr_pre 87876 whatever")
+        self.assertEqual(record["goals"][1]["conclusion"], "subsume left right")
 
 
 if __name__ == "__main__":
