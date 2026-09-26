@@ -1,0 +1,333 @@
+Tactic call zesu_run ran for 45.08 secs (44.71u,0.169s) (success)
+Tactic call zesu_run ran for 9.191 secs (9.128u,0.019s) (success)
+Tactic call zesu_run ran for 0.131 secs (0.131u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.238 secs (0.237u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.018 secs (0.018u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+2 goals
+
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  Decoded : Type
+  WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation
+                                        Decoded
+  args : WriteSuccessArgs Decoded
+  witness : writeSuccessNativeWitness Decoded
+  P : iProp Sigma
+  Hwf : writeSuccessWitnessWellFormed args witness
+  Halign : (bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z
+  Hupper : (bv_unsigned (writeSuccessFrameSp witness) + 1896 <
+            machineRamEnd defaultMap)%Z
+  n, b : bv 64
+  H0 : Z.land (bv_unsigned b) 131072 = 0%Z
+  H1 : Z.land (bvn_unsigned n) 131072 = 0%Z
+  vmem : bv 64
+  H3 : 64%N ≠ 0%N
+       → (- bv_half_modulus 64 ≤ bv_signed vmem < bv_half_modulus 64)%Z
+  H2 : (-1 < bv_unsigned vmem < bv_modulus 64)%Z
+  H4 : (-1 < bv_unsigned b < bv_modulus 64)%Z
+  H5 : 64%N ≠ 0%N
+       → (- bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64)%Z
+  H6 : (-1 < bv_unsigned n < bv_modulus 64)%Z
+  H7 : 64%N ≠ 0%N
+       → (- bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64)%Z
+  Hlookup : take 69 (writeSuccessValues witness)
+            !! Z.to_nat
+                 ((bv_unsigned (writeSuccessFrameSp witness + 1136) -
+                   (bv_unsigned (writeSuccessFrameSp witness) + 1032))
+                  `div` 8) = Some vmem
+  b0 : bv 64
+  H8 : Z.land (bv_unsigned b0) 131072 = 0%Z
+  H9 : (-1 < bv_unsigned b0 < bv_modulus 64)%Z
+  H10 : 64%N ≠ 0%N
+        → (- bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64)%Z
+  ============================
+  Snapshots.writeOutputEvents (writeSuccessEntrySp witness - (2000 + 16)) 8
+    [Z_to_bv 8 (bv_unsigned vmem `mod` 256);
+     Z_to_bv 8 ((bv_unsigned vmem `div` 256) `mod` 256);
+     Z_to_bv 8 (((bv_unsigned vmem `div` 256) `div` 256) `mod` 256);
+     Z_to_bv 8
+       ((((bv_unsigned vmem `div` 256) `div` 256) `div` 256) `mod` 256);
+     Z_to_bv 8
+       (((((bv_unsigned vmem `div` 256) `div` 256) `div` 256) `div` 256)
+        `mod` 256);
+     Z_to_bv 8
+       ((((((bv_unsigned vmem `div` 256) `div` 256) `div` 256) `div` 256)
+         `div` 256) `mod` 256);
+     Z_to_bv 8
+       (((((((bv_unsigned vmem `div` 256) `div` 256) `div` 256) `div` 256)
+          `div` 256) `div` 256) `mod` 256);
+     Z_to_bv 8
+       ((((((((bv_unsigned vmem `div` 256) `div` 256) `div` 256) `div` 256)
+           `div` 256) `div` 256) `div` 256) `mod` 256)]
+    (exactPostWithdrawalsFirstTail witness)
+  ⊆ writeSuccessExactPostWithdrawalsEvents witness
+
+goal 2 is:
+ _ : instr_lookup_resources Index.lookup
+ _ : instr_body_lookup_resources body_lookup
+ _ : instr_pre 89360 encoderIntEntryBoundary
+ --------------------------------------□
+ _ : instr_body 87804
+       (writeSuccessExactPostWithdrawalsAt156fc args witness P)
+ _ : "x18" ↦ᵣ RVal_Bits (writeSuccessFrameSp witness + 1768)%bv
+ _ : "x8"
+     ↦ᵣ RVal_Bits
+          (Z_to_bv 64
+             (bv_unsigned (writeSuccessWithdrawalsBase witness) +
+              length (writeSuccessWithdrawalsBytes witness)))
+ _ : "x9" ↦ᵣ RVal_Bits 0%bv
+ _ : bv_unsigned (writeSuccessWithdrawalsBase witness)
+     ↦ₘ∗ writeSuccessWithdrawalsBytes witness
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 72)
+     ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+          (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+             (writeSuccessDecodedBytes witness)) 7
+ _ : reg_col
+       [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64);
+        (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64);
+        (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+        (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
+        (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+        (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+        (KindReg "x27", BitsShape 64); (KindReg "x28", BitsShape 64);
+        (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : ⌜writeSuccessWitnessWellFormed args witness⌝
+ _ : (bv_unsigned (writeSuccessFrameSp witness) - 80) ↦ₘ? 32
+ _ : (bv_unsigned (writeSuccessFrameSp witness) - 48) ↦ₘ? 32
+ _ : bv_unsigned (writeSuccessFrameSp witness) ↦ₘ? 8
+ _ : writeSuccessExactCopiedTailWordsWithout7 (writeSuccessFrameSp witness)
+       (writeSuccessDecodedBytes witness)
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 312)
+     ↦ₘ∗ writeSuccessSourceBytes witness
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1584)
+     ↦ₘ∗ take 4
+           (drop 552
+              (IslarisMemory.bytes_of_u64s (writeSuccessValues witness)))
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1588)
+     ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash
+           (writeSuccessValues witness)
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1620)
+     ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s (writeSuccessValues witness))
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1624) ↦ₘ? 16
+ _ : writeSuccessTerminalSavedSlots witness
+ _ : bv_unsigned (writeSuccessDecodedPointer witness)
+     ↦ₘ∗ writeSuccessDecodedBytes witness
+ _ : bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 4)
+     ↦ₘ∗ writeSuccessPayload witness
+ _ : (fix byteListItemResources
+        (Sigma0 : gFunctors) (islaG1 : islaG Sigma0)
+        (address : Z) (items : list ByteListItem) {struct items} :
+          iProp Sigma0 :=
+        match items with
+        | [] => True
+        | item :: rest => address ↦ₘ byteListData item ∗
+            (address + 8) ↦ₘ byteListSize item ∗
+            bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+            ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+            byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+        end) Sigma islaG0
+       (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9))
+       (writeSuccessRawTransactions witness)
+ _ : bv_unsigned
+       (writeSuccessPostBytes1571c (writeSuccessPostData witness)).1
+     ↦ₘ∗ writeSuccessPostBytes1571cPayload (writeSuccessPostData witness)
+ _ : ⌜bv_unsigned
+        (writeSuccessPostBytes1571c (writeSuccessPostData witness)).2 =
+      length
+        (writeSuccessPostBytes1571cPayload (writeSuccessPostData witness))⌝
+ _ : bv_unsigned
+       (WriteSuccessPostTransactionResources.writeSuccessPostWord
+          (WriteSuccessPostTransactionResources.writeSuccessPostSourceWords
+             (writeSuccessSourceBytes witness)) 74)
+     ↦ₘ∗ writeSuccessPostHashesPayload (writeSuccessPostData witness)
+ _ : ⌜length (writeSuccessPostHashesPayload (writeSuccessPostData witness)) =
+      (32 * writeSuccessPostHashesCount (writeSuccessPostData witness))%nat⌝
+ _ : bv_unsigned
+       (writeSuccessPostBytes158e0 (writeSuccessPostData witness)).1
+     ↦ₘ∗ writeSuccessPostBytes158e0Payload (writeSuccessPostData witness)
+ _ : ⌜bv_unsigned
+        (writeSuccessPostBytes158e0 (writeSuccessPostData witness)).2 =
+      length
+        (writeSuccessPostBytes158e0Payload (writeSuccessPostData witness))⌝
+ _ : bv_unsigned
+       (writeSuccessPostBytes158f0 (writeSuccessPostData witness)).1
+     ↦ₘ∗ writeSuccessPostBytes158f0Payload (writeSuccessPostData witness)
+ _ : ⌜bv_unsigned
+        (writeSuccessPostBytes158f0 (writeSuccessPostData witness)).2 =
+      length
+        (writeSuccessPostBytes158f0Payload (writeSuccessPostData witness))⌝
+ _ : bv_unsigned
+       (writeSuccessPostBytes15900 (writeSuccessPostData witness)).1
+     ↦ₘ∗ writeSuccessPostBytes15900Payload (writeSuccessPostData witness)
+ _ : ⌜bv_unsigned
+        (writeSuccessPostBytes15900 (writeSuccessPostData witness)).2 =
+      length
+        (writeSuccessPostBytes15900Payload (writeSuccessPostData witness))⌝
+ _ : bv_unsigned
+       (writeSuccessPostBytes15910 (writeSuccessPostData witness)).1
+     ↦ₘ∗ writeSuccessPostBytes15910Payload (writeSuccessPostData witness)
+ _ : ⌜bv_unsigned
+        (writeSuccessPostBytes15910 (writeSuccessPostData witness)).2 =
+      length
+        (writeSuccessPostBytes15910Payload (writeSuccessPostData witness))⌝
+ _ : bv_unsigned
+       (writeSuccessPostBytes15920 (writeSuccessPostData witness)).1
+     ↦ₘ∗ writeSuccessPostBytes15920Payload (writeSuccessPostData witness)
+ _ : ⌜bv_unsigned
+        (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 =
+      length
+        (writeSuccessPostBytes15920Payload (writeSuccessPostData witness))⌝
+ _ : (fix byteListItemResources
+        (Sigma0 : gFunctors) (islaG1 : islaG Sigma0)
+        (address : Z) (items : list ByteListItem) {struct items} :
+          iProp Sigma0 :=
+        match items with
+        | [] => True
+        | item :: rest => address ↦ₘ byteListData item ∗
+            (address + 8) ↦ₘ byteListSize item ∗
+            bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+            ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+            byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+        end) Sigma islaG0
+       (bv_unsigned
+          (WriteSuccessPostTransactionResources.writeSuccessPostWord
+             (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                (writeSuccessDecodedBytes witness)) 0))
+       (writeSuccessPostByteLists15930 (writeSuccessPostData witness))
+ _ : (fix byteListItemResources
+        (Sigma0 : gFunctors) (islaG1 : islaG Sigma0)
+        (address : Z) (items : list ByteListItem) {struct items} :
+          iProp Sigma0 :=
+        match items with
+        | [] => True
+        | item :: rest => address ↦ₘ byteListData item ∗
+            (address + 8) ↦ₘ byteListSize item ∗
+            bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+            ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+            byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+        end) Sigma islaG0
+       (bv_unsigned
+          (WriteSuccessPostTransactionResources.writeSuccessPostWord
+             (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                (writeSuccessDecodedBytes witness)) 2))
+       (writeSuccessPostByteLists15940 (writeSuccessPostData witness))
+ _ : (fix byteListItemResources
+        (Sigma0 : gFunctors) (islaG1 : islaG Sigma0)
+        (address : Z) (items : list ByteListItem) {struct items} :
+          iProp Sigma0 :=
+        match items with
+        | [] => True
+        | item :: rest => address ↦ₘ byteListData item ∗
+            (address + 8) ↦ₘ byteListSize item ∗
+            bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+            ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+            byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+        end) Sigma islaG0
+       (bv_unsigned
+          (WriteSuccessPostTransactionResources.writeSuccessPostWord
+             (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                (writeSuccessDecodedBytes witness)) 4))
+       (writeSuccessPostByteLists15950 (writeSuccessPostData witness))
+ _ : match
+       writeSuccessPostConditional1596c (writeSuccessPostData witness)
+     with
+     | Some value =>
+         match
+           writeSuccessPostConditional1596cPayload
+             (writeSuccessPostData witness)
+         with
+         | Some payload =>
+             WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
+               value payload
+         | None => False
+         end
+     | None =>
+         match
+           writeSuccessPostConditional1596cPayload
+             (writeSuccessPostData witness)
+         with
+         | Some _ => False
+         | None => True
+         end
+     end
+ _ : (fix byteListItemResources
+        (Sigma0 : gFunctors) (islaG1 : islaG Sigma0)
+        (address : Z) (items : list ByteListItem) {struct items} :
+          iProp Sigma0 :=
+        match items with
+        | [] => True
+        | item :: rest => address ↦ₘ byteListData item ∗
+            (address + 8) ↦ₘ byteListSize item ∗
+            bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+            ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+            byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+        end) Sigma islaG0
+       (bv_unsigned
+          (WriteSuccessPostTransactionResources.writeSuccessPostWord
+             (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                (writeSuccessDecodedBytes witness)) 14))
+       (writeSuccessPostByteLists159c8 (writeSuccessPostData witness))
+ _ : ⌜WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataFacts
+        (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+        (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)⌝
+ _ : bv_unsigned 96709
+     ↦ₘ∗ [Z_to_bv 8 90; Z_to_bv 8 83; Z_to_bv 8 83;
+          Z_to_bv 8 90; Z_to_bv 8 1; Z_to_bv 8 1]
+ _ : ⌜writeSuccessTransactions witness = writeSuccessTransactions witness⌝
+ _ : ⌜writeSuccessTransactionBytes witness =
+      writeSuccessTransactionsBytes (writeSuccessTransactions witness)⌝
+ _ : ⌜[] = []⌝
+ _ : ⌜writeSuccessTransactionBytes witness =
+      writeSuccessTransactionsBytes (writeSuccessTransactions witness)⌝
+ _ : ⌜writeSuccessTransactionBytes witness =
+      writeSuccessTransactionBytes witness⌝
+ _ : ⌜length (writeSuccessTransactionBytes witness) =
+      (288 * length (writeSuccessTransactions witness))%nat⌝
+ _ : ⌜0 = (288 * 0)%nat⌝
+ _ : ⌜length (writeSuccessTransactionBytes witness) =
+      (288 * length (writeSuccessTransactions witness))%nat⌝
+ _ : ⌜length (writeSuccessTransactions witness) <
+      2 *
+      (2 *
+       (2 *
+        (2 *
+         (2 *
+          (2 *
+           (2 *
+            (2 *
+             (2 *
+              (2 *
+               (2 *
+                (2 *
+                 (2 *
+                  (2 * (2 * (2 * (2 * (2 * (2 * (2 * (2 * (2 * ...)))))))))))))))))))))⌝
+ _ : ⌜(bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z⌝
+ _ : ⌜(0 ≤ bv_unsigned (writeSuccessFrameSp witness) - 48)%Z⌝
+ _ : ⌜(bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824)%Z⌝
+ _ : ⌜(writeSuccessTransactionBase witness `mod` 8)%Z = 0%Z⌝
+ _ : ⌜(0 ≤ writeSuccessTransactionBase witness)%Z⌝
+ _ : ⌜(writeSuccessTransactionBase witness +
+       length (writeSuccessTransactionBytes witness) <
+       0 + 1073741824)%Z⌝
+ _ : True
+ _ : True
+ _ : P
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1744) ↦ₘ? 48
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1032)
+     ↦ₘ∗ take 69 (writeSuccessValues witness)
+ _ : reg_col
+       [(KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
+        (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]
+ --------------------------------------∗
+ (WriteSuccessExactEncoderIntCall.encoderIntExactReturn
+    (writeSuccessFrameSp witness) (Z_to_bv 64 (87792 + 4))
+    (exactPostWithdrawalsFirstTail witness) -∗
+  zesu_ld_spec 87796 "x10" "x2" 1144) ∗ True
+exit=0 ms=87964 rss_kb=2099508
