@@ -111,6 +111,8 @@ def main():
                 live.add(f); todo.append(f)
 
     plans = glob.glob(a.base + "/docs/ai/plan/*.md") + glob.glob(a.base + "/docs/ai/plan/archive/*.md")
+    # The sweep's own outputs name every file; they are not evidence of use.
+    plans = [p for p in plans if not os.path.basename(p).startswith("TECH_DEBT_")]
     ptexts = {}
     for p in plans:
         m = DATE.search(os.path.basename(p))

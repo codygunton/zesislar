@@ -278,6 +278,23 @@ def main():
             cls, why = "live", ""
         rec["class"], rec["why"] = cls, why
 
+    # A removal tier must be closed under importers: a module that a kept
+    # module imports cannot go before it. Demote to the importer's tier.
+    rank = {"remove now": 0, "remove after CP3": 1, "debt, keep": 2, "live": 3}
+    changed = True
+    while changed:
+        changed = False
+        for m, rec in records.items():
+            if rank[rec["class"]] >= 2:
+                continue
+            later = [i for i in importers[m] if rank[records[i]["class"]] > rank[rec["class"]]]
+            if later:
+                top = max(sorted(later), key=lambda i: rank[records[i]["class"]])
+                cls = records[top]["class"]
+                rec["class"] = "debt, keep" if cls == "live" else cls
+                rec["why"] = f"imported by {Path(top).name} ({cls})"
+                changed = True
+
     Path(args.out).write_text(json.dumps(records, indent=1) + "\n")
     counts = defaultdict(int)
     for rec in records.values():

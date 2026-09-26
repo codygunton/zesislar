@@ -118,7 +118,8 @@ def main():
       f"time. The unreachable set is {u['gate_seconds'] / A['all']['gate_seconds']:.0%} of "
       f"all recorded module-seconds and {u['lines'] / A['all']['lines']:.0%} of all lines. "
       f"Of these modules, {A['classes']['remove now']['modules']} are \"remove now\". The "
-      "other unreachable modules are frozen benchmark inputs or plan inputs. "
+      "other unreachable modules are frozen benchmark inputs, plan inputs, or modules "
+      "that those inputs import. "
       f"{q1['tests_only']['modules']} more modules are reachable only from tests.\n")
 
     # Q2

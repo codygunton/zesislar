@@ -10,8 +10,9 @@ base=$(git -C "$tree" rev-parse --path-format=absolute --git-common-dir | xargs 
 plans=$base/docs/ai/plan
 mkdir -p "$out"
 cd "$tree"
-test "$(git rev-parse HEAD)" = "$(git rev-parse "$sha")" || {
-  echo "checkout is not at $sha" >&2; exit 2; }
+# The tree outside this directory must equal the root.
+git diff --quiet "$sha" -- . ':!ZesuSsz/Evidence/debt' || {
+  echo "checkout differs from $sha outside ZesuSsz/Evidence/debt" >&2; exit 2; }
 
 find ZesuSsz -name '*.v' | sort > "$out/vfiles.txt"
 coqdep=${COQDEP:-$HOME/islaris/_opam/bin/coqdep}
