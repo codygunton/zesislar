@@ -1,6 +1,6 @@
 # Builder buildout report
 
-Status: Phase B is ready for review at pushed root `7dfa8d5a` on 2026-09-26. All four current-root arms and all seven B2 probes completed. Every B2 probe stalled. B3 remains at C6. T5 is rejected and parked. The final batch preview passed. The final push benchmark remains next. This report makes no CP3 claim.
+Status: Phase B is ready for review at pushed root `ed945cd3` on 2026-09-26. All four current-root arms and all seven B2 probes completed. Every B2 probe stalled. B3 remains at C6. The user accepted T5 as a v2 step behind its switch. It remains unmerged on its pushed branch. The final batch preview passed. All four final-root benchmarks completed. B5 is on hold. The sole permitted segment item is the proof-only split at `0x156fc`; it is not started. This report makes no CP3 claim.
 
 ## Phase A
 
@@ -419,13 +419,11 @@ The v2 rule-15 JSON is `ZesuSsz/Evidence/residuals/benchmark/7dfa8d5a0d6f-v2-rul
 
 Candidate `687b8859` on `builder-t5-return-wand` adds an opt-in v2 step for `(R -∗ K) ∗ True`. `All.v` and `Sets/v2.v` remain unchanged. The Boolean continuation proof passed in 6.089 seconds with 1,047,488 KiB peak RSS. The suffix continuation proof passed in 28.145 seconds with 1,162,780 KiB peak RSS. The no-switch controls stopped at C9 in 5.830 and 10.861 seconds. `test_boolean_return_wand`, `test_suffix_return_wand`, and `test_return_wand_v1_inactive` print `Closed under the global context`. Both closed tests prove isolated resource implications. They do not measure progress in a named segment. The suffix test matches legacy `write_success_suffix_bytes_158e0` at `0x158f0`. The actual TF1 stall ends in `zesu_ld_spec 88304 "x10" "x2" 936`. The Boolean adapter test does not run TF2. The actual TF2 return-to-load stall ends in `zesu_ld_spec 88480 "x8" "x2" 96`.
 
-Admission under plan 14(4) requires a moved benchmark row or measured progress in a named segment. The closed tests alone do not meet that condition. Candidate check-fast passed. The full candidate arm completed with regressions. Both candidate arms completed. T5 is neither selected nor admitted. The candidate is rejected and parked. It remains unmerged. No 24-job standalone preview ran.
+The user accepted T5 candidate `687b8859` as a v2 step behind its switch. It remains on its pushed branch and is not integrated. The user ruled that its three full-set errors and two rule-15 errors are dead v1 hand lines under a v2 import. They are not regressions. The closed implication tests remain separate from measured segment closure. No named segment closed in these tests.
 
-The T5 immutable-arm build exited 0 at eight jobs. Its check-iris build took 4,550.033 seconds, with peak task RSS 5,252,964 KiB. The JSON record is `determinism/_build/agents/bench/687b885940e4/_build/log.jsonl`. This arm build is separate from the required 24-job standalone preview. No standalone preview ran; the candidate is rejected. The 305-row candidate probe completed at eight jobs. Root remains `7dfa8d5a`.
+The T5 immutable-arm build exited 0 at eight jobs in 4,550.033 seconds. Peak task RSS was 5,252,964 KiB. Its JSON is `determinism/_build/agents/bench/687b885940e4/_build/log.jsonl`. This build is not a 24-job standalone preview.
 
-The T5 full-set JSON is `ZesuSsz/Evidence/residuals/benchmark/687b885940e4-v2-t5.json`. It records seven closed rows, 271 residual rows, and 27 errors, with a 4.39-second median. Current-root v2 has 24 errors. Three residual-to-error regressions persist in isolated re-probes: `encoder_int_exact_framed_correct`, `encoder_optional_u64_exact_none_adapter_from_closed`, and `encoder_optional_u64_exact_none_return_frame`. The candidate adds no closed row. The exact error messages were not retained. The source diagnosis remains unconfirmed. The retained adapter prefixes use manual return steps after `zesu_run`. This source observation does not establish the cause of any error. Eight rows change class, signature, and goal hash. Five other rows change goal or class. Those changes do not satisfy admission while the regressions remain. The 48-row candidate arm also completed.
-
-The T5 rule-15 JSON is `ZesuSsz/Evidence/residuals/benchmark/687b885940e4-v2-t5-rule15.json`. It records six closed rows, 40 residual rows, and two errors, with a 5.76-second median. Against current-root v2 rule-15, it adds two persistent residual-to-error changes and no closure. All added errors reproduced alone. Four rows change class, signature, and goal hash. Both arm results reject selection of T5. Exact error text remains unavailable. The probable adapter-prefix cause remains unconfirmed.
+Candidate `687b885940e4-v2-t5.json` records seven closed, 271 residual, and 27 error rows, with median 4.39 seconds. It adds no closure. The three added errors reproduced alone: `encoder_int_exact_framed_correct`, `encoder_optional_u64_exact_none_adapter_from_closed`, and `encoder_optional_u64_exact_none_return_frame`. Eight rows change class, signature, and goal hash. Candidate `687b885940e4-v2-t5-rule15.json` records six closed, 40 residual, and two error rows, with median 5.76 seconds. It adds no closure; four rows change class, signature, and goal hash. Both added errors reproduced alone. Exact error text was not retained. The user's ruling supersedes the earlier rejection. It does not claim that T5 merged.
 
 The high-load Raw-module CPU exceedance did not reproduce at root `7dfa8d5a`. `WriteSuccessTransactionsCarrierChunk14f68Raw.v` passed in 103.416 CPU seconds, with peak RSS 2,883,168 KiB. `WriteSuccessTransactionsCarrierChunk14f6cRaw.v` passed in 161.016 CPU seconds, with peak RSS 3,849,704 KiB. The hot tactic is unqualified `iFrame`, through `iFrameAnySpatial` and `typeclasses eauto (nat_or_var_opt)`. Both CPU measurements are below 200 seconds, so no split or source change is required. Logs are in `.worktrees/builder-carrier-profile/_build/agents/carrier-profile/logs/`. These profiles are not completed benchmark arms. The guarded eight-job restart completed; its log is `.worktrees/islaris-native/_build/agents/orch/logs/benchmark-7dfa8d5a-retry3-j8.log`. Both v1 arms passed baseline equality. V2 gained five closed rows on the full set and four on rule-15. All four current-root arms completed.
 
@@ -453,7 +451,30 @@ Source root `7dfa8d5a` remains unchanged. Batch `d115e803` first failed its 24-j
 
 The unchanged full retry passed at 24 jobs in 559.829 seconds. Peak task RSS was 2,235,844 KiB. The scope peak was 36 GiB. The retry recorded zero timeouts. No source edits or limit increases occurred between these previews.
 
-The logs are `.worktrees/islaris-native/_build/agents/orch/logs/buildout-b5-preview-d115e803.log` and `buildout-b5-preview-d115e803-retry.log` in that directory. The associated control logs record the scope measurements. The report is ready for B5 review. The final push benchmark remains next.
+The logs are `.worktrees/islaris-native/_build/agents/orch/logs/buildout-b5-preview-d115e803.log` and `buildout-b5-preview-d115e803-retry.log` in that directory. The associated control logs record the scope measurements. The report is ready for B5 review. All four final-root benchmarks completed. B5 is on hold. The sole permitted segment item is the proof-only split at `0x156fc`; it is not started.
+
+## Final root benchmarks and B5 hold
+
+All four arms on pushed root `ed945cd357ac` completed at 24 jobs. Session `17933` exited 0. The JSON files are under `determinism/ZesuSsz/Evidence/residuals/benchmark/`. Evidence source commit `828697e7` contains exactly these four JSON files. This report branch carries that commit as `70093906`.
+
+| JSON stem | Closed | Residual | Error | Timeout | Median seconds |
+|---|---:|---:|---:|---:|---:|
+| `ed945cd357ac` | 2 | 302 | 0 | 1 | 6.38 |
+| `ed945cd357ac-rule15` | 2 | 45 | 0 | 1 | 7.46 |
+| `ed945cd357ac-v2` | 7 | 274 | 24 | 0 | 4.53 |
+| `ed945cd357ac-v2-rule15` | 6 | 42 | 0 | 0 | 5.92 |
+
+| Arm | Comparison stem | Outcome diff | Class diff | Signature diff | Goal hash diff |
+|---|---|---:|---:|---:|---:|
+| v1 full | `ccf505e81f85` | 0 | 0 | 0 | 0 |
+| v1 rule-15 | `ccf505e81f85-rule15` | 0 | 0 | 0 | 0 |
+| v2 full | `434db04166fa-v2` | 5 | 6 | 6 | 6 |
+| v2 rule-15 | `434db04166fa-v2-rule15` | 4 | 5 | 5 | 5 |
+| All four arms | matching `7dfa8d5a0d6f` arms | 0 | 0 | 0 | 0 |
+
+The extra v2 class, signature, and hash change remains the known TF3 collector defect. Corrected B2 evidence retains both goals at C1. Each timeout or error re-probe kept its outcome. The benchmark log is `.worktrees/islaris-native/_build/agents/orch/logs/benchmark-ed945cd3-j24.log`.
+
+The user directed B5 to hold after these results. The sole permitted segment item is the proof-only split at `0x156fc`. It is not started. The requested item 1 finding is that 301 of 304 residual lemmas have a raised stop. Most stops are pure side goals. The collection worker's non-raising `zesu_block` result decides the next build step. The earlier 387-of-388 dispatch statistic measures a different population. T5 stays behind its switch on its pushed branch.
 
 ## B5: ready for review
 
@@ -464,10 +485,10 @@ The logs are `.worktrees/islaris-native/_build/agents/orch/logs/buildout-b5-prev
 | First junction | Current-root post-withdrawals remains at C6; the conditional B3 chain did not run. Earlier inference reached no junction. | Re-run only after the post-withdrawals load stall moves. |
 | Cleanup lines | Phase A removed 1,972 hand lines across 198 lemmas in 160 modules. | None for the recorded Phase A batches. |
 | Closed segment hand lines | No B2 generated segment closed. | Record hand lines and `Print Assumptions` for any later closed segment. |
-| 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; endpoint preview took 2,245.399 s; the merged batch took 478.188 s; the unchanged final preview retry took 559.829 s. | The final push benchmark remains next. The eight-job T5 arm build remains separate. |
-| Tickets | T1 to T5 remain unresolved. T5 is rejected and parked: three new errors on 305 rows, two on 48, and no added closure. All seven segments remain stalled. | T3→T1 remains unmeasured and depends on the module-limit split at `0x156fc`. The lead must review the Phase C path. |
+| 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; endpoint preview took 2,245.399 s; the merged batch took 478.188 s; the unchanged final preview retry took 559.829 s. | All four final-root benchmarks completed. B5 is on hold. The sole permitted segment item is the proof-only split at `0x156fc`; it is not started. The eight-job T5 arm build remains separate. |
+| Tickets | T1 to T5 remain unresolved. T5 is accepted behind its v2 switch but remains unmerged. Its 3/2 errors are dead v1 hand lines under the ruling. All seven segments remain stalled. | T3→T1 remains unmeasured and depends on the module-limit split at `0x156fc`. B5 is on hold. Only the proof-only split at `0x156fc` is permitted; it is not started. |
 | Compliance boundary | The lead parked three new `KnownBug` constructors. The approved endpoint preview passed both gates; startup trace approval and reproduction are recorded. | Close the whole-run adequacy bridge for CP4. Keep the parked constructors out of the merge. |
 
 The current segment inputs are `ZesuSsz/Evidence/det/open_segments.json` and `ZesuSsz/Evidence/det/chain/post_withdrawals.json`. The recorded stalls are in `ZesuSsz/Evidence/det/wp4/stalls.jsonl`. The old draft report came from branch `builder-roota-pw` at `7ae0c1dc`. Branch `builder-report0` at `0be3adf6` holds earlier benchmark JSON. The draft branches `builder-seg-pw` (`b64d405d`), `builder-seg-tf1` (`3ced1187`), and `builder-seg-tf2` (`3dc4ddc0`) do not contain closed segment proofs. They stay parked for Phase C.
 
-Phase B is ready for review. Both v1 arms passed equality. V2 gained five closed rows on the full set and four on rule-15. All seven B2 probes stalled, and B3 reached no new junction. T5 is rejected and parked. The final batch preview passed. The final push benchmark remains next. T3→T1 remains unmeasured with its split dependency. No CP3 result is claimed. `zesuCompliance` retains its existing `Admitted` status.
+Phase B is ready for review. Both v1 arms passed equality. V2 gained five closed rows on the full set and four on rule-15. All seven B2 probes stalled, and B3 reached no new junction. The user accepted T5 as a v2 step behind its switch. It remains unmerged on its pushed branch. The final batch preview passed. All four final-root benchmarks completed. B5 is on hold. The sole permitted segment item is the proof-only split at `0x156fc`; it is not started. T3→T1 remains unmeasured with its split dependency. No CP3 result is claimed. `zesuCompliance` retains its existing `Admitted` status.
