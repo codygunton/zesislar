@@ -1,0 +1,20 @@
+[
+  {
+    "name": "write_success_exact_tail_fields_second_segment",
+    "entry": "0x1596c",
+    "exit": "0x159b8",
+    "like": "WriteSuccessExactTailFieldsThirdSegment.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.Sets.v2",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (tail : spec) (Hwf : writeSuccessWitnessWellFormed args witness)",
+    "spec": "writeSuccessExactTailFirstBranchState args witness tail"
+  }
+]
