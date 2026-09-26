@@ -58,6 +58,9 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
         capture_output=True, text=True).stdout.strip()
     if not reservation:
         raise SystemExit("resource guard returned no coqc reservation")
+    # The module limit is 300 s; a measurement may ask for more with
+    # ZESU_COQC_SECONDS (the replay always set it, and it was ignored).
+    seconds = int(os.environ.get("ZESU_COQC_SECONDS", "300"))
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
     process = None
@@ -77,8 +80,8 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
                               if line.startswith("VmRSS:"))
             except (FileNotFoundError, ProcessLookupError, StopIteration):
                 rss_kb = 0
-            if elapsed > 300 or rss_kb > 6 * 1024 * 1024:
-                limit = "time" if elapsed > 300 else "memory"
+            if elapsed > seconds or rss_kb > 6 * 1024 * 1024:
+                limit = "time" if elapsed > seconds else "memory"
                 process.terminate()
                 try:
                     process.wait(timeout=2)
