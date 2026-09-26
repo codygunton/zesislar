@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.ReturnBundle.
 Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.
 Require Import ZesuSsz.Contracts.Endpoints.
