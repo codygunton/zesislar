@@ -1,0 +1,20 @@
+[
+  {
+    "name": "write_success_exact_tail_fields_first_segment",
+    "entry": "0x158e0",
+    "exit": "0x1596c",
+    "like": "WriteSuccessExactSuffixHashesTailConnection.v",
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.Sets.v2",
+      "ZesuSsz.Contracts.Endpoints",
+      "ZesuSsz.Contracts.IslarisCode",
+      "ZesuSsz.Proofs.WriteSuccess.Interfaces",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts"
+    ],
+    "binders": "`{!islaG Sigma} `{!threadG} (sp data size : bv 64) (hashBase : Z) (hashBytes bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "spec": "writeSuccessExactTailFieldsEntryBoundary sp data size (BV 64 0) (Z_to_bv 64 (hashBase + Z.of_nat (length hashBytes))) bytes tail (hashBase \u21a6\u2098\u2217 hashBytes \u2217 P)"
+  }
+]

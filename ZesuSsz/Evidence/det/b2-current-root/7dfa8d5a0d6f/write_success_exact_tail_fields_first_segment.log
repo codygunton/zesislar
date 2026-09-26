@@ -1,0 +1,6 @@
+stalled      9.2s frame  37  unknown  ∗[2] -∗ ∗ True  write_success_exact_tail_fields_first_segment
+calls in [0x158e0, 0x1596c): 3 premises, 1 contract modules
+  □ instr_pre 0x15c6c encoderBytesEntryBoundary -∗
+  □ instr_pre 0x15c10 encoderByteListsEntryBoundary -∗
+  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗
+spec record written to ZesuSsz/Evidence/det/b2-current-root/7dfa8d5a0d6f/write_success_exact_tail_fields_first_segment.spec.json

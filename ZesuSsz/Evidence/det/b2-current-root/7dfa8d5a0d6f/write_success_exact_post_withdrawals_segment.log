@@ -1,0 +1,7 @@
+stalled      3.9s frame  26  C6       ∃ : bv N *ₗ ()  write_success_exact_post_withdrawals_segment
+calls in [0x156e8, 0x15744): 4 premises, 1 contract modules
+  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗
+  □ instr_pre 0x15bc8 encoderOptionalEntryBoundary -∗
+  □ instr_pre 0x15c6c encoderBytesEntryBoundary -∗
+  □ instr_pre 0x10190 writeOutputEntryBoundary -∗
+spec record written to ZesuSsz/Evidence/det/b2-current-root/7dfa8d5a0d6f/write_success_exact_post_withdrawals_segment.spec.json
