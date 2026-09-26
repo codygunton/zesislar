@@ -36,6 +36,7 @@ Require Import ZesuSsz.Automation.CallReturnSpecTable.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ExistentialArrayRestore.
 Require Import ZesuSsz.Automation.OutcomeHandoff.
+Require Import ZesuSsz.Automation.ReturnBundle.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
@@ -53,7 +54,10 @@ Ltac zesu_rule_set_v2_steps :=
   | |- envs_entails _ ((_ -∗ WPasm _) ∗ True)%I =>
       zesu_enter_call_return_if_enabled
   | |- envs_entails _ ((_ -∗ zesu_ld_spec _ _ _ _) ∗ True)%I =>
-      zesu_enter_call_return_spec_table_if_enabled
+      first [zesu_enter_return_bundle_if_enabled
+            |zesu_enter_call_return_spec_table_if_enabled]
+  | |- envs_entails _ ((_ -∗ _) ∗ True)%I =>
+      zesu_enter_return_bundle_if_enabled
   (* C3: a sealed bundle, opened for the lookup that failed. *)
   | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled
