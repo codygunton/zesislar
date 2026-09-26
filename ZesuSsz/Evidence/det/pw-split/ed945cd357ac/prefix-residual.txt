@@ -1,0 +1,102 @@
+Tactic call zesu_run ran for 1.986 secs (1.867u,0.029s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.186 secs (0.185u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+3 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  Decoded : Type
+  WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation
+                                        Decoded
+  args : WriteSuccessArgs Decoded
+  witness : writeSuccessNativeWitness Decoded
+  P : iProp Sigma
+  Hwf : writeSuccessWitnessWellFormed args witness
+  b : bv 64
+  H0 : Z.land (bv_unsigned b) 131072 = 0
+  H1 : -1 < bv_unsigned b < bv_modulus 64
+  H2 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  ============================
+  bv_extract 0 (3 - 0) (writeSuccessFrameSp witness + 1136) = 0%bv
+
+goal 2 is:
+ bv_unsigned (writeSuccessFrameSp witness + 1136)
+ ≤ bv_unsigned (0 + 1073741824 - 8)
+goal 3 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 89360 encoderIntEntryBoundary
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_body 87804
+       (writeSuccessExactPostWithdrawalsAt156fc args witness P)
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x10", BitsShape 64);
+        (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64);
+        (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+        (KindReg "x15", BitsShape 64)]
+ _ : "x5" ↦ᵣ RVal_Bits 604086456%bv
+ _ : "x18" ↦ᵣ RVal_Bits (writeSuccessFrameSp witness + 1768)%bv
+ _ : "x8"
+     ↦ᵣ RVal_Bits
+          (Z_to_bv 64
+             (bv_unsigned (writeSuccessWithdrawalsBase witness) +
+              length (writeSuccessWithdrawalsBytes witness)))
+ _ : "x9" ↦ᵣ RVal_Bits 0%bv
+ _ : writeSuccessExactPostWithdrawalsUntouched
+       (bv_unsigned (writeSuccessWithdrawalsBase witness))
+       (writeSuccessWithdrawalsBytes witness)
+       (writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ P)
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 1744) ↦ₘ? 48
+ _ : (bv_unsigned (writeSuccessFrameSp witness) - 16) ↦ₘ? 16
+ _ : spec_trace (writeSuccessExactPostWithdrawalsEvents witness)
+ _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 87784)
+ _ : "x2" ↦ᵣ RVal_Bits (writeSuccessFrameSp witness)
+ _ : reg_col zesu_ram_sys_regs
+ --------------------------------------∗
+ find_in_context
+   (FindMemMapsTo (bv_unsigned (writeSuccessFrameSp witness + 1136)))
+   (λ mk : mem_mapsto_kind,
+      match mk with
+      | MKMapsTo n' vmem =>
+          ∃ Heq : 64%N = n',
+            ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗
+            bv_unsigned (writeSuccessFrameSp witness + 1136) ↦ₘ vmem -∗
+            WPasm HIDDEN
+      | MKArray n' a' values =>
+          if (n' =? 64)%N
+          then
+           ⌜(bv_unsigned (writeSuccessFrameSp witness + 1136) - a') `mod` 8 =
+            0⌝ ∗
+          ∃ i : nat,
+            ⌜i =
+             (bv_unsigned (writeSuccessFrameSp witness + 1136) - a') `div` 8⌝ ∗
+            ⌜(i < length values)%nat⌝ ∗
+            ∃ Heq : 64%N = n',
+              ∀ vmem : bv n',
+                ⌜values !! i = Some vmem⌝ -∗
+                ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗
+                a' ↦ₘ∗ values -∗ WPasm HIDDEN
+          else ⌜n' = 8%N⌝ ∗
+          ∃ i : nat,
+            ⌜i = bv_unsigned (writeSuccessFrameSp witness + 1136) - a'⌝ ∗
+            ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗
+            ∀ vmem : bv 64,
+              ⌜vmem =
+               Z_to_bv 64
+                 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗
+              ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
+      | MKUninit _ _ => False
+      | MKMMIO a' length =>
+          ⌜a' ≤ bv_unsigned (writeSuccessFrameSp witness + 1136)⌝ ∗
+          ⌜bv_unsigned (writeSuccessFrameSp witness + 1136) + 8 ≤ a' + length⌝ ∗
+          ∃ Pks Pks' : spec, spec_trace Pks ∗
+            ⌜scons (SReadMem (writeSuccessFrameSp witness + 1136) n1) Pks'
+             ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
+      end)
+exit=0 ms=8538 rss_kb=1559236
