@@ -411,7 +411,7 @@ Proof split `b754157a` preserves the public `transactions_source_authorization_r
 
 | Required item | Current record | Pending work |
 |---|---|---|
-| v2 rule table and deltas | B1 table and the two B4 arms above; current v2 has six selected switches. | Run the plan section 15 current-root v2 arms on both frozen sets and record per-lemma diffs. |
+| Current-root arms and rule deltas | B1 table and the two B4 arms above; current v2 has six selected switches. | Verify current-root v1 equality and measure v2 deltas on both frozen sets. Record per-lemma outcome, class, signature, and goal-hash diffs for all four arms. |
 | Seven segments | B2 table has seven timed stalls under the four-switch B1 set. | Run all seven patched probes under the current six-switch set; record any changed goal or outcome. Patch `7f7ff3f9` passed check-fast; no patched probe result is recorded. |
 | First junction | B3 inferred one event and no junction; `chain.py` could not start. | Re-run only if the current-root post-withdrawals probe moves past its C6 load. |
 | Cleanup lines | Phase A removed 1,972 hand lines across 198 lemmas in 160 modules. | None for the recorded Phase A batches. |
