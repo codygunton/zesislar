@@ -1,6 +1,6 @@
 # Builder buildout report
 
-Status: Phase B is ready for review at pushed root `7dfa8d5a` on 2026-09-26. All four current-root arms and all seven B2 probes completed. Every B2 probe stalled. B3 remains at C6. T5 is rejected and parked. The final batch preview remains pending. This report makes no CP3 claim.
+Status: Phase B is ready for review at pushed root `7dfa8d5a` on 2026-09-26. All four current-root arms and all seven B2 probes completed. Every B2 probe stalled. B3 remains at C6. T5 is rejected and parked. The final batch preview passed. The final push benchmark remains next. This report makes no CP3 claim.
 
 ## Phase A
 
@@ -447,6 +447,14 @@ Root removed 22 inactive builder worktrees after a read-only audit. Eleven were 
 
 The registered count fell from 62 to 40. Rounded free space rose from 545 to 548 GiB. This is not an exact freed-byte measurement. The audit `df -h /home` record is `/dev/mapper/my-home`: 1.7T size, 1.2T used, 548G available, 69% used, mounted at `/home`.
 
+## Final batch preview
+
+Source root `7dfa8d5a` remains unchanged. Batch `d115e803` first failed its 24-job preview with an out-of-memory error. It ran for 1,932.085 seconds, with peak task RSS 5,201,436 KiB. Dune reported no Coq source line. The only missing included output was `WriteSuccessExactBlobHashesWide.v`.
+
+The unchanged full retry passed at 24 jobs in 559.829 seconds. Peak task RSS was 2,235,844 KiB. The scope peak was 36 GiB. The retry recorded zero timeouts. No source edits or limit increases occurred between these previews.
+
+The logs are `.worktrees/islaris-native/_build/agents/orch/logs/buildout-b5-preview-d115e803.log` and `buildout-b5-preview-d115e803-retry.log` in that directory. The associated control logs record the scope measurements. The report is ready for B5 review. The final push benchmark remains next.
+
 ## B5: ready for review
 
 | Required item | Current record | Pending work |
@@ -456,10 +464,10 @@ The registered count fell from 62 to 40. Rounded free space rose from 545 to 548
 | First junction | Current-root post-withdrawals remains at C6; the conditional B3 chain did not run. Earlier inference reached no junction. | Re-run only after the post-withdrawals load stall moves. |
 | Cleanup lines | Phase A removed 1,972 hand lines across 198 lemmas in 160 modules. | None for the recorded Phase A batches. |
 | Closed segment hand lines | No B2 generated segment closed. | Record hand lines and `Print Assumptions` for any later closed segment. |
-| 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; endpoint preview took 2,245.399 s; the merged batch took 478.188 s. | The final batch preview remains pending. The eight-job T5 arm build does not replace it. |
+| 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; endpoint preview took 2,245.399 s; the merged batch took 478.188 s; the unchanged final preview retry took 559.829 s. | The final push benchmark remains next. The eight-job T5 arm build remains separate. |
 | Tickets | T1 to T5 remain unresolved. T5 is rejected and parked: three new errors on 305 rows, two on 48, and no added closure. All seven segments remain stalled. | T3→T1 remains unmeasured and depends on the module-limit split at `0x156fc`. The lead must review the Phase C path. |
 | Compliance boundary | The lead parked three new `KnownBug` constructors. The approved endpoint preview passed both gates; startup trace approval and reproduction are recorded. | Close the whole-run adequacy bridge for CP4. Keep the parked constructors out of the merge. |
 
 The current segment inputs are `ZesuSsz/Evidence/det/open_segments.json` and `ZesuSsz/Evidence/det/chain/post_withdrawals.json`. The recorded stalls are in `ZesuSsz/Evidence/det/wp4/stalls.jsonl`. The old draft report came from branch `builder-roota-pw` at `7ae0c1dc`. Branch `builder-report0` at `0be3adf6` holds earlier benchmark JSON. The draft branches `builder-seg-pw` (`b64d405d`), `builder-seg-tf1` (`3ced1187`), and `builder-seg-tf2` (`3dc4ddc0`) do not contain closed segment proofs. They stay parked for Phase C.
 
-Phase B is ready for review. Both v1 arms passed equality. V2 gained five closed rows on the full set and four on rule-15. All seven B2 probes stalled, and B3 reached no new junction. T5 is rejected and parked. The final batch preview remains pending. T3→T1 remains unmeasured with its split dependency. No CP3 result is claimed. `zesuCompliance` retains its existing `Admitted` status.
+Phase B is ready for review. Both v1 arms passed equality. V2 gained five closed rows on the full set and four on rule-15. All seven B2 probes stalled, and B3 reached no new junction. T5 is rejected and parked. The final batch preview passed. The final push benchmark remains next. T3→T1 remains unmeasured with its split dependency. No CP3 result is claimed. `zesuCompliance` retains its existing `Admitted` status.
