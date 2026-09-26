@@ -64,7 +64,7 @@ The attempted frame rewrite did not expose the sealed array.
 `prefix-five-residual.txt` preserves the complete final context and both goals.
 Proof development stopped after this attempt.
 
-Root must queue check-fast and the cheap preview before this preparation can be committed.
+Root check-fast and the focused preview passed before this preparation was committed.
 The branch must remain unmerged.
 
 ## Composition hand-line record
