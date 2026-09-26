@@ -51,6 +51,8 @@ SET_FILE = Path("ZesuSsz/Evidence/residuals/benchmark_set.txt")
 RULE_15_SET = Path("ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt")
 RESULT_DIR = Path("ZesuSsz/Evidence/residuals/benchmark")
 AUTOMATION = "ZesuSsz/Automation"
+# The probe's block call (`capture.BLOCK_CALL`); `--variant` sets it.
+VARIANT = ["standard"]
 # A source tree of its own, so nothing under the worktree is ever rewritten.
 TREE = Path("_build/agents/bench")
 
@@ -287,6 +289,7 @@ def measure(root: Path, pairs: list[tuple[str, str]], jobs: int,
             result = capture(root / PROOF_DIR / module, lemma,
                              build_dir.resolve(),
                              scratch, probe_dir, seconds=seconds,
+                             variant=VARIANT[0],
                              imports=imports, cwd=root)
         finally:
             width.release()
@@ -408,6 +411,8 @@ def main() -> int:
                         default=[],
                         help="a module every probe requires, for measuring "
                              "a rule that is built but not exported")
+    parser.add_argument("--variant", default="standard",
+                        help="the probe's block call, from capture.BLOCK_CALL")
     parser.add_argument("--no-reprobe", action="store_true",
                         help="keep batch errors and timeouts as they are "
                              "(the policy is to re-probe them alone)")
@@ -421,6 +426,7 @@ def main() -> int:
                         help="the build tree the probes compile against; "
                              "needed when the worktree builds elsewhere")
     arguments = parser.parse_args()
+    VARIANT[0] = arguments.variant
 
     repository = Path.cwd()
     commit = subprocess.run(["git", "rev-parse", arguments.automation],
@@ -456,6 +462,7 @@ def main() -> int:
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     result = {"automation": commit, "summary": summary(rows), "rows": rows,
               "classifier": CLASSIFIER, "imports": list(arguments.imports),
+              "variant": arguments.variant,
               "seconds": arguments.seconds}
     if arguments.without_tests:
         result["excluded"] = [TESTS_DIR]

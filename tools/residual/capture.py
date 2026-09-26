@@ -27,7 +27,14 @@ from modules import find_proof  # noqa: E402
 
 BEGIN = "RESIDUAL-BEGIN"
 END = "RESIDUAL-END"
-BLOCK_CALL = {"standard": "zesu_block.", "pure": "try zesu_block."}
+BLOCK_CALL = {"standard": "zesu_block.", "pure": "try zesu_block.",
+              # The non-raising prototype (plan 16 item 6), one entry per
+              # automation: a module that imports `AllLegacy` names the
+              # legacy tactics.
+              "nonraising":
+                  "ZesuSsz.Automation.Prototypes.NonRaising.zesu_block_nr.",
+              "nonraising_legacy":
+                  "ZesuSsz.Automation.Prototypes.NonRaising.zesu_block_nr_legacy."}
 # Class C4 asks which pure solver closes the goal. `assert_succeeds` runs the
 # solver and then puts the goal back, so one probe tries every candidate.
 SOLVERS = [("bv_solve", "bv_solve"), ("lia", "lia"),
@@ -113,6 +120,8 @@ def probe_text(module: Path, lemma: str, solver: bool = False,
     header = [f"Require Import {name}." for name in imports]
     prefix = header + lines[:proof.proof_line] + ["Proof."]
     trailer = [f"End {name}." for name in reversed(proof.open_blocks)]
+    if variant == "nonraising" and "AllLegacy" in module.read_text():
+        variant = "nonraising_legacy"
     body = probe_body(solver, variant) + END_MARKER
     source = ["Set Printing Width 200."] + prefix + body + trailer + [""]
     return "\n".join(source), proof.body
