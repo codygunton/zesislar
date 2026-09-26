@@ -1,6 +1,6 @@
 # Builder buildout report
 
-Status: draft at pushed root `7dfa8d5a` on 2026-09-26. Phase A and B1 are measured. B2 records seven stalled probes, and B3 records its stop. B4 has two selected rules. The endpoint preview at `264096af` passed both gates after the step-5 rulings. B5 remains open while current-root v2 arms and seven B2 probes remain pending.
+Status: draft at pushed root `7dfa8d5a` on 2026-09-26. Phase A and B1 are measured. B2 records seven completed current-root probes; all stalled. B3 remains at C6. B4 has two selected rules. The endpoint preview at `264096af` passed both gates after the step-5 rulings. B5 remains open while current-root v1/v2 arms and the T5 arm and preview remain pending.
 
 ## Phase A
 
@@ -51,17 +51,17 @@ The full set also had two signature-only changes in `WriteSuccessValueSuffix.v`:
 
 ## B2: seven segments
 
-The seven B2 probes ran with the B1 switch set. They predate the two switches in root `40cdc060`. A5 probed suffix entry under an earlier v2 set in 4.4 s and found C3. That result does not replace its B2 row. No seven-segment probe set under the current v2 imports is recorded yet. The B2 harness patch `7f7ff3f9` passed check-fast. It selects the last `instr_body` entry, passes the private build directory to inference, and supplies the closed memcpy call premise. All seven patched probes remain pending.
+All seven B2 probes completed at root `7dfa8d5a` with the approved contracts and current six-switch v2 set. The driver used at most two guarded scratch compiles. All seven stalled. No generated segment closed. Four unfinished generated drafts use `.v.txt` files. The results and exact residuals are in `ZesuSsz/Evidence/det/b2-current-root/7dfa8d5a0d6f/RESULTS.md` on `builder-b2-prep` at source commit `4f1a14cb`. The B2 harness patch `7f7ff3f9` passed check-fast before these probes.
 
 | Segment | Range | Probe seconds | Outcome | Stall class and goal head | Inferred junction | Closed hand lines |
 |---|---|---:|---|---|---|---:|
-| Post-transactions | 0x15668→0x156e8 | 4.8 s | Stalled | C8: `∗[10] match ∗ ↦ₘ∗ ∗ (…)…`; goal head `match writeSuccessPostConditional1596c ... with ... end -∗ byteListItemResources ... ∗ ... -∗ ... -∗ zesu_ld_spec 87656 "x10" "x2" 1104` | Pending | N/A (open) |
-| Post-withdrawals | 0x156e8→0x15744 | 2.4 s | Stalled | C6: `∃ : bv N *ₗ ()`; array sealed at 0x156e8 | Pending | N/A (open) |
-| Suffix entry | 0x15744→0x15754 | 5.3 s | Stalled | C6: `∗[2] ↦ᵣ ∗ True`; goal head `encoderIntExactReturn ... -∗ "PC" ↦ᵣ ... -∗ WPasm ...` | Pending | N/A (open) |
-| Tail fields 1 | 0x158e0→0x1596c | 7.0 s | Stalled | Unknown: `(encoderBytesExactReturn data size sp (Z_to_bv 64 (88300 + 4)) bytes b3 0 (Z_to_bv 64 (hashBase + length hashBytes)) word1 tail -∗ zesu_ld_spec 88304 "x10" "x2" 936) ∗ True` | Pending | N/A (open) |
-| Tail fields 2 | 0x1596c→0x159b8 | 4.3 s | Stalled | C1: `∃ : spec *ₗ ()`; after one inferred event, 7.3 s at T2 return-to-load goal | One Boolean output event | N/A (open) |
-| Tail fields 3 | 0x159b8→0x159d8 | 5.0 s | Stalled | C1: `∃ x : spec *ₗ list (bv 8) *ₗ (), ⌜encoderOptionalU64Valid (writeSuccessFrameSp witness + 296) x.2ₗ⌝ ∗` | Pending | N/A (open) |
-| Epilogue | 0x159d8→0x15a0c | 5.8 s | Stalled | C4: `∃ x : isla_trace, Index.lookup (bv_unsigned ra) = Some x` | Pending | N/A (open) |
+| Post-transactions | 0x15668→0x156e8 | 5.6 s | Stalled | C8: `match writeSuccessPostConditional1596c ... with ... end -∗ byteListItemResources ... ∗ ... -∗ ... -∗ zesu_ld_spec 87656 "x10" "x2" 1104` | Not reached | N/A (open) |
+| Post-withdrawals | 0x156e8→0x15744 | 3.9 s | Stalled | C6: `∃ y : bv 64 *ₗ (), (sp + 1136) ↦ₘ y.1ₗ ∗ ...` | Not reached; B3 did not run | N/A (open) |
+| Suffix entry | 0x15744→0x15754 | 6.1 s | Stalled | C6: `encoderIntExactReturn ... -∗ "PC" ↦ᵣ ... -∗ WPasm ...` | Not reached | N/A (open) |
+| Tail fields 1 | 0x158e0→0x1596c | 9.2 s | Stalled | Unknown: `(encoderBytesExactReturn ... -∗ zesu_ld_spec 88304 "x10" "x2" 936) ∗ True` | Not reached | N/A (open) |
+| Tail fields 2 | 0x1596c→0x159b8 | 6.1 s | Stalled | C1: `∃ x : spec *ₗ (), ⌜writeOutputEvents ... (writeSuccessBooleanWordPayload 0) x.1ₗ ⊆ tail⌝ ∗ ...` | Not reached | N/A (open) |
+| Tail fields 3 | 0x159b8→0x159d8 | 5.9 s | Stalled | Unknown: `spec` | Not reached | N/A (open) |
+| Epilogue | 0x159d8→0x15a0c | 7.9 s | Stalled | C4: `∃ x : isla_trace, Index.lookup (bv_unsigned ra) = Some x` | Not reached | N/A (open) |
 
 The suffix-entry C6 goal is the `encoderIntExactReturn` handoff at 0x15750. Its call premise at 0x15d10 uses `encoderIntEntryBoundary`, an alias of `zesuEncoderIntExactCallSpec`. The chain infers its only junction at 0x15744 and keeps the merged hashes-loop boundary at 0x15754 frozen.
 
@@ -69,7 +69,7 @@ A focused post-withdrawals probe on c4d44f8d rebuilt its dependencies in a priva
 
 No B2 generated segment is closed or committed yet. The set of closed segments is empty, so no closed-segment hand-line count applies.
 
-The final-v2 probe recorded these exact residual goal heads. Each block is the complete conclusion from the probe record.
+The following blocks preserve the earlier B1-set residual records. The current-root exact residuals are in the `RESULTS.md` file above.
 
 <details><summary>Post-transactions: C8, 4.8 s</summary>
 
@@ -280,6 +280,8 @@ After one inferred Boolean output event, tail fields 2 stalled in 7.3 s at the T
 
 ## B3 and B4
 
+The current-root post-withdrawals probe remains at C6 on the `sp + 1136` load. The conditional B3 inference and chain did not run. The older B3 records below remain historical evidence.
+
 Post-withdrawals B3 inference omitted the closed spec table and found one output event. It reached zero junctions. Thus, chain generation had no starting junction and B3 stopped. Round 2 stopped in 46.3 s at frame 97, class C1, on the loaded-word trace inclusion. These measurements predate root `40cdc060`. The exact round-2 goal follows.
 
 A focused B3 retry with v2 and the four closed call premises stopped in 3.8 s at frame 27 on the same C6 `sp + 1136` load. Round 0 inferred zero events. It reached no junction, so `chain.py` had no starting junction.
@@ -395,11 +397,17 @@ The candidate arm files are `6ccb7607d797-v2-ur1.json`, `6ccb7607d797-v2-ur1-rul
 
 The guarded v1 arm on `40cdc060` kept all 305 and 48 outcomes unchanged against `b4761100`. It reported two closed rows on each set. The 24-job `check-iris` preview passed with zero timeouts and a 94 GiB batch peak. The guard held the gate from 11:25:26 to 12:05:01 on 2026-09-25, a 39 min 35 s run. The log is `.worktrees/islaris-native/_build/agents/orch/logs/v2-keepers-preview-40cdc060.log`. The arm log is `v2-keepers-v1-arm-40cdc060.log` beside it. The gate time comes from `/run/user/1000/zesu-guard/guard.log`. The preceding Export fuel fix at `4d03f0eb` passed `check-fast`; its module took 4.079 s and 673 MiB in isolation.
 
+## T5 candidate and Raw profiling
+
+Candidate `687b8859` on `builder-t5-return-wand` adds an opt-in v2 step for `(R -∗ K) ∗ True`. `All.v` and `Sets/v2.v` remain unchanged. The Boolean continuation proof passed in 6.089 seconds with 1,047,488 KiB peak RSS. The suffix continuation proof passed in 28.145 seconds with 1,162,780 KiB peak RSS. The no-switch controls stopped at C9 in 5.830 and 10.861 seconds. `test_boolean_return_wand`, `test_suffix_return_wand`, and `test_return_wand_v1_inactive` print `Closed under the global context`. These tests close the two continuations, not caller segments. Candidate check-fast passed. The benchmark arm and standalone full preview remain pending; the candidate is unmerged.
+
+The high-load Raw-module CPU exceedance did not reproduce at root `7dfa8d5a`. `WriteSuccessTransactionsCarrierChunk14f68Raw.v` passed in 103.416 CPU seconds, with peak RSS 2,883,168 KiB. `WriteSuccessTransactionsCarrierChunk14f6cRaw.v` passed in 161.016 CPU seconds, with peak RSS 3,849,704 KiB. The hot tactic is unqualified `iFrame`, through `iFrameAnySpatial` and `typeclasses eauto (nat_or_var_opt)`. Both CPU measurements are below 200 seconds, so no split or source change is required. Logs are in `.worktrees/builder-carrier-profile/_build/agents/carrier-profile/logs/`. These profiles are not completed benchmark arms. The guarded eight-job restart is running; its log is `.worktrees/islaris-native/_build/agents/orch/logs/benchmark-7dfa8d5a-retry3-j8.log`. All four current-root arm results remain pending.
+
 ## Plan section 14 step 5: compliance boundary
 
 The lead parked three proposed `KnownBug` constructors for the withdrawal, transaction, and witness-header list-count limits. Their required computed paired mismatch tests were unavailable under the old endpoint projection and abstract `EvmSailAdapter` evaluators. No new constructor is accepted or merged.
 
-Root `7dfa8d5a` now includes the endpoint, startup generation, proof split, B2 harness patch, reproduction record, and report updates. The merged batch passed check-fast in 0.534 seconds. Its full check-iris took 478.188 seconds at 24 jobs, with peak task RSS 2,234,872 KiB. The logs are `endpoint-batch-check-fast-0b128666.log` and `endpoint-batch-check-iris-0b128666.log` under `.worktrees/islaris-native/_build/agents/orch/logs/`. Current-root benchmark arms and all seven patched B2 probes remain pending.
+Root `7dfa8d5a` now includes the endpoint, startup generation, proof split, B2 harness patch, reproduction record, and report updates. The merged batch passed check-fast in 0.534 seconds. Its full check-iris took 478.188 seconds at 24 jobs, with peak task RSS 2,234,872 KiB. The logs are `endpoint-batch-check-fast-0b128666.log` and `endpoint-batch-check-iris-0b128666.log` under `.worktrees/islaris-native/_build/agents/orch/logs/`. Current-root benchmark arms remain pending. All seven patched B2 probes completed and stalled.
 
 The endpoint preview at `264096af` passed check-fast and the full check-iris gate. The full build took 2,245.399 seconds at 24 jobs. Its logs are `.worktrees/islaris-native/_build/agents/orch/logs/endpoint-check-fast-264096af.log` and `endpoint-check-iris-264096af.log` in that directory. The endpoint uses symbolic pinned ELF memory, host input memory, and a real output-event projection. Its statement keeps exactly the named `decodeOk` and `writeOk` proof premises. The pinned-code and non-vacuity lemmas are closed. `zesuCompliance` retains its existing `Admitted` status. CP4 still needs the whole-run adequacy bridge.
 
@@ -412,14 +420,14 @@ Proof split `b754157a` preserves the public `transactions_source_authorization_r
 | Required item | Current record | Pending work |
 |---|---|---|
 | Current-root arms and rule deltas | B1 table and the two B4 arms above; current v2 has six selected switches. | Verify current-root v1 equality and measure v2 deltas on both frozen sets. Record per-lemma outcome, class, signature, and goal-hash diffs for all four arms. |
-| Seven segments | B2 table has seven timed stalls under the four-switch B1 set. | Run all seven patched probes under the current six-switch set; record any changed goal or outcome. Patch `7f7ff3f9` passed check-fast; no patched probe result is recorded. |
-| First junction | B3 inferred one event and no junction; `chain.py` could not start. | Re-run only if the current-root post-withdrawals probe moves past its C6 load. |
+| Seven segments | Evidence `4f1a14cb` records all seven patched current-root probes; all stalled under the six-switch v2 set. | No generated segment closed. Later rule candidates need new probes. |
+| First junction | Current-root post-withdrawals remains at C6; the conditional B3 chain did not run. Earlier inference reached no junction. | Re-run only after the post-withdrawals load stall moves. |
 | Cleanup lines | Phase A removed 1,972 hand lines across 198 lemmas in 160 modules. | None for the recorded Phase A batches. |
 | Closed segment hand lines | No B2 generated segment closed. | Record hand lines and `Print Assumptions` for any later closed segment. |
 | 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; the `40cdc060` preview took 39 min 35 s; endpoint preview `264096af` took 2,245.399 s; the merged batch took 478.188 s, both at 24 jobs. | Record the gate for any later ordered merge. |
-| Tickets | T1 loaded-word inclusion, T2 return-to-load, T3 `sp + 1136` memory, T4 optional outcome, and T5 generic return wand remain. | Measure T5 and the T3→T1 path on current-root probes. Keep the chain-end and split requirements explicit. |
+| Tickets | T1 to T5 remain open. T5 candidate `687b8859` closes two continuation tests; all seven current-root segments remain stalled. | Run the T5 arm and standalone full preview. Keep T3→T1, chain-end, and segment-split requirements explicit. |
 | Compliance boundary | The lead parked three new `KnownBug` constructors. The approved endpoint preview passed both gates; startup trace approval and reproduction are recorded. | Close the whole-run adequacy bridge for CP4. Keep the parked constructors out of the merge. |
 
 The current segment inputs are `ZesuSsz/Evidence/det/open_segments.json` and `ZesuSsz/Evidence/det/chain/post_withdrawals.json`. The recorded stalls are in `ZesuSsz/Evidence/det/wp4/stalls.jsonl`. The old draft report came from branch `builder-roota-pw` at `7ae0c1dc`. Branch `builder-report0` at `0be3adf6` holds earlier benchmark JSON. The draft branches `builder-seg-pw` (`b64d405d`), `builder-seg-tf1` (`3ced1187`), and `builder-seg-tf2` (`3dc4ddc0`) do not contain closed segment proofs. They stay parked for Phase C.
 
-This report is a draft. Current-root v2 arms on both frozen sets and all seven B2 probes remain open, so the B5 stop and review have not occurred.
+This report is a draft. Current-root v1/v2 arms on both frozen sets remain pending. The T5 arm and standalone full preview also remain pending. All seven B2 probes completed and stalled. The B5 stop and review have not occurred.
