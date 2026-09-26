@@ -1,6 +1,6 @@
 # Builder buildout report
 
-Status: draft at pushed root `40cdc060` on 2026-09-25. Phase A and B1 are measured. B2 records seven stalled probes, and B3 records its stop. B4 has two selected rules. The endpoint preview at `264096af` passed both gates after the step-5 rulings. B5 remains open while current-root v2 arms and seven B2 probes remain pending.
+Status: draft at pushed root `7dfa8d5a` on 2026-09-26. Phase A and B1 are measured. B2 records seven stalled probes, and B3 records its stop. B4 has two selected rules. The endpoint preview at `264096af` passed both gates after the step-5 rulings. B5 remains open while current-root v2 arms and seven B2 probes remain pending.
 
 ## Phase A
 
@@ -399,6 +399,8 @@ The guarded v1 arm on `40cdc060` kept all 305 and 48 outcomes unchanged against 
 
 The lead parked three proposed `KnownBug` constructors for the withdrawal, transaction, and witness-header list-count limits. Their required computed paired mismatch tests were unavailable under the old endpoint projection and abstract `EvmSailAdapter` evaluators. No new constructor is accepted or merged.
 
+Root `7dfa8d5a` now includes the endpoint, startup generation, proof split, B2 harness patch, reproduction record, and report updates. The merged batch passed check-fast in 0.534 seconds. Its full check-iris took 478.188 seconds at 24 jobs, with peak task RSS 2,234,872 KiB. The logs are `endpoint-batch-check-fast-0b128666.log` and `endpoint-batch-check-iris-0b128666.log` under `.worktrees/islaris-native/_build/agents/orch/logs/`. Current-root benchmark arms and all seven patched B2 probes remain pending.
+
 The endpoint preview at `264096af` passed check-fast and the full check-iris gate. The full build took 2,245.399 seconds at 24 jobs. Its logs are `.worktrees/islaris-native/_build/agents/orch/logs/endpoint-check-fast-264096af.log` and `endpoint-check-iris-264096af.log` in that directory. The endpoint uses symbolic pinned ELF memory, host input memory, and a real output-event projection. Its statement keeps exactly the named `decodeOk` and `writeOk` proof premises. The pinned-code and non-vacuity lemmas are closed. `zesuCompliance` retains its existing `Admitted` status. CP4 still needs the whole-run adequacy bridge.
 
 The user approved startup traces at `0x10120`, `0x10124`, and `0x10128`. The pinned binary, Islaris, generator, and single configuration remain unchanged. The generated outputs remain ignored files. Commit `aa86daed` records the commands and hashes in `experiments/islaris-startup/REPRODUCTION.md`. The base `PUSH3_PROGRESS.md` startup-approval entry records the same evidence.
@@ -414,7 +416,7 @@ Proof split `b754157a` preserves the public `transactions_source_authorization_r
 | First junction | B3 inferred one event and no junction; `chain.py` could not start. | Re-run only if the current-root post-withdrawals probe moves past its C6 load. |
 | Cleanup lines | Phase A removed 1,972 hand lines across 198 lemmas in 160 modules. | None for the recorded Phase A batches. |
 | Closed segment hand lines | No B2 generated segment closed. | Record hand lines and `Print Assumptions` for any later closed segment. |
-| 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; the `40cdc060` preview took 39 min 35 s; endpoint preview `264096af` took 2,245.399 s at 24 jobs. | Record the gate for any remaining ordered merge. |
+| 24-job gate times | A3, A4, A5, A6, and B1 times appear above; T2-b took about 42 min; the `40cdc060` preview took 39 min 35 s; endpoint preview `264096af` took 2,245.399 s; the merged batch took 478.188 s, both at 24 jobs. | Record the gate for any later ordered merge. |
 | Tickets | T1 loaded-word inclusion, T2 return-to-load, T3 `sp + 1136` memory, T4 optional outcome, and T5 generic return wand remain. | Measure T5 and the T3→T1 path on current-root probes. Keep the chain-end and split requirements explicit. |
 | Compliance boundary | The lead parked three new `KnownBug` constructors. The approved endpoint preview passed both gates; startup trace approval and reproduction are recorded. | Close the whole-run adequacy bridge for CP4. Keep the parked constructors out of the merge. |
 
