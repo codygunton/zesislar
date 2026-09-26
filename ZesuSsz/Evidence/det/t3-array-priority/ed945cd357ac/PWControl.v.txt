@@ -1,0 +1,50 @@
+Set Printing Width 200.
+Require Import isla.isla.
+From iris.proofmode Require Import environments.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Sets.v2.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Contracts.IslarisCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactPrefixStackFacts.
+Require Import ZesuSsz.Proofs.WriteSuccess.InterfacesCoverage.
+Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.
+Require Import ZesuSsz.Automation.ArrayLoadPriority.
+Ltac zesu_run_pass_v2 ::=
+  zesu_expose_environment_alias;
+  try zesu_prepare_uninit_goal;
+  try zesu_normalize_find_mem_address;
+  unshelve (time "zesu_run" repeat first
+    [zesu_array_load_priority | zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    try zesu_finish_closed_wand; try zesu_finish_framed_wand; zesu_finish).
+Lemma infer_boundary `{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma) (Hwf : writeSuccessWitnessWellFormed args witness) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗
+  □ instr_pre 0x15bc8 encoderOptionalEntryBoundary -∗
+  □ instr_pre 0x15c6c encoderBytesEntryBoundary -∗
+  □ instr_pre 0x10190 writeOutputEntryBoundary -∗
+  instr_body 0x156e8
+    (writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness ∗ P)).
+Proof.
+idtac "PROBE-BEGIN".
+try intros.
+idtac.
+try zesu_block.
+all: try liShow.
+all: idtac "BOUNDARY-ALL-GOALS-BEGIN".
+Show.
+all: idtac "BOUNDARY-ALL-GOALS-END".
+all: try (lazymatch goal with
+  | |- ?goal =>
+      lazymatch type of goal with
+      | Prop => fail
+      | _ => shelve
+      end
+  end).
+Show.
+Abort.
+Goal True. idtac "PROBE-END". Abort.

@@ -1,0 +1,33 @@
+{
+  "source_root": "ed945cd357acd5d0b4e8a5030eb89264428ae6a8",
+  "control": {
+    "support_import": "ZesuSsz.Proofs.WriteSuccess.InterfacesCoverage",
+    "elapsed_seconds": 11.032,
+    "peak_rss_kib": 1410556,
+    "result": "stalled at zesu_ld_spec 87784 x10 x2 1136 bare-word precondition"
+  },
+  "switched": {
+    "support_import": "ZesuSsz.Proofs.WriteSuccess.InterfacesCoverage",
+    "elapsed_seconds": 44.33,
+    "peak_rss_kib": 1789084,
+    "result": "past first raw array load; stalled at encoder_int call 0x156f0 with return 0x156f4"
+  },
+  "selector_tests": {
+    "elapsed_seconds": 3.814,
+    "peak_rss_kib": 1073292,
+    "assumptions": "Closed under the global context",
+    "lemmas": [
+      "test_array_priority_inactive",
+      "test_array_priority",
+      "test_nonarray_priority"
+    ]
+  },
+  "arms": "pending root queue; switch alone and matched-support control/candidate",
+  "mcp": {
+    "health": "passed",
+    "preamble_start": "No node at point / crashed",
+    "file_start_check_step_multi": "passed; test_array_priority closed",
+    "compile_file_verify": "load-path failure for ZesuSsz.Automation.All; compile validation also rejects Load and Add LoadPath",
+    "fallback": "guarded coqc_scratch; read-only completed root arm dependencies; maximum two coqc"
+  }
+}

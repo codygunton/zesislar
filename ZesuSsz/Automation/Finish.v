@@ -16,6 +16,7 @@ Require Import ZesuSsz.Automation.PureFacts.
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
 Require Import ZesuSsz.Automation.V2Steps.
+Require Import ZesuSsz.Automation.ArrayLoadPriority.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -511,7 +512,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_array_load_priority | zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
