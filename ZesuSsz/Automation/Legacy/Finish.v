@@ -295,12 +295,13 @@ Ltac zesu_run :=
   try zesu_solve_instances.
 
 Ltac zesu_block :=
-  iStartProof;
+  tryif iStartProof then (
   simpl;
   repeat first [progress iIntros (?) | progress iIntros "#?" |
     progress iIntros "?"];
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
-  zesu_run.
+  zesu_run)
+  else first [solve [zesu_finish] | idtac].
 
 Ltac zesu_run_until boundary :=
   first [boundary tt |

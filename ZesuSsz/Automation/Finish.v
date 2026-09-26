@@ -570,13 +570,14 @@ Ltac zesu_reduce_introduced_code_lists :=
    handles those, so the block automation hands them to it instead of
    failing. *)
 Ltac zesu_block_v1 :=
-  iStartProof;
+  tryif iStartProof then (
   zesu_expose_code_lists;
   repeat first [progress iIntros (?) | progress iIntros "#?" |
     progress iIntros "?"];
   zesu_reduce_introduced_code_lists;
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
-  zesu_run.
+  zesu_run)
+  else first [solve [zesu_finish] | idtac].
 
 Ltac zesu_block_v2 :=
   tryif iStartProof then (
@@ -586,7 +587,7 @@ Ltac zesu_block_v2 :=
     zesu_reduce_introduced_code_lists;
     repeat iDestruct select (_ ∗ _)%I as "[? ?]";
     zesu_run)
-  else zesu_finish.
+  else first [solve [zesu_finish] | idtac].
 
 Ltac zesu_block :=
   tryif zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1.

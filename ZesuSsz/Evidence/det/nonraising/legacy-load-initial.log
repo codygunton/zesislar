@@ -1,0 +1,37 @@
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+INITIAL_GOAL_BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  base : bv 64
+  bytes : list (bv 8)
+  Hlength : length bytes = 288%nat
+  ============================
+  instr 86088 (Some a15048) -∗
+  instr_body 86088
+    (reg_col zesu_ram_sys_regs ∗ "x10" ↦ᵣ RVal_Bits base ∗
+     "x16" ↦ᵣ: (λ _ : valu, True) ∗ ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
+     ⌜mapRamBase defaultMap ≤ bv_unsigned base
+      ∧ bv_unsigned base + 288 ≤ machineRamEnd defaultMap⌝ ∗
+     bv_unsigned base ↦ₘ∗ bytes ∗
+     instr_pre 86092
+       (reg_col zesu_ram_sys_regs ∗ "x10" ↦ᵣ RVal_Bits base ∗
+        "x16"
+        ↦ᵣ RVal_Bits
+             (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 80 bytes)))) ∗
+        bv_unsigned base ↦ₘ∗ bytes ∗ True) ∗ True)
+INITIAL_GOAL_END
+Tactic call zesu_run ran for 0.68 secs (0.678u,0.s) (success)
+Closed under the global context
+exit=0 ms=4528 rss_kb=888968
