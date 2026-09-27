@@ -1,0 +1,2039 @@
+File "./ZesuSsz/Generated/Level1.v", line 109, characters 0-62:
+Warning: To avoid stack overflow, large numbers in nat are interpreted as
+applications of Init.Nat.of_num_uint. [abstract-large-number,numbers,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.375 secs (0.373u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 0.235 secs (0.234u,0.s) (success)
+Tactic call liARun ran for 0.385 secs (0.38u,0.s) (success)
+Tactic call zesu_run ran for 0.928 secs (0.926u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.477 secs (1.462u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.028 secs (1.019u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.449 secs (1.431u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.285 secs (0.284u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.513 secs (0.511u,0.s) (success)
+Tactic call zesu_run ran for 0.553 secs (0.55u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.631 secs (1.616u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.752 secs (2.727u,0.01s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.683 secs (2.664u,0.01s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.498 secs (0.493u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 2.357 secs (2.34u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.527 secs (0.522u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.045 secs (1.039u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.853 secs (1.835u,0.01s) (success)
+Tactic call zesu_run ran for 1.662 secs (1.654u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.635 secs (2.613u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 4.576 secs (4.539u,0.016s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.635 secs (0.633u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.767 secs (1.759u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.165 secs (1.154u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 0.158 secs (0.154u,0.003s) (success)
+Tactic call zesu_run ran for 0.17 secs (0.169u,0.s) (success)
+Tactic call zesu_run ran for 0.148 secs (0.147u,0.s) (success)
+Tactic call zesu_run ran for 1.414 secs (1.406u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.045 secs (1.035u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.288 secs (1.272u,0.009s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.281 secs (1.272u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.064 secs (2.042u,0.013s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 4.49 secs (4.456u,0.02s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.255 secs (1.248u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 6.997 secs (6.949u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.296 secs (0.289u,0.006s) (success)
+Tactic call zesu_run ran for 0.322 secs (0.317u,0.003s) (success)
+Tactic call zesu_run ran for 1.629 secs (1.612u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.293 secs (1.289u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.102 secs (1.092u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.022 secs (1.014u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.476 secs (1.463u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 3.834 secs (3.802u,0.013s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 6.716 secs (6.652u,0.032s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.133 secs (1.13u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.205 secs (1.201u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.6 secs (1.591u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 8.787 secs (8.696u,0.036s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.549 secs (1.536u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.799 secs (0.796u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.364 secs (0.363u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.423 secs (0.418u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.655 secs (0.652u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.777 secs (0.773u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.464 secs (0.462u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.494 secs (0.488u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.488 secs (0.483u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.506 secs (1.485u,0.016s) (success)
+Tactic call zesu_run ran for 0.457 secs (0.455u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+File "./ZesuSsz/Generated/ElfImage.v", line 73, characters 0-58:
+Warning: To avoid stack overflow, large numbers in nat are interpreted as
+applications of Init.Nat.of_num_uint. [abstract-large-number,numbers,default]
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.968 secs (0.949u,0.013s) (success)
+Tactic call zesu_run ran for 0.6 secs (0.591u,0.006s) (success)
+Tactic call zesu_run ran for 4.969 secs (4.928u,0.02s) (success)
+Closed under the global context
+Tactic call liARun ran for 2.281 secs (2.264u,0.006s) (success)
+Tactic call liARun ran for 0.164 secs (0.163u,0.s) (success)
+Tactic call liARun ran for 2.505 secs (2.484u,0.009s) (success)
+Tactic call liARun ran for 0.037 secs (0.037u,0.s) (success)
+Tactic call liARun ran for 0.564 secs (0.562u,0.s) (success)
+Tactic call liARun ran for 1.024 secs (1.003u,0.011s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.569 secs (0.562u,0.003s) (success)
+Tactic call zesu_run ran for 3.36 secs (3.347u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.856 secs (1.838u,0.009s) (success)
+Tactic call zesu_run ran for 0.276 secs (0.275u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.495 secs (1.482u,0.006s) (success)
+Tactic call zesu_run ran for 0.387 secs (0.385u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.436 secs (1.422u,0.006s) (success)
+Tactic call zesu_run ran for 0.291 secs (0.289u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.167 secs (1.154u,0.006s) (success)
+Tactic call zesu_run ran for 0.332 secs (0.327u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.528 secs (2.5u,0.016s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.406 secs (2.395u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 2.486 secs (2.467u,0.01s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 6.388 secs (6.333u,0.022s) (success)
+Tactic call zesu_run ran for 4.319 secs (4.271u,0.016s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.516 secs (3.489u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 8.087 secs (8.024u,0.026s) (success)
+Tactic call zesu_run ran for 7.094 secs (7.024u,0.049s) (success)
+Tactic call zesu_run ran for 3.915 secs (3.898u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 5.29 secs (5.248u,0.016s) (success)
+Tactic call zesu_run ran for 5.358 secs (5.306u,0.026s) (success)
+Tactic call zesu_run ran for 4.937 secs (4.9u,0.016s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 2.908 secs (2.89u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 11.704 secs (11.598u,0.053s) (success)
+Tactic call zesu_run ran for 6.559 secs (6.487u,0.039s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 12.443 secs (12.345u,0.036s) (success)
+Tactic call zesu_run ran for 10.116 secs (10.029u,0.046s) (success)
+Tactic call zesu_run ran for 5.281 secs (5.249u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.564 secs (2.539u,0.016s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 9.203 secs (9.131u,0.025s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 10.431 secs (10.341u,0.036s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 18.905 secs (18.773u,0.036s) (success)
+Tactic call zesu_run ran for 5.727 secs (5.671u,0.033s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 20.991 secs (20.828u,0.059s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 7.389 secs (7.327u,0.029s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 10.736 secs (10.649u,0.036s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 10.772 secs (10.681u,0.039s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 19.205 secs (19.037u,0.072s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 19.459 secs (19.301u,0.049s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 17.943 secs (17.819u,0.053s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 11.354 secs (11.264u,0.046s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 13.475 secs (13.342u,0.029s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 4.92 secs (4.889u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 4.337 secs (4.284u,0.013s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 4.352 secs (4.315u,0.019s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 5.901 secs (5.84u,0.029s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 5.992 secs (5.94u,0.023s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.194 secs (1.192u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 7.249 secs (7.184u,0.026s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.493 secs (1.482u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 7.105 secs (7.034u,0.032s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.117 secs (1.111u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.269 secs (1.257u,0.006s) (success)
+Tactic call zesu_run ran for 0.005 secs (0.005u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.087 secs (0.087u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 4.033 secs (3.999u,0.016s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 4.622 secs (4.582u,0.019s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 2.625 secs (2.599u,0.013s) (success)
+Tactic call zesu_run ran for 0.573 secs (0.57u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 3.763 secs (3.725u,0.026s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 4.545 secs (4.497u,0.029s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 5.058 secs (5.015u,0.019s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 8.176 secs (8.122u,0.026s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 4.306 secs (4.268u,0.016s) (success)
+Tactic call zesu_run ran for 4.912 secs (4.861u,0.023s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 0.514 secs (0.513u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.447 secs (0.443u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 4.412 secs (4.375u,0.016s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 4.708 secs (4.644u,0.039s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 9.983 secs (9.885u,0.043s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 0.978 secs (0.972u,0.002s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.861 secs (0.858u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 4.643 secs (4.599u,0.019s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 4.77 secs (4.732u,0.013s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 3.91 secs (3.88u,0.016s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 9.716 secs (9.636u,0.033s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.565 secs (0.563u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.227 secs (1.216u,0.006s) (success)
+Tactic call zesu_run ran for 0.004 secs (0.004u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.024 secs (0.024u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.296 secs (1.274u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.245 secs (1.228u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 5.362 secs (5.313u,0.023s) (success)
+Tactic call liARun ran for 1.298 secs (1.284u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.433 secs (2.415u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.054 secs (1.051u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.657 secs (1.641u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.529 secs (1.513u,0.009s) (success)
+Closed under the global context
+Tactic call liARun ran for 0.284 secs (0.28u,0.003s) (success)
+Tactic call zesu_run ran for 4.111 secs (4.082u,0.009s) (success)
+Tactic call zesu_run ran for 3.873 secs (3.841u,0.016s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 1.876 secs (1.851u,0.016s) (success)
+Tactic call liARun ran for 0.124 secs (0.123u,0.s) (success)
+Tactic call liARun ran for 1.35 secs (1.34u,0.003s) (success)
+Tactic call liARun ran for 0.12 secs (0.119u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.587 secs (0.572u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.004 secs (0.985u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.124 secs (1.116u,0.003s) (success)
+Tactic call zesu_run ran for 0.729 secs (0.726u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 13.454 secs (13.306u,0.076s) (success)
+Tactic call zesu_run ran for 7.869 secs (7.789u,0.016s) (success)
+Tactic call zesu_run ran for 0.095 secs (0.094u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.627 secs (1.607u,0.013s) (success)
+Tactic call zesu_run ran for 0.943 secs (0.94u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 9.937 secs (9.839u,0.052s) (success)
+Tactic call zesu_run ran for 1.371 secs (1.366u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 0.319 secs (0.318u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.357 secs (3.339u,0.003s) (success)
+Tactic call zesu_run ran for 3.006 secs (2.982u,0.013s) (success)
+Tactic call zesu_run ran for 3.2 secs (3.178u,0.009s) (success)
+Tactic call zesu_run ran for 3.316 secs (3.295u,0.006s) (success)
+Tactic call zesu_run ran for 3.131 secs (3.113u,0.006s) (success)
+Tactic call zesu_run ran for 3.594 secs (3.561u,0.013s) (success)
+Closed under the global context
+Tactic call liARun ran for 4.27 secs (4.231u,0.018s) (success)
+Tactic call liARun ran for 0.932 secs (0.924u,0.003s) (success)
+Tactic call liARun ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.774 secs (1.758u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.724 secs (3.697u,0.009s) (success)
+Tactic call zesu_run ran for 5.567 secs (5.498u,0.026s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.221 secs (2.19u,0.02s) (success)
+Tactic call zesu_run ran for 0.755 secs (0.752u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 8.195 secs (8.119u,0.036s) (success)
+Tactic call zesu_run ran for 11.593 secs (11.521u,0.026s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.489 secs (0.474u,0.013s) (success)
+Closed under the global context
+Tactic call liARun ran for 0.517 secs (0.515u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.786 secs (3.753u,0.016s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 9.54 secs (9.459u,0.036s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 6.268 secs (6.218u,0.026s) (success)
+Tactic call zesu_run ran for 4.686 secs (4.662u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 14.113 secs (14.004u,0.039s) (success)
+Tactic call zesu_run ran for 1.548 secs (1.535u,0.006s) (success)
+Closed under the global context
+Tactic call liARun ran for 0.697 secs (0.691u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.632 secs (1.615u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.47 secs (1.457u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.878 secs (2.852u,0.016s) (success)
+Closed under the global context
+Tactic call liARun ran for 7.278 secs (7.201u,0.043s) (success)
+Tactic call liARun ran for 1.406 secs (1.396u,0.003s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 0.198 secs (0.197u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 7.66 secs (7.602u,0.023s) (success)
+Tactic call zesu_run ran for 0.107 secs (0.106u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.794 secs (2.771u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.826 secs (1.799u,0.019s) (success)
+Closed under the global context
+Tactic call liARun ran for 1.137 secs (1.128u,0.003s) (success)
+Tactic call liARun ran for 1.284 secs (1.272u,0.006s) (success)
+Tactic call liARun ran for 0.012 secs (0.012u,0.s) (success)
+Tactic call liARun ran for 0.129 secs (0.128u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 4.525 secs (4.49u,0.011s) (success)
+Tactic call liARun ran for 0.153 secs (0.153u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 6.082 secs (6.032u,0.023s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 6.367 secs (6.328u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 6.29 secs (6.238u,0.022s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.496 secs (1.477u,0.012s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 9.288 secs (9.194u,0.043s) (success)
+Tactic call liARun ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call liARun ran for 2.503 secs (2.491u,0.003s) (success)
+Tactic call liARun ran for 3.751 secs (3.719u,0.012s) (success)
+Tactic call liARun ran for 0.199 secs (0.195u,0.003s) (success)
+Tactic call liARun ran for 0.574 secs (0.57u,0.003s) (success)
+Closed under the global context
+Tactic call liARun ran for 0.593 secs (0.591u,0.s) (success)
+Tactic call liARun ran for 0.725 secs (0.721u,0.s) (success)
+Tactic call liARun ran for 0.777 secs (0.77u,0.003s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 4.027 secs (3.991u,0.016s) (success)
+Tactic call liARun ran for 0.179 secs (0.178u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.383 secs (2.353u,0.016s) (success)
+Tactic call liARun ran for 4.042 secs (4.013u,0.009s) (success)
+Tactic call liARun ran for 0.223 secs (0.222u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 5.428 secs (5.39u,0.019s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 6.322 secs (6.245u,0.039s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.378 secs (2.361u,0.006s) (success)
+Closed under the global context
+Tactic call liARun ran for 3.981 secs (3.945u,0.016s) (success)
+Tactic call liARun ran for 0.282 secs (0.281u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.116 secs (0.115u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.113 secs (0.113u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.056 secs (0.056u,0.s) (success)
+Tactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.254 secs (0.24u,0.012s) (success)
+Closed under the global context
+Tactic call liARun ran for 22.786 secs (22.569u,0.119s) (success)
+Tactic call liARun ran for 0.183 secs (0.183u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 11.152 secs (11.064u,0.043s) (success)
+Tactic call liARun ran for 0.145 secs (0.145u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 24.285 secs (24.062u,0.105s) (success)
+Tactic call liARun ran for 0.185 secs (0.184u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.269 secs (1.26u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.204 secs (0.197u,0.006s) (success)
+Tactic call zesu_run ran for 0.189 secs (0.188u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.993 secs (1.968u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.079 secs (2.048u,0.019s) (success)
+Closed under the global context
+Tactic call liARun ran for 24.907 secs (24.705u,0.082s) (success)
+Tactic call liARun ran for 0.167 secs (0.166u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.054 secs (2.041u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.499 secs (2.482u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.962 secs (1.941u,0.012s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.469 secs (2.439u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.701 secs (2.668u,0.014s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.236 secs (0.224u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.713 secs (0.709u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.494 secs (0.488u,0.002s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.247 secs (0.245u,0.s) (success)
+Tactic call liARun ran for 35. secs (34.705u,0.109s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.841 secs (0.833u,0.003s) (success)
+Closed under the global context
+Tactic call liARun ran for 2.803 secs (2.796u,0.s) (success)
+Tactic call liARun ran for 0.196 secs (0.195u,0.s) (success)
+Tactic call liARun ran for 0.967 secs (0.962u,0.s) (success)
+Tactic call liARun ran for 2.518 secs (2.5u,0.006s) (success)
+Tactic call liARun ran for 0.161 secs (0.16u,0.s) (success)
+Tactic call liARun ran for 1.012 secs (1.003u,0.s) (success)
+Tactic call liARun ran for 2.692 secs (2.671u,0.006s) (success)
+Tactic call liARun ran for 0.182 secs (0.181u,0.s) (success)
+Tactic call liARun ran for 1.011 secs (1.u,0.003s) (success)
+Tactic call liARun ran for 4.073 secs (4.047u,0.006s) (success)
+Tactic call liARun ran for 0.258 secs (0.257u,0.s) (success)
+Tactic call liARun ran for 1.136 secs (1.131u,0.s) (success)
+Tactic call liARun ran for 3.357 secs (3.334u,0.003s) (success)
+Tactic call liARun ran for 0.172 secs (0.171u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.462 secs (2.411u,0.022s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.444 secs (0.432u,0.01s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 11.247 secs (11.145u,0.043s) (success)
+Tactic call zesu_run ran for 10.414 secs (10.312u,0.039s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.06 secs (0.06u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.106 secs (0.105u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.138 secs (0.134u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 8.926 secs (8.835u,0.035s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.007 secs (1.985u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 6.639 secs (6.585u,0.019s) (success)
+Tactic call liARun ran for 6.98 secs (6.927u,0.023s) (success)
+Tactic call liARun ran for 2.637 secs (2.614u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.144 secs (0.14u,0.s) (success)
+Tactic call zesu_run ran for 0.009 secs (0.009u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.164 secs (0.162u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.012 secs (0.012u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.104 secs (0.103u,0.s) (success)
+Tactic call zesu_run ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.058 secs (0.058u,0.s) (success)
+Tactic call zesu_run ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 1.741 secs (1.709u,0.022s) (success)
+Tactic call liARun ran for 0.566 secs (0.557u,0.006s) (success)
+Tactic call liARun ran for 0.601 secs (0.598u,0.s) (success)
+Tactic call liARun ran for 0.672 secs (0.666u,0.003s) (success)
+Tactic call liARun ran for 1.616 secs (1.606u,0.003s) (success)
+Tactic call liARun ran for 0.065 secs (0.065u,0.s) (success)
+Tactic call liARun ran for 1.103 secs (1.094u,0.003s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.636 secs (2.622u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 2.267 secs (2.253u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call liARun ran for 3.253 secs (3.224u,0.012s) (success)
+Tactic call liARun ran for 2.065 secs (2.054u,0.003s) (success)
+Tactic call liARun ran for 2.407 secs (2.389u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 4.218 secs (4.192u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.005 secs (0.005u,0.s) (success)
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.704 secs (0.699u,0.003s) (success)
+Tactic call zesu_run ran for 1.418 secs (1.41u,0.s) (success)
+Tactic call zesu_run ran for 0.014 secs (0.013u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.047 secs (0.047u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.831 secs (1.824u,0.003s) (success)
+Tactic call zesu_run ran for 0.011 secs (0.011u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.043 secs (0.043u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call liARun ran for 2.018 secs (2.002u,0.006s) (success)
+Tactic call liARun ran for 0.188 secs (0.187u,0.s) (success)
+Tactic call liARun ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call liARun ran for 3.068 secs (3.041u,0.006s) (success)
+Tactic call liARun ran for 0.137 secs (0.136u,0.s) (success)
+Tactic call liARun ran for 1.38 secs (1.367u,0.006s) (success)
+Tactic call liARun ran for 0.176 secs (0.175u,0.s) (success)
+Tactic call liARun ran for 0.005 secs (0.005u,0.s) (success)
+Tactic call zesu_run ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call zesu_run ran for 0.251 secs (0.249u,0.s) (success)
+Tactic call zesu_run ran for 0.209 secs (0.208u,0.s) (success)
+Tactic call zesu_run ran for 0.219 secs (0.217u,0.s) (success)
+Tactic call zesu_run ran for 0.264 secs (0.263u,0.s) (success)
+Tactic call liARun ran for 4.673 secs (4.633u,0.013s) (success)
+Tactic call liARun ran for 7.93 secs (7.879u,0.013s) (success)
+Tactic call liARun ran for 0.739 secs (0.736u,0.s) (success)
+Tactic call liARun ran for 4.232 secs (4.2u,0.009s) (success)
+Tactic call liARun ran for 4.126 secs (4.096u,0.009s) (success)
+Tactic call liARun ran for 4.057 secs (4.026u,0.009s) (success)
+Tactic call liARun ran for 5.903 secs (5.862u,0.009s) (success)
+Closed under the global context
+Tactic call liARun ran for 2.804 secs (2.767u,0.023s) (success)
+Tactic call liARun ran for 0.066 secs (0.066u,0.s) (success)
+Tactic call liARun ran for 1.066 secs (1.06u,0.s) (success)
+Tactic call liARun ran for 0.069 secs (0.069u,0.s) (success)
+Tactic call liARun ran for 0.874 secs (0.87u,0.s) (success)
+Tactic call liARun ran for 0.065 secs (0.065u,0.s) (success)
+Tactic call liARun ran for 0.989 secs (0.98u,0.003s) (success)
+Tactic call liARun ran for 0.077 secs (0.077u,0.s) (success)
+Tactic call liARun ran for 0.795 secs (0.78u,0.009s) (success)
+Tactic call liARun ran for 0.569 secs (0.566u,0.s) (success)
+Tactic call liARun ran for 1.685 secs (1.665u,0.009s) (success)
+Tactic call zesu_run ran for 0.336 secs (0.334u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.887 secs (0.877u,0.006s) (success)
+Tactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.16 secs (0.159u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.563 secs (0.55u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.234 secs (0.233u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.982 secs (2.952u,0.016s) (success)
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.232 secs (0.231u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.045 secs (0.044u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.121 secs (0.104u,0.016s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.035 secs (0.022u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.061 secs (0.061u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.58 secs (0.569u,0.009s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 0.907 secs (0.89u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.07 secs (0.059u,0.009s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.223 secs (2.203u,0.009s) (success)
+Tactic call zesu_run ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.187 secs (0.186u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.018 secs (0.018u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.072 secs (1.051u,0.016s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.008 secs (1.978u,0.019s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 1.138 secs (1.133u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.004 secs (0.004u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.139 secs (0.138u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.42 secs (0.415u,0.003s) (success)
+Tactic call zesu_run ran for 0.335 secs (0.334u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.087 secs (0.08u,0.006s) (success)
+Tactic call zesu_run ran for 0.053 secs (0.053u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.916 secs (2.888u,0.016s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.027 secs (0.027u,0.s) (success)
+Tactic call zesu_run ran for 0.228 secs (0.227u,0.s) (success)
+Tactic call zesu_run ran for 0.163 secs (0.162u,0.s) (success)
+Tactic call zesu_run ran for 0.139 secs (0.138u,0.s) (success)
+Tactic call zesu_run ran for 0.12 secs (0.12u,0.s) (success)
+Tactic call zesu_run ran for 0.117 secs (0.117u,0.s) (success)
+Tactic call zesu_run ran for 0.116 secs (0.116u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.007 secs (1.99u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call zesu_run ran for 0.018 secs (0.018u,0.s) (success)
+Tactic call zesu_run ran for 0.195 secs (0.194u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.14 secs (0.139u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.105 secs (0.091u,0.013s) (success)
+Tactic call zesu_run ran for 0.058 secs (0.058u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.069 secs (0.069u,0.s) (success)
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.038 secs (0.038u,0.s) (success)
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 1.156 secs (1.152u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.824 secs (0.811u,0.009s) (success)
+Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)
+Tactic call zesu_run ran for 0.048 secs (0.048u,0.s) (success)
+Tactic call zesu_run ran for 0.048 secs (0.045u,0.003s) (success)
+Tactic call zesu_run ran for 0.044 secs (0.043u,0.s) (success)
+Tactic call zesu_run ran for 0.009 secs (0.009u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.129 secs (0.129u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 3.967 secs (3.936u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.087 secs (0.073u,0.012s) (success)
+Tactic call zesu_run ran for 0.054 secs (0.054u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.101 secs (0.098u,0.002s) (success)
+Tactic call zesu_run ran for 0.057 secs (0.057u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.099 secs (0.093u,0.006s) (success)
+Tactic call zesu_run ran for 0.226 secs (0.225u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 2.179 secs (2.16u,0.01s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.604 secs (0.601u,0.s) (success)
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.113 secs (0.113u,0.s) (success)
+Tactic call zesu_run ran for 0.054 secs (0.054u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.11 secs (0.103u,0.006s) (success)
+Tactic call zesu_run ran for 0.216 secs (0.215u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 17.637 secs (17.514u,0.046s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.157 secs (0.143u,0.013s) (success)
+Tactic call zesu_run ran for 0.253 secs (0.252u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.291 secs (0.284u,0.006s) (success)
+Tactic call zesu_run ran for 4.437 secs (4.416u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 5.035 secs (4.987u,0.026s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.826 secs (2.816u,0.003s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.362 secs (1.343u,0.013s) (success)
+Tactic call zesu_run ran for 0.667 secs (0.664u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 4.895 secs (4.85u,0.019s) (success)
+Tactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 3.98 secs (3.961u,0.006s) (success)
+Tactic call zesu_run ran for 0.006 secs (0.006u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.004 secs (0.004u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 1.55 secs (1.542u,0.s) (success)
+Tactic call zesu_run ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.297 secs (0.295u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Axioms:
+zesuCompliance
+  : ∀ (runner : DecoderEvaluator) (model : DecoderModel) 
+      (inputRef : ByteString → option StatelessInputRef) 
+      (P : AdmissibleProgram),
+      IslarisContractCorrect 74088 85244
+        (mainConcreteDecodeModel
+           (DecodeMeaningModuloKnownBugs runner model inputRef
+              zesuObservationBugApplies)
+           (mainDecodeUnionTail
+              (DecodeMeaningModuloKnownBugs runner model inputRef
+                 zesuObservationBugApplies)
+              (λ _ : DecodeBoundaryArgs,
+                 scons
+                   (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                   snil)
+              (λ _ : DecodeBoundaryArgs,
+                 scons
+                   (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                   snil))
+           (λ _ : DecodeBoundaryArgs,
+              scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                snil))
+      → IslarisContractCorrect 85296 85264
+          (writeSuccessFixedTailModel zesuWriteSuccessAllows
+             zesuWriteSuccessOutputRelation
+             (scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                snil) (λ _ nextPc : Z, nextPc = 85264))
+        → ComplianceModuloKnownBugs (zesuEndpoint P)
+            (EvmSailReference runner model inputRef) zesuBugApplies
+            zesuEquivalent
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 11.955 secs (11.85u,0.039s) (success)
+Tactic call zesu_run ran for 0.016 secs (0.016u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 1.534 secs (1.519u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.016 secs (0.016u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 2.19 secs (2.174u,0.003s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.073 secs (0.073u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.774 secs (0.756u,0.013s) (success)
+Tactic call zesu_run ran for 0.024 secs (0.024u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 0.182 secs (0.182u,0.s) (success)
+Tactic call zesu_run ran for 0.246 secs (0.245u,0.s) (success)
+Tactic call zesu_run ran for 0.345 secs (0.344u,0.s) (success)
+Tactic call zesu_run ran for 0.059 secs (0.059u,0.s) (success)
+Tactic call zesu_run ran for 0.057 secs (0.057u,0.s) (success)
+Tactic call zesu_run ran for 0.052 secs (0.052u,0.s) (success)
+Tactic call zesu_run ran for 0.058 secs (0.058u,0.s) (success)
+Tactic call zesu_run ran for 1.044 secs (1.041u,0.s) (success)
+Tactic call zesu_run ran for 0.387 secs (0.385u,0.s) (success)
+Tactic call zesu_run ran for 0.484 secs (0.478u,0.003s) (success)
+Tactic call zesu_run ran for 0.363 secs (0.361u,0.s) (success)
+Tactic call zesu_run ran for 0.423 secs (0.421u,0.s) (success)
+Tactic call zesu_run ran for 0.314 secs (0.31u,0.003s) (success)
+Tactic call zesu_run ran for 3.647 secs (3.627u,0.003s) (success)
+Tactic call zesu_run ran for 1.684 secs (1.676u,0.s) (success)
+Tactic call zesu_run ran for 0.428 secs (0.425u,0.s) (success)
+Tactic call zesu_run ran for 0.458 secs (0.455u,0.s) (success)
+Tactic call zesu_run ran for 0.334 secs (0.332u,0.s) (success)
+Tactic call zesu_run ran for 0.402 secs (0.396u,0.003s) (success)
+Tactic call zesu_run ran for 0.362 secs (0.36u,0.s) (success)
+Tactic call zesu_run ran for 3.151 secs (3.122u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.122 secs (0.121u,0.s) (success)
+Tactic call zesu_run ran for 0.999 secs (0.989u,0.006s) (success)
+Tactic call zesu_run ran for 1.116 secs (1.109u,0.003s) (success)
+Tactic call zesu_run ran for 0.911 secs (0.909u,0.s) (success)
+Tactic call zesu_run ran for 1.104 secs (1.1u,0.s) (success)
+Tactic call zesu_run ran for 0.842 secs (0.84u,0.s) (success)
+Tactic call zesu_run ran for 4.593 secs (4.564u,0.009s) (success)
+Tactic call zesu_run ran for 0.832 secs (0.825u,0.003s) (success)
+Tactic call zesu_run ran for 0.654 secs (0.648u,0.003s) (success)
+Tactic call zesu_run ran for 0.796 secs (0.792u,0.s) (success)
+Tactic call zesu_run ran for 0.748 secs (0.74u,0.003s) (success)
+Tactic call zesu_run ran for 0.706 secs (0.696u,0.s) (success)
+Tactic call zesu_run ran for 0.59 secs (0.587u,0.s) (success)
+Tactic call zesu_run ran for 0.59 secs (0.584u,0.s) (success)
+Tactic call zesu_run ran for 0.561 secs (0.558u,0.s) (success)
+Tactic call zesu_run ran for 0.763 secs (0.759u,0.s) (success)
+Tactic call zesu_run ran for 0.658 secs (0.655u,0.s) (success)
+Tactic call zesu_run ran for 0.678 secs (0.671u,0.003s) (success)
+Tactic call zesu_run ran for 0.704 secs (0.701u,0.s) (success)
+Tactic call zesu_run ran for 0.707 secs (0.704u,0.s) (success)
+Tactic call zesu_run ran for 0.445 secs (0.444u,0.s) (success)
+Tactic call zesu_run ran for 0.431 secs (0.43u,0.s) (success)
+Tactic call zesu_run ran for 0.418 secs (0.417u,0.s) (success)
+Tactic call zesu_run ran for 1.127 secs (1.124u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.051 secs (1.034u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.345 secs (1.324u,0.013s) (success)
+Tactic call zesu_run ran for 0.722 secs (0.714u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.812 secs (1.8u,0.003s) (success)
+Tactic call zesu_run ran for 1.131 secs (1.119u,0.006s) (success)
+Tactic call zesu_run ran for 1.31 secs (1.305u,0.s) (success)
+Tactic call zesu_run ran for 0.982 secs (0.978u,0.s) (success)
+Tactic call zesu_run ran for 1.111 secs (1.106u,0.s) (success)
+Tactic call zesu_run ran for 0.96 secs (0.955u,0.s) (success)
+Tactic call zesu_run ran for 0.992 secs (0.988u,0.s) (success)
+Tactic call zesu_run ran for 1.046 secs (1.036u,0.003s) (success)
+Tactic call zesu_run ran for 0.878 secs (0.873u,0.s) (success)
+Tactic call zesu_run ran for 1.007 secs (1.002u,0.s) (success)
+Tactic call zesu_run ran for 0.929 secs (0.92u,0.003s) (success)
+Tactic call zesu_run ran for 0.918 secs (0.909u,0.003s) (success)
+Tactic call zesu_run ran for 0.896 secs (0.885u,0.006s) (success)
+Tactic call zesu_run ran for 0.933 secs (0.928u,0.s) (success)
+Tactic call zesu_run ran for 0.812 secs (0.808u,0.s) (success)
+Tactic call zesu_run ran for 0.927 secs (0.923u,0.s) (success)
+Tactic call zesu_run ran for 0.799 secs (0.796u,0.s) (success)
+Tactic call zesu_run ran for 0.842 secs (0.837u,0.s) (success)
+Tactic call zesu_run ran for 0.814 secs (0.808u,0.s) (success)
+Tactic call zesu_run ran for 0.823 secs (0.818u,0.s) (success)
+Tactic call zesu_run ran for 0.739 secs (0.735u,0.s) (success)
+Tactic call zesu_run ran for 0.778 secs (0.774u,0.s) (success)
+Tactic call zesu_run ran for 0.833 secs (0.827u,0.s) (success)
+Tactic call zesu_run ran for 2.624 secs (2.611u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.184 secs (0.183u,0.s) (success)
+Tactic call zesu_run ran for 1.283 secs (1.271u,0.006s) (success)
+Tactic call zesu_run ran for 1.274 secs (1.263u,0.006s) (success)
+Tactic call zesu_run ran for 1.086 secs (1.081u,0.s) (success)
+Tactic call zesu_run ran for 1.243 secs (1.231u,0.006s) (success)
+Tactic call zesu_run ran for 1.332 secs (1.325u,0.s) (success)
+Tactic call zesu_run ran for 3.208 secs (3.192u,0.006s) (success)
+Tactic call zesu_run ran for 0.922 secs (0.918u,0.s) (success)
+Tactic call zesu_run ran for 1.017 secs (1.011u,0.s) (success)
+Tactic call zesu_run ran for 0.888 secs (0.884u,0.s) (success)
+Tactic call zesu_run ran for 0.817 secs (0.81u,0.003s) (success)
+Tactic call zesu_run ran for 0.912 secs (0.907u,0.s) (success)
+Tactic call zesu_run ran for 0.854 secs (0.846u,0.003s) (success)
+Tactic call zesu_run ran for 0.823 secs (0.819u,0.s) (success)
+Tactic call zesu_run ran for 0.87 secs (0.863u,0.003s) (success)
+Tactic call zesu_run ran for 0.852 secs (0.845u,0.003s) (success)
+Tactic call zesu_run ran for 0.809 secs (0.805u,0.s) (success)
+Tactic call zesu_run ran for 0.888 secs (0.881u,0.003s) (success)
+Tactic call zesu_run ran for 0.79 secs (0.787u,0.s) (success)
+Tactic call zesu_run ran for 0.726 secs (0.723u,0.s) (success)
+Tactic call zesu_run ran for 0.732 secs (0.728u,0.s) (success)
+Tactic call zesu_run ran for 0.8 secs (0.795u,0.s) (success)
+Tactic call zesu_run ran for 0.767 secs (0.763u,0.s) (success)
+Tactic call zesu_run ran for 0.688 secs (0.685u,0.s) (success)
+Tactic call zesu_run ran for 0.7 secs (0.696u,0.s) (success)
+Tactic call zesu_run ran for 0.721 secs (0.717u,0.s) (success)
+Tactic call zesu_run ran for 0.758 secs (0.753u,0.s) (success)
+Tactic call zesu_run ran for 0.723 secs (0.719u,0.s) (success)
+Tactic call zesu_run ran for 0.794 secs (0.79u,0.s) (success)
+Tactic call zesu_run ran for 2.127 secs (2.111u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.125 secs (0.124u,0.s) (success)
+Tactic call zesu_run ran for 1.793 secs (1.784u,0.s) (success)
+Tactic call zesu_run ran for 1.375 secs (1.362u,0.006s) (success)
+Tactic call zesu_run ran for 1.281 secs (1.272u,0.003s) (success)
+Tactic call zesu_run ran for 1.156 secs (1.151u,0.s) (success)
+Tactic call zesu_run ran for 1.182 secs (1.175u,0.s) (success)
+Tactic call zesu_run ran for 4.342 secs (4.31u,0.006s) (success)
+Tactic call zesu_run ran for 0.994 secs (0.985u,0.003s) (success)
+Tactic call zesu_run ran for 0.876 secs (0.872u,0.s) (success)
+Tactic call zesu_run ran for 0.84 secs (0.836u,0.s) (success)
+Tactic call zesu_run ran for 0.829 secs (0.825u,0.s) (success)
+Tactic call zesu_run ran for 0.845 secs (0.841u,0.s) (success)
+Tactic call zesu_run ran for 0.961 secs (0.958u,0.s) (success)
+Tactic call zesu_run ran for 0.774 secs (0.77u,0.s) (success)
+Tactic call zesu_run ran for 0.763 secs (0.76u,0.s) (success)
+Tactic call zesu_run ran for 0.818 secs (0.813u,0.s) (success)
+Tactic call zesu_run ran for 0.812 secs (0.807u,0.s) (success)
+Tactic call zesu_run ran for 0.738 secs (0.734u,0.s) (success)
+Tactic call zesu_run ran for 0.701 secs (0.697u,0.s) (success)
+Tactic call zesu_run ran for 0.795 secs (0.79u,0.s) (success)
+Tactic call zesu_run ran for 0.792 secs (0.787u,0.s) (success)
+Tactic call zesu_run ran for 0.674 secs (0.67u,0.s) (success)
+Tactic call zesu_run ran for 0.661 secs (0.658u,0.s) (success)
+Tactic call zesu_run ran for 2.3 secs (2.289u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 17.814 secs (17.682u,0.048s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 17.317 secs (17.16u,0.063s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.097 secs (0.096u,0.s) (success)
+Tactic call zesu_run ran for 0.098 secs (0.098u,0.s) (success)
+Tactic call zesu_run ran for 0.138 secs (0.137u,0.s) (success)
+Tactic call zesu_run ran for 0.097 secs (0.096u,0.s) (success)
+Tactic call zesu_run ran for 0.09 secs (0.089u,0.s) (success)
+Tactic call zesu_run ran for 0.08 secs (0.08u,0.s) (success)
+Tactic call zesu_run ran for 0.37 secs (0.365u,0.003s) (success)
+Tactic call zesu_run ran for 0.052 secs (0.052u,0.s) (success)
+Tactic call zesu_run ran for 0.022 secs (0.022u,0.s) (success)
+Tactic call zesu_run ran for 0.033 secs (0.033u,0.s) (success)
+Tactic call zesu_run ran for 0.167 secs (0.166u,0.s) (success)
+Tactic call zesu_run ran for 0.21 secs (0.206u,0.003s) (success)
+Tactic call zesu_run ran for 0.16 secs (0.156u,0.003s) (success)
+Tactic call zesu_run ran for 0.134 secs (0.13u,0.003s) (success)
+Tactic call zesu_run ran for 0.148 secs (0.148u,0.s) (success)
+Tactic call zesu_run ran for 0.385 secs (0.383u,0.s) (success)
+Tactic call zesu_run ran for 0.048 secs (0.048u,0.s) (success)
+Tactic call zesu_run ran for 0.016 secs (0.016u,0.s) (success)
+Tactic call zesu_run ran for 1.271 secs (1.262u,0.003s) (success)
+Tactic call zesu_run ran for 0.473 secs (0.471u,0.s) (success)
+Tactic call zesu_run ran for 0.43 secs (0.428u,0.s) (success)
+Tactic call zesu_run ran for 0.364 secs (0.362u,0.s) (success)
+Tactic call zesu_run ran for 0.36 secs (0.358u,0.s) (success)
+Tactic call zesu_run ran for 0.346 secs (0.344u,0.s) (success)
+Tactic call zesu_run ran for 3.696 secs (3.668u,0.006s) (success)
+Tactic call zesu_run ran for 1.737 secs (1.727u,0.s) (success)
+Tactic call zesu_run ran for 0.614 secs (0.607u,0.s) (success)
+Tactic call zesu_run ran for 0.586 secs (0.583u,0.s) (success)
+Tactic call zesu_run ran for 0.525 secs (0.518u,0.003s) (success)
+Tactic call zesu_run ran for 0.496 secs (0.49u,0.003s) (success)
+Tactic call zesu_run ran for 0.504 secs (0.501u,0.s) (success)
+Tactic call zesu_run ran for 4.101 secs (4.071u,0.013s) (success)
+Tactic call zesu_run ran for 1.449 secs (1.436u,0.006s) (success)
+Tactic call zesu_run ran for 0.514 secs (0.508u,0.003s) (success)
+Tactic call zesu_run ran for 0.527 secs (0.524u,0.s) (success)
+Tactic call zesu_run ran for 0.387 secs (0.382u,0.003s) (success)
+Tactic call zesu_run ran for 0.371 secs (0.369u,0.s) (success)
+Tactic call zesu_run ran for 0.355 secs (0.354u,0.s) (success)
+Tactic call zesu_run ran for 3.854 secs (3.821u,0.009s) (success)
+Tactic call zesu_run ran for 1.777 secs (1.763u,0.003s) (success)
+Tactic call zesu_run ran for 0.593 secs (0.589u,0.s) (success)
+Tactic call zesu_run ran for 0.61 secs (0.606u,0.s) (success)
+Tactic call zesu_run ran for 0.554 secs (0.548u,0.003s) (success)
+Tactic call zesu_run ran for 0.667 secs (0.66u,0.003s) (success)
+Tactic call zesu_run ran for 0.58 secs (0.574u,0.003s) (success)
+Tactic call zesu_run ran for 4.99 secs (4.959u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 24.01 secs (23.802u,0.083s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 22.375 secs (22.165u,0.086s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.174 secs (0.173u,0.s) (success)
+Tactic call zesu_run ran for 1.362 secs (1.352u,0.003s) (success)
+Tactic call zesu_run ran for 1.379 secs (1.36u,0.013s) (success)
+Tactic call zesu_run ran for 1.414 secs (1.408u,0.s) (success)
+Tactic call zesu_run ran for 1.596 secs (1.583u,0.006s) (success)
+Tactic call zesu_run ran for 1.274 secs (1.269u,0.s) (success)
+Tactic call zesu_run ran for 4.011 secs (3.979u,0.013s) (success)
+Tactic call zesu_run ran for 0.973 secs (0.965u,0.003s) (success)
+Tactic call zesu_run ran for 0.9 secs (0.889u,0.003s) (success)
+Tactic call zesu_run ran for 0.887 secs (0.882u,0.s) (success)
+Tactic call zesu_run ran for 0.833 secs (0.83u,0.s) (success)
+Tactic call zesu_run ran for 0.752 secs (0.743u,0.006s) (success)
+Tactic call zesu_run ran for 0.751 secs (0.749u,0.s) (success)
+Tactic call zesu_run ran for 1.127 secs (1.119u,0.003s) (success)
+Tactic call zesu_run ran for 0.958 secs (0.955u,0.s) (success)
+Tactic call zesu_run ran for 0.974 secs (0.969u,0.s) (success)
+Tactic call zesu_run ran for 0.998 secs (0.992u,0.s) (success)
+Tactic call zesu_run ran for 0.912 secs (0.907u,0.s) (success)
+Tactic call zesu_run ran for 0.994 secs (0.986u,0.003s) (success)
+Tactic call zesu_run ran for 1.04 secs (1.034u,0.s) (success)
+Tactic call zesu_run ran for 0.924 secs (0.919u,0.s) (success)
+Tactic call zesu_run ran for 0.78 secs (0.777u,0.s) (success)
+Tactic call zesu_run ran for 0.982 secs (0.978u,0.s) (success)
+Tactic call zesu_run ran for 0.932 secs (0.928u,0.s) (success)
+Tactic call zesu_run ran for 1.083 secs (1.077u,0.s) (success)
+Tactic call zesu_run ran for 0.799 secs (0.792u,0.003s) (success)
+Tactic call zesu_run ran for 0.667 secs (0.664u,0.s) (success)
+Tactic call zesu_run ran for 0.569 secs (0.567u,0.s) (success)
+Tactic call zesu_run ran for 0.538 secs (0.536u,0.s) (success)
+Tactic call zesu_run ran for 1.616 secs (1.604u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.703 secs (0.7u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.785 secs (0.776u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.404 secs (2.391u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 4.187 secs (4.159u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.84 secs (0.837u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.197 secs (1.189u,0.003s) (success)
+Tactic call zesu_run ran for 6.799 secs (6.761u,0.013s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.232 secs (1.227u,0.s) (success)
+Tactic call zesu_run ran for 7.52 secs (7.474u,0.019s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 5.31 secs (5.276u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context

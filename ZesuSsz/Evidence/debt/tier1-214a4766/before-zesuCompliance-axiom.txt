@@ -1,0 +1,276 @@
+Axioms:
+zesuCompliance
+  : forall (runner : EvmSailAdapter.DecoderEvaluator)
+      (model : EvmSailAdapter.DecoderModel)
+      (inputRef : Endpoints.ByteString ->
+                  option evm_decoder_types.StatelessInputRef)
+      (P : Program.AdmissibleProgram),
+    Endpoints.IslarisContractCorrect
+      (BinNums.Zpos
+         (BinNums.xO
+            (BinNums.xO
+               (BinNums.xO
+                  (BinNums.xI
+                     (BinNums.xO
+                        (BinNums.xI
+                           (BinNums.xI
+                              (BinNums.xO
+                                 (BinNums.xI
+                                    (BinNums.xO
+                                       (BinNums.xO
+                                          (BinNums.xO
+                                             (BinNums.xO
+                                                (BinNums.xI
+                                                 (BinNums.xO
+                                                 (BinNums.xO BinNums.xH)))))))))))))))))
+      (BinNums.Zpos
+         (BinNums.xO
+            (BinNums.xO
+               (BinNums.xI
+                  (BinNums.xI
+                     (BinNums.xI
+                        (BinNums.xI
+                           (BinNums.xI
+                              (BinNums.xI
+                                 (BinNums.xO
+                                    (BinNums.xO
+                                       (BinNums.xI
+                                          (BinNums.xI
+                                             (BinNums.xO
+                                                (BinNums.xO
+                                                 (BinNums.xI
+                                                 (BinNums.xO BinNums.xH)))))))))))))))))
+      (WholeResources.mainConcreteDecodeModel
+         (DecodeMeaningModuloKnownBugs runner model inputRef
+            zesuObservationBugApplies)
+         (DecodeTail.mainDecodeUnionTail
+            (DecodeMeaningModuloKnownBugs runner model inputRef
+               zesuObservationBugApplies)
+            (fun _ : Endpoints.DecodeBoundaryArgs =>
+             spec.scons
+               (opsem.SWriteMem
+                  {|
+                    definitions.bv_unsigned :=
+                      Machine.machineExitAddress Machine.defaultMap;
+                    definitions.bv_is_wf :=
+                      I
+                      <:
+                      definitions.BvWf
+                        (BinNums.Npos
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xO
+                                       (BinNums.xO (BinNums.xO BinNums.xH)))))))
+                        (Machine.machineExitAddress Machine.defaultMap)
+                  |}
+                  {|
+                    definitions.bvn_n :=
+                      BinNums.Npos
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xO (BinNums.xO BinNums.xH))))));
+                    definitions.bvn_val :=
+                      {|
+                        definitions.bv_unsigned := BinNums.Z0;
+                        definitions.bv_is_wf :=
+                          I
+                          <:
+                          definitions.BvWf
+                            (BinNums.Npos
+                               (BinNums.xO
+                                  (BinNums.xO
+                                     (BinNums.xO
+                                        (BinNums.xO
+                                           (BinNums.xO
+                                              (BinNums.xO BinNums.xH)))))))
+                            BinNums.Z0
+                      |}
+                  |}) spec.snil)
+            (fun _ : Endpoints.DecodeBoundaryArgs =>
+             spec.scons
+               (opsem.SWriteMem
+                  {|
+                    definitions.bv_unsigned :=
+                      Machine.machineExitAddress Machine.defaultMap;
+                    definitions.bv_is_wf :=
+                      I
+                      <:
+                      definitions.BvWf
+                        (BinNums.Npos
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xO
+                                       (BinNums.xO (BinNums.xO BinNums.xH)))))))
+                        (Machine.machineExitAddress Machine.defaultMap)
+                  |}
+                  {|
+                    definitions.bvn_n :=
+                      BinNums.Npos
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xO (BinNums.xO BinNums.xH))))));
+                    definitions.bvn_val :=
+                      {|
+                        definitions.bv_unsigned := BinNums.Z0;
+                        definitions.bv_is_wf :=
+                          I
+                          <:
+                          definitions.BvWf
+                            (BinNums.Npos
+                               (BinNums.xO
+                                  (BinNums.xO
+                                     (BinNums.xO
+                                        (BinNums.xO
+                                           (BinNums.xO
+                                              (BinNums.xO BinNums.xH)))))))
+                            BinNums.Z0
+                      |}
+                  |}) spec.snil))
+         (fun _ : Endpoints.DecodeBoundaryArgs =>
+          spec.scons
+            (opsem.SWriteMem
+               {|
+                 definitions.bv_unsigned :=
+                   Machine.machineExitAddress Machine.defaultMap;
+                 definitions.bv_is_wf :=
+                   I
+                   <:
+                   definitions.BvWf
+                     (BinNums.Npos
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xO (BinNums.xO BinNums.xH)))))))
+                     (Machine.machineExitAddress Machine.defaultMap)
+               |}
+               {|
+                 definitions.bvn_n :=
+                   BinNums.Npos
+                     (BinNums.xO
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO (BinNums.xO BinNums.xH))))));
+                 definitions.bvn_val :=
+                   {|
+                     definitions.bv_unsigned := BinNums.Z0;
+                     definitions.bv_is_wf :=
+                       I
+                       <:
+                       definitions.BvWf
+                         (BinNums.Npos
+                            (BinNums.xO
+                               (BinNums.xO
+                                  (BinNums.xO
+                                     (BinNums.xO
+                                        (BinNums.xO (BinNums.xO BinNums.xH)))))))
+                         BinNums.Z0
+                   |}
+               |}) spec.snil)) ->
+    Endpoints.IslarisContractCorrect
+      (BinNums.Zpos
+         (BinNums.xO
+            (BinNums.xO
+               (BinNums.xO
+                  (BinNums.xO
+                     (BinNums.xI
+                        (BinNums.xI
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xI
+                                    (BinNums.xO
+                                       (BinNums.xI
+                                          (BinNums.xI
+                                             (BinNums.xO
+                                                (BinNums.xO
+                                                 (BinNums.xI
+                                                 (BinNums.xO BinNums.xH)))))))))))))))))
+      (BinNums.Zpos
+         (BinNums.xO
+            (BinNums.xO
+               (BinNums.xO
+                  (BinNums.xO
+                     (BinNums.xI
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xI
+                                    (BinNums.xO
+                                       (BinNums.xI
+                                          (BinNums.xI
+                                             (BinNums.xO
+                                                (BinNums.xO
+                                                 (BinNums.xI
+                                                 (BinNums.xO BinNums.xH)))))))))))))))))
+      (WriteSuccessNativeContract.writeSuccessFixedTailModel
+         zesuWriteSuccessAllows zesuWriteSuccessOutputRelation
+         (spec.scons
+            (opsem.SWriteMem
+               {|
+                 definitions.bv_unsigned :=
+                   Machine.machineExitAddress Machine.defaultMap;
+                 definitions.bv_is_wf :=
+                   I
+                   <:
+                   definitions.BvWf
+                     (BinNums.Npos
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xO (BinNums.xO BinNums.xH)))))))
+                     (Machine.machineExitAddress Machine.defaultMap)
+               |}
+               {|
+                 definitions.bvn_n :=
+                   BinNums.Npos
+                     (BinNums.xO
+                        (BinNums.xO
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO (BinNums.xO BinNums.xH))))));
+                 definitions.bvn_val :=
+                   {|
+                     definitions.bv_unsigned := BinNums.Z0;
+                     definitions.bv_is_wf :=
+                       I
+                       <:
+                       definitions.BvWf
+                         (BinNums.Npos
+                            (BinNums.xO
+                               (BinNums.xO
+                                  (BinNums.xO
+                                     (BinNums.xO
+                                        (BinNums.xO (BinNums.xO BinNums.xH)))))))
+                         BinNums.Z0
+                   |}
+               |}) spec.snil)
+         (fun _ nextPc : BinNums.Z =>
+          nextPc =
+          BinNums.Zpos
+            (BinNums.xO
+               (BinNums.xO
+                  (BinNums.xO
+                     (BinNums.xO
+                        (BinNums.xI
+                           (BinNums.xO
+                              (BinNums.xO
+                                 (BinNums.xO
+                                    (BinNums.xI
+                                       (BinNums.xO
+                                          (BinNums.xI
+                                             (BinNums.xI
+                                                (BinNums.xO
+                                                 (BinNums.xO
+                                                 (BinNums.xI
+                                                 (BinNums.xO BinNums.xH)))))))))))))))))) ->
+    Targets.ComplianceModuloKnownBugs (zesuEndpoint P)
+      (Targets.EvmSailReference runner model inputRef)
+      BugPredicates.zesuBugApplies BugPredicates.zesuEquivalent

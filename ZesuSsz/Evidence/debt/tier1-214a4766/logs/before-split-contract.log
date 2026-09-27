@@ -1,0 +1,3 @@
+ASSUMPTIONS_BEGIN write_success_contract_from_tail
+Closed under the global context
+ASSUMPTIONS_END write_success_contract_from_tail

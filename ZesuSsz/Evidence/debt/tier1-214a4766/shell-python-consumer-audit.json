@@ -1,0 +1,33 @@
+{
+  "ZesuSsz/Evidence/check_proof_hygiene.py": [
+    {
+      "line": 82,
+      "module": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsIterationBody.v",
+      "text": "A2_EXCEPTIONS = {\"WriteSuccessWithdrawalsIterationBody.v\"}"
+    }
+  ],
+  "ZesuSsz/Evidence/check_write_success_decoder.sh": [
+    {
+      "line": 13,
+      "module": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.v",
+      "text": "--target WriteSuccessDecoderExamples -- \\"
+    },
+    {
+      "line": 16,
+      "module": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.v",
+      "text": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.vo"
+    },
+    {
+      "line": 22,
+      "module": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.v",
+      "text": "Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessDecoderExamples."
+    }
+  ],
+  "tools/delete_operational.py": [
+    {
+      "line": 67,
+      "module": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessWithdrawalsIterationBody.v",
+      "text": "\"ZesuSsz/Experiments/WriteSuccessWithdrawalsIterationBody.v\","
+    }
+  ]
+}

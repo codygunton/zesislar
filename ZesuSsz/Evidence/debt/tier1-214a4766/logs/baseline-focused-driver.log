@@ -1,0 +1,7 @@
+gate lock: state=wanted holder=worker1:gate-debt-baseline-focused:/home/cody/zesislar/.worktrees/islaris-native pid=2139256 start=2026-09-27T10:15:39-04:00
+gate lock: state=held holder=worker1:gate-debt-baseline-focused:/home/cody/zesislar/.worktrees/islaris-native pid=2139256 start=2026-09-27T10:15:39-04:00
+drain: waited 0 s; coqc machine-wide 0; used 27 GiB
+gate debt-baseline-focused with 24 jobs; guard: used 27 GiB (launch <150, hold 180, kill 200); coqc 0 machine-wide; load5 0; blocked 0; jobs 48; batch peak 0 GiB; gate lock state=held holder=worker1:gate-debt-baseline-focused:/home/cody/zesislar/.worktrees/islaris-native pid=2139256 start=2026-09-27T10:15:39-04:00; holds 500; guard kills 0
+prometheus lucy 10:10-10:15: memory used peak 27.3 p90 27.2 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 1 p90 0; blocked peak 1 p90 0; cpu busy peak 1 p90 1 %; disk read peak 0 p90 0 MiB/s; /home free 542 GiB
+gate debt-baseline-focused exit 0; 0 Timeout!; batch peak 63 GiB
+prometheus lucy 10:15-10:42: memory used peak 63.9 p90 54.0 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 15 p90 14; blocked peak 1 p90 0; cpu busy peak 39 p90 37 %; disk read peak 10 p90 0 MiB/s; /home free 542 GiB

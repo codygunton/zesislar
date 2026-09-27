@@ -1,0 +1,11 @@
+{
+  "before_worktree_count": 28,
+  "after_approved_cleanup": 19,
+  "after_audit_cleanup": 18,
+  "final_count_after_builder_removal_expected": 17,
+  "freed_gib": 11.60455322265625,
+  "available_bytes": 594205519872,
+  "df": "Filesystem           Size  Used Avail Use% Mounted on\n/dev/mapper/my-home  1.7T  1.2T  554G  68% /home\n",
+  "own_audit_worktree_removed": true,
+  "builder_removal_after_final_push_pending": true
+}

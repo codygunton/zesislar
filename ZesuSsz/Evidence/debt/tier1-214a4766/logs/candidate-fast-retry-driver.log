@@ -1,0 +1,8 @@
+gate lock: state=wanted holder=worker1:gate-check-fast:/home/cody/zesislar/.worktrees/builder-debt-tier1 pid=2211789 start=2026-09-27T12:17:21-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmpeqrmkg9p/spec.json
+OK (skipped=1)
+warning: 55 proof-size baseline violations remain
+warning: 84 baseline forbidden-name occurrences remain
+Error: Don't know how to build
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.vo

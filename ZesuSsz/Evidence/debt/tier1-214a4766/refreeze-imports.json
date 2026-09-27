@@ -1,0 +1,18 @@
+{
+  "ZesuSsz/Evidence/det/expensive_no_context.txt": "402fa3d618ab1526400b23508e8ed43e29c26a95eaacf1f993674651d95e3d50",
+  "ZesuSsz/Evidence/det/expensive_set.txt": "335f8d5e336c72473db1893cb31856a074db5251e6c207f119a5e9d115f350cc",
+  "ZesuSsz/Evidence/det/iris_set.txt": "f3a27109f74baf398027e36f6c3d4981a99dac64432e330d4e7090fccc6d3534",
+  "ZesuSsz/Evidence/det/median_band_set.txt": "c53c155fc3ea8bce9767a492773378223f9d8bb634cec68261d8ffefb5b6de99",
+  "ZesuSsz/Evidence/det/not_bi_set.txt": "46fbcc6b318420285d7b3e932d6a11c38d07636b60cae85222564b28c1463fd2",
+  "ZesuSsz/Evidence/det/profile_set.txt": "d701a04f5cae13100b3c599b34105cb5106a5a1bc28a85e343cc011741e33fd8",
+  "ZesuSsz/Evidence/det/refrozen-214a4766/arms.log": "48103e5adc9046c4f7f5dc589bda7f5c1de04c2e3d5ee2cd758644aeb75fc299",
+  "ZesuSsz/Evidence/det/refrozen-214a4766/segments-v1.jsonl": "1e037917fbae5304753b52ab4e00ebbfb9ce77e756ce953b3b1ff82a90dcef4a",
+  "ZesuSsz/Evidence/det/refrozen-214a4766/segments-v2.jsonl": "cf4c23087b24b90e2e08bd3ef5b342f19d89ef2c3c5312433f8032f70eb3b255",
+  "ZesuSsz/Evidence/det/wp2_ab_set.txt": "2123b631309ffbef49815b4f998f4fb02789a6b15793eadc3d18c0b1bc6b33fe",
+  "ZesuSsz/Evidence/residuals/benchmark/214a47663d2d-refrozen-v1-rule15.json": "17062ff1b9989430757165c7d526f44a90370d5f3e9b3cc0740c353b4e28f7d0",
+  "ZesuSsz/Evidence/residuals/benchmark/214a47663d2d-refrozen-v1.json": "c3dcbcdc0a6b0a0a852b51ab4a1ea8d1e9184a5fdd67cf361ebd5e33909b4f44",
+  "ZesuSsz/Evidence/residuals/benchmark/214a47663d2d-refrozen-v2-rule15.json": "dd594a4d85932d7756077e17b0456f4b423ef67d191332a440ed7d4fa17f02cc",
+  "ZesuSsz/Evidence/residuals/benchmark/214a47663d2d-refrozen-v2.json": "0a4f192e9512f4b1614ebf90573e6a173362e805791f4c934cf6050d67dda49e",
+  "ZesuSsz/Evidence/residuals/benchmark_set.txt": "f9029e9d5d31d92c20a9be26d2b052a385872465dc3c018f88cda1e9bccee4c0",
+  "ZesuSsz/Evidence/residuals/benchmark_set_segments.txt": "72fab3fe5bf1435f9623314fb90cc51e6212a85d60da059da2e029a54e18a46f"
+}

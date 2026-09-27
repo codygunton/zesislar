@@ -1,0 +1,5 @@
+{
+  "worktrees": 28,
+  "df": "Filesystem           Size  Used Avail Use% Mounted on\n/dev/mapper/my-home  1.7T  1.2T  542G  69% /home\n",
+  "available_bytes": 581745225728
+}

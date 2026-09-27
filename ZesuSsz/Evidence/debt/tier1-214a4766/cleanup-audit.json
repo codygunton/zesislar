@@ -1,0 +1,1472 @@
+{
+  "root": "214a4766",
+  "branch_rows": [
+    {
+      "branch": "auto-post-transactions",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/auto-post-transactions",
+          "sha": "67d85f2c406f58bef7628a6561b852567092a0ca",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "auto-post-transactions-compressed",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/auto-post-transactions-compressed",
+          "sha": "3371c152bc795ddde2eed1e28dc88ba45771ed84",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "auto-spec-sealed",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/auto-spec-sealed",
+          "sha": "14e6ba2570b30b9d4bb45c57c506a9749f16485b",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-a4",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-a4",
+          "sha": "d4880e4cdb7cc41383eca13198e47d41a1a25cea",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-a4",
+          "sha": "d4880e4cdb7cc41383eca13198e47d41a1a25cea",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-a6",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-a6",
+          "sha": "a9e8558cce8218845a4601b017247d4b77080f64",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-a6",
+          "sha": "cb264b1df0e322a2315c6490ce58e5d9292d65d2",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-a6-b2",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-a6-b2",
+          "sha": "e222ae968d92d2e4721853565a1eed4477764a6f",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-a6-b2",
+          "sha": "e222ae968d92d2e4721853565a1eed4477764a6f",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-a6-b34",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-a6-b34",
+          "sha": "dc850b227bdfa2c2d4d7048861b28e290fcf7f01",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-a6-b34",
+          "sha": "dc850b227bdfa2c2d4d7048861b28e290fcf7f01",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-a6-scanner",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/builder-a6-scanner",
+          "sha": "a9e8558cce8218845a4601b017247d4b77080f64",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-auth-restore-split",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-auth-restore-split",
+          "sha": "b754157a9efc9fb2d0607dc0ade4dcd854ed9e48",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-auth-restore-split",
+          "sha": "b754157a9efc9fb2d0607dc0ade4dcd854ed9e48",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-b1",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-b1",
+          "sha": "ee968a5cd5bb090dffaa6706a5752324313e11c4",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-b1",
+          "sha": "ee968a5cd5bb090dffaa6706a5752324313e11c4",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-b5-final",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-b5-final",
+          "sha": "48a9dc26b0efa5002726661071c83bf2c7a2f0ba",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-b5-final",
+          "sha": "48a9dc26b0efa5002726661071c83bf2c7a2f0ba",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-b5-preview",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-b5-preview",
+          "sha": "ed945cd357acd5d0b4e8a5030eb89264428ae6a8",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-benchmark-cwd",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-benchmark-cwd",
+          "sha": "e7c720337d2cb66c773ff61a9587e5d373217e4a",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-benchmark-cwd",
+          "sha": "e7c720337d2cb66c773ff61a9587e5d373217e4a",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-carrier-profile",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-carrier-profile",
+          "sha": "7dfa8d5a0d6ffdc38c750508a01b9a5d9ac4dae5",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-contract0",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-contract0",
+          "sha": "5e7b03ea7bc1345e91b3abe8ecbe81109044ec59",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 5e7b03ea7bc1345e91b3abe8ecbe81109044ec59"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-contract0",
+          "sha": "5e7b03ea7bc1345e91b3abe8ecbe81109044ec59",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 5e7b03ea7bc1345e91b3abe8ecbe81109044ec59"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-exec-cp5-a",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-exec-cp5-a",
+          "sha": "0ab816102b6660f2f68489dcdc855ec74ceb47d3",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-exec-cp5-a",
+          "sha": "0ab816102b6660f2f68489dcdc855ec74ceb47d3",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-exec-fuel-fix",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-exec-fuel-fix",
+          "sha": "4d03f0eb20f5c028681aebdea22ec088cb0c6120",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-exec-fuel-fix",
+          "sha": "4d03f0eb20f5c028681aebdea22ec088cb0c6120",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-final-evidence",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-final-evidence",
+          "sha": "214a47663d2d288127f75b3fd950bba4cc6afea9",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-final-evidence",
+          "sha": "214a47663d2d288127f75b3fd950bba4cc6afea9",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-gate-wanted",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-gate-wanted",
+          "sha": "fe90a18557fc731dce3eed734f03581ae2383af1",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-gate-wanted",
+          "sha": "fe90a18557fc731dce3eed734f03581ae2383af1",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-guard-scope-test",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-guard-scope-test",
+          "sha": "c29194a71e1dfb24a5c1e48eb40aeb24681dbc3f",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-guard-scope-test",
+          "sha": "c29194a71e1dfb24a5c1e48eb40aeb24681dbc3f",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-guardtest",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-guardtest",
+          "sha": "cdc72563f3294e413d3c7507995b575470954a0f",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-guardtest",
+          "sha": "cdc72563f3294e413d3c7507995b575470954a0f",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-nonraising-v1",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-nonraising-v1",
+          "sha": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-nonraising-v1",
+          "sha": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-preview-harness",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-preview-harness",
+          "sha": "c365af410a2fffad113faac1c9561d338612147c",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-report0",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-report0",
+          "sha": "0be3adf64afadf8170bedd298b6354506b998a29",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 0be3adf64afadf8170bedd298b6354506b998a29"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-report0",
+          "sha": "0be3adf64afadf8170bedd298b6354506b998a29",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 0be3adf64afadf8170bedd298b6354506b998a29"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-roota-launch-cap",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-roota-launch-cap",
+          "sha": "906b0999244bff200c3a2d319541c3404cd8e6f9",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-roota-launch-cap",
+          "sha": "07b9e902cb769ea1cbb05b9ea050e8c0b43336cb",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 07b9e902cb769ea1cbb05b9ea050e8c0b43336cb"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-roota-launch-cap-final",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/builder-roota-launch-cap-final",
+          "sha": "906b0999244bff200c3a2d319541c3404cd8e6f9",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-roota-launch-cap-pre-reboot",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-roota-launch-cap-pre-reboot",
+          "sha": "07b9e902cb769ea1cbb05b9ea050e8c0b43336cb",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 07b9e902cb769ea1cbb05b9ea050e8c0b43336cb"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-seg-pw",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-seg-pw",
+          "sha": "b64d405df855aa43c4b30a3b86d6ab052491c12a",
+          "ancestor": false,
+          "patch_unique": [
+            "+ b64d405df855aa43c4b30a3b86d6ab052491c12a"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-seg-pw",
+          "sha": "b64d405df855aa43c4b30a3b86d6ab052491c12a",
+          "ancestor": false,
+          "patch_unique": [
+            "+ b64d405df855aa43c4b30a3b86d6ab052491c12a"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-seg-tf1",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-seg-tf1",
+          "sha": "3ced118767e7ad18265ca970211de9fb5ce93cc5",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 3ced118767e7ad18265ca970211de9fb5ce93cc5"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-seg-tf1",
+          "sha": "3ced118767e7ad18265ca970211de9fb5ce93cc5",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 3ced118767e7ad18265ca970211de9fb5ce93cc5"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-seg-tf2",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-seg-tf2",
+          "sha": "3dc4ddc0d90a8777a9ebd6e1ef6f8a682edd393b",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 3dc4ddc0d90a8777a9ebd6e1ef6f8a682edd393b"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-seg-tf2",
+          "sha": "3dc4ddc0d90a8777a9ebd6e1ef6f8a682edd393b",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 3dc4ddc0d90a8777a9ebd6e1ef6f8a682edd393b"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-startup-traces",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-startup-traces",
+          "sha": "dd9902ff9870390a3b70f0258952a5b7d11422d1",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-startup-traces",
+          "sha": "dd9902ff9870390a3b70f0258952a5b7d11422d1",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-t1-a",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t1-a",
+          "sha": "063da2b8aa6323768bcb74fea76e63c70094d6f8",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 063da2b8aa6323768bcb74fea76e63c70094d6f8"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t1-a",
+          "sha": "063da2b8aa6323768bcb74fea76e63c70094d6f8",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 063da2b8aa6323768bcb74fea76e63c70094d6f8"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-t2b",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t2b",
+          "sha": "c4d44f8da061f598ab06ce59274c0b8b43a69a26",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t2b",
+          "sha": "d4e7e62b687d2f08d3e17904e454262281ce3fd5",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-t3-array-priority",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t3-array-priority",
+          "sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t3-array-priority",
+          "sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-t3-array-priority-original-e09421e3",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t3-array-priority-original-e09421e3",
+          "sha": "e09421e3f0356bdc4cc7d48f57abd4775b8f4a30",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t3-array-priority-original-e09421e3",
+          "sha": "e09421e3f0356bdc4cc7d48f57abd4775b8f4a30",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-t3-b",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t3-b",
+          "sha": "2cd8f023cfba3641081e9b809f3fd359e867b118",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 2cd8f023cfba3641081e9b809f3fd359e867b118"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t3-b",
+          "sha": "2cd8f023cfba3641081e9b809f3fd359e867b118",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 2cd8f023cfba3641081e9b809f3fd359e867b118"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-t4-a",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t4-a",
+          "sha": "ce24f717a9e046ec5b818fc289a720bcf33f4a18",
+          "ancestor": false,
+          "patch_unique": [
+            "+ ce24f717a9e046ec5b818fc289a720bcf33f4a18"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t4-a",
+          "sha": "ce24f717a9e046ec5b818fc289a720bcf33f4a18",
+          "ancestor": false,
+          "patch_unique": [
+            "+ ce24f717a9e046ec5b818fc289a720bcf33f4a18"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-t4-b",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t4-b",
+          "sha": "e88a49f56d33d2006ce4835747d65ab37a5e6f7e",
+          "ancestor": false,
+          "patch_unique": [
+            "+ e88a49f56d33d2006ce4835747d65ab37a5e6f7e"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t4-b",
+          "sha": "e88a49f56d33d2006ce4835747d65ab37a5e6f7e",
+          "ancestor": false,
+          "patch_unique": [
+            "+ e88a49f56d33d2006ce4835747d65ab37a5e6f7e"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-t5-analysis",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t5-analysis",
+          "sha": "40cdc060fafc252133cbbe0b4e2602ba949e71dc",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-t6-return-bundle",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-t6-return-bundle",
+          "sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-t6-return-bundle",
+          "sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "builder-unknown-row-1",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-unknown-row-1",
+          "sha": "6ccb7607d79719d8fd42b3f4b675d0473e1f04e9",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 6ccb7607d79719d8fd42b3f4b675d0473e1f04e9"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/builder-unknown-row-1",
+          "sha": "6ccb7607d79719d8fd42b3f4b675d0473e1f04e9",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 6ccb7607d79719d8fd42b3f4b675d0473e1f04e9"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "builder-v2-keepers",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/builder-v2-keepers",
+          "sha": "40cdc060fafc252133cbbe0b4e2602ba949e71dc",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/builder-v2-keepers",
+          "sha": "40cdc060fafc252133cbbe0b4e2602ba949e71dc",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "endpoint-step5",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/endpoint-step5",
+      "refs": [
+        {
+          "ref": "refs/heads/endpoint-step5",
+          "sha": "6082bcbd653d4b61b2664239ed6a5b200297b1b8",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/endpoint-step5",
+          "sha": "6082bcbd653d4b61b2664239ed6a5b200297b1b8",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "generated-semantics",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/generated-semantics",
+          "sha": "195c76b2332e1ebb0c9de0ac21551eff3fa08b31",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/generated-semantics",
+          "sha": "195c76b2332e1ebb0c9de0ac21551eff3fa08b31",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native",
+          "sha": "214a47663d2d288127f75b3fd950bba4cc6afea9",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native",
+          "sha": "214a47663d2d288127f75b3fd950bba4cc6afea9",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-auto",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-auto-rootc",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-auto",
+          "sha": "c4d44f8da061f598ab06ce59274c0b8b43a69a26",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-auto",
+          "sha": "960dc9e7ffbc0dc75c961824e746a8ee94e5e2bb",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-auto-cp3",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-auto-cp3",
+          "sha": "45193a66fa1863e38e53b328c18baf5ac12713db",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 45193a66fa1863e38e53b328c18baf5ac12713db"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-auto-cp3-narrowed",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-auto-cp3-narrowed",
+          "sha": "89116c4c5f0bd82ac48e16008b17a584a2a9e80a",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 89116c4c5f0bd82ac48e16008b17a584a2a9e80a"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-auto-cp3-narrowed-v2",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-auto-cp3-narrowed-v2",
+          "sha": "6f86e676b14beea40c3e8e055671538355c222fe",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-auto-memory",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": ".worktrees/islaris-native-auto-memory",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-auto-memory",
+          "sha": "68e68015cb218fde460e835a111b2addd2ca35ee",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 68e68015cb218fde460e835a111b2addd2ca35ee"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-auto-memory",
+          "sha": "68e68015cb218fde460e835a111b2addd2ca35ee",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 68e68015cb218fde460e835a111b2addd2ca35ee"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-exec-b",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-exec-b",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-exec-b",
+          "sha": "ff8b2da8c80fb9df74a4737f5016d85415d273c8",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-exec-b",
+          "sha": "ff8b2da8c80fb9df74a4737f5016d85415d273c8",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-exec-c",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-exec-c",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-exec-c",
+          "sha": "0923674f5a1a6ae92d2416ff4a324ef6cf5273b2",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-exec-c",
+          "sha": "0923674f5a1a6ae92d2416ff4a324ef6cf5273b2",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-exec-d",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-exec-d",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-exec-d",
+          "sha": "4c62ff2727ed5473a867bd02e2daaecf0ce8c38f",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-exec-d",
+          "sha": "4c62ff2727ed5473a867bd02e2daaecf0ce8c38f",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-infra",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-infra",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-infra",
+          "sha": "906b0999244bff200c3a2d319541c3404cd8e6f9",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-infra",
+          "sha": "906b0999244bff200c3a2d319541c3404cd8e6f9",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-main-segments-20260917",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-main-segments-20260917",
+          "sha": "9d6cd9519645f542c6f0f347d864a644b89e2eb4",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-main-wip",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-main-wip",
+          "sha": "1f31d09caecdfbcdfe1ff2db7aa5c6b3fae41cd8",
+          "ancestor": false,
+          "patch_unique": [
+            "+ 1f31d09caecdfbcdfe1ff2db7aa5c6b3fae41cd8"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-orch-preview",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-orch-preview",
+          "sha": "68cacd65f105d57e45e8994c7db0f34d55324a42",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-orch-repair2",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-orch-repair2",
+          "sha": "033460c3d26ed6d00ed991dd09b7b7ee66d1b30f",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-orch-repair2",
+          "sha": "033460c3d26ed6d00ed991dd09b7b7ee66d1b30f",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-port",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-port",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-port",
+          "sha": "3f03a331da85a487114ea2ca1b9610a4d164c058",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-port",
+          "sha": "3f03a331da85a487114ea2ca1b9610a4d164c058",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-tail",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-tail",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-tail",
+          "sha": "e8ff4f598b26e442106d767e02123361abac77bb",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-tail",
+          "sha": "4e727aa20e9fda3e43a311c670eddd4287b774e7",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-tail-b1",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-tail-b1",
+          "sha": "e76dcee683a472119f55cb1d19fe492c2d25de77",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-tail-epilogue",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/remotes/origin/islaris-native-tail-epilogue",
+          "sha": "4e727aa20e9fda3e43a311c670eddd4287b774e7",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-tail-repair-step8",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-tail-repair-step8",
+          "sha": "4e727aa20e9fda3e43a311c670eddd4287b774e7",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-tail-repair-step8",
+          "sha": "1fa388487a5d656c205d8f3e82c9917df47bae01",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-tx",
+      "inventory_status": "merged",
+      "inventory_worktree": ".worktrees/islaris-native-tx",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-tx",
+          "sha": "ccf505e81f8538a1c69ec6386d04fabfcffe41d1",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-tx",
+          "sha": "f656a2531cc9ceca2088664836867095091b312b",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-native-tx-step8",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-native-tx-step8",
+          "sha": "e0fb4d5302c3ad52aa8526379067c4d3849fae24",
+          "ancestor": false,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-native-tx-step8",
+          "sha": "e0fb4d5302c3ad52aa8526379067c4d3849fae24",
+          "ancestor": false,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-proof-foundation",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-proof-foundation",
+          "sha": "f94ec63ef822ca1ff5ccd0645ab120c4dc14d7bc",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-proofs-stack",
+      "inventory_status": "superseded (1/1 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-proofs-stack",
+          "sha": "62ee1867884f4ae6947ee8f1812d970b2ee5780e",
+          "ancestor": false,
+          "patch_unique": [
+            "+ e2e41a23c4dd8c861f8cc1a15cd6443ba7b7853e"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "islaris-read-input-pr",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-read-input-pr",
+          "sha": "4ee25589e8c3f1d2bd436f28c60415cd0379aecc",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-read-input-pr",
+          "sha": "4ee25589e8c3f1d2bd436f28c60415cd0379aecc",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-write-failure",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-write-failure",
+          "sha": "49fff92d3907d8a5d37618c7e9712a85a45a741f",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-write-failure",
+          "sha": "49fff92d3907d8a5d37618c7e9712a85a45a741f",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-write-success",
+      "inventory_status": "superseded (7/7 subj)",
+      "inventory_worktree": ".worktrees/islaris-write-success",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-write-success",
+          "sha": "1fcdb592363631f27b4db83972936b7d1be4319a",
+          "ancestor": false,
+          "patch_unique": [
+            "+ e2e41a23c4dd8c861f8cc1a15cd6443ba7b7853e",
+            "+ e525da71249bef62033a3ff2ee8bf92b963e2b4a",
+            "+ 2846878414e877fa377676e55b1345e961e889d6",
+            "+ 0f49482b66734fbc385ed1138e77f03d79fa2a70",
+            "+ dc59d7a6bd7798683fae2365544ffb8df00369e4",
+            "+ d91da6d34520aa54fe079aa95441ca069622f54c",
+            "+ eea4a4443688266c269e21dabf4c6a28f2f44b79"
+          ]
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-write-success",
+          "sha": "1fcdb592363631f27b4db83972936b7d1be4319a",
+          "ancestor": false,
+          "patch_unique": [
+            "+ e2e41a23c4dd8c861f8cc1a15cd6443ba7b7853e",
+            "+ e525da71249bef62033a3ff2ee8bf92b963e2b4a",
+            "+ 2846878414e877fa377676e55b1345e961e889d6",
+            "+ 0f49482b66734fbc385ed1138e77f03d79fa2a70",
+            "+ dc59d7a6bd7798683fae2365544ffb8df00369e4",
+            "+ d91da6d34520aa54fe079aa95441ca069622f54c",
+            "+ eea4a4443688266c269e21dabf4c6a28f2f44b79"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "islaris-write-success-monolithic",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-write-success-monolithic",
+          "sha": "1447baba19e96c89c0d2b1b56ee44a518b4769f6",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-write-success-monolithic",
+          "sha": "cdf5da3d81507050881f10c11f2bbf8d8c9617b8",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-zkvm-exit",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-zkvm-exit",
+          "sha": "9887f24b0d1d7ba24e0e3dfdf3554e670eadfd98",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/islaris-zkvm-exit",
+          "sha": "9887f24b0d1d7ba24e0e3dfdf3554e670eadfd98",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "islaris-zkvm-exit-pre-rebase",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/islaris-zkvm-exit-pre-rebase",
+          "sha": "a6c988edc57b5852a115fc5462833a7cd9e0145d",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "level1-evidence-stack",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/level1-evidence-stack",
+          "sha": "f1e222966b20134d72bc07533352fee5091ab92f",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/level1-evidence-stack",
+          "sha": "f1e222966b20134d72bc07533352fee5091ab92f",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "main",
+      "inventory_status": "merged main",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/main",
+          "sha": "d361ca8b68bdc35af5e0fde09c99bcfde2700b81",
+          "ancestor": true,
+          "patch_unique": []
+        },
+        {
+          "ref": "refs/remotes/origin/main",
+          "sha": "d361ca8b68bdc35af5e0fde09c99bcfde2700b81",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "orch/endpoint-preview",
+      "inventory_status": "merged",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/orch/endpoint-preview",
+          "sha": "7dfa8d5a0d6ffdc38c750508a01b9a5d9ac4dae5",
+          "ancestor": true,
+          "patch_unique": []
+        }
+      ]
+    },
+    {
+      "branch": "read-input-stack",
+      "inventory_status": "superseded (2/2 subj)",
+      "inventory_worktree": "none",
+      "refs": [
+        {
+          "ref": "refs/heads/read-input-stack",
+          "sha": "587314acfda070db67d7c800d4b45cb63bc05995",
+          "ancestor": false,
+          "patch_unique": [
+            "+ e2e41a23c4dd8c861f8cc1a15cd6443ba7b7853e",
+            "+ e525da71249bef62033a3ff2ee8bf92b963e2b4a"
+          ]
+        }
+      ]
+    }
+  ],
+  "worktrees": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/endpoint-step5",
+      "status": "",
+      "head": "6082bcbd653d4b61b2664239ed6a5b200297b1b8",
+      "patch_unique": [],
+      "ancestor": false
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-auto-rootc",
+      "status": "",
+      "head": "c4d44f8da061f598ab06ce59274c0b8b43a69a26",
+      "patch_unique": [],
+      "ancestor": true
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-auto-memory",
+      "status": "",
+      "head": "68e68015cb218fde460e835a111b2addd2ca35ee",
+      "patch_unique": [
+        "+ 68e68015cb218fde460e835a111b2addd2ca35ee"
+      ],
+      "ancestor": false
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-exec-b",
+      "status": "",
+      "head": "ff8b2da8c80fb9df74a4737f5016d85415d273c8",
+      "patch_unique": [],
+      "ancestor": true
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-exec-c",
+      "status": "",
+      "head": "0923674f5a1a6ae92d2416ff4a324ef6cf5273b2",
+      "patch_unique": [],
+      "ancestor": true
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-exec-d",
+      "status": "",
+      "head": "4c62ff2727ed5473a867bd02e2daaecf0ce8c38f",
+      "patch_unique": [],
+      "ancestor": true
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-infra",
+      "status": "",
+      "head": "906b0999244bff200c3a2d319541c3404cd8e6f9",
+      "patch_unique": [],
+      "ancestor": true
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-port",
+      "status": "",
+      "head": "3f03a331da85a487114ea2ca1b9610a4d164c058",
+      "patch_unique": [],
+      "ancestor": true
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/islaris-native-tail",
+      "status": "",
+      "head": "e8ff4f598b26e442106d767e02123361abac77bb",
+      "patch_unique": [],
+      "ancestor": false
+    }
+  ]
+}

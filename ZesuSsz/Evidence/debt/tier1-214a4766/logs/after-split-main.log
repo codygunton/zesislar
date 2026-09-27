@@ -1,0 +1,6 @@
+ASSUMPTIONS_BEGIN main_whole_state_correct
+Closed under the global context
+ASSUMPTIONS_END main_whole_state_correct
+ASSUMPTIONS_BEGIN main_whole_correct
+Closed under the global context
+ASSUMPTIONS_END main_whole_correct

@@ -1,0 +1,13 @@
+{
+  "root": "1bd760f5db927ef08ccbfb883410992b6c4b2bf5",
+  "preview_sha": "1bd760f5db927ef08ccbfb883410992b6c4b2bf5",
+  "gate": "check-iris",
+  "exit": 0,
+  "jobs": 24,
+  "timeouts": 0,
+  "batch_peak_gib": 66,
+  "compile_seconds": 292.782,
+  "assumptions_equal": true,
+  "pushed": true,
+  "recorded": "2026-09-27T17:35:32.090338+00:00"
+}
