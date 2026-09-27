@@ -1,7 +1,0 @@
-Require Import ZesuSsz.Automation.All.
-Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalResources.
-Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalNonzero.
-Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15690Zero.
-Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsWithdrawalsTotalBranch.
-Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsPost15678WithdrawalsTotal.
-Require Export ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsCarrierWithdrawalsTotalProvider.

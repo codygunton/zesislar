@@ -5,12 +5,9 @@
  (modules
   (:standard \
    Contracts.Machine
-   Proofs.WriteSuccess.WriteSuccessHashesLoopFrame
    Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry
    Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry15740
-   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry15740Prepare
-   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryCallerResources
-   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryFinal))
+   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryCallerResources))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit

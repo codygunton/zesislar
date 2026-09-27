@@ -93,6 +93,11 @@ Definition writeSuccessLoadBlockAdapterSpec `{!islaG Sigma} `{!threadG} :
     writeSuccessLoadRegisterResources sp base b10 b11 saved ∗
     writeSuccessLoadMemoryResources sp base values saved)%I.
 
+Local Instance : LithiumUnfold (@writeSuccessLoadBlockAdapterSpec) := I.
+Local Instance : LithiumUnfold (@writeSuccessLoadRegisterResources) := I.
+Local Instance : LithiumUnfold (@writeSuccessLoadMemoryResources) := I.
+Local Instance : LithiumUnfold (@writeSuccessLoadTerminal) := I.
+
 Lemma write_success_load_block_adapter_to_core `{!islaG Sigma} `{!threadG} :
   writeSuccessLoadBlockAdapterSpec ⊢ writeSuccessLoadBlockSpec.
 Proof.
