@@ -1,0 +1,53 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.AllLegacy.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBlobHashesLoads28.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBlobHashesLoads24.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsFlagLoads.
+From IslaTraces.write_success_66 Require Import instrs.
+
+Definition blobLoad24Frame `{!islaG Sigma} `{!threadG} (bytes : list (bv 8))
+    (index : nat) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col [(KindReg "x11", BitsShape 64); (KindReg "x5", BitsShape 64);
+    (KindReg "x17", BitsShape 64); (KindReg "x16", BitsShape 64)] ∗
+   ⌜(index + 28 <= length bytes)%nat⌝ ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@blobLoad24Frame) := I.
+
+Definition blobLoaded28Frame `{!islaG Sigma} `{!threadG}
+    (bytes : list (bv 8)) (index : nat) (P : iProp Sigma) : iProp Sigma :=
+  ("x10" ↦ᵣ RVal_Bits (transactionRowByte bytes index 28) ∗
+   "x14" ↦ᵣ RVal_Bits (transactionRowByte bytes index 29) ∗
+   "x13" ↦ᵣ RVal_Bits (transactionRowByte bytes index 30) ∗
+   "x12" ↦ᵣ RVal_Bits (transactionRowByte bytes index 31) ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@blobLoaded28Frame) := I.
+
+Lemma blob_load28_to_load24 `{!islaG Sigma} `{!threadG}
+    row base bytes index (P : iProp Sigma) :
+  blobLoads28Post row base bytes index (blobLoad24Frame bytes index P) -∗
+  blobLoads24Entry row base bytes index (blobLoaded28Frame bytes index P).
+Proof.
+  iIntros "Hfirst". iEval (unfold blobLoads28Post) in "Hfirst".
+  iDestruct "Hfirst" as
+    "(Hsys & H6 & H7 & H28 & H1 & Hrow & Harray & %Hcursor & %Hbound & %Hlow & %Hhigh & Hframe & _)".
+  iEval (unfold blobLoad24Frame) in "Hframe".
+  iDestruct "Hframe" as "(Hregs & %Hbound24 & HP & _)".
+  iEval (unfold blobLoads24Entry, blobLoaded28Frame).
+  iFrame. done.
+Qed.
+Print Assumptions blob_load28_to_load24.
+
+Lemma blob_loads28_24_correct `{!islaG Sigma} `{!threadG}
+    row base bytes index (P : iProp Sigma) :
+  ([∗ list] instruction ∈ take 4 (drop 8 IslaTraces.write_success_66.instrs.instr_map),
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ take 4 (drop 12 IslaTraces.write_success_66.instrs.instr_map),
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15414 (blobLoads24Post row base bytes index
+    (blobLoaded28Frame bytes index P)) -∗
+  instr_body 0x153f4 (blobLoads28Entry row base bytes index
+    (blobLoad24Frame bytes index P)).
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

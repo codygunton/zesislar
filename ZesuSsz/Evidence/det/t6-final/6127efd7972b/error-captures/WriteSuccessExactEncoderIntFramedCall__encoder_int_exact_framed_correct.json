@@ -1,0 +1,7 @@
+{
+  "probe": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b/_build/residuals/probes/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.v",
+  "exit": 1,
+  "elapsed": 5.23,
+  "source_sha256": "3df31b72277622be1ba3f87e7277d28999d52f08adcf81584bec5fae4db6f43f",
+  "source_unchanged": true
+}

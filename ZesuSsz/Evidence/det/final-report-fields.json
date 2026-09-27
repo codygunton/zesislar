@@ -1,0 +1,261 @@
+{
+  "root_source_sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+  "root_push_status": "queued after green final evidence gate",
+  "nonraising": {
+    "merged": true,
+    "reconciled_closed_gain": 110,
+    "reconciled_error_reduction": 383,
+    "iris_outcome_changes": 0,
+    "pure_closed_gain": 102,
+    "unfold_closed_gain": 8,
+    "source_sha": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+    "full_preview_retry_seconds": 42.296
+  },
+  "t6": {
+    "merged": true,
+    "full_closed_delta": 2,
+    "full_error_delta": 3,
+    "rule15_closed_delta": 1,
+    "rule15_error_delta": 2,
+    "lost_closures": 0,
+    "new_timeouts": 0,
+    "earlier_adapter_errors": true,
+    "postarm_preview_seconds": 39.358,
+    "source_sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+    "prearm_full_preview_seconds": 2369.61,
+    "full_raw_summary": {
+      "probed": 305,
+      "outcomes": {
+        "residual": 269,
+        "closed": 9,
+        "error": 27
+      },
+      "classes": {
+        "C7": 56,
+        "C6": 30,
+        "C9": 18,
+        "C4": 13,
+        "C2": 42,
+        "unknown": 55,
+        "n/a": 36,
+        "C1": 37,
+        "C3": 2,
+        "C8": 16
+      },
+      "closed_fraction": 0.0295,
+      "median_seconds": 4.53,
+      "reprobed": 27,
+      "reprobe_changed": 0
+    },
+    "rule15_raw_summary": {
+      "probed": 48,
+      "outcomes": {
+        "residual": 39,
+        "closed": 7,
+        "error": 2
+      },
+      "classes": {
+        "unknown": 8,
+        "n/a": 9,
+        "C1": 8,
+        "C7": 5,
+        "C2": 6,
+        "C4": 2,
+        "C3": 2,
+        "C9": 1,
+        "C6": 3,
+        "C8": 4
+      },
+      "closed_fraction": 0.1458,
+      "median_seconds": 5.52,
+      "reprobed": 2,
+      "reprobe_changed": 0
+    }
+  },
+  "t3": {
+    "candidate_sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+    "merged": true,
+    "source_audit": {
+      "source_sha": "f08fa35bf956c933c951580727194ffcb0932334",
+      "snapshot": "immutable f08fa35bf956",
+      "tracked_blob_count": 2530,
+      "verified_git_modes": 2530,
+      "blob_mismatches": 0,
+      "mode_mismatches": 0,
+      "missing_entries": 0,
+      "non_blob_entries": 0,
+      "reported_by": "T3 writer via root",
+      "action": "Read-only source audit; no compile or source change",
+      "build_and_probes": "Retired f08 snapshot failed before probes on the ArrayLoadPriority test import. Corrected a80 results appear below.",
+      "historical": true
+    },
+    "full_deltas": {
+      "closed": 0,
+      "residual": 0,
+      "error": 0,
+      "timeout": 0,
+      "field_diffs": {
+        "outcome": 0,
+        "pred_class": 0,
+        "signature": 0,
+        "goal_sha256": 0
+      },
+      "validation_errors": [],
+      "reprobe_marker_errors": [],
+      "reprobed": 24,
+      "outcomes": {
+        "residual": 274,
+        "closed": 7,
+        "error": 24
+      }
+    },
+    "rule15_deltas": {
+      "closed": 0,
+      "residual": 0,
+      "error": 0,
+      "timeout": 0,
+      "field_diffs": {
+        "outcome": 0,
+        "pred_class": 0,
+        "signature": 0,
+        "goal_sha256": 0
+      },
+      "validation_errors": [],
+      "reprobe_marker_errors": [],
+      "reprobed": 0,
+      "outcomes": {
+        "residual": 42,
+        "closed": 6
+      }
+    },
+    "postarm_preview": {
+      "exit": 0,
+      "jobs": 24,
+      "peak_gib": 44,
+      "timeouts": 0,
+      "dune_proof_target_seconds": 0.849,
+      "driver_lock_start": "2026-09-26T22:01:30-04:00",
+      "driver_mtime_utc": "2026-09-27T02:02:09.832819+00:00",
+      "driver_timestamp_span_seconds_bounds": [
+        38.833,
+        39.833
+      ],
+      "duration_note": "The driver timestamps bound the elapsed span; the exact cached Dune target time is separate."
+    },
+    "original_candidate": "f08fa35bf956c933c951580727194ffcb0932334",
+    "prearm_preview": {
+      "exit": 0,
+      "jobs": 24,
+      "reported_peak_gib": 45,
+      "timeouts": 0,
+      "dune_proof_target_seconds": 3.958,
+      "gate_lock_start": "2026-09-26T21:49:53-04:00",
+      "driver_log_completion": "2026-09-26T21:50:49.171649970-04:00",
+      "duration_note": "Driver duration is inferred from second-resolution lock timestamp and log completion. The exact Dune target time is separate. Production modules were not recompiled.",
+      "driver_timestamp_span_seconds_bounds": [
+        55.172,
+        56.172
+      ]
+    }
+  },
+  "final_standard_arms": {
+    "v1_full": {
+      "outcomes": {
+        "residual": 302,
+        "closed": 2,
+        "timeout": 1
+      },
+      "field_diffs": {
+        "outcome": 0,
+        "pred_class": 0,
+        "signature": 0,
+        "goal_sha256": 0
+      },
+      "reprobed": 1,
+      "validation_errors": [],
+      "reprobe_marker_errors": [],
+      "baseline": "ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac.json",
+      "candidate": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json"
+    },
+    "v1_rule15": {
+      "outcomes": {
+        "residual": 45,
+        "closed": 2,
+        "timeout": 1
+      },
+      "field_diffs": {
+        "outcome": 0,
+        "pred_class": 0,
+        "signature": 0,
+        "goal_sha256": 0
+      },
+      "reprobed": 1,
+      "validation_errors": [],
+      "reprobe_marker_errors": [],
+      "baseline": "ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-rule15.json",
+      "candidate": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-rule15.json"
+    },
+    "v2_full": {
+      "outcomes": {
+        "residual": 274,
+        "closed": 7,
+        "error": 24
+      },
+      "field_diffs": {
+        "outcome": 0,
+        "pred_class": 0,
+        "signature": 0,
+        "goal_sha256": 0
+      },
+      "reprobed": 25,
+      "validation_errors": [],
+      "reprobe_marker_errors": [],
+      "baseline": "ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+      "candidate": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v2-full.json"
+    },
+    "v2_rule15": {
+      "outcomes": {
+        "residual": 42,
+        "closed": 6
+      },
+      "field_diffs": {
+        "outcome": 0,
+        "pred_class": 0,
+        "signature": 0,
+        "goal_sha256": 0
+      },
+      "reprobed": 0,
+      "validation_errors": [],
+      "reprobe_marker_errors": [],
+      "baseline": "ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+      "candidate": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v2-rule15.json"
+    }
+  },
+  "note": "All final standard arms and the final evidence check-fast passed. Root push is queued. No CP3 or Phase C completion is claimed.",
+  "candidate_evidence_base": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+  "final_standard_arms_session": 28859,
+  "final_evidence_check_fast": {
+    "exit": 0,
+    "jobs": 24,
+    "batch_peak_gib": 52,
+    "timeouts": 0,
+    "dune_target_seconds": 17.316,
+    "dune_target_peak_kib": 1239776,
+    "driver_lock_start": "2026-09-26T22:37:54-04:00",
+    "driver_mtime_utc": "2026-09-27T02:38:37.052824+00:00",
+    "driver_timestamp_span_seconds_bounds": [
+      42.053,
+      43.053
+    ],
+    "timing_note": "Driver timestamps bound the elapsed span. Exact Dune target time is separate.",
+    "uncached_checks": "passed, including executable decoder cases",
+    "precompilation_failures": [
+      "Missing _build/agents parent directory.",
+      "Generated IslaTraces.zkvm_exit theory link absent."
+    ],
+    "retry_preparation": "Root created the build parent and linked the build and generated traces to integration artifacts.",
+    "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build",
+    "agent_jobs_environment": 24,
+    "source_sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3"
+  }
+}

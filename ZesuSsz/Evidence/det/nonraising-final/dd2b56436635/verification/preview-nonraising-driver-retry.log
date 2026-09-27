@@ -1,0 +1,15 @@
+gate lock: state=wanted holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/builder-nonraising-v1 pid=1127907 start=2026-09-26T18:29:37-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmpk3kg1nnj/spec.json
+OK (skipped=1)
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+writeSuccess decoder executable cases: passed
+uncached checks passed
+gate lock: state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/builder-nonraising-v1 pid=1127907 start=2026-09-26T18:29:37-04:00
+drain: waited 0 s; coqc machine-wide 0; used 41 GiB
+gate check-iris with 24 jobs; guard: used 42 GiB (launch <150, hold 180, kill 200); coqc 0 machine-wide; load5 0; blocked 0; jobs 46; batch peak 0 GiB; gate lock state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/builder-nonraising-v1 pid=1127907 start=2026-09-26T18:29:37-04:00; holds 500; guard kills 0
+prometheus lucy 18:24-18:29: memory used peak 43.0 p90 42.0 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 2 p90 2; blocked peak 1 p90 0; cpu busy peak 1 p90 1 %; disk read peak 0 p90 0 MiB/s; /home free 543 GiB
+gate check-iris exit 0; 0 Timeout!; batch peak 43 GiB
+prometheus lucy 18:29-18:30: memory used peak 43.1 p90 42.8 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 1 p90 1; blocked peak 0 p90 0; cpu busy peak 1 p90 1 %; disk read peak 0 p90 0 MiB/s; /home free 543 GiB
+bash tools/det/gate.sh check-iris   23.26s user 2.87s system 61% cpu 42.296 total

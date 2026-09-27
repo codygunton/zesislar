@@ -1,0 +1,50 @@
+python3 ZesuSsz/Evidence/generate_islaris_dump.py \
+  --disassembly build/endpoint-elf/meta/disassembly.txt \
+  --profile experiments/islaris-startup/profile.json --output build/islaris-dumps/startup.dump
+install -m644 ZesuSsz/riscv64_zesu.toml /home/cody/islaris/_opam/etc/islaris/riscv64_zesu.toml
+mkdir -p generated/isla-traces/startup
+opam exec --switch=/home/cody/islaris -- islaris build/islaris-dumps/startup.dump -j 3 -o generated/isla-traces/startup \
+  --coqdir=IslaTraces.startup --arch=riscv64
+(thread 0) [isla-footprint] generated/isla-traces/startup/a10120.isla
+(thread 2) [isla-footprint] generated/isla-traces/startup/a10124.isla
+(thread 1) [isla-footprint] generated/isla-traces/startup/a10128.isla
+(thread 1) [coq-generation] generated/isla-traces/startup/a10128.v
+(thread 0) [coq-generation] generated/isla-traces/startup/a10120.v
+(thread 2) [coq-generation] generated/isla-traces/startup/a10124.v
+sed -i -e '/(package islaris)/d' \
+  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 InstrSpecs lithium iris stdpp RecordUpdate Ltac2)/' \
+  generated/isla-traces/startup/dune
+uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py'
+..............................................................................................................................
+----------------------------------------------------------------------
+Ran 126 tests in 7.666s
+
+OK
+assumptions: 1 checked; 0 changed
+CHANGED M.v f
+assumptions: 1 checked; 1 changed
+generated /tmp/tmpxyiz0yaj/generated/GeneratedWriteSuccessExactSuffixEntrySegment.v
+3.8s outcome=stalled class=C3 goal=subsume (…) (…)
+calls in [0x156e8, 0x15744): 0 premises, 0 contract modules
+spec record written to /tmp/tmpro4ylx2x/spec.json
+PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+...................................................s.......................................
+----------------------------------------------------------------------
+Ran 91 tests in 0.023s
+
+OK (skipped=1)
+python3 ZesuSsz/Evidence/check_parity.py
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+python3 ZesuSsz/Evidence/check_spec_shapes.py
+bash ZesuSsz/Evidence/check_write_success_decoder.sh
+writeSuccess decoder executable cases: passed
+/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d/tools/resource_guard.sh locked check-iris -- /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d/tools/resource_guard.sh batch check-iris -- \
+  python3 tools/build_record.py --build-dir /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build \
+  --target check-iris -- opam exec --switch=/home/cody/islaris -- dune build --root . \
+  --build-dir /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build --cache=enabled -j24 \
+  @ZesuSsz/Proofs/all
+Closed under the global context
+Closed under the global context
+Closed under the global context

@@ -1,0 +1,26 @@
+{
+  "phase": "T6 before probes",
+  "source_sha": "55251ed462dba84daec0f92a87c8729a7d224e29",
+  "arm_result_exists": false,
+  "source_failure": {
+    "module": "ZesuSsz/Proofs/Tests/ReturnBundle.v",
+    "line": 9,
+    "characters": [
+      10,
+      22
+    ],
+    "error": "Cannot infer ?T in partial instance '?T -> Type' found for type islaG"
+  },
+  "repair_owner": "Endpoint worker",
+  "isolation_attempt": {
+    "preflight": "passed",
+    "coqc_count": 0,
+    "load1": 0.73,
+    "compile_started": false,
+    "tooling_error": "/usr/bin/time missing",
+    "command_repair": "Endpoint worker corrects ignored command"
+  },
+  "integration_root": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+  "t6_merged": false,
+  "result": "No T6 benchmark measurement; no isolation measurement"
+}

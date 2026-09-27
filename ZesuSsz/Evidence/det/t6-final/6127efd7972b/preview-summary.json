@@ -1,0 +1,16 @@
+{
+  "source_sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+  "first_attempt": {
+    "result": "tooling failure before proof compilation",
+    "error": "Cannot create external build directory: _build/agents/push1 parent absent",
+    "elapsed_seconds": 8.201
+  },
+  "retry": {
+    "exit": 0,
+    "jobs": 24,
+    "elapsed_seconds": 2369.61,
+    "reported_peak_gib": 111,
+    "timeouts": 0
+  },
+  "arm_marker_status": "Not created by this evidence worker; root completion remains queued"
+}

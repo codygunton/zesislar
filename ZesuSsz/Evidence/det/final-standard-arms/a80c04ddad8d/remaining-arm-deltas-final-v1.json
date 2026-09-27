@@ -1,0 +1,561 @@
+[
+  {
+    "group": "nr-v2-baseline",
+    "set": "full",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-v2.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+    "outcomes_before": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "outcomes_after": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 24,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-v2-baseline",
+    "set": "rule15",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-v2-rule15.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+    "outcomes_before": {
+      "residual": 42,
+      "closed": 6
+    },
+    "outcomes_after": {
+      "residual": 42,
+      "closed": 6
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 0,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-t6-switch",
+    "set": "full",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-full.json",
+    "outcomes_before": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "outcomes_after": {
+      "residual": 269,
+      "closed": 9,
+      "error": 27
+    },
+    "closed_delta": 2,
+    "field_diffs": {
+      "outcome": 5,
+      "pred_class": 5,
+      "signature": 5,
+      "goal_sha256": 5
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 27,
+    "lost_closures": [],
+    "new_errors_timeouts": [
+      {
+        "module": "WriteSuccessExactEncoderIntFramedCall.v",
+        "lemma": "encoder_int_exact_framed_correct",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "C1",
+            "n/a"
+          ],
+          "signature": [
+            "\u2203 : spec *\u2097 ()",
+            ""
+          ],
+          "goal_sha256": [
+            "dc3bb0df855e33fc4e82c95bc39b9b1692be59ee8191aaecdc818f58b21eaa7a",
+            ""
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "C2",
+            "n/a"
+          ],
+          "signature": [
+            "encoderOptionalU64Valid pointer bytes",
+            ""
+          ],
+          "goal_sha256": [
+            "d7ac07b9dbf5d01aa4f2c81f85d31ce7cc84fb0b45e9573d0fb2f35f3de60b61",
+            ""
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_return_frame",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "unknown",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[11] \u21a6\u1d63 \u2217 \u21a6\u1d63 \u2217 \u21a6\u1d63\u2026",
+            ""
+          ],
+          "goal_sha256": [
+            "589b5b1b3921d700e3b3bd92f18eaae8c56a40c480f341c88629090019abdac2",
+            ""
+          ]
+        }
+      }
+    ],
+    "changes": [
+      {
+        "module": "WriteSuccessExactBooleanClosedCall.v",
+        "lemma": "encoder_boolean_exact_frame_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "closed"
+          ],
+          "pred_class": [
+            "C9",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[2] -\u2217 \u2217 True",
+            ""
+          ],
+          "goal_sha256": [
+            "01b15d8448b68c4b3ea40feeb8f877d391f68b7bb259f42d13f66cd86a10fb81",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderIntFramedCall.v",
+        "lemma": "encoder_int_exact_frame_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "closed"
+          ],
+          "pred_class": [
+            "C9",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[2] -\u2217 \u2217 True",
+            ""
+          ],
+          "goal_sha256": [
+            "800c09eb93671a1f1331cfb2b99a00b219a036359a24beecb416f34e654948de",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderIntFramedCall.v",
+        "lemma": "encoder_int_exact_framed_correct",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "C1",
+            "n/a"
+          ],
+          "signature": [
+            "\u2203 : spec *\u2097 ()",
+            ""
+          ],
+          "goal_sha256": [
+            "dc3bb0df855e33fc4e82c95bc39b9b1692be59ee8191aaecdc818f58b21eaa7a",
+            ""
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "C2",
+            "n/a"
+          ],
+          "signature": [
+            "encoderOptionalU64Valid pointer bytes",
+            ""
+          ],
+          "goal_sha256": [
+            "d7ac07b9dbf5d01aa4f2c81f85d31ce7cc84fb0b45e9573d0fb2f35f3de60b61",
+            ""
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_return_frame",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "unknown",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[11] \u21a6\u1d63 \u2217 \u21a6\u1d63 \u2217 \u21a6\u1d63\u2026",
+            ""
+          ],
+          "goal_sha256": [
+            "589b5b1b3921d700e3b3bd92f18eaae8c56a40c480f341c88629090019abdac2",
+            ""
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "group": "nr-t6-switch",
+    "set": "rule15",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-rule15.json",
+    "outcomes_before": {
+      "residual": 42,
+      "closed": 6
+    },
+    "outcomes_after": {
+      "residual": 39,
+      "closed": 7,
+      "error": 2
+    },
+    "closed_delta": 1,
+    "field_diffs": {
+      "outcome": 3,
+      "pred_class": 3,
+      "signature": 3,
+      "goal_sha256": 3
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 2,
+    "lost_closures": [],
+    "new_errors_timeouts": [
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "C2",
+            "n/a"
+          ],
+          "signature": [
+            "encoderOptionalU64Valid pointer bytes",
+            ""
+          ],
+          "goal_sha256": [
+            "d7ac07b9dbf5d01aa4f2c81f85d31ce7cc84fb0b45e9573d0fb2f35f3de60b61",
+            ""
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_return_frame",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "unknown",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[11] \u21a6\u1d63 \u2217 \u21a6\u1d63 \u2217 \u21a6\u1d63\u2026",
+            ""
+          ],
+          "goal_sha256": [
+            "589b5b1b3921d700e3b3bd92f18eaae8c56a40c480f341c88629090019abdac2",
+            ""
+          ]
+        }
+      }
+    ],
+    "changes": [
+      {
+        "module": "WriteSuccessExactBooleanClosedCall.v",
+        "lemma": "encoder_boolean_exact_frame_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "closed"
+          ],
+          "pred_class": [
+            "C9",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[2] -\u2217 \u2217 True",
+            ""
+          ],
+          "goal_sha256": [
+            "01b15d8448b68c4b3ea40feeb8f877d391f68b7bb259f42d13f66cd86a10fb81",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_adapter_from_closed",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "C2",
+            "n/a"
+          ],
+          "signature": [
+            "encoderOptionalU64Valid pointer bytes",
+            ""
+          ],
+          "goal_sha256": [
+            "d7ac07b9dbf5d01aa4f2c81f85d31ce7cc84fb0b45e9573d0fb2f35f3de60b61",
+            ""
+          ]
+        }
+      },
+      {
+        "module": "WriteSuccessExactEncoderOptionalU64Call.v",
+        "lemma": "encoder_optional_u64_exact_none_return_frame",
+        "diff": {
+          "outcome": [
+            "residual",
+            "error"
+          ],
+          "pred_class": [
+            "unknown",
+            "n/a"
+          ],
+          "signature": [
+            "\u2217[11] \u21a6\u1d63 \u2217 \u21a6\u1d63 \u2217 \u21a6\u1d63\u2026",
+            ""
+          ],
+          "goal_sha256": [
+            "589b5b1b3921d700e3b3bd92f18eaae8c56a40c480f341c88629090019abdac2",
+            ""
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "group": "nr-t3-switch",
+    "set": "full",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-t3-switch-full.json",
+    "outcomes_before": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "outcomes_after": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 24,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-t3-switch",
+    "set": "rule15",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-t3-switch-rule15.json",
+    "outcomes_before": {
+      "residual": 42,
+      "closed": 6
+    },
+    "outcomes_after": {
+      "residual": 42,
+      "closed": 6
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 0,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-final-v1",
+    "set": "full",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json",
+    "outcomes_before": {
+      "residual": 302,
+      "closed": 2,
+      "timeout": 1
+    },
+    "outcomes_after": {
+      "residual": 302,
+      "closed": 2,
+      "timeout": 1
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 1,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-final-v1",
+    "set": "rule15",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-rule15.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-rule15.json",
+    "outcomes_before": {
+      "residual": 45,
+      "closed": 2,
+      "timeout": 1
+    },
+    "outcomes_after": {
+      "residual": 45,
+      "closed": 2,
+      "timeout": 1
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 1,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-final-v2",
+    "set": "full",
+    "state": "pending"
+  },
+  {
+    "group": "nr-final-v2",
+    "set": "rule15",
+    "state": "pending"
+  }
+]

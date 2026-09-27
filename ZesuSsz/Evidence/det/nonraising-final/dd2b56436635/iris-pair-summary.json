@@ -1,0 +1,644 @@
+{
+  "rows": 52,
+  "completed_pairs": 26,
+  "pending_single_rows": 0,
+  "candidate_worsenings": [],
+  "pairs": [
+    {
+      "module": "WriteSuccessEncoderBytes.v",
+      "lemma": "encoder_bytes_correct",
+      "baseline": "closed",
+      "candidate": "closed",
+      "seconds": [
+        100.138,
+        98.861
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessEncoderCalls.v",
+      "lemma": "zesu_encoder_bytes_any_pre",
+      "baseline": "closed",
+      "candidate": "closed",
+      "seconds": [
+        119.916,
+        121.163
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessEncoderOptionalSome.v",
+      "lemma": "encoder_optional_some_correct",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        79.889,
+        79.399
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=79889 rss_kb=6290436",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=79399 rss_kb=6307876",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactAuthorizationsCopy.v",
+      "lemma": "authorization_copy_correct",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        119.437,
+        113.16
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=119437 rss_kb=6297804",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=113160 rss_kb=6291256",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactBlobHashesLoadHandoff.v",
+      "lemma": "blob_loads16_20_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        160.678,
+        125.161
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactBlobHashesUpperLoadHandoff.v",
+      "lemma": "blob_loads28_24_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        160.944,
+        125.15
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactCopiedNativeLoad.v",
+      "lemma": "exact_copied_native_load_correct",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        95.4,
+        91.889
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=95400 rss_kb=6314104",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=91889 rss_kb=6292760",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactEncoderBytes.v",
+      "lemma": "zesu_encoder_bytes_exact_call_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        84.111,
+        84.098
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactNativeLoad.v",
+      "lemma": "exact_native_load_correct",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        102.169,
+        98.914
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=102169 rss_kb=6298856",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=98914 rss_kb=6314792",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactOptionalU64SomeCall.v",
+      "lemma": "optional_u64_some_exact_call_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        91.366,
+        90.376
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactStorageKeysLoadHandoff.v",
+      "lemma": "storage_keys_loads16_20_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        124.16,
+        124.152
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactSuffixHashesWord1Load.v",
+      "lemma": "suffix_word1_load_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        126.417,
+        126.922
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactSuffixHashesWord2Load.v",
+      "lemma": "suffix_word2_load_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        126.919,
+        127.667
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessExactSuffixHashesWord3Load.v",
+      "lemma": "suffix_word3_load_correct",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        126.418,
+        127.657
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessHashesLoopWord1.v",
+      "lemma": "write_success_hashes_word1",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        114.904,
+        72.609
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessHashesLoopWord2.v",
+      "lemma": "write_success_hashes_word2",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        112.873,
+        74.091
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessHashesLoopWord3.v",
+      "lemma": "write_success_hashes_word3",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        112.138,
+        74.091
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessNativeSuffixBytesBoundaryAdapter.v",
+      "lemma": "write_success_suffix_bytes_aggregate_entry_from_15750_zero",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        103.647,
+        103.133
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessNativeSuffixIntPair.v",
+      "lemma": "write_success_suffix_156e8_int",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        10.782,
+        10.537
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessPrologue.v",
+      "lemma": "write_success_prologue",
+      "baseline": "closed",
+      "candidate": "closed",
+      "seconds": [
+        63.841,
+        63.59
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessTransactions10190SavedAdapterA.v",
+      "lemma": "write_success_transactions_10190_saved_adapter_a",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        47.607,
+        47.358
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=47607 rss_kb=6291592",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=47358 rss_kb=6319444",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessTransactions10190SavedAdapterAHead.v",
+      "lemma": "write_success_transactions_10190_saved_adapter_a_head",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        47.357,
+        47.846
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=47357 rss_kb=6319892",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=47846 rss_kb=6330512",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessTransactions10190SavedAdapterAMiddle.v",
+      "lemma": "write_success_transactions_10190_saved_adapter_a_middle",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        47.358,
+        47.359
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=47358 rss_kb=6297504",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=47359 rss_kb=6318764",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessTransactions10190SavedAdapterB.v",
+      "lemma": "write_success_transactions_10190_saved_adapter_b",
+      "baseline": "error",
+      "candidate": "error",
+      "seconds": [
+        47.096,
+        47.362
+      ],
+      "changed_fields": [
+        "error_lines"
+      ],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "limit_memory",
+        "limit_memory"
+      ],
+      "first_errors": [
+        [
+          "exit=-15 ms=47096 rss_kb=6290372",
+          "proof limit exceeded: memory"
+        ],
+        [
+          "exit=-15 ms=47362 rss_kb=6300860",
+          "proof limit exceeded: memory"
+        ]
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessTransactionsCarrierChunk15078Raw.v",
+      "lemma": "write_success_transactions_carrier_chunk_15078",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        72.85,
+        73.088
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    },
+    {
+      "module": "WriteSuccessTransactionsChunk151d0Helpers.v",
+      "lemma": "write_success_access_entries_own_length",
+      "baseline": "residual",
+      "candidate": "residual",
+      "seconds": [
+        1.023,
+        1.274
+      ],
+      "changed_fields": [],
+      "goal_hash_equal": true,
+      "error_kind": [
+        "",
+        ""
+      ],
+      "first_errors": [
+        [],
+        []
+      ],
+      "candidate_worsening": false,
+      "review_required": false
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+[
+  {
+    "group": "nr-v2-baseline",
+    "set": "full",
+    "automation": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+    "imports": [
+      "ZesuSsz.Automation.Sets.v2"
+    ],
+    "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+    "command": [
+      "/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh",
+      "batch",
+      "nr-v2-baseline-full",
+      "--",
+      "python3",
+      "/home/cody/zesislar/.worktrees/determinism/tools/residual/benchmark.py",
+      "--automation",
+      "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+      "--set",
+      "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set.txt",
+      "--name",
+      "nr-v2-baseline-full",
+      "--jobs",
+      "32",
+      "--seconds",
+      "300",
+      "--import",
+      "ZesuSsz.Automation.Sets.v2"
+    ],
+    "cwd": "/home/cody/zesislar/.worktrees/islaris-native"
+  },
+  {
+    "group": "nr-v2-baseline",
+    "set": "rule15",
+    "automation": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+    "imports": [
+      "ZesuSsz.Automation.Sets.v2"
+    ],
+    "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+    "command": [
+      "/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh",
+      "batch",
+      "nr-v2-baseline-rule15",
+      "--",
+      "python3",
+      "/home/cody/zesislar/.worktrees/determinism/tools/residual/benchmark.py",
+      "--automation",
+      "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+      "--set",
+      "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt",
+      "--name",
+      "nr-v2-baseline-rule15",
+      "--jobs",
+      "32",
+      "--seconds",
+      "300",
+      "--import",
+      "ZesuSsz.Automation.Sets.v2"
+    ],
+    "cwd": "/home/cody/zesislar/.worktrees/islaris-native"
+  },
+  {
+    "group": "nr-t6-switch",
+    "set": "full",
+    "automation": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+    "imports": [
+      "ZesuSsz.Automation.Sets.v2",
+      "ZesuSsz.Automation.Switches.ReturnBundle"
+    ],
+    "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-full.json",
+    "command": [
+      "/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh",
+      "batch",
+      "nr-t6-switch-full",
+      "--",
+      "python3",
+      "/home/cody/zesislar/.worktrees/determinism/tools/residual/benchmark.py",
+      "--automation",
+      "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+      "--set",
+      "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set.txt",
+      "--name",
+      "nr-t6-switch-full",
+      "--jobs",
+      "32",
+      "--seconds",
+      "300",
+      "--import",
+      "ZesuSsz.Automation.Sets.v2",
+      "--import",
+      "ZesuSsz.Automation.Switches.ReturnBundle"
+    ],
+    "cwd": "/home/cody/zesislar/.worktrees/islaris-native"
+  },
+  {
+    "group": "nr-t6-switch",
+    "set": "rule15",
+    "automation": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+    "imports": [
+      "ZesuSsz.Automation.Sets.v2",
+      "ZesuSsz.Automation.Switches.ReturnBundle"
+    ],
+    "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-rule15.json",
+    "command": [
+      "/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh",
+      "batch",
+      "nr-t6-switch-rule15",
+      "--",
+      "python3",
+      "/home/cody/zesislar/.worktrees/determinism/tools/residual/benchmark.py",
+      "--automation",
+      "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+      "--set",
+      "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt",
+      "--name",
+      "nr-t6-switch-rule15",
+      "--jobs",
+      "32",
+      "--seconds",
+      "300",
+      "--import",
+      "ZesuSsz.Automation.Sets.v2",
+      "--import",
+      "ZesuSsz.Automation.Switches.ReturnBundle"
+    ],
+    "cwd": "/home/cody/zesislar/.worktrees/islaris-native"
+  }
+]

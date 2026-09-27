@@ -1,0 +1,76 @@
+[
+  {
+    "group": "nr-v2-baseline",
+    "set": "full",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-v2.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+    "outcomes_before": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "outcomes_after": {
+      "residual": 274,
+      "closed": 7,
+      "error": 24
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 24,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-v2-baseline",
+    "set": "rule15",
+    "validation_errors": [],
+    "reprobe_marker_errors": [],
+    "baseline": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-v2-rule15.json",
+    "candidate": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+    "outcomes_before": {
+      "residual": 42,
+      "closed": 6
+    },
+    "outcomes_after": {
+      "residual": 42,
+      "closed": 6
+    },
+    "closed_delta": 0,
+    "field_diffs": {
+      "outcome": 0,
+      "pred_class": 0,
+      "signature": 0,
+      "goal_sha256": 0
+    },
+    "missing": [],
+    "extra": [],
+    "candidate_sha_matches": true,
+    "imports_match": true,
+    "reprobed": 0,
+    "lost_closures": [],
+    "new_errors_timeouts": [],
+    "changes": []
+  },
+  {
+    "group": "nr-t6-switch",
+    "set": "full",
+    "state": "pending"
+  },
+  {
+    "group": "nr-t6-switch",
+    "set": "rule15",
+    "state": "pending"
+  }
+]

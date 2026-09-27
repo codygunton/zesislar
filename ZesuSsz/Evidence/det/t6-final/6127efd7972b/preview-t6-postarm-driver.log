@@ -1,0 +1,13 @@
+gate lock: state=wanted holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b pid=1392289 start=2026-09-26T20:46:28-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmp4u6rqziz/spec.json
+OK (skipped=1)
+writeSuccess decoder executable cases: passed
+uncached checks passed
+gate lock: state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b pid=1392289 start=2026-09-26T20:46:28-04:00
+drain: waited 0 s; coqc machine-wide 0; used 43 GiB
+gate check-iris with 24 jobs; guard: used 43 GiB (launch <150, hold 180, kill 200); coqc 0 machine-wide; load5 3; blocked 0; jobs 45; batch peak 0 GiB; gate lock state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b pid=1392289 start=2026-09-26T20:46:28-04:00; holds 500; guard kills 0
+prometheus lucy 20:41-20:46: memory used peak 55.9 p90 51.8 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 7 p90 7; blocked peak 0 p90 0; cpu busy peak 21 p90 9 %; disk read peak 0 p90 0 MiB/s; /home free 541 GiB
+gate check-iris exit 0; 0 Timeout!; batch peak 43 GiB
+prometheus lucy 20:46-20:47: memory used peak 43.5 p90 43.5 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 4 p90 3; blocked peak 0 p90 0; cpu busy peak 1 p90 1 %; disk read peak 0 p90 0 MiB/s; /home free 541 GiB
+bash  check-iris   5.64s user 2.47s system 20% cpu 39.358 total

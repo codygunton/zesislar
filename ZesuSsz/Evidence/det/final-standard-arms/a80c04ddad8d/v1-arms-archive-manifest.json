@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac.json",
+      "sha256": "3800336fe2ef6fde9663bfe569cca141edb9b1adb76e2c88c5b4ede9983519a9",
+      "bytes": 96895
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-rule15.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/ed945cd357ac-rule15.json",
+      "sha256": "ea1a0ee5d613873980bb2eb8e9c4285fa89c2d953aa0856a1783c8c56e64d471",
+      "bytes": 15880
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json",
+      "sha256": "043e4ad8d71604d7a82a9d2731dea1196a47ca5ae9fd71ec8ce78a145e422467",
+      "bytes": 96919
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-rule15.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-rule15.json",
+      "sha256": "d1ebcc16561a9fa285a288db42ead353bbf7feb54744d22b24361e64432b39e7",
+      "bytes": 15902
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-deltas-final-v1.json",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/remaining-arm-deltas-final-v1.json",
+      "sha256": "a7b06715038b78dbbe1eeb4d251ff139e322b7b8c85b7f1750c7f277be2b221b",
+      "bytes": 14992
+    }
+  ]
+}

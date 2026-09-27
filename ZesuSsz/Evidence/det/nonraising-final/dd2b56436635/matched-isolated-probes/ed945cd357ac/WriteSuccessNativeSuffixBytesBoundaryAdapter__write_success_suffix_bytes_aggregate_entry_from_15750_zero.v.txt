@@ -1,0 +1,84 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.AllLegacy.
+Require Import ZesuMachineMap.Machine.
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisCode.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixBytes15920.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixBytesCompose.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesCall.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessSuffixHashes15750Branch.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessInstrBodyAdapters.
+From IslaTraces.write_success_blocks Require Import Index.
+
+Import ListNotations.
+
+(** The aggregate exit keeps all five descriptor resources.  The old
+    0x15930 suffix contract exposes descriptor five in registers and keeps
+    descriptors one through four in its continuation frame. *)
+Definition writeSuccessSuffixBytesAggregateExitAt15930
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5 oldS0 oldS1 : bv 64)
+      (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec),
+    writeSuccessSuffixAt15930
+      (writeSuccessSuffixBytesP5 sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5
+        b1 b2 b3 b4 b5 P))%I.
+
+Global Instance : LithiumUnfold
+  (@writeSuccessSuffixBytesAggregateExitAt15930) := I.
+
+(** The zero branch supplies the system register collection and x8.  This
+    frame carries the remaining aggregate entry resources. *)
+Definition writeSuccessSuffixBytesAggregateEntryZeroFrame
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
+  (∃ (sp d1 s1 d2 s2 d3 s3 d4 s4 d5 s5 oldS1 : bv 64)
+      (b1 b2 b3 b4 b5 : list (bv 8)) (tail : spec),
+    "x1" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x2" ↦ᵣ RVal_Bits sp ∗
+    "x5" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x6" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x9" ↦ᵣ RVal_Bits oldS1 ∗
+    "x10" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    "x11" ↦ᵣ: (fun value => ⌜valu_has_shape value (BitsShape 64)⌝) ∗
+    (bv_unsigned sp - 48) ↦ₘ? 48 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
+    spec_trace
+      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+        (writeOutputEventsAny d1 s1
+          (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+            (writeOutputEventsAny d2 s2
+              (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                (writeOutputEventsAny d3 s3
+                  (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                    (writeOutputEventsAny d4 s4
+                      (writeOutputEventsAny (sp - BV 64 48)%bv (BV 64 8)
+                        (writeOutputEventsAny d5 s5 tail)))))))))) ∗
+    bv_unsigned d1 ↦ₘ∗ b1 ∗ ⌜bv_unsigned s1 = length b1⌝ ∗
+    bv_unsigned d2 ↦ₘ∗ b2 ∗ ⌜bv_unsigned s2 = length b2⌝ ∗
+    bv_unsigned d3 ↦ₘ∗ b3 ∗ ⌜bv_unsigned s3 = length b3⌝ ∗
+    bv_unsigned d4 ↦ₘ∗ b4 ∗ ⌜bv_unsigned s4 = length b4⌝ ∗
+    bv_unsigned d5 ↦ₘ∗ b5 ∗ ⌜bv_unsigned s5 = length b5⌝ ∗
+    ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+    ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 48⌝ ∗
+    ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+    ⌜bv_unsigned sp + 1896 < (machineRamEnd defaultMap)⌝ ∗
+    reg_col ((fun register => (KindReg register, BitsShape 64)) <$>
+      writeSuccessSuffixBytesCarrierOtherRegisters) ∗
+    (bv_unsigned sp + 920) ↦ₘ d1 ∗ (bv_unsigned sp + 928) ↦ₘ s1 ∗
+    (bv_unsigned sp + 936) ↦ₘ d2 ∗ (bv_unsigned sp + 944) ↦ₘ s2 ∗
+    (bv_unsigned sp + 952) ↦ₘ d3 ∗ (bv_unsigned sp + 960) ↦ₘ s3 ∗
+    (bv_unsigned sp + 968) ↦ₘ d4 ∗ (bv_unsigned sp + 976) ↦ₘ s4 ∗
+    (bv_unsigned sp + 984) ↦ₘ d5 ∗ (bv_unsigned sp + 992) ↦ₘ s5 ∗ P ∗ True)%I.
+
+Global Instance : LithiumUnfold
+  (@writeSuccessSuffixBytesAggregateEntryZeroFrame) := I.
+
+Lemma write_success_suffix_bytes_aggregate_entry_from_15750_zero
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+  writeSuccessSuffixHashes15750ZeroState
+      (writeSuccessSuffixBytesAggregateEntryZeroFrame P) -∗
+  writeSuccessSuffixBytesAggregateEntry P.
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

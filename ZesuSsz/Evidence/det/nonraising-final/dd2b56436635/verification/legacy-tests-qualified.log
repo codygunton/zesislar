@@ -1,0 +1,13 @@
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 0.702 secs (0.7u,0.s) (success)
+Closed under the global context
+exit=0 ms=4527 rss_kb=869216

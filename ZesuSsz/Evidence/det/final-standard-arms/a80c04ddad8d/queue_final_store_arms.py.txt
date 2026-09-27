@@ -1,0 +1,19 @@
+"""Root-only final arms for a80 through the exclusive physical-store owner."""
+import argparse,json,subprocess
+from pathlib import Path
+p=argparse.ArgumentParser();p.add_argument('--print-only',action='store_true');a=p.parse_args()
+archive=Path(__file__).parent;root=Path('/home/cody/zesislar/.worktrees/islaris-native');tools=Path('/home/cody/zesislar/.worktrees/determinism')
+sha='a80c04ddad8daa85e335fb26f21bc9d99c6c99f3';rows=[]
+for group,imports in [('nr-final-v1',[]),('nr-final-v2',['ZesuSsz.Automation.Sets.v2'])]:
+ for label,file in [('full','benchmark_set.txt'),('rule15','benchmark_set_rule15.txt')]:
+  name=group+'-'+label;target=root/'ZesuSsz/Evidence/residuals/benchmark'/f'{sha[:12]}-{name}.json'
+  cmd=[str(tools/'tools/resource_guard.sh'),'batch',name,'--','python3',str(archive/'t3_store_owner.py'),'--config',str(archive/'t3-stable-owner.json'),'arm','--','--automation',sha,'--set',str(tools/'ZesuSsz/Evidence/residuals'/file),'--name',name,'--jobs','32','--seconds','300']
+  for module in imports:cmd+=['--import',module]
+  rows.append({'group':group,'set':label,'automation':sha,'imports':imports,'result':str(target),'command':cmd,'cwd':str(root),'physical_build_store':str(root/'_build/agents/bench/f08fa35bf956/_build')})
+manifest=archive/'remaining-arm-manifest.json';old=json.loads(manifest.read_text())
+manifest.write_text(json.dumps([r for r in old if r['group'] not in ['nr-final-v1','nr-final-v2']]+rows,indent=2)+'\n')
+for row in rows:
+ print(json.dumps(row),flush=True)
+ if not a.print_only:
+  if Path(row['result']).exists():raise SystemExit('Refuse result overwrite')
+  subprocess.run(row['command'],cwd=root,check=True)

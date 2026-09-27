@@ -1,0 +1,113 @@
+Tactic call zesu_run ran for 2.725 secs (2.705u,0.006s) (success)
+Tactic call zesu_run ran for 0.017 secs (0.017u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.017 secs (0.016u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call T6 direct TF2 ran for 3.795 secs (3.769u,0.006s) (success)
+2 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  Decoded : Type
+  WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation
+                                        Decoded
+  args : WriteSuccessArgs Decoded
+  witness : writeSuccessNativeWitness Decoded
+  H0 : (bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z
+  H1 : (0 ≤ bv_unsigned (writeSuccessFrameSp witness))%Z
+  H2 : (bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824)%Z
+  b0 : bv 64
+  H3 : Z.land (bv_unsigned b0) 131072 = 0%Z
+  H4 : WriteSuccessPostTransactionResources.writeSuccessPostWord
+         (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+            (writeSuccessDecodedBytes witness)) 7 = 0%bv
+  b1 : bv 64
+  H5 : Z.land (bv_unsigned b1) 131072 = 0%Z
+  b2 : bv 64
+  H6 : Z.land (bv_unsigned b2) 131072 = 0%Z
+  H7 : (-1 < bv_unsigned b2 < bv_modulus 64)%Z
+  H8 : 64%N ≠ 0%N
+       → (- bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64)%Z
+  H9 : (-1 < bv_unsigned b1 < bv_modulus 64)%Z
+  H10 : 64%N ≠ 0%N
+        → (- bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64)%Z
+  H11 : (-1 < bv_unsigned b0 < bv_modulus 64)%Z
+  H12 : 64%N ≠ 0%N
+        → (- bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64)%Z
+  ============================
+  _ : instr_lookup_resources Index.lookup
+  _ : spec_instr_resources
+  _ : instr_pre 88988 encoderBooleanEntryBoundary
+  _ : instr_pre 89196 encoderBytesEntryBoundary
+  _ : instr_pre 89360 encoderIntEntryBoundary
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_body 88504 (writeSuccessExactTailSecondBranchState args witness)
+  _ : writeSuccessExactPostWithdrawalsCallerFrameRest args witness
+  _ : reg_col
+        [(KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+         (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+         (KindReg "x15", BitsShape 64); (KindReg "x18", BitsShape 64)]
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 72)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 7
+  _ : "x8"
+      ↦ᵣ RVal_Bits
+           (WriteSuccessPostTransactionResources.writeSuccessPostWord
+              (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                 (writeSuccessDecodedBytes witness)) 7)
+  --------------------------------------∗
+  ∃ x : spec *ₗ (),
+    ⌜Snapshots.writeOutputEvents (writeSuccessEntrySp witness - (2000 + 9)) 1
+       (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 0) x.1ₗ
+     ⊆ writeSuccessExactTailFirstBranchEvents witness⌝ ∗
+    ⌜bv_extract 0 4 (writeSuccessFrameSp witness) = 0%bv⌝ ∗
+    ⌜(0 ≤ bv_unsigned (writeSuccessFrameSp witness) - 16)%Z⌝ ∗
+    ⌜(bv_unsigned (writeSuccessFrameSp witness) < 0 + 1073741824)%Z⌝ ∗
+    ⌜bv_extract 0 1 (Z_to_bv 64 (88476 + 4)) = 0%bv⌝ ∗
+    ⌜bv_extract 1 1 (Z_to_bv 64 (88476 + 4)) = 0%bv⌝ ∗
+    ⌜bv_extract 0 2 (Z_to_bv 64 (88476 + 4)) = 0%bv⌝ ∗
+    instr_pre (bv_unsigned (Z_to_bv 64 (88476 + 4)))
+      (encoderBooleanClosedReturn 0 (writeSuccessFrameSp witness)
+         (Z_to_bv 64 (88476 + 4)) x.1ₗ) ∗ True
+
+goal 2 is:
+ _ : instr_lookup_resources Index.lookup
+ _ : spec_instr_resources
+ _ : instr_pre 88988 encoderBooleanEntryBoundary
+ _ : instr_pre 89196 encoderBytesEntryBoundary
+ _ : instr_pre 89360 encoderIntEntryBoundary
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_body 88504 (writeSuccessExactTailSecondBranchState args witness)
+ _ : writeSuccessExactPostWithdrawalsCallerFrameRest args witness
+ _ : reg_col
+       [(KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+        (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+        (KindReg "x15", BitsShape 64); (KindReg "x18", BitsShape 64)]
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 72)
+     ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+          (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+             (writeSuccessDecodedBytes witness)) 7
+ _ : "x8"
+     ↦ᵣ RVal_Bits
+          (WriteSuccessPostTransactionResources.writeSuccessPostWord
+             (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                (writeSuccessDecodedBytes witness)) 7)
+ --------------------------------------∗
+ ∃ x : spec *ₗ (),
+   ⌜Snapshots.writeOutputEvents (writeSuccessEntrySp witness - (2000 + 9)) 1
+      (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1) x.1ₗ
+    ⊆ writeSuccessExactTailFirstBranchEvents witness⌝ ∗
+   ⌜bv_extract 0 4 (writeSuccessFrameSp witness) = 0%bv⌝ ∗
+   ⌜(0 ≤ bv_unsigned (writeSuccessFrameSp witness) - 16)%Z⌝ ∗
+   ⌜(bv_unsigned (writeSuccessFrameSp witness) < 0 + 1073741824)%Z⌝ ∗
+   ⌜bv_extract 0 1 (Z_to_bv 64 (88444 + 4)) = 0%bv⌝ ∗
+   ⌜bv_extract 1 1 (Z_to_bv 64 (88444 + 4)) = 0%bv⌝ ∗
+   ⌜bv_extract 0 2 (Z_to_bv 64 (88444 + 4)) = 0%bv⌝ ∗
+   instr_pre (bv_unsigned (Z_to_bv 64 (88444 + 4)))
+     (encoderBooleanClosedReturn 1 (writeSuccessFrameSp witness)
+        (Z_to_bv 64 (88444 + 4)) x.1ₗ) ∗ True
+exit=0 ms=5278 rss_kb=1341656

@@ -1,0 +1,34 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.AllLegacy.
+Require Import ZesuMachineMap.Machine.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeEntry.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomePrefix.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeBooleanJump.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeBooleanResume.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeResume.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeJumpHandoff.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64SomeCallSpec.
+From IslaTraces.write_success_04 Require Import instrs.
+From IslaTraces.write_success_03 Require Import instrs.
+From IslaTraces.write_success_07 Require Import instrs.
+From IslaTraces.write_success_01 Require Import instrs.
+
+Lemma optional_u64_some_exact_call_correct `{!islaG Sigma} `{!threadG}
+    (pointer value sp ret old_x5 old_x6 old_x8 old_x11 : bv 64)
+    (tag : bv 8) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_04.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_03.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15bc8 (optionalU64SomeExactCallEntry pointer value sp ret old_x5
+    old_x6 old_x8 old_x11 tag bytes tail P).
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

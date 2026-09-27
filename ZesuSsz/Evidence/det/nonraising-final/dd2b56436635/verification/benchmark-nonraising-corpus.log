@@ -1,0 +1,9 @@
+benchmark dd2b56436635: 2315 lemmas
+arm tree _build/agents/bench/dd2b56436635
+resource guard allows 32 concurrent jobs
+classifier v2
+reprobed alone 0, 0 changed outcome
+probed 2315  closed 14.2%  median 8.3 s
+outcomes {"closed": 328, "error": 73, "residual": 1791, "timeout": 123}
+classes  {"C1": 290, "C2": 340, "C3": 19, "C4": 206, "C6": 220, "C7": 136, "C8": 155, "C9": 9, "n/a": 524, "unknown": 416}
+no earlier run to compare

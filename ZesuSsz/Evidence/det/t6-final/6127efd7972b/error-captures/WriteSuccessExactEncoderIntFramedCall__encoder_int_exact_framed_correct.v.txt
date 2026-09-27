@@ -1,0 +1,108 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.Sets.v2.
+Require Import ZesuSsz.Automation.Switches.ReturnBundle.
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuMachineMap.Machine.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Export.Snapshots.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderIntCall.
+From IslaTraces.write_success_07 Require Import instrs.
+From IslaTraces.write_success_01 Require Import instrs.
+
+Import ZesuSsz.Automation.Calls.FramedContinuations.
+
+Definition encoderIntExactFramedPost `{!islaG Sigma} `{!threadG}
+    (sp ret : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ RVal_Bits (BV 64 (mapIoContextAddress defaultMap)) ∗
+   "x10" ↦ᵣ RVal_Bits (sp - BV 64 16)%bv ∗ "x11" ↦ᵣ RVal_Bits (BV 64 8) ∗
+   (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (machineOutputAddress defaultMap) 16 ∗
+   spec_trace tail ∗ P ∗ True)%I.
+
+Definition encoderIntExactFramedSpec `{!islaG Sigma} `{!threadG}
+    (value sp ret old_x5 old_x11 : bv 64)
+    (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col zesu_ram_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits ret ∗ "x2" ↦ᵣ RVal_Bits sp ∗
+   "x5" ↦ᵣ RVal_Bits old_x5 ∗ "x10" ↦ᵣ RVal_Bits value ∗
+   "x11" ↦ᵣ RVal_Bits old_x11 ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗
+   mmio_range (machineOutputAddress defaultMap) 16 ∗
+   spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)
+     (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail) ∗
+   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
+   ⌜(mapRamBase defaultMap) <= bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
+   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗ P ∗
+   instr_pre (bv_unsigned ret) (encoderIntExactFramedPost sp ret tail P) ∗ True)%I.
+
+Global Instance : LithiumUnfold (@encoderIntExactFramedPost) := I.
+Global Instance : LithiumUnfold (@encoderIntExactFramedSpec) := I.
+
+Lemma encoder_int_exact_frame_adapter `{!islaG Sigma} `{!threadG}
+    (value sp ret old_x5 old_x11 : bv 64)
+    (tail : spec) (P : iProp Sigma) :
+  instr_body 0x15d10 zesuEncoderIntPayloadCallSpec -∗
+  instr_body 0x15d10 (encoderIntExactFramedSpec value sp ret old_x5 old_x11 tail P).
+Proof.
+  iStartProof. iIntros "Hcallee".
+  iApply (instr_pre_wand 0x15d10 0x15d10 false false with "Hcallee");
+    [done | done |].
+  iIntros "Hentry". iDestruct "Hentry" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace &
+      %Halign & %Hmin & %Hmax & %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
+  iExists value, sp, (bv_unsigned ret), tail. zesu_run.
+Qed.
+
+Lemma encoder_int_exact_return_frame `{!islaG Sigma} `{!threadG}
+    (sp ret : bv 64) (tail : spec) (P : iProp Sigma) :
+  encoderIntExactReturn sp ret tail ∗ P -∗
+  encoderIntExactFramedPost sp ret tail P.
+Proof.
+  iStartProof. iIntros "[Hreturn HP]".
+  iEval (unfold encoderIntExactReturn) in "Hreturn".
+  iEval (unfold encoderIntExactFramedPost).
+  iDestruct "Hreturn" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace & _)".
+  iFrame "∗".
+Qed.
+
+Print Assumptions encoder_int_exact_return_frame.
+
+Lemma encoder_int_exact_frame_adapter_from_closed `{!islaG Sigma} `{!threadG}
+    (value sp ret old_x5 old_x11 : bv 64)
+    (tail : spec) (P : iProp Sigma) :
+  instr_body 0x15d10 zesuEncoderIntExactCallSpec -∗
+  instr_body 0x15d10
+    (encoderIntExactFramedSpec value sp ret old_x5 old_x11 tail P).
+Proof.
+  iStartProof. iIntros "Hcallee".
+  iApply (instr_pre_wand 0x15d10 0x15d10 false false with "Hcallee");
+    [done | done |].
+  iIntros "Hentry". iDestruct "Hentry" as
+    "(Hsys & H1 & H2 & H5 & H10 & H11 & Hstack & Hmmio & Htrace &
+      %Halign & %Hmin & %Hmax & %Hret0 & %Hret1 & %Hret2 & HP & Hnext & _)".
+  iExists value, sp, ret, tail. zesu_run.
+  iSplit.
+  - iIntros "Hreturn". iApply encoder_int_exact_return_frame.
+    iFrame "Hreturn HP".
+  - done.
+Qed.
+
+Print Assumptions encoder_int_exact_frame_adapter_from_closed.
+
+Lemma encoder_int_exact_framed_correct `{!islaG Sigma} `{!threadG}
+    (value sp ret old_x5 old_x11 : bv 64)
+    (tail : spec) (P : iProp Sigma) :
+  ([∗ list] instruction ∈ IslaTraces.write_success_07.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ IslaTraces.write_success_01.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15d10 (encoderIntExactFramedSpec value sp ret old_x5 old_x11 tail P).
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

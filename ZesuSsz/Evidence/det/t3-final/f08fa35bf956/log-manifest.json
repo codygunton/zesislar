@@ -1,0 +1,17 @@
+[
+  {
+    "file": "check-fast-t3-rebased-driver.log",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-t3-rebased-driver.log",
+    "sha256": "cbb94cb7fc2cadf009836c4131bc397720d9eea967d00750d4ee32ce96c243a6"
+  },
+  {
+    "file": "check-fast-t3-rebased.log",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-t3-rebased.log",
+    "sha256": "6aeff28ff3d7bcd73174d2853dc71c3f3b79b4e2150b75e06f7db740f2d7b5cf"
+  },
+  {
+    "file": "full-command-manifest.json",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-manifest.json",
+    "sha256": "9d21f27fc03dfcc1546a4231d6ffeeb5500a93c58252d521eb55396ef8e07519"
+  }
+]

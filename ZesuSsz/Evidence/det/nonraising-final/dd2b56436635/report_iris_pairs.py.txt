@@ -1,0 +1,18 @@
+import collections,json
+from pathlib import Path
+p=Path(__file__).with_name('iris-matched-reprobes.jsonl')
+rows=[]
+for line in p.read_text().splitlines():
+ try: rows.append(json.loads(line))
+ except json.JSONDecodeError: pass
+pairs=collections.defaultdict(dict)
+for r in rows: pairs[(r['module'],r['lemma'])][r['arm']]=r
+fields=['outcome','goal_sha256','error_kind','error_lines']
+results=[]
+for (module,lemma),arms in sorted(pairs.items()):
+ if 'ed945cd357ac' not in arms or 'dd2b56436635' not in arms: continue
+ a,b=arms['ed945cd357ac'],arms['dd2b56436635']
+ severity={'closed':0,'residual':1,'error':2,'timeout':2}
+ worsening=severity[b['outcome']]>severity[a['outcome']]
+ results.append({'module':module,'lemma':lemma,'baseline':a['outcome'],'candidate':b['outcome'],'seconds':[a['seconds'],b['seconds']],'changed_fields':[f for f in fields if a.get(f)!=b.get(f)],'goal_hash_equal':a['goal_sha256']==b['goal_sha256'],'error_kind':[a['error_kind'],b['error_kind']],'first_errors':[a['error_lines'][:2],b['error_lines'][:2]],'candidate_worsening':worsening,'review_required':a['outcome']!=b['outcome']})
+print(json.dumps({'rows':len(rows),'completed_pairs':len(results),'pending_single_rows':len(rows)-2*len(results),'candidate_worsenings':[r for r in results if r['candidate_worsening']],'pairs':results},indent=2))

@@ -1,0 +1,17 @@
+{
+  "outcome": "passed",
+  "exit": 0,
+  "elapsed_seconds": 141.847,
+  "user_cpu_seconds": 139.967,
+  "system_cpu_seconds": 0.4,
+  "peak_rss_kib": 3880308,
+  "scratch_elapsed_ms": 139673,
+  "tactic_seconds": [
+    32.694,
+    0.582,
+    0.676
+  ],
+  "conclusion": "No module repair is required under the low-load isolation rule.",
+  "artifact_source": "55251ed462dba84daec0f92a87c8729a7d224e29",
+  "initial_high_load_records": "Preserved separately in 14f98Raw-timing-and-source-audit.json"
+}

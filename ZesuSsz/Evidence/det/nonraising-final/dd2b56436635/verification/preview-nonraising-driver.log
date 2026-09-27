@@ -1,0 +1,48 @@
+gate lock: state=wanted holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/builder-nonraising-v1 pid=1086487 start=2026-09-26T17:44:06-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmpgp0w_5v8/spec.json
+OK (skipped=1)
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+File "./ZesuSsz/Generated/Level1.v", line 109, characters 0-62:
+Warning: To avoid stack overflow, large numbers in nat are interpreted as
+applications of Init.Nat.of_num_uint. [abstract-large-number,numbers,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+writeSuccess decoder executable cases: passed
+uncached checks passed
+gate lock: state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/builder-nonraising-v1 pid=1086487 start=2026-09-26T17:44:06-04:00
+drain: waited 0 s; coqc machine-wide 0; used 42 GiB
+gate check-iris with 24 jobs; guard: used 42 GiB (launch <150, hold 180, kill 200); coqc 0 machine-wide; load5 1; blocked 0; jobs 46; batch peak 0 GiB; gate lock state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/builder-nonraising-v1 pid=1086487 start=2026-09-26T17:44:06-04:00; holds 500; guard kills 0
+prometheus lucy 17:39-17:44: memory used peak 46.4 p90 45.1 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 1 p90 1; blocked peak 0 p90 0; cpu busy peak 2 p90 2 %; disk read peak 1 p90 0 MiB/s; /home free 543 GiB
+gate check-iris exit 2; 0 Timeout!; batch peak 114 GiB
+prometheus lucy 17:44-18:24: memory used peak 111.6 p90 90.9 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 24 p90 23; blocked peak 1 p90 0; cpu busy peak 38 p90 38 %; disk read peak 3 p90 0 MiB/s; /home free 543 GiB
+bash tools/det/gate.sh check-iris   31825.47s user 633.97s system 1351% cpu 40:02.12 total

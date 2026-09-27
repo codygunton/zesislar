@@ -1,0 +1,35 @@
+{
+  "source_sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+  "source_files_verified": 2530,
+  "check_fast": {
+    "exit": 0,
+    "elapsed_seconds": 42.398,
+    "jobs": 24,
+    "peak_gib": 44
+  },
+  "preview": {
+    "exit": 0,
+    "jobs": 24,
+    "reported_peak_gib": 45,
+    "timeouts": 0,
+    "dune_proof_target_seconds": 3.958,
+    "gate_lock_start": "2026-09-26T21:49:53-04:00",
+    "driver_log_completion": "2026-09-26T21:50:49.171649970-04:00",
+    "duration_note": "Driver duration is inferred from second-resolution lock timestamp and log completion. The exact Dune target time is separate. Production modules were not recompiled.",
+    "driver_timestamp_span_seconds_bounds": [
+      55.172,
+      56.172
+    ]
+  },
+  "completion": {
+    "proofs_and_automation_targets": "passed",
+    "new_arm_marker": "created after targets passed",
+    "retired_f08_marker": "never created"
+  },
+  "physical_store": "f08fa35bf956/_build",
+  "t3_switched_arms": {
+    "session": 50432,
+    "status": "pending"
+  },
+  "merged": false
+}

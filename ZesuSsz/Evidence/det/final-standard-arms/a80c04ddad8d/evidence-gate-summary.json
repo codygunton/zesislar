@@ -1,0 +1,24 @@
+{
+  "exit": 0,
+  "jobs": 24,
+  "batch_peak_gib": 52,
+  "timeouts": 0,
+  "dune_target_seconds": 17.316,
+  "dune_target_peak_kib": 1239776,
+  "driver_lock_start": "2026-09-26T22:37:54-04:00",
+  "driver_mtime_utc": "2026-09-27T02:38:37.052824+00:00",
+  "driver_timestamp_span_seconds_bounds": [
+    42.053,
+    43.053
+  ],
+  "timing_note": "Driver timestamps bound the elapsed span. Exact Dune target time is separate.",
+  "uncached_checks": "passed, including executable decoder cases",
+  "precompilation_failures": [
+    "Missing _build/agents parent directory.",
+    "Generated IslaTraces.zkvm_exit theory link absent."
+  ],
+  "retry_preparation": "Root created the build parent and linked the build and generated traces to integration artifacts.",
+  "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build",
+  "agent_jobs_environment": 24,
+  "source_sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3"
+}

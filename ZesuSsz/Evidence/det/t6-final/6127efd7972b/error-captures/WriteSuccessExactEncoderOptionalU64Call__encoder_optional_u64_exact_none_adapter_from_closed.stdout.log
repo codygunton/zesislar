@@ -1,0 +1,11 @@
+Tactic call zesu_run ran for 0.097 secs (0.097u,0.s) (success)
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.197 secs (0.196u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.068 secs (0.068u,0.s) (success)
+Tactic call zesu_run ran for 0.082 secs (0.082u,0.s) (success)
+exit=1 ms=5276 rss_kb=1077496

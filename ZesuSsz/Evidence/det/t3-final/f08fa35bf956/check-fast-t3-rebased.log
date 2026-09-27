@@ -1,0 +1,494 @@
+python3 ZesuSsz/Evidence/generate_islaris_dump.py \
+  --disassembly build/endpoint-elf/meta/disassembly.txt \
+  --profile experiments/islaris-startup/profile.json --output build/islaris-dumps/startup.dump
+mkdir -p generated/isla-traces/startup
+opam exec --switch=/home/cody/islaris -- islaris build/islaris-dumps/startup.dump -j 3 -o generated/isla-traces/startup \
+  --coqdir=IslaTraces.startup --arch=riscv64
+(thread 1) [isla-footprint] generated/isla-traces/startup/a10120.isla
+(thread 0) [isla-footprint] generated/isla-traces/startup/a10124.isla
+(thread 2) [isla-footprint] generated/isla-traces/startup/a10128.isla
+(thread 1) [coq-generation] generated/isla-traces/startup/a10120.v
+(thread 0) [coq-generation] generated/isla-traces/startup/a10124.v
+(thread 2) [coq-generation] generated/isla-traces/startup/a10128.v
+sed -i -e '/(package islaris)/d' \
+  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 InstrSpecs lithium iris stdpp RecordUpdate Ltac2)/' \
+  generated/isla-traces/startup/dune
+uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py'
+..............................................................................................................................
+----------------------------------------------------------------------
+Ran 126 tests in 7.642s
+
+OK
+assumptions: 1 checked; 0 changed
+CHANGED M.v f
+assumptions: 1 checked; 1 changed
+generated /tmp/tmpfpz7kskj/generated/GeneratedWriteSuccessExactSuffixEntrySegment.v
+3.8s outcome=stalled class=C3 goal=subsume (…) (…)
+calls in [0x156e8, 0x15744): 0 premises, 0 contract modules
+spec record written to /tmp/tmp1od2o3p0/spec.json
+PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+...................................................s.......................................
+----------------------------------------------------------------------
+Ran 91 tests in 0.020s
+
+OK (skipped=1)
+python3 ZesuSsz/Evidence/check_parity.py
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+python3 ZesuSsz/Evidence/check_spec_shapes.py
+bash ZesuSsz/Evidence/check_write_success_decoder.sh
+Closed under the global context
+writeSuccess decoder executable cases: passed
+/home/cody/zesislar/.worktrees/builder-t3-array-priority/tools/resource_guard.sh batch check-fast -- \
+  python3 tools/build_record.py --build-dir /home/cody/zesislar/.worktrees/builder-t3-array-priority/_build/agents/infra \
+  --target check-fast -- opam exec --switch=/home/cody/islaris -- dune build --root . \
+  --build-dir /home/cody/zesislar/.worktrees/builder-t3-array-priority/_build/agents/infra --cache=enabled -j24 \
+  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all \
+  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.191 secs (0.17u,0.016s) (success)
+Tactic call zesu_run ran for 0.153 secs (0.153u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.781 secs (0.772u,0.006s) (success)
+Tactic call zesu_run ran for 0.82 secs (0.8u,0.016s) (success)
+Tactic call zesu_run ran for 0.454 secs (0.439u,0.013s) (success)
+Tactic call liARun ran for 0.905 secs (0.892u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 1.05 secs (1.038u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.82 secs (0.816u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 1.797 secs (1.77u,0.019s) (success)
+Tactic call liARun ran for 0.117 secs (0.117u,0.s) (success)
+Tactic call liARun ran for 1.95 secs (1.931u,0.009s) (success)
+Tactic call liARun ran for 0.018 secs (0.018u,0.s) (success)
+Tactic call liARun ran for 0.478 secs (0.476u,0.s) (success)
+File "./ZesuSsz/Generated/ElfImage.v", line 73, characters 0-58:
+Warning: To avoid stack overflow, large numbers in nat are interpreted as
+applications of Init.Nat.of_num_uint. [abstract-large-number,numbers,default]
+Tactic call zesu_run ran for 2.649 secs (2.628u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 6.733 secs (6.657u,0.036s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.663 secs (0.653u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.375 secs (0.366u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.511 secs (0.502u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.541 secs (0.538u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.627 secs (0.62u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.392 secs (0.387u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.509 secs (0.507u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.597 secs (0.594u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 4.185 secs (4.135u,0.026s) (success)
+Tactic call zesu_run ran for 5.779 secs (5.719u,0.036s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 4.194 secs (4.158u,0.016s) (success)
+Tactic call zesu_run ran for 5.777 secs (5.728u,0.019s) (success)
+Tactic call zesu_run ran for 7.013 secs (6.949u,0.03s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 7.579 secs (7.505u,0.039s) (success)
+Tactic call zesu_run ran for 1.392 secs (1.377u,0.009s) (success)
+Tactic call zesu_run ran for 0.237 secs (0.233u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.188 secs (1.178u,0.003s) (success)
+Tactic call zesu_run ran for 0.294 secs (0.294u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.261 secs (1.248u,0.006s) (success)
+Tactic call zesu_run ran for 0.246 secs (0.245u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 1.746 secs (1.733u,0.003s) (success)
+Tactic call zesu_run ran for 0.554 secs (0.548u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 9.237 secs (9.135u,0.056s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 11.082 secs (10.961u,0.066s) (success)
+Tactic call zesu_run ran for 3.821 secs (3.788u,0.016s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.887 secs (3.863u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.581 secs (1.548u,0.025s) (success)
+Tactic call zesu_run ran for 0.006 secs (0.006u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.051 secs (0.05u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 10.086 secs (10.011u,0.033s) (success)
+Tactic call zesu_run ran for 1. secs (0.988u,0.009s) (success)
+Tactic call zesu_run ran for 0.004 secs (0.004u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.023 secs (0.023u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.303 secs (3.266u,0.019s) (success)
+Tactic call zesu_run ran for 0.66 secs (0.654u,0.003s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 11.14 secs (11.041u,0.039s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 0.423 secs (0.418u,0.003s) (success)
+Tactic call zesu_run ran for 5.674 secs (5.626u,0.019s) (success)
+Tactic call zesu_run ran for 4.848 secs (4.792u,0.033s) (success)
+Tactic call zesu_run ran for 4.471 secs (4.439u,0.013s) (success)
+Tactic call liARun ran for 0.971 secs (0.96u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 15.089 secs (14.937u,0.069s) (success)
+Tactic call zesu_run ran for 18.507 secs (18.348u,0.063s) (success)
+Tactic call zesu_run ran for 7.828 secs (7.757u,0.032s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 3.01 secs (2.983u,0.013s) (success)
+Tactic call zesu_run ran for 3.542 secs (3.507u,0.015s) (success)
+Tactic call zesu_run ran for 3.233 secs (3.187u,0.018s) (success)
+Tactic call zesu_run ran for 3.221 secs (3.181u,0.025s) (success)
+Tactic call zesu_run ran for 3.394 secs (3.357u,0.019s) (success)
+Tactic call zesu_run ran for 3.529 secs (3.496u,0.013s) (success)
+Tactic call zesu_run ran for 3.615 secs (3.577u,0.016s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 1.355 secs (1.35u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call liARun ran for 3.86 secs (3.81u,0.023s) (success)
+Tactic call liARun ran for 0.749 secs (0.746u,0.s) (success)
+Tactic call liARun ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.61 secs (2.576u,0.019s) (success)
+Tactic call liARun ran for 8.613 secs (8.52u,0.049s) (success)
+Closed under the global context
+Tactic call liARun ran for 6.893 secs (6.832u,0.026s) (success)
+Tactic call liARun ran for 6.904 secs (6.838u,0.029s) (success)
+Tactic call liARun ran for 1.506 secs (1.489u,0.009s) (success)
+Tactic call liARun ran for 8.313 secs (8.243u,0.035s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 13.751 secs (13.61u,0.069s) (success)
+Tactic call zesu_run ran for 13.663 secs (13.544u,0.046s) (success)
+Tactic call liARun ran for 0.421 secs (0.416u,0.003s) (success)
+Tactic call zesu_run ran for 1.845 secs (1.827u,0.009s) (success)
+Tactic call liARun ran for 0.967 secs (0.962u,0.s) (success)
+Tactic call liARun ran for 0.958 secs (0.951u,0.s) (success)
+Tactic call liARun ran for 0.008 secs (0.008u,0.s) (success)
+Tactic call liARun ran for 0.059 secs (0.059u,0.s) (success)
+Tactic call liARun ran for 4.7 secs (4.659u,0.006s) (success)
+Tactic call liARun ran for 0.124 secs (0.123u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 8.499 secs (8.413u,0.036s) (success)
+Tactic call liARun ran for 0.009 secs (0.009u,0.s) (success)
+Tactic call liARun ran for 2.75 secs (2.729u,0.003s) (success)
+Tactic call liARun ran for 22.182 secs (21.966u,0.092s) (success)
+Tactic call liARun ran for 0.168 secs (0.168u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 22.028 secs (21.78u,0.119s) (success)
+Tactic call liARun ran for 0.166 secs (0.165u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 22.477 secs (22.251u,0.092s) (success)
+Tactic call liARun ran for 0.172 secs (0.171u,0.s) (success)
+Closed under the global context
+Tactic call liARun ran for 12.106 secs (11.973u,0.069s) (success)
+Tactic call liARun ran for 0.199 secs (0.198u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.176 secs (0.175u,0.s) (success)
+Tactic call liARun ran for 31.343 secs (31.05u,0.114s) (success)
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 11.71 secs (11.602u,0.043s) (success)
+Tactic call zesu_run ran for 8.362 secs (8.311u,0.023s) (success)
+Tactic call liARun ran for 1.156 secs (1.136u,0.016s) (success)
+Tactic call liARun ran for 0.493 secs (0.488u,0.003s) (success)
+Tactic call liARun ran for 0.479 secs (0.477u,0.s) (success)
+Tactic call liARun ran for 0.512 secs (0.511u,0.s) (success)
+Tactic call liARun ran for 1.286 secs (1.282u,0.s) (success)
+Tactic call liARun ran for 0.053 secs (0.053u,0.s) (success)
+Tactic call liARun ran for 0.843 secs (0.84u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call liARun ran for 1.636 secs (1.618u,0.013s) (success)
+Tactic call liARun ran for 0.115 secs (0.115u,0.s) (success)
+Tactic call liARun ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call liARun ran for 2.302 secs (2.288u,0.006s) (success)
+Tactic call liARun ran for 0.107 secs (0.107u,0.s) (success)
+Tactic call liARun ran for 0.918 secs (0.912u,0.003s) (success)
+Tactic call liARun ran for 0.112 secs (0.109u,0.003s) (success)
+Tactic call liARun ran for 0.003 secs (0.003u,0.s) (success)
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Tactic call zesu_run ran for 0.151 secs (0.15u,0.s) (success)
+Tactic call zesu_run ran for 0.15 secs (0.149u,0.s) (success)
+Tactic call zesu_run ran for 0.154 secs (0.153u,0.s) (success)
+Tactic call zesu_run ran for 0.155 secs (0.155u,0.s) (success)
+Tactic call liARun ran for 3.21 secs (3.196u,0.003s) (success)
+Tactic call liARun ran for 5.219 secs (5.195u,0.006s) (success)
+Tactic call liARun ran for 0.627 secs (0.625u,0.s) (success)
+Tactic call liARun ran for 2.779 secs (2.764u,0.006s) (success)
+Tactic call liARun ran for 2.97 secs (2.958u,0.003s) (success)
+Tactic call liARun ran for 2.908 secs (2.889u,0.009s) (success)
+Tactic call liARun ran for 3.657 secs (3.638u,0.006s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 2.488 secs (2.47u,0.009s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Axioms:
+zesuCompliance
+  : ∀ (runner : DecoderEvaluator) (model : DecoderModel) 
+      (inputRef : ByteString → option StatelessInputRef) 
+      (P : AdmissibleProgram),
+      IslarisContractCorrect 74088 85244
+        (mainConcreteDecodeModel
+           (DecodeMeaningModuloKnownBugs runner model inputRef
+              zesuObservationBugApplies)
+           (mainDecodeUnionTail
+              (DecodeMeaningModuloKnownBugs runner model inputRef
+                 zesuObservationBugApplies)
+              (λ _ : DecodeBoundaryArgs,
+                 scons
+                   (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                   snil)
+              (λ _ : DecodeBoundaryArgs,
+                 scons
+                   (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                   snil))
+           (λ _ : DecodeBoundaryArgs,
+              scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                snil))
+      → IslarisContractCorrect 85296 85264
+          (writeSuccessFixedTailModel zesuWriteSuccessAllows
+             zesuWriteSuccessOutputRelation
+             (scons (SWriteMem (BV 64 (machineExitAddress defaultMap)) 0%bv)
+                snil) (λ _ nextPc : Z, nextPc = 85264))
+        → ComplianceModuloKnownBugs (zesuEndpoint P)
+            (EvmSailReference runner model inputRef) zesuBugApplies
+            zesuEquivalent

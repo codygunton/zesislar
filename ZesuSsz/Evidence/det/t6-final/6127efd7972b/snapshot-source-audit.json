@@ -1,0 +1,7 @@
+{
+  "source_sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+  "tracked_entries_verified": 2508,
+  "copied_build_from": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/55251ed462db/_build",
+  "build_status": "not built; Dune must revalidate all dependencies",
+  "arm_marker_created": false
+}

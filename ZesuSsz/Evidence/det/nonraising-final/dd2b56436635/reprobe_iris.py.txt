@@ -1,0 +1,23 @@
+import dataclasses,json,sys
+from pathlib import Path
+runner=Path('/home/cody/zesislar/.worktrees/determinism/tools/residual')
+sys.path.insert(0,str(runner)); sys.path.insert(0,str(runner.parent/'det'))
+import benchmark
+from capture import capture
+from classify import classify
+from goals import conclusion_text
+from signature import signature
+local=Path('/home/cody/zesislar/.worktrees/builder-nonraising-v1/_build/agents/nonraising')
+pairs=[line.rsplit(':',1) for line in (local/'iris-reprobe-set.txt').read_text().splitlines()]
+arms=[('ed945cd357ac',Path('/home/cody/zesislar/.worktrees/determinism/_build/agents/bench/ed945cd357ac')),('dd2b56436635',Path('/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/dd2b56436635'))]
+output=local/'iris-matched-reprobes.jsonl'
+with output.open('w') as f:
+ for module,lemma in pairs:
+  for tag,root in arms:
+   result=capture(root/benchmark.PROOF_DIR/module,lemma,root/'_build',benchmark.SCRATCH,local/'matched-isolated-probes'/tag,seconds=300,variant='standard',cwd=root)
+   row=dataclasses.asdict(result)
+   row['arm']=tag
+   row['pred_class']=classify(result.goal_text,'residual' if result.goal_text else result.outcome).pred_class
+   row['signature']=signature(conclusion_text(result.goal_text)[1]) if result.goal_text else ''
+   f.write(json.dumps(row)+'\n'); f.flush()
+   print(f'{tag} {module}:{lemma}: {result.outcome}, {result.seconds:.3f} s',flush=True)

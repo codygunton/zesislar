@@ -1,0 +1,6 @@
+Isolated preflight: coqc=0 load1=2.05
+Tactic call liARun ran for 32.694 secs (32.608u,0.012s) (success)
+Tactic call liARun ran for 0.582 secs (0.58u,0.s) (success)
+Tactic call liARun ran for 0.676 secs (0.674u,0.s) (success)
+exit=0 ms=139673 rss_kb=3880308
+isolation elapsed=141.847 user_cpu=139.967 system_cpu=0.400

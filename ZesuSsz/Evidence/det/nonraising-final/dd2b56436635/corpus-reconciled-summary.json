@@ -1,0 +1,147 @@
+{
+  "label": "reconciled analytical views; only 26 matched keys replaced; raw JSONs unchanged",
+  "replaced_keys": 26,
+  "raw_hashes": {
+    "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/434db04166fa-corpus.json": "9607b281b66538fbd1d60817acaaae69562aece2e5281042268c91c5b304dbc1",
+    "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-corpus.json": "2d84b0e7eff807b1bd42023ed05863b444a7a609efc0a9325f420c55073568ae"
+  },
+  "groups": {
+    "total": {
+      "raw_baseline": {
+        "residual": 1510,
+        "error": 450,
+        "timeout": 139,
+        "closed": 216
+      },
+      "raw_candidate": {
+        "residual": 1791,
+        "closed": 328,
+        "timeout": 123,
+        "error": 73
+      },
+      "raw_delta": {
+        "closed": 112,
+        "residual": 281,
+        "error": -377,
+        "timeout": -16
+      },
+      "reconciled_baseline": {
+        "residual": 1521,
+        "error": 456,
+        "timeout": 120,
+        "closed": 218
+      },
+      "reconciled_candidate": {
+        "residual": 1794,
+        "closed": 328,
+        "timeout": 120,
+        "error": 73
+      },
+      "reconciled_delta": {
+        "closed": 110,
+        "residual": 273,
+        "error": -383,
+        "timeout": 0
+      }
+    },
+    "iris": {
+      "raw_baseline": {
+        "residual": 1503,
+        "timeout": 139,
+        "closed": 215,
+        "error": 65
+      },
+      "raw_candidate": {
+        "residual": 1511,
+        "timeout": 123,
+        "closed": 217,
+        "error": 71
+      },
+      "raw_delta": {
+        "closed": 2,
+        "residual": 8,
+        "error": 6,
+        "timeout": -16
+      },
+      "reconciled_baseline": {
+        "residual": 1514,
+        "timeout": 120,
+        "closed": 217,
+        "error": 71
+      },
+      "reconciled_candidate": {
+        "residual": 1514,
+        "timeout": 120,
+        "closed": 217,
+        "error": 71
+      },
+      "reconciled_delta": {
+        "closed": 0,
+        "residual": 0,
+        "error": 0,
+        "timeout": 0
+      }
+    },
+    "pure": {
+      "raw_baseline": {
+        "error": 377,
+        "closed": 1,
+        "residual": 7
+      },
+      "raw_candidate": {
+        "residual": 280,
+        "closed": 103,
+        "error": 2
+      },
+      "raw_delta": {
+        "closed": 102,
+        "residual": 273,
+        "error": -375,
+        "timeout": 0
+      },
+      "reconciled_baseline": {
+        "error": 377,
+        "closed": 1,
+        "residual": 7
+      },
+      "reconciled_candidate": {
+        "residual": 280,
+        "closed": 103,
+        "error": 2
+      },
+      "reconciled_delta": {
+        "closed": 102,
+        "residual": 273,
+        "error": -375,
+        "timeout": 0
+      }
+    },
+    "unfold": {
+      "raw_baseline": {
+        "error": 8
+      },
+      "raw_candidate": {
+        "closed": 8
+      },
+      "raw_delta": {
+        "closed": 8,
+        "residual": 0,
+        "error": -8,
+        "timeout": 0
+      },
+      "reconciled_baseline": {
+        "error": 8
+      },
+      "reconciled_candidate": {
+        "closed": 8
+      },
+      "reconciled_delta": {
+        "closed": 8,
+        "residual": 0,
+        "error": -8,
+        "timeout": 0
+      }
+    }
+  },
+  "reconciled_iris_outcome_changes": []
+}

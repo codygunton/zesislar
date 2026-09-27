@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd /home/cody/zesislar/.worktrees/builder-t6-return-bundle
+rtk proxy python3 - <<'PREFLIGHT'
+import os, subprocess
+p=subprocess.run(['pgrep','-x','coqc'],capture_output=True,text=True)
+load=os.getloadavg()[0]
+if p.returncode==0 or load>8:
+    raise SystemExit('Hold: isolation needs zero existing coqc processes and load1 <= 8.')
+print(f'Isolated preflight: coqc=0 load1={load:.2f}')
+PREFLIGHT
+ulimit -t 300
+TIMEFORMAT='isolation elapsed=%3R user_cpu=%3U system_cpu=%3S'
+time rtk proxy python3 tools/build_record.py \
+  --build-dir _build/agents/t6-return-bundle/isolation-14f98 \
+  --target WriteSuccessTransactionsCarrierChunk14f98Raw-isolated \
+  -- tools/coqc_scratch.sh \
+  _build/agents/t6-return-bundle/isolation-14f98/WriteSuccessTransactionsCarrierChunk14f98Raw.v \
+  /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/55251ed462db/_build

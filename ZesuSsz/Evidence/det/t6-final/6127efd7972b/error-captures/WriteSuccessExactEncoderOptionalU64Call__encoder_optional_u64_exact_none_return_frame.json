@@ -1,0 +1,7 @@
+{
+  "probe": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b/_build/residuals/probes/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.v",
+  "exit": 1,
+  "elapsed": 6.435,
+  "source_sha256": "981b72a758fd3814f897d0dd9d3d0ee7cbbec58606f3e12fdc35c65d1182192c",
+  "source_unchanged": true
+}

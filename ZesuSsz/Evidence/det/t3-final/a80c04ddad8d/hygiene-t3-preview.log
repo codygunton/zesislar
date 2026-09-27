@@ -1,0 +1,5 @@
+Freed 0B (0 files removed)
+Freed: 0.00 GiB
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/my-home  1.7T  1.2T  541G  69% /home
+Worktrees: 28

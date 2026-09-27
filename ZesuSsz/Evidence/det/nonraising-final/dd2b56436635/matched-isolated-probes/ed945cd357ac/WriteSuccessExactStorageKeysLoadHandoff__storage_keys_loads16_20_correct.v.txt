@@ -1,0 +1,53 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.AllLegacy.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysLoads16.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactStorageKeysLoads20.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsFlagLoads.
+From IslaTraces.write_success_58 Require Import instrs.
+
+Definition storageKeysLoad20Frame `{!islaG Sigma} `{!threadG} (bytes : list (bv 8))
+    (index : nat) (P : iProp Sigma) : iProp Sigma :=
+  (reg_col [(KindReg "x8", BitsShape 64); (KindReg "x26", BitsShape 64);
+    (KindReg "x9", BitsShape 64); (KindReg "x25", BitsShape 64)] ∗
+   ⌜(index + 24 <= length bytes)%nat⌝ ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@storageKeysLoad20Frame) := I.
+
+Definition storageKeysLoaded16Frame `{!islaG Sigma} `{!threadG}
+    (bytes : list (bv 8)) (index : nat) (P : iProp Sigma) : iProp Sigma :=
+  ("x6" ↦ᵣ RVal_Bits (transactionRowByte bytes index 16) ∗
+   "x7" ↦ᵣ RVal_Bits (transactionRowByte bytes index 17) ∗
+   "x28" ↦ᵣ RVal_Bits (transactionRowByte bytes index 18) ∗
+   "x1" ↦ᵣ RVal_Bits (transactionRowByte bytes index 19) ∗ P ∗ True)%I.
+Global Instance : LithiumUnfold (@storageKeysLoaded16Frame) := I.
+
+Lemma storage_keys_load16_to_load20 `{!islaG Sigma} `{!threadG}
+    row base bytes index (P : iProp Sigma) :
+  storageKeysLoads16Post row base bytes index (storageKeysLoad20Frame bytes index P) -∗
+  storageKeysLoads20Entry row base bytes index (storageKeysLoaded16Frame bytes index P).
+Proof.
+  iIntros "Hfirst". iEval (unfold storageKeysLoads16Post) in "Hfirst".
+  iDestruct "Hfirst" as
+    "(Hsys & H6 & H7 & H28 & H1 & Hrow & Harray & %Hcursor & %Hbound & %Hlow & %Hhigh & Hframe & _)".
+  iEval (unfold storageKeysLoad20Frame) in "Hframe".
+  iDestruct "Hframe" as "(Hregs & %Hbound24 & HP & _)".
+  iEval (unfold storageKeysLoads20Entry, storageKeysLoaded16Frame).
+  iFrame. done.
+Qed.
+Print Assumptions storage_keys_load16_to_load20.
+
+Lemma storage_keys_loads16_20_correct `{!islaG Sigma} `{!threadG}
+    row base bytes index (P : iProp Sigma) :
+  ([∗ list] instruction ∈ take 4 IslaTraces.write_success_58.instrs.instr_map,
+    instr instruction.1 (Some instruction.2))%I -∗
+  ([∗ list] instruction ∈ take 4 (drop 4 IslaTraces.write_success_58.instrs.instr_map),
+    instr instruction.1 (Some instruction.2))%I -∗
+  instr_body 0x15248 (storageKeysLoads20Post row base bytes index
+    (storageKeysLoaded16Frame bytes index P)) -∗
+  instr_body 0x15228 (storageKeysLoads16Entry row base bytes index
+    (storageKeysLoad20Frame bytes index P)).
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

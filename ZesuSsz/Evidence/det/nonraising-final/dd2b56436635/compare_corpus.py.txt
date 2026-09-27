@@ -1,0 +1,27 @@
+import collections,json
+from pathlib import Path
+base=Path('/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals')
+root=Path('/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals')
+key=lambda r:(r['module'],r['lemma'])
+rows=lambda p:json.loads(p.read_text())['rows']
+pop={key(r):r['population'] for r in map(json.loads,(base/'corpus.jsonl').read_text().splitlines())}
+b={key(r):r for r in rows(base/'benchmark/434db04166fa-corpus.json')}
+p={key(r):r for r in rows(base/'benchmark/dcf02bfe2d00-corpus-nr.json')}
+prototype=[k for k in b if pop[k]=='iris' and (b[k]['outcome']=='closed' and p[k]['outcome']!='closed' or b[k]['outcome']=='residual' and p[k]['outcome']=='error')]
+candidate=root/'benchmark/dd2b56436635-corpus.json'
+if not candidate.exists():
+ print(json.dumps({'state':'pending','baseline_keys':len(b),'populations':dict(collections.Counter(pop[k] for k in b)),'prototype_regression_rows':[{ 'module':k[0],'lemma':k[1],'before':b[k]['outcome'],'prototype':p[k]['outcome']} for k in prototype]},indent=2))
+ raise SystemExit(0)
+candidate_doc=json.loads(candidate.read_text())
+rr=candidate_doc['rows']; c={key(r):r for r in rr}
+expected_sha='dd2b5643663568543a21a5a2ebc72fcf853725b0'
+metadata_errors=[]
+if candidate_doc.get('automation')!=expected_sha: metadata_errors.append('candidate automation SHA mismatch')
+if candidate_doc.get('summary',{}).get('reprobed')!=0: metadata_errors.append('candidate reprobed must equal zero')
+fields=['outcome','pred_class','signature','goal_sha256']
+changed=[{'module':k[0],'lemma':k[1],'population':pop[k],'diff':{f:[b[k].get(f),c[k].get(f)] for f in fields if b[k].get(f)!=c[k].get(f)}} for k in b.keys()&c.keys() if any(b[k].get(f)!=c[k].get(f) for f in fields)]
+summary={'candidate_keys':len(c),'duplicate_keys':len(rr)-len(c),'missing':sorted(b.keys()-c.keys()),'extra':sorted(c.keys()-b.keys()),'population_mismatch':[key(r) for r in rr if 'population' in r and r['population']!=pop.get(key(r))],'outcomes_by_population':{g:dict(collections.Counter(c[k]['outcome'] for k in c if pop[k]==g)) for g in ['iris','pure','unfold']},'field_diffs_by_population':{g:{f:sum(pop[k]==g and b[k].get(f)!=c[k].get(f) for k in b.keys()&c.keys()) for f in fields} for g in ['iris','pure','unfold']},'iris_outcome_changes':[r for r in changed if r['population']=='iris' and 'outcome' in r['diff']],'new_pure_unfold_errors':[r for r in changed if r['population']!='iris' and r['diff'].get('outcome',[None,None])[1]=='error'],'prototype_regression_checks':[{'module':k[0],'lemma':k[1],'baseline':b[k]['outcome'],'prototype':p[k]['outcome'],'candidate':c.get(k,{}).get('outcome')} for k in prototype],'changes':changed}
+lost_closed=[{'module':k[0],'lemma':k[1],'population':pop[k],'before':b[k]['outcome'],'after':c[k]['outcome']} for k in b.keys()&c.keys() if b[k]['outcome']=='closed' and c[k]['outcome']!='closed']
+new_errors_timeouts=[{'module':k[0],'lemma':k[1],'population':pop[k],'before':b[k]['outcome'],'after':c[k]['outcome']} for k in b.keys()&c.keys() if c[k]['outcome'] in ('error','timeout') and c[k]['outcome']!=b[k]['outcome']]
+summary.update({'candidate_automation':candidate_doc.get('automation'),'candidate_reprobed':candidate_doc.get('summary',{}).get('reprobed'),'metadata_errors':metadata_errors,'lost_closed_rejected':lost_closed,'new_errors_or_timeouts_review':new_errors_timeouts,'acceptance':'reject' if metadata_errors or lost_closed or summary['missing'] or summary['extra'] or summary['duplicate_keys'] or summary['population_mismatch'] else 'root review required' if summary['iris_outcome_changes'] or new_errors_timeouts else 'no flagged regression'})
+print(json.dumps(summary,indent=2))

@@ -1,0 +1,6 @@
+(3:pid7:1099221)(10:categories())(4:prog33:/home/cody/islaris/_opam/bin/coqc)(3:dir80:/home/cody/zesislar/.worktrees/builder-nonraising-v1/_build/agents/infra/default)(4:exit2:-1)(5:error15:got signal ABRT)(12:target_files(148:/home/cody/zesislar/.worktrees/builder-nonraising-v1/_build/agents/infra/default/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysStores.glob146:/home/cody/zesislar/.worktrees/builder-nonraising-v1/_build/agents/infra/default/ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactStorageKeysStores.vo))(6:stdout65:Tactic call zesu_run ran for 5.161 secs (5.11u,0.026s) (success)
+)(6:stderr27:Fatal error: out of memory
+)(6:rusage((13:user_cpu_time10:8650554000)(15:system_cpu_time9:496187000)(6:maxrss6:936968)(6:minflt5:30095)(6:majflt1:0)(7:inblock1:0)(7:oublock3:176)(5:nvcsw5:11003)(6:nivcsw2:30))))(11:diagnostics4:user19:1790459231500269074(3:exn144:File "ZesuSsz/dune", lines 3-52, characters 0-4487:
+Tactic call zesu_run ran for 5.161 secs (5.11u,0.026s) (success)
+Fatal error: out of memory
+)(3:loc14:ZesuSsz/dune:3)(4:memo((12:execute-rule((2:id3:839)(4:info(14:From_dune_file((9:po

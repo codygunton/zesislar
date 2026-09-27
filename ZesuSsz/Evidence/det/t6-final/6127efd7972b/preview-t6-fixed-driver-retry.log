@@ -1,0 +1,46 @@
+gate lock: state=wanted holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b pid=1274618 start=2026-09-26T19:50:55-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmps0za5y3g/spec.json
+OK (skipped=1)
+File "./ZesuSsz/Generated/Level1.v", line 109, characters 0-62:
+Warning: To avoid stack overflow, large numbers in nat are interpreted as
+applications of Init.Nat.of_num_uint. [abstract-large-number,numbers,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+writeSuccess decoder executable cases: passed
+uncached checks passed
+gate lock: state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b pid=1274618 start=2026-09-26T19:50:55-04:00
+drain: waited 0 s; coqc machine-wide 0; used 42 GiB
+gate check-iris with 24 jobs; guard: used 42 GiB (launch <150, hold 180, kill 200); coqc 0 machine-wide; load5 2; blocked 0; jobs 46; batch peak 0 GiB; gate lock state=held holder=cody:gate-check-iris:/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b pid=1274618 start=2026-09-26T19:50:55-04:00; holds 500; guard kills 0
+prometheus lucy 19:46-19:51: memory used peak 45.6 p90 45.4 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 4 p90 4; blocked peak 0 p90 0; cpu busy peak 2 p90 2 %; disk read peak 2 p90 0 MiB/s; /home free 541 GiB
+gate check-iris exit 0; 0 Timeout!; batch peak 111 GiB
+prometheus lucy 19:51-20:30: memory used peak 110.1 p90 91.2 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 24 p90 24; blocked peak 1 p90 0; cpu busy peak 38 p90 38 %; disk read peak 15 p90 0 MiB/s; /home free 541 GiB
+bash  check-iris   31783.65s user 646.82s system 1368% cpu 39:29.61 total

@@ -1,0 +1,12 @@
+[
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-t3-switch-rule15.json",
+    "destination": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-t3-switch-rule15.json",
+    "sha256": "a293bb5d67a72e148b9819f6554a02a3ea9d425b590d88478c75caf734b8de21"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-deltas-t3.json",
+    "destination": "ZesuSsz/Evidence/det/t3-final/a80c04ddad8d/remaining-arm-deltas-t3.json",
+    "sha256": "281fa844198065fa963fd3c5f6781aaed455b7a4392b3942d712b437beb57493"
+  }
+]

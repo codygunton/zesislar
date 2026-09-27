@@ -1,0 +1,22 @@
+[
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/isolation-14f98/WriteSuccessTransactionsCarrierChunk14f98Raw.v",
+    "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/isolation-14f98/WriteSuccessTransactionsCarrierChunk14f98Raw.v.txt",
+    "sha256": "11fda2c9ec68ea56a817e5d93babaddb5c02966f6339f768707e68b9eb592c70"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/isolation-14f98/log.jsonl",
+    "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/isolation-14f98/log.jsonl",
+    "sha256": "523a5ef9051511e8e29fa9f11e9d7415c33068a549b2931160d1e837f4f6b858"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/isolation-14f98/result.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/isolation-14f98/result.log",
+    "sha256": "a94220569cb3d3e9f5eabbfc9370ccd6c1c7e361d68430627f7eb173618bb048"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/isolation-14f98/run-isolated.sh",
+    "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/isolation-14f98/run-isolated.sh.txt",
+    "sha256": "d4b18ea0850e54085e1d803b37dd0affe19e528bd97a653ab97e948ff13692ea"
+  }
+]

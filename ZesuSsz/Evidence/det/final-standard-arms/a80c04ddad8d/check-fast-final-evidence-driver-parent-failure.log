@@ -1,0 +1,10 @@
+gate lock: state=wanted holder=cody:gate-check-fast:/home/cody/zesislar/.worktrees/builder-final-evidence pid=1683625 start=2026-09-26T22:35:25-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmpkdn255gg/spec.json
+OK (skipped=1)
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+Error: Cannot create external build directory
+/home/cody/zesislar/.worktrees/builder-final-evidence/_build/agents/push1.
+Make sure that the parent dir
+/home/cody/zesislar/.worktrees/builder-final-evidence/_build/agents exists.

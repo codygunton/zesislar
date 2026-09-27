@@ -1,0 +1,67 @@
+{"group": "nr-final-v1", "set": "full", "automation": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "imports": [], "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json", "command": ["/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh", "batch", "nr-final-v1-full", "--", "python3", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3_store_owner.py", "--config", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-stable-owner.json", "arm", "--", "--automation", "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "--set", "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set.txt", "--name", "nr-final-v1-full", "--jobs", "32", "--seconds", "300"], "cwd": "/home/cody/zesislar/.worktrees/islaris-native", "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build"}
+benchmark a80c04ddad8d: 305 lemmas
+arm tree _build/agents/bench/a80c04ddad8d
+resource guard allows 32 concurrent jobs
+reprobed WriteSuccessExactEpilogueSegment.v:write_success_exact_epilogue_segment: batch timeout 300 s, alone timeout 300 s
+classifier v2
+reprobed alone 1, 0 changed outcome
+probed 305  closed 0.7%  median 6.5 s
+outcomes {"closed": 2, "residual": 302, "timeout": 1}
+classes  {"C1": 56, "C2": 61, "C3": 2, "C4": 13, "C6": 30, "C7": 56, "C8": 16, "C9": 9, "n/a": 3, "unknown": 59}
+no earlier run to compare
+{"group": "nr-final-v1", "set": "rule15", "automation": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "imports": [], "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-rule15.json", "command": ["/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh", "batch", "nr-final-v1-rule15", "--", "python3", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3_store_owner.py", "--config", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-stable-owner.json", "arm", "--", "--automation", "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "--set", "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt", "--name", "nr-final-v1-rule15", "--jobs", "32", "--seconds", "300"], "cwd": "/home/cody/zesislar/.worktrees/islaris-native", "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build"}
+benchmark a80c04ddad8d: 48 lemmas
+arm tree _build/agents/bench/a80c04ddad8d
+resource guard allows 32 concurrent jobs
+reprobed WriteSuccessExactEpilogueSegment.v:write_success_exact_epilogue_segment: batch timeout 300 s, alone timeout 300 s
+classifier v2
+reprobed alone 1, 0 changed outcome
+probed 48  closed 4.2%  median 7.2 s
+outcomes {"closed": 2, "residual": 45, "timeout": 1}
+classes  {"C1": 10, "C2": 8, "C3": 2, "C4": 2, "C6": 3, "C7": 5, "C8": 4, "n/a": 3, "unknown": 11}
+no earlier run to compare
+{"group": "nr-final-v2", "set": "full", "automation": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "imports": ["ZesuSsz.Automation.Sets.v2"], "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v2-full.json", "command": ["/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh", "batch", "nr-final-v2-full", "--", "python3", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3_store_owner.py", "--config", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-stable-owner.json", "arm", "--", "--automation", "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "--set", "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set.txt", "--name", "nr-final-v2-full", "--jobs", "32", "--seconds", "300", "--import", "ZesuSsz.Automation.Sets.v2"], "cwd": "/home/cody/zesislar/.worktrees/islaris-native", "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build"}
+benchmark a80c04ddad8d: 305 lemmas
+arm tree _build/agents/bench/a80c04ddad8d
+resource guard allows 32 concurrent jobs
+reprobed WriteSuccessExactEpilogueSegment.v:write_success_exact_epilogue_segment: batch error 75 s, alone residual 94 s
+reprobed WriteSuccessExactHeaderChunk14e78.v:write_success_exact_header_chunk_14e78: batch error 7 s, alone error 5 s
+reprobed WriteSuccessNativeSuffixBytes158e0Carrier.v:write_success_suffix_bytes_158f0_carrier: batch error 4 s, alone error 2 s
+reprobed WriteSuccessNativeSuffixBytes158e0Carrier.v:write_success_suffix_bytes_15900_carrier: batch error 3 s, alone error 2 s
+reprobed WriteSuccessNativeSuffixBytes158e0Carrier.v:write_success_suffix_bytes_15910_carrier: batch error 3 s, alone error 2 s
+reprobed WriteSuccessNativeSuffixBytes158e0Carrier.v:write_success_suffix_bytes_15920_carrier: batch error 3 s, alone error 2 s
+reprobed WriteSuccessNativeSuffixIntPair.v:write_success_suffix_156e8_int: batch error 5 s, alone error 3 s
+reprobed WriteSuccessNativeSuffixIntPair.v:write_success_suffix_int_pair: batch error 5 s, alone error 3 s
+reprobed WriteSuccessTransactionsChunk14f20.v:write_success_transactions_chunk_14f20: batch error 2 s, alone error 1 s
+reprobed WriteSuccessTransactionsChunk14f2c.v:write_success_transactions_chunk_14f2c: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f34.v:write_success_transactions_chunk_14f34: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f3c.v:write_success_transactions_chunk_14f3c: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f44.v:write_success_transactions_chunk_14f44: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f48.v:write_success_transactions_chunk_14f48: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f4c.v:write_success_transactions_chunk_14f4c: batch error 4 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f54.v:write_success_transactions_chunk_14f54: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk14f58.v:write_success_transactions_chunk_14f58: batch error 3 s, alone error 2 s
+reprobed WriteSuccessTransactionsChunk15044Load.v:write_success_transactions_chunk_15044_load: batch error 6 s, alone error 4 s
+reprobed WriteSuccessTransactionsChunk1509cLoad.v:write_success_transactions_chunk_1509c_load: batch error 7 s, alone error 5 s
+reprobed WriteSuccessTransactionsChunk150a0Load.v:write_success_transactions_chunk_150a0_load: batch error 8 s, alone error 5 s
+reprobed WriteSuccessTransactionsChunk150a8Load.v:write_success_transactions_chunk_150a8_load: batch error 8 s, alone error 5 s
+reprobed WriteSuccessTransactionsChunk150b0Load.v:write_success_transactions_chunk_150b0_load: batch error 7 s, alone error 5 s
+reprobed WriteSuccessTransactionsChunk150b4Load.v:write_success_transactions_chunk_150b4_load: batch error 6 s, alone error 5 s
+reprobed WriteSuccessTransactionsChunk150bcLoad.v:write_success_transactions_chunk_150bc_load: batch error 7 s, alone error 5 s
+reprobed WriteSuccessTransactionsChunk150c4Load.v:write_success_transactions_chunk_150c4_load: batch error 8 s, alone error 5 s
+classifier v2
+reprobed alone 25, 1 changed outcome
+probed 305  closed 2.3%  median 4.5 s
+outcomes {"closed": 7, "error": 24, "residual": 274}
+classes  {"C1": 38, "C2": 43, "C3": 2, "C4": 13, "C6": 30, "C7": 56, "C8": 16, "C9": 20, "n/a": 31, "unknown": 56}
+no earlier run to compare
+{"group": "nr-final-v2", "set": "rule15", "automation": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "imports": ["ZesuSsz.Automation.Sets.v2"], "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v2-rule15.json", "command": ["/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh", "batch", "nr-final-v2-rule15", "--", "python3", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3_store_owner.py", "--config", "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-stable-owner.json", "arm", "--", "--automation", "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3", "--set", "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set_rule15.txt", "--name", "nr-final-v2-rule15", "--jobs", "32", "--seconds", "300", "--import", "ZesuSsz.Automation.Sets.v2"], "cwd": "/home/cody/zesislar/.worktrees/islaris-native", "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build"}
+benchmark a80c04ddad8d: 48 lemmas
+arm tree _build/agents/bench/a80c04ddad8d
+resource guard allows 32 concurrent jobs
+classifier v2
+reprobed alone 0, 0 changed outcome
+probed 48  closed 12.5%  median 5.8 s
+outcomes {"closed": 6, "residual": 42}
+classes  {"C1": 8, "C2": 7, "C3": 2, "C4": 2, "C6": 3, "C7": 5, "C8": 4, "C9": 2, "n/a": 6, "unknown": 9}
+no earlier run to compare

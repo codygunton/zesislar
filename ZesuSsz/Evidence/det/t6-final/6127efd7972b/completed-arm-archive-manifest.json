@@ -1,0 +1,82 @@
+[
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-full.json",
+    "destination": "ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-full.json",
+    "sha256": "a79c2d70f26fe5ab873361e38611502d39d3d0ff5985de7148a93fd0081734e8"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-rule15.json",
+    "destination": "ZesuSsz/Evidence/residuals/benchmark/6127efd7972b-nr-t6-switch-rule15.json",
+    "sha256": "6a5c6ae99a7fb3d373cafe455baea12c0e3b81e7349742ee4883a2070addcde8"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-arm-deltas-final.json",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/t6-arm-deltas-final.json",
+    "sha256": "006cbbab233e64151c9507dcb785a33d15b35dbbd15f8b482ae2572d8ebb5639"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.json",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.json",
+    "sha256": "0540387a244f2eebe3644d69644b4dab34780ae03363f012d3574d64ecb793dc"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.stderr.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.stderr.log",
+    "sha256": "679ad10c7dd1b20c238230bd68e5d757d95ace2c71193192921d054efe8a7062"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.stdout.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.stdout.log",
+    "sha256": "f7ba3cb25febbbc83f85ff76e4156ac76d8d380096d8def7fbf10a08ba74f666"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.json",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.json",
+    "sha256": "3b024b7b603fcaaecfe0d9990e276eeeb2ce4b8c7183e1e1d62e8e11405c8d05"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.stderr.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.stderr.log",
+    "sha256": "4ba9b3dd91b6eabb81b328a81fdb765402f277aed571744f95fd87965bfa2c4e"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.stdout.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.stdout.log",
+    "sha256": "ec2ae13c8fe67ed82714171f04764a8354d86da8037c027b2c9a894ff386edca"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.json",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.json",
+    "sha256": "605c8d89edfdf0ff7557cd9ae74f585330f8030a0842848cc7ef0104a9859aa3"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.stderr.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.stderr.log",
+    "sha256": "245d0afbe384703ac198252bd2b013501e3b6f91e059c6890944dc771fd68720"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/builder-t6-return-bundle/_build/agents/t6-return-bundle/error-captures-6127/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.stdout.log",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.stdout.log",
+    "sha256": "08deb503d9da23a1cb0cd2fa7e158cb8c0610052cc9866f97f5ce83941faa84e"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b/_build/residuals/probes/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.v",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderIntFramedCall__encoder_int_exact_framed_correct.v.txt",
+    "sha256": "3df31b72277622be1ba3f87e7277d28999d52f08adcf81584bec5fae4db6f43f"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b/_build/residuals/probes/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.v",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_adapter_from_closed.v.txt",
+    "sha256": "ceb929a0cca2cc436cab067e7ea3b0a79dbca08439daa1af309327e8ff99c294"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/6127efd7972b/_build/residuals/probes/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.v",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/error-captures/WriteSuccessExactEncoderOptionalU64Call__encoder_optional_u64_exact_none_return_frame.v.txt",
+    "sha256": "981b72a758fd3814f897d0dd9d3d0ee7cbbec58606f3e12fdc35c65d1182192c"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-manifest.json",
+    "destination": "ZesuSsz/Evidence/det/t6-final/6127efd7972b/arm-command-manifest.json",
+    "sha256": "74c5290f12025640652ceca2fe718b2a48f6d98ce1052ff646a174cb0f40f758"
+  }
+]

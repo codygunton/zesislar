@@ -1,0 +1,24 @@
+{
+  "source_sha": "f08fa35bf956c933c951580727194ffcb0932334",
+  "original_sha": "e09421e3f0356bdc4cc7d48f57abd4775b8f4a30",
+  "candidate_pushed": true,
+  "original_backup_pushed": true,
+  "rebased_on": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+  "source_audit": {
+    "files": 23,
+    "exact_matches_to_original": 22,
+    "remaining_file": "ZesuSsz/Automation/Finish.v",
+    "remaining_change": "T3 import and selector applied to 6127; non-raising v1 preserved",
+    "report_source": "Root review"
+  },
+  "check_fast": {
+    "exit": 0,
+    "jobs": 24,
+    "elapsed_seconds": 346.28,
+    "peak_gib": 63,
+    "timeouts": 0
+  },
+  "switched_arm_session": 93339,
+  "arm_state": "immutable snapshot build running at requested32 jobs when recorded",
+  "merged": false
+}

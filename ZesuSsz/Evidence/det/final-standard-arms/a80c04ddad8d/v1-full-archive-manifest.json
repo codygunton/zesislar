@@ -1,0 +1,22 @@
+{
+  "files": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v1-full.json",
+      "sha256": "043e4ad8d71604d7a82a9d2731dea1196a47ca5ae9fd71ec8ce78a145e422467",
+      "bytes": 96919
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-deltas-final-progress.json",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/remaining-arm-deltas-v1-full-progress.json",
+      "sha256": "94eecbbd8f9a9a9f22db9405bdcf96a9ecc45bc48a1c01ca2e6ce2030c0ac327",
+      "bytes": 14176
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/queue_final_store_arms.py",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/queue_final_store_arms.py.txt",
+      "sha256": "2af5622077256b6fbc8753665264ffb96137942c120de06c06e3d31733aeb2ab",
+      "bytes": 1656
+    }
+  ]
+}

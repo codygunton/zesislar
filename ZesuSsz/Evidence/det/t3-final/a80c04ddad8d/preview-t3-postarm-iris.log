@@ -1,0 +1,34 @@
+python3 ZesuSsz/Evidence/generate_islaris_dump.py \
+  --disassembly build/endpoint-elf/meta/disassembly.txt \
+  --profile experiments/islaris-startup/profile.json --output build/islaris-dumps/startup.dump
+uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py'
+..............................................................................................................................
+----------------------------------------------------------------------
+Ran 126 tests in 7.706s
+
+OK
+assumptions: 1 checked; 0 changed
+CHANGED M.v f
+assumptions: 1 checked; 1 changed
+generated /tmp/tmp2l6ndpj7/generated/GeneratedWriteSuccessExactSuffixEntrySegment.v
+3.8s outcome=stalled class=C3 goal=subsume (…) (…)
+calls in [0x156e8, 0x15744): 0 premises, 0 contract modules
+spec record written to /tmp/tmpf3b2wa8h/spec.json
+PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+...................................................s.......................................
+----------------------------------------------------------------------
+Ran 91 tests in 0.022s
+
+OK (skipped=1)
+python3 ZesuSsz/Evidence/check_parity.py
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+python3 ZesuSsz/Evidence/check_spec_shapes.py
+bash ZesuSsz/Evidence/check_write_success_decoder.sh
+writeSuccess decoder executable cases: passed
+/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d/tools/resource_guard.sh locked check-iris -- /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d/tools/resource_guard.sh batch check-iris -- \
+  python3 tools/build_record.py --build-dir /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build \
+  --target check-iris -- opam exec --switch=/home/cody/islaris -- dune build --root . \
+  --build-dir /home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build --cache=enabled -j24 \
+  @ZesuSsz/Proofs/all

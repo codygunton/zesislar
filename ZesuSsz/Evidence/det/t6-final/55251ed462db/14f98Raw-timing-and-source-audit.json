@@ -1,0 +1,27 @@
+{
+  "module": "WriteSuccessTransactionsCarrierChunk14f98Raw.v",
+  "entry": "Automation.AllLegacy",
+  "t6_switch_imported": false,
+  "timings": [
+    {
+      "source": "dd2b5643663568543a21a5a2ebc72fcf853725b0",
+      "cpu_seconds": 495.037367,
+      "elapsed_seconds": 498.601606,
+      "peak_rss_kib": 3870948
+    },
+    {
+      "source": "ed945cd357acd5d0b4e8a5030eb89264428ae6a8",
+      "cpu_seconds": 274.220202,
+      "elapsed_seconds": 275.462971,
+      "peak_rss_kib": 3996012
+    }
+  ],
+  "low_load_isolation": "Prepared; not run",
+  "cause": "Unresolved; no cause inferred from these timing records",
+  "t6_source_identity": {
+    "source_sha": "55251ed462dba84daec0f92a87c8729a7d224e29",
+    "tracked_entries_checked": 2508,
+    "matching_entries": 2508,
+    "reported_by": "Endpoint worker via root"
+  }
+}

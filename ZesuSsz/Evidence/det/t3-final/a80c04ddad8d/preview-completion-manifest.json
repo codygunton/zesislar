@@ -1,0 +1,42 @@
+[
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/preview-t3-fixed-driver.log",
+    "file": "preview-t3-fixed-driver.log",
+    "sha256": "248a9dc57f667cf118deb1271ce9788033e95327fe918cacba1a528b98d01c52"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/preview-t3-fixed-iris.log",
+    "file": "preview-t3-fixed-iris.log",
+    "sha256": "fa44007e7e1e4500ce493f36fe9f07ab04c235e8491415ffedebb6f0cd2b5370"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/hygiene-t3-preview.log",
+    "file": "hygiene-t3-preview.log",
+    "sha256": "bfc38ef32a395df46af49767e09c1f2f46d72b6575d48258f7e1145877db862d"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-store-complete.log",
+    "file": "t3-store-complete.log",
+    "sha256": "343f1c0ac89532045689975ac545b76dcb6a282194f54c0f773fbe5660cf0bb8"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-stable-owner.json",
+    "file": "t3-stable-owner.json",
+    "sha256": "bc5fedd13dea93de421e5e2009a7412cf4e2cd3200e9a6bb73bc1ce750982c86"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d/.snapshot-source-audit.json",
+    "file": "snapshot-source-audit.json",
+    "sha256": "9319cbd728e97f3a18a60940883e251fb1ff2ff3787883d580e2bf7dc5af78b0"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d/.arm-commit",
+    "file": "arm-commit",
+    "sha256": "96020badd82ae69ca6b1c9faf4afe1f3e9fbc38ee6b1ac1c6fdab3ae178dc182"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build/log.jsonl",
+    "file": "physical-store-build-records.jsonl",
+    "sha256": "21a969603c767a8df51c0ce660cb8959040b0c6110c0b09330c92cae49ffef21"
+  }
+]

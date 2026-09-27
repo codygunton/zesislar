@@ -1,0 +1,514 @@
+Tactic call zesu_run ran for 5.033 secs (4.931u,0.076s) (success)
+Tactic call zesu_run ran for 0.785 secs (0.777u,0.003s) (success)
+Tactic call zesu_run ran for 47.672 secs (47.3u,0.116s) (success)
+Tactic call zesu_run ran for 6.856 secs (6.796u,0.023s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.047 secs (0.047u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call
+TF2 inferred Candidate ran for 77.057 secs (76.393u,0.255s) 
+(success)
+2 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  Decoded : Type
+  WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation
+                                        Decoded
+  args : WriteSuccessArgs Decoded
+  witness : writeSuccessNativeWitness Decoded
+  tail : spec
+  Hwf : writeSuccessWitnessWellFormed args witness
+  H0 : (bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z
+  H1 : (0 ≤ bv_unsigned (writeSuccessFrameSp witness))%Z
+  H2 : (bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824)%Z
+  b0 : bv 64
+  H3 : Z.land (bv_unsigned b0) 131072 = 0%Z
+  H4 : WriteSuccessPostTransactionResources.writeSuccessPostWord
+         (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+            (writeSuccessDecodedBytes witness)) 7 = 0%bv
+  b1 : bv 64
+  H5 : Z.land (bv_unsigned b1) 131072 = 0%Z
+  b2 : bv 64
+  H6 : Z.land (bv_unsigned b2) 131072 = 0%Z
+  H7 : (-1 < bv_unsigned b2 < bv_modulus 64)%Z
+  H8 : 64%N ≠ 0%N
+       → (- bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64)%Z
+  H9 : (-1 < bv_unsigned b1 < bv_modulus 64)%Z
+  H10 : 64%N ≠ 0%N
+        → (- bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64)%Z
+  H11 : (-1 < bv_unsigned b0 < bv_modulus 64)%Z
+  H12 : 64%N ≠ 0%N
+        → (- bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64)%Z
+  b : bv 64
+  H13 : Z.land (bv_unsigned b) 131072 = 0%Z
+  H14 : (-1 < bv_unsigned b < bv_modulus 64)%Z
+  H15 : 64%N ≠ 0%N
+        → (- bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64)%Z
+  ============================
+  _ : instr_lookup_resources Index.lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 88988 encoderBooleanEntryBoundary
+  _ : instr_pre 89196 encoderBytesEntryBoundary
+  _ : instr_pre 89360 encoderIntEntryBoundary
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64);
+         (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64);
+         (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+         (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
+         (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+         (KindReg "x27", BitsShape 64); (KindReg "x28", BitsShape 64);
+         (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : ⌜writeSuccessWitnessWellFormed args witness⌝
+  _ : (bv_unsigned (writeSuccessFrameSp witness) - 80) ↦ₘ? 32
+  _ : (bv_unsigned (writeSuccessFrameSp witness) - 48) ↦ₘ? 32
+  _ : bv_unsigned (writeSuccessFrameSp witness) ↦ₘ? 8
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 24)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 0
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 16)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 1
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 40)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 2
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 32)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 3
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 56)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 4
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 48)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 5
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 64)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 6
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 8)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 8
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 296)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 10
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 304)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 11
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 280)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 12
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 288)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 13
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 88)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 15
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 312)
+      ↦ₘ∗ writeSuccessSourceBytes witness
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 1032)
+      ↦ₘ∗ take 69 (writeSuccessValues witness)
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 1584)
+      ↦ₘ∗ take 4
+            (drop 552
+               (IslarisMemory.bytes_of_u64s (writeSuccessValues witness)))
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 1588)
+      ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash
+            (writeSuccessValues witness)
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 1620)
+      ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s (writeSuccessValues witness))
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 1624) ↦ₘ? 16
+  _ : writeSuccessTerminalSavedSlots witness
+  _ : bv_unsigned (writeSuccessDecodedPointer witness)
+      ↦ₘ∗ writeSuccessDecodedBytes witness
+  _ : bv_unsigned
+        (WriteSuccessValueSpec.writeSuccessValueWord
+           (writeSuccessValues witness) 4) ↦ₘ∗ writeSuccessPayload witness
+  _ : (fix byteListItemResources
+         (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) 
+         (address : Z) (items : list ByteListItem) {struct items} :
+           iProp Sigma0 :=
+         match items with
+         | [] => True
+         | item :: rest => address ↦ₘ byteListData item ∗
+             (address + 8) ↦ₘ byteListSize item ∗
+             bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+             ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+             byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+         end) Sigma islaG0
+        (bv_unsigned
+           (WriteSuccessValueSpec.writeSuccessValueWord
+              (writeSuccessValues witness) 9))
+        (writeSuccessRawTransactions witness)
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes1571c
+           (writeSuccessPostData witness)).1
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes1571cPayload
+            (writeSuccessPostData witness)
+  _ : ⌜bv_unsigned
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes1571c
+            (writeSuccessPostData witness)).2 =
+       length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes1571cPayload
+            (writeSuccessPostData witness))⌝
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostSourceWords
+              (writeSuccessSourceBytes witness)) 74)
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostHashesPayload
+            (writeSuccessPostData witness)
+  _ : ⌜length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostHashesPayload
+            (writeSuccessPostData witness)) =
+       (32 *
+        WriteSuccessPostTransactionDescriptors.writeSuccessPostHashesCount
+          (writeSuccessPostData witness))%nat⌝
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158e0
+           (writeSuccessPostData witness)).1
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158e0Payload
+            (writeSuccessPostData witness)
+  _ : ⌜bv_unsigned
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158e0
+            (writeSuccessPostData witness)).2 =
+       length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158e0Payload
+            (writeSuccessPostData witness))⌝
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158f0
+           (writeSuccessPostData witness)).1
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158f0Payload
+            (writeSuccessPostData witness)
+  _ : ⌜bv_unsigned
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158f0
+            (writeSuccessPostData witness)).2 =
+       length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes158f0Payload
+            (writeSuccessPostData witness))⌝
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15900
+           (writeSuccessPostData witness)).1
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15900Payload
+            (writeSuccessPostData witness)
+  _ : ⌜bv_unsigned
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15900
+            (writeSuccessPostData witness)).2 =
+       length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15900Payload
+            (writeSuccessPostData witness))⌝
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15910
+           (writeSuccessPostData witness)).1
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15910Payload
+            (writeSuccessPostData witness)
+  _ : ⌜bv_unsigned
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15910
+            (writeSuccessPostData witness)).2 =
+       length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15910Payload
+            (writeSuccessPostData witness))⌝
+  _ : bv_unsigned
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15920
+           (writeSuccessPostData witness)).1
+      ↦ₘ∗ WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15920Payload
+            (writeSuccessPostData witness)
+  _ : ⌜bv_unsigned
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15920
+            (writeSuccessPostData witness)).2 =
+       length
+         (WriteSuccessPostTransactionDescriptors.writeSuccessPostBytes15920Payload
+            (writeSuccessPostData witness))⌝
+  _ : (fix byteListItemResources
+         (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) 
+         (address : Z) (items : list ByteListItem) {struct items} :
+           iProp Sigma0 :=
+         match items with
+         | [] => True
+         | item :: rest => address ↦ₘ byteListData item ∗
+             (address + 8) ↦ₘ byteListSize item ∗
+             bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+             ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+             byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+         end) Sigma islaG0
+        (bv_unsigned
+           (WriteSuccessPostTransactionResources.writeSuccessPostWord
+              (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                 (writeSuccessDecodedBytes witness)) 0))
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostByteLists15930
+           (writeSuccessPostData witness))
+  _ : (fix byteListItemResources
+         (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) 
+         (address : Z) (items : list ByteListItem) {struct items} :
+           iProp Sigma0 :=
+         match items with
+         | [] => True
+         | item :: rest => address ↦ₘ byteListData item ∗
+             (address + 8) ↦ₘ byteListSize item ∗
+             bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+             ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+             byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+         end) Sigma islaG0
+        (bv_unsigned
+           (WriteSuccessPostTransactionResources.writeSuccessPostWord
+              (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                 (writeSuccessDecodedBytes witness)) 2))
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostByteLists15940
+           (writeSuccessPostData witness))
+  _ : (fix byteListItemResources
+         (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) 
+         (address : Z) (items : list ByteListItem) {struct items} :
+           iProp Sigma0 :=
+         match items with
+         | [] => True
+         | item :: rest => address ↦ₘ byteListData item ∗
+             (address + 8) ↦ₘ byteListSize item ∗
+             bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+             ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+             byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+         end) Sigma islaG0
+        (bv_unsigned
+           (WriteSuccessPostTransactionResources.writeSuccessPostWord
+              (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                 (writeSuccessDecodedBytes witness)) 4))
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostByteLists15950
+           (writeSuccessPostData witness))
+  _ : match
+        WriteSuccessPostTransactionDescriptors.writeSuccessPostConditional1596c
+          (writeSuccessPostData witness)
+      with
+      | Some value =>
+          match
+            WriteSuccessPostTransactionDescriptors.writeSuccessPostConditional1596cPayload
+              (writeSuccessPostData witness)
+          with
+          | Some payload =>
+              WriteSuccessPostTransactionResources.writeSuccessDescriptorResources
+                value payload
+          | None => False
+          end
+      | None =>
+          match
+            WriteSuccessPostTransactionDescriptors.writeSuccessPostConditional1596cPayload
+              (writeSuccessPostData witness)
+          with
+          | Some _ => False
+          | None => True
+          end
+      end
+  _ : (fix byteListItemResources
+         (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) 
+         (address : Z) (items : list ByteListItem) {struct items} :
+           iProp Sigma0 :=
+         match items with
+         | [] => True
+         | item :: rest => address ↦ₘ byteListData item ∗
+             (address + 8) ↦ₘ byteListSize item ∗
+             bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+             ⌜bv_unsigned (byteListSize item) = length (byteListBytes item)⌝ ∗
+             byteListItemResources Sigma0 islaG1 (address + 16)%Z rest
+         end) Sigma islaG0
+        (bv_unsigned
+           (WriteSuccessPostTransactionResources.writeSuccessPostWord
+              (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                 (writeSuccessDecodedBytes witness)) 14))
+        (WriteSuccessPostTransactionDescriptors.writeSuccessPostByteLists159c8
+           (writeSuccessPostData witness))
+  _ : ⌜WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataFacts
+         (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+         (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)⌝
+  _ : bv_unsigned 96709
+      ↦ₘ∗ [Z_to_bv 8 90; Z_to_bv 8 83; Z_to_bv 8 83; 
+           Z_to_bv 8 90; Z_to_bv 8 1; Z_to_bv 8 1]
+  _ : ⌜writeSuccessTransactions witness = writeSuccessTransactions witness⌝
+  _ : ⌜writeSuccessTransactionBytes witness =
+       writeSuccessTransactionsBytes (writeSuccessTransactions witness)⌝
+  _ : ⌜[] = []⌝
+  _ : ⌜writeSuccessTransactionBytes witness =
+       writeSuccessTransactionsBytes (writeSuccessTransactions witness)⌝
+  _ : ⌜writeSuccessTransactionBytes witness =
+       writeSuccessTransactionBytes witness⌝
+  _ : ⌜length (writeSuccessTransactionBytes witness) =
+       (288 * length (writeSuccessTransactions witness))%nat⌝
+  _ : ⌜0 = (288 * 0)%nat⌝
+  _ : ⌜length (writeSuccessTransactionBytes witness) =
+       (288 * length (writeSuccessTransactions witness))%nat⌝
+  _ : ⌜length (writeSuccessTransactions witness) <
+       2 *
+       (2 *
+        (2 *
+         (2 *
+          (2 *
+           (2 *
+            (2 *
+             (2 *
+              (2 *
+               (2 *
+                (2 *
+                 (2 *
+                  (2 * (2 * (2 * (2 * (2 * (2 * (2 * (2 * (2 * ...))))))))))))))))))))⌝
+  _ : ⌜(bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z⌝
+  _ : ⌜(0 ≤ bv_unsigned (writeSuccessFrameSp witness) - 48)%Z⌝
+  _ : ⌜(bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824)%Z⌝
+  _ : ⌜(writeSuccessTransactionBase witness `mod` 8)%Z = 0%Z⌝
+  _ : ⌜(0 ≤ writeSuccessTransactionBase witness)%Z⌝
+  _ : ⌜(writeSuccessTransactionBase witness +
+        length (writeSuccessTransactionBytes witness) < 
+        0 + 1073741824)%Z⌝
+  _ : True
+  _ : True
+  _ : reg_col
+        [(KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+         (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+         (KindReg "x15", BitsShape 64); (KindReg "x18", BitsShape 64)]
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 72)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 7
+  _ : (bv_unsigned (writeSuccessFrameSp witness) - 8)
+      ↦ₘ Z_to_bv 64 (88476 + 4)
+  _ : bv_unsigned (writeSuccessEntrySp witness - (2000 + 9))
+      ↦ₘ∗ WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 0
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace tail
+  _ : True
+  _ : "x8"
+      ↦ᵣ RVal_Bits
+           (WriteSuccessPostTransactionResources.writeSuccessPostWord
+              (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                 (writeSuccessDecodedBytes witness)) 14)
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 96)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 14
+  _ : (bv_unsigned (writeSuccessFrameSp witness) + 80)
+      ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+           (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+              (writeSuccessDecodedBytes witness)) 9
+  --------------------------------------∗
+  (bv_unsigned (writeSuccessFrameSp witness) - 9) ↦ₘ? 9 ∗
+  ∃ (_ : ()) (x : spec *ₗ ()), mmio_range (604086456 + 8) 16 ∗
+    spec_trace
+      (Snapshots.writeOutputEvents
+         (writeSuccessEntrySp witness - (2000 + 16)) 8
+         [Z_to_bv 8
+            (bv_unsigned
+               (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                  (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                     (writeSuccessDecodedBytes witness)) 9) `mod` 256);
+          Z_to_bv 8
+            ((bv_unsigned
+                (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                   (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                      (writeSuccessDecodedBytes witness)) 9) `div` 256)
+             `mod` 256);
+          Z_to_bv 8
+            (((bv_unsigned
+                 (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                    (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                       (writeSuccessDecodedBytes witness)) 9) `div` 256)
+              `div` 256) `mod` 256);
+          Z_to_bv 8
+            ((((bv_unsigned
+                  (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                     (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                        (writeSuccessDecodedBytes witness)) 9) `div` 256)
+               `div` 256) `div` 256) `mod` 256);
+          Z_to_bv 8
+            (((((bv_unsigned
+                   (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                      (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                         (writeSuccessDecodedBytes witness)) 9) `div` 256)
+                `div` 256) `div` 256) `div` 256) `mod` 256);
+          Z_to_bv 8
+            ((((((bv_unsigned
+                    (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                       (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                          (writeSuccessDecodedBytes witness)) 9) `div` 256)
+                 `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+          Z_to_bv 8
+            (((((((bv_unsigned
+                     (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                        (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                           (writeSuccessDecodedBytes witness)) 9) `div` 256)
+                  `div` 256) `div` 256) `div` 256) `div` 256) `div` 256)
+             `mod` 256);
+          Z_to_bv 8
+            ((((((((bv_unsigned
+                      (WriteSuccessPostTransactionResources.writeSuccessPostWord
+                         (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                            (writeSuccessDecodedBytes witness)) 9) `div` 256)
+                   `div` 256) `div` 256) `div` 256) `div` 256) `div` 256)
+              `div` 256) `mod` 256)] x.1ₗ) ∗
+    ⌜(bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z⌝ ∗
+    ⌜(0 ≤ bv_unsigned (writeSuccessFrameSp witness) - 16)%Z⌝ ∗
+    ⌜(bv_unsigned (writeSuccessFrameSp witness) < 0 + 1073741824)%Z⌝ ∗
+    ⌜bv_extract 0 1 (Z_to_bv 64 (88492 + 4)) = 0%bv⌝ ∗
+    ⌜bv_extract 1 1 (Z_to_bv 64 (88492 + 4)) = 0%bv⌝ ∗
+    ⌜bv_extract 0 2 (Z_to_bv 64 (88492 + 4)) = 0%bv⌝ ∗
+    instr_pre (bv_unsigned (Z_to_bv 64 (88492 + 4)))
+      (WriteSuccessExactEncoderIntCall.encoderIntExactReturn
+         (writeSuccessFrameSp witness) (Z_to_bv 64 (88492 + 4)) x.1ₗ) ∗ True
+
+goal 2 is:
+ _ : instr_lookup_resources Index.lookup
+ _ : spec_instr_resources
+ _ : instr_pre 88988 encoderBooleanEntryBoundary
+ _ : instr_pre 89196 encoderBytesEntryBoundary
+ _ : instr_pre 89360 encoderIntEntryBoundary
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : writeSuccessExactPostWithdrawalsCallerFrameRest args witness
+ _ : reg_col
+       [(KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+        (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+        (KindReg "x15", BitsShape 64); (KindReg "x18", BitsShape 64)]
+ _ : (bv_unsigned (writeSuccessFrameSp witness) + 72)
+     ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord
+          (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+             (writeSuccessDecodedBytes witness)) 7
+ _ : "x8"
+     ↦ᵣ RVal_Bits
+          (WriteSuccessPostTransactionResources.writeSuccessPostWord
+             (WriteSuccessPostTransactionResources.writeSuccessPostTailWords
+                (writeSuccessDecodedBytes witness)) 7)
+ --------------------------------------∗
+ ∃ x : spec *ₗ (),
+   ⌜scons_snap (SWriteMem (BV 64 (604086456 + 16)) 1%bv)
+      (λ snapshot : seq_snapshot,
+         read_mem_list (snap_mem snapshot)
+           (bv_unsigned (writeSuccessEntrySp witness - (2000 + 9))) 1 =
+         Some (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1))
+      x.1ₗ
+    ⊆ scons_snap (SWriteMem (BV 64 (604086456 + 16)) 1%bv)
+        (λ snapshot : seq_snapshot,
+           read_mem_list (snap_mem snapshot)
+             (bv_unsigned (writeSuccessEntrySp witness - (2000 + 9))) 1 =
+           Some
+             (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 0))
+        tail⌝ ∗ ⌜bv_extract 0 4 (writeSuccessFrameSp witness) = 0%bv⌝ ∗
+   ⌜(0 ≤ bv_unsigned (writeSuccessFrameSp witness) - 16)%Z⌝ ∗
+   ⌜(bv_unsigned (writeSuccessFrameSp witness) < 0 + 1073741824)%Z⌝ ∗
+   ⌜bv_extract 0 1 (Z_to_bv 64 (88444 + 4)) = 0%bv⌝ ∗
+   ⌜bv_extract 1 1 (Z_to_bv 64 (88444 + 4)) = 0%bv⌝ ∗
+   ⌜bv_extract 0 2 (Z_to_bv 64 (88444 + 4)) = 0%bv⌝ ∗
+   instr_pre (bv_unsigned (Z_to_bv 64 (88444 + 4)))
+     (encoderBooleanClosedReturn 1 (writeSuccessFrameSp witness)
+        (Z_to_bv 64 (88444 + 4)) x.1ₗ) ∗ True
+exit=0 ms=79687 rss_kb=2098044

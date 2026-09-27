@@ -1,0 +1,16 @@
+gate lock: state=wanted holder=cody:gate-check-fast:/home/cody/zesislar/.worktrees/builder-t3-array-priority pid=1396972 start=2026-09-26T20:49:21-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmp664cebyt/spec.json
+OK (skipped=1)
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+Closed under the global context
+writeSuccess decoder executable cases: passed
+uncached checks passed
+gate lock: state=held holder=cody:gate-check-fast:/home/cody/zesislar/.worktrees/builder-t3-array-priority pid=1396972 start=2026-09-26T20:49:21-04:00
+drain: waited 0 s; coqc machine-wide 0; used 43 GiB
+gate check-fast with 24 jobs; guard: used 43 GiB (launch <150, hold 180, kill 200); coqc 0 machine-wide; load5 1; blocked 0; jobs 45; batch peak 0 GiB; gate lock state=held holder=cody:gate-check-fast:/home/cody/zesislar/.worktrees/builder-t3-array-priority pid=1396972 start=2026-09-26T20:49:21-04:00; holds 500; guard kills 0
+prometheus lucy 20:44-20:49: memory used peak 43.6 p90 43.5 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 5 p90 4; blocked peak 0 p90 0; cpu busy peak 1 p90 1 %; disk read peak 0 p90 0 MiB/s; /home free 541 GiB
+gate check-fast exit 0; 0 Timeout!; batch peak 63 GiB
+prometheus lucy 20:49-20:55: memory used peak 61.7 p90 56.5 of 251 GiB; swap used peak 0.0 p90 0.0 GiB; load5 peak 5 p90 5; blocked peak 1 p90 0; cpu busy peak 26 p90 20 %; disk read peak 0 p90 0 MiB/s; /home free 541 GiB
+bash tools/det/gate.sh check-fast   1663.43s user 40.69s system 492% cpu 5:46.28 total

@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-deltas-final-three.json",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/remaining-arm-deltas-final-three.json",
+      "sha256": "38bc8eee18ad9729844c13c89b815d2d810ff6b93739c88e4bdae0d69339f73c",
+      "bytes": 15823
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v2-full.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-final-v2-full.json",
+      "sha256": "3ec3e5c19e6069b6efd288a0ca281a6f6fe372a14fe38cb20089f274ca5ede30",
+      "bytes": 96581
+    }
+  ]
+}

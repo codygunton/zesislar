@@ -1,0 +1,37 @@
+{"group": "nr-t3-switch", "set": "full", "automation": "f08fa35bf956c933c951580727194ffcb0932334", "imports": ["ZesuSsz.Automation.Sets.v2", "ZesuSsz.Automation.Switches.ArrayLoadPriority"], "result": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/f08fa35bf956-nr-t3-switch-full.json", "command": ["/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh", "batch", "nr-t3-switch-full", "--", "python3", "/home/cody/zesislar/.worktrees/determinism/tools/residual/benchmark.py", "--automation", "f08fa35bf956c933c951580727194ffcb0932334", "--set", "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set.txt", "--name", "nr-t3-switch-full", "--jobs", "32", "--seconds", "300", "--import", "ZesuSsz.Automation.Sets.v2", "--import", "ZesuSsz.Automation.Switches.ArrayLoadPriority"], "cwd": "/home/cody/zesislar/.worktrees/islaris-native"}
+benchmark f08fa35bf956: 305 lemmas
+arm tree _build/agents/bench/f08fa35bf956
+benchmark build failed:
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 5.367 secs (5.334u,0.013s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+make: *** [Makefile:346: check-iris] Error 1
+Traceback (most recent call last):
+  File "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining_arms.py", line 36, in <module>
+    subprocess.run(row['command'],cwd=repo,check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/cody/zesislar/.worktrees/determinism/tools/resource_guard.sh', 'batch', 'nr-t3-switch-full', '--', 'python3', '/home/cody/zesislar/.worktrees/determinism/tools/residual/benchmark.py', '--automation', 'f08fa35bf956c933c951580727194ffcb0932334', '--set', '/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark_set.txt', '--name', 'nr-t3-switch-full', '--jobs', '32', '--seconds', '300', '--import', 'ZesuSsz.Automation.Sets.v2', '--import', 'ZesuSsz.Automation.Switches.ArrayLoadPriority']' returned non-zero exit status 1.

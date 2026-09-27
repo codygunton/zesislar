@@ -1,0 +1,437 @@
+{
+  "record": "Exact copied verification logs and text fixtures; no build artifacts.",
+  "files": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessEncoderBytes__encoder_bytes_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessEncoderBytes__encoder_bytes_correct.v.txt",
+      "bytes": 5344,
+      "sha256": "960a20cce56a238ad2e13af4459f747165dca4b9fb644c493189976de9f2d6d9"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessEncoderCalls__zesu_encoder_bytes_any_pre.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessEncoderCalls__zesu_encoder_bytes_any_pre.v.txt",
+      "bytes": 2311,
+      "sha256": "8d27541faa429d0f326d139af0c3eb3d0adea801394fbe1570ce95d39c4fb5dd"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessEncoderOptionalSome__encoder_optional_some_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessEncoderOptionalSome__encoder_optional_some_correct.v.txt",
+      "bytes": 1704,
+      "sha256": "992a7dce00e2c826754a1f17caa6a55063459f572a462f55a4e7b58b2f67e784"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactAuthorizationsCopy__authorization_copy_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactAuthorizationsCopy__authorization_copy_correct.v.txt",
+      "bytes": 3133,
+      "sha256": "3084429fea76a56a38c7b88e6a391bfafb11ec7d9c11561d050ba24aa6133d26"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactBlobHashesLoadHandoff__blob_loads16_20_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactBlobHashesLoadHandoff__blob_loads16_20_correct.v.txt",
+      "bytes": 2686,
+      "sha256": "1b098d9f1bc3f8f2300c7d6002fd18329a4564269969531831e0ae7a546726fe"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactBlobHashesUpperLoadHandoff__blob_loads28_24_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactBlobHashesUpperLoadHandoff__blob_loads28_24_correct.v.txt",
+      "bytes": 2699,
+      "sha256": "672bd6af366b5117c13c60ec3af80f69843b4006257d2ad02ad3b68cf11f5907"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactCopiedNativeLoad__exact_copied_native_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactCopiedNativeLoad__exact_copied_native_load_correct.v.txt",
+      "bytes": 1281,
+      "sha256": "0d6c3aa2d6f9747450de3e2d95c01c2516616c6202db9e27d5c707f6df296463"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactEncoderBytes__zesu_encoder_bytes_exact_call_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactEncoderBytes__zesu_encoder_bytes_exact_call_correct.v.txt",
+      "bytes": 19192,
+      "sha256": "b7cd49eb5cae17f5f1a73dc594462618b5879c16a6fcc07bea867fb907bf1825"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactNativeLoad__exact_native_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactNativeLoad__exact_native_load_correct.v.txt",
+      "bytes": 1159,
+      "sha256": "85f5a962e8b6aa4cffe0e4a849a8983bb96991569203fa9dfb09bcb69576a4b5"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactOptionalU64SomeCall__optional_u64_some_exact_call_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactOptionalU64SomeCall__optional_u64_some_exact_call_correct.v.txt",
+      "bytes": 2011,
+      "sha256": "86bc36ae4fd024e9725c7426b88998fcfc0c91371ae564c0cd775eccfc4fb749"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactStorageKeysLoadHandoff__storage_keys_loads16_20_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactStorageKeysLoadHandoff__storage_keys_loads16_20_correct.v.txt",
+      "bytes": 2823,
+      "sha256": "c9062a6a6816b33186faad6a35e7dfb092676c2645f2c10bba3dcdd349f53f84"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactSuffixHashesWord1Load__suffix_word1_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactSuffixHashesWord1Load__suffix_word1_load_correct.v.txt",
+      "bytes": 1060,
+      "sha256": "9084e99126b7158a674c3135768fb8dc62c87b82d872a6f21a6db7c0a659b5f2"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactSuffixHashesWord2Load__suffix_word2_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactSuffixHashesWord2Load__suffix_word2_load_correct.v.txt",
+      "bytes": 1060,
+      "sha256": "e9177e58939085e32f8aad49f5dfc2f247d43c26ee5221d303a468223b20d58b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactSuffixHashesWord3Load__suffix_word3_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessExactSuffixHashesWord3Load__suffix_word3_load_correct.v.txt",
+      "bytes": 946,
+      "sha256": "8f3ef39b5e80e9871e7587600339e2d938d5b3e434041a91fe750f8a52380609"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessHashesLoopWord1__write_success_hashes_word1.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessHashesLoopWord1__write_success_hashes_word1.v.txt",
+      "bytes": 1535,
+      "sha256": "5c04c1c994adf12c4bfe7bb4a2739ea04f624803fc744ce30cf8dde70007cce1"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessHashesLoopWord2__write_success_hashes_word2.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessHashesLoopWord2__write_success_hashes_word2.v.txt",
+      "bytes": 1535,
+      "sha256": "092147c4e23993b6c55528fcb09987cae49895069b2096582bdf799b72871ef8"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessHashesLoopWord3__write_success_hashes_word3.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessHashesLoopWord3__write_success_hashes_word3.v.txt",
+      "bytes": 1535,
+      "sha256": "312411fb4349e89ecdd3c51b04af5a80eb07a2be58357912d154e6b189e4c307"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessNativeSuffixBytesBoundaryAdapter__write_success_suffix_bytes_aggregate_entry_from_15750_zero.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessNativeSuffixBytesBoundaryAdapter__write_success_suffix_bytes_aggregate_entry_from_15750_zero.v.txt",
+      "bytes": 4529,
+      "sha256": "5e19df34bb6261bad6326230a49d01039d50288d3d9c6de54824de91b20ed93a"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessNativeSuffixIntPair__write_success_suffix_156e8_int.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessNativeSuffixIntPair__write_success_suffix_156e8_int.v.txt",
+      "bytes": 7582,
+      "sha256": "dc15482fa8be3acdcb0a99f1aec5abe290362fd6e5b587b4c9dd2707ad308064"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessPrologue__write_success_prologue.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessPrologue__write_success_prologue.v.txt",
+      "bytes": 1207,
+      "sha256": "fb01cdaef6d5d0777d67465e9241d656186b0e7a8eef2acd7d4799d77548830b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterAHead__write_success_transactions_10190_saved_adapter_a_head.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterAHead__write_success_transactions_10190_saved_adapter_a_head.v.txt",
+      "bytes": 995,
+      "sha256": "fe3d5f3e8cebe947df53a886da412b4d51d4b25d7d4b0f8e8e7b2c6f4784f4da"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterAMiddle__write_success_transactions_10190_saved_adapter_a_middle.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterAMiddle__write_success_transactions_10190_saved_adapter_a_middle.v.txt",
+      "bytes": 866,
+      "sha256": "c2a77ed96c0eac7f139edecda1a4f0e876ce7200f227f6a150e80d1b2c338872"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterA__write_success_transactions_10190_saved_adapter_a.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterA__write_success_transactions_10190_saved_adapter_a.v.txt",
+      "bytes": 1373,
+      "sha256": "fd8636c0656c85a06f4e640225dc0ec1670f189fa119b8df24f2a075653c8988"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterB__write_success_transactions_10190_saved_adapter_b.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactions10190SavedAdapterB__write_success_transactions_10190_saved_adapter_b.v.txt",
+      "bytes": 1234,
+      "sha256": "2272be4b8a7c9f09f8c39f6e1b75c217370cfa13a73760e748d1f09411c2dbc5"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactionsCarrierChunk15078Raw__write_success_transactions_carrier_chunk_15078.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactionsCarrierChunk15078Raw__write_success_transactions_carrier_chunk_15078.v.txt",
+      "bytes": 7663,
+      "sha256": "ded09c42d576f165748b4d2cd3246c4534b3cf6aa01990f18c1a45880102a169"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactionsChunk151d0Helpers__write_success_access_entries_own_length.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/dd2b56436635/WriteSuccessTransactionsChunk151d0Helpers__write_success_access_entries_own_length.v.txt",
+      "bytes": 1175,
+      "sha256": "29256ad48f0b16dc1b4ee4eade15cca4bea8c786f6c953e9bd9380003183c77d"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessEncoderBytes__encoder_bytes_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessEncoderBytes__encoder_bytes_correct.v.txt",
+      "bytes": 5344,
+      "sha256": "960a20cce56a238ad2e13af4459f747165dca4b9fb644c493189976de9f2d6d9"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessEncoderCalls__zesu_encoder_bytes_any_pre.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessEncoderCalls__zesu_encoder_bytes_any_pre.v.txt",
+      "bytes": 2311,
+      "sha256": "8d27541faa429d0f326d139af0c3eb3d0adea801394fbe1570ce95d39c4fb5dd"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessEncoderOptionalSome__encoder_optional_some_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessEncoderOptionalSome__encoder_optional_some_correct.v.txt",
+      "bytes": 1704,
+      "sha256": "992a7dce00e2c826754a1f17caa6a55063459f572a462f55a4e7b58b2f67e784"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactAuthorizationsCopy__authorization_copy_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactAuthorizationsCopy__authorization_copy_correct.v.txt",
+      "bytes": 3133,
+      "sha256": "3084429fea76a56a38c7b88e6a391bfafb11ec7d9c11561d050ba24aa6133d26"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactBlobHashesLoadHandoff__blob_loads16_20_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactBlobHashesLoadHandoff__blob_loads16_20_correct.v.txt",
+      "bytes": 2686,
+      "sha256": "1b098d9f1bc3f8f2300c7d6002fd18329a4564269969531831e0ae7a546726fe"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactBlobHashesUpperLoadHandoff__blob_loads28_24_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactBlobHashesUpperLoadHandoff__blob_loads28_24_correct.v.txt",
+      "bytes": 2699,
+      "sha256": "672bd6af366b5117c13c60ec3af80f69843b4006257d2ad02ad3b68cf11f5907"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactCopiedNativeLoad__exact_copied_native_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactCopiedNativeLoad__exact_copied_native_load_correct.v.txt",
+      "bytes": 1281,
+      "sha256": "0d6c3aa2d6f9747450de3e2d95c01c2516616c6202db9e27d5c707f6df296463"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactEncoderBytes__zesu_encoder_bytes_exact_call_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactEncoderBytes__zesu_encoder_bytes_exact_call_correct.v.txt",
+      "bytes": 19192,
+      "sha256": "b7cd49eb5cae17f5f1a73dc594462618b5879c16a6fcc07bea867fb907bf1825"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactNativeLoad__exact_native_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactNativeLoad__exact_native_load_correct.v.txt",
+      "bytes": 1159,
+      "sha256": "85f5a962e8b6aa4cffe0e4a849a8983bb96991569203fa9dfb09bcb69576a4b5"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactOptionalU64SomeCall__optional_u64_some_exact_call_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactOptionalU64SomeCall__optional_u64_some_exact_call_correct.v.txt",
+      "bytes": 2011,
+      "sha256": "86bc36ae4fd024e9725c7426b88998fcfc0c91371ae564c0cd775eccfc4fb749"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactStorageKeysLoadHandoff__storage_keys_loads16_20_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactStorageKeysLoadHandoff__storage_keys_loads16_20_correct.v.txt",
+      "bytes": 2823,
+      "sha256": "c9062a6a6816b33186faad6a35e7dfb092676c2645f2c10bba3dcdd349f53f84"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactSuffixHashesWord1Load__suffix_word1_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactSuffixHashesWord1Load__suffix_word1_load_correct.v.txt",
+      "bytes": 1060,
+      "sha256": "9084e99126b7158a674c3135768fb8dc62c87b82d872a6f21a6db7c0a659b5f2"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactSuffixHashesWord2Load__suffix_word2_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactSuffixHashesWord2Load__suffix_word2_load_correct.v.txt",
+      "bytes": 1060,
+      "sha256": "e9177e58939085e32f8aad49f5dfc2f247d43c26ee5221d303a468223b20d58b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactSuffixHashesWord3Load__suffix_word3_load_correct.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessExactSuffixHashesWord3Load__suffix_word3_load_correct.v.txt",
+      "bytes": 946,
+      "sha256": "8f3ef39b5e80e9871e7587600339e2d938d5b3e434041a91fe750f8a52380609"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessHashesLoopWord1__write_success_hashes_word1.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessHashesLoopWord1__write_success_hashes_word1.v.txt",
+      "bytes": 1535,
+      "sha256": "5c04c1c994adf12c4bfe7bb4a2739ea04f624803fc744ce30cf8dde70007cce1"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessHashesLoopWord2__write_success_hashes_word2.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessHashesLoopWord2__write_success_hashes_word2.v.txt",
+      "bytes": 1535,
+      "sha256": "092147c4e23993b6c55528fcb09987cae49895069b2096582bdf799b72871ef8"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessHashesLoopWord3__write_success_hashes_word3.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessHashesLoopWord3__write_success_hashes_word3.v.txt",
+      "bytes": 1535,
+      "sha256": "312411fb4349e89ecdd3c51b04af5a80eb07a2be58357912d154e6b189e4c307"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessNativeSuffixBytesBoundaryAdapter__write_success_suffix_bytes_aggregate_entry_from_15750_zero.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessNativeSuffixBytesBoundaryAdapter__write_success_suffix_bytes_aggregate_entry_from_15750_zero.v.txt",
+      "bytes": 4529,
+      "sha256": "5e19df34bb6261bad6326230a49d01039d50288d3d9c6de54824de91b20ed93a"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessNativeSuffixIntPair__write_success_suffix_156e8_int.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessNativeSuffixIntPair__write_success_suffix_156e8_int.v.txt",
+      "bytes": 7582,
+      "sha256": "dc15482fa8be3acdcb0a99f1aec5abe290362fd6e5b587b4c9dd2707ad308064"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessPrologue__write_success_prologue.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessPrologue__write_success_prologue.v.txt",
+      "bytes": 1207,
+      "sha256": "fb01cdaef6d5d0777d67465e9241d656186b0e7a8eef2acd7d4799d77548830b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterAHead__write_success_transactions_10190_saved_adapter_a_head.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterAHead__write_success_transactions_10190_saved_adapter_a_head.v.txt",
+      "bytes": 995,
+      "sha256": "fe3d5f3e8cebe947df53a886da412b4d51d4b25d7d4b0f8e8e7b2c6f4784f4da"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterAMiddle__write_success_transactions_10190_saved_adapter_a_middle.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterAMiddle__write_success_transactions_10190_saved_adapter_a_middle.v.txt",
+      "bytes": 866,
+      "sha256": "c2a77ed96c0eac7f139edecda1a4f0e876ce7200f227f6a150e80d1b2c338872"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterA__write_success_transactions_10190_saved_adapter_a.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterA__write_success_transactions_10190_saved_adapter_a.v.txt",
+      "bytes": 1373,
+      "sha256": "fd8636c0656c85a06f4e640225dc0ec1670f189fa119b8df24f2a075653c8988"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterB__write_success_transactions_10190_saved_adapter_b.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactions10190SavedAdapterB__write_success_transactions_10190_saved_adapter_b.v.txt",
+      "bytes": 1234,
+      "sha256": "2272be4b8a7c9f09f8c39f6e1b75c217370cfa13a73760e748d1f09411c2dbc5"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactionsCarrierChunk15078Raw__write_success_transactions_carrier_chunk_15078.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactionsCarrierChunk15078Raw__write_success_transactions_carrier_chunk_15078.v.txt",
+      "bytes": 7663,
+      "sha256": "ded09c42d576f165748b4d2cd3246c4534b3cf6aa01990f18c1a45880102a169"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactionsChunk151d0Helpers__write_success_access_entries_own_length.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/matched-isolated-probes/ed945cd357ac/WriteSuccessTransactionsChunk151d0Helpers__write_success_access_entries_own_length.v.txt",
+      "bytes": 1175,
+      "sha256": "29256ad48f0b16dc1b4ee4eade15cca4bea8c786f6c953e9bd9380003183c77d"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-nonraising.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/check-fast-nonraising.log",
+      "bytes": 2599,
+      "sha256": "be1d6301a7ff1c4fbe1136988b75c2fab3a7dcfa5b6eef8c27e8727ffafc3391"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-nonraising-retry.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/check-fast-nonraising-retry.log",
+      "bytes": 1600,
+      "sha256": "aa191b2838f18006c9a36e6e01aafbed88d72d225f1788c597ed3f069f5315e3"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-nonraising-ready.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/check-fast-nonraising-ready.log",
+      "bytes": 23272,
+      "sha256": "4eb2992d3fa0943c0b90d7c863a579f22061898b9b4b9b0fd8f723f1a4e7e8ee"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/preview-nonraising-driver.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/preview-nonraising-driver.log",
+      "bytes": 2742,
+      "sha256": "3a32005b1426e69a2d3e9f8df2f888174d624b0954191efaa134aae54eecc075"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/preview-nonraising-iris.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/preview-nonraising-iris.log",
+      "bytes": 208692,
+      "sha256": "8fd414b38702a5e7b90ab761a85875050cb1bc6597bce4ac48d26172fcdd2247"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/preview-nonraising-driver-retry.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/preview-nonraising-driver-retry.log",
+      "bytes": 1551,
+      "sha256": "e85fc56de1b8195f1d3eec950a732f58867082654778680abce16c4da2950352"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/preview-nonraising-iris-retry.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/preview-nonraising-iris-retry.log",
+      "bytes": 2202,
+      "sha256": "86ad8ce27d105a2f1482a8547f6919b98961e9424eabb1118a187c0cb4053812"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/stores-old-isolated.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/stores-old-isolated.log",
+      "bytes": 129,
+      "sha256": "924b23f387a991f6948a575973fc325d842a32ea450792e40192698a1c8621eb"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/stores-dd2-isolated.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/stores-dd2-isolated.log",
+      "bytes": 129,
+      "sha256": "ae6be49d7ae7b11ffbf487869bf325e69cd6bfde7fcecb033dfb88c3f14854ce"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/benchmark-nonraising-corpus.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/benchmark-nonraising-corpus.log",
+      "bytes": 430,
+      "sha256": "dd6a34f7e947e98a1b8f37bb13136bdc941ddd2a7a444f7e957ab6ea25604983"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/hygiene-nonraising-preview.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/hygiene-nonraising-preview.log",
+      "bytes": 160,
+      "sha256": "921df485cde20815b6a26b9ee5316f51fb61950beef5b918d6d16218fdc4988e"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/hygiene-nonraising-merged.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/hygiene-nonraising-merged.log",
+      "bytes": 160,
+      "sha256": "13817c16f7d0d037fa501f3bb4854883372779ae4da1e98ab0187a9cf4505909"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/iris-matched-reprobes.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/iris-matched-reprobes.log",
+      "bytes": 5431,
+      "sha256": "8b3a350e2fadb677b208dc468f55f8da6f78126d68b5ffa3aa7e2423be4c3ffe"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/live-tests.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/live-tests.log",
+      "bytes": 611,
+      "sha256": "fc30c08ab53c8333fbb0c8e71e90ab9b7d83b73bfa5541f10dbe826279c02984"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/legacy-tests.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/legacy-tests.log",
+      "bytes": 616,
+      "sha256": "a52a6702029063309be7be173a0fb85399f9889c419a04968a634fd577c5dda6"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/legacy-tests-qualified.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/legacy-tests-qualified.log",
+      "bytes": 609,
+      "sha256": "2f9f4561eddaec753f606c8996f5c248ce7b0bdeeaf8e6a24783cfe9f31ffeeb"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/initial-legacy-load.log",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/initial-legacy-load.log",
+      "bytes": 1449,
+      "sha256": "e0426efe428b44a4d6a659bd02ca2bc4f35bf9af129e6ae2c868db0679348ffc"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/FocusedNonRaising.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/FocusedNonRaising.v.txt",
+      "bytes": 3400,
+      "sha256": "01d98bf0b72abc4d5bcb3c5455ea0fb0c74a1085bbea2d76af555c2334a7f7d8"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/FocusedNonRaisingLegacy.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/FocusedNonRaisingLegacy.v.txt",
+      "bytes": 3297,
+      "sha256": "d39682984a251f9eefdd77ef1ae66d0617eac45ab7a54df2906f254764204302"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/InitialLegacyLoad.v",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/verification/InitialLegacyLoad.v.txt",
+      "bytes": 3363,
+      "sha256": "242daad3d19beb64f325d19079b66770e9b157e78460efd5016313472ac445ff"
+    }
+  ]
+}

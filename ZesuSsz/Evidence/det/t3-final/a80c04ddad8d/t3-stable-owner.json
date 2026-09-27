@@ -1,0 +1,10 @@
+{
+  "source_sha": "a80c04ddad8daa85e335fb26f21bc9d99c6c99f3",
+  "source_root": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/a80c04ddad8d",
+  "retired_sha": "f08fa35bf956c933c951580727194ffcb0932334",
+  "retired_root": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956",
+  "physical_build_store": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build",
+  "slot_owner_root": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956",
+  "exclusive_lock": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/t3-stable-store.lock",
+  "retired_policy": "Never rebuild, mark, delete, or trim f08 while this source owns its physical store."
+}

@@ -1,0 +1,21 @@
+{
+  "archive_path": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t3-writer-a80c04ddad8d",
+  "files_verified": 33,
+  "tracked_curated": [
+    {
+      "file": "ZesuSsz/Evidence/det/t3-final/a80c04ddad8d/writer-diagnostics/tests-final-three.log",
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t3-writer-a80c04ddad8d/tests-final-three.log",
+      "sha256": "245c9a9584260032365d526e61ddc500bd78fdb3fda047263e094ee5188d135a"
+    },
+    {
+      "file": "ZesuSsz/Evidence/det/t3-final/a80c04ddad8d/writer-diagnostics/tests-final.log",
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t3-writer-a80c04ddad8d/tests-final.log",
+      "sha256": "969efec62a8d77fb1431a6725b2d262feea92d90294da904db2e2200070eb4f0"
+    },
+    {
+      "file": "ZesuSsz/Evidence/det/t3-final/a80c04ddad8d/writer-diagnostics/T3Final.v.txt",
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t3-writer-a80c04ddad8d/T3Final.v",
+      "sha256": "8f4a0d5a93a71d14fafa35e214ace7f07867f54d928245e51f5294a4e7000286"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.AllLegacy.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190SavedAdapterASpec.
+
+Lemma write_success_transactions_10190_saved_adapter_a_middle
+    `{!islaG Sigma} `{!threadG} (transaction : writeSuccessTransaction) :
+  reg_col (writeSuccessTransactions10190SavedMiddle transaction) -∗
+  "x19" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 224) ∗
+  "x20" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 56) ∗
+  "x21" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 72).
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

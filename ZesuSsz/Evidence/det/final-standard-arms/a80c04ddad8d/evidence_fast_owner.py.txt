@@ -1,0 +1,35 @@
+"""Root-only evidence check-fast with the existing exclusive physical store."""
+import fcntl,json,os,subprocess,sys
+from pathlib import Path
+sha='a80c04ddad8daa85e335fb26f21bc9d99c6c99f3'
+archive=Path(__file__).resolve().parent
+config=json.loads((archive/'t3-stable-owner.json').read_text())
+root=Path('/home/cody/zesislar/.worktrees/builder-final-evidence').resolve()
+owner=Path(config['slot_owner_root']).resolve()
+store=Path(config['physical_build_store']).resolve()
+if config['source_sha']!=sha or store!=owner/'_build':raise SystemExit('Store provenance mismatch')
+if (owner/'.arm-commit').exists():raise SystemExit('Retired store root must stay unmarked')
+snapshot=Path(config['source_root'])
+if (snapshot/'.arm-commit').read_text().strip()!=sha:raise SystemExit('Validated arm marker required')
+def git(*args):return subprocess.check_output(['git','-C',str(root),*args])
+if git('rev-parse','HEAD').decode().strip()!=sha:raise SystemExit('Evidence HEAD mismatch')
+paths=[os.fsdecode(p) for p in git('diff','--cached','--name-only','-z').split(b'\0') if p]
+if not paths or any(not p.startswith('ZesuSsz/Evidence/') for p in paths):raise SystemExit('Staged changes must be Evidence-only')
+if git('diff','--name-only').strip():raise SystemExit('Unstaged tracked changes are not permitted')
+for p in paths:
+ if not (root/p).is_file() or git('show',':'+p)!=(root/p).read_bytes():raise SystemExit('Staged/worktree byte mismatch: '+p)
+sys.path.insert(0,str(Path('/home/cody/zesislar/.worktrees/determinism/tools/det')))
+import coqc_slots
+original_counts=coqc_slots.counts
+def counts(requested_root,proc=Path('/proc')):
+ return original_counts(owner if Path(requested_root).resolve()==root else requested_root,proc)
+coqc_slots.counts=counts
+if sys.argv[1:2]==['slots']:
+ sys.argv=['coqc_slots.py',*sys.argv[2:]];raise SystemExit(coqc_slots.main())
+if sys.argv[1:]!=['run']:raise SystemExit('Use run; root queues this helper')
+with Path(config['exclusive_lock']).open('a') as lock:
+ fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ env={**os.environ,'ZESU_EVIDENCE_ROOT':str(root),'ZESU_EVIDENCE_BUILD_DIR':str(store),
+      'ZESU_EVIDENCE_OWNER':str(Path(__file__).resolve()),'ZESU_FAST_MAX_JOBS':'24'}
+ raise SystemExit(subprocess.call(['bash',str(archive/'evidence_fast_gate.sh'),'check-fast',
+ '/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-final-evidence.log'],env=env))

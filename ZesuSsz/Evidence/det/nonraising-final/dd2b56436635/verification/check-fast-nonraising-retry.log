@@ -1,0 +1,30 @@
+python3 ZesuSsz/Evidence/generate_islaris_dump.py \
+  --disassembly build/endpoint-elf/meta/disassembly.txt \
+  --profile experiments/islaris-startup/profile.json --output build/islaris-dumps/startup.dump
+uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py'
+..............................................................................................................................
+----------------------------------------------------------------------
+Ran 126 tests in 7.666s
+
+OK
+assumptions: 1 checked; 0 changed
+CHANGED M.v f
+assumptions: 1 checked; 1 changed
+generated /tmp/tmpghgt9pd6/generated/GeneratedWriteSuccessExactSuffixEntrySegment.v
+3.8s outcome=stalled class=C3 goal=subsume (…) (…)
+calls in [0x156e8, 0x15744): 0 premises, 0 contract modules
+spec record written to /tmp/tmpr1snxeqt/spec.json
+PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+...................................................s.......................................
+----------------------------------------------------------------------
+Ran 91 tests in 0.021s
+
+OK (skipped=1)
+python3 ZesuSsz/Evidence/check_parity.py
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+hand lines with no residual record: ZesuSsz/Proofs/Tests/NonRaisingLegacy.v: test_nonraising_legacy_machine_load: 1 lines
+make: *** [Makefile:324: check-evidence-tools] Error 1

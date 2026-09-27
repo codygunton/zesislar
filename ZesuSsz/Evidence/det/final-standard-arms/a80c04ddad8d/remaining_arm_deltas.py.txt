@@ -1,0 +1,54 @@
+import collections,json
+from pathlib import Path
+local=Path(__file__).parent
+manifest=json.loads((local/'remaining-arm-manifest.json').read_text())
+paths={(r['group'],r['set']):Path(r['result']) for r in manifest}
+old=Path('/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark')
+key=lambda r:(r['module'],r['lemma'])
+fields=['outcome','pred_class','signature','goal_sha256']
+results=[]
+for r in manifest:
+ group,which=r['group'],r['set'];now=Path(r['result'])
+ if not now.exists():results.append({'group':group,'set':which,'state':'pending'});continue
+ if group=='nr-v2-baseline':before=old/f'ed945cd357ac-v2{"-rule15" if which=="rule15" else ""}.json'
+ elif group=='nr-final-v1':before=old/f'ed945cd357ac{"-rule15" if which=="rule15" else ""}.json'
+ else:
+  before=paths.get(('nr-v2-baseline',which))
+  if before is None:results.append({'group':group,'set':which,'state':'baseline phase absent'});continue
+ if not before.exists():results.append({'group':group,'set':which,'state':'baseline pending'});continue
+ a=json.loads(before.read_text());b=json.loads(now.read_text());aa={key(x):x for x in a['rows']};bb={key(x):x for x in b['rows']}
+ validation=[]
+ if len(aa)!=len(a['rows']):validation.append('baseline duplicate keys')
+ if len(bb)!=len(b['rows']):validation.append('candidate duplicate keys')
+ expected_before_sha='ed945cd357acd5d0b4e8a5030eb89264428ae6a8' if group in ['nr-v2-baseline','nr-final-v1'] else 'dd2b5643663568543a21a5a2ebc72fcf853725b0'
+ if a.get('automation')!=expected_before_sha:validation.append('baseline automation SHA mismatch')
+ if b.get('automation')!=r['automation']:validation.append('candidate automation SHA mismatch')
+ expected_before_imports=[] if group=='nr-final-v1' else ['ZesuSsz.Automation.Sets.v2']
+ if a.get('imports')!=expected_before_imports:validation.append('baseline imports mismatch')
+ if b.get('imports')!=r['imports']:validation.append('candidate imports mismatch')
+ for field in ['classifier','seconds']:
+  if a.get(field)!=b.get(field):validation.append(field+' metadata mismatch')
+ if a.get('variant','standard')!=b.get('variant','standard'):validation.append('variant metadata mismatch')
+ if a.get('variant','standard')!='standard' or b.get('variant','standard')!='standard':validation.append('non-standard variant')
+ if a.get('excluded') or b.get('excluded'):validation.append('excluded source files')
+ if a['summary'].get('probed')!=len(a['rows']) or b['summary'].get('probed')!=len(b['rows']):validation.append('summary probed count mismatch')
+ frozen=Path(r['command'][r['command'].index('--set')+1])
+ expected={tuple(line.rsplit(':',1)) for line in frozen.read_text().splitlines() if line.strip()}
+ if set(aa)!=expected:validation.append('baseline differs from frozen set')
+ if set(bb)!=expected:validation.append('candidate differs from frozen set')
+ reprobe_errors=[]
+ for label,doc in [('baseline',a),('candidate',b)]:
+  again=[row for row in doc['rows'] if row.get('reprobed')]
+  changed=[row for row in again if row.get('batch',{}).get('outcome')!=row['outcome']]
+  if doc['summary'].get('reprobed')!=len(again):validation.append(label+' reprobed count mismatch')
+  if doc['summary'].get('reprobe_changed')!=len(changed):validation.append(label+' reprobe_changed count mismatch')
+  for row in doc['rows']:
+   if row['outcome'] in ['error','timeout'] and row.get('reprobed') is not True:reprobe_errors.append([label,*key(row),'error/timeout lacks reprobed=true'])
+   if row.get('reprobed') is True:
+    batch=row.get('batch',{})
+    if batch.get('outcome') not in ['error','timeout']:reprobe_errors.append([label,*key(row),'invalid batch outcome'])
+    if any(field not in batch for field in ['outcome','seconds','pred_class','signature','goal_sha256']):reprobe_errors.append([label,*key(row),'missing batch fields'])
+   elif 'batch' in row:reprobe_errors.append([label,*key(row),'batch exists without marker'])
+ changes=[{'module':k[0],'lemma':k[1],'diff':{f:[aa[k].get(f),bb[k].get(f)] for f in fields if aa[k].get(f)!=bb[k].get(f)}} for k in sorted(aa.keys()&bb.keys()) if any(aa[k].get(f)!=bb[k].get(f) for f in fields)]
+ results.append({'group':group,'set':which,'validation_errors':validation,'reprobe_marker_errors':reprobe_errors,'baseline':str(before),'candidate':str(now),'outcomes_before':a['summary']['outcomes'],'outcomes_after':b['summary']['outcomes'],'closed_delta':b['summary']['outcomes'].get('closed',0)-a['summary']['outcomes'].get('closed',0),'field_diffs':{f:sum(f in c['diff'] for c in changes) for f in fields},'missing':sorted(aa.keys()-bb.keys()),'extra':sorted(bb.keys()-aa.keys()),'candidate_sha_matches':b['automation']==r['automation'],'imports_match':b['imports']==r['imports'],'reprobed':b['summary'].get('reprobed'),'lost_closures':[c for c in changes if c['diff'].get('outcome',[None,None])[0]=='closed' and c['diff']['outcome'][1]!='closed'],'new_errors_timeouts':[c for c in changes if c['diff'].get('outcome',[None,None])[1] in ['error','timeout']],'changes':changes})
+print(json.dumps(results,indent=2))

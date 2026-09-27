@@ -1,0 +1,23 @@
+Set Printing Width 200.
+Require Import ZesuSsz.Automation.AllLegacy.
+From Coq Require Import Lists.List.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190SavedAdapterA.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactions10190SavedAdapterASpec.
+
+Lemma write_success_transactions_10190_saved_adapter_b
+    `{!islaG Sigma} `{!threadG} (transaction : writeSuccessTransaction) :
+  reg_col (writeSuccessTransactions10190SavedTail transaction) -∗
+  "x22" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 200) ∗
+  "x23" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 24) ∗
+  "x24" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 8) ∗
+  "x25" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 0) ∗
+  "x26" ↦ᵣ RVal_Bits (writeSuccessTransactionWord transaction 184) ∗
+  "x27" ↦ᵣ RVal_Bits
+    (bv_zero_extend 64 (writeSuccessTransactionByte transaction 32)) ∗ True.
+Proof.
+idtac "RESIDUAL-BEGIN". move => *. zesu_block. all: liShow. Show.
+Abort.
+Goal True. idtac "RESIDUAL-END". Abort.

@@ -1,0 +1,46 @@
+{
+  "files": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/check-fast-final-evidence.log",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/check-fast-final-evidence.log",
+      "sha256": "ebbf146dfb732cb474e62d5aff6cdfd9fd63c575f7a64cc014f3d540605f9423",
+      "bytes": 5975
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/check-fast-final-evidence-driver-parent-failure.log",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/check-fast-final-evidence-driver-parent-failure.log",
+      "sha256": "5c9b8b60a4af4ff31a51727aba9ff0f6dc7ae0358ba7dbc998aef016abf0a653",
+      "bytes": 611
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/check-fast-final-evidence-driver-traces-failure.log",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/check-fast-final-evidence-driver-traces-failure.log",
+      "sha256": "4a4e033b13dcc43c5a302791c4f17f20ad339f89649866b5268daacf12e7e4f6",
+      "bytes": 841
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/check-fast-final-evidence-driver.log",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/check-fast-final-evidence-driver.log",
+      "sha256": "8d44855fef4ca214f9160ca1f9e827d59990846289409e51fb221b634a7a9884",
+      "bytes": 1472
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/evidence_fast_gate.sh",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/evidence_fast_gate.sh.txt",
+      "sha256": "8e0a97488e3c4d1224b4bd09414491f7491ce1d102d96d5e861e1bf06d38c9ae",
+      "bytes": 4896
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/evidence_fast_owner.py",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/evidence_fast_owner.py.txt",
+      "sha256": "1fc0cee493a6f02caafcef28bf4f6356ca75f90b6aed9338ff4e066e931aeef4",
+      "bytes": 2406
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/bench/f08fa35bf956/_build/log.jsonl",
+      "destination": "ZesuSsz/Evidence/det/final-standard-arms/a80c04ddad8d/evidence-gate-build-records.jsonl",
+      "sha256": "396f14441bc030f088cd25693db47fe92753ed3d9dc9b8077c48cf5e910969e6",
+      "bytes": 1069
+    }
+  ]
+}

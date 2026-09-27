@@ -1,0 +1,15 @@
+{
+  "source_sha": "f08fa35bf956c933c951580727194ffcb0932334",
+  "phase": "Arm build before probes",
+  "module": "ZesuSsz/Proofs/Tests/ArrayLoadPriority.v",
+  "line": 5,
+  "characters": [
+    7,
+    20
+  ],
+  "error": "Cannot find module ListNotations.",
+  "benchmark_result_exists": false,
+  "repair_owner": "T3 writer",
+  "required_fix_verification": "Compile exact test file without inlined rule headers",
+  "log_sha256": "0ecb663b92aefe21f9d005ff0ef22b4b8a3224872579a5b448fc1bef2dfe3fb1"
+}

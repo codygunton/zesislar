@@ -1,0 +1,17 @@
+[
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-t3-switch-full.json",
+    "destination": "ZesuSsz/Evidence/residuals/benchmark/a80c04ddad8d-nr-t3-switch-full.json",
+    "sha256": "8bf942d8eee37efaee4028934c776d5a7099838418aabe5f416f1064489bcdbc"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-deltas-t3-full.json",
+    "destination": "ZesuSsz/Evidence/det/t3-final/a80c04ddad8d/remaining-arm-deltas-t3-full.json",
+    "sha256": "1a57804fba50c6c7603d43b94fd1886e368c41ed7846fd810963b35a8ff54b04"
+  },
+  {
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/remaining-arm-manifest.json",
+    "destination": "ZesuSsz/Evidence/det/t3-final/a80c04ddad8d/arm-command-manifest.json",
+    "sha256": "81dce134978c6e4f943853aaa8e00cb1efbf89199b96ddc594189e8f495c8603"
+  }
+]

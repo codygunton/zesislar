@@ -1,0 +1,5 @@
+{
+  "previous_sha256": "e4c86d428390abb8db8be0a3900460113cf96729f3e9819cdde46616532d5802",
+  "new_sha256": "f776515f5ec5cb991a0a6591a37474dc1052a29664c48ca38cede81333b9a35b",
+  "reason": "Add duplicate-key, metadata, frozen-set, and standard reprobe-policy checks. Raw records unchanged."
+}

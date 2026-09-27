@@ -1,0 +1,1 @@
+{"source_sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d", "requested_jobs": 24, "build_targets": ["@ZesuSsz/Proofs/all", "@ZesuSsz/Automation/all"], "arm_marker": "written only after successful benchmark.build"}

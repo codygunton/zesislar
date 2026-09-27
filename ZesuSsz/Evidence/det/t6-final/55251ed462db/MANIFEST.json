@@ -1,0 +1,95 @@
+{
+  "historical_candidate_sha": "5b19de9408b1bbad9b44a11e5d9c9046656467ac",
+  "rebased_candidate_sha": "55251ed462dba84daec0f92a87c8729a7d224e29",
+  "baseline_arm": "ed945cd357ac",
+  "measurement_scope": "Historical 5b19de94 source against immutable ed945 artifacts; no post-rebase measurement.",
+  "diagnostics": [
+    {
+      "name": "TF1 frozen start",
+      "tactic_seconds": 12.788,
+      "scratch_seconds": 14.288,
+      "rss_kib": 1516820,
+      "result": "Opens bytes return bundle; missing sp+936 ownership. Resource gap, not a proved execution counterexample."
+    },
+    {
+      "name": "TF2 frozen start",
+      "tactic_seconds": 3.795,
+      "scratch_seconds": 5.278,
+      "rss_kib": 1341656,
+      "result": "Two earlier Boolean trace-tail goals; return wand not reached."
+    },
+    {
+      "name": "TF2 inferred-state control",
+      "tactic_seconds": 15.257,
+      "scratch_seconds": 17.395,
+      "rss_kib": 1433256,
+      "result": "Stops at recorded Boolean return wand."
+    },
+    {
+      "name": "TF2 inferred-state T6",
+      "tactic_seconds": 77.057,
+      "scratch_seconds": 79.687,
+      "rss_kib": 2098044,
+      "result": "Opens Boolean return; reaches integer call at 0x159ac; scratch and trace goals remain."
+    }
+  ],
+  "proof_scope": "No segment closure, boundary changes, hand proof lines, or default support imports. Diagnostic .v files end with Abort.",
+  "excluded": "All _build outputs, transient scratch files, candidate source/test files, build symlinks, and generated traces.",
+  "files": [
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsFirstT6Diagnostic.v",
+      "bytes": 1404,
+      "sha256": "a503980c1d97c1b61b162a554d2e27ed23a0e34cc0e2a7746878f6edea685c59"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsFirstT6Residual.txt",
+      "bytes": 5062,
+      "sha256": "1ab440ddd91c6bbf66f6b304cdfb43430c6fc98f6f746c3a210c1baecdcd5e39"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsFirstT6Review.md",
+      "bytes": 2020,
+      "sha256": "5554149c03fed9e200c9eb32e81166be340096fa5f74ae49c20bc0efbf714675"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondT6Diagnostic.v",
+      "bytes": 1257,
+      "sha256": "2a0ff7c4573cd690bf5d04913b1613e9a643cf7a26f754ee112d5debbc1f8e3b"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondT6Residual.txt",
+      "bytes": 5758,
+      "sha256": "298884823deb099193afeffde1d710574b16fd0debae750b501cc4a087a2c06f"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondT6Review.md",
+      "bytes": 1042,
+      "sha256": "5041be770b348c571d4cb4675930ee8e65f58330f65f85777c8b3bbeafe5cf55"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondTrace1Candidate.v",
+      "bytes": 4562,
+      "sha256": "57606c3794bf9f70b72363bb3983bf94adf9bd38093d48cd3897a7d799a272b5"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondTrace1CandidateResidual.txt",
+      "bytes": 26566,
+      "sha256": "81f915057f9c1cd7de122b6af43f5c5571cc7f47e14ec2ee5ee6982fa2d7d3b6"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondTrace1Control.v",
+      "bytes": 1278,
+      "sha256": "ec0a1725dc49c955c03188f0f40ce81284125be45a783d5063c302c1363850a9"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondTrace1ControlResidual.txt",
+      "bytes": 5337,
+      "sha256": "50fd5f49600d96a7bebcf28eebd7f5585961cb55f5dca1b9254761ce9313fd38"
+    },
+    {
+      "path": "ZesuSsz/Evidence/det/t6-rule21/TailFieldsSecondTrace1Review.md",
+      "bytes": 2328,
+      "sha256": "90ec81693597995ba409a303dee7407363e363aa0c1c5ba36bc9b5a9e1eb0bfd"
+    }
+  ]
+}

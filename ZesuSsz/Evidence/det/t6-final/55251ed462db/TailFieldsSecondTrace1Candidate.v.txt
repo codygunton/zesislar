@@ -1,0 +1,101 @@
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Sets.v2.
+Require Import isla.riscv64.riscv64.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Contracts.Endpoints.
+Require Import ZesuSsz.Contracts.IslarisCode.
+From ZesuSsz.Proofs.WriteSuccess Require Import
+ Interfaces WriteSuccessNativeContract WriteSuccessRepresentation
+ WriteSuccessExactPrefixStackFacts InterfacesCoverage.
+(* Open only the resources introduced by this return wand. *)
+Require Import isla.isla.
+Require Import ZesuSsz.Automation.PureFacts.
+From iris.proofmode Require Import environments intro_patterns.
+
+Class ZesuStepReturnBundle : Prop := zesu_step_return_bundle : True.
+
+Ltac zesu_open_return_bundle H :=
+  lazymatch iTypeOf H with
+  | Some (_, ?body) =>
+      first
+        [ lazymatch body with
+          | (_ ∗ _)%I =>
+              let left := iFresh in
+              let right := iFresh in
+              let pattern := constr:(IList [[IIdent left; IIdent right]]) in
+              iDestruct H as pattern;
+              try zesu_open_return_bundle left;
+              try zesu_open_return_bundle right
+          end
+        | let head := get_head body in
+          let _ := constr:(_ : LithiumUnfold head) in
+          iEval (progress unfold head; cbv beta zeta) in H;
+          zesu_open_return_bundle H ]
+  end.
+
+Ltac zesu_enter_return_bundle_if_enabled :=
+  let _ := constr:(_ : ZesuStepReturnBundle) in
+  lazymatch goal with
+  | |- envs_entails _ ((_ -∗ _) ∗ True)%I =>
+      iSplit; [let H := iFresh in iIntros H; zesu_open_return_bundle H | done]
+  end.
+
+Require Import ZesuSsz.Automation.PureFacts.
+
+
+Global Instance zesu_switch_return_bundle_set : ZesuRuleSetV2 := I.
+Global Instance zesu_switch_return_bundle : ZesuStepReturnBundle := I.
+
+Require Import isla.isla.
+Require Import isla.riscv64.riscv64.
+Require Import InstrSpecs.Specs.
+From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.SpecPrefix.
+Require Import ZesuSsz.Automation.LookupReduce.
+Require Import ZesuSsz.Automation.CallReturn.
+Require Import ZesuSsz.Automation.CallReturnSpecTable.
+Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.ExistentialArrayRestore.
+Require Import ZesuSsz.Automation.OutcomeHandoff.
+
+
+
+Ltac zesu_rule_set_v2_steps ::= 
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) =>
+      first [zesu_outcome_handoff_if_enabled
+            | zesu_restore_existential_array_if_enabled
+            | zesu_open_sealed_for_lookup_if_enabled
+            | zesu_close_spec_tail_if_enabled]
+  (* C7: the instruction a lookup holds, in the form the search reads. *)
+  | |- envs_entails _ (subsume (instr _ _) _ _) =>
+      zesu_reduce_instr_lookup_if_enabled
+  (* C7: the continuation a returning call leaves. *)
+  | |- envs_entails _ ((_ -∗ _ -∗ WPasm _) ∗ True)%I =>
+      zesu_enter_call_return_if_enabled
+  | |- envs_entails _ ((_ -∗ WPasm _) ∗ True)%I =>
+      zesu_enter_call_return_if_enabled
+  | |- envs_entails _ ((_ -∗ zesu_ld_spec _ _ _ _) ∗ True)%I =>
+      first [zesu_enter_return_bundle_if_enabled
+            |zesu_enter_call_return_spec_table_if_enabled]
+  | |- envs_entails _ ((_ -∗ _) ∗ True)%I =>
+      zesu_enter_return_bundle_if_enabled
+  (* C3: a sealed bundle, opened for the lookup that failed. *)
+  | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
+      zesu_open_sealed_for_lookup_if_enabled
+  | |- envs_entails _ (find_in_context (FindRegMapsTo _) _) =>
+      zesu_open_sealed_for_lookup_if_enabled
+  | |- envs_entails _ (@bi_exist _ (li_prod (bv 64) unit) _) =>
+      zesu_open_sealed_for_lookup_if_enabled
+  end.
+
+Lemma infer_boundary `{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (tail : spec) (Hwf : writeSuccessWitnessWellFormed args witness) :
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  □ instr_pre 0x15b9c encoderBooleanEntryBoundary -∗
+  □ instr_pre 0x15c6c encoderBytesEntryBoundary -∗
+  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗
+  instr_body 0x1596c
+    (writeSuccessExactTailFirstBranchState args witness (Snapshots.writeOutputEvents (writeSuccessEntrySp witness - (2000 + 9)) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 0) tail)).
+Proof. time "TF2 inferred Candidate" zesu_block. Show. Abort.

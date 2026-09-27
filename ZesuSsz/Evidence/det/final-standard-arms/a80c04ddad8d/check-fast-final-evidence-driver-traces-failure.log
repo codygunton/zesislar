@@ -1,0 +1,13 @@
+gate lock: state=wanted holder=cody:gate-check-fast:/home/cody/zesislar/.worktrees/builder-final-evidence pid=1685884 start=2026-09-26T22:37:11-04:00
+uncached checks: hygiene, parity, spec shapes, evidence tests
+spec record written to /tmp/tmpc9hh6fuw/spec.json
+OK (skipped=1)
+warning: 321 proof-size baseline violations remain
+warning: 584 baseline forbidden-name occurrences remain
+File "ZesuSsz/dune", line 16, characters 50-70:
+16 |    isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit
+                                                       ^^^^^^^^^^^^^^^^^^^^
+Theory "IslaTraces.zkvm_exit" has not been found.
+-> required by theory ZesuSsz in ZesuSsz/dune:4
+-> required by
+   /home/cody/zesislar/.worktrees/builder-final-evidence/_build/agents/push1/default/ZesuSsz/Proofs/WriteSuccess/WriteSuccessDecoderExamples.vo

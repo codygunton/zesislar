@@ -1,0 +1,145 @@
+{
+  "label": "Exact copied evidence. Diagnostic .v files use .v.txt; no executable proof source added.",
+  "files": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/corpus-comparison.json",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/corpus-comparison.json",
+      "sha256": "14ba4d3c00fb7337ff0d86cf1e78ae6aa8c1fea00c660be7e333f266ebac2bd0"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/corpus-reconciled-baseline.json",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/corpus-reconciled-baseline.json",
+      "sha256": "7eb5ce746263fb42e4faf7d6c631571be53e517e262435ba715cecc0e8b00d85"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/corpus-reconciled-candidate.json",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/corpus-reconciled-candidate.json",
+      "sha256": "3eb7d3b51aa91818cd5e113c96d670711408bb72e28df0bd58bf91b6ad10f3aa"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/corpus-reconciled-summary.json",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/corpus-reconciled-summary.json",
+      "sha256": "015a571761e4f0e6805d1b646d94456f85aee759d6944274b27031be529d2e80"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/iris-matched-reprobes.jsonl",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/iris-matched-reprobes.jsonl",
+      "sha256": "5b075cb318214cd0f2bb5973eb78207e322221a5c8c8bd592f12acafc58ae253"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/iris-pair-summary.json",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/iris-pair-summary.json",
+      "sha256": "eb82f1a61d87caf28641731f9af07424fae33d0982191c771a154164db3e88d3"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/iris-reprobe-set.txt",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/iris-reprobe-set.txt",
+      "sha256": "4f21e4aecce4d16268bd09b96f1e2996137312948e2ddc703be4ac8e164ae755"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/source-identity.json",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/source-identity.json",
+      "sha256": "6863df71a63ead599bfde6399e3d8375b8dde6efd21bfae647e8a6fe9112aa7b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/full-preview-memory-failure.txt",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/full-preview-memory-failure.txt",
+      "sha256": "deaa4b8fb01dbefa56e23e75e19a966a23668844849362446fa8e9b222554486"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/compare_corpus.py",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/compare_corpus.py.txt",
+      "sha256": "a226a48798c7247dfe722afaf4dd0cda44cdbac889856918c62d96ff3dfe458d"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/report_iris_pairs.py",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/report_iris_pairs.py.txt",
+      "sha256": "58591ffbbd9e6e7c0eaa58cf901a588f800fa91a29563490265b4ce174c60d84"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/nonraising-dd2b56436635/reprobe_iris.py",
+      "destination": "ZesuSsz/Evidence/det/nonraising-final/dd2b56436635/reprobe_iris.py.txt",
+      "sha256": "2914ae16dc74fb33abd010b0dcaa19fd8ba2c2ba2a95c440f4671e4c676e3684"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/determinism/ZesuSsz/Evidence/residuals/benchmark/434db04166fa-corpus.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/434db04166fa-corpus.json",
+      "sha256": "9607b281b66538fbd1d60817acaaae69562aece2e5281042268c91c5b304dbc1"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-corpus.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-corpus.json",
+      "sha256": "2d84b0e7eff807b1bd42023ed05863b444a7a609efc0a9325f420c55073568ae"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-full.json",
+      "sha256": "76125aaa3eb943fe05d5545cf94d780e31fb3951783cf1ff3e244f4b4ea874e4"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+      "destination": "ZesuSsz/Evidence/residuals/benchmark/dd2b56436635-nr-v2-baseline-rule15.json",
+      "sha256": "32febfa19a24f94b6bc3701549b9d2d5876a90bcd694a308950e32f535266e4b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/MANIFEST.json",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/MANIFEST.json",
+      "sha256": "6106bf40dd13f4843670ac02b6b411af08db067b4f62a30c4e9123284f3dca55"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsFirstT6Diagnostic.v",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsFirstT6Diagnostic.v.txt",
+      "sha256": "a503980c1d97c1b61b162a554d2e27ed23a0e34cc0e2a7746878f6edea685c59"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsFirstT6Residual.txt",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsFirstT6Residual.txt",
+      "sha256": "1ab440ddd91c6bbf66f6b304cdfb43430c6fc98f6f746c3a210c1baecdcd5e39"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsFirstT6Review.md",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsFirstT6Review.md",
+      "sha256": "5554149c03fed9e200c9eb32e81166be340096fa5f74ae49c20bc0efbf714675"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondT6Diagnostic.v",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondT6Diagnostic.v.txt",
+      "sha256": "2a0ff7c4573cd690bf5d04913b1613e9a643cf7a26f754ee112d5debbc1f8e3b"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondT6Residual.txt",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondT6Residual.txt",
+      "sha256": "298884823deb099193afeffde1d710574b16fd0debae750b501cc4a087a2c06f"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondT6Review.md",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondT6Review.md",
+      "sha256": "5041be770b348c571d4cb4675930ee8e65f58330f65f85777c8b3bbeafe5cf55"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondTrace1Candidate.v",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondTrace1Candidate.v.txt",
+      "sha256": "57606c3794bf9f70b72363bb3983bf94adf9bd38093d48cd3897a7d799a272b5"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondTrace1CandidateResidual.txt",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondTrace1CandidateResidual.txt",
+      "sha256": "81f915057f9c1cd7de122b6af43f5c5571cc7f47e14ec2ee5ee6982fa2d7d3b6"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondTrace1Control.v",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondTrace1Control.v.txt",
+      "sha256": "ec0a1725dc49c955c03188f0f40ce81284125be45a783d5063c302c1363850a9"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondTrace1ControlResidual.txt",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondTrace1ControlResidual.txt",
+      "sha256": "50fd5f49600d96a7bebcf28eebd7f5585961cb55f5dca1b9254761ce9313fd38"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-evidence-55251/TailFieldsSecondTrace1Review.md",
+      "destination": "ZesuSsz/Evidence/det/t6-final/55251ed462db/TailFieldsSecondTrace1Review.md",
+      "sha256": "90ec81693597995ba409a303dee7407363e363aa0c1c5ba36bc9b5a9e1eb0bfd"
+    }
+  ]
+}

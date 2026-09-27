@@ -1,0 +1,13 @@
+{
+  "source_sha": "f08fa35bf956c933c951580727194ffcb0932334",
+  "snapshot": "immutable f08fa35bf956",
+  "tracked_blob_count": 2530,
+  "verified_git_modes": 2530,
+  "blob_mismatches": 0,
+  "mode_mismatches": 0,
+  "missing_entries": 0,
+  "non_blob_entries": 0,
+  "reported_by": "T3 writer via root",
+  "action": "Read-only source audit; no compile or source change",
+  "build_and_probes": "pending"
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "result": "dd2b56436635-nr-v2-baseline-full.json",
+    "sha256": "76125aaa3eb943fe05d5545cf94d780e31fb3951783cf1ff3e244f4b4ea874e4",
+    "group": "nr-v2-baseline",
+    "set": "full"
+  },
+  {
+    "result": "dd2b56436635-nr-v2-baseline-rule15.json",
+    "sha256": "32febfa19a24f94b6bc3701549b9d2d5876a90bcd694a308950e32f535266e4b",
+    "group": "nr-v2-baseline",
+    "set": "rule15"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "source_sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+  "full_delta": {
+    "closed": 2,
+    "error": 3,
+    "lost_closures": 0,
+    "new_timeouts": 0
+  },
+  "rule15_delta": {
+    "closed": 1,
+    "error": 2,
+    "lost_closures": 0,
+    "new_timeouts": 0
+  },
+  "new_error_diagnosis": {
+    "error": "Expected a single focused goal but 0 goals are focused.",
+    "integer": "Probe line 89 iSplit in an earlier frame adapter",
+    "optional": "Probe line 219 iSplit in an earlier Some adapter",
+    "target_proofs_started": false
+  },
+  "raw_arm_records": "Unchanged exact copies",
+  "post_arm_preview_session": 43453,
+  "preview_status": "passed",
+  "post_arm_preview": {
+    "exit": 0,
+    "elapsed_seconds": 39.358,
+    "jobs": 24,
+    "peak_gib": 43,
+    "timeouts": 0
+  },
+  "merge": {
+    "type": "fast-forward",
+    "source_sha": "6127efd7972be8dcde3871e9b6cd7bde4e96985d",
+    "root_pushed": false,
+    "candidate_branches_pushed": true,
+    "writer_worktree_removed": true
+  }
+}

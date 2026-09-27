@@ -1,0 +1,22 @@
+[
+  {
+    "file": "preview-t6-postarm-driver.log",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/preview-t6-postarm-driver.log",
+    "sha256": "a9af95b64ffcaa77c4cf8dc8fbba10ebba8d4fb45b58a3e1f08560cf2716d228"
+  },
+  {
+    "file": "preview-t6-postarm-iris.log",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/preview-t6-postarm-iris.log",
+    "sha256": "8b75ce273321f5a55e78e2152e43ce142ae5724c0710f9e4662b13fbadd89b92"
+  },
+  {
+    "file": "hygiene-t6-merged.log",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/hygiene-t6-merged.log",
+    "sha256": "1cb23a1b9c10f74a7a8e6508c1a16728fdc7dd224bc58a49d76f783d564477ef"
+  },
+  {
+    "file": "t6-snapshot-completion.log",
+    "source": "/home/cody/zesislar/.worktrees/islaris-native/_build/agents/orch/logs/t6-snapshot-completion.log",
+    "sha256": "1c5b29cc673047e9c0b15a0089799eb01dc55d385182ba8546edb4a064ec7af8"
+  }
+]

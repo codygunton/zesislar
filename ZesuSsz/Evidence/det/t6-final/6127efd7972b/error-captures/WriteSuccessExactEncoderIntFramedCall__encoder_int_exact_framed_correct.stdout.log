@@ -1,0 +1,5 @@
+Tactic call zesu_run ran for 0.094 secs (0.094u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.054 secs (0.054u,0.s) (success)
+Tactic call zesu_run ran for 0.044 secs (0.044u,0.s) (success)
+exit=1 ms=4064 rss_kb=1076572
