@@ -155,11 +155,13 @@ def main():
       "`ZesuSsz/Evidence/` (" + ", ".join(f"`{k}` {v}" for k, v in hits.items()) +
       "). Otherwise the ratchet reports stale entries.")
     dh = det_set_hits(tree, rn_paths)
-    w("5. The measurement sets of the determinism plan name removed modules (" +
-      ", ".join(f"`det/{k}` {v} rows" for k, v in dh.items()) + "). The frozen "
-      "benchmark sets name none. `PLAN_DETERMINISM` is active and measures the whole "
-      "corpus. So either run tier 1 after that investigation closes, or drop those rows "
-      "and re-freeze its sets.")
+    if dh:
+        w("5. The measurement sets of the determinism plan name removed modules (" +
+          ", ".join(f"`det/{k}` {v} rows" for k, v in dh.items()) + "). Drop those "
+          "rows with `refreeze.py` before the removal.")
+    else:
+        w("5. The benchmark and `det/` measurement sets are re-frozen (`refreeze.py`) "
+          "and name no tier-1 module; no set change.")
     w("6. Then run one full preview. `Print Assumptions` of the four roots must not change.\n")
     w("### Ranked module groups\n")
     w("Groups: the module name with addresses and indices replaced by `*`. The rank is "

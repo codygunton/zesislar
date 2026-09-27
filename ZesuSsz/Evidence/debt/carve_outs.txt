@@ -4,7 +4,12 @@ ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBoolean1599cCall.v	remove af
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBooleanSetupCompose.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixByteListCalls.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixByteListSetups.v	remove after CP3	carve-out 1: proves an open-segment address
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes158f0.v	remove after CP3	carve-out 1: proves an open-segment address
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15900.v	remove after CP3	carve-out 1: proves an open-segment address
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15910.v	remove after CP3	carve-out 1: proves an open-segment address
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes15980Segment.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytes1598cCall.v	remove after CP3	carve-out 1: proves an open-segment address
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesCall.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixBytesPost15930.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15960Raw.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixInt15964Handoff.v	remove after CP3	carve-out 1: proves an open-segment address
@@ -16,6 +21,7 @@ ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixLoadBranchSegment.v	remove a
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixRoot.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessNativeSuffixScalarSetups.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessPost15930Loads.v	remove after CP3	carve-out 1: proves an open-segment address
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsBytes.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessPostWithdrawalsOptional.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15740Raw.v	remove after CP3	carve-out 1: proves an open-segment address
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntry.v	remove after CP3	carve-out 1: proves an open-segment address
@@ -30,6 +36,11 @@ ZesuSsz/Proofs/Main/Failure.v	debt, keep	carve-out 3: kept until the CP4 review
 ZesuSsz/Proofs/Main/FailureAdapter.v	debt, keep	carve-out 3: kept until the CP4 review
 ZesuSsz/Proofs/Main/SnapshotInput.v	debt, keep	carve-out 3: kept until the CP4 review
 ZesuSsz/Export/TerminationResources.v	debt, keep	carve-out helper: imported by DecodeTermination.v (debt, keep)
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748Compose.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashes15744Compose.v (remove after CP3)
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesQContinuations.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashes15744Compose.v (remove after CP3)
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes1574cNonzeroCaller.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashes15748Compose.v (remove after CP3)
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748EntryResourceAdapter.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashes15748EntryPreAdapter.v (remove after CP3)
+ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashes15748Raw.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashesEntry.v (remove after CP3)
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryAdapter.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashesEntry.v (remove after CP3)
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryCallerResources.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashesEntry15740.v (remove after CP3)
 ZesuSsz/Proofs/WriteSuccess/WriteSuccessSuffixHashesEntryResourceFinal.v	remove after CP3	carve-out helper: imported by WriteSuccessSuffixHashesEntryAdapter.v (remove after CP3)
