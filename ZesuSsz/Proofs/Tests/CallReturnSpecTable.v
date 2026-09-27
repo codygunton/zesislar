@@ -51,7 +51,7 @@ Lemma test_call_return_rule_rejects_existential `{!islaG Sigma} `{!threadG}
   ((R -∗ ∃ n : nat, ⌜n = 0%nat⌝) ∗ True).
 Proof.
   iIntros "Hcontinue".
-  tryif zesu_rule_set_v2_steps
+  tryif ZesuSsz.Automation.CallReturnSpecTable.zesu_enter_call_return_spec_table
   then fail "the load-only return rule matched an existential"
   else idtac.
   iSplit; last done.
