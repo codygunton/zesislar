@@ -24,6 +24,11 @@ ROOTS = {
     "shell": "ZesuSsz/Compliance/Shell.v",
     "adequacy": "ZesuSsz/Export/Adequacy.v",
 }
+# The lead's carve-outs from tier 1 (PLAN_TECH_DEBT_SWEEP section 7).
+OPEN_RANGES = [(0x156e8, 0x15744), (0x158e0, 0x159b8)]
+KEPT_EXPORT = {"ZesuSsz/Export/" + n + ".v" for n in (
+    "DecodeTermination", "WriteSuccessExecutor", "WriteSuccessWithdrawalsRank",
+    "WriteSuccessWithdrawalsRegion", "WriteSuccessControl")}
 TEST_DIRS = ("ZesuSsz/Proofs/Tests/", "ZesuSsz/Tests/")
 CURRENT = "ZesuSsz/Automation/All.v"
 LEGACY = "ZesuSsz/Automation/AllLegacy.v"
@@ -278,6 +283,17 @@ def main():
             cls, why = "live", ""
         rec["class"], rec["why"] = cls, why
 
+    # Carve-outs. Their helpers follow through the closure below.
+    for m, rec in records.items():
+        if rec["class"] != "remove now":
+            continue
+        if any(lo <= e < hi for e in entries_by_module[m] for lo, hi in OPEN_RANGES):
+            rec["class"], rec["why"] = "remove after CP3", "carve-out 1: proves an open-segment address"
+        elif m in KEPT_EXPORT:
+            rec["class"], rec["why"] = "debt, keep", "carve-out 2: pre-staged CP5 work"
+        elif m.startswith("ZesuSsz/Proofs/Main/"):
+            rec["class"], rec["why"] = "debt, keep", "carve-out 3: kept until the CP4 review"
+
     # A removal tier must be closed under importers: a module that a kept
     # module imports cannot go before it. Demote to the importer's tier.
     rank = {"remove now": 0, "remove after CP3": 1, "debt, keep": 2, "live": 3}
@@ -292,7 +308,9 @@ def main():
                 top = max(sorted(later), key=lambda i: rank[records[i]["class"]])
                 cls = records[top]["class"]
                 rec["class"] = "debt, keep" if cls == "live" else cls
-                rec["why"] = f"imported by {Path(top).name} ({cls})"
+                helper = records[top]["why"].startswith("carve-out")
+                rec["why"] = (f"carve-out helper: imported by {Path(top).name} ({cls})" if helper
+                              else f"imported by {Path(top).name} ({cls})")
                 changed = True
 
     Path(args.out).write_text(json.dumps(records, indent=1) + "\n")
