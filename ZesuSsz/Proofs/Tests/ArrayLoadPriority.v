@@ -1,4 +1,6 @@
 Require Import ZesuSsz.Automation.All.
+From Coq Require Import Lists.List.
+Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Sets.v2.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
 From IslaTraces.write_success_blocks Require Import Index.
