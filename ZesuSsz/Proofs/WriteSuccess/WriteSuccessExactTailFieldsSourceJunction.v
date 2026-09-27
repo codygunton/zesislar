@@ -20,6 +20,17 @@ Definition tailFieldsSourceByteView `{!islaG Sigma}
    (base + 624) ↦ₘ∗ take 64 (drop 624 bytes) ∗
    (base + 688) ↦ₘ∗ drop 688 bytes ∗ True)%I.
 
+Global Instance : LithiumUnfold (@tailFieldsSourceByteView) := I.
+
+Lemma tailFieldsSourceByteView_unfold `{!islaG Sigma}
+    (base : Z) (bytes : list (bv 8)) :
+  tailFieldsSourceByteView base bytes ⊣⊢
+  (base ↦ₘ∗ take 608 bytes ∗
+   (base + 608) ↦ₘ∗ take 16 (drop 608 bytes) ∗
+   (base + 624) ↦ₘ∗ take 64 (drop 624 bytes) ∗
+   (base + 688) ↦ₘ∗ drop 688 bytes ∗ True)%I.
+Proof. done. Qed.
+
 Lemma tail_fields_source_bytes_open `{!islaG Sigma}
     (base : Z) (bytes : list (bv 8)) :
   length bytes = 720%nat ->
@@ -62,6 +73,16 @@ Definition tailFieldsSourceWordView `{!islaG Sigma}
   ((base + 608) ↦ₘ∗ u64s_of_bytes 2 (take 16 (drop 608 bytes)) ∗
    (base + 624) ↦ₘ∗ u64s_of_bytes 8 (take 64 (drop 624 bytes)) ∗
    tailFieldsSourceUntouched base bytes ∗ True)%I.
+
+Global Instance : LithiumUnfold (@tailFieldsSourceWordView) := I.
+
+Lemma tailFieldsSourceWordView_unfold `{!islaG Sigma}
+    (base : Z) (bytes : list (bv 8)) :
+  tailFieldsSourceWordView base bytes ⊣⊢
+  ((base + 608) ↦ₘ∗ u64s_of_bytes 2 (take 16 (drop 608 bytes)) ∗
+   (base + 624) ↦ₘ∗ u64s_of_bytes 8 (take 64 (drop 624 bytes)) ∗
+   tailFieldsSourceUntouched base bytes ∗ True)%I.
+Proof. done. Qed.
 
 Lemma tail_fields_source_byte_word_equiv `{!islaG Sigma}
     (base : Z) (bytes : list (bv 8)) (count : nat) :
@@ -166,6 +187,19 @@ Definition tailFieldsCallerSourceView `{!islaG Sigma} `{!threadG}
       (bv_unsigned (writeSuccessFrameSp witness) + 312)
       (writeSuccessSourceBytes witness) ∗
    tailFieldsCallerUntouched args witness ∗ True)%I.
+
+Global Instance : LithiumUnfold (@tailFieldsCallerSourceView) := I.
+
+Lemma tailFieldsCallerSourceView_unfold `{!islaG Sigma} `{!threadG}
+    {Decoded} `{!WriteSuccessMemoryRepresentation Decoded}
+    (args : WriteSuccessArgs Decoded)
+    (witness : writeSuccessNativeWitness Decoded) :
+  tailFieldsCallerSourceView args witness ⊣⊢
+  (tailFieldsSourceWordView
+      (bv_unsigned (writeSuccessFrameSp witness) + 312)
+      (writeSuccessSourceBytes witness) ∗
+   tailFieldsCallerUntouched args witness ∗ True)%I.
+Proof. done. Qed.
 
 Lemma tail_fields_source_junction_equiv `{!islaG Sigma}
     (base : Z) (bytes : list (bv 8)) :
