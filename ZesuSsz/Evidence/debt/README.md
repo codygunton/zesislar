@@ -20,3 +20,20 @@ They write nothing into the tree. `run.sh` runs them in order.
 the environment of each build; the scripts never read it out.
 
     ZesuSsz/Evidence/debt/run.sh <root-sha> <out-dir>
+
+## Pre-deletion step (sweep plan section 7, step 1)
+
+| script | does |
+|---|---|
+| `tier_lists.py` | writes `tier1_remove_now.txt` and `carve_outs.txt` from one inventory run |
+| `refreeze.py` | keeps set rows whose module imports `Automation.All` and survives tier 1; writes `benchmark_set_segments.txt` |
+| `baseline_arms.sh` | v1 and v2 arms on both sets, then the three open segments, all under the guard |
+
+The arms need the classifier-v2 and re-probe version of `benchmark.py`,
+which only `origin/determinism` carries:
+
+    git archive origin/determinism tools | tar -x -C <dir>
+    ZesuSsz/Evidence/debt/baseline_arms.sh <root-sha> <dir>/tools
+
+The worktree must hold `generated/isla-traces` and `build/`, which the arm
+tree copies in.

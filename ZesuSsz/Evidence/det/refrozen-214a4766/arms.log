@@ -1,0 +1,57 @@
+=== refrozen-v1 2026-09-27T01:47:33-04:00
+benchmark 214a47663d2d: 199 lemmas
+arm tree _build/agents/bench/214a47663d2d
+resource guard allows 32 concurrent jobs
+reprobed WriteSuccessExactEpilogueSegment.v:write_success_exact_epilogue_segment: batch timeout 300 s, alone timeout 300 s
+classifier v2
+reprobed alone 1, 0 changed outcome
+probed 199  closed 1.0%  median 3.8 s
+outcomes {"closed": 2, "residual": 196, "timeout": 1}
+classes  {"C1": 24, "C2": 24, "C3": 2, "C4": 11, "C6": 20, "C7": 54, "C8": 7, "C9": 2, "n/a": 3, "unknown": 52}
+no earlier run to compare
+=== refrozen-v1 exit 0 2026-09-27T02:37:11-04:00
+=== refrozen-v1-rule15 2026-09-27T02:37:11-04:00
+benchmark 214a47663d2d: 48 lemmas
+arm tree _build/agents/bench/214a47663d2d
+resource guard allows 32 concurrent jobs
+reprobed WriteSuccessExactEpilogueSegment.v:write_success_exact_epilogue_segment: batch timeout 300 s, alone timeout 300 s
+classifier v2
+reprobed alone 1, 0 changed outcome
+probed 48  closed 4.2%  median 7.7 s
+outcomes {"closed": 2, "residual": 45, "timeout": 1}
+classes  {"C1": 10, "C2": 8, "C3": 2, "C4": 2, "C6": 3, "C7": 5, "C8": 4, "n/a": 3, "unknown": 11}
+no earlier run to compare
+=== refrozen-v1-rule15 exit 0 2026-09-27T02:47:14-04:00
+=== refrozen-v2 2026-09-27T02:47:14-04:00
+benchmark 214a47663d2d: 199 lemmas
+arm tree _build/agents/bench/214a47663d2d
+resource guard allows 32 concurrent jobs
+classifier v2
+reprobed alone 0, 0 changed outcome
+probed 199  closed 3.5%  median 3.0 s
+outcomes {"closed": 7, "residual": 192}
+classes  {"C1": 21, "C2": 23, "C3": 2, "C4": 11, "C6": 20, "C7": 54, "C8": 7, "C9": 5, "n/a": 7, "unknown": 49}
+no earlier run to compare
+=== refrozen-v2 exit 0 2026-09-27T02:50:32-04:00
+=== refrozen-v2-rule15 2026-09-27T02:50:32-04:00
+benchmark 214a47663d2d: 48 lemmas
+arm tree _build/agents/bench/214a47663d2d
+resource guard allows 32 concurrent jobs
+classifier v2
+reprobed alone 0, 0 changed outcome
+probed 48  closed 12.5%  median 5.5 s
+outcomes {"closed": 6, "residual": 42}
+classes  {"C1": 8, "C2": 7, "C3": 2, "C4": 2, "C6": 3, "C7": 5, "C8": 4, "C9": 2, "n/a": 6, "unknown": 9}
+no earlier run to compare
+=== refrozen-v2-rule15 exit 0 2026-09-27T02:52:27-04:00
+=== segments-v1 2026-09-27T02:52:27-04:00
+stalled      8.2s frame  13  C4       bv_extract = _  write_success_exact_post_withdrawals_segment
+stalled     13.4s frame  53  C1       ∃ : spec *ₗ ()  write_success_exact_tail_fields_first_segment
+stalled      8.2s frame  45  C1       ∃ : spec *ₗ ()  write_success_exact_tail_fields_second_segment
+=== segments-v1 exit 0 2026-09-27T02:52:57-04:00
+=== segments-v2 2026-09-27T02:52:57-04:00
+stalled     10.9s frame  96  C6       ∃ : bv N *ₗ ()  write_success_exact_post_withdrawals_segment
+stalled      8.2s frame  37  C9       ∗[2] -∗ ∗ True  write_success_exact_tail_fields_first_segment
+stalled      5.4s frame  35  C1       ∃ : spec *ₗ ()  write_success_exact_tail_fields_second_segment
+=== segments-v2 exit 0 2026-09-27T02:53:22-04:00
+=== done 2026-09-27T02:53:22-04:00
