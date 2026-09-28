@@ -254,6 +254,39 @@ Lemma zesuDecodeFailureHandoff runner model inputRef applies Sigma HG HT args :
       {| failureReturnAddress := 0x14d24 |}.
 Proof. reflexivity. Qed.
 
+Lemma zesu_decode_meaning_compliance runner model inputRef args outcome expected :
+  DecodeMeaningModuloKnownBugs runner model inputRef
+    zesuObservationBugApplies args outcome ->
+  referenceRuns (EvmSailReference runner model inputRef)
+    (decodeInput args) expected ->
+  OutcomeEquivalentModulo zesuBugApplies zesuEquivalent (decodeInput args)
+    (match outcome with
+     | DecodeBoundaryFailure => DecodeFailure
+     | DecodeBoundarySuccess observation =>
+       DecodeSuccess (observationToStatelessInput observation)
+     end) expected.
+Proof.
+  intros [ref [Hinput Hmeaning]] [expectedRef [HexpectedRef Hexpected]].
+  rewrite Hinput in HexpectedRef. inversion HexpectedRef. subst expectedRef.
+  unfold OutcomeEquivalentModulo, zesuEquivalent.
+  destruct outcome as [|observation]; simpl in Hmeaning |- *.
+  - destruct expected as [decoded|]; simpl in Hexpected.
+    + unfold ReferenceRejects in Hmeaning. unfold ReferenceDecodes in Hexpected.
+      pose proof (evaluates_functional runner _ _ _ _ _ Hmeaning Hexpected) as Heq.
+      discriminate.
+    + left. reflexivity.
+  - destruct Hmeaning as [Hdecoded|Hbug].
+    + destruct expected as [decoded|]; simpl in Hexpected.
+      * unfold ReferenceDecodes in Hdecoded, Hexpected.
+        pose proof (evaluates_functional runner _ _ _ _ _ Hdecoded Hexpected) as Heq.
+        inversion Heq. left. reflexivity.
+      * unfold ReferenceDecodes in Hdecoded. unfold ReferenceRejects in Hexpected.
+        pose proof (evaluates_functional runner _ _ _ _ _ Hdecoded Hexpected) as Heq.
+        discriminate.
+    + right. exact Hbug.
+Qed.
+Print Assumptions zesu_decode_meaning_compliance.
+
 Theorem zesuCompliance
     (runner : DecoderEvaluator) (model : DecoderModel)
     (inputRef : ByteString -> option StatelessInputRef)
