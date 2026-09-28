@@ -22,6 +22,7 @@
    reach the shape, the tactic fails and the stall stays a ticket. *)
 
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.GuardedTracePrefix.
 Require Import isla.isla.
 From iris.proofmode Require Import environments.
 
@@ -70,4 +71,5 @@ Ltac zesu_step_spec_tail_on :=
   let _ := constr:(_ : ZesuStepSpecTail) in idtac.
 
 Ltac zesu_close_spec_tail_if_enabled :=
-  zesu_step_spec_tail_on; zesu_close_spec_tail.
+  zesu_step_spec_tail_on;
+  first [zesu_registered_trace_tail | zesu_close_spec_tail].
