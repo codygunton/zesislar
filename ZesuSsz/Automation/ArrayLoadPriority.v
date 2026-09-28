@@ -83,7 +83,7 @@ Ltac zesu_array_load_find_owned address :=
           repeat iDestruct select (_ ∗ _)%I as "[? ?]";
           zesu_array_load_find_owned address].
 
-Ltac zesu_array_load_priority :=
+Ltac zesu_array_load_select :=
   lazymatch goal with
   | |- envs_entails ?Delta (find_in_context (FindInstrKind ?address ?later) _) =>
       let _ := constr:(_ : ZesuStepArrayLoadPriority) in
@@ -121,3 +121,63 @@ Ltac zesu_array_load_priority :=
       end
       end
   end.
+
+(* These reductions are opt-in v2 steps. They preserve the owned arrays. *)
+Class ZesuStepWordArrayLookup : Prop := zesu_step_word_array_lookup : True.
+
+Ltac zesu_normalize_word_array_lookup :=
+  match goal with
+  | Hlookup : ?values !! Z.to_nat
+      ((bv_unsigned (bv_add ?sp ?offset) - (bv_unsigned ?sp + ?start))
+        `div` ?stride) = Some ?loaded |- _ =>
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      let origin := eval vm_compute in start in
+      let width := eval vm_compute in stride in
+      lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
+      lazymatch origin with Z0 => idtac | Zpos _ => idtac end;
+      lazymatch width with Zpos _ => idtac end;
+      let index := eval vm_compute in (Z.to_nat ((integer - origin) `div` width)) in
+      let Hsum := fresh "HwordArrayAddress" in
+      assert (Hsum : bv_unsigned (bv_add sp offset) =
+        (bv_unsigned sp + integer)%Z) by
+        (try zesu_witness_facts;
+         cbv [machineRamEnd mapRamSize mapRamBase defaultMap] in *;
+         bv_solve);
+      let Hindex := fresh "HwordArrayIndex" in
+      assert (Hindex : Z.to_nat
+        ((bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))
+          `div` stride) = index) by
+        (rewrite Hsum; f_equal; f_equal; lia);
+      rewrite Hindex in Hlookup; clear Hsum Hindex;
+      rewrite ?lookup_cons ?lookup_nil in Hlookup;
+      lazymatch type of Hlookup with
+      | Some ?expected = Some ?actual =>
+          is_var actual;
+          let Hvalue := fresh "HwordArrayValue" in
+          injection Hlookup as Hvalue; subst actual
+      | _ => idtac
+      end
+  end.
+
+Ltac zesu_word_array_lookup_if_enabled :=
+  let _ := constr:(_ : ZesuStepWordArrayLookup) in
+  zesu_normalize_word_array_lookup.
+
+
+Ltac zesu_array_region_metadata_if_enabled :=
+  let _ := constr:(_ : ZesuStepArrayLoadPriority) in
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
+      lazymatch goal with
+      | |- context[array_region_start 64 ?base ?base] =>
+          progress (autorewrite with lithium_rewrite)
+      end
+  | |- envs_entails _ _ => fail 0
+  | |- context[array_region_start 64 ?base ?base] =>
+      progress (autorewrite with lithium_rewrite)
+  end.
+
+
+Ltac zesu_array_load_priority :=
+  first [zesu_word_array_lookup_if_enabled |
+    zesu_array_region_metadata_if_enabled | zesu_array_load_select].
