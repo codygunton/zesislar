@@ -3,6 +3,7 @@
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ResourceGroups.
+Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import InstrSpecs.Lookup InstrSpecs.Specs.
 Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
@@ -66,7 +67,8 @@ Ltac zesu_array_load_contains address spatial :=
       first [let Hrange := fresh "HarrayLoadRange" in
              assert (Hrange : (start <= address /\
                address + 8 <= start + Z.of_nat (length values) * Z.of_N (bits / 8))%Z)
-               by (first [cbn; lia | zesu_witness_arith]); clear Hrange
+               by (autorewrite with lithium_rewrite;
+                   first [cbn; lia | zesu_witness_arith]); clear Hrange
             | zesu_array_load_contains address rest]
   | Esnoc ?rest _ _ => zesu_array_load_contains address rest
   end.
