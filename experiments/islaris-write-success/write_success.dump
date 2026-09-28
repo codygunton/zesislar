@@ -1,0 +1,239 @@
+//@isla-config: riscv64_zesu_write_success.toml
+   14d30:	83010113          	addi	sp,sp,-2000
+   14d34:	7c113423          	sd	ra,1992(sp)
+   14d38:	7c813023          	sd	s0,1984(sp)
+   14d3c:	7a913c23          	sd	s1,1976(sp)
+   14d40:	7b213823          	sd	s2,1968(sp)
+   14d44:	7b313423          	sd	s3,1960(sp)
+   14d48:	7b413023          	sd	s4,1952(sp)
+   14d4c:	79513c23          	sd	s5,1944(sp)
+   14d50:	79613823          	sd	s6,1936(sp)
+   14d54:	79713423          	sd	s7,1928(sp)
+   14d58:	79813023          	sd	s8,1920(sp)
+   14d5c:	77913c23          	sd	s9,1912(sp)
+   14d60:	77a13823          	sd	s10,1904(sp)
+   14d64:	77b13423          	sd	s11,1896(sp)
+   14d68:	00050413          	mv	s0,a0
+   14d6c:	13810513          	addi	a0,sp,312
+   14d70:	2d000613          	li	a2,720
+   14d74:	00040593          	mv	a1,s0
+   14d78:	ffffb097          	auipc	ra,0xffffb
+   14d7c:	45c080e7          	jalr	1116(ra) # 101d4 <memcpy>
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14d80:	2d043503          	ld	a0,720(s0)
+   14d84:	00a13c23          	sd	a0,24(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14d88:	2d843503          	ld	a0,728(s0)
+   14d8c:	00a13823          	sd	a0,16(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14d90:	2e043503          	ld	a0,736(s0)
+   14d94:	02a13423          	sd	a0,40(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14d98:	2e843503          	ld	a0,744(s0)
+   14d9c:	02a13023          	sd	a0,32(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14da0:	2f043503          	ld	a0,752(s0)
+   14da4:	02a13c23          	sd	a0,56(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14da8:	2f843503          	ld	a0,760(s0)
+   14dac:	02a13823          	sd	a0,48(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14db0:	30043503          	ld	a0,768(s0)
+   14db4:	04a13023          	sd	a0,64(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14db8:	30843503          	ld	a0,776(s0)
+   14dbc:	04a13423          	sd	a0,72(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14dc0:	31043503          	ld	a0,784(s0)
+   14dc4:	00a13423          	sd	a0,8(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14dc8:	31843503          	ld	a0,792(s0)
+   14dcc:	04a13823          	sd	a0,80(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14dd0:	32043503          	ld	a0,800(s0)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14dd4:	32843583          	ld	a1,808(s0)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14dd8:	33043603          	ld	a2,816(s0)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14ddc:	33843683          	ld	a3,824(s0)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14de0:	34043703          	ld	a4,832(s0)
+   14de4:	06e13023          	sd	a4,96(sp)
+//@constraint: = ((_ extract 2 0) x8) 0b000
+//@constraint: bvuge x8 rv_ram_base
+//@constraint: bvult (bvadd x8 0x0000000000000350) (bvadd rv_ram_base rv_ram_size)
+   14de8:	34843703          	ld	a4,840(s0)
+   14dec:	04e13c23          	sd	a4,88(sp)
+   14df0:	12a13423          	sd	a0,296(sp)
+   14df4:	12b13823          	sd	a1,304(sp)
+   14df8:	10c13c23          	sd	a2,280(sp)
+   14dfc:	12d13023          	sd	a3,288(sp)
+   14e14:	40810513          	addi	a0,sp,1032
+   14e18:	13810593          	addi	a1,sp,312
+   14e1c:	25000613          	li	a2,592
+   14e20:	ffffb097          	auipc	ra,0xffffb
+   14e24:	3b4080e7          	jalr	948(ra) # 101d4 <memcpy>
+   14e28:	4a010513          	addi	a0,sp,1184
+   14e38:	4c010513          	addi	a0,sp,1216
+   14e48:	4d410513          	addi	a0,sp,1236
+   14e58:	4f410513          	addi	a0,sp,1268
+   14e68:	51410513          	addi	a0,sp,1300
+   14e78:	61410513          	addi	a0,sp,1556
+   14e88:	40813503          	ld	a0,1032(sp)
+   14e8c:	00001097          	auipc	ra,0x1
+   14e90:	e84080e7          	jalr	-380(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   14e94:	41013503          	ld	a0,1040(sp)
+   14e98:	00001097          	auipc	ra,0x1
+   14e9c:	e78080e7          	jalr	-392(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   14ea0:	41813503          	ld	a0,1048(sp)
+   14ea4:	00001097          	auipc	ra,0x1
+   14ea8:	e6c080e7          	jalr	-404(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   14eac:	42013503          	ld	a0,1056(sp)
+   14eb0:	00001097          	auipc	ra,0x1
+   14eb4:	e60080e7          	jalr	-416(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   14eb8:	42813503          	ld	a0,1064(sp)
+   14ebc:	43013583          	ld	a1,1072(sp)
+   14ec0:	00001097          	auipc	ra,0x1
+   14ec4:	dac080e7          	jalr	-596(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   14ec8:	43813503          	ld	a0,1080(sp)
+   14ecc:	00001097          	auipc	ra,0x1
+   14ed0:	e44080e7          	jalr	-444(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   14ed4:	63410513          	addi	a0,sp,1588
+   14ee4:	44013503          	ld	a0,1088(sp)
+   14ee8:	06a13423          	sd	a0,104(sp)
+   14eec:	44813503          	ld	a0,1096(sp)
+   14ef0:	06a13823          	sd	a0,112(sp)
+   15668:	45013503          	ld	a0,1104(sp)
+   1566c:	45813583          	ld	a1,1112(sp)
+   15670:	00000097          	auipc	ra,0x0
+   15674:	5a0080e7          	jalr	1440(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>
+   15678:	46013403          	ld	s0,1120(sp)
+   1567c:	46813483          	ld	s1,1128(sp)
+   156e8:	47013503          	ld	a0,1136(sp)
+   156ec:	00000097          	auipc	ra,0x0
+   156f0:	624080e7          	jalr	1572(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   156f4:	47813503          	ld	a0,1144(sp)
+   156f8:	00000097          	auipc	ra,0x0
+   156fc:	618080e7          	jalr	1560(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   15700:	48013503          	ld	a0,1152(sp)
+   15704:	48813583          	ld	a1,1160(sp)
+   15708:	64a13c23          	sd	a0,1624(sp)
+   1570c:	66b13023          	sd	a1,1632(sp)
+   15710:	65810513          	addi	a0,sp,1624
+   15714:	00000097          	auipc	ra,0x0
+   15718:	4b4080e7          	jalr	1204(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>
+   1571c:	49013503          	ld	a0,1168(sp)
+   15720:	49813583          	ld	a1,1176(sp)
+   15724:	00000097          	auipc	ra,0x0
+   15728:	548080e7          	jalr	1352(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   1572c:	3e810513          	addi	a0,sp,1000
+   1573c:	38813483          	ld	s1,904(sp)
+   15740:	39013403          	ld	s0,912(sp)
+   158e0:	39813503          	ld	a0,920(sp)
+   158e4:	3a013583          	ld	a1,928(sp)
+   158e8:	00000097          	auipc	ra,0x0
+   158ec:	384080e7          	jalr	900(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   158f0:	3a813503          	ld	a0,936(sp)
+   158f4:	3b013583          	ld	a1,944(sp)
+   158f8:	00000097          	auipc	ra,0x0
+   158fc:	374080e7          	jalr	884(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   15900:	3b813503          	ld	a0,952(sp)
+   15904:	3c013583          	ld	a1,960(sp)
+   15908:	00000097          	auipc	ra,0x0
+   1590c:	364080e7          	jalr	868(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   15910:	3c813503          	ld	a0,968(sp)
+   15914:	3d013583          	ld	a1,976(sp)
+   15918:	00000097          	auipc	ra,0x0
+   1591c:	354080e7          	jalr	852(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   15920:	3d813503          	ld	a0,984(sp)
+   15924:	3e013583          	ld	a1,992(sp)
+   15928:	00000097          	auipc	ra,0x0
+   1592c:	344080e7          	jalr	836(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   15930:	01813503          	ld	a0,24(sp)
+   15934:	01013583          	ld	a1,16(sp)
+   15938:	00000097          	auipc	ra,0x0
+   1593c:	2d8080e7          	jalr	728(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>
+   15940:	02813503          	ld	a0,40(sp)
+   15944:	02013583          	ld	a1,32(sp)
+   15948:	00000097          	auipc	ra,0x0
+   1594c:	2c8080e7          	jalr	712(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>
+   15950:	03813503          	ld	a0,56(sp)
+   15954:	03013583          	ld	a1,48(sp)
+   15958:	00000097          	auipc	ra,0x0
+   1595c:	2b8080e7          	jalr	696(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>
+   15960:	04013503          	ld	a0,64(sp)
+   15964:	00000097          	auipc	ra,0x0
+   15968:	3ac080e7          	jalr	940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   1596c:	04813403          	ld	s0,72(sp)
+   15970:	02040263          	beqz	s0,15994 <ssz_decode_observation.writeSuccess+0xc64>
+   15974:	00100513          	li	a0,1
+   15978:	00000097          	auipc	ra,0x0
+   1597c:	224080e7          	jalr	548(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>
+   15980:	00040513          	mv	a0,s0
+   15984:	00813583          	ld	a1,8(sp)
+   15988:	00000097          	auipc	ra,0x0
+   1598c:	2e4080e7          	jalr	740(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>
+   15990:	0100006f          	j	159a0 <ssz_decode_observation.writeSuccess+0xc70>
+   15994:	00000513          	li	a0,0
+   15998:	00000097          	auipc	ra,0x0
+   1599c:	204080e7          	jalr	516(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>
+   159a0:	06013403          	ld	s0,96(sp)
+   159a4:	05013503          	ld	a0,80(sp)
+   159a8:	00000097          	auipc	ra,0x0
+   159ac:	368080e7          	jalr	872(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>
+   159b0:	12810513          	addi	a0,sp,296
+   159b4:	00000097          	auipc	ra,0x0
+   159b8:	214080e7          	jalr	532(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>
+   159bc:	11810513          	addi	a0,sp,280
+   159c0:	00000097          	auipc	ra,0x0
+   159c4:	208080e7          	jalr	520(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>
+   159c8:	00040513          	mv	a0,s0
+   159cc:	05813583          	ld	a1,88(sp)
+   159d0:	00000097          	auipc	ra,0x0
+   159d4:	240080e7          	jalr	576(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>
+   159d8:	7c813083          	ld	ra,1992(sp)
+   159dc:	7c013403          	ld	s0,1984(sp)
+   159e0:	7b813483          	ld	s1,1976(sp)
+   159e4:	7b013903          	ld	s2,1968(sp)
+   159e8:	7a813983          	ld	s3,1960(sp)
+   159ec:	7a013a03          	ld	s4,1952(sp)
+   159f0:	79813a83          	ld	s5,1944(sp)
+   159f4:	79013b03          	ld	s6,1936(sp)
+   159f8:	78813b83          	ld	s7,1928(sp)
+   159fc:	78013c03          	ld	s8,1920(sp)
+   15a00:	77813c83          	ld	s9,1912(sp)
+   15a04:	77013d03          	ld	s10,1904(sp)
+   15a08:	76813d83          	ld	s11,1896(sp)
+   15a0c:	7d010113          	addi	sp,sp,2000
+   15a10:	00008067          	ret
