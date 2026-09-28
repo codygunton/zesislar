@@ -1,21 +1,16 @@
 #!/usr/bin/env bash
-# One project gate, alone, inside the batch scope.
-#
-# Plan section 4 rule 4: a gate never shares the machine with a probe,
-# replay or benchmark batch, and never two gates at once, across every
-# agent. A gate has priority over new batches (amended 2026-09-24): it
-# takes /tmp/zesu-gate.lock in the `wanted` state first, so every guard
-# starts no new arm, batch, or probe; a running arm completes, the gate
-# waits for its job scopes, marks the lock `held`, and waits for the
-# `coqc` still running to drain before it starts. Rule 1: it runs
-# inside a 120 GiB systemd scope (ZESU_IO=gate), so 48 GiB of the machine
-# stay free for other users. Jobs come from the guard's `gate-jobs`: 48
-# for check-fast, 24 for check-iris.
+# Gates exclude new ordinary batches while named writers continue.
+# The wanted lock waits for ordinary scopes and reservations to finish.
+# The compiler drain excludes registered writers. Their 16 slots remain
+# reserved. Each writer uses at most two compilers. Each gate uses 24 jobs
+# inside its existing 120 GiB scope. The machine cap stays at 48.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$root"
-guard=tools/resource_guard.sh
+build_dir="$root/_build/agents/infra"
+guard=${ZESU_RESOURCE_GUARD:-tools/resource_guard.sh}
+reservations="${ZESU_GUARD_STATE:-${XDG_RUNTIME_DIR:-/tmp}/zesu-guard}/coqc-reservations"
 target=${1:-check-iris}
 log=${2:-_build/agents/infra/gate-$target.log}
 
@@ -41,34 +36,47 @@ PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover \
 python3 ZesuSsz/Evidence/check_parity.py
 python3 ZesuSsz/Evidence/check_proof_hygiene.py
 python3 ZesuSsz/Evidence/check_spec_shapes.py
-bash ZesuSsz/Evidence/check_write_success_decoder.sh
 echo "uncached checks passed"
+# The executable decoder check runs uncached through check-evidence-tools
+# inside the aggregate below. It can start compiler jobs.
 
 # Running arms and batches complete; then the lock is held.
 $guard lock-hold $$ || exit $?
 echo "gate lock: $($guard lock-status)"
 
-# Other agents' guards now hold; wait for their running `coqc` to finish
+# Ordinary guards now hold; wait for nonwriter compilers to finish
 # and for memory to fall below the guard's launch line (150 GiB used).
 drain=${ZESU_GATE_DRAIN_SECONDS:-1800}
 floor=0
 launch=$(( ${ZESU_LAUNCH_GIB:-150} * 1073741824 ))
 used() { free -b | awk '/^Mem:/ {printf "%.0f", $2 - $7}'; }
 waited=0
-while { (( $(pgrep -c -x coqc || true) > floor )) || (( $(used) >= launch )); } \
-      && (( waited < drain )); do
+compiler_count() {
+  local count
+  count=$($guard coqc-count nonwriter) || {
+    echo "refusing: compiler snapshot failed during gate drain" >&2
+    return 3
+  }
+  if ! [[ "$count" =~ ^[0-9]+$ ]]; then
+    echo "refusing: invalid compiler count during gate drain" >&2
+    return 3
+  fi
+  echo "$count"
+}
+while :; do
+  coqc=$(compiler_count) || exit 3
+  memory=$(used)
+  if (( (coqc <= floor && memory < launch) || waited >= drain )); then break; fi
   sleep 10; waited=$(( waited + 10 ))
 done
-coqc=$(pgrep -c -x coqc || true)
-memory=$(used)
-echo "drain: waited $waited s; coqc machine-wide $coqc; used $(( memory / 1073741824 )) GiB"
+echo "drain: waited $waited s; coqc nonwriter $coqc; used $(( memory / 1073741824 )) GiB"
 if (( coqc > floor || memory >= launch )); then
   echo "refusing: gate drain timed out with $coqc coqc and $(( memory / 1073741824 )) GiB used" >&2
   exit 3
 fi
 
 jobs=$($guard gate-jobs "$target")
-slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs" --drain-floor "$floor") || exit 3
+slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs" --own-build-dir "$build_dir" --proc "${ZESU_PROC_ROOT:-/proc}" --writer-reservations "$reservations" --drain-floor "$floor") || exit 3
 read -r jobs own other <<< "$slots"
 if (( jobs < 1 )); then
   echo "refusing: no coqc slot remains after drain" >&2
@@ -79,12 +87,13 @@ setsid nohup $guard watch >/dev/null 2>&1 &
 watcher=$!
 started=$(date -Is)
 
-echo "gate $target with $jobs jobs; $($guard report)"
+gate_report=$($guard report) || exit 3
+echo "gate $target with $jobs jobs; $gate_report"
 mkdir -p "$(dirname "$log")"
 set +e
 setsid env ZESU_GUARD=0 ZESU_IN_GATE=1 ZESU_IO=gate ZESU_BATCH_LIMIT=120G $guard batch "gate-${target}" -- \
-  make "$target" AGENT_BUILD_DIR="$root/_build/agents/infra" FAST_JOBS="$jobs" \
-  AGENT_JOBS="$jobs" > "$log" 2>&1 &
+  make "$target" AGENT_BUILD_DIR="$build_dir" FAST_JOBS="$jobs" \
+  AGENT_JOBS="$jobs" GUARD="$guard" > "$log" 2>&1 &
 gate_pid=$!
 status=0
 poll=${ZESU_GATE_CAP_POLL_SECONDS:-30}
@@ -104,7 +113,7 @@ stop_gate() {
 while gate_running; do
   sleep "$poll"
   gate_running || break
-  if ! slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs"); then
+  if ! slots=$(python3 tools/det/coqc_slots.py "$root" "$jobs" --own-build-dir "$build_dir" --proc "${ZESU_PROC_ROOT:-/proc}" --writer-reservations "$reservations"); then
     echo "gate stopped: coqc slot check failed" >&2
     stop_gate
     status=3

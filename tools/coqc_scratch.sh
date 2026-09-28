@@ -34,6 +34,7 @@ recipe = remember_recipe(build_dir)
 if recipe is None:
     raise SystemExit("no coqc compiler recipe exists; build a focused proof target first")
 command = recipe["command"]
+compiler = os.environ.get("ZESU_SCRATCH_COQC_BINARY", command[0])
 working_dir = recipe["working_dir"]
 
 flags = []
@@ -51,23 +52,27 @@ for argument in command[1:]:
 
 with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
     output = Path(output_dir) / f"{source.stem}.vo"
-    guard = str(Path(sys.argv[4]) / "resource_guard.sh")
+    guard = os.environ.get("ZESU_RESOURCE_GUARD", str(Path(sys.argv[4]) / "resource_guard.sh"))
     subprocess.run([guard, "wait"], check=True)
-    reservation = subprocess.run(
-        [guard, "reserve-coqc", str(os.getpid())], check=True,
-        capture_output=True, text=True).stdout.strip()
+    reservation = os.environ.get("ZESU_COQC_RESERVATION", "")
+    owns_reservation = not reservation
+    if owns_reservation:
+        reservation = subprocess.run(
+            [guard, "reserve-coqc", str(os.getpid())], check=True,
+            capture_output=True, text=True).stdout.strip()
     if not reservation:
         raise SystemExit("resource guard returned no coqc reservation")
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
     process = None
     try:
+        subprocess.run([guard, "confirm-coqc", reservation], check=True)
         process = subprocess.Popen(
-            [command[0], *flags, "-o", str(output), str(source)],
+            [guard, "scope", "scratch-coqc", "--", compiler, *flags, "-o", str(output), str(source)],
             cwd=working_dir,
+            env={**os.environ, "ZESU_COQC_RESERVATION": reservation,
+                 "ZESU_MODULE_LIMIT_GIB": "6"},
         )
-        subprocess.run([guard, "mark-coqc", reservation, str(process.pid)],
-                       check=True)
         limit = None
         while process.poll() is None:
             elapsed = time.monotonic() - started
@@ -92,7 +97,8 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
         if process is not None and process.poll() is None:
             process.terminate()
             process.wait()
-        subprocess.run([guard, "release-coqc", reservation], check=True)
+        if owns_reservation:
+            subprocess.run([guard, "release-coqc", reservation], check=True)
     elapsed_ms = round((time.monotonic() - started) * 1000)
     after = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
     print(f"exit={returncode} ms={elapsed_ms} rss_kb={max(before, after)}")

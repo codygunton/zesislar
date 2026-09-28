@@ -1,6 +1,7 @@
 """Tests for the resource guard's gate lock and ramp, and for prom.py."""
 
 import os
+import json
 import subprocess
 import sys
 import tempfile
@@ -15,12 +16,21 @@ sys.path.insert(0, str(TOOLS / "det"))
 import prom  # noqa: E402
 
 
+def fixture_environment(**changes):
+    """Remove inherited build routes before a fixture sets its own routes."""
+    environment = {name: value for name, value in os.environ.items()
+                   if not name.startswith("ZESU_")}
+    environment.pop("ROCQ_COQC_BINARY", None)
+    environment.update(changes)
+    return environment
+
+
 class GuardLockTest(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         base = Path(self.directory.name)
         self.lock = base / "lock"
-        self.environment = {**os.environ,
+        self.environment = {**fixture_environment(),
                             "ZESU_GATE_LOCK": str(self.lock),
                             "ZESU_GUARD_STATE": str(base / "state"),
                             "ZESU_RAMP_FILE": str(base / "ramp"),
@@ -31,6 +41,24 @@ class GuardLockTest(unittest.TestCase):
                             "ZESU_MAX_BLOCKED": "100000"}
         self.bin = base / "bin"
         self.bin.mkdir()
+        self.cgroup = base / "controller-cgroup"
+        self.cgroup.write_text("0::/user.slice/user-1000.slice/user@1000.service/app.slice/fixture.scope\n")
+        self.environment["GUARD_TEST_CONTROLLER_CGROUP"] = str(self.cgroup)
+        fake_cat = self.bin / "cat"
+        fake_cat.write_text(
+            '#!/bin/sh\n'
+            'if [ "$#" = 1 ]; then\n'
+            ' case "$1" in\n'
+            '  /proc/*/cgroup)\n'
+            '   pid=${1#/proc/}; pid=${pid%/cgroup}\n'
+            '   case "$pid" in\n'
+            '    ""|*[!0-9]*) ;;\n'
+            '    *) exec /usr/bin/cat "$GUARD_TEST_CONTROLLER_CGROUP" ;;\n'
+            '   esac ;;\n'
+            ' esac\n'
+            'fi\n'
+            'exec /usr/bin/cat "$@"\n')
+        fake_cat.chmod(0o755)
         fake_free = self.bin / "free"
         fake_free.write_text(
             "#!/bin/sh\n"
@@ -45,18 +73,34 @@ class GuardLockTest(unittest.TestCase):
         fake_systemd.chmod(0o755)
         fake_systemctl = self.bin / "systemctl"
         fake_systemctl.write_text(
-            "#!/bin/sh\n"
-            "case \"$*\" in\n"
-            "  *is-active*) exit 0 ;;\n"
-            "  *kill*|*stop*) printf '%s\\n' \"$*\" >> \"$GUARD_TEST_SYSTEMCTL_LOG\" ;;\n"
-            "esac\n"
+            "#!/usr/bin/env python3\n"
+            "import json,os,pathlib,sys\n"
+            "args=sys.argv[1:];state=pathlib.Path(os.environ['GUARD_TEST_SLICE_STATE'])\n"
+            "data=json.loads(state.read_text()) if state.exists() else {}\n"
+            "if 'set-property' in args:\n"
+            " if os.environ.get('GUARD_TEST_SLICE_FAIL'):sys.exit(1)\n"
+            " unit=args[args.index('--runtime')+1];data[unit]=dict(x.split('=',1) for x in args if '=' in x)\n"
+            " state.write_text(json.dumps(data))\n"
+            "elif 'show' in args:\n"
+            " unit=args[args.index('show')+1]\n"
+            " for key,value in data.get(unit,{}).items():\n"
+            "  if value.endswith('G'):value=str(int(value[:-1])*1073741824)\n"
+            "  print(key+'='+value)\n"
+            "elif 'kill' in args or 'stop' in args:\n"
+            " with open(os.environ['GUARD_TEST_SYSTEMCTL_LOG'],'a') as f:f.write(' '.join(args)+'\\n')\n"
         )
         fake_systemctl.chmod(0o755)
         self.environment["PATH"] = f"{self.bin}:{os.environ['PATH']}"
         self.environment["GUARD_TEST_USED_GIB"] = "40"
+        state = base / "state"
+        state.mkdir(exist_ok=True)
+        (state / "disk-busy").write_text(f"{int(time.time()) + 60} 0\n")
         self.environment["GUARD_TEST_SYSTEMCTL_LOG"] = str(base / "systemctl.log")
+        self.environment["GUARD_TEST_SLICE_STATE"] = str(base / "slice-state.json")
         for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
-                     "ZESU_BATCH_LIMIT", "ZESU_IO"):
+                     "ZESU_BATCH_LIMIT", "ZESU_IO", "ZESU_WRITER_ID",
+                     "ZESU_RESOURCE_GUARD", "ZESU_COQC_RESERVATION", "ZESU_COQC_SCOPE",
+                     "ZESU_AGGREGATE_SLICE", "ZESU_AGGREGATE_LIMIT"):
             self.environment.pop(name, None)
 
     def tearDown(self):
@@ -66,15 +110,449 @@ class GuardLockTest(unittest.TestCase):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
                               text=True, env=self.environment)
 
+    def batch_environment(self, limit="150G"):
+        slice_name = f"zesuaggregate1000p{os.getpid()}r1.slice"
+        subprocess.run(["systemctl", "--user", "set-property", "--runtime", slice_name,
+                        f"MemoryMax={limit}", "MemorySwapMax=0"],
+                       env=self.environment, check=True)
+        return {"ZESU_IN_BATCH": "1", "ZESU_AGGREGATE_SLICE": slice_name,
+                "ZESU_AGGREGATE_LIMIT": limit}
+
+    def prepare_blocked_fixture(self, blocked):
+        base = Path(self.directory.name)
+        count = base / "blocked-count"
+        count.write_text(f"{blocked}\n")
+        self.environment["GUARD_TEST_BLOCKED_COUNT"] = str(count)
+        self.environment["ZESU_MAX_BLOCKED"] = "16"
+        self.environment["ZESU_POPULATING_PREFIX"] = str(base / "populating")
+        self.environment["ZESU_DISK_BUSY_PERCENT"] = "100000"
+        fake_awk = self.bin / "awk"
+        fake_awk.write_text(
+            '#!/bin/sh\n'
+            'case "$1" in\n'
+            '  *procs_blocked*) cat "$GUARD_TEST_BLOCKED_COUNT" ;;\n'
+            '  *) exec /usr/bin/awk "$@" ;;\n'
+            'esac\n')
+        fake_awk.chmod(0o755)
+        fake_pgrep = self.bin / "pgrep"
+        fake_pgrep.write_text('#!/bin/sh\nprintf "0\\n"\n')
+        fake_pgrep.chmod(0o755)
+        return count
+
+    def writer_fixture(self, state="wanted", count=0):
+        self.prepare_blocked_fixture(0)
+        counter = Path(self.directory.name) / "coqc-count"
+        counter.write_text(f"{count}\n")
+        (self.bin / "pgrep").write_text('#!/bin/sh\ncount=$(cat "$GUARD_TEST_COQC_COUNT"); seq 1 "$count"\n')
+        self.environment.update(GUARD_TEST_COQC_COUNT=str(counter), ZESU_MAX_COQC="48",
+                                ZESU_PROC_ROOT=str(Path(self.directory.name) / "proc"))
+        self.lock.write_text(f"state={state} holder=fixture pid={os.getpid()} start=x\n")
+        return counter
+
+    def reserve_writer(self, writer):
+        result = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
+                                env={**self.environment, "ZESU_WRITER_ID": writer},
+                                capture_output=True, text=True, timeout=3)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(result.stdout.strip())
+        return result.stdout.strip()
+
+    def assert_launch_waits(self, arguments, environment, reason):
+        process = subprocess.Popen([str(GUARD), *arguments], env=environment,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        try:
+            log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
+            deadline = time.monotonic() + 3
+            while time.monotonic() < deadline and process.poll() is None:
+                if log.exists() and reason in log.read_text():
+                    break
+                time.sleep(0.02)
+            self.assertIsNone(process.poll())
+            self.assertIn(reason, log.read_text())
+        finally:
+            process.terminate()
+            process.communicate(timeout=3)
+
+    def test_empty_compiler_snapshots_allow_counts_and_admission(self):
+        self.prepare_blocked_fixture(0)
+        for status in (0, 1):
+            with self.subTest(status=status):
+                (self.bin / "pgrep").write_text(f"#!/bin/sh\nexit {status}\n")
+                for arguments in (("coqc-count",), ("coqc-count", "nonwriter")):
+                    result = self.guard(*arguments)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(result.stdout.strip(), "0")
+                self.assertEqual(self.guard("wait").returncode, 0)
+                self.assertEqual(self.guard("hold").stdout.strip(), "none")
+                result = self.guard("reserve-coqc", str(os.getpid()))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                token = result.stdout.strip()
+                self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
+                self.guard("release-coqc", token)
+
+    def test_failed_compiler_snapshots_refuse_all_counter_callers(self):
+        self.prepare_blocked_fixture(0)
+        (self.bin / "pgrep").write_text("#!/bin/sh\nexit 1\n")
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        try:
+            for status in (2, 3, 127):
+                for output in ("", "9000000\\n"):
+                    with self.subTest(status=status, output=output):
+                        (self.bin / "pgrep").write_text(
+                            f"#!/bin/sh\nprintf '{output}'\nexit {status}\n")
+                        commands = (("coqc-count",), ("coqc-count", "nonwriter"),
+                                    ("hold",), ("wait",), ("report",),
+                                    ("reserve-coqc", str(os.getpid())),
+                                    ("confirm-coqc", token))
+                        for arguments in commands:
+                            result = self.guard(*arguments)
+                            self.assertEqual(result.returncode, status,
+                                             (arguments, result.stderr))
+                            self.assertEqual(result.stdout, "")
+                            self.assertIn("compiler snapshot failed", result.stderr)
+                        reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+                        self.assertEqual(list(reservations.iterdir()), [Path(token)])
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_failed_admission_snapshot_after_successful_hold_refuses_reservation(self):
+        self.prepare_blocked_fixture(0)
+        counter = Path(self.directory.name) / "snapshot-call-count"
+        self.environment["GUARD_TEST_SNAPSHOT_CALLS"] = str(counter)
+        (self.bin / "pgrep").write_text(
+            '#!/bin/sh\nfile="$GUARD_TEST_SNAPSHOT_CALLS"\n'
+            'count=0; [ ! -f "$file" ] || count=$(cat "$file")\n'
+            'count=$((count + 1)); echo "$count" > "$file"\n'
+            'if [ "$count" = 1 ]; then exit 1; else exit 3; fi\n')
+        result = self.guard("reserve-coqc", str(os.getpid()))
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertEqual(counter.read_text().strip(), "2")
+        reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+        self.assertEqual(list(reservations.iterdir()), [])
+
+    def test_failed_confirmation_snapshot_after_successful_hold_refuses_launch(self):
+        self.prepare_blocked_fixture(0)
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        counter = Path(self.directory.name) / "snapshot-call-count"
+        self.environment["GUARD_TEST_SNAPSHOT_CALLS"] = str(counter)
+        (self.bin / "pgrep").write_text(
+            '#!/bin/sh\nfile="$GUARD_TEST_SNAPSHOT_CALLS"\n'
+            'count=0; [ ! -f "$file" ] || count=$(cat "$file")\n'
+            'count=$((count + 1)); echo "$count" > "$file"\n'
+            'if [ "$count" = 1 ]; then exit 1; else exit 2; fi\n')
+        try:
+            result = self.guard("confirm-coqc", token)
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertEqual(result.stdout, "")
+            self.assertEqual(counter.read_text().strip(), "2")
+            self.assertTrue(Path(token).exists())
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_failed_snapshot_prevents_scope_and_batch_commands(self):
+        self.prepare_blocked_fixture(0)
+        executed = Path(self.directory.name) / "command-executed"
+        for status in (2, 3):
+            (self.bin / "pgrep").write_text(f"#!/bin/sh\nexit {status}\n")
+            for arguments, extra in (
+                (("scope", "failure", "--", "touch", str(executed)), {}),
+                (("batch", "failure", "--", "touch", str(executed)), {}),
+                (("batch", "nested", "--", "touch", str(executed)), {"ZESU_IN_BATCH": "1"}),
+            ):
+                with self.subTest(status=status, arguments=arguments):
+                    result = subprocess.run([str(GUARD), *arguments],
+                                            env={**self.environment, **extra},
+                                            capture_output=True, text=True, timeout=3)
+                    self.assertEqual(result.returncode, status, result.stderr)
+                    self.assertFalse(executed.exists())
+
+    def test_failed_snapshot_prevents_scope_exec_command(self):
+        self.prepare_blocked_fixture(0)
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        executed = Path(self.directory.name) / "command-executed"
+        try:
+            for status in (2, 3):
+                (self.bin / "pgrep").write_text(f"#!/bin/sh\nexit {status}\n")
+                result = self.guard("scope-exec", token, "--", "touch", str(executed))
+                self.assertEqual(result.returncode, status, result.stderr)
+                self.assertFalse(executed.exists())
+                self.assertTrue(Path(token).exists())
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_writer_admission_under_wanted_and_held_gates(self):
+        for state in ("wanted", "held"):
+            with self.subTest(state=state):
+                self.writer_fixture(state)
+                self.environment["ZESU_WRITER_ID"] = "tail-fields-2"
+                token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+                self.assertTrue(token)
+                try:
+                    self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
+                    self.assertEqual(self.guard("hold").stdout.strip(), "none")
+                    self.environment.pop("ZESU_WRITER_ID")
+                    self.assertEqual(self.guard("confirm-coqc", token).returncode, 2)
+                    self.assertIn("gate lock", self.guard("hold").stdout)
+                finally:
+                    self.guard("release-coqc", token)
+
+    def test_gate_leaves_16_slots_and_admits_all_16_writers(self):
+        counter = self.writer_fixture(count=32)
+        self.environment["ZESU_IN_GATE"] = "1"
+        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                 "16 slots reserved for writers")
+        tokens = [self.reserve_writer(f"writer-{i // 2}") for i in range(16)]
+        try:
+            self.assertEqual(len(tokens), 16)
+            self.assert_launch_waits(["reserve-coqc", str(os.getpid())],
+                                     {**self.environment, "ZESU_WRITER_ID": "ninth"},
+                                     "reservations machine-wide")
+            counter.write_text("0\n")
+            self.assert_launch_waits(["reserve-coqc", str(os.getpid())],
+                                     {**self.environment, "ZESU_WRITER_ID": "ninth"},
+                                     "16 reserved slots")
+        finally:
+            for token in tokens:
+                self.guard("release-coqc", token)
+
+    def test_each_writer_has_two_slots_even_with_gate_flag(self):
+        self.writer_fixture()
+        self.environment.update(ZESU_WRITER_ID="tf2", ZESU_IN_GATE="1")
+        tokens = [self.reserve_writer("tf2") for _ in range(2)]
+        try:
+            self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                     "writer tf2 at its 2 compiler limit")
+        finally:
+            for token in tokens:
+                self.guard("release-coqc", token)
+
+    def test_gate_does_not_wait_for_writer_reservations_or_scopes(self):
+        self.writer_fixture()
+        token = self.reserve_writer("tf2")
+        (self.bin / "systemctl").write_text(
+            '#!/bin/sh\nprintf "zesutest-writer-tf2-coqc.scope loaded active running\n"\n')
+        try:
+            self.assertEqual(self.guard("lock-hold", str(os.getpid())).returncode, 0)
+            self.assertIn("state=held", self.lock.read_text())
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_writer_does_not_bypass_memory_blocked_or_machine_limits(self):
+        counter = self.writer_fixture()
+        self.environment["ZESU_WRITER_ID"] = "tf2"
+        self.environment["GUARD_TEST_USED_GIB"] = "150"
+        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                 "memory 150 GiB")
+        self.environment["GUARD_TEST_USED_GIB"] = "40"
+        Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("17\n")
+        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                 "blocked 17")
+        Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("16\n")
+        counter.write_text("48\n")
+        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                 "coqc 48 machine-wide")
+
+    def test_writer_reservation_rechecks_nonwriter_cap_before_launch(self):
+        counter = self.writer_fixture(count=31)
+        self.environment["ZESU_IN_GATE"] = "1"
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assertTrue(token)
+        try:
+            counter.write_text("32\n")
+            self.assert_launch_waits(["confirm-coqc", token], self.environment,
+                                     "16 slots reserved for writers")
+            counter.write_text("31\n")
+            self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_reserved_compiler_absent_from_pid_snapshot_keeps_its_slot(self):
+        self.writer_fixture()
+        self.environment.update(ZESU_WRITER_ID="tf2", ZESU_MAX_COQC="1")
+        token = self.reserve_writer("tf2")
+        fake_pid = "9000000"
+        proc = Path(self.environment["ZESU_PROC_ROOT"]) / fake_pid
+        proc.mkdir(parents=True)
+        (proc / "comm").write_text("coqc\n")
+        self.assertEqual(self.guard("mark-coqc", token, fake_pid).returncode, 0)
+        # The compiler appeared after pgrep's empty snapshot. Its reservation
+        # must remain pending until a subsequent snapshot includes that PID.
+        try:
+            self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                     "coqc 0 with 1 reservations machine-wide")
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_gate_counter_excludes_live_writer_and_shell_wrapper(self):
+        self.writer_fixture()
+        token = self.reserve_writer("tf2")
+        proc = Path(self.environment["ZESU_PROC_ROOT"])
+        for pid in (9000000, 9000001, 9000002):
+            entry = proc / str(pid)
+            entry.mkdir(parents=True)
+            (entry / "comm").write_text("coqc\n")
+        (proc / "9000002/exe").symlink_to("/bin/bash")
+        self.assertEqual(self.guard("mark-coqc", token, "9000000").returncode, 0)
+        snapshot = Path(self.directory.name) / "pids"
+        snapshot.write_text("9000000\n9000001\n9000002\n")
+        (self.bin / "pgrep").write_text('#!/bin/sh\ncat "$GUARD_TEST_PIDS"\n')
+        self.environment["GUARD_TEST_PIDS"] = str(snapshot)
+        try:
+            for state in ("wanted", "held"):
+                self.lock.write_text(f"state={state} holder=fixture pid={os.getpid()} start=x\n")
+                self.assertEqual(self.guard("coqc-count").stdout.strip(), "2")
+                self.assertEqual(self.guard("coqc-count", "nonwriter").stdout.strip(), "1")
+            snapshot.write_text("9000000\n9000002\n")
+            self.assertEqual(self.guard("coqc-count", "nonwriter").stdout.strip(), "0")
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_writer_confirmation_rechecks_blocked_and_memory(self):
+        self.writer_fixture()
+        self.environment["ZESU_WRITER_ID"] = "tf2"
+        token = self.reserve_writer("tf2")
+        try:
+            Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("17\n")
+            self.assert_launch_waits(["confirm-coqc", token], self.environment, "blocked 17")
+            Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("16\n")
+            self.environment["GUARD_TEST_USED_GIB"] = "150"
+            self.assert_launch_waits(["confirm-coqc", token], self.environment, "memory 150 GiB")
+            self.environment["GUARD_TEST_USED_GIB"] = "40"
+            self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_nonwriter_scope_releases_reservation_for_a_new_gate(self):
+        self.prepare_blocked_fixture(0)
+        (self.bin / "systemd-run").write_text(
+            '#!/bin/sh\n'
+            'printf "state=wanted holder=fixture pid=%s start=x\n" "$FAKE_GATE_PID" > "$ZESU_GATE_LOCK"\n'
+            'while [ "$1" != -- ]; do shift; done; shift; exec "$@"\n')
+        self.environment["FAKE_GATE_PID"] = str(os.getpid())
+        result = subprocess.run([str(GUARD), "scope", "fixture", "--", "/bin/echo", "WRONG"],
+                                env=self.environment, capture_output=True, text=True, timeout=3)
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertNotIn("WRONG", result.stdout)
+        reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+        self.assertEqual(list(reservations.iterdir()), [])
+        self.assertEqual(self.guard("lock-hold", str(os.getpid())).returncode, 0)
+
+    def test_writer_identity_validation_and_batch_refusal(self):
+        self.prepare_blocked_fixture(0)
+        self.environment["ZESU_WRITER_ID"] = "../../bad"
+        self.assertEqual(self.guard("reserve-coqc", str(os.getpid())).returncode, 2)
+        self.environment["ZESU_WRITER_ID"] = "tf2"
+        self.assertEqual(self.guard("batch", "bad", "--", "true").returncode, 2)
+
+    def test_direct_launches_hold_at_17_and_resume_at_16(self):
+        count = self.prepare_blocked_fixture(17)
+        modes = ({}, {"ZESU_IN_GATE": "1"}, self.batch_environment())
+        for command in ("scope", "batch"):
+            for mode in modes:
+                with self.subTest(command=command, mode=mode):
+                    count.write_text("17\n")
+                    log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
+                    previous = log.stat().st_size if log.exists() else 0
+                    process = subprocess.Popen(
+                        [str(GUARD), command, "blocked-test", "--",
+                         "/bin/echo", "LAUNCHED"],
+                        env={**self.environment, **mode}, text=True,
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    try:
+                        deadline = time.monotonic() + 3
+                        while time.monotonic() < deadline:
+                            if process.poll() is not None:
+                                break
+                            if log.exists() and "HOLD blocked 17" in log.read_text()[previous:]:
+                                break
+                            time.sleep(0.02)
+                        self.assertIsNone(process.poll(), "launch bypassed the blocked limit")
+                        self.assertIn("HOLD blocked 17", log.read_text()[previous:])
+                        count.write_text("16\n")
+                        stdout, stderr = process.communicate(timeout=5)
+                        self.assertEqual(process.returncode, 0, stderr)
+                        self.assertIn("LAUNCHED", stdout)
+                        self.assertIn("RESUME", log.read_text()[previous:])
+                    finally:
+                        if process.poll() is None:
+                            process.terminate()
+                        process.communicate(timeout=3)
+
+    def test_reservation_rechecks_blocked_under_gate_owner_exemption(self):
+        count = self.prepare_blocked_fixture(16)
+        self.environment["ZESU_IN_GATE"] = "1"
+        self.lock.write_text(f"state=wanted holder=t pid={os.getpid()} start=x\n")
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assertTrue(token)
+        count.write_text("17\n")
+        process = subprocess.Popen([str(GUARD), "confirm-coqc", token],
+                                   env=self.environment, text=True,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            time.sleep(0.2)
+            self.assertIsNone(process.poll())
+            count.write_text("16\n")
+            _, stderr = process.communicate(timeout=3)
+            self.assertEqual(process.returncode, 0, stderr)
+            self.assertTrue(self.lock.exists())
+        finally:
+            if process.poll() is None:
+                process.terminate()
+            process.communicate(timeout=3)
+            self.guard("release-coqc", token)
+        self.assertEqual(self.guard("confirm-coqc", token).returncode, 2)
+
+    def test_confirmation_refuses_a_foreign_gate_without_waiting_on_it(self):
+        self.prepare_blocked_fixture(0)
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assertTrue(token)
+        self.lock.write_text(f"state=wanted holder=t pid={os.getpid()} start=x\n")
+        try:
+            result = self.guard("confirm-coqc", token)
+            self.assertEqual(result.returncode, 3)
+            self.assertIn("reservation launch refused for gate", result.stderr)
+        finally:
+            self.guard("release-coqc", token)
+        self.assertEqual(self.guard("lock-hold", str(os.getpid())).returncode, 0)
+
+    def test_reservation_rechecks_the_48_machine_cap(self):
+        self.prepare_blocked_fixture(0)
+        count = Path(self.directory.name) / "coqc-count"
+        count.write_text("47\n")
+        (self.bin / "pgrep").write_text('#!/bin/sh\ncount=$(cat "$GUARD_TEST_COQC_COUNT"); seq 1 "$count"\n')
+        self.environment["GUARD_TEST_COQC_COUNT"] = str(count)
+        self.environment["ZESU_MAX_COQC"] = "48"
+        self.environment["ZESU_PROC_ROOT"] = str(Path(self.directory.name) / "proc")
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assertTrue(token)
+        count.write_text("48\n")
+        process = subprocess.Popen([str(GUARD), "confirm-coqc", token],
+                                   env=self.environment, text=True,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            time.sleep(0.2)
+            self.assertIsNone(process.poll())
+            count.write_text("47\n")
+            _, stderr = process.communicate(timeout=3)
+            self.assertEqual(process.returncode, 0, stderr)
+        finally:
+            if process.poll() is None:
+                process.terminate()
+            process.communicate(timeout=3)
+            self.guard("release-coqc", token)
+
     def test_concurrent_coqc_reservations_keep_the_48_cap(self):
         base = Path(self.directory.name)
         count = base / "coqc-count"
         count.write_text("47\n")
         fake_pgrep = self.bin / "pgrep"
-        fake_pgrep.write_text('#!/bin/sh\ncat "$GUARD_TEST_COQC_COUNT"\n')
+        fake_pgrep.write_text('#!/bin/sh\ncount=$(cat "$GUARD_TEST_COQC_COUNT"); '
+                              'seq 1 "$((count - 1))"; echo 12345\n')
         fake_pgrep.chmod(0o755)
         self.environment["GUARD_TEST_COQC_COUNT"] = str(count)
         self.environment["ZESU_MAX_COQC"] = "48"
+        self.environment["ZESU_PROC_ROOT"] = str(Path(self.directory.name) / "proc")
         self.environment["ZESU_IN_BATCH"] = "1"
         proc = base / "proc" / "12345"
         proc.mkdir(parents=True)
@@ -126,6 +604,18 @@ class GuardLockTest(unittest.TestCase):
             holder.terminate()
             holder.wait(timeout=3)
 
+    def test_fixture_environment_removes_routes_and_retains_explicit_fixture_routes(self):
+        from unittest.mock import patch
+        inherited = {"ZESU_RESOURCE_GUARD": "/real/guard", "ZESU_ROCQ_COQC_WRAPPER": "/real/compiler",
+                     "ZESU_SCRATCH_COQC_BINARY": "/real/scratch", "ZESU_WRITER_ID": "writer",
+                     "ZESU_GATE_LOCK": "/real/wanted", "ZESU_COQC_RESERVATION": "/real/token",
+                     "ROCQ_COQC_BINARY": "/real/compiler"}
+        with patch.dict(os.environ, inherited):
+            cleaned = fixture_environment()
+            for name in inherited:self.assertNotIn(name, cleaned)
+            explicit = fixture_environment(ZESU_RESOURCE_GUARD="/fixture/guard")
+            self.assertEqual(explicit["ZESU_RESOURCE_GUARD"], "/fixture/guard")
+
     def test_subprocesses_do_not_inherit_guard_bypass_flags(self):
         for name in ("ZESU_GUARD", "ZESU_IN_GATE", "ZESU_IN_BATCH", "ZESU_ARM",
                      "ZESU_BATCH_LIMIT"):
@@ -133,7 +623,7 @@ class GuardLockTest(unittest.TestCase):
                 self.assertNotIn(name, self.environment)
 
     def test_batch_fence_under_gate_environment(self):
-        environment = {**os.environ, "ZESU_GUARD": "0", "ZESU_IN_GATE": "1",
+        environment = {**fixture_environment(), "ZESU_GUARD": "0", "ZESU_IN_GATE": "1",
                        "ZESU_IN_BATCH": "1", "ZESU_ARM": "1",
                        "ZESU_BATCH_LIMIT": "120G", "ZESU_IO": "batch"}
         result = subprocess.run(
@@ -240,7 +730,7 @@ class GuardLockTest(unittest.TestCase):
         try:
             self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
                              0)
-            environment = {**self.environment, "ZESU_IN_BATCH": "1"}
+            environment = {**self.environment, **self.batch_environment()}
             done = subprocess.run(
                 ["timeout", "1", str(GUARD), "scope", "arm-job", "--", "true"],
                 capture_output=True, text=True, env=environment,
@@ -281,9 +771,12 @@ class GuardLockTest(unittest.TestCase):
         self.assertIn("$guard lock-release $$", gate)
 
     def test_gate_jobs_caps(self):
-        self.assertLessEqual(int(self.guard("gate-jobs").stdout), 24)
-        self.assertLessEqual(int(self.guard("gate-jobs", "check-fast").stdout),
-                             48)
+        self.environment["GUARD_TEST_USED_GIB"] = "30"
+        for name in ("ZESU_MAX_JOBS", "ZESU_GATE_MAX_JOBS", "ZESU_FAST_MAX_JOBS"):
+            self.environment.pop(name, None)
+        self.assertEqual(int(self.guard("jobs").stdout), 48)
+        self.assertEqual(int(self.guard("gate-jobs").stdout), 24)
+        self.assertEqual(int(self.guard("gate-jobs", "check-fast").stdout), 24)
 
     def test_absolute_memory_thresholds(self):
         for used, expected in ((149, None), (150, "launch line 150"),
@@ -308,6 +801,130 @@ class GuardLockTest(unittest.TestCase):
                 self.assertIn(fence, result.stdout)
                 self.assertIn("MemorySwapMax=0", result.stdout)
 
+    def test_aggregate_contains_parent_and_compiler_but_excludes_writer(self):
+        base = Path(self.directory.name)
+        events = base / "aggregate-scopes.jsonl"
+        self.prepare_blocked_fixture(0)
+        self.environment["AGGREGATE_TEST_EVENTS"] = str(events)
+        (self.bin / "systemd-run").write_text(
+            '#!/usr/bin/env python3\nimport json,os,sys\n'
+            'with open(os.environ["AGGREGATE_TEST_EVENTS"],"a") as f:f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+            'args=sys.argv[sys.argv.index("--")+1:];os.execvp(args[0],args)\n')
+        command = base / "parent.py"
+        command.write_text(
+            "import os,subprocess,sys\n"
+            "guard=sys.argv[1]\n"
+            "subprocess.run([guard,'batch','nested','--',guard,'scope','ordinary','--','true'],check=True)\n"
+)
+        for gate, limit in ((False, "150G"), (True, "120G")):
+            with self.subTest(gate=gate):
+                events.unlink(missing_ok=True)
+                if gate:self.lock.write_text(f"state=held holder=fixture pid={os.getpid()} start=x\n")
+                env = {**self.environment, **({"ZESU_IN_GATE": "1"} if gate else {})}
+                result = subprocess.run([str(GUARD), "batch", "parent", "--",
+                                         sys.executable, str(command), str(GUARD)],
+                                        env=env, capture_output=True, text=True, timeout=5)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                writer = subprocess.run([str(GUARD), "scope", "writer", "--", "true"],
+                                        env={**self.environment, "ZESU_WRITER_ID": "tf2"},
+                                        capture_output=True, text=True, timeout=5)
+                self.assertEqual(writer.returncode, 0, writer.stderr)
+                scopes = [json.loads(line) for line in events.read_text().splitlines()]
+                self.assertEqual(len(scopes), 3)
+                slices = [next(arg for arg in row if arg.startswith("--slice=")) for row in scopes]
+                self.assertEqual(slices[0], slices[1])
+                self.assertTrue(slices[0].startswith("--slice=zesuaggregate"))
+                self.assertEqual(slices[2], "--slice=app.slice")
+                self.assertIn(f"MemoryMax={limit}", scopes[0])
+                for row in scopes[1:]:self.assertIn("MemoryMax=6G", row)
+                for row in scopes:self.assertIn("MemorySwapMax=0", row)
+                properties = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
+                self.assertEqual(properties[slices[0].split("=",1)[1]]["MemoryMax"], limit)
+                self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations").iterdir()), [])
+
+    def test_missing_or_changed_aggregate_fence_rejects_compiler(self):
+        self.prepare_blocked_fixture(0)
+        for context in ({"ZESU_IN_BATCH": "1"},
+                        {**self.batch_environment("150G"), "ZESU_AGGREGATE_LIMIT": "120G"},
+                        {**self.batch_environment(), "ZESU_AGGREGATE_SLICE": "app.slice"}):
+            with self.subTest(context=context):
+                result = subprocess.run([str(GUARD), "scope", "bad", "--", "echo", "WRONG"],
+                                        env={**self.environment, **context}, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 2)
+                self.assertNotIn("WRONG", result.stdout)
+                self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations").iterdir()), [])
+
+    def test_writer_controller_rejects_batch_context(self):
+        self.prepare_blocked_fixture(0)
+        result = subprocess.run([str(GUARD), "scope", "writer", "--", "echo", "WRONG"],
+                                env={**self.environment, **self.batch_environment(), "ZESU_WRITER_ID": "tf2"},
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("WRONG", result.stdout)
+
+    def test_fixture_controller_cgroup_is_private(self):
+        result = subprocess.run(["cat", f"/proc/{os.getpid()}/cgroup"],
+                                env=self.environment, check=True, capture_output=True, text=True)
+        self.assertEqual(result.stdout, self.cgroup.read_text())
+        ordinary = Path(self.directory.name) / "ordinary-file"
+        ordinary.write_text("ordinary content\n")
+        result = subprocess.run(["cat", str(ordinary)], env=self.environment,
+                                check=True, capture_output=True, text=True)
+        self.assertEqual(result.stdout, ordinary.read_text())
+        result = subprocess.run(["cat", "/proc/123invalid/cgroup"], env=self.environment,
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        result = subprocess.run(["cat", "/proc/self/cgroup"], env=self.environment,
+                                check=True, capture_output=True, text=True)
+        self.assertEqual(result.stdout, Path("/proc/self/cgroup").read_text())
+
+    def test_writer_controller_rejects_fixture_aggregate_cgroup(self):
+        self.prepare_blocked_fixture(0)
+        self.cgroup.write_text(
+            "0::/user.slice/user-1000.slice/user@1000.service/"
+            f"zesuaggregate1000p{os.getpid()}r1.slice/fixture.scope\n")
+        result = subprocess.run([str(GUARD), "scope", "writer", "--", "echo", "WRONG"],
+                                env={**self.environment, "ZESU_WRITER_ID": "tf2"},
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("writer controller must start outside the batch aggregate", result.stderr)
+        self.assertNotIn("WRONG", result.stdout)
+        reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+        self.assertEqual(list(reservations.iterdir()), [])
+        self.assertEqual((Path(self.environment["ZESU_GUARD_STATE"]) / "scopes").read_text(), "")
+
+    def test_batch_cleanup_removes_only_its_compiler_reservations(self):
+        self.prepare_blocked_fixture(0)
+        context = self.batch_environment()
+        ordinary = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
+                                  env={**self.environment, **context}, check=True, capture_output=True, text=True).stdout.strip()
+        writer = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
+                                env={**self.environment, "ZESU_WRITER_ID": "tf2"},
+                                check=True, capture_output=True, text=True).stdout.strip()
+        # Retain the owner to test explicit cleanup instead of stale-owner cleanup.
+        (self.bin / "systemd-run").write_text(
+            '#!/bin/sh\nwhile [ "$1" != -- ]; do shift; done; shift; exec "$@"\n')
+        command = f'"{GUARD}" reserve-coqc {os.getpid()} > "$AGGREGATE_TOKEN_OUTPUT"'
+        token_file = Path(self.directory.name) / "aggregate-token"
+        result = subprocess.run([str(GUARD), "batch", "cleanup", "--", "bash", "-c", command],
+                                env={**self.environment, "AGGREGATE_TOKEN_OUTPUT": str(token_file)},
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(token_file.exists())
+        self.assertFalse(Path(token_file.read_text().strip()).exists())
+        self.assertTrue(Path(ordinary).exists())
+        self.assertTrue(Path(writer).exists())
+        for token in (ordinary, writer):self.guard("release-coqc", token)
+
+    def test_failed_slice_cap_prevents_parent_launch(self):
+        self.prepare_blocked_fixture(0)
+        self.environment["GUARD_TEST_SLICE_FAIL"] = "1"
+        result = self.guard("batch", "bad", "--", "echo", "WRONG")
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("WRONG", result.stdout)
+        self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "launches").iterdir()), [])
+
     def test_direct_batch_waits_at_launch_limit(self):
         self.environment["GUARD_TEST_USED_GIB"] = "150"
         result = subprocess.run(
@@ -324,7 +941,7 @@ class GuardLockTest(unittest.TestCase):
 
     def test_watch_kills_youngest_scope_at_200_gib(self):
         state = Path(self.environment["ZESU_GUARD_STATE"])
-        state.mkdir()
+        state.mkdir(exist_ok=True)
         (state / "scopes").write_text("old.scope\nyoung.scope\n")
         log = Path(self.environment["GUARD_TEST_SYSTEMCTL_LOG"])
         self.environment["ZESU_GUARD_POLL"] = "0.05"

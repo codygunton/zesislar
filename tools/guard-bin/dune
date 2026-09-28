@@ -1,0 +1,4 @@
+(rule
+ (target coqc)
+ (deps ../dune_coqc_guarded.sh ../resource_guard.sh)
+ (action (copy %{dep:../dune_coqc_guarded.sh} %{target})))

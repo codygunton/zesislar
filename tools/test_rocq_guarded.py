@@ -8,6 +8,8 @@ import subprocess
 import tempfile
 import unittest
 
+from test_guard import fixture_environment
+
 
 TOOLS = Path(__file__).resolve().parent
 
@@ -17,7 +19,7 @@ class RocqGuardedTests(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
-        self.environment = dict(os.environ, PATH=f"{self.root}:{os.environ['PATH']}",
+        self.environment = fixture_environment( PATH=f"{self.root}:{os.environ['PATH']}",
                                 TEST_RECORD=str(self.root / "record.jsonl"))
         for name in ("rocq_mcp_guarded.sh", "rocq_coqc_guarded.sh"):
             shutil.copy2(TOOLS / name, self.root / name)

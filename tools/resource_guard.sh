@@ -12,9 +12,11 @@
 #
 # Subcommands:
 #   jobs                 the concurrency a batch may use right now
-#   gate-jobs [TARGET]   the concurrency a gate may use: check-fast 48,
-#                        check-iris (and any other gate) 24
+#   gate-jobs [TARGET]   the concurrency a gate may use: 24
+#   coqc-count [nonwriter] count actual compilers, excluding shell wrappers
 #   wait                 block until one more job may start
+#   reserve-coqc PID     reserve one machine-wide compiler slot
+#   confirm-coqc TOKEN   recheck a reserved launch before starting it
 #   watch                the polling loop; kills the youngest scope at 90 %
 #   scope NAME -- CMD    run CMD in its own 6 GiB scope, registered
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
@@ -36,6 +38,8 @@
 #   at most 48 `coqc` processes, counted for every agent, not only ours;
 #   load5 at most 80 and at most 16 blocked processes;
 #   no gate holds or wants /tmp/zesu-gate.lock.
+# Named writers may continue through a gate with two compilers each.
+# A live gate leaves 16 of the 48 slots for writers.
 # A gate has priority over new batches (plan section 4 item 4, amended
 # 2026-09-24): it writes the lock in the `wanted` state before its build,
 # and no new arm, batch, scope, or probe starts while the lock exists in
@@ -75,7 +79,14 @@ RAMP_MS=${ZESU_RAMP_MS:-500}
 RAMP_FILE=${ZESU_RAMP_FILE:-/tmp/zesu-guard-ramp}
 GATE_LOCK=${ZESU_GATE_LOCK:-/tmp/zesu-gate.lock}
 GATE_MUTEX="${GATE_LOCK}.mutex"
-FAST_MAX_JOBS=${ZESU_FAST_MAX_JOBS:-48}
+FAST_MAX_JOBS=${ZESU_FAST_MAX_JOBS:-24}
+# Gates leave 16 machine slots for writers. Each named writer gets two.
+WRITER_RESERVED=16
+WRITER_MAX_COQC=2
+WRITER_ID=${ZESU_WRITER_ID:-}
+if [ -n "$WRITER_ID" ] && ! [[ "$WRITER_ID" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+  echo "resource guard: invalid writer identity" >&2; exit 2
+fi
 PROM=$(dirname "$0")/det/prom.py
 POLL_SECONDS=${ZESU_GUARD_POLL:-5}
 SCOPE_PREFIX=${ZESU_SCOPE_PREFIX:-zesudet}
@@ -105,10 +116,39 @@ used_gib() {
   echo $(( (total - available) / GIB ))
 }
 
-# `pgrep -c` prints 0 and exits non-zero when nothing matches, so a
-# `|| echo 0` fallback would print the count twice. `pgrep` sees every
-# user's processes, so this is the machine-wide count the plan asks for.
-coqc_count() { local n; n=$(pgrep -c -x coqc 2>/dev/null); echo "${n:-0}"; }
+# Dune's executable remains named coqc. Its Bash wrapper is not a compiler.
+# Count one PID snapshot and remove shell wrappers before slot admission.
+compiler_process() {
+  local pid=$1 executable
+  executable=$(readlink "$PROC_ROOT/$pid/exe" 2>/dev/null) || executable=""
+  case "${executable##*/}" in bash|sh|dash|zsh|ksh) return 1 ;; esac
+  return 0
+}
+
+compiler_pids() {
+  local pid snapshot status
+  if snapshot=$(pgrep -x coqc); then :
+  else
+    status=$?
+    if (( status != 1 )); then
+      echo "resource guard: compiler snapshot failed (pgrep exit $status)" >&2
+      return "$status"
+    fi
+    snapshot=""
+  fi
+  for pid in $snapshot; do
+    [[ "$pid" =~ ^[1-9][0-9]*$ ]] || continue
+    compiler_process "$pid" && printf '%s ' "$pid"
+  done
+  return 0
+}
+
+coqc_count() {
+  local snapshot
+  snapshot=$(compiler_pids) || return $?
+  set -- $snapshot
+  echo "$#"
+}
 
 # load5, not load1: the load1 spikes of 2026-09-22 lasted one to five
 # minutes and followed disk bursts, and holding on them stalls a batch
@@ -119,7 +159,7 @@ blocked_count() { awk '/^procs_blocked/ {print $2}' /proc/stat; }
 
 # --- the gate lock ---------------------------------------------------------
 #
-# "A gate runs alone" is mechanical across agents: a gate writes its state,
+# A gate excludes ordinary launches and admits named writers: it writes its state,
 # holder, PID, and start time to the lock, and every guard holds new
 # launches while the lock is live, wanted or held. A lock whose PID is dead
 # is removed and reported.
@@ -178,7 +218,7 @@ lock_hold() {
   local pid=$1 limit=${ZESU_GATE_SCOPE_WAIT:-14400} start=$SECONDS live
   local noted=""
   # A registered launch can precede its systemd scope. Wait for both.
-  while live=$(( $(live_scopes | wc -l) + $(live_launches | wc -l) + $(live_reservations | wc -l) )); (( live > 0 )); do
+  while live=$(( $(live_scopes | wc -l) + $(live_launches | wc -l) + $(gate_reservations | wc -l) )); (( live > 0 )); do
     if (( SECONDS - start >= limit )); then
       echo "refusing: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
       lock_release "$pid"; return 3
@@ -227,7 +267,8 @@ live_launches() {
   for marker in "$LAUNCHES"/*; do
     [ -e "$marker" ] || continue
     pid=${marker##*/}; pid=${pid%%.*}
-    if kill -0 "$pid" 2>/dev/null; then echo "$marker"
+    if kill -0 "$pid" 2>/dev/null; then
+      [ "$(sed -n 's/^writer=//p' "$marker")" ] || echo "$marker"
     else rm -f "$marker"; fi
   done
 }
@@ -245,40 +286,114 @@ live_reservations() {
   done
 }
 
-pending_reservations() {
-  local marker child pending=0
+reservation_writer() { sed -n 's/^writer=//p' "$1"; }
+
+# A recorder can be the marked child. Count its actual compiler once.
+reservation_compiler() {
+  local child descendant
+  read -r child < "$1" || return 1
+  [[ "$child" =~ ^[0-9]+$ ]] || { child=${1##*/}; child=${child%%.*}; }
+  if [ "$(cat "$PROC_ROOT/$child/comm" 2>/dev/null)" = coqc ] && compiler_process "$child"; then
+    echo "$child"; return 0
+  fi
+  for descendant in $(cat "$PROC_ROOT/$child/task/$child/children" 2>/dev/null); do
+    if [ "$(cat "$PROC_ROOT/$descendant/comm" 2>/dev/null)" = coqc ] && compiler_process "$descendant"; then
+      echo "$descendant"; return 0
+    fi
+  done
+  return 1
+}
+
+nonwriter_coqc_count() {
+  local snapshot pid marker compiler writer_pids="" count=0
+  snapshot=$(compiler_pids) || return $?
   while IFS= read -r marker; do
-    child=$(cat "$marker" 2>/dev/null) || child=""
-    if ! [[ "$child" =~ ^[0-9]+$ ]] || \
-       [ "$(cat "$PROC_ROOT/$child/comm" 2>/dev/null)" != coqc ]; then
+    [ -n "$(reservation_writer "$marker")" ] || continue
+    compiler=$(reservation_compiler "$marker") || continue
+    writer_pids="$writer_pids $compiler"
+  done < <(live_reservations)
+  for pid in $snapshot; do
+    [[ " $writer_pids " == *" $pid "* ]] || count=$(( count + 1 ))
+  done
+  echo "$count"
+}
+
+gate_reservations() {
+  local marker
+  while IFS= read -r marker; do
+    [ -n "$(reservation_writer "$marker")" ] || echo "$marker"
+  done < <(live_reservations)
+}
+
+# This runs under the gate mutex. Use one PID snapshot for both counts.
+# A reserved compiler absent from that snapshot still uses a pending slot.
+compiler_admission_reason() {
+  local confirming=${1:-0} count pending=0 marker writer compiler snapshot
+  local writers=0 own=0 counted_writers=0 pending_writers=0 nonwriter_limit
+  snapshot=$(compiler_pids) || return $?
+  set -- $snapshot; count=$#
+  while IFS= read -r marker; do
+    writer=$(reservation_writer "$marker")
+    if [ -n "$writer" ]; then
+      writers=$(( writers + 1 ))
+      [ "$writer" != "$WRITER_ID" ] || own=$(( own + 1 ))
+    fi
+    compiler=$(reservation_compiler "$marker") || compiler=""
+    if [ -n "$compiler" ] && [[ " $snapshot " == *" $compiler "* ]]; then
+      [ -z "$writer" ] || counted_writers=$(( counted_writers + 1 ))
+    else
       pending=$(( pending + 1 ))
+      [ -z "$writer" ] || pending_writers=$(( pending_writers + 1 ))
     fi
   done < <(live_reservations)
-  echo "$pending"
+  if (( count + pending + 1 - confirming > MAX_COQC )); then
+    echo "coqc $count with $pending reservations machine-wide"
+  elif [ -n "$WRITER_ID" ]; then
+    if (( own + 1 - confirming > WRITER_MAX_COQC )); then
+      echo "writer $WRITER_ID at its $WRITER_MAX_COQC compiler limit"
+    elif (( writers + 1 - confirming > WRITER_RESERVED )); then
+      echo "writers at their $WRITER_RESERVED reserved slots"
+    fi
+  elif lock_live_unlocked >/dev/null 2>&1; then
+    nonwriter_limit=$(( MAX_COQC - WRITER_RESERVED ))
+    (( nonwriter_limit < 0 )) && nonwriter_limit=0
+    if (( count - counted_writers + pending - pending_writers + 1 - confirming > nonwriter_limit )); then
+      echo "nonwriter compiler limit $nonwriter_limit; $WRITER_RESERVED slots reserved for writers"
+    fi
+  fi
 }
 
 # The gate mutex also serializes scratch reservations. Concurrent waiters
 # cannot both admit at 47 coqc, and a wanted gate cannot miss a launch.
 reserve_coqc() {
-  local owner=$1 marker holder count pending
+  local owner=$1 marker holder reason admission status held=""
   [[ "$owner" =~ ^[0-9]+$ ]] || return 2
   while kill -0 "$owner" 2>/dev/null; do
     exec 7>>"$GATE_MUTEX"
     flock 7
     holder=""
-    if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ]; then
+    if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ]; then
       holder=$(lock_live_unlocked 2>/dev/null) || holder=""
     fi
-    count=$(coqc_count)
-    pending=$(pending_reservations)
-    if [ -z "$holder" ] && (( count + pending < MAX_COQC )); then
+    reason=$(hold_reason no-lock) || {
+      status=$?; flock -u 7; exec 7>&-; return "$status"
+    }
+    admission=$(compiler_admission_reason) || {
+      status=$?; flock -u 7; exec 7>&-; return "$status"
+    }
+    if [ -z "$reason$holder$admission" ]; then
       marker=$(mktemp "$COQC_RESERVATIONS/$owner.XXXXXXXX")
-      printf 'pending\n' > "$marker"
+      local aggregate=""
+      [ -n "$WRITER_ID" ] || aggregate="${ZESU_AGGREGATE_SLICE:-}"
+      printf 'pending\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$marker"
       flock -u 7
       exec 7>&-
       echo "$marker"
       return 0
     fi
+    reason=${reason:-${holder:+gate lock: $holder}}
+    reason=${reason:-$admission}
+    if [ "$reason" != "$held" ]; then note "HOLD reservation: $reason"; held=$reason; fi
     flock -u 7
     exec 7>&-
     sleep "$POLL_SECONDS"
@@ -290,6 +405,49 @@ reservation_path() {
   [[ "$(dirname "$1")" == "$COQC_RESERVATIONS" && -f "$1" ]]
 }
 
+# A slot can wait while resources change. Recheck the complete launch
+# conditions under the reservation mutex immediately before the compiler.
+confirm_coqc() {
+  local marker=$1 reason holder admission owner status held=""
+  while :; do
+    exec 7>>"$GATE_MUTEX"
+    flock 7
+    owner=${marker##*/}; owner=${owner%%.*}
+    if ! reservation_path "$marker" || ! kill -0 "$owner" 2>/dev/null \
+       || [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
+      flock -u 7; exec 7>&-; return 2
+    fi
+    holder=""
+    if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ]; then
+      holder=$(lock_live_unlocked 2>/dev/null) || holder=""
+    fi
+    # A foreign pending launch must release its reservation for the gate.
+    # Waiting here would make the gate and this reservation wait on each other.
+    if [ -n "$holder" ]; then
+      note "CANCEL reservation launch for gate: $holder"
+      echo "resource guard: reservation launch refused for gate: $holder" >&2
+      flock -u 7; exec 7>&-
+      return 3
+    fi
+    reason=$(hold_reason no-lock) || {
+      status=$?; flock -u 7; exec 7>&-; return "$status"
+    }
+    admission=$(compiler_admission_reason 1) || {
+      status=$?; flock -u 7; exec 7>&-; return "$status"
+    }
+    if [ -z "$reason$holder$admission" ]; then
+      [ -z "$held" ] || note "RESUME reservation launch: $held"
+      flock -u 7; exec 7>&-
+      return 0
+    fi
+    reason=${reason:-${holder:+gate lock: $holder}}
+    reason=${reason:-$admission}
+    if [ "$reason" != "$held" ]; then note "HOLD reservation launch: $reason"; held=$reason; fi
+    flock -u 7; exec 7>&-
+    sleep "$POLL_SECONDS"
+  done
+}
+
 mark_coqc() {
   local marker=$1 child=$2
   [[ "$child" =~ ^[0-9]+$ ]] || return 2
@@ -298,7 +456,11 @@ mark_coqc() {
   if ! reservation_path "$marker"; then
     flock -u 7; exec 7>&-; return 2
   fi
-  printf '%s\n' "$child" > "$marker"
+  local writer replacement aggregate; writer=$(reservation_writer "$marker")
+  aggregate=$(sed -n '3s/^aggregate=//p' "$marker")
+  replacement=$(mktemp "$STATE_DIR/coqc-mark.XXXXXXXX")
+  printf '%s\nwriter=%s\naggregate=%s\n' "$child" "$writer" "$aggregate" > "$replacement"
+  mv -f -- "$replacement" "$marker"
   flock -u 7
   exec 7>&-
 }
@@ -308,6 +470,20 @@ release_coqc() {
   exec 7>>"$GATE_MUTEX"
   flock 7
   if reservation_path "$marker"; then rm -f "$marker"; fi
+  flock -u 7
+  exec 7>&-
+}
+
+release_aggregate_reservations() {
+  local slice=$1 marker
+  exec 7>>"$GATE_MUTEX"
+  flock 7
+  for marker in "$COQC_RESERVATIONS"/*; do
+    [ -f "$marker" ] || continue
+    if [ "$(sed -n '3s/^aggregate=//p' "$marker")" = "$slice" ]; then
+      rm -f "$marker"
+    fi
+  done
   flock -u 7
   exec 7>&-
 }
@@ -412,7 +588,7 @@ guard_jobs() {
 # one, and 37 concurrent `coqc` processes spend those budgets on memory
 # traffic. Lead's ruling 2026-09-22: `check-iris` runs alone at 24 jobs,
 # the timeouts stay, and a red gate is re-run once before it is believed.
-# `check-fast` builds no proof module and runs at 48 (plan section 4).
+# Both gates stay at 24 while the writer reservation applies.
 # The memory formula stays as the ceiling for both.
 GATE_MAX_JOBS=${ZESU_GATE_MAX_JOBS:-24}
 
@@ -421,6 +597,7 @@ gate_jobs() {
   cap=$GATE_MAX_JOBS
   [ "$target" = check-fast ] && cap=$FAST_MAX_JOBS
   allowed=$(guard_jobs)
+  (( cap > GATE_MAX_JOBS )) && cap=$GATE_MAX_JOBS
   (( cap < allowed )) && allowed=$cap
   (( allowed < 1 )) && allowed=1
   echo "$allowed"
@@ -428,7 +605,7 @@ gate_jobs() {
 
 live_scopes() {
   systemctl --user list-units --type=scope --state=active --plain --no-legend \
-    "${SCOPE_PREFIX}-*" 2>/dev/null | awk '{print $1}'
+    "${SCOPE_PREFIX}-*" 2>/dev/null | awk '$1 !~ /-writer-/ {print $1}'
 }
 
 # The youngest scope is the last one this agent registered that is still
@@ -457,14 +634,16 @@ kill_youngest() {
 # are not held by its own lock.
 hold_reason() {
   local used coqc load blocked holder
-  used=$(used_gib); coqc=$(coqc_count)
+  used=$(used_gib)
+  coqc=$(coqc_count) || return $?
   load=$(load_five); blocked=$(blocked_count)
   if (( used >= HOLD_GIB )); then echo "memory ${used} GiB, at the ${HOLD_GIB} GiB hold"
   elif (( used >= LAUNCH_GIB )); then echo "memory ${used} GiB, launch line ${LAUNCH_GIB}"
   elif (( coqc >= MAX_COQC )); then echo "coqc $coqc machine-wide"
   elif (( load > MAX_LOAD )); then echo "load5 $load"
   elif (( blocked > MAX_BLOCKED )); then echo "blocked $blocked"
-  elif [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ] \
+  elif [ "${1:-}" != no-lock ] \
+       && [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ] \
        && holder=$(lock_live 2>/dev/null); then
     echo "gate lock: $holder"
   fi
@@ -476,7 +655,7 @@ guard_wait() {
   local reason held="" since
   while :; do
     (( $(used_gib) >= KILL_GIB )) && kill_youngest > /dev/null
-    reason=$(hold_reason)
+    reason=$(hold_reason) || return $?
     if [ -z "$reason" ]; then
       [ -n "$held" ] && note "RESUME after $(( $(date +%s) - since )) s: $held"
       ramp_needed && ramp
@@ -516,7 +695,7 @@ guard_watch() {
 # A new scope or batch waits while a gate wants or holds the lock. Work
 # inside a running batch or gate is not new and goes on.
 wait_for_gate() {
-  [ -n "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ] && return 0
+  [ -n "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ] && return 0
   local holder held=""
   while holder=$(lock_live 2>/dev/null); do
     [ -z "$held" ] && note "HOLD launch for gate: $holder" && held=1
@@ -526,8 +705,8 @@ wait_for_gate() {
   return 0
 }
 
-# A direct `scope` or `batch` call obeys the launch line too; `wait`
-# adds the other checks for runners that pace their own jobs.
+# Legacy memory-only wait. Scope and batch launches use guard_wait so
+# load, blocked processes, and the compiler count also apply.
 wait_for_memory_budget() {
   local used held=""
   while :; do
@@ -542,48 +721,151 @@ wait_for_memory_budget() {
   done
 }
 
+aggregate_slice() {
+  local slice="${ZESU_AGGREGATE_SLICE:-}" limit="${ZESU_AGGREGATE_LIMIT:-}" properties
+  if [ -z "$slice" ]; then
+    if [ -n "${ZESU_IN_BATCH:-}" ]; then
+      echo "resource guard: batch compiler lacks its aggregate slice" >&2
+      return 2
+    fi
+    echo app.slice
+    return 0
+  fi
+  if [[ ! "$slice" =~ ^zesuaggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
+     [[ ! "$limit" =~ ^(120G|150G)$ ]]; then
+    echo "resource guard: invalid aggregate slice or limit" >&2
+    return 2
+  fi
+  properties=$(systemctl --user show "$slice" -p MemoryMax -p MemorySwapMax) || return $?
+  local bytes=$((120 * GIB))
+  [ "$limit" != 150G ] || bytes=$((150 * GIB))
+  local max swap
+  max=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemoryMax" {print $2}')
+  swap=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemorySwapMax" {print $2}')
+  if [ "$max" != "$bytes" ] || [ "$swap" != 0 ]; then
+    echo "resource guard: aggregate slice lacks its memory fence" >&2
+    return 2
+  fi
+  echo "$slice"
+}
+
 run_scope() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
   wait_for_gate
-  wait_for_memory_budget
-  local marker="" status
-  if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}" ]; then
-    until marker=$(admit_launch); do wait_for_gate; done
+  guard_wait || return $?
+  local status reservation="${ZESU_COQC_RESERVATION:-}" owned=0 child="" slice
+  # Writers never enter a gate or batch aggregate.
+  if [ -n "$WRITER_ID" ]; then
+    if [ -n "${ZESU_IN_BATCH:-}" ] ||
+       [[ "$(cat /proc/$$/cgroup)" == *"/zesuaggregate"*".slice/"* ]]; then
+      echo "resource guard: writer controller must start outside the batch aggregate" >&2
+      return 2
+    fi
+    slice=app.slice
+  else slice=$(aggregate_slice) || return $?; fi
+  if [ -z "$reservation" ]; then
+    reservation=$(reserve_coqc $$) || return $?
+    owned=1
+  fi
+  if ! confirm_coqc "$reservation"; then
+    [ "$owned" = 0 ] || release_coqc "$reservation"
+    return 3
+  fi
+  # Only scope-exec sets this token after systemd creates the job fence.
+  if [ "${ZESU_COQC_SCOPE:-}" = "$reservation" ]; then
+    mark_coqc "$reservation" "$BASHPID" || return $?
+    exec "$@"
   fi
   local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
+  if [ -n "$WRITER_ID" ]; then
+    unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-$$-${RANDOM}"
+  fi
+  cleanup_scope() {
+    if [ -n "$child" ] && kill -0 "$child" 2>/dev/null; then
+      systemctl --user stop "$unit.scope" 2>/dev/null || true
+      kill "$child" 2>/dev/null || true
+      wait "$child" 2>/dev/null || true
+    fi
+    [ "$owned" = 0 ] || release_coqc "$reservation"
+  }
+  trap cleanup_scope EXIT
+  trap 'exit 143' TERM
+  trap 'exit 130' INT
   echo "$unit.scope" >> "$REGISTRY"
-  systemd-run --user --scope --quiet --unit="$unit" \
+  systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
     -p "MemoryMax=${MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
-    $(io_class) "$@"
+    $(io_class) "$(realpath "$0")" scope-exec "$reservation" -- "$@" &
+  child=$!
+  wait "$child"
   status=$?
-  [ -z "$marker" ] || rm -f "$marker"
+  child=""
+  cleanup_scope
+  trap - EXIT TERM INT
   return "$status"
 }
 
 run_batch() {
+  if [ -n "$WRITER_ID" ]; then
+    echo "resource guard: writers must use compiler admission or a guarded scope" >&2
+    return 2
+  fi
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
-  # One batch scope is enough. A gate calls `make`, and `make` wraps its
-  # own build in a batch too; nesting a scope inside a scope either fails
-  # or halves the cap for no gain.
+  # Nested make wrappers reuse the aggregate created by their parent.
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
+    guard_wait || return $?
+    aggregate_slice >/dev/null || return $?
     exec "$@"
   fi
   wait_for_gate
-  wait_for_memory_budget
-  local marker="" status
+  guard_wait || return $?
+  local marker="" status child=""
   if [ -z "${ZESU_IN_GATE:-}" ]; then
     until marker=$(admit_launch); do wait_for_gate; done
   fi
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
-  echo "$unit.scope" >> "$REGISTRY"
+  local slice="zesuaggregate${UID}p$$r${RANDOM}.slice"
   local limit=$BATCH_LIMIT
-  [ "${ZESU_IO:-batch}" = gate ] && limit=$GATE_LIMIT
-  env ZESU_IN_BATCH=1 systemd-run --user --scope --quiet --unit="$unit" \
-    -p "MemoryMax=${limit}" -p MemorySwapMax=0 -- $(io_class) "$@"
+  if [ -n "${ZESU_IN_GATE:-}" ] || [ "${ZESU_IO:-batch}" = gate ]; then limit=$GATE_LIMIT; fi
+  # Cap the aggregate before either its parent or a compiler starts.
+  if ! systemctl --user set-property --runtime "$slice" "MemoryMax=$limit" MemorySwapMax=0; then
+    systemctl --user stop "$slice" 2>/dev/null || true
+    systemctl --user revert "$slice" 2>/dev/null || true
+    [ -z "$marker" ] || rm -f "$marker"
+    return 2
+  fi
+  cleanup_batch() {
+    local stopped=0
+    if systemctl --user stop "$slice" 2>/dev/null; then
+      stopped=1
+      release_aggregate_reservations "$slice"
+    fi
+    if [ -n "$child" ] && kill -0 "$child" 2>/dev/null; then
+      kill "$child" 2>/dev/null || true
+      wait "$child" 2>/dev/null || true
+    fi
+    if [ "$stopped" = 1 ]; then
+      systemctl --user revert "$slice" 2>/dev/null || return 2
+      [ -z "$marker" ] || rm -f "$marker"
+    else
+      echo "resource guard: aggregate stop failed; its memory fence remains" >&2
+      return 2
+    fi
+  }
+  trap cleanup_batch EXIT
+  trap 'exit 143' TERM
+  trap 'exit 130' INT
+  echo "$unit.scope" >> "$REGISTRY"
+  env ZESU_IN_BATCH=1 ZESU_AGGREGATE_SLICE="$slice" ZESU_AGGREGATE_LIMIT="$limit" \
+    systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
+    -p "MemoryMax=$limit" -p MemorySwapMax=0 -- $(io_class) "$@" &
+  child=$!
+  wait "$child"
   status=$?
-  [ -z "$marker" ] || rm -f "$marker"
+  child=""
+  cleanup_batch || status=2
+  trap - EXIT TERM INT
   return "$status"
 }
 
@@ -598,11 +880,12 @@ io_class() {
 # Guard state from /proc, then the machine figures from Prometheus. The
 # Prometheus line is what a report quotes (plan section 4, rule 6).
 report() {
-  local peak holder
+  local peak holder coqc
+  coqc=$(coqc_count) || return $?
   peak=$(cat "$PEAK" 2>/dev/null); peak=${peak:-0}
   holder=$(lock_live 2>/dev/null) || holder=none
   printf 'guard: used %s GiB (launch <%s, hold %s, kill %s); coqc %s machine-wide; load5 %s; blocked %s; jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
-    "$(used_gib)" "$LAUNCH_GIB" "$HOLD_GIB" "$KILL_GIB" "$(coqc_count)" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
+    "$(used_gib)" "$LAUNCH_GIB" "$HOLD_GIB" "$KILL_GIB" "$coqc" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
     $(( peak / GIB )) "$holder" \
     "$(grep -c ' HOLD ' "$LOG" 2>/dev/null | head -1)" \
     "$(grep -c ' KILL ' "$LOG" 2>/dev/null | head -1)"
@@ -611,15 +894,25 @@ report() {
 
 case "${1:-report}" in
   jobs)   guard_jobs ;;
+  coqc-count)
+    if [ "${2:-}" = nonwriter ]; then nonwriter_coqc_count; else coqc_count; fi ;;
   gate-jobs) gate_jobs "${2:-check-iris}" ;;
   reset-peak) echo 0 > "$PEAK" ;;
   peak)   awk '{printf "%d", $1 / 1073741824}' "$PEAK" 2>/dev/null; echo ;;
   wait)   guard_wait ;;
   reserve-coqc) reserve_coqc "$2" ;;
+  confirm-coqc) confirm_coqc "$2" ;;
   mark-coqc) mark_coqc "$2" "$3" ;;
   release-coqc) release_coqc "$2" ;;
   watch)  guard_watch ;;
   scope)  shift; run_scope "$@" ;;
+  scope-exec)
+    token=$2; shift 2; [ "${1:-}" = -- ] && shift
+    confirm_coqc "$token" || exit $?
+    mark_coqc "$token" $$ || exit $?
+    export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
+    ulimit -t 300
+    exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;
   lock-status) lock_live || echo "no gate lock" ;;
@@ -627,8 +920,8 @@ case "${1:-report}" in
   lock-want) lock_acquire "$3" "$2" ;;
   lock-hold) lock_hold "$2" ;;
   lock-release) lock_release "$2" ;;
-  hold)   r=$(hold_reason); echo "${r:-none}" ;;
+  hold)   r=$(hold_reason) || exit $?; echo "${r:-none}" ;;
   window) shift; python3 "$PROM" window "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|reserve-coqc PID|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
 esac

@@ -1,2 +1,7 @@
 ; Exclude build outputs from dune's source tree.
 (dirs :standard \ build)
+
+; The override applies to Coq configuration and every compiler action.
+(env
+ (_
+  (binaries (tools/guard-bin/coqc as coqc))))

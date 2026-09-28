@@ -9,6 +9,8 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from test_guard import fixture_environment
+
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "residual"))
 
@@ -391,6 +393,9 @@ class ScratchCompilerGuard(unittest.TestCase):
                 'exit "${SCRATCH_GUARD_STATUS:-0}" ;;\n'
                 '  reserve-coqc) echo reserve >> "$SCRATCH_EVENTS"; '
                 'echo token ;;\n'
+                '  confirm-coqc) echo confirm >> "$SCRATCH_EVENTS"; '
+                'exit "${SCRATCH_CONFIRM_STATUS:-0}" ;;\n'
+                '  scope) echo scope >> "$SCRATCH_EVENTS"; shift 3; exec "$@" ;;\n'
                 '  mark-coqc) echo mark >> "$SCRATCH_EVENTS" ;;\n'
                 '  release-coqc) echo release >> "$SCRATCH_EVENTS" ;;\n'
                 'esac\n')
@@ -408,16 +413,22 @@ class ScratchCompilerGuard(unittest.TestCase):
                 "working_dir": str(root),
             }))
             events = root / "events"
-            env = dict(os.environ, SCRATCH_EVENTS=str(events))
+            env = fixture_environment( SCRATCH_EVENTS=str(events))
             command = ["bash", str(scratch), str(source), str(build)]
             passed = subprocess.run(command, env=env, capture_output=True,
                                     text=True, check=False)
             self.assertEqual(passed.returncode, 0, passed.stderr)
             recorded = events.read_text().splitlines()
-            self.assertEqual(recorded[:2], ["wait", "reserve"])
+            self.assertEqual(recorded[:3], ["wait", "reserve", "confirm"])
             self.assertEqual(recorded[-1], "release")
             self.assertEqual(set(recorded),
-                             {"wait", "reserve", "mark", "coqc", "release"})
+                             {"wait", "reserve", "confirm", "scope", "coqc", "release"})
+            events.unlink()
+            rejected = subprocess.run(command, env=dict(env, SCRATCH_CONFIRM_STATUS="19"),
+                                      capture_output=True, text=True, check=False)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertEqual(events.read_text().splitlines(),
+                             ["wait", "reserve", "confirm", "release"])
             events.unlink()
             failed = subprocess.run(command,
                                     env=dict(env, SCRATCH_GUARD_STATUS="17"),
