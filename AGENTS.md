@@ -47,11 +47,47 @@ Do not fork Islaris unless the user approves that change.
 
 ## File structure
 
-Keep one reviewed proof file for each Level 1 contract when practical.
+Keep one small umbrella file for each Level 1 contract.
+Split large proofs into modules with explicit Iris handoff contracts.
+Put each reusable contract, straight-line chunk, branch, loop body, and composition proof in a suitable module.
+The umbrella file must import the modules and expose the final theorem.
+Do not duplicate large specifications or shared memory lemmas across modules.
 Use the structure in `ZesuSsz/Experiments/ZkvmExit.v`, `AllocatorGet.v`, and `WriteFailure.v`.
 Move shared definitions to `ZesuSsz/Contracts/` only after two proofs need the same definition.
 Put generated trace semantics under `generated/isla-traces/`.
 Put generators and their checks under `ZesuSsz/Evidence/` or the applicable build directory.
+
+## Build efficiency
+
+Use all safe parallelism for independent build targets.
+Use no more than 48 workers.
+Measure one representative task before a large parallel build.
+Calculate the worker limit from 70 percent of available memory and the measured peak task memory.
+Use the smaller value of that limit and 48.
+Use 48 workers when the dependency graph and the memory limit permit 48 workers.
+
+Do not describe the machine as CPU-bound from one process measurement.
+Check total CPU use, per-process CPU use, load, available memory, and swap use.
+State that a proof is single-thread bound when one process uses one core and the machine remains idle.
+
+Treat a proof module as too large when it takes more than 90 seconds or uses more than 4 GiB.
+Stop repeated work on that module.
+Split it at sound proof-state boundaries before further full compilation.
+If no sound split exists, report the exact dependency that prevents parallel work.
+
+Compile independent modules together with Dune.
+Keep the final composition proof small and sequential.
+Do not expect `-j` to parallelize tactics inside one Rocq proof.
+Do not stop a healthy sequential build to test a parallel split.
+Run the split build beside the sequential build when memory permits this action.
+
+Use build caches and focused targets during proof development.
+Do not rerun an unchanged failed tactic or build.
+Inspect the first residual goal before the next attempt.
+Use a wait of at least 60 seconds for a silent long build.
+Do useful independent work between build checks.
+Use bounded output and `rtk` for logs, searches, status checks, tests, and builds.
+Do not print generated traces or complete build logs unless the error requires that output.
 
 ## Proof workflow
 
@@ -63,6 +99,10 @@ Put generators and their checks under `ZesuSsz/Evidence/` or the applicable buil
 6. Generate and check the control-flow certificate.
 7. Apply `nativeContractBridge` and prove the exact Level 1 assumption.
 8. Verify the proof with `rocq-mcp` before the complete project gate.
+
+Before a proof exceeds the module limits, define handoff contracts and split the proof.
+Build all independent proof modules in one Dune command.
+Record elapsed time, peak memory, worker count, and machine utilization at each performance checkpoint.
 
 Stop and ask the user before changing the contract, proof boundary, or proof architecture.
 Report instruction counts, branch counts, loops, residual goals, and any manual proof growth.
