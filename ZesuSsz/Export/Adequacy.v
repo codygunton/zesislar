@@ -4,6 +4,7 @@ From isla Require Import adequacy.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Executor.
+Require Import ZesuSsz.Contracts.EndpointMemory.
 
 Definition zesu_ram_sys_regs_map (mstatusBits satp : bv 64) : reg_map :=
   <[ "rv_enable_pmp" := RVal_Bool (mapEnablePmp defaultMap) ]> $
@@ -104,3 +105,24 @@ Proof.
   - rewrite !app_assoc. exact Hterminal.
 Qed.
 Print Assumptions completed_run_through_decoder.
+
+(** Allocate observable output and exit devices from the approved initial memory. *)
+Lemma zesu_endpoint_mmio_init `{!islaG Sigma} `{!threadG} input :
+  (List.length input <= 64 * 1024 * 1024)%nat ->
+  backed_mem (dom (endpointInputMemory input)) -∗
+  mmio_range (machineOutputAddress defaultMap) 16 ∗
+  mmio_range (machineExitAddress defaultMap) 8.
+Proof.
+  intros Hbound. iIntros "#Hbacked". iSplit.
+  - iApply mmio_range_intro;
+      [lia | cbn; lia | cbn; lia | | iExact "Hbacked"].
+    intros address Hdom Hrange.
+    apply (endpoint_device_range_unbacked input Hbound address Hdom).
+    cbn in Hrange |- *. lia.
+  - iApply mmio_range_intro;
+      [lia | cbn; lia | cbn; lia | | iExact "Hbacked"].
+    intros address Hdom Hrange.
+    apply (endpoint_device_range_unbacked input Hbound address Hdom).
+    cbn in Hrange |- *. lia.
+Qed.
+Print Assumptions zesu_endpoint_mmio_init.
