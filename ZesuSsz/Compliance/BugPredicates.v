@@ -207,6 +207,110 @@ Definition versionedHashCountApplies
   | _, _ => False
   end.
 
+(** This reader extracts an offset-table count after the Zesu size checks.
+    A successful endpoint outcome supplies the remaining element checks. *)
+Definition zesuVariableListCount
+    (bytes : ByteString) (start : nat) (span : Z) : option Z :=
+  if span =? 0 then Some 0 else
+  if 4 <=? span then
+    match zesuReadU32At bytes start with
+    | Some first =>
+        if (0 <? first) && (first <=? span) &&
+           (Z.modulo first 4 =? 0)
+        then Some (Z.div first 4)
+        else None
+    | None => None
+    end
+  else None.
+
+Record ZesuListCountLayout : Type := {
+  bugWithdrawalBytes : nat;
+  bugTransactionCount : Z;
+  bugWitnessHeaderCount : Z
+}.
+
+(** Keep the seven original layout fields and predicates unchanged. *)
+Definition zesuListCountLayout (input : ByteString) : option ZesuListCountLayout :=
+  let bytes := zesuBugPayload input in
+  match zesuReadU32At bytes 2, zesuReadU32At bytes 6,
+        zesuReadU32At bytes 10 with
+  | Some nprOffset, Some witnessOffset, Some chainOffset =>
+      let nprStart := (2 + Z.to_nat nprOffset)%nat in
+      let witnessStart := (2 + Z.to_nat witnessOffset)%nat in
+      let chainStart := (2 + Z.to_nat chainOffset)%nat in
+      match zesuReadU32At bytes nprStart,
+            zesuReadU32At bytes (nprStart + 4),
+            zesuReadU32At bytes (witnessStart + 8) with
+      | Some payloadOffset, Some hashesOffset, Some headersOffset =>
+          let payloadStart := (nprStart + Z.to_nat payloadOffset)%nat in
+          let payloadEnd := (nprStart + Z.to_nat hashesOffset)%nat in
+          let headersStart := (witnessStart + Z.to_nat headersOffset)%nat in
+          match zesuReadU32At bytes (payloadStart + 436),
+                zesuReadU32At bytes (payloadStart + 504),
+                zesuReadU32At bytes (payloadStart + 508) with
+          | Some fixedLength, Some transactionsOffset, Some withdrawalsOffset =>
+              match if fixedLength =? 540
+                    then zesuReadU32At bytes (payloadStart + 528)
+                    else if fixedLength =? 528
+                         then Some (Z.of_nat (payloadEnd - payloadStart))
+                         else None with
+              | Some accessListOffset =>
+                  if (fixedLength <=? transactionsOffset) &&
+                     (transactionsOffset <=? withdrawalsOffset) &&
+                     (withdrawalsOffset <=? accessListOffset) &&
+                     (accessListOffset <=? Z.of_nat (payloadEnd - payloadStart)) &&
+                     Nat.leb headersStart chainStart &&
+                     Nat.leb chainStart (length bytes)
+                  then
+                    match zesuVariableListCount bytes
+                            (payloadStart + Z.to_nat transactionsOffset)
+                            (withdrawalsOffset - transactionsOffset),
+                          zesuVariableListCount bytes headersStart
+                            (Z.of_nat (chainStart - headersStart)) with
+                    | Some transactions, Some headers =>
+                        Some {| bugWithdrawalBytes :=
+                                  Z.to_nat (accessListOffset - withdrawalsOffset);
+                                bugTransactionCount := transactions;
+                                bugWitnessHeaderCount := headers |}
+                    | _, _ => None
+                    end
+                  else None
+              | None => None
+              end
+          | _, _, _ => None
+          end
+      | _, _, _ => None
+      end
+  | _, _, _ => None
+  end.
+
+(** Zesu checks 44-byte packing.  The reference permits at most 16 withdrawals. *)
+Definition withdrawalCountApplies
+    (input : ByteString) (actual : DecodeOutcome) : Prop :=
+  match zesuListCountLayout input, actual with
+  | Some layout, DecodeSuccess _ =>
+      Nat.modulo (bugWithdrawalBytes layout) 44 = 0%nat /\
+      (16 * 44 < Z.of_nat (bugWithdrawalBytes layout))%Z
+  | _, _ => False
+  end.
+
+(** Zesu checks the offset table and RLP items.  The reference permits at most
+    1048576 transactions. *)
+Definition transactionCountApplies
+    (input : ByteString) (actual : DecodeOutcome) : Prop :=
+  match zesuListCountLayout input, actual with
+  | Some layout, DecodeSuccess _ => 1048576 < bugTransactionCount layout
+  | _, _ => False
+  end.
+
+(** Zesu checks the offset table.  The reference permits at most 256 headers. *)
+Definition witnessHeaderCountApplies
+    (input : ByteString) (actual : DecodeOutcome) : Prop :=
+  match zesuListCountLayout input, actual with
+  | Some layout, DecodeSuccess _ => 256 < bugWitnessHeaderCount layout
+  | _, _ => False
+  end.
+
 Definition zesuBugApplies : BugApplies :=
   fun bug =>
     match bug with
@@ -217,6 +321,9 @@ Definition zesuBugApplies : BugApplies :=
     | ExtraDataLength => extraDataLengthApplies
     | PublicKeyCount => publicKeyCountApplies
     | VersionedHashCount => versionedHashCountApplies
+    | WithdrawalCount => withdrawalCountApplies
+    | TransactionCount => transactionCountApplies
+    | WitnessHeaderCount => witnessHeaderCountApplies
     end.
 
 (** Compliance compares complete decode outcomes. *)
