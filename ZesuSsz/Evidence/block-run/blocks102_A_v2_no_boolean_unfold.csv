@@ -1,0 +1,14 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+NF,b102,0x156e8,3,call:1572(ra),write_success_exact_post_withdrawals_before156f4,stalled,2,C1,0x156ec,"auipc ra,0x0",call,"∃ x : spec *ₗ (),",58.1,56.8,1933,600,,0x156f4
+NF,b102,0x153d0,1,branch,transactions_source_blob_empty_correct,closed,1,,,,,,14.1,13.6,1330,600,,0x15564
+NF,b102,0x14ed4,4,call:692(ra),write_success_exact_value_suffix,stalled,3,C4,0x14edc,"auipc ra,0xffffb",call,subsume,10.1,10.0,1178,600,,
+NF,b102,0x15700,7,call:1204(ra),block_15700,stalled,6,C1,0x15714,"auipc ra,0x0",call,"∃ y : spec *ₗ list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x8"" ↦ᵣ RVal_Bits y.4ₗ ∗ ""x10"" ↦ᵣ RVal_Bits y.5ₗ ∗ ""x11"" ↦ᵣ RVal_Bits y.3ₗ ∗ (bv_unsigned sp - 32) ↦",10.0,9.2,1327,600,,
+NF,b102,0x1568c,2,branch,withdrawal_initial_nonempty,stalled,2,unknown,0x15690,"beqz s1,156e8 <ssz_decode_observation.writeSuccess+0x9b8>",other,"∃ y : list (bv 8) *ₗ list (list (bv 8)) *ₗ (), withdrawalLoopPayload sp (Z_to_bv 64 base) base (row :: rest) y.2ₗ y.1ₗ rest source tail P ∗ True",8.0,7.8,1336,600,,0x15694
+NF,b102,0x14e88,3,call:-380(ra),write_success_exact_value_block,stalled,2,unknown,0x14e8c,"auipc ra,0x1",call,"∃ x : list (bv 64) *ₗ bv 64 *ₗ (), reg_col zesu_ram_sys_regs ∗ ""x10"" ↦ᵣ: (λ _ : valu, True) ∗ ""x2"" ↦ᵣ RVal_Bits x.2ₗ ∗ (bv_unsigned x.2ₗ + 1032) ↦ₘ∗ x.1ₗ ∗",8.0,7.5,1132,600,,
+NF,b102,0x159b0,3,call:532(ra),block_159b0,stalled,2,C2,0x159b4,"auipc ra,0x0",call,"subsume (bv_unsigned (sp + 296) ↦ₘ value) (λ x : spec *ₗ list (bv 8) *ₗ (), bv_unsigned (sp + 296) ↦ₘ∗ x.2ₗ)",7.0,6.6,1280,600,,
+NF,b102,0x1571c,4,call:1352(ra),block_1571c,stalled,3,C1,0x15724,"auipc ra,0x0",call,"∃ y : spec *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x8"" ↦ᵣ RVal_Bits y.9ₗ ∗ ""x9"" ↦ᵣ RVal",7.0,6.4,1289,600,,
+NF,b102,0x159c8,4,call:576(ra),write_success_exact_final_payload_setup_correct,stalled,3,C2,0x159d0,"auipc ra,0x0",call,"∃ y : spec *ₗ list ByteListItem *ₗ (), writeSuccessExactFinalPayloadCallEntryFrame sp pointer count y.2ₗ y.1ₗ savedReturn ((bv_unsigned sp + 88) ↦ₘ count ∗ Q)",7.0,6.3,1266,600,,
+NF,b102,0x15668,4,call:1440(ra),exact_tail_raw_load,stalled,1,C4,0x15668,"ld a0,1104(sp)",load,"∃ y : bv 64 *ₗ (), (bv_unsigned sp + 1112) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 1112 < 0 + 1073741824⌝ ∗",6.0,5.6,1263,600,,
+NF,b102,0x14e28,4,call:864(ra),write_success_header_chunk_14e28,closed,4,,,,,,5.0,4.9,1025,600,,0x14e38
+NF,b102,0x151d4,2,branch,access_control_exact_native_correct,closed,2,,,,,,4.0,3.7,1064,600,,0x153c0 0x151dc
+NF,b102,0x151d0,1,fall,access_initial_to_loop_correct,closed,1,,,,,,3.0,2.5,1051,600,,0x151d4

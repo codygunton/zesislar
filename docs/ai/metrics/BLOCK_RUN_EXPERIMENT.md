@@ -1,7 +1,6 @@
 # Block-run experiment: one `zesu_block` run per basic block
 
-Root 931f8386 (origin/islaris-native). Measurement only: no proof, Automation, or plan change.
-Per-block CSVs (sorted by wall time): `ZesuSsz/Evidence/block-run/`. Runs on 2026-09-28/29.
+Root 931f8386. Measurement only. Per-block CSVs (sorted by wall time): `ZesuSsz/Evidence/block-run/`. Runs 2026-09-28/29.
 
 ## Setup
 - Blocks: the `Evidence/generate_zesu_cfg.py` rule gives 102 blocks (cut after calls) or 26 (no cut after calls).
@@ -88,8 +87,7 @@ Per-block CSVs (sorted by wall time): `ZesuSsz/Evidence/block-run/`. Runs on 202
 | 0x15590 | k 4/5, same | CClosure.mk_clos 11.4%, Conversion.eqappr 9.3%, pure_rec 7.3% | kernel conversion |
 | 0x15694 | k 4/5, same | CClosure.mk_clos 10.8%, Conversion.eqappr 9.7%, pure_rec 7.0% | kernel conversion |
 | 0x15754 | k 31/96, loop body `lbu`; fence or cap | CArray.loop 18.6%, caml_c_call 15.6%, Micromega Polynomial.* 27% | lia (zesu_finish solvers) |
-- None of the capped runs is in bv_solve or bit-blasting. The largest symbolic register value at the kill point is
-  not observable, because a killed run prints no goal.
+- None of the capped runs is in bv_solve. The largest symbolic register value at a kill is not observable (no goal printed).
 
 ## Import sensitivity
 - One declaration changes a 13 s block (0x14e28) into a run of more than 600 s:
@@ -101,6 +99,16 @@ Per-block CSVs (sorted by wall time): `ZesuSsz/Evidence/block-run/`. Runs on 202
 - Count: it is the only global `LithiumUnfold` on a `zesu_call` spec (of 1,446 LithiumUnfold instances).
   627 of 1,253 proof modules load it transitively; none loads 2 such instances. 12 of the 87 A probes load it.
   A generated segment that imports `Interfaces` for its call premises loads it.
+## LithiumUnfold removal test (scratch worktree; no tracked proof file changed)
+- The global instance cannot simply go: `WriteSuccessEncoderBooleanCall.v:42` and `WriteSuccessEncoderOptionalU64SomeBooleanCall.v:45`
+  then fail ("side condition"). Variant that keeps all 117 built targets green: `#[local] Instance` in those 2 modules.
+- A probes (local variant, cap 600): 0x14e28 closes (5 s). Of the 12 probes that load the instance, 10 give the same result,
+  1.1-5× faster (the with-instance runs ran under a higher load). 0x14e88 and 0x14ed4 reached `BLK_STOP` with the instance
+  and stall without it (they used it).
+- The 4 memcpy blocks (cap 1800) still time out at the same auipc: a separate cause.
+- 30 merged modules that load it (the slowest in the orch gate trace; 6 replaced because a dependency runs out of memory at the
+  6 GiB dune fence), one fresh coqc each: 29 pairs compile in both arms (1 failed with the instance). CPU sum 5,808 s with,
+  5,930 s without. Ratio without/with: min 0.70, p25 0.98, median 1.02, p75 1.07, max 1.31. No speedup.
 
 ## No entry (15): no merged lemma at the leader, and no inferred state
 0x14e14 0x14e94 0x14ea0 0x14eac 0x14eb8 0x14ec8 0x14ee4 0x14efc 0x14f00 0x1511c 0x1513c 0x15194 0x1573c 0x158d4 0x159bc.
