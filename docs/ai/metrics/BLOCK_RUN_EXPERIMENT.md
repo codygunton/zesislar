@@ -107,4 +107,5 @@ Per-block CSVs (sorted by wall time): `ZesuSsz/Evidence/block-run/`. Runs on 202
 At a call block, `BLK_STOP` is reached at the call site before the return, so it is not the state at the leader.
 
 ## 2 h reruns of the capped blocks
-0x15754: fence (8 GiB) at 447 s. The 4 memcpy blocks were still running at this commit.
+All 4 memcpy blocks hit the 7,200 s cap (7,166 CPU s each; peak 2.8 GiB) with no step past the auipc before the call
+(0x14d78, 0x151f8, 0x1559c, 0x156a0). 0x15754 hits the 8 GiB fence at 447 s (k 31/96).
