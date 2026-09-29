@@ -1,0 +1,103 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A_legacy,b102,0x151dc,9,call:-36(ra),access_copy_whole_correct,timeout,1,,0x151dc,"li a0,40",other,,603.8,596.3,1842,600,0x15200,
+A_legacy,b102,0x15668,4,call:1440(ra),exact_tail_raw_load,timeout,1,,0x15668,"ld a0,1104(sp)",load,,603.6,595.5,2056,600,0x15678,
+A_legacy,b102,0x15590,5,call:-968(ra),authorization_copy_correct,timeout,1,,0x15590,"addi a0,sp,1744",other,,603.5,596.6,2056,600,0x155a4,
+A_legacy,b102,0x159d8,15,ret,write_success_epilogue_block,timeout,1,,0x159d8,"ld ra,1992(sp)",load,,603.5,597.5,4134,600,,
+A_legacy,b102,0x15754,96,call:-1852(ra),write_success_hashes_word3,timeout,1,,0x15754,"lbu a0,25(s1)",load,,603.4,595.6,8190,600,0x158d4,
+A_legacy,b102,0x14d30,20,call:1116(ra),write_success_prologue_chunk_14d30,timeout,1,,0x14d30,"addi sp,sp,-2000",other,,603.1,594.2,2833,600,0x14d80,
+A_legacy,b102,0x15694,5,call:-1228(ra),withdrawal_copy_correct,timeout,1,,0x15694,"addi a0,sp,1744",other,,603.1,595.9,1757,600,0x156a8,
+A_legacy,b102,0x156e8,3,call:1572(ra),write_success_exact_post_withdrawals_before156f4,stalled,1,C1,0x156e8,"ld a0,1136(sp)",load,"∃ x : spec *ₗ (),",111.1,110.2,2056,600,,0x156f4
+A_legacy,b102,0x15564,4,call:1912(ra),max_blob_fee_correct,stalled,1,unknown,0x15564,"ld a0,152(sp)",load,"∃ x : isla_trace, Index.lookup 65936 = Some x",109.4,100.5,1517,600,0x15574,
+A_legacy,b102,0x1515c,9,call:-1500(ra),transactions_recipient_copy_correct,stalled,1,unknown,0x1515c,"ld a0,1640(sp)",load,"find_in_context (FindRegMapsTo ""x1"")",93.6,90.7,1710,600,0x15180,
+A_legacy,b102,0x1571c,4,call:1352(ra),block_1571c,stalled,1,C1,0x1571c,"ld a0,1168(sp)",load,"∃ y : spec *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x8"" ↦ᵣ RVal_Bits y.9ₗ ∗ ""x9"" ↦ᵣ RVal",79.2,76.9,2056,600,0x1572c,
+A_legacy,b102,0x158e0,4,call:900(ra),exact_suffix_bytes_158e0_payload,stalled,1,C1,0x158e0,"ld a0,920(sp)",load,"∃ x : spec *ₗ (),",79.2,76.9,2056,600,,0x158f0
+A_legacy,b102,0x15900,4,call:868(ra),exact_suffix_bytes_15900_payload_at,stalled,1,C1,0x15900,"ld a0,952(sp)",load,"∃ x : spec *ₗ (),",77.8,75.2,1936,600,,0x15910
+A_legacy,b102,0x15920,4,call:836(ra),exact_suffix_bytes_15920_payload_at,stalled,1,C1,0x15920,"ld a0,984(sp)",load,"∃ x : spec *ₗ (),",77.1,75.7,2056,600,,0x15930
+A_legacy,b102,0x14f08,122,call:168(ra),transactions_index_cell_correct,stalled,1,C4,0x14f08,"sd a1,248(sp)",pure,find_in_context (FindMemMapsTo (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0)),75.8,73.2,1914,600,0x150f0,
+A_legacy,b102,0x159b0,3,call:532(ra),block_159b0,stalled,1,C2,0x159b0,"addi a0,sp,296",other,"subsume (bv_unsigned (sp + 296) ↦ₘ value) (λ x : spec *ₗ list (bv 8) *ₗ (), bv_unsigned (sp + 296) ↦ₘ∗ x.2ₗ)",74.1,71.1,2056,600,0x159bc,
+A_legacy,b102,0x15644,6,call:1628(ra),transactions_signature_s_call_correct,stalled,1,unknown,0x15644,"ld a0,208(sp)",load,"∃ x : isla_trace, Index.lookup 89264 = Some x",73.1,71.5,2056,600,0x1565c,
+A_legacy,b102,0x15228,96,call:-528(ra),storage_keys_loads16_correct,stalled,1,C2,0x15228,"lbu t1,16(s6)",load,find_in_context (FindMemMapsTo (bv_unsigned (row + 20))),72.8,70.8,1539,600,0x153a8,
+A_legacy,b102,0x158f0,4,call:884(ra),exact_suffix_bytes_158f0_payload_at,stalled,1,C1,0x158f0,"ld a0,936(sp)",load,"∃ x : spec *ₗ (),",72.5,70.1,1914,600,,0x15900
+A_legacy,b102,0x159c8,4,call:576(ra),write_success_exact_final_payload_setup_correct,stalled,1,C2,0x159c8,"mv a0,s0",other,"∃ y : spec *ₗ list ByteListItem *ₗ (), writeSuccessExactFinalPayloadCallEntryFrame sp pointer count y.2ₗ y.1ₗ savedReturn ((bv_unsigned sp + 88) ↦ₘ count ∗ Q)",67.1,65.9,2056,600,0x159d8,
+A_legacy,b102,0x15108,4,call:-1068(ra),transactions_gas_price_call_correct,stalled,1,unknown,0x15108,"mv a0,s9",other,"∃ x : isla_trace, Index.lookup 65936 = Some x",66.2,62.8,1327,600,0x15118,
+A_legacy,b102,0x155e4,6,call:1724(ra),authorization_second_u256_correct,stalled,1,unknown,0x155e4,"ld a0,1776(sp)",load,"∃ x : isla_trace, Index.lookup 89264 = Some x",65.1,64.1,2007,600,0x155fc,
+A_legacy,b102,0x155fc,6,call:1700(ra),authorization_third_u256_correct,stalled,1,unknown,0x155fc,"ld a0,1808(sp)",load,"∃ x : isla_trace, Index.lookup 89264 = Some x",64.8,62.7,1891,600,0x15614,
+A_legacy,b102,0x15910,4,call:852(ra),exact_suffix_bytes_15910_payload_at,stalled,1,C1,0x15910,"ld a0,968(sp)",load,"∃ x : spec *ₗ (),",62.1,60.5,2056,600,,0x15920
+A_legacy,b102,0x15700,7,call:1204(ra),block_15700,stalled,1,C1,0x15700,"ld a0,1152(sp)",load,"∃ y : spec *ₗ list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x8"" ↦ᵣ RVal_Bits y.4ₗ ∗ ""x10"" ↦ᵣ RVal_Bits y.5ₗ ∗ ""x11"" ↦ᵣ RVal_Bits y.3ₗ ∗ (bv_unsigned sp - 32) ↦",62.1,61.3,2056,600,0x1571c,
+A_legacy,b102,0x15678,5,call:1676(ra),post_transactions_exact_withdrawal_load_correct,stalled,1,C1,0x15678,"ld s0,1120(sp)",load,"∃ y : spec *ₗ (), ""x5"" ↦ᵣ: (λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝) ∗ ""x11"" ↦ᵣ: (λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝) ∗ (bv_unsigned sp - 16) ↦",61.1,60.0,2056,600,0x1568c,
+A_legacy,b102,0x15128,4,call:-1100(ra),transactions_priority_value_call_correct,stalled,1,unknown,0x15128,"mv a0,s1",other,"∃ x : isla_trace, Index.lookup 65936 = Some x",60.7,57.5,1513,600,0x15138,
+A_legacy,b102,0x153d4,97,call:-960(ra),blob_loads16_correct,stalled,1,C2,0x153d4,"lbu t1,16(s3)",load,find_in_context (FindMemMapsTo (bv_unsigned (row + 20))),59.1,57.7,1539,600,0x15558,
+A_legacy,b102,0x155d8,3,call:1844(ra),authorization_second_int_correct,stalled,1,C1,0x155d8,"ld a0,1848(sp)",load,"∃ x : spec *ₗ (),",59.1,57.5,2056,600,0x155e4,
+A_legacy,b102,0x15980,4,call:740(ra),exact_tail_present_bytes_call_handoff,stalled,1,C1,0x15980,"mv a0,s0",other,"∃ x : spec *ₗ (),",57.1,55.7,2056,600,,0x15990
+A_legacy,b102,0x159a0,4,call:872(ra),exact_tail_scalar_call_handoff,stalled,1,C1,0x159a0,"ld s0,96(sp)",load,"∃ x : spec *ₗ (),",56.1,55.0,2056,600,,0x159b0
+A_legacy,b102,0x15990,1,jump,write_success_suffix_jump_15990,closed,1,,,,,,55.4,54.2,2056,600,0x159a0,
+A_legacy,b102,0x156b4,3,call:1624(ra),withdrawal_second_int_correct,stalled,1,C1,0x156b4,"ld a0,1752(sp)",load,"∃ x : spec *ₗ (),",47.4,45.6,1514,600,0x156c0,
+A_legacy,b102,0x155a4,6,call:1788(ra),authorization_first_u256_correct,stalled,1,unknown,0x155a4,"ld a0,1744(sp)",load,"∃ x : isla_trace, Index.lookup 89264 = Some x",44.6,42.7,1514,600,0x155bc,
+A_legacy,b102,0x15574,4,call:1940(ra),authorization_count_correct,stalled,1,C1,0x15574,"ld s2,160(sp)",load,"∃ x : spec *ₗ (),",44.1,43.2,2056,600,0x15584,
+A_legacy,b102,0x156a8,3,call:1636(ra),withdrawal_first_int_correct,stalled,1,C1,0x156a8,"ld a0,1744(sp)",load,"∃ x : spec *ₗ (),",43.3,42.6,1466,600,0x156b4,
+A_legacy,b102,0x155cc,3,call:1856(ra),authorization_first_int_correct,stalled,1,C1,0x155cc,"ld a0,1840(sp)",load,"∃ x : spec *ₗ (),",40.0,36.8,1366,600,0x155d8,
+A_legacy,b102,0x156d0,3,call:1596(ra),withdrawal_third_int_correct,stalled,1,C1,0x156d0,"ld a0,1760(sp)",load,"∃ x : spec *ₗ (),",40.0,38.4,1517,600,0x156dc,
+A_legacy,b102,0x15950,4,call:696(ra),write_success_post_15950_byte_list_setup,partial,3,,0x1595c,jalr 696(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,in-state handoff,,39.1,38.0,2056,600,0x15960,
+A_legacy,b102,0x153c0,4,call:-1720(ra),access_return_count_correct,stalled,1,C1,0x153c0,"ld s6,136(sp)",load,"∃ x : spec *ₗ (),",39.1,38.1,2056,600,0x153d0,
+A_legacy,b102,0x15210,3,call:-1284(ra),access_count_whole_correct,stalled,1,C1,0x15210,"ld a0,1752(sp)",load,"∃ x : spec *ₗ (),",38.7,37.9,1515,600,0x1521c,
+A_legacy,b102,0x1562c,6,call:1652(ra),transactions_signature_r_call_correct,stalled,1,unknown,0x1562c,"ld a0,216(sp)",load,"∃ x : isla_trace, Index.lookup 89264 = Some x",38.1,35.6,1352,600,0x15644,
+A_legacy,b102,0x15148,3,call:-1084(ra),transactions_gas_limit_call_correct,stalled,1,C1,0x15148,"mv a0,s10",other,"∃ x : spec *ₗ (),",35.1,33.8,2056,600,0x15154,
+A_legacy,b102,0x1521c,3,branch,access_lists_storage_whole_branch_correct,stalled,1,C2,0x1521c,"ld s6,1744(sp)",load,transactionRowWord bytes 0 8 = 0%bv,33.1,32.2,2007,600,,0x153b4 0x15228
+A_legacy,b102,0x156c0,4,call:-1336(ra),withdrawal_whole_output_correct,stalled,1,C1,0x156c0,"li a1,20",other,"∃ y : spec *ₗ list (bv 8) *ₗ Z *ₗ (), y.3ₗ ↦ₘ∗ y.2ₗ ∗ mmio_range (604086456 + 8) 16 ∗",30.1,28.7,2056,600,,0x156d0
+A_legacy,b102,0x151c4,3,call:-1208(ra),transactions_access_count_call_correct,stalled,1,C1,0x151c4,"ld a0,264(sp)",load,"∃ x : spec *ₗ (),",28.6,26.6,1490,600,0x151d0,
+A_legacy,b102,0x1565c,3,jump,transactions_back_edge_correct,reached,3,,,,,,27.0,26.0,2056,600,0x14f00,
+A_legacy,b102,0x156f4,3,call:1560(ra),write_success_suffix_156f4_int,stalled,1,C1,0x156f4,"ld a0,1144(sp)",load,"∃ x : spec *ₗ Z *ₗ bv 64 *ₗ bv 64 *ₗ (), ⌜(Z_to_bv 64 87804 + 4)%bv = Z_to_bv 64 x.2ₗ⌝ ∗ ""x2"" ↦ᵣ RVal_Bits x.3ₗ ∗",26.8,24.6,1570,600,,0x15700
+A_legacy,b102,0x150fc,3,call:-1008(ra),transactions_nonce_call_correct,stalled,1,C1,0x150fc,"ld a0,272(sp)",load,"∃ x : spec *ₗ (),",26.5,25.8,1514,600,0x15108,
+A_legacy,b102,0x15620,3,call:1772(ra),transactions_signature_v_call_correct,stalled,1,C1,0x15620,"ld a0,176(sp)",load,"∃ x : spec *ₗ (),",26.2,24.9,1404,600,0x1562c,
+A_legacy,b102,0x14ed4,4,call:692(ra),write_success_exact_value_suffix,stalled,1,C1,0x14ed4,"addi a0,sp,1588",other,"∃ x : spec *ₗ (),",25.7,23.6,1262,600,0x14ee4,
+A_legacy,b102,0x14e88,3,call:-380(ra),write_success_exact_value_block,stalled,1,C1,0x14e88,"ld a0,1032(sp)",load,"∃ x : spec *ₗ (),",25.6,24.6,1178,600,0x14e94,
+A_legacy,b102,0x15940,4,call:712(ra),write_success_post_15940_byte_list_setup,partial,3,,0x1594c,jalr 712(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,in-state handoff,,23.1,21.8,2056,600,0x15950,
+A_legacy,b102,0x14e48,4,call:832(ra),write_success_header_chunk_14e48,closed,4,,,,,,22.7,4.0,1031,600,,0x14e58
+A_legacy,b102,0x14e38,4,call:848(ra),write_success_header_chunk_14e38,closed,4,,,,,,21.7,4.1,1030,600,,0x14e48
+A_legacy,b102,0x14e68,4,call:800(ra),write_success_header_chunk_14e68,closed,4,,,,,,21.3,4.4,1031,600,,0x14e78
+A_legacy,b102,0x1519c,6,call:-1276(ra),transactions_value_call_correct,stalled,1,unknown,0x1519c,"mv a0,s2",other,"∃ x : isla_trace, Index.lookup 89264 = Some x",20.9,18.7,1490,600,0x151b4,
+A_legacy,b102,0x1568c,2,branch,withdrawal_initial_nonempty,stalled,1,unknown,0x1568c,"addi s2,sp,1768",other,"∃ y : list (bv 8) *ₗ list (list (bv 8)) *ₗ (), withdrawalLoopPayload sp (Z_to_bv 64 base) base (row :: rest) y.2ₗ y.1ₗ rest source tail P ∗ True",20.3,18.2,1733,600,0x156e8,0x15694
+A_legacy,b102,0x1572c,4,call:-1444(ra),write_success_suffix_root_output,closed,4,,,,,,20.1,18.9,2056,600,,0x1573c
+A_legacy,b102,0x15994,3,call:516(ra),exact_tail_absent_boolean_call_handoff,stalled,1,C1,0x15994,"li a0,0",other,"∃ x : spec *ₗ (),",20.0,18.9,2056,600,,0x159a0
+A_legacy,b102,0x15190,1,jump,transactions_recipient_output_value_continuation,stalled,1,unknown,0x15190,j 1519c <ssz_decode_observation.writeSuccess+0x46c>,other,"∃ x : isla_trace, Index.lookup 89264 = Some x",19.9,16.9,1326,600,0x1519c,
+A_legacy,b102,0x15614,3,branch,authorization_tail_pre_correct,stalled,1,unknown,0x15614,"addi s1,s1,144",other,(count - 1)%bv ≠ 0%bv,19.7,18.5,1984,600,,0x15590 0x15620
+A_legacy,b102,0x14d80,37,call:900(ra),write_success_load_block_correct,partial,32,,0x14e00,"auipc a0,0x3",in-state handoff,,18.6,9.9,1444,600,0x14e14,
+A_legacy,b102,0x151d4,2,branch,access_control_exact_native_correct,closed,2,,,,,,18.2,16.4,1710,600,,0x153c0 0x151dc
+A_legacy,b102,0x155bc,4,call:-1076(ra),authorization_whole_output_correct,stalled,1,C1,0x155bc,"li a1,20",other,"∃ y : spec *ₗ list (bv 8) *ₗ Z *ₗ (), y.3ₗ ↦ₘ∗ y.2ₗ ∗ mmio_range (604086456 + 8) 16 ∗",17.3,14.8,1517,600,,0x155cc
+A_legacy,b102,0x150f0,3,call:-1324(ra),transactions_chain_none_call_correct,stalled,1,C1,0x150f0,"addi a0,sp,1664",other,"∃ y : spec *ₗ list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x8"" ↦ᵣ RVal_Bits y.4ₗ ∗ ""x10"" ↦ᵣ RVal_Bits y.5ₗ ∗ ""x11"" ↦ᵣ RVal_Bits y.3ₗ ∗ (bv_unsigned sp - 32) ↦",17.2,14.1,1280,600,0x150fc,
+A_legacy,b102,0x156dc,3,branch,withdrawal_tail_correct,closed,3,,,,,,17.0,16.4,2056,600,0x15694 0x156e8,
+A_legacy,b102,0x14e28,4,call:864(ra),write_success_header_chunk_14e28,closed,4,,,,,,16.8,4.3,1058,600,,0x14e38
+A_legacy,b102,0x153d0,1,branch,transactions_source_blob_empty_correct,closed,1,,,,,,16.6,14.3,1514,600,0x153d4,0x15564
+A_legacy,b102,0x15960,3,call:940(ra),write_success_suffix_int_15960_setup,partial,2,,0x15968,jalr 940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,in-state handoff,,16.0,14.7,2056,600,0x1596c,
+A_legacy,b102,0x1596c,2,branch,exact_tail_optional_bytes_branch_handoff,closed,2,,,,,,16.0,15.2,2056,600,,0x15994 0x15974
+A_legacy,b102,0x15930,4,call:728(ra),write_success_post_15930_load_pointer,partial,3,,0x1593c,jalr 728(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,in-state handoff,,15.6,14.9,1891,600,0x15940,
+A_legacy,b102,0x15138,1,jump,transactions_priority_fee_gas_call_correct,reached,1,,,,,,14.3,10.5,1519,600,0x15148,
+A_legacy,b102,0x153a8,3,branch,storage_keys_tail_correct,stalled,1,unknown,0x153a8,"addi s6,s6,32",other,(count - 1)%bv ≠ 0%bv,14.0,12.3,1357,600,,0x15228 0x153b4
+A_legacy,b102,0x15180,4,call:8(ra),transactions_recipient_output_correct,closed,4,,,,,,13.9,11.8,1817,600,,0x15190
+A_legacy,b102,0x15974,3,call:548(ra),exact_tail_present_boolean_call_handoff,stalled,1,C1,0x15974,"li a0,1",other,"∃ x : spec *ₗ (),",13.6,13.1,1914,600,,0x15980
+A_legacy,b102,0x15558,3,branch,blob_tail_correct,stalled,1,unknown,0x15558,"addi s3,s3,32",other,(count - 1)%bv ≠ 0%bv,13.0,12.2,1324,600,,0x153d4 0x15564
+A_legacy,b102,0x15584,3,branch,authorization_initial_zero,closed,3,,,,,,13.0,12.7,2056,600,0x15620 0x15590,
+A_legacy,b102,0x15154,2,branch,transactions_recipient_branch_correct,closed,2,,,,,,12.9,8.6,1505,600,,0x15194 0x1515c
+A_legacy,b102,0x15118,1,branch,transactions_priority_branch_correct,closed,1,,,,,,12.7,1.6,1252,600,,0x1513c 0x1511c
+A_legacy,b102,0x15200,4,call:-120(ra),access_lists_whole_output_correct,stalled,1,C1,0x15200,"li a1,20",other,"∃ y : spec *ₗ list (bv 8) *ₗ Z *ₗ (), y.3ₗ ↦ₘ∗ y.2ₗ ∗ mmio_range (604086456 + 8) 16 ∗",11.4,10.3,1358,600,,0x15210
+A_legacy,b102,0x14e58,4,call:816(ra),write_success_header_chunk_14e58,closed,4,,,,,,11.2,8.2,1252,600,,0x14e68
+A_legacy,b102,0x14e78,4,call:784(ra),write_success_header_chunk_14e78,closed,4,,,,,,10.5,10.1,1255,600,0x14e88,
+A_legacy,b102,0x15750,1,branch,write_success_suffix_hashes_15750_nonzero_state,closed,1,,,,,,10.0,9.1,2056,600,0x158e0,0x15754
+A_legacy,b102,0x153b4,3,jump,access_lists_tail_correct,closed,3,,,,,,9.1,7.9,1322,600,,0x151d4
+A_legacy,b102,0x151b4,4,call:-1360(ra),transactions_data_jump_correct,closed,4,,,,,,6.8,6.2,1517,600,0x151c4,
+A_legacy,b102,0x151d0,1,fall,access_initial_to_loop_correct,closed,1,,,,,,6.3,5.4,1328,600,,0x151d4
+A_legacy,b102,0x14e14,5,call:948(ra) # 101d4 <memcpy>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14e94,3,call:-392(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14ea0,3,call:-404(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14eb8,4,call:-596(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14eac,3,call:-416(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14ec8,3,call:-444(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14ee4,6,call:-484(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14f00,2,branch,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x14efc,1,fall,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x1511c,3,call:-1412(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x1513c,3,call:-1444(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x15194,2,call:-1528(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x1573c,5,call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x158d4,3,branch,,no-entry,,,,,,,,,,,,
+A_legacy,b102,0x159bc,3,call:520(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>,,no-entry,,,,,,,,,,,,
