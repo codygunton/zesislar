@@ -273,16 +273,21 @@ live_launches() {
   done
 }
 
-# A scratch compiler keeps a reservation until its child exits. Before
-# the child appears in /proc, the reservation uses one additional slot.
-# Once /proc counts the child, the reservation does not count it twice.
+# A scratch compiler keeps a reservation until its child exits.
+# Pending reservations do not occupy slots until confirmation succeeds.
 live_reservations() {
-  local marker owner
+  local marker owner child
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
-    if kill -0 "$owner" 2>/dev/null; then echo "$marker"
-    else rm -f "$marker"; fi
+    if ! kill -0 "$owner" 2>/dev/null; then
+      rm -f "$marker"; continue
+    fi
+    read -r child < "$marker" || continue
+    if [[ "$child" =~ ^[0-9]+$ ]] && [ ! -d "$PROC_ROOT/$child" ]; then
+      rm -f "$marker"; continue
+    fi
+    echo "$marker"
   done
 }
 
@@ -326,13 +331,16 @@ gate_reservations() {
 }
 
 # This runs under the gate mutex. Use one PID snapshot for both counts.
-# A reserved compiler absent from that snapshot still uses a pending slot.
+# Count confirmed launches and marked compilers, excluding pending requests.
 compiler_admission_reason() {
   local confirming=${1:-0} count pending=0 marker writer compiler snapshot
   local writers=0 own=0 counted_writers=0 pending_writers=0 nonwriter_limit
   snapshot=$(compiler_pids) || return $?
   set -- $snapshot; count=$#
   while IFS= read -r marker; do
+    local state
+    read -r state < "$marker" || continue
+    [ "$state" != pending ] || continue
     writer=$(reservation_writer "$marker")
     if [ -n "$writer" ]; then
       writers=$(( writers + 1 ))
@@ -363,8 +371,7 @@ compiler_admission_reason() {
   fi
 }
 
-# The gate mutex also serializes scratch reservations. Concurrent waiters
-# cannot both admit at 47 coqc, and a wanted gate cannot miss a launch.
+# The gate mutex serializes confirmation. A wanted gate cannot miss a launch.
 reserve_coqc() {
   local owner=$1 marker holder reason admission status held=""
   [[ "$owner" =~ ^[0-9]+$ ]] || return 2
@@ -408,7 +415,7 @@ reservation_path() {
 # A slot can wait while resources change. Recheck the complete launch
 # conditions under the reservation mutex immediately before the compiler.
 confirm_coqc() {
-  local marker=$1 reason holder admission owner status held=""
+  local marker=$1 reason holder admission owner status state confirming replacement held=""
   while :; do
     exec 7>>"$GATE_MUTEX"
     flock 7
@@ -432,11 +439,21 @@ confirm_coqc() {
     reason=$(hold_reason no-lock) || {
       status=$?; flock -u 7; exec 7>&-; return "$status"
     }
-    admission=$(compiler_admission_reason 1) || {
+    read -r state < "$marker" || { flock -u 7; exec 7>&-; return 2; }
+    confirming=1
+    [ "$state" != pending ] || confirming=0
+    admission=$(compiler_admission_reason "$confirming") || {
       status=$?; flock -u 7; exec 7>&-; return "$status"
     }
     if [ -z "$reason$holder$admission" ]; then
       [ -z "$held" ] || note "RESUME reservation launch: $held"
+      if [ "$state" = pending ]; then
+        replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
+          flock -u 7; exec 7>&-; return 2
+        }
+        sed '1s/^pending$/confirmed/' "$marker" > "$replacement"
+        mv -f -- "$replacement" "$marker"
+      fi
       flock -u 7; exec 7>&-
       return 0
     fi

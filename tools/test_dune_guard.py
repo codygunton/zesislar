@@ -145,7 +145,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             state = Path(self.environment["ZESU_GUARD_STATE"])
             marker = next((state / "coqc-reservations").iterdir())
             self.assertEqual(marker.read_text().splitlines()[0], child)
-            # One live writer compiler plus fifteen pending writer slots fits
+            # One live writer compiler plus fifteen confirmed writer slots fits
             # alongside 32 conservatively counted external compiler PIDs.
             snapshot.write_text(f"{process.pid}\n{child}\n" +
                                 "".join(f"{9000000 + i}\n" for i in range(32)))
@@ -155,6 +155,10 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                         capture_output=True, text=True, timeout=3)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 tokens.append(result.stdout.strip())
+                result = subprocess.run([str(guard), "confirm-coqc", tokens[-1]],
+                                        env={**self.environment, "ZESU_WRITER_ID": f"writer-{i // 2}"},
+                                        capture_output=True, text=True, timeout=3)
+                self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(len(list((state / "coqc-reservations").iterdir())), 16)
             waiter = subprocess.Popen([str(guard), "reserve-coqc", str(os.getpid())],
                                       env={**self.environment, "ZESU_WRITER_ID": "writer-8"},
@@ -230,6 +234,9 @@ class DuneCompilerGuardTest(unittest.TestCase):
         tokens = [subprocess.run([str(guard), "reserve-coqc", str(os.getpid())],
                                 env=self.environment, check=True, capture_output=True,
                                 text=True).stdout.strip() for _ in range(2)]
+        for token in tokens:
+            subprocess.run([str(guard), "confirm-coqc", token], env=self.environment,
+                           check=True, capture_output=True, text=True, timeout=3)
         source = self.root / "Probe.v"
         source.write_text("(* Fake compiler input. *)\n")
         process = subprocess.Popen([str(self.wrapper), str(source)], env=self.environment,
