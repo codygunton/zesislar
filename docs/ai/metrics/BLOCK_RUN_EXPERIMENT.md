@@ -117,3 +117,29 @@ At a call block, `BLK_STOP` is reached at the call site before the return, so it
 ## 2 h reruns of the capped blocks
 All 4 memcpy blocks hit the 7,200 s cap (7,166 CPU s each; peak 2.8 GiB) with no step past the auipc before the call
 (0x14d78, 0x151f8, 0x1559c, 0x156a0). 0x15754 hits the 8 GiB fence at 447 s (k 31/96).
+
+## memcpy stall (0x14d30, 0x151dc, 0x15590, 0x15694; probe copies only, no tracked change)
+- Reproduction: 0x15590 (5 instructions), arm A, the `zesu_run_pass_v2` copy. The run hangs over 300 s at the auipc 0x1559c.
+  Wrapping each search step in `timeout 30` exposes the goal: after the jalr, prove `zesuMemcpyCallSpec` from the caller context.
+- Callee-spec form, same state and tactic:
+  - generic `□ instr_pre 0x101d4 zesuMemcpyCallSpec`: hangs over 300 s, with or without the `Interfaces` import;
+  - the merged proof's specialized `memcpyWholePublic base start bytes src …`: closes in 4 s;
+  - no call premise: steps into memcpy at once.
+- Entry-state bisect (generic spec): removing the source array `base ↦ₘ∗ bytes`, the destination `↦ₘ?`, or the pure
+  facts, or making the source array exact at `src`: all still hang. The hang does not depend on the resources.
+- Automation bisect on the exposed goal (each alternative alone, 40 s): 22 of 24 return at once. `zesu_liAStep` and
+  `liUnfoldLate` time out. Both reach `li_do_unfold`. There the typeclass query `LithiumUnfold (@zesuMemcpyCallSpec)`
+  takes over 60 s, and `iEval (unfold zesuMemcpyCallSpec)` takes 1 ms.
+  `Set Typeclasses Debug` prints only the query line in 20 s: the first candidate's unification never returns.
+- Mechanism: `Class LithiumUnfold {A} (x : A)` has no Hint Mode, and its 1,446 instances name transparent constants,
+  so every instance is a candidate. Unifying `zesuMemcpyCallSpec` with another candidate unfolds both into
+  `zesu_call …` bodies (about 30 register conjuncts each) and compares them. Perf: about 45% of CPU in
+  `Conversion.eqappr`, `CClosure.mk_clos`. This is the same class of problem as the Boolean-instance import sensitivity.
+- The removal that fixes it: `Global Typeclasses Opaque zesu_call.` (or `…Opaque zesuMemcpyCallSpec.`) in the probe. The query takes 0 s.
+  - 0x15590 ends in 5 s; 0x14d30, 0x151dc and 0x15694 end in 6-23 s. All 4 then stall at the call on a real mismatch:
+    the generic `zesu_call` pre wants `reg_col [x5 x6 x7 x28-x31]`, which the caller does not own.
+  - The Boolean case 0x14e28 with `Interfaces` imported closes in 6 s (over 300 s without the fix).
+  - `Global Hint Mode LithiumUnfold - !` does not help (still over 60 s).
+- Proposed fix (not implemented, and not tested on the full gate): add `Global Typeclasses Opaque zesu_call zesu_call_ret.`
+  to `Automation/Calls.v`, so the `LithiumUnfold` search cannot unfold call-spec bodies. The register mismatch above
+  remains a separate contract question.
