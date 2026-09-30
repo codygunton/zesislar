@@ -1,4 +1,7 @@
 import unittest
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
@@ -6,7 +9,7 @@ from check_proof_hygiene import (
     proof_size_warnings,
     proof_size_ratchet_failures,
     ratchet_failures,
-    record_ratchet_failures,
+    generated_hand_line_failures,
 )
 
 
@@ -84,21 +87,44 @@ class ProofHygieneTests(unittest.TestCase):
         )
         self.assertTrue(proof_size_ratchet_failures("New.v", warnings, {}))
 
-    def test_residual_record_ratchet(self):
-        entries = [("new_block", "instr_body 0x1 spec", 3)]
-        self.assertEqual(
-            len(record_ratchet_failures("new.v", entries, set(), [])), 1)
-        self.assertEqual(
-            record_ratchet_failures("new.v", entries, {"new_block"}, []), [])
-        self.assertEqual(
-            record_ratchet_failures(
-                "new.v", entries, set(), ["new.v:new_block"]), [])
+    def test_generated_instruction_body_rejects_hand_lines(self):
+        name = "ZesuSsz/Generated/WriteSuccess/Blocks/Block_1.v"
+        for body in ("Proof. iIntros. zesu_block. Qed.",
+                     "Proof.\n  iIntros.\n  zesu_block.\nQed.",
+                     "Proof using All. iIntros. zesu_block. Qed.",
+                     "Proof using Type*.\n  iIntros.\n  zesu_block.\nQed."):
+            with self.subTest(body=body), tempfile.TemporaryDirectory() as root:
+                path = Path(root) / name
+                path.parent.mkdir(parents=True)
+                text = "Lemma block_1 : instr_body 0x1 spec.\n" + body + "\n"
+                path.write_text(text)
+                with patch("check_proof_hygiene.ROOT", Path(root)):
+                    failures = generated_hand_line_failures(name, text)
+                self.assertEqual(len(failures), 1)
+                self.assertIn("block_1: 1 lines", failures[0])
 
-    def test_residual_record_ratchet_ignores_clean_proofs(self):
-        entries = [("clean_block", "instr_body 0x1 spec", 0),
-                   ("not_a_block", "some other statement", 9)]
-        self.assertEqual(
-            record_ratchet_failures("new.v", entries, set(), []), [])
+    def test_generated_instruction_body_accepts_block_automation(self):
+        name = "ZesuSsz/Generated/WriteSuccess/Blocks/Block_1.v"
+        text = ("Lemma block_1 : instr_body 0x1 spec.\n"
+                "Proof. zesu_block. Qed.\n"
+                "Lemma pure_fact : True.\nProof. exact I. Qed.\n")
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / name
+            path.parent.mkdir(parents=True)
+            path.write_text(text)
+            with patch("check_proof_hygiene.ROOT", Path(root)):
+                self.assertEqual(generated_hand_line_failures(name, text), [])
+
+    def test_handwritten_instruction_body_needs_no_residual_record(self):
+        self.assertEqual(generated_hand_line_failures(
+            "ZesuSsz/Proofs/Test.v",
+            "Lemma block_1 : instr_body 0x1 spec.\nProof. iIntros. Qed.\n"), [])
+
+    def test_proof_using_keeps_the_40_line_limit(self):
+        lines = ["Lemma block_1 : instr_body 0x1 spec.",
+                 "Proof using All.", *["  iFrame."] * 41, "Qed."]
+        self.assertEqual(proof_size_warnings("Test.v", lines),
+                         ["instr_body proof has 41 lines: Test.v:2"])
 
 
 if __name__ == "__main__":

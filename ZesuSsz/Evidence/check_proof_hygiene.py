@@ -11,18 +11,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "residual"))
-from modules import parse_module
+from modules import PROOF_OPENER, parse_module
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
-RECORD_BASELINE_PATH = Path(__file__).with_name("residual_record_baseline.json")
-RESIDUAL_CORPUS = ROOT / "ZesuSsz" / "Evidence" / "residuals" / "corpus.jsonl"
-DET_EVIDENCE = ROOT / "ZesuSsz" / "Evidence" / "det"
-LEMMA_RECORD = re.compile(r'"lemma"\s*:\s*"([^"]+)"')
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
 LEGACY_HOOKS_PATH = "ZesuSsz/Automation/Legacy/Hooks.v"
 PROOFS_PREFIX = "ZesuSsz/Proofs/"
+GENERATED_PROOFS_PREFIX = "ZesuSsz/Generated/"
 SHELL_ALLOWLIST = {"ZesuSsz/Compliance/Shell.v"}
 GENERATED_PREFIX = "generated/"
 
@@ -99,69 +96,22 @@ def tracked_files() -> list[str]:
     return sorted(set(output.splitlines()))
 
 
-def recorded_lemmas() -> set[str]:
-    """Every lemma that has a residual record on disk.
-
-    A hand line is a debt, and a debt has to be visible: the record says
-    what the automation refused and which class it belongs to, so the
-    line becomes a ticket instead of a habit. The corpus is the store the
-    replay writes; the `det` evidence adds the records the probes write.
-    """
-    names: set[str] = set()
-    for path in [RESIDUAL_CORPUS, *sorted(DET_EVIDENCE.rglob("*.jsonl"))]:
-        if not path.exists():
-            continue
-        with path.open() as handle:
-            for line in handle:
-                match = LEMMA_RECORD.search(line)
-                if match:
-                    names.add(match.group(1))
-    return names
-
-
-def record_ratchet_failures(
-    name: str,
-    entries: list[tuple[str, str, int]],
-    recorded: set[str],
-    baseline: list[str],
-) -> list[str]:
-    """The ratchet itself, over (lemma, statement, hand-line count)."""
-    failures = []
-    for lemma, statement, hand in entries:
-        if "instr_body" not in statement or hand == 0:
-            continue
-        if lemma in recorded or f"{name}:{lemma}" in baseline:
-            continue
-        failures.append(
-            f"hand lines with no residual record: {name}: {lemma}: "
-            f"{hand} lines"
-        )
-    return failures
-
-
-def residual_record_failures(
-    name: str, text: str, recorded: set[str], baseline: list[str]
-) -> list[str]:
-    """A new lemma with hand lines needs a residual record.
-
-    The ratchet is one-way: everything that has hand lines today is in the
-    baseline, and a lemma added after it either closes with the block
-    automation alone or arrives with the record that explains why it
-    cannot.
-    """
-    path = ROOT / name
-    try:
-        proofs = parse_module(path)
-    except (OSError, ValueError):
+def generated_hand_line_failures(name: str, text: str) -> list[str]:
+    """Generated instruction-body proofs must use only block automation."""
+    if not name.startswith(GENERATED_PROOFS_PREFIX):
         return []
+    path = ROOT / name
+    proofs = parse_module(path)
     lines = text.splitlines()
-    entries = [
-        (proof.name,
-         "\n".join(lines[proof.declaration_line:proof.proof_line]),
-         len(proof.hand_lines))
-        for proof in proofs
-    ]
-    return record_ratchet_failures(name, entries, recorded, baseline)
+    failures = []
+    for proof in proofs:
+        statement = "\n".join(lines[proof.declaration_line:proof.proof_line])
+        if "instr_body" in statement and proof.hand_lines:
+            failures.append(
+                f"generated instr_body proof has hand lines: {name}: "
+                f"{proof.name}: {len(proof.hand_lines)} lines"
+            )
+    return failures
 
 
 def forbidden_counts(text: str) -> dict[str, int]:
@@ -194,7 +144,7 @@ def proof_size_warnings(name: str, lines: list[str]) -> list[str]:
     for number, line in enumerate(lines, 1):
         if proof_start is None:
             statement_has_instr_body = statement_has_instr_body or "instr_body" in line
-            if re.match(r"^\s*Proof\.", line):
+            if PROOF_OPENER.match(line):
                 if re.search(r"\bQed\.", line):
                     statement_has_instr_body = False
                 else:
@@ -259,9 +209,6 @@ def main() -> None:
     legacy_entries = set(baseline_data["legacy_entry_files"])
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
-    record_baseline = (json.loads(RECORD_BASELINE_PATH.read_text())["lemmas"]
-                       if RECORD_BASELINE_PATH.exists() else [])
-    recorded = recorded_lemmas()
     failures: list[str] = []
     warnings: list[str] = []
     remaining = 0
@@ -278,6 +225,7 @@ def main() -> None:
             continue
         text = path.read_text()
         lines = text.splitlines()
+        failures.extend(generated_hand_line_failures(name, text))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
         # Reviewed proof files remain subject to the complete placeholder check.
@@ -307,8 +255,6 @@ def main() -> None:
             if (path.name not in A2_EXCEPTIONS and
                     any(fnmatch.fnmatch(path.name, pattern) for pattern in A2_PATTERNS)):
                 failures.append(f"Appendix A.2 file remains: {name}")
-            failures.extend(residual_record_failures(
-                name, text, recorded, record_baseline))
             size_messages = proof_size_warnings(name, lines)
             if CP1_ENFORCED:
                 warnings.extend(size_messages)

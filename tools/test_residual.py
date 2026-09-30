@@ -80,6 +80,18 @@ class ParseModule(unittest.TestCase):
         self.assertEqual(inline.hand_lines, ["done."])
         self.assertIn("bv_solve.", third.hand_lines)
 
+    def test_proof_using_preserves_hand_lines(self):
+        for opener in ("Proof using All.", "Proof using Type*."):
+            for body in (f"{opener} iIntros. zesu_block. Qed.",
+                         f"{opener}\n  iIntros.\n  zesu_block.\nQed."):
+                with self.subTest(body=body):
+                    self.path.write_text("Lemma block : instr_body 0x1 spec.\n" + body)
+                    proofs = modules.parse_module(self.path)
+                    self.assertEqual(len(proofs), 1)
+                    self.assertEqual(proofs[0].name, "block")
+                    self.assertEqual(len(proofs[0].hand_lines), 1)
+                    self.assertIn("iIntros.", proofs[0].hand_lines[0])
+
     def test_strips_a_terminator_that_shares_a_line(self):
         self.assertNotIn("Qed.", "".join(self.proofs[2].body))
 
