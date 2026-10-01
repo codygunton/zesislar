@@ -118,6 +118,7 @@ Ltac zesu_finish_ram_address :=
 Ltac zesu_finish_pointer_alignment :=
   lazymatch goal with
   | |- bv_extract _ _ _ = _ => idtac
+  | |- (bv_unsigned _ `mod` _ = 0)%Z => zesu_rule_set_v2_on
   end;
   match goal with
   | Halign : bv_unsigned ?pointer `mod` _ = 0 |- _ =>
