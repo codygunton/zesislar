@@ -464,6 +464,28 @@ chain:
 	  --build-dir $(DET_BUILD_DIR) $(if $(RULE),--rule $(RULE),) \
 	  $(if $(ALT),--alt $(ALT),)
 
+# Run each writeSuccess CFG block with its selected entry state.
+BLOCK_BUILD_DIR ?= $(CURDIR)/_build/agents/worker-build-2-block
+RULES ?= v2
+CAP ?= 600
+BLOCK_JOBS ?= 16
+BLOCK_PREPARE_JOBS ?= 16
+.PHONY: block-run block-prepare
+block-prepare: startup-traces
+	mkdir -p $(BLOCK_BUILD_DIR)
+	unset ARISTOTLE_API_KEY OPEN_ROUTER_API_KEY PROVER_API_KEY; \
+	  ZESU_MAX_COQC=40 $(GUARD_BATCH) worker-build-2-block-prepare -- $(PYTHON) tools/build_record.py \
+	  --build-dir $(BLOCK_BUILD_DIR) --target block-prepare -- $(OPAM) dune build --root . \
+	  --build-dir $(BLOCK_BUILD_DIR) --cache=enabled -j$(BLOCK_PREPARE_JOBS) @ZesuSsz/Automation/all \
+	  ZesuSsz/Automation/Sets/v2.vo $(if $(wildcard ZesuSsz/Automation/Sets/call.v),ZesuSsz/Automation/Sets/call.vo,) \
+	  $$($(PYTHON) tools/block/entries.py --targets) $(if $(IMPORT_MODULE),$(subst .,/,$(IMPORT_MODULE)).vo,)
+
+block-run: build/endpoint-cfg block-prepare
+	RULES=$(RULES) CAP=$(CAP) ZESU_MAX_COQC=40 $(GUARD_BATCH) worker-build-2-block -- $(PYTHON) tools/block/blockrun.py \
+	  --build-dir $(BLOCK_BUILD_DIR) --jobs $(BLOCK_JOBS) \
+	  $(if $(STATES),--states $(STATES),) $(if $(LEADERS),--leaders $(LEADERS),) \
+	  $(if $(BLOCK_OUTPUT_DIR),--output-dir $(BLOCK_OUTPUT_DIR),) $(if $(BASELINE),--compare $(BASELINE),) $(if $(IMPORT_MODULE),--import-module $(IMPORT_MODULE),)
+
 # The segment table and the residual classes, from the records on disk.
 .PHONY: report
 report:
