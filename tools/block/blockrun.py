@@ -222,6 +222,8 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.jobs <= 48:
         parser.error("The worker count must be between 1 and 48.")
+    if args.states and not args.states.is_dir():
+        parser.error(f"The states directory does not exist: {args.states}")
     EXTRA_IMPORTS = args.import_module
     if any(not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*", module) for module in EXTRA_IMPORTS):
         parser.error("An import module has an invalid name.")

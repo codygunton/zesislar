@@ -89,6 +89,15 @@ class BlockTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("call set unavailable", result.stdout)
 
+    def test_missing_states_directory_reports_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "absent"
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "tools/block/blockrun.py"), "--states", str(missing)],
+                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("The states directory does not exist:", result.stderr)
+
     def test_partial_handoff(self):
         result = analyze.classify(dict(leader="0x15930", last="0x1593c", n=4, outcome="closed-all"))
         self.assertEqual(result["result"], "partial")

@@ -1,0 +1,17 @@
+{
+  "before": "f3db2e7792dac2d630e8abfb48b8bd616e050619",
+  "after": "e91fbe10b786",
+  "sets": {
+    "benchmark_set.txt": "f9029e9d5d31d92c20a9be26d2b052a385872465dc3c018f88cda1e9bccee4c0",
+    "benchmark_set_rule15.txt": "bda8106531863c603271e6173994bacf57b8d13ef126bbc36ae1fe6bc8cda275"
+  },
+  "seconds": 300,
+  "before_workers": 8,
+  "after_workers": 40,
+  "preparation": "Focused imported modules in immutable git archive trees; benchmark measure and capture unchanged.",
+  "compiler": "/home/cody/islaris/_opam/bin/coqc",
+  "admission": "Local guard copy: eight writer reservations, 300-second reservation expiry; module memory and CPU fences retained.",
+  "retries": "15 full-set admission errors replaced with valid results after guard correction.",
+  "parked": "WriteSuccessPostWithdrawalsBytes: preparation OOM; not rerun.",
+  "states_acceptance": "make block-run STATES=<empty directory>, with completed prerequisites reused: no-entry. Missing directory: exit 2 with explicit diagnostic."
+}

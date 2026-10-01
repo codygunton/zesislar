@@ -1,0 +1,45 @@
+{
+  "before": {
+    "probed": 199,
+    "outcomes": {
+      "residual": 196,
+      "closed": 2,
+      "timeout": 1
+    },
+    "classes": {
+      "C7": 54,
+      "unknown": 54,
+      "C1": 24,
+      "C6": 20,
+      "C2": 24,
+      "C4": 11,
+      "n/a": 3,
+      "C3": 2,
+      "C8": 7
+    },
+    "closed_fraction": 0.0101,
+    "median_seconds": 7.0
+  },
+  "after": {
+    "probed": 199,
+    "outcomes": {
+      "residual": 196,
+      "closed": 2,
+      "timeout": 1
+    },
+    "classes": {
+      "C7": 54,
+      "unknown": 54,
+      "C1": 24,
+      "C6": 20,
+      "C2": 24,
+      "C4": 11,
+      "n/a": 3,
+      "C3": 2,
+      "C8": 7
+    },
+    "closed_fraction": 0.0101,
+    "median_seconds": 41.91
+  },
+  "changed_outcomes": []
+}
