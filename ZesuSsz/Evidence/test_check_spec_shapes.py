@@ -1,4 +1,12 @@
+import contextlib
+import io
+import json
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+import check_spec_shapes
 
 from check_spec_shapes import (
     binder_shape,
@@ -7,6 +15,9 @@ from check_spec_shapes import (
     failures,
     resource_parts,
     shape_counts,
+    typeclasses_opaque,
+    unfold_opacity_count,
+    unfold_targets,
 )
 
 
@@ -102,6 +113,101 @@ class SpecShapeTests(unittest.TestCase):
                      frame_parameters_in_closed_specs=0)
         self.assertEqual(len(failures("new.v", count, {})), 1)
         self.assertEqual(failures("old.v", count, {"old.v": count}), [])
+
+    def test_unfold_instances_require_explicit_typeclass_opacity(self):
+        for scope in ("Global", "Local", "#[local]", "#[global]", ""):
+            with self.subTest(scope=scope):
+                source = f'{scope} Instance : LithiumUnfold (@callSpec) := I.'
+                self.assertEqual(unfold_opacity_count(source, set()), 1)
+                opaque = typeclasses_opaque('Global Typeclasses Opaque callSpec.')
+                self.assertEqual(unfold_opacity_count(source, opaque), 0)
+                self.assertEqual(typeclasses_opaque('Global Opaque callSpec.'), set())
+
+    def test_unfold_targets_include_named_multiline_and_qualified_instances(self):
+        source = ('#[local] Instance call_unfold `{!islaG Sigma} :\n'
+                  '  LithiumUnfold (@Calls.callSpec) := I.\n'
+                  'Global Instance ret_unfold : LithiumUnfold returnSpec := I.')
+        self.assertEqual(unfold_targets(source), ['Calls.callSpec', 'returnSpec'])
+
+    def test_unfold_targets_include_proof_bodies_and_priorities(self):
+        source = ('Global Instance : LithiumUnfold (@callSpec).\n'
+                  'Proof. exact I. Qed.\n'
+                  'Local Instance : LithiumUnfold (@returnSpec) | 10 := I.')
+        self.assertEqual(unfold_targets(source), ['callSpec', 'returnSpec'])
+        self.assertEqual(unfold_opacity_count(source, {'returnSpec'}), 1)
+
+    def test_typeclass_opacity_supports_lists_and_locality(self):
+        source = ('Global\nTypeclasses Opaque callSpec Calls.returnSpec.\n'
+                  '#[global] Typeclasses Opaque frameSpec.\n'
+                  'Local Typeclasses Opaque localSpec.\n'
+                  '#[local] Typeclasses Opaque anotherLocal.\n'
+                  'Typeclasses Opaque defaultSpec.')
+        self.assertEqual(typeclasses_opaque(source, global_only=True),
+                         {'callSpec', 'Calls.returnSpec', 'frameSpec'})
+        self.assertEqual(typeclasses_opaque(source),
+                         {'callSpec', 'Calls.returnSpec', 'frameSpec',
+                          'localSpec', 'anotherLocal', 'defaultSpec'})
+
+    def test_comments_do_not_supply_opacity_or_instances(self):
+        source = ('(* Global Typeclasses Opaque callSpec. (* nested *) *)\n'
+                  'Global Instance : LithiumUnfold (@callSpec) := I.\n'
+                  '(* Global Instance : LithiumUnfold (@fakeSpec) := I. *)')
+        self.assertEqual(unfold_targets(source), ['callSpec'])
+        self.assertEqual(unfold_opacity_count(source, typeclasses_opaque(source)), 1)
+
+    def test_nonconstant_unfold_target_is_a_violation(self):
+        source = 'Global Instance : LithiumUnfold (fun x => x) := I.'
+        self.assertEqual(unfold_targets(source), [None])
+        self.assertEqual(unfold_opacity_count(source, {'x'}), 1)
+
+    def test_call_body_opacity_does_not_seal_the_instance_constant(self):
+        source = ('Definition callSpec : iProp Sigma := zesu_call 16 P.\n'
+                  'Global Instance : LithiumUnfold (@callSpec) := I.\n'
+                  'Global Typeclasses Opaque zesu_call zesu_call_ret.')
+        count = unfold_opacity_count(source, typeclasses_opaque(source))
+        self.assertEqual(count, 1)
+        counts = {'unfold_without_typeclasses_opaque': count}
+        self.assertEqual(failures('old.v', counts, {'old.v': counts}), [])
+        self.assertEqual(failures('old.v', {'unfold_without_typeclasses_opaque': 2},
+                                  {'old.v': counts}),
+                         ['old.v: unfold_without_typeclasses_opaque: 2 > 1'])
+        self.assertEqual(failures('new.v', counts, {}),
+                         ['new.v: unfold_without_typeclasses_opaque: 1 > 0'])
+
+    def test_main_checks_automation_and_preserves_opacity_locality(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            automation = 'ZesuSsz/Automation/Calls.v'
+            opacity = 'ZesuSsz/Contracts/Opacity.v'
+            (root / automation).parent.mkdir(parents=True)
+            (root / opacity).parent.mkdir(parents=True)
+            baseline = root / 'baseline.json'
+            baseline.write_text(json.dumps({}))
+            with patch.object(check_spec_shapes, 'ROOT', root), \
+                 patch.object(check_spec_shapes, 'BASELINE', baseline), \
+                 patch.object(check_spec_shapes.subprocess, 'check_output',
+                              return_value=automation + '\n' + opacity + '\n'):
+                for target in ('callSpec', 'ZesuSsz.Contracts.Opacity.callSpec'):
+                    (root / automation).write_text(
+                        'Definition callSpec := 1.\n'
+                        f'Global Instance : LithiumUnfold (@{target}) := I.')
+                    for scope in ('Global', '#[global]', 'Local', '#[local]'):
+                        with self.subTest(target=target, scope=scope):
+                            (root / opacity).write_text(
+                                'Definition callSpec := 2.\n'
+                                f'{scope} Typeclasses Opaque callSpec.')
+                            expected = int(target == 'callSpec' or
+                                           scope in ('Local', '#[local]'))
+                            with contextlib.redirect_stderr(io.StringIO()) as errors:
+                                self.assertEqual(check_spec_shapes.main(), expected)
+                            if expected:
+                                self.assertIn(automation + ': unfold_without_typeclasses_opaque: 1 > 0',
+                                              errors.getvalue())
+                (root / automation).write_text(
+                    'Global Instance : LithiumUnfold (@callSpec) := I.\n'
+                    'Local Typeclasses Opaque callSpec.')
+                with contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(check_spec_shapes.main(), 0)
 
 
 if __name__ == "__main__":

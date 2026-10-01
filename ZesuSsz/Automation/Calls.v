@@ -103,6 +103,8 @@ Definition zesu_call `{!islaG Sigma} `{!threadG} (stack_size : Z)
 
 Global Instance : LithiumUnfold (@zesu_call) := I.
 
+Global Typeclasses Opaque zesu_call zesu_call_ret.
+
 Notation zesu_c_call := zesu_call.
 Notation zesu_c_call_ret := zesu_call_ret.
 
