@@ -1,0 +1,350 @@
+{
+  "0x14d30": {
+    "lemma": "write_success_prologue_chunk_14d30",
+    "module": "WriteSuccessPrologueChunk14d30"
+  },
+  "0x14d80": {
+    "lemma": "write_success_load_block_correct",
+    "module": "WriteSuccessLoadBlockCore"
+  },
+  "0x14e28": {
+    "lemma": "write_success_header_chunk_14e28",
+    "module": "WriteSuccessHeaderChunk14e28"
+  },
+  "0x14e38": {
+    "lemma": "write_success_header_chunk_14e38",
+    "module": "WriteSuccessHeaderChunk14e38"
+  },
+  "0x14e48": {
+    "lemma": "write_success_header_chunk_14e48",
+    "module": "WriteSuccessHeaderChunk14e48"
+  },
+  "0x14e58": {
+    "lemma": "write_success_header_chunk_14e58",
+    "module": "WriteSuccessHeaderChunk14e58"
+  },
+  "0x14e68": {
+    "lemma": "write_success_header_chunk_14e68",
+    "module": "WriteSuccessHeaderChunk14e68"
+  },
+  "0x14e78": {
+    "lemma": "write_success_header_chunk_14e78",
+    "module": "WriteSuccessHeaderChunk14e78"
+  },
+  "0x14e88": {
+    "lemma": "write_success_exact_value_block",
+    "module": "WriteSuccessExactValueBlock"
+  },
+  "0x14ed4": {
+    "lemma": "write_success_exact_value_suffix",
+    "module": "WriteSuccessExactValueSuffix"
+  },
+  "0x14f08": {
+    "lemma": "transactions_index_cell_correct",
+    "module": "WriteSuccessExactTransactionsIndexCell"
+  },
+  "0x150f0": {
+    "lemma": "transactions_chain_none_call_correct",
+    "module": "WriteSuccessExactTransactionsChainNoneCall"
+  },
+  "0x150fc": {
+    "lemma": "transactions_nonce_call_correct",
+    "module": "WriteSuccessExactTransactionsNonceCall"
+  },
+  "0x15108": {
+    "lemma": "transactions_gas_price_call_correct",
+    "module": "WriteSuccessExactTransactionsGasPriceCall"
+  },
+  "0x15118": {
+    "lemma": "transactions_priority_branch_correct",
+    "module": "WriteSuccessExactTransactionsPriority"
+  },
+  "0x15128": {
+    "lemma": "transactions_priority_value_call_correct",
+    "module": "WriteSuccessExactTransactionsPriorityValueCall"
+  },
+  "0x15138": {
+    "lemma": "transactions_priority_fee_gas_call_correct",
+    "module": "WriteSuccessExactTransactionsPriorityFeeGasCall"
+  },
+  "0x15148": {
+    "lemma": "transactions_gas_limit_call_correct",
+    "module": "WriteSuccessExactTransactionsGasLimitCall"
+  },
+  "0x15154": {
+    "lemma": "transactions_recipient_branch_correct",
+    "module": "WriteSuccessExactTransactionsRecipientBranch"
+  },
+  "0x1515c": {
+    "lemma": "transactions_recipient_copy_correct",
+    "module": "WriteSuccessExactTransactionsRecipientCopy"
+  },
+  "0x15180": {
+    "lemma": "transactions_recipient_output_correct",
+    "module": "WriteSuccessExactTransactionsRecipientOutput"
+  },
+  "0x15190": {
+    "lemma": "transactions_recipient_output_value_continuation",
+    "module": "WriteSuccessExactTransactionsRecipientOutputValueContinuation"
+  },
+  "0x1519c": {
+    "lemma": "transactions_value_call_correct",
+    "module": "WriteSuccessExactTransactionsValueCall"
+  },
+  "0x151b4": {
+    "lemma": "transactions_data_jump_correct",
+    "module": "WriteSuccessExactTransactionsDataJump"
+  },
+  "0x151c4": {
+    "lemma": "transactions_access_count_call_correct",
+    "module": "WriteSuccessExactTransactionsAccessCountCall"
+  },
+  "0x151d0": {
+    "lemma": "access_initial_to_loop_correct",
+    "module": "WriteSuccessExactAccessListsInitialLoop"
+  },
+  "0x151d4": {
+    "lemma": "access_control_exact_native_correct",
+    "module": "WriteSuccessExactAccessListsControlNative"
+  },
+  "0x151dc": {
+    "lemma": "access_copy_whole_correct",
+    "module": "WriteSuccessExactAccessListsCopyWhole"
+  },
+  "0x15200": {
+    "lemma": "access_lists_whole_output_correct",
+    "module": "WriteSuccessExactAccessListsOutputWhole"
+  },
+  "0x15210": {
+    "lemma": "access_count_whole_correct",
+    "module": "WriteSuccessExactAccessListsCountWhole"
+  },
+  "0x1521c": {
+    "lemma": "access_lists_storage_whole_branch_correct",
+    "module": "WriteSuccessExactAccessListsStorageWholeBranch"
+  },
+  "0x15228": {
+    "lemma": "storage_keys_loads16_correct",
+    "module": "WriteSuccessExactStorageKeysLoads16"
+  },
+  "0x153a8": {
+    "lemma": "storage_keys_tail_correct",
+    "module": "WriteSuccessExactStorageKeysTail"
+  },
+  "0x153b4": {
+    "lemma": "access_lists_tail_correct",
+    "module": "WriteSuccessExactAccessListsTail"
+  },
+  "0x153c0": {
+    "lemma": "access_return_count_correct",
+    "module": "WriteSuccessExactAccessListsReturnCount"
+  },
+  "0x153d0": {
+    "lemma": "transactions_source_blob_empty_correct",
+    "module": "WriteSuccessExactTransactionsSourceBlobEmptyRegion"
+  },
+  "0x153d4": {
+    "lemma": "blob_loads16_correct",
+    "module": "WriteSuccessExactBlobHashesLoads16"
+  },
+  "0x15558": {
+    "lemma": "blob_tail_correct",
+    "module": "WriteSuccessExactBlobHashesTail"
+  },
+  "0x15564": {
+    "lemma": "max_blob_fee_correct",
+    "module": "WriteSuccessExactTransactionsMaxBlobFee"
+  },
+  "0x15574": {
+    "lemma": "authorization_count_correct",
+    "module": "WriteSuccessExactAuthorizationsCount"
+  },
+  "0x15584": {
+    "lemma": "authorization_initial_zero",
+    "module": "WriteSuccessExactAuthorizationsInitialZero"
+  },
+  "0x15590": {
+    "lemma": "authorization_copy_correct",
+    "module": "WriteSuccessExactAuthorizationsCopy"
+  },
+  "0x155a4": {
+    "lemma": "authorization_first_u256_correct",
+    "module": "WriteSuccessExactAuthorizationsU256"
+  },
+  "0x155bc": {
+    "lemma": "authorization_whole_output_correct",
+    "module": "WriteSuccessExactAuthorizationsOutputWhole"
+  },
+  "0x155cc": {
+    "lemma": "authorization_first_int_correct",
+    "module": "WriteSuccessExactAuthorizationsInt"
+  },
+  "0x155d8": {
+    "lemma": "authorization_second_int_correct",
+    "module": "WriteSuccessExactAuthorizationsSecondInt"
+  },
+  "0x155e4": {
+    "lemma": "authorization_second_u256_correct",
+    "module": "WriteSuccessExactAuthorizationsSecondU256"
+  },
+  "0x155fc": {
+    "lemma": "authorization_third_u256_correct",
+    "module": "WriteSuccessExactAuthorizationsThirdU256"
+  },
+  "0x15614": {
+    "lemma": "authorization_tail_pre_correct",
+    "module": "WriteSuccessExactAuthorizationsTail"
+  },
+  "0x15620": {
+    "lemma": "transactions_signature_v_call_correct",
+    "module": "WriteSuccessExactTransactionsSignatureVCall"
+  },
+  "0x1562c": {
+    "lemma": "transactions_signature_r_call_correct",
+    "module": "WriteSuccessExactTransactionsSignatureRCall"
+  },
+  "0x15644": {
+    "lemma": "transactions_signature_s_call_correct",
+    "module": "WriteSuccessExactTransactionsSignatureSCall"
+  },
+  "0x1565c": {
+    "lemma": "transactions_back_edge_correct",
+    "module": "WriteSuccessExactTransactionsBackEdge"
+  },
+  "0x15668": {
+    "lemma": "exact_tail_raw_load",
+    "module": "WriteSuccessExactTailRawLoad"
+  },
+  "0x15678": {
+    "lemma": "post_transactions_exact_withdrawal_load_correct",
+    "module": "WriteSuccessExactPostTransactionsWithdrawalLoad"
+  },
+  "0x1568c": {
+    "lemma": "withdrawal_initial_nonempty",
+    "module": "WriteSuccessExactWithdrawalsInitial"
+  },
+  "0x15694": {
+    "lemma": "withdrawal_copy_correct",
+    "module": "WriteSuccessExactWithdrawalsCopy"
+  },
+  "0x156a8": {
+    "lemma": "withdrawal_first_int_correct",
+    "module": "WriteSuccessExactWithdrawalsInt"
+  },
+  "0x156b4": {
+    "lemma": "withdrawal_second_int_correct",
+    "module": "WriteSuccessExactWithdrawalsSecondInt"
+  },
+  "0x156c0": {
+    "lemma": "withdrawal_whole_output_correct",
+    "module": "WriteSuccessExactWithdrawalsOutputWhole"
+  },
+  "0x156d0": {
+    "lemma": "withdrawal_third_int_correct",
+    "module": "WriteSuccessExactWithdrawalsThirdInt"
+  },
+  "0x156dc": {
+    "lemma": "withdrawal_tail_correct",
+    "module": "WriteSuccessExactWithdrawalsTailNative"
+  },
+  "0x156e8": {
+    "lemma": "write_success_exact_post_withdrawals_before156f4",
+    "module": "WriteSuccessExactPostWithdrawalsBefore156f4"
+  },
+  "0x156f4": {
+    "lemma": "write_success_suffix_156f4_int",
+    "module": "WriteSuccessNativeSuffixIntPair"
+  },
+  "0x15700": {
+    "lemma": "block_15700",
+    "module": "WriteSuccessPostWithdrawalsOptional"
+  },
+  "0x1571c": {
+    "lemma": "block_1571c",
+    "module": "WriteSuccessPostWithdrawalsBytes"
+  },
+  "0x1572c": {
+    "lemma": "write_success_suffix_root_output",
+    "module": "WriteSuccessNativeSuffixRoot"
+  },
+  "0x15750": {
+    "lemma": "write_success_suffix_hashes_15750_nonzero_state",
+    "module": "WriteSuccessSuffixHashes15750Branch"
+  },
+  "0x15754": {
+    "lemma": "write_success_hashes_word3",
+    "module": "WriteSuccessHashesLoopWord3"
+  },
+  "0x158e0": {
+    "lemma": "exact_suffix_bytes_158e0_payload",
+    "module": "WriteSuccessExactSuffixBytesPayload158e0"
+  },
+  "0x158f0": {
+    "lemma": "exact_suffix_bytes_158f0_payload_at",
+    "module": "WriteSuccessExactSuffixBytesPayload158f0At"
+  },
+  "0x15900": {
+    "lemma": "exact_suffix_bytes_15900_payload_at",
+    "module": "WriteSuccessExactSuffixBytesPayload15900At"
+  },
+  "0x15910": {
+    "lemma": "exact_suffix_bytes_15910_payload_at",
+    "module": "WriteSuccessExactSuffixBytesPayload15910At"
+  },
+  "0x15920": {
+    "lemma": "exact_suffix_bytes_15920_payload_at",
+    "module": "WriteSuccessExactSuffixBytesPayload15920At"
+  },
+  "0x15930": {
+    "lemma": "write_success_post_15930_load_pointer",
+    "module": "WriteSuccessPost15930Loads"
+  },
+  "0x15940": {
+    "lemma": "write_success_post_15940_byte_list_setup",
+    "module": "WriteSuccessNativeSuffixByteListSetups"
+  },
+  "0x15950": {
+    "lemma": "write_success_post_15950_byte_list_setup",
+    "module": "WriteSuccessNativeSuffixByteListSetups"
+  },
+  "0x15960": {
+    "lemma": "write_success_suffix_int_15960_setup",
+    "module": "WriteSuccessNativeSuffixScalarSetups"
+  },
+  "0x1596c": {
+    "lemma": "exact_tail_optional_bytes_branch_handoff",
+    "module": "WriteSuccessExactTailBranchCallHandoff"
+  },
+  "0x15974": {
+    "lemma": "exact_tail_present_boolean_call_handoff",
+    "module": "WriteSuccessExactTailPresentBooleanCallHandoff"
+  },
+  "0x15980": {
+    "lemma": "exact_tail_present_bytes_call_handoff",
+    "module": "WriteSuccessExactTailBytesCallHandoff"
+  },
+  "0x15990": {
+    "lemma": "write_success_suffix_jump_15990",
+    "module": "WriteSuccessNativeSuffixScalarSetups"
+  },
+  "0x15994": {
+    "lemma": "exact_tail_absent_boolean_call_handoff",
+    "module": "WriteSuccessExactTailBooleanCallHandoffs"
+  },
+  "0x159a0": {
+    "lemma": "exact_tail_scalar_call_handoff",
+    "module": "WriteSuccessExactTailScalarCallHandoff"
+  },
+  "0x159b0": {
+    "lemma": "block_159b0",
+    "module": "WriteSuccessTailOptionalSetup"
+  },
+  "0x159c8": {
+    "lemma": "write_success_exact_final_payload_setup_correct",
+    "module": "WriteSuccessExactFinalPayloadSetup"
+  },
+  "0x159d8": {
+    "lemma": "write_success_epilogue_block",
+    "module": "WriteSuccessEpilogueBlock"
+  }
+}

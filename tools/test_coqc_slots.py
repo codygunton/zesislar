@@ -13,6 +13,11 @@ import coqc_slots  # noqa: E402
 
 class CoqcSlotsTest(unittest.TestCase):
     def setUp(self):
+        # Fixture expectations use 48 slots, independent of the active gate budget.
+        from unittest.mock import patch
+        environment = patch.dict(os.environ, {"ZESU_MAX_COQC": "48"})
+        environment.start()
+        self.addCleanup(environment.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)

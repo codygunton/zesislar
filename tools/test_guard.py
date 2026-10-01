@@ -1131,6 +1131,22 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token)
 
+    def test_scope_exec_accepts_explicit_cpu_limit(self):
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        environment = {**self.environment, "ZESU_SCOPE_CPU": "600"}
+        try:
+            result = subprocess.run([str(GUARD), "scope-exec", token, "--", "bash", "-c", "ulimit -t"],
+                                    env=environment, capture_output=True, text=True, timeout=3)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout.strip(), "600")
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_scope_rejects_invalid_cpu_limit(self):
+        result = self.guard("scope", "probe", "--cpu", "invalid", "--", "true")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("invalid CPU limit", result.stderr)
+
 
 class PromTest(unittest.TestCase):
     def test_window_renders_peak_and_p90(self):

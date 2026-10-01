@@ -18,7 +18,7 @@
 #   reserve-coqc PID     reserve one machine-wide compiler slot
 #   confirm-coqc TOKEN   recheck a reserved launch before starting it
 #   watch                the polling loop; kills the youngest scope at 90 %
-#   scope NAME -- CMD    run CMD in its own 6 GiB scope, registered
+#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its own 6 GiB scope, registered
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
@@ -800,7 +800,11 @@ aggregate_slice() {
 }
 
 run_scope() {
-  local name=$1; shift
+  local name=$1 cpu=300; shift
+  if [ "${1:-}" = "--cpu" ]; then
+    cpu=${2:-}; shift 2
+    [[ "$cpu" =~ ^[1-9][0-9]*$ ]] || { echo "resource guard: invalid CPU limit" >&2; return 2; }
+  fi
   [ "${1:-}" = "--" ] && shift
   wait_for_gate
   guard_wait || return $?
@@ -842,7 +846,7 @@ run_scope() {
   trap cleanup_scope EXIT
   trap 'exit 143' TERM
   trap 'exit 130' INT
-  ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
+  ZESU_SCOPE_CPU="$cpu" ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
     -p "MemoryMax=${MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
     $(io_class) "$(realpath "$0")" scope-exec "$reservation" -- "$@" &
   child=$!
@@ -963,7 +967,7 @@ case "${1:-report}" in
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
-    ulimit -t 300
+    ulimit -t "${ZESU_SCOPE_CPU:-300}"
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;
@@ -975,5 +979,5 @@ case "${1:-report}" in
   hold)   r=$(hold_reason) || exit $?; echo "${r:-none}" ;;
   window) shift; python3 "$PROM" window "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME [--cpu SECONDS] -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
 esac
