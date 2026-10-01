@@ -21,9 +21,86 @@ spec = importlib.util.spec_from_file_location("block_gen", TOOLS / "block/gen_bl
 gen_block = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gen_block)
 
+remaining_spec = importlib.util.spec_from_file_location(
+    'remaining_states', TOOLS.parent / 'ZesuSsz/Evidence/det/remaining/run_states.py')
+remaining_states = importlib.util.module_from_spec(remaining_spec)
+remaining_spec.loader.exec_module(remaining_states)
+
 TMP = 'reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers)'
 BINDERS = '`{!islaG Sigma} `{!threadG} (tail : spec)'
 ATOMS = ['reg_col zesu_ram_sys_regs', TMP, 'spec_trace tail']
+
+
+class RemainingStates(unittest.TestCase):
+    def test_successor_record_uses_stop_and_preserves_entry_and_exit(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d30.v')
+        row = {'leader': '0x14d30', 'stop': '0x14d80', 'exit': '0x14d90',
+               'lemma': 'write_success_prologue_chunk_14d30',
+               'parameter_types': {'tag': 'bv 64'}}
+        output = 'BOUNDARY-REACHED BLK_STOP_14d80\n1 goal\n====\nBLK_STOP_14d80\n'
+        record = remaining_states.from_mcp(row, {'seconds': 1, 'result': {
+            'success': True, 'feedback': [['Show.', output]]}}, module)
+        self.assertEqual(record['state_entry'], '0x14d80')
+        self.assertEqual(record['probe_entry'], '0x14d30')
+        self.assertEqual(record['exit'], '0x14d90')
+        self.assertEqual(record['parameter_types']['tag'], 'bv 64')
+
+    def test_another_goals_stop_marker_does_not_supply_a_state(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d30.v')
+        row = {'leader': '0x14d30', 'lemma': 'write_success_prologue_chunk_14d30'}
+        output = 'BOUNDARY-REACHED BLK_STOP_14d30\n1 goal\n====\nBLK_STOP_20\n'
+        record = remaining_states.from_mcp(row, {'seconds': 1, 'result': {
+            'success': True, 'feedback': [['Show.', output]]}}, module)
+        self.assertEqual(record['outcome'], 'error')
+        self.assertNotIn('state_entry', record)
+
+    def test_successor_probe_does_not_measure_reassigned_predecessors(self):
+        manifest = [{'leader': '0x14e14', 'outcome': 'missing-entry',
+                     'predecessors': ['0x14d80']}]
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(infer_boundary, 'probe_source') as probe:
+            rows = remaining_states.prepare_successors(manifest, Path(directory))
+        probe.assert_not_called()
+        self.assertEqual(rows[0]['outcome'], 'external-predecessor')
+
+    def test_successor_probe_requires_an_actual_predecessor_state(self):
+        manifest = [{'leader': '0x14e88', 'outcome': 'residual'},
+                    {'leader': '0x14e94', 'outcome': 'missing-entry',
+                     'predecessors': ['0x14e88']}]
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(infer_boundary, 'probe_source') as probe:
+            rows = remaining_states.prepare_successors(manifest, Path(directory))
+        probe.assert_not_called()
+        self.assertEqual(rows[0]['outcome'], 'missing-predecessor-state')
+
+    def test_reassigned_blocks_are_excluded(self):
+        reassigned = remaining_states.shared.LEADERS
+        blocks = [{'start': hex(leader)} for leader in reassigned] + [
+            {'start': '0x14d30'}, {'start': '0x15190'}, {'start': '0x159c8'}]
+        self.assertEqual(remaining_states.remaining_blocks(blocks), blocks[-3:])
+
+    def test_mcp_record_keeps_the_kernel_context_and_native_selection(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d30.v')
+        row = {'leader': '0x14d30', 'lemma': 'write_success_prologue_chunk_14d30'}
+        output = ('BOUNDARY-REACHED BLK_STOP_14d30\n'
+                  'BOUNDARY-ALL-GOALS-BEGIN\n1 goal\nsp : bv 64\n====\n'
+                  '_ : reg_col zesu_ram_sys_regs\n---∗\nBLK_STOP_14d30\n'
+                  'BOUNDARY-ALL-GOALS-END\n1 goal\nsp : bv 64\n====\n'
+                  '_ : reg_col zesu_ram_sys_regs\n---∗\nBLK_STOP_14d30\n')
+        record = remaining_states.from_mcp(row, {'seconds': 1, 'result': {
+            'success': True, 'feedback': [['Show.', output]]}}, module)
+        self.assertEqual(record['outcome'], 'reached')
+        self.assertEqual(record['state_entry'], '0x14d30')
+        self.assertIn('reg_col zesu_ram_sys_regs', record['context'])
+        self.assertEqual(record['module'], module.name)
+
+    def test_mcp_failure_does_not_create_a_state(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d30.v')
+        row = {'leader': '0x14d30', 'lemma': 'write_success_prologue_chunk_14d30'}
+        record = remaining_states.from_mcp(row, {'seconds': 1, 'result': {
+            'success': False, 'error': 'MCP memory limit'}}, module)
+        self.assertEqual(record['outcome'], 'error')
+        self.assertNotIn('state_entry', record)
 
 
 class StrictCalls(unittest.TestCase):
@@ -49,6 +126,107 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_strengthening_does_not_duplicate_unknown_temporary_ownership(self):
+        state = {'binders': BINDERS, 'standard_call_frame': True,
+                 'spatial': ['spec_trace tail', 'reg_col [(KindReg "x5", CustomShape)]']}
+        with self.assertRaisesRegex(ValueError, 'unsupported collection'):
+            gen_block.state_source(0x10, state)
+
+    def test_memory_coverage_uses_integer_scope(self):
+        source = gen_boundary.boundary_source(
+            'State', BINDERS + ' (sp : bv 64)', [],
+            ATOMS + ['(bv_unsigned sp - 48) ↦ₘ? 48'], seal=True)
+        self.assertIn('((bv_unsigned sp - 48), ((bv_unsigned sp - 48)) + (48))%Z',
+                      source)
+
+    def test_recorded_instruction_address_width_is_preserved(self):
+        atom = 'instr_pre (bv_unsigned 87484) True'
+        state = {'binders': BINDERS, 'spatial': ATOMS + [atom],
+                 'resource_values': [{'source': atom, 'value': '87484%bv',
+                                      'type': '(bv 32)'}]}
+        self.assertIn('@bv_unsigned 32 87484', gen_block.state_source(0x10, state))
+
+    def test_unused_parameter_types_survive_stop_inference(self):
+        state = {'binders': BINDERS + ' old_ra', 'spatial': ATOMS,
+                 'parameter_types': {'old_ra': 'bv 64'}}
+        self.assertIn('(old_ra : bv 64)', gen_block.state_source(0x10, state))
+
+    def test_recorded_value_types_preserve_bitvector_widths(self):
+        atom = '"x5" ↦ᵣ RVal_Bits (bv_to_bvn 8)'
+        state = {'binders': BINDERS, 'standard_call_frame': True,
+                 'spatial': ['reg_col zesu_ram_sys_regs', atom, 'spec_trace tail'],
+                 'resource_values': [{'source': '(' + atom + ')%I',
+                                      'value': '8%bv', 'type': '(bv 32)'}]}
+        source = gen_block.state_source(0x10, state)
+        self.assertIn('@bv_to_bvn 32 (8%bv)', source)
+
+    def test_recorded_local_types_type_untyped_native_parameters(self):
+        source = gen_boundary.boundary_source('State', BINDERS + ' sp old_ra',
+            [('sp', 'bv 64'), ('old_ra', 'bv 64')], ATOMS + ['bv_unsigned sp ↦ₘ? 8'],
+            seal=True, call_resources=True)
+        self.assertIn('(sp : bv 64) (old_ra : bv 64)', source)
+
+    def test_parameter_types_do_not_rewrite_dependent_binder_types(self):
+        binders = '(f : forall (x : bv 64), P x) sp'
+        self.assertEqual(gen_boundary.typed_parameters(
+            binders, {'sp': 'bv 64', 'P': 'iProp Sigma', 'x': 'bv 32'}),
+            '(f : forall (x : bv 64), P x) (sp : bv 64)')
+
+    def test_application_keeps_untyped_native_parameters(self):
+        binders = '`{!islaG Sigma} `{!threadG} sp base cursor (P : iProp Sigma)'
+        self.assertEqual(gen_boundary.explicit_arguments(binders), 'sp base cursor P')
+
+    def test_standard_frame_strengthening_is_explicit(self):
+        state = {'binders': BINDERS + ' (P : iProp Sigma)',
+                 'spatial': ['P', 'spec_trace tail']}
+        with self.assertRaisesRegex(ValueError, 'zesu_ram_sys_regs'):
+            gen_block.state_source(0x10, state)
+        source = gen_block.state_source(0x10, dict(state, standard_call_frame=True))
+        self.assertIn('reg_col zesu_ram_sys_regs', source)
+        self.assertIn('tmp_registers', source)
+        self.assertIn('P', source)
+        self.assertIn('spec_trace tail', source)
+
+    def test_standard_frame_preserves_partial_exact_ownership(self):
+        atoms = ['reg_col zesu_ram_sys_regs', '"x5" ↦ᵣ RVal_Bits value',
+                 '"x6" ↦ᵣ: fun r => ⌜valu_has_shape r (BitsShape 64)⌝', 'P']
+        strengthened = gen_block.with_standard_call_frame(atoms)
+        self.assertEqual(strengthened.count('reg_col zesu_ram_sys_regs'), 1)
+        self.assertIn('ExactShape (RVal_Bits value)', strengthened[0])
+        self.assertEqual(strengthened[0].count('BitsShape 64'), 6)
+        self.assertEqual(strengthened[-1], 'P')
+        gen_boundary.require_call_resources(strengthened)
+
+    def test_standard_frame_preserves_complete_collections(self):
+        self.assertEqual(gen_block.with_standard_call_frame(ATOMS), ATOMS)
+
+    def test_system_alias_does_not_duplicate_ownership(self):
+        state = {'binders': BINDERS, 'standard_call_frame': True,
+                 'spatial': ['reg_col zesu_instr_sys_regs', TMP, 'spec_trace tail']}
+        source = gen_block.state_source(0x10, state)
+        self.assertEqual(source.count('reg_col zesu_ram_sys_regs'), 1)
+        self.assertNotIn('reg_col zesu_instr_sys_regs', source)
+
+    def test_grouped_coq_locals_remain_separate_values(self):
+        coq, _, _ = gen_boundary.sections('H : True\nb8, b9 : bv 64\n====\n')
+        self.assertEqual(coq, [('H', 'True'), ('b8', 'bv 64'), ('b9', 'bv 64')])
+
+    def test_context_without_persistent_separator_keeps_spatial_resources(self):
+        _, persistent, spatial = gen_boundary.sections(
+            'sp : bv 64\n====\n_ : reg_col zesu_ram_sys_regs\n_ : spec_trace tail')
+        self.assertEqual(persistent, [])
+        self.assertEqual(spatial, ['reg_col zesu_ram_sys_regs', 'spec_trace tail'])
+
+    def test_recorded_register_reduction_preserves_ownership(self):
+        registers = '; '.join(f'(KindReg "{r}", BitsShape 64)'
+                              for r in gen_boundary.TMP_REGISTERS)
+        state = {'binders': BINDERS,
+                 'spatial': ['reg_col zesu_ram_sys_regs', 'reg_col Shapes', 'spec_trace tail'],
+                 'register_collections': [{'source': 'Shapes', 'value': '[' + registers + ']'}]}
+        source = gen_block.state_source(0x10, state)
+        self.assertIn('tmp_registers', source)
+        self.assertNotIn('reg_col Shapes', source)
+
     def test_seal_contains_only_memory_and_declares_coverage(self):
         atoms = ATOMS + ['(base + 8) ↦ₘ∗ take 8 bytes', 'base ↦ₘ word',
                          '(base + 16) ↦ₘ? 8', '⌜base >= 0⌝']
@@ -95,6 +273,20 @@ class StatePartition(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "temporary register collection"):
             gen_boundary.boundary_source("State", BINDERS, [], atoms,
                                          seal=False, call_resources=True)
+
+    def test_literal_collection_preserves_other_registers(self):
+        registers = '; '.join(f'(KindReg "{r}", BitsShape 64)'
+                              for r in gen_boundary.TMP_REGISTERS)
+        normalized = gen_boundary.normalize_temporaries(
+            ['reg_col [' + registers + '; (KindReg "x12", BitsShape 64)]'])
+        self.assertIn('tmp_registers', normalized[0])
+        self.assertEqual(normalized[1], 'reg_col [(KindReg "x12", BitsShape 64)]')
+
+    def test_partial_literal_collection_does_not_add_temporaries(self):
+        normalized = gen_boundary.normalize_temporaries(
+            ['reg_col [(KindReg "x5", ExactShape (RVal_Bits value))]'])
+        self.assertFalse(any('tmp_registers' in atom for atom in normalized))
+        self.assertEqual(normalized, ['"x5" ↦ᵣ (RVal_Bits value)'])
 
     def test_shaped_temporaries_keep_their_predicate(self):
         atoms = [f'"{register}" ↦ᵣ: fun r => ⌜valu_has_shape r (BitsShape 64)⌝ ∗ True'
@@ -170,13 +362,111 @@ class StatePartition(unittest.TestCase):
 
 
 class StopInference(unittest.TestCase):
+    def test_copied_native_instances_use_typeclass_opacity(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactAccessListsCopyWhole.v')
+        source, _entry = infer_boundary.entry_source(module, 'access_copy_whole_correct')
+        for name in ('accessCopyWholeFrame', 'accessCopyWholePost', 'accessCopyWholeEntry'):
+            self.assertIn(f'#[local] Typeclasses Opaque {name}.', source)
+
+    def test_entry_snapshot_keeps_the_canonical_guarded_entry(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/'
+                      'WriteSuccessExactTransactionsRecipientOutputValueContinuation.v')
+        source, entry = infer_boundary.entry_source(
+            module, 'transactions_recipient_output_value_continuation')
+        self.assertEqual(entry, '0x15190')
+        self.assertIn('transactionRecipientOutputPost sp', source)
+        self.assertNotIn('instr_pre 0x15190', source)
+
+    def test_kernel_metadata_preserves_unused_parameters_and_values(self):
+        text = ('BOUNDARY-PARAMETERS-BEGIN\n1 goal\nold_ra : bv 64\n'
+                '====\nTrue\nBOUNDARY-PARAMETERS-END\n'
+                'BOUNDARY-VALUE-BEGIN ("x1" ↦ᵣ RVal_Bits (bv_to_bvn 8))%I '
+                'BOUNDARY-VALUE-TERM 8%bv BOUNDARY-VALUE-TYPE (bv 32) '
+                'BOUNDARY-VALUE-END\n')
+        selected, record = infer_boundary.goal_record(text)
+        self.assertNotIn('old_ra : bv 64', selected)
+        self.assertEqual(record['parameter_types']['old_ra'], 'bv 64')
+        self.assertEqual(record['resource_values'][0]['type'], '(bv 32)')
+        self.assertEqual(record['resource_values'][0]['value'], '8%bv')
+
+    def test_stop_probe_uses_the_generated_entry_state(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e28.v')
+        source = infer_boundary.probe_source(module, 'write_success_header_chunk_14e28',
+            '0x14e38', [], stop='0x14e38',
+            entry_state=('Definition StateProbe := True%I.', 'StateProbe'))
+        self.assertIn('Definition StateProbe := True%I.', source)
+        self.assertIn('instr_body 0x14e28 (StateProbe).', source)
+        self.assertIn('□ instr_pre 0x10190 writeOutputExactCallSpec -∗', source)
+
+    def test_stop_marker_requires_the_requested_successor(self):
+        self.assertTrue(infer_boundary.reached_stop('BOUNDARY-REACHED BLK_STOP_20', '0x20'))
+        self.assertFalse(infer_boundary.reached_stop('BOUNDARY-REACHED BLK_STOP_200', '0x20'))
+        self.assertFalse(infer_boundary.reached_stop('No more goals.', '0x20'))
+
+    def test_entry_snapshot_keeps_the_literal_native_predicate(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e28.v')
+        source, entry = infer_boundary.entry_source(module, 'write_success_header_chunk_14e28')
+        self.assertEqual(entry, '0x14e28')
+        self.assertIn('writeSuccessHeaderEventsAfterTag sp tail', source)
+        self.assertNotIn('writeSuccessHeaderEventsAfter1184 sp tail', source)
+        self.assertNotIn('instr_body 0x14e28', source)
+        self.assertIn('try zesu_open_return_bundle "ENTRY".', source)
+
+    def test_record_keeps_rocq_register_reductions(self):
+        text = ('BOUNDARY-REGISTERS-BEGIN Shapes BOUNDARY-REGISTERS-VALUE\n'
+                '[(KindReg "x5", BitsShape 64)] BOUNDARY-REGISTERS-END')
+        self.assertEqual(infer_boundary.goal_record(text)[1]['register_collections'],
+                         [{'source': 'Shapes', 'value': '[(KindReg "x5", BitsShape 64)]'}])
+
+    def test_inferred_state_imports_the_constant_definitions(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e28.v')
+        self.assertIn('ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec',
+                      infer_boundary.native_imports(module))
+
+    def test_probe_replaces_legacy_body_lookup_resources(self):
+        source = infer_boundary.with_standard_code([
+            'Lemma test ' + BINDERS + ' :',
+            'instr_body_lookup_resources Index.body_lookup -∗',
+            'instr_body 0x10 True.'])
+        self.assertFalse(any('body_lookup_resources' in line for line in source))
+        self.assertTrue(any('instr_lookup_resources' in line for line in source))
+
+    def test_probe_calls_cover_stop_beyond_original_handoff(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessPrologueChunk14d30.v')
+        source = infer_boundary.probe_source(
+            module, 'write_success_prologue_chunk_14d30', '0x14d48', [], stop='0x14d80')
+        self.assertIn('□ instr_pre 0x101d4 zesuMemcpyCallSpec -∗', source)
+        self.assertIn('Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.', source)
+        self.assertNotIn('Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.', source)
+        self.assertIn('write_success_prologue_entry sp decoded', source)
+        self.assertNotIn('instr_body 0x14d48', source)
+
+    def test_existing_call_premise_is_not_duplicated(self):
+        module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessHeaderChunk14e28.v')
+        source = infer_boundary.probe_source(
+            module, 'write_success_header_chunk_14e28', '0x14e38', [], stop='0x14e38')
+        self.assertEqual(source.count('□ instr_pre 0x10190 zesuWriteOutputCallSpec -∗'), 1)
+        self.assertEqual(source.count('□ instr_pre 0x10190 writeOutputExactCallSpec -∗'), 1)
+        self.assertIn('instr_pre 0x10190 writeOutputExactCallSpec => iClear Hcallee', source)
+        self.assertLess(source.index('□ instr_pre 0x10190 writeOutputExactCallSpec -∗'),
+                        source.index('□ instr_pre 0x10190 zesuWriteOutputCallSpec -∗'))
+        self.assertNotIn('Require Import ZesuSsz.Proofs.WriteSuccess.Interfaces.', source)
+        self.assertIn('writeSuccessHeaderEventsAfterTag sp tail', source)
+
+    def test_unknown_probe_callee_is_rejected(self):
+        with patch.object(infer_boundary, 'call_premises',
+                          side_effect=ValueError('no closed contract for: 0xabc')) as calls:
+            with self.assertRaisesRegex(ValueError, '0xabc'):
+                infer_boundary.with_call_premises(['instr_body 0x10 True.'], '0x20')
+        calls.assert_called_once_with(0x10, 0x20, strict=True)
+
     def test_stop_record_names_stop_when_it_differs_from_original_exit(self):
         module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailFieldsThirdSegment.v')
         lemma = 'write_success_exact_tail_fields_third_segment'
         with patch.object(infer_boundary, 'probe_source', return_value='source'), \
              patch.object(infer_boundary, 'run', return_value=(
-                 infer_boundary.probes.BEGIN + '\n' + infer_boundary.REACHED + '\n'
-                 + '1 goal\n=====\nTrue\n' + infer_boundary.probes.END)):
+                 infer_boundary.probes.BEGIN + '\n' + infer_boundary.REACHED + ' BLK_STOP_20\n'
+                 + '1 goal\n=====\nBLK_STOP_20\n' + infer_boundary.probes.END)):
             record = infer_boundary.infer(module, lemma, '0x30', Path('build'),
                                            [], 30, stop='0x20', after_return=True)
         self.assertEqual(record['outcome'], 'reached')

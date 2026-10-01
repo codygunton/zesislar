@@ -32,7 +32,7 @@ sys.path.insert(0, str(HERE.parent / "residual"))
 from goals import COQ_RULE, IRIS_RULE  # noqa: E402
 from gen_coverage import memory_range  # noqa: E402
 
-HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*)\s*:\s*(?P<body>.*)$')
+HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*(?:\s*,\s*[A-Za-z_][\w\'’]*)*)\s*:\s*(?P<body>.*)$')
 RULE_20_CONJUNCTS = 12
 # The names a segment statement already binds. Anything else the context
 # mentions was introduced by the automation and becomes an existential.
@@ -82,6 +82,38 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
     if any(atom.startswith("reg_col ") and "tmp_registers" in atom
            for atom in atoms):
         return atoms
+    expanded = []
+    for atom in atoms:
+        match = re.fullmatch(r"reg_col\s+\[(.*)\]", atom, re.S)
+        if not match:
+            expanded.append(atom)
+            continue
+        entries, depth, start = [], 0, 0
+        for index, character in enumerate(match.group(1)):
+            depth += (character in "([{") - (character in ")]}")
+            if character == ";" and depth == 0:
+                entries.append(match.group(1)[start:index].strip())
+                start = index + 1
+        entries.append(match.group(1)[start:].strip())
+        retained, temporary = [], []
+        for entry in entries:
+            resource = re.fullmatch(r'\(KindReg "(x\d+)",\s*(.+)\)', entry, re.S)
+            if not resource or resource.group(1) not in TMP_REGISTERS:
+                retained.append(entry)
+                continue
+            register, shape = resource.groups()
+            exact = re.fullmatch(r"ExactShape\s+(.+)", shape, re.S)
+            if exact:
+                temporary.append(f'"{register}" ↦ᵣ {exact.group(1)}')
+            elif re.fullmatch(r"BitsShape\s+\d+", shape):
+                temporary.append(f'"{register}" ↦ᵣ: fun r => '
+                                 f'⌜valu_has_shape r ({shape})⌝ ∗ True')
+            else:
+                retained.append(entry)
+        if retained:
+            expanded.append("reg_col [" + "; ".join(retained) + "]")
+        expanded.extend(temporary)
+    atoms = expanded
     found = {}
     for index, atom in enumerate(atoms):
         match = re.fullmatch(r'"(x\d+)"\s*↦ᵣ\s+(.+)', atom)
@@ -92,8 +124,8 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
             found[register] = index, f"ExactShape ({match.group(2)})"
             continue
         match = re.fullmatch(
-            r'"(x\d+)"\s*↦ᵣ:\s*(?:fun\s+(\w+)\s*=>|λ\s+(\w+)\s*,)\s*'
-            r'⌜valu_has_shape\s+(\w+)\s+\((BitsShape\s+\d+)\)⌝\s*∗\s*True', atom)
+            r'"(x\d+)"\s*↦ᵣ:\s*(?:fun\s+(\w+)(?:\s*:\s*valu)?\s*=>|λ\s+(\w+)(?:\s*:\s*valu)?\s*,)\s*'
+            r'⌜valu_has_shape\s+(\w+)\s+\((BitsShape\s+\d+)\)⌝(?:\s*∗\s*True)?', atom)
         if match and match.group(1) in TMP_REGISTERS:
             register, bound = match.group(1), match.group(2) or match.group(3)
             if match.group(4) != bound:
@@ -189,6 +221,8 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     spatial: list[str] = []
     target = coq
     lines = block.split("\n")
+    has_persistent = any(IRIS_RULE.match(line.strip()) and line.strip().endswith('□')
+                         for line in lines)
     pending: list[str] = []
 
     def flush(into) -> None:
@@ -200,7 +234,8 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
             pending.clear()
             return
         if into is coq:
-            into.append((match.group("name"), match.group("body").strip()))
+            into.extend((name.strip(), match.group("body").strip())
+                        for name in match.group("name").split(','))
         else:
             into.append(match.group("body").strip())
         pending.clear()
@@ -209,7 +244,7 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
         stripped = line.strip()
         if COQ_RULE.match(stripped):
             flush(target)
-            target = persistent
+            target = persistent if has_persistent else spatial
             continue
         if IRIS_RULE.match(stripped):
             flush(target)
@@ -248,7 +283,8 @@ def free_locals(coq: list[tuple[str, str]], binders: str) -> list[tuple[str, str
 def explicit_arguments(binders: str) -> str:
     """The names a definition with these binders is applied to.
 
-    Only the explicit groups, `(a b : T)`. The backtick groups are
+    Include explicit groups `(a b : T)` and untyped explicit names.
+    The backtick groups are
     instance arguments and the braces are implicit, and both are left to
     inference, which is what every hand-written boundary in the project
     does too.
@@ -256,8 +292,20 @@ def explicit_arguments(binders: str) -> str:
     names: list[str] = []
     depth = 0
     current = ""
+    bare = ""
     implicit = False
     for index, character in enumerate(binders):
+        if depth == 0 and character == "{":
+            depth = 1
+            implicit = True
+            continue
+        if implicit and character == "}":
+            depth -= 1
+            continue
+        if depth == 0 and (character.isspace() or character in "(`"):
+            if bare:
+                names.append(bare)
+                bare = ""
         if character == "(" and not (index and binders[index - 1] == "`"):
             depth += 1
             if depth == 1:
@@ -275,13 +323,42 @@ def explicit_arguments(binders: str) -> str:
             continue
         if depth >= 1:
             current += character
+        elif character.isalnum() or character in "_'":
+            bare += character
+    if bare:
+        names.append(bare)
     return " ".join(names)
+
+
+def typed_parameters(binders: str, kinds: dict[str, str]) -> str:
+    """Type bare parameters from Rocq, and preserve explicit binder groups."""
+    parts, index = [], 0
+    while index < len(binders):
+        start = index
+        if binders[index] in '({':
+            depth = 1
+            index += 1
+            while index < len(binders) and depth:
+                depth += (binders[index] in '({') - (binders[index] in ')}')
+                index += 1
+            parts.append(binders[start:index])
+        elif match := re.match(r'[A-Za-z_][\w\']*', binders[index:]):
+            word = match[0]
+            parts.append(f'({word} : {kinds[word]})' if word in kinds else word)
+            index += len(word)
+        else:
+            parts.append(binders[index])
+            index += 1
+    return ''.join(parts)
 
 
 def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     spatial: list[str], seal: bool, *,
                     call_resources: bool = False,
                     sorts: dict[str, str] | None = None) -> str:
+    # Native lemmas often leave explicit parameter types to inference.
+    # A memory-only definition cannot infer types from removed atoms.
+    binders = typed_parameters(binders, dict(coq))
     spatial = [atom for body in spatial for atom in spatial_atoms(body)]
     if call_resources:
         spatial = normalize_temporaries(spatial)
@@ -303,11 +380,11 @@ def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     and "-∗" not in atom else None)
         if seal and coverage:
             memory.append(atom)
-            ranges.append(coverage)
+            ranges.append(f'{coverage}%Z')
         else:
             opened.append(atom)
     applied = explicit_arguments(binders)
-    lines = []
+    lines = ['Local Open Scope Z_scope.', '']
     if memory:
         frame = f"{name}Memory"
         raw = f"{frame}Raw"
