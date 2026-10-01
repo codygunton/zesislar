@@ -25,6 +25,14 @@
       "name": "encoderBooleanEntryBoundary",
       "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
     },
+    "0x15cb0": {
+      "name": "encoderU256EntryBoundary",
+      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+    },
+    "0x15ce4": {
+      "name": "zesuEncoderInt1645CallSpec",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderInt1645Call"
+    },
     "0x10190": {
       "name": "writeOutputEntryBoundary",
       "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"

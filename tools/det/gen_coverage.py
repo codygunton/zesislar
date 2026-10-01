@@ -28,6 +28,50 @@ REGION = re.compile(r"([A-Za-z_][\w'.() +\-]*?)\s*↦ₘ\?\s*(\d+)")
 REGISTER = re.compile(r'"(x\d+|PC)"\s*↦ᵣ')
 
 
+def array_width(values: str, kinds: dict[str, str]) -> int | None:
+    """Use the expression's recorded type or an element-preserving slice."""
+    kind = kinds.get(values.strip(), "")
+    match = re.fullmatch(r"list\s+\(?bv\s+(\d+)\)?", kind.strip())
+    if match:
+        return int(match.group(1))
+    sliced = re.fullmatch(r"(?:take|drop)\s+(?:\d+|[\w']+|\([^()]*\))\s+(.+)", values.strip())
+    if sliced:
+        return array_width(sliced.group(1), kinds)
+    return None
+
+
+def memory_range(atom: str, kinds: dict[str, str]) -> str | None:
+    """Return coverage for one memory atom with a known size."""
+    if "↦ₘ" not in atom:
+        return None
+    base, value = atom.split("↦ₘ", 1)
+    # An atom must own memory directly. A nested predicate can also own
+    # registers or traces, which must remain outside the memory seal.
+    depth = 0
+    for character in base:
+        depth += (character in "([{⌜") - (character in ")]}⌝")
+    if depth:
+        return None
+    base, value = base.strip(), value.strip()
+    if value.startswith("∗"):
+        values = value[1:].strip()
+        width = array_width(values, kinds)
+        if width is None or width % 8:
+            return None
+        size = f"{width // 8} * Z.of_nat (length ({values}))"
+    elif value.startswith("?"):
+        size = value[1:].strip()
+    else:
+        kind = kinds.get(value, "")
+        width = re.fullmatch(r"bv\s+(\d+)", kind)
+        if width is None:
+            width = re.match(r"\(?BV\s+(\d+)\b", value)
+        if width is None or int(width.group(1)) % 8:
+            return None
+        size = str(int(width.group(1)) // 8)
+    return f"({base}, ({base}) + ({size}))"
+
+
 def definition(text: str, name: str) -> re.Match | None:
     return re.search(DEFINITION.pattern.format(name=re.escape(name)), text,
                      re.M | re.S)
