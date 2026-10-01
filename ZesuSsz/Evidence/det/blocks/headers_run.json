@@ -1,0 +1,15 @@
+{
+  "source_sha": "9a0307bcc6b77b9d77506446cf1b244531386f7e",
+  "compatible_cache_sha": "e91fbe10b7861d7e86d1a70120bef18b9ab253df",
+  "cache_compatibility": "Automation and Proofs sources are identical between these commits. Generated states and blocks were compiled together in the owned cache arm. Temporary source copies were removed.",
+  "contract": "zesuWriteOutputCallSpec",
+  "contract_module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+  "rules": "call",
+  "variant": "A",
+  "cap_seconds": 600,
+  "probe_workers": 6,
+  "compile_workers": 16,
+  "verification": "All six generated Proof. zesu_block. Qed. modules compiled. All six Print Assumptions reports: Closed under the global context.",
+  "promotion": false,
+  "rocq_mcp": "rocq_compile_file failed before proof checking: Dune selected the base repository and found duplicate IslaTraces.allocator_get theories. The MCP load path also omitted the temporary generated states. Owned focused Dune verification passed."
+}
