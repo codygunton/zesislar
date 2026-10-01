@@ -163,8 +163,9 @@ class CallSites(unittest.TestCase):
             lines, modules, unknown = call_sites.premises(
                 0x15744, 0x15754, dumps=missing)
         self.assertEqual(lines,
-                         ["  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗"])
-        self.assertEqual(modules, ["ZesuSsz.Proofs.WriteSuccess.Interfaces"])
+                         ["  □ instr_pre 0x15d10 encoderIntContract -∗"])
+        self.assertEqual(modules, [
+            "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntContract"])
         self.assertEqual(unknown, [])
 
     def test_post_transactions_memcpy_has_closed_entry_boundary(self):

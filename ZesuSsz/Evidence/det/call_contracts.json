@@ -1,13 +1,14 @@
 {
-  "comment": "Call target to closed contract. A generated segment carries one persistent `instr_pre` premise per distinct target its range calls, so the block never steps into a callee. The targets come from the jal/jalr of the disassembly. The contracts are the *EntryBoundary aliases in Interfaces.v, which is what the merged segments and the hand drafts use; the *ExactCallSpec definitions they alias live in scattered modules and are not the name a segment states.",
+  "comment": "Call target to closed contract. A generated segment carries one persistent `instr_pre` premise per distinct call target. The block never steps into a callee. The targets come from the jal/jalr instructions in the disassembly. Contracts name entry aliases in Interfaces.v or direct callee specifications. The local_unfold flag enables local LithiumUnfold and opacity declarations in generated callers.",
   "contracts": {
     "0x101d4": {
       "name": "memcpyEntryBoundary",
       "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
     },
     "0x15d10": {
-      "name": "encoderIntEntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "encoderIntContract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntContract",
+      "local_unfold": true
     },
     "0x15bc8": {
       "name": "encoderOptionalEntryBoundary",
