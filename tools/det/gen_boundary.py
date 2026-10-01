@@ -30,6 +30,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "residual"))
 
 from goals import COQ_RULE, IRIS_RULE  # noqa: E402
+from gen_coverage import memory_range  # noqa: E402
 
 HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*)\s*:\s*(?P<body>.*)$')
 RULE_20_CONJUNCTS = 12
@@ -37,6 +38,148 @@ RULE_20_CONJUNCTS = 12
 # mentions was introduced by the automation and becomes an existential.
 STANDARD_BINDERS = ("Sigma", "islaG0", "H", "Decoded",
                     "WriteSuccessMemoryRepresentation0")
+TMP_REGISTERS = ("x5", "x6", "x7", "x28", "x29", "x30", "x31")
+
+
+def spatial_atoms(body: str) -> list[str]:
+    """Split only outer separating conjunctions. Preserve binder scopes."""
+    body = body.strip()
+    if body.endswith("%I"):
+        body = body[:-2].strip()
+    depth, quoted = 0, False
+    cuts = []
+    for index, character in enumerate(body):
+        if character == '"':
+            quoted = not quoted
+        if quoted:
+            continue
+        if character in "([{⌜":
+            depth += 1
+        elif character in ")]}⌝":
+            depth -= 1
+        elif character == "∗" and depth == 0 and body[index - 1:index] != "ₘ":
+            # A wand or a register predicate binds the following chain.
+            prefix = body[:index]
+            if "-" == body[index - 1:index] or "↦ᵣ:" in prefix or re.match(r"∃\b|∃", prefix):
+                return [body]
+            cuts.append(index)
+    if body.startswith("(") and body.endswith(")"):
+        depth = 0
+        for index, character in enumerate(body):
+            depth += (character == "(") - (character == ")")
+            if depth == 0:
+                if index == len(body) - 1:
+                    return spatial_atoms(body[1:-1])
+                break
+    if not cuts:
+        return [body]
+    return [part for start, end in zip([-1] + cuts, cuts + [len(body)])
+            for part in spatial_atoms(body[start + 1:end])]
+
+
+def normalize_temporaries(atoms: list[str]) -> list[str]:
+    """Collect all seven exact temporary atoms without changing values."""
+    if any(atom.startswith("reg_col ") and "tmp_registers" in atom
+           for atom in atoms):
+        return atoms
+    found = {}
+    for index, atom in enumerate(atoms):
+        match = re.fullmatch(r'"(x\d+)"\s*↦ᵣ\s+(.+)', atom)
+        if match and match.group(1) in TMP_REGISTERS:
+            register = match.group(1)
+            if register in found:
+                raise ValueError(f"duplicate temporary resource: {register}")
+            found[register] = index, f"ExactShape ({match.group(2)})"
+            continue
+        match = re.fullmatch(
+            r'"(x\d+)"\s*↦ᵣ:\s*(?:fun\s+(\w+)\s*=>|λ\s+(\w+)\s*,)\s*'
+            r'⌜valu_has_shape\s+(\w+)\s+\((BitsShape\s+\d+)\)⌝\s*∗\s*True', atom)
+        if match and match.group(1) in TMP_REGISTERS:
+            register, bound = match.group(1), match.group(2) or match.group(3)
+            if match.group(4) != bound:
+                continue
+            if register in found:
+                raise ValueError(f"duplicate temporary resource: {register}")
+            found[register] = index, match.group(5)
+    if len(found) != len(TMP_REGISTERS):
+        return atoms
+    shapes = "; ".join(f"({found[register][1]})" for register in TMP_REGISTERS)
+    collection = ("reg_col (zip_with (fun r shape => (KindReg r, shape)) "
+                  f"tmp_registers [{shapes}])")
+    indices = {index for index, _ in found.values()}
+    return [collection] + [atom for index, atom in enumerate(atoms)
+                           if index not in indices]
+
+
+def require_call_resources(atoms: list[str]) -> None:
+    """Reject missing ownership. Never add inferred resources."""
+    if "reg_col zesu_ram_sys_regs" not in atoms:
+        raise ValueError("missing top-level reg_col zesu_ram_sys_regs")
+    if not any(atom.startswith("reg_col ") and "tmp_registers" in atom
+               for atom in atoms):
+        raise ValueError("missing top-level temporary register collection")
+
+
+def require_open_resources(atoms: list[str], binders: str) -> None:
+    """Reject folded packages until inference exposes their resource atoms."""
+    abstract = {name for name, kind in binder_types(binders).items()
+                if kind == "iProp Sigma"}
+    for atom in atoms:
+        if (atom in abstract or atom in ("True", "emp")
+                or atom.startswith(("reg_col ", "spec_trace ", "mmio_range ",
+                                    "instr_pre ", "instr_body ", "⌜"))
+                or re.match(r'"[^"]+"\s*(?:#\s*"[^"]+"\s*)?↦ᵣ', atom)):
+            continue
+        if "↦ₘ" in atom:
+            base = atom.split("↦ₘ", 1)[0]
+            depth = sum((character in "([{⌜") - (character in ")]}⌝")
+                        for character in base)
+            if depth == 0:
+                continue
+        raise ValueError(f"folded or unsupported spatial resource: {atom}")
+
+
+def binder_types(binders: str) -> dict[str, str]:
+    """Read explicit parameter types, including nested parentheses."""
+    out = {}
+    for match in re.finditer(r"\(([A-Za-z_][\w' ]*)\s*:\s*", binders):
+        depth = 1
+        for index in range(match.end(), len(binders)):
+            depth += (binders[index] == "(") - (binders[index] == ")")
+            if depth == 0:
+                kind = binders[match.end():index].strip()
+                out.update({name: kind for name in match.group(1).split()})
+                break
+    return out
+
+
+def local_parts(locals_: list[tuple[str, str]], sorts: dict[str, str],
+                strict: bool) -> tuple[list[tuple[str, str]], list[str]]:
+    """Separate proof facts from values using recorded or known sorts."""
+    variables, facts = [], []
+    propositions = {variable for variable, kind in locals_ if kind == "Prop"}
+    known_types = r"(?:Prop|Type|Set|Z|nat|N|bool|string|valu|spec|isla_trace|unit|bv\s+\d+|list\s+.+)"
+    for variable, kind in locals_:
+        sort = sorts.get(variable)
+        if strict and sort is None:
+            raise ValueError(f"missing Coq sort for local {variable}: {kind}")
+        if sort is None:
+            if kind in propositions or kind in ("True", "False"):
+                sort = "Prop"
+            elif re.fullmatch(known_types, kind):
+                sort = "Type"
+            elif re.search(r" = | ≠ | < | <= | ≤ | > | >= | ≥ | /\\ | \\/ | ↔ ", kind):
+                # Equality and arithmetic relations are propositions. Do not
+                # infer the sort of a function or a dependent product here.
+                if not any(operator in kind for operator in ("->", "→", "forall", "∀")):
+                    sort = "Prop"
+        if sort == "Prop":
+            facts.append(f"⌜{kind}⌝")
+        elif sort == "Type" or not strict:
+            variables.append((variable, kind))
+        else:
+            raise ValueError(f"missing Coq sort for local {variable}: {kind}")
+    return variables, facts
 
 
 def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
@@ -136,37 +279,65 @@ def explicit_arguments(binders: str) -> str:
 
 
 def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
-                    spatial: list[str], seal: bool) -> str:
-    locals_ = free_locals(coq, binders)
-    pure = [f"⌜{kind}⌝" for variable, kind in locals_ if kind == "Prop"]
+                    spatial: list[str], seal: bool, *,
+                    call_resources: bool = False,
+                    sorts: dict[str, str] | None = None) -> str:
+    spatial = [atom for body in spatial for atom in spatial_atoms(body)]
+    if call_resources:
+        spatial = normalize_temporaries(spatial)
+        require_call_resources(spatial)
+        require_open_resources(spatial, binders)
+    locals_, pure = local_parts(free_locals(coq, binders), sorts or {}, call_resources)
     existentials = "".join(
         f"∃ {variable} : {kind},\n   " for variable, kind in locals_
-        if kind != "Prop")
-    body = " ∗\n   ".join(spatial + pure) if (spatial or pure) else "True"
-    raw = f"{name}Raw" if seal else name
+    )
+    # Only direct memory atoms with known coverage can enter the seal.
+    # A folded state, a continuation, or an unknown memory size stays open.
+    kinds = dict(coq)
+    kinds.update(binder_types(binders))
+    memory, ranges, opened = [], [], []
+    for atom in spatial:
+        coverage = (memory_range(atom, kinds)
+                    if "↦ᵣ" not in atom and "spec_trace" not in atom
+                    and not atom.startswith(("∃", "⌜", "reg_col"))
+                    and "-∗" not in atom else None)
+        if seal and coverage:
+            memory.append(atom)
+            ranges.append(coverage)
+        else:
+            opened.append(atom)
     applied = explicit_arguments(binders)
-    lines = [
-        f"Definition {raw}",
-        f"    {binders} : iProp Sigma :=",
-        f"  ({existentials}{body})%I.",
-        f"Global Instance : LithiumUnfold (@{raw}) := I.",
-    ]
-    if seal:
-        # Rule 20: a boundary a reader has to hold in their head shows at
-        # most twelve conjuncts. A wider one is sealed, and the C3 rule
-        # opens it lazily when a lookup needs what is inside.
+    lines = []
+    if memory:
+        frame = f"{name}Memory"
+        raw = f"{frame}Raw"
+        frame_binders = binders + "".join(
+            f" ({variable} : {kind})" for variable, kind in locals_)
+        frame_args = " ".join([applied] + [variable for variable, kind in locals_]).strip()
+        body = " ∗\n   ".join([f"({atom})" for atom in memory] + ["True"])
         lines += [
-            "",
-            f"Definition {name}",
-            f"    {binders} : iProp Sigma := {raw} {applied}.",
-            "",
-            f"Lemma {name}_unfold",
-            f"    {binders} :",
-            f"  {name} {applied} ⊣⊢ {raw} {applied}.",
+            f"Definition {raw}",
+            f"    {frame_binders} : iProp Sigma := ({body})%I.",
+            f"Global Instance : LithiumUnfold (@{raw}) := I.",
+            f"Global Typeclasses Opaque {raw}.",
+            f"Definition {frame}",
+            f"    {frame_binders} : iProp Sigma := {raw} {frame_args}.",
+            f"Lemma {frame}_unfold {frame_binders} :",
+            f"  {frame} {frame_args} ⊣⊢ {raw} {frame_args}.",
             "Proof. done. Qed.",
+            f"Global Opaque {frame}.",
+            f"Global Instance zesu_sealed_{frame} {frame_binders} :",
+            f"  ZesuSealed ({frame} {frame_args}) ({raw} {frame_args})",
+            f"    [{'; '.join(ranges)}] [] := {frame}_unfold {frame_args}.",
             "",
-            f"Global Opaque {name}.",
         ]
+        opened.append(f"{frame} {frame_args}")
+    # Parentheses keep each register predicate's lambda inside its atom.
+    body = " ∗\n   ".join([f"({atom})" for atom in opened + pure] + ["True"])
+    lines += [f"Definition {name}", f"    {binders} : iProp Sigma :=",
+              f"  ({existentials}{body})%I.",
+              f"Global Instance : LithiumUnfold (@{name}) := I.",
+              f"Global Typeclasses Opaque {name}."]
     return "\n".join(lines) + "\n"
 
 
@@ -179,6 +350,8 @@ def main() -> int:
     parser.add_argument("--binders", default=None,
                         help="the binders the boundary keeps as parameters")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--call-resources", action="store_true",
+                        help="require top-level system and temporary collections")
     arguments = parser.parse_args()
 
     emitted = []
@@ -190,13 +363,18 @@ def main() -> int:
         if record.get("outcome") != "reached" or "context" not in record:
             continue
         coq, _persistent, spatial = sections(record["context"])
+        spatial = [atom for resource in spatial for atom in spatial_atoms(resource)]
+        if arguments.call_resources:
+            spatial = normalize_temporaries(spatial)
         stem = arguments.name or (
             "".join(part.capitalize() for part in
                     record["lemma"].split("_")[:6]) + "Boundary")
         binders = arguments.binders or record.get("binders", "")
         emitted.append(boundary_source(
             stem, binders, coq, spatial,
-            seal=len(spatial) > RULE_20_CONJUNCTS))
+            seal=len(spatial) > RULE_20_CONJUNCTS,
+            call_resources=arguments.call_resources,
+            sorts=record.get("local_sorts", record.get("sorts"))))
         print(f"{record['lemma']}: {len(spatial)} conjuncts, "
               f"{'sealed' if len(spatial) > RULE_20_CONJUNCTS else 'open'}")
     if not emitted:
@@ -205,6 +383,8 @@ def main() -> int:
     arguments.out.parent.mkdir(parents=True, exist_ok=True)
     arguments.out.write_text(
         "(* Generated by tools/det/gen_boundary.py. Do not edit. *)\n\n"
+        "Require Import ZesuSsz.Automation.All.\n"
+        "Require Import ZesuSsz.Automation.SealedCoverage.\n\n"
         + "\n\n".join(emitted))
     print(f"written to {arguments.out}")
     return 0
