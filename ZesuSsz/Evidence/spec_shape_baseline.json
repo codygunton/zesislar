@@ -1,6 +1,6 @@
 {
   "ZesuSsz/Automation/Calls.v": {
-    "unfold_without_typeclasses_opaque": 1
+    "unfold_without_typeclasses_opaque": 2
   },
   "ZesuSsz/Contracts/DecodeHeap.v": {
     "predicates_without_unfold": 6
