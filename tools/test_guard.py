@@ -86,6 +86,9 @@ class GuardLockTest(unittest.TestCase):
             " for key,value in data.get(unit,{}).items():\n"
             "  if value.endswith('G'):value=str(int(value[:-1])*1073741824)\n"
             "  print(key+'='+value)\n"
+            "elif 'list-units' in args:\n"
+            " live=os.environ.get('GUARD_TEST_LIVE_SCOPES')\n"
+            " if live:print(pathlib.Path(live).read_text(),end='')\n"
             "elif 'kill' in args or 'stop' in args:\n"
             " with open(os.environ['GUARD_TEST_SYSTEMCTL_LOG'],'a') as f:f.write(' '.join(args)+'\\n')\n"
         )
@@ -628,6 +631,97 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token)
 
+    def test_96_expired_confirmations_do_not_block_a_compiler(self):
+        self.writer_fixture()
+        self.lock.unlink()
+        directory = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+        directory.mkdir(exist_ok=True)
+        expired = []
+        for index in range(96):
+            marker = directory / f"{os.getpid()}.gate-{index // 32}.{index}"
+            marker.write_text("confirmed\nwriter=\naggregate=\n")
+            os.utime(marker, (time.time() - 120, time.time() - 120))
+            expired.append(marker)
+        token = directory / f"{os.getpid()}.launch"
+        token.write_text("pending\nwriter=\naggregate=\n")
+        result = subprocess.run([str(GUARD), "confirm-coqc", str(token)],
+                                env=self.environment, capture_output=True,
+                                text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(token.read_text().splitlines()[0], "confirmed")
+        self.assertTrue(all(not marker.exists() for marker in expired))
+        executed = Path(self.directory.name) / "executed"
+        result = subprocess.run([str(GUARD), "scope-exec", str(token),
+                                 "--", "touch", str(executed)],
+                                env=self.environment, capture_output=True,
+                                text=True, timeout=3)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(executed.exists())
+
+    def test_live_compilers_and_fresh_confirmations_share_the_48_cap(self):
+        self.writer_fixture(count=40)
+        self.lock.unlink()
+        directory = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+        directory.mkdir(exist_ok=True)
+        launching = []
+        for index in range(8):
+            marker = directory / f"{os.getpid()}.launching-{index}"
+            marker.write_text("confirmed\nwriter=\naggregate=\n")
+            launching.append(marker)
+        token = directory / f"{os.getpid()}.pending"
+        token.write_text("pending\nwriter=\naggregate=\n")
+        self.assert_launch_waits(["confirm-coqc", str(token)], self.environment,
+                                 "coqc 40 with 8 reservations machine-wide")
+        for marker in launching:
+            os.utime(marker, (time.time() - 120, time.time() - 120))
+        result = subprocess.run([str(GUARD), "confirm-coqc", str(token)],
+                                env=self.environment, capture_output=True,
+                                text=True, timeout=3)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(all(not marker.exists() for marker in launching))
+
+    def test_expired_own_confirmation_cannot_launch(self):
+        self.writer_fixture()
+        token = Path(self.reserve_writer("tf2"))
+        os.utime(token, (time.time() - 120, time.time() - 120))
+        executed = Path(self.directory.name) / "executed"
+        result = subprocess.run([str(GUARD), "scope-exec", str(token),
+                                 "--", "touch", str(executed)],
+                                env={**self.environment, "ZESU_WRITER_ID": "tf2"},
+                                capture_output=True, text=True, timeout=3)
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertFalse(token.exists())
+        self.assertFalse(executed.exists())
+
+    def test_old_marked_wrapper_with_live_nested_compiler_keeps_its_slot(self):
+        self.writer_fixture()
+        self.environment.update(ZESU_WRITER_ID="tf2", ZESU_MAX_COQC="1")
+        token = Path(self.reserve_writer("tf2"))
+        proc = Path(self.environment["ZESU_PROC_ROOT"])
+        for pid, name, children in ((9000000, "bash", "9000001"),
+                                    (9000001, "python", "9000002"),
+                                    (9000002, "coqc", "")):
+            entry = proc / str(pid)
+            (entry / "task" / str(pid)).mkdir(parents=True)
+            (entry / "comm").write_text(name + "\n")
+            (entry / "task" / str(pid) / "children").write_text(children)
+        self.assertEqual(self.guard("mark-coqc", str(token), "9000000").returncode, 0)
+        os.utime(token, (time.time() - 120, time.time() - 120))
+        try:
+            self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+                                     "coqc 0 with 1 reservations machine-wide")
+            self.assertTrue(token.exists())
+        finally:
+            self.guard("release-coqc", str(token))
+
+    def test_marking_does_not_extend_the_confirmation_timeout(self):
+        self.writer_fixture()
+        token = Path(self.reserve_writer("tf2"))
+        confirmed = time.time() - 30
+        os.utime(token, (confirmed, confirmed))
+        self.assertEqual(self.guard("mark-coqc", str(token), str(os.getpid())).returncode, 0)
+        self.assertAlmostEqual(token.stat().st_mtime, confirmed, places=4)
+
     def test_dead_reservation_owner_and_child_are_removed(self):
         self.writer_fixture()
         self.environment.update(ZESU_WRITER_ID="tf2", ZESU_MAX_COQC="1")
@@ -1000,6 +1094,9 @@ class GuardLockTest(unittest.TestCase):
         state = Path(self.environment["ZESU_GUARD_STATE"])
         state.mkdir(exist_ok=True)
         (state / "scopes").write_text("old.scope\nyoung.scope\n")
+        live = Path(self.directory.name) / "live-scopes"
+        live.write_text("old.scope loaded active running\nyoung.scope loaded active running\n")
+        self.environment["GUARD_TEST_LIVE_SCOPES"] = str(live)
         log = Path(self.environment["GUARD_TEST_SYSTEMCTL_LOG"])
         self.environment["ZESU_GUARD_POLL"] = "0.05"
         self.environment["GUARD_TEST_USED_GIB"] = "199"
@@ -1011,6 +1108,28 @@ class GuardLockTest(unittest.TestCase):
                        capture_output=True, env=self.environment)
         self.assertIn("young.scope", log.read_text())
         self.assertNotIn("old.scope", log.read_text())
+
+    def test_startup_prunes_scope_registry_to_live_units(self):
+        state = Path(self.environment["ZESU_GUARD_STATE"])
+        registry = state / "scopes"
+        registry.write_text("abandoned.scope\n" * 27761 + "young.scope\nyoung.scope\n")
+        live = Path(self.directory.name) / "live-scopes"
+        live.write_text("young.scope loaded active running\n")
+        self.environment["GUARD_TEST_LIVE_SCOPES"] = str(live)
+        self.assertEqual(self.guard("coqc-count").returncode, 0)
+        self.assertEqual(registry.read_text(), "young.scope\n")
+
+    def test_scope_exec_registers_the_active_scope(self):
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        environment = {**self.environment, "ZESU_SCOPE_UNIT": "young.scope"}
+        try:
+            result = subprocess.run([str(GUARD), "scope-exec", token, "--", "true"],
+                                    env=environment, capture_output=True, text=True, timeout=3)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            registry = Path(self.environment["ZESU_GUARD_STATE"]) / "scopes"
+            self.assertEqual(registry.read_text(), "young.scope\n")
+        finally:
+            self.guard("release-coqc", token)
 
 
 class PromTest(unittest.TestCase):

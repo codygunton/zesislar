@@ -276,7 +276,8 @@ live_launches() {
 # A scratch compiler keeps a reservation until its child exits.
 # Pending reservations do not occupy slots until confirmation succeeds.
 live_reservations() {
-  local marker owner child
+  local marker owner child now modified
+  now=$(date +%s)
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
@@ -287,6 +288,12 @@ live_reservations() {
     if [[ "$child" =~ ^[0-9]+$ ]] && [ ! -d "$PROC_ROOT/$child" ]; then
       rm -f "$marker"; continue
     fi
+    if [ "$child" != pending ]; then
+      modified=$(stat -c %Y "$marker" 2>/dev/null) || continue
+      if (( now - modified > 60 )) && ! reservation_compiler "$marker" >/dev/null; then
+        rm -f "$marker"; continue
+      fi
+    fi
     echo "$marker"
   done
 }
@@ -295,16 +302,18 @@ reservation_writer() { sed -n 's/^writer=//p' "$1"; }
 
 # A recorder can be the marked child. Count its actual compiler once.
 reservation_compiler() {
-  local child descendant
+  local child descendant queue
   read -r child < "$1" || return 1
   [[ "$child" =~ ^[0-9]+$ ]] || { child=${1##*/}; child=${child%%.*}; }
-  if [ "$(cat "$PROC_ROOT/$child/comm" 2>/dev/null)" = coqc ] && compiler_process "$child"; then
-    echo "$child"; return 0
-  fi
-  for descendant in $(cat "$PROC_ROOT/$child/task/$child/children" 2>/dev/null); do
+  queue=$child
+  while [ -n "$queue" ]; do
+    descendant=${queue%% *}
+    if [ "$queue" = "$descendant" ]; then queue=""; else queue=${queue#* }; fi
     if [ "$(cat "$PROC_ROOT/$descendant/comm" 2>/dev/null)" = coqc ] && compiler_process "$descendant"; then
       echo "$descendant"; return 0
     fi
+    child=$(cat "$PROC_ROOT/$descendant/task/$descendant/children" 2>/dev/null)
+    for child in $child; do queue="${queue:+$queue }$child"; done
   done
   return 1
 }
@@ -445,6 +454,10 @@ confirm_coqc() {
     admission=$(compiler_admission_reason "$confirming") || {
       status=$?; flock -u 7; exec 7>&-; return "$status"
     }
+    # Admission can remove this token if its earlier confirmation expired.
+    if ! reservation_path "$marker"; then
+      flock -u 7; exec 7>&-; return 2
+    fi
     if [ -z "$reason$holder$admission" ]; then
       [ -z "$held" ] || note "RESUME reservation launch: $held"
       if [ "$state" = pending ]; then
@@ -477,6 +490,8 @@ mark_coqc() {
   aggregate=$(sed -n '3s/^aggregate=//p' "$marker")
   replacement=$(mktemp "$STATE_DIR/coqc-mark.XXXXXXXX")
   printf '%s\nwriter=%s\naggregate=%s\n' "$child" "$writer" "$aggregate" > "$replacement"
+  # Marking the child must not restart the confirmation's launch window.
+  touch -r "$marker" "$replacement"
   mv -f -- "$replacement" "$marker"
   flock -u 7
   exec 7>&-
@@ -624,6 +639,24 @@ live_scopes() {
   systemctl --user list-units --type=scope --state=active --plain --no-legend \
     "${SCOPE_PREFIX}-*" 2>/dev/null | awk '$1 !~ /-writer-/ {print $1}'
 }
+
+prune_scope_registry() (
+  local active replacement
+  exec 8>>"$REGISTRY.lock"
+  flock 8
+  active=$(systemctl --user list-units --type=scope --state=active --plain \
+    --no-legend "${SCOPE_PREFIX}-*" 2>/dev/null) || return 0
+  replacement=$(mktemp "$STATE_DIR/scopes.XXXXXXXX") || return 2
+  awk 'NR == FNR { live[$1] = 1; next } live[$0] && !seen[$0]++' \
+    <(printf '%s\n' "$active") "$REGISTRY" > "$replacement"
+  mv -f -- "$replacement" "$REGISTRY"
+)
+
+register_scope() (
+  exec 8>>"$REGISTRY.lock"
+  flock 8
+  printf '%s\n' "$1" >> "$REGISTRY"
+)
 
 # The youngest scope is the last one this agent registered that is still
 # alive, so the kill lands on the job that has run least, not on a batch
@@ -809,8 +842,7 @@ run_scope() {
   trap cleanup_scope EXIT
   trap 'exit 143' TERM
   trap 'exit 130' INT
-  echo "$unit.scope" >> "$REGISTRY"
-  systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
+  ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
     -p "MemoryMax=${MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
     $(io_class) "$(realpath "$0")" scope-exec "$reservation" -- "$@" &
   child=$!
@@ -909,6 +941,8 @@ report() {
   python3 "$PROM" now || echo "prometheus unavailable; no machine figures"
 }
 
+prune_scope_registry
+
 case "${1:-report}" in
   jobs)   guard_jobs ;;
   coqc-count)
@@ -925,6 +959,7 @@ case "${1:-report}" in
   scope)  shift; run_scope "$@" ;;
   scope-exec)
     token=$2; shift 2; [ "${1:-}" = -- ] && shift
+    [ -z "${ZESU_SCOPE_UNIT:-}" ] || register_scope "$ZESU_SCOPE_UNIT"
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
