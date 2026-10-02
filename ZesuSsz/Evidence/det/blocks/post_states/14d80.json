@@ -89,6 +89,18 @@
       "iProp Sigma"
     ],
     [
+      "Hdecoded",
+      "bv_unsigned decoded = (bv_unsigned sp + 32)%Z"
+    ],
+    [
+      "Hmin",
+      "(mapRamBase defaultMap + 0x880 <= bv_unsigned sp)%Z"
+    ],
+    [
+      "Hmax",
+      "(bv_unsigned sp + 0x7d0 < machineRamEnd defaultMap)%Z"
+    ],
+    [
       "Halign",
       "bv_unsigned sp `mod` 16 = 0"
     ],
@@ -518,7 +530,8 @@
     "\"x11\" ↦ᵣ RVal_Bits b23",
     "\"x2\" ↦ᵣ RVal_Bits (sp - 2000)%bv",
     "bv_unsigned (Z_to_bv 64 85504 + 12288 + 18446744073709550533) ↦ₘ∗ [90%bv; 83%bv; 83%bv; 90%bv; 1%bv; 1%bv]",
-    "spec_trace tail"
+    "spec_trace tail",
+    "mmio_range (machineOutputAddress defaultMap) 16"
   ],
   "imports": [
     "ZesuSsz.Export.Snapshots"
@@ -641,7 +654,10 @@
     "sp": "Type",
     "H": "Type",
     "islaG0": "Type",
-    "Sigma": "Type"
+    "Sigma": "Type",
+    "Hdecoded": "Prop",
+    "Hmin": "Prop",
+    "Hmax": "Prop"
   },
   "memory_word_widths": {
     "(bv_unsigned (sp - 2000) + 288)": 64,
@@ -694,5 +710,27 @@
     "word_width": 64,
     "packing": "borrowed_words = IslarisMemory.u64s_of_bytes 16 (take (16 * 8) (drop 720 object))",
     "length": 16
+  },
+  "persistent": [
+    "mmio_range (604086456 + 8) 16",
+    "mmio_range (604086456 + 8) 16"
+  ],
+  "ambient_fact_provenance": {
+    "source": "ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactNativeCopy.v",
+    "theorem": "exact_native_copy_correct",
+    "parameters": {
+      "Hdecoded": "bv_unsigned decoded = (bv_unsigned sp + 32)%Z",
+      "Hmin": "(mapRamBase defaultMap + 0x880 <= bv_unsigned sp)%Z",
+      "Hmax": "(bv_unsigned sp + 0x7d0 < machineRamEnd defaultMap)%Z"
+    },
+    "method": "Recovered unchanged theorem parameters; the diagnostic raw_goals omitted these ambient facts. No bound was strengthened."
+  },
+  "persistent_provenance": {
+    "source": "raw_goals persistent context before the □ separator",
+    "resources": [
+      "mmio_range (604086456 + 8) 16",
+      "mmio_range (604086456 + 8) 16"
+    ],
+    "generated_form": "One intrinsically persistent MMIO permission represents both duplicable persistent copies."
   }
 }
