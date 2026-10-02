@@ -1,6 +1,7 @@
 """Tests for the resource guard's gate lock and ramp, and for prom.py."""
 
 import os
+import fcntl
 import json
 import subprocess
 import sys
@@ -693,6 +694,19 @@ class GuardLockTest(unittest.TestCase):
                                 text=True, timeout=3)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(all(not marker.exists() for marker in launching))
+
+    def test_confirmed_slot_drains_while_admission_mutex_is_held(self):
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
+        try:
+            with open(str(self.lock) + ".mutex", "a") as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX)
+                result = subprocess.run(
+                    [str(GUARD), "confirm-coqc", token], env=self.environment,
+                    text=True, capture_output=True, timeout=2)
+                self.assertEqual(result.returncode, 0, result.stderr)
+        finally:
+            self.guard("release-coqc", token)
 
     def test_old_own_confirmation_remains_valid_before_launch(self):
         self.writer_fixture()
