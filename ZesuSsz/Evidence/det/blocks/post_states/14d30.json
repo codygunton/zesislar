@@ -1,0 +1,875 @@
+{
+  "state_entry": "0x14d7c",
+  "entry": "0x14d30",
+  "outcome": "reached",
+  "binders": "`{!islaG Sigma} `{!threadG} {Decoded : Type} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded)",
+  "coq": [
+    [
+      "H1",
+      "successStackPointer Decoded args = bv_unsigned (writeSuccessEntrySp witness)"
+    ],
+    [
+      "H3",
+      "successDecodedAddress Decoded args = bv_unsigned (writeSuccessDecodedPointer witness)"
+    ],
+    [
+      "H2",
+      "successReturnAddress Decoded args = 85264%Z"
+    ],
+    [
+      "H4",
+      "writeSuccessReturnValue witness = Z_to_bv 64 (successReturnAddress Decoded args)"
+    ],
+    [
+      "H5",
+      "bv_unsigned (writeSuccessDecodedPointer witness) = (bv_unsigned (writeSuccessEntrySp witness) + 32)%Z"
+    ],
+    [
+      "H6",
+      "length (writeSuccessDecodedBytes witness) = 848%nat"
+    ],
+    [
+      "H7",
+      "length (writeSuccessSourceBytes witness) = 720%nat"
+    ],
+    [
+      "H8",
+      "writeSuccessSourceBytes witness = take 720 (writeSuccessDecodedBytes witness)"
+    ],
+    [
+      "H9",
+      "length (writeSuccessValues witness) = 74%nat"
+    ],
+    [
+      "H10",
+      "IslarisMemory.bytes_of_u64s (writeSuccessValues witness) = take 592 (writeSuccessSourceBytes witness)"
+    ],
+    [
+      "H11",
+      "bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 5) = length (writeSuccessPayload witness)"
+    ],
+    [
+      "H12",
+      "writeSuccessValueWord (writeSuccessValues witness) 7 = Z_to_bv 64 (writeSuccessTransactionBase witness)"
+    ],
+    [
+      "H13",
+      "writeSuccessValueWord (writeSuccessValues witness) 8 = Z_to_bv 64 (length (writeSuccessTransactions witness))"
+    ],
+    [
+      "H14",
+      "WriteSuccessNativeContract.writeSuccessTransactionBytes witness = writeSuccessTransactionsBytes (writeSuccessTransactions witness)"
+    ],
+    [
+      "H15",
+      "writeSuccessMemoryRepresents (writeSuccessDecodedBytes witness) (writeSuccessValues witness) (writeSuccessPayload witness) (writeSuccessTransactions witness) (writeSuccessRawTransactions witness) (writeSuccessWithdrawalsBytes witness) (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness) (successDecoded Decoded args)"
+    ],
+    [
+      "H16",
+      "WriteSuccessTransactionsPost15674Boundary.writeSuccessTransactionsPost15674ByteListFacts (writeSuccessFrameSp witness) (writeSuccessValueWord (writeSuccessValues witness) 9) (writeSuccessValueWord (writeSuccessValues witness) 10) (writeSuccessRawTransactions witness)"
+    ],
+    [
+      "H17",
+      "writeSuccessValueWord (writeSuccessValues witness) 11 = writeSuccessWithdrawalsBase witness"
+    ],
+    [
+      "H18",
+      "writeSuccessValueWord (writeSuccessValues witness) 12 = Z_to_bv 64 (writeSuccessWithdrawalsCount witness)"
+    ],
+    [
+      "H19",
+      "length (writeSuccessWithdrawalsBytes witness) = (48 * writeSuccessWithdrawalsCount witness)%nat"
+    ],
+    [
+      "H20",
+      "(mapRamBase defaultMap \u2264 bv_unsigned (writeSuccessWithdrawalsBase witness))%Z"
+    ],
+    [
+      "H21",
+      "(bv_unsigned (writeSuccessWithdrawalsBase witness) + length (writeSuccessWithdrawalsBytes witness) < machineRamEnd defaultMap)%Z"
+    ],
+    [
+      "H22",
+      "(bv_unsigned (writeSuccessEntrySp witness) `mod` 16)%Z = 0%Z"
+    ],
+    [
+      "H23",
+      "(mapRamBase defaultMap + 2176 \u2264 bv_unsigned (writeSuccessEntrySp witness))%Z"
+    ],
+    [
+      "H25",
+      "(bv_unsigned (writeSuccessEntrySp witness) + 2000 < machineRamEnd defaultMap)%Z"
+    ],
+    [
+      "v",
+      "valu"
+    ],
+    [
+      "v0",
+      "valu"
+    ],
+    [
+      "v1",
+      "bv 64"
+    ],
+    [
+      "v2",
+      "bv 64"
+    ],
+    [
+      "v3",
+      "bv 64"
+    ],
+    [
+      "v4",
+      "bv 64"
+    ],
+    [
+      "v5",
+      "bv 64"
+    ],
+    [
+      "v6",
+      "bv 64"
+    ],
+    [
+      "v7",
+      "bv 64"
+    ],
+    [
+      "v8",
+      "bv 64"
+    ],
+    [
+      "v9",
+      "bv 64"
+    ],
+    [
+      "v10",
+      "bv 64"
+    ],
+    [
+      "v11",
+      "bv 64"
+    ],
+    [
+      "v12",
+      "bv 64"
+    ],
+    [
+      "v13",
+      "bv 64"
+    ],
+    [
+      "H24",
+      "bv_extract 0 4 (writeSuccessEntrySp witness) = 0%bv"
+    ],
+    [
+      "Hupper",
+      "(bv_unsigned (writeSuccessEntrySp witness) + 2000 < 0 + 1073741824)%Z"
+    ],
+    [
+      "vact",
+      "valu"
+    ],
+    [
+      "vact0",
+      "valu"
+    ],
+    [
+      "vact1",
+      "valu"
+    ],
+    [
+      "vact2",
+      "valu"
+    ],
+    [
+      "vact3",
+      "valu"
+    ],
+    [
+      "vact4",
+      "valu"
+    ],
+    [
+      "vact5",
+      "valu"
+    ],
+    [
+      "vact6",
+      "valu"
+    ],
+    [
+      "vact7",
+      "valu"
+    ],
+    [
+      "vact8",
+      "valu"
+    ],
+    [
+      "vact9",
+      "valu"
+    ],
+    [
+      "vact10",
+      "valu"
+    ],
+    [
+      "vact11",
+      "valu"
+    ],
+    [
+      "vact12",
+      "valu"
+    ],
+    [
+      "b",
+      "bv 64"
+    ],
+    [
+      "H0",
+      "Z.land (bv_unsigned b) 131072 = 0%Z"
+    ],
+    [
+      "n",
+      "bv 64"
+    ],
+    [
+      "b0",
+      "bv 64"
+    ],
+    [
+      "H26",
+      "Z.land (bv_unsigned b0) 131072 = 0%Z"
+    ],
+    [
+      "H27",
+      "Z.land (bvn_unsigned n) 131072 = 0%Z"
+    ],
+    [
+      "n0",
+      "bv 64"
+    ],
+    [
+      "b1",
+      "bool"
+    ],
+    [
+      "n1",
+      "bv 64"
+    ],
+    [
+      "b2",
+      "bv 64"
+    ],
+    [
+      "H28",
+      "Z.land (bv_unsigned b2) 131072 = 0%Z"
+    ],
+    [
+      "H29",
+      "Z.land (bvn_unsigned n1) 131072 = 0%Z"
+    ],
+    [
+      "n2",
+      "bv 64"
+    ],
+    [
+      "b3",
+      "bool"
+    ],
+    [
+      "n3",
+      "bv 64"
+    ],
+    [
+      "b4",
+      "bv 64"
+    ],
+    [
+      "H30",
+      "Z.land (bv_unsigned b4) 131072 = 0%Z"
+    ],
+    [
+      "H31",
+      "Z.land (bvn_unsigned n3) 131072 = 0%Z"
+    ],
+    [
+      "n4",
+      "bv 64"
+    ],
+    [
+      "b5",
+      "bool"
+    ],
+    [
+      "n5",
+      "bv 64"
+    ],
+    [
+      "b6",
+      "bv 64"
+    ],
+    [
+      "H32",
+      "Z.land (bv_unsigned b6) 131072 = 0%Z"
+    ],
+    [
+      "H33",
+      "Z.land (bvn_unsigned n5) 131072 = 0%Z"
+    ],
+    [
+      "n6",
+      "bv 64"
+    ],
+    [
+      "b7",
+      "bool"
+    ],
+    [
+      "n7",
+      "bv 64"
+    ],
+    [
+      "b8",
+      "bv 64"
+    ],
+    [
+      "H34",
+      "Z.land (bv_unsigned b8) 131072 = 0%Z"
+    ],
+    [
+      "H35",
+      "Z.land (bvn_unsigned n7) 131072 = 0%Z"
+    ],
+    [
+      "n8",
+      "bv 64"
+    ],
+    [
+      "b9",
+      "bool"
+    ],
+    [
+      "n9",
+      "bv 64"
+    ],
+    [
+      "b10",
+      "bv 64"
+    ],
+    [
+      "H36",
+      "Z.land (bv_unsigned b10) 131072 = 0%Z"
+    ],
+    [
+      "H37",
+      "Z.land (bvn_unsigned n9) 131072 = 0%Z"
+    ],
+    [
+      "n10",
+      "bv 64"
+    ],
+    [
+      "b11",
+      "bool"
+    ],
+    [
+      "n11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "H38",
+      "Z.land (bv_unsigned b12) 131072 = 0%Z"
+    ],
+    [
+      "H39",
+      "Z.land (bvn_unsigned n11) 131072 = 0%Z"
+    ],
+    [
+      "n12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bool"
+    ],
+    [
+      "n13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "H40",
+      "Z.land (bv_unsigned b14) 131072 = 0%Z"
+    ],
+    [
+      "H41",
+      "Z.land (bvn_unsigned n13) 131072 = 0%Z"
+    ],
+    [
+      "n14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bool"
+    ],
+    [
+      "n15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "H42",
+      "Z.land (bv_unsigned b16) 131072 = 0%Z"
+    ],
+    [
+      "H43",
+      "Z.land (bvn_unsigned n15) 131072 = 0%Z"
+    ],
+    [
+      "n16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bool"
+    ],
+    [
+      "n17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "H44",
+      "Z.land (bv_unsigned b18) 131072 = 0%Z"
+    ],
+    [
+      "H45",
+      "Z.land (bvn_unsigned n17) 131072 = 0%Z"
+    ],
+    [
+      "n18",
+      "bv 64"
+    ],
+    [
+      "b19",
+      "bool"
+    ],
+    [
+      "n19",
+      "bv 64"
+    ],
+    [
+      "b20",
+      "bv 64"
+    ],
+    [
+      "H46",
+      "Z.land (bv_unsigned b20) 131072 = 0%Z"
+    ],
+    [
+      "H47",
+      "Z.land (bvn_unsigned n19) 131072 = 0%Z"
+    ],
+    [
+      "n20",
+      "bv 64"
+    ],
+    [
+      "b21",
+      "bool"
+    ],
+    [
+      "n21",
+      "bv 64"
+    ],
+    [
+      "b22",
+      "bv 64"
+    ],
+    [
+      "H48",
+      "Z.land (bv_unsigned b22) 131072 = 0%Z"
+    ],
+    [
+      "H49",
+      "Z.land (bvn_unsigned n21) 131072 = 0%Z"
+    ],
+    [
+      "n22",
+      "bv 64"
+    ],
+    [
+      "b23",
+      "bool"
+    ],
+    [
+      "n23",
+      "bv 64"
+    ],
+    [
+      "b24",
+      "bv 64"
+    ],
+    [
+      "H50",
+      "Z.land (bv_unsigned b24) 131072 = 0%Z"
+    ],
+    [
+      "H51",
+      "Z.land (bvn_unsigned n23) 131072 = 0%Z"
+    ],
+    [
+      "n24",
+      "bv 64"
+    ],
+    [
+      "b25",
+      "bool"
+    ],
+    [
+      "b26",
+      "bv 64"
+    ],
+    [
+      "H52",
+      "Z.land (bv_unsigned b26) 131072 = 0%Z"
+    ],
+    [
+      "b27",
+      "bv 64"
+    ],
+    [
+      "H53",
+      "Z.land (bv_unsigned b27) 131072 = 0%Z"
+    ],
+    [
+      "b28",
+      "bv 64"
+    ],
+    [
+      "H54",
+      "Z.land (bv_unsigned b28) 131072 = 0%Z"
+    ],
+    [
+      "b29",
+      "bv 64"
+    ],
+    [
+      "H55",
+      "Z.land (bv_unsigned b29) 131072 = 0%Z"
+    ],
+    [
+      "b30",
+      "bv 64"
+    ],
+    [
+      "H56",
+      "Z.land (bv_unsigned b30) 131072 = 0%Z"
+    ]
+  ],
+  "persistent": [],
+  "spatial": [
+    "\u231cvalu_has_shape vact (BitsShape 64)\u231d",
+    "\"x3\" \u21a6\u1d63 vact",
+    "\u231cvalu_has_shape vact0 (BitsShape 64)\u231d",
+    "\"x4\" \u21a6\u1d63 vact0",
+    "\u231cvalu_has_shape vact1 (BitsShape 64)\u231d",
+    "\"x5\" \u21a6\u1d63 vact1",
+    "\u231cvalu_has_shape vact2 (BitsShape 64)\u231d",
+    "\"x6\" \u21a6\u1d63 vact2",
+    "\u231cvalu_has_shape vact3 (BitsShape 64)\u231d",
+    "\"x7\" \u21a6\u1d63 vact3",
+    "\u231cvalu_has_shape vact4 (BitsShape 64)\u231d",
+    "\"x13\" \u21a6\u1d63 vact4",
+    "\u231cvalu_has_shape vact5 (BitsShape 64)\u231d",
+    "\"x14\" \u21a6\u1d63 vact5",
+    "\u231cvalu_has_shape vact6 (BitsShape 64)\u231d",
+    "\"x15\" \u21a6\u1d63 vact6",
+    "\u231cvalu_has_shape vact7 (BitsShape 64)\u231d",
+    "\"x16\" \u21a6\u1d63 vact7",
+    "\u231cvalu_has_shape vact8 (BitsShape 64)\u231d",
+    "\"x17\" \u21a6\u1d63 vact8",
+    "\u231cvalu_has_shape vact9 (BitsShape 64)\u231d",
+    "\"x28\" \u21a6\u1d63 vact9",
+    "\u231cvalu_has_shape vact10 (BitsShape 64)\u231d",
+    "\"x29\" \u21a6\u1d63 vact10",
+    "\u231cvalu_has_shape vact11 (BitsShape 64)\u231d",
+    "\"x30\" \u21a6\u1d63 vact11",
+    "\u231cvalu_has_shape vact12 (BitsShape 64)\u231d",
+    "\"x31\" \u21a6\u1d63 vact12",
+    "emp",
+    "(bv_unsigned (writeSuccessEntrySp witness) - 2000) \u21a6\u2098? 1896",
+    "bv_unsigned (writeSuccessDecodedPointer witness) \u21a6\u2098\u2217 writeSuccessDecodedBytes witness",
+    "mmio_range (604086456 + 8) 16",
+    "spec_trace (writeSuccessNativeTailEvents witness)",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 48) \u21a6\u2098? 48",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 80) \u21a6\u2098? 32",
+    "bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 4) \u21a6\u2098\u2217 writeSuccessPayload witness",
+    "writeSuccessTransactionBase witness \u21a6\u2098\u2217 WriteSuccessNativeContract.writeSuccessTransactionBytes witness",
+    "writeSuccessTransactionsOwn (writeSuccessTransactions witness)",
+    "writeSuccessTransactionsInvariant (writeSuccessFrameSp witness) (writeSuccessTransactionBase witness) (writeSuccessTransactions witness) [] (writeSuccessTransactions witness) (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) [] (WriteSuccessNativeContract.writeSuccessTransactionBytes witness)",
+    "\u231clength (writeSuccessSourceBytes witness) = 720%nat\u231d",
+    "\u231cIslarisMemory.bytes_of_u64s (writeSuccessValues witness) = take 592 (writeSuccessSourceBytes witness)\u231d",
+    "\u231clength (writeSuccessValues witness) = 74%nat\u231d",
+    "\u231cbv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 5) = length (writeSuccessPayload witness)\u231d",
+    "\u231cwriteSuccessValueWord (writeSuccessValues witness) 7 = Z_to_bv 64 (writeSuccessTransactionBase witness)\u231d",
+    "\u231cwriteSuccessValueWord (writeSuccessValues witness) 8 = Z_to_bv 64 (length (writeSuccessTransactions witness))\u231d",
+    "\u231c(bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z\u231d",
+    "\u231c(bv_unsigned (writeSuccessFrameSp witness) `mod` 8)%Z = 0%Z\u231d",
+    "\u231c(0 \u2264 bv_unsigned (writeSuccessFrameSp witness) - 48)%Z\u231d",
+    "\u231c(bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824)%Z\u231d",
+    "True",
+    "byteListItemResources (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9)) (writeSuccessRawTransactions witness)",
+    "bv_unsigned (writeSuccessWithdrawalsBase witness) \u21a6\u2098\u2217 writeSuccessWithdrawalsBytes witness",
+    "\u231cWriteSuccessTransactionsPost15674Boundary.writeSuccessTransactionsPost15674ByteListFacts (writeSuccessFrameSp witness) (writeSuccessValueWord (writeSuccessValues witness) 9) (writeSuccessValueWord (writeSuccessValues witness) 10) (writeSuccessRawTransactions witness)\u231d",
+    "\u231cwriteSuccessValueWord (writeSuccessValues witness) 11 = writeSuccessWithdrawalsBase witness\u231d",
+    "\u231cwriteSuccessValueWord (writeSuccessValues witness) 12 = Z_to_bv 64 (writeSuccessWithdrawalsCount witness)\u231d",
+    "\u231clength (writeSuccessWithdrawalsBytes witness) = (48 * writeSuccessWithdrawalsCount witness)%nat\u231d",
+    "\u231c(0 \u2264 bv_unsigned (writeSuccessWithdrawalsBase witness))%Z\u231d",
+    "\u231c(bv_unsigned (writeSuccessWithdrawalsBase witness) + length (writeSuccessWithdrawalsBytes witness) < 0 + 1073741824)%Z\u231d",
+    "writeSuccessPostTransactionDataResources (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)",
+    "writeSuccessNativeStaticResources",
+    "\u231clength (writeSuccessDecodedBytes witness) = 848%nat\u231d",
+    "\u231c(0 \u2264 bv_unsigned (writeSuccessDecodedPointer witness))%Z\u231d",
+    "\u231c(bv_unsigned (writeSuccessDecodedPointer witness) + 848 < 0 + 1073741824)%Z\u231d",
+    "True",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1992) \u21a6\u2098 writeSuccessReturnValue witness",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1984) \u21a6\u2098 writeSuccessSavedS0 witness",
+    "\"x9\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS1 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1976) \u21a6\u2098 writeSuccessSavedS1 witness",
+    "\"x18\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS2 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1968) \u21a6\u2098 writeSuccessSavedS2 witness",
+    "\"x19\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS3 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1960) \u21a6\u2098 writeSuccessSavedS3 witness",
+    "\"x20\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS4 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1952) \u21a6\u2098 writeSuccessSavedS4 witness",
+    "\"x21\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS5 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1944) \u21a6\u2098 writeSuccessSavedS5 witness",
+    "\"x22\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS6 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1936) \u21a6\u2098 writeSuccessSavedS6 witness",
+    "\"x23\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS7 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1928) \u21a6\u2098 writeSuccessSavedS7 witness",
+    "\"x24\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS8 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1920) \u21a6\u2098 writeSuccessSavedS8 witness",
+    "\"x25\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS9 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1912) \u21a6\u2098 writeSuccessSavedS9 witness",
+    "\"x26\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS10 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1904) \u21a6\u2098 writeSuccessSavedS10 witness",
+    "\"x27\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS11 witness)",
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1896) \u21a6\u2098 writeSuccessSavedS11 witness",
+    "\"x2\" \u21a6\u1d63 RVal_Bits (writeSuccessEntrySp witness + 18446744073709549616)%bv",
+    "\"x10\" \u21a6\u1d63 RVal_Bits (writeSuccessEntrySp witness + 18446744073709549616 + 312)%bv",
+    "\"x12\" \u21a6\u1d63 RVal_Bits 720%bv",
+    "\"x8\" \u21a6\u1d63 RVal_Bits (writeSuccessDecodedPointer witness + 0)%bv",
+    "\"x11\" \u21a6\u1d63 RVal_Bits (writeSuccessDecodedPointer witness + 0 + 0)%bv",
+    "reg_col zesu_ram_sys_regs",
+    "\"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 85368 + 18446744073709531136)%bv"
+  ],
+  "local_sorts": {
+    "H1": "Prop",
+    "H3": "Prop",
+    "H2": "Prop",
+    "H4": "Prop",
+    "H5": "Prop",
+    "H6": "Prop",
+    "H7": "Prop",
+    "H8": "Prop",
+    "H9": "Prop",
+    "H10": "Prop",
+    "H11": "Prop",
+    "H12": "Prop",
+    "H13": "Prop",
+    "H14": "Prop",
+    "H15": "Prop",
+    "H16": "Prop",
+    "H17": "Prop",
+    "H18": "Prop",
+    "H19": "Prop",
+    "H20": "Prop",
+    "H21": "Prop",
+    "H22": "Prop",
+    "H23": "Prop",
+    "H25": "Prop",
+    "v": "Type",
+    "v0": "Type",
+    "v1": "Type",
+    "v2": "Type",
+    "v3": "Type",
+    "v4": "Type",
+    "v5": "Type",
+    "v6": "Type",
+    "v7": "Type",
+    "v8": "Type",
+    "v9": "Type",
+    "v10": "Type",
+    "v11": "Type",
+    "v12": "Type",
+    "v13": "Type",
+    "H24": "Prop",
+    "Hupper": "Prop",
+    "vact": "Type",
+    "vact0": "Type",
+    "vact1": "Type",
+    "vact2": "Type",
+    "vact3": "Type",
+    "vact4": "Type",
+    "vact5": "Type",
+    "vact6": "Type",
+    "vact7": "Type",
+    "vact8": "Type",
+    "vact9": "Type",
+    "vact10": "Type",
+    "vact11": "Type",
+    "vact12": "Type",
+    "b": "Type",
+    "H0": "Prop",
+    "n": "Type",
+    "b0": "Type",
+    "H26": "Prop",
+    "H27": "Prop",
+    "n0": "Type",
+    "b1": "Type",
+    "n1": "Type",
+    "b2": "Type",
+    "H28": "Prop",
+    "H29": "Prop",
+    "n2": "Type",
+    "b3": "Type",
+    "n3": "Type",
+    "b4": "Type",
+    "H30": "Prop",
+    "H31": "Prop",
+    "n4": "Type",
+    "b5": "Type",
+    "n5": "Type",
+    "b6": "Type",
+    "H32": "Prop",
+    "H33": "Prop",
+    "n6": "Type",
+    "b7": "Type",
+    "n7": "Type",
+    "b8": "Type",
+    "H34": "Prop",
+    "H35": "Prop",
+    "n8": "Type",
+    "b9": "Type",
+    "n9": "Type",
+    "b10": "Type",
+    "H36": "Prop",
+    "H37": "Prop",
+    "n10": "Type",
+    "b11": "Type",
+    "n11": "Type",
+    "b12": "Type",
+    "H38": "Prop",
+    "H39": "Prop",
+    "n12": "Type",
+    "b13": "Type",
+    "n13": "Type",
+    "b14": "Type",
+    "H40": "Prop",
+    "H41": "Prop",
+    "n14": "Type",
+    "b15": "Type",
+    "n15": "Type",
+    "b16": "Type",
+    "H42": "Prop",
+    "H43": "Prop",
+    "n16": "Type",
+    "b17": "Type",
+    "n17": "Type",
+    "b18": "Type",
+    "H44": "Prop",
+    "H45": "Prop",
+    "n18": "Type",
+    "b19": "Type",
+    "n19": "Type",
+    "b20": "Type",
+    "H46": "Prop",
+    "H47": "Prop",
+    "n20": "Type",
+    "b21": "Type",
+    "n21": "Type",
+    "b22": "Type",
+    "H48": "Prop",
+    "H49": "Prop",
+    "n22": "Type",
+    "b23": "Type",
+    "n23": "Type",
+    "b24": "Type",
+    "H50": "Prop",
+    "H51": "Prop",
+    "n24": "Type",
+    "b25": "Type",
+    "b26": "Type",
+    "H52": "Prop",
+    "b27": "Type",
+    "H53": "Prop",
+    "b28": "Type",
+    "H54": "Prop",
+    "b29": "Type",
+    "H55": "Prop",
+    "b30": "Type",
+    "H56": "Prop"
+  },
+  "imports": [
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeContract",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessRepresentation",
+    "ZesuSsz.Contracts.Endpoints",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPostTransactionResources",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessValueSpec"
+  ],
+  "root_provenance": {
+    "source": "WriteSuccessNativeContract.writeSuccessNativeEntry",
+    "verified_baseline": "11186cbc",
+    "source_check": "NativeContract, ToLoadWithFrame, and LoadHeader sources have no diff against baseline."
+  },
+  "raw_goals": "1 focused goal (shelved: 58)\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  Decoded : Type\n  WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation Decoded\n  args : WriteSuccessArgs Decoded\n  witness : writeSuccessNativeWitness Decoded\n  H1 : successStackPointer Decoded args = bv_unsigned (writeSuccessEntrySp witness)\n  H3 : successDecodedAddress Decoded args = bv_unsigned (writeSuccessDecodedPointer witness)\n  H2 : successReturnAddress Decoded args = 85264%Z\n  H4 : writeSuccessReturnValue witness = Z_to_bv 64 (successReturnAddress Decoded args)\n  H5 : bv_unsigned (writeSuccessDecodedPointer witness) = (bv_unsigned (writeSuccessEntrySp witness) + 32)%Z\n  H6 : length (writeSuccessDecodedBytes witness) = 848%nat\n  H7 : length (writeSuccessSourceBytes witness) = 720%nat\n  H8 : writeSuccessSourceBytes witness = take 720 (writeSuccessDecodedBytes witness)\n  H9 : length (writeSuccessValues witness) = 74%nat\n  H10 : IslarisMemory.bytes_of_u64s (writeSuccessValues witness) = take 592 (writeSuccessSourceBytes witness)\n  H11 : bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 5) = length (writeSuccessPayload witness)\n  H12 : writeSuccessValueWord (writeSuccessValues witness) 7 = Z_to_bv 64 (writeSuccessTransactionBase witness)\n  H13 : writeSuccessValueWord (writeSuccessValues witness) 8 = Z_to_bv 64 (length (writeSuccessTransactions witness))\n  H14 : WriteSuccessNativeContract.writeSuccessTransactionBytes witness = writeSuccessTransactionsBytes (writeSuccessTransactions witness)\n  H15 : writeSuccessMemoryRepresents (writeSuccessDecodedBytes witness) (writeSuccessValues witness) (writeSuccessPayload witness) (writeSuccessTransactions witness) (writeSuccessRawTransactions witness) (writeSuccessWithdrawalsBytes witness) (writeSuccessWithdrawalsCount witness) (writeSuccessPostData witness) (successDecoded Decoded args)\n  H16 : WriteSuccessTransactionsPost15674Boundary.writeSuccessTransactionsPost15674ByteListFacts (writeSuccessFrameSp witness) (writeSuccessValueWord (writeSuccessValues witness) 9) (writeSuccessValueWord (writeSuccessValues witness) 10) (writeSuccessRawTransactions witness)\n  H17 : writeSuccessValueWord (writeSuccessValues witness) 11 = writeSuccessWithdrawalsBase witness\n  H18 : writeSuccessValueWord (writeSuccessValues witness) 12 = Z_to_bv 64 (writeSuccessWithdrawalsCount witness)\n  H19 : length (writeSuccessWithdrawalsBytes witness) = (48 * writeSuccessWithdrawalsCount witness)%nat\n  H20 : (mapRamBase defaultMap \u2264 bv_unsigned (writeSuccessWithdrawalsBase witness))%Z\n  H21 : (bv_unsigned (writeSuccessWithdrawalsBase witness) + length (writeSuccessWithdrawalsBytes witness) < machineRamEnd defaultMap)%Z\n  H22 : (bv_unsigned (writeSuccessEntrySp witness) `mod` 16)%Z = 0%Z\n  H23 : (mapRamBase defaultMap + 2176 \u2264 bv_unsigned (writeSuccessEntrySp witness))%Z\n  H25 : (bv_unsigned (writeSuccessEntrySp witness) + 2000 < machineRamEnd defaultMap)%Z\n  v, v0 : valu\n  v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13 : bv 64\n  H24 : bv_extract 0 4 (writeSuccessEntrySp witness) = 0%bv\n  Hupper : (bv_unsigned (writeSuccessEntrySp witness) + 2000 < 0 + 1073741824)%Z\n  vact, vact0, vact1, vact2, vact3, vact4, vact5, vact6, vact7, vact8, vact9, vact10, vact11, vact12 : valu\n  b : bv 64\n  H0 : Z.land (bv_unsigned b) 131072 = 0%Z\n  n, b0 : bv 64\n  H26 : Z.land (bv_unsigned b0) 131072 = 0%Z\n  H27 : Z.land (bvn_unsigned n) 131072 = 0%Z\n  n0 : bv 64\n  b1 : bool\n  n1, b2 : bv 64\n  H28 : Z.land (bv_unsigned b2) 131072 = 0%Z\n  H29 : Z.land (bvn_unsigned n1) 131072 = 0%Z\n  n2 : bv 64\n  b3 : bool\n  n3, b4 : bv 64\n  H30 : Z.land (bv_unsigned b4) 131072 = 0%Z\n  H31 : Z.land (bvn_unsigned n3) 131072 = 0%Z\n  n4 : bv 64\n  b5 : bool\n  n5, b6 : bv 64\n  H32 : Z.land (bv_unsigned b6) 131072 = 0%Z\n  H33 : Z.land (bvn_unsigned n5) 131072 = 0%Z\n  n6 : bv 64\n  b7 : bool\n  n7, b8 : bv 64\n  H34 : Z.land (bv_unsigned b8) 131072 = 0%Z\n  H35 : Z.land (bvn_unsigned n7) 131072 = 0%Z\n  n8 : bv 64\n  b9 : bool\n  n9, b10 : bv 64\n  H36 : Z.land (bv_unsigned b10) 131072 = 0%Z\n  H37 : Z.land (bvn_unsigned n9) 131072 = 0%Z\n  n10 : bv 64\n  b11 : bool\n  n11, b12 : bv 64\n  H38 : Z.land (bv_unsigned b12) 131072 = 0%Z\n  H39 : Z.land (bvn_unsigned n11) 131072 = 0%Z\n  n12 : bv 64\n  b13 : bool\n  n13, b14 : bv 64\n  H40 : Z.land (bv_unsigned b14) 131072 = 0%Z\n  H41 : Z.land (bvn_unsigned n13) 131072 = 0%Z\n  n14 : bv 64\n  b15 : bool\n  n15, b16 : bv 64\n  H42 : Z.land (bv_unsigned b16) 131072 = 0%Z\n  H43 : Z.land (bvn_unsigned n15) 131072 = 0%Z\n  n16 : bv 64\n  b17 : bool\n  n17, b18 : bv 64\n  H44 : Z.land (bv_unsigned b18) 131072 = 0%Z\n  H45 : Z.land (bvn_unsigned n17) 131072 = 0%Z\n  n18 : bv 64\n  b19 : bool\n  n19, b20 : bv 64\n  H46 : Z.land (bv_unsigned b20) 131072 = 0%Z\n  H47 : Z.land (bvn_unsigned n19) 131072 = 0%Z\n  n20 : bv 64\n  b21 : bool\n  n21, b22 : bv 64\n  H48 : Z.land (bv_unsigned b22) 131072 = 0%Z\n  H49 : Z.land (bvn_unsigned n21) 131072 = 0%Z\n  n22 : bv 64\n  b23 : bool\n  n23, b24 : bv 64\n  H50 : Z.land (bv_unsigned b24) 131072 = 0%Z\n  H51 : Z.land (bvn_unsigned n23) 131072 = 0%Z\n  n24 : bv 64\n  b25 : bool\n  b26 : bv 64\n  H52 : Z.land (bv_unsigned b26) 131072 = 0%Z\n  b27 : bv 64\n  H53 : Z.land (bv_unsigned b27) 131072 = 0%Z\n  b28 : bv 64\n  H54 : Z.land (bv_unsigned b28) 131072 = 0%Z\n  b29 : bv 64\n  H55 : Z.land (bv_unsigned b29) 131072 = 0%Z\n  b30 : bv 64\n  H56 : Z.land (bv_unsigned b30) 131072 = 0%Z\n  ============================\n  \"Hlookup\" : instr_lookup_resources Index.lookup\n  \"Hspec\" : spec_instr_resources\n  --------------------------------------\u25a1\n  \"Hnext\" : instr_pre 85372 True\n  _ : \u231cvalu_has_shape vact (BitsShape 64)\u231d\n  _ : \"x3\" \u21a6\u1d63 vact\n  _ : \u231cvalu_has_shape vact0 (BitsShape 64)\u231d\n  _ : \"x4\" \u21a6\u1d63 vact0\n  _ : \u231cvalu_has_shape vact1 (BitsShape 64)\u231d\n  _ : \"x5\" \u21a6\u1d63 vact1\n  _ : \u231cvalu_has_shape vact2 (BitsShape 64)\u231d\n  _ : \"x6\" \u21a6\u1d63 vact2\n  _ : \u231cvalu_has_shape vact3 (BitsShape 64)\u231d\n  _ : \"x7\" \u21a6\u1d63 vact3\n  _ : \u231cvalu_has_shape vact4 (BitsShape 64)\u231d\n  _ : \"x13\" \u21a6\u1d63 vact4\n  _ : \u231cvalu_has_shape vact5 (BitsShape 64)\u231d\n  _ : \"x14\" \u21a6\u1d63 vact5\n  _ : \u231cvalu_has_shape vact6 (BitsShape 64)\u231d\n  _ : \"x15\" \u21a6\u1d63 vact6\n  _ : \u231cvalu_has_shape vact7 (BitsShape 64)\u231d\n  _ : \"x16\" \u21a6\u1d63 vact7\n  _ : \u231cvalu_has_shape vact8 (BitsShape 64)\u231d\n  _ : \"x17\" \u21a6\u1d63 vact8\n  _ : \u231cvalu_has_shape vact9 (BitsShape 64)\u231d\n  _ : \"x28\" \u21a6\u1d63 vact9\n  _ : \u231cvalu_has_shape vact10 (BitsShape 64)\u231d\n  _ : \"x29\" \u21a6\u1d63 vact10\n  _ : \u231cvalu_has_shape vact11 (BitsShape 64)\u231d\n  _ : \"x30\" \u21a6\u1d63 vact11\n  _ : \u231cvalu_has_shape vact12 (BitsShape 64)\u231d\n  _ : \"x31\" \u21a6\u1d63 vact12\n  _ : emp\n  _ : (bv_unsigned (writeSuccessEntrySp witness) - 2000) \u21a6\u2098? 1896\n  _ : bv_unsigned (writeSuccessDecodedPointer witness) \u21a6\u2098\u2217 writeSuccessDecodedBytes witness\n  _ : mmio_range (604086456 + 8) 16\n  _ : spec_trace (writeSuccessNativeTailEvents witness)\n  _ : (bv_unsigned (writeSuccessFrameSp witness) - 48) \u21a6\u2098? 48\n  _ : (bv_unsigned (writeSuccessFrameSp witness) - 80) \u21a6\u2098? 32\n  _ : bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 4) \u21a6\u2098\u2217 writeSuccessPayload witness\n  _ : writeSuccessTransactionBase witness \u21a6\u2098\u2217 WriteSuccessNativeContract.writeSuccessTransactionBytes witness\n  _ : writeSuccessTransactionsOwn (writeSuccessTransactions witness)\n  _ : writeSuccessTransactionsInvariant (writeSuccessFrameSp witness) (writeSuccessTransactionBase witness) (writeSuccessTransactions witness) [] (writeSuccessTransactions witness) (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) [] (WriteSuccessNativeContract.writeSuccessTransactionBytes witness)\n  _ : \u231clength (writeSuccessSourceBytes witness) = 720%nat\u231d\n  _ : \u231cIslarisMemory.bytes_of_u64s (writeSuccessValues witness) = take 592 (writeSuccessSourceBytes witness)\u231d\n  _ : \u231clength (writeSuccessValues witness) = 74%nat\u231d\n  _ : \u231cbv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 5) = length (writeSuccessPayload witness)\u231d\n  _ : \u231cwriteSuccessValueWord (writeSuccessValues witness) 7 = Z_to_bv 64 (writeSuccessTransactionBase witness)\u231d\n  _ : \u231cwriteSuccessValueWord (writeSuccessValues witness) 8 = Z_to_bv 64 (length (writeSuccessTransactions witness))\u231d\n  _ : \u231c(bv_unsigned (writeSuccessFrameSp witness) `mod` 16)%Z = 0%Z\u231d\n  _ : \u231c(bv_unsigned (writeSuccessFrameSp witness) `mod` 8)%Z = 0%Z\u231d\n  _ : \u231c(0 \u2264 bv_unsigned (writeSuccessFrameSp witness) - 48)%Z\u231d\n  _ : \u231c(bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824)%Z\u231d\n  _ : True\n  _ : byteListItemResources (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9)) (writeSuccessRawTransactions witness)\n  _ : bv_unsigned (writeSuccessWithdrawalsBase witness) \u21a6\u2098\u2217 writeSuccessWithdrawalsBytes witness\n  _ : \u231cWriteSuccessTransactionsPost15674Boundary.writeSuccessTransactionsPost15674ByteListFacts (writeSuccessFrameSp witness) (writeSuccessValueWord (writeSuccessValues witness) 9) (writeSuccessValueWord (writeSuccessValues witness) 10) (writeSuccessRawTransactions witness)\u231d\n  _ : \u231cwriteSuccessValueWord (writeSuccessValues witness) 11 = writeSuccessWithdrawalsBase witness\u231d\n  _ : \u231cwriteSuccessValueWord (writeSuccessValues witness) 12 = Z_to_bv 64 (writeSuccessWithdrawalsCount witness)\u231d\n  _ : \u231clength (writeSuccessWithdrawalsBytes witness) = (48 * writeSuccessWithdrawalsCount witness)%nat\u231d\n  _ : \u231c(0 \u2264 bv_unsigned (writeSuccessWithdrawalsBase witness))%Z\u231d\n  _ : \u231c(bv_unsigned (writeSuccessWithdrawalsBase witness) + length (writeSuccessWithdrawalsBytes witness) < 0 + 1073741824)%Z\u231d\n  _ : writeSuccessPostTransactionDataResources (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)\n  _ : writeSuccessNativeStaticResources\n  _ : \u231clength (writeSuccessDecodedBytes witness) = 848%nat\u231d\n  _ : \u231c(0 \u2264 bv_unsigned (writeSuccessDecodedPointer witness))%Z\u231d\n  _ : \u231c(bv_unsigned (writeSuccessDecodedPointer witness) + 848 < 0 + 1073741824)%Z\u231d\n  _ : True\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1992) \u21a6\u2098 writeSuccessReturnValue witness\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1984) \u21a6\u2098 writeSuccessSavedS0 witness\n  _ : \"x9\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS1 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1976) \u21a6\u2098 writeSuccessSavedS1 witness\n  _ : \"x18\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS2 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1968) \u21a6\u2098 writeSuccessSavedS2 witness\n  _ : \"x19\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS3 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1960) \u21a6\u2098 writeSuccessSavedS3 witness\n  _ : \"x20\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS4 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1952) \u21a6\u2098 writeSuccessSavedS4 witness\n  _ : \"x21\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS5 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1944) \u21a6\u2098 writeSuccessSavedS5 witness\n  _ : \"x22\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS6 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1936) \u21a6\u2098 writeSuccessSavedS6 witness\n  _ : \"x23\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS7 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1928) \u21a6\u2098 writeSuccessSavedS7 witness\n  _ : \"x24\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS8 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1920) \u21a6\u2098 writeSuccessSavedS8 witness\n  _ : \"x25\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS9 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1912) \u21a6\u2098 writeSuccessSavedS9 witness\n  _ : \"x26\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS10 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1904) \u21a6\u2098 writeSuccessSavedS10 witness\n  _ : \"x27\" \u21a6\u1d63 RVal_Bits (writeSuccessSavedS11 witness)\n  _ : bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1896) \u21a6\u2098 writeSuccessSavedS11 witness\n  _ : \"x2\" \u21a6\u1d63 RVal_Bits (writeSuccessEntrySp witness + 18446744073709549616)%bv\n  _ : \"x10\" \u21a6\u1d63 RVal_Bits (writeSuccessEntrySp witness + 18446744073709549616 + 312)%bv\n  _ : \"x12\" \u21a6\u1d63 RVal_Bits 720%bv\n  _ : \"x8\" \u21a6\u1d63 RVal_Bits (writeSuccessDecodedPointer witness + 0)%bv\n  _ : \"x11\" \u21a6\u1d63 RVal_Bits (writeSuccessDecodedPointer witness + 0 + 0)%bv\n  _ : reg_col zesu_ram_sys_regs\n  _ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 85368 + 18446744073709531136)%bv\n  --------------------------------------\u2217\n  find_in_context (FindInstrKind 85372 true) (\u03bb ik : instr_kind, match ik with\n                                                                 | IKInstr (Some t) => \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 85372) -\u2217 WPasm t\n                                                                 | IKInstr None => \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 85372)) snil \u2286 P\u03bas\u231d \u2217 True\n                                                                 | IKPre _ P => P\n                                                                 end)\n",
+  "capture_method": "Native symbolic execution from complete writeSuccessNativeEntry; stop before 0x14d7c. Captured context retains all ownership. Fifty-eight arithmetic side goals remain shelved.",
+  "memory_word_widths": {
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1992)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1984)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1976)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1968)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1960)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1952)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1944)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1936)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1928)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1920)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1912)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1904)": 64,
+    "bv_unsigned (writeSuccessEntrySp witness + 18446744073709549616 + 1896)": 64
+  },
+  "exit": "0x14d7c",
+  "post_state": true,
+  "name": "State_14d7c",
+  "block_exit": "0x14d7c",
+  "prune_unowned_locals": true,
+  "native_predecessor": "native_root/entry_states.json",
+  "execution_tactics": "unfold LET_GOAL, LET_ID; liAStep until FindInstrKind 85372; unLET; expose environment; close Z_scope and nat_scope; Show",
+  "register_bit_widths": {
+    "x12": 64
+  },
+  "generator_dependency": "native-capture-metadata.patch: register_bit_widths restores the captured x12 width."
+}
