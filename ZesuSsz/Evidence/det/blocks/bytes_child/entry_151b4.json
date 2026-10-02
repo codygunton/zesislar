@@ -1,0 +1,121 @@
+{
+  "entry": "0x151b4",
+  "binders": "`{!islaG Sigma} `{!threadG} (low : bv 64) (high : bv 64) (old_ra : bv 64) (old_data : bv 64) (old_size : bv 64) (P : iProp Sigma) (sp : bv 64) (bytes : list (bv 8)) (tail : spec)",
+  "module": "WriteSuccessExactTransactionsDataJump",
+  "source_resource": "(transactionDataJumpEntry low high old_ra old_data old_size P)",
+  "outcome": "reached",
+  "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_151b4.out",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "islaG0",
+      "islaG Sigma"
+    ],
+    [
+      "H",
+      "threadG"
+    ],
+    [
+      "low",
+      "bv 64"
+    ],
+    [
+      "high",
+      "bv 64"
+    ],
+    [
+      "old_ra",
+      "bv 64"
+    ],
+    [
+      "old_data",
+      "bv 64"
+    ],
+    [
+      "old_size",
+      "bv 64"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "H0",
+      "True"
+    ],
+    [
+      "HbytesSize",
+      "bv_unsigned high = Z.of_nat (length bytes)"
+    ],
+    [
+      "Halign",
+      "bv_unsigned sp `mod` 16 = 0"
+    ],
+    [
+      "Hlower",
+      "mapRamBase defaultMap <= bv_unsigned sp - 48"
+    ],
+    [
+      "Hupper",
+      "bv_unsigned sp < machineRamEnd defaultMap"
+    ]
+  ],
+  "spatial": [
+    "reg_col zesu_ram_sys_regs",
+    "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn low)",
+    "\"x22\" \u21a6\u1d63 RVal_Bits (bv_to_bvn high)",
+    "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_ra)",
+    "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_data)",
+    "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_size)",
+    "P",
+    "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+    "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+    "bv_unsigned low \u21a6\u2098\u2217 bytes",
+    "mmio_range (machineOutputAddress defaultMap) 16",
+    "spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8) (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned high))) (writeOutputEvents low high bytes tail))"
+  ],
+  "persistent": [],
+  "arguments": "low high old_ra old_data old_size P sp bytes tail",
+  "local_sorts": {
+    "Sigma": "Type",
+    "islaG0": "Type",
+    "H": "Type",
+    "low": "Type",
+    "high": "Type",
+    "old_ra": "Type",
+    "old_data": "Type",
+    "old_size": "Type",
+    "P": "Type",
+    "H0": "Prop",
+    "HbytesSize": "Prop",
+    "Halign": "Prop",
+    "Hlower": "Prop",
+    "Hupper": "Prop"
+  },
+  "imports": [
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsDataJump",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+    "ZesuSsz.Export.Snapshots",
+    "ZesuSsz.Contracts.IslarisMemory",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesContract",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputSemantic",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessObservation"
+  ],
+  "stack_size": 48,
+  "stack_pointer": "sp",
+  "return_point": true,
+  "block_exit": "0x151c4",
+  "rerun_lemma": "infer_boundary",
+  "seal_memory": false,
+  "provenance": "Authorized complete register file, bytes ownership, exact payload trace over low/high entry words, and callee scratch."
+}
