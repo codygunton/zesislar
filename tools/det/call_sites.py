@@ -60,17 +60,25 @@ def contracts(path: Path = CONTRACTS) -> dict[int, dict]:
 
 def premises(entry: int, exit_address: int, dumps: Path = DUMPS,
              table: Path = CONTRACTS,
-             index: Path = CALL_INDEX) -> tuple[list[str], list[str], list[int]]:
+             index: Path = CALL_INDEX, *,
+             strict: bool = False) -> tuple[list[str], list[str], list[int]]:
     """The `instr_pre` premises, the modules they need, and the unknowns."""
     known = contracts(table)
     targets, unknown = [], []
     for site, (target, _) in sorted(call_sites(dumps, index).items()):
-        if not entry <= site < exit_address or target is None:
+        if not entry <= site < exit_address:
+            continue
+        if target is None:
+            if strict:
+                raise ValueError(f"unresolved call target at {hex(site)}")
             continue
         if target in known and target not in targets:
             targets.append(target)
         elif target not in known and target not in unknown:
             unknown.append(target)
+    if strict and unknown:
+        raise ValueError("no closed contract for: "
+                         + ", ".join(hex(target) for target in unknown))
     lines = [f"  □ instr_pre {hex(target)} {known[target]['name']} -∗"
              for target in targets]
     modules = []

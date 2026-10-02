@@ -111,17 +111,20 @@ def compile_module(path: Path, build_dir: Path, seconds: int) -> dict:
         staged.unlink(missing_ok=True)
 
 
-def _build_staged(path: Path, build_dir: Path, seconds: int) -> dict:
+def _build_staged(path: Path, build_dir: Path, seconds: int, *, jobs: int = 4) -> dict:
     guard = Path("tools/resource_guard.sh")
     launcher = ([str(guard), "scope", f"gen-{path.stem[:30]}", "--"]
                 if guard.exists() else [])
     started = time.monotonic()
+    environment = dict(os.environ)
+    for credential in ("ARISTOTLE_API_KEY", "OPEN_ROUTER_API_KEY", "PROVER_API_KEY"):
+        environment.pop(credential, None)
     done = subprocess.run(
         [*launcher, "nice", "-n", "10", "opam", "exec", "--switch",
          str(Path.home() / "islaris"), "--", "dune", "build", "--root", ".",
          "--build-dir", str(Path(build_dir).resolve()), "--cache=enabled",
-         "-j4", str(path.with_suffix(".vo"))],
-        capture_output=True, text=True, timeout=seconds + 60)
+         f"-j{jobs}", str(path.with_suffix(".vo"))],
+        capture_output=True, text=True, timeout=seconds + 60, env=environment)
     output = done.stdout + "\n" + done.stderr
     errors = [line for line in output.split("\n")
               if line.startswith("Error") or "Tactic failure" in line]
@@ -130,7 +133,8 @@ def _build_staged(path: Path, build_dir: Path, seconds: int) -> dict:
             "errors": errors[:4]}
 
 
-def from_spec(spec: dict, extra_imports: list[str]) -> tuple[str, str]:
+def from_spec(spec: dict, extra_imports: list[str], *,
+              strict: bool = False) -> tuple[str, str]:
     """A segment module from a spec record, not from an existing module.
 
     Chain generation has no merged module to read a statement out of: the
@@ -143,18 +147,24 @@ def from_spec(spec: dict, extra_imports: list[str]) -> tuple[str, str]:
 
     entry = int(spec["entry"], 16)
     exit_address = int(spec["exit"], 16)
-    calls, call_modules, _unknown = call_premises(entry, exit_address)
+    calls, call_modules, _unknown = call_premises(entry, exit_address,
+                                                strict=strict)
     imports = (["Require Import isla.riscv64.riscv64.",
                 "From IslaTraces.write_success_blocks Require Import Index."]
                + [f"Require Import {name}."
                   for name in list(spec["imports"]) + call_modules
                   + list(extra_imports)])
     name = spec["name"]
+    successors = spec.get("successors")
+    exits = ([line for successor in successors
+              for line in [f"  instr_pre {successor['address']}",
+                           f"    ({successor['spec']}) -∗"]]
+             if successors is not None else
+             [f"  instr_body {spec['exit']}",
+              f"    ({spec['exit_spec']}) -∗"])
     body = ([f"Lemma {name}", f"    {spec['binders']} :"]
             + CODE_PREMISES + calls
-            + [f"  instr_body {spec['exit']}",
-               f"    ({spec['exit_spec']}) -∗",
-               f"  instr_body {spec['entry']}",
+            + exits + [f"  instr_body {spec['entry']}",
                f"    ({spec['spec']}).",
                "Proof. zesu_block. Qed.",
                "",

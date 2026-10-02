@@ -1,0 +1,29 @@
+[
+  {
+    "leader": "0x14e88",
+    "load_cleared": true,
+    "remaining": "successor BLK_STOP",
+    "full_block_closed": false,
+    "trace_inclusion_cleared": true
+  },
+  {
+    "leader": "0x150fc",
+    "load_cleared": true,
+    "remaining": "legacy return-register equalities",
+    "full_block_closed": false,
+    "trace_inclusion_cleared": true
+  },
+  {
+    "leader": "0x151c4",
+    "load_cleared": true,
+    "remaining": "legacy return-register equalities",
+    "full_block_closed": false,
+    "trace_inclusion_cleared": true
+  },
+  {
+    "leader": "0x158f0",
+    "load_cleared": true,
+    "remaining": "successor BLK_STOP",
+    "full_block_closed": false
+  }
+]

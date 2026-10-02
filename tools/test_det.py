@@ -85,13 +85,13 @@ class FreeLocals(unittest.TestCase):
         self.assertIn("∃ b : bv 64,", source)
         self.assertIn("LithiumUnfold (@TestBoundary)", source)
 
-    def test_a_wide_boundary_is_sealed(self):
+    def test_unknown_resources_do_not_enter_a_memory_seal(self):
         coq, _persistent, _spatial = gen_boundary.sections(GOAL_BLOCK)
         wide = [f"P{index}" for index in range(20)]
         source = gen_boundary.boundary_source("WideBoundary", "", coq, wide,
                                               seal=True)
-        self.assertIn("Global Opaque WideBoundary.", source)
-        self.assertIn("WideBoundary_unfold", source)
+        self.assertNotIn("Global Opaque", source)
+        self.assertIn("LithiumUnfold (@WideBoundary)", source)
 
 
 class ExplicitArguments(unittest.TestCase):
@@ -163,8 +163,9 @@ class CallSites(unittest.TestCase):
             lines, modules, unknown = call_sites.premises(
                 0x15744, 0x15754, dumps=missing)
         self.assertEqual(lines,
-                         ["  □ instr_pre 0x15d10 encoderIntEntryBoundary -∗"])
-        self.assertEqual(modules, ["ZesuSsz.Proofs.WriteSuccess.Interfaces"])
+                         ["  □ instr_pre 0x15d10 encoderIntContract -∗"])
+        self.assertEqual(modules, [
+            "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderIntContract"])
         self.assertEqual(unknown, [])
 
     def test_post_transactions_memcpy_has_closed_entry_boundary(self):

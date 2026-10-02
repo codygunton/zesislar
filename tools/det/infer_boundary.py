@@ -48,6 +48,14 @@ SCRATCH = Path("tools/coqc_scratch.sh")
 REACHED = "BOUNDARY-REACHED"
 RAW_BEGIN = "BOUNDARY-ALL-GOALS-BEGIN"
 RAW_END = "BOUNDARY-ALL-GOALS-END"
+SORT_BEGIN = "BOUNDARY-LOCAL-SORTS-BEGIN"
+SORT_END = "BOUNDARY-LOCAL-SORTS-END"
+SORT_MARKER = "BOUNDARY-LOCAL-SORT"
+PRINT_LOCAL_SORTS = f'''all: (idtac "{SORT_BEGIN}";
+  try (multimatch goal with Hlocal : ?T |- _ =>
+    let S := type of T in idtac "{SORT_MARKER}" Hlocal ":" S; fail
+  end);
+  idtac "{SORT_END}").'''
 
 
 # Islaris already resolves an instruction fetch from `instr_lookup_resources`
@@ -98,7 +106,7 @@ def statement_without(lines: list[str], exit_address: str) -> list[str]:
     out, dropping = [], False
     for line in lines:
         if exit_address in line and ("instr_body" in line or "instr_pre" in line):
-            dropping = True
+            dropping = not line.rstrip().endswith("-∗")
             continue
         if dropping:
             # The premise continues while the line is indented and has not
@@ -118,6 +126,45 @@ SHELVE_TERM_GOALS = """all: try (lazymatch goal with
       | _ => shelve
       end
   end)."""
+
+
+def stop_name(address: str) -> str:
+    return f"BLK_STOP_{int(address, 16):x}"
+
+
+def stop_statement(lines: list[str], address: str) -> list[str]:
+    """Bind an abstract successor and retain its guarded instruction premise."""
+    lines = statement_without(lines, address)
+    name = stop_name(address)
+    for index, line in enumerate(lines):
+        if line.rstrip().endswith(":"):
+            lines[index] = line.rstrip()[:-1] + f" ({name} : iProp Sigma) :"
+            position = next((row for row in range(index + 1, len(lines))
+                             if "instr_lookup_resources" in lines[row]), index + 1)
+            lines[position:position] = [
+                f"  instr_pre {hex(int(address, 16))} {name} -∗"]
+            return lines
+    raise ValueError("the lemma declaration has no binder boundary")
+
+
+def stop_recording(address: str | None, after_return: bool) -> list[str]:
+    """Enter the returned continuation before reading its caller frame."""
+    lines = []
+    if after_return:
+        lines += ["all: try zesu_enter_return_bundle_if_enabled.",
+                  "all: try zesu_enter_return_wand_if_enabled."]
+    if address:
+        name = stop_name(address)
+        lines += [f'''all: try (lazymatch goal with
+  | |- envs_entails _ {name} => idtac "{REACHED}"
+  end).''']
+    return lines
+
+
+def return_imports(after_return: bool) -> list[str]:
+    return (["Require Import ZesuSsz.Automation.Switches.ReturnBundle.",
+             "Require Import ZesuSsz.Automation.Switches.ReturnWand."]
+            if after_return else [])
 
 
 def with_inferred_trace(spec: dict) -> tuple[list[str], str, list[str], list[str]]:
@@ -151,7 +198,8 @@ def with_inferred_trace(spec: dict) -> tuple[list[str], str, list[str], list[str
 
 
 def spec_source(spec: dict, rule: str = "",
-                alternatives: tuple[str, ...] = ()) -> str:
+                alternatives: tuple[str, ...] = (), *,
+                stop: str | None = None, after_return: bool = False) -> str:
     """A probe for a segment that has no module yet.
 
     An open segment is described by its entry address and the predicate
@@ -174,6 +222,8 @@ def spec_source(spec: dict, rule: str = "",
                  + [f"  instr_body {spec['entry']}",
                     f"    ({body})" + ("" if closing else ".")]
                  + closing)
+    if stop:
+        statement = stop_statement(statement, stop)
     preamble: list[str] = []
     block = "zesu_block"
     if rule or alternatives:
@@ -186,6 +236,7 @@ def spec_source(spec: dict, rule: str = "",
     body = [f'idtac "{probes.BEGIN}".', "try intros.",
             "try eexists." if spec.get("infer_trace") else "idtac.",
             f"try {block}.",
+            *stop_recording(stop, after_return),
             "all: try liShow.",
             # `unshelve` brings the search's own term evars to the front,
             # and a probe that prints one of those has reported nothing.
@@ -193,25 +244,29 @@ def spec_source(spec: dict, rule: str = "",
             # the goal the automation actually stopped on.
             f'all: idtac "{RAW_BEGIN}".', "Show.", f'all: idtac "{RAW_END}".',
             SHELVE_TERM_GOALS,
+            PRINT_LOCAL_SORTS,
             "Show.", "Abort."]
     return "\n".join(
         ["Set Printing Width 200.", "Require Import isla.isla.",
          "From iris.proofmode Require Import environments.",
          "From IslaTraces.write_success_blocks Require Import Index."]
-        + imports + preamble + statement + ["Proof."] + body
+        + imports + return_imports(after_return) + preamble + statement + ["Proof."] + body
         + probes.END_MARKER + [""])
 
 
 def probe_source(module: Path, lemma: str, exit_address: str,
                  driver: list[str], rule: str = "",
                  alternatives: tuple[str, ...] = (),
-                 extra_imports: tuple[str, ...] = ()) -> str:
+                 extra_imports: tuple[str, ...] = (), *,
+                 stop: str | None = None, after_return: bool = False) -> str:
     proof = find_proof(module, lemma)
     lines = module.read_text().split("\n")
     statement = with_standard_code(statement_without(
         lines[proof.declaration_line:proof.proof_line], exit_address))
     statement = [line.replace(lemma, "infer_boundary") for line in statement]
-    normalized = str(int(exit_address, 16))
+    if stop:
+        statement = stop_statement(statement, stop)
+    normalized = str(int(stop or exit_address, 16))
     block = "zesu_block"
     preamble: list[str] = []
     if rule or alternatives:
@@ -225,6 +280,7 @@ def probe_source(module: Path, lemma: str, exit_address: str,
                                           ).split("\n"))
     body = [f'idtac "{probes.BEGIN}".', "try intros.", f"try {block}."]
     body += driver
+    body += stop_recording(stop, after_return)
     body += [
         # Arriving at the exit shows as the goal asking for the instruction
         # or the precondition at that address.
@@ -235,12 +291,13 @@ def probe_source(module: Path, lemma: str, exit_address: str,
          end).''',
         "all: try liShow.",
         f'all: idtac "{RAW_BEGIN}".', "Show.", f'all: idtac "{RAW_END}".',
-        SHELVE_TERM_GOALS, "Show.", "Abort."]
+        SHELVE_TERM_GOALS, PRINT_LOCAL_SORTS, "Show.", "Abort."]
     source = (["Set Printing Width 200.", "Require Import isla.isla.",
                "From iris.proofmode Require Import environments.",
                "From IslaTraces.write_success_blocks Require Import Index."]
               + lines[:proof.declaration_line]
               + [f"Require Import {name}." for name in extra_imports]
+              + return_imports(after_return)
               + preamble + statement
               + ["Proof."]
               + body + probes.END_MARKER
@@ -273,23 +330,47 @@ def goal_record(text: str) -> tuple[str, dict]:
         selected = before + after
     return selected, {
         "raw_goals": text,
+        "local_sorts": local_sorts(text),
         "goals": [{"context": context, "conclusion": conclusion}
                   for context, conclusion in map(split_goal, split_goals(all_goals))],
     }
 
 
+def local_sorts(text: str) -> dict[str, str]:
+    """Read the first selected goal's sorts from Rocq's own type query."""
+    if SORT_BEGIN not in text or SORT_END not in text:
+        return {}
+    block = text.split(SORT_BEGIN, 1)[1].split(SORT_END, 1)[0]
+    return {name: "Prop" if sort == "Prop" else "Type"
+            for name, sort in re.findall(
+                rf"{SORT_MARKER}\s+(\S+)\s*:\s*(Prop|Set|Type)\b", block)}
+
+
 def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
           driver: list[str], seconds: int, rule: str = "",
           alternatives: tuple[str, ...] = (),
-          extra_imports: tuple[str, ...] = ()) -> dict:
+          extra_imports: tuple[str, ...] = (), *,
+          stop: str | None = None, after_return: bool = False) -> dict:
     started = time.monotonic()
     output = run(probe_source(module, lemma, exit_address, driver, rule,
-                              alternatives, extra_imports),
+                              alternatives, extra_imports,
+                              stop=stop, after_return=after_return),
                  f"{module.stem}__{lemma}", build_dir, seconds)
     text, details = goal_record(probes.marked(output))
     record = {**details, "module": module.name, "lemma": lemma, "exit": exit_address,
               "seconds": round(time.monotonic() - started, 1),
               "driver_lines": len(driver)}
+    proof = find_proof(module, lemma)
+    header = []
+    for line in module.read_text().splitlines()[proof.declaration_line:proof.proof_line]:
+        header.append(line)
+        if line.rstrip().endswith(":"):
+            break
+    declaration = " ".join(line.strip() for line in header).rstrip(":").strip()
+    record["binders"] = re.sub(rf"^Lemma\s+{re.escape(lemma)}\b\s*", "", declaration)
+    parts = module.with_suffix("").parts
+    if "ZesuSsz" in parts:
+        record["imports"] = [".".join(parts[parts.index("ZesuSsz"):]), *extra_imports]
     if probes.END not in output:
         record["outcome"] = "error"
         record["error_lines"] = [line for line in output.split("\n")
@@ -301,6 +382,7 @@ def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
                    "context": context, "conclusion": conclusion})
     if REACHED in output:
         record["outcome"] = "reached"
+        record["state_entry"] = hex(int(stop or exit_address, 16))
         return record
     record["outcome"] = "stalled"
     record["pred_class"] = classify(text, "residual").pred_class
@@ -324,6 +406,10 @@ def main() -> int:
     parser.add_argument("--alt", action="append", default=[],
                         help="a tactic to append to the probe's search list")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--stop", default=None,
+                        help="stop at ADDR with an abstract BLK_STOP successor")
+    parser.add_argument("--after-return", action="store_true",
+                        help="enter the return wand and open its bundle before recording")
     arguments = parser.parse_args()
     records = []
     for spec in (json.loads(arguments.specs.read_text())
@@ -332,10 +418,12 @@ def main() -> int:
         output = run(spec_source(spec,
                                  arguments.rule.read_text()
                                  if arguments.rule else "",
-                                 tuple(arguments.alt)),
+                                 tuple(arguments.alt), stop=arguments.stop,
+                                 after_return=arguments.after_return),
                      spec["name"], arguments.build_dir, arguments.seconds)
         record = {"lemma": spec["name"], "entry": spec["entry"],
                   "exit": spec["exit"],
+                  "binders": spec["binders"], "imports": spec["imports"],
                   "call_premises": len(call_premises(
                       int(spec["entry"], 16), int(spec["exit"], 16))[0]),
                   "seconds": round(time.monotonic() - started, 1)}
@@ -348,11 +436,13 @@ def main() -> int:
         else:
             context, conclusion = conclusion_text(text)
             frame, points = context_size(context)
-            record.update({"outcome": "stalled", "frame": frame,
+            record.update({"outcome": "reached" if REACHED in output else "stalled", "frame": frame,
                            "mapsto": points, "context": context,
                            "conclusion": conclusion,
                            "pred_class": classify(text, "residual").pred_class,
                            "signature": signature(conclusion)})
+            if record["outcome"] == "reached":
+                record["state_entry"] = hex(int(arguments.stop or spec["exit"], 16))
         records.append(record)
         print(f"{record['outcome']:8s} {record['seconds']:7.1f}s "
               f"frame {record.get('frame', 0):3d}  "
@@ -376,7 +466,8 @@ def main() -> int:
         record = infer(path, lemma, exit_address.strip(),
                        arguments.build_dir, driver, arguments.seconds,
                        arguments.rule.read_text() if arguments.rule else "",
-                       tuple(arguments.alt))
+                       tuple(arguments.alt), stop=arguments.stop,
+                       after_return=arguments.after_return)
         records.append(record)
         print(f"{record['outcome']:8s} {record['seconds']:7.1f}s "
               f"frame {record.get('frame', 0):3d}  "
