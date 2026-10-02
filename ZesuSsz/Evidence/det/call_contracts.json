@@ -19,8 +19,9 @@
       "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
     },
     "0x15c6c": {
-      "name": "encoderBytesEntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "encoderBytesContract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBytesContract",
+      "local_unfold": true
     },
     "0x15b9c": {
       "name": "encoderBooleanEntryBoundary",
