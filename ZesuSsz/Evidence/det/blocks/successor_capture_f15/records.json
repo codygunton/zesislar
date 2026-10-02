@@ -1,0 +1,319 @@
+[
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x150fc",
+    "last": "0x15104",
+    "n": 3,
+    "kind": "call:-1008(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15108"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_150fc",
+    "stops": [],
+    "kept_succ": [
+      "0x15108"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 6.5,
+    "peak_mib": 1052,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        957
+      ],
+      [
+        6,
+        1012
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15100"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x150fc_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_15108",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x15148",
+    "last": "0x15150",
+    "n": 3,
+    "kind": "call:-1084(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15154"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15148",
+    "stops": [],
+    "kept_succ": [
+      "0x15154"
+    ],
+    "run": "A",
+    "seconds": 5.0,
+    "cpu": 4.8,
+    "peak_mib": 1026,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        47
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15148",
+      "0x1514c"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x15148_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_15154",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x151c4",
+    "last": "0x151cc",
+    "n": 3,
+    "kind": "call:-1208(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x151d0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151c4",
+    "stops": [],
+    "kept_succ": [
+      "0x151d0"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 6.5,
+    "peak_mib": 1053,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        48
+      ],
+      [
+        5,
+        999
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x151c8"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x151c4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_151d0",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x153c0",
+    "last": "0x153cc",
+    "n": 4,
+    "kind": "call:-1720(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x153d0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_153c0",
+    "stops": [],
+    "kept_succ": [
+      "0x153d0"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 6.3,
+    "peak_mib": 1052,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        48
+      ],
+      [
+        5,
+        1002
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x153c4",
+      "0x153c8"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x153c0_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_153d0",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x15574",
+    "last": "0x15580",
+    "n": 4,
+    "kind": "call:1940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15584"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15574",
+    "stops": [],
+    "kept_succ": [
+      "0x15584"
+    ],
+    "run": "A",
+    "seconds": 8.0,
+    "cpu": 7.4,
+    "peak_mib": 1053,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        21
+      ],
+      [
+        5,
+        999
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15578",
+      "0x1557c"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x15574_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_15584",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x15620",
+    "last": "0x15628",
+    "n": 3,
+    "kind": "call:1772(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1562c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15620",
+    "stops": [],
+    "kept_succ": [
+      "0x1562c"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 6.3,
+    "peak_mib": 1055,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        45
+      ],
+      [
+        5,
+        1000
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15624"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x15620_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_1562c",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "successor_capture_f15",
+    "leader": "0x1568c",
+    "last": "0x15690",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1568c",
+    "stops": [],
+    "kept_succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "run": "A",
+    "seconds": 10.0,
+    "cpu": 9.8,
+    "peak_mib": 1346,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1021
+      ],
+      [
+        6,
+        1155
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1568c",
+      "0x15690"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x1568c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "87772%bv = b1",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]
