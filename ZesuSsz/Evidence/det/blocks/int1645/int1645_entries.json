@@ -1,0 +1,347 @@
+[
+  {
+    "entry": "0x15108",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTransactionsGasPriceCall",
+    "source_resource": "(transactionGasPriceEntry sp low high oldra old5 tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15108.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "low",
+        "bv 64"
+      ],
+      [
+        "high",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 32)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "reg_col [(KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x24\" \u21a6\u1d63 RVal_Bits (bv_to_bvn high)",
+      "\"x25\" \u21a6\u1d63 RVal_Bits (bv_to_bvn low)",
+      "(bv_unsigned sp - 32) \u21a6\u2098? 32",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 32))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 16))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 32)) 16 = Some (writeSuccessU128WordsPayload low high)) tail))",
+      "P",
+      "instr_pre 86296 (transactionGasPricePost sp low high tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp low high oldra old5 tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "low": "Type",
+      "high": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasPriceCall",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
+    ],
+    "block_exit": "0x15118"
+  },
+  {
+    "entry": "0x15128",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTransactionsPriorityValueCall",
+    "source_resource": "(transactionPriorityValueEntry sp low high oldra old5 tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15128.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "low",
+        "bv 64"
+      ],
+      [
+        "high",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 32)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "reg_col [(KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x23\" \u21a6\u1d63 RVal_Bits (bv_to_bvn high)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn low)",
+      "(bv_unsigned sp - 32) \u21a6\u2098? 32",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 32))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 16))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 32)) 16 = Some (writeSuccessU128WordsPayload low high)) tail))",
+      "P",
+      "instr_pre 86328 (transactionPriorityValuePost sp low high tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp low high oldra old5 tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "low": "Type",
+      "high": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsPriorityValueCall",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
+    ],
+    "block_exit": "0x15138"
+  },
+  {
+    "entry": "0x15564",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTransactionsMaxBlobFee",
+    "source_resource": "(maxBlobFeeEntry sp low high oldra old5 tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15564.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "low",
+        "bv 64"
+      ],
+      [
+        "high",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 160 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 32)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "reg_col [(KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "(bv_unsigned sp + 144) \u21a6\u2098 high",
+      "(bv_unsigned sp + 152) \u21a6\u2098 low",
+      "(bv_unsigned sp - 32) \u21a6\u2098? 32",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 32))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 16))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 32)) 16 = Some (writeSuccessU128WordsPayload low high)) tail))",
+      "P",
+      "instr_pre 87412 (maxBlobFeePost sp low high tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp low high oldra old5 tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "low": "Type",
+      "high": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsMaxBlobFee",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
+    ],
+    "block_exit": "0x15574"
+  }
+]

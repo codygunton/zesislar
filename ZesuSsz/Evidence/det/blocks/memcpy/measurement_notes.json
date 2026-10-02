@@ -1,0 +1,6 @@
+{
+  "contract": "memcpyEntryBoundary",
+  "target": "0x101d4",
+  "results": "Four stalls; no complete block closure.",
+  "missing_entry": "0x14e14"
+}

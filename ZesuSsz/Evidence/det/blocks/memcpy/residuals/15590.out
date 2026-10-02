@@ -1,0 +1,505 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 3.465 secs (3.446u,0.006s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.8 secs (0.797u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+BOUNDARY-ALL-GOALS-BEGIN
+8 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, src : bv 64
+  base : Z
+  start : nat
+  bytes : list (bv 8)
+  P, BLK_STOP_155a4 : iProp Sigma
+  H0 : bv_unsigned sp + 1896 < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp
+  H2 : base + Z.of_nat (length bytes) < 0 + 1073741824
+  H3 : 0 ≤ base
+  H4 : (start + 144 <= length bytes)%nat
+  H5 : bv_unsigned src = base + Z.of_nat start
+  b : bv 64
+  H6 : Z.land (bv_unsigned b) 131072 = 0
+  b0 : bv 64
+  H7 : Z.land (bv_unsigned b0) 131072 = 0
+  b1 : bv 64
+  H8 : Z.land (bv_unsigned b1) 131072 = 0
+  b2 : bv 64
+  H9 : Z.land (bv_unsigned b2) 131072 = 0
+  H10 : -1 < bv_unsigned b2 < bv_modulus 64
+  H11 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64
+  H12 : -1 < bv_unsigned b1 < bv_modulus 64
+  H13 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H14 : -1 < bv_unsigned b0 < bv_modulus 64
+  H15 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H16 : -1 < bv_unsigned b < bv_modulus 64
+  H17 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H18 : -1 < bv_unsigned src < bv_modulus 64
+  H19 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed src < bv_half_modulus 64
+  H20 : -1 < bv_unsigned sp < bv_modulus 64
+  H21 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  bv_unsigned sp `mod` 16 = 0
+
+goal 2 is:
+ base = bv_unsigned src
+goal 3 is:
+ 87460%bv = b21
+goal 4 is:
+ b19 = (sp + 1744)%bv
+goal 5 is:
+ b20 = src
+goal 6 is:
+ 144%bv = b22
+goal 7 is:
+ 144%bv = b25
+goal 8 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 66004 memcpyEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 87460 BLK_STOP_155a4
+ _ : P
+ _ : reg_col []
+ _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x8", ExactShape (RVal_Bits (bv_to_bvn b8))); (KindReg "x9", ExactShape (RVal_Bits (bv_to_bvn src))); (KindReg "x18", ExactShape (RVal_Bits (bv_to_bvn b9)));
+        (KindReg "x19", ExactShape (RVal_Bits (bv_to_bvn b10))); (KindReg "x20", ExactShape (RVal_Bits (bv_to_bvn b11))); (KindReg "x21", ExactShape (RVal_Bits (bv_to_bvn b12)));
+        (KindReg "x22", ExactShape (RVal_Bits (bv_to_bvn b13))); (KindReg "x23", ExactShape (RVal_Bits (bv_to_bvn b14))); (KindReg "x24", ExactShape (RVal_Bits (bv_to_bvn b15)));
+        (KindReg "x25", ExactShape (RVal_Bits (bv_to_bvn b16))); (KindReg "x26", ExactShape (RVal_Bits (bv_to_bvn b17))); (KindReg "x27", ExactShape (RVal_Bits (bv_to_bvn b18)))]
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : bv_unsigned src ↦ₘ∗ bytes
+ _ : bv_unsigned (sp + 1744) ↦ₘ∗ take (Z.to_nat (bv_unsigned 144)) bytes
+ _ : reg_col
+       [(KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64);
+        (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ --------------------------------------∗
+ base ↦ₘ∗ bytes ∗ bv_unsigned (sp + 1744) ↦ₘ∗ take 144 (drop start bytes) ∗ WriteSuccessExactAuthorizationsCopy.authorizationCopyFrame sp src P ∗ True
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H23 : Prop
+BOUNDARY-LOCAL-SORT H22 : Prop
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT b21 : Set
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H23 : Prop
+BOUNDARY-LOCAL-SORT H22 : Prop
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT b19 : Set
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H23 : Prop
+BOUNDARY-LOCAL-SORT H22 : Prop
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT b20 : Set
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H23 : Prop
+BOUNDARY-LOCAL-SORT H22 : Prop
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT b22 : Set
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H23 : Prop
+BOUNDARY-LOCAL-SORT H22 : Prop
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT b25 : Set
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H43 : Prop
+BOUNDARY-LOCAL-SORT H42 : Prop
+BOUNDARY-LOCAL-SORT H41 : Prop
+BOUNDARY-LOCAL-SORT H40 : Prop
+BOUNDARY-LOCAL-SORT H39 : Prop
+BOUNDARY-LOCAL-SORT H38 : Prop
+BOUNDARY-LOCAL-SORT H37 : Prop
+BOUNDARY-LOCAL-SORT H36 : Prop
+BOUNDARY-LOCAL-SORT H35 : Prop
+BOUNDARY-LOCAL-SORT H34 : Prop
+BOUNDARY-LOCAL-SORT H33 : Prop
+BOUNDARY-LOCAL-SORT H32 : Prop
+BOUNDARY-LOCAL-SORT H31 : Prop
+BOUNDARY-LOCAL-SORT H30 : Prop
+BOUNDARY-LOCAL-SORT H29 : Prop
+BOUNDARY-LOCAL-SORT H28 : Prop
+BOUNDARY-LOCAL-SORT H27 : Prop
+BOUNDARY-LOCAL-SORT H26 : Prop
+BOUNDARY-LOCAL-SORT H25 : Prop
+BOUNDARY-LOCAL-SORT H24 : Prop
+BOUNDARY-LOCAL-SORT H23 : Prop
+BOUNDARY-LOCAL-SORT H22 : Prop
+BOUNDARY-LOCAL-SORT H21 : Prop
+BOUNDARY-LOCAL-SORT H20 : Prop
+BOUNDARY-LOCAL-SORT H19 : Prop
+BOUNDARY-LOCAL-SORT H18 : Prop
+BOUNDARY-LOCAL-SORT H17 : Prop
+BOUNDARY-LOCAL-SORT H16 : Prop
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT b18 : Set
+BOUNDARY-LOCAL-SORT b17 : Set
+BOUNDARY-LOCAL-SORT b16 : Set
+BOUNDARY-LOCAL-SORT b15 : Set
+BOUNDARY-LOCAL-SORT b14 : Set
+BOUNDARY-LOCAL-SORT b13 : Set
+BOUNDARY-LOCAL-SORT b12 : Set
+BOUNDARY-LOCAL-SORT b11 : Set
+BOUNDARY-LOCAL-SORT b10 : Set
+BOUNDARY-LOCAL-SORT b9 : Set
+BOUNDARY-LOCAL-SORT b8 : Set
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT b2 : Set
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT b1 : Set
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_155a4 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT bytes : Set
+BOUNDARY-LOCAL-SORT start : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT src : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORTS-END
+8 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, src : bv 64
+  base : Z
+  start : nat
+  bytes : list (bv 8)
+  P, BLK_STOP_155a4 : iProp Sigma
+  H0 : bv_unsigned sp + 1896 < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp
+  H2 : base + Z.of_nat (length bytes) < 0 + 1073741824
+  H3 : 0 ≤ base
+  H4 : (start + 144 <= length bytes)%nat
+  H5 : bv_unsigned src = base + Z.of_nat start
+  b : bv 64
+  H6 : Z.land (bv_unsigned b) 131072 = 0
+  b0 : bv 64
+  H7 : Z.land (bv_unsigned b0) 131072 = 0
+  b1 : bv 64
+  H8 : Z.land (bv_unsigned b1) 131072 = 0
+  b2 : bv 64
+  H9 : Z.land (bv_unsigned b2) 131072 = 0
+  H10 : -1 < bv_unsigned b2 < bv_modulus 64
+  H11 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64
+  H12 : -1 < bv_unsigned b1 < bv_modulus 64
+  H13 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H14 : -1 < bv_unsigned b0 < bv_modulus 64
+  H15 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H16 : -1 < bv_unsigned b < bv_modulus 64
+  H17 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H18 : -1 < bv_unsigned src < bv_modulus 64
+  H19 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed src < bv_half_modulus 64
+  H20 : -1 < bv_unsigned sp < bv_modulus 64
+  H21 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  bv_unsigned sp `mod` 16 = 0
+
+goal 2 is:
+ base = bv_unsigned src
+goal 3 is:
+ 87460%bv = b21
+goal 4 is:
+ b19 = (sp + 1744)%bv
+goal 5 is:
+ b20 = src
+goal 6 is:
+ 144%bv = b22
+goal 7 is:
+ 144%bv = b25
+goal 8 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 66004 memcpyEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 87460 BLK_STOP_155a4
+ _ : P
+ _ : reg_col []
+ _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x8", ExactShape (RVal_Bits (bv_to_bvn b8))); (KindReg "x9", ExactShape (RVal_Bits (bv_to_bvn src))); (KindReg "x18", ExactShape (RVal_Bits (bv_to_bvn b9)));
+        (KindReg "x19", ExactShape (RVal_Bits (bv_to_bvn b10))); (KindReg "x20", ExactShape (RVal_Bits (bv_to_bvn b11))); (KindReg "x21", ExactShape (RVal_Bits (bv_to_bvn b12)));
+        (KindReg "x22", ExactShape (RVal_Bits (bv_to_bvn b13))); (KindReg "x23", ExactShape (RVal_Bits (bv_to_bvn b14))); (KindReg "x24", ExactShape (RVal_Bits (bv_to_bvn b15)));
+        (KindReg "x25", ExactShape (RVal_Bits (bv_to_bvn b16))); (KindReg "x26", ExactShape (RVal_Bits (bv_to_bvn b17))); (KindReg "x27", ExactShape (RVal_Bits (bv_to_bvn b18)))]
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : bv_unsigned src ↦ₘ∗ bytes
+ _ : bv_unsigned (sp + 1744) ↦ₘ∗ take (Z.to_nat (bv_unsigned 144)) bytes
+ _ : reg_col
+       [(KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64);
+        (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ --------------------------------------∗
+ base ↦ₘ∗ bytes ∗ bv_unsigned (sp + 1744) ↦ₘ∗ take 144 (drop start bytes) ∗ WriteSuccessExactAuthorizationsCopy.authorizationCopyFrame sp src P ∗ True
+PROBE-END

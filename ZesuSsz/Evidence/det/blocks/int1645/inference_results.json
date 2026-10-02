@@ -1,0 +1,74 @@
+[
+  {
+    "name": "infer_15108",
+    "entry": "0x15108",
+    "exit": "0x15118",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15108",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15108 sp low high oldra old5 tail P",
+    "rc": 0,
+    "wall": 4.1,
+    "cpu": 3.7,
+    "peak_mib": 1077,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        18
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/int1645-inference/Infer_15108.out"
+  },
+  {
+    "name": "infer_15128",
+    "entry": "0x15128",
+    "exit": "0x15138",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15128",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15128 sp low high oldra old5 tail P",
+    "rc": 0,
+    "wall": 4.1,
+    "cpu": 3.8,
+    "peak_mib": 1076,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1026
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/int1645-inference/Infer_15128.out"
+  },
+  {
+    "name": "infer_15564",
+    "entry": "0x15564",
+    "exit": "0x15574",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15564",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15564 sp low high oldra old5 tail P",
+    "rc": 0,
+    "wall": 2.0,
+    "cpu": 2.0,
+    "peak_mib": 1029,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1029
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/int1645-inference/Infer_15564.out"
+  }
+]

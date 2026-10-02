@@ -1,0 +1,4 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,b17,0x15108,4,call:-1068(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>,infer_boundary,stalled,3,C6,0x15110,"auipc ra, 1",call,(bv_unsigned sp - 32) ↦ₘ? 32 ∗,4.0,3.9,1074,600,,0x15118
+A,b17,0x15128,4,call:-1100(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>,infer_boundary,stalled,3,C6,0x15130,"auipc ra, 1",call,(bv_unsigned sp - 32) ↦ₘ? 32 ∗,5.0,4.0,1076,600,,0x15138
+A,b17,0x15564,4,call:1912(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>,infer_boundary,stalled,1,C6,0x15564,"ld a0, 0x98(sp)",load,"∃ y : bv 64 *ₗ (), (bv_unsigned sp + 152) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 152 < 0 + 1073741824⌝ ∗",3.0,2.1,1031,600,,0x15574

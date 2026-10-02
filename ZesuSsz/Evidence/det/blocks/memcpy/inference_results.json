@@ -1,0 +1,130 @@
+[
+  {
+    "name": "infer_14d30",
+    "entry": "0x14d30",
+    "exit": "0x14d80",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (decoded : bv 64) (ra : bv 64) (s0 : bv 64) (s1 : bv 64) (s2 : bv 64) (s3 : bv 64) (s4 : bv 64) (s5 : bv 64) (s6 : bv 64) (s7 : bv 64) (s8 : bv 64) (s9 : bv 64) (s10 : bv 64) (s11 : bv 64) (P : iProp Sigma) (Q : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_14d30",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_14d30 sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 P Q",
+    "rc": 0,
+    "wall": 23.1,
+    "cpu": 22.2,
+    "peak_mib": 1584,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        18
+      ],
+      [
+        5,
+        1319
+      ],
+      [
+        10,
+        1452
+      ],
+      [
+        15,
+        1522
+      ],
+      [
+        20,
+        1568
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/memcpy-inference/Infer_14d30.out"
+  },
+  {
+    "name": "infer_151dc",
+    "entry": "0x151dc",
+    "exit": "0x15200",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (base : bv 64) (cursor : bv 64) (old_index : bv 64) (old_ra : bv 64) (bytes : list (bv 8)) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_151dc",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_151dc sp base cursor old_index old_ra bytes P",
+    "rc": 0,
+    "wall": 3.1,
+    "cpu": 2.4,
+    "peak_mib": 1269,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        32
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/memcpy-inference/Infer_151dc.out"
+  },
+  {
+    "name": "infer_15590",
+    "entry": "0x15590",
+    "exit": "0x155a4",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15590",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15590 sp src oldra base start bytes P",
+    "rc": 0,
+    "wall": 12.0,
+    "cpu": 11.9,
+    "peak_mib": 1709,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1251
+      ],
+      [
+        6,
+        1406
+      ],
+      [
+        11,
+        1704
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/memcpy-inference/Infer_15590.out"
+  },
+  {
+    "name": "infer_15694",
+    "entry": "0x15694",
+    "exit": "0x156a8",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15694",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15694 sp src oldra base start bytes P",
+    "rc": 0,
+    "wall": 12.0,
+    "cpu": 11.8,
+    "peak_mib": 1698,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1250
+      ],
+      [
+        6,
+        1400
+      ],
+      [
+        11,
+        1692
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/memcpy-inference/Infer_15694.out"
+  }
+]

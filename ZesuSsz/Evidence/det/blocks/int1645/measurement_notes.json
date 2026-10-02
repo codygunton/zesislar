@@ -1,0 +1,7 @@
+{
+  "contract": "encoderInt1645Contract",
+  "contract_sha": "42615c91",
+  "target": "0x15ce4",
+  "results": "Three stalls; no complete block closure.",
+  "missing_entries": []
+}
