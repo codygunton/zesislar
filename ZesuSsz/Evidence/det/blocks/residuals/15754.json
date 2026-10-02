@@ -1,0 +1,76 @@
+{
+  "name": "infer_15754",
+  "entry": "0x15754",
+  "exit": "0x158d4",
+  "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+  "imports": [
+    "ZesuSsz.Generated.WriteSuccess.States.State_15754",
+    "ZesuSsz.Automation.Sets.call"
+  ],
+  "spec": "State_15754 P",
+  "rc": -9,
+  "wall": 71.0,
+  "cpu": 70.8,
+  "peak_mib": 8230,
+  "limit": "memory",
+  "rss_samples": [
+    [
+      1,
+      1020
+    ],
+    [
+      6,
+      1357
+    ],
+    [
+      11,
+      1927
+    ],
+    [
+      16,
+      2533
+    ],
+    [
+      21,
+      3051
+    ],
+    [
+      26,
+      3615
+    ],
+    [
+      31,
+      4251
+    ],
+    [
+      36,
+      4683
+    ],
+    [
+      41,
+      5247
+    ],
+    [
+      46,
+      5841
+    ],
+    [
+      51,
+      6349
+    ],
+    [
+      56,
+      6892
+    ],
+    [
+      61,
+      7467
+    ],
+    [
+      66,
+      7685
+    ]
+  ],
+  "outcome": "error",
+  "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/writeoutput-inference/Infer_15754.out"
+}

@@ -1,0 +1,10 @@
+Leader: 0x15228
+Variant: A
+Counter: 5
+Raw output: ZesuSsz/Evidence/det/blocks/residuals/15228.out
+
+find_in_context (FindMemMapsTo (bv_unsigned (row + 20)))
+    (λ mk : mem_mapsto_kind,
+       match mk with
+       | MKMapsTo n' vmem3 => ∃ Heq : 8%N = n', ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ bv_unsigned (row + 20) ↦ₘ vmem3 -∗ WPasm HIDDEN
+       | MKArray n' a' values =>

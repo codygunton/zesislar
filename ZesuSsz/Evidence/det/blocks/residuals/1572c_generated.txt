@@ -1,0 +1,8 @@
+Generated block: 0x1572c
+Raw output: ZesuSsz/Evidence/det/blocks/residuals/1572c_generated.out
+
+∃ x : bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ spec *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ + 1000) ↦ₘ x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗ P ∗
+    reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗ reg_col zesu_ram_sys_regs ∗
+    reg_col
+      [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);

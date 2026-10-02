@@ -1,0 +1,446 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86568))
+BLK-PC (bv_to_bvn LET)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86572))
+BLK-PC (bv_to_bvn LET3)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86576))
+BLK-PC (bv_to_bvn LET7)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86580))
+BLK-PC (bv_to_bvn LET11)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86584))
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  row : bv 64
+  base : Z
+  bytes : list (bv 8)
+  index : nat
+  P, BLK_STOP_153a8 : iProp Sigma
+  H0 : base + length bytes < 0 + 1073741824
+  H1 : 0 ≤ base
+  H2 : (index + 20 <= length bytes)%nat
+  H3 : bv_unsigned row = base + index
+  n, b : bv 64
+  H4 : Z.land (bv_unsigned b) 131072 = 0
+  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  vmem : bv 8
+  H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
+  H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
+  n1, b0 : bv 64
+  H8 : Z.land (bv_unsigned b0) 131072 = 0
+  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  vmem0 : bv 8
+  H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
+  H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
+  n3, b1 : bv 64
+  H12 : Z.land (bv_unsigned b1) 131072 = 0
+  H13 : Z.land (bvn_unsigned n3) 131072 = 0
+  vmem1 : bv 8
+  H14 : bytes !! Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) = Some vmem1
+  H15 : (Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) < length bytes)%nat
+  n5, b2 : bv 64
+  H16 : Z.land (bv_unsigned b2) 131072 = 0
+  H17 : Z.land (bvn_unsigned n5) 131072 = 0
+  vmem2 : bv 8
+  H18 : bytes !! Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) = Some vmem2
+  H19 : (Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) < length bytes)%nat
+  n7, b3 : bv 64
+  H20 : Z.land (bv_unsigned b3) 131072 = 0
+  H21 : Z.land (bvn_unsigned n7) 131072 = 0
+  n9 : bv 8
+  H22 : -1 < bv_unsigned n9 < bv_modulus 8
+  H23 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed n9 < bv_half_modulus 8
+  H24 : -1 < bv_unsigned b3 < bv_modulus 64
+  H25 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b3 < bv_half_modulus 64
+  H26 : -1 < bv_unsigned n7 < bv_modulus 64
+  H27 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n7 < bv_half_modulus 64
+  H28 : -1 < bv_unsigned vmem2 < bv_modulus 8
+  H29 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem2 < bv_half_modulus 8
+  H30 : -1 < bv_unsigned b2 < bv_modulus 64
+  H31 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64
+  H32 : -1 < bv_unsigned n5 < bv_modulus 64
+  H33 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n5 < bv_half_modulus 64
+  H34 : -1 < bv_unsigned vmem1 < bv_modulus 8
+  H35 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem1 < bv_half_modulus 8
+  H36 : -1 < bv_unsigned b1 < bv_modulus 64
+  H37 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H38 : -1 < bv_unsigned n3 < bv_modulus 64
+  H39 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n3 < bv_half_modulus 64
+  H40 : -1 < bv_unsigned vmem0 < bv_modulus 8
+  H41 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem0 < bv_half_modulus 8
+  H42 : -1 < bv_unsigned b0 < bv_modulus 64
+  H43 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H44 : -1 < bv_unsigned n1 < bv_modulus 64
+  H45 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64
+  H46 : -1 < bv_unsigned vmem < bv_modulus 8
+  H47 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem < bv_half_modulus 8
+  H48 : -1 < bv_unsigned b < bv_modulus 64
+  H49 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H50 : -1 < bv_unsigned n < bv_modulus 64
+  H51 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64
+  H52 : -1 < bv_unsigned row < bv_modulus 64
+  H53 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed row < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 65936 zesuWriteOutputCallSpec
+  --------------------------------------□
+  _ : instr_pre 86952 BLK_STOP_153a8
+  _ : P
+  _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
+  _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
+  _ : "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem1)
+  _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : base ↦ₘ∗ bytes
+  _ : "x1" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem2)
+  _ : reg_col []
+  _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 86584)
+  _ : "x22" ↦ᵣ RVal_Bits row
+  _ : reg_col zesu_ram_sys_regs
+  --------------------------------------∗
+  find_in_context (FindMemMapsTo (bv_unsigned (row + 20)))
+    (λ mk : mem_mapsto_kind,
+       match mk with
+       | MKMapsTo n' vmem3 => ∃ Heq : 8%N = n', ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ bv_unsigned (row + 20) ↦ₘ vmem3 -∗ WPasm HIDDEN
+       | MKArray n' a' values =>
+           if (n' =? 8)%N
+           then ⌜(bv_unsigned (row + 20) - a') `mod` 1 = 0⌝ ∗
+           ∃ i : nat, ⌜i = (bv_unsigned (row + 20) - a') `div` 1⌝ ∗ ⌜(i < length values)%nat⌝ ∗
+             ∃ Heq : 8%N = n', ∀ vmem3 : bv n', ⌜values !! i = Some vmem3⌝ -∗ ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
+           else ⌜n' = 8%N⌝ ∗
+           ∃ i : nat, ⌜i = bv_unsigned (row + 20) - a'⌝ ∗ ⌜(i + N.to_nat 1 <= length values)%nat⌝ ∗
+             ∀ vmem3 : bv 8, ⌜vmem3 = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))⌝ -∗ ⌜n9 = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
+       | MKUninit _ _ => False
+       | MKMMIO a' length => ⌜a' ≤ bv_unsigned (row + 20)⌝ ∗ ⌜bv_unsigned (row + 20) + 1 ≤ a' + length⌝ ∗
+           ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (row + 20) n9) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
+       end)
+BOUNDARY-ALL-GOALS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  row : bv 64
+  base : Z
+  bytes : list (bv 8)
+  index : nat
+  P, BLK_STOP_153a8 : iProp Sigma
+  H0 : base + length bytes < 0 + 1073741824
+  H1 : 0 ≤ base
+  H2 : (index + 20 <= length bytes)%nat
+  H3 : bv_unsigned row = base + index
+  n, b : bv 64
+  H4 : Z.land (bv_unsigned b) 131072 = 0
+  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  vmem : bv 8
+  H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
+  H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
+  n1, b0 : bv 64
+  H8 : Z.land (bv_unsigned b0) 131072 = 0
+  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  vmem0 : bv 8
+  H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
+  H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
+  n3, b1 : bv 64
+  H12 : Z.land (bv_unsigned b1) 131072 = 0
+  H13 : Z.land (bvn_unsigned n3) 131072 = 0
+  vmem1 : bv 8
+  H14 : bytes !! Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) = Some vmem1
+  H15 : (Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) < length bytes)%nat
+  n5, b2 : bv 64
+  H16 : Z.land (bv_unsigned b2) 131072 = 0
+  H17 : Z.land (bvn_unsigned n5) 131072 = 0
+  vmem2 : bv 8
+  H18 : bytes !! Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) = Some vmem2
+  H19 : (Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) < length bytes)%nat
+  n7, b3 : bv 64
+  H20 : Z.land (bv_unsigned b3) 131072 = 0
+  H21 : Z.land (bvn_unsigned n7) 131072 = 0
+  n9 : bv 8
+  H22 : -1 < bv_unsigned n9 < bv_modulus 8
+  H23 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed n9 < bv_half_modulus 8
+  H24 : -1 < bv_unsigned b3 < bv_modulus 64
+  H25 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b3 < bv_half_modulus 64
+  H26 : -1 < bv_unsigned n7 < bv_modulus 64
+  H27 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n7 < bv_half_modulus 64
+  H28 : -1 < bv_unsigned vmem2 < bv_modulus 8
+  H29 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem2 < bv_half_modulus 8
+  H30 : -1 < bv_unsigned b2 < bv_modulus 64
+  H31 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64
+  H32 : -1 < bv_unsigned n5 < bv_modulus 64
+  H33 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n5 < bv_half_modulus 64
+  H34 : -1 < bv_unsigned vmem1 < bv_modulus 8
+  H35 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem1 < bv_half_modulus 8
+  H36 : -1 < bv_unsigned b1 < bv_modulus 64
+  H37 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H38 : -1 < bv_unsigned n3 < bv_modulus 64
+  H39 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n3 < bv_half_modulus 64
+  H40 : -1 < bv_unsigned vmem0 < bv_modulus 8
+  H41 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem0 < bv_half_modulus 8
+  H42 : -1 < bv_unsigned b0 < bv_modulus 64
+  H43 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H44 : -1 < bv_unsigned n1 < bv_modulus 64
+  H45 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64
+  H46 : -1 < bv_unsigned vmem < bv_modulus 8
+  H47 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem < bv_half_modulus 8
+  H48 : -1 < bv_unsigned b < bv_modulus 64
+  H49 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H50 : -1 < bv_unsigned n < bv_modulus 64
+  H51 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64
+  H52 : -1 < bv_unsigned row < bv_modulus 64
+  H53 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed row < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 65936 zesuWriteOutputCallSpec
+  --------------------------------------□
+  _ : instr_pre 86952 BLK_STOP_153a8
+  _ : P
+  _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
+  _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
+  _ : "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem1)
+  _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : base ↦ₘ∗ bytes
+  _ : "x1" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem2)
+  _ : reg_col []
+  _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 86584)
+  _ : "x22" ↦ᵣ RVal_Bits row
+  _ : reg_col zesu_ram_sys_regs
+  --------------------------------------∗
+  find_in_context (FindMemMapsTo (bv_unsigned (row + 20)))
+    (λ mk : mem_mapsto_kind,
+       match mk with
+       | MKMapsTo n' vmem3 => ∃ Heq : 8%N = n', ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ bv_unsigned (row + 20) ↦ₘ vmem3 -∗ WPasm HIDDEN
+       | MKArray n' a' values =>
+           if (n' =? 8)%N
+           then ⌜(bv_unsigned (row + 20) - a') `mod` 1 = 0⌝ ∗
+           ∃ i : nat, ⌜i = (bv_unsigned (row + 20) - a') `div` 1⌝ ∗ ⌜(i < length values)%nat⌝ ∗
+             ∃ Heq : 8%N = n', ∀ vmem3 : bv n', ⌜values !! i = Some vmem3⌝ -∗ ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
+           else ⌜n' = 8%N⌝ ∗
+           ∃ i : nat, ⌜i = bv_unsigned (row + 20) - a'⌝ ∗ ⌜(i + N.to_nat 1 <= length values)%nat⌝ ∗
+             ∀ vmem3 : bv 8, ⌜vmem3 = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))⌝ -∗ ⌜n9 = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
+       | MKUninit _ _ => False
+       | MKMMIO a' length => ⌜a' ≤ bv_unsigned (row + 20)⌝ ∗ ⌜bv_unsigned (row + 20) + 1 ≤ a' + length⌝ ∗
+           ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (row + 20) n9) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
+       end)
+PROBE-END

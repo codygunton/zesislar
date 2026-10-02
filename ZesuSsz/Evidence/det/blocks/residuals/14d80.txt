@@ -1,0 +1,6 @@
+Leader: 0x14d80
+Variant: A
+Counter: 1
+Raw output: ZesuSsz/Evidence/det/blocks/residuals/14d80.out
+
+WriteSuccessLoadBlockCore.writeSuccessLoadBlockStack sp values ∗ True

@@ -1,0 +1,87 @@
+{
+  "entry_source_sha": "9a0307bcc6b77b9d77506446cf1b244531386f7e",
+  "rules": "call",
+  "variant": "A",
+  "cap_seconds": 600,
+  "workers": 6,
+  "successor_premises": "Abstract BLK_STOP premises from infer_boundary.py --stop. These measurements capture residuals; they do not prove successor contracts.",
+  "counter_limit": "The collector counts BLK-PC markers. A symbolic PC or an internal handoff can make its numeric stall_pc lag behind execution. Read the raw goal before attributing a stall to an instruction.",
+  "memory_case": {
+    "name": "infer_15754",
+    "entry": "0x15754",
+    "exit": "0x158d4",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15754",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15754 P",
+    "rc": -9,
+    "wall": 71.0,
+    "cpu": 70.8,
+    "peak_mib": 8230,
+    "limit": "memory",
+    "rss_samples": [
+      [
+        1,
+        1020
+      ],
+      [
+        6,
+        1357
+      ],
+      [
+        11,
+        1927
+      ],
+      [
+        16,
+        2533
+      ],
+      [
+        21,
+        3051
+      ],
+      [
+        26,
+        3615
+      ],
+      [
+        31,
+        4251
+      ],
+      [
+        36,
+        4683
+      ],
+      [
+        41,
+        5247
+      ],
+      [
+        46,
+        5841
+      ],
+      [
+        51,
+        6349
+      ],
+      [
+        56,
+        6892
+      ],
+      [
+        61,
+        7467
+      ],
+      [
+        66,
+        7685
+      ]
+    ],
+    "outcome": "error",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/writeoutput-inference/Infer_15754.out"
+  },
+  "pending": "Coordinator rulings on nine unresolved successor boundaries and the recorded 0x15754 memory row.",
+  "root_verification": "The generated block reached its successor, but Qed failed. The residual is existential framing of the inferred State_1573c resources. No proof lines were added."
+}

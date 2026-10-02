@@ -1,0 +1,10 @@
+Leader: 0x153d4
+Variant: A
+Counter: 2
+Raw output: ZesuSsz/Evidence/det/blocks/residuals/153d4.out
+
+∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗
+   ⌜(IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1 <= length bytes)%nat⌝ ∗
+   (base ↦ₘ∗ take (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes -∗
+    (base + 1 * (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)%nat) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
+    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + 18%nat)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗

@@ -1,0 +1,226 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86996))
+BLK-PC (bv_to_bvn LET)
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87000))
+BLK-PC (bv_to_bvn LET3)
+BLK-AT-PRE (87004 + 4)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+2 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  row : bv 64
+  base : Z
+  bytes : list (bv 8)
+  index : nat
+  P, BLK_STOP_15558 : iProp Sigma
+  H0 : base + length bytes < 0 + 1073741824
+  H1 : 0 ≤ base
+  H2 : (index + 20 <= length bytes)%nat
+  H3 : bv_unsigned row = base + index
+  n, b : bv 64
+  H4 : Z.land (bv_unsigned b) 131072 = 0
+  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  vmem : bv 8
+  H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
+  H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
+  n1, b0 : bv 64
+  H8 : Z.land (bv_unsigned b0) 131072 = 0
+  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  vmem0 : bv 8
+  H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
+  H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
+  H12 : -1 < bv_unsigned vmem0 < bv_modulus 8
+  H13 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem0 < bv_half_modulus 8
+  H14 : -1 < bv_unsigned b0 < bv_modulus 64
+  H15 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H16 : -1 < bv_unsigned n1 < bv_modulus 64
+  H17 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64
+  H18 : -1 < bv_unsigned vmem < bv_modulus 8
+  H19 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem < bv_half_modulus 8
+  H20 : -1 < bv_unsigned b < bv_modulus 64
+  H21 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H22 : -1 < bv_unsigned n < bv_modulus 64
+  H23 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64
+  H24 : -1 < bv_unsigned row < bv_modulus 64
+  H25 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed row < bv_half_modulus 64
+  ============================
+  bv_unsigned row + 18 = base + 1 * IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)
+
+goal 2 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ --------------------------------------□
+ _ : instr_pre 87384 BLK_STOP_15558
+ _ : reg_col [(KindReg "x8", BitsShape 64)]
+ _ : P
+ _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
+ _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
+ _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ --------------------------------------∗
+ ∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗
+   ⌜(IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1 <= length bytes)%nat⌝ ∗
+   (base ↦ₘ∗ take (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes -∗
+    (base + 1 * (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)%nat) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
+    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + 18%nat)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗
+    ⌜0 ≤ bv_unsigned row + 18 < 0 + 1073741824⌝ ∗
+    instr_pre (87004 + 4)
+      (reg_col zesu_ram_sys_regs ∗ "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 x.2ₗ) ∗ "x19" ↦ᵣ RVal_Bits row ∗ (bv_unsigned row + 18) ↦ₘ x.2ₗ ∗ (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗
+       (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ True))
+BOUNDARY-ALL-GOALS-END
+2 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  row : bv 64
+  base : Z
+  bytes : list (bv 8)
+  index : nat
+  P, BLK_STOP_15558 : iProp Sigma
+  H0 : base + length bytes < 0 + 1073741824
+  H1 : 0 ≤ base
+  H2 : (index + 20 <= length bytes)%nat
+  H3 : bv_unsigned row = base + index
+  n, b : bv 64
+  H4 : Z.land (bv_unsigned b) 131072 = 0
+  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  vmem : bv 8
+  H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
+  H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
+  n1, b0 : bv 64
+  H8 : Z.land (bv_unsigned b0) 131072 = 0
+  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  vmem0 : bv 8
+  H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
+  H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
+  H12 : -1 < bv_unsigned vmem0 < bv_modulus 8
+  H13 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem0 < bv_half_modulus 8
+  H14 : -1 < bv_unsigned b0 < bv_modulus 64
+  H15 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H16 : -1 < bv_unsigned n1 < bv_modulus 64
+  H17 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64
+  H18 : -1 < bv_unsigned vmem < bv_modulus 8
+  H19 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed vmem < bv_half_modulus 8
+  H20 : -1 < bv_unsigned b < bv_modulus 64
+  H21 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H22 : -1 < bv_unsigned n < bv_modulus 64
+  H23 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64
+  H24 : -1 < bv_unsigned row < bv_modulus 64
+  H25 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed row < bv_half_modulus 64
+  ============================
+  bv_unsigned row + 18 = base + 1 * IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)
+
+goal 2 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ --------------------------------------□
+ _ : instr_pre 87384 BLK_STOP_15558
+ _ : reg_col [(KindReg "x8", BitsShape 64)]
+ _ : P
+ _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
+ _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
+ _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ --------------------------------------∗
+ ∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗
+   ⌜(IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1 <= length bytes)%nat⌝ ∗
+   (base ↦ₘ∗ take (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes -∗
+    (base + 1 * (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)%nat) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
+    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + 18%nat)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗
+    ⌜0 ≤ bv_unsigned row + 18 < 0 + 1073741824⌝ ∗
+    instr_pre (87004 + 4)
+      (reg_col zesu_ram_sys_regs ∗ "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 x.2ₗ) ∗ "x19" ↦ᵣ RVal_Bits row ∗ (bv_unsigned row + 18) ↦ₘ x.2ₗ ∗ (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗
+       (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ True))
+PROBE-END

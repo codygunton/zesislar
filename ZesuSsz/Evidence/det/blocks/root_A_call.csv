@@ -1,0 +1,2 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,b17,0x1572c,4,call:-1444(ra) # 10190 <write_output>,infer_boundary,reached,4,,,,,,4.0,3.5,1064,600,,0x1573c

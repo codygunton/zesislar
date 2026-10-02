@@ -1,0 +1,266 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87852))
+BLK-PC (bv_to_bvn LET)
+BLK-PC (bv_to_bvn (Z_to_bv 64 87856))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87856))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87856))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87856))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87856))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87856))
+BLK-PC (bv_to_bvn LET1)
+BLK-PC (bv_to_bvn (Z_to_bv 64 87860))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87860))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87860))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87860))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87860))
+BLK-PC (bv_to_bvn (Z_to_bv 64 87860))
+BLK-PC (bv_to_bvn LET2)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P : iProp Sigma
+  sp, root : bv 64
+  tail : spec
+  H0 : bv_unsigned sp + 1896 < 0 + 1073741824
+  H1 : bv_unsigned sp < 0 + 1073741824
+  H2 : 0 ≤ bv_unsigned sp - 16
+  H3 : bv_unsigned sp `mod` 16 = 0
+  b : bv 64
+  H4 : Z.land (bv_unsigned b) 131072 = 0
+  b0 : bv 64
+  H5 : Z.land (bv_unsigned b0) 131072 = 0
+  b1 : bv 64
+  H6 : Z.land (bv_unsigned b1) 131072 = 0
+  b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21 : bv 64
+  H7 : -1 < bv_unsigned b21 < bv_modulus 64
+  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64
+  H9 : -1 < bv_unsigned b20 < bv_modulus 64
+  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64
+  H11 : -1 < bv_unsigned b19 < bv_modulus 64
+  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64
+  H13 : -1 < bv_unsigned b18 < bv_modulus 64
+  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64
+  H15 : -1 < bv_unsigned b17 < bv_modulus 64
+  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64
+  H17 : -1 < bv_unsigned b16 < bv_modulus 64
+  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64
+  H19 : -1 < bv_unsigned b15 < bv_modulus 64
+  H20 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64
+  H21 : -1 < bv_unsigned b14 < bv_modulus 64
+  H22 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64
+  H23 : -1 < bv_unsigned b13 < bv_modulus 64
+  H24 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64
+  H25 : -1 < bv_unsigned b12 < bv_modulus 64
+  H26 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64
+  H27 : -1 < bv_unsigned b11 < bv_modulus 64
+  H28 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64
+  H29 : -1 < bv_unsigned b10 < bv_modulus 64
+  H30 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64
+  H31 : -1 < bv_unsigned b9 < bv_modulus 64
+  H32 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64
+  H33 : -1 < bv_unsigned b8 < bv_modulus 64
+  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64
+  H35 : -1 < bv_unsigned b1 < bv_modulus 64
+  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H37 : -1 < bv_unsigned b0 < bv_modulus 64
+  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H39 : -1 < bv_unsigned b < bv_modulus 64
+  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H41 : -1 < bv_unsigned root < bv_modulus 64
+  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed root < bv_half_modulus 64
+  H43 : -1 < bv_unsigned sp < bv_modulus 64
+  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 65936 zesuWriteOutputCallSpec
+  _ : mmio_range (604086456 + 8) 16
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : (bv_unsigned sp + 1000) ↦ₘ root
+  _ : P
+  _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+  _ : reg_col zesu_ram_sys_regs
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64); (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x8", ExactShape (RVal_Bits b8)); (KindReg "x9", ExactShape (RVal_Bits b9)); (KindReg "x18", ExactShape (RVal_Bits b10)); (KindReg "x19", ExactShape (RVal_Bits b11));
+         (KindReg "x20", ExactShape (RVal_Bits b12)); (KindReg "x21", ExactShape (RVal_Bits b13)); (KindReg "x22", ExactShape (RVal_Bits b14)); (KindReg "x23", ExactShape (RVal_Bits b15));
+         (KindReg "x24", ExactShape (RVal_Bits b16)); (KindReg "x25", ExactShape (RVal_Bits b17)); (KindReg "x26", ExactShape (RVal_Bits b18)); (KindReg "x27", ExactShape (RVal_Bits b19))]
+  _ : "x10" ↦ᵣ RVal_Bits b20
+  _ : "x11" ↦ᵣ RVal_Bits b21
+  _ : "x2" ↦ᵣ RVal_Bits sp
+  _ : spec_trace tail
+  --------------------------------------∗
+  ∃ x : bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ spec *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ + 1000) ↦ₘ x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗ P ∗
+    reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗ reg_col zesu_ram_sys_regs ∗
+    reg_col
+      [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+       (KindReg "x17", BitsShape 64)] ∗
+    reg_col
+      [(KindReg "x8", ExactShape (RVal_Bits x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ)); (KindReg "x9", ExactShape (RVal_Bits x.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ));
+       (KindReg "x18", ExactShape (RVal_Bits x.nextₗ.nextₗ.nextₗ.9ₗ)); (KindReg "x19", ExactShape (RVal_Bits x.nextₗ.nextₗ.9ₗ)); (KindReg "x20", ExactShape (RVal_Bits x.nextₗ.9ₗ));
+       (KindReg "x21", ExactShape (RVal_Bits x.9ₗ)); (KindReg "x22", ExactShape (RVal_Bits x.8ₗ)); (KindReg "x23", ExactShape (RVal_Bits x.7ₗ)); (KindReg "x24", ExactShape (RVal_Bits x.6ₗ));
+       (KindReg "x25", ExactShape (RVal_Bits x.5ₗ)); (KindReg "x26", ExactShape (RVal_Bits x.4ₗ)); (KindReg "x27", ExactShape (RVal_Bits x.3ₗ))] ∗ "x10" ↦ᵣ RVal_Bits x.2ₗ ∗ 
+    "x11" ↦ᵣ RVal_Bits x.1ₗ ∗ "x2" ↦ᵣ RVal_Bits x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗ spec_trace x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗
+    reg_col
+      [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+       (KindReg "x31", BitsShape 64)] ∗ mmio_range (604086456 + 8) 16 ∗ ⌜bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ + 1896 < 0 + 1073741824⌝ ∗
+    ⌜bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < 0 + 1073741824⌝ ∗
+    ⌜0 ≤ bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ - 16⌝ ∗ ⌜bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ `mod` 16 = 0⌝ ∗
+    ⌜Z.land (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ) 131072 = 0⌝ ∗ ⌜Z.land (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ) 131072 = 0⌝ ∗
+    ⌜Z.land (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ) 131072 = 0⌝ ∗ ⌜-1 < bv_unsigned x.1ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.1ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.2ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.2ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.3ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.3ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.4ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.4ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.5ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.5ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.6ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.6ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.7ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.7ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.8ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.8ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ True
+BOUNDARY-ALL-GOALS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P : iProp Sigma
+  sp, root : bv 64
+  tail : spec
+  H0 : bv_unsigned sp + 1896 < 0 + 1073741824
+  H1 : bv_unsigned sp < 0 + 1073741824
+  H2 : 0 ≤ bv_unsigned sp - 16
+  H3 : bv_unsigned sp `mod` 16 = 0
+  b : bv 64
+  H4 : Z.land (bv_unsigned b) 131072 = 0
+  b0 : bv 64
+  H5 : Z.land (bv_unsigned b0) 131072 = 0
+  b1 : bv 64
+  H6 : Z.land (bv_unsigned b1) 131072 = 0
+  b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21 : bv 64
+  H7 : -1 < bv_unsigned b21 < bv_modulus 64
+  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64
+  H9 : -1 < bv_unsigned b20 < bv_modulus 64
+  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64
+  H11 : -1 < bv_unsigned b19 < bv_modulus 64
+  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64
+  H13 : -1 < bv_unsigned b18 < bv_modulus 64
+  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64
+  H15 : -1 < bv_unsigned b17 < bv_modulus 64
+  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64
+  H17 : -1 < bv_unsigned b16 < bv_modulus 64
+  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64
+  H19 : -1 < bv_unsigned b15 < bv_modulus 64
+  H20 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64
+  H21 : -1 < bv_unsigned b14 < bv_modulus 64
+  H22 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64
+  H23 : -1 < bv_unsigned b13 < bv_modulus 64
+  H24 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64
+  H25 : -1 < bv_unsigned b12 < bv_modulus 64
+  H26 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64
+  H27 : -1 < bv_unsigned b11 < bv_modulus 64
+  H28 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64
+  H29 : -1 < bv_unsigned b10 < bv_modulus 64
+  H30 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64
+  H31 : -1 < bv_unsigned b9 < bv_modulus 64
+  H32 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64
+  H33 : -1 < bv_unsigned b8 < bv_modulus 64
+  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64
+  H35 : -1 < bv_unsigned b1 < bv_modulus 64
+  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H37 : -1 < bv_unsigned b0 < bv_modulus 64
+  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H39 : -1 < bv_unsigned b < bv_modulus 64
+  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H41 : -1 < bv_unsigned root < bv_modulus 64
+  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed root < bv_half_modulus 64
+  H43 : -1 < bv_unsigned sp < bv_modulus 64
+  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 65936 zesuWriteOutputCallSpec
+  _ : mmio_range (604086456 + 8) 16
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : (bv_unsigned sp + 1000) ↦ₘ root
+  _ : P
+  _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+  _ : reg_col zesu_ram_sys_regs
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64); (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x8", ExactShape (RVal_Bits b8)); (KindReg "x9", ExactShape (RVal_Bits b9)); (KindReg "x18", ExactShape (RVal_Bits b10)); (KindReg "x19", ExactShape (RVal_Bits b11));
+         (KindReg "x20", ExactShape (RVal_Bits b12)); (KindReg "x21", ExactShape (RVal_Bits b13)); (KindReg "x22", ExactShape (RVal_Bits b14)); (KindReg "x23", ExactShape (RVal_Bits b15));
+         (KindReg "x24", ExactShape (RVal_Bits b16)); (KindReg "x25", ExactShape (RVal_Bits b17)); (KindReg "x26", ExactShape (RVal_Bits b18)); (KindReg "x27", ExactShape (RVal_Bits b19))]
+  _ : "x10" ↦ᵣ RVal_Bits b20
+  _ : "x11" ↦ᵣ RVal_Bits b21
+  _ : "x2" ↦ᵣ RVal_Bits sp
+  _ : spec_trace tail
+  --------------------------------------∗
+  ∃ x : bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ spec *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ + 1000) ↦ₘ x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗ P ∗
+    reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗ reg_col zesu_ram_sys_regs ∗
+    reg_col
+      [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+       (KindReg "x17", BitsShape 64)] ∗
+    reg_col
+      [(KindReg "x8", ExactShape (RVal_Bits x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ)); (KindReg "x9", ExactShape (RVal_Bits x.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ));
+       (KindReg "x18", ExactShape (RVal_Bits x.nextₗ.nextₗ.nextₗ.9ₗ)); (KindReg "x19", ExactShape (RVal_Bits x.nextₗ.nextₗ.9ₗ)); (KindReg "x20", ExactShape (RVal_Bits x.nextₗ.9ₗ));
+       (KindReg "x21", ExactShape (RVal_Bits x.9ₗ)); (KindReg "x22", ExactShape (RVal_Bits x.8ₗ)); (KindReg "x23", ExactShape (RVal_Bits x.7ₗ)); (KindReg "x24", ExactShape (RVal_Bits x.6ₗ));
+       (KindReg "x25", ExactShape (RVal_Bits x.5ₗ)); (KindReg "x26", ExactShape (RVal_Bits x.4ₗ)); (KindReg "x27", ExactShape (RVal_Bits x.3ₗ))] ∗ "x10" ↦ᵣ RVal_Bits x.2ₗ ∗ 
+    "x11" ↦ᵣ RVal_Bits x.1ₗ ∗ "x2" ↦ᵣ RVal_Bits x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗ spec_trace x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗
+    reg_col
+      [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+       (KindReg "x31", BitsShape 64)] ∗ mmio_range (604086456 + 8) 16 ∗ ⌜bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ + 1896 < 0 + 1073741824⌝ ∗
+    ⌜bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < 0 + 1073741824⌝ ∗
+    ⌜0 ≤ bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ - 16⌝ ∗ ⌜bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ `mod` 16 = 0⌝ ∗
+    ⌜Z.land (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ) 131072 = 0⌝ ∗ ⌜Z.land (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ) 131072 = 0⌝ ∗
+    ⌜Z.land (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ) 131072 = 0⌝ ∗ ⌜-1 < bv_unsigned x.1ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.1ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.2ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.2ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.3ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.3ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.4ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.4ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.5ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.5ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.6ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.6ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.7ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.7ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.8ₗ < bv_modulus 64⌝ ∗ ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.8ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗
+    ⌜-1 < bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_modulus 64⌝ ∗
+    ⌜64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ < bv_half_modulus 64⌝ ∗ True
+PROBE-END
