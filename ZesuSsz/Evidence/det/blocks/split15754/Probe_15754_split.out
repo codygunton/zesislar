@@ -1,0 +1,5 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 1.308 secs (1.301u,0.002s) (success)
+exit=137 ms=50708 rss_kb=6335788
+
+/home/cody/zesislar/.worktrees/wp0-integration-worker-2/tools/resource_guard.sh: line 864: 1912990 Killed                     ZESU_SCOPE_CPU="$cpu" ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" -p "MemoryMax=${MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- $(io_class) "$(realpath "$0")" scope-exec "$reservation" -- "$@"

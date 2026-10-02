@@ -1,0 +1,119 @@
+{
+  "boolean": {
+    "before": {
+      "stalled": 4,
+      "boundary-stall": 2
+    },
+    "after": {
+      "stalled": 4,
+      "boundary-stall": 2
+    },
+    "measured": 4
+  },
+  "bytelists": {
+    "before": {
+      "stalled": 4,
+      "boundary-stall": 1
+    },
+    "after": {
+      "stalled": 4,
+      "boundary-stall": 1
+    },
+    "measured": 4
+  },
+  "bytes": {
+    "before": {
+      "boundary-stall": 3,
+      "stalled": 6
+    },
+    "after": {
+      "boundary-stall": 3,
+      "stalled": 6
+    },
+    "measured": 6
+  },
+  "int1645": {
+    "before": {
+      "stalled": 3
+    },
+    "after": {
+      "stalled": 3
+    },
+    "measured": 3
+  },
+  "integer": {
+    "before": {
+      "stalled": 16,
+      "boundary-stall": 7,
+      "partial": 1
+    },
+    "after": {
+      "reached": 1,
+      "boundary-stall": 7,
+      "stalled": 16
+    },
+    "measured": 17
+  },
+  "memcpy": {
+    "before": {
+      "stalled": 4,
+      "boundary-stall": 1
+    },
+    "after": {
+      "stalled": 4,
+      "boundary-stall": 1
+    },
+    "measured": 4
+  },
+  "nocall": {
+    "before": {
+      "boundary-stall": 6,
+      "stalled": 7,
+      "closed": 10
+    },
+    "after": {
+      "boundary-stall": 6,
+      "reached": 1,
+      "closed": 9,
+      "stalled": 7
+    },
+    "measured": 8
+  },
+  "optional": {
+    "before": {
+      "stalled": 3,
+      "boundary-stall": 1
+    },
+    "after": {
+      "stalled": 3,
+      "boundary-stall": 1
+    },
+    "measured": 3
+  },
+  "u256": {
+    "before": {
+      "stalled": 6
+    },
+    "after": {
+      "stalled": 6
+    },
+    "measured": 6
+  },
+  "writeOutput": {
+    "before": {
+      "partial": 1,
+      "closed": 6,
+      "reached": 1,
+      "stalled": 8,
+      "memory": 1
+    },
+    "after": {
+      "stalled": 7,
+      "closed": 5,
+      "memory": 2,
+      "reached": 1,
+      "timeout": 2
+    },
+    "measured": 16
+  }
+}

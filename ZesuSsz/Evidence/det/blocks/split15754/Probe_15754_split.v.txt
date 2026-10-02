@@ -1,0 +1,39 @@
+Set Printing Width 200.
+Require Import isla.isla.
+From iris.proofmode Require Import environments.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Generated.WriteSuccess.States.SplitState_15754.
+Require Import ZesuSsz.Automation.Sets.call.
+Lemma infer_boundary `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (pointer : bv 64) (base : Z) (total : nat) (processed : nat) (remaining : nat) (bytes : list (bv 8)) (tail : spec) (word0 : bv 64) (word1 : bv 64) (word2 : bv 64) (word3 : bv 64)  (BLK_STOP_157d0 : iProp Sigma) :
+  instr_pre 0x157d0 BLK_STOP_157d0 -∗
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  instr_body 0x15754
+    (SplitState_15754 P sp pointer base total processed remaining bytes tail word0 word1 word2 word3).
+Proof.
+idtac "PROBE-BEGIN".
+try intros.
+idtac.
+try zesu_block.
+all: try (lazymatch goal with
+  | |- envs_entails _ BLK_STOP_157d0 => idtac "BOUNDARY-REACHED"
+  end).
+all: try liShow.
+all: idtac "BOUNDARY-ALL-GOALS-BEGIN".
+Show.
+all: idtac "BOUNDARY-ALL-GOALS-END".
+all: try (lazymatch goal with
+  | |- ?goal =>
+      lazymatch type of goal with
+      | Prop => fail
+      | _ => shelve
+      end
+  end).
+all: (idtac "BOUNDARY-LOCAL-SORTS-BEGIN";
+  try (multimatch goal with Hlocal : ?T |- _ =>
+    let S := type of T in idtac "BOUNDARY-LOCAL-SORT" Hlocal ":" S; fail
+  end);
+  idtac "BOUNDARY-LOCAL-SORTS-END").
+Show.
+Abort.
+Goal True. idtac "PROBE-END". Abort.

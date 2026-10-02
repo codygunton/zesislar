@@ -1,0 +1,3811 @@
+[
+  {
+    "variant": "finalf15",
+    "leader": "0x14d30",
+    "last": "0x14d7c",
+    "n": 20,
+    "kind": "call:1116(ra) # 101d4 <memcpy>",
+    "succ": [
+      "0x14d80"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_14d30",
+    "stops": [],
+    "kept_succ": [
+      "0x14d80"
+    ],
+    "run": "A",
+    "seconds": 26.7,
+    "cpu": 24.9,
+    "peak_mib": 1593,
+    "rc": 0,
+    "rss_samples": [
+      [
+        15,
+        1532
+      ],
+      [
+        21,
+        1570
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14d30",
+      "0x14d68",
+      "0x14d6c",
+      "0x14d70",
+      "0x14d74",
+      "0x14d78"
+    ],
+    "k_max": 19,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14d30_call.out",
+    "pred_class": "C2",
+    "conclusion": "\u2203 x : list (bv 8) *\u2097 (), bv_unsigned decoded \u21a6\u2098\u2217 x.1\u2097 \u2217 bv_unsigned (sp + 18446744073709549616 + 312) \u21a6\u2098? bv_unsigned 720 \u2217 \u231cbv_unsigned 720 \u2264 length x.1\u2097\u231d \u2217 \u231c0 \u2264 bv_unsigned decoded\u231d \u2217\n    \u231cbv_unsigned decoded + bv_unsigned 720 < 0 + 1073741824\u231d \u2217 \u231c0 \u2264 bv_unsigned (sp + 18446744073709549616 + 312)\u231d \u2217\n    \u231cbv_unsigned (sp + 18446744073709549616 + 312) + bv_unsigned 720 < 0 + 1073741824\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85372 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits decoded; RVal_Bits s1; RVal_Bits s2; RVal_Bits s3; RVal_Bits s4; RVal_Bits s5; RVal_Bits s6; RVal_Bits s7; RVa",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14d80",
+    "last": "0x14e10",
+    "n": 37,
+    "kind": "call:900(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e14"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_14d80",
+    "stops": [],
+    "kept_succ": [
+      "0x14e14"
+    ],
+    "run": "A",
+    "seconds": 35.1,
+    "cpu": 34.3,
+    "peak_mib": 1541,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1032
+      ],
+      [
+        9,
+        1117
+      ],
+      [
+        14,
+        1235
+      ],
+      [
+        20,
+        1381
+      ],
+      [
+        25,
+        1459
+      ],
+      [
+        30,
+        1501
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e00",
+      "0x14e04",
+      "0x14e08",
+      "0x14e0c"
+    ],
+    "k_max": 36,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14d80_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (Z_to_bv 64 85504 + 12288 + 18446744073709550533) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace (Snapshots.writeOutputEvents (Z_to_bv 64 85504 + 12288 + 18446744073709550533) 6 x.2\u2097 x.1\u2097) \u2217 \u231cbv_unsigned 6 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85520 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits base; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19; RVal_Bits b20; RVal_Bits b21]\n         (Z_to_bv 64 (85520 + 4)) sp (\u03bb _ : list (bv",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e28",
+    "last": "0x14e34",
+    "n": 4,
+    "kind": "call:864(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e38"
+    ],
+    "lemma": "block_14e28",
+    "module": "Probe_14e28",
+    "stops": [],
+    "kept_succ": [
+      "0x14e38"
+    ],
+    "run": "A",
+    "seconds": 22.1,
+    "cpu": 6.2,
+    "peak_mib": 1101,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        996
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e28",
+      "0x14e2c",
+      "0x14e30"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e28_call.out",
+    "outcome": "closed-all",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e38",
+    "last": "0x14e44",
+    "n": 4,
+    "kind": "call:848(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e48"
+    ],
+    "lemma": "block_14e38",
+    "module": "Probe_14e38",
+    "stops": [],
+    "kept_succ": [
+      "0x14e48"
+    ],
+    "run": "A",
+    "seconds": 13.9,
+    "cpu": 6.0,
+    "peak_mib": 1240,
+    "rc": 0,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e38",
+      "0x14e3c",
+      "0x14e40"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e38_call.out",
+    "outcome": "closed-all",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e48",
+    "last": "0x14e54",
+    "n": 4,
+    "kind": "call:832(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e58"
+    ],
+    "lemma": "block_14e48",
+    "module": "Probe_14e48",
+    "stops": [],
+    "kept_succ": [
+      "0x14e58"
+    ],
+    "run": "A",
+    "seconds": 10.4,
+    "cpu": 5.9,
+    "peak_mib": 1097,
+    "rc": 0,
+    "rss_samples": [
+      [
+        4,
+        1023
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e48",
+      "0x14e4c",
+      "0x14e50"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e48_call.out",
+    "outcome": "closed-all",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e58",
+    "last": "0x14e64",
+    "n": 4,
+    "kind": "call:816(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e68"
+    ],
+    "lemma": "block_14e58",
+    "module": "Probe_14e58",
+    "stops": [],
+    "kept_succ": [
+      "0x14e68"
+    ],
+    "run": "A",
+    "seconds": 18.7,
+    "cpu": 6.0,
+    "peak_mib": 1101,
+    "rc": 0,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e58",
+      "0x14e5c",
+      "0x14e60"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e58_call.out",
+    "outcome": "closed-all",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e68",
+    "last": "0x14e74",
+    "n": 4,
+    "kind": "call:800(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e78"
+    ],
+    "lemma": "block_14e68",
+    "module": "Probe_14e68",
+    "stops": [],
+    "kept_succ": [
+      "0x14e78"
+    ],
+    "run": "A",
+    "seconds": 11.1,
+    "cpu": 8.9,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        982
+      ],
+      [
+        8,
+        1090
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e68",
+      "0x14e6c",
+      "0x14e70"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e68_call.out",
+    "outcome": "closed-all",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e78",
+    "last": "0x14e84",
+    "n": 4,
+    "kind": "call:784(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e88"
+    ],
+    "lemma": "block_14e78",
+    "module": "Probe_14e78",
+    "stops": [],
+    "kept_succ": [
+      "0x14e88"
+    ],
+    "run": "A",
+    "seconds": 19.0,
+    "cpu": 5.7,
+    "peak_mib": 1073,
+    "rc": 0,
+    "rss_samples": [
+      [
+        5,
+        1073
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e78",
+      "0x14e7c",
+      "0x14e80"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e78_call.out",
+    "pred_class": "unknown",
+    "conclusion": "HeaderSuccessor_14e88Memory sp bytes tail P \u2217 True \u2217 \u231cbv_unsigned sp + 1896 < 0 + 1073741824\u231d \u2217 \u231c0 \u2264 bv_unsigned sp\u231d \u2217 \u231cbv_unsigned sp `mod` 16 = 0\u231d \u2217 \u231clength bytes = 720%nat\u231d \u2217 True",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14e88",
+    "last": "0x14e90",
+    "n": 3,
+    "kind": "call:-380(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x14e94"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_14e88",
+    "stops": [],
+    "kept_succ": [
+      "0x14e94"
+    ],
+    "run": "A",
+    "seconds": 10.8,
+    "cpu": 6.5,
+    "peak_mib": 1416,
+    "rc": 0,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e8c"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14e88_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_14e94",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14ed4",
+    "last": "0x14ee0",
+    "n": 4,
+    "kind": "call:692(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14ee4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_14ed4",
+    "stops": [],
+    "kept_succ": [
+      "0x14ee4"
+    ],
+    "run": "A",
+    "seconds": 19.5,
+    "cpu": 7.8,
+    "peak_mib": 1138,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1079
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14ed4",
+      "0x14ed8",
+      "0x14edc"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14ed4_call.out",
+    "pred_class": "C4",
+    "conclusion": "scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n    (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp + 1588)) 32 = Some (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values))\n    (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValue",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x14f00",
+    "last": "0x14f04",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x15668",
+      "0x14f08"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_14f00",
+    "stops": [],
+    "kept_succ": [
+      "0x15668",
+      "0x14f08"
+    ],
+    "run": "A",
+    "seconds": 6.2,
+    "cpu": 5.1,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1087
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14f04"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x14f00_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_15668",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "recoverf15",
+    "leader": "0x14f08",
+    "last": "0x150ec",
+    "n": 122,
+    "kind": "call:168(ra) # 10190 <write_output>",
+    "succ": [
+      "0x150f0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_14f08",
+    "stops": [],
+    "kept_succ": [
+      "0x150f0"
+    ],
+    "run": "A",
+    "seconds": 34.0,
+    "cpu": 33.5,
+    "peak_mib": 6186,
+    "rc": -9,
+    "rss_samples": [
+      [
+        1,
+        927
+      ],
+      [
+        6,
+        1457
+      ],
+      [
+        11,
+        2150
+      ],
+      [
+        16,
+        2992
+      ],
+      [
+        21,
+        3964
+      ],
+      [
+        26,
+        4781
+      ],
+      [
+        31,
+        5642
+      ]
+    ],
+    "cap": 300,
+    "limit": "memory",
+    "pcs_seen": [
+      "0x14f0c",
+      "0x14f10"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 0,
+    "outcome": "memory",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x150f0",
+    "last": "0x150f8",
+    "n": 3,
+    "kind": "call:-1324(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>",
+    "succ": [
+      "0x150fc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_150f0",
+    "stops": [],
+    "kept_succ": [
+      "0x150fc"
+    ],
+    "run": "A",
+    "seconds": 17.6,
+    "cpu": 5.1,
+    "peak_mib": 1305,
+    "rc": 0,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x150f0",
+      "0x150f4"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x150f0_call.out",
+    "pred_class": "C2",
+    "conclusion": "encoderOptionalU64Valid (sp + 1664) bytes",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x150fc",
+    "last": "0x15104",
+    "n": 3,
+    "kind": "call:-1008(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15108"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_150fc",
+    "stops": [],
+    "kept_succ": [
+      "0x15108"
+    ],
+    "run": "A",
+    "seconds": 15.8,
+    "cpu": 13.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        9,
+        1217
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15100"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x150fc_call.out",
+    "pred_class": "unknown",
+    "conclusion": "86280%bv = b",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15108",
+    "last": "0x15114",
+    "n": 4,
+    "kind": "call:-1068(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>",
+    "succ": [
+      "0x15118"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15108",
+    "stops": [],
+    "kept_succ": [
+      "0x15118"
+    ],
+    "run": "A",
+    "seconds": 6.3,
+    "cpu": 5.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1035
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15108",
+      "0x1510c",
+      "0x15110"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15108_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 16%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 16%bv)\n         (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 32)) 16 = Some (WriteSuccessExactEncoderU128.writeSuccessU128WordsPayload low high)) tail\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86292 + 4)))\n      (zesu_c_call_ret 32\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits high; RVal_Bits low; RVal_Bits b16; RVal_Bits b17]\n         (Z",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1511c",
+    "last": "0x15124",
+    "n": 3,
+    "kind": "call:-1412(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>",
+    "succ": [
+      "0x15128"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1511c",
+    "stops": [],
+    "kept_succ": [
+      "0x15128"
+    ],
+    "run": "A",
+    "seconds": 5.8,
+    "cpu": 4.6,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1269
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1511c",
+      "0x15120"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1511c_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (), (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace (Snapshots.writeOutputEvents (sp - 9) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1) x.1\u2097) \u2217 \u231cbv_extract 0 4 sp = 0%bv\u231d \u2217 \u231c0 \u2264 bv_unsigned sp - 16\u231d \u2217\n    \u231cbv_unsigned sp < 0 + 1073741824\u231d \u2217 \u231cbv_extract 0 1 (Z_to_bv 64 (86308 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 1 1 (Z_to_bv 64 (86308 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 0 2 (Z_to_bv 64 (86308 + 4)) = 0%bv\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86308 + 4))) (encoderBooleanClosedReturn 1 sp (Z_to_bv 64 (86308 + 4)) x.1\u2097) \u2217 True",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15128",
+    "last": "0x15134",
+    "n": 4,
+    "kind": "call:-1100(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>",
+    "succ": [
+      "0x15138"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15128",
+    "stops": [],
+    "kept_succ": [
+      "0x15138"
+    ],
+    "run": "A",
+    "seconds": 8.9,
+    "cpu": 5.6,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1035
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15128",
+      "0x1512c",
+      "0x15130"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15128_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 16%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 16%bv)\n         (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 32)) 16 = Some (WriteSuccessExactEncoderU128.writeSuccessU128WordsPayload low high)) tail\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86324 + 4)))\n      (zesu_c_call_ret 32\n         [RVal_Bits b8; RVal_Bits low; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits high; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17]\n         (Z",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15138",
+    "last": "0x15138",
+    "n": 1,
+    "kind": "jump",
+    "succ": [
+      "0x15148"
+    ],
+    "lemma": "block_15138",
+    "module": "Probe_15138",
+    "stops": [],
+    "kept_succ": [
+      "0x15148"
+    ],
+    "run": "A",
+    "seconds": 5.7,
+    "cpu": 2.2,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15138"
+    ],
+    "k_max": 1,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15138_call.out",
+    "pred_class": "C3",
+    "conclusion": "Successor_15138_15148Memory sp value tail P \u2217 \u231cbv_unsigned sp < 0 + 1073741824\u231d \u2217 \u231c0 \u2264 bv_unsigned sp - 16\u231d \u2217 \u231cbv_unsigned sp `mod` 16 = 0\u231d \u2217 \u231c-1 < bv_unsigned value < bv_modulus 64\u231d \u2217\n  \u231c64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed value < bv_half_modulus 64\u231d \u2217 \u231c-1 < bv_unsigned sp < bv_modulus 64\u231d \u2217 \u231c64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed sp < bv_half_modulus 64\u231d \u2217 True",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1513c",
+    "last": "0x15144",
+    "n": 3,
+    "kind": "call:-1444(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>",
+    "succ": [
+      "0x15148"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1513c",
+    "stops": [],
+    "kept_succ": [
+      "0x15148"
+    ],
+    "run": "A",
+    "seconds": 14.4,
+    "cpu": 3.5,
+    "peak_mib": 1274,
+    "rc": 0,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1513c",
+      "0x15140"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1513c_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (), (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace (Snapshots.writeOutputEvents (sp - 9) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 0) x.1\u2097) \u2217 \u231cbv_extract 0 4 sp = 0%bv\u231d \u2217 \u231c0 \u2264 bv_unsigned sp - 16\u231d \u2217\n    \u231cbv_unsigned sp < 0 + 1073741824\u231d \u2217 \u231cbv_extract 0 1 (Z_to_bv 64 (86340 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 1 1 (Z_to_bv 64 (86340 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 0 2 (Z_to_bv 64 (86340 + 4)) = 0%bv\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86340 + 4))) (encoderBooleanClosedReturn 0 sp (Z_to_bv 64 (86340 + 4)) x.1\u2097) \u2217 True",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15148",
+    "last": "0x15150",
+    "n": 3,
+    "kind": "call:-1084(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15154"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15148",
+    "stops": [],
+    "kept_succ": [
+      "0x15154"
+    ],
+    "run": "A",
+    "seconds": 18.6,
+    "cpu": 14.5,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1039
+      ],
+      [
+        9,
+        1163
+      ],
+      [
+        14,
+        1327
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15148",
+      "0x1514c"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15148_call.out",
+    "pred_class": "unknown",
+    "conclusion": "86356%bv = b3",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15154",
+    "last": "0x15158",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x15194",
+      "0x1515c"
+    ],
+    "lemma": "block_15154",
+    "module": "Probe_15154",
+    "stops": [],
+    "kept_succ": [
+      "0x15194",
+      "0x1515c"
+    ],
+    "run": "A",
+    "seconds": 8.2,
+    "cpu": 6.9,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1071
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15158"
+    ],
+    "k_max": 2,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15154_call.out",
+    "pred_class": "C4",
+    "conclusion": "0 \u2264 bv_unsigned sp - 16",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1515c",
+    "last": "0x1517c",
+    "n": 9,
+    "kind": "call:-1500(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>",
+    "succ": [
+      "0x15180"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1515c",
+    "stops": [],
+    "kept_succ": [
+      "0x15180"
+    ],
+    "run": "A",
+    "seconds": 18.1,
+    "cpu": 16.7,
+    "peak_mib": 1545,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        925
+      ],
+      [
+        7,
+        1307
+      ],
+      [
+        13,
+        1489
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15164",
+      "0x15170",
+      "0x15174",
+      "0x15178"
+    ],
+    "k_max": 8,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1515c_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (), (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace (Snapshots.writeOutputEvents (sp - 9) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1) x.1\u2097) \u2217 \u231cbv_extract 0 4 sp = 0%bv\u231d \u2217 \u231c0 \u2264 bv_unsigned sp - 16\u231d \u2217\n    \u231cbv_unsigned sp < 0 + 1073741824\u231d \u2217 \u231cbv_extract 0 1 (Z_to_bv 64 (86396 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 1 1 (Z_to_bv 64 (86396 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 0 2 (Z_to_bv 64 (86396 + 4)) = 0%bv\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86396 + 4))) (encoderBooleanClosedReturn 1 sp (Z_to_bv 64 (86396 + 4)) x.1\u2097) \u2217 True",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15180",
+    "last": "0x1518c",
+    "n": 4,
+    "kind": "call:8(ra) # 10190 <write_output>",
+    "succ": [
+      "0x15190"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15180",
+    "stops": [],
+    "kept_succ": [
+      "0x15190"
+    ],
+    "run": "A",
+    "seconds": 7.3,
+    "cpu": 6.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1027
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15180",
+      "0x15184",
+      "0x15188"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15180_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_15190",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15190",
+    "last": "0x15190",
+    "n": 1,
+    "kind": "jump",
+    "succ": [
+      "0x1519c"
+    ],
+    "lemma": "block_15190",
+    "module": "Probe_15190",
+    "stops": [],
+    "kept_succ": [
+      "0x1519c"
+    ],
+    "run": "A",
+    "seconds": 4.8,
+    "cpu": 3.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1061
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15190"
+    ],
+    "k_max": 1,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15190_call.out",
+    "pred_class": "C3",
+    "conclusion": "Successor_15190_1519cMemory sp first second w0 w1 w2 w3 old13 last tail P \u2217 \u231cbv_unsigned sp + 1764 < 0 + 1073741824\u231d \u2217 \u231c0 \u2264 bv_unsigned sp - 48\u231d \u2217 \u231cbv_unsigned sp `mod` 16 = 0\u231d \u2217\n  \u231c0 \u2264 bv_unsigned sp - 16\u231d \u2217 \u231c-1 < bv_unsigned last < bv_modulus 32\u231d \u2217 \u231c32%N \u2260 0%N \u2192 - bv_half_modulus 32 \u2264 bv_signed last < bv_half_modulus 32\u231d \u2217 \u231c-1 < bv_unsigned old13 < bv_modulus 64\u231d \u2217\n  \u231c64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed old13 < bv_half_modulus 64\u231d \u2217 \u231c-1 < bv_unsigned w3 < bv_modulus 64\u231d \u2217 \u231c64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed w3 < bv_half_modulus 64\u231d \u2217\n  \u231c-1 < bv_unsigned w2 < bv_modulus 6",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15194",
+    "last": "0x15198",
+    "n": 2,
+    "kind": "call:-1528(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>",
+    "succ": [
+      "0x1519c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15194",
+    "stops": [],
+    "kept_succ": [
+      "0x1519c"
+    ],
+    "run": "A",
+    "seconds": 8.5,
+    "cpu": 6.5,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1261
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15194"
+    ],
+    "k_max": 1,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15194_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (), (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace (Snapshots.writeOutputEvents (sp - 9) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 0) x.1\u2097) \u2217 \u231cbv_extract 0 4 sp = 0%bv\u231d \u2217 \u231c0 \u2264 bv_unsigned sp - 16\u231d \u2217\n    \u231cbv_unsigned sp < 0 + 1073741824\u231d \u2217 \u231cbv_extract 0 1 (Z_to_bv 64 (86424 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 1 1 (Z_to_bv 64 (86424 + 4)) = 0%bv\u231d \u2217 \u231cbv_extract 0 2 (Z_to_bv 64 (86424 + 4)) = 0%bv\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86424 + 4))) (encoderBooleanClosedReturn 0 sp (Z_to_bv 64 (86424 + 4)) x.1\u2097) \u2217 True",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1519c",
+    "last": "0x151b0",
+    "n": 6,
+    "kind": "call:-1276(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>",
+    "succ": [
+      "0x151b4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1519c",
+    "stops": [],
+    "kept_succ": [
+      "0x151b4"
+    ],
+    "run": "A",
+    "seconds": 11.0,
+    "cpu": 9.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1267
+      ],
+      [
+        8,
+        1319
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1519c",
+      "0x151a0",
+      "0x151a8",
+      "0x151ac"
+    ],
+    "k_max": 5,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1519c_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n         (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 = Some (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload w0 w1 w2 w3)) tail\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (86448 + 4)))\n      (zesu_c_call_ret 48\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits w0; RVal_Bits b10; RVal_Bits w1; RVal_Bits w3; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16]\n        ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x151b4",
+    "last": "0x151c0",
+    "n": 4,
+    "kind": "call:-1360(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x151c4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151b4",
+    "stops": [],
+    "kept_succ": [
+      "0x151c4"
+    ],
+    "run": "A",
+    "seconds": 8.6,
+    "cpu": 6.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1031
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x151b4",
+      "0x151b8",
+      "0x151bc"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x151b4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "(bv_unsigned sp - 48) \u21a6\u2098? 48 \u2217\n  \u2203 (bytes : list (bv 8)) (tail : spec), bv_unsigned low \u21a6\u2098\u2217 bytes \u2217 \u231cbv_unsigned high = length bytes\u231d \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (Snapshots.writeOutputEvents (sp - 48) 8\n         [Z_to_bv 8 (bv_unsigned high `mod` 256); Z_to_bv 8 ((bv_unsigned high `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned high `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned high `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned high `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_u",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x151c4",
+    "last": "0x151cc",
+    "n": 3,
+    "kind": "call:-1208(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x151d0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151c4",
+    "stops": [],
+    "kept_succ": [
+      "0x151d0"
+    ],
+    "run": "A",
+    "seconds": 17.9,
+    "cpu": 16.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1047
+      ],
+      [
+        9,
+        1097
+      ],
+      [
+        15,
+        1337
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x151c8"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x151c4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "86480%bv = b",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x151d4",
+    "last": "0x151d8",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151d4",
+    "stops": [],
+    "kept_succ": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 5.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1071
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(86484"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x151d4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned sp + 264) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 264 < 0 + 1073741824\u231d \u2217\n    instr_pre (86484 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x10\" \u21a6\u1d63 RVal_Bits y.1\u2097 \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 (bv_unsigned sp + 264) \u21a6\u2098 y.1\u2097 \u2217 True)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x151dc",
+    "last": "0x151fc",
+    "n": 9,
+    "kind": "call:-36(ra) # 101d4 <memcpy>",
+    "succ": [
+      "0x15200"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151dc",
+    "stops": [],
+    "kept_succ": [
+      "0x15200"
+    ],
+    "run": "A",
+    "seconds": 30.2,
+    "cpu": 29.7,
+    "peak_mib": 1939,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1275
+      ],
+      [
+        8,
+        1337
+      ],
+      [
+        14,
+        1442
+      ],
+      [
+        20,
+        1636
+      ],
+      [
+        25,
+        1900
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x151dc",
+      "0x151e4",
+      "0x151ec",
+      "0x151f0",
+      "0x151f4",
+      "0x151f8"
+    ],
+    "k_max": 8,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x151dc_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned base = bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 40))",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15200",
+    "last": "0x1520c",
+    "n": 4,
+    "kind": "call:-120(ra) # 10190 <write_output>",
+    "succ": [
+      "0x15210"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15200",
+    "stops": [],
+    "kept_succ": [
+      "0x15210"
+    ],
+    "run": "A",
+    "seconds": 7.1,
+    "cpu": 6.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1020
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15200",
+      "0x15204",
+      "0x15208"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15200_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned (sp + 1744) = bv_unsigned (sp + 1760)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15210",
+    "last": "0x15218",
+    "n": 3,
+    "kind": "call:-1284(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1521c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15210",
+    "stops": [],
+    "kept_succ": [
+      "0x1521c"
+    ],
+    "run": "A",
+    "seconds": 14.6,
+    "cpu": 11.4,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1055
+      ],
+      [
+        8,
+        1130
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15210",
+      "0x15214"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15210_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1752) - (bv_unsigned sp + 1744))) bytes)))) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1752) - (bv_unsigned sp + 1744))) bytes)))) `div` 256) `mod` 256);\n             Z_to_bv 8\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1521c",
+    "last": "0x15224",
+    "n": 3,
+    "kind": "branch",
+    "succ": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "lemma": "block_1521c",
+    "module": "Probe_1521c",
+    "stops": [],
+    "kept_succ": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "run": "A",
+    "seconds": 17.8,
+    "cpu": 16.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1080
+      ],
+      [
+        8,
+        1157
+      ],
+      [
+        14,
+        1327
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1521c",
+      "0x15220",
+      "0x15224"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1521c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "data = b2",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15228",
+    "last": "0x153a4",
+    "n": 96,
+    "kind": "call:-528(ra) # 10190 <write_output>",
+    "succ": [
+      "0x153a8"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15228",
+    "stops": [],
+    "kept_succ": [
+      "0x153a8"
+    ],
+    "run": "A",
+    "seconds": 303.5,
+    "cpu": 299.5,
+    "peak_mib": 4009,
+    "rc": -15,
+    "rss_samples": [
+      [
+        3,
+        1029
+      ],
+      [
+        8,
+        1097
+      ],
+      [
+        14,
+        1235
+      ],
+      [
+        20,
+        1373
+      ],
+      [
+        25,
+        1417
+      ],
+      [
+        30,
+        1527
+      ],
+      [
+        35,
+        1545
+      ],
+      [
+        40,
+        1749
+      ],
+      [
+        45,
+        1759
+      ],
+      [
+        50,
+        1771
+      ],
+      [
+        55,
+        1835
+      ],
+      [
+        60,
+        2189
+      ],
+      [
+        65,
+        2199
+      ],
+      [
+        70,
+        2209
+      ],
+      [
+        75,
+        2217
+      ],
+      [
+        80,
+        2227
+      ],
+      [
+        85,
+        2237
+      ],
+      [
+        90,
+        2247
+      ],
+      [
+        95,
+        2282
+      ],
+      [
+        100,
+        2850
+      ],
+      [
+        105,
+        2850
+      ],
+      [
+        110,
+        2850
+      ],
+      [
+        115,
+        2850
+      ],
+      [
+        120,
+        2850
+      ],
+      [
+        125,
+        2858
+      ],
+      [
+        130,
+        2868
+      ],
+      [
+        135,
+        2878
+      ],
+      [
+        140,
+        2888
+      ],
+      [
+        145,
+        2898
+      ],
+      [
+        150,
+        2908
+      ],
+      [
+        155,
+        2918
+      ],
+      [
+        160,
+        2926
+      ],
+      [
+        165,
+        2936
+      ],
+      [
+        170,
+        2946
+      ],
+      [
+        175,
+        2956
+      ],
+      [
+        180,
+        2966
+      ],
+      [
+        185,
+        2974
+      ],
+      [
+        190,
+        3500
+      ],
+      [
+        195,
+        3890
+      ],
+      [
+        200,
+        4002
+      ],
+      [
+        205,
+        4009
+      ],
+      [
+        210,
+        4009
+      ],
+      [
+        215,
+        4009
+      ],
+      [
+        220,
+        4009
+      ],
+      [
+        225,
+        4009
+      ],
+      [
+        230,
+        4009
+      ],
+      [
+        235,
+        4009
+      ],
+      [
+        240,
+        4009
+      ],
+      [
+        245,
+        4009
+      ],
+      [
+        250,
+        4009
+      ],
+      [
+        255,
+        4009
+      ],
+      [
+        260,
+        4009
+      ],
+      [
+        265,
+        4009
+      ],
+      [
+        270,
+        4009
+      ],
+      [
+        275,
+        4009
+      ],
+      [
+        280,
+        4009
+      ],
+      [
+        285,
+        4009
+      ],
+      [
+        291,
+        4009
+      ],
+      [
+        296,
+        4009
+      ],
+      [
+        301,
+        4009
+      ]
+    ],
+    "cap": 300,
+    "limit": "time",
+    "pcs_seen": [
+      "0x15228",
+      "0x1522c",
+      "0x15230",
+      "0x15234",
+      "0x15238",
+      "0x1523c",
+      "0x15240",
+      "0x15244",
+      "0x15248",
+      "0x1524c",
+      "0x15250",
+      "0x15254",
+      "0x15258"
+    ],
+    "k_max": 13,
+    "stop_hit": false,
+    "at": [],
+    "goals": 0,
+    "outcome": "timeout",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x153c0",
+    "last": "0x153cc",
+    "n": 4,
+    "kind": "call:-1720(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x153d0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_153c0",
+    "stops": [],
+    "kept_succ": [
+      "0x153d0"
+    ],
+    "run": "A",
+    "seconds": 18.8,
+    "cpu": 18.2,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1054
+      ],
+      [
+        9,
+        1103
+      ],
+      [
+        15,
+        1263
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x153c4",
+      "0x153c8"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x153c0_call.out",
+    "pred_class": "unknown",
+    "conclusion": "86992%bv = b3",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x153d4",
+    "last": "0x15554",
+    "n": 97,
+    "kind": "call:-960(ra) # 10190 <write_output>",
+    "succ": [
+      "0x15558"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_153d4",
+    "stops": [],
+    "kept_succ": [
+      "0x15558"
+    ],
+    "run": "A",
+    "seconds": 303.7,
+    "cpu": 299.6,
+    "peak_mib": 4009,
+    "rc": -15,
+    "rss_samples": [
+      [
+        3,
+        1029
+      ],
+      [
+        8,
+        1114
+      ],
+      [
+        14,
+        1279
+      ],
+      [
+        20,
+        1401
+      ],
+      [
+        25,
+        1467
+      ],
+      [
+        30,
+        1537
+      ],
+      [
+        35,
+        1621
+      ],
+      [
+        40,
+        1757
+      ],
+      [
+        45,
+        1763
+      ],
+      [
+        50,
+        1771
+      ],
+      [
+        55,
+        2017
+      ],
+      [
+        60,
+        2199
+      ],
+      [
+        65,
+        2209
+      ],
+      [
+        70,
+        2217
+      ],
+      [
+        75,
+        2227
+      ],
+      [
+        80,
+        2237
+      ],
+      [
+        85,
+        2247
+      ],
+      [
+        90,
+        2257
+      ],
+      [
+        95,
+        2377
+      ],
+      [
+        100,
+        2849
+      ],
+      [
+        105,
+        2859
+      ],
+      [
+        110,
+        2867
+      ],
+      [
+        115,
+        2877
+      ],
+      [
+        120,
+        2889
+      ],
+      [
+        125,
+        2899
+      ],
+      [
+        130,
+        2907
+      ],
+      [
+        135,
+        2917
+      ],
+      [
+        140,
+        2927
+      ],
+      [
+        145,
+        2937
+      ],
+      [
+        150,
+        2947
+      ],
+      [
+        155,
+        2957
+      ],
+      [
+        160,
+        2967
+      ],
+      [
+        165,
+        2975
+      ],
+      [
+        170,
+        2985
+      ],
+      [
+        175,
+        2995
+      ],
+      [
+        180,
+        3005
+      ],
+      [
+        185,
+        3146
+      ],
+      [
+        190,
+        3928
+      ],
+      [
+        195,
+        4009
+      ],
+      [
+        200,
+        4009
+      ],
+      [
+        205,
+        4009
+      ],
+      [
+        210,
+        4009
+      ],
+      [
+        215,
+        4009
+      ],
+      [
+        220,
+        4009
+      ],
+      [
+        225,
+        4009
+      ],
+      [
+        230,
+        4009
+      ],
+      [
+        235,
+        4009
+      ],
+      [
+        240,
+        4009
+      ],
+      [
+        245,
+        4009
+      ],
+      [
+        250,
+        4009
+      ],
+      [
+        255,
+        4009
+      ],
+      [
+        260,
+        4009
+      ],
+      [
+        265,
+        4009
+      ],
+      [
+        270,
+        4009
+      ],
+      [
+        275,
+        4009
+      ],
+      [
+        280,
+        4009
+      ],
+      [
+        285,
+        4009
+      ],
+      [
+        290,
+        4009
+      ],
+      [
+        295,
+        4009
+      ],
+      [
+        300,
+        4009
+      ]
+    ],
+    "cap": 300,
+    "limit": "time",
+    "pcs_seen": [
+      "0x153d4",
+      "0x153d8",
+      "0x153dc",
+      "0x153e0",
+      "0x153e4",
+      "0x153e8",
+      "0x153ec",
+      "0x153f0",
+      "0x153f4",
+      "0x153f8",
+      "0x153fc",
+      "0x15400",
+      "0x15404"
+    ],
+    "k_max": 13,
+    "stop_hit": false,
+    "at": [],
+    "goals": 0,
+    "outcome": "timeout",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15564",
+    "last": "0x15570",
+    "n": 4,
+    "kind": "call:1912(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>",
+    "succ": [
+      "0x15574"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15564",
+    "stops": [],
+    "kept_succ": [
+      "0x15574"
+    ],
+    "run": "A",
+    "seconds": 11.0,
+    "cpu": 8.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1025
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1556c"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15564_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 16%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 16%bv)\n         (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 32)) 16 = Some (WriteSuccessExactEncoderU128.writeSuccessU128WordsPayload low high)) tail\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (87408 + 4)))\n      (zesu_c_call_ret 32\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15574",
+    "last": "0x15580",
+    "n": 4,
+    "kind": "call:1940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15584"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15574",
+    "stops": [],
+    "kept_succ": [
+      "0x15584"
+    ],
+    "run": "A",
+    "seconds": 19.9,
+    "cpu": 19.1,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1020
+      ],
+      [
+        8,
+        1078
+      ],
+      [
+        15,
+        1215
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15578",
+      "0x1557c"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15574_call.out",
+    "pred_class": "unknown",
+    "conclusion": "87428%bv = b",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15590",
+    "last": "0x155a0",
+    "n": 5,
+    "kind": "call:-968(ra) # 101d4 <memcpy>",
+    "succ": [
+      "0x155a4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15590",
+    "stops": [],
+    "kept_succ": [
+      "0x155a4"
+    ],
+    "run": "A",
+    "seconds": 19.7,
+    "cpu": 19.0,
+    "peak_mib": 1586,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1267
+      ],
+      [
+        8,
+        1317
+      ],
+      [
+        13,
+        1438
+      ],
+      [
+        19,
+        1584
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15590",
+      "0x15594",
+      "0x15598",
+      "0x1559c"
+    ],
+    "k_max": 4,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15590_call.out",
+    "pred_class": "C4",
+    "conclusion": "base = bv_unsigned src",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x155a4",
+    "last": "0x155b8",
+    "n": 6,
+    "kind": "call:1788(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>",
+    "succ": [
+      "0x155bc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_155a4",
+    "stops": [],
+    "kept_succ": [
+      "0x155bc"
+    ],
+    "run": "A",
+    "seconds": 24.0,
+    "cpu": 23.2,
+    "peak_mib": 1804,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1252
+      ],
+      [
+        8,
+        1323
+      ],
+      [
+        15,
+        1533
+      ],
+      [
+        20,
+        1715
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x155a4",
+      "0x155a8",
+      "0x155ac",
+      "0x155b0",
+      "0x155b4"
+    ],
+    "k_max": 5,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x155a4_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n         (\u03bb snapshot : seq_snapshot,\n            read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 =\n            Some\n              (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 0 0)\n                 (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 0 8) (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 0 16)\n                 (WriteSuccessE",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x155bc",
+    "last": "0x155c8",
+    "n": 4,
+    "kind": "call:-1076(ra) # 10190 <write_output>",
+    "succ": [
+      "0x155cc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_155bc",
+    "stops": [],
+    "kept_succ": [
+      "0x155cc"
+    ],
+    "run": "A",
+    "seconds": 9.2,
+    "cpu": 7.4,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1025
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x155bc",
+      "0x155c0",
+      "0x155c4"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x155bc_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned (sp + 1744) = bv_unsigned (sp + 1856)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x155cc",
+    "last": "0x155d4",
+    "n": 3,
+    "kind": "call:1856(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x155d8"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_155cc",
+    "stops": [],
+    "kept_succ": [
+      "0x155d8"
+    ],
+    "run": "A",
+    "seconds": 17.1,
+    "cpu": 14.1,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1024
+      ],
+      [
+        9,
+        1133
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x155cc",
+      "0x155d0"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x155cc_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1840) - (bv_unsigned sp + 1744))) bytes)))) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1840) - (bv_unsigned sp + 1744))) bytes)))) `div` 256) `mod` 256);\n             Z_to_bv 8\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x155d8",
+    "last": "0x155e0",
+    "n": 3,
+    "kind": "call:1844(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x155e4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_155d8",
+    "stops": [],
+    "kept_succ": [
+      "0x155e4"
+    ],
+    "run": "A",
+    "seconds": 15.8,
+    "cpu": 12.7,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1055
+      ],
+      [
+        8,
+        1135
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x155d8",
+      "0x155dc"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x155d8_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1848) - (bv_unsigned sp + 1744))) bytes)))) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1848) - (bv_unsigned sp + 1744))) bytes)))) `div` 256) `mod` 256);\n             Z_to_bv 8\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x155e4",
+    "last": "0x155f8",
+    "n": 6,
+    "kind": "call:1724(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>",
+    "succ": [
+      "0x155fc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_155e4",
+    "stops": [],
+    "kept_succ": [
+      "0x155fc"
+    ],
+    "run": "A",
+    "seconds": 23.4,
+    "cpu": 23.2,
+    "peak_mib": 1827,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1252
+      ],
+      [
+        8,
+        1353
+      ],
+      [
+        14,
+        1511
+      ],
+      [
+        19,
+        1721
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x155e4",
+      "0x155e8",
+      "0x155ec",
+      "0x155f0",
+      "0x155f4"
+    ],
+    "k_max": 5,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x155e4_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n         (\u03bb snapshot : seq_snapshot,\n            read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 =\n            Some\n              (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 32 0)\n                 (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 32 8) (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 32 16)\n                 (WriteSucce",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x155fc",
+    "last": "0x15610",
+    "n": 6,
+    "kind": "call:1700(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>",
+    "succ": [
+      "0x15614"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_155fc",
+    "stops": [],
+    "kept_succ": [
+      "0x15614"
+    ],
+    "run": "A",
+    "seconds": 24.8,
+    "cpu": 23.9,
+    "peak_mib": 1822,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1276
+      ],
+      [
+        8,
+        1351
+      ],
+      [
+        14,
+        1481
+      ],
+      [
+        19,
+        1665
+      ],
+      [
+        24,
+        1821
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x155fc",
+      "0x15600",
+      "0x15604",
+      "0x15608",
+      "0x1560c"
+    ],
+    "k_max": 5,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x155fc_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n         (\u03bb snapshot : seq_snapshot,\n            read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 =\n            Some\n              (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 64 0)\n                 (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 64 8) (WriteSuccessExactTransactionsGasLoads.transactionRowWord bytes 64 16)\n                 (WriteSucce",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15620",
+    "last": "0x15628",
+    "n": 3,
+    "kind": "call:1772(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1562c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15620",
+    "stops": [],
+    "kept_succ": [
+      "0x1562c"
+    ],
+    "run": "A",
+    "seconds": 18.1,
+    "cpu": 17.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1039
+      ],
+      [
+        8,
+        1087
+      ],
+      [
+        14,
+        1255
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15624"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15620_call.out",
+    "pred_class": "unknown",
+    "conclusion": "87596%bv = b",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1562c",
+    "last": "0x15640",
+    "n": 6,
+    "kind": "call:1652(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>",
+    "succ": [
+      "0x15644"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1562c",
+    "stops": [],
+    "kept_succ": [
+      "0x15644"
+    ],
+    "run": "A",
+    "seconds": 11.1,
+    "cpu": 9.4,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1276
+      ],
+      [
+        8,
+        1331
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1563c"
+    ],
+    "k_max": 5,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1562c_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n         (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 = Some (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload w0 w1 w2 w3)) tail\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (87616 + 4)))\n      (zesu_c_call_ret 48\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15644",
+    "last": "0x15658",
+    "n": 6,
+    "kind": "call:1628(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>",
+    "succ": [
+      "0x1565c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15644",
+    "stops": [],
+    "kept_succ": [
+      "0x1565c"
+    ],
+    "run": "A",
+    "seconds": 11.0,
+    "cpu": 9.5,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1276
+      ],
+      [
+        8,
+        1333
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15654"
+    ],
+    "k_max": 5,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15644_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1\u2097\n     \u2286 scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)\n         (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 = Some (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload w0 w1 w2 w3)) tail\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (87640 + 4)))\n      (zesu_c_call_ret 48\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15668",
+    "last": "0x15674",
+    "n": 4,
+    "kind": "call:1440(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15678"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15668",
+    "stops": [],
+    "kept_succ": [
+      "0x15678"
+    ],
+    "run": "A",
+    "seconds": 13.7,
+    "cpu": 10.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1263
+      ],
+      [
+        8,
+        1306
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(87660"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15668_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned sp + 1104 = bv_unsigned sp + 1032 + 8 * IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15678",
+    "last": "0x15688",
+    "n": 5,
+    "kind": "call:1676(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1568c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15678",
+    "stops": [],
+    "kept_succ": [
+      "0x1568c"
+    ],
+    "run": "A",
+    "seconds": 17.1,
+    "cpu": 15.7,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1020
+      ],
+      [
+        8,
+        1097
+      ],
+      [
+        15,
+        1289
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15678",
+      "0x1567c"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15678_call.out",
+    "pred_class": "unknown",
+    "conclusion": "(bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217\n  \u2203 tail : spec, mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (Snapshots.writeOutputEvents (sp - 16) 8\n         [Z_to_bv 8 (bv_unsigned vmem0 `mod` 256); Z_to_bv 8 ((bv_unsigned vmem0 `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned vmem0 `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned vmem0 `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned vmem0 `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned vmem0 `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n  ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1568c",
+    "last": "0x15690",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1568c",
+    "stops": [],
+    "kept_succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "run": "A",
+    "seconds": 16.0,
+    "cpu": 13.1,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1060
+      ],
+      [
+        7,
+        1103
+      ],
+      [
+        13,
+        1296
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1568c",
+      "0x15690"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1568c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "87772%bv = b1",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15694",
+    "last": "0x156a4",
+    "n": 5,
+    "kind": "call:-1228(ra) # 101d4 <memcpy>",
+    "succ": [
+      "0x156a8"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15694",
+    "stops": [],
+    "kept_succ": [
+      "0x156a8"
+    ],
+    "run": "A",
+    "seconds": 18.2,
+    "cpu": 17.6,
+    "peak_mib": 1599,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        918
+      ],
+      [
+        8,
+        1352
+      ],
+      [
+        13,
+        1494
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15694",
+      "0x15698",
+      "0x1569c",
+      "0x156a0"
+    ],
+    "k_max": 4,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15694_call.out",
+    "pred_class": "C4",
+    "conclusion": "base = bv_unsigned src",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x156a8",
+    "last": "0x156b0",
+    "n": 3,
+    "kind": "call:1636(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x156b4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_156a8",
+    "stops": [],
+    "kept_succ": [
+      "0x156b4"
+    ],
+    "run": "A",
+    "seconds": 14.3,
+    "cpu": 12.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        571
+      ],
+      [
+        7,
+        1118
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x156a8",
+      "0x156ac"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x156a8_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1744) - (bv_unsigned sp + 1744))) bytes)))) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1744) - (bv_unsigned sp + 1744))) bytes)))) `div` 256) `mod` 256);\n             Z_to_bv 8\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x156b4",
+    "last": "0x156bc",
+    "n": 3,
+    "kind": "call:1624(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x156c0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_156b4",
+    "stops": [],
+    "kept_succ": [
+      "0x156c0"
+    ],
+    "run": "A",
+    "seconds": 12.4,
+    "cpu": 11.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        530
+      ],
+      [
+        5,
+        1063
+      ],
+      [
+        10,
+        1202
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x156b4",
+      "0x156b8"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x156b4_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1752) - (bv_unsigned sp + 1744))) bytes)))) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1752) - (bv_unsigned sp + 1744))) bytes)))) `div` 256) `mod` 256);\n             Z_to_bv 8\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x156c0",
+    "last": "0x156cc",
+    "n": 4,
+    "kind": "call:-1336(ra) # 10190 <write_output>",
+    "succ": [
+      "0x156d0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_156c0",
+    "stops": [],
+    "kept_succ": [
+      "0x156d0"
+    ],
+    "run": "A",
+    "seconds": 9.4,
+    "cpu": 6.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1021
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x156c0",
+      "0x156c4",
+      "0x156c8"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x156c0_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned (sp + 1744) = bv_unsigned (sp + 1768)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x156d0",
+    "last": "0x156d8",
+    "n": 3,
+    "kind": "call:1596(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x156dc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_156d0",
+    "stops": [],
+    "kept_succ": [
+      "0x156dc"
+    ],
+    "run": "A",
+    "seconds": 12.3,
+    "cpu": 11.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        931
+      ],
+      [
+        7,
+        1105
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x156d0",
+      "0x156d4"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x156d0_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cscons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n       (\u03bb snapshot : seq_snapshot,\n          read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n          Some\n            [Z_to_bv 8 (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1760) - (bv_unsigned sp + 1744))) bytes)))) `mod` 256);\n             Z_to_bv 8 ((bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop (Z.to_nat (bv_unsigned (sp + 1760) - (bv_unsigned sp + 1744))) bytes)))) `div` 256) `mod` 256);\n             Z_to_bv 8\n     ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15700",
+    "last": "0x15718",
+    "n": 7,
+    "kind": "call:1204(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>",
+    "succ": [
+      "0x1571c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15700",
+    "stops": [],
+    "kept_succ": [
+      "0x1571c"
+    ],
+    "run": "A",
+    "seconds": 11.4,
+    "cpu": 10.5,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1268
+      ],
+      [
+        8,
+        1341
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15710",
+      "0x15714"
+    ],
+    "k_max": 6,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15700_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 y : spec *\u2097 list (bv 8) *\u2097 bv 64 *\u2097 bv 64 *\u2097 bv 64 *\u2097 (), \"x8\" \u21a6\u1d63 RVal_Bits y.4\u2097 \u2217 \"x10\" \u21a6\u1d63 RVal_Bits y.5\u2097 \u2217 \"x11\" \u21a6\u1d63 RVal_Bits y.3\u2097 \u2217 (bv_unsigned sp - 32) \u21a6\u2098? 32 \u2217 bv_unsigned y.5\u2097 \u21a6\u2098\u2217 y.2\u2097 \u2217\n    \u231cencoderOptionalU64Valid y.5\u2097 y.2\u2097\u231d \u2217 \u231c0 \u2264 bv_unsigned y.5\u2097\u231d \u2217 \u231cbv_unsigned y.5\u2097 + length y.2\u2097 < 0 + 1073741824\u231d \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      match encoderOptionalU64Outcome y.2\u2097 with\n      | Some value =>\n          Snapshots.writeOutputEvents (sp - 25) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1)\n            (Snapshots.writeOutputEvents (sp - 16) 8\n ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1572c",
+    "last": "0x15738",
+    "n": 4,
+    "kind": "call:-1444(ra) # 10190 <write_output>",
+    "succ": [
+      "0x1573c"
+    ],
+    "lemma": "block_1572c",
+    "module": "Probe_1572c",
+    "stops": [],
+    "kept_succ": [
+      "0x1573c"
+    ],
+    "run": "A",
+    "seconds": 6.4,
+    "cpu": 4.7,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1027
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1572c",
+      "0x15730",
+      "0x15734"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1572c_call.out",
+    "pred_class": "C2",
+    "conclusion": "subsume (bv_unsigned (sp + 1000) \u21a6\u2098 root) (\u03bb x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1000) \u21a6\u2098\u2217 x.2\u2097)\n    (\u03bb x : spec *\u2097 list (bv 8) *\u2097 (), mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1000) 32 x.2\u2097 x.1\u2097) \u2217 \u231cbv_unsigned 32 = length x.2\u2097\u231d \u2217\n       instr_pre (bv_unsigned (Z_to_bv 64 (87864 + 4)))\n         (zesu_c_call_ret 0\n            [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n            (Z_to_bv 64 (87864 + 4)) sp (\u03bb _",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1573c",
+    "last": "0x1574c",
+    "n": 5,
+    "kind": "call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15750"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1573c",
+    "stops": [],
+    "kept_succ": [
+      "0x15750"
+    ],
+    "run": "A",
+    "seconds": 4.9,
+    "cpu": 4.5,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        3,
+        1030
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(87868"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1573c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned sp + 904) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 904 < 0 + 1073741824\u231d \u2217\n    instr_pre (87868 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x9\" \u21a6\u1d63 RVal_Bits y.1\u2097 \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 (bv_unsigned sp + 904) \u21a6\u2098 y.1\u2097 \u2217 True)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x158f0",
+    "last": "0x158fc",
+    "n": 4,
+    "kind": "call:884(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x15900"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_158f0",
+    "stops": [],
+    "kept_succ": [
+      "0x15900"
+    ],
+    "run": "A",
+    "seconds": 9.9,
+    "cpu": 9.5,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        905
+      ],
+      [
+        6,
+        1079
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x158f8"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x158f0_call.out",
+    "pred_class": "C4",
+    "conclusion": "scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n    (\u03bb snapshot : seq_snapshot,\n       read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 =\n       Some\n         [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 2",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15900",
+    "last": "0x1590c",
+    "n": 4,
+    "kind": "call:868(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x15910"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15900",
+    "stops": [],
+    "kept_succ": [
+      "0x15910"
+    ],
+    "run": "A",
+    "seconds": 9.6,
+    "cpu": 9.1,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        2,
+        1063
+      ],
+      [
+        8,
+        1102
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15908"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15900_call.out",
+    "pred_class": "C4",
+    "conclusion": "scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n    (\u03bb snapshot : seq_snapshot,\n       read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 =\n       Some\n         [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 2",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15910",
+    "last": "0x1591c",
+    "n": 4,
+    "kind": "call:852(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x15920"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15910",
+    "stops": [],
+    "kept_succ": [
+      "0x15920"
+    ],
+    "run": "A",
+    "seconds": 8.1,
+    "cpu": 7.9,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        195
+      ],
+      [
+        5,
+        1080
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15918"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15910_call.out",
+    "pred_class": "C4",
+    "conclusion": "scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n    (\u03bb snapshot : seq_snapshot,\n       read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 =\n       Some\n         [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 2",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15920",
+    "last": "0x1592c",
+    "n": 4,
+    "kind": "call:836(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x15930"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15920",
+    "stops": [],
+    "kept_succ": [
+      "0x15930"
+    ],
+    "run": "A",
+    "seconds": 9.5,
+    "cpu": 8.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        559
+      ],
+      [
+        5,
+        1081
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15928"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15920_call.out",
+    "pred_class": "C4",
+    "conclusion": "scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n    (\u03bb snapshot : seq_snapshot,\n       read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 =\n       Some\n         [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 2",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15930",
+    "last": "0x1593c",
+    "n": 4,
+    "kind": "call:728(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15940"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15930",
+    "stops": [],
+    "kept_succ": [
+      "0x15940"
+    ],
+    "run": "A",
+    "seconds": 5.2,
+    "cpu": 5.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        157
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(88372"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15930_call.out",
+    "pred_class": "unknown",
+    "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned base + 16) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned base `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned base + 16 < 0 + 1073741824\u231d \u2217\n    instr_pre (88372 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x11\" \u21a6\u1d63 RVal_Bits y.1\u2097 \u2217 \"x2\" \u21a6\u1d63 RVal_Bits base \u2217 (bv_unsigned base + 16) \u21a6\u2098 y.1\u2097 \u2217 True)",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15940",
+    "last": "0x1594c",
+    "n": 4,
+    "kind": "call:712(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15950"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15940",
+    "stops": [],
+    "kept_succ": [
+      "0x15950"
+    ],
+    "run": "A",
+    "seconds": 8.1,
+    "cpu": 7.4,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        127
+      ],
+      [
+        5,
+        1291
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15948"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15940_call.out",
+    "pred_class": "unknown",
+    "conclusion": "(bv_unsigned sp - 80) \u21a6\u2098? 80 \u2217\n  \u2203 (items : list ByteListItem) (tail : spec), byteListItemResources (bv_unsigned pointer) items \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (Snapshots.writeOutputEvents (sp - 48) 8\n         [Z_to_bv 8 (length items `mod` 256); Z_to_bv 8 ((length items `div` 256) `mod` 256); Z_to_bv 8 (((length items `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((length items `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((length items `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((length items `div` 256) `div` ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15950",
+    "last": "0x1595c",
+    "n": 4,
+    "kind": "call:696(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15960"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15950",
+    "stops": [],
+    "kept_succ": [
+      "0x15960"
+    ],
+    "run": "A",
+    "seconds": 8.1,
+    "cpu": 8.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        142
+      ],
+      [
+        5,
+        1281
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15958"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15950_call.out",
+    "pred_class": "unknown",
+    "conclusion": "(bv_unsigned sp - 80) \u21a6\u2098? 80 \u2217\n  \u2203 (items : list ByteListItem) (tail : spec), byteListItemResources (bv_unsigned pointer) items \u2217 mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (Snapshots.writeOutputEvents (sp - 48) 8\n         [Z_to_bv 8 (length items `mod` 256); Z_to_bv 8 ((length items `div` 256) `mod` 256); Z_to_bv 8 (((length items `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((length items `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((length items `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((length items `div` 256) `div` ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15960",
+    "last": "0x15968",
+    "n": 3,
+    "kind": "call:940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1596c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15960",
+    "stops": [],
+    "kept_succ": [
+      "0x1596c"
+    ],
+    "run": "A",
+    "seconds": 6.1,
+    "cpu": 6.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        95
+      ],
+      [
+        5,
+        1064
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15964"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15960_call.out",
+    "pred_class": "unknown",
+    "conclusion": "(bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217\n  \u2203 tail : spec, mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (Snapshots.writeOutputEvents (sp - 16) 8\n         [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n  ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x1596c",
+    "last": "0x15970",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x15994",
+      "0x15974"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1596c",
+    "stops": [],
+    "kept_succ": [
+      "0x15994",
+      "0x15974"
+    ],
+    "run": "A",
+    "seconds": 5.1,
+    "cpu": 4.8,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        118
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15970"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x1596c_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned sp + 72 < 0 + 1073741824",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x15980",
+    "last": "0x1598c",
+    "n": 4,
+    "kind": "call:740(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x15990"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15980",
+    "stops": [],
+    "kept_succ": [
+      "0x15990"
+    ],
+    "run": "A",
+    "seconds": 10.1,
+    "cpu": 9.7,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        166
+      ],
+      [
+        5,
+        1047
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15980",
+      "0x15988"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x15980_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned size = length bytes",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x159a0",
+    "last": "0x159ac",
+    "n": 4,
+    "kind": "call:872(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x159b0"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_159a0",
+    "stops": [],
+    "kept_succ": [
+      "0x159b0"
+    ],
+    "run": "A",
+    "seconds": 8.0,
+    "cpu": 7.0,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        49
+      ],
+      [
+        5,
+        1071
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x159a8"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x159a0_call.out",
+    "pred_class": "C4",
+    "conclusion": "bv_unsigned sp + 96 < 0 + 1073741824",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "finalf15",
+    "leader": "0x159b0",
+    "last": "0x159b8",
+    "n": 3,
+    "kind": "call:532(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>",
+    "succ": [
+      "0x159bc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_159b0",
+    "stops": [],
+    "kept_succ": [
+      "0x159bc"
+    ],
+    "run": "A",
+    "seconds": 9.1,
+    "cpu": 8.3,
+    "peak_mib": 1417,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        60
+      ],
+      [
+        5,
+        1300
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x159b0",
+      "0x159b4"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/finalf15-A-driver/probes/A_finalf15_0x159b0_call.out",
+    "pred_class": "C2",
+    "conclusion": "subsume (bv_unsigned (sp + 296) \u21a6\u2098 value) (\u03bb x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 296) \u21a6\u2098\u2217 x.2\u2097)\n    (\u03bb x : spec *\u2097 list (bv 8) *\u2097 (), \u231cencoderOptionalU64Valid (sp + 296) x.2\u2097\u231d \u2217 \u231c0 \u2264 bv_unsigned (sp + 296)\u231d \u2217 \u231cbv_unsigned (sp + 296) + length x.2\u2097 < 0 + 1073741824\u231d \u2217\n       mmio_range (604086456 + 8) 16 \u2217\n       spec_trace\n         match encoderOptionalU64Outcome x.2\u2097 with\n         | Some value0 =>\n             Snapshots.writeOutputEvents (sp - 25) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1)\n               (Snapshots.writeOutputEvents (sp - 16) 8\n             ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

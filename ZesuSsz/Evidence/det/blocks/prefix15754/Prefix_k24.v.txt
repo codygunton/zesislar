@@ -1,0 +1,71 @@
+Set Printing Width 200.
+Require Import isla.isla.
+From iris.proofmode Require Import environments.
+From IslaTraces.write_success_blocks Require Import Index.
+Set Printing Width 200.
+Require Import isla.isla.
+From iris.proofmode Require Import environments.
+From IslaTraces.write_success_blocks Require Import Index.
+Require Import ZesuSsz.Generated.WriteSuccess.States.SplitState_15754.
+Require Import ZesuSsz.Automation.Sets.call.
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Sets.call.
+Require Import ZesuSsz.Automation.ArrayLoadPreselect ZesuSsz.Automation.ArrayLoadPriority ZesuSsz.Automation.ConjunctMatch ZesuSsz.Automation.V2Steps ZesuSsz.Automation.PackedWordValues ZesuSsz.Automation.ResourceGroups ZesuSsz.Automation.Hooks ZesuSsz.Automation.Finish.
+
+Ltac blk_pc := try (lazymatch goal with
+  | |- envs_entails ?D _ => lazymatch D with
+      | context [reg_mapsto _ "PC" _ (RVal_Bits ?v)] => idtac "BLK-PC" v
+      end end).
+Ltac blk_pass :=
+  zesu_expose_environment_alias;
+  try zesu_prepare_uninit_goal;
+  try zesu_normalize_find_mem_address;
+  unshelve (repeat (first
+    [zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; blk_pc); liShow;
+    try zesu_finish_closed_wand;
+    try zesu_finish_framed_wand;
+    zesu_finish).
+Ltac blk_run :=
+  unshelve (repeat progress
+    (blk_pass; try zesu_solve_instances; zesu_finish));
+  try zesu_solve_instances.
+Ltac blk_block :=
+  tryif iStartProof then (
+    zesu_expose_code_lists;
+    repeat first [progress iIntros (?) | progress iIntros "#?" |
+      progress iIntros "?"];
+    zesu_reduce_introduced_code_lists;
+    repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+    blk_run)
+  else first [solve [zesu_finish] | idtac].
+
+Lemma block_run `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (pointer : bv 64) (base : Z) (total : nat) (processed : nat) (remaining : nat) (bytes : list (bv 8)) (tail : spec) (word0 : bv 64) (word1 : bv 64) (word2 : bv 64) (word3 : bv 64)  (BLK_STOP_157b4 : iProp Sigma) :
+  instr_pre 0x157b4 BLK_STOP_157b4 -∗
+  instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
+  IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
+  instr_body 0x15754
+    (SplitState_15754 P sp pointer base total processed remaining bytes tail word0 word1 word2 word3).
+Proof.
+idtac "PROBE-BEGIN".
+try intros.
+try blk_block.
+all: try (lazymatch goal with
+  | |- envs_entails _ ?P => lazymatch P with
+      | context [instr_pre ?a] => idtac "BLK-AT-PRE" a
+      | context [instr_body ?a] => idtac "BLK-AT-BODY" a
+      end end).
+all: idtac "BLK-GOAL".
+all: try liShow.
+all: idtac "BOUNDARY-ALL-GOALS-BEGIN".
+Show.
+all: idtac "BOUNDARY-ALL-GOALS-END".
+all: try (lazymatch goal with
+  | |- ?goal =>
+      lazymatch type of goal with
+      | Prop => fail
+      | _ => shelve
+      end
+  end).
+Show.
+Abort.
+Goal True. idtac "PROBE-END". Abort.

@@ -1,0 +1,183 @@
+{
+  "entry": "0x15754",
+  "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (pointer : bv 64) (base : Z) (total : nat) (processed : nat) (remaining : nat) (bytes : list (bv 8)) (tail : spec) (word0 : bv 64) (word1 : bv 64) (word2 : bv 64) (word3 : bv 64)",
+  "module": "WriteSuccessHashesLoopWord3",
+  "source_resource": "(writeSuccessHashesLoopSpec P)",
+  "outcome": "reached",
+  "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15754.out",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "islaG0",
+      "islaG Sigma"
+    ],
+    [
+      "H",
+      "threadG"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "pointer",
+      "bv 64"
+    ],
+    [
+      "base",
+      "Z"
+    ],
+    [
+      "total",
+      "nat"
+    ],
+    [
+      "processed",
+      "nat"
+    ],
+    [
+      "remaining",
+      "nat"
+    ],
+    [
+      "bytes",
+      "list (bv 8)"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "word0",
+      "bv 64"
+    ],
+    [
+      "word1",
+      "bv 64"
+    ],
+    [
+      "word2",
+      "bv 64"
+    ],
+    [
+      "word3",
+      "bv 64"
+    ],
+    [
+      "H0",
+      "True"
+    ],
+    [
+      "H1",
+      "True"
+    ],
+    [
+      "H2",
+      "(base + Z.of_nat (length bytes) < machineRamEnd defaultMap)%Z"
+    ],
+    [
+      "H3",
+      "(mapRamBase defaultMap \u2264 base)%Z"
+    ],
+    [
+      "H4",
+      "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+    ],
+    [
+      "H5",
+      "(mapRamBase defaultMap \u2264 bv_unsigned sp)%Z"
+    ],
+    [
+      "H6",
+      "(bv_unsigned sp `mod` 16 = 0)%Z"
+    ],
+    [
+      "H7",
+      "(S remaining < 2 ^ 64)%nat"
+    ],
+    [
+      "H8",
+      "(bv_unsigned pointer = base + 32 * Z.of_nat processed)%Z"
+    ],
+    [
+      "H9",
+      "length bytes = (32 * total)%nat"
+    ],
+    [
+      "H10",
+      "total = (processed + S remaining)%nat"
+    ],
+    [
+      "H11",
+      "True"
+    ]
+  ],
+  "spatial": [
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+    "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+    "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (S remaining))))",
+    "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn pointer)",
+    "base \u21a6\u2098\u2217 bytes",
+    "(bv_unsigned sp + 1744) \u21a6\u2098 word0",
+    "(bv_unsigned sp + 1752) \u21a6\u2098 word1",
+    "(bv_unsigned sp + 1760) \u21a6\u2098 word2",
+    "(bv_unsigned sp + 1768) \u21a6\u2098 word3",
+    "mmio_range (604086456 + 8) 16",
+    "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1744))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) ((fix writeSuccessHashesEvents (sp0 : bv 64) (count : nat) (tail0 : spec) {struct count} : spec := match count with | 0%nat => tail0 | S count0 => scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp0 + 1744))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) (writeSuccessHashesEvents sp0 count0 tail0)) end) sp remaining tail)))",
+    "P",
+    "instr_pre 88288 (writeSuccessHashesLoopExit sp base total bytes tail P)",
+    "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+  ],
+  "persistent": [],
+  "arguments": "P sp pointer base total processed remaining bytes tail word0 word1 word2 word3",
+  "local_sorts": {
+    "Sigma": "Type",
+    "islaG0": "Type",
+    "H": "Type",
+    "P": "Type",
+    "sp": "Type",
+    "pointer": "Type",
+    "base": "Type",
+    "total": "Type",
+    "processed": "Type",
+    "remaining": "Type",
+    "bytes": "Type",
+    "tail": "Type",
+    "word0": "Type",
+    "word1": "Type",
+    "word2": "Type",
+    "word3": "Type",
+    "H0": "Prop",
+    "H1": "Prop",
+    "H2": "Prop",
+    "H3": "Prop",
+    "H4": "Prop",
+    "H5": "Prop",
+    "H6": "Prop",
+    "H7": "Prop",
+    "H8": "Prop",
+    "H9": "Prop",
+    "H10": "Prop",
+    "H11": "Prop"
+  },
+  "imports": [
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopWord3",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+    "ZesuSsz.Export.Snapshots",
+    "ZesuSsz.Contracts.IslarisMemory",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec"
+  ],
+  "name": "SplitState_15754",
+  "state_module": "ZesuSsz.Generated.WriteSuccess.States.SplitState_15754",
+  "block_exit": "0x157d0"
+}

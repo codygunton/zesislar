@@ -1,0 +1,2 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,prefix_k24,0x15754,24,prefix,infer_boundary,memory,1,,0x15754,"lbu a0, 0x19(s1)",load,,65.0,64.3,6186,300,,0x157b4
