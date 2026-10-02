@@ -39,6 +39,7 @@ RULE_20_CONJUNCTS = 12
 STANDARD_BINDERS = ("Sigma", "islaG0", "H", "Decoded",
                     "WriteSuccessMemoryRepresentation0")
 TMP_REGISTERS = ("x5", "x6", "x7", "x28", "x29", "x30", "x31")
+COQ_LOCALS = re.compile(r"^([A-Za-z_][\w'’]*(?:\s*,\s*[A-Za-z_][\w'’]*)*)\s*:\s*(.*)$")
 
 
 def spatial_atoms(body: str) -> list[str]:
@@ -82,6 +83,38 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
     if any(atom.startswith("reg_col ") and "tmp_registers" in atom
            for atom in atoms):
         return atoms
+    expanded = []
+    for atom in atoms:
+        match = re.fullmatch(r"reg_col\s*\[(.*)\]", atom, re.DOTALL)
+        if match is None:
+            expanded.append(atom)
+            continue
+        parts, start, depth = [], 0, 0
+        body = match.group(1)
+        for index, character in enumerate(body):
+            depth += (character in "([{") - (character in ")]}")
+            if character == ";" and depth == 0:
+                parts.append(body[start:index].strip())
+                start = index + 1
+        parts.append(body[start:].strip())
+        resources = []
+        for part in parts:
+            pair = re.fullmatch(r'\(KindReg "(x\d+)",\s*(.+)\)', part, re.DOTALL)
+            if pair is None:
+                break
+            register, shape = pair.groups()
+            exact = re.fullmatch(r"ExactShape\s*\((.+)\)", shape, re.DOTALL)
+            if exact:
+                resources.append(f'"{register}" ↦ᵣ {exact.group(1)}')
+            elif re.fullmatch(r"BitsShape\s+\d+", shape):
+                resources.append(f'"{register}" ↦ᵣ: λ v, ⌜valu_has_shape v ({shape})⌝ ∗ True')
+            else:
+                break
+        else:
+            expanded.extend(resources)
+            continue
+        expanded.append(atom)
+    atoms = expanded
     found = {}
     for index, atom in enumerate(atoms):
         match = re.fullmatch(r'"(x\d+)"\s*↦ᵣ\s+(.+)', atom)
@@ -109,6 +142,99 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
     indices = {index for index, _ in found.values()}
     return [collection] + [atom for index, atom in enumerate(atoms)
                            if index not in indices]
+
+
+def normalize_lent_arrays(atoms: list[str]) -> list[str]:
+    """Apply a captured array-return wand to its owned slice."""
+    atoms = list(atoms)
+    while True:
+        for index, atom in enumerate(atoms):
+            if atom.count("-∗") != 1 or any(term in atom for term in ("∃", "λ", "fun ")):
+                continue
+            borrowed, restored = (part.strip() for part in atom.split("-∗"))
+            if borrowed.count("↦ₘ∗") != 1 or restored.count("↦ₘ∗") != 1:
+                continue
+            owner = next((other for other, resource in enumerate(atoms)
+                          if other != index and resource == borrowed), None)
+            if owner is not None:
+                atoms = [resource for other, resource in enumerate(atoms)
+                         if other not in (index, owner)] + spatial_atoms(restored)
+                break
+        else:
+            return atoms
+
+
+def normalize_bitvector_addresses(atoms: list[str], widths: dict[str, int]) -> list[str]:
+    """Restore captured address widths before elaborating unsigned numerals."""
+    def replace(match):
+        value = match.group(1)
+        width = widths.get(value)
+        if not isinstance(width, int) or width <= 0:
+            raise ValueError(f"missing captured bit width for unsigned numeral: {value}")
+        return f"bv_unsigned (BV {width} {value})"
+    return [re.sub(r"bv_unsigned\s+(\d+)(?:%bv)?\b", replace, atom)
+            for atom in atoms]
+
+
+def normalize_memory_literals(atoms: list[str], widths: dict[str, int]) -> list[str]:
+    """Restore the captured bit width that Rocq omits from word numerals."""
+    def ungroup(address: str) -> str:
+        while address.startswith("(") and address.endswith(")"):
+            depth = 0
+            for index, character in enumerate(address):
+                depth += (character == "(") - (character == ")")
+                if depth == 0:
+                    break
+            if index != len(address) - 1:
+                break
+            address = address[1:-1].strip()
+        return address
+
+    def captured_width(address: str) -> int | None:
+        return next((width for key, width in widths.items()
+                     if ungroup(key) == ungroup(address)), None)
+
+    normalized = []
+    for atom in atoms:
+        for event in reversed(list(re.finditer(r"SWriteMem\s+", atom))):
+            start = event.end()
+            end = start
+            if atom[start] == "(":
+                depth = 1
+                end += 1
+                while depth and end < len(atom):
+                    depth += (atom[end] == "(") - (atom[end] == ")")
+                    end += 1
+            else:
+                while end < len(atom) and not atom[end].isspace():
+                    end += 1
+            value = re.match(r"\s+(\d+)%bv\b", atom[end:])
+            if value is not None:
+                address = atom[start:end]
+                width = captured_width(address)
+                if not isinstance(width, int) or width <= 0:
+                    raise ValueError(f"missing captured bit width for write event: {address}")
+                atom = (atom[:end] + f" (BV {width} {value.group(1)})"
+                        + atom[end + value.end():])
+        array = re.fullmatch(r"(.+?)\s*↦ₘ∗\s*(\[[^\[\]]*\])", atom)
+        if array is not None and re.search(r"\d+%bv\b", array.group(2)):
+            address, values = array.groups()
+            width = captured_width(address)
+            if not isinstance(width, int) or width <= 0:
+                raise ValueError(f"missing captured bit width for memory array: {atom}")
+            values = re.sub(r"(\d+)%bv\b", lambda value:
+                            f"(BV {width} {value.group(1)})", values)
+            atom = f"{address} ↦ₘ∗ {values}"
+        match = re.fullmatch(r"(.+?)\s*↦ₘ\s*(\d+)(?:%bv)?", atom)
+        if match is None:
+            normalized.append(atom)
+            continue
+        address, value = match.groups()
+        width = captured_width(address)
+        if not isinstance(width, int) or width <= 0:
+            raise ValueError(f"missing captured bit width for memory word: {atom}")
+        normalized.append(f"{address} ↦ₘ (BV {width} {value})")
+    return normalized
 
 
 def require_call_resources(atoms: list[str]) -> None:
@@ -175,7 +301,7 @@ def local_parts(locals_: list[tuple[str, str]], sorts: dict[str, str],
                     sort = "Prop"
         if sort == "Prop":
             facts.append(f"⌜{kind}⌝")
-        elif sort == "Type" or not strict:
+        elif sort in ("Set", "Type") or not strict:
             variables.append((variable, kind))
         else:
             raise ValueError(f"missing Coq sort for local {variable}: {kind}")
@@ -195,6 +321,13 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
         if not pending:
             return
         text = " ".join(part.strip() for part in pending)
+        if into is coq:
+            match = COQ_LOCALS.match(text)
+            if match is not None:
+                coq.extend((name.strip(), match.group(2).strip())
+                           for name in match.group(1).split(","))
+            pending.clear()
+            return
         match = HYPOTHESIS.match(text)
         if match is None:
             pending.clear()
@@ -217,7 +350,7 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
             if target is None:
                 break
             continue
-        if HYPOTHESIS.match(stripped) and (pending or True):
+        if HYPOTHESIS.match(stripped) or (target is coq and COQ_LOCALS.match(stripped)):
             flush(target)
             pending.append(stripped)
         elif pending:
@@ -281,8 +414,11 @@ def explicit_arguments(binders: str) -> str:
 def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     spatial: list[str], seal: bool, *,
                     call_resources: bool = False,
-                    sorts: dict[str, str] | None = None) -> str:
+                    sorts: dict[str, str] | None = None,
+                    memory_word_widths: dict[str, int] | None = None) -> str:
     spatial = [atom for body in spatial for atom in spatial_atoms(body)]
+    spatial = normalize_memory_literals(spatial, memory_word_widths or {})
+    spatial = normalize_lent_arrays(spatial)
     if call_resources:
         spatial = normalize_temporaries(spatial)
         require_call_resources(spatial)
@@ -374,7 +510,8 @@ def main() -> int:
             stem, binders, coq, spatial,
             seal=len(spatial) > RULE_20_CONJUNCTS,
             call_resources=arguments.call_resources,
-            sorts=record.get("local_sorts", record.get("sorts"))))
+            sorts=record.get("local_sorts", record.get("sorts")),
+            memory_word_widths=record.get("memory_word_widths")))
         print(f"{record['lemma']}: {len(spatial)} conjuncts, "
               f"{'sealed' if len(spatial) > RULE_20_CONJUNCTS else 'open'}")
     if not emitted:

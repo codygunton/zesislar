@@ -49,6 +49,74 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_captured_unsigned_numeral_keeps_its_bit_width(self):
+        atom = 'bv_unsigned 96709 ↦ₘ∗ bytes'
+        self.assertEqual(gen_boundary.normalize_bitvector_addresses(
+            [atom], {'96709': 64}), ['bv_unsigned (BV 64 96709) ↦ₘ∗ bytes'])
+        with self.assertRaisesRegex(ValueError, 'missing captured bit width'):
+            gen_boundary.normalize_bitvector_addresses([atom], {})
+        self.assertEqual(infer_boundary.bitvector_address_widths(
+            'BOUNDARY-ADDRESS-WIDTH 96709%bv : 64%N'), {'96709': 64})
+
+    def test_captured_array_numerals_keep_their_bit_width(self):
+        atom = 'bv_unsigned pointer ↦ₘ∗ [90%bv; 83%bv; byte]'
+        self.assertEqual(gen_boundary.normalize_memory_literals(
+            [atom], {'(bv_unsigned pointer)': 8}),
+            ['bv_unsigned pointer ↦ₘ∗ [(BV 8 90); (BV 8 83); byte]'])
+        with self.assertRaisesRegex(ValueError, 'missing captured bit width'):
+            gen_boundary.normalize_memory_literals([atom], {})
+        self.assertIn('@mem_mapsto_array', infer_boundary.PRINT_MEMORY_WIDTHS)
+
+    def test_captured_memory_numeral_keeps_its_bit_width(self):
+        atom = '(base - 8) ↦ₘ 89232%bv'
+        self.assertEqual(gen_boundary.normalize_memory_literals(
+            [atom, 'base ↦ₘ word'], {'(base - 8)': 64}),
+            ['(base - 8) ↦ₘ (BV 64 89232)', 'base ↦ₘ word'])
+        with self.assertRaisesRegex(ValueError, 'missing captured bit width'):
+            gen_boundary.normalize_memory_literals([atom], {})
+        event = 'spec_trace (scons (SWriteMem (BV 64 (port + 16)) 8%bv) tail)'
+        self.assertEqual(gen_boundary.normalize_memory_literals(
+            [event], {'(BV 64 (port + 16))': 64}),
+            ['spec_trace (scons (SWriteMem (BV 64 (port + 16)) (BV 64 8)) tail)'])
+
+    def test_captured_slice_and_return_wand_restore_the_array(self):
+        borrowed = '(base + 16) ↦ₘ∗ take 20 (drop 16 bytes)'
+        whole = 'base ↦ₘ∗ bytes'
+        self.assertEqual(gen_boundary.normalize_lent_arrays(
+            [borrowed, borrowed + ' -∗ ' + whole, 'spec_trace tail']),
+            ['spec_trace tail', whole])
+        unmatched = [borrowed + ' -∗ ' + whole, '(base + 17) ↦ₘ∗ bytes']
+        self.assertEqual(gen_boundary.normalize_lent_arrays(unmatched), unmatched)
+
+    def test_recorded_set_sort_is_a_value_witness(self):
+        source = gen_boundary.boundary_source(
+            'State', BINDERS, [('returned', 'bv 64')],
+            ATOMS + ['"x10" ↦ᵣ RVal_Bits returned'], seal=False,
+            call_resources=True, sorts={'returned': 'Set'})
+        self.assertIn('∃ returned : bv 64', source)
+
+    def test_grouped_coq_locals_keep_each_witness(self):
+        coq, persistent, spatial = gen_boundary.sections(
+            'first, second : bv 64\nHbound : first = second\n'
+            '============================\n_ : mmio_range 0 16\n'
+            '--------------------------------------□\n_ : "x10" ↦ᵣ RVal_Bits first\n'
+            '--------------------------------------∗\nPOST')
+        self.assertEqual(coq, [('first', 'bv 64'), ('second', 'bv 64'),
+                               ('Hbound', 'first = second')])
+        self.assertEqual(persistent, ['mmio_range 0 16'])
+        self.assertEqual(spatial, ['"x10" ↦ᵣ RVal_Bits first'])
+
+    def test_return_collection_keeps_temporary_and_argument_ownership(self):
+        registers = ['x1', 'x12', *gen_boundary.TMP_REGISTERS]
+        atom = 'reg_col [' + '; '.join(
+            f'(KindReg "{register}", BitsShape 64)' for register in registers) + ']'
+        normalized = gen_boundary.normalize_temporaries([atom])
+        self.assertIn('tmp_registers', normalized[0])
+        self.assertEqual(normalized[0].count('(BitsShape 64)'), 7)
+        self.assertEqual(len(normalized), 3)
+        self.assertTrue(normalized[1].startswith('"x1" ↦ᵣ:'))
+        self.assertTrue(normalized[2].startswith('"x12" ↦ᵣ:'))
+
     def test_seal_contains_only_memory_and_declares_coverage(self):
         atoms = ATOMS + ['(base + 8) ↦ₘ∗ take 8 bytes', 'base ↦ₘ word',
                          '(base + 16) ↦ₘ? 8', '⌜base >= 0⌝']
@@ -198,6 +266,14 @@ class StopInference(unittest.TestCase):
         self.assertEqual(infer_boundary.goal_record(text)[1]['local_sorts'],
                          {'Hvalid': 'Prop', 'n': 'Type', 'P': 'Type'})
 
+    def test_capture_records_memory_and_event_widths(self):
+        text = ('BOUNDARY-MEMORY-WIDTH (base - 8) : 64%N\n'
+                'BOUNDARY-MEMORY-WIDTH (BV 64 (port + 16)) : 64%N\n')
+        self.assertEqual(infer_boundary.goal_record(text)[1]['memory_word_widths'],
+                         {'(base - 8)': 64, '(BV 64 (port + 16))': 64})
+        with self.assertRaisesRegex(ValueError, 'conflicting captured memory widths'):
+            infer_boundary.memory_word_widths(
+                text + 'BOUNDARY-MEMORY-WIDTH (base - 8) : 8%N\n')
     def test_stop_keeps_the_entry_after_a_single_line_exit_premise(self):
         statement = ['Lemma test ' + BINDERS + ' :',
                      '  instr_body 0x20 exit -∗', '  instr_body 0x10 entry.']
