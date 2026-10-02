@@ -1,10 +1,8 @@
 Leader: 0x156c0
-Variant: A
-Counter: 3
 Raw output: ZesuSsz/Evidence/det/blocks/residuals/156c0.out
 
-find_in_context (FindRegMapsTo "x12")
-    (λ rk : reg_mapsto_kind,
-       match rk with
-       | RKMapsTo v =>
-           ∃ (x : bv 64 *ₗ bv 64 *ₗ ()) (b12 : bv 64), ⌜v = RVal_Bits b12⌝ ∗
+∃ x : spec *ₗ (),
+   ⌜scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 20)) x.1ₗ
+    ⊆ scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 20)) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp + 1768)) 20 = Some (take 20 (drop 24 bytes))) tail⌝ ∗
+   instr_pre (bv_unsigned (Z_to_bv 64 (87756 + 4)))
+     (zesu_c_call_ret 0

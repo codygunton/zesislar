@@ -104,19 +104,19 @@ BOUNDARY-ALL-GOALS-BEGIN
   bytes : list (bv 8)
   index : nat
   P, BLK_STOP_15558 : iProp Sigma
-  H0 : base + length bytes < 0 + 1073741824
+  H0 : base + Z.of_nat (length bytes) < 0 + 1073741824
   H1 : 0 ≤ base
   H2 : (index + 20 <= length bytes)%nat
-  H3 : bv_unsigned row = base + index
+  H3 : bv_unsigned row = base + Z.of_nat index
   n, b : bv 64
   H4 : Z.land (bv_unsigned b) 131072 = 0
-  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  H5 : Z.land (bvn_unsigned (bv_to_bvn n)) 131072 = 0
   vmem : bv 8
   H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
   H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
   n1, b0 : bv 64
   H8 : Z.land (bv_unsigned b0) 131072 = 0
-  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  H9 : Z.land (bvn_unsigned (bv_to_bvn n1)) 131072 = 0
   vmem0 : bv 8
   H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
   H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
@@ -135,7 +135,7 @@ BOUNDARY-ALL-GOALS-BEGIN
   H24 : -1 < bv_unsigned row < bv_modulus 64
   H25 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed row < bv_half_modulus 64
   ============================
-  bv_unsigned row + 18 = base + 1 * IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)
+  bv_unsigned row + 18 = base + 1 * Z.of_nat (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18))
 
 goal 2 is:
  _ : instr_lookup_resources lookup
@@ -145,19 +145,24 @@ goal 2 is:
  _ : instr_pre 87384 BLK_STOP_15558
  _ : reg_col [(KindReg "x8", BitsShape 64)]
  _ : P
- _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
- _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x2", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64);
+        (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+        (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+        (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : "x6" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem))
+ _ : "x7" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem0))
  _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
  --------------------------------------∗
  ∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗
    ⌜(IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1 <= length bytes)%nat⌝ ∗
    (base ↦ₘ∗ take (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes -∗
-    (base + 1 * (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)%nat) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
-    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + 18%nat)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗
+    (base + 1 * Z.of_nat (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
+    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + Z.of_nat 19) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + Z.of_nat 18)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗
     ⌜0 ≤ bv_unsigned row + 18 < 0 + 1073741824⌝ ∗
     instr_pre (87004 + 4)
-      (reg_col zesu_ram_sys_regs ∗ "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 x.2ₗ) ∗ "x19" ↦ᵣ RVal_Bits row ∗ (bv_unsigned row + 18) ↦ₘ x.2ₗ ∗ (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗
-       (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ True))
+      (reg_col zesu_ram_sys_regs ∗ "x28" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 x.2ₗ)) ∗ "x19" ↦ᵣ RVal_Bits (bv_to_bvn row) ∗ (bv_unsigned row + 18) ↦ₘ x.2ₗ ∗
+       (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + Z.of_nat 19) ↦ₘ∗ drop 19 x.1ₗ ∗ True))
 BOUNDARY-ALL-GOALS-END
 2 goals
   
@@ -169,19 +174,19 @@ BOUNDARY-ALL-GOALS-END
   bytes : list (bv 8)
   index : nat
   P, BLK_STOP_15558 : iProp Sigma
-  H0 : base + length bytes < 0 + 1073741824
+  H0 : base + Z.of_nat (length bytes) < 0 + 1073741824
   H1 : 0 ≤ base
   H2 : (index + 20 <= length bytes)%nat
-  H3 : bv_unsigned row = base + index
+  H3 : bv_unsigned row = base + Z.of_nat index
   n, b : bv 64
   H4 : Z.land (bv_unsigned b) 131072 = 0
-  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  H5 : Z.land (bvn_unsigned (bv_to_bvn n)) 131072 = 0
   vmem : bv 8
   H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
   H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
   n1, b0 : bv 64
   H8 : Z.land (bv_unsigned b0) 131072 = 0
-  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  H9 : Z.land (bvn_unsigned (bv_to_bvn n1)) 131072 = 0
   vmem0 : bv 8
   H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
   H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
@@ -200,7 +205,7 @@ BOUNDARY-ALL-GOALS-END
   H24 : -1 < bv_unsigned row < bv_modulus 64
   H25 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed row < bv_half_modulus 64
   ============================
-  bv_unsigned row + 18 = base + 1 * IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)
+  bv_unsigned row + 18 = base + 1 * Z.of_nat (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18))
 
 goal 2 is:
  _ : instr_lookup_resources lookup
@@ -210,17 +215,22 @@ goal 2 is:
  _ : instr_pre 87384 BLK_STOP_15558
  _ : reg_col [(KindReg "x8", BitsShape 64)]
  _ : P
- _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
- _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x2", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64);
+        (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+        (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+        (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : "x6" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem))
+ _ : "x7" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem0))
  _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
  --------------------------------------∗
  ∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗
    ⌜(IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1 <= length bytes)%nat⌝ ∗
    (base ↦ₘ∗ take (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes -∗
-    (base + 1 * (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)%nat) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
-    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + 18%nat)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗
+    (base + 1 * Z.of_nat (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1)) ↦ₘ∗ drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18) + 1) bytes -∗
+    (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + Z.of_nat 19) ↦ₘ∗ drop 19 x.1ₗ ∗ ⌜18 = (0 + Z.of_nat 18)%Z⌝ ∗ ⌜(18 < length x.1ₗ)%nat⌝ ∗ ⌜x.1ₗ !! 18%nat = Some x.2ₗ⌝ ∗
     ⌜0 ≤ bv_unsigned row + 18 < 0 + 1073741824⌝ ∗
     instr_pre (87004 + 4)
-      (reg_col zesu_ram_sys_regs ∗ "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 x.2ₗ) ∗ "x19" ↦ᵣ RVal_Bits row ∗ (bv_unsigned row + 18) ↦ₘ x.2ₗ ∗ (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗
-       (bv_unsigned row + 0 + 19%nat) ↦ₘ∗ drop 19 x.1ₗ ∗ True))
+      (reg_col zesu_ram_sys_regs ∗ "x28" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 x.2ₗ)) ∗ "x19" ↦ᵣ RVal_Bits (bv_to_bvn row) ∗ (bv_unsigned row + 18) ↦ₘ x.2ₗ ∗
+       (bv_unsigned row + 0) ↦ₘ∗ take 18 x.1ₗ ∗ (bv_unsigned row + 0 + Z.of_nat 19) ↦ₘ∗ drop 19 x.1ₗ ∗ True))
 PROBE-END

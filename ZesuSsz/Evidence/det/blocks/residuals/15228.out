@@ -236,37 +236,37 @@ BOUNDARY-ALL-GOALS-BEGIN
   bytes : list (bv 8)
   index : nat
   P, BLK_STOP_153a8 : iProp Sigma
-  H0 : base + length bytes < 0 + 1073741824
+  H0 : base + Z.of_nat (length bytes) < 0 + 1073741824
   H1 : 0 ≤ base
   H2 : (index + 20 <= length bytes)%nat
-  H3 : bv_unsigned row = base + index
+  H3 : bv_unsigned row = base + Z.of_nat index
   n, b : bv 64
   H4 : Z.land (bv_unsigned b) 131072 = 0
-  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  H5 : Z.land (bvn_unsigned (bv_to_bvn n)) 131072 = 0
   vmem : bv 8
   H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
   H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
   n1, b0 : bv 64
   H8 : Z.land (bv_unsigned b0) 131072 = 0
-  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  H9 : Z.land (bvn_unsigned (bv_to_bvn n1)) 131072 = 0
   vmem0 : bv 8
   H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
   H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
   n3, b1 : bv 64
   H12 : Z.land (bv_unsigned b1) 131072 = 0
-  H13 : Z.land (bvn_unsigned n3) 131072 = 0
+  H13 : Z.land (bvn_unsigned (bv_to_bvn n3)) 131072 = 0
   vmem1 : bv 8
   H14 : bytes !! Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) = Some vmem1
   H15 : (Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) < length bytes)%nat
   n5, b2 : bv 64
   H16 : Z.land (bv_unsigned b2) 131072 = 0
-  H17 : Z.land (bvn_unsigned n5) 131072 = 0
+  H17 : Z.land (bvn_unsigned (bv_to_bvn n5)) 131072 = 0
   vmem2 : bv 8
   H18 : bytes !! Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) = Some vmem2
   H19 : (Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) < length bytes)%nat
   n7, b3 : bv 64
   H20 : Z.land (bv_unsigned b3) 131072 = 0
-  H21 : Z.land (bvn_unsigned n7) 131072 = 0
+  H21 : Z.land (bvn_unsigned (bv_to_bvn n7)) 131072 = 0
   n9 : bv 8
   H22 : -1 < bv_unsigned n9 < bv_modulus 8
   H23 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed n9 < bv_half_modulus 8
@@ -307,15 +307,20 @@ BOUNDARY-ALL-GOALS-BEGIN
   --------------------------------------□
   _ : instr_pre 86952 BLK_STOP_153a8
   _ : P
-  _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
-  _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
-  _ : "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem1)
+  _ : reg_col
+        [(KindReg "x2", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64);
+         (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  _ : "x6" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem))
+  _ : "x7" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem0))
+  _ : "x28" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem1))
   _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
   _ : base ↦ₘ∗ bytes
-  _ : "x1" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem2)
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem2))
   _ : reg_col []
-  _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 86584)
-  _ : "x22" ↦ᵣ RVal_Bits row
+  _ : "PC" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 86584))
+  _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn row)
   _ : reg_col zesu_ram_sys_regs
   --------------------------------------∗
   find_in_context (FindMemMapsTo (bv_unsigned (row + 20)))
@@ -325,14 +330,14 @@ BOUNDARY-ALL-GOALS-BEGIN
        | MKArray n' a' values =>
            if (n' =? 8)%N
            then ⌜(bv_unsigned (row + 20) - a') `mod` 1 = 0⌝ ∗
-           ∃ i : nat, ⌜i = (bv_unsigned (row + 20) - a') `div` 1⌝ ∗ ⌜(i < length values)%nat⌝ ∗
+           ∃ i : nat, ⌜Z.of_nat i = (bv_unsigned (row + 20) - a') `div` 1⌝ ∗ ⌜(i < length values)%nat⌝ ∗
              ∃ Heq : 8%N = n', ∀ vmem3 : bv n', ⌜values !! i = Some vmem3⌝ -∗ ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
            else ⌜n' = 8%N⌝ ∗
-           ∃ i : nat, ⌜i = bv_unsigned (row + 20) - a'⌝ ∗ ⌜(i + N.to_nat 1 <= length values)%nat⌝ ∗
+           ∃ i : nat, ⌜Z.of_nat i = bv_unsigned (row + 20) - a'⌝ ∗ ⌜(i + N.to_nat 1 <= length values)%nat⌝ ∗
              ∀ vmem3 : bv 8, ⌜vmem3 = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))⌝ -∗ ⌜n9 = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
        | MKUninit _ _ => False
        | MKMMIO a' length => ⌜a' ≤ bv_unsigned (row + 20)⌝ ∗ ⌜bv_unsigned (row + 20) + 1 ≤ a' + length⌝ ∗
-           ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (row + 20) n9) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
+           ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (row + 20) (bv_to_bvn n9)) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
        end)
 BOUNDARY-ALL-GOALS-END
 1 goal
@@ -345,37 +350,37 @@ BOUNDARY-ALL-GOALS-END
   bytes : list (bv 8)
   index : nat
   P, BLK_STOP_153a8 : iProp Sigma
-  H0 : base + length bytes < 0 + 1073741824
+  H0 : base + Z.of_nat (length bytes) < 0 + 1073741824
   H1 : 0 ≤ base
   H2 : (index + 20 <= length bytes)%nat
-  H3 : bv_unsigned row = base + index
+  H3 : bv_unsigned row = base + Z.of_nat index
   n, b : bv 64
   H4 : Z.land (bv_unsigned b) 131072 = 0
-  H5 : Z.land (bvn_unsigned n) 131072 = 0
+  H5 : Z.land (bvn_unsigned (bv_to_bvn n)) 131072 = 0
   vmem : bv 8
   H6 : bytes !! Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) = Some vmem
   H7 : (Z.to_nat ((bv_unsigned (row + 16) - base) `div` 1) < length bytes)%nat
   n1, b0 : bv 64
   H8 : Z.land (bv_unsigned b0) 131072 = 0
-  H9 : Z.land (bvn_unsigned n1) 131072 = 0
+  H9 : Z.land (bvn_unsigned (bv_to_bvn n1)) 131072 = 0
   vmem0 : bv 8
   H10 : bytes !! Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) = Some vmem0
   H11 : (Z.to_nat ((bv_unsigned (row + 17) - base) `div` 1) < length bytes)%nat
   n3, b1 : bv 64
   H12 : Z.land (bv_unsigned b1) 131072 = 0
-  H13 : Z.land (bvn_unsigned n3) 131072 = 0
+  H13 : Z.land (bvn_unsigned (bv_to_bvn n3)) 131072 = 0
   vmem1 : bv 8
   H14 : bytes !! Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) = Some vmem1
   H15 : (Z.to_nat ((bv_unsigned (row + 18) - base) `div` 1) < length bytes)%nat
   n5, b2 : bv 64
   H16 : Z.land (bv_unsigned b2) 131072 = 0
-  H17 : Z.land (bvn_unsigned n5) 131072 = 0
+  H17 : Z.land (bvn_unsigned (bv_to_bvn n5)) 131072 = 0
   vmem2 : bv 8
   H18 : bytes !! Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) = Some vmem2
   H19 : (Z.to_nat ((bv_unsigned (row + 19) - base) `div` 1) < length bytes)%nat
   n7, b3 : bv 64
   H20 : Z.land (bv_unsigned b3) 131072 = 0
-  H21 : Z.land (bvn_unsigned n7) 131072 = 0
+  H21 : Z.land (bvn_unsigned (bv_to_bvn n7)) 131072 = 0
   n9 : bv 8
   H22 : -1 < bv_unsigned n9 < bv_modulus 8
   H23 : 8%N ≠ 0%N → - bv_half_modulus 8 ≤ bv_signed n9 < bv_half_modulus 8
@@ -416,15 +421,20 @@ BOUNDARY-ALL-GOALS-END
   --------------------------------------□
   _ : instr_pre 86952 BLK_STOP_153a8
   _ : P
-  _ : "x6" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem)
-  _ : "x7" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem0)
-  _ : "x28" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem1)
+  _ : reg_col
+        [(KindReg "x2", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64);
+         (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  _ : "x6" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem))
+  _ : "x7" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem0))
+  _ : "x28" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem1))
   _ : reg_col [(KindReg "x5", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
   _ : base ↦ₘ∗ bytes
-  _ : "x1" ↦ᵣ RVal_Bits (bv_zero_extend 64 vmem2)
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn (bv_zero_extend 64 vmem2))
   _ : reg_col []
-  _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 86584)
-  _ : "x22" ↦ᵣ RVal_Bits row
+  _ : "PC" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 86584))
+  _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn row)
   _ : reg_col zesu_ram_sys_regs
   --------------------------------------∗
   find_in_context (FindMemMapsTo (bv_unsigned (row + 20)))
@@ -434,13 +444,13 @@ BOUNDARY-ALL-GOALS-END
        | MKArray n' a' values =>
            if (n' =? 8)%N
            then ⌜(bv_unsigned (row + 20) - a') `mod` 1 = 0⌝ ∗
-           ∃ i : nat, ⌜i = (bv_unsigned (row + 20) - a') `div` 1⌝ ∗ ⌜(i < length values)%nat⌝ ∗
+           ∃ i : nat, ⌜Z.of_nat i = (bv_unsigned (row + 20) - a') `div` 1⌝ ∗ ⌜(i < length values)%nat⌝ ∗
              ∃ Heq : 8%N = n', ∀ vmem3 : bv n', ⌜values !! i = Some vmem3⌝ -∗ ⌜eq_rect 8%N bv n9 n' Heq = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
            else ⌜n' = 8%N⌝ ∗
-           ∃ i : nat, ⌜i = bv_unsigned (row + 20) - a'⌝ ∗ ⌜(i + N.to_nat 1 <= length values)%nat⌝ ∗
+           ∃ i : nat, ⌜Z.of_nat i = bv_unsigned (row + 20) - a'⌝ ∗ ⌜(i + N.to_nat 1 <= length values)%nat⌝ ∗
              ∀ vmem3 : bv 8, ⌜vmem3 = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))⌝ -∗ ⌜n9 = vmem3⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN
        | MKUninit _ _ => False
        | MKMMIO a' length => ⌜a' ≤ bv_unsigned (row + 20)⌝ ∗ ⌜bv_unsigned (row + 20) + 1 ≤ a' + length⌝ ∗
-           ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (row + 20) n9) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
+           ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (row + 20) (bv_to_bvn n9)) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)
        end)
 PROBE-END

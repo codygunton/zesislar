@@ -1,7 +1,7 @@
 [
   {
     "entry": "0x1572c",
-    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec)",
     "module": "WriteSuccessNativeSuffixRoot",
     "source_resource": "(writeSuccessSuffixAt1572c P)",
     "outcome": "reached",
@@ -75,14 +75,14 @@
       "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldData)",
       "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldSize)",
       "mmio_range (604086456 + 8) 16",
-      "spec_trace (writeOutputEventsAny (sp + 1000) 32 tail)",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1000))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) tail))",
       "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
       "(bv_unsigned sp + 1000) \u21a6\u2098 root",
       "P",
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn (BV 64 604086456))); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "P",
+    "arguments": "P sp root oldData oldSize tail",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -113,8 +113,8 @@
   {
     "entry": "0x1573c",
     "outcome": "reached",
-    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
-    "arguments": "P",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec)",
+    "arguments": "P sp root oldData oldSize tail",
     "coq": [
       [
         "Sigma",

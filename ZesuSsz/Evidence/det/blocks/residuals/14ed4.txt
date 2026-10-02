@@ -1,10 +1,4 @@
 Leader: 0x14ed4
-Variant: A
-Counter: 3
 Raw output: ZesuSsz/Evidence/det/blocks/residuals/14ed4.out
 
-∃ x : spec *ₗ (),
-    ⌜scons (SWriteMem (BV 64 (604086456 + 16)) 32%bv) x.1ₗ
-     ⊆ scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv)
-         (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp + 1588)) 32 = Some (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values))
-         (WriteSuccessExactValueSpec.writeSuccessExactValueIntEvent sp values 8 tail)⌝ ∗
+BLK_STOP_14ee4

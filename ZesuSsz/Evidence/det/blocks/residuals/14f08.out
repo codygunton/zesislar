@@ -72,17 +72,25 @@ BOUNDARY-ALL-GOALS-BEGIN
         [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
          (KindReg "x31", BitsShape 64)]
   _ : (bv_unsigned sp + 248) ↦ₘ cursor
-  _ : "x2" ↦ᵣ RVal_Bits sp
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
   _ : (bv_unsigned sp + 104) ↦ₘ base
-  _ : "x11" ↦ᵣ RVal_Bits base
-  _ : "x10" ↦ᵣ RVal_Bits (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288))%bv
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn base)
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+         (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64);
+         (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
   --------------------------------------∗
-  ∃ x : list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ (), "x25" ↦ᵣ: (λ _ : valu, True) ∗ "x10" ↦ᵣ RVal_Bits x.3ₗ ∗ ((bv_unsigned x.3ₗ + 0) ↦ₘ∗ take 0 x.1ₗ ∗ (bv_unsigned x.3ₗ + 0) ↦ₘ x.2ₗ) ∗
-    (bv_unsigned x.3ₗ + 0 + 8%nat) ↦ₘ∗ drop 8 x.1ₗ ∗ ⌜0 = (0 + 0%nat)%Z⌝ ∗ ⌜(8 <= length x.1ₗ)%nat⌝ ∗ ⌜x.2ₗ = Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 0 x.1ₗ)))⌝ ∗
-    ⌜bv_unsigned x.3ₗ `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned x.3ₗ + 0 < 0 + 1073741824⌝ ∗
+  ∃ x : list (bv 8) *ₗ bv 64 *ₗ (), (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ∗ take 0 x.1ₗ ∗
+    (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ x.2ₗ ∗
+    (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0 + Z.of_nat 8) ↦ₘ∗ drop 8 x.1ₗ ∗ ⌜0 = (0 + Z.of_nat 0)%Z⌝ ∗ ⌜(8 <= length x.1ₗ)%nat⌝ ∗
+    ⌜x.2ₗ = Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 0 x.1ₗ)))⌝ ∗ ⌜bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) `mod` 8 = 0⌝ ∗
+    ⌜0 ≤ bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0 < 0 + 1073741824⌝ ∗
     instr_pre (85788 + 4)
-      (reg_col zesu_ram_sys_regs ∗ "x25" ↦ᵣ RVal_Bits x.2ₗ ∗ "x10" ↦ᵣ RVal_Bits x.3ₗ ∗ (bv_unsigned x.3ₗ + 0) ↦ₘ x.2ₗ ∗ (bv_unsigned x.3ₗ + 0) ↦ₘ∗ take 0 x.1ₗ ∗
-       (bv_unsigned x.3ₗ + 0 + 8%nat) ↦ₘ∗ drop 8 x.1ₗ ∗ True)
+      (reg_col zesu_ram_sys_regs ∗ "x25" ↦ᵣ RVal_Bits (bv_to_bvn x.2ₗ) ∗ "x10" ↦ᵣ RVal_Bits (bv_to_bvn (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288))) ∗
+       (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ x.2ₗ ∗
+       (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ∗ take 0 x.1ₗ ∗
+       (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0 + Z.of_nat 8) ↦ₘ∗ drop 8 x.1ₗ ∗ True)
 BOUNDARY-ALL-GOALS-END
 1 goal
   
@@ -123,15 +131,23 @@ BOUNDARY-ALL-GOALS-END
         [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
          (KindReg "x31", BitsShape 64)]
   _ : (bv_unsigned sp + 248) ↦ₘ cursor
-  _ : "x2" ↦ᵣ RVal_Bits sp
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
   _ : (bv_unsigned sp + 104) ↦ₘ base
-  _ : "x11" ↦ᵣ RVal_Bits base
-  _ : "x10" ↦ᵣ RVal_Bits (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288))%bv
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn base)
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+         (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64);
+         (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
   --------------------------------------∗
-  ∃ x : list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ (), "x25" ↦ᵣ: (λ _ : valu, True) ∗ "x10" ↦ᵣ RVal_Bits x.3ₗ ∗ ((bv_unsigned x.3ₗ + 0) ↦ₘ∗ take 0 x.1ₗ ∗ (bv_unsigned x.3ₗ + 0) ↦ₘ x.2ₗ) ∗
-    (bv_unsigned x.3ₗ + 0 + 8%nat) ↦ₘ∗ drop 8 x.1ₗ ∗ ⌜0 = (0 + 0%nat)%Z⌝ ∗ ⌜(8 <= length x.1ₗ)%nat⌝ ∗ ⌜x.2ₗ = Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 0 x.1ₗ)))⌝ ∗
-    ⌜bv_unsigned x.3ₗ `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned x.3ₗ + 0 < 0 + 1073741824⌝ ∗
+  ∃ x : list (bv 8) *ₗ bv 64 *ₗ (), (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ∗ take 0 x.1ₗ ∗
+    (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ x.2ₗ ∗
+    (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0 + Z.of_nat 8) ↦ₘ∗ drop 8 x.1ₗ ∗ ⌜0 = (0 + Z.of_nat 0)%Z⌝ ∗ ⌜(8 <= length x.1ₗ)%nat⌝ ∗
+    ⌜x.2ₗ = Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 0 x.1ₗ)))⌝ ∗ ⌜bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) `mod` 8 = 0⌝ ∗
+    ⌜0 ≤ bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0 < 0 + 1073741824⌝ ∗
     instr_pre (85788 + 4)
-      (reg_col zesu_ram_sys_regs ∗ "x25" ↦ᵣ RVal_Bits x.2ₗ ∗ "x10" ↦ᵣ RVal_Bits x.3ₗ ∗ (bv_unsigned x.3ₗ + 0) ↦ₘ x.2ₗ ∗ (bv_unsigned x.3ₗ + 0) ↦ₘ∗ take 0 x.1ₗ ∗
-       (bv_unsigned x.3ₗ + 0 + 8%nat) ↦ₘ∗ drop 8 x.1ₗ ∗ True)
+      (reg_col zesu_ram_sys_regs ∗ "x25" ↦ᵣ RVal_Bits (bv_to_bvn x.2ₗ) ∗ "x10" ↦ᵣ RVal_Bits (bv_to_bvn (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288))) ∗
+       (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ x.2ₗ ∗
+       (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ∗ take 0 x.1ₗ ∗
+       (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0 + Z.of_nat 8) ↦ₘ∗ drop 8 x.1ₗ ∗ True)
 PROBE-END

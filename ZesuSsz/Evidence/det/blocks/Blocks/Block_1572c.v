@@ -12,14 +12,14 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
 Require Import ZesuSsz.Automation.Sets.call.
 
 Lemma block_1572c
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) :
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
   instr_pre 0x1573c
-    (State_1573c P) -∗
+    (State_1573c P sp root oldData oldSize tail) -∗
   instr_body 0x1572c
-    (State_1572c P).
+    (State_1572c P sp root oldData oldSize tail).
 Proof. zesu_block. Qed.
 
 Print Assumptions block_1572c.

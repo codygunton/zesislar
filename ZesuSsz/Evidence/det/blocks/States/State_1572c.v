@@ -11,19 +11,14 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec.
 
 Definition State_1572c
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
-  (∃ sp : bv 64,
-   ∃ root : bv 64,
-   ∃ oldData : bv 64,
-   ∃ oldSize : bv 64,
-   ∃ tail : spec,
-   (reg_col zesu_ram_sys_regs) ∗
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec) : iProp Sigma :=
+  ((reg_col zesu_ram_sys_regs) ∗
    ("x1" ↦ᵣ RVal_Bits (bv_to_bvn (BV 64 87852))) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
    ("x10" ↦ᵣ RVal_Bits (bv_to_bvn oldData)) ∗
    ("x11" ↦ᵣ RVal_Bits (bv_to_bvn oldSize)) ∗
    (mmio_range (604086456 + 8) 16) ∗
-   (spec_trace (writeOutputEventsAny (sp + 1000) 32 tail)) ∗
+   (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1000))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) tail))) ∗
    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    ((bv_unsigned sp + 1000) ↦ₘ root) ∗
    (P) ∗

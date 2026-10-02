@@ -49,6 +49,28 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_full_register_file_preserves_exact_values_and_does_not_duplicate(self):
+        atoms = ATOMS + ['"x2" ↦ᵣ RVal_Bits sp', '"x12" ↦ᵣ RVal_Bits argument']
+        completed = gen_boundary.complete_register_file(atoms)
+        self.assertIn('"x12" ↦ᵣ RVal_Bits argument', completed)
+        self.assertNotIn('(KindReg "x12", BitsShape 64)', completed[-1])
+        self.assertNotIn('(KindReg "x5", BitsShape 64)', completed[-1])
+        self.assertEqual(gen_boundary.complete_register_file(completed), completed)
+
+    def test_duplicate_register_ownership_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "duplicate register.*x5"):
+            gen_boundary.complete_register_file(ATOMS + ['"x5" ↦ᵣ RVal_Bits value'])
+
+    def test_recorded_witness_replaces_memory_address_and_dependent_facts(self):
+        source = gen_boundary.boundary_source(
+            "State", BINDERS + ' (sp : bv 64)',
+            [('pointer', 'bv 64'), ('H0', 'bv_unsigned pointer = bv_unsigned sp + 1000')],
+            ['bv_unsigned pointer ↦ₘ? 32'], seal=False,
+            sorts={'pointer': 'Type', 'H0': 'Prop'}, witnesses={'pointer': '(sp + 1000)%bv'})
+        self.assertNotIn('∃ pointer', source)
+        self.assertIn('bv_unsigned ((sp + 1000)%bv) ↦ₘ? 32', source)
+        self.assertNotIn('bv_unsigned pointer', source)
+
     def test_seal_contains_only_memory_and_declares_coverage(self):
         atoms = ATOMS + ['(base + 8) ↦ₘ∗ take 8 bytes', 'base ↦ₘ word',
                          '(base + 16) ↦ₘ? 8', '⌜base >= 0⌝']

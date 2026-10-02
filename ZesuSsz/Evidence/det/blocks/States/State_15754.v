@@ -49,7 +49,7 @@ Definition State_15754
    ("x8" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (S remaining))))) ∗
    ("x9" ↦ᵣ RVal_Bits (bv_to_bvn pointer)) ∗
    (mmio_range (604086456 + 8) 16) ∗
-   (spec_trace (writeOutputEventsAny (sp + 1744) 32 (writeSuccessHashesEvents sp remaining tail))) ∗
+   (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1744))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) ((fix writeSuccessHashesEvents (sp0 : bv 64) (count : nat) (tail0 : spec) {struct count} : spec := match count with | 0%nat => tail0 | S count0 => scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp0 + 1744))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) (writeSuccessHashesEvents sp0 count0 tail0)) end) sp remaining tail)))) ∗
    (P) ∗
    (instr_pre 88288 (writeSuccessHashesLoopExit sp base total bytes tail P)) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗

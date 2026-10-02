@@ -82,6 +82,8 @@
     "outcome": "error",
     "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/writeoutput-inference/Infer_15754.out"
   },
-  "pending": "Coordinator rulings on nine unresolved successor boundaries and the recorded 0x15754 memory row.",
-  "root_verification": "The generated block reached its successor, but Qed failed. The residual is existential framing of the inferred State_1573c resources. No proof lines were added."
+  "pending": "Coordinator ruling #1348 on anonymous successor register values.",
+  "root_verification": "Qed remains open on reg_col subsumption with existential exact values introduced from entry BitsShape registers.",
+  "state_rules": "Full general-register ownership; nested stack and event definitions expanded by Coq; captured root entry witnesses promoted to block binders.",
+  "partial_case": "0x14d80 closes through its entry instr_pre 0x14e00 after 32 of 37 instructions. It is partial, not whole-block closure."
 }

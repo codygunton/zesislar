@@ -19,9 +19,10 @@ Definition State_15200
    ("x11" ↦ᵣ RVal_Bits (bv_to_bvn old_size)) ∗
    (bv_unsigned (sp + 1744) ↦ₘ∗ bytes) ∗
    (mmio_range (604086456 + 8) 16) ∗
-   (spec_trace (writeOutputEvents (sp + 1760) 20 (take 20 (drop 16 bytes)) tail)) ∗
+   (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1760))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 20))) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp + 1760)) 20 = Some (take 20 (drop 16 bytes))) tail))) ∗
    (P) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    (⌜True⌝) ∗
    (⌜(bv_unsigned sp + 1784 < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜(mapRamBase defaultMap <= bv_unsigned sp)%Z⌝) ∗

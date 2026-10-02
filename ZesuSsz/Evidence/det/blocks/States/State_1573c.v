@@ -11,11 +11,8 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec.
 
 Definition State_1573c
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
-  (∃ sp : bv 64,
-   ∃ root : bv 64,
-   ∃ tail : spec,
-   ∃ b : bv 64,
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec) : iProp Sigma :=
+  (∃ b : bv 64,
    ∃ b0 : bv 64,
    ∃ b1 : bv 64,
    ∃ b8 : bv 64,

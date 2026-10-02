@@ -111,6 +111,91 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
                            if index not in indices]
 
 
+def complete_register_file(atoms: list[str]) -> list[str]:
+    """Add shapes for missing general registers without replacing ownership."""
+    owned: set[str] = set()
+    for atom in atoms:
+        registers = []
+        if atom.startswith("reg_col "):
+            registers = re.findall(r'KindReg "(x\d+)"', atom)
+            if "tmp_registers" in atom:
+                registers += list(TMP_REGISTERS)
+            if not registers and atom != "reg_col zesu_ram_sys_regs":
+                raise ValueError(f"unexpanded register collection: {atom}")
+        else:
+            match = re.match(r'^"(x\d+)"\s*↦ᵣ', atom)
+            if match:
+                registers = [match.group(1)]
+        for register in registers:
+            if register in owned:
+                raise ValueError(f"duplicate register resource: {register}")
+            owned.add(register)
+    missing = [f'(KindReg "x{index}", BitsShape 64)'
+               for index in range(1, 32) if f"x{index}" not in owned]
+    return atoms + (["reg_col [" + "; ".join(missing) + "]"] if missing else [])
+
+
+def flat_state_tactics(prefix: str, root: Path) -> str:
+    """Expand loaded project packages in a proof-mode capture.
+
+    Coq elaborates the reductions. Source text supplies constant names only.
+    The capture retains abstract frame parameters and does not split arrays.
+    """
+    loaded: dict[str, str] = {}
+    pending = [prefix]
+    imports = re.compile(
+        r"(?:From\s+([\w.]+)\s+)?Require\s+(?:Import|Export)\s+"
+        r"([^;]+?)\.(?=\s|$)")
+    while pending:
+        source = re.sub(r"\(\*.*?\*\)", "", pending.pop(), flags=re.S)
+        for match in imports.finditer(source):
+            for name in match[2].split():
+                module = (match[1] + "." if match[1] else "") + name
+                path = root / (module.replace(".", "/") + ".v")
+                if path.exists() and module not in loaded:
+                    loaded[module] = path.read_text()
+                    pending.append(loaded[module])
+    tactics = []
+    for module, source in [("", prefix), *loaded.items()]:
+        for name in re.findall(r"(?:Definition|Fixpoint)\s+(\w+)\b", source):
+            if not any(part in name.lower() for part in
+                       ("frame", "scratch", "handoff", "event", "stack")):
+                continue
+            constant = (module + "." if module else "") + name
+            unfold = name + "_unfold"
+            action = ("rewrite " + (module + "." if module else "") + unfold
+                      if re.search(r"Lemma\s+" + re.escape(unfold) + r"\b", source)
+                      else "unfold " + constant)
+            tactics.append(
+                "all: try (repeat iMatchHyp ltac:(fun H P => "
+                "iEval (progress " + action + ") in H)).")
+    return "\n".join(tactics) + "\n"
+
+
+def entry_witness_binders(binders: str, coq: list[tuple[str, str]],
+                          sorts: dict[str, str]) -> tuple[str, str]:
+    """Name captured entry witnesses in the block's parameter list."""
+    variables, _facts = local_parts(free_locals(coq, binders), sorts, True)
+    expanded = binders + "".join(f" ({name} : {kind})" for name, kind in variables)
+    return expanded, explicit_arguments(expanded)
+
+
+def substitute_witnesses(coq: list[tuple[str, str]], spatial: list[str],
+                         witnesses: dict[str, str]) -> tuple[list[tuple[str, str]], list[str]]:
+    """Use probe-recorded witnesses instead of fresh existential variables."""
+    known = {name for name, _kind in coq}
+    unknown = set(witnesses) - known
+    if unknown:
+        raise ValueError("witnesses absent from probe: " + ", ".join(sorted(unknown)))
+    def replace(text: str) -> str:
+        for name, expression in witnesses.items():
+            text = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                          lambda _match: "(" + expression + ")", text)
+        return text
+    return ([(name, replace(kind)) for name, kind in coq if name not in witnesses],
+            [replace(atom) for atom in spatial])
+
+
 def require_call_resources(atoms: list[str]) -> None:
     """Reject missing ownership. Never add inferred resources."""
     if "reg_col zesu_ram_sys_regs" not in atoms:
@@ -281,7 +366,9 @@ def explicit_arguments(binders: str) -> str:
 def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     spatial: list[str], seal: bool, *,
                     call_resources: bool = False,
-                    sorts: dict[str, str] | None = None) -> str:
+                    sorts: dict[str, str] | None = None,
+                    witnesses: dict[str, str] | None = None) -> str:
+    coq, spatial = substitute_witnesses(coq, spatial, witnesses or {})
     spatial = [atom for body in spatial for atom in spatial_atoms(body)]
     if call_resources:
         spatial = normalize_temporaries(spatial)

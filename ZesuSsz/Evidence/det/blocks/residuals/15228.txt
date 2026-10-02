@@ -1,6 +1,4 @@
 Leader: 0x15228
-Variant: A
-Counter: 5
 Raw output: ZesuSsz/Evidence/det/blocks/residuals/15228.out
 
 find_in_context (FindMemMapsTo (bv_unsigned (row + 20)))

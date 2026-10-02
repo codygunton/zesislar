@@ -1,8 +1,7 @@
-Generated block: 0x1572c
 Raw output: ZesuSsz/Evidence/det/blocks/residuals/1572c_generated.out
 
-∃ x : bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ spec *ₗ bv 64 *ₗ bv 64 *ₗ (),
-    (bv_unsigned x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ + 1000) ↦ₘ x.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.nextₗ.9ₗ ∗ P ∗
-    reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)] ∗ reg_col zesu_ram_sys_regs ∗
-    reg_col
-      [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+subsume
+    (reg_col
+       [(KindReg "x8", ExactShape (RVal_Bits b8)); (KindReg "x9", ExactShape (RVal_Bits b9)); (KindReg "x18", ExactShape (RVal_Bits b10)); (KindReg "x19", ExactShape (RVal_Bits b11));
+        (KindReg "x20", ExactShape (RVal_Bits b12)); (KindReg "x21", ExactShape (RVal_Bits b13)); (KindReg "x22", ExactShape (RVal_Bits b14)); (KindReg "x23", ExactShape (RVal_Bits b15));
+        (KindReg "x24", ExactShape (RVal_Bits b16)); (KindReg "x25", ExactShape (RVal_Bits b17)); (KindReg "x26", ExactShape (RVal_Bits b18)); (KindReg "x27", ExactShape (RVal_Bits b19))])

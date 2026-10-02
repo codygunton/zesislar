@@ -1,18 +1,18 @@
 run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept,measurement
-A,b17,0x14d80,37,call:900(ra) # 10190 <write_output>,infer_boundary,stalled,1,unknown,0x14d80,"ld a0, 0x2d0(s0)",load,WriteSuccessLoadBlockCore.writeSuccessLoadBlockStack sp values ∗ True,13.1,12.5,1224,600,,0x14e14,variant-A
+A,b17,0x14d80,37,call:900(ra) # 10190 <write_output>,infer_boundary,partial,32,,0x14e00,"auipc a0, 3",in-state handoff,,12.1,11.9,1263,600,,0x14e14,variant-A
 A,b17,0x14e28,4,call:864(ra) # 10190 <write_output>,block_14e28,closed,4,,,,,,5.1,4.5,1029,600,,0x14e38,variant-A
 A,b17,0x14e38,4,call:848(ra) # 10190 <write_output>,block_14e38,closed,4,,,,,,5.1,4.6,1028,600,,0x14e48,variant-A
 A,b17,0x14e48,4,call:832(ra) # 10190 <write_output>,block_14e48,closed,4,,,,,,5.0,4.5,1028,600,,0x14e58,variant-A
 A,b17,0x14e58,4,call:816(ra) # 10190 <write_output>,block_14e58,closed,4,,,,,,5.0,4.5,1029,600,,0x14e68,variant-A
 A,b17,0x14e68,4,call:800(ra) # 10190 <write_output>,block_14e68,closed,4,,,,,,5.0,4.6,1028,600,,0x14e78,variant-A
 A,b17,0x14e78,4,call:784(ra) # 10190 <write_output>,block_14e78,closed,4,,,,,,5.0,4.5,1027,600,,0x14e88,variant-A
-A,b17,0x14ed4,4,call:692(ra) # 10190 <write_output>,infer_boundary,stalled,3,C1,0x14edc,"auipc ra, 0xffffb",call,"∃ x : spec *ₗ (),",6.1,5.8,1071,600,,0x14ee4,variant-A
-A,b17,0x14f08,122,call:168(ra) # 10190 <write_output>,infer_boundary,stalled,5,C2,0x14f18,"add a0, a1, a0",other,"∃ x : list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x25"" ↦ᵣ: (λ _ : valu, True) ∗ ""x10"" ↦ᵣ RVal_Bits x.3ₗ ∗ ((bv_unsigned x.3ₗ + 0) ↦ₘ∗ take 0 x.1ₗ ∗ (bv_unsigned x.3ₗ ",5.0,4.3,1030,600,,0x150f0,variant-A
-A,b17,0x15180,4,call:8(ra) # 10190 <write_output>,infer_boundary,stalled,3,unknown,0x15188,"auipc ra, 0xffffb",call,"find_in_context (FindRegMapsTo ""x12"")",7.1,6.7,1044,600,,0x15190,variant-A
-A,b17,0x15200,4,call:-120(ra) # 10190 <write_output>,infer_boundary,stalled,3,unknown,0x15208,"auipc ra, 0xffffb",call,"find_in_context (FindRegMapsTo ""x12"")",7.0,6.1,1047,600,,0x15210,variant-A
-A,b17,0x15228,96,call:-528(ra) # 10190 <write_output>,infer_boundary,stalled,5,C2,0x15238,"lbu s0, 0x14(s6)",load,find_in_context (FindMemMapsTo (bv_unsigned (row + 20))),17.0,16.8,1290,600,,0x153a8,variant-A
-A,b17,0x153d4,97,call:-960(ra) # 10190 <write_output>,infer_boundary,stalled,2,C4,0x153d8,"lbu t2, 0x11(s3)",load,"∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗",8.0,7.8,1093,600,,0x15558,variant-A
-A,b17,0x155bc,4,call:-1076(ra) # 10190 <write_output>,infer_boundary,stalled,3,unknown,0x155c4,"auipc ra, 0xffffb",call,"find_in_context (FindRegMapsTo ""x12"")",7.0,6.0,1046,600,,0x155cc,variant-A
-A,b17,0x156c0,4,call:-1336(ra) # 10190 <write_output>,infer_boundary,stalled,3,unknown,0x156c8,"auipc ra, 0xffffb",call,"find_in_context (FindRegMapsTo ""x12"")",7.0,6.7,1048,600,,0x156d0,variant-A
-A,b17,0x1572c,4,call:-1444(ra) # 10190 <write_output>,infer_boundary,reached,4,,,,,,4.0,3.5,1064,600,,0x1573c,variant-A
-inference,b17,0x15754,96,,infer_boundary,memory,,,,,,,71.0,70.8,8230,600,,0x158d4,boundary-inference
+A,b17,0x14ed4,4,call:692(ra) # 10190 <write_output>,infer_boundary,reached,4,,,,,,8.0,7.1,1104,600,,0x14ee4,variant-A
+A,b17,0x14f08,122,call:168(ra) # 10190 <write_output>,infer_boundary,stalled,5,C2,0x14f18,"add a0, a1, a0",other,"∃ x : list (bv 8) *ₗ bv 64 *ₗ (), (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 288)) + 0) ↦ₘ∗ take 0 x.1ₗ ∗",5.1,4.5,1052,600,,0x150f0,variant-A
+A,b17,0x15180,4,call:8(ra) # 10190 <write_output>,infer_boundary,stalled,3,C4,0x15188,"auipc ra, 0xffffb",call,"∃ x : spec *ₗ (),",5.0,4.6,1065,600,,0x15190,variant-A
+A,b17,0x15200,4,call:-120(ra) # 10190 <write_output>,infer_boundary,stalled,3,C4,0x15208,"auipc ra, 0xffffb",call,"∃ x : spec *ₗ (),",5.0,4.6,1068,600,,0x15210,variant-A
+A,b17,0x15228,96,call:-528(ra) # 10190 <write_output>,infer_boundary,stalled,5,C2,0x15238,"lbu s0, 0x14(s6)",load,find_in_context (FindMemMapsTo (bv_unsigned (row + 20))),16.0,15.3,1298,600,,0x153a8,variant-A
+A,b17,0x153d4,97,call:-960(ra) # 10190 <write_output>,infer_boundary,stalled,2,C4,0x153d8,"lbu t2, 0x11(s3)",load,"∃ x : list (bv 8) *ₗ bv 8 *ₗ (), ⌜take 1 (drop (IslarisMemory.array_region_start 8 base (bv_unsigned row + 18)) bytes) = [x.2ₗ]⌝ ∗",7.1,6.5,1097,600,,0x15558,variant-A
+A,b17,0x155bc,4,call:-1076(ra) # 10190 <write_output>,infer_boundary,stalled,3,C4,0x155c4,"auipc ra, 0xffffb",call,"∃ x : spec *ₗ (),",5.0,4.6,1066,600,,0x155cc,variant-A
+A,b17,0x156c0,4,call:-1336(ra) # 10190 <write_output>,infer_boundary,stalled,3,C4,0x156c8,"auipc ra, 0xffffb",call,"∃ x : spec *ₗ (),",5.0,4.5,1065,600,,0x156d0,variant-A
+A,b17,0x1572c,4,call:-1444(ra) # 10190 <write_output>,block_1572c,stalled,3,unknown,0x15734,"auipc ra, 0xffffb",call,subsume,6.0,5.0,1095,600,,0x1573c,variant-A-generated
+inference,b17,0x15754,96,,infer_boundary,memory,,,,,,,71.0,70.8,8230,600,,0x158d4,recorded-boundary-inference
