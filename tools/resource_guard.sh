@@ -82,7 +82,10 @@ GATE_MUTEX="${GATE_LOCK}.mutex"
 FAST_MAX_JOBS=${ZESU_FAST_MAX_JOBS:-24}
 # Gates leave 16 machine slots for writers. Each named writer gets two.
 WRITER_RESERVED=16
-WRITER_MAX_COQC=2
+WRITER_MAX_COQC=${ZESU_WRITER_MAX_COQC:-2}
+if ! [[ "$WRITER_MAX_COQC" =~ ^[1-9][0-9]*$ ]]; then
+  echo "resource guard: invalid writer compiler limit" >&2; exit 2
+fi
 WRITER_ID=${ZESU_WRITER_ID:-}
 if [ -n "$WRITER_ID" ] && ! [[ "$WRITER_ID" =~ ^[a-zA-Z0-9._-]+$ ]]; then
   echo "resource guard: invalid writer identity" >&2; exit 2
@@ -380,6 +383,14 @@ compiler_admission_reason() {
   fi
 }
 
+reservation_class() {
+  if [ -n "${ZESU_IN_GATE:-}" ]; then echo gate
+  elif [ -n "${ZESU_IN_BATCH:-}" ]; then echo batch
+  elif [ -n "$WRITER_ID" ]; then echo "writer:$WRITER_ID"
+  else echo standalone
+  fi
+}
+
 # The gate mutex serializes confirmation. A wanted gate cannot miss a launch.
 reserve_coqc() {
   local owner=$1 marker holder reason admission status held=""
@@ -409,7 +420,7 @@ reserve_coqc() {
     fi
     reason=${reason:-${holder:+gate lock: $holder}}
     reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then note "HOLD reservation: $reason"; held=$reason; fi
+    if [ "$reason" != "$held" ]; then note "HOLD reservation: class=$(reservation_class) $reason"; held=$reason; fi
     flock -u 7
     exec 7>&-
     sleep "$POLL_SECONDS"
@@ -472,7 +483,7 @@ confirm_coqc() {
     fi
     reason=${reason:-${holder:+gate lock: $holder}}
     reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then note "HOLD reservation launch: $reason"; held=$reason; fi
+    if [ "$reason" != "$held" ]; then note "HOLD reservation launch: class=$(reservation_class) $reason"; held=$reason; fi
     flock -u 7; exec 7>&-
     sleep "$POLL_SECONDS"
   done
