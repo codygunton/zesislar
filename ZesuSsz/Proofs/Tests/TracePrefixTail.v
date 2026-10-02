@@ -38,8 +38,18 @@ Proof.
       (scons_snap event accept candidate) (scons_snap event other tail) in idtac.
   zesu_close_matching_trace_tail. iExact "Hpre".
 Qed.
+Lemma test_snapshot_plain_call_tail (first second : seq_event)
+    (accept : seq_snapshot -> Prop) (tail : spec) (address : Z) (P : iProp Sigma) :
+  instr_pre address P -∗
+  ∃ x : spec *ₗ (),
+    ⌜scons first (scons_snap second accept x.1ₗ) ⊆
+      scons first (scons second tail)⌝ ∗ instr_pre address P.
+Proof.
+  iIntros "Hpre". zesu_close_matching_trace_tail. iExact "Hpre".
+Qed.
 End tests.
 
 Print Assumptions test_snapshot_call_tail.
 Print Assumptions test_event_snapshot_call_tail.
 Print Assumptions test_snapshot_predicate_guard.
+Print Assumptions test_snapshot_plain_call_tail.

@@ -1,0 +1,73 @@
+{
+  "configured_compilers": 6,
+  "batch_wall_seconds": 15,
+  "boundary_source": "headers_open entry_states.json in wp0-integration-worker-2",
+  "results": [
+    {
+      "leader": "0x14e28",
+      "outcome": "closed",
+      "remaining_goals": 0,
+      "elapsed_ms": 13667,
+      "peak_rss_kib": 1232960,
+      "array_residual": false,
+      "trace_residual": false,
+      "slice_length_residual": false,
+      "assumptions": []
+    },
+    {
+      "leader": "0x14e38",
+      "outcome": "closed",
+      "remaining_goals": 0,
+      "elapsed_ms": 13749,
+      "peak_rss_kib": 1227408,
+      "array_residual": false,
+      "trace_residual": false,
+      "slice_length_residual": false,
+      "assumptions": []
+    },
+    {
+      "leader": "0x14e48",
+      "outcome": "closed",
+      "remaining_goals": 0,
+      "elapsed_ms": 13181,
+      "peak_rss_kib": 1223584,
+      "array_residual": false,
+      "trace_residual": false,
+      "slice_length_residual": false,
+      "assumptions": []
+    },
+    {
+      "leader": "0x14e58",
+      "outcome": "closed",
+      "remaining_goals": 0,
+      "elapsed_ms": 13553,
+      "peak_rss_kib": 1224328,
+      "array_residual": false,
+      "trace_residual": false,
+      "slice_length_residual": false,
+      "assumptions": []
+    },
+    {
+      "leader": "0x14e68",
+      "outcome": "closed",
+      "remaining_goals": 0,
+      "elapsed_ms": 13202,
+      "peak_rss_kib": 1229672,
+      "array_residual": false,
+      "trace_residual": false,
+      "slice_length_residual": false,
+      "assumptions": []
+    },
+    {
+      "leader": "0x14e78",
+      "outcome": "closed",
+      "remaining_goals": 0,
+      "elapsed_ms": 12875,
+      "peak_rss_kib": 1214584,
+      "array_residual": false,
+      "trace_residual": false,
+      "slice_length_residual": false,
+      "assumptions": []
+    }
+  ]
+}
