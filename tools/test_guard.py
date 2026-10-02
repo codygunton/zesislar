@@ -508,7 +508,9 @@ class GuardLockTest(unittest.TestCase):
                 process.terminate()
             process.communicate(timeout=3)
             self.guard("release-coqc", token)
-        self.assertEqual(self.guard("confirm-coqc", token).returncode, 2)
+        self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
+        self.assertTrue(Path(token).exists())
+        self.guard("release-coqc", token)
 
     def test_confirmation_refuses_a_foreign_gate_without_waiting_on_it(self):
         self.prepare_blocked_fixture(0)
@@ -680,7 +682,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(all(not marker.exists() for marker in launching))
 
-    def test_expired_own_confirmation_cannot_launch(self):
+    def test_expired_own_confirmation_reserves_again_before_launch(self):
         self.writer_fixture()
         token = Path(self.reserve_writer("tf2"))
         os.utime(token, (time.time() - 120, time.time() - 120))
@@ -689,9 +691,10 @@ class GuardLockTest(unittest.TestCase):
                                  "--", "touch", str(executed)],
                                 env={**self.environment, "ZESU_WRITER_ID": "tf2"},
                                 capture_output=True, text=True, timeout=3)
-        self.assertEqual(result.returncode, 2, result.stderr)
-        self.assertFalse(token.exists())
-        self.assertFalse(executed.exists())
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(executed.exists())
+        log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
+        self.assertIn("RETRY reservation", log.read_text())
 
     def test_old_marked_wrapper_with_live_nested_compiler_keeps_its_slot(self):
         self.writer_fixture()

@@ -420,7 +420,7 @@ reserve_coqc() {
     fi
     reason=${reason:-${holder:+gate lock: $holder}}
     reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then note "HOLD reservation: class=$(reservation_class) $reason"; held=$reason; fi
+    if [ "$reason" != "$held" ]; then note "HOLD reservation: class=$(reservation_class) reservations=$(live_reservations | wc -l) $reason"; held=$reason; fi
     flock -u 7
     exec 7>&-
     sleep "$POLL_SECONDS"
@@ -432,6 +432,17 @@ reservation_path() {
   [[ "$(dirname "$1")" == "$COQC_RESERVATIONS" && -f "$1" ]]
 }
 
+# Preserve the caller's token path when admission expires its reservation.
+renew_coqc() {
+  local marker=$1 owner=$2 replacement
+  note "RETRY reservation: class=$(reservation_class) missing or expired token owner=$owner"
+  replacement=$(reserve_coqc "$owner") || return "$?"
+  exec 7>>"$GATE_MUTEX"
+  flock 7
+  mv -f -- "$replacement" "$marker"
+  flock -u 7; exec 7>&-
+}
+
 # A slot can wait while resources change. Recheck the complete launch
 # conditions under the reservation mutex immediately before the compiler.
 confirm_coqc() {
@@ -440,8 +451,18 @@ confirm_coqc() {
     exec 7>>"$GATE_MUTEX"
     flock 7
     owner=${marker##*/}; owner=${owner%%.*}
-    if ! reservation_path "$marker" || ! kill -0 "$owner" 2>/dev/null \
-       || [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
+    if [[ "$(dirname "$marker")" != "$COQC_RESERVATIONS" ]] \
+       || ! [[ "$owner" =~ ^[0-9]+$ ]] || ! kill -0 "$owner" 2>/dev/null; then
+      echo "resource guard: invalid reservation path or dead owner: $marker" >&2
+      flock -u 7; exec 7>&-; return 2
+    fi
+    if ! reservation_path "$marker"; then
+      flock -u 7; exec 7>&-
+      renew_coqc "$marker" "$owner" || return "$?"
+      continue
+    fi
+    if [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
+      echo "resource guard: reservation writer mismatch: $marker" >&2
       flock -u 7; exec 7>&-; return 2
     fi
     holder=""
@@ -459,7 +480,11 @@ confirm_coqc() {
     reason=$(hold_reason no-lock) || {
       status=$?; flock -u 7; exec 7>&-; return "$status"
     }
-    read -r state < "$marker" || { flock -u 7; exec 7>&-; return 2; }
+    if ! read -r state < "$marker"; then
+      flock -u 7; exec 7>&-
+      renew_coqc "$marker" "$owner" || return "$?"
+      continue
+    fi
     confirming=1
     [ "$state" != pending ] || confirming=0
     admission=$(compiler_admission_reason "$confirming") || {
@@ -467,12 +492,15 @@ confirm_coqc() {
     }
     # Admission can remove this token if its earlier confirmation expired.
     if ! reservation_path "$marker"; then
-      flock -u 7; exec 7>&-; return 2
+      flock -u 7; exec 7>&-
+      renew_coqc "$marker" "$owner" || return "$?"
+      continue
     fi
     if [ -z "$reason$holder$admission" ]; then
       [ -z "$held" ] || note "RESUME reservation launch: $held"
       if [ "$state" = pending ]; then
         replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
+          echo "resource guard: cannot create confirmation file" >&2
           flock -u 7; exec 7>&-; return 2
         }
         sed '1s/^pending$/confirmed/' "$marker" > "$replacement"
@@ -483,7 +511,7 @@ confirm_coqc() {
     fi
     reason=${reason:-${holder:+gate lock: $holder}}
     reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then note "HOLD reservation launch: class=$(reservation_class) $reason"; held=$reason; fi
+    if [ "$reason" != "$held" ]; then note "HOLD reservation launch: class=$(reservation_class) reservations=$(live_reservations | wc -l) $reason"; held=$reason; fi
     flock -u 7; exec 7>&-
     sleep "$POLL_SECONDS"
   done

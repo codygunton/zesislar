@@ -51,3 +51,33 @@ compiler_admission_reason
             result = self.run_guard("reservation_class", **variables)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.strip(), expected)
+
+    def test_missing_token_is_reserved_again(self):
+        result = self.run_guard("""
+hold_reason() { :; }
+compiler_admission_reason() { :; }
+marker="$COQC_RESERVATIONS/$$.missing"
+confirm_coqc "$marker"
+head -n 1 "$marker"
+cat "$LOG"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("confirmed", result.stdout)
+        self.assertIn("RETRY reservation", result.stdout)
+
+    def test_expiry_during_admission_retries(self):
+        result = self.run_guard("""
+hold_reason() { :; }
+marker="$COQC_RESERVATIONS/$$.expired"
+printf 'pending\\nwriter=\\naggregate=\\n' > "$marker"
+compiler_admission_reason() {
+  if [ ! -f "$STATE_DIR/expired-once" ]; then
+    touch "$STATE_DIR/expired-once"
+    rm -f "$marker"
+  fi
+}
+confirm_coqc "$marker"
+head -n 1 "$marker"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("confirmed", result.stdout)
