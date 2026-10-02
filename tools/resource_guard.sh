@@ -299,7 +299,8 @@ reservation_writer() { sed -n 's/^writer=//p' "$1"; }
 reservation_compiler() {
   local child descendant queue
   read -r child < "$1" || return 1
-  [[ "$child" =~ ^[0-9]+$ ]] || { child=${1##*/}; child=${child%%.*}; }
+  # An unmarked launch has no compiler yet. Its owner can include this scan.
+  [[ "$child" =~ ^[0-9]+$ ]] || return 1
   queue=$child
   while [ -n "$queue" ]; do
     descendant=${queue%% *}

@@ -16,7 +16,9 @@ class ResourceGuard(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             environment = {key: value for key, value in os.environ.items()
                            if not key.startswith("ZESU_")}
-            environment.update(ZESU_GUARD_STATE=directory, **variables)
+            environment.update(ZESU_GUARD_STATE=directory,
+                               ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
+                               **variables)
             return subprocess.run(["bash"], input=LIBRARY + "\n" + script,
                                   text=True, capture_output=True, env=environment, timeout=20)
 
@@ -127,6 +129,21 @@ cat "$STATE_DIR/events"
         self.assertEqual(starts, 6)
         self.assertFalse(active)
         self.assertLessEqual(peak, 2)
+
+    def test_unmarked_reservation_does_not_scan_its_owner(self):
+        result = self.run_guard(r"""
+mkdir -p "$STATE_DIR/proc/123/task/123"
+printf 'coqc\n' > "$STATE_DIR/proc/123/comm"
+printf '123\n' > "$STATE_DIR/proc/123/task/123/children"
+PROC_ROOT="$STATE_DIR/proc"
+compiler_process() { return 0; }
+printf 'confirmed\nwriter=\n' > "$STATE_DIR/123.token"
+if reservation_compiler "$STATE_DIR/123.token"; then exit 1; fi
+printf '123\nwriter=\n' > "$STATE_DIR/123.token"
+reservation_compiler "$STATE_DIR/123.token"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "123")
 
     def test_confirmed_launch_does_not_expire_before_compiler_start(self):
         result = self.run_guard("""
