@@ -1,0 +1,218 @@
+[
+  {
+    "entry": "0x15694",
+    "state_entry": "0x15694",
+    "leader": "0x156dc",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsTailNative"
+    ],
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "(islaG Sigma)"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "pointer",
+        "(bv 64)"
+      ],
+      [
+        "count",
+        "(bv 64)"
+      ],
+      [
+        "P",
+        "(iProp Sigma)"
+      ],
+      [
+        "sp",
+        "(bv 64)"
+      ],
+      [
+        "b",
+        "(bv 64)"
+      ],
+      [
+        "H0",
+        "(Z.land (bv_unsigned b) 131072 = 0)"
+      ],
+      [
+        "b0",
+        "(bv 64)"
+      ],
+      [
+        "H1",
+        "(Z.land (bv_unsigned b0) 131072 = 0)"
+      ],
+      [
+        "b1",
+        "(bv 64)"
+      ],
+      [
+        "H2",
+        "(Z.land (bv_unsigned b1) 131072 = 0)"
+      ],
+      [
+        "H3",
+        "((count + 18446744073709551615)%bv ≠ 0%bv)"
+      ]
+    ],
+    "local_sorts": {
+      "H3": "Prop",
+      "H2": "Prop",
+      "b1": "Type",
+      "H1": "Prop",
+      "b0": "Type",
+      "H0": "Prop",
+      "b": "Type",
+      "sp": "Type",
+      "P": "Type",
+      "count": "Type",
+      "pointer": "Type",
+      "H": "Type",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "persistent": [
+      "instr_lookup_resources lookup",
+      "spec_instr_resources"
+    ],
+    "spatial": [
+      "instr_pre 87700 (withdrawalTailPost pointer count P)",
+      "instr_pre 87784 (withdrawalTailPost pointer count P)",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "\"x8\" ↦ᵣ RVal_Bits (pointer + 48)%bv",
+      "reg_col zesu_ram_sys_regs",
+      "\"x9\" ↦ᵣ RVal_Bits (count + 18446744073709551615)%bv"
+    ],
+    "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\npointer : (bv 64)\ncount : (bv 64)\nP : (iProp Sigma)\nsp : (bv 64)\nb : (bv 64)\nH0 : (Z.land (bv_unsigned b) 131072 = 0)\nb0 : (bv 64)\nH1 : (Z.land (bv_unsigned b0) 131072 = 0)\nb1 : (bv 64)\nH2 : (Z.land (bv_unsigned b1) 131072 = 0)\nH3 : ((count + 18446744073709551615)%bv ≠ 0%bv)\n============================\n_ : instr_lookup_resources lookup\n_ : spec_instr_resources\n--------------------------------------□\n_ : instr_pre 87700 (withdrawalTailPost pointer count P)\n_ : instr_pre 87784 (withdrawalTailPost pointer count P)\n_ : P\n_ : reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])\n_ : \"x8\" ↦ᵣ RVal_Bits (pointer + 48)%bv\n_ : reg_col zesu_ram_sys_regs\n_ : \"x9\" ↦ᵣ RVal_Bits (count + 18446744073709551615)%bv",
+    "conclusion": "find_in_context (FindInstrKind 87700 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 87700) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 87700)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "raw_goal": "goal 1 is:\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  pointer, count : bv 64\n  P : iProp Sigma\n  sp, b : bv 64\n  H0 : Z.land (bv_unsigned b) 131072 = 0\n  b0 : bv 64\n  H1 : Z.land (bv_unsigned b0) 131072 = 0\n  b1 : bv 64\n  H2 : Z.land (bv_unsigned b1) 131072 = 0\n  H3 : (count + 18446744073709551615)%bv ≠ 0%bv\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  --------------------------------------□\n  _ : instr_pre 87700 (withdrawalTailPost pointer count P)\n  _ : instr_pre 87784 (withdrawalTailPost pointer count P)\n  _ : P\n  _ : reg_col\n        [(KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64);\n         (KindReg \"x31\", BitsShape 64)]\n  _ : \"x8\" ↦ᵣ RVal_Bits (pointer + 48)%bv\n  _ : reg_col zesu_ram_sys_regs\n  _ : \"x9\" ↦ᵣ RVal_Bits (count + 18446744073709551615)%bv\n  --------------------------------------∗\n  find_in_context (FindInstrKind 87700 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 87700) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 87700)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "provenance": {
+      "proof_module": "ZesuSsz.Generated.WriteSuccess.Blocks.Block_156dc",
+      "source_resource": "(withdrawalTailEntry pointer count P)",
+      "capture": "Native instruction execution stopped before successor selection; full Iris context retained.",
+      "artifact_sha256": "6e7dbca17f09a653268c750facbb7ecc40844173809ad2a02c8a9f67326906ce",
+      "trace": "The capture retains spec_trace and opaque frame resources without unfolding them.",
+      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. Zero values retain their explicit bv 64 type, confirmed with Set Printing All."
+    }
+  },
+  {
+    "entry": "0x156e8",
+    "state_entry": "0x156e8",
+    "leader": "0x156dc",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsTailNative"
+    ],
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "(islaG Sigma)"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "pointer",
+        "(bv 64)"
+      ],
+      [
+        "count",
+        "(bv 64)"
+      ],
+      [
+        "P",
+        "(iProp Sigma)"
+      ],
+      [
+        "sp",
+        "(bv 64)"
+      ],
+      [
+        "b",
+        "(bv 64)"
+      ],
+      [
+        "H0",
+        "(Z.land (bv_unsigned b) 131072 = 0)"
+      ],
+      [
+        "b0",
+        "(bv 64)"
+      ],
+      [
+        "H1",
+        "(Z.land (bv_unsigned b0) 131072 = 0)"
+      ],
+      [
+        "b1",
+        "(bv 64)"
+      ],
+      [
+        "H2",
+        "(Z.land (bv_unsigned b1) 131072 = 0)"
+      ],
+      [
+        "H3",
+        "((count + 18446744073709551615)%bv = 0%bv)"
+      ]
+    ],
+    "local_sorts": {
+      "H3": "Prop",
+      "H2": "Prop",
+      "b1": "Type",
+      "H1": "Prop",
+      "b0": "Type",
+      "H0": "Prop",
+      "b": "Type",
+      "sp": "Type",
+      "P": "Type",
+      "count": "Type",
+      "pointer": "Type",
+      "H": "Type",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "persistent": [
+      "instr_lookup_resources lookup",
+      "spec_instr_resources"
+    ],
+    "spatial": [
+      "instr_pre 87700 (withdrawalTailPost pointer count P)",
+      "instr_pre 87784 (withdrawalTailPost pointer count P)",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "\"x8\" ↦ᵣ RVal_Bits (pointer + 48)%bv",
+      "reg_col zesu_ram_sys_regs",
+      "\"x9\" ↦ᵣ RVal_Bits (count + 18446744073709551615)%bv"
+    ],
+    "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\npointer : (bv 64)\ncount : (bv 64)\nP : (iProp Sigma)\nsp : (bv 64)\nb : (bv 64)\nH0 : (Z.land (bv_unsigned b) 131072 = 0)\nb0 : (bv 64)\nH1 : (Z.land (bv_unsigned b0) 131072 = 0)\nb1 : (bv 64)\nH2 : (Z.land (bv_unsigned b1) 131072 = 0)\nH3 : ((count + 18446744073709551615)%bv = 0%bv)\n============================\n_ : instr_lookup_resources lookup\n_ : spec_instr_resources\n--------------------------------------□\n_ : instr_pre 87700 (withdrawalTailPost pointer count P)\n_ : instr_pre 87784 (withdrawalTailPost pointer count P)\n_ : P\n_ : reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])\n_ : \"x8\" ↦ᵣ RVal_Bits (pointer + 48)%bv\n_ : reg_col zesu_ram_sys_regs\n_ : \"x9\" ↦ᵣ RVal_Bits (count + 18446744073709551615)%bv",
+    "conclusion": "find_in_context (FindInstrKind 87784 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 87784) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 87784)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "raw_goal": "goal 2 is:\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  pointer, count : bv 64\n  P : iProp Sigma\n  sp, b : bv 64\n  H0 : Z.land (bv_unsigned b) 131072 = 0\n  b0 : bv 64\n  H1 : Z.land (bv_unsigned b0) 131072 = 0\n  b1 : bv 64\n  H2 : Z.land (bv_unsigned b1) 131072 = 0\n  H3 : (count + 18446744073709551615)%bv = 0%bv\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  --------------------------------------□\n  _ : instr_pre 87700 (withdrawalTailPost pointer count P)\n  _ : instr_pre 87784 (withdrawalTailPost pointer count P)\n  _ : P\n  _ : reg_col\n        [(KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64);\n         (KindReg \"x31\", BitsShape 64)]\n  _ : \"x8\" ↦ᵣ RVal_Bits (pointer + 48)%bv\n  _ : reg_col zesu_ram_sys_regs\n  _ : \"x9\" ↦ᵣ RVal_Bits (count + 18446744073709551615)%bv\n  --------------------------------------∗\n  find_in_context (FindInstrKind 87784 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 87784) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 87784)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "provenance": {
+      "proof_module": "ZesuSsz.Generated.WriteSuccess.Blocks.Block_156dc",
+      "source_resource": "(withdrawalTailEntry pointer count P)",
+      "capture": "Native instruction execution stopped before successor selection; full Iris context retained.",
+      "artifact_sha256": "6e7dbca17f09a653268c750facbb7ecc40844173809ad2a02c8a9f67326906ce",
+      "trace": "The capture retains spec_trace and opaque frame resources without unfolding them.",
+      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. Zero values retain their explicit bv 64 type, confirmed with Set Printing All."
+    }
+  }
+]

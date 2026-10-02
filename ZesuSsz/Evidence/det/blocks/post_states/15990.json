@@ -1,0 +1,70 @@
+[
+  {
+    "entry": "0x159a0",
+    "state_entry": "0x159a0",
+    "leader": "0x15990",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64)",
+    "imports": [],
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "(islaG Sigma)"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "P",
+        "(iProp Sigma)"
+      ],
+      [
+        "sp",
+        "(bv 64)"
+      ],
+      [
+        "b",
+        "(bv 64)"
+      ],
+      [
+        "H0",
+        "(Z.land (bv_unsigned b) 131072 = 0)"
+      ]
+    ],
+    "local_sorts": {
+      "H0": "Prop",
+      "b": "Type",
+      "sp": "Type",
+      "P": "Type",
+      "H": "Type",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "persistent": [
+      "instr_lookup_resources lookup",
+      "spec_instr_resources"
+    ],
+    "spatial": [
+      "instr_pre 88480 P",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "reg_col zesu_ram_sys_regs"
+    ],
+    "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nP : (iProp Sigma)\nsp : (bv 64)\nb : (bv 64)\nH0 : (Z.land (bv_unsigned b) 131072 = 0)\n============================\n_ : instr_lookup_resources lookup\n_ : spec_instr_resources\n--------------------------------------□\n_ : instr_pre 88480 P\n_ : P\n_ : reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])\n_ : reg_col zesu_ram_sys_regs",
+    "conclusion": "find_in_context (FindInstrKind 88480 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 88480) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 88480)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "raw_goal": "goal 1 is:\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  P : iProp Sigma\n  sp, b : bv 64\n  H0 : Z.land (bv_unsigned b) 131072 = 0\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  --------------------------------------□\n  _ : instr_pre 88480 P\n  _ : P\n  _ : reg_col\n        [(KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64);\n         (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col zesu_ram_sys_regs\n  --------------------------------------∗\n  find_in_context (FindInstrKind 88480 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 88480) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 88480)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "provenance": {
+      "proof_module": "ZesuSsz.Generated.WriteSuccess.Blocks.Block_15990",
+      "source_resource": "(writeSuccessSuffixJump15990Spec P)",
+      "capture": "Native instruction execution stopped before successor selection; full Iris context retained.",
+      "artifact_sha256": "6e7dbca17f09a653268c750facbb7ecc40844173809ad2a02c8a9f67326906ce",
+      "trace": "The capture retains spec_trace and opaque frame resources without unfolding them.",
+      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. Zero values retain their explicit bv 64 type, confirmed with Set Printing All."
+    }
+  }
+]
