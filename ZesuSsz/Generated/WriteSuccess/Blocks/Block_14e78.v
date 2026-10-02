@@ -7,17 +7,20 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_14e78.
-Require Import ZesuSsz.Generated.WriteSuccess.States.State_14e88.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Generated.WriteSuccess.States.HeaderSuccessor_14e88.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteOutputContract.
 Require Import ZesuSsz.Automation.Sets.call.
+
+#[local] Instance : LithiumUnfold (@writeOutputContract) := I.
+#[local] Typeclasses Opaque writeOutputContract.
 
 Lemma block_14e78
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e88
-    (State_14e88 sp bytes tail P) -∗
+    (HeaderSuccessor_14e88 sp bytes tail P) -∗
   instr_body 0x14e78
     (State_14e78 sp bytes tail P).
 Proof. zesu_block. Qed.

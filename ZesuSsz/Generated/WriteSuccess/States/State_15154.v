@@ -25,7 +25,7 @@ Definition State_15154
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (tag : bv 64) (old_data : bv 64) (P : iProp Sigma) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
-   ("x10" ↦ᵣ RVal_Bits (bv_to_bvn old_data)) ∗
+   (reg_col [(KindReg "x10", BitsShape 64)]) ∗
    ((bv_unsigned sp + 120) ↦ₘ tag) ∗
    (P) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗

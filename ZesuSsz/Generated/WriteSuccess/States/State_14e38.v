@@ -19,6 +19,8 @@ Definition State_14e38
    (P) ∗
    (instr_pre 85640 (writeSuccessHeaderPost sp bytes tail P)) ∗
    (reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 0 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜True⌝) ∗
    (⌜bv_unsigned sp + 1896 < machineRamEnd defaultMap⌝) ∗
    (⌜mapRamBase defaultMap ≤ bv_unsigned sp⌝) ∗
