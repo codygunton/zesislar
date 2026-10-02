@@ -1,0 +1,181 @@
+[
+  {
+    "entry": "0x1573c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "olddata",
+        "bv 64"
+      ],
+      [
+        "oldsize",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "b",
+        "bv 64"
+      ],
+      [
+        "b0",
+        "bv 64"
+      ],
+      [
+        "b1",
+        "bv 64"
+      ],
+      [
+        "b2",
+        "bv 64"
+      ],
+      [
+        "b9",
+        "bv 64"
+      ],
+      [
+        "b10",
+        "bv 64"
+      ],
+      [
+        "b11",
+        "bv 64"
+      ],
+      [
+        "b12",
+        "bv 64"
+      ],
+      [
+        "b13",
+        "bv 64"
+      ],
+      [
+        "b14",
+        "bv 64"
+      ],
+      [
+        "b15",
+        "bv 64"
+      ],
+      [
+        "b16",
+        "bv 64"
+      ],
+      [
+        "b17",
+        "bv 64"
+      ],
+      [
+        "b18",
+        "bv 64"
+      ],
+      [
+        "H0",
+        "length bytes = 720%nat"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H2",
+        "0 ≤ bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp + 1896 < 0 + 1073741824"
+      ],
+      [
+        "b3",
+        "bv 64"
+      ],
+      [
+        "b4",
+        "bv 64"
+      ]
+    ],
+    "spatial": [
+      "\"x3\" ↦ᵣ RVal_Bits b",
+      "\"x4\" ↦ᵣ RVal_Bits b0",
+      "P",
+      "True",
+      "bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes) -∗ (bv_unsigned sp + 312) ↦ₘ∗ bytes",
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+      "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b1)); (KindReg \"x9\", ExactShape (RVal_Bits b2)); (KindReg \"x18\", ExactShape (RVal_Bits b9)); (KindReg \"x19\", ExactShape (RVal_Bits b10)); (KindReg \"x20\", ExactShape (RVal_Bits b11)); (KindReg \"x21\", ExactShape (RVal_Bits b12)); (KindReg \"x22\", ExactShape (RVal_Bits b13)); (KindReg \"x23\", ExactShape (RVal_Bits b14)); (KindReg \"x24\", ExactShape (RVal_Bits b15)); (KindReg \"x25\", ExactShape (RVal_Bits b16)); (KindReg \"x26\", ExactShape (RVal_Bits b17)); (KindReg \"x27\", ExactShape (RVal_Bits b18))]",
+      "\"x10\" ↦ᵣ RVal_Bits b3",
+      "\"x11\" ↦ᵣ RVal_Bits b4",
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes)",
+      "spec_trace tail"
+    ],
+    "imports": [
+      "ZesuSsz.Export.Snapshots"
+    ],
+    "arguments": "sp oldra old5 olddata oldsize bytes tail P",
+    "outcome": "reached",
+    "source_resource": "native exact writeOutputContract return",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "sp": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "olddata": "Type",
+      "oldsize": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "b": "Type",
+      "b0": "Type",
+      "b1": "Type",
+      "b2": "Type",
+      "b9": "Type",
+      "b10": "Type",
+      "b11": "Type",
+      "b12": "Type",
+      "b13": "Type",
+      "b14": "Type",
+      "b15": "Type",
+      "b16": "Type",
+      "b17": "Type",
+      "b18": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "b3": "Type",
+      "b4": "Type"
+    }
+  }
+]

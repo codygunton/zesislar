@@ -8,18 +8,21 @@ Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_1572c.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_1573c.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteOutputContract.
 Require Import ZesuSsz.Automation.Sets.call.
 
+#[local] Instance : LithiumUnfold (@writeOutputContract) := I.
+#[local] Typeclasses Opaque writeOutputContract.
+
 Lemma block_1572c
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec) :
+    `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x1573c
-    (State_1573c P sp root oldData oldSize tail) -∗
+    (State_1573c sp oldra old5 olddata oldsize bytes tail P) -∗
   instr_body 0x1572c
-    (State_1572c P sp root oldData oldSize tail).
+    (State_1572c sp oldra old5 olddata oldsize bytes tail P).
 Proof. zesu_block. Qed.
 
 Print Assumptions block_1572c.
