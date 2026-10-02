@@ -1,0 +1,46 @@
+{
+  "boolean": {
+    "stalled": 4,
+    "boundary-stall": 2
+  },
+  "bytelists": {
+    "stalled": 4,
+    "boundary-stall": 1
+  },
+  "bytes": {
+    "boundary-stall": 2,
+    "stalled": 7
+  },
+  "int1645": {
+    "stalled": 3
+  },
+  "integer": {
+    "reached": 1,
+    "boundary-stall": 6,
+    "stalled": 17
+  },
+  "memcpy": {
+    "stalled": 4,
+    "boundary-stall": 1
+  },
+  "nocall": {
+    "boundary-stall": 6,
+    "reached": 1,
+    "closed": 9,
+    "stalled": 7
+  },
+  "optional": {
+    "stalled": 3,
+    "boundary-stall": 1
+  },
+  "u256": {
+    "stalled": 6
+  },
+  "writeOutput": {
+    "stalled": 7,
+    "closed": 5,
+    "memory": 2,
+    "reached": 1,
+    "timeout": 2
+  }
+}

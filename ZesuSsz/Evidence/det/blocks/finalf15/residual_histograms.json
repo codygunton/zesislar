@@ -1,0 +1,132 @@
+{
+  "histograms": {
+    "memcpy": {
+      "C2": 1,
+      "C4": 3
+    },
+    "optional": {
+      "C2": 2,
+      "C1": 1
+    },
+    "integer": {
+      "unknown": 9,
+      "C1": 6,
+      "C4": 1
+    },
+    "int1645": {
+      "C1": 3
+    },
+    "boolean": {
+      "C1": 4
+    },
+    "nocall": {
+      "C3": 2,
+      "C4": 2,
+      "unknown": 3
+    },
+    "u256": {
+      "C1": 6
+    },
+    "bytes": {
+      "unknown": 1,
+      "C4": 5
+    },
+    "bytelists": {
+      "C4": 1,
+      "unknown": 3
+    },
+    "writeOutput": {
+      "C1": 1,
+      "unknown": 1,
+      "C4": 4,
+      "C2": 1
+    }
+  },
+  "unknown": [
+    {
+      "group": "integer",
+      "leader": "0x150fc",
+      "conclusion": "86280%bv = b"
+    },
+    {
+      "group": "integer",
+      "leader": "0x15148",
+      "conclusion": "86356%bv = b3"
+    },
+    {
+      "group": "bytes",
+      "leader": "0x151b4",
+      "conclusion": "(bv_unsigned sp - 48) \u21a6\u2098? 48 \u2217"
+    },
+    {
+      "group": "integer",
+      "leader": "0x151c4",
+      "conclusion": "86480%bv = b"
+    },
+    {
+      "group": "nocall",
+      "leader": "0x151d4",
+      "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned sp + 264) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 264 < 0 + 1073741824\u231d \u2217"
+    },
+    {
+      "group": "nocall",
+      "leader": "0x1521c",
+      "conclusion": "data = b2"
+    },
+    {
+      "group": "integer",
+      "leader": "0x153c0",
+      "conclusion": "86992%bv = b3"
+    },
+    {
+      "group": "integer",
+      "leader": "0x15574",
+      "conclusion": "87428%bv = b"
+    },
+    {
+      "group": "integer",
+      "leader": "0x15620",
+      "conclusion": "87596%bv = b"
+    },
+    {
+      "group": "integer",
+      "leader": "0x15678",
+      "conclusion": "(bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217"
+    },
+    {
+      "group": "nocall",
+      "leader": "0x1568c",
+      "conclusion": "87772%bv = b1"
+    },
+    {
+      "group": "integer",
+      "leader": "0x1573c",
+      "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned sp + 904) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 904 < 0 + 1073741824\u231d \u2217"
+    },
+    {
+      "group": "bytelists",
+      "leader": "0x15930",
+      "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned base + 16) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned base `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned base + 16 < 0 + 1073741824\u231d \u2217"
+    },
+    {
+      "group": "bytelists",
+      "leader": "0x15940",
+      "conclusion": "(bv_unsigned sp - 80) \u21a6\u2098? 80 \u2217"
+    },
+    {
+      "group": "bytelists",
+      "leader": "0x15950",
+      "conclusion": "(bv_unsigned sp - 80) \u21a6\u2098? 80 \u2217"
+    },
+    {
+      "group": "integer",
+      "leader": "0x15960",
+      "conclusion": "(bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217"
+    },
+    {
+      "group": "writeOutput",
+      "leader": "0x14e78",
+      "conclusion": "HeaderSuccessor_14e88Memory sp bytes tail P \u2217 True \u2217 \u231cbv_unsigned sp + 1896 < 0 + 1073741824\u231d \u2217 \u231c0 \u2264 bv_unsigned sp\u231d \u2217 \u231cbv_unsigned sp `mod` 16 = 0\u231d \u2217 \u231clength b"
+    }
+  ]
+}

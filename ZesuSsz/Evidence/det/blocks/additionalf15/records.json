@@ -1,0 +1,88 @@
+[
+  {
+    "variant": "additionalf15",
+    "leader": "0x156f4",
+    "last": "0x156fc",
+    "n": 3,
+    "kind": "call:1560(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15700"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_156f4",
+    "stops": [],
+    "kept_succ": [
+      "0x15700"
+    ],
+    "run": "A",
+    "seconds": 6.0,
+    "cpu": 5.6,
+    "peak_mib": 1267,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1240
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x156f8"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/additionalf15-A-driver/probes/A_additionalf15_0x156f4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "reg_col [(KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)] \u2217\n  \u2203 x : bv 64 *\u2097 bv 64 *\u2097 (),\n    \"x10\"\n    \u21a6\u1d63: \u03bb r10 : valu,\n          \u2203 b10 : bv 64, \u231cr10 = RVal_Bits b10\u231d \u2217\n            \"x11\"\n            \u21a6\u1d63: \u03bb r11 : valu,\n                  \u2203 b11 : bv 64, \u231cr11 = RVal_Bits b11\u231d \u2217\n                    \"x12\"\n                    \u21a6\u1d63: \u03bb r12 : valu,\n                          \u2203 b12 : bv 64, \u231cr12 = RVal_Bits b12\u231d \u2217\n                            \"x13\"\n                          ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "additionalf15",
+    "leader": "0x1571c",
+    "last": "0x15728",
+    "n": 4,
+    "kind": "call:1352(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x1572c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1571c",
+    "stops": [],
+    "kept_succ": [
+      "0x1572c"
+    ],
+    "run": "A",
+    "seconds": 8.0,
+    "cpu": 7.8,
+    "peak_mib": 1308,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1242
+      ],
+      [
+        6,
+        1292
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15724"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/additionalf15-A-driver/probes/A_additionalf15_0x1571c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "find_in_context (FindRegMapsTo \"x8\")\n    (\u03bb rk : reg_mapsto_kind,\n       match rk with\n       | RKMapsTo v =>\n           \u2203 x : bv 64 *\u2097 bv 64 *\u2097 (), \u231cvalu_has_shape v (BitsShape 64)\u231d \u2217\n             \"x9\"\n             \u21a6\u1d63: \u03bb r9 : valu, \u231cvalu_has_shape r9 (BitsShape 64)\u231d \u2217\n                   \"x18\"\n                   \u21a6\u1d63: \u03bb r18 : valu, \u231cvalu_has_shape r18 (BitsShape 64)\u231d \u2217\n                         \"x19\"\n                         \u21a6\u1d63: \u03bb r19 : valu, \u231cvalu_has_shape r19 (BitsShape 64)\u231d \u2217\n                               \"x20\"\n                               \u21a6\u1d63: \u03bb r20 : valu, \u231cvalu_has_shape r20 (BitsShape 6",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]
