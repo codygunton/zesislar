@@ -1,0 +1,108 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, optionalValue, optionalTag, data, size, root : bv 64
+  bytes : list (bv 8)
+  saved : list (bv 64)
+  tail : spec
+  P : iProp Sigma
+  H0 : True
+  H1 : bv_unsigned sp + 1896 < machineRamEnd defaultMap
+  H2 : bv_unsigned sp < machineRamEnd defaultMap
+  H3 : mapRamBase defaultMap ≤ bv_unsigned sp - 48
+  H4 : bv_unsigned sp `mod` 16 = 0
+  H5 : bv_unsigned size = Z.of_nat (length bytes)
+  H6 : length saved = length writeSuccessPostWithdrawalsSaved
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64); (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x10" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x11" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : reg_col
+        match saved with
+        | [] => []
+        | x2 :: l2 =>
+            (KindReg "x8", ExactShape (RVal_Bits (bv_to_bvn x2)))
+            :: match l2 with
+               | [] => []
+               | x0 :: l0 =>
+                   (KindReg "x9", ExactShape (RVal_Bits (bv_to_bvn x0)))
+                   :: match l0 with
+                      | [] => []
+                      | x1 :: l1 =>
+                          (KindReg "x18", ExactShape (RVal_Bits (bv_to_bvn x1)))
+                          :: match l1 with
+                             | [] => []
+                             | x3 :: l3 =>
+                                 (KindReg "x19", ExactShape (RVal_Bits (bv_to_bvn x3)))
+                                 :: match l3 with
+                                    | [] => []
+                                    | x4 :: l4 =>
+                                        (KindReg "x20", ExactShape (RVal_Bits (bv_to_bvn x4)))
+                                        :: match l4 with
+                                           | [] => []
+                                           | x5 :: l5 =>
+                                               (KindReg "x21", ExactShape (RVal_Bits (bv_to_bvn x5)))
+                                               :: match l5 with
+                                                  | [] => []
+                                                  | x6 :: l6 =>
+                                                      (KindReg "x22", ExactShape (RVal_Bits (bv_to_bvn x6)))
+                                                      :: match l6 with
+                                                         | [] => []
+                                                         | x7 :: l7 =>
+                                                             (KindReg "x23", ExactShape (RVal_Bits (bv_to_bvn x7)))
+                                                             :: match l7 with
+                                                                | [] => []
+                                                                | x8 :: l8 =>
+                                                                    (KindReg "x24", ExactShape (RVal_Bits (bv_to_bvn x8)))
+                                                                    :: match l8 with
+                                                                       | [] => []
+                                                                       | x9 :: l9 =>
+                                                                           (KindReg "x25", ExactShape (RVal_Bits (bv_to_bvn x9)))
+                                                                           :: match l9 with
+                                                                              | [] => []
+                                                                              | x10 :: l10 =>
+                                                                                  (KindReg "x26", ExactShape (RVal_Bits (bv_to_bvn x10)))
+                                                                                  :: match l10 with
+                                                                                     | [] => []
+                                                                                     | x11 :: _ => [(KindReg "x27", ExactShape (RVal_Bits (bv_to_bvn x11)))]
+                                                                                     end
+                                                                              end
+                                                                       end
+                                                                end
+                                                         end
+                                                  end
+                                           end
+                                    end
+                             end
+                      end
+               end
+        end
+  _ : (bv_unsigned sp - 48) ↦ₘ? 48
+  _ : bv_unsigned (sp + 1624) ↦ₘ optionalValue
+  _ : (bv_unsigned (sp + 1624) + 8) ↦ₘ optionalTag
+  _ : (bv_unsigned sp + 1152) ↦ₘ optionalValue
+  _ : (bv_unsigned sp + 1160) ↦ₘ optionalTag
+  _ : (bv_unsigned sp + 1168) ↦ₘ data
+  _ : (bv_unsigned sp + 1176) ↦ₘ size
+  _ : (bv_unsigned sp + 1000) ↦ₘ root
+  _ : bv_unsigned data ↦ₘ∗ bytes
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48)))
+           (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data))
+                 (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size))
+                    (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1000))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 32)) tail))))))
+  _ : P
+  --------------------------------------∗
+  False
+exit=0 ms=4349 rss_kb=1024368
+

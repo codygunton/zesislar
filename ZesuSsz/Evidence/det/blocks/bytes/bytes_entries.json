@@ -1,0 +1,766 @@
+[
+  {
+    "entry": "0x151b4",
+    "binders": "`{!islaG Sigma} `{!threadG} (low : bv 64) (high : bv 64) (old_ra : bv 64) (old_data : bv 64) (old_size : bv 64) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTransactionsDataJump",
+    "source_resource": "(transactionDataJumpEntry low high old_ra old_data old_size P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_151b4.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "low",
+        "bv 64"
+      ],
+      [
+        "high",
+        "bv 64"
+      ],
+      [
+        "old_ra",
+        "bv 64"
+      ],
+      [
+        "old_data",
+        "bv 64"
+      ],
+      [
+        "old_size",
+        "bv 64"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn low)",
+      "\"x22\" \u21a6\u1d63 RVal_Bits (bv_to_bvn high)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_ra)",
+      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_data)",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_size)",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "low high old_ra old_data old_size P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "low": "Type",
+      "high": "Type",
+      "old_ra": "Type",
+      "old_data": "Type",
+      "old_size": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsDataJump",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x158e0",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "module": "WriteSuccessExactSuffixBytesPayload158e0",
+    "source_resource": "(exactSuffixBytes158e0Entry P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_158e0.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "size",
+        "bv 64"
+      ],
+      [
+        "oldS0",
+        "bv 64"
+      ],
+      [
+        "oldS1",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "True"
+      ],
+      [
+        "H2",
+        "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H4",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 48)%Z"
+      ],
+      [
+        "H5",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ],
+      [
+        "H6",
+        "(bv_unsigned size = Z.of_nat (length bytes))%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x1\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x5\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS0)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS1)",
+      "\"x10\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
+      "\"x11\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 = Some [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))",
+      "bv_unsigned data \u21a6\u2098\u2217 bytes",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp + 920) \u21a6\u2098 data",
+      "(bv_unsigned sp + 928) \u21a6\u2098 size",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "P": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "size": "Type",
+      "oldS0": "Type",
+      "oldS1": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop",
+      "H5": "Prop",
+      "H6": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactSuffixBytesPayload158e0",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x158f0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (size : bv 64) (oldS0 : bv 64) (oldS1 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactSuffixBytesPayload158f0At",
+    "source_resource": "(exactSuffixBytesPayloadEntryAt 936 944 sp data size oldS0 oldS1 bytes tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_158f0.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "size",
+        "bv 64"
+      ],
+      [
+        "oldS0",
+        "bv 64"
+      ],
+      [
+        "oldS1",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "True"
+      ],
+      [
+        "H2",
+        "(bv_unsigned size = Z.of_nat (length bytes) \u2227 bv_unsigned sp `mod` 16 = 0 \u2227 mapRamBase defaultMap \u2264 bv_unsigned sp - 48 \u2227 bv_unsigned sp < machineRamEnd defaultMap \u2227 bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS0)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS1)",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 = Some [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))",
+      "bv_unsigned data \u21a6\u2098\u2217 bytes",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp + 936) \u21a6\u2098 data",
+      "(bv_unsigned sp + 944) \u21a6\u2098 size",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data size oldS0 oldS1 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "size": "Type",
+      "oldS0": "Type",
+      "oldS1": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactSuffixBytesPayload158f0At",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x15900",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (size : bv 64) (oldS0 : bv 64) (oldS1 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactSuffixBytesPayload15900At",
+    "source_resource": "(exactSuffixBytesPayloadEntryAt 952 960 sp data size oldS0 oldS1 bytes tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15900.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "size",
+        "bv 64"
+      ],
+      [
+        "oldS0",
+        "bv 64"
+      ],
+      [
+        "oldS1",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "True"
+      ],
+      [
+        "H2",
+        "(bv_unsigned size = Z.of_nat (length bytes) \u2227 bv_unsigned sp `mod` 16 = 0 \u2227 mapRamBase defaultMap \u2264 bv_unsigned sp - 48 \u2227 bv_unsigned sp < machineRamEnd defaultMap \u2227 bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS0)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS1)",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 = Some [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))",
+      "bv_unsigned data \u21a6\u2098\u2217 bytes",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp + 952) \u21a6\u2098 data",
+      "(bv_unsigned sp + 960) \u21a6\u2098 size",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data size oldS0 oldS1 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "size": "Type",
+      "oldS0": "Type",
+      "oldS1": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactSuffixBytesPayload15900At",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x15910",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (size : bv 64) (oldS0 : bv 64) (oldS1 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactSuffixBytesPayload15910At",
+    "source_resource": "(exactSuffixBytesPayloadEntryAt 968 976 sp data size oldS0 oldS1 bytes tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15910.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "size",
+        "bv 64"
+      ],
+      [
+        "oldS0",
+        "bv 64"
+      ],
+      [
+        "oldS1",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "True"
+      ],
+      [
+        "H2",
+        "(bv_unsigned size = Z.of_nat (length bytes) \u2227 bv_unsigned sp `mod` 16 = 0 \u2227 mapRamBase defaultMap \u2264 bv_unsigned sp - 48 \u2227 bv_unsigned sp < machineRamEnd defaultMap \u2227 bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS0)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS1)",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 = Some [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))",
+      "bv_unsigned data \u21a6\u2098\u2217 bytes",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp + 968) \u21a6\u2098 data",
+      "(bv_unsigned sp + 976) \u21a6\u2098 size",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data size oldS0 oldS1 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "size": "Type",
+      "oldS0": "Type",
+      "oldS1": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactSuffixBytesPayload15910At",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x15920",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (size : bv 64) (oldS0 : bv 64) (oldS1 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactSuffixBytesPayload15920At",
+    "source_resource": "(exactSuffixBytesPayloadEntryAt 984 992 sp data size oldS0 oldS1 bytes tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15920.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "size",
+        "bv 64"
+      ],
+      [
+        "oldS0",
+        "bv 64"
+      ],
+      [
+        "oldS1",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "True"
+      ],
+      [
+        "H2",
+        "(bv_unsigned size = Z.of_nat (length bytes) \u2227 bv_unsigned sp `mod` 16 = 0 \u2227 mapRamBase defaultMap \u2264 bv_unsigned sp - 48 \u2227 bv_unsigned sp < machineRamEnd defaultMap \u2227 bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS0)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS1)",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 = Some [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))",
+      "bv_unsigned data \u21a6\u2098\u2217 bytes",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp + 984) \u21a6\u2098 data",
+      "(bv_unsigned sp + 992) \u21a6\u2098 size",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data size oldS0 oldS1 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "size": "Type",
+      "oldS0": "Type",
+      "oldS1": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactSuffixBytesPayload15920At",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x15980",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (size : bv 64) (oldS1 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTailBytesCallHandoff",
+    "source_resource": "(reg_col zesu_ram_sys_regs \u2217\n     \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217\n     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>\n       [\"x1\"; \"x5\"; \"x6\"; \"x10\"; \"x11\"]) \u2217\n     \"x8\" \u21a6\u1d63 RVal_Bits data \u2217 \"x9\" \u21a6\u1d63 RVal_Bits oldS1 \u2217\n     (bv_unsigned sp + 8) \u21a6\u2098 size \u2217\n     (bv_unsigned sp - 48) \u21a6\u2098? 48 \u2217 bv_unsigned data \u21a6\u2098\u2217 bytes \u2217\n     mmio_range (machineOutputAddress defaultMap) 16 \u2217\n     spec_trace (writeOutputEvents (sp - BV 64 48)%bv (BV 64 8)\n       (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned size)))\n       (writeOutputEvents data size bytes tail)) \u2217 P \u2217 True)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15980.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "size",
+        "bv 64"
+      ],
+      [
+        "oldS1",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn data)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldS1)",
+      "(bv_unsigned sp + 8) \u21a6\u2098 size",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "bv_unsigned data \u21a6\u2098\u2217 bytes",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 = Some [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data size oldS1 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "size": "Type",
+      "oldS1": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailBytesCallHandoff",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  }
+]

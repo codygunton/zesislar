@@ -1,0 +1,30 @@
+[
+  {
+    "name": "infer_1515c",
+    "entry": "0x1515c",
+    "exit": "0x15180",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (first : bv 64) (second : bv 64) (last : bv 32) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_1515c",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_1515c sp first second last P",
+    "rc": 0,
+    "wall": 10.0,
+    "cpu": 9.3,
+    "peak_mib": 1641,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1249
+      ],
+      [
+        6,
+        1468
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/boolean-inference/Infer_1515c.out"
+  }
+]

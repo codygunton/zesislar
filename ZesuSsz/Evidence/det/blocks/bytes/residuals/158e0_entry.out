@@ -1,0 +1,54 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P : iProp Sigma
+  sp, data, size, oldS0, oldS1 : bv 64
+  bytes : list (bv 8)
+  tail : spec
+  H0, H1 : True
+  H2 : bv_unsigned sp + 1896 < machineRamEnd defaultMap
+  H3 : bv_unsigned sp < machineRamEnd defaultMap
+  H4 : mapRamBase defaultMap ≤ bv_unsigned sp - 48
+  H5 : bv_unsigned sp `mod` 16 = 0
+  H6 : bv_unsigned size = Z.of_nat (length bytes)
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x1" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x5" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x6" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn oldS0)
+  _ : "x9" ↦ᵣ RVal_Bits (bv_to_bvn oldS1)
+  _ : "x10" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x11" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : (bv_unsigned sp - 48) ↦ₘ? 48
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (λ snapshot : seq_snapshot,
+                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 =
+                 Some
+                   [Z_to_bv 8 (bv_unsigned size `mod` 256); Z_to_bv 8 ((bv_unsigned size `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned size `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((bv_unsigned size `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((bv_unsigned size `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)])
+              (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data))
+                 (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size))
+                    (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned data) (Z.to_N (bv_unsigned size)) = Some bytes) tail))))
+  _ : bv_unsigned data ↦ₘ∗ bytes
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+         (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+         (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+         (KindReg "x27", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : (bv_unsigned sp + 920) ↦ₘ data
+  _ : (bv_unsigned sp + 928) ↦ₘ size
+  _ : P
+  --------------------------------------∗
+  False
+exit=0 ms=4119 rss_kb=1028344
+

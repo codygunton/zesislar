@@ -1,0 +1,27 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp : bv 64
+  tail : spec
+  P : iProp Sigma
+  H0 : True
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x1" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x5" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝
+  _ : "x10" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝
+  _ : "x11" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝
+  _ : (bv_unsigned sp - 16) ↦ₘ? 16
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 9)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 1))
+              (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 9)) 1 = Some (writeSuccessBooleanWordPayload 1)) tail))
+  _ : P
+  --------------------------------------∗
+  False
+exit=0 ms=7992 rss_kb=990648
+

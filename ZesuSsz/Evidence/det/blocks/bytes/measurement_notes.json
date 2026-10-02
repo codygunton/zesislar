@@ -1,0 +1,10 @@
+{
+  "contract": "encoderBytesEntryBoundary",
+  "target": "0x15c6c",
+  "results": "Six stalls, no complete block closure.",
+  "missing_entry": "0x14eb8",
+  "entry_normalization": {
+    "0x1571c": "Conditional register collection. No ownership inferred.",
+    "0x158e0": "Nested conjunction. Generation rejects duplicate x5 ownership."
+  }
+}

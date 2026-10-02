@@ -1,0 +1,14 @@
+{
+  "contract": "encoderBooleanEntryBoundary",
+  "target": "0x15b9c",
+  "results": "One call-boundary stall; no complete block closure.",
+  "missing_entries": [
+    "0x1511c",
+    "0x1513c",
+    "0x15194"
+  ],
+  "entry_normalization": {
+    "0x15974": "Nested frame conjunction; generation rejects duplicate x5 ownership.",
+    "0x15994": "Nested frame conjunction; generation rejects duplicate x5 ownership."
+  }
+}

@@ -1,0 +1,2 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,b17,0x1515c,9,call:-1500(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,infer_boundary,stalled,8,C1,0x15178,"auipc ra, 1",call,"∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗",10.0,9.6,1643,600,,0x15180

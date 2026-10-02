@@ -1,0 +1,247 @@
+[
+  {
+    "entry": "0x1515c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (first : bv 64) (second : bv 64) (last : bv 32) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTransactionsRecipientCopy",
+    "source_resource": "(transactionRecipientCopyEntry sp first second last P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_1515c.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "first",
+        "bv 64"
+      ],
+      [
+        "second",
+        "bv 64"
+      ],
+      [
+        "last",
+        "bv 32"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 1764 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 8 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "reg_col [(KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64)]",
+      "(bv_unsigned sp + 1640) \u21a6\u2098 first",
+      "(bv_unsigned sp + 1648) \u21a6\u2098 second",
+      "(bv_unsigned sp + 1656) \u21a6\u2098 last",
+      "(bv_unsigned sp + 1744) \u21a6\u2098? 20",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp first second last P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "first": "Type",
+      "second": "Type",
+      "last": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsRecipientCopy",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x15974",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTailPresentBooleanCallHandoff",
+    "source_resource": "(reg_col zesu_ram_sys_regs \u2217\n     \"x1\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217\n     \"x5\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     \"x10\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     \"x11\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217\n     mmio_range (machineOutputAddress defaultMap) 16 \u2217\n     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)\n       (writeSuccessBooleanWordPayload (BV 64 1)) tail) \u2217 P \u2217 True)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15974.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x1\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x5\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "\"x10\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "\"x11\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 9))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 1))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 9)) 1 = Some (writeSuccessBooleanWordPayload 1)) tail))",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailPresentBooleanCallHandoff",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  },
+  {
+    "entry": "0x15994",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTailBooleanCallHandoffs",
+    "source_resource": "(reg_col zesu_ram_sys_regs \u2217\n     \"x1\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217\n     \"x5\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     \"x10\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     \"x11\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217\n     mmio_range (machineOutputAddress defaultMap) 16 \u2217\n     spec_trace (writeOutputEvents (sp - BV 64 9)%bv (BV 64 1)\n       (writeSuccessBooleanWordPayload (BV 64 0)) tail) \u2217 P \u2217 True)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15994.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x1\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x5\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "\"x10\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "\"x11\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 9))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 1))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 9)) 1 = Some (writeSuccessBooleanWordPayload 0)) tail))",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailBooleanCallHandoffs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ]
+  }
+]
