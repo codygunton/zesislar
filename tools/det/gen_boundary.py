@@ -41,6 +41,23 @@ STANDARD_BINDERS = ("Sigma", "islaG0", "H", "Decoded",
 TMP_REGISTERS = ("x5", "x6", "x7", "x28", "x29", "x30", "x31")
 
 
+def fold_printed_resources(atoms: list[str]) -> list[str]:
+    """Restore the global name of the printed byte-list fixpoint."""
+    result = []
+    for atom in atoms:
+        if atom.startswith("(fix byteListItemResources "):
+            depth = 0
+            for index, character in enumerate(atom):
+                depth += (character == "(") - (character == ")")
+                if depth == 0:
+                    atom = "(@byteListItemResources)" + atom[index + 1:]
+                    break
+            else:
+                raise ValueError("unbalanced byte-list resource fixpoint")
+        result.append(atom)
+    return result
+
+
 def spatial_atoms(body: str) -> list[str]:
     """Split only outer separating conjunctions. Preserve binder scopes."""
     body = body.strip()
@@ -169,9 +186,9 @@ def post_state_register_precision(atoms: list[str], binders: str,
 
 
 def deduplicate_register_shapes(atoms: list[str]) -> list[str]:
-    """Retain exact ownership and remove its explicit BitsShape duplicate."""
+    """Retain direct ownership and remove its explicit BitsShape duplicate."""
     exact = {match[1] for atom in atoms
-             if (match := re.match(r'^"(x\d+)"\s*↦ᵣ\s+', atom))}
+             if (match := re.match(r'^"(x\d+)"\s*↦ᵣ:?\s+', atom))}
     for atom in atoms:
         exact.update(re.findall(r'KindReg "(x\d+)", ExactShape', atom))
         if "tmp_registers" in atom and "zip_with" in atom:
@@ -187,6 +204,16 @@ def deduplicate_register_shapes(atoms: list[str]) -> list[str]:
                            r'\s*\(KindReg "(x\d+)", BitsShape 64\)\s*', entry))
                                and match[1] in exact)]
             atom = "reg_col [" + "; ".join(entries) + "]"
+        elif "tmp_registers" in atom and "zip_with" in atom:
+            shapes = atom[atom.rfind("[") + 1:atom.rfind("]")].split(";")
+            if len(shapes) != len(TMP_REGISTERS):
+                raise ValueError("temporary register shape count does not match")
+            entries = [(register, shape.strip())
+                       for register, shape in zip(TMP_REGISTERS, shapes)
+                       if not (register in exact and shape.strip() == "BitsShape 64")]
+            if len(entries) != len(shapes):
+                atom = "reg_col [" + "; ".join(
+                    f'(KindReg "{register}", {shape})' for register, shape in entries) + "]"
         result.append(atom)
     return result
 
@@ -321,10 +348,15 @@ def require_open_resources(atoms: list[str], binders: str) -> None:
                 if kind == "iProp Sigma"}
     for atom in atoms:
         if (atom in abstract or atom in ("True", "emp")
+                or atom in ("writeSuccessNativeStaticResources",
+                            "WriteSuccessNativeContract.writeSuccessNativeStaticResources")
                 or atom.startswith(("writeSuccessTransactionsOwn ",
+                                    "writeSuccessTransactionsInvariant ",
+                                    "WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant ",
                                     "writeSuccessPostTransactionDataResources ",
                                     "WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources ",
                                     "byteListItemResources ",
+                                    "(@byteListItemResources) ",
                                     "reg_col ", "spec_trace ", "mmio_range ",
                                     "instr_pre ", "instr_body ", "⌜"))
                 or (atom.startswith("∀ ") and "instr_pre " in atom)
