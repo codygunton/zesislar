@@ -102,6 +102,7 @@ def state_source(leader: int, state: dict) -> str:
         coq, spatial = state.get("coq", []), state["spatial"]
     spatial = gen_boundary.normalize_temporaries(
         [atom for resource in spatial for atom in gen_boundary.spatial_atoms(resource)])
+    spatial = gen_boundary.fold_printed_resources(spatial)
     spatial = add_stack_resources(state, spatial)
     if state.get("block_exit") is not None:
         spatial = gen_boundary.strip_internal_handoffs(
