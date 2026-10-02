@@ -1,0 +1,182 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86564))
+BLK-PC (bv_to_bvn LET1)
+BLK-PC (bv_to_bvn LET)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+2 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, data : bv 64
+  bytes : list (bv 8)
+  P, BLK_STOP_15228, BLK_STOP_153b4 : iProp Sigma
+  H0 : bv_unsigned sp + 1784 < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp
+  H2 : bv_unsigned sp `mod` 8 = 0
+  H3 : length bytes = 40%nat
+  b1 : bv 64
+  H4 : Z.land (bv_unsigned b1) 131072 = 0
+  H5 : Z_to_bv 64
+         (little_endian_to_bv 8
+            (take 8
+               (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat (Z.to_nat (bv_unsigned sp + 1744 - (bv_unsigned sp + 1744)) + 8))))
+                  (drop (Z.to_nat (bv_unsigned sp + 1744 - (bv_unsigned sp + 1744)) + 8) bytes)))) = 0%bv
+  H6 : -1 < bv_unsigned b1 < bv_modulus 64
+  H7 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H8 : -1 < bv_unsigned data < bv_modulus 64
+  H9 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed data < bv_half_modulus 64
+  H10 : -1 < bv_unsigned sp < bv_modulus 64
+  H11 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 65936 zesuWriteOutputCallSpec
+  --------------------------------------□
+  _ : instr_pre 86568 BLK_STOP_15228
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn data)
+  _ : P
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64);
+         (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64)]
+  _ : (bv_unsigned sp + 1744) ↦ₘ∗ take (Z.to_nat 0) bytes
+  _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))))
+  _ : (bv_unsigned sp + 1744) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))
+  _ : reg_col []
+  _ : (bv_unsigned sp + 1744 + Z.of_nat 8) ↦ₘ∗ take (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes)
+  _ : (bv_unsigned sp + 1744 + Z.of_nat 8 + Z.of_nat (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8))
+      ↦ₘ∗ drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8) (drop 8 bytes)
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : (bv_unsigned sp + 1752) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x27" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))))
+  --------------------------------------∗
+  BLK_STOP_153b4
+
+goal 2 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ --------------------------------------□
+ _ : instr_pre 86964 BLK_STOP_153b4
+ _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn data)
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64);
+        (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+        (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64)]
+ _ : (bv_unsigned sp + 1744) ↦ₘ∗ take (Z.to_nat 0) bytes
+ _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))))
+ _ : (bv_unsigned sp + 1744) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))
+ _ : reg_col []
+ _ : (bv_unsigned sp + 1744 + Z.of_nat 8) ↦ₘ∗ take (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes)
+ _ : (bv_unsigned sp + 1744 + Z.of_nat 8 + Z.of_nat (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8))
+     ↦ₘ∗ drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8) (drop 8 bytes)
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : (bv_unsigned sp + 1752) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x27" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))))
+ --------------------------------------∗
+ BLK_STOP_15228
+BOUNDARY-ALL-GOALS-END
+2 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, data : bv 64
+  bytes : list (bv 8)
+  P, BLK_STOP_15228, BLK_STOP_153b4 : iProp Sigma
+  H0 : bv_unsigned sp + 1784 < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp
+  H2 : bv_unsigned sp `mod` 8 = 0
+  H3 : length bytes = 40%nat
+  b1 : bv 64
+  H4 : Z.land (bv_unsigned b1) 131072 = 0
+  H5 : Z_to_bv 64
+         (little_endian_to_bv 8
+            (take 8
+               (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat (Z.to_nat (bv_unsigned sp + 1744 - (bv_unsigned sp + 1744)) + 8))))
+                  (drop (Z.to_nat (bv_unsigned sp + 1744 - (bv_unsigned sp + 1744)) + 8) bytes)))) = 0%bv
+  H6 : -1 < bv_unsigned b1 < bv_modulus 64
+  H7 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H8 : -1 < bv_unsigned data < bv_modulus 64
+  H9 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed data < bv_half_modulus 64
+  H10 : -1 < bv_unsigned sp < bv_modulus 64
+  H11 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 65936 zesuWriteOutputCallSpec
+  --------------------------------------□
+  _ : instr_pre 86568 BLK_STOP_15228
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn data)
+  _ : P
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64);
+         (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64)]
+  _ : (bv_unsigned sp + 1744) ↦ₘ∗ take (Z.to_nat 0) bytes
+  _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))))
+  _ : (bv_unsigned sp + 1744) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))
+  _ : reg_col []
+  _ : (bv_unsigned sp + 1744 + Z.of_nat 8) ↦ₘ∗ take (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes)
+  _ : (bv_unsigned sp + 1744 + Z.of_nat 8 + Z.of_nat (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8))
+      ↦ₘ∗ drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8) (drop 8 bytes)
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : (bv_unsigned sp + 1752) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x27" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))))
+  --------------------------------------∗
+  BLK_STOP_153b4
+
+goal 2 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ --------------------------------------□
+ _ : instr_pre 86964 BLK_STOP_153b4
+ _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn data)
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64);
+        (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+        (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64)]
+ _ : (bv_unsigned sp + 1744) ↦ₘ∗ take (Z.to_nat 0) bytes
+ _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))))
+ _ : (bv_unsigned sp + 1744) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 0) bytes)))
+ _ : reg_col []
+ _ : (bv_unsigned sp + 1744 + Z.of_nat 8) ↦ₘ∗ take (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes)
+ _ : (bv_unsigned sp + 1744 + Z.of_nat 8 + Z.of_nat (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8))
+     ↦ₘ∗ drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8)) + 8) (drop 8 bytes)
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : (bv_unsigned sp + 1752) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x27" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat (bv_unsigned sp + 1752 - (bv_unsigned sp + 1744 + Z.of_nat 8))) (drop 8 bytes))))))
+ --------------------------------------∗
+ BLK_STOP_15228
+PROBE-END

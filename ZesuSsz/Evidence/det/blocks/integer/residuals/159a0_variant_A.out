@@ -1,0 +1,136 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88488))
+BLK-PC (bv_to_bvn LET)
+BLK-AT-PRE (bv_unsigned (Z_to_bv 64 (88492 + 4)))
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+8 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, saved, value : bv 64
+  tail : spec
+  P, BLK_STOP_159b0 : iProp Sigma
+  b : bv 64
+  ============================
+  bv_unsigned sp `mod` 8 = 0
+
+goal 2 is:
+ bv_unsigned sp + 96 < 0 + 1073741824
+goal 3 is:
+ bv_unsigned sp `mod` 8 = 0
+goal 4 is:
+ bv_unsigned sp + 80 < 0 + 1073741824
+goal 5 is:
+ bv_unsigned sp `mod` 16 = 0
+goal 6 is:
+ 0 ≤ bv_unsigned sp - 16
+goal 7 is:
+ bv_unsigned sp < 0 + 1073741824
+goal 8 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 89360 encoderIntContract
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_pre 88496 BLK_STOP_159b0
+ _ : P
+ _ : (bv_unsigned sp + 96) ↦ₘ saved
+ _ : (bv_unsigned sp + 80) ↦ₘ value
+ _ : reg_col []
+ _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+ --------------------------------------∗
+ ∃ x : spec *ₗ (),
+   ⌜scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+      (λ snapshot : seq_snapshot,
+         read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+         Some
+           [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) x.1ₗ
+    ⊆ scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+        (λ snapshot : seq_snapshot,
+           read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+           Some
+             [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail⌝ ∗
+   instr_pre (bv_unsigned (Z_to_bv 64 (88492 + 4)))
+     (zesu_c_call_ret 16
+        [RVal_Bits (bv_to_bvn saved); RVal_Bits (bv_to_bvn b9); RVal_Bits (bv_to_bvn b10); RVal_Bits (bv_to_bvn b11); RVal_Bits (bv_to_bvn b12); RVal_Bits (bv_to_bvn b13); 
+         RVal_Bits (bv_to_bvn b14); RVal_Bits (bv_to_bvn b15); RVal_Bits (bv_to_bvn b16); RVal_Bits (bv_to_bvn b17); RVal_Bits (bv_to_bvn b18); RVal_Bits (bv_to_bvn b19)] 
+        (Z_to_bv 64 (88492 + 4)) sp (λ _ : list (bv 64), mmio_range (604086456 + 8) 16 ∗ spec_trace x.1ₗ ∗ True))
+BOUNDARY-ALL-GOALS-END
+8 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, saved, value : bv 64
+  tail : spec
+  P, BLK_STOP_159b0 : iProp Sigma
+  b : bv 64
+  ============================
+  bv_unsigned sp `mod` 8 = 0
+
+goal 2 is:
+ bv_unsigned sp + 96 < 0 + 1073741824
+goal 3 is:
+ bv_unsigned sp `mod` 8 = 0
+goal 4 is:
+ bv_unsigned sp + 80 < 0 + 1073741824
+goal 5 is:
+ bv_unsigned sp `mod` 16 = 0
+goal 6 is:
+ 0 ≤ bv_unsigned sp - 16
+goal 7 is:
+ bv_unsigned sp < 0 + 1073741824
+goal 8 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 89360 encoderIntContract
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_pre 88496 BLK_STOP_159b0
+ _ : P
+ _ : (bv_unsigned sp + 96) ↦ₘ saved
+ _ : (bv_unsigned sp + 80) ↦ₘ value
+ _ : reg_col []
+ _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+ --------------------------------------∗
+ ∃ x : spec *ₗ (),
+   ⌜scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+      (λ snapshot : seq_snapshot,
+         read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+         Some
+           [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+            Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) x.1ₗ
+    ⊆ scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+        (λ snapshot : seq_snapshot,
+           read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+           Some
+             [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail⌝ ∗
+   instr_pre (bv_unsigned (Z_to_bv 64 (88492 + 4)))
+     (zesu_c_call_ret 16
+        [RVal_Bits (bv_to_bvn saved); RVal_Bits (bv_to_bvn b9); RVal_Bits (bv_to_bvn b10); RVal_Bits (bv_to_bvn b11); RVal_Bits (bv_to_bvn b12); RVal_Bits (bv_to_bvn b13); 
+         RVal_Bits (bv_to_bvn b14); RVal_Bits (bv_to_bvn b15); RVal_Bits (bv_to_bvn b16); RVal_Bits (bv_to_bvn b17); RVal_Bits (bv_to_bvn b18); RVal_Bits (bv_to_bvn b19)] 
+        (Z_to_bv 64 (88492 + 4)) sp (λ _ : list (bv 64), mmio_range (604086456 + 8) 16 ∗ spec_trace x.1ₗ ∗ True))
+PROBE-END

@@ -39,6 +39,8 @@ Definition State_14d30
    ("x11" ↦ᵣ: λ _ : valu, "x12" ↦ᵣ: λ _ : valu, (∃ v0 v1 v2 v3 v4 v5 v6 v7 v8 v9 v10 v11 v12 : bv 64, (bv_unsigned sp - 104) ↦ₘ v0 ∗ (bv_unsigned sp - 96) ↦ₘ v1 ∗ (bv_unsigned sp - 88) ↦ₘ v2 ∗ (bv_unsigned sp - 80) ↦ₘ v3 ∗ (bv_unsigned sp - 72) ↦ₘ v4 ∗ (bv_unsigned sp - 64) ↦ₘ v5 ∗ (bv_unsigned sp - 56) ↦ₘ v6 ∗ (bv_unsigned sp - 48) ↦ₘ v7 ∗ (bv_unsigned sp - 40) ↦ₘ v8 ∗ (bv_unsigned sp - 32) ↦ₘ v9 ∗ (bv_unsigned sp - 24) ↦ₘ v10 ∗ (bv_unsigned sp - 16) ↦ₘ v11 ∗ (bv_unsigned sp - 8) ↦ₘ v12 ∗ True) ∗ writeSuccessPrologueFacts sp decoded P) ∗
    (Q) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 0 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (reg_col [(KindReg "x12", BitsShape 64)]) ∗
    True)%I.
 Global Instance : LithiumUnfold (@State_14d30) := I.

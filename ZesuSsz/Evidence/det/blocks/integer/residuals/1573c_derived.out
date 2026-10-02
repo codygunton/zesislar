@@ -1,0 +1,143 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 0.837 secs (0.825u,0.006s) (success)
+Tactic call zesu_run ran for 0.609 secs (0.606u,0.s) (success)
+Tactic call zesu_run ran for 0.212 secs (0.211u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P : iProp Sigma
+  sp, root, oldData, oldSize : bv 64
+  tail : spec
+  BLK_STOP_15750 : iProp Sigma
+  b20, b21 : bv 64
+  H0 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
+  H1 : (bv_unsigned sp < 0 + 1073741824)%Z
+  H2 : (0 ≤ bv_unsigned sp - 16)%Z
+  H3 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H4 : (-1 < bv_unsigned b21)%Z
+  H5 : (bv_unsigned b21 < bv_modulus 64)%Z
+  H6 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64)%Z
+  H7 : (-1 < bv_unsigned b20)%Z
+  H8 : (bv_unsigned b20 < bv_modulus 64)%Z
+  H9 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64)%Z
+  H10 : (-1 < bv_unsigned root)%Z
+  H11 : (bv_unsigned root < bv_modulus 64)%Z
+  H12 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed root < bv_half_modulus 64)%Z
+  H13 : (-1 < bv_unsigned sp)%Z
+  H14 : (bv_unsigned sp < bv_modulus 64)%Z
+  H15 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64)%Z
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 89360 encoderIntContract
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_pre 87888 BLK_STOP_15750
+  _ : (bv_unsigned sp + 1000) ↦ₘ root
+  _ : P
+  _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64)]
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn b20)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn b21)
+  _ : spec_trace tail
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x8", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
+         (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : bv 64 *ₗ (), (bv_unsigned sp + 904) ↦ₘ y.1ₗ ∗ ⌜(bv_unsigned sp `mod` 8)%Z = 0%Z⌝ ∗ ⌜(0 ≤ bv_unsigned sp + 904 < 0 + 1073741824)%Z⌝ ∗
+    instr_pre (87868 + 4) (reg_col zesu_ram_sys_regs ∗ "x9" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 904) ↦ₘ y.1ₗ ∗ True)
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H15 : Prop
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT b21 : Set
+BOUNDARY-LOCAL-SORT b20 : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_15750 : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT oldSize : Set
+BOUNDARY-LOCAL-SORT oldData : Set
+BOUNDARY-LOCAL-SORT root : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORTS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P : iProp Sigma
+  sp, root, oldData, oldSize : bv 64
+  tail : spec
+  BLK_STOP_15750 : iProp Sigma
+  b20, b21 : bv 64
+  H0 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
+  H1 : (bv_unsigned sp < 0 + 1073741824)%Z
+  H2 : (0 ≤ bv_unsigned sp - 16)%Z
+  H3 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H4 : (-1 < bv_unsigned b21)%Z
+  H5 : (bv_unsigned b21 < bv_modulus 64)%Z
+  H6 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64)%Z
+  H7 : (-1 < bv_unsigned b20)%Z
+  H8 : (bv_unsigned b20 < bv_modulus 64)%Z
+  H9 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64)%Z
+  H10 : (-1 < bv_unsigned root)%Z
+  H11 : (bv_unsigned root < bv_modulus 64)%Z
+  H12 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed root < bv_half_modulus 64)%Z
+  H13 : (-1 < bv_unsigned sp)%Z
+  H14 : (bv_unsigned sp < bv_modulus 64)%Z
+  H15 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64)%Z
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 89360 encoderIntContract
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_pre 87888 BLK_STOP_15750
+  _ : (bv_unsigned sp + 1000) ↦ₘ root
+  _ : P
+  _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+         (KindReg "x17", BitsShape 64)]
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn b20)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn b21)
+  _ : spec_trace tail
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x8", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
+         (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : bv 64 *ₗ (), (bv_unsigned sp + 904) ↦ₘ y.1ₗ ∗ ⌜(bv_unsigned sp `mod` 8)%Z = 0%Z⌝ ∗ ⌜(0 ≤ bv_unsigned sp + 904 < 0 + 1073741824)%Z⌝ ∗
+    instr_pre (87868 + 4) (reg_col zesu_ram_sys_regs ∗ "x9" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 904) ↦ₘ y.1ₗ ∗ True)
+PROBE-END

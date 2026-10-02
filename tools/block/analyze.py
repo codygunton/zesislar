@@ -20,6 +20,25 @@ def final_goal(out):
     return tail, re.split(r'\n(?=\S)', parts[-1])[0].strip()
 
 
+def final_conclusions(out):
+    """Inspect every residual goal from the final Show, including pure goals."""
+    tail = out.split('BOUNDARY-ALL-GOALS-END')[-1]
+    starts = list(re.finditer(r'(?:^|\n)\d+ goals?\n', tail))
+    if not starts:
+        return [final_goal(out)[1]]
+    shown = tail[starts[-1].end():]
+    conclusions = []
+    for goal in re.split(r'\ngoal \d+ is:\n', shown):
+        if re.search(r'-{10,}∗\n', goal):
+            goal = re.split(r'-{10,}∗\n', goal)[-1]
+        elif re.search(r'={10,}\n', goal):
+            goal = re.split(r'={10,}\n', goal)[-1]
+        conclusion = re.split(r'\n(?=\S)', goal)[0].strip()
+        if conclusion:
+            conclusions.append(conclusion)
+    return conclusions
+
+
 def classify(r):
     out = Path(r['raw_path']).read_text() if r.get('raw_path') else ''
     lo = int(r['leader'], 16)
@@ -38,9 +57,13 @@ def classify(r):
         res.update(result='closed', k=r['n'])
     elif o == 'probe':
         tail, concl = final_goal(out)
-        if re.fullmatch(r'BLK_STOP_[0-9a-f]+', concl):
+        conclusions = final_conclusions(out)
+        residuals = [goal for goal in conclusions
+                     if not re.fullmatch(r'BLK_STOP_[0-9a-f]+', goal)]
+        if conclusions and not residuals:
             res.update(result='reached', k=r['n'])
         else:
+            if residuals:concl = residuals[0]
             res.update(result='stalled', cls=r.get('pred_class') or '?',
                        concl1=(concl.split('\n')[0] if concl else (r.get('conclusion') or '').strip().split('\n')[0])[:160])
     elif o in ('timeout', 'memory'):

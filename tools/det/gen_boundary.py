@@ -82,6 +82,17 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
     if any(atom.startswith("reg_col ") and "tmp_registers" in atom
            for atom in atoms):
         return atoms
+    for index, atom in enumerate(atoms):
+        if not atom.startswith("reg_col ["):
+            continue
+        entries = [re.fullmatch(r'\s*\(KindReg "(x\d+)", (.+)\)\s*', entry)
+                   for entry in atom[len("reg_col ["):-1].split(";")]
+        if (len(entries) == len(TMP_REGISTERS) and all(entries)
+                and {entry[1] for entry in entries} == set(TMP_REGISTERS)):
+            shapes = {entry[1]: entry[2] for entry in entries}
+            normalized = ("reg_col (zip_with (fun r shape => (KindReg r, shape)) "
+                          "tmp_registers [" + "; ".join(shapes[r] for r in TMP_REGISTERS) + "])")
+            return atoms[:index] + [normalized] + atoms[index + 1:]
     found = {}
     for index, atom in enumerate(atoms):
         match = re.fullmatch(r'"(x\d+)"\s*↦ᵣ\s+(.+)', atom)
@@ -109,6 +120,30 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
     indices = {index for index, _ in found.values()}
     return [collection] + [atom for index, atom in enumerate(atoms)
                            if index not in indices]
+
+
+def preserve_register_precision(atoms: list[str], unknown: set[str]) -> list[str]:
+    """Keep entry-unknown registers at BitsShape precision in a successor."""
+    result = []
+    for atom in atoms:
+        direct = re.match(r'^"(x\d+)"\s*↦ᵣ\s+', atom)
+        if direct and direct[1] in unknown:
+            atom = f'reg_col [(KindReg "{direct[1]}", BitsShape 64)]'
+        elif atom.startswith("reg_col ["):
+            entries = atom[len("reg_col ["):-1].split(";")
+            for index, entry in enumerate(entries):
+                register = re.match(r'\s*\(KindReg "(x\d+)"', entry)
+                if register and register[1] in unknown:
+                    entries[index] = f'(KindReg "{register[1]}", BitsShape 64)'
+            atom = "reg_col [" + "; ".join(entry.strip() for entry in entries) + "]"
+        elif "tmp_registers" in atom and "zip_with" in atom:
+            start, end = atom.rfind("["), atom.rfind("]")
+            shapes = atom[start + 1:end].split(";")
+            shapes = ["BitsShape 64" if register in unknown else shape.strip()
+                      for register, shape in zip(TMP_REGISTERS, shapes)]
+            atom = atom[:start + 1] + "; ".join(shapes) + atom[end:]
+        result.append(atom)
+    return result
 
 
 def deduplicate_register_shapes(atoms: list[str]) -> list[str]:

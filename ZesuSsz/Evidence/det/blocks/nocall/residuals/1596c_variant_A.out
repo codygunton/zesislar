@@ -1,0 +1,128 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn (Z_to_bv 64 88432))
+BLK-PC (bv_to_bvn LET1)
+BLK-PC (bv_to_bvn LET)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+4 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, data : bv 64
+  P, BLK_STOP_15974, BLK_STOP_15994 : iProp Sigma
+  b : bv 64
+  ============================
+  bv_unsigned sp `mod` 8 = 0
+
+goal 2 is:
+ bv_unsigned sp + 72 < 0 + 1073741824
+goal 3 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 88988 encoderBooleanEntryBoundary
+ _ : instr_pre 89196 encoderBytesEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 88436 BLK_STOP_15974
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
+        (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+        (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : (bv_unsigned sp + 72) ↦ₘ 0
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn 0)
+ --------------------------------------∗
+ BLK_STOP_15994
+goal 4 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 88988 encoderBooleanEntryBoundary
+ _ : instr_pre 89196 encoderBytesEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 88468 BLK_STOP_15994
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
+        (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+        (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : (bv_unsigned sp + 72) ↦ₘ data
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn data)
+ --------------------------------------∗
+ BLK_STOP_15974
+BOUNDARY-ALL-GOALS-END
+4 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, data : bv 64
+  P, BLK_STOP_15974, BLK_STOP_15994 : iProp Sigma
+  b : bv 64
+  ============================
+  bv_unsigned sp `mod` 8 = 0
+
+goal 2 is:
+ bv_unsigned sp + 72 < 0 + 1073741824
+goal 3 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 88988 encoderBooleanEntryBoundary
+ _ : instr_pre 89196 encoderBytesEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 88436 BLK_STOP_15974
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
+        (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+        (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : (bv_unsigned sp + 72) ↦ₘ 0
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn 0)
+ --------------------------------------∗
+ BLK_STOP_15994
+goal 4 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 88988 encoderBooleanEntryBoundary
+ _ : instr_pre 89196 encoderBytesEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 88468 BLK_STOP_15994
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64);
+        (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+        (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+        (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : (bv_unsigned sp + 72) ↦ₘ data
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn data)
+ --------------------------------------∗
+ BLK_STOP_15974
+PROBE-END

@@ -1,0 +1,36 @@
+{
+  "rows": 85,
+  "results": {
+    "stalled": 53,
+    "boundary-stall": 21,
+    "closed": 10,
+    "partial": 1
+  },
+  "status": "Baseline consolidation; full rerun awaits worker-build-1 rule commit.",
+  "contracts": "Integer a0964b99; Int1645 42615c91; bytes uses the prior entry boundary until exact updated contract rerun.",
+  "classifier": "Every residual goal is inspected.",
+  "generated_qed_blocks": [
+    "0x15118",
+    "0x15154",
+    "0x153a8",
+    "0x153b4",
+    "0x15558",
+    "0x15614",
+    "0x1565c"
+  ],
+  "additional_probe_closures": [
+    "0x15584",
+    "0x156dc",
+    "0x15990"
+  ],
+  "derived_entries": [
+    "0x14f00",
+    "0x1511c",
+    "0x1513c",
+    "0x15194",
+    "0x151d4",
+    "0x1573c"
+  ],
+  "stack_facts": "Coordinator approved explicit stack ownership and facts. Generated boundaries include them; changed boundaries require rerun.",
+  "pending_boundary_rerun": "The approved stack facts changed generated boundaries after these baseline measurements. Rerun at the load-rule SHA."
+}

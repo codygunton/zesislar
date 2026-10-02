@@ -1,0 +1,144 @@
+[
+  {
+    "entry": "0x1513c",
+    "exit": "0x15148",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1513c",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "Successor_15118_1513c tag P",
+    "rc": 0,
+    "wall": 4.1,
+    "cpu": 3.9,
+    "peak_mib": 1271,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        47
+      ]
+    ],
+    "group": "boolean",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/derived-inference/Infer_1513c.out"
+  },
+  {
+    "entry": "0x1511c",
+    "exit": "0x15128",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1511c",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "Successor_15118_1511c tag P",
+    "rc": 0,
+    "wall": 5.1,
+    "cpu": 4.1,
+    "peak_mib": 1270,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        45
+      ]
+    ],
+    "group": "boolean",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/derived-inference/Infer_1511c.out"
+  },
+  {
+    "entry": "0x15194",
+    "exit": "0x1519c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (tag : bv 64) (old_data : bv 64) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.Successor_15154_15194",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "Successor_15154_15194 sp tag old_data P",
+    "rc": 0,
+    "wall": 5.0,
+    "cpu": 4.1,
+    "peak_mib": 1272,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        32
+      ]
+    ],
+    "group": "boolean",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/derived-inference/Infer_15194.out"
+  },
+  {
+    "entry": "0x151d4",
+    "exit": "0x151dc",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (index : bv 64) (old11 : bv 64) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.Successor_153b4_151d4",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "Successor_153b4_151d4 sp index old11 P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.7,
+    "peak_mib": 1061,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        942
+      ]
+    ],
+    "group": "nocall",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/derived-inference/Infer_151d4.out"
+  },
+  {
+    "entry": "0x14f00",
+    "exit": "0x14f08",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (index : bv 64) (total : bv 64) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.Successor_1565c_14f00",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "Successor_1565c_14f00 sp index total P",
+    "rc": 0,
+    "wall": 6.0,
+    "cpu": 5.6,
+    "peak_mib": 1220,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        17
+      ],
+      [
+        5,
+        1194
+      ]
+    ],
+    "group": "nocall",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/derived-inference/Infer_14f00.out"
+  },
+  {
+    "entry": "0x1573c",
+    "exit": "0x15750",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_1573c",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_1573c P sp root oldData oldSize tail",
+    "rc": 0,
+    "wall": 4.0,
+    "cpu": 3.7,
+    "peak_mib": 1024,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        3
+      ]
+    ],
+    "group": "integer",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/derived-inference/Infer_1573c.out"
+  }
+]

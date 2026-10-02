@@ -14,14 +14,15 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt.
 
 Definition State_15930
-    `{!islaG Sigma} `{!threadG}  : iProp Sigma :=
+    `{!islaG Sigma} `{!threadG}  (base : bv 64) : iProp Sigma :=
   (∃ value : bv 64,
-   ∃ base : bv 64,
    (reg_col zesu_ram_sys_regs) ∗
    ("x10" ↦ᵣ: λ _ : valu, True) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn base)) ∗
    ((bv_unsigned base + 24) ↦ₘ value) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned base `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned base - 80 /\ bv_unsigned base < machineRamEnd defaultMap)%Z⌝) ∗
    (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    (⌜(mapRamBase defaultMap ≤ bv_unsigned base + 24 < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜(bv_unsigned base `mod` 8 = 0)%Z⌝) ∗

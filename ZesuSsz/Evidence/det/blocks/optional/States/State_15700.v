@@ -53,6 +53,8 @@ Definition State_15700
    (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 25))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 1))) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn data)) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn size)) (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1000))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) tail))))))))))) ∗
    (P) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn (BV 64 604086456))); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 32 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (State_15700Memory sp optionalValue optionalTag data size root bytes saved tail P) ∗
    (⌜True⌝) ∗
    (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗

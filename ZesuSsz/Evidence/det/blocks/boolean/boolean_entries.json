@@ -94,7 +94,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
-    ]
+    ],
+    "stack_size": 16,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15974",
@@ -168,7 +170,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
-    ]
+    ],
+    "stack_size": 16,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15994",
@@ -242,6 +246,8 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
-    ]
+    ],
+    "stack_size": 16,
+    "stack_pointer": "sp"
   }
 ]

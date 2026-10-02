@@ -32,9 +32,8 @@ Global Instance zesu_sealed_State_14e88Memory `{!islaG Sigma} `{!threadG} (P : i
     [((bv_unsigned sp - 48), ((bv_unsigned sp - 48)) + (48)); ((bv_unsigned sp + 104), ((bv_unsigned sp + 104)) + (16)); ((bv_unsigned sp + 1032), ((bv_unsigned sp + 1032)) + (8 * Z.of_nat (length (take 69 values)))); (bv_unsigned (writeSuccessExactValueWord values 4), (bv_unsigned (writeSuccessExactValueWord values 4)) + (1 * Z.of_nat (length (payload))))] [] := State_14e88Memory_unfold P sp values payload tail.
 
 Definition State_14e88
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) : iProp Sigma :=
-  (∃ sp : bv 64,
-   ∃ values : list (bv 64),
+    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) : iProp Sigma :=
+  (∃ values : list (bv 64),
    ∃ payload : list (bv 8),
    ∃ tail : spec,
    (reg_col zesu_ram_sys_regs) ∗
@@ -48,6 +47,8 @@ Definition State_14e88
    (P) ∗
    (instr_pre 85764 (writeSuccessExactValuePost sp values payload tail P)) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 16 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (State_14e88Memory P sp values payload tail) ∗
    (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜(mapRamBase defaultMap ≤ bv_unsigned sp - 48)%Z⌝) ∗

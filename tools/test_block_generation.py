@@ -49,6 +49,17 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_stack_boundary_replaces_unknown_x2_and_keeps_arguments(self):
+        state = {'binders': BINDERS, 'stack_size': 16}
+        atoms = ['reg_col [(KindReg "x1", BitsShape 64); (KindReg "x2", BitsShape 64)]']
+        result = gen_block.add_stack_resources(state, atoms)
+        self.assertEqual(state['arguments'], 'tail sp')
+        self.assertIn('(sp : bv 64)', state['binders'])
+        self.assertNotIn('(KindReg "x2", BitsShape 64)', ' '.join(result))
+        self.assertIn('"x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)', result)
+        self.assertIn('⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝', result)
+        self.assertEqual(gen_block.add_stack_resources(state, result), result)
+
     def test_full_register_file_preserves_exact_values_and_does_not_duplicate(self):
         atoms = ATOMS + ['"x2" ↦ᵣ RVal_Bits sp', '"x12" ↦ᵣ RVal_Bits argument']
         completed = gen_boundary.complete_register_file(atoms)
@@ -66,6 +77,24 @@ class StatePartition(unittest.TestCase):
                  'reg_col [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64)]']
         result = gen_boundary.deduplicate_register_shapes(atoms)
         self.assertEqual(result, [atoms[0], 'reg_col [(KindReg "x6", BitsShape 64)]'])
+
+    def test_captured_literal_temporaries_keep_their_shapes(self):
+        atom = 'reg_col [' + '; '.join('(KindReg "' + r + '", BitsShape 64)'
+                                      for r in gen_boundary.TMP_REGISTERS) + ']'
+        normalized = gen_boundary.normalize_temporaries([atom])
+        self.assertIn('tmp_registers', normalized[0])
+        self.assertEqual(normalized[0].count('BitsShape 64'), 7)
+
+    def test_successor_precision_keeps_known_stack_pointer(self):
+        atoms = ['"x2" ↦ᵣ RVal_Bits sp',
+                 'reg_col [(KindReg "x8", ExactShape (RVal_Bits value))]']
+        self.assertEqual(gen_boundary.preserve_register_precision(atoms, {"x8"}),
+                         [atoms[0], 'reg_col [(KindReg "x8", BitsShape 64)]'])
+
+    def test_named_successor_state_uses_its_recorded_name(self):
+        state = {"name": "Successor_15118_1513c", "binders": BINDERS, "arguments": "tail"}
+        self.assertEqual(gen_block.state_application(0x1513c, state),
+                         "Successor_15118_1513c tail")
 
     def test_internal_handoffs_do_not_close_the_block(self):
         atoms = ['instr_pre (88368 + 4) P', 'instr_pre 88380 Q', 'instr_pre 88384 R']
@@ -255,6 +284,16 @@ class StopInference(unittest.TestCase):
 
 
 class BlockGeneration(unittest.TestCase):
+    def test_unreachable_successor_uses_false_without_a_state_import(self):
+        states = {0x14d30: {'binders': BINDERS, 'spatial': ATOMS},
+                  0x14d34: {'outcome': 'unreachable-successor'}}
+        block = {'start': 0x14d30, 'end': 0x14d34,
+                 'successors': ['0x14d34']}
+        with patch.object(call_sites, 'call_sites', return_value={}):
+            source, _ = gen_block.generate(block, states)
+        self.assertIn('instr_pre 0x14d34\n    (False)', source)
+        self.assertNotIn('States.State_14d34', source)
+
     def test_dune_launch_removes_credentials(self):
         with patch.dict(os.environ, {'ARISTOTLE_API_KEY': 'test-a',
                                      'OPEN_ROUTER_API_KEY': 'test-b',

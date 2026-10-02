@@ -1,0 +1,114 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86492))
+BLK-PC (bv_to_bvn LET)
+BLK-AT-PRE (86496 + 4)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, base, cursor, old_index, old_ra : bv 64
+  bytes : list (bv 8)
+  P, BLK_STOP_15200 : iProp Sigma
+  H0 : (40 * Z.to_nat (bv_unsigned cursor) + 40 <= length bytes)%nat
+  H1 : bv_unsigned base + Z.of_nat (length bytes) < 0 + 1073741824
+  H2 : 0 ≤ bv_unsigned base
+  H3 : bv_unsigned sp + 1784 < 0 + 1073741824
+  H4 : 0 ≤ bv_unsigned sp
+  H5 : bv_unsigned sp `mod` 8 = 0
+  b : bv 64
+  H6 : Z.land (bv_unsigned b) 131072 = 0
+  H7 : -1 < bv_unsigned b < bv_modulus 64
+  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H9 : -1 < bv_unsigned old_ra < bv_modulus 64
+  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_ra < bv_half_modulus 64
+  H11 : -1 < bv_unsigned old_index < bv_modulus 64
+  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_index < bv_half_modulus 64
+  H13 : -1 < bv_unsigned cursor < bv_modulus 64
+  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed cursor < bv_half_modulus 64
+  H15 : -1 < bv_unsigned base < bv_modulus 64
+  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed base < bv_half_modulus 64
+  H17 : -1 < bv_unsigned sp < bv_modulus 64
+  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 66004 memcpyEntryBoundary
+  --------------------------------------□
+  _ : instr_pre 86528 BLK_STOP_15200
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn old_ra)
+  _ : instr_pre 86528 (WriteSuccessExactAccessListsCopyWhole.accessCopyWholePost sp base cursor bytes P)
+  _ : P
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  _ : State_151dcMemory sp base cursor old_index old_ra bytes P
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn 40)
+  _ : reg_col [(KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]
+  --------------------------------------∗
+  (bv_unsigned sp + 272) ↦ₘ? 8 ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 272 < 0 + 1073741824⌝ ∗
+  instr_pre (86496 + 4) (reg_col zesu_ram_sys_regs ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn cursor) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 272) ↦ₘ cursor ∗ True)
+BOUNDARY-ALL-GOALS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, base, cursor, old_index, old_ra : bv 64
+  bytes : list (bv 8)
+  P, BLK_STOP_15200 : iProp Sigma
+  H0 : (40 * Z.to_nat (bv_unsigned cursor) + 40 <= length bytes)%nat
+  H1 : bv_unsigned base + Z.of_nat (length bytes) < 0 + 1073741824
+  H2 : 0 ≤ bv_unsigned base
+  H3 : bv_unsigned sp + 1784 < 0 + 1073741824
+  H4 : 0 ≤ bv_unsigned sp
+  H5 : bv_unsigned sp `mod` 8 = 0
+  b : bv 64
+  H6 : Z.land (bv_unsigned b) 131072 = 0
+  H7 : -1 < bv_unsigned b < bv_modulus 64
+  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H9 : -1 < bv_unsigned old_ra < bv_modulus 64
+  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_ra < bv_half_modulus 64
+  H11 : -1 < bv_unsigned old_index < bv_modulus 64
+  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_index < bv_half_modulus 64
+  H13 : -1 < bv_unsigned cursor < bv_modulus 64
+  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed cursor < bv_half_modulus 64
+  H15 : -1 < bv_unsigned base < bv_modulus 64
+  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed base < bv_half_modulus 64
+  H17 : -1 < bv_unsigned sp < bv_modulus 64
+  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 66004 memcpyEntryBoundary
+  --------------------------------------□
+  _ : instr_pre 86528 BLK_STOP_15200
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn old_ra)
+  _ : instr_pre 86528 (WriteSuccessExactAccessListsCopyWhole.accessCopyWholePost sp base cursor bytes P)
+  _ : P
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  _ : State_151dcMemory sp base cursor old_index old_ra bytes P
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn 40)
+  _ : reg_col [(KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]
+  --------------------------------------∗
+  (bv_unsigned sp + 272) ↦ₘ? 8 ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 272 < 0 + 1073741824⌝ ∗
+  instr_pre (86496 + 4) (reg_col zesu_ram_sys_regs ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn cursor) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 272) ↦ₘ cursor ∗ True)
+PROBE-END

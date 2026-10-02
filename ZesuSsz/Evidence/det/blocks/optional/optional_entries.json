@@ -136,7 +136,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec"
     ],
-    "block_exit": "0x150fc"
+    "block_exit": "0x150fc",
+    "stack_size": 32,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15700",
@@ -287,11 +289,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec"
     ],
-    "block_exit": "0x1571c"
+    "block_exit": "0x1571c",
+    "stack_size": 32,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x159b0",
-    "binders": "`{!islaG Sigma} `{!threadG} (Q : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (Q : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessTailOptionalSetup",
     "source_resource": "(writeSuccessTailOptionalSetupSpec Q)",
     "outcome": "reached",
@@ -380,7 +384,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "Q",
+    "arguments": "Q sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -410,6 +414,8 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec"
     ],
-    "block_exit": "0x159bc"
+    "block_exit": "0x159bc",
+    "stack_size": 32,
+    "stack_pointer": "sp"
   }
 ]

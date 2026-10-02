@@ -1,0 +1,68 @@
+PROBE-BEGIN
+BLK-AT-PRE (88372 + 4)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  BLK_STOP_15940 : iProp Sigma
+  value, base : bv 64
+  v : valu
+  H0 : 0 ≤ bv_unsigned base + 24
+  H1 : bv_unsigned base + 24 < 0 + 1073741824
+  H2 : bv_unsigned base `mod` 8 = 0
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 89104 encoderByteListsEntryBoundary
+  --------------------------------------□
+  _ : instr_pre 88384 BLK_STOP_15940
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn value)
+  _ : (bv_unsigned base + 24) ↦ₘ value
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+         (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64);
+         (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : bv 64 *ₗ (), (bv_unsigned base + 16) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned base `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned base + 16 < 0 + 1073741824⌝ ∗
+    instr_pre (88372 + 4) (reg_col zesu_ram_sys_regs ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn base) ∗ (bv_unsigned base + 16) ↦ₘ y.1ₗ ∗ True)
+BOUNDARY-ALL-GOALS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  BLK_STOP_15940 : iProp Sigma
+  value, base : bv 64
+  v : valu
+  H0 : 0 ≤ bv_unsigned base + 24
+  H1 : bv_unsigned base + 24 < 0 + 1073741824
+  H2 : bv_unsigned base `mod` 8 = 0
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 89104 encoderByteListsEntryBoundary
+  --------------------------------------□
+  _ : instr_pre 88384 BLK_STOP_15940
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn value)
+  _ : (bv_unsigned base + 24) ↦ₘ value
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+         (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64);
+         (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+         (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : bv 64 *ₗ (), (bv_unsigned base + 16) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned base `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned base + 16 < 0 + 1073741824⌝ ∗
+    instr_pre (88372 + 4) (reg_col zesu_ram_sys_regs ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn base) ∗ (bv_unsigned base + 16) ↦ₘ y.1ₗ ∗ True)
+PROBE-END

@@ -150,7 +150,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec"
     ],
-    "block_exit": "0x14d80"
+    "block_exit": "0x14d80",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x151dc",
@@ -280,7 +282,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec"
     ],
-    "block_exit": "0x15200"
+    "block_exit": "0x15200",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15590",
@@ -408,7 +412,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec"
     ],
-    "block_exit": "0x155a4"
+    "block_exit": "0x155a4",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15694",
@@ -536,6 +542,8 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec"
     ],
-    "block_exit": "0x156a8"
+    "block_exit": "0x156a8",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   }
 ]

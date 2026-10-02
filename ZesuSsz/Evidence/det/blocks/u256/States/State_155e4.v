@@ -15,20 +15,37 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256.
 
+Definition State_155e4MemoryRaw
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma := (((bv_unsigned sp + 1744) ↦ₘ∗ bytes) ∗
+   ((bv_unsigned sp - 48) ↦ₘ? 48) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@State_155e4MemoryRaw) := I.
+Global Typeclasses Opaque State_155e4MemoryRaw.
+Definition State_155e4Memory
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma := State_155e4MemoryRaw sp oldra old5 bytes tail P.
+Lemma State_155e4Memory_unfold `{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
+  State_155e4Memory sp oldra old5 bytes tail P ⊣⊢ State_155e4MemoryRaw sp oldra old5 bytes tail P.
+Proof. done. Qed.
+Global Opaque State_155e4Memory.
+Global Instance zesu_sealed_State_155e4Memory `{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
+  ZesuSealed (State_155e4Memory sp oldra old5 bytes tail P) (State_155e4MemoryRaw sp oldra old5 bytes tail P)
+    [((bv_unsigned sp + 1744), ((bv_unsigned sp + 1744)) + (1 * Z.of_nat (length (bytes)))); ((bv_unsigned sp - 48), ((bv_unsigned sp - 48)) + (48))] [] := State_155e4Memory_unfold sp oldra old5 bytes tail P.
+
 Definition State_155e4
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
    ("x1" ↦ᵣ RVal_Bits (bv_to_bvn oldra)) ∗
    (reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64)]) ∗
-   ((bv_unsigned sp + 1744) ↦ₘ∗ bytes) ∗
-   ((bv_unsigned sp - 48) ↦ₘ? 48) ∗
    (mmio_range (604086456 + 8) 16) ∗
    (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 = Some (writeSuccessU256WordsPayload (transactionRowWord bytes 32 0) (transactionRowWord bytes 32 8) (transactionRowWord bytes 32 16) (transactionRowWord bytes 32 24))) tail))) ∗
    (P) ∗
    (instr_pre (bv_unsigned (BV 64 87548)) (authorizationU256Post sp bytes 32 87548 tail P)) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 48 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
+   (State_155e4Memory sp oldra old5 bytes tail P) ∗
    (⌜True⌝) ∗
    (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜(mapRamBase defaultMap ≤ bv_unsigned sp - 48)%Z⌝) ∗

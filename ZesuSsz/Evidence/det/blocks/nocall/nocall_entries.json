@@ -1,7 +1,7 @@
 [
   {
     "entry": "0x15118",
-    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessExactTransactionsPriority",
     "source_resource": "(transactionPriorityBranchState tag P)",
     "outcome": "reached",
@@ -39,7 +39,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "tag P",
+    "arguments": "tag P sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -68,7 +68,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x1511c"
+    "block_exit": "0x1511c",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15138",
@@ -172,7 +174,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x1513c"
+    "block_exit": "0x1513c",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15154",
@@ -270,7 +274,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x1515c"
+    "block_exit": "0x1515c",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15190",
@@ -448,7 +454,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15194"
+    "block_exit": "0x15194",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x151d0",
@@ -689,7 +697,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x151d4"
+    "block_exit": "0x151d4",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x151d4",
@@ -915,7 +925,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x151dc"
+    "block_exit": "0x151dc",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x1521c",
@@ -1019,11 +1031,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15228"
+    "block_exit": "0x15228",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x153a8",
-    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessExactStorageKeysTail",
     "source_resource": "(storageKeysTailState pointer count P)",
     "outcome": "reached",
@@ -1066,7 +1080,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "pointer count P",
+    "arguments": "pointer count P sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -1096,7 +1110,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x153b4"
+    "block_exit": "0x153b4",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x153b4",
@@ -1194,7 +1210,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x153c0"
+    "block_exit": "0x153c0",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x153d0",
@@ -1449,11 +1467,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x153d4"
+    "block_exit": "0x153d4",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15558",
-    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (value22 : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (value22 : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessExactBlobHashesTail",
     "source_resource": "(blobTailState pointer count value22 P)",
     "outcome": "reached",
@@ -1501,7 +1521,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "pointer count value22 P",
+    "arguments": "pointer count value22 P sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -1532,7 +1552,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15564"
+    "block_exit": "0x15564",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15584",
@@ -1633,11 +1655,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15590"
+    "block_exit": "0x15590",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15614",
-    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessExactAuthorizationsTail",
     "source_resource": "(authorizationTailState pointer count P)",
     "outcome": "reached",
@@ -1680,7 +1704,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "pointer count P",
+    "arguments": "pointer count P sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -1710,7 +1734,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15620"
+    "block_exit": "0x15620",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x1565c",
@@ -1810,7 +1836,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15668"
+    "block_exit": "0x15668",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x1568c",
@@ -1926,11 +1954,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15694"
+    "block_exit": "0x15694",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x156dc",
-    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessExactWithdrawalsTailNative",
     "source_resource": "(withdrawalTailEntry pointer count P)",
     "outcome": "reached",
@@ -1975,7 +2005,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "pointer count P",
+    "arguments": "pointer count P sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -2005,11 +2035,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x156e8"
+    "block_exit": "0x156e8",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15750",
-    "binders": "`{!islaG Sigma} `{!threadG} (value : bv 64) (Q : iProp Sigma) (Hvalue : value \u2260 0%bv)",
+    "binders": "`{!islaG Sigma} `{!threadG} (value : bv 64) (Q : iProp Sigma) (Hvalue : value \u2260 0%bv) (sp : bv 64)",
     "module": "WriteSuccessSuffixHashes15750Branch",
     "source_resource": "(writeSuccessSuffixHashes15750NonzeroState value Q)",
     "outcome": "reached",
@@ -2047,7 +2079,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "value Q Hvalue",
+    "arguments": "value Q Hvalue sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -2076,7 +2108,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15754"
+    "block_exit": "0x15754",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x1596c",
@@ -2154,11 +2188,13 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15974"
+    "block_exit": "0x15974",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15990",
-    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64)",
     "module": "WriteSuccessNativeSuffixScalarSetups",
     "source_resource": "(writeSuccessSuffixJump15990Spec P)",
     "outcome": "reached",
@@ -2188,7 +2224,7 @@
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
     "persistent": [],
-    "arguments": "P",
+    "arguments": "P sp",
     "local_sorts": {
       "Sigma": "Type",
       "islaG0": "Type",
@@ -2215,6 +2251,8 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
     ],
-    "block_exit": "0x15994"
+    "block_exit": "0x15994",
+    "stack_size": 0,
+    "stack_pointer": "sp"
   }
 ]

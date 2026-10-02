@@ -22,12 +22,15 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimit
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec.
 
 Definition State_15750
-    `{!islaG Sigma} `{!threadG} (value : bv 64) (Q : iProp Sigma) (Hvalue : value ≠ 0%bv) : iProp Sigma :=
+    `{!islaG Sigma} `{!threadG} (value : bv 64) (Q : iProp Sigma) (Hvalue : value ≠ 0%bv) (sp : bv 64) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
    ("x8" ↦ᵣ RVal_Bits (bv_to_bvn value)) ∗
    (Q) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
-   (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x2", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
+   ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 0 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
+   (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    True)%I.
 Global Instance : LithiumUnfold (@State_15750) := I.
 Global Typeclasses Opaque State_15750.

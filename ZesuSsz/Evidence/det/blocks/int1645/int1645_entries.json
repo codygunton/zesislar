@@ -112,7 +112,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
     ],
-    "block_exit": "0x15118"
+    "block_exit": "0x15118",
+    "stack_size": 32,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15128",
@@ -227,7 +229,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
     ],
-    "block_exit": "0x15138"
+    "block_exit": "0x15138",
+    "stack_size": 32,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15564",
@@ -342,6 +346,8 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
     ],
-    "block_exit": "0x15574"
+    "block_exit": "0x15574",
+    "stack_size": 32,
+    "stack_pointer": "sp"
   }
 ]

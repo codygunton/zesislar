@@ -13,6 +13,21 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt.
 
+Definition State_15668MemoryRaw
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (transactionCount : nat) (tail : spec) (P : iProp Sigma) (Hvalues : length values = 74%nat) (Halign : bv_unsigned sp `mod` 16 = 0) (Hlower : mapRamBase defaultMap ≤ bv_unsigned sp) (Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap) : iProp Sigma := (((bv_unsigned sp + 1032) ↦ₘ∗ take 69 values) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@State_15668MemoryRaw) := I.
+Global Typeclasses Opaque State_15668MemoryRaw.
+Definition State_15668Memory
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (transactionCount : nat) (tail : spec) (P : iProp Sigma) (Hvalues : length values = 74%nat) (Halign : bv_unsigned sp `mod` 16 = 0) (Hlower : mapRamBase defaultMap ≤ bv_unsigned sp) (Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap) : iProp Sigma := State_15668MemoryRaw sp values transactionCount tail P Hvalues Halign Hlower Hupper.
+Lemma State_15668Memory_unfold `{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (transactionCount : nat) (tail : spec) (P : iProp Sigma) (Hvalues : length values = 74%nat) (Halign : bv_unsigned sp `mod` 16 = 0) (Hlower : mapRamBase defaultMap ≤ bv_unsigned sp) (Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap) :
+  State_15668Memory sp values transactionCount tail P Hvalues Halign Hlower Hupper ⊣⊢ State_15668MemoryRaw sp values transactionCount tail P Hvalues Halign Hlower Hupper.
+Proof. done. Qed.
+Global Opaque State_15668Memory.
+Global Instance zesu_sealed_State_15668Memory `{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (transactionCount : nat) (tail : spec) (P : iProp Sigma) (Hvalues : length values = 74%nat) (Halign : bv_unsigned sp `mod` 16 = 0) (Hlower : mapRamBase defaultMap ≤ bv_unsigned sp) (Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap) :
+  ZesuSealed (State_15668Memory sp values transactionCount tail P Hvalues Halign Hlower Hupper) (State_15668MemoryRaw sp values transactionCount tail P Hvalues Halign Hlower Hupper)
+    [((bv_unsigned sp + 1032), ((bv_unsigned sp + 1032)) + (8 * Z.of_nat (length (take 69 values))))] [] := State_15668Memory_unfold sp values transactionCount tail P Hvalues Halign Hlower Hupper.
+
 Definition State_15668
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (transactionCount : nat) (tail : spec) (P : iProp Sigma) (Hvalues : length values = 74%nat) (Halign : bv_unsigned sp `mod` 16 = 0) (Hlower : mapRamBase defaultMap ≤ bv_unsigned sp) (Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
@@ -20,13 +35,15 @@ Definition State_15668
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
    ("x10" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat transactionCount)))) ∗
    ("x11" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat transactionCount)))) ∗
-   ((bv_unsigned sp + 1032) ↦ₘ∗ take 69 values) ∗
    ((bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))) ∗
    ((bv_unsigned sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values) ∗
    ((bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)) ∗
    (spec_trace tail) ∗
    (P) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 80 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
+   (State_15668Memory sp values transactionCount tail P Hvalues Halign Hlower Hupper) ∗
    (⌜True⌝) ∗
    True)%I.
 Global Instance : LithiumUnfold (@State_15668) := I.

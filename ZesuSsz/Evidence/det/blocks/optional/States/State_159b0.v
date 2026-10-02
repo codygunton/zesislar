@@ -34,9 +34,8 @@ Global Instance zesu_sealed_State_159b0Memory `{!islaG Sigma} `{!threadG} (Q : i
     [((bv_unsigned sp - 32), ((bv_unsigned sp - 32)) + (32)); ((bv_unsigned sp + 296), ((bv_unsigned sp + 296)) + (8)); ((bv_unsigned sp + 304), ((bv_unsigned sp + 304)) + (8))] [] := State_159b0Memory_unfold Q sp value tag tail.
 
 Definition State_159b0
-    `{!islaG Sigma} `{!threadG} (Q : iProp Sigma) : iProp Sigma :=
-  (∃ sp : bv 64,
-   ∃ value : bv 64,
+    `{!islaG Sigma} `{!threadG} (Q : iProp Sigma) (sp : bv 64) : iProp Sigma :=
+  (∃ value : bv 64,
    ∃ tag : bv 64,
    ∃ tail : spec,
    (reg_col zesu_ram_sys_regs) ∗
@@ -69,6 +68,8 @@ Definition State_159b0
    (∀ b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 : bv 64, instr_pre 88508 (writeSuccessSuffixOptionalU64159b8Return 88508 sp (sp + 296) value tag tail b8 b9 b18 b19 b20 b21 b22 b23 b24 b25 b26 b27 ∗ Q)) ∗
    (Q) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 32 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]) ∗
    (State_159b0Memory Q sp value tag tail) ∗
    (⌜(bv_unsigned sp + 304 < machineRamEnd defaultMap)%Z⌝) ∗

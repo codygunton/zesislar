@@ -1,5 +1,5 @@
 run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
-A,b17,0x14d30,20,call:1116(ra) # 101d4 <memcpy>,infer_boundary,stalled,19,C4,0x14d78,"auipc ra, 0xffffb",call,"∃ x : list (bv 8) *ₗ (), bv_unsigned decoded ↦ₘ∗ x.1ₗ ∗ bv_unsigned (sp + 18446744073709549616 + 312) ↦ₘ? bv_unsigned 720 ∗ ⌜bv_unsigned 720 ≤ Z.of_nat (length ",27.1,26.6,1580,600,,0x14d80
+A,b17,0x14d30,20,call:1116(ra) # 101d4 <memcpy>,infer_boundary,stalled,19,C4,0x14d78,"auipc ra, 0xffffb",call,bv_unsigned (sp + 18446744073709549616) `mod` 8 = 0,27.1,26.6,1580,600,,0x14d80
 A,b17,0x151dc,9,call:-36(ra) # 101d4 <memcpy>,infer_boundary,stalled,1,C6,0x151dc,"addi a0, zero, 0x28",other,(bv_unsigned sp + 272) ↦ₘ? 8 ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 272 < 0 + 1073741824⌝ ∗,3.1,2.8,1272,600,,0x15200
-A,b17,0x15590,5,call:-968(ra) # 101d4 <memcpy>,infer_boundary,stalled,4,C4,0x1559c,"auipc ra, 0xffffb",call,base ↦ₘ∗ bytes ∗ bv_unsigned (sp + 1744) ↦ₘ∗ take 144 (drop start bytes) ∗ WriteSuccessExactAuthorizationsCopy.authorizationCopyFrame sp src P ∗ True,15.0,14.4,1605,600,,0x155a4
-A,b17,0x15694,5,call:-1228(ra) # 101d4 <memcpy>,infer_boundary,stalled,4,C4,0x156a0,"auipc ra, 0xffffb",call,base ↦ₘ∗ bytes ∗ bv_unsigned (sp + 1744) ↦ₘ∗ take 48 (drop start bytes) ∗ WriteSuccessExactWithdrawalsCopy.withdrawalCopyFrame sp src P ∗ True,15.0,14.6,1604,600,,0x156a8
+A,b17,0x15590,5,call:-968(ra) # 101d4 <memcpy>,infer_boundary,stalled,4,C4,0x1559c,"auipc ra, 0xffffb",call,bv_unsigned sp `mod` 16 = 0,15.0,14.4,1605,600,,0x155a4
+A,b17,0x15694,5,call:-1228(ra) # 101d4 <memcpy>,infer_boundary,stalled,4,C4,0x156a0,"auipc ra, 0xffffb",call,bv_unsigned sp `mod` 16 = 0,15.0,14.6,1604,600,,0x156a8

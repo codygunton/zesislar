@@ -13,19 +13,36 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt.
 
+Definition State_159a0MemoryRaw
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma := (((bv_unsigned sp + 96) ↦ₘ saved) ∗
+   ((bv_unsigned sp + 80) ↦ₘ value) ∗
+   ((bv_unsigned sp - 16) ↦ₘ? 16) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@State_159a0MemoryRaw) := I.
+Global Typeclasses Opaque State_159a0MemoryRaw.
+Definition State_159a0Memory
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma := State_159a0MemoryRaw sp saved value tail P.
+Lemma State_159a0Memory_unfold `{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma) :
+  State_159a0Memory sp saved value tail P ⊣⊢ State_159a0MemoryRaw sp saved value tail P.
+Proof. done. Qed.
+Global Opaque State_159a0Memory.
+Global Instance zesu_sealed_State_159a0Memory `{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma) :
+  ZesuSealed (State_159a0Memory sp saved value tail P) (State_159a0MemoryRaw sp saved value tail P)
+    [((bv_unsigned sp + 96), ((bv_unsigned sp + 96)) + (8)); ((bv_unsigned sp + 80), ((bv_unsigned sp + 80)) + (8)); ((bv_unsigned sp - 16), ((bv_unsigned sp - 16)) + (16))] [] := State_159a0Memory_unfold sp saved value tail P.
+
 Definition State_159a0
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
    (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64)]) ∗
-   ((bv_unsigned sp + 96) ↦ₘ saved) ∗
-   ((bv_unsigned sp + 80) ↦ₘ value) ∗
-   ((bv_unsigned sp - 16) ↦ₘ? 16) ∗
    (mmio_range (604086456 + 8) 16) ∗
    (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))) ∗
    (P) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 16 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
+   (State_159a0Memory sp saved value tail P) ∗
    (⌜True⌝) ∗
    True)%I.
 Global Instance : LithiumUnfold (@State_159a0) := I.

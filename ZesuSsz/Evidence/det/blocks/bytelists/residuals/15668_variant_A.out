@@ -1,0 +1,100 @@
+PROBE-BEGIN
+BLK-AT-PRE (87660 + 4)
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+3 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp : bv 64
+  values : list (bv 64)
+  transactionCount : nat
+  tail : spec
+  P : iProp Sigma
+  Hvalues : length values = 74%nat
+  Halign : bv_unsigned sp `mod` 16 = 0
+  Hlower : mapRamBase defaultMap ≤ bv_unsigned sp
+  Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap
+  BLK_STOP_15678 : iProp Sigma
+  ============================
+  bv_unsigned sp + 1104 = bv_unsigned sp + 1032 + 8 * Z.of_nat (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104))
+
+goal 2 is:
+ (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104) < length (take 69 values))%nat
+goal 3 is:
+ _ : instr_lookup_resources lookup
+ _ : instr_body_lookup_resources body_lookup
+ _ : instr_pre 89104 encoderByteListsEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 87672 BLK_STOP_15678
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+        (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64);
+        (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+        (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : (bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))
+ _ : (bv_unsigned sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values
+ _ : (bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)
+ _ : spec_trace tail
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : (bv_unsigned sp + 1032) ↦ₘ∗ take (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104)) (take 69 values)
+ _ : (bv_unsigned sp + 1032 + 8 * Z.of_nat (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104) + 1))
+     ↦ₘ∗ drop (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104) + 1) (take 69 values)
+ _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn (take 69 values !!! IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104)))
+ _ : (bv_unsigned sp + 1104) ↦ₘ (take 69 values !!! IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104))
+ --------------------------------------∗
+ ∃ y : bv 64 *ₗ (), (bv_unsigned sp + 1112) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 1112 < 0 + 1073741824⌝ ∗
+   instr_pre (87660 + 4) (reg_col zesu_ram_sys_regs ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 1112) ↦ₘ y.1ₗ ∗ True)
+BOUNDARY-ALL-GOALS-END
+3 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp : bv 64
+  values : list (bv 64)
+  transactionCount : nat
+  tail : spec
+  P : iProp Sigma
+  Hvalues : length values = 74%nat
+  Halign : bv_unsigned sp `mod` 16 = 0
+  Hlower : mapRamBase defaultMap ≤ bv_unsigned sp
+  Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap
+  BLK_STOP_15678 : iProp Sigma
+  ============================
+  bv_unsigned sp + 1104 = bv_unsigned sp + 1032 + 8 * Z.of_nat (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104))
+
+goal 2 is:
+ (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104) < length (take 69 values))%nat
+goal 3 is:
+ _ : instr_lookup_resources lookup
+ _ : instr_body_lookup_resources body_lookup
+ _ : instr_pre 89104 encoderByteListsEntryBoundary
+ --------------------------------------□
+ _ : instr_pre 87672 BLK_STOP_15678
+ _ : reg_col
+       [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64);
+        (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64);
+        (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+        (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+ _ : (bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))
+ _ : (bv_unsigned sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values
+ _ : (bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)
+ _ : spec_trace tail
+ _ : P
+ _ : reg_col
+       [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+        (KindReg "x31", BitsShape 64)]
+ _ : (bv_unsigned sp + 1032) ↦ₘ∗ take (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104)) (take 69 values)
+ _ : (bv_unsigned sp + 1032 + 8 * Z.of_nat (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104) + 1))
+     ↦ₘ∗ drop (IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104) + 1) (take 69 values)
+ _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn (take 69 values !!! IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104)))
+ _ : (bv_unsigned sp + 1104) ↦ₘ (take 69 values !!! IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104))
+ --------------------------------------∗
+ ∃ y : bv 64 *ₗ (), (bv_unsigned sp + 1112) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 1112 < 0 + 1073741824⌝ ∗
+   instr_pre (87660 + 4) (reg_col zesu_ram_sys_regs ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 1112) ↦ₘ y.1ₗ ∗ True)
+PROBE-END

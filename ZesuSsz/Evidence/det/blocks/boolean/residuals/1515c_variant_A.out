@@ -1,0 +1,252 @@
+PROBE-BEGIN
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86372))
+BLK-PC (bv_to_bvn LET)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86384))
+BLK-PC (bv_to_bvn LET3)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86388))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86388))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86388))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86388))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86388))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86388))
+BLK-PC (bv_to_bvn LET7)
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn (Z_to_bv 64 86392))
+BLK-PC (bv_to_bvn LET8)
+BLK-AT-PRE (bv_unsigned (Z_to_bv 64 (86396 + 4)))
+BLK-GOAL
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, first, second : bv 64
+  last : bv 32
+  P, BLK_STOP_15180 : iProp Sigma
+  H0 : bv_unsigned sp + 1764 < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp
+  H2 : bv_unsigned sp `mod` 8 = 0
+  n, b1 : bv 64
+  H3 : Z.land (bv_unsigned b1) 131072 = 0
+  H4 : Z.land (bvn_unsigned (bv_to_bvn n)) 131072 = 0
+  n1, b2 : bv 64
+  H5 : Z.land (bv_unsigned b2) 131072 = 0
+  H6 : Z.land (bvn_unsigned (bv_to_bvn n1)) 131072 = 0
+  b3 : bool
+  b4 : bv 64
+  H7 : Z.land (bv_unsigned b4) 131072 = 0
+  b5 : bv 64
+  H8 : Z.land (bv_unsigned b5) 131072 = 0
+  H9 : -1 < bv_unsigned b5 < bv_modulus 64
+  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b5 < bv_half_modulus 64
+  H11 : -1 < bv_unsigned b4 < bv_modulus 64
+  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b4 < bv_half_modulus 64
+  H13 : -1 < bv_unsigned b2 < bv_modulus 64
+  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64
+  H15 : -1 < bv_unsigned n1 < bv_modulus 64
+  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64
+  H17 : -1 < bv_unsigned b1 < bv_modulus 64
+  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H19 : -1 < bv_unsigned n < bv_modulus 64
+  H20 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64
+  H21 : -1 < bv_unsigned last < bv_modulus 32
+  H22 : 32%N ≠ 0%N → - bv_half_modulus 32 ≤ bv_signed last < bv_half_modulus 32
+  H23 : -1 < bv_unsigned second < bv_modulus 64
+  H24 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed second < bv_half_modulus 64
+  H25 : -1 < bv_unsigned first < bv_modulus 64
+  H26 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed first < bv_half_modulus 64
+  H27 : -1 < bv_unsigned sp < bv_modulus 64
+  H28 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 88988 encoderBooleanEntryBoundary
+  --------------------------------------□
+  _ : instr_pre 86400 BLK_STOP_15180
+  _ : P
+  _ : (bv_unsigned sp + 1640) ↦ₘ first
+  _ : (bv_unsigned sp + 1648) ↦ₘ second
+  _ : (bv_unsigned sp + 1656) ↦ₘ last
+  _ : reg_col []
+  _ : (bv_unsigned sp + 1744) ↦ₘ first
+  _ : (bv_unsigned sp + 1752) ↦ₘ second
+  _ : "x12" ↦ᵣ RVal_Bits (bv_to_bvn (bv_sign_extend 64 last))
+  _ : (bv_unsigned sp + 1760) ↦ₘ bv_extract 0 32 (bv_sign_extend 64 last)
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+         (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+         (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+         (KindReg "x27", BitsShape 64)]
+  _ : reg_col [(KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  --------------------------------------∗
+  ∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗
+    spec_trace (Snapshots.writeOutputEvents (sp - 9) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1) x.1ₗ) ∗ ⌜bv_extract 0 4 sp = 0%bv⌝ ∗ ⌜0 ≤ bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < 0 + 1073741824⌝ ∗ ⌜bv_extract 0 1 (Z_to_bv 64 (86396 + 4)) = 0%bv⌝ ∗ ⌜bv_extract 1 1 (Z_to_bv 64 (86396 + 4)) = 0%bv⌝ ∗ ⌜bv_extract 0 2 (Z_to_bv 64 (86396 + 4)) = 0%bv⌝ ∗
+    instr_pre (bv_unsigned (Z_to_bv 64 (86396 + 4))) (encoderBooleanClosedReturn 1 sp (Z_to_bv 64 (86396 + 4)) x.1ₗ) ∗ True
+BOUNDARY-ALL-GOALS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, first, second : bv 64
+  last : bv 32
+  P, BLK_STOP_15180 : iProp Sigma
+  H0 : bv_unsigned sp + 1764 < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp
+  H2 : bv_unsigned sp `mod` 8 = 0
+  n, b1 : bv 64
+  H3 : Z.land (bv_unsigned b1) 131072 = 0
+  H4 : Z.land (bvn_unsigned (bv_to_bvn n)) 131072 = 0
+  n1, b2 : bv 64
+  H5 : Z.land (bv_unsigned b2) 131072 = 0
+  H6 : Z.land (bvn_unsigned (bv_to_bvn n1)) 131072 = 0
+  b3 : bool
+  b4 : bv 64
+  H7 : Z.land (bv_unsigned b4) 131072 = 0
+  b5 : bv 64
+  H8 : Z.land (bv_unsigned b5) 131072 = 0
+  H9 : -1 < bv_unsigned b5 < bv_modulus 64
+  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b5 < bv_half_modulus 64
+  H11 : -1 < bv_unsigned b4 < bv_modulus 64
+  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b4 < bv_half_modulus 64
+  H13 : -1 < bv_unsigned b2 < bv_modulus 64
+  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64
+  H15 : -1 < bv_unsigned n1 < bv_modulus 64
+  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64
+  H17 : -1 < bv_unsigned b1 < bv_modulus 64
+  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64
+  H19 : -1 < bv_unsigned n < bv_modulus 64
+  H20 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64
+  H21 : -1 < bv_unsigned last < bv_modulus 32
+  H22 : 32%N ≠ 0%N → - bv_half_modulus 32 ≤ bv_signed last < bv_half_modulus 32
+  H23 : -1 < bv_unsigned second < bv_modulus 64
+  H24 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed second < bv_half_modulus 64
+  H25 : -1 < bv_unsigned first < bv_modulus 64
+  H26 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed first < bv_half_modulus 64
+  H27 : -1 < bv_unsigned sp < bv_modulus 64
+  H28 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 88988 encoderBooleanEntryBoundary
+  --------------------------------------□
+  _ : instr_pre 86400 BLK_STOP_15180
+  _ : P
+  _ : (bv_unsigned sp + 1640) ↦ₘ first
+  _ : (bv_unsigned sp + 1648) ↦ₘ second
+  _ : (bv_unsigned sp + 1656) ↦ₘ last
+  _ : reg_col []
+  _ : (bv_unsigned sp + 1744) ↦ₘ first
+  _ : (bv_unsigned sp + 1752) ↦ₘ second
+  _ : "x12" ↦ᵣ RVal_Bits (bv_to_bvn (bv_sign_extend 64 last))
+  _ : (bv_unsigned sp + 1760) ↦ₘ bv_extract 0 32 (bv_sign_extend 64 last)
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+         (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+         (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+         (KindReg "x27", BitsShape 64)]
+  _ : reg_col [(KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  --------------------------------------∗
+  ∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗
+    spec_trace (Snapshots.writeOutputEvents (sp - 9) 1 (WriteSuccessExactBooleanSpec.writeSuccessBooleanWordPayload 1) x.1ₗ) ∗ ⌜bv_extract 0 4 sp = 0%bv⌝ ∗ ⌜0 ≤ bv_unsigned sp - 16⌝ ∗
+    ⌜bv_unsigned sp < 0 + 1073741824⌝ ∗ ⌜bv_extract 0 1 (Z_to_bv 64 (86396 + 4)) = 0%bv⌝ ∗ ⌜bv_extract 1 1 (Z_to_bv 64 (86396 + 4)) = 0%bv⌝ ∗ ⌜bv_extract 0 2 (Z_to_bv 64 (86396 + 4)) = 0%bv⌝ ∗
+    instr_pre (bv_unsigned (Z_to_bv 64 (86396 + 4))) (encoderBooleanClosedReturn 1 sp (Z_to_bv 64 (86396 + 4)) x.1ₗ) ∗ True
+PROBE-END

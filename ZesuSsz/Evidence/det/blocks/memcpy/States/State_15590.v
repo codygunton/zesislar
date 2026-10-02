@@ -17,6 +17,22 @@ Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU6415
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec.
 
+Definition State_15590MemoryRaw
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma := ((base ↦ₘ∗ bytes) ∗
+   ((bv_unsigned sp + 1744) ↦ₘ? 144) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@State_15590MemoryRaw) := I.
+Global Typeclasses Opaque State_15590MemoryRaw.
+Definition State_15590Memory
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma := State_15590MemoryRaw sp src oldra base start bytes P.
+Lemma State_15590Memory_unfold `{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma) :
+  State_15590Memory sp src oldra base start bytes P ⊣⊢ State_15590MemoryRaw sp src oldra base start bytes P.
+Proof. done. Qed.
+Global Opaque State_15590Memory.
+Global Instance zesu_sealed_State_15590Memory `{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma) :
+  ZesuSealed (State_15590Memory sp src oldra base start bytes P) (State_15590MemoryRaw sp src oldra base start bytes P)
+    [(base, (base) + (1 * Z.of_nat (length (bytes)))); ((bv_unsigned sp + 1744), ((bv_unsigned sp + 1744)) + (144))] [] := State_15590Memory_unfold sp src oldra base start bytes P.
+
 Definition State_15590
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (src : bv 64) (oldra : bv 64) (base : Z) (start : nat) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
@@ -24,12 +40,13 @@ Definition State_15590
    ("x9" ↦ᵣ RVal_Bits (bv_to_bvn src)) ∗
    ("x1" ↦ᵣ RVal_Bits (bv_to_bvn oldra)) ∗
    (reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]) ∗
-   (base ↦ₘ∗ bytes) ∗
-   ((bv_unsigned sp + 1744) ↦ₘ? 144) ∗
    (instr_pre 87460 (authorizationCopyPost sp src base start bytes P)) ∗
    (P) ∗
    (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp - 0 /\ bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
+   (State_15590Memory sp src oldra base start bytes P) ∗
    (⌜True⌝) ∗
    (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜(mapRamBase defaultMap ≤ bv_unsigned sp)%Z⌝) ∗

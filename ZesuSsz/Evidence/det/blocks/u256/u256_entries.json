@@ -126,7 +126,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256"
-    ]
+    ],
+    "stack_size": 48,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x155a4",
@@ -237,7 +239,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256"
-    ]
+    ],
+    "stack_size": 48,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x155e4",
@@ -348,7 +352,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256"
-    ]
+    ],
+    "stack_size": 48,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x155fc",
@@ -459,7 +465,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256"
-    ]
+    ],
+    "stack_size": 48,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x1562c",
@@ -588,7 +596,9 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256"
-    ]
+    ],
+    "stack_size": 48,
+    "stack_pointer": "sp"
   },
   {
     "entry": "0x15644",
@@ -717,6 +727,8 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsU256"
-    ]
+    ],
+    "stack_size": 48,
+    "stack_pointer": "sp"
   }
 ]

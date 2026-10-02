@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -61,6 +62,29 @@ def read_states(path: Path) -> dict[int, dict]:
     return states
 
 
+def add_stack_resources(state: dict, spatial: list[str]) -> list[str]:
+    """Add the approved stack boundary with an explicit recorded bound."""
+    if "stack_size" not in state:
+        return spatial
+    pointer = state.get("stack_pointer", "sp")
+    if pointer not in gen_boundary.explicit_arguments(state["binders"]).split():
+        arguments = state.get("arguments", gen_boundary.explicit_arguments(state["binders"]))
+        state["binders"] += f" ({pointer} : bv 64)"
+        state["arguments"] = (arguments + f" {pointer}").strip()
+    exact = f'"x2" ↦ᵣ RVal_Bits (bv_to_bvn {pointer})'
+    has_exact = any(atom.startswith('"x2" ↦ᵣ') for atom in spatial)
+    if not has_exact:
+        spatial = [re.sub(r'\(KindReg "x2", BitsShape 64\);?\s*', '', atom)
+                   for atom in spatial]
+        spatial = [re.sub(r';\s*\]', ']', atom) for atom in spatial]
+        spatial.append(exact)
+    size = state["stack_size"]
+    facts = [f'⌜(bv_unsigned {pointer} `mod` 16 = 0)%Z⌝',
+             f'⌜(mapRamBase defaultMap <= bv_unsigned {pointer} - {size} /\\ '
+             f'bv_unsigned {pointer} < machineRamEnd defaultMap)%Z⌝']
+    return spatial + [fact for fact in facts if fact not in spatial]
+
+
 def state_source(leader: int, state: dict) -> str:
     if state.get("outcome", "reached") != "reached":
         raise ValueError(f"state {hex(leader)} did not reach its boundary")
@@ -70,15 +94,19 @@ def state_source(leader: int, state: dict) -> str:
         coq, spatial = state.get("coq", []), state["spatial"]
     spatial = gen_boundary.normalize_temporaries(
         [atom for resource in spatial for atom in gen_boundary.spatial_atoms(resource)])
+    spatial = add_stack_resources(state, spatial)
     if state.get("block_exit") is not None:
         spatial = gen_boundary.strip_internal_handoffs(
             spatial, leader, int(str(state["block_exit"]), 0))
+    spatial = gen_boundary.preserve_register_precision(
+        spatial, set(state.get("entry_unknown_registers", []))
+        - ({"x2"} if "stack_size" in state else set()))
     deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
     if deduplicated != spatial:
         state["deduplicated"] = True
     spatial = gen_boundary.complete_register_file(deduplicated)
     source = gen_boundary.boundary_source(
-        f"State_{leader:x}", state["binders"], coq, spatial,
+        state.get("name", f"State_{leader:x}"), state["binders"], coq, spatial,
         seal=len(spatial) > gen_boundary.RULE_20_CONJUNCTS,
         call_resources=True, sorts=state.get("local_sorts", state.get("sorts")),
         witnesses=state.get("witnesses"))
@@ -90,8 +118,10 @@ def state_source(leader: int, state: dict) -> str:
 
 
 def state_application(leader: int, state: dict) -> str:
+    if state.get("outcome") == "unreachable-successor":
+        return "False"
     args = state.get("arguments", gen_boundary.explicit_arguments(state["binders"]))
-    return f"State_{leader:x} {args}".strip()
+    return f"{state.get('name', f'State_{leader:x}')} {args}".strip()
 
 
 def generate(block: dict, states: dict[int, dict]) -> tuple[str, str]:
@@ -103,11 +133,17 @@ def generate(block: dict, states: dict[int, dict]) -> tuple[str, str]:
     if missing:
         raise ValueError("missing inferred states: " + ", ".join(missing))
     for value in needed:
-        state_source(value, states[value])
+        if states[value].get("outcome") != "unreachable-successor":
+            state_source(value, states[value])
+        elif value == leader:
+            raise ValueError("an entry cannot be an unreachable successor")
     _premises, _modules, _unknown = call_sites.premises(leader, end, strict=True)
     spec = {"name": f"block_{leader:x}", "entry": hex(leader), "exit": hex(end),
             "binders": states[leader]["binders"],
-            "imports": [f"{STATE_MODULE}.State_{value:x}" for value in needed],
+            "imports": [states[value].get("state_module",
+                        f"{STATE_MODULE}.{states[value].get('name', f'State_{value:x}')}")
+                        for value in needed
+                        if states[value].get("outcome") != "unreachable-successor"],
             "spec": state_application(leader, states[leader]),
             "successors": [{"address": hex(value),
                             "spec": state_application(value, states[value])}
