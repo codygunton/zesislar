@@ -70,7 +70,13 @@ def state_source(leader: int, state: dict) -> str:
         coq, spatial = state.get("coq", []), state["spatial"]
     spatial = gen_boundary.normalize_temporaries(
         [atom for resource in spatial for atom in gen_boundary.spatial_atoms(resource)])
-    spatial = gen_boundary.complete_register_file(spatial)
+    if state.get("block_exit") is not None:
+        spatial = gen_boundary.strip_internal_handoffs(
+            spatial, leader, int(str(state["block_exit"]), 0))
+    deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
+    if deduplicated != spatial:
+        state["deduplicated"] = True
+    spatial = gen_boundary.complete_register_file(deduplicated)
     source = gen_boundary.boundary_source(
         f"State_{leader:x}", state["binders"], coq, spatial,
         seal=len(spatial) > gen_boundary.RULE_20_CONJUNCTS,

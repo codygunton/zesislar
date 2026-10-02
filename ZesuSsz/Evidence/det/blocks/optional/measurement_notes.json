@@ -1,0 +1,8 @@
+{
+  "contract": "encoderOptionalEntryBoundary",
+  "target": "0x15bc8",
+  "results": "Three stalls; no complete block closure.",
+  "missing_entry": "0x159bc",
+  "conditional_collections": "Preserved as written.",
+  "interior_handoffs": "Removed at concrete addresses inside each block."
+}

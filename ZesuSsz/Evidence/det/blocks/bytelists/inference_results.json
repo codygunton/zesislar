@@ -1,0 +1,98 @@
+[
+  {
+    "name": "infer_15668",
+    "entry": "0x15668",
+    "exit": "0x15678",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (transactionCount : nat) (tail : spec) (P : iProp Sigma) (Hvalues : length values = 74%nat) (Halign : bv_unsigned sp `mod` 16 = 0) (Hlower : mapRamBase defaultMap \u2264 bv_unsigned sp) (Hupper : bv_unsigned sp + 1896 < machineRamEnd defaultMap)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15668",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15668 sp values transactionCount tail P Hvalues Halign Hlower Hupper",
+    "rc": 0,
+    "wall": 5.1,
+    "cpu": 4.4,
+    "peak_mib": 1278,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        29
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/bytelists-inference/Infer_15668.out"
+  },
+  {
+    "name": "infer_15930",
+    "entry": "0x15930",
+    "exit": "0x15940",
+    "binders": "`{!islaG Sigma} `{!threadG} ",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15930",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15930 ",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.3,
+    "peak_mib": 1265,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1249
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/bytelists-inference/Infer_15930.out"
+  },
+  {
+    "name": "infer_15940",
+    "entry": "0x15940",
+    "exit": "0x15950",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15940",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15940 P",
+    "rc": 0,
+    "wall": 5.0,
+    "cpu": 4.8,
+    "peak_mib": 1316,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1249
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/bytelists-inference/Infer_15940.out"
+  },
+  {
+    "name": "infer_15950",
+    "entry": "0x15950",
+    "exit": "0x15960",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15950",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15950 P",
+    "rc": 0,
+    "wall": 5.1,
+    "cpu": 4.8,
+    "peak_mib": 1313,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        19
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/bytelists-inference/Infer_15950.out"
+  }
+]

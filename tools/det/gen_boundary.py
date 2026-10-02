@@ -111,6 +111,45 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
                            if index not in indices]
 
 
+def deduplicate_register_shapes(atoms: list[str]) -> list[str]:
+    """Retain exact ownership and remove its explicit BitsShape duplicate."""
+    exact = {match[1] for atom in atoms
+             if (match := re.match(r'^"(x\d+)"\s*↦ᵣ\s+', atom))}
+    for atom in atoms:
+        exact.update(re.findall(r'KindReg "(x\d+)", ExactShape', atom))
+        if "tmp_registers" in atom and "zip_with" in atom:
+            shapes = atom[atom.rfind("[") + 1:atom.rfind("]")].split(";")
+            exact.update(register for register, shape in zip(TMP_REGISTERS, shapes)
+                         if "ExactShape" in shape)
+    result = []
+    for atom in atoms:
+        if atom.startswith("reg_col ["):
+            entries = atom[len("reg_col ["):-1].split(";")
+            entries = [entry.strip() for entry in entries
+                       if not ((match := re.fullmatch(
+                           r'\s*\(KindReg "(x\d+)", BitsShape 64\)\s*', entry))
+                               and match[1] in exact)]
+            atom = "reg_col [" + "; ".join(entries) + "]"
+        result.append(atom)
+    return result
+
+
+def strip_internal_handoffs(atoms: list[str], start: int, end: int) -> list[str]:
+    """Remove instruction premises inside the measured CFG block."""
+    def internal(atom: str) -> bool:
+        match = re.match(r'instr_(?:pre|body)\s+(\([^)]*\)|0x[0-9a-fA-F]+|\d+)\s', atom)
+        if not match:
+            return False
+        address = match[1].strip("() ")
+        # Printed concrete addresses use either a numeral or a numeral plus offset.
+        terms = re.fullmatch(r'(0x[0-9a-fA-F]+|\d+)(?:\s*\+\s*(\d+))?', address)
+        if not terms:
+            return False
+        pc = int(terms[1], 0) + (int(terms[2]) if terms[2] else 0)
+        return start <= pc < end
+    return [atom for atom in atoms if not internal(atom)]
+
+
 def complete_register_file(atoms: list[str]) -> list[str]:
     """Add shapes for missing general registers without replacing ownership."""
     owned: set[str] = set()
@@ -118,12 +157,13 @@ def complete_register_file(atoms: list[str]) -> list[str]:
         registers = []
         if atom.startswith("reg_col "):
             if not (atom.startswith("reg_col [") or "tmp_registers" in atom
-                    or atom == "reg_col zesu_ram_sys_regs"):
+                    or atom == "reg_col zesu_ram_sys_regs"
+                    or atom.startswith(("reg_col match ", "reg_col (match "))):
                 raise ValueError(f"unexpanded register collection: {atom}")
             registers = re.findall(r'KindReg "(x\d+)"', atom)
             if "tmp_registers" in atom:
                 registers += list(TMP_REGISTERS)
-            if not registers and atom != "reg_col zesu_ram_sys_regs":
+            if not registers and atom not in ("reg_col zesu_ram_sys_regs", "reg_col []"):
                 raise ValueError(f"unexpanded register collection: {atom}")
         else:
             match = re.match(r'^"(x\d+)"\s*↦ᵣ', atom)
@@ -216,6 +256,7 @@ def require_open_resources(atoms: list[str], binders: str) -> None:
         if (atom in abstract or atom in ("True", "emp")
                 or atom.startswith(("reg_col ", "spec_trace ", "mmio_range ",
                                     "instr_pre ", "instr_body ", "⌜"))
+                or (atom.startswith("∀ ") and "instr_pre " in atom)
                 or re.match(r'"[^"]+"\s*(?:#\s*"[^"]+"\s*)?↦ᵣ', atom)):
             continue
         if "↦ₘ" in atom:

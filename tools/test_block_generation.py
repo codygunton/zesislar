@@ -57,10 +57,19 @@ class StatePartition(unittest.TestCase):
         self.assertNotIn('(KindReg "x5", BitsShape 64)', completed[-1])
         self.assertEqual(gen_boundary.complete_register_file(completed), completed)
 
-    def test_conditional_register_ownership_is_rejected(self):
-        with self.assertRaisesRegex(ValueError, "register collection"):
-            gen_boundary.complete_register_file([
-                'reg_col (match saved with [] => [(KindReg "x8", BitsShape 64)] | _ => [] end)'])
+    def test_conditional_register_collection_is_preserved(self):
+        atom = 'reg_col (match saved with [] => [(KindReg "x8", BitsShape 64)] | _ => [] end)'
+        self.assertIn(atom, gen_boundary.complete_register_file([atom]))
+
+    def test_exact_register_ownership_removes_only_bits_duplicate(self):
+        atoms = ['"x5" ↦ᵣ RVal_Bits value',
+                 'reg_col [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64)]']
+        result = gen_boundary.deduplicate_register_shapes(atoms)
+        self.assertEqual(result, [atoms[0], 'reg_col [(KindReg "x6", BitsShape 64)]'])
+
+    def test_internal_handoffs_do_not_close_the_block(self):
+        atoms = ['instr_pre (88368 + 4) P', 'instr_pre 88380 Q', 'instr_pre 88384 R']
+        self.assertEqual(gen_boundary.strip_internal_handoffs(atoms, 88368, 88384), [atoms[2]])
 
     def test_duplicate_register_ownership_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "duplicate register.*x5"):

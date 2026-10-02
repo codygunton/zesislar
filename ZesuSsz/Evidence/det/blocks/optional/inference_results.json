@@ -1,0 +1,74 @@
+[
+  {
+    "name": "infer_150f0",
+    "entry": "0x150f0",
+    "exit": "0x150fc",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (olddata : bv 64) (old5 : bv 64) (old6 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_150f0",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_150f0 sp oldra olddata old5 old6 old11 bytes tail P",
+    "rc": 0,
+    "wall": 4.1,
+    "cpu": 3.7,
+    "peak_mib": 1282,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        17
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/optional-inference/Infer_150f0.out"
+  },
+  {
+    "name": "infer_15700",
+    "entry": "0x15700",
+    "exit": "0x1571c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (optionalValue : bv 64) (optionalTag : bv 64) (data : bv 64) (size : bv 64) (root : bv 64) (bytes : list (bv 8)) (saved : list (bv 64)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15700",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15700 sp optionalValue optionalTag data size root bytes saved tail P",
+    "rc": 0,
+    "wall": 4.0,
+    "cpu": 3.3,
+    "peak_mib": 1267,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1249
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/optional-inference/Infer_15700.out"
+  },
+  {
+    "name": "infer_159b0",
+    "entry": "0x159b0",
+    "exit": "0x159bc",
+    "binders": "`{!islaG Sigma} `{!threadG} (Q : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_159b0",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_159b0 Q",
+    "rc": 0,
+    "wall": 7.1,
+    "cpu": 6.0,
+    "peak_mib": 1317,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1249
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/optional-inference/Infer_159b0.out"
+  }
+]

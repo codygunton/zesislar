@@ -1,0 +1,111 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  savedReturn : bv 64
+  Q : iProp Sigma
+  sp, pointer, count : bv 64
+  items : list ByteListItem
+  tail : spec
+  b12, b13, b14, b15, b16, b17, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11 : bv 64
+  H0 : bv_extract 0 2 savedReturn = 0%bv
+  H1 : bv_extract 1 1 savedReturn = 0%bv
+  H2 : bv_extract 0 1 savedReturn = 0%bv
+  H3 : bv_unsigned sp + 2000 < machineRamEnd defaultMap
+  H4 : mapRamBase defaultMap ≤ bv_unsigned sp + 1896
+  H5 : bv_unsigned sp `mod` 8 = 0
+  H6 : bv_unsigned sp < machineRamEnd defaultMap
+  H7 : mapRamBase defaultMap ≤ bv_unsigned sp - 80
+  H8 : bv_extract 0 4 sp = 0%bv
+  H9 : bv_unsigned pointer + 16 * Z.of_nat (length items) < machineRamEnd defaultMap
+  H10 : mapRamBase defaultMap ≤ bv_unsigned pointer
+  H11 : bv_extract 0 3 pointer = 0%bv
+  H12 : Z.of_nat (length items) < 2 ^ 64
+  H13 : bv_unsigned count = Z.of_nat (length items)
+  H14 : mapRamBase defaultMap ≤ bv_unsigned sp + 88 < machineRamEnd defaultMap
+  H15 : bv_unsigned sp `mod` 8 = 0
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x1" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn pointer)
+  _ : "x10" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : "x11" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝
+  _ : instr_pre 88532 (writeSuccessExactPost159d4PayloadCallEntrySpec savedReturn ((bv_unsigned sp + 88) ↦ₘ count ∗ Q))
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x9", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
+         (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  _ : "x12" ↦ᵣ RVal_Bits (bv_to_bvn b12)
+  _ : "x13" ↦ᵣ RVal_Bits (bv_to_bvn b13)
+  _ : "x14" ↦ᵣ RVal_Bits (bv_to_bvn b14)
+  _ : "x15" ↦ᵣ RVal_Bits (bv_to_bvn b15)
+  _ : "x16" ↦ᵣ RVal_Bits (bv_to_bvn b16)
+  _ : "x17" ↦ᵣ RVal_Bits (bv_to_bvn b17)
+  _ : (bv_unsigned sp - 80) ↦ₘ? 80
+  _ : (fix byteListItemResources (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) (address : Z) (items0 : list ByteListItem) {struct items0} : iProp Sigma0 :=
+         match items0 with
+         | [] => True
+         | item :: rest => address ↦ₘ byteListData item ∗ (address + 8) ↦ₘ byteListSize item ∗ bv_unsigned (byteListData item) ↦ₘ∗ byteListBytes item ∗
+             ⌜bv_unsigned (byteListSize item) = Z.of_nat (length (byteListBytes item))⌝ ∗ byteListItemResources Sigma0 islaG1 (address + 16) rest
+         end) Sigma islaG0 (bv_unsigned pointer) items
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (λ snapshot : seq_snapshot,
+                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 8 =
+                 Some
+                   [Z_to_bv 8 (Z.of_nat (length items) `mod` 256); Z_to_bv 8 ((Z.of_nat (length items) `div` 256) `mod` 256); Z_to_bv 8 (((Z.of_nat (length items) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((Z.of_nat (length items) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((Z.of_nat (length items) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((Z.of_nat (length items) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((Z.of_nat (length items) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((Z.of_nat (length items) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)])
+              ((fix byteListItemPayloadEvents (sp0 : bv 64) (items0 : list ByteListItem) (tail0 : spec) {struct items0} : spec :=
+                  match items0 with
+                  | [] => tail0
+                  | item :: rest =>
+                      scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp0 - 48)))
+                        (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+                           (λ snapshot : seq_snapshot,
+                              read_mem_list (snap_mem snapshot) (bv_unsigned (sp0 - 48)) 8 =
+                              Some
+                                [Z_to_bv 8 (bv_unsigned (byteListSize item) `mod` 256); Z_to_bv 8 ((bv_unsigned (byteListSize item) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((bv_unsigned (byteListSize item) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((bv_unsigned (byteListSize item) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((bv_unsigned (byteListSize item) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((bv_unsigned (byteListSize item) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((((bv_unsigned (byteListSize item) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((((bv_unsigned (byteListSize item) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)])
+                           (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (byteListData item)))
+                              (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (byteListSize item)))
+                                 (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (byteListData item)) (Z.to_N (bv_unsigned (byteListSize item))) = Some (byteListBytes item))
+                                 (byteListItemPayloadEvents sp0 rest tail0))))
+                  end) (sp - 32)%bv items tail)))
+  _ : (bv_unsigned sp + 1992) ↦ₘ savedReturn
+  _ : (bv_unsigned sp + 1984) ↦ₘ s0
+  _ : (bv_unsigned sp + 1976) ↦ₘ s1
+  _ : (bv_unsigned sp + 1968) ↦ₘ s2
+  _ : (bv_unsigned sp + 1960) ↦ₘ s3
+  _ : (bv_unsigned sp + 1952) ↦ₘ s4
+  _ : (bv_unsigned sp + 1944) ↦ₘ s5
+  _ : (bv_unsigned sp + 1936) ↦ₘ s6
+  _ : (bv_unsigned sp + 1928) ↦ₘ s7
+  _ : (bv_unsigned sp + 1920) ↦ₘ s8
+  _ : (bv_unsigned sp + 1912) ↦ₘ s9
+  _ : (bv_unsigned sp + 1904) ↦ₘ s10
+  _ : (bv_unsigned sp + 1896) ↦ₘ s11
+  _ : (bv_unsigned sp + 88) ↦ₘ count
+  _ : Q
+  _ : instr_pre (bv_unsigned savedReturn)
+        (WriteSuccessEpilogueBlock.writeSuccessEpiloguePost sp savedReturn s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11
+           ((∃ a0 a1 a2 : bv 64, "x10" ↦ᵣ RVal_Bits (bv_to_bvn a0) ∗ "x11" ↦ᵣ RVal_Bits (bv_to_bvn a1) ∗ "x12" ↦ᵣ RVal_Bits (bv_to_bvn a2)) ∗ (bv_unsigned sp - 80) ↦ₘ? 80 ∗
+            byteListItemResources (bv_unsigned pointer) items ∗ mmio_range (604086456 + 8) 16 ∗ spec_trace tail ∗ (bv_unsigned sp + 88) ↦ₘ count ∗ Q))
+  --------------------------------------∗
+  False
+exit=0 ms=36439 rss_kb=1252516
+

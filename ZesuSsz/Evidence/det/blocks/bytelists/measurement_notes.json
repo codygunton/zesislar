@@ -1,0 +1,8 @@
+{
+  "contract": "encoderByteListsEntryBoundary",
+  "target": "0x15c10",
+  "results": "Four stalls; no complete block closure. Interior handoffs were removed.",
+  "entry_normalization": {
+    "0x159c8": "Recursive byteListItemResources remains folded. No array was split."
+  }
+}

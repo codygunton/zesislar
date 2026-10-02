@@ -28,7 +28,8 @@ def classify(r):
     k = (max(inblk) - lo) // 4 + 1 if inblk else 1
     o = r.get('outcome')
     res = dict(result=o, k=k)
-    if o == 'closed-all' and r['leader'] in INSTATE:
+    if (o == 'closed-all' and r['leader'] in INSTATE
+            and not r.get('interior_handoffs_stripped')):
         h = INSTATE[r['leader']]
         res.update(result='partial', k=(h - lo) // 4, stall_pc=hex(h), stall_insn=' '.join(DIS.get(h, ('?', ''))),
                    stall_kind='in-state handoff')
