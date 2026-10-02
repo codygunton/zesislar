@@ -49,6 +49,38 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_flat_capture_opens_named_memory_without_array_splits(self):
+        source = ('Definition sampleMemory := memory.\n'
+                  'Definition sampleTailWords := words.\n'
+                  'Definition samplePayload := payload.\n')
+        with tempfile.TemporaryDirectory() as directory:
+            tactics = gen_boundary.flat_state_tactics(source, Path(directory))
+        self.assertIn('unfold sampleMemory', tactics)
+        self.assertIn('unfold sampleTailWords', tactics)
+        self.assertNotIn('unfold samplePayload', tactics)
+        self.assertNotIn('array_split', tactics)
+
+    def test_stack_expression_keeps_existing_binders(self):
+        state = {'binders': BINDERS, 'stack_size': 16,
+                 'stack_pointer': '(entry_sp - 2000)'}
+        atoms = ['"x2" ↦ᵣ RVal_Bits (bv_to_bvn (entry_sp - 2000))']
+        result = gen_block.add_stack_resources(state, atoms)
+        self.assertEqual(state['binders'], BINDERS)
+        self.assertIn('bv_unsigned (entry_sp - 2000)', ' '.join(result))
+        with self.assertRaisesRegex(ValueError, 'exact x2 ownership'):
+            gen_block.add_stack_resources(state, [])
+
+    def test_partitioned_temporaries_keep_captured_conditional_ownership(self):
+        atoms = ['reg_col zesu_ram_sys_regs', '"x5" ↦ᵣ value',
+                 'reg_col match saved with | [] => [] | _ => ['
+                 + '; '.join(f'(KindReg "{r}", BitsShape 64)'
+                             for r in gen_boundary.TMP_REGISTERS[1:]) + '] end']
+        original = list(atoms)
+        gen_boundary.require_call_resources(atoms)
+        self.assertEqual(atoms, original)
+        with self.assertRaisesRegex(ValueError, 'temporary register collection'):
+            gen_boundary.require_call_resources(atoms[:-1])
+
     def test_stack_boundary_replaces_unknown_x2_and_keeps_arguments(self):
         state = {'binders': BINDERS, 'stack_size': 16}
         atoms = ['reg_col [(KindReg "x1", BitsShape 64); (KindReg "x2", BitsShape 64)]']

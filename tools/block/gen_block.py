@@ -67,12 +67,15 @@ def add_stack_resources(state: dict, spatial: list[str]) -> list[str]:
     if "stack_size" not in state:
         return spatial
     pointer = state.get("stack_pointer", "sp")
-    if pointer not in gen_boundary.explicit_arguments(state["binders"]).split():
+    has_exact = any(atom.startswith('"x2" ↦ᵣ') for atom in spatial)
+    if not re.fullmatch(r"[A-Za-z_][\w']*", pointer) and not has_exact:
+        raise ValueError("a stack expression requires exact x2 ownership")
+    if (re.fullmatch(r"[A-Za-z_][\w']*", pointer)
+            and pointer not in gen_boundary.explicit_arguments(state["binders"]).split()):
         arguments = state.get("arguments", gen_boundary.explicit_arguments(state["binders"]))
         state["binders"] += f" ({pointer} : bv 64)"
         state["arguments"] = (arguments + f" {pointer}").strip()
     exact = f'"x2" ↦ᵣ RVal_Bits (bv_to_bvn {pointer})'
-    has_exact = any(atom.startswith('"x2" ↦ᵣ') for atom in spatial)
     if not has_exact:
         spatial = [re.sub(r'\(KindReg "x2", BitsShape 64\);?\s*', '', atom)
                    for atom in spatial]

@@ -237,7 +237,7 @@ def flat_state_tactics(prefix: str, root: Path) -> str:
     for module, source in [("", prefix), *loaded.items()]:
         for name in re.findall(r"(?:Definition|Fixpoint)\s+(\w+)\b", source):
             if not any(part in name.lower() for part in
-                       ("frame", "scratch", "handoff", "event", "stack", "register", "untouched")):
+                       ("frame", "scratch", "handoff", "event", "stack", "register", "untouched", "tailwords", "memory", "slots")):
                 continue
             constant = (module + "." if module else "") + name
             unfold = name + "_unfold"
@@ -280,7 +280,17 @@ def require_call_resources(atoms: list[str]) -> None:
         raise ValueError("missing top-level reg_col zesu_ram_sys_regs")
     if not any(atom.startswith("reg_col ") and "tmp_registers" in atom
                for atom in atoms):
-        raise ValueError("missing top-level temporary register collection")
+        declared = set()
+        for atom in atoms:
+            direct = re.match(r'^"(x\d+)"\s*↦ᵣ', atom)
+            if direct:
+                declared.add(direct[1])
+            elif atom.startswith("reg_col "):
+                declared.update(re.findall(r'KindReg "(x\d+)"', atom))
+        # Keep mixed and conditional collections exactly as captured.
+        # A generated proof must establish the required branch ownership.
+        if not set(TMP_REGISTERS).issubset(declared):
+            raise ValueError("missing top-level temporary register collection")
 
 
 def require_open_resources(atoms: list[str], binders: str) -> None:
