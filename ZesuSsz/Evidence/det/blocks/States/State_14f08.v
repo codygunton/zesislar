@@ -9,19 +9,40 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveFieldRegion.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsSpec.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveSpec.
 
 Definition State_14f08
-    `{!islaG Sigma} `{!threadG} (sp : bv 64) (base : bv 64) (cursor : bv 64) (old_data : bv 64) (P : iProp Sigma) : iProp Sigma :=
+    `{!islaG Sigma} `{!threadG} (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction) (processed : list writeSuccessTransaction) (transaction : writeSuccessTransaction) (rest : list writeSuccessTransaction) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
-   ("x10" ↦ᵣ RVal_Bits (bv_to_bvn old_data)) ∗
-   ("x11" ↦ᵣ RVal_Bits (bv_to_bvn cursor)) ∗
-   ((bv_unsigned sp + 104) ↦ₘ base) ∗
+   ("x10" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (length transactions))))) ∗
+   ("x11" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (length processed))))) ∗
+   ((bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base) ∗
    ((bv_unsigned sp + 248) ↦ₘ? 8) ∗
+   (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]) ∗
+   ((bv_unsigned sp + 120) ↦ₘ? 128) ∗
+   ((bv_unsigned sp + 256) ↦ₘ? 24) ∗
+   ((bv_unsigned sp + 1640) ↦ₘ? 256) ∗
+   (base ↦ₘ∗ bytes) ∗
+   (mmio_range (604086456 + 8) 16) ∗
+   (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1744))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 1))) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp + 1744)) 1 = Some [default 0%bv (bytes !! (288 * length processed + 264)%nat)]) (WriteSuccessOutputSemantic.writeOutputPayloadsSpec (WriteSuccessOutputDescriptors.writeSuccessOptionalU64Descriptors sp (writeSuccessTransactionChainId transaction) ++ ((sp - 16)%bv, 8%bv) :: ((sp - 32)%bv, 16%bv) :: WriteSuccessOutputDescriptors.writeSuccessOptionalU128Descriptors sp (writeSuccessTransactionGasPriorityFee transaction) ++ ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessOptionalAddressDescriptors sp (writeSuccessTransactionTo transaction) ++ ((sp - 48)%bv, 32%bv) :: ((sp - 48)%bv, 8%bv) :: (writeSuccessTransactionDataPointer transaction, Z_to_bv 64 (Z.of_nat (length (writeSuccessTransactionData transaction)))) :: ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessAccessListsDescriptors sp (writeSuccessTransactionAccessEntries transaction) ++ ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessBlobHashesDescriptors sp (length (writeSuccessTransactionBlobHashes transaction)) ++ ((sp - 32)%bv, 16%bv) :: ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessAuthorizationsDescriptors sp (length (writeSuccessTransactionAuthorizations transaction)) ++ [((sp - 16)%bv, 8%bv); ((sp - 48)%bv, 32%bv); ((sp - 48)%bv, 32%bv)]) (map WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessEncodeFragments.writeSuccessOptionalFragments WriteSuccessObservation.writeSuccessEncodeU64 (WriteSuccessRepresentation.writeSuccessOptionalWordValue (writeSuccessTransactionChainId transaction)) ++ WriteSuccessObservation.writeSuccessEncodeU64 (bv_unsigned (writeSuccessTransactionNonce transaction)) :: WriteSuccessObservation.writeSuccessEncodeU128 (WriteSuccessRepresentation.writeSuccessPairValue (writeSuccessTransactionGasPrice transaction)) :: WriteSuccessEncodeFragments.writeSuccessOptionalFragments WriteSuccessObservation.writeSuccessEncodeU128 (WriteSuccessRepresentation.writeSuccessOptionalPairValue (writeSuccessTransactionGasPriorityFee transaction)) ++ WriteSuccessObservation.writeSuccessEncodeU64 (bv_unsigned (writeSuccessTransactionGasLimit transaction)) :: WriteSuccessEncodeFragments.writeSuccessOptionalBytesFragments (option_map WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionTo transaction)) ++ WriteSuccessObservation.writeSuccessEncodeU256 (WriteSuccessRepresentation.writeSuccessWordsValue (writeSuccessTransactionValue transaction)) :: WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionData transaction)))) :: WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionData transaction) :: WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (map WriteSuccessRepresentation.writeSuccessAccessObservation (writeSuccessTransactionAccessEntries transaction)))) :: concat (map WriteSuccessEncodeFragments.writeSuccessAccessFragments (map WriteSuccessRepresentation.writeSuccessAccessObservation (writeSuccessTransactionAccessEntries transaction))) ++ WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (map WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionBlobHashes transaction)))) :: concat (map (λ bytes0 : Endpoints.ByteString, [bytes0]) (map WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionBlobHashes transaction))) ++ WriteSuccessObservation.writeSuccessEncodeU128 (WriteSuccessRepresentation.writeSuccessPairValue (writeSuccessTransactionMaxFeePerBlobGas transaction)) :: WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (map WriteSuccessRepresentation.writeSuccessAuthorizationObservationOfBytes (writeSuccessTransactionAuthorizations transaction)))) :: concat (map WriteSuccessEncodeFragments.writeSuccessAuthorizationFragments (map WriteSuccessRepresentation.writeSuccessAuthorizationObservationOfBytes (writeSuccessTransactionAuthorizations transaction))) ++ [WriteSuccessObservation.writeSuccessEncodeU64 (bv_unsigned (writeSuccessTransactionV transaction)); WriteSuccessObservation.writeSuccessEncodeU256 (WriteSuccessRepresentation.writeSuccessWordsValue (writeSuccessTransactionR transaction)); WriteSuccessObservation.writeSuccessEncodeU256 (WriteSuccessRepresentation.writeSuccessWordsValue (writeSuccessTransactionS transaction))])) (WriteSuccessOutputSemantic.writeOutputPayloadsSpec (WriteSuccessOutputDescriptors.writeSuccessTransactionsDescriptors sp rest) (writeSuccessExactTransactionsPayloads rest) tail))))) ∗
+   ((bv_unsigned sp - 48) ↦ₘ? 48) ∗
+   ((bv_unsigned sp + 112) ↦ₘ Z_to_bv 64 (Z.of_nat (length transactions))) ∗
+   (writeSuccessTransactionsOwn transactions) ∗
    (P) ∗
-   (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
-   (reg_col [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    (⌜True⌝) ∗
+   (⌜True⌝) ∗
+   (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗
+   (⌜True⌝) ∗
+   (⌜True⌝) ∗
+   (⌜transactionLoopSourceFacts sp base transactions processed (transaction :: rest) bytes⌝) ∗
+   (⌜(288 * length processed + 288 <= length bytes)%nat⌝) ∗
+   (⌜(base + Z.of_nat (length bytes) < machineRamEnd defaultMap)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap ≤ base)%Z⌝) ∗
+   (⌜base `mod` 8 = 0⌝) ∗
    (⌜(bv_unsigned sp + 256 < machineRamEnd defaultMap)%Z⌝) ∗
    (⌜(mapRamBase defaultMap ≤ bv_unsigned sp)%Z⌝) ∗
    (⌜(bv_unsigned sp `mod` 8 = 0)%Z⌝) ∗
