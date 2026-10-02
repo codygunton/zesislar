@@ -1,0 +1,7 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,ownershipf15,0x14e78,4,call:784(ra) # 10190 <write_output>,block_14e78,closed,4,,,,,,7.1,6.9,1031,300,,0x14e88
+A,ownershipf15,0x151b4,4,call:-1360(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,memory,1,,0x151b4,"mv a0, s0",other,,60.1,59.2,6188,300,,0x151c4
+A,ownershipf15,0x15678,5,call:1676(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,stalled,2,C1,0x1567c,"ld s1, 0x468(sp)",load,"∃ x : spec *ₗ (), mmio_range (604086456 + 8) 16 ∗",11.0,10.5,1330,300,,0x1568c
+A,ownershipf15,0x15940,4,call:712(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,infer_boundary,stalled,3,C1,0x15948,"auipc ra, 0",call,"∃ x : spec *ₗ list ByteListItem *ₗ (),",7.1,6.3,1284,300,,0x15950
+A,ownershipf15,0x15950,4,call:696(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,infer_boundary,stalled,3,C1,0x15958,"auipc ra, 0",call,"∃ x : spec *ₗ list ByteListItem *ₗ (),",7.0,6.2,1285,300,,0x15960
+A,ownershipf15,0x15960,3,call:940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,stalled,2,C1,0x15964,"auipc ra, 0",call,"∃ x : spec *ₗ (), mmio_range (604086456 + 8) 16 ∗",6.0,5.2,1027,300,,0x1596c
