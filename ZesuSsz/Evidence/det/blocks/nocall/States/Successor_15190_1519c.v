@@ -43,9 +43,9 @@ Global Instance zesu_sealed_Successor_15190_1519cMemory `{!islaG Sigma} `{!threa
 
 Definition Successor_15190_1519c
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (first : bv 64) (second : bv 64) (w0 : bv 64) (w1 : bv 64) (w2 : bv 64) (w3 : bv 64) (old13 : bv 64) (last : bv 32) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
-  (("x1" ↦ᵣ RVal_Bits (bv_to_bvn (BV 64 86416))) ∗
-   ("x10" ↦ᵣ RVal_Bits (bv_to_bvn (sp + 1744))) ∗
-   ("x11" ↦ᵣ RVal_Bits (bv_to_bvn (BV 64 20))) ∗
+  ((reg_col [(KindReg "x1", BitsShape 64)]) ∗
+   (reg_col [(KindReg "x10", BitsShape 64)]) ∗
+   (reg_col [(KindReg "x11", BitsShape 64)]) ∗
    (bv_unsigned (sp + 1744) ↦ₘ∗ WordPayloads.words_20_payload first second last) ∗
    (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 48))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 48)) 32 = Some (WriteSuccessExactEncoderU256Spec.writeSuccessU256WordsPayload w0 w1 w2 w3)) tail))) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
@@ -55,7 +55,7 @@ Definition Successor_15190_1519c
    ("x20" ↦ᵣ RVal_Bits (bv_to_bvn w1)) ∗
    ("x21" ↦ᵣ RVal_Bits (bv_to_bvn w3)) ∗
    (P) ∗
-   (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn (BV 64 604086456))); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
+   (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
    (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    (True) ∗
    (reg_col zesu_ram_sys_regs) ∗

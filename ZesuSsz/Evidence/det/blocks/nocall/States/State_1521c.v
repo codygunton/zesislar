@@ -25,7 +25,7 @@ Definition State_1521c
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (bytes : list (bv 8)) (P : iProp Sigma) : iProp Sigma :=
   ((reg_col zesu_ram_sys_regs) ∗
    ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
-   ("x10" ↦ᵣ RVal_Bits (bv_to_bvn data)) ∗
+   (reg_col [(KindReg "x10", BitsShape 64)]) ∗
    (reg_col [(KindReg "x22", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
    ((bv_unsigned sp + 1744) ↦ₘ∗ bytes) ∗
    (P) ∗

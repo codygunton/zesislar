@@ -417,3 +417,17 @@ class BlockGeneration(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ExtraLeaders(unittest.TestCase):
+    def test_split_preserves_instructions_and_final_successors(self):
+        block = {"start": 0x15754, "end": 0x157d4, "successors": ["0x15800"],
+                 "instructions": [{"pc": pc} for pc in range(0x15754, 0x157d4, 4)]}
+        parts = gen_block.split_blocks([block], {0x157d0})
+        self.assertEqual(parts[0]["end"], 0x157d0)
+        self.assertEqual(parts[0]["successors"], ["0x157d0"])
+        self.assertEqual(parts[1]["successors"], block["successors"])
+        self.assertEqual([i for part in parts for i in part["instructions"]],
+                         block["instructions"])
+        with self.assertRaisesRegex(ValueError, "instruction boundary"):
+            gen_block.split_blocks([block], {0x157cf})

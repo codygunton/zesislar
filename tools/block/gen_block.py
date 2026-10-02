@@ -104,7 +104,9 @@ def state_source(leader: int, state: dict) -> str:
     spatial = gen_boundary.preserve_register_precision(
         spatial, (set(state.get("entry_unknown_registers", []))
                   | ({"x1", "x5", "x10", "x11"}
-                     if state.get("return_point") else set()))
+                     if (state.get("return_point")
+                         or leader in {pc + 4 for pc in call_sites.call_sites()})
+                     else set()))
         - ({"x2"} if "stack_size" in state else set()))
     deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
     if deduplicated != spatial:
@@ -112,7 +114,9 @@ def state_source(leader: int, state: dict) -> str:
     spatial = gen_boundary.complete_register_file(deduplicated)
     source = gen_boundary.boundary_source(
         state.get("name", f"State_{leader:x}"), state["binders"], coq, spatial,
-        seal=len(spatial) > gen_boundary.RULE_20_CONJUNCTS,
+        seal=(len(spatial) > gen_boundary.RULE_20_CONJUNCTS
+              and not any(leader <= pc < address(state.get("block_exit", leader))
+                          for pc in call_sites.call_sites())),
         call_resources=True, sorts=state.get("local_sorts", state.get("sorts")),
         witnesses=state.get("witnesses"))
     imports = ["ZesuSsz.Automation.All", "ZesuSsz.Automation.SealedCoverage",
@@ -199,11 +203,39 @@ def compile_module(block_path: Path, state_paths: list[Path], build_dir: Path,
     return result
 
 
+def split_blocks(blocks: list[dict], extra_leaders: set[int]) -> list[dict]:
+    """Split pinned instruction lists at explicit additional leaders."""
+    result = []
+    found = set()
+    for block in blocks:
+        start, end = address(block["start"]), address(block["end"])
+        cuts = sorted(point for point in extra_leaders if start <= point < end)
+        instruction_addresses = {address(item["pc"]) for item in block["instructions"]}
+        for point in cuts:
+            if point not in instruction_addresses:
+                raise ValueError(f"extra leader {hex(point)} is not an instruction boundary")
+        found.update(cuts)
+        boundaries = sorted({start, *cuts, end})
+        for left, right in zip(boundaries, boundaries[1:]):
+            part = dict(block, start=left, end=right, id=hex(left))
+            part["instructions"] = [item for item in block["instructions"]
+                                    if left <= address(item["pc"]) < right]
+            part["instructionCount"] = len(part["instructions"])
+            if right != end:
+                part["successors"] = [hex(right)]
+            result.append(part)
+    if extra_leaders - found:
+        raise ValueError("extra leaders outside pinned blocks: " +
+                         ", ".join(hex(point) for point in sorted(extra_leaders - found)))
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cfg", type=Path, default=Path("build/endpoint-cfg/zesu-cfg.json"))
     parser.add_argument("--states", type=Path, required=True)
     parser.add_argument("--leader", action="append", default=[])
+    parser.add_argument("--extra-leader", action="append", default=[])
     parser.add_argument("--out-dir", type=Path, default=STAGING)
     parser.add_argument("--build-dir", type=Path, default=BUILD_DIR)
     parser.add_argument("--seconds", type=int, default=300)
@@ -216,6 +248,7 @@ def main() -> int:
     cfg = json.loads(args.cfg.read_text())
     blocks = next(function["blocks"] for function in cfg["functions"]
                   if address(function["start"]) == 0x14d30)
+    blocks = split_blocks(blocks, {address(value) for value in args.extra_leader})
     leaders = {address(value) for value in args.leader}
     if leaders:
         blocks = [block for block in blocks if address(block["start"]) in leaders]
