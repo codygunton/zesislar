@@ -1,0 +1,263 @@
+[
+  {
+    "entry": "0x1519c",
+    "state_entry": "0x1519c",
+    "leader": "0x15190",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (old_ra : bv 64) (old_x5 : bv 64) (old_data : bv 64) (old_size : bv 64) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Export.Snapshots"
+    ],
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "(islaG Sigma)"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "(bv 64)"
+      ],
+      [
+        "old_ra",
+        "(bv 64)"
+      ],
+      [
+        "old_x5",
+        "(bv 64)"
+      ],
+      [
+        "old_data",
+        "(bv 64)"
+      ],
+      [
+        "old_size",
+        "(bv 64)"
+      ],
+      [
+        "payload",
+        "(list (bv 8))"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "(iProp Sigma)"
+      ],
+      [
+        "b8",
+        "(bv 64)"
+      ],
+      [
+        "b9",
+        "(bv 64)"
+      ],
+      [
+        "b10",
+        "(bv 64)"
+      ],
+      [
+        "b11",
+        "(bv 64)"
+      ],
+      [
+        "b12",
+        "(bv 64)"
+      ],
+      [
+        "b13",
+        "(bv 64)"
+      ],
+      [
+        "b14",
+        "(bv 64)"
+      ],
+      [
+        "b15",
+        "(bv 64)"
+      ],
+      [
+        "b16",
+        "(bv 64)"
+      ],
+      [
+        "b17",
+        "(bv 64)"
+      ],
+      [
+        "b18",
+        "(bv 64)"
+      ],
+      [
+        "b19",
+        "(bv 64)"
+      ],
+      [
+        "b2",
+        "(bv 64)"
+      ],
+      [
+        "b3",
+        "(bv 64)"
+      ],
+      [
+        "b",
+        "(bv 64)"
+      ],
+      [
+        "b0",
+        "(bv 64)"
+      ],
+      [
+        "b1",
+        "(bv 64)"
+      ],
+      [
+        "b4",
+        "(bv 64)"
+      ],
+      [
+        "b5",
+        "(bv 64)"
+      ],
+      [
+        "b6",
+        "(bv 64)"
+      ],
+      [
+        "b7",
+        "(bv 64)"
+      ],
+      [
+        "b20",
+        "(bv 64)"
+      ],
+      [
+        "b21",
+        "(bv 64)"
+      ],
+      [
+        "H0",
+        "((bv_unsigned sp `mod` 16)%Z = 0%Z)"
+      ],
+      [
+        "H1",
+        "(0 ≤ bv_unsigned sp - 16)%Z"
+      ],
+      [
+        "H2",
+        "(bv_unsigned sp + 1764 < 0 + 1073741824)%Z"
+      ],
+      [
+        "H3",
+        "(length payload = 20%nat)"
+      ],
+      [
+        "b22",
+        "(bv 64)"
+      ],
+      [
+        "H4",
+        "(Z.land (bv_unsigned b22) 131072 = 0%Z)"
+      ]
+    ],
+    "local_sorts": {
+      "H4": "Prop",
+      "b22": "Type",
+      "H3": "Prop",
+      "H2": "Prop",
+      "H1": "Prop",
+      "H0": "Prop",
+      "b21": "Type",
+      "b20": "Type",
+      "b7": "Type",
+      "b6": "Type",
+      "b5": "Type",
+      "b4": "Type",
+      "b1": "Type",
+      "b0": "Type",
+      "b": "Type",
+      "b3": "Type",
+      "b2": "Type",
+      "b19": "Type",
+      "b18": "Type",
+      "b17": "Type",
+      "b16": "Type",
+      "b15": "Type",
+      "b14": "Type",
+      "b13": "Type",
+      "b12": "Type",
+      "b11": "Type",
+      "b10": "Type",
+      "b9": "Type",
+      "b8": "Type",
+      "P": "Type",
+      "tail": "Type",
+      "payload": "Type",
+      "old_size": "Type",
+      "old_data": "Type",
+      "old_x5": "Type",
+      "old_ra": "Type",
+      "sp": "Type",
+      "H": "Type",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "persistent": [
+      "instr_lookup_resources lookup",
+      "spec_instr_resources",
+      "mmio_range (604086456 + 8) 16"
+    ],
+    "spatial": [
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "P",
+      "\"x3\" ↦ᵣ RVal_Bits b",
+      "\"x4\" ↦ᵣ RVal_Bits b0",
+      "\"x1\" ↦ᵣ RVal_Bits b1",
+      "\"x12\" ↦ᵣ RVal_Bits b4",
+      "\"x13\" ↦ᵣ RVal_Bits b5",
+      "\"x14\" ↦ᵣ RVal_Bits b6",
+      "\"x15\" ↦ᵣ RVal_Bits b7",
+      "\"x16\" ↦ᵣ RVal_Bits b20",
+      "\"x17\" ↦ᵣ RVal_Bits b21",
+      "\"x8\" ↦ᵣ RVal_Bits b8",
+      "\"x9\" ↦ᵣ RVal_Bits b9",
+      "\"x18\" ↦ᵣ RVal_Bits b10",
+      "\"x19\" ↦ᵣ RVal_Bits b11",
+      "\"x20\" ↦ᵣ RVal_Bits b12",
+      "\"x21\" ↦ᵣ RVal_Bits b13",
+      "\"x22\" ↦ᵣ RVal_Bits b14",
+      "\"x23\" ↦ᵣ RVal_Bits b15",
+      "\"x24\" ↦ᵣ RVal_Bits b16",
+      "\"x25\" ↦ᵣ RVal_Bits b17",
+      "\"x26\" ↦ᵣ RVal_Bits b18",
+      "\"x27\" ↦ᵣ RVal_Bits b19",
+      "\"x10\" ↦ᵣ RVal_Bits b2",
+      "\"x11\" ↦ᵣ RVal_Bits b3",
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "spec_trace tail",
+      "bv_unsigned (sp + 1744) ↦ₘ∗ payload",
+      "True",
+      "reg_col zesu_ram_sys_regs"
+    ],
+    "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nsp : (bv 64)\nold_ra : (bv 64)\nold_x5 : (bv 64)\nold_data : (bv 64)\nold_size : (bv 64)\npayload : (list (bv 8))\ntail : spec\nP : (iProp Sigma)\nb8 : (bv 64)\nb9 : (bv 64)\nb10 : (bv 64)\nb11 : (bv 64)\nb12 : (bv 64)\nb13 : (bv 64)\nb14 : (bv 64)\nb15 : (bv 64)\nb16 : (bv 64)\nb17 : (bv 64)\nb18 : (bv 64)\nb19 : (bv 64)\nb2 : (bv 64)\nb3 : (bv 64)\nb : (bv 64)\nb0 : (bv 64)\nb1 : (bv 64)\nb4 : (bv 64)\nb5 : (bv 64)\nb6 : (bv 64)\nb7 : (bv 64)\nb20 : (bv 64)\nb21 : (bv 64)\nH0 : ((bv_unsigned sp `mod` 16)%Z = 0%Z)\nH1 : (0 ≤ bv_unsigned sp - 16)%Z\nH2 : (bv_unsigned sp + 1764 < 0 + 1073741824)%Z\nH3 : (length payload = 20%nat)\nb22 : (bv 64)\nH4 : (Z.land (bv_unsigned b22) 131072 = 0%Z)\n============================\n_ : instr_lookup_resources lookup\n_ : spec_instr_resources\n_ : mmio_range (604086456 + 8) 16\n--------------------------------------□\n_ : reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])\n_ : P\n_ : \"x3\" ↦ᵣ RVal_Bits b\n_ : \"x4\" ↦ᵣ RVal_Bits b0\n_ : \"x1\" ↦ᵣ RVal_Bits b1\n_ : \"x12\" ↦ᵣ RVal_Bits b4\n_ : \"x13\" ↦ᵣ RVal_Bits b5\n_ : \"x14\" ↦ᵣ RVal_Bits b6\n_ : \"x15\" ↦ᵣ RVal_Bits b7\n_ : \"x16\" ↦ᵣ RVal_Bits b20\n_ : \"x17\" ↦ᵣ RVal_Bits b21\n_ : \"x8\" ↦ᵣ RVal_Bits b8\n_ : \"x9\" ↦ᵣ RVal_Bits b9\n_ : \"x18\" ↦ᵣ RVal_Bits b10\n_ : \"x19\" ↦ᵣ RVal_Bits b11\n_ : \"x20\" ↦ᵣ RVal_Bits b12\n_ : \"x21\" ↦ᵣ RVal_Bits b13\n_ : \"x22\" ↦ᵣ RVal_Bits b14\n_ : \"x23\" ↦ᵣ RVal_Bits b15\n_ : \"x24\" ↦ᵣ RVal_Bits b16\n_ : \"x25\" ↦ᵣ RVal_Bits b17\n_ : \"x26\" ↦ᵣ RVal_Bits b18\n_ : \"x27\" ↦ᵣ RVal_Bits b19\n_ : \"x10\" ↦ᵣ RVal_Bits b2\n_ : \"x11\" ↦ᵣ RVal_Bits b3\n_ : \"x2\" ↦ᵣ RVal_Bits sp\n_ : spec_trace tail\n_ : bv_unsigned (sp + 1744) ↦ₘ∗ payload\n_ : True\n_ : reg_col zesu_ram_sys_regs",
+    "conclusion": "find_in_context (FindInstrKind 86428 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 86428) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 86428)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "raw_goal": "goal 1 is:\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, old_ra, old_x5, old_data, old_size : bv 64\n  payload : list (bv 8)\n  tail : spec\n  P : iProp Sigma\n  b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b2, b3, b, b0, b1, b4, b5, b6, b7, b20, b21 : bv 64\n  H0 : (bv_unsigned sp `mod` 16)%Z = 0%Z\n  H1 : (0 ≤ bv_unsigned sp - 16)%Z\n  H2 : (bv_unsigned sp + 1764 < 0 + 1073741824)%Z\n  H3 : length payload = 20\n  b22 : bv 64\n  H4 : Z.land (bv_unsigned b22) 131072 = 0%Z\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : reg_col\n        [(KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64);\n         (KindReg \"x31\", BitsShape 64)]\n  _ : P\n  _ : \"x3\" ↦ᵣ RVal_Bits b\n  _ : \"x4\" ↦ᵣ RVal_Bits b0\n  _ : \"x1\" ↦ᵣ RVal_Bits b1\n  _ : \"x12\" ↦ᵣ RVal_Bits b4\n  _ : \"x13\" ↦ᵣ RVal_Bits b5\n  _ : \"x14\" ↦ᵣ RVal_Bits b6\n  _ : \"x15\" ↦ᵣ RVal_Bits b7\n  _ : \"x16\" ↦ᵣ RVal_Bits b20\n  _ : \"x17\" ↦ᵣ RVal_Bits b21\n  _ : \"x8\" ↦ᵣ RVal_Bits b8\n  _ : \"x9\" ↦ᵣ RVal_Bits b9\n  _ : \"x18\" ↦ᵣ RVal_Bits b10\n  _ : \"x19\" ↦ᵣ RVal_Bits b11\n  _ : \"x20\" ↦ᵣ RVal_Bits b12\n  _ : \"x21\" ↦ᵣ RVal_Bits b13\n  _ : \"x22\" ↦ᵣ RVal_Bits b14\n  _ : \"x23\" ↦ᵣ RVal_Bits b15\n  _ : \"x24\" ↦ᵣ RVal_Bits b16\n  _ : \"x25\" ↦ᵣ RVal_Bits b17\n  _ : \"x26\" ↦ᵣ RVal_Bits b18\n  _ : \"x27\" ↦ᵣ RVal_Bits b19\n  _ : \"x10\" ↦ᵣ RVal_Bits b2\n  _ : \"x11\" ↦ᵣ RVal_Bits b3\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : spec_trace tail\n  _ : bv_unsigned (sp + 1744) ↦ₘ∗ payload\n  _ : True\n  _ : reg_col zesu_ram_sys_regs\n  --------------------------------------∗\n  find_in_context (FindInstrKind 86428 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 86428) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 86428)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "provenance": {
+      "proof_module": "ZesuSsz.Generated.WriteSuccess.Blocks.Block_15190",
+      "source_resource": "State_15190 sp old_ra old_x5 old_data old_size payload tail P",
+      "capture": "Native execution stopped before successor selection; complete Iris context retained.",
+      "artifact_sha256": "6e7dbca17f09a653268c750facbb7ecc40844173809ad2a02c8a9f67326906ce",
+      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. The entry memory seal opens through its ZesuSealed instance before capture. Each array remains whole."
+    }
+  }
+]

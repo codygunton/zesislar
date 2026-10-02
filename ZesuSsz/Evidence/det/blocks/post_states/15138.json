@@ -1,0 +1,112 @@
+[
+  {
+    "entry": "0x15148",
+    "state_entry": "0x15148",
+    "leader": "0x15138",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall"
+    ],
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "(islaG Sigma)"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "(bv 64)"
+      ],
+      [
+        "value",
+        "(bv 64)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "(iProp Sigma)"
+      ],
+      [
+        "H0",
+        "((bv_unsigned sp `mod` 16)%Z = 0%Z)"
+      ],
+      [
+        "H1",
+        "(0 ≤ bv_unsigned sp - 0)%Z"
+      ],
+      [
+        "H2",
+        "(bv_unsigned sp < 0 + 1073741824)%Z"
+      ],
+      [
+        "H3",
+        "(0 ≤ bv_unsigned sp - 16)%Z"
+      ],
+      [
+        "b",
+        "(bv 64)"
+      ],
+      [
+        "H4",
+        "(Z.land (bv_unsigned b) 131072 = 0%Z)"
+      ]
+    ],
+    "local_sorts": {
+      "H4": "Prop",
+      "b": "Type",
+      "H3": "Prop",
+      "H2": "Prop",
+      "H1": "Prop",
+      "H0": "Prop",
+      "P": "Type",
+      "tail": "Type",
+      "value": "Type",
+      "sp": "Type",
+      "H": "Type",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "persistent": [
+      "instr_lookup_resources lookup",
+      "spec_instr_resources",
+      "mmio_range (604086456 + 8) 16"
+    ],
+    "spatial": [
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "reg_col [(KindReg \"x1\", BitsShape 64)]",
+      "reg_col [(KindReg \"x11\", BitsShape 64)]",
+      "reg_col [(KindReg \"x10\", BitsShape 64)]",
+      "\"x26\" ↦ᵣ RVal_Bits value",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (8%bv : bv 64)) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+      "P",
+      "instr_pre 86356 (WriteSuccessExactTransactionsGasLimitCall.transactionGasLimitPost sp value tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp - 16) ↦ₘ? 16",
+      "True",
+      "reg_col zesu_ram_sys_regs"
+    ],
+    "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nsp : (bv 64)\nvalue : (bv 64)\ntail : spec\nP : (iProp Sigma)\nH0 : ((bv_unsigned sp `mod` 16)%Z = 0%Z)\nH1 : (0 ≤ bv_unsigned sp - 0)%Z\nH2 : (bv_unsigned sp < 0 + 1073741824)%Z\nH3 : (0 ≤ bv_unsigned sp - 16)%Z\nb : (bv 64)\nH4 : (Z.land (bv_unsigned b) 131072 = 0%Z)\n============================\n_ : instr_lookup_resources lookup\n_ : spec_instr_resources\n_ : mmio_range (604086456 + 8) 16\n--------------------------------------□\n_ : \"x2\" ↦ᵣ RVal_Bits sp\n_ : reg_col [(KindReg \"x1\", BitsShape 64)]\n_ : reg_col [(KindReg \"x11\", BitsShape 64)]\n_ : reg_col [(KindReg \"x10\", BitsShape 64)]\n_ : \"x26\" ↦ᵣ RVal_Bits value\n_ : spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (8%bv : bv 64)) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))\n_ : P\n_ : instr_pre 86356 (WriteSuccessExactTransactionsGasLimitCall.transactionGasLimitPost sp value tail P)\n_ : reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])\n_ : reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]\n_ : (bv_unsigned sp - 16) ↦ₘ? 16\n_ : True\n_ : reg_col zesu_ram_sys_regs",
+    "conclusion": "find_in_context (FindInstrKind 86344 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 86344) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 86344)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "raw_goal": "goal 1 is:\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, value : bv 64\n  tail : spec\n  P : iProp Sigma\n  H0 : (bv_unsigned sp `mod` 16)%Z = 0%Z\n  H1 : (0 ≤ bv_unsigned sp - 0)%Z\n  H2 : (bv_unsigned sp < 0 + 1073741824)%Z\n  H3 : (0 ≤ bv_unsigned sp - 16)%Z\n  b : bv 64\n  H4 : Z.land (bv_unsigned b) 131072 = 0%Z\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : reg_col [(KindReg \"x1\", BitsShape 64)]\n  _ : reg_col [(KindReg \"x11\", BitsShape 64)]\n  _ : reg_col [(KindReg \"x10\", BitsShape 64)]\n  _ : \"x26\" ↦ᵣ RVal_Bits value\n  _ : spec_trace\n        (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv)\n           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n              (λ snapshot : seq_snapshot,\n                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n                 Some\n                   [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))\n  _ : P\n  _ : instr_pre 86356 (WriteSuccessExactTransactionsGasLimitCall.transactionGasLimitPost sp value tail P)\n  _ : reg_col\n        [(KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64);\n         (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64);\n         (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64);\n         (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64);\n         (KindReg \"x27\", BitsShape 64)]\n  _ : (bv_unsigned sp - 16) ↦ₘ? 16\n  _ : True\n  _ : reg_col zesu_ram_sys_regs\n  --------------------------------------∗\n  find_in_context (FindInstrKind 86344 true)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) => \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 86344) -∗ WPasm t\n       | IKInstr None => ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 86344)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre _ P0 => P0\n       end)",
+    "provenance": {
+      "proof_module": "ZesuSsz.Generated.WriteSuccess.Blocks.Block_15138",
+      "source_resource": "State_15138 sp value tail P",
+      "capture": "Native execution stopped before successor selection; complete Iris context retained.",
+      "artifact_sha256": "6e7dbca17f09a653268c750facbb7ecc40844173809ad2a02c8a9f67326906ce",
+      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. The entry memory seal opens through its ZesuSealed instance before capture. Each array remains whole. The MMIO size value retains its explicit bv 64 type, confirmed with Set Printing All."
+    }
+  }
+]
