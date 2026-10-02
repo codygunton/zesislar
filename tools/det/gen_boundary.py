@@ -299,7 +299,8 @@ def require_open_resources(atoms: list[str], binders: str) -> None:
                 if kind == "iProp Sigma"}
     for atom in atoms:
         if (atom in abstract or atom in ("True", "emp")
-                or atom.startswith(("reg_col ", "spec_trace ", "mmio_range ",
+                or atom.startswith(("byteListItemResources ",
+                                    "reg_col ", "spec_trace ", "mmio_range ",
                                     "instr_pre ", "instr_body ", "⌜"))
                 or (atom.startswith("∀ ") and "instr_pre " in atom)
                 or re.match(r'"[^"]+"\s*(?:#\s*"[^"]+"\s*)?↦ᵣ', atom)):

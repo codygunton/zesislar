@@ -1,0 +1,20 @@
+{
+  "start": "2026-10-02T01:04:46-04:00",
+  "end": "2026-10-02T01:40:51-04:00",
+  "reasons": {
+    "launch for gate: state=held holder=worker-build-1:check-iris:/home/cody/zesislar/.worktrees/block-int-contract pid=3426553 start=2026-10-02T00:52:32-04:00": 9,
+    "reservation: class=batch coqc 48 with 3 reservations machine-wide": 1,
+    "reservation: class=batch coqc 49 machine-wide": 1,
+    "reservation launch: class=batch coqc 51 machine-wide": 1,
+    "reservation launch: class=batch coqc 50 machine-wide": 1,
+    "coqc 48 machine-wide": 7,
+    "reservation launch: class=batch coqc 48 machine-wide": 6,
+    "reservation: class=batch coqc 48 with 0 reservations machine-wide": 1,
+    "reservation: class=batch coqc 48 machine-wide": 1,
+    "reservation launch: class=batch coqc 48 with 0 reservations machine-wide": 1,
+    "reservation launch: class=batch coqc 48 with 1 reservations machine-wide": 1,
+    "reservation: class=batch coqc 48 with 1 reservations machine-wide": 1
+  },
+  "total": 31,
+  "window_includes_dependency_wait": true
+}

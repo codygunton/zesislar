@@ -102,7 +102,9 @@ def state_source(leader: int, state: dict) -> str:
         spatial = gen_boundary.strip_internal_handoffs(
             spatial, leader, int(str(state["block_exit"]), 0))
     spatial = gen_boundary.preserve_register_precision(
-        spatial, set(state.get("entry_unknown_registers", []))
+        spatial, (set(state.get("entry_unknown_registers", []))
+                  | ({"x1", "x5", "x10", "x11"}
+                     if state.get("return_point") else set()))
         - ({"x2"} if "stack_size" in state else set()))
     deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
     if deduplicated != spatial:

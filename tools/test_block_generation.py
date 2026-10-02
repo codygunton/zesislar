@@ -49,6 +49,20 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_return_point_discards_legacy_register_values(self):
+        state = {"binders": BINDERS, "spatial": [ATOMS[0], ATOMS[2]] +
+                 [f'"{register}" ↦ᵣ RVal_Bits (BV 64 8)'
+                  for register in ("x1", "x5", "x10", "x11")],
+                 "return_point": True}
+        with patch.object(gen_boundary, "boundary_source", return_value="") as boundary:
+            gen_block.state_source(0x150fc, state)
+        spatial = boundary.call_args.args[3]
+        for register in ("x1", "x5", "x10", "x11"):
+            self.assertTrue(any(f'KindReg "{register}", BitsShape 64' in atom
+                                for atom in spatial))
+            self.assertFalse(any(atom.startswith(f'"{register}" ↦ᵣ')
+                                 for atom in spatial))
+
     def test_flat_capture_opens_named_memory_without_array_splits(self):
         source = ('Definition sampleMemory := memory.\n'
                   'Definition sampleTailWords := words.\n'

@@ -129,7 +129,7 @@
     },
     "stack_size": 16,
     "stack_pointer": "(writeSuccessEntrySp witness - 2000)",
-    "normalization_error": "folded or unsupported spatial resource: byteListItemResources (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9)) (writeSuccessRawTransactions witness)"
+    "normalization_error": "folded or unsupported spatial resource: WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources (writeSuccessEntrySp witness - 2000) (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)"
   },
   {
     "entry": "0x156f4",
