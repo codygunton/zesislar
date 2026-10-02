@@ -1,0 +1,54 @@
+{
+  "root": "f15b0e67",
+  "outcomes": {
+    "stalled": 54,
+    "boundary-stall": 19,
+    "reached": 3,
+    "closed": 21,
+    "memory": 3,
+    "timeout": 2
+  },
+  "stalled_histogram": {
+    "boolean": {
+      "C1": 4
+    },
+    "bytelists": {
+      "C4": 1,
+      "unknown": 1,
+      "C1": 2
+    },
+    "bytes": {
+      "unknown": 1,
+      "C4": 5
+    },
+    "int1645": {
+      "C1": 3
+    },
+    "integer": {
+      "C1": 8,
+      "unknown": 2,
+      "C4": 1
+    },
+    "memcpy": {
+      "C2": 1,
+      "C4": 3
+    },
+    "nocall": {
+      "C3": 2,
+      "C4": 2,
+      "unknown": 3
+    },
+    "optional": {
+      "C2": 2,
+      "C1": 1
+    },
+    "u256": {
+      "C1": 6
+    },
+    "writeOutput": {
+      "C1": 1,
+      "C4": 4,
+      "C2": 1
+    }
+  }
+}

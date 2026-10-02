@@ -1,0 +1,8 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,successor_capture_f15,0x150fc,3,call:-1008(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,3,,,,,,7.0,6.5,1052,300,,0x15108
+A,successor_capture_f15,0x15148,3,call:-1084(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,3,,,,,,5.0,4.8,1026,300,,0x15154
+A,successor_capture_f15,0x151c4,3,call:-1208(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,3,,,,,,7.0,6.5,1053,300,,0x151d0
+A,successor_capture_f15,0x153c0,4,call:-1720(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,4,,,,,,7.0,6.3,1052,300,,0x153d0
+A,successor_capture_f15,0x15574,4,call:1940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,4,,,,,,8.0,7.4,1053,300,,0x15584
+A,successor_capture_f15,0x15620,3,call:1772(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,3,,,,,,7.0,6.3,1055,300,,0x1562c
+A,successor_capture_f15,0x1568c,2,branch,infer_boundary,stalled,2,unknown,0x15690,"beqz s1, 0x58",other,87772%bv = b1,10.0,9.8,1346,300,,0x156e8 0x15694

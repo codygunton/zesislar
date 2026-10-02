@@ -49,6 +49,152 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_return_point_discards_legacy_register_values(self):
+        state = {"binders": BINDERS, "spatial": [ATOMS[0], ATOMS[2]] +
+                 [f'"{register}" ↦ᵣ RVal_Bits (BV 64 8)'
+                  for register in ("x1", "x5", "x10", "x11")],
+                 "return_point": True}
+        with patch.object(gen_boundary, "boundary_source", return_value="") as boundary:
+            gen_block.state_source(0x150fc, state)
+        spatial = boundary.call_args.args[3]
+        for register in ("x1", "x5", "x10", "x11"):
+            self.assertTrue(any(f'KindReg "{register}", BitsShape 64' in atom
+                                for atom in spatial))
+            self.assertFalse(any(atom.startswith(f'"{register}" ↦ᵣ')
+                                 for atom in spatial))
+
+    def test_flat_capture_opens_named_memory_without_array_splits(self):
+        source = ('Definition sampleMemory := memory.\n'
+                  'Definition sampleTailWords := words.\n'
+                  'Definition samplePayload := payload.\n')
+        with tempfile.TemporaryDirectory() as directory:
+            tactics = gen_boundary.flat_state_tactics(source, Path(directory))
+        self.assertIn('unfold sampleMemory', tactics)
+        self.assertIn('unfold sampleTailWords', tactics)
+        self.assertNotIn('unfold samplePayload', tactics)
+        self.assertNotIn('array_split', tactics)
+
+    def test_stack_expression_keeps_existing_binders(self):
+        state = {'binders': BINDERS, 'stack_size': 16,
+                 'stack_pointer': '(entry_sp - 2000)'}
+        atoms = ['"x2" ↦ᵣ RVal_Bits (bv_to_bvn (entry_sp - 2000))']
+        result = gen_block.add_stack_resources(state, atoms)
+        self.assertEqual(state['binders'], BINDERS)
+        self.assertIn('bv_unsigned (entry_sp - 2000)', ' '.join(result))
+        with self.assertRaisesRegex(ValueError, 'exact x2 ownership'):
+            gen_block.add_stack_resources(state, [])
+
+    def test_partitioned_temporaries_keep_captured_conditional_ownership(self):
+        atoms = ['reg_col zesu_ram_sys_regs', '"x5" ↦ᵣ value',
+                 'reg_col match saved with | [] => [] | _ => ['
+                 + '; '.join(f'(KindReg "{r}", BitsShape 64)'
+                             for r in gen_boundary.TMP_REGISTERS[1:]) + '] end']
+        original = list(atoms)
+        gen_boundary.require_call_resources(atoms)
+        self.assertEqual(atoms, original)
+        with self.assertRaisesRegex(ValueError, 'temporary register collection'):
+            gen_boundary.require_call_resources(atoms[:-1])
+
+    def test_stack_boundary_replaces_unknown_x2_and_keeps_arguments(self):
+        state = {'binders': BINDERS, 'stack_size': 16}
+        atoms = ['reg_col [(KindReg "x1", BitsShape 64); (KindReg "x2", BitsShape 64)]']
+        result = gen_block.add_stack_resources(state, atoms)
+        self.assertEqual(state['arguments'], 'tail sp')
+        self.assertIn('(sp : bv 64)', state['binders'])
+        self.assertNotIn('(KindReg "x2", BitsShape 64)', ' '.join(result))
+        self.assertIn('"x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)', result)
+        self.assertIn('⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝', result)
+        self.assertEqual(gen_block.add_stack_resources(state, result), result)
+        self.assertIn('(bv_unsigned sp - 16) ↦ₘ? 16', result)
+
+    def test_supplied_successor_removes_only_its_legacy_continuation(self):
+        state = {'binders': BINDERS, 'spatial': ATOMS +
+                 ['instr_pre 86280 P', 'instr_pre 89360 P'],
+                 'supplied_successors': ['0x15108']}
+        with patch.object(gen_boundary, 'boundary_source', return_value='') as boundary:
+            gen_block.state_source(0x150fc, state)
+        self.assertNotIn('instr_pre 86280 P', boundary.call_args.args[3])
+        self.assertIn('instr_pre 89360 P', boundary.call_args.args[3])
+
+    def test_post_state_removes_unused_anonymous_facts_and_keeps_memory_open(self):
+        state = {'binders': BINDERS, 'spatial': ATOMS + ['"x8" ↦ᵣ RVal_Bits b'],
+                 'coq': [('b', 'bv 64'), ('H0', 'bv_unsigned b < 100')],
+                 'post_state': True, 'seal_memory': False}
+        with patch.object(gen_boundary, 'boundary_source', return_value='') as boundary:
+            gen_block.state_source(0x15108, state)
+        self.assertEqual(boundary.call_args.args[2], [])
+        self.assertFalse(boundary.call_args.kwargs['seal'])
+
+    def test_full_register_file_preserves_exact_values_and_does_not_duplicate(self):
+        atoms = ATOMS + ['"x2" ↦ᵣ RVal_Bits sp', '"x12" ↦ᵣ RVal_Bits argument']
+        completed = gen_boundary.complete_register_file(atoms)
+        self.assertIn('"x12" ↦ᵣ RVal_Bits argument', completed)
+        self.assertNotIn('(KindReg "x12", BitsShape 64)', completed[-1])
+        self.assertNotIn('(KindReg "x5", BitsShape 64)', completed[-1])
+        self.assertEqual(gen_boundary.complete_register_file(completed), completed)
+
+    def test_conditional_register_collection_is_preserved(self):
+        atom = 'reg_col (match saved with [] => [(KindReg "x8", BitsShape 64)] | _ => [] end)'
+        self.assertIn(atom, gen_boundary.complete_register_file([atom]))
+
+    def test_exact_register_ownership_removes_only_bits_duplicate(self):
+        atoms = ['"x5" ↦ᵣ RVal_Bits value',
+                 'reg_col [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64)]']
+        result = gen_boundary.deduplicate_register_shapes(atoms)
+        self.assertEqual(result, [atoms[0], 'reg_col [(KindReg "x6", BitsShape 64)]'])
+
+    def test_captured_literal_temporaries_keep_their_shapes(self):
+        atom = 'reg_col [' + '; '.join('(KindReg "' + r + '", BitsShape 64)'
+                                      for r in gen_boundary.TMP_REGISTERS) + ']'
+        normalized = gen_boundary.normalize_temporaries([atom])
+        self.assertIn('tmp_registers', normalized[0])
+        self.assertEqual(normalized[0].count('BitsShape 64'), 7)
+
+    def test_successor_precision_keeps_known_stack_pointer(self):
+        atoms = ['"x2" ↦ᵣ RVal_Bits sp',
+                 'reg_col [(KindReg "x8", ExactShape (RVal_Bits value))]']
+        self.assertEqual(gen_boundary.preserve_register_precision(atoms, {"x8"}),
+                         [atoms[0], 'reg_col [(KindReg "x8", BitsShape 64)]'])
+
+    def test_named_successor_state_uses_its_recorded_name(self):
+        state = {"name": "Successor_15118_1513c", "binders": BINDERS, "arguments": "tail"}
+        self.assertEqual(gen_block.state_application(0x1513c, state),
+                         "Successor_15118_1513c tail")
+
+    def test_post_state_anonymous_register_uses_bits_shape(self):
+        atoms = ['reg_col [(KindReg "x8", ExactShape (RVal_Bits b))]',
+                 '"x10" ↦ᵣ RVal_Bits returned']
+        result = gen_boundary.post_state_register_precision(
+            atoms, BINDERS, [('b', 'bv 64'), ('returned', 'bv 64')])
+        self.assertIn('reg_col [(KindReg "x8", BitsShape 64)]', result)
+        self.assertIn('reg_col [(KindReg "x10", BitsShape 64)]', result)
+
+    def test_post_state_keeps_parameters_and_memory_related_values(self):
+        atoms = ['"x10" ↦ᵣ RVal_Bits value', '"x11" ↦ᵣ RVal_Bits loaded',
+                 '(bv_unsigned sp + 8) ↦ₘ loaded']
+        result = gen_boundary.post_state_register_precision(
+            atoms, BINDERS + ' (value : bv 64)',
+            [('value', 'bv 64'), ('loaded', 'bv 64')])
+        self.assertEqual(result, atoms)
+
+    def test_internal_handoffs_do_not_close_the_block(self):
+        atoms = ['instr_pre (88368 + 4) P', 'instr_pre 88380 Q', 'instr_pre 88384 R']
+        self.assertEqual(gen_boundary.strip_internal_handoffs(atoms, 88368, 88384), [atoms[2]])
+
+    def test_duplicate_register_ownership_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "duplicate register.*x5"):
+            gen_boundary.complete_register_file(ATOMS + ['"x5" ↦ᵣ RVal_Bits value'])
+
+    def test_recorded_witness_replaces_memory_address_and_dependent_facts(self):
+        source = gen_boundary.boundary_source(
+            "State", BINDERS + ' (sp : bv 64)',
+            [('pointer', 'bv 64'), ('H0', 'bv_unsigned pointer = bv_unsigned sp + 1000')],
+            ['bv_unsigned pointer ↦ₘ? 32'], seal=False,
+            sorts={'pointer': 'Type', 'H0': 'Prop'}, witnesses={'pointer': '(sp + 1000)%bv'})
+        self.assertNotIn('∃ pointer', source)
+        self.assertIn('bv_unsigned ((sp + 1000)%bv) ↦ₘ? 32', source)
+        self.assertNotIn('bv_unsigned pointer', source)
+
     def test_seal_contains_only_memory_and_declares_coverage(self):
         atoms = ATOMS + ['(base + 8) ↦ₘ∗ take 8 bytes', 'base ↦ₘ word',
                          '(base + 16) ↦ₘ? 8', '⌜base >= 0⌝']
@@ -61,7 +207,9 @@ class StatePartition(unittest.TestCase):
         self.assertNotIn("⌜base", memory)
         self.assertIn("ZesuSealed", memory)
         self.assertIn("1 * Z.of_nat (length (take 8 bytes))", memory)
-        self.assertIn("(base, (base) + (8))", memory)
+        self.assertNotIn("base ↦ₘ word", memory)
+        self.assertIn("base ↦ₘ word", state)
+        self.assertIn("((base + 16), ((base + 16)) + (8))", memory)
         self.assertIn("Global Opaque StateMemory.", memory)
         self.assertNotIn("Global Opaque State.", source)
         self.assertIn("reg_col zesu_ram_sys_regs", state)
@@ -219,6 +367,16 @@ class StopInference(unittest.TestCase):
 
 
 class BlockGeneration(unittest.TestCase):
+    def test_unreachable_successor_uses_false_without_a_state_import(self):
+        states = {0x14d30: {'binders': BINDERS, 'spatial': ATOMS},
+                  0x14d34: {'outcome': 'unreachable-successor'}}
+        block = {'start': 0x14d30, 'end': 0x14d34,
+                 'successors': ['0x14d34']}
+        with patch.object(call_sites, 'call_sites', return_value={}):
+            source, _ = gen_block.generate(block, states)
+        self.assertIn('instr_pre 0x14d34\n    (False)', source)
+        self.assertNotIn('States.State_14d34', source)
+
     def test_dune_launch_removes_credentials(self):
         with patch.dict(os.environ, {'ARISTOTLE_API_KEY': 'test-a',
                                      'OPEN_ROUTER_API_KEY': 'test-b',
@@ -296,3 +454,17 @@ class BlockGeneration(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ExtraLeaders(unittest.TestCase):
+    def test_split_preserves_instructions_and_final_successors(self):
+        block = {"start": 0x15754, "end": 0x157d4, "successors": ["0x15800"],
+                 "instructions": [{"pc": pc} for pc in range(0x15754, 0x157d4, 4)]}
+        parts = gen_block.split_blocks([block], {0x157d0})
+        self.assertEqual(parts[0]["end"], 0x157d0)
+        self.assertEqual(parts[0]["successors"], ["0x157d0"])
+        self.assertEqual(parts[1]["successors"], block["successors"])
+        self.assertEqual([i for part in parts for i in part["instructions"]],
+                         block["instructions"])
+        with self.assertRaisesRegex(ValueError, "instruction boundary"):
+            gen_block.split_blocks([block], {0x157cf})

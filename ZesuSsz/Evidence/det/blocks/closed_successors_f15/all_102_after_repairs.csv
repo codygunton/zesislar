@@ -1,0 +1,103 @@
+group,leader,n,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,kept,before_result,rerun_sha,measured,run,variant,kind,lemma,cap,stops,measurement
+memcpy,0x14d30,20,stalled,19,C2,0x14d78,"auipc ra, 0xffffb",call,"∃ x : list (bv 8) *ₗ (), bv_unsigned decoded ↦ₘ∗ x.1ₗ ∗ bv_unsigned (sp + 18446744073709549616 + 312) ↦ₘ? bv_unsigned 720 ∗ ⌜bv_unsigned 720 ≤ length x.1ₗ⌝ ∗ ⌜0",26.7,24.9,1593,0x14d80,stalled,f15b0e67,True,A,finalf15,call:1116(ra) # 101d4 <memcpy>,infer_boundary,300,,
+memcpy,0x14e14,5,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+integer,0x14e88,3,reached,3,,,,,,10.8,6.5,1416,0x14e94,stalled,f15b0e67,True,A,finalf15,call:-380(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+integer,0x14e94,3,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+integer,0x14ea0,3,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+integer,0x14eac,3,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+bytes,0x14eb8,4,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+integer,0x14ec8,3,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+integer,0x14ee4,6,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+nocall,0x14efc,1,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+nocall,0x14f00,2,reached,2,,,,,,6.2,5.1,1417,0x15668 0x14f08,stalled,f15b0e67,True,A,finalf15,branch,infer_boundary,300,,
+optional,0x150f0,3,stalled,2,C2,0x150f4,"auipc ra, 1",call,encoderOptionalU64Valid (sp + 1664) bytes,17.6,5.1,1305,0x150fc,stalled,f15b0e67,True,A,finalf15,call:-1324(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>,infer_boundary,300,,
+integer,0x150fc,3,closed,3,,,,,,6.1,5.2,1049,0x15108,stalled,f15b0e67,True,A,closed_successors_f15,call:-1008(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,block_150fc,300,,closed_successors_f15
+int1645,0x15108,4,stalled,3,C1,0x15110,"auipc ra, 1",call,"∃ x : spec *ₗ (),",6.3,5.8,1417,0x15118,stalled,f15b0e67,True,A,finalf15,call:-1068(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>,infer_boundary,300,,
+nocall,0x15118,1,closed,1,,,,,,2.0,2.0,1064,0x1513c 0x1511c,closed,,False,,,,,,,
+boolean,0x1511c,3,stalled,2,C1,0x15120,"auipc ra, 1",call,"∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗",5.8,4.6,1417,0x15128,stalled,f15b0e67,True,A,finalf15,call:-1412(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,infer_boundary,300,,
+int1645,0x15128,4,stalled,3,C1,0x15130,"auipc ra, 1",call,"∃ x : spec *ₗ (),",8.9,5.6,1417,0x15138,stalled,f15b0e67,True,A,finalf15,call:-1100(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>,infer_boundary,300,,
+nocall,0x15138,1,stalled,1,C3,0x15138,j 0x10,sealed bundle,Successor_15138_15148Memory sp value tail P ∗ ⌜bv_unsigned sp < 0 + 1073741824⌝ ∗ ⌜0 ≤ bv_unsigned sp - 16⌝ ∗ ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗ ⌜-1 < bv_unsigned ,5.7,2.2,1417,0x15148,stalled,f15b0e67,True,A,finalf15,jump,block_15138,300,,
+boolean,0x1513c,3,stalled,2,C1,0x15140,"auipc ra, 1",call,"∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗",14.4,3.5,1274,0x15148,stalled,f15b0e67,True,A,finalf15,call:-1444(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,infer_boundary,300,,
+integer,0x15148,3,closed,3,,,,,,5.0,4.4,1035,0x15154,stalled,f15b0e67,True,A,closed_successors_f15,call:-1084(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,block_15148,300,,closed_successors_f15
+nocall,0x15154,2,stalled,2,C4,0x15158,"beqz a0, 0x3c",pure,0 ≤ bv_unsigned sp - 16,8.2,6.9,1417,0x15194 0x1515c,closed,f15b0e67,True,A,finalf15,branch,block_15154,300,,
+boolean,0x1515c,9,stalled,8,C1,0x15178,"auipc ra, 1",call,"∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗",18.1,16.7,1545,0x15180,stalled,f15b0e67,True,A,finalf15,call:-1500(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,infer_boundary,300,,
+nocall,0x15190,1,stalled,1,C3,0x15190,j 0xc,sealed bundle,Successor_15190_1519cMemory sp first second w0 w1 w2 w3 old13 last tail P ∗ ⌜bv_unsigned sp + 1764 < 0 + 1073741824⌝ ∗ ⌜0 ≤ bv_unsigned sp - 48⌝ ∗ ⌜bv_unsigned ,4.8,3.3,1417,0x1519c,stalled,f15b0e67,True,A,finalf15,jump,block_15190,300,,
+boolean,0x15194,2,stalled,1,C1,0x15194,"auipc ra, 1",call,"∃ x : spec *ₗ (), (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗",8.5,6.5,1417,0x1519c,stalled,f15b0e67,True,A,finalf15,call:-1528(ra) # 15b9c <ssz_decode_observation.Encoder.boolean>,infer_boundary,300,,
+u256,0x1519c,6,stalled,5,C1,0x151ac,"auipc ra, 1",call,"∃ x : spec *ₗ (),",11.0,9.3,1417,0x151b4,stalled,f15b0e67,True,A,finalf15,call:-1276(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>,infer_boundary,300,,
+bytes,0x151b4,4,memory,1,,0x151b4,"mv a0, s0",other,,60.1,59.2,6188,0x151c4,stalled,f15b0e67,True,A,ownershipf15,call:-1360(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,ownershipf15
+integer,0x151c4,3,closed,3,,,,,,6.1,5.2,1049,0x151d0,stalled,f15b0e67,True,A,closed_successors_f15,call:-1208(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,block_151c4,300,,closed_successors_f15
+nocall,0x151d0,1,boundary-stall,,,,,,Recursive access-entry ownership remains folded.,,,,,boundary-stall,,False,,,,,,,
+nocall,0x151d4,2,stalled,1,unknown,0x151d4,"ld a0, 0x108(sp)",load,"∃ y : bv 64 *ₗ (), (bv_unsigned sp + 264) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 264 < 0 + 1073741824⌝ ∗",7.0,5.3,1417,0x153c0 0x151dc,stalled,f15b0e67,True,A,finalf15,branch,infer_boundary,300,,
+memcpy,0x151dc,9,stalled,8,C4,0x151f8,"auipc ra, 0xffffb",call,bv_unsigned base = bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 40)),30.2,29.7,1939,0x15200,stalled,f15b0e67,True,A,finalf15,call:-36(ra) # 101d4 <memcpy>,infer_boundary,300,,
+integer,0x15210,3,stalled,2,C1,0x15214,"auipc ra, 1",call,"∃ x : spec *ₗ (),",14.6,11.4,1417,0x1521c,stalled,f15b0e67,True,A,finalf15,call:-1284(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+nocall,0x1521c,3,stalled,3,unknown,0x15224,"beqz s11, 0x190",other,data = b2,17.8,16.0,1417,0x153b4 0x15228,stalled,f15b0e67,True,A,finalf15,branch,block_1521c,300,,
+nocall,0x153a8,3,closed,3,,,,,,4.0,3.5,1075,0x15228 0x153b4,closed,,False,,,,,,,
+nocall,0x153b4,3,closed,3,,,,,,3.0,2.8,1065,0x151d4,closed,,False,,,,,,,
+integer,0x153c0,4,closed,4,,,,,,6.0,5.4,1053,0x153d0,stalled,f15b0e67,True,A,closed_successors_f15,call:-1720(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,block_153c0,300,,closed_successors_f15
+nocall,0x153d0,1,boundary-stall,,,,,,Recursive access-entry ownership remains folded.,,,,,boundary-stall,,False,,,,,,,
+nocall,0x15558,3,closed,3,,,,,,4.0,3.1,1074,0x153d4 0x15564,closed,,False,,,,,,,
+int1645,0x15564,4,stalled,3,C1,0x1556c,"auipc ra, 0",call,"∃ x : spec *ₗ (),",11.0,8.8,1417,0x15574,stalled,f15b0e67,True,A,finalf15,call:1912(ra) # 15ce4 <ssz_decode_observation.Encoder.int__anon_1645>,infer_boundary,300,,
+integer,0x15574,4,closed,4,,,,,,6.0,5.5,1048,0x15584,stalled,f15b0e67,True,A,closed_successors_f15,call:1940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,block_15574,300,,closed_successors_f15
+nocall,0x15584,3,closed,3,,,,,,4.1,3.7,1274,0x15620 0x15590,closed,,False,,,,,,,
+memcpy,0x15590,5,stalled,4,C4,0x1559c,"auipc ra, 0xffffb",call,base = bv_unsigned src,19.7,19.0,1586,0x155a4,stalled,f15b0e67,True,A,finalf15,call:-968(ra) # 101d4 <memcpy>,infer_boundary,300,,
+u256,0x155a4,6,stalled,5,C1,0x155b4,"auipc ra, 0",call,"∃ x : spec *ₗ (),",24.0,23.2,1804,0x155bc,stalled,f15b0e67,True,A,finalf15,call:1788(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>,infer_boundary,300,,
+integer,0x155cc,3,stalled,2,C1,0x155d0,"auipc ra, 0",call,"∃ x : spec *ₗ (),",17.1,14.1,1417,0x155d8,stalled,f15b0e67,True,A,finalf15,call:1856(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+integer,0x155d8,3,stalled,2,C1,0x155dc,"auipc ra, 0",call,"∃ x : spec *ₗ (),",15.8,12.7,1417,0x155e4,stalled,f15b0e67,True,A,finalf15,call:1844(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+u256,0x155e4,6,stalled,5,C1,0x155f4,"auipc ra, 0",call,"∃ x : spec *ₗ (),",23.4,23.2,1827,0x155fc,stalled,f15b0e67,True,A,finalf15,call:1724(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>,infer_boundary,300,,
+u256,0x155fc,6,stalled,5,C1,0x1560c,"auipc ra, 0",call,"∃ x : spec *ₗ (),",24.8,23.9,1822,0x15614,stalled,f15b0e67,True,A,finalf15,call:1700(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>,infer_boundary,300,,
+nocall,0x15614,3,closed,3,,,,,,4.0,3.2,1073,0x15590 0x15620,closed,,False,,,,,,,
+integer,0x15620,3,closed,3,,,,,,6.0,5.2,1048,0x1562c,stalled,f15b0e67,True,A,closed_successors_f15,call:1772(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,block_15620,300,,closed_successors_f15
+u256,0x1562c,6,stalled,5,C1,0x1563c,"auipc ra, 0",call,"∃ x : spec *ₗ (),",11.1,9.4,1417,0x15644,stalled,f15b0e67,True,A,finalf15,call:1652(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>,infer_boundary,300,,
+u256,0x15644,6,stalled,5,C1,0x15654,"auipc ra, 0",call,"∃ x : spec *ₗ (),",11.0,9.5,1417,0x1565c,stalled,f15b0e67,True,A,finalf15,call:1628(ra) # 15cb0 <ssz_decode_observation.Encoder.int__anon_1658>,infer_boundary,300,,
+nocall,0x1565c,3,closed,3,,,,,,4.0,3.0,1068,0x14f00,closed,,False,,,,,,,
+bytelists,0x15668,4,stalled,1,C4,0x15668,"ld a0, 0x450(sp)",load,bv_unsigned sp + 1104 = bv_unsigned sp + 1032 + 8 * IslarisMemory.array_region_start 64 (bv_unsigned sp + 1032) (bv_unsigned sp + 1104),13.7,10.3,1417,0x15678,stalled,f15b0e67,True,A,finalf15,call:1440(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,infer_boundary,300,,
+integer,0x15678,5,stalled,2,C1,0x1567c,"ld s1, 0x468(sp)",load,"∃ x : spec *ₗ (), mmio_range (604086456 + 8) 16 ∗",11.0,10.5,1330,0x1568c,stalled,f15b0e67,True,A,ownershipf15,call:1676(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,ownershipf15
+nocall,0x1568c,2,stalled,2,unknown,0x15690,"beqz s1, 0x58",other,87772%bv = b1,16.0,13.1,1417,0x156e8 0x15694,stalled,f15b0e67,True,A,finalf15,branch,infer_boundary,300,,
+memcpy,0x15694,5,stalled,4,C4,0x156a0,"auipc ra, 0xffffb",call,base = bv_unsigned src,18.2,17.6,1599,0x156a8,stalled,f15b0e67,True,A,finalf15,call:-1228(ra) # 101d4 <memcpy>,infer_boundary,300,,
+integer,0x156a8,3,stalled,2,C1,0x156ac,"auipc ra, 0",call,"∃ x : spec *ₗ (),",14.3,12.0,1417,0x156b4,stalled,f15b0e67,True,A,finalf15,call:1636(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+integer,0x156b4,3,stalled,2,C1,0x156b8,"auipc ra, 0",call,"∃ x : spec *ₗ (),",12.4,11.8,1417,0x156c0,stalled,f15b0e67,True,A,finalf15,call:1624(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+integer,0x156d0,3,stalled,2,C1,0x156d4,"auipc ra, 0",call,"∃ x : spec *ₗ (),",12.3,11.0,1417,0x156dc,stalled,f15b0e67,True,A,finalf15,call:1596(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+nocall,0x156dc,3,closed,3,,,,,,6.0,5.2,1214,0x15694 0x156e8,closed,,False,,,,,,,
+integer,0x156e8,3,boundary-stall,,,,,,Capture still contains a nested frame conjunction. Generation rejects duplicate x6 ownership instead of guessing.,,,,,boundary-stall,,False,,,,,,,
+integer,0x156f4,3,stalled,2,unknown,0x156f8,"auipc ra, 0",call,"reg_col [(KindReg ""x6"", BitsShape 64); (KindReg ""x7"", BitsShape 64); (KindReg ""x28"", BitsShape 64); (KindReg ""x29"", BitsShape 64); (KindReg ""x30"", BitsShape 64)",6.0,5.6,1267,0x15700,boundary-stall,f15b0e67,True,A,additionalf15,call:1560(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+optional,0x15700,7,stalled,6,C1,0x15714,"auipc ra, 0",call,"∃ y : spec *ₗ list (bv 8) *ₗ bv 64 *ₗ bv 64 *ₗ bv 64 *ₗ (), ""x8"" ↦ᵣ RVal_Bits y.4ₗ ∗ ""x10"" ↦ᵣ RVal_Bits y.5ₗ ∗ ""x11"" ↦ᵣ RVal_Bits y.3ₗ ∗ (bv_unsigned sp - 32) ↦",11.4,10.5,1417,0x1571c,stalled,f15b0e67,True,A,finalf15,call:1204(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>,infer_boundary,300,,
+bytes,0x1571c,4,stalled,3,unknown,0x15724,"auipc ra, 0",call,"find_in_context (FindRegMapsTo ""x8"")",8.0,7.8,1308,0x1572c,boundary-stall,f15b0e67,True,A,additionalf15,call:1352(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,
+integer,0x1573c,5,stalled,1,unknown,0x1573c,"ld s1, 0x388(sp)",load,"∃ y : bv 64 *ₗ (), (bv_unsigned sp + 904) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 904 < 0 + 1073741824⌝ ∗",4.9,4.5,1417,0x15750,stalled,f15b0e67,True,A,finalf15,call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+nocall,0x15750,1,boundary-stall,1,,,,,Only successor 15754 was captured. The 158e0 boundary awaits a ruling.,3.0,2.3,1065,0x158e0 0x15754,boundary-stall,,False,,,,,,,
+nocall,0x158d4,3,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+bytes,0x158e0,4,boundary-stall,,,,,,Nested conjunction. Generation rejects duplicate x5 ownership.,,,,,boundary-stall,,False,,,,,,,
+bytes,0x158f0,4,stalled,3,C4,0x158f8,"auipc ra, 0",call,scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv),9.9,9.5,1417,0x15900,stalled,f15b0e67,True,A,finalf15,call:884(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,
+bytes,0x15900,4,stalled,3,C4,0x15908,"auipc ra, 0",call,scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv),9.6,9.1,1417,0x15910,stalled,f15b0e67,True,A,finalf15,call:868(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,
+bytes,0x15910,4,stalled,3,C4,0x15918,"auipc ra, 0",call,scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv),8.1,7.9,1417,0x15920,stalled,f15b0e67,True,A,finalf15,call:852(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,
+bytes,0x15920,4,stalled,3,C4,0x15928,"auipc ra, 0",call,scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv),9.5,8.8,1417,0x15930,stalled,f15b0e67,True,A,finalf15,call:836(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,
+bytelists,0x15930,4,stalled,1,unknown,0x15930,"ld a0, 0x18(sp)",load,"∃ y : bv 64 *ₗ (), (bv_unsigned base + 16) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned base `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned base + 16 < 0 + 1073741824⌝ ∗",5.2,5.0,1417,0x15940,stalled,f15b0e67,True,A,finalf15,call:728(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,infer_boundary,300,,
+bytelists,0x15940,4,stalled,3,C1,0x15948,"auipc ra, 0",call,"∃ x : spec *ₗ list ByteListItem *ₗ (),",7.1,6.3,1284,0x15950,stalled,f15b0e67,True,A,ownershipf15,call:712(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,infer_boundary,300,,ownershipf15
+bytelists,0x15950,4,stalled,3,C1,0x15958,"auipc ra, 0",call,"∃ x : spec *ₗ list ByteListItem *ₗ (),",7.0,6.2,1285,0x15960,stalled,f15b0e67,True,A,ownershipf15,call:696(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>,infer_boundary,300,,ownershipf15
+integer,0x15960,3,stalled,2,C1,0x15964,"auipc ra, 0",call,"∃ x : spec *ₗ (), mmio_range (604086456 + 8) 16 ∗",6.0,5.2,1027,0x1596c,partial,f15b0e67,True,A,ownershipf15,call:940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,ownershipf15
+nocall,0x1596c,2,stalled,2,C4,0x15970,"beqz s0, 0x24",pure,bv_unsigned sp + 72 < 0 + 1073741824,5.1,4.8,1417,0x15994 0x15974,stalled,f15b0e67,True,A,finalf15,branch,infer_boundary,300,,
+boolean,0x15974,3,boundary-stall,,,,,,Nested frame conjunction; generation rejects duplicate x5 ownership.,,,,,boundary-stall,,False,,,,,,,
+bytes,0x15980,4,stalled,3,C4,0x15988,"auipc ra, 0",call,bv_unsigned size = length bytes,10.1,9.7,1417,0x15990,stalled,f15b0e67,True,A,finalf15,call:740(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>,infer_boundary,300,,
+nocall,0x15990,1,closed,1,,,,,,3.0,2.2,1267,0x159a0,closed,,False,,,,,,,
+boolean,0x15994,3,boundary-stall,,,,,,Nested frame conjunction; generation rejects duplicate x5 ownership.,,,,,boundary-stall,,False,,,,,,,
+integer,0x159a0,4,stalled,3,C4,0x159a8,"auipc ra, 0",call,bv_unsigned sp + 96 < 0 + 1073741824,8.0,7.0,1417,0x159b0,stalled,f15b0e67,True,A,finalf15,call:872(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,300,,
+optional,0x159b0,3,stalled,2,C2,0x159b4,"auipc ra, 0",call,"subsume (bv_unsigned (sp + 296) ↦ₘ value) (λ x : spec *ₗ list (bv 8) *ₗ (), bv_unsigned (sp + 296) ↦ₘ∗ x.2ₗ)",9.1,8.3,1417,0x159bc,stalled,f15b0e67,True,A,finalf15,call:532(ra) # 15bc8 <ssz_decode_observation.Encoder.optionalU64>,infer_boundary,300,,
+optional,0x159bc,3,boundary-stall,,,,,,No predecessor state reached this boundary.,,,,,boundary-stall,,False,,,,,,,
+bytelists,0x159c8,4,boundary-stall,,,,,,Recursive byteListItemResources remains folded. No array was split.,,,,,boundary-stall,,False,,,,,,,
+nocall,0x159d8,15,boundary-stall,,,,,,Terminal epilogue capture remains folded; no CFG successor was invented.,,,,,boundary-stall,,False,,,,,,,
+writeOutput,0x14d80,37,stalled,36,C1,0x14e0c,"auipc ra, 0xffffb",call,"∃ x : spec *ₗ list (bv 8) *ₗ (), bv_unsigned (Z_to_bv 64 85504 + 12288 + 18446744073709550533) ↦ₘ∗ x.2ₗ ∗ mmio_range (604086456 + 8) 16 ∗",35.1,34.3,1541,0x14e14,partial,f15b0e67,True,A,finalf15,call:900(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x14e28,4,closed,4,,,,,,22.1,6.2,1101,0x14e38,closed,f15b0e67,True,A,finalf15,call:864(ra) # 10190 <write_output>,block_14e28,300,,variant-A
+writeOutput,0x14e38,4,closed,4,,,,,,13.9,6.0,1240,0x14e48,closed,f15b0e67,True,A,finalf15,call:848(ra) # 10190 <write_output>,block_14e38,300,,variant-A
+writeOutput,0x14e48,4,closed,4,,,,,,10.4,5.9,1097,0x14e58,closed,f15b0e67,True,A,finalf15,call:832(ra) # 10190 <write_output>,block_14e48,300,,variant-A
+writeOutput,0x14e58,4,closed,4,,,,,,18.7,6.0,1101,0x14e68,closed,f15b0e67,True,A,finalf15,call:816(ra) # 10190 <write_output>,block_14e58,300,,variant-A
+writeOutput,0x14e68,4,closed,4,,,,,,11.1,8.9,1417,0x14e78,closed,f15b0e67,True,A,finalf15,call:800(ra) # 10190 <write_output>,block_14e68,300,,variant-A
+writeOutput,0x14e78,4,closed,4,,,,,,7.1,6.9,1031,0x14e88,closed,f15b0e67,True,A,ownershipf15,call:784(ra) # 10190 <write_output>,block_14e78,300,,ownershipf15
+writeOutput,0x14ed4,4,stalled,3,C4,0x14edc,"auipc ra, 0xffffb",call,scons_snap (SWriteMem (BV 64 (604086456 + 16)) 32%bv),19.5,7.8,1138,0x14ee4,reached,f15b0e67,True,A,finalf15,call:692(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x14f08,122,memory,1,,0x14f08,"sd a1, 0xf8(sp)",other,,34.0,33.5,6186,0x150f0,stalled,f15b0e67,True,A,recoverf15,call:168(ra) # 10190 <write_output>,infer_boundary,300,,import corrected; measured again
+writeOutput,0x15180,4,reached,4,,,,,,7.3,6.3,1417,0x15190,stalled,f15b0e67,True,A,finalf15,call:8(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x15200,4,stalled,3,C4,0x15208,"auipc ra, 0xffffb",call,bv_unsigned (sp + 1744) = bv_unsigned (sp + 1760),7.1,6.0,1417,0x15210,stalled,f15b0e67,True,A,finalf15,call:-120(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x15228,96,timeout,1,,0x15228,"lbu t1, 0x10(s6)",load,,303.5,299.5,4009,0x153a8,stalled,f15b0e67,True,A,finalf15,call:-528(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x153d4,97,timeout,1,,0x153d4,"lbu t1, 0x10(s3)",load,,303.7,299.6,4009,0x15558,stalled,f15b0e67,True,A,finalf15,call:-960(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x155bc,4,stalled,3,C4,0x155c4,"auipc ra, 0xffffb",call,bv_unsigned (sp + 1744) = bv_unsigned (sp + 1856),9.2,7.4,1417,0x155cc,stalled,f15b0e67,True,A,finalf15,call:-1076(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x156c0,4,stalled,3,C4,0x156c8,"auipc ra, 0xffffb",call,bv_unsigned (sp + 1744) = bv_unsigned (sp + 1768),9.4,6.3,1417,0x156d0,stalled,f15b0e67,True,A,finalf15,call:-1336(ra) # 10190 <write_output>,infer_boundary,300,,variant-A
+writeOutput,0x1572c,4,stalled,3,C2,0x15734,"auipc ra, 0xffffb",call,"subsume (bv_unsigned (sp + 1000) ↦ₘ root) (λ x : spec *ₗ list (bv 8) *ₗ (), bv_unsigned (sp + 1000) ↦ₘ∗ x.2ₗ)",6.4,4.7,1417,0x1573c,stalled,f15b0e67,True,A,finalf15,call:-1444(ra) # 10190 <write_output>,block_1572c,300,,variant-A-generated
+writeOutput,0x15754,96,memory,,,,,,,71.0,70.8,8230,0x158d4,memory,,False,inference,b17,,infer_boundary,600,,recorded-boundary-inference
