@@ -155,6 +155,43 @@ Ltac zesu_open_sealed_for_lookup :=
      be split here, or the resources inside stay invisible. *)
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
 
+(* A load handoff exposes its address before choosing the loaded value. *)
+Ltac zesu_open_sealed_load_handoff :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ ?A ?continuation) =>
+      let witness := constr:(_ : Inhabited A) in
+      let body := eval cbn beta in (continuation inhabitant) in
+      let address := lazymatch body with
+        | context[(?address ↦ₘ _)%I] => address
+        | context[(?address ↦ₘ∗ _)%I] => address
+        end in
+      iMatchHyp ltac:(fun H sealed =>
+        first [let instance := constr:(_ : ZesuSealed sealed _ _ _) in
+        lazymatch type of instance with
+        | ZesuSealed _ ?raw _ _ =>
+            let head := get_head raw in
+            let opened := eval unfold head in raw in
+            first [lazymatch opened with
+                    | context[(?owned ↦ₘ _)%I] => unify owned address
+                    end
+                  | lazymatch opened with
+                    | context[(?owned ↦ₘ∗ _)%I] => unify owned address
+                    end];
+            iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance)); unfold head) in H
+        end
+        | let head := get_head sealed in
+          let _ := constr:(_ : LithiumUnfold head) in
+          let opened := eval unfold head in sealed in
+          first [lazymatch opened with
+                  | context[(?owned ↦ₘ _)%I] => unify owned address
+                  end
+                | lazymatch opened with
+                  | context[(?owned ↦ₘ∗ _)%I] => unify owned address
+                  end];
+          iEval (progress unfold head) in H]);
+      repeat iDestruct select (_ ∗ _)%I as "[? ?]"
+  end.
+
 (* The switch for this one rule. `Automation/Switch.v` provides it
    with every other v2 step; `Automation/Switches/…` provides it
    alone, which is how one benchmark arm measures one rule. *)

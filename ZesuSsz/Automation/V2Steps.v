@@ -46,6 +46,7 @@ Ltac zesu_rule_set_v2_steps :=
   | |- envs_entails _ (@bi_exist _ _ _) =>
       first [zesu_outcome_handoff_if_enabled
             | zesu_restore_existential_array_if_enabled
+            | (zesu_step_sealed_open_on; zesu_open_sealed_load_handoff)
             | zesu_open_sealed_for_lookup_if_enabled
             | zesu_close_loaded_trace_if_enabled
             | zesu_close_spec_tail_if_enabled]
@@ -72,7 +73,5 @@ Ltac zesu_rule_set_v2_steps :=
   | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled
   | |- envs_entails _ (find_in_context (FindRegMapsTo _) _) =>
-      zesu_open_sealed_for_lookup_if_enabled
-  | |- envs_entails _ (@bi_exist _ (li_prod (bv 64) unit) _) =>
       zesu_open_sealed_for_lookup_if_enabled
   end.
