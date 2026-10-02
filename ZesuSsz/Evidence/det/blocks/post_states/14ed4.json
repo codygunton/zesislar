@@ -1,0 +1,468 @@
+{
+  "raw_goals": "1 goal\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp : bv 64\n  values : list (bv 64)\n  payload : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  b8, b9, stack2 : bv 64\n  H0 : bv_unsigned sp + 1896 < 0 + 1073741824\n  H1 : 0 ≤ bv_unsigned sp - 48\n  H2 : bv_unsigned sp `mod` 8 = 0\n  H3 : bv_unsigned sp `mod` 16 = 0\n  H4 : length values = 74%nat\n  H5 : length (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values) =\n       32%nat\n  b : bv 64\n  H6 : Z.land (bv_unsigned b) 131072 = 0\n  b0 : bv 64\n  H7 : Z.land (bv_unsigned b0) 131072 = 0\n  b1 : bv 64\n  H8 : Z.land (bv_unsigned b1) 131072 = 0\n  b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21 : bv 64\n  H9 : -1 < bv_unsigned b21 < bv_modulus 64\n  H10 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64\n  H11 : -1 < bv_unsigned b20 < bv_modulus 64\n  H12 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b19 < bv_modulus 64\n  H14 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b18 < bv_modulus 64\n  H16 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b17 < bv_modulus 64\n  H18 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b16 < bv_modulus 64\n  H20 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b15 < bv_modulus 64\n  H22 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b14 < bv_modulus 64\n  H24 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b13 < bv_modulus 64\n  H26 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b12 < bv_modulus 64\n  H28 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b11 < bv_modulus 64\n  H30 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b10 < bv_modulus 64\n  H32 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b1 < bv_modulus 64\n  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b0 < bv_modulus 64\n  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64\n  H37 : -1 < bv_unsigned b < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64\n  H39 : -1 < bv_unsigned stack2 < bv_modulus 64\n  H40 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed stack2 < bv_half_modulus 64\n  H41 : -1 < bv_unsigned b9 < bv_modulus 64\n  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64\n  H43 : -1 < bv_unsigned b8 < bv_modulus 64\n  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64\n  H45 : -1 < bv_unsigned sp < bv_modulus 64\n  H46 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : (bv_unsigned sp + 1584)\n      ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))\n  _ : (bv_unsigned sp + 1620)\n      ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)\n  _ : P\n  _ : instr_pre 85764\n        (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values\n           payload tail P)\n  _ : (bv_unsigned sp - 16) ↦ₘ? 16\n  _ : (bv_unsigned sp - 48) ↦ₘ? 8%nat\n  _ : (bv_unsigned sp - 40) ↦ₘ 89232\n  _ : (bv_unsigned sp - 32) ↦ₘ stack2\n  _ : (bv_unsigned sp - 24) ↦ₘ b9\n  _ : (bv_unsigned sp + 104) ↦ₘ? 16\n  _ : (bv_unsigned sp + 1032) ↦ₘ∗ take 69 values\n  _ : bv_unsigned\n        (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 4)\n      ↦ₘ∗ payload\n  _ : True\n  _ : reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64);\n         (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64);\n         (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64);\n         (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64);\n         (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits b8));\n         (KindReg \"x9\", ExactShape (RVal_Bits b9));\n         (KindReg \"x18\", ExactShape (RVal_Bits b10));\n         (KindReg \"x19\", ExactShape (RVal_Bits b11));\n         (KindReg \"x20\", ExactShape (RVal_Bits b12));\n         (KindReg \"x21\", ExactShape (RVal_Bits b13));\n         (KindReg \"x22\", ExactShape (RVal_Bits b14));\n         (KindReg \"x23\", ExactShape (RVal_Bits b15));\n         (KindReg \"x24\", ExactShape (RVal_Bits b16));\n         (KindReg \"x25\", ExactShape (RVal_Bits b17));\n         (KindReg \"x26\", ExactShape (RVal_Bits b18));\n         (KindReg \"x27\", ExactShape (RVal_Bits b19))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b20\n  _ : \"x11\" ↦ᵣ RVal_Bits b21\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : bv_unsigned (sp + 1588)\n      ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values\n  _ : spec_trace\n        (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv)\n           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n              (λ snapshot : seq_snapshot,\n                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n                 Some\n                   [Z_to_bv 8\n                      (bv_unsigned\n                         (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                            values 8) `mod` 256);\n                    Z_to_bv 8\n                      ((bv_unsigned\n                          (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                             values 8) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      (((bv_unsigned\n                           (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                              values 8) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      ((((bv_unsigned\n                            (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                               values 8) `div` 256) `div` 256) `div` 256)\n                       `mod` 256);\n                    Z_to_bv 8\n                      (((((bv_unsigned\n                             (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                values 8) `div` 256) `div` 256) `div` 256)\n                        `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      ((((((bv_unsigned\n                              (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                 values 8) `div` 256) `div` 256) `div` 256)\n                         `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      (((((((bv_unsigned\n                               (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                  values 8) `div` 256) `div` 256) `div` 256)\n                          `div` 256) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      ((((((((bv_unsigned\n                                (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                   values 8) `div` 256) `div` 256) `div` 256)\n                           `div` 256) `div` 256) `div` 256) `div` 256)\n                       `mod` 256)]) tail))\n  --------------------------------------∗\n  POST\nBOUNDARY-LOCAL-SORT H46 : Prop\nBOUNDARY-LOCAL-SORT H45 : Prop\nBOUNDARY-LOCAL-SORT H44 : Prop\nBOUNDARY-LOCAL-SORT H43 : Prop\nBOUNDARY-LOCAL-SORT H42 : Prop\nBOUNDARY-LOCAL-SORT H41 : Prop\nBOUNDARY-LOCAL-SORT H40 : Prop\nBOUNDARY-LOCAL-SORT H39 : Prop\nBOUNDARY-LOCAL-SORT H38 : Prop\nBOUNDARY-LOCAL-SORT H37 : Prop\nBOUNDARY-LOCAL-SORT H36 : Prop\nBOUNDARY-LOCAL-SORT H35 : Prop\nBOUNDARY-LOCAL-SORT H34 : Prop\nBOUNDARY-LOCAL-SORT H33 : Prop\nBOUNDARY-LOCAL-SORT H32 : Prop\nBOUNDARY-LOCAL-SORT H31 : Prop\nBOUNDARY-LOCAL-SORT H30 : Prop\nBOUNDARY-LOCAL-SORT H29 : Prop\nBOUNDARY-LOCAL-SORT H28 : Prop\nBOUNDARY-LOCAL-SORT H27 : Prop\nBOUNDARY-LOCAL-SORT H26 : Prop\nBOUNDARY-LOCAL-SORT H25 : Prop\nBOUNDARY-LOCAL-SORT H24 : Prop\nBOUNDARY-LOCAL-SORT H23 : Prop\nBOUNDARY-LOCAL-SORT H22 : Prop\nBOUNDARY-LOCAL-SORT H21 : Prop\nBOUNDARY-LOCAL-SORT H20 : Prop\nBOUNDARY-LOCAL-SORT H19 : Prop\nBOUNDARY-LOCAL-SORT H18 : Prop\nBOUNDARY-LOCAL-SORT H17 : Prop\nBOUNDARY-LOCAL-SORT H16 : Prop\nBOUNDARY-LOCAL-SORT H15 : Prop\nBOUNDARY-LOCAL-SORT H14 : Prop\nBOUNDARY-LOCAL-SORT H13 : Prop\nBOUNDARY-LOCAL-SORT H12 : Prop\nBOUNDARY-LOCAL-SORT H11 : Prop\nBOUNDARY-LOCAL-SORT H10 : Prop\nBOUNDARY-LOCAL-SORT H9 : Prop\nBOUNDARY-LOCAL-SORT b21 : Set\nBOUNDARY-LOCAL-SORT b20 : Set\nBOUNDARY-LOCAL-SORT b19 : Set\nBOUNDARY-LOCAL-SORT b18 : Set\nBOUNDARY-LOCAL-SORT b17 : Set\nBOUNDARY-LOCAL-SORT b16 : Set\nBOUNDARY-LOCAL-SORT b15 : Set\nBOUNDARY-LOCAL-SORT b14 : Set\nBOUNDARY-LOCAL-SORT b13 : Set\nBOUNDARY-LOCAL-SORT b12 : Set\nBOUNDARY-LOCAL-SORT b11 : Set\nBOUNDARY-LOCAL-SORT b10 : Set\nBOUNDARY-LOCAL-SORT H8 : Prop\nBOUNDARY-LOCAL-SORT b1 : Set\nBOUNDARY-LOCAL-SORT H7 : Prop\nBOUNDARY-LOCAL-SORT b0 : Set\nBOUNDARY-LOCAL-SORT H6 : Prop\nBOUNDARY-LOCAL-SORT b : Set\nBOUNDARY-LOCAL-SORT H5 : Prop\nBOUNDARY-LOCAL-SORT H4 : Prop\nBOUNDARY-LOCAL-SORT H3 : Prop\nBOUNDARY-LOCAL-SORT H2 : Prop\nBOUNDARY-LOCAL-SORT H1 : Prop\nBOUNDARY-LOCAL-SORT H0 : Prop\nBOUNDARY-LOCAL-SORT stack2 : Set\nBOUNDARY-LOCAL-SORT b9 : Set\nBOUNDARY-LOCAL-SORT b8 : Set\nBOUNDARY-LOCAL-SORT POST : Type\nBOUNDARY-LOCAL-SORT P : Type\nBOUNDARY-LOCAL-SORT tail : Type\nBOUNDARY-LOCAL-SORT payload : Set\nBOUNDARY-LOCAL-SORT values : Set\nBOUNDARY-LOCAL-SORT sp : Set\nBOUNDARY-LOCAL-SORT H : Set\nBOUNDARY-LOCAL-SORT islaG0 : Type\nBOUNDARY-LOCAL-SORT Sigma : Type\n",
+  "local_sorts": {
+    "H46": "Prop",
+    "H45": "Prop",
+    "H44": "Prop",
+    "H43": "Prop",
+    "H42": "Prop",
+    "H41": "Prop",
+    "H40": "Prop",
+    "H39": "Prop",
+    "H38": "Prop",
+    "H37": "Prop",
+    "H36": "Prop",
+    "H35": "Prop",
+    "H34": "Prop",
+    "H33": "Prop",
+    "H32": "Prop",
+    "H31": "Prop",
+    "H30": "Prop",
+    "H29": "Prop",
+    "H28": "Prop",
+    "H27": "Prop",
+    "H26": "Prop",
+    "H25": "Prop",
+    "H24": "Prop",
+    "H23": "Prop",
+    "H22": "Prop",
+    "H21": "Prop",
+    "H20": "Prop",
+    "H19": "Prop",
+    "H18": "Prop",
+    "H17": "Prop",
+    "H16": "Prop",
+    "H15": "Prop",
+    "H14": "Prop",
+    "H13": "Prop",
+    "H12": "Prop",
+    "H11": "Prop",
+    "H10": "Prop",
+    "H9": "Prop",
+    "b21": "Set",
+    "b20": "Set",
+    "b19": "Set",
+    "b18": "Set",
+    "b17": "Set",
+    "b16": "Set",
+    "b15": "Set",
+    "b14": "Set",
+    "b13": "Set",
+    "b12": "Set",
+    "b11": "Set",
+    "b10": "Set",
+    "H8": "Prop",
+    "b1": "Set",
+    "H7": "Prop",
+    "b0": "Set",
+    "H6": "Prop",
+    "b": "Set",
+    "H5": "Prop",
+    "H4": "Prop",
+    "H3": "Prop",
+    "H2": "Prop",
+    "H1": "Prop",
+    "H0": "Prop",
+    "stack2": "Set",
+    "b9": "Set",
+    "b8": "Set",
+    "POST": "Type",
+    "P": "Type",
+    "tail": "Type",
+    "payload": "Set",
+    "values": "Set",
+    "sp": "Set",
+    "H": "Set",
+    "islaG0": "Type",
+    "Sigma": "Type"
+  },
+  "memory_word_widths": {
+    "(bv_unsigned sp - 40)": 64,
+    "(BV 64 (604086456 + 16))": 64
+  },
+  "goals": [
+    {
+      "context": "1 goal\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp : bv 64\n  values : list (bv 64)\n  payload : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  b8, b9, stack2 : bv 64\n  H0 : bv_unsigned sp + 1896 < 0 + 1073741824\n  H1 : 0 ≤ bv_unsigned sp - 48\n  H2 : bv_unsigned sp `mod` 8 = 0\n  H3 : bv_unsigned sp `mod` 16 = 0\n  H4 : length values = 74%nat\n  H5 : length (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values) =\n       32%nat\n  b : bv 64\n  H6 : Z.land (bv_unsigned b) 131072 = 0\n  b0 : bv 64\n  H7 : Z.land (bv_unsigned b0) 131072 = 0\n  b1 : bv 64\n  H8 : Z.land (bv_unsigned b1) 131072 = 0\n  b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21 : bv 64\n  H9 : -1 < bv_unsigned b21 < bv_modulus 64\n  H10 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64\n  H11 : -1 < bv_unsigned b20 < bv_modulus 64\n  H12 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b19 < bv_modulus 64\n  H14 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b18 < bv_modulus 64\n  H16 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b17 < bv_modulus 64\n  H18 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b16 < bv_modulus 64\n  H20 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b15 < bv_modulus 64\n  H22 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b14 < bv_modulus 64\n  H24 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b13 < bv_modulus 64\n  H26 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b12 < bv_modulus 64\n  H28 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b11 < bv_modulus 64\n  H30 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b10 < bv_modulus 64\n  H32 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b1 < bv_modulus 64\n  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b0 < bv_modulus 64\n  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64\n  H37 : -1 < bv_unsigned b < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64\n  H39 : -1 < bv_unsigned stack2 < bv_modulus 64\n  H40 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed stack2 < bv_half_modulus 64\n  H41 : -1 < bv_unsigned b9 < bv_modulus 64\n  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64\n  H43 : -1 < bv_unsigned b8 < bv_modulus 64\n  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64\n  H45 : -1 < bv_unsigned sp < bv_modulus 64\n  H46 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : (bv_unsigned sp + 1584)\n      ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))\n  _ : (bv_unsigned sp + 1620)\n      ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)\n  _ : P\n  _ : instr_pre 85764\n        (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values\n           payload tail P)\n  _ : (bv_unsigned sp - 16) ↦ₘ? 16\n  _ : (bv_unsigned sp - 48) ↦ₘ? 8%nat\n  _ : (bv_unsigned sp - 40) ↦ₘ 89232\n  _ : (bv_unsigned sp - 32) ↦ₘ stack2\n  _ : (bv_unsigned sp - 24) ↦ₘ b9\n  _ : (bv_unsigned sp + 104) ↦ₘ? 16\n  _ : (bv_unsigned sp + 1032) ↦ₘ∗ take 69 values\n  _ : bv_unsigned\n        (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 4)\n      ↦ₘ∗ payload\n  _ : True\n  _ : reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64);\n         (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64);\n         (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64);\n         (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64);\n         (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits b8));\n         (KindReg \"x9\", ExactShape (RVal_Bits b9));\n         (KindReg \"x18\", ExactShape (RVal_Bits b10));\n         (KindReg \"x19\", ExactShape (RVal_Bits b11));\n         (KindReg \"x20\", ExactShape (RVal_Bits b12));\n         (KindReg \"x21\", ExactShape (RVal_Bits b13));\n         (KindReg \"x22\", ExactShape (RVal_Bits b14));\n         (KindReg \"x23\", ExactShape (RVal_Bits b15));\n         (KindReg \"x24\", ExactShape (RVal_Bits b16));\n         (KindReg \"x25\", ExactShape (RVal_Bits b17));\n         (KindReg \"x26\", ExactShape (RVal_Bits b18));\n         (KindReg \"x27\", ExactShape (RVal_Bits b19))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b20\n  _ : \"x11\" ↦ᵣ RVal_Bits b21\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : bv_unsigned (sp + 1588)\n      ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values\n  _ : spec_trace\n        (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv)\n           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv)\n              (λ snapshot : seq_snapshot,\n                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =\n                 Some\n                   [Z_to_bv 8\n                      (bv_unsigned\n                         (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                            values 8) `mod` 256);\n                    Z_to_bv 8\n                      ((bv_unsigned\n                          (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                             values 8) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      (((bv_unsigned\n                           (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                              values 8) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      ((((bv_unsigned\n                            (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                               values 8) `div` 256) `div` 256) `div` 256)\n                       `mod` 256);\n                    Z_to_bv 8\n                      (((((bv_unsigned\n                             (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                values 8) `div` 256) `div` 256) `div` 256)\n                        `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      ((((((bv_unsigned\n                              (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                 values 8) `div` 256) `div` 256) `div` 256)\n                         `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      (((((((bv_unsigned\n                               (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                  values 8) `div` 256) `div` 256) `div` 256)\n                          `div` 256) `div` 256) `div` 256) `mod` 256);\n                    Z_to_bv 8\n                      ((((((((bv_unsigned\n                                (WriteSuccessExactValueSpec.writeSuccessExactValueWord\n                                   values 8) `div` 256) `div` 256) `div` 256)\n                           `div` 256) `div` 256) `div` 256) `div` 256)\n                       `mod` 256)]) tail))",
+      "conclusion": "POST\nBOUNDARY-LOCAL-SORT H46 : Prop\nBOUNDARY-LOCAL-SORT H45 : Prop\nBOUNDARY-LOCAL-SORT H44 : Prop\nBOUNDARY-LOCAL-SORT H43 : Prop\nBOUNDARY-LOCAL-SORT H42 : Prop\nBOUNDARY-LOCAL-SORT H41 : Prop\nBOUNDARY-LOCAL-SORT H40 : Prop\nBOUNDARY-LOCAL-SORT H39 : Prop\nBOUNDARY-LOCAL-SORT H38 : Prop\nBOUNDARY-LOCAL-SORT H37 : Prop\nBOUNDARY-LOCAL-SORT H36 : Prop\nBOUNDARY-LOCAL-SORT H35 : Prop\nBOUNDARY-LOCAL-SORT H34 : Prop\nBOUNDARY-LOCAL-SORT H33 : Prop\nBOUNDARY-LOCAL-SORT H32 : Prop\nBOUNDARY-LOCAL-SORT H31 : Prop\nBOUNDARY-LOCAL-SORT H30 : Prop\nBOUNDARY-LOCAL-SORT H29 : Prop\nBOUNDARY-LOCAL-SORT H28 : Prop\nBOUNDARY-LOCAL-SORT H27 : Prop\nBOUNDARY-LOCAL-SORT H26 : Prop\nBOUNDARY-LOCAL-SORT H25 : Prop\nBOUNDARY-LOCAL-SORT H24 : Prop\nBOUNDARY-LOCAL-SORT H23 : Prop\nBOUNDARY-LOCAL-SORT H22 : Prop\nBOUNDARY-LOCAL-SORT H21 : Prop\nBOUNDARY-LOCAL-SORT H20 : Prop\nBOUNDARY-LOCAL-SORT H19 : Prop\nBOUNDARY-LOCAL-SORT H18 : Prop\nBOUNDARY-LOCAL-SORT H17 : Prop\nBOUNDARY-LOCAL-SORT H16 : Prop\nBOUNDARY-LOCAL-SORT H15 : Prop\nBOUNDARY-LOCAL-SORT H14 : Prop\nBOUNDARY-LOCAL-SORT H13 : Prop\nBOUNDARY-LOCAL-SORT H12 : Prop\nBOUNDARY-LOCAL-SORT H11 : Prop\nBOUNDARY-LOCAL-SORT H10 : Prop\nBOUNDARY-LOCAL-SORT H9 : Prop\nBOUNDARY-LOCAL-SORT b21 : Set\nBOUNDARY-LOCAL-SORT b20 : Set\nBOUNDARY-LOCAL-SORT b19 : Set\nBOUNDARY-LOCAL-SORT b18 : Set\nBOUNDARY-LOCAL-SORT b17 : Set\nBOUNDARY-LOCAL-SORT b16 : Set\nBOUNDARY-LOCAL-SORT b15 : Set\nBOUNDARY-LOCAL-SORT b14 : Set\nBOUNDARY-LOCAL-SORT b13 : Set\nBOUNDARY-LOCAL-SORT b12 : Set\nBOUNDARY-LOCAL-SORT b11 : Set\nBOUNDARY-LOCAL-SORT b10 : Set\nBOUNDARY-LOCAL-SORT H8 : Prop\nBOUNDARY-LOCAL-SORT b1 : Set\nBOUNDARY-LOCAL-SORT H7 : Prop\nBOUNDARY-LOCAL-SORT b0 : Set\nBOUNDARY-LOCAL-SORT H6 : Prop\nBOUNDARY-LOCAL-SORT b : Set\nBOUNDARY-LOCAL-SORT H5 : Prop\nBOUNDARY-LOCAL-SORT H4 : Prop\nBOUNDARY-LOCAL-SORT H3 : Prop\nBOUNDARY-LOCAL-SORT H2 : Prop\nBOUNDARY-LOCAL-SORT H1 : Prop\nBOUNDARY-LOCAL-SORT H0 : Prop\nBOUNDARY-LOCAL-SORT stack2 : Set\nBOUNDARY-LOCAL-SORT b9 : Set\nBOUNDARY-LOCAL-SORT b8 : Set\nBOUNDARY-LOCAL-SORT POST : Type\nBOUNDARY-LOCAL-SORT P : Type\nBOUNDARY-LOCAL-SORT tail : Type\nBOUNDARY-LOCAL-SORT payload : Set\nBOUNDARY-LOCAL-SORT values : Set\nBOUNDARY-LOCAL-SORT sp : Set\nBOUNDARY-LOCAL-SORT H : Set\nBOUNDARY-LOCAL-SORT islaG0 : Type\nBOUNDARY-LOCAL-SORT Sigma : Type"
+    }
+  ],
+  "leader": "0x14ed4",
+  "exit": "0x14ee4",
+  "entry_state": "State_14ed4",
+  "entry_binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "entry_provenance": "(writeSuccessExactValueBaseFeeReturnSpec sp values payload tail P)",
+  "callee": "writeOutputContract",
+  "callee_address": "0x10190",
+  "post_state": {
+    "entry": "0x14ee4",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "values",
+        "list (bv 64)"
+      ],
+      [
+        "payload",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "b8",
+        "bv 64"
+      ],
+      [
+        "b9",
+        "bv 64"
+      ],
+      [
+        "stack2",
+        "bv 64"
+      ],
+      [
+        "H0",
+        "bv_unsigned sp + 1896 < 0 + 1073741824"
+      ],
+      [
+        "H1",
+        "0 ≤ bv_unsigned sp - 48"
+      ],
+      [
+        "H2",
+        "bv_unsigned sp `mod` 8 = 0"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length values = 74%nat"
+      ],
+      [
+        "H5",
+        "length (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values) = 32%nat"
+      ],
+      [
+        "b10",
+        "bv 64"
+      ],
+      [
+        "b11",
+        "bv 64"
+      ],
+      [
+        "b12",
+        "bv 64"
+      ],
+      [
+        "b13",
+        "bv 64"
+      ],
+      [
+        "b14",
+        "bv 64"
+      ],
+      [
+        "b15",
+        "bv 64"
+      ],
+      [
+        "b16",
+        "bv 64"
+      ],
+      [
+        "b17",
+        "bv 64"
+      ],
+      [
+        "b18",
+        "bv 64"
+      ],
+      [
+        "b19",
+        "bv 64"
+      ],
+      [
+        "b20",
+        "bv 64"
+      ],
+      [
+        "b21",
+        "bv 64"
+      ]
+    ],
+    "spatial": [
+      "(bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))",
+      "(bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)",
+      "P",
+      "instr_pre 85764 (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values payload tail P)",
+      "(bv_unsigned sp - 16) ↦ₘ? 16",
+      "(bv_unsigned sp - 48) ↦ₘ? 8%nat",
+      "(bv_unsigned sp - 40) ↦ₘ 89232",
+      "(bv_unsigned sp - 32) ↦ₘ stack2",
+      "(bv_unsigned sp - 24) ↦ₘ b9",
+      "(bv_unsigned sp + 104) ↦ₘ? 16",
+      "(bv_unsigned sp + 1032) ↦ₘ∗ take 69 values",
+      "bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 4) ↦ₘ∗ payload",
+      "True",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+      "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11)); (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15)); (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]",
+      "\"x10\" ↦ᵣ RVal_Bits b20",
+      "\"x11\" ↦ᵣ RVal_Bits b21",
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "bv_unsigned (sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `mod` 256); Z_to_bv 8 ((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+      "mmio_range (604086456 + 8) 16"
+    ],
+    "local_sorts": {
+      "H46": "Prop",
+      "H45": "Prop",
+      "H44": "Prop",
+      "H43": "Prop",
+      "H42": "Prop",
+      "H41": "Prop",
+      "H40": "Prop",
+      "H39": "Prop",
+      "H38": "Prop",
+      "H37": "Prop",
+      "H36": "Prop",
+      "H35": "Prop",
+      "H34": "Prop",
+      "H33": "Prop",
+      "H32": "Prop",
+      "H31": "Prop",
+      "H30": "Prop",
+      "H29": "Prop",
+      "H28": "Prop",
+      "H27": "Prop",
+      "H26": "Prop",
+      "H25": "Prop",
+      "H24": "Prop",
+      "H23": "Prop",
+      "H22": "Prop",
+      "H21": "Prop",
+      "H20": "Prop",
+      "H19": "Prop",
+      "H18": "Prop",
+      "H17": "Prop",
+      "H16": "Prop",
+      "H15": "Prop",
+      "H14": "Prop",
+      "H13": "Prop",
+      "H12": "Prop",
+      "H11": "Prop",
+      "H10": "Prop",
+      "H9": "Prop",
+      "b21": "Set",
+      "b20": "Set",
+      "b19": "Set",
+      "b18": "Set",
+      "b17": "Set",
+      "b16": "Set",
+      "b15": "Set",
+      "b14": "Set",
+      "b13": "Set",
+      "b12": "Set",
+      "b11": "Set",
+      "b10": "Set",
+      "H8": "Prop",
+      "b1": "Set",
+      "H7": "Prop",
+      "b0": "Set",
+      "H6": "Prop",
+      "b": "Set",
+      "H5": "Prop",
+      "H4": "Prop",
+      "H3": "Prop",
+      "H2": "Prop",
+      "H1": "Prop",
+      "H0": "Prop",
+      "stack2": "Set",
+      "b9": "Set",
+      "b8": "Set",
+      "POST": "Type",
+      "P": "Type",
+      "tail": "Type",
+      "payload": "Set",
+      "values": "Set",
+      "sp": "Set",
+      "H": "Set",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec"
+    ],
+    "outcome": "reached",
+    "derived_from": "0x14ed4",
+    "source_capture": "Rocq native zesu_block with the corrected single-event trace hook; declared memory opened by its equivalence lemma",
+    "memory_word_widths": {
+      "(bv_unsigned sp - 40)": 64,
+      "(BV 64 (604086456 + 16))": 64
+    }
+  },
+  "capture_method": "Rocq Show after complete native block with exact callee contract",
+  "source_capture": "Rocq native zesu_block with the corrected single-event trace hook; declared memory opened by its equivalence lemma",
+  "entry": "0x14ee4",
+  "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "values",
+      "list (bv 64)"
+    ],
+    [
+      "payload",
+      "list (bv 8)"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "b8",
+      "bv 64"
+    ],
+    [
+      "b9",
+      "bv 64"
+    ],
+    [
+      "stack2",
+      "bv 64"
+    ],
+    [
+      "H0",
+      "bv_unsigned sp + 1896 < 0 + 1073741824"
+    ],
+    [
+      "H1",
+      "0 ≤ bv_unsigned sp - 48"
+    ],
+    [
+      "H2",
+      "bv_unsigned sp `mod` 8 = 0"
+    ],
+    [
+      "H3",
+      "bv_unsigned sp `mod` 16 = 0"
+    ],
+    [
+      "H4",
+      "length values = 74%nat"
+    ],
+    [
+      "H5",
+      "length (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values) = 32%nat"
+    ],
+    [
+      "b10",
+      "bv 64"
+    ],
+    [
+      "b11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "b19",
+      "bv 64"
+    ],
+    [
+      "b20",
+      "bv 64"
+    ],
+    [
+      "b21",
+      "bv 64"
+    ]
+  ],
+  "spatial": [
+    "(bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))",
+    "(bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)",
+    "P",
+    "instr_pre 85764 (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values payload tail P)",
+    "(bv_unsigned sp - 16) ↦ₘ? 16",
+    "(bv_unsigned sp - 48) ↦ₘ? 8%nat",
+    "(bv_unsigned sp - 40) ↦ₘ 89232",
+    "(bv_unsigned sp - 32) ↦ₘ stack2",
+    "(bv_unsigned sp - 24) ↦ₘ b9",
+    "(bv_unsigned sp + 104) ↦ₘ? 16",
+    "(bv_unsigned sp + 1032) ↦ₘ∗ take 69 values",
+    "bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 4) ↦ₘ∗ payload",
+    "True",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11)); (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15)); (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]",
+    "\"x10\" ↦ᵣ RVal_Bits b20",
+    "\"x11\" ↦ᵣ RVal_Bits b21",
+    "\"x2\" ↦ᵣ RVal_Bits sp",
+    "bv_unsigned (sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values",
+    "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `mod` 256); Z_to_bv 8 ((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+    "mmio_range (604086456 + 8) 16"
+  ],
+  "imports": [
+    "ZesuSsz.Export.Snapshots",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec"
+  ],
+  "outcome": "reached",
+  "derived_from": "0x14ed4",
+  "state_entry": "0x14ee4"
+}
