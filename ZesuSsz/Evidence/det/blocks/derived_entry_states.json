@@ -5,8 +5,8 @@
     "state_module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1513c",
     "source_predecessor": "0x15118",
     "outcome": "reached",
-    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
-    "arguments": "tag P",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma) (sp : bv 64)",
+    "arguments": "tag P sp",
     "coq": [
       [
         "Sigma",
@@ -66,7 +66,8 @@
       "islaG0": "Type",
       "H": "Type",
       "P": "Type"
-    }
+    },
+    "stack_size": 16
   },
   {
     "entry": "0x1511c",
@@ -74,8 +75,8 @@
     "state_module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1511c",
     "source_predecessor": "0x15118",
     "outcome": "reached",
-    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
-    "arguments": "tag P",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma) (sp : bv 64)",
+    "arguments": "tag P sp",
     "coq": [
       [
         "Sigma",
@@ -155,7 +156,8 @@
       "H1": "Prop",
       "H4": "Prop",
       "H5": "Prop"
-    }
+    },
+    "stack_size": 16
   },
   {
     "entry": "0x15194",
@@ -256,7 +258,8 @@
       "H2": "Prop",
       "H6": "Prop",
       "H7": "Prop"
-    }
+    },
+    "stack_size": 16
   },
   {
     "entry": "0x151d4",
@@ -372,7 +375,8 @@
       "H10": "Prop",
       "H11": "Prop",
       "H12": "Prop"
-    }
+    },
+    "stack_size": 0
   },
   {
     "entry": "0x14f00",
@@ -508,7 +512,8 @@
       "H12": "Prop",
       "H13": "Prop",
       "H14": "Prop"
-    }
+    },
+    "stack_size": 0
   },
   {
     "entry": "0x1573c",
@@ -648,6 +653,7 @@
       "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec"
     ],
     "register_precision": "entry",
-    "anonymous_witness_facts": "omitted under coordinator ruling #1348"
+    "anonymous_witness_facts": "omitted under coordinator ruling #1348",
+    "stack_size": 16
   }
 ]

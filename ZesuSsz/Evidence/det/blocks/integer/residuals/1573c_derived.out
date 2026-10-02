@@ -1,7 +1,7 @@
 PROBE-BEGIN
-Tactic call zesu_run ran for 0.837 secs (0.825u,0.006s) (success)
-Tactic call zesu_run ran for 0.609 secs (0.606u,0.s) (success)
-Tactic call zesu_run ran for 0.212 secs (0.211u,0.s) (success)
+Tactic call zesu_run ran for 0.846 secs (0.838u,0.003s) (success)
+Tactic call zesu_run ran for 0.299 secs (0.298u,0.s) (success)
+Tactic call zesu_run ran for 0.247 secs (0.246u,0.s) (success)
 Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
 BOUNDARY-ALL-GOALS-BEGIN
 1 goal
@@ -14,10 +14,10 @@ BOUNDARY-ALL-GOALS-BEGIN
   tail : spec
   BLK_STOP_15750 : iProp Sigma
   b20, b21 : bv 64
-  H0 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
-  H1 : (bv_unsigned sp < 0 + 1073741824)%Z
-  H2 : (0 ≤ bv_unsigned sp - 16)%Z
-  H3 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H0 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H1 : (0 ≤ bv_unsigned sp - 16)%Z
+  H2 : (bv_unsigned sp < 0 + 1073741824)%Z
+  H3 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
   H4 : (-1 < bv_unsigned b21)%Z
   H5 : (bv_unsigned b21 < bv_modulus 64)%Z
   H6 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64)%Z
@@ -38,7 +38,6 @@ BOUNDARY-ALL-GOALS-BEGIN
   _ : mmio_range (604086456 + 8) 16
   --------------------------------------□
   _ : instr_pre 87888 BLK_STOP_15750
-  _ : (bv_unsigned sp + 1000) ↦ₘ root
   _ : P
   _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
   _ : reg_col
@@ -50,6 +49,7 @@ BOUNDARY-ALL-GOALS-BEGIN
   _ : reg_col
         [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
          (KindReg "x31", BitsShape 64)]
+  _ : State_1573cMemory P sp root oldData oldSize tail b20 b21
   _ : reg_col
         [(KindReg "x8", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
          (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
@@ -98,10 +98,10 @@ BOUNDARY-LOCAL-SORTS-END
   tail : spec
   BLK_STOP_15750 : iProp Sigma
   b20, b21 : bv 64
-  H0 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
-  H1 : (bv_unsigned sp < 0 + 1073741824)%Z
-  H2 : (0 ≤ bv_unsigned sp - 16)%Z
-  H3 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H0 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H1 : (0 ≤ bv_unsigned sp - 16)%Z
+  H2 : (bv_unsigned sp < 0 + 1073741824)%Z
+  H3 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
   H4 : (-1 < bv_unsigned b21)%Z
   H5 : (bv_unsigned b21 < bv_modulus 64)%Z
   H6 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64)%Z
@@ -122,7 +122,6 @@ BOUNDARY-LOCAL-SORTS-END
   _ : mmio_range (604086456 + 8) 16
   --------------------------------------□
   _ : instr_pre 87888 BLK_STOP_15750
-  _ : (bv_unsigned sp + 1000) ↦ₘ root
   _ : P
   _ : reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
   _ : reg_col
@@ -134,6 +133,7 @@ BOUNDARY-LOCAL-SORTS-END
   _ : reg_col
         [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
          (KindReg "x31", BitsShape 64)]
+  _ : State_1573cMemory P sp root oldData oldSize tail b20 b21
   _ : reg_col
         [(KindReg "x8", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64);
          (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]

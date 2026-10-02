@@ -1,5 +1,5 @@
 PROBE-BEGIN
-Tactic call zesu_run ran for 0.836 secs (0.829u,0.003s) (success)
+Tactic call zesu_run ran for 0.748 secs (0.738u,0.006s) (success)
 Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
 Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
 BOUNDARY-ALL-GOALS-BEGIN
@@ -10,18 +10,21 @@ BOUNDARY-ALL-GOALS-BEGIN
   H : threadG
   sp, index, total : bv 64
   P, BLK_STOP_14f08, BLK_STOP_15668 : iProp Sigma
-  H0 : (bv_unsigned sp + 256 < 0 + 1073741824)%Z
-  H1 : (0 ≤ bv_unsigned sp)%Z
-  H2 : (bv_unsigned sp `mod` 8)%Z = 0%Z
-  H3 : (-1 < bv_unsigned total)%Z
-  H4 : (bv_unsigned total < bv_modulus 64)%Z
-  H5 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed total < bv_half_modulus 64)%Z
-  H6 : (-1 < bv_unsigned index)%Z
-  H7 : (bv_unsigned index < bv_modulus 64)%Z
-  H8 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed index < bv_half_modulus 64)%Z
-  H9 : (-1 < bv_unsigned sp)%Z
-  H10 : (bv_unsigned sp < bv_modulus 64)%Z
-  H11 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64)%Z
+  H0 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H1 : (0 ≤ bv_unsigned sp - 0)%Z
+  H2 : (bv_unsigned sp < 0 + 1073741824)%Z
+  H3 : (bv_unsigned sp + 256 < 0 + 1073741824)%Z
+  H4 : (0 ≤ bv_unsigned sp)%Z
+  H5 : (bv_unsigned sp `mod` 8)%Z = 0%Z
+  H6 : (-1 < bv_unsigned total)%Z
+  H7 : (bv_unsigned total < bv_modulus 64)%Z
+  H8 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed total < bv_half_modulus 64)%Z
+  H9 : (-1 < bv_unsigned index)%Z
+  H10 : (bv_unsigned index < bv_modulus 64)%Z
+  H11 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed index < bv_half_modulus 64)%Z
+  H12 : (-1 < bv_unsigned sp)%Z
+  H13 : (bv_unsigned sp < bv_modulus 64)%Z
+  H14 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64)%Z
   b, b0 : bv 64
   ============================
   (index + 1)%bv = b0
@@ -29,6 +32,9 @@ BOUNDARY-ALL-GOALS-END
 BOUNDARY-LOCAL-SORTS-BEGIN
 BOUNDARY-LOCAL-SORT b0 : Set
 BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H14 : Prop
+BOUNDARY-LOCAL-SORT H13 : Prop
+BOUNDARY-LOCAL-SORT H12 : Prop
 BOUNDARY-LOCAL-SORT H11 : Prop
 BOUNDARY-LOCAL-SORT H10 : Prop
 BOUNDARY-LOCAL-SORT H9 : Prop
@@ -58,18 +64,21 @@ BOUNDARY-LOCAL-SORTS-END
   H : threadG
   sp, index, total : bv 64
   P, BLK_STOP_14f08, BLK_STOP_15668 : iProp Sigma
-  H0 : (bv_unsigned sp + 256 < 0 + 1073741824)%Z
-  H1 : (0 ≤ bv_unsigned sp)%Z
-  H2 : (bv_unsigned sp `mod` 8)%Z = 0%Z
-  H3 : (-1 < bv_unsigned total)%Z
-  H4 : (bv_unsigned total < bv_modulus 64)%Z
-  H5 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed total < bv_half_modulus 64)%Z
-  H6 : (-1 < bv_unsigned index)%Z
-  H7 : (bv_unsigned index < bv_modulus 64)%Z
-  H8 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed index < bv_half_modulus 64)%Z
-  H9 : (-1 < bv_unsigned sp)%Z
-  H10 : (bv_unsigned sp < bv_modulus 64)%Z
-  H11 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64)%Z
+  H0 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H1 : (0 ≤ bv_unsigned sp - 0)%Z
+  H2 : (bv_unsigned sp < 0 + 1073741824)%Z
+  H3 : (bv_unsigned sp + 256 < 0 + 1073741824)%Z
+  H4 : (0 ≤ bv_unsigned sp)%Z
+  H5 : (bv_unsigned sp `mod` 8)%Z = 0%Z
+  H6 : (-1 < bv_unsigned total)%Z
+  H7 : (bv_unsigned total < bv_modulus 64)%Z
+  H8 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed total < bv_half_modulus 64)%Z
+  H9 : (-1 < bv_unsigned index)%Z
+  H10 : (bv_unsigned index < bv_modulus 64)%Z
+  H11 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed index < bv_half_modulus 64)%Z
+  H12 : (-1 < bv_unsigned sp)%Z
+  H13 : (bv_unsigned sp < bv_modulus 64)%Z
+  H14 : 64%N ≠ 0%N → (- bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64)%Z
   b, b0 : bv 64
   ============================
   (index + 1)%bv = b0

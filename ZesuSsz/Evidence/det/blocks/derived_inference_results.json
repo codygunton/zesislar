@@ -2,21 +2,21 @@
   {
     "entry": "0x1513c",
     "exit": "0x15148",
-    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "imports": [
       "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1513c",
       "ZesuSsz.Automation.Sets.call"
     ],
-    "spec": "Successor_15118_1513c tag P",
+    "spec": "Successor_15118_1513c tag P sp",
     "rc": 0,
     "wall": 4.1,
-    "cpu": 3.9,
-    "peak_mib": 1271,
+    "cpu": 3.4,
+    "peak_mib": 1269,
     "limit": null,
     "rss_samples": [
       [
         0,
-        47
+        48
       ]
     ],
     "group": "boolean",
@@ -25,21 +25,21 @@
   {
     "entry": "0x1511c",
     "exit": "0x15128",
-    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma)",
+    "binders": "`{!islaG Sigma} `{!threadG} (tag : bv 64) (P : iProp Sigma) (sp : bv 64)",
     "imports": [
       "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1511c",
       "ZesuSsz.Automation.Sets.call"
     ],
-    "spec": "Successor_15118_1511c tag P",
+    "spec": "Successor_15118_1511c tag P sp",
     "rc": 0,
-    "wall": 5.1,
-    "cpu": 4.1,
+    "wall": 4.0,
+    "cpu": 3.5,
     "peak_mib": 1270,
     "limit": null,
     "rss_samples": [
       [
         0,
-        45
+        42
       ]
     ],
     "group": "boolean",
@@ -55,14 +55,14 @@
     ],
     "spec": "Successor_15154_15194 sp tag old_data P",
     "rc": 0,
-    "wall": 5.0,
-    "cpu": 4.1,
-    "peak_mib": 1272,
+    "wall": 4.0,
+    "cpu": 3.4,
+    "peak_mib": 1270,
     "limit": null,
     "rss_samples": [
       [
         0,
-        32
+        20
       ]
     ],
     "group": "boolean",
@@ -78,14 +78,14 @@
     ],
     "spec": "Successor_153b4_151d4 sp index old11 P",
     "rc": 0,
-    "wall": 3.0,
-    "cpu": 2.7,
-    "peak_mib": 1061,
+    "wall": 3.1,
+    "cpu": 2.5,
+    "peak_mib": 1062,
     "limit": null,
     "rss_samples": [
       [
-        1,
-        942
+        0,
+        46
       ]
     ],
     "group": "nocall",
@@ -102,17 +102,13 @@
     "spec": "Successor_1565c_14f00 sp index total P",
     "rc": 0,
     "wall": 6.0,
-    "cpu": 5.6,
-    "peak_mib": 1220,
+    "cpu": 5.0,
+    "peak_mib": 1276,
     "limit": null,
     "rss_samples": [
       [
-        0,
-        17
-      ],
-      [
-        5,
-        1194
+        1,
+        1057
       ]
     ],
     "group": "nocall",
@@ -129,13 +125,13 @@
     "spec": "State_1573c P sp root oldData oldSize tail",
     "rc": 0,
     "wall": 4.0,
-    "cpu": 3.7,
-    "peak_mib": 1024,
+    "cpu": 3.0,
+    "peak_mib": 1027,
     "limit": null,
     "rss_samples": [
       [
-        0,
-        3
+        1,
+        1020
       ]
     ],
     "group": "integer",

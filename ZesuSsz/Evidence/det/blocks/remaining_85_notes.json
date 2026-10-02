@@ -31,6 +31,6 @@
     "0x151d4",
     "0x1573c"
   ],
-  "stack_facts": "Coordinator approved explicit stack ownership and facts. Generated boundaries include them; changed boundaries require rerun.",
+  "stack_facts": "The six derived entries were measured with approved stack facts. Other changed boundaries still require rerun.",
   "pending_boundary_rerun": "The approved stack facts changed generated boundaries after these baseline measurements. Rerun at the load-rule SHA."
 }
