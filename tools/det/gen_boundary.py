@@ -32,7 +32,7 @@ sys.path.insert(0, str(HERE.parent / "residual"))
 from goals import COQ_RULE, IRIS_RULE  # noqa: E402
 from gen_coverage import memory_range  # noqa: E402
 
-HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*)\s*:\s*(?P<body>.*)$')
+HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*(?:\s*,\s*[A-Za-z_][\w\'’]*)*)\s*:\s*(?P<body>.*)$')
 RULE_20_CONJUNCTS = 12
 # The names a segment statement already binds. Anything else the context
 # mentions was introduced by the automation and becomes an existential.
@@ -117,6 +117,9 @@ def complete_register_file(atoms: list[str]) -> list[str]:
     for atom in atoms:
         registers = []
         if atom.startswith("reg_col "):
+            if not (atom.startswith("reg_col [") or "tmp_registers" in atom
+                    or atom == "reg_col zesu_ram_sys_regs"):
+                raise ValueError(f"unexpanded register collection: {atom}")
             registers = re.findall(r'KindReg "(x\d+)"', atom)
             if "tmp_registers" in atom:
                 registers += list(TMP_REGISTERS)
@@ -159,7 +162,7 @@ def flat_state_tactics(prefix: str, root: Path) -> str:
     for module, source in [("", prefix), *loaded.items()]:
         for name in re.findall(r"(?:Definition|Fixpoint)\s+(\w+)\b", source):
             if not any(part in name.lower() for part in
-                       ("frame", "scratch", "handoff", "event", "stack")):
+                       ("frame", "scratch", "handoff", "event", "stack", "register", "untouched")):
                 continue
             constant = (module + "." if module else "") + name
             unfold = name + "_unfold"
@@ -167,9 +170,9 @@ def flat_state_tactics(prefix: str, root: Path) -> str:
                       if re.search(r"Lemma\s+" + re.escape(unfold) + r"\b", source)
                       else "unfold " + constant)
             tactics.append(
-                "all: try (repeat iMatchHyp ltac:(fun H P => "
-                "iEval (progress " + action + ") in H)).")
-    return "\n".join(tactics) + "\n"
+                "iMatchHyp ltac:(fun H P => "
+                "iEval (progress " + action + ") in H)")
+    return ("all: repeat first [" + " |\n".join(tactics) + "].\n") if tactics else ""
 
 
 def entry_witness_binders(binders: str, coq: list[tuple[str, str]],
@@ -274,6 +277,8 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     spatial: list[str] = []
     target = coq
     lines = block.split("\n")
+    has_square_rule = any(IRIS_RULE.match(line.strip()) and line.strip().endswith("□")
+                          for line in lines)
     pending: list[str] = []
 
     def flush(into) -> None:
@@ -285,7 +290,8 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
             pending.clear()
             return
         if into is coq:
-            into.append((match.group("name"), match.group("body").strip()))
+            into.extend((name.strip(), match.group("body").strip())
+                        for name in match.group("name").split(","))
         else:
             into.append(match.group("body").strip())
         pending.clear()
@@ -302,8 +308,11 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
             if target is None:
                 break
             continue
-        if HYPOTHESIS.match(stripped) and (pending or True):
+        if HYPOTHESIS.match(stripped):
             flush(target)
+            if target is persistent and not has_square_rule and stripped.startswith("_ :"):
+                # A goal without persistent hypotheses omits the square rule.
+                target = spatial
             pending.append(stripped)
         elif pending:
             pending.append(stripped)

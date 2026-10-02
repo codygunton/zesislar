@@ -1,0 +1,64 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  Decoded : Type
+  WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation Decoded
+  args : WriteSuccessArgs Decoded
+  witness : writeSuccessNativeWitness Decoded
+  P : iProp Sigma
+  Hwf : writeSuccessWitnessWellFormed args witness
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn (writeSuccessEntrySp witness - 2000))
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+         (KindReg "x15", BitsShape 64)]
+  _ : "x5" ↦ᵣ RVal_Bits (bv_to_bvn 604086456)
+  _ : "x18" ↦ᵣ RVal_Bits (bv_to_bvn (writeSuccessEntrySp witness - 2000 + 1768))
+  _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (bv_unsigned (writeSuccessWithdrawalsBase witness) + Z.of_nat (length (writeSuccessWithdrawalsBytes witness)))))
+  _ : "x9" ↦ᵣ RVal_Bits (bv_to_bvn 0)
+  _ : bv_unsigned (writeSuccessWithdrawalsBase witness) ↦ₘ∗ writeSuccessWithdrawalsBytes witness ∗
+      ((bv_unsigned (writeSuccessEntrySp witness - 2000) + 72)
+       ↦ₘ WriteSuccessPostTransactionResources.writeSuccessPostWord (WriteSuccessPostTransactionResources.writeSuccessPostTailWords (writeSuccessDecodedBytes witness)) 7 ∗
+       reg_col
+         [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+          (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64);
+          (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+          (KindReg "x31", BitsShape 64)] ∗ ⌜writeSuccessWitnessWellFormed args witness⌝ ∗ (bv_unsigned (writeSuccessEntrySp witness - 2000) - 80) ↦ₘ? 32 ∗
+       (bv_unsigned (writeSuccessEntrySp witness - 2000) - 48) ↦ₘ? 32 ∗ bv_unsigned (writeSuccessEntrySp witness - 2000) ↦ₘ? 8 ∗
+       writeSuccessExactCopiedTailWordsWithout7 (writeSuccessEntrySp witness - 2000) (writeSuccessDecodedBytes witness) ∗
+       (bv_unsigned (writeSuccessEntrySp witness - 2000) + 312) ↦ₘ∗ writeSuccessSourceBytes witness ∗
+       WriteSuccessExactValueSpec.writeSuccessExactValueMemory (writeSuccessEntrySp witness - 2000) (writeSuccessValues witness) ∗ (bv_unsigned (writeSuccessEntrySp witness - 2000) + 1624) ↦ₘ? 16 ∗
+       writeSuccessTerminalSavedSlots witness ∗ bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗ writeSuccessDecodedBytes witness ∗
+       bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 4) ↦ₘ∗ writeSuccessPayload witness ∗
+       byteListItemResources (bv_unsigned (writeSuccessValueWord (writeSuccessValues witness) 9)) (writeSuccessRawTransactions witness) ∗
+       WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources (writeSuccessEntrySp witness - 2000) (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness)
+         (writeSuccessPostData witness) ∗ writeSuccessNativeStaticResources ∗
+       writeSuccessTransactionsInvariant (writeSuccessEntrySp witness - 2000) (writeSuccessTransactionBase witness) (writeSuccessTransactions witness) [] (writeSuccessTransactions witness)
+         (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) [] (WriteSuccessNativeContract.writeSuccessTransactionBytes witness) ∗ True) ∗ P
+  _ : (bv_unsigned (writeSuccessEntrySp witness - 2000) + 1744) ↦ₘ? 48
+  _ : (bv_unsigned (writeSuccessEntrySp witness - 2000) - 16) ↦ₘ? 16
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace
+        match writeSuccessExactPostWithdrawalsPayloads witness with
+        | [] => λ _ : list seq_label, False%type
+        | payload :: payloadTail =>
+            Snapshots.writeOutputEvents (writeSuccessEntrySp witness - 2000 - 16) 8 payload
+              match payloadTail with
+              | [] => λ _ : list seq_label, False%type
+              | payload0 :: payloadTail0 =>
+                  Snapshots.writeOutputEvents (writeSuccessEntrySp witness - 2000 - 16) 8 payload0
+                    (writeOutputPayloadsSpec
+                       (WriteSuccessOutputDescriptors.writeSuccessOptionalU64Descriptors (writeSuccessEntrySp witness - 2000) (writeSuccessPostOptional15700 (writeSuccessPostData witness)) ++
+                        ((writeSuccessEntrySp witness - 2000 - 48)%bv, 8%bv)
+                        :: ((writeSuccessPostBytes1571c (writeSuccessPostData witness)).1, (writeSuccessPostBytes1571c (writeSuccessPostData witness)).2)
+                           :: ((writeSuccessEntrySp witness - 2000 + 1000)%bv, 32%bv) :: writeSuccessPost1573cDescriptors (writeSuccessEntrySp witness - 2000) (writeSuccessPostData witness))
+                       payloadTail0 (writeSuccessTraceTail witness))
+              end
+        end
+  --------------------------------------∗
+  False
+exit=0 ms=13656 rss_kb=1331420
+

@@ -61,6 +61,18 @@ class Sections(unittest.TestCase):
         self.assertEqual(len(persistent), 2)
         self.assertEqual(len(spatial), 3)
 
+    def test_grouped_locals_keep_their_common_type(self):
+        coq, _, _ = gen_boundary.sections(GOAL_BLOCK.replace("b : bv 64", "b, c : bv 64"))
+        self.assertEqual(dict(coq)["b"], "bv 64")
+        self.assertEqual(dict(coq)["c"], "bv 64")
+
+    def test_spatial_context_without_persistent_separator(self):
+        goal = "  b : bv 64\n  ============================\n  _ : reg_col sys_regs\n  --------------------------------------∗\n  False\n"
+        coq, persistent, spatial = gen_boundary.sections(goal)
+        self.assertEqual(coq, [("b", "bv 64")])
+        self.assertEqual(persistent, [])
+        self.assertEqual(spatial, ["reg_col sys_regs"])
+
     def test_joins_a_wrapped_hypothesis(self):
         _coq, _persistent, spatial = gen_boundary.sections(GOAL_BLOCK)
         self.assertIn("↦ₘ∗ take 69 (writeSuccessValues witness)", spatial[1])

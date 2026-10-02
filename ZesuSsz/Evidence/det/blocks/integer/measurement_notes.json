@@ -1,0 +1,19 @@
+{
+  "contract_sha": "a0964b99",
+  "contract": "encoderIntContract",
+  "target": "0x15d10",
+  "results": "15 stalled, 1 partial at internal handoff 0x15968; no complete block closure",
+  "missing_entries": [
+    "0x14e94",
+    "0x14ea0",
+    "0x14eac",
+    "0x14ec8",
+    "0x14ee4",
+    "0x1573c"
+  ],
+  "entry_normalization": {
+    "0x156e8": "Capture still contains a nested frame conjunction. Generation rejects duplicate x6 ownership instead of guessing.",
+    "0x156f4": "conditional register collection; no ownership inferred"
+  },
+  "staging": "Integer states use a separate directory. Accepted header states remain unchanged."
+}

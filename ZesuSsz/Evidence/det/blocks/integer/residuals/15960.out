@@ -1,0 +1,9 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 0.676 secs (0.673u,0.s) (success)
+BOUNDARY-ALL-GOALS-BEGIN
+No more goals.
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORTS-END
+No more goals.
+PROBE-END

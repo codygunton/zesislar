@@ -1,0 +1,111 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 0.943 secs (0.935u,0.002s) (success)
+Tactic call zesu_run ran for 0.452 secs (0.45u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P, BLK_STOP_14e94 : iProp Sigma
+  sp : bv 64
+  values : list (bv 64)
+  payload : list (bv 8)
+  tail : spec
+  H0 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
+  H1 : (0 ≤ bv_unsigned sp - 48)%Z
+  H2 : (bv_unsigned sp `mod` 8)%Z = 0%Z
+  H3 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H4 : bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 5) = Z.of_nat (length payload)
+  H5 : length values = 74
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 89360 encoderIntContract
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_pre 85652 BLK_STOP_14e94
+  _ : (bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))
+  _ : (bv_unsigned sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values
+  _ : (bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)
+  _ : spec_trace (WriteSuccessExactValueSpec.writeSuccessExactValueIntEvent sp values 0 (WriteSuccessExactValueSpec.writeSuccessExactValueEventsAfter0 sp values payload tail))
+  _ : P
+  _ : instr_pre 85764 (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values payload tail P)
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : State_14e88Memory P sp values payload tail
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64);
+         (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : list (bv 64) *ₗ (), (bv_unsigned sp + 1032) ↦ₘ∗ y.1ₗ ∗ ⌜(bv_unsigned sp + 1032)%Z = (bv_unsigned sp + 1032 + 8 * Z.of_nat 0)%Z⌝ ∗ ⌜0 < length y.1ₗ⌝ ∗ ⌜(bv_unsigned sp `mod` 8)%Z = 0%Z⌝ ∗
+    ⌜(0 ≤ bv_unsigned sp + 1032 < 0 + 1073741824)%Z⌝ ∗
+    instr_pre (85640 + 4) (reg_col zesu_ram_sys_regs ∗ "x10" ↦ᵣ RVal_Bits (bv_to_bvn (default 0%bv (y.1ₗ !! 0))) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 1032) ↦ₘ∗ y.1ₗ ∗ True)
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT payload : Set
+BOUNDARY-LOCAL-SORT values : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_14e94 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORTS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P, BLK_STOP_14e94 : iProp Sigma
+  sp : bv 64
+  values : list (bv 64)
+  payload : list (bv 8)
+  tail : spec
+  H0 : (bv_unsigned sp + 1896 < 0 + 1073741824)%Z
+  H1 : (0 ≤ bv_unsigned sp - 48)%Z
+  H2 : (bv_unsigned sp `mod` 8)%Z = 0%Z
+  H3 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  H4 : bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 5) = Z.of_nat (length payload)
+  H5 : length values = 74
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 89360 encoderIntContract
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_pre 85652 BLK_STOP_14e94
+  _ : (bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))
+  _ : (bv_unsigned sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values
+  _ : (bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)
+  _ : spec_trace (WriteSuccessExactValueSpec.writeSuccessExactValueIntEvent sp values 0 (WriteSuccessExactValueSpec.writeSuccessExactValueEventsAfter0 sp values payload tail))
+  _ : P
+  _ : instr_pre 85764 (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values payload tail P)
+  _ : reg_col
+        [(KindReg "x5", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : State_14e88Memory P sp values payload tail
+  _ : reg_col
+        [(KindReg "x1", BitsShape 64); (KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x11", BitsShape 64);
+         (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64);
+         (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : list (bv 64) *ₗ (), (bv_unsigned sp + 1032) ↦ₘ∗ y.1ₗ ∗ ⌜(bv_unsigned sp + 1032)%Z = (bv_unsigned sp + 1032 + 8 * Z.of_nat 0)%Z⌝ ∗ ⌜0 < length y.1ₗ⌝ ∗ ⌜(bv_unsigned sp `mod` 8)%Z = 0%Z⌝ ∗
+    ⌜(0 ≤ bv_unsigned sp + 1032 < 0 + 1073741824)%Z⌝ ∗
+    instr_pre (85640 + 4) (reg_col zesu_ram_sys_regs ∗ "x10" ↦ᵣ RVal_Bits (bv_to_bvn (default 0%bv (y.1ₗ !! 0))) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 1032) ↦ₘ∗ y.1ₗ ∗ True)
+PROBE-END

@@ -57,6 +57,11 @@ class StatePartition(unittest.TestCase):
         self.assertNotIn('(KindReg "x5", BitsShape 64)', completed[-1])
         self.assertEqual(gen_boundary.complete_register_file(completed), completed)
 
+    def test_conditional_register_ownership_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "register collection"):
+            gen_boundary.complete_register_file([
+                'reg_col (match saved with [] => [(KindReg "x8", BitsShape 64)] | _ => [] end)'])
+
     def test_duplicate_register_ownership_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "duplicate register.*x5"):
             gen_boundary.complete_register_file(ATOMS + ['"x5" ↦ᵣ RVal_Bits value'])

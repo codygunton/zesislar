@@ -1,0 +1,386 @@
+[
+  {
+    "name": "infer_14e88",
+    "entry": "0x14e88",
+    "exit": "0x14e94",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_14e88",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_14e88 P",
+    "rc": 0,
+    "wall": 3.1,
+    "cpu": 3.0,
+    "peak_mib": 1032,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        48
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_14e88.out"
+  },
+  {
+    "name": "infer_150fc",
+    "entry": "0x150fc",
+    "exit": "0x15108",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (value : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_150fc",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_150fc sp value oldra old5 old11 tail P",
+    "rc": 0,
+    "wall": 3.1,
+    "cpu": 2.4,
+    "peak_mib": 1027,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        48
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_150fc.out"
+  },
+  {
+    "name": "infer_15148",
+    "entry": "0x15148",
+    "exit": "0x15154",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (value : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15148",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15148 sp value oldra old5 old11 tail P",
+    "rc": 0,
+    "wall": 5.0,
+    "cpu": 4.5,
+    "peak_mib": 1075,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        44
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_15148.out"
+  },
+  {
+    "name": "infer_151c4",
+    "entry": "0x151c4",
+    "exit": "0x151d0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (value : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_151c4",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_151c4 sp value oldra old5 old11 tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.4,
+    "peak_mib": 1027,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1024
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_151c4.out"
+  },
+  {
+    "name": "infer_15210",
+    "entry": "0x15210",
+    "exit": "0x1521c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (old_ra : bv 64) (old5 : bv 64) (old_data : bv 64) (old_size : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15210",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15210 sp old_ra old5 old_data old_size bytes tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.3,
+    "peak_mib": 1025,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        5
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_15210.out"
+  },
+  {
+    "name": "infer_153c0",
+    "entry": "0x153c0",
+    "exit": "0x153d0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (savedX22 : bv 64) (old22 : bv 64) (old_ra : bv 64) (old5 : bv 64) (old_data : bv 64) (old_size : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_153c0",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_153c0 sp savedX22 old22 old_ra old5 old_data old_size tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.4,
+    "peak_mib": 1027,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        26
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_153c0.out"
+  },
+  {
+    "name": "infer_15574",
+    "entry": "0x15574",
+    "exit": "0x15584",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (count : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15574",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15574 sp count oldra old5 old11 tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.4,
+    "peak_mib": 1027,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1022
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_15574.out"
+  },
+  {
+    "name": "infer_155cc",
+    "entry": "0x155cc",
+    "exit": "0x155d8",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_155cc",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_155cc sp oldra old5 old11 bytes tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.8,
+    "peak_mib": 1029,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        20
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_155cc.out"
+  },
+  {
+    "name": "infer_155d8",
+    "entry": "0x155d8",
+    "exit": "0x155e4",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_155d8",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_155d8 sp oldra old5 old11 bytes tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.8,
+    "peak_mib": 1029,
+    "limit": null,
+    "rss_samples": [
+      [
+        0,
+        33
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_155d8.out"
+  },
+  {
+    "name": "infer_15620",
+    "entry": "0x15620",
+    "exit": "0x1562c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (value : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15620",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15620 sp value oldra old5 old11 tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.4,
+    "peak_mib": 1027,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1024
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_15620.out"
+  },
+  {
+    "name": "infer_15678",
+    "entry": "0x15678",
+    "exit": "0x1568c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old8 : bv 64) (old9 : bv 64) (olddata : bv 64) (values : list (bv 64)) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15678",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15678 sp oldra old8 old9 olddata values P",
+    "rc": 0,
+    "wall": 4.0,
+    "cpu": 3.0,
+    "peak_mib": 1029,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1022
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_15678.out"
+  },
+  {
+    "name": "infer_156a8",
+    "entry": "0x156a8",
+    "exit": "0x156b4",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_156a8",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_156a8 sp oldra old5 old11 bytes tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.3,
+    "peak_mib": 1029,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1022
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_156a8.out"
+  },
+  {
+    "name": "infer_156b4",
+    "entry": "0x156b4",
+    "exit": "0x156c0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_156b4",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_156b4 sp oldra old5 old11 bytes tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.3,
+    "peak_mib": 1028,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1024
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_156b4.out"
+  },
+  {
+    "name": "infer_156d0",
+    "entry": "0x156d0",
+    "exit": "0x156dc",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_156d0",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_156d0 sp oldra old5 old11 bytes tail P",
+    "rc": 0,
+    "wall": 3.0,
+    "cpu": 2.3,
+    "peak_mib": 1029,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1024
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_156d0.out"
+  },
+  {
+    "name": "infer_15960",
+    "entry": "0x15960",
+    "exit": "0x1596c",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15960",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_15960 P",
+    "rc": 0,
+    "wall": 2.0,
+    "cpu": 1.5,
+    "peak_mib": 1032,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1024
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_15960.out"
+  },
+  {
+    "name": "infer_159a0",
+    "entry": "0x159a0",
+    "exit": "0x159b0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_159a0",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "spec": "State_159a0 sp saved value tail P",
+    "rc": 0,
+    "wall": 5.0,
+    "cpu": 4.1,
+    "peak_mib": 1074,
+    "limit": null,
+    "rss_samples": [
+      [
+        1,
+        1024
+      ]
+    ],
+    "outcome": "stalled",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/integer-inference/Infer_159a0.out"
+  }
+]

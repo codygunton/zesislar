@@ -1,0 +1,119 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 0.311 secs (0.31u,0.s) (success)
+Tactic call zesu_run ran for 0.073 secs (0.072u,0.s) (success)
+Tactic call zesu_run ran for 0.039 secs (0.038u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, count, oldra, old5, old11 : bv 64
+  tail : spec
+  P, BLK_STOP_15584 : iProp Sigma
+  H0 : (bv_unsigned sp + 176 < 0 + 1073741824)%Z
+  H1 : (0 ≤ bv_unsigned sp - 16)%Z
+  H2 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 89360 encoderIntContract
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_pre 87428 BLK_STOP_15584
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn oldra)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn old11)
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (λ snapshot : seq_snapshot,
+                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+                 Some
+                   [Z_to_bv 8 (bv_unsigned count `mod` 256); Z_to_bv 8 ((bv_unsigned count `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned count `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((bv_unsigned count `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))
+  _ : P
+  _ : instr_pre 87428 (WriteSuccessExactAuthorizationsCount.authorizationCountPost sp count tail P)
+  _ : reg_col
+        [(KindReg "x5", ExactShape (RVal_Bits (bv_to_bvn old5))); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
+         (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+         (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+         (KindReg "x27", BitsShape 64)]
+  _ : State_15574Memory sp count oldra old5 old11 tail P
+  _ : reg_col [(KindReg "x10", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : bv 64 *ₗ (), (bv_unsigned sp + 160) ↦ₘ y.1ₗ ∗ ⌜(bv_unsigned sp `mod` 8)%Z = 0%Z⌝ ∗ ⌜(0 ≤ bv_unsigned sp + 160 < 0 + 1073741824)%Z⌝ ∗
+    instr_pre (87412 + 4) (reg_col zesu_ram_sys_regs ∗ "x18" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 160) ↦ₘ y.1ₗ ∗ True)
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_15584 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT old11 : Set
+BOUNDARY-LOCAL-SORT old5 : Set
+BOUNDARY-LOCAL-SORT oldra : Set
+BOUNDARY-LOCAL-SORT count : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORTS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, count, oldra, old5, old11 : bv 64
+  tail : spec
+  P, BLK_STOP_15584 : iProp Sigma
+  H0 : (bv_unsigned sp + 176 < 0 + 1073741824)%Z
+  H1 : (0 ≤ bv_unsigned sp - 16)%Z
+  H2 : (bv_unsigned sp `mod` 16)%Z = 0%Z
+  b : bv 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : instr_body_lookup_resources body_lookup
+  _ : instr_pre 89360 encoderIntContract
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : instr_pre 87428 BLK_STOP_15584
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn oldra)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn old11)
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (λ snapshot : seq_snapshot,
+                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+                 Some
+                   [Z_to_bv 8 (bv_unsigned count `mod` 256); Z_to_bv 8 ((bv_unsigned count `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned count `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((bv_unsigned count `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((bv_unsigned count `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))
+  _ : P
+  _ : instr_pre 87428 (WriteSuccessExactAuthorizationsCount.authorizationCountPost sp count tail P)
+  _ : reg_col
+        [(KindReg "x5", ExactShape (RVal_Bits (bv_to_bvn old5))); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
+         (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+         (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+         (KindReg "x27", BitsShape 64)]
+  _ : State_15574Memory sp count oldra old5 old11 tail P
+  _ : reg_col [(KindReg "x10", BitsShape 64)]
+  --------------------------------------∗
+  ∃ y : bv 64 *ₗ (), (bv_unsigned sp + 160) ↦ₘ y.1ₗ ∗ ⌜(bv_unsigned sp `mod` 8)%Z = 0%Z⌝ ∗ ⌜(0 ≤ bv_unsigned sp + 160 < 0 + 1073741824)%Z⌝ ∗
+    instr_pre (87412 + 4) (reg_col zesu_ram_sys_regs ∗ "x18" ↦ᵣ RVal_Bits (bv_to_bvn y.1ₗ) ∗ "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗ (bv_unsigned sp + 160) ↦ₘ y.1ₗ ∗ True)
+PROBE-END
