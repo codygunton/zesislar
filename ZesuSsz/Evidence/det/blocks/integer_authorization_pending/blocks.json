@@ -1,0 +1,22 @@
+[
+  {
+    "start": "0x155cc",
+    "end": "0x155d8",
+    "successors": [
+      "0x155d8"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ]
+  },
+  {
+    "start": "0x155d8",
+    "end": "0x155e4",
+    "successors": [
+      "0x155e4"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ]
+  }
+]

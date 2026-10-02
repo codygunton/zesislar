@@ -1,0 +1,344 @@
+[
+  {
+    "entry": "0x156a8",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactWithdrawalsInt",
+    "source_resource": "(withdrawalIntEntry sp oldra old5 old11 bytes 0 (BV 64 0x156b4) tail P)",
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "old11",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 48)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ],
+      [
+        "H4",
+        "length bytes = 48%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old11)",
+      "reg_col [(KindReg \"x10\", BitsShape 64)]",
+      "(bv_unsigned sp + 1744) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned (transactionRowWord bytes 0 0) `mod` 256); Z_to_bv 8 ((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (transactionRowWord bytes 0 0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+      "P",
+      "instr_pre (bv_unsigned (BV 64 87732)) (withdrawalIntPost sp bytes (BV 64 87732) tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp oldra old5 old11 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "old11": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ],
+    "stack_pointer": "sp",
+    "name": "CapturedEntry_156a8WithdrawalIndex",
+    "block_exit": "0x156b4",
+    "supplied_successors": [
+      "0x156b4"
+    ],
+    "seal_memory": false
+  },
+  {
+    "entry": "0x156b4",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactWithdrawalsSecondInt",
+    "source_resource": "(withdrawalIntEntry sp oldra old5 old11 bytes 8 (BV 64 0x156c0) tail P)",
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "old11",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 48)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ],
+      [
+        "H4",
+        "length bytes = 48%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old11)",
+      "reg_col [(KindReg \"x10\", BitsShape 64)]",
+      "(bv_unsigned sp + 1744) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned (transactionRowWord bytes 0 8) `mod` 256); Z_to_bv 8 ((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (transactionRowWord bytes 0 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+      "P",
+      "instr_pre (bv_unsigned (BV 64 87744)) (withdrawalIntPost sp bytes (BV 64 87744) tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp oldra old5 old11 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "old11": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ],
+    "stack_pointer": "sp",
+    "name": "CapturedEntry_156b4WithdrawalValidator",
+    "block_exit": "0x156c0",
+    "supplied_successors": [
+      "0x156c0"
+    ],
+    "seal_memory": false
+  },
+  {
+    "entry": "0x156d0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactWithdrawalsThirdInt",
+    "source_resource": "(withdrawalIntEntry sp oldra old5 old11 bytes 16 (BV 64 0x156dc) tail P)",
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "old11",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 48)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ],
+      [
+        "H4",
+        "length bytes = 48%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old11)",
+      "reg_col [(KindReg \"x10\", BitsShape 64)]",
+      "(bv_unsigned sp + 1744) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned (transactionRowWord bytes 0 16) `mod` 256); Z_to_bv 8 ((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (transactionRowWord bytes 0 16) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+      "P",
+      "instr_pre (bv_unsigned (BV 64 87772)) (withdrawalIntPost sp bytes (BV 64 87772) tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp oldra old5 old11 bytes tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "old11": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ],
+    "stack_pointer": "sp",
+    "name": "CapturedEntry_156d0WithdrawalAmount",
+    "block_exit": "0x156dc",
+    "supplied_successors": [
+      "0x156dc"
+    ],
+    "seal_memory": false
+  }
+]

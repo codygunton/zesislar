@@ -1,0 +1,109 @@
+[
+  {
+    "entry": "0x14e88",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8)) (tail : spec)",
+    "module": "WriteSuccessExactValueBlock",
+    "source_resource": "(writeSuccessExactValueSpec P)",
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "values",
+        "list (bv 64)"
+      ],
+      [
+        "payload",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "H0",
+        "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H1",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp - 48)%Z"
+      ],
+      [
+        "H2",
+        "(bv_unsigned sp `mod` 8 = 0)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16 = 0)%Z"
+      ],
+      [
+        "H4",
+        "(bv_unsigned (writeSuccessExactValueWord values 5) = Z.of_nat (length payload))%Z"
+      ],
+      [
+        "H5",
+        "length values = 74%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 69 values",
+      "(bv_unsigned sp + 1584) \u21a6\u2098\u2217 take 4 (drop 552 (bytes_of_u64s values))",
+      "(bv_unsigned sp + 1588) \u21a6\u2098\u2217 writeSuccessValueBlockHash values",
+      "(bv_unsigned sp + 1620) \u21a6\u2098\u2217 drop 588 (bytes_of_u64s values)",
+      "bv_unsigned (writeSuccessExactValueWord values 4) \u21a6\u2098\u2217 payload",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessExactValueIntEvent sp values 0 (writeSuccessExactValueEventsAfter0 sp values payload tail))",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "P sp values payload tail",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "P": "Type",
+      "sp": "Type",
+      "values": "Type",
+      "payload": "Type",
+      "tail": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop",
+      "H5": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec"
+    ],
+    "name": "CapturedEntry_14e88Value",
+    "capture_boundary_removed": "0x14f04",
+    "seal_memory": false
+  }
+]
