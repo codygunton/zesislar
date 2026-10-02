@@ -1,0 +1,324 @@
+[
+  {
+    "variant": "ownershipf15",
+    "leader": "0x14e78",
+    "last": "0x14e84",
+    "n": 4,
+    "kind": "call:784(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e88"
+    ],
+    "lemma": "block_14e78",
+    "module": "Probe_14e78",
+    "stops": [],
+    "kept_succ": [
+      "0x14e88"
+    ],
+    "run": "A",
+    "seconds": 7.1,
+    "cpu": 6.9,
+    "peak_mib": 1031,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        48
+      ],
+      [
+        5,
+        975
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e78",
+      "0x14e7c",
+      "0x14e80"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/ownershipf15-A-driver/probes/A_ownershipf15_0x14e78_call.out",
+    "outcome": "closed-all",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "ownershipf15",
+    "leader": "0x151b4",
+    "last": "0x151c0",
+    "n": 4,
+    "kind": "call:-1360(ra) # 15c6c <ssz_decode_observation.Encoder.bytes>",
+    "succ": [
+      "0x151c4"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151b4",
+    "stops": [],
+    "kept_succ": [
+      "0x151c4"
+    ],
+    "run": "A",
+    "seconds": 60.1,
+    "cpu": 59.2,
+    "peak_mib": 6188,
+    "rc": -9,
+    "rss_samples": [
+      [
+        0,
+        45
+      ],
+      [
+        5,
+        1074
+      ],
+      [
+        10,
+        1524
+      ],
+      [
+        15,
+        2014
+      ],
+      [
+        20,
+        2518
+      ],
+      [
+        25,
+        2940
+      ],
+      [
+        30,
+        3430
+      ],
+      [
+        35,
+        3942
+      ],
+      [
+        40,
+        4292
+      ],
+      [
+        45,
+        4788
+      ],
+      [
+        50,
+        5278
+      ],
+      [
+        55,
+        5782
+      ]
+    ],
+    "cap": 300,
+    "limit": "memory",
+    "pcs_seen": [
+      "0x151b4",
+      "0x151b8",
+      "0x151bc"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 0,
+    "outcome": "memory",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "ownershipf15",
+    "leader": "0x15678",
+    "last": "0x15688",
+    "n": 5,
+    "kind": "call:1676(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1568c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15678",
+    "stops": [],
+    "kept_succ": [
+      "0x1568c"
+    ],
+    "run": "A",
+    "seconds": 11.0,
+    "cpu": 10.5,
+    "peak_mib": 1330,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        26
+      ],
+      [
+        5,
+        1023
+      ],
+      [
+        10,
+        1325
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15678",
+      "0x1567c"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/ownershipf15-A-driver/probes/A_ownershipf15_0x15678_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (), mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (writeOutputEvents (sp - 16) 8\n         [Z_to_bv 8 (bv_unsigned vmem0 `mod` 256); Z_to_bv 8 ((bv_unsigned vmem0 `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned vmem0 `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned vmem0 `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned vmem0 `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned vmem0 `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 (((((((bv_unsigned vme",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "ownershipf15",
+    "leader": "0x15940",
+    "last": "0x1594c",
+    "n": 4,
+    "kind": "call:712(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15950"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15940",
+    "stops": [],
+    "kept_succ": [
+      "0x15950"
+    ],
+    "run": "A",
+    "seconds": 7.1,
+    "cpu": 6.3,
+    "peak_mib": 1284,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        46
+      ],
+      [
+        5,
+        1262
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15948"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/ownershipf15-A-driver/probes/A_ownershipf15_0x15940_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list ByteListItem *\u2097 (),\n    (fix byteListItemResources (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) (address : Z) (items : list ByteListItem) {struct items} : iProp Sigma0 :=\n       match items with\n       | [] => True\n       | item :: rest => address \u21a6\u2098 byteListData item \u2217 (address + 8) \u21a6\u2098 byteListSize item \u2217 bv_unsigned (byteListData item) \u21a6\u2098\u2217 byteListBytes item \u2217\n           \u231cbv_unsigned (byteListSize item) = length (byteListBytes item)\u231d \u2217 byteListItemResources Sigma0 islaG1 (address + 16) rest\n       end) Sigma islaG0 (bv_unsigned pointer) x.2\u2097 \u2217 mmio_range (604086456 + 8) 16",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "ownershipf15",
+    "leader": "0x15950",
+    "last": "0x1595c",
+    "n": 4,
+    "kind": "call:696(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15960"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15950",
+    "stops": [],
+    "kept_succ": [
+      "0x15960"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 6.2,
+    "peak_mib": 1285,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1130
+      ],
+      [
+        6,
+        1282
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15958"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/ownershipf15-A-driver/probes/A_ownershipf15_0x15950_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list ByteListItem *\u2097 (),\n    (fix byteListItemResources (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) (address : Z) (items : list ByteListItem) {struct items} : iProp Sigma0 :=\n       match items with\n       | [] => True\n       | item :: rest => address \u21a6\u2098 byteListData item \u2217 (address + 8) \u21a6\u2098 byteListSize item \u2217 bv_unsigned (byteListData item) \u21a6\u2098\u2217 byteListBytes item \u2217\n           \u231cbv_unsigned (byteListSize item) = length (byteListBytes item)\u231d \u2217 byteListItemResources Sigma0 islaG1 (address + 16) rest\n       end) Sigma islaG0 (bv_unsigned pointer) x.2\u2097 \u2217 mmio_range (604086456 + 8) 16",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "ownershipf15",
+    "leader": "0x15960",
+    "last": "0x15968",
+    "n": 3,
+    "kind": "call:940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1596c"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15960",
+    "stops": [],
+    "kept_succ": [
+      "0x1596c"
+    ],
+    "run": "A",
+    "seconds": 6.0,
+    "cpu": 5.2,
+    "peak_mib": 1027,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        5
+      ],
+      [
+        5,
+        1006
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15964"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/ownershipf15-A-driver/probes/A_ownershipf15_0x15960_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (), mmio_range (604086456 + 8) 16 \u2217\n    spec_trace\n      (writeOutputEvents (sp - 16) 8\n         [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n          Z_to_bv 8 (((((((bv_unsigned val",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

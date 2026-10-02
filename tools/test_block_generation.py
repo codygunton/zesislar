@@ -105,6 +105,25 @@ class StatePartition(unittest.TestCase):
         self.assertIn('"x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)', result)
         self.assertIn('⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝', result)
         self.assertEqual(gen_block.add_stack_resources(state, result), result)
+        self.assertIn('(bv_unsigned sp - 16) ↦ₘ? 16', result)
+
+    def test_supplied_successor_removes_only_its_legacy_continuation(self):
+        state = {'binders': BINDERS, 'spatial': ATOMS +
+                 ['instr_pre 86280 P', 'instr_pre 89360 P'],
+                 'supplied_successors': ['0x15108']}
+        with patch.object(gen_boundary, 'boundary_source', return_value='') as boundary:
+            gen_block.state_source(0x150fc, state)
+        self.assertNotIn('instr_pre 86280 P', boundary.call_args.args[3])
+        self.assertIn('instr_pre 89360 P', boundary.call_args.args[3])
+
+    def test_post_state_removes_unused_anonymous_facts_and_keeps_memory_open(self):
+        state = {'binders': BINDERS, 'spatial': ATOMS + ['"x8" ↦ᵣ RVal_Bits b'],
+                 'coq': [('b', 'bv 64'), ('H0', 'bv_unsigned b < 100')],
+                 'post_state': True, 'seal_memory': False}
+        with patch.object(gen_boundary, 'boundary_source', return_value='') as boundary:
+            gen_block.state_source(0x15108, state)
+        self.assertEqual(boundary.call_args.args[2], [])
+        self.assertFalse(boundary.call_args.kwargs['seal'])
 
     def test_full_register_file_preserves_exact_values_and_does_not_duplicate(self):
         atoms = ATOMS + ['"x2" ↦ᵣ RVal_Bits sp', '"x12" ↦ᵣ RVal_Bits argument']
@@ -142,6 +161,22 @@ class StatePartition(unittest.TestCase):
         self.assertEqual(gen_block.state_application(0x1513c, state),
                          "Successor_15118_1513c tail")
 
+    def test_post_state_anonymous_register_uses_bits_shape(self):
+        atoms = ['reg_col [(KindReg "x8", ExactShape (RVal_Bits b))]',
+                 '"x10" ↦ᵣ RVal_Bits returned']
+        result = gen_boundary.post_state_register_precision(
+            atoms, BINDERS, [('b', 'bv 64'), ('returned', 'bv 64')])
+        self.assertIn('reg_col [(KindReg "x8", BitsShape 64)]', result)
+        self.assertIn('reg_col [(KindReg "x10", BitsShape 64)]', result)
+
+    def test_post_state_keeps_parameters_and_memory_related_values(self):
+        atoms = ['"x10" ↦ᵣ RVal_Bits value', '"x11" ↦ᵣ RVal_Bits loaded',
+                 '(bv_unsigned sp + 8) ↦ₘ loaded']
+        result = gen_boundary.post_state_register_precision(
+            atoms, BINDERS + ' (value : bv 64)',
+            [('value', 'bv 64'), ('loaded', 'bv 64')])
+        self.assertEqual(result, atoms)
+
     def test_internal_handoffs_do_not_close_the_block(self):
         atoms = ['instr_pre (88368 + 4) P', 'instr_pre 88380 Q', 'instr_pre 88384 R']
         self.assertEqual(gen_boundary.strip_internal_handoffs(atoms, 88368, 88384), [atoms[2]])
@@ -172,7 +207,9 @@ class StatePartition(unittest.TestCase):
         self.assertNotIn("⌜base", memory)
         self.assertIn("ZesuSealed", memory)
         self.assertIn("1 * Z.of_nat (length (take 8 bytes))", memory)
-        self.assertIn("(base, (base) + (8))", memory)
+        self.assertNotIn("base ↦ₘ word", memory)
+        self.assertIn("base ↦ₘ word", state)
+        self.assertIn("((base + 16), ((base + 16)) + (8))", memory)
         self.assertIn("Global Opaque StateMemory.", memory)
         self.assertNotIn("Global Opaque State.", source)
         self.assertIn("reg_col zesu_ram_sys_regs", state)

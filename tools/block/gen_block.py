@@ -82,6 +82,11 @@ def add_stack_resources(state: dict, spatial: list[str]) -> list[str]:
         spatial = [re.sub(r';\s*\]', ']', atom) for atom in spatial]
         spatial.append(exact)
     size = state["stack_size"]
+    if size:
+        scratch = f'(bv_unsigned {pointer} - {size}) ↦ₘ? {size}'
+        equivalents = {scratch, f'bv_unsigned ({pointer} - {size}) ↦ₘ? {size}'}
+        if not any(atom in equivalents for atom in spatial):
+            spatial.append(scratch)
     facts = [f'⌜(bv_unsigned {pointer} `mod` 16 = 0)%Z⌝',
              f'⌜(mapRamBase defaultMap <= bv_unsigned {pointer} - {size} /\\ '
              f'bv_unsigned {pointer} < machineRamEnd defaultMap)%Z⌝']
@@ -101,6 +106,24 @@ def state_source(leader: int, state: dict) -> str:
     if state.get("block_exit") is not None:
         spatial = gen_boundary.strip_internal_handoffs(
             spatial, leader, int(str(state["block_exit"]), 0))
+    for successor in state.get("supplied_successors", []):
+        pc = address(successor)
+        spatial = gen_boundary.strip_internal_handoffs(spatial, pc, pc + 1)
+    if state.get("post_state"):
+        spatial = gen_boundary.post_state_register_precision(spatial, state["binders"], coq)
+        parameters = set(gen_boundary.explicit_arguments(state["binders"]).split())
+        unused = {name for name, kind in coq
+                  if kind == "bv 64" and name not in parameters
+                  and not any(re.search(r"(?<![\w'])" + re.escape(name)
+                                        + r"(?![\w'])", atom) for atom in spatial)
+                  and not any(re.search(r"(?<![\w'])" + re.escape(name)
+                                        + r"(?![\w'])", other_kind)
+                              for other_name, other_kind in coq
+                              if not re.fullmatch(r"H\d+", other_name))}
+        coq = [(name, kind) for name, kind in coq if name not in unused
+               and not (re.fullmatch(r"H\d+", name)
+                        and any(re.search(r"(?<![\w'])" + re.escape(value)
+                                          + r"(?![\w'])", kind) for value in unused))]
     spatial = gen_boundary.preserve_register_precision(
         spatial, (set(state.get("entry_unknown_registers", []))
                   | ({"x1", "x5", "x10", "x11"}
@@ -114,9 +137,9 @@ def state_source(leader: int, state: dict) -> str:
     spatial = gen_boundary.complete_register_file(deduplicated)
     source = gen_boundary.boundary_source(
         state.get("name", f"State_{leader:x}"), state["binders"], coq, spatial,
-        seal=(len(spatial) > gen_boundary.RULE_20_CONJUNCTS
+        seal=state.get("seal_memory", (len(spatial) > gen_boundary.RULE_20_CONJUNCTS
               and not any(leader <= pc < address(state.get("block_exit", leader))
-                          for pc in call_sites.call_sites())),
+                          for pc in call_sites.call_sites()))),
         call_resources=True, sorts=state.get("local_sorts", state.get("sorts")),
         witnesses=state.get("witnesses"))
     imports = ["ZesuSsz.Automation.All", "ZesuSsz.Automation.SealedCoverage",

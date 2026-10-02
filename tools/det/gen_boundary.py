@@ -146,6 +146,28 @@ def preserve_register_precision(atoms: list[str], unknown: set[str]) -> list[str
     return result
 
 
+def post_state_register_precision(atoms: list[str], binders: str,
+                                  coq: list[tuple[str, str]]) -> list[str]:
+    """Keep anonymous post-state registers as shapes unless memory uses them."""
+    parameters = set(explicit_arguments(binders).split())
+    anonymous = {name for name, kind in coq
+                 if kind == "bv 64" and name not in parameters}
+    other = " ".join(atom for atom in atoms
+                     if not atom.startswith("reg_col ") and "↦ᵣ" not in atom)
+    unknown = set()
+    for atom in atoms:
+        values = re.findall(
+            r'KindReg "(x\d+)", ExactShape \(RVal_Bits ([A-Za-z_][\w\']*)\)', atom)
+        direct = re.fullmatch(r'"(x\d+)" ↦ᵣ RVal_Bits ([A-Za-z_][\w\']*)', atom)
+        if direct:
+            values.append((direct[1], direct[2]))
+        for register, value in values:
+            if value in anonymous and not re.search(
+                    r"(?<![\w'])" + re.escape(value) + r"(?![\w'])", other):
+                unknown.add(register)
+    return preserve_register_precision(atoms, unknown)
+
+
 def deduplicate_register_shapes(atoms: list[str]) -> list[str]:
     """Retain exact ownership and remove its explicit BitsShape duplicate."""
     exact = {match[1] for atom in atoms
@@ -487,7 +509,10 @@ def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     if "↦ᵣ" not in atom and "spec_trace" not in atom
                     and not atom.startswith(("∃", "⌜", "reg_col"))
                     and "-∗" not in atom else None)
-        if seal and coverage:
+        # Keep scalar words visible to load/store rules. Coverage alone does
+        # not establish that a block leaves a word untouched.
+        scalar_word = re.search(r"↦ₘ\s+", atom) is not None
+        if seal and coverage and not scalar_word:
             memory.append(atom)
             ranges.append(coverage)
         else:
