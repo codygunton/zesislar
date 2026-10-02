@@ -33,7 +33,9 @@ Ltac zesu_array_load_table address persistent :=
           let body := eval hnf in (table address) in
           lazymatch body with
           | Some (zesu_ld_spec _ _ ?baseRegister ?offset) =>
-              constr:((baseRegister, offset))
+              constr:((baseRegister, offset, 8%Z))
+          | Some (zesu_lbu_byte_array_at_spec _ _ ?baseRegister ?offset _ _) =>
+              constr:((baseRegister, offset, 1%Z))
           | _ => zesu_array_load_table address rest
           end
       | _ => zesu_array_load_table address rest
@@ -61,27 +63,28 @@ Ltac zesu_array_load_register register spatial :=
   | Esnoc ?rest _ _ => zesu_array_load_register register rest
   end.
 
-Ltac zesu_array_load_contains address spatial :=
+Ltac zesu_array_load_contains address width spatial :=
   lazymatch spatial with
   | Esnoc ?rest _ (@mem_mapsto_array _ _ ?bits ?start ?fraction ?values) =>
+      let stride := eval vm_compute in (Z.of_N (bits / 8)) in
       first [let Hrange := fresh "HarrayLoadRange" in
              assert (Hrange : (start <= address /\
-               address + 8 <= start + Z.of_nat (length values) * Z.of_N (bits / 8))%Z)
+               address + width <= start + Z.of_nat (length values) * stride)%Z)
                by (autorewrite with lithium_rewrite;
                    first [cbn; lia | zesu_witness_arith]); clear Hrange
-            | zesu_array_load_contains address rest]
-  | Esnoc ?rest _ _ => zesu_array_load_contains address rest
+            | zesu_array_load_contains address width rest]
+  | Esnoc ?rest _ _ => zesu_array_load_contains address width rest
   end.
 
-Ltac zesu_array_load_find_owned address :=
+Ltac zesu_array_load_find_owned address width :=
   first [lazymatch goal with
          | |- envs_entails ?Delta _ =>
              let spatial := eval cbn [env_spatial] in (env_spatial Delta) in
-             zesu_array_load_contains address spatial
+             zesu_array_load_contains address width spatial
          end
         | zesu_open_sealed_covering address;
           repeat iDestruct select (_ ∗ _)%I as "[? ?]";
-          zesu_array_load_find_owned address].
+          zesu_array_load_find_owned address width].
 
 Ltac zesu_array_load_select :=
   lazymatch goal with
@@ -92,7 +95,7 @@ Ltac zesu_array_load_select :=
       | |- envs_entails ?Delta _ =>
       let persistent := eval cbn [env_intuitionistic] in (env_intuitionistic Delta) in
       let load := zesu_array_load_table address persistent in
-      lazymatch load with (?register, ?offset) =>
+      lazymatch load with (?register, ?offset, ?width) =>
       let lookup := zesu_array_load_code persistent in
       iApply (find_in_context_instr_lookup_resources address later);
       iExists lookup; iSplit; [iAssumption |];
@@ -116,7 +119,8 @@ Ltac zesu_array_load_select :=
       | |- envs_entails ?After _ =>
           let spatial := eval cbn [env_spatial] in (env_spatial After) in
           let base := zesu_array_load_register register spatial in
-          zesu_array_load_find_owned (bv_unsigned base + offset)%Z
+          repeat iDestruct select (⌜_⌝)%I as %?;
+          zesu_array_load_find_owned (bv_unsigned base + offset)%Z width
       end
       end
       end
