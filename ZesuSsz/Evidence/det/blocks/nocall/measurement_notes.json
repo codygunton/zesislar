@@ -1,0 +1,15 @@
+{
+  "results": "Sixteen probes: three closed, thirteen reached CFG successor goals. These are measurements, not exported contract proofs.",
+  "missing_entries": [
+    "0x14efc",
+    "0x14f00",
+    "0x158d4"
+  ],
+  "entry_normalization": {
+    "0x151d0": "Recursive access-entry ownership remains folded.",
+    "0x151d4": "Recursive access-entry ownership remains folded.",
+    "0x153d0": "Recursive access-entry ownership remains folded.",
+    "0x159d8": "Terminal epilogue capture remains folded; no CFG successor was invented."
+  },
+  "branch_premises": "Each branch receives both CFG successor premises."
+}

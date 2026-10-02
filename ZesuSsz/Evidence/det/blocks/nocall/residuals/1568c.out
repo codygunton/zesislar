@@ -1,0 +1,519 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 2.581 secs (2.556u,0.015s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.086 secs (0.086u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+BOUNDARY-ALL-GOALS-BEGIN
+5 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  oldra : bv 64
+  base : Z
+  row : list (bv 8)
+  rest : list (list (bv 8))
+  source : list (bv 8)
+  tail : spec
+  P, BLK_STOP_15694, BLK_STOP_156e8 : iProp Sigma
+  b : bv 64
+  H0 : Z.land (bv_unsigned b) 131072 = 0
+  b0 : bv 64
+  H1 : Z.land (bv_unsigned b0) 131072 = 0
+  H2 : Z_to_bv 64 (Z.of_nat (S (length rest))) = 0%bv
+  H3 : -1 < bv_unsigned b0 < bv_modulus 64
+  H4 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H5 : -1 < bv_unsigned b < bv_modulus 64
+  H6 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H7 : -1 < bv_unsigned oldra < bv_modulus 64
+  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed oldra < bv_half_modulus 64
+  ============================
+  oldra = 87772%bv
+
+goal 2 is:
+ 604086456%bv = old5
+goal 3 is:
+ Z_to_bv 64 base = Z_to_bv 64 (base + Z.of_nat (length source))
+goal 4 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 66004 memcpyEntryBoundary
+ _ : instr_pre 89360 encoderIntContract
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_pre 87700 BLK_STOP_15694
+ _ : instr_pre 87784 BLK_STOP_156e8
+ _ : spec_trace
+       (Snapshots.writeOutputEvents (sp - 16) 8
+          [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row) `div` 256) `mod` 256);
+           Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+          (Snapshots.writeOutputEvents (sp - 16) 8
+             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `mod` 256);
+              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+             (Snapshots.writeOutputEvents (sp + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row))
+                (Snapshots.writeOutputEvents (sp - 16) 8
+                   [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                   ((fix writeSuccessExactWithdrawalEvents (sp0 : bv 64) (rows : list (list (bv 8))) (tail0 : spec) {struct rows} : spec :=
+                       match rows with
+                       | [] => tail0
+                       | row0 :: rest0 =>
+                           Snapshots.writeOutputEvents (sp0 - 16) 8
+                             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row0) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row0) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                             (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                (Snapshots.writeOutputEvents (sp0 + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row0))
+                                   (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                      [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                      (writeSuccessExactWithdrawalEvents sp0 rest0 tail0))))
+                       end) sp rest tail)))))
+ _ : P
+ _ : reg_col
+       [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+        (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+        (KindReg "x27", BitsShape 64)]
+ _ : State_1568cMemory sp oldra old5 base row rest source tail P
+ _ : reg_col [(KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ --------------------------------------∗
+ base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗ spec_trace tail ∗ P ∗ True
+goal 5 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 66004 memcpyEntryBoundary
+ _ : instr_pre 89360 encoderIntContract
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_pre 87784 BLK_STOP_156e8
+ _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn oldra)
+ _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 base))
+ _ : spec_trace
+       (Snapshots.writeOutputEvents (sp - 16) 8
+          [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row) `div` 256) `mod` 256);
+           Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+          (Snapshots.writeOutputEvents (sp - 16) 8
+             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `mod` 256);
+              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+             (Snapshots.writeOutputEvents (sp + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row))
+                (Snapshots.writeOutputEvents (sp - 16) 8
+                   [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                   ((fix writeSuccessExactWithdrawalEvents (sp0 : bv 64) (rows : list (list (bv 8))) (tail0 : spec) {struct rows} : spec :=
+                       match rows with
+                       | [] => tail0
+                       | row0 :: rest0 =>
+                           Snapshots.writeOutputEvents (sp0 - 16) 8
+                             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row0) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row0) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                             (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                (Snapshots.writeOutputEvents (sp0 + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row0))
+                                   (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                      [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                      (writeSuccessExactWithdrawalEvents sp0 rest0 tail0))))
+                       end) sp rest tail)))))
+ _ : P
+ _ : instr_pre 87784 (withdrawalLoopExit sp base source tail P)
+ _ : reg_col
+       [(KindReg "x5", ExactShape (RVal_Bits (bv_to_bvn old5))); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+        (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+        (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+        (KindReg "x27", BitsShape 64)]
+ _ : State_1568cMemory sp oldra old5 base row rest source tail P
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : "x18" ↦ᵣ RVal_Bits (bv_to_bvn (sp + 1768))
+ _ : reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x9" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (S (length rest)))))
+ --------------------------------------∗
+ BLK_STOP_15694
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_156e8 : Type
+BOUNDARY-LOCAL-SORT BLK_STOP_15694 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT source : Set
+BOUNDARY-LOCAL-SORT rest : Set
+BOUNDARY-LOCAL-SORT row : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT oldra : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_156e8 : Type
+BOUNDARY-LOCAL-SORT BLK_STOP_15694 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT source : Set
+BOUNDARY-LOCAL-SORT rest : Set
+BOUNDARY-LOCAL-SORT row : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT old5 : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_156e8 : Type
+BOUNDARY-LOCAL-SORT BLK_STOP_15694 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT source : Set
+BOUNDARY-LOCAL-SORT rest : Set
+BOUNDARY-LOCAL-SORT row : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_156e8 : Type
+BOUNDARY-LOCAL-SORT BLK_STOP_15694 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT source : Set
+BOUNDARY-LOCAL-SORT rest : Set
+BOUNDARY-LOCAL-SORT row : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT old5 : Set
+BOUNDARY-LOCAL-SORT oldra : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORT H12 : Prop
+BOUNDARY-LOCAL-SORT H11 : Prop
+BOUNDARY-LOCAL-SORT H10 : Prop
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT b0 : Set
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT BLK_STOP_156e8 : Type
+BOUNDARY-LOCAL-SORT BLK_STOP_15694 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT source : Set
+BOUNDARY-LOCAL-SORT rest : Set
+BOUNDARY-LOCAL-SORT row : Set
+BOUNDARY-LOCAL-SORT base : Set
+BOUNDARY-LOCAL-SORT old5 : Set
+BOUNDARY-LOCAL-SORT oldra : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORTS-END
+5 goals
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  oldra : bv 64
+  base : Z
+  row : list (bv 8)
+  rest : list (list (bv 8))
+  source : list (bv 8)
+  tail : spec
+  P, BLK_STOP_15694, BLK_STOP_156e8 : iProp Sigma
+  b : bv 64
+  H0 : Z.land (bv_unsigned b) 131072 = 0
+  b0 : bv 64
+  H1 : Z.land (bv_unsigned b0) 131072 = 0
+  H2 : Z_to_bv 64 (Z.of_nat (S (length rest))) = 0%bv
+  H3 : -1 < bv_unsigned b0 < bv_modulus 64
+  H4 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64
+  H5 : -1 < bv_unsigned b < bv_modulus 64
+  H6 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H7 : -1 < bv_unsigned oldra < bv_modulus 64
+  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed oldra < bv_half_modulus 64
+  ============================
+  oldra = 87772%bv
+
+goal 2 is:
+ 604086456%bv = old5
+goal 3 is:
+ Z_to_bv 64 base = Z_to_bv 64 (base + Z.of_nat (length source))
+goal 4 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 66004 memcpyEntryBoundary
+ _ : instr_pre 89360 encoderIntContract
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_pre 87700 BLK_STOP_15694
+ _ : instr_pre 87784 BLK_STOP_156e8
+ _ : spec_trace
+       (Snapshots.writeOutputEvents (sp - 16) 8
+          [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row) `div` 256) `mod` 256);
+           Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+          (Snapshots.writeOutputEvents (sp - 16) 8
+             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `mod` 256);
+              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+             (Snapshots.writeOutputEvents (sp + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row))
+                (Snapshots.writeOutputEvents (sp - 16) 8
+                   [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                   ((fix writeSuccessExactWithdrawalEvents (sp0 : bv 64) (rows : list (list (bv 8))) (tail0 : spec) {struct rows} : spec :=
+                       match rows with
+                       | [] => tail0
+                       | row0 :: rest0 =>
+                           Snapshots.writeOutputEvents (sp0 - 16) 8
+                             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row0) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row0) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                             (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                (Snapshots.writeOutputEvents (sp0 + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row0))
+                                   (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                      [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                      (writeSuccessExactWithdrawalEvents sp0 rest0 tail0))))
+                       end) sp rest tail)))))
+ _ : P
+ _ : reg_col
+       [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+        (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+        (KindReg "x27", BitsShape 64)]
+ _ : State_1568cMemory sp oldra old5 base row rest source tail P
+ _ : reg_col [(KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ --------------------------------------∗
+ base ↦ₘ∗ source ∗ (bv_unsigned sp + 1744) ↦ₘ? 48 ∗ (bv_unsigned sp - 16) ↦ₘ? 16 ∗ mmio_range (604086456 + 8) 16 ∗ spec_trace tail ∗ P ∗ True
+goal 5 is:
+ _ : instr_lookup_resources lookup
+ _ : spec_instr_resources
+ _ : instr_pre 66004 memcpyEntryBoundary
+ _ : instr_pre 89360 encoderIntContract
+ _ : instr_pre 65936 zesuWriteOutputCallSpec
+ _ : mmio_range (604086456 + 8) 16
+ --------------------------------------□
+ _ : instr_pre 87784 BLK_STOP_156e8
+ _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn oldra)
+ _ : "x8" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 base))
+ _ : spec_trace
+       (Snapshots.writeOutputEvents (sp - 16) 8
+          [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row) `div` 256) `mod` 256);
+           Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+           Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+          (Snapshots.writeOutputEvents (sp - 16) 8
+             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `mod` 256);
+              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+             (Snapshots.writeOutputEvents (sp + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row))
+                (Snapshots.writeOutputEvents (sp - 16) 8
+                   [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                   ((fix writeSuccessExactWithdrawalEvents (sp0 : bv 64) (rows : list (list (bv 8))) (tail0 : spec) {struct rows} : spec :=
+                       match rows with
+                       | [] => tail0
+                       | row0 :: rest0 =>
+                           Snapshots.writeOutputEvents (sp0 - 16) 8
+                             [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row0) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row0) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                              Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                             (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                (Snapshots.writeOutputEvents (sp0 + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row0))
+                                   (Snapshots.writeOutputEvents (sp0 - 16) 8
+                                      [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                       Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]
+                                      (writeSuccessExactWithdrawalEvents sp0 rest0 tail0))))
+                       end) sp rest tail)))))
+ _ : P
+ _ : instr_pre 87784 (withdrawalLoopExit sp base source tail P)
+ _ : reg_col
+       [(KindReg "x5", ExactShape (RVal_Bits (bv_to_bvn old5))); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+        (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+ _ : reg_col
+       [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64);
+        (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64);
+        (KindReg "x27", BitsShape 64)]
+ _ : State_1568cMemory sp oldra old5 base row rest source tail P
+ _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+ _ : "x18" ↦ᵣ RVal_Bits (bv_to_bvn (sp + 1768))
+ _ : reg_col [(KindReg "x10", BitsShape 64); (KindReg "x11", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]
+ _ : reg_col zesu_ram_sys_regs
+ _ : "x9" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (S (length rest)))))
+ --------------------------------------∗
+ BLK_STOP_15694
+PROBE-END

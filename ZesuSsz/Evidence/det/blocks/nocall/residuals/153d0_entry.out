@@ -1,0 +1,89 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp : bv 64
+  base : Z
+  bytes : list (bv 8)
+  processed, index : nat
+  dataBytes, accessBytes, chainBytes : list (bv 8)
+  entries : list WriteSuccessAccessListsSpec.writeSuccessAccessEntry
+  tail : spec
+  Q : iProp Sigma
+  storedIndex, old27, word0, word1, word2, word3 : bv 64
+  H0, H1, H2, H3, H4, H5, H6 : True
+  H7 : accessBytes ≠ []
+       → mapRamBase defaultMap ≤ bv_unsigned (transactionRowWord bytes index 208) ∧ bv_unsigned (transactionRowWord bytes index 208) + Z.of_nat (length accessBytes) < machineRamEnd defaultMap
+  H8 : dataBytes ≠ []
+       → mapRamBase defaultMap ≤ bv_unsigned (transactionRowWord bytes index 192) ∧ bv_unsigned (transactionRowWord bytes index 192) + Z.of_nat (length dataBytes) < machineRamEnd defaultMap
+  H9 : bv_unsigned sp + 1896 < machineRamEnd defaultMap
+  H10 : mapRamBase defaultMap ≤ bv_unsigned sp - 16
+  H11 : bv_unsigned sp `mod` 16 = 0
+  H12 : True
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn 86992)
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x5" ↦ᵣ RVal_Bits (bv_to_bvn 604086456)
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn (sp - 16))
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn 8)
+  _ : (bv_unsigned sp - 16) ↦ₘ? 16
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace tail
+  _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn (transactionRowWord bytes index 232))
+  _ : (bv_unsigned sp + 136) ↦ₘ transactionRowWord bytes index 232
+  _ : reg_col [(KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64);
+         (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x23", BitsShape 64);
+         (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64); (KindReg "x30", BitsShape 64);
+         (KindReg "x31", BitsShape 64)]
+  _ : "x19" ↦ᵣ RVal_Bits (bv_to_bvn (transactionRowWord bytes index 224))
+  _ : "x27" ↦ᵣ RVal_Bits (bv_to_bvn old27)
+  _ : bv_unsigned (transactionRowWord bytes index 208) ↦ₘ∗ accessBytes
+  _ : (fix writeSuccessAccessEntriesOwn (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) (entries0 : list WriteSuccessAccessListsSpec.writeSuccessAccessEntry) {struct entries0} : iProp Sigma0 :=
+         match entries0 with
+         | [] => True
+         | entry :: entries1 => WriteSuccessAccessListsSpec.writeSuccessAccessEntryOwn entry ∗ writeSuccessAccessEntriesOwn Sigma0 islaG1 entries1 ∗ True
+         end) Sigma islaG0 entries
+  _ : (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 (bv_unsigned (transactionRowWord bytes index 208))
+  _ : (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat (length entries))
+  _ : (bv_unsigned sp + 272) ↦ₘ storedIndex
+  _ : (bv_unsigned sp + 1744) ↦ₘ? 40
+  _ : (bv_unsigned sp + 1712) ↦ₘ word0
+  _ : (bv_unsigned sp + 1720) ↦ₘ word1
+  _ : (bv_unsigned sp + 1728) ↦ₘ word2
+  _ : (bv_unsigned sp + 1736) ↦ₘ word3
+  _ : (bv_unsigned sp + 1640) ↦ₘ WriteSuccessExactTransactionsSourceFieldLayout.transactionRecipientSourceWord bytes index 265
+  _ : (bv_unsigned sp + 1648) ↦ₘ WriteSuccessExactTransactionsSourceFieldLayout.transactionRecipientSourceWord bytes index 273
+  _ : (bv_unsigned sp + 1656) ↦ₘ WriteSuccessExactTransactionsSourceFieldLayout.transactionRecipientSourceLast bytes index
+  _ : (bv_unsigned sp + 120) ↦ₘ WriteSuccessExactTransactionsFlagLoads.transactionRowByte bytes index 285
+  _ : (bv_unsigned sp + 128) ↦ₘ transactionRowWord bytes index 64
+  _ : bv_unsigned (transactionRowWord bytes index 192) ↦ₘ∗ dataBytes
+  _ : (bv_unsigned sp - 48) ↦ₘ? 32
+  _ : bv_unsigned (sp + 1664) ↦ₘ∗ chainBytes
+  _ : base ↦ₘ∗ bytes
+  _ : (bv_unsigned sp + 104) ↦ₘ Z_to_bv 64 base
+  _ : (bv_unsigned sp + 248) ↦ₘ Z_to_bv 64 (Z.of_nat processed)
+  _ : (bv_unsigned sp + 144) ↦ₘ transactionRowWord bytes index 88
+  _ : (bv_unsigned sp + 152) ↦ₘ transactionRowWord bytes index 80
+  _ : (bv_unsigned sp + 160) ↦ₘ transactionRowWord bytes index 248
+  _ : (bv_unsigned sp + 168) ↦ₘ transactionRowWord bytes index 240
+  _ : (bv_unsigned sp + 176) ↦ₘ transactionRowWord bytes index 256
+  _ : (bv_unsigned sp + 184) ↦ₘ transactionRowWord bytes index 120
+  _ : (bv_unsigned sp + 192) ↦ₘ transactionRowWord bytes index 112
+  _ : (bv_unsigned sp + 200) ↦ₘ transactionRowWord bytes index 104
+  _ : (bv_unsigned sp + 208) ↦ₘ transactionRowWord bytes index 128
+  _ : (bv_unsigned sp + 216) ↦ₘ transactionRowWord bytes index 96
+  _ : (bv_unsigned sp + 224) ↦ₘ transactionRowWord bytes index 152
+  _ : (bv_unsigned sp + 232) ↦ₘ transactionRowWord bytes index 144
+  _ : (bv_unsigned sp + 240) ↦ₘ transactionRowWord bytes index 136
+  _ : (bv_unsigned sp + 1660) ↦ₘ? 4
+  _ : (bv_unsigned sp + 1680) ↦ₘ? 32
+  _ : (bv_unsigned sp + 1784) ↦ₘ? 112
+  _ : Q
+  --------------------------------------∗
+  False
+exit=0 ms=76821 rss_kb=2105240
+

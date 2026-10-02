@@ -1,0 +1,17 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,b17,0x15118,1,branch,infer_boundary,reached,1,,,,,,4.0,3.1,1272,600,,0x1513c 0x1511c
+A,b17,0x15138,1,jump,infer_boundary,reached,1,,,,,,3.0,2.7,1271,600,,0x15148
+A,b17,0x15154,2,branch,infer_boundary,reached,2,,,,,,4.1,3.5,1272,600,,0x15194 0x1515c
+A,b17,0x15190,1,jump,infer_boundary,reached,1,,,,,,4.1,3.3,1273,600,,0x1519c
+A,b17,0x1521c,3,branch,infer_boundary,reached,3,,,,,,4.0,3.6,1073,600,,0x153b4 0x15228
+A,b17,0x153a8,3,branch,infer_boundary,reached,3,,,,,,4.0,3.3,1067,600,,0x15228 0x153b4
+A,b17,0x153b4,3,jump,infer_boundary,reached,3,,,,,,3.0,2.6,1066,600,,0x151d4
+A,b17,0x15558,3,branch,infer_boundary,reached,3,,,,,,5.1,4.1,1067,600,,0x153d4 0x15564
+A,b17,0x15584,3,branch,infer_boundary,closed,3,,,,,,4.1,3.7,1274,600,,0x15620 0x15590
+A,b17,0x15614,3,branch,infer_boundary,reached,3,,,,,,4.0,3.5,1067,600,,0x15590 0x15620
+A,b17,0x1565c,3,jump,infer_boundary,reached,3,,,,,,4.0,3.5,1067,600,,0x14f00
+A,b17,0x1568c,2,branch,infer_boundary,reached,2,,,,,,10.0,9.2,1576,600,,0x156e8 0x15694
+A,b17,0x156dc,3,branch,infer_boundary,closed,3,,,,,,6.0,5.2,1214,600,,0x15694 0x156e8
+A,b17,0x15750,1,branch,infer_boundary,reached,1,,,,,,3.0,2.3,1065,600,,0x158e0 0x15754
+A,b17,0x1596c,2,branch,infer_boundary,reached,2,,,,,,3.1,2.9,1272,600,,0x15994 0x15974
+A,b17,0x15990,1,jump,infer_boundary,closed,1,,,,,,3.0,2.2,1267,600,,0x159a0

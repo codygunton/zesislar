@@ -1,0 +1,45 @@
+Tactic call zesu_run ran for 0.168 secs (0.167u,0.s) (success)
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  P : iProp Sigma
+  sp, ra, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11 : bv 64
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : reg_col writeSuccessOtherRegShapes
+  _ : "x1"
+      ↦ᵣ: λ _ : valu, "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp) ∗
+            "x8"
+            ↦ᵣ: λ _ : valu,
+                  "x9"
+                  ↦ᵣ: λ _ : valu,
+                        "x18"
+                        ↦ᵣ: λ _ : valu,
+                              "x19"
+                              ↦ᵣ: λ _ : valu,
+                                    "x20"
+                                    ↦ᵣ: λ _ : valu,
+                                          "x21"
+                                          ↦ᵣ: λ _ : valu,
+                                                "x22"
+                                                ↦ᵣ: λ _ : valu,
+                                                      "x23"
+                                                      ↦ᵣ: λ _ : valu,
+                                                            "x24"
+                                                            ↦ᵣ: λ _ : valu,
+                                                                  "x25"
+                                                                  ↦ᵣ: λ _ : valu,
+                                                                        "x26"
+                                                                        ↦ᵣ: λ _ : valu,
+                                                                              "x27"
+                                                                              ↦ᵣ: λ _ : valu, writeSuccessEpilogueSavedSlots sp ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 ∗
+                                                                                    ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 1896⌝ ∗ ⌜bv_unsigned sp + 2000 < 0 + 1073741824⌝ ∗
+                                                                                    ⌜bv_extract 0 1 ra = 0%bv⌝ ∗ ⌜bv_extract 1 1 ra = 0%bv⌝ ∗ ⌜bv_extract 0 2 ra = 0%bv⌝ ∗ P ∗
+                                                                                    instr_pre (bv_unsigned (bv_or (bv_and (ra + 0) 18446744073709551614) 0))
+                                                                                      (writeSuccessEpiloguePost sp ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 P) ∗ True
+  --------------------------------------∗
+  False
+exit=0 ms=30290 rss_kb=1032016
+

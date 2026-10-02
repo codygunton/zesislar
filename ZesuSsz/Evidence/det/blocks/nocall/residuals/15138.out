@@ -1,0 +1,138 @@
+PROBE-BEGIN
+Tactic call zesu_run ran for 0.599 secs (0.588u,0.009s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+BOUNDARY-ALL-GOALS-BEGIN
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, value : bv 64
+  tail : spec
+  P, BLK_STOP_15148 : iProp Sigma
+  H0 : bv_unsigned sp < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp - 16
+  H2 : bv_unsigned sp `mod` 16 = 0
+  b : bv 64
+  H3 : Z.land (bv_unsigned b) 131072 = 0
+  H4 : -1 < bv_unsigned b < bv_modulus 64
+  H5 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H6 : -1 < bv_unsigned value < bv_modulus 64
+  H7 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed value < bv_half_modulus 64
+  H8 : -1 < bv_unsigned sp < bv_modulus 64
+  H9 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 88988 encoderBooleanEntryBoundary
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn 86328)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn 16)
+  _ : reg_col [(KindReg "x10", BitsShape 64)]
+  _ : "x26" ↦ᵣ RVal_Bits (bv_to_bvn value)
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (λ snapshot : seq_snapshot,
+                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+                 Some
+                   [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))
+  _ : P
+  _ : instr_pre 86356 (WriteSuccessExactTransactionsGasLimitCall.transactionGasLimitPost sp value tail P)
+  _ : reg_col
+        [(KindReg "x5", ExactShape (RVal_Bits (bv_to_bvn 604086456))); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
+         (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64);
+         (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64);
+         (KindReg "x27", BitsShape 64)]
+  _ : State_15138Memory sp value tail P
+  _ : reg_col zesu_ram_sys_regs
+  --------------------------------------∗
+  BLK_STOP_15148
+BOUNDARY-ALL-GOALS-END
+BOUNDARY-LOCAL-SORTS-BEGIN
+BOUNDARY-LOCAL-SORT H9 : Prop
+BOUNDARY-LOCAL-SORT H8 : Prop
+BOUNDARY-LOCAL-SORT H7 : Prop
+BOUNDARY-LOCAL-SORT H6 : Prop
+BOUNDARY-LOCAL-SORT H5 : Prop
+BOUNDARY-LOCAL-SORT H4 : Prop
+BOUNDARY-LOCAL-SORT H3 : Prop
+BOUNDARY-LOCAL-SORT b : Set
+BOUNDARY-LOCAL-SORT H2 : Prop
+BOUNDARY-LOCAL-SORT H1 : Prop
+BOUNDARY-LOCAL-SORT H0 : Prop
+BOUNDARY-LOCAL-SORT BLK_STOP_15148 : Type
+BOUNDARY-LOCAL-SORT P : Type
+BOUNDARY-LOCAL-SORT tail : Type
+BOUNDARY-LOCAL-SORT value : Set
+BOUNDARY-LOCAL-SORT sp : Set
+BOUNDARY-LOCAL-SORT H : Set
+BOUNDARY-LOCAL-SORT islaG0 : Type
+BOUNDARY-LOCAL-SORT Sigma : Type
+BOUNDARY-LOCAL-SORTS-END
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp, value : bv 64
+  tail : spec
+  P, BLK_STOP_15148 : iProp Sigma
+  H0 : bv_unsigned sp < 0 + 1073741824
+  H1 : 0 ≤ bv_unsigned sp - 16
+  H2 : bv_unsigned sp `mod` 16 = 0
+  b : bv 64
+  H3 : Z.land (bv_unsigned b) 131072 = 0
+  H4 : -1 < bv_unsigned b < bv_modulus 64
+  H5 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64
+  H6 : -1 < bv_unsigned value < bv_modulus 64
+  H7 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed value < bv_half_modulus 64
+  H8 : -1 < bv_unsigned sp < bv_modulus 64
+  H9 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64
+  ============================
+  _ : instr_lookup_resources lookup
+  _ : spec_instr_resources
+  _ : instr_pre 88988 encoderBooleanEntryBoundary
+  _ : mmio_range (604086456 + 8) 16
+  --------------------------------------□
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x1" ↦ᵣ RVal_Bits (bv_to_bvn 86328)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn 16)
+  _ : reg_col [(KindReg "x10", BitsShape 64)]
+  _ : "x26" ↦ᵣ RVal_Bits (bv_to_bvn value)
+  _ : spec_trace
+        (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16)))
+           (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+              (λ snapshot : seq_snapshot,
+                 read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 =
+                 Some
+                   [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                    Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))
+  _ : P
+  _ : instr_pre 86356 (WriteSuccessExactTransactionsGasLimitCall.transactionGasLimitPost sp value tail P)
+  _ : reg_col
+        [(KindReg "x5", ExactShape (RVal_Bits (bv_to_bvn 604086456))); (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64); (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+         (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+  _ : reg_col
+        [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64);
+         (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64);
+         (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64);
+         (KindReg "x27", BitsShape 64)]
+  _ : State_15138Memory sp value tail P
+  _ : reg_col zesu_ram_sys_regs
+  --------------------------------------∗
+  BLK_STOP_15148
+PROBE-END

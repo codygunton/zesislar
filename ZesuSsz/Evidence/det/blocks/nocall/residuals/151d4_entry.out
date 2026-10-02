@@ -1,0 +1,94 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  sp : bv 64
+  base : Z
+  entries, processed, remaining : list WriteSuccessAccessListsSpec.writeSuccessAccessEntry
+  bytes : list (bv 8)
+  storedIndex, x19, savedX22, data, x22, x27 : bv 64
+  tail : spec
+  P : iProp Sigma
+  word0, word1, word2, word3 : bv 64
+  H0 : True
+  H1 : entries ≠ [] → base + Z.of_nat (length bytes) < machineRamEnd defaultMap
+  H2 : entries ≠ [] → mapRamBase defaultMap ≤ base
+  H3 : bv_unsigned sp + 1896 < machineRamEnd defaultMap
+  H4 : mapRamBase defaultMap ≤ bv_unsigned sp - 16
+  H5 : bv_unsigned sp `mod` 16 = 0
+  H6 : (length entries < 2 ^ 64)%nat
+  H7 : length bytes = (40 * length entries)%nat
+  H8 : bytes = WriteSuccessAccessListsSpec.writeSuccessAccessEntriesBytes entries
+  H9 : entries = processed ++ remaining
+  H10, H11 : True
+  ============================
+  _ : reg_col zesu_ram_sys_regs
+  _ : reg_col WriteSuccessAccessListsSpec.writeSuccessAccessListsOtherRegShapes
+  _ : "x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)
+  _ : "x19" ↦ᵣ RVal_Bits (bv_to_bvn x19)
+  _ : "x10" ↦ᵣ RVal_Bits (bv_to_bvn data)
+  _ : "x11" ↦ᵣ RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (length processed))))
+  _ : "x22" ↦ᵣ RVal_Bits (bv_to_bvn x22)
+  _ : "x27" ↦ᵣ RVal_Bits (bv_to_bvn x27)
+  _ : base ↦ₘ∗ bytes
+  _ : (fix writeSuccessAccessEntriesOwn (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) (entries0 : list WriteSuccessAccessListsSpec.writeSuccessAccessEntry) {struct entries0} : iProp Sigma0 :=
+         match entries0 with
+         | [] => True
+         | entry :: entries1 => WriteSuccessAccessListsSpec.writeSuccessAccessEntryOwn entry ∗ writeSuccessAccessEntriesOwn Sigma0 islaG1 entries1 ∗ True
+         end) Sigma islaG0 entries
+  _ : (bv_unsigned sp + 136) ↦ₘ savedX22
+  _ : (bv_unsigned sp + 256) ↦ₘ Z_to_bv 64 base
+  _ : (bv_unsigned sp + 264) ↦ₘ Z_to_bv 64 (Z.of_nat (length entries))
+  _ : (bv_unsigned sp + 272) ↦ₘ storedIndex
+  _ : (bv_unsigned sp + 1744) ↦ₘ? 40
+  _ : (bv_unsigned sp - 16) ↦ₘ? 16
+  _ : (bv_unsigned sp + 1712) ↦ₘ word0
+  _ : (bv_unsigned sp + 1720) ↦ₘ word1
+  _ : (bv_unsigned sp + 1728) ↦ₘ word2
+  _ : (bv_unsigned sp + 1736) ↦ₘ word3
+  _ : mmio_range (604086456 + 8) 16
+  _ : spec_trace
+        ((fix writeSuccessExactAccessListsEvents (sp0 : bv 64) (entries0 : list WriteSuccessAccessListsSpec.writeSuccessAccessEntry) (tail0 : spec) {struct entries0} : spec :=
+            match entries0 with
+            | [] => tail0
+            | entry :: entries1 =>
+                scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp0 + 1760)))
+                  (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 20))
+                     (λ snapshot : seq_snapshot,
+                        read_mem_list (snap_mem snapshot) (bv_unsigned (sp0 + 1760)) 20 =
+                        Some
+                          (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 16 20 (WriteSuccessAccessListsSpec.writeSuccessAccessEntryBytes entry))))
+                     (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp0 - 16)))
+                        (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 8))
+                           (λ snapshot : seq_snapshot,
+                              read_mem_list (snap_mem snapshot) (bv_unsigned (sp0 - 16)) 8 =
+                              Some
+                                [Z_to_bv 8 (Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `mod` 256);
+                                 Z_to_bv 8 ((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 (((((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8 ((((((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8
+                                   (((((((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);
+                                 Z_to_bv 8
+                                   ((((((((Z.of_nat (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256)
+                                    `mod` 256)])
+                           ((fix writeSuccessExactStorageKeyEvents (sp1 : bv 64) (keys : list (list (bv 8))) (tail1 : spec) {struct keys} : spec :=
+                               match keys with
+                               | [] => tail1
+                               | key :: keys0 =>
+                                   scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp1 + 1712)))
+                                     (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn 32))
+                                        (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp1 + 1712)) 32 = Some key) (writeSuccessExactStorageKeyEvents sp1 keys0 tail1))
+                               end) sp0
+                              (map WriteSuccessOutputSemantic.writeSuccessPrivateBytes
+                                 (WriteSuccessRepresentation.writeSuccessFixedChunks 32 (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageCount entry)
+                                    (WriteSuccessAccessListsSpec.writeSuccessAccessEntryStorageBytes entry))) (writeSuccessExactAccessListsEvents sp0 entries1 tail0)))))
+            end) sp remaining tail)
+  _ : P
+  --------------------------------------∗
+  False
+exit=0 ms=70559 rss_kb=1090304
+
