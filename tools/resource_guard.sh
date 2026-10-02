@@ -417,10 +417,24 @@ reservation_holders() {
   echo "${holders:-none}"
 }
 
+# A confirmed slot remains valid while its owner lives. This read-only
+# check lets an admitted launch drain without joining the admission queue.
+confirmed_reservation() {
+  local marker=$1 owner state
+  owner=${marker##*/}; owner=${owner%%.*}
+  [[ "$owner" =~ ^[0-9]+$ ]] || return 1
+  kill -0 "$owner" 2>/dev/null || return 1
+  reservation_path "$marker" || return 1
+  read -r state < "$marker" || return 1
+  [ "$state" != pending ] || return 1
+  [ "$(reservation_writer "$marker")" = "$WRITER_ID" ]
+}
+
 # Take the slot atomically immediately before launch. An admitted caller
 # can confirm again without waiting for admission while it holds its slot.
 confirm_coqc() {
   local marker=$1 reason holder admission owner status state replacement aggregate held=""
+  confirmed_reservation "$marker" && return 0
   while :; do
     exec 7>>"$GATE_MUTEX"
     flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
