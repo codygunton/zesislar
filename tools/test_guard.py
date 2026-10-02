@@ -111,7 +111,7 @@ class GuardLockTest(unittest.TestCase):
 
     def guard(self, *arguments):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
-                              text=True, env=self.environment)
+                              text=True, env=self.environment, timeout=10)
 
     def batch_environment(self, limit="150G"):
         slice_name = f"zesuaggregate1000p{os.getpid()}r1.slice"
@@ -210,7 +210,6 @@ class GuardLockTest(unittest.TestCase):
                             f"#!/bin/sh\nprintf '{output}'\nexit {status}\n")
                         commands = (("coqc-count",), ("coqc-count", "nonwriter"),
                                     ("hold",), ("wait",), ("report",),
-                                    ("reserve-coqc", str(os.getpid())),
                                     ("confirm-coqc", token))
                         for arguments in commands:
                             result = self.guard(*arguments)
@@ -219,7 +218,7 @@ class GuardLockTest(unittest.TestCase):
                             self.assertEqual(result.stdout, "")
                             self.assertIn("compiler snapshot failed", result.stderr)
                         reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
-                        self.assertEqual(list(reservations.iterdir()), [Path(token)])
+                        self.assertEqual(list(reservations.iterdir()), [])
         finally:
             self.guard("release-coqc", token)
 
@@ -232,7 +231,8 @@ class GuardLockTest(unittest.TestCase):
             'count=0; [ ! -f "$file" ] || count=$(cat "$file")\n'
             'count=$((count + 1)); echo "$count" > "$file"\n'
             'if [ "$count" = 1 ]; then exit 1; else exit 3; fi\n')
-        result = self.guard("reserve-coqc", str(os.getpid()))
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        result = self.guard("confirm-coqc", token)
         self.assertEqual(result.returncode, 3, result.stderr)
         self.assertEqual(result.stdout, "")
         self.assertEqual(counter.read_text().strip(), "2")
@@ -254,7 +254,7 @@ class GuardLockTest(unittest.TestCase):
             self.assertEqual(result.returncode, 2, result.stderr)
             self.assertEqual(result.stdout, "")
             self.assertEqual(counter.read_text().strip(), "2")
-            self.assertTrue(Path(token).exists())
+            self.assertFalse(Path(token).exists())
         finally:
             self.guard("release-coqc", token)
 
@@ -285,7 +285,7 @@ class GuardLockTest(unittest.TestCase):
                 result = self.guard("scope-exec", token, "--", "touch", str(executed))
                 self.assertEqual(result.returncode, status, result.stderr)
                 self.assertFalse(executed.exists())
-                self.assertTrue(Path(token).exists())
+                self.assertFalse(Path(token).exists())
         finally:
             self.guard("release-coqc", token)
 
@@ -308,16 +308,23 @@ class GuardLockTest(unittest.TestCase):
     def test_gate_leaves_16_slots_and_admits_all_16_writers(self):
         counter = self.writer_fixture(count=32)
         self.environment["ZESU_IN_GATE"] = "1"
-        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+        request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                  "16 slots reserved for writers")
         tokens = [self.reserve_writer(f"writer-{i // 2}") for i in range(16)]
         try:
             self.assertEqual(len(tokens), 16)
-            self.assert_launch_waits(["reserve-coqc", str(os.getpid())],
+            request = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
+                                     env={**self.environment, "ZESU_WRITER_ID": "ninth"},
+                                     check=True, capture_output=True, text=True).stdout.strip()
+            self.assert_launch_waits(["confirm-coqc", request],
                                      {**self.environment, "ZESU_WRITER_ID": "ninth"},
                                      "reservations machine-wide")
             counter.write_text("0\n")
-            self.assert_launch_waits(["reserve-coqc", str(os.getpid())],
+            request = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
+                                     env={**self.environment, "ZESU_WRITER_ID": "ninth"},
+                                     check=True, capture_output=True, text=True).stdout.strip()
+            self.assert_launch_waits(["confirm-coqc", request],
                                      {**self.environment, "ZESU_WRITER_ID": "ninth"},
                                      "16 reserved slots")
         finally:
@@ -329,7 +336,8 @@ class GuardLockTest(unittest.TestCase):
         self.environment.update(ZESU_WRITER_ID="tf2", ZESU_IN_GATE="1")
         tokens = [self.reserve_writer("tf2") for _ in range(2)]
         try:
-            self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+            request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+            self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                      "writer tf2 at its 2 compiler limit")
         finally:
             for token in tokens:
@@ -350,15 +358,18 @@ class GuardLockTest(unittest.TestCase):
         counter = self.writer_fixture()
         self.environment["ZESU_WRITER_ID"] = "tf2"
         self.environment["GUARD_TEST_USED_GIB"] = "150"
-        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+        request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                  "memory 150 GiB")
         self.environment["GUARD_TEST_USED_GIB"] = "40"
         Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("17\n")
-        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+        request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                  "blocked 17")
         Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("16\n")
         counter.write_text("48\n")
-        self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+        request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                  "coqc 48 machine-wide")
 
     def test_writer_reservation_rechecks_nonwriter_cap_before_launch(self):
@@ -386,7 +397,8 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(self.guard("mark-coqc", token, fake_pid).returncode, 0)
         # A marked compiler occupies a slot before the next PID snapshot.
         try:
-            self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+            request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+            self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                      "coqc 0 with 1 reservations machine-wide")
         finally:
             self.guard("release-coqc", token)
@@ -418,7 +430,7 @@ class GuardLockTest(unittest.TestCase):
     def test_writer_confirmation_rechecks_blocked_and_memory(self):
         self.writer_fixture()
         self.environment["ZESU_WRITER_ID"] = "tf2"
-        token = self.reserve_writer("tf2")
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
         try:
             Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("17\n")
             self.assert_launch_waits(["confirm-coqc", token], self.environment, "blocked 17")
@@ -430,7 +442,7 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token)
 
-    def test_nonwriter_scope_releases_reservation_for_a_new_gate(self):
+    def test_admitted_scope_drains_before_a_new_gate(self):
         self.prepare_blocked_fixture(0)
         (self.bin / "systemd-run").write_text(
             '#!/bin/sh\n'
@@ -439,8 +451,8 @@ class GuardLockTest(unittest.TestCase):
         self.environment["FAKE_GATE_PID"] = str(os.getpid())
         result = subprocess.run([str(GUARD), "scope", "fixture", "--", "/bin/echo", "WRONG"],
                                 env=self.environment, capture_output=True, text=True, timeout=3)
-        self.assertEqual(result.returncode, 3, result.stderr)
-        self.assertNotIn("WRONG", result.stdout)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("WRONG", result.stdout)
         reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
         self.assertEqual(list(reservations.iterdir()), [])
         self.assertEqual(self.guard("lock-hold", str(os.getpid())).returncode, 0)
@@ -520,7 +532,7 @@ class GuardLockTest(unittest.TestCase):
         try:
             result = self.guard("confirm-coqc", token)
             self.assertEqual(result.returncode, 3)
-            self.assertIn("reservation launch refused for gate", result.stderr)
+            self.assertIn("confirmation refused by gate lock", result.stderr)
         finally:
             self.guard("release-coqc", token)
         self.assertEqual(self.guard("lock-hold", str(os.getpid())).returncode, 0)
@@ -572,11 +584,11 @@ class GuardLockTest(unittest.TestCase):
         first_token = first.stdout.strip()
         confirmed = self.guard("confirm-coqc", first_token)
         self.assertEqual(confirmed.returncode, 0, confirmed.stderr)
+        second_token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
         second = subprocess.Popen(
-            [str(GUARD), "reserve-coqc", str(os.getpid())],
+            [str(GUARD), "confirm-coqc", second_token],
             env=self.environment, text=True, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        second_token = ""
         try:
             time.sleep(0.2)
             self.assertIsNone(second.poll())
@@ -588,8 +600,8 @@ class GuardLockTest(unittest.TestCase):
             count.write_text("47\n")
             stdout, stderr = second.communicate(timeout=3)
             self.assertEqual(second.returncode, 0, stderr)
-            second_token = stdout.strip()
-            self.assertTrue(second_token)
+            self.assertEqual(stdout, "")
+            self.assertTrue(Path(second_token).exists())
         finally:
             if second.poll() is None:
                 second.terminate()
@@ -633,14 +645,14 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token)
 
-    def test_96_expired_confirmations_do_not_block_a_compiler(self):
+    def test_96_dead_owner_confirmations_do_not_block_a_compiler(self):
         self.writer_fixture()
         self.lock.unlink()
         directory = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
         directory.mkdir(exist_ok=True)
         expired = []
         for index in range(96):
-            marker = directory / f"{os.getpid()}.gate-{index // 32}.{index}"
+            marker = directory / f"9000000.gate-{index // 32}.{index}"
             marker.write_text("confirmed\nwriter=\naggregate=\n")
             os.utime(marker, (time.time() - 120, time.time() - 120))
             expired.append(marker)
@@ -675,14 +687,14 @@ class GuardLockTest(unittest.TestCase):
         self.assert_launch_waits(["confirm-coqc", str(token)], self.environment,
                                  "coqc 40 with 8 reservations machine-wide")
         for marker in launching:
-            os.utime(marker, (time.time() - 120, time.time() - 120))
+            self.guard("release-coqc", str(marker))
         result = subprocess.run([str(GUARD), "confirm-coqc", str(token)],
                                 env=self.environment, capture_output=True,
                                 text=True, timeout=3)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(all(not marker.exists() for marker in launching))
 
-    def test_expired_own_confirmation_reserves_again_before_launch(self):
+    def test_old_own_confirmation_remains_valid_before_launch(self):
         self.writer_fixture()
         token = Path(self.reserve_writer("tf2"))
         os.utime(token, (time.time() - 120, time.time() - 120))
@@ -694,7 +706,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(executed.exists())
         log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
-        self.assertIn("RETRY reservation", log.read_text())
+        self.assertNotIn("RETRY reservation", log.read_text() if log.exists() else "")
 
     def test_old_marked_wrapper_with_live_nested_compiler_keeps_its_slot(self):
         self.writer_fixture()
@@ -711,7 +723,8 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(self.guard("mark-coqc", str(token), "9000000").returncode, 0)
         os.utime(token, (time.time() - 120, time.time() - 120))
         try:
-            self.assert_launch_waits(["reserve-coqc", str(os.getpid())], self.environment,
+            request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+            self.assert_launch_waits(["confirm-coqc", request], self.environment,
                                      "coqc 0 with 1 reservations machine-wide")
             self.assertTrue(token.exists())
         finally:
@@ -741,9 +754,10 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token)
 
-    def test_gate_waits_for_a_pending_coqc_reservation(self):
+    def test_gate_waits_for_an_admitted_coqc_launch(self):
         token = self.guard("reserve-coqc", str(os.getpid()))
         self.assertEqual(token.returncode, 0, token.stderr)
+        self.assertEqual(self.guard("confirm-coqc", token.stdout.strip()).returncode, 0)
         holder = subprocess.Popen(["sleep", "30"])
         try:
             self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
@@ -1056,10 +1070,16 @@ class GuardLockTest(unittest.TestCase):
         writer = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
                                 env={**self.environment, "ZESU_WRITER_ID": "tf2"},
                                 check=True, capture_output=True, text=True).stdout.strip()
+        subprocess.run([str(GUARD), "confirm-coqc", ordinary],
+                       env={**self.environment, **context}, check=True, capture_output=True, text=True)
+        subprocess.run([str(GUARD), "confirm-coqc", writer],
+                       env={**self.environment, "ZESU_WRITER_ID": "tf2"},
+                       check=True, capture_output=True, text=True)
         # Retain the owner to test explicit cleanup instead of stale-owner cleanup.
         (self.bin / "systemd-run").write_text(
             '#!/bin/sh\nwhile [ "$1" != -- ]; do shift; done; shift; exec "$@"\n')
-        command = f'"{GUARD}" reserve-coqc {os.getpid()} > "$AGGREGATE_TOKEN_OUTPUT"'
+        command = (f'token=$("{GUARD}" reserve-coqc {os.getpid()}); '
+                   f'"{GUARD}" confirm-coqc "$token" && printf "%s\\n" "$token" > "$AGGREGATE_TOKEN_OUTPUT"')
         token_file = Path(self.directory.name) / "aggregate-token"
         result = subprocess.run([str(GUARD), "batch", "cleanup", "--", "bash", "-c", command],
                                 env={**self.environment, "AGGREGATE_TOKEN_OUTPUT": str(token_file)},

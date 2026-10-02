@@ -18,7 +18,7 @@ class ResourceGuard(unittest.TestCase):
                            if not key.startswith("ZESU_")}
             environment.update(ZESU_GUARD_STATE=directory, **variables)
             return subprocess.run(["bash"], input=LIBRARY + "\n" + script,
-                                  text=True, capture_output=True, env=environment)
+                                  text=True, capture_output=True, env=environment, timeout=20)
 
     def test_configured_limit_changes_writer_admission(self):
         script = '''
@@ -52,7 +52,7 @@ compiler_admission_reason
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.strip(), expected)
 
-    def test_missing_token_is_reserved_again(self):
+    def test_missing_request_is_admitted(self):
         result = self.run_guard("""
 hold_reason() { :; }
 compiler_admission_reason() { :; }
@@ -63,9 +63,9 @@ cat "$LOG"
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("confirmed", result.stdout)
-        self.assertIn("RETRY reservation", result.stdout)
+        self.assertNotIn("RETRY reservation", result.stdout)
 
-    def test_expiry_during_admission_retries(self):
+    def test_legacy_pending_request_is_replaced(self):
         result = self.run_guard("""
 hold_reason() { :; }
 marker="$COQC_RESERVATIONS/$$.expired"
@@ -81,3 +81,71 @@ head -n 1 "$marker"
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("confirmed", result.stdout)
+
+    def test_two_batches_exceed_cap_without_deadlock(self):
+        result = self.run_guard("""
+hold_reason() { :; }
+compiler_pids() { :; }
+POLL_SECONDS=0.01
+worker() {
+  local owner=$BASHPID marker
+  marker=$(reserve_coqc "$owner") || return
+  [ ! -e "$marker" ] || return 10
+  confirm_coqc "$marker" || return
+  # A repeated confirmation must not wait on the slot it already owns.
+  confirm_coqc "$marker" || return
+  printf 'start %s\n' "$owner" >> "$STATE_DIR/events"
+  sleep 0.05
+  printf 'end %s\n' "$owner" >> "$STATE_DIR/events"
+  release_coqc "$marker"
+}
+batch() {
+  local pids="" pid status=0
+  for _ in 1 2 3; do worker & pids="$pids $!"; done
+  for pid in $pids; do wait "$pid" || status=1; done
+  return "$status"
+}
+batch & one=$!
+batch & two=$!
+wait "$one" || exit 11
+wait "$two" || exit 12
+cat "$STATE_DIR/events"
+[ -z "$(live_reservations)" ]
+""", ZESU_MAX_COQC="2", ZESU_IN_BATCH="1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        active = set()
+        starts = 0
+        peak = 0
+        for line in result.stdout.splitlines():
+            event, pid = line.split()
+            if event == "start":
+                active.add(pid)
+                starts += 1
+                peak = max(peak, len(active))
+            else:
+                active.remove(pid)
+        self.assertEqual(starts, 6)
+        self.assertFalse(active)
+        self.assertLessEqual(peak, 2)
+
+    def test_confirmed_launch_does_not_expire_before_compiler_start(self):
+        result = self.run_guard("""
+hold_reason() { :; }
+compiler_pids() { :; }
+marker=$(reserve_coqc $$)
+confirm_coqc "$marker"
+touch -d '2 minutes ago' "$marker"
+live_reservations
+[ -f "$marker" ] || exit 4
+mark_coqc "$marker" $$
+confirm_coqc "$marker"
+[ -f "$marker" ]
+release_coqc "$marker"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("coqc-reservations", result.stdout)
+
+    def test_confirmation_errors_are_visible(self):
+        result = self.run_guard('confirm_coqc "$COQC_RESERVATIONS/not-a-pid.token"')
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("invalid reservation path or dead owner", result.stderr)
