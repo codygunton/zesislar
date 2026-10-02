@@ -1,0 +1,89 @@
+[
+  {
+    "entry": "0x159a0",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (saved : bv 64) (value : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTailScalarCallHandoff",
+    "source_resource": "(reg_col zesu_ram_sys_regs \u2217\n     \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217\n     reg_col ((fun register => (KindReg register, BitsShape 64)) <$>\n       [\"x1\"; \"x5\"; \"x8\"; \"x10\"; \"x11\"]) \u2217\n     (bv_unsigned sp + 96) \u21a6\u2098 saved \u2217 (bv_unsigned sp + 80) \u21a6\u2098 value \u2217\n     (bv_unsigned sp - 16) \u21a6\u2098? 16 \u2217\n     mmio_range (machineOutputAddress defaultMap) 16 \u2217\n     spec_trace (writeOutputEvents (sp - BV 64 16)%bv (BV 64 8)\n       (writeSuccessPrivateBytes (writeSuccessEncodeU64 (bv_unsigned value))) tail) \u2217\n     P \u2217 True)",
+    "outcome": "reached",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "saved",
+        "bv 64"
+      ],
+      [
+        "value",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64)]",
+      "(bv_unsigned sp + 96) \u21a6\u2098 saved",
+      "(bv_unsigned sp + 80) \u21a6\u2098 value",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp saved value tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "saved": "Type",
+      "value": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory"
+    ],
+    "stack_size": 16,
+    "stack_pointer": "sp",
+    "entry_premises": [
+      "bv_unsigned sp `mod` 16 = 0",
+      "mapRamBase defaultMap <= bv_unsigned sp - 16",
+      "bv_unsigned sp + 96 < machineRamEnd defaultMap"
+    ],
+    "premise_source": {
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTailScalarCallHandoff",
+      "lemma": "exact_tail_scalar_call_handoff"
+    },
+    "complete_register_file": true,
+    "block_exit": "0x159b0"
+  }
+]

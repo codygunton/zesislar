@@ -1,0 +1,32 @@
+[
+  {
+    "start": "0x156a8",
+    "end": "0x156b4",
+    "successors": [
+      "0x156b4"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ]
+  },
+  {
+    "start": "0x156b4",
+    "end": "0x156c0",
+    "successors": [
+      "0x156c0"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ]
+  },
+  {
+    "start": "0x156d0",
+    "end": "0x156dc",
+    "successors": [
+      "0x156dc"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ]
+  }
+]

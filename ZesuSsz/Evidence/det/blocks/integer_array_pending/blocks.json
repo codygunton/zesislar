@@ -1,0 +1,12 @@
+[
+  {
+    "start": "0x15210",
+    "end": "0x1521c",
+    "successors": [
+      "0x1521c"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads"
+    ]
+  }
+]
