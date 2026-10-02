@@ -37,8 +37,9 @@
       "local_unfold": true
     },
     "0x10190": {
-      "name": "writeOutputEntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "writeOutputContract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteOutputContract",
+      "local_unfold": true
     }
   }
 }
