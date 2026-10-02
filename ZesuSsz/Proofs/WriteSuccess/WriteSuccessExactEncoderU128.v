@@ -20,6 +20,17 @@ Definition writeSuccessU128WordsPayload (low high : bv 64) : list (bv 8) :=
     (writeSuccessEncodeU64 (bv_unsigned low) ++
      writeSuccessEncodeU64 (bv_unsigned high)).
 
+Lemma writeSuccessU128WordsPayload_little_endian low high :
+  writeSuccessU128WordsPayload low high =
+  bv_to_little_endian 8 8 (bv_unsigned low) ++
+  bv_to_little_endian 8 8 (bv_unsigned high).
+Proof.
+  rewrite /writeSuccessU128WordsPayload /writeSuccessPrivateBytes map_app.
+  rewrite -!writeSuccessPrivateEncodeU64. reflexivity.
+Qed.
+
+#[export] Hint Rewrite writeSuccessU128WordsPayload_little_endian : zesu_payloads lithium_rewrite isla_coq_rewrite.
+
 Lemma writeSuccessU128WordsPayload_encoder low high :
   writeSuccessU128WordsPayload low high =
   writeSuccessPrivateBytes
