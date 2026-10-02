@@ -32,13 +32,30 @@ sys.path.insert(0, str(HERE.parent / "residual"))
 from goals import COQ_RULE, IRIS_RULE  # noqa: E402
 from gen_coverage import memory_range  # noqa: E402
 
-HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*)\s*:\s*(?P<body>.*)$')
+HYPOTHESIS = re.compile(r'^(?P<name>_|"[^"]*"|[A-Za-z_][\w\'’]*(?:\s*,\s*[A-Za-z_][\w\'’]*)*)\s*:\s*(?P<body>.*)$')
 RULE_20_CONJUNCTS = 12
 # The names a segment statement already binds. Anything else the context
 # mentions was introduced by the automation and becomes an existential.
 STANDARD_BINDERS = ("Sigma", "islaG0", "H", "Decoded",
                     "WriteSuccessMemoryRepresentation0")
 TMP_REGISTERS = ("x5", "x6", "x7", "x28", "x29", "x30", "x31")
+
+
+def fold_printed_resources(atoms: list[str]) -> list[str]:
+    """Restore the global name of the printed byte-list fixpoint."""
+    result = []
+    for atom in atoms:
+        if atom.startswith("(fix byteListItemResources "):
+            depth = 0
+            for index, character in enumerate(atom):
+                depth += (character == "(") - (character == ")")
+                if depth == 0:
+                    atom = "(@byteListItemResources)" + atom[index + 1:]
+                    break
+            else:
+                raise ValueError("unbalanced byte-list resource fixpoint")
+        result.append(atom)
+    return result
 
 
 def spatial_atoms(body: str) -> list[str]:
@@ -82,6 +99,17 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
     if any(atom.startswith("reg_col ") and "tmp_registers" in atom
            for atom in atoms):
         return atoms
+    for index, atom in enumerate(atoms):
+        if not atom.startswith("reg_col ["):
+            continue
+        entries = [re.fullmatch(r'\s*\(KindReg "(x\d+)", (.+)\)\s*', entry)
+                   for entry in atom[len("reg_col ["):-1].split(";")]
+        if (len(entries) == len(TMP_REGISTERS) and all(entries)
+                and {entry[1] for entry in entries} == set(TMP_REGISTERS)):
+            shapes = {entry[1]: entry[2] for entry in entries}
+            normalized = ("reg_col (zip_with (fun r shape => (KindReg r, shape)) "
+                          "tmp_registers [" + "; ".join(shapes[r] for r in TMP_REGISTERS) + "])")
+            return atoms[:index] + [normalized] + atoms[index + 1:]
     found = {}
     for index, atom in enumerate(atoms):
         match = re.fullmatch(r'"(x\d+)"\s*↦ᵣ\s+(.+)', atom)
@@ -111,13 +139,207 @@ def normalize_temporaries(atoms: list[str]) -> list[str]:
                            if index not in indices]
 
 
+def preserve_register_precision(atoms: list[str], unknown: set[str]) -> list[str]:
+    """Keep entry-unknown registers at BitsShape precision in a successor."""
+    result = []
+    for atom in atoms:
+        direct = re.match(r'^"(x\d+)"\s*↦ᵣ\s+', atom)
+        if direct and direct[1] in unknown:
+            atom = f'reg_col [(KindReg "{direct[1]}", BitsShape 64)]'
+        elif atom.startswith("reg_col ["):
+            entries = atom[len("reg_col ["):-1].split(";")
+            for index, entry in enumerate(entries):
+                register = re.match(r'\s*\(KindReg "(x\d+)"', entry)
+                if register and register[1] in unknown:
+                    entries[index] = f'(KindReg "{register[1]}", BitsShape 64)'
+            atom = "reg_col [" + "; ".join(entry.strip() for entry in entries) + "]"
+        elif "tmp_registers" in atom and "zip_with" in atom:
+            start, end = atom.rfind("["), atom.rfind("]")
+            shapes = atom[start + 1:end].split(";")
+            shapes = ["BitsShape 64" if register in unknown else shape.strip()
+                      for register, shape in zip(TMP_REGISTERS, shapes)]
+            atom = atom[:start + 1] + "; ".join(shapes) + atom[end:]
+        result.append(atom)
+    return result
+
+
+def post_state_register_precision(atoms: list[str], binders: str,
+                                  coq: list[tuple[str, str]]) -> list[str]:
+    """Keep anonymous post-state registers as shapes unless memory uses them."""
+    parameters = set(explicit_arguments(binders).split())
+    anonymous = {name for name, kind in coq
+                 if kind == "bv 64" and name not in parameters}
+    other = " ".join(atom for atom in atoms
+                     if not atom.startswith("reg_col ") and "↦ᵣ" not in atom)
+    unknown = set()
+    for atom in atoms:
+        values = re.findall(
+            r'KindReg "(x\d+)", ExactShape \(RVal_Bits ([A-Za-z_][\w\']*)\)', atom)
+        direct = re.fullmatch(r'"(x\d+)" ↦ᵣ RVal_Bits ([A-Za-z_][\w\']*)', atom)
+        if direct:
+            values.append((direct[1], direct[2]))
+        for register, value in values:
+            if value in anonymous and not re.search(
+                    r"(?<![\w'])" + re.escape(value) + r"(?![\w'])", other):
+                unknown.add(register)
+    return preserve_register_precision(atoms, unknown)
+
+
+def deduplicate_register_shapes(atoms: list[str]) -> list[str]:
+    """Retain direct ownership and remove its explicit BitsShape duplicate."""
+    exact = {match[1] for atom in atoms
+             if (match := re.match(r'^"(x\d+)"\s*↦ᵣ:?\s+', atom))}
+    for atom in atoms:
+        exact.update(re.findall(r'KindReg "(x\d+)", ExactShape', atom))
+        if "tmp_registers" in atom and "zip_with" in atom:
+            shapes = atom[atom.rfind("[") + 1:atom.rfind("]")].split(";")
+            exact.update(register for register, shape in zip(TMP_REGISTERS, shapes)
+                         if "ExactShape" in shape)
+    result = []
+    for atom in atoms:
+        if atom.startswith("reg_col ["):
+            entries = atom[len("reg_col ["):-1].split(";")
+            entries = [entry.strip() for entry in entries
+                       if not ((match := re.fullmatch(
+                           r'\s*\(KindReg "(x\d+)", BitsShape 64\)\s*', entry))
+                               and match[1] in exact)]
+            atom = "reg_col [" + "; ".join(entries) + "]"
+        elif "tmp_registers" in atom and "zip_with" in atom:
+            shapes = atom[atom.rfind("[") + 1:atom.rfind("]")].split(";")
+            if len(shapes) != len(TMP_REGISTERS):
+                raise ValueError("temporary register shape count does not match")
+            entries = [(register, shape.strip())
+                       for register, shape in zip(TMP_REGISTERS, shapes)
+                       if not (register in exact and shape.strip() == "BitsShape 64")]
+            if len(entries) != len(shapes):
+                atom = "reg_col [" + "; ".join(
+                    f'(KindReg "{register}", {shape})' for register, shape in entries) + "]"
+        result.append(atom)
+    return result
+
+
+def strip_internal_handoffs(atoms: list[str], start: int, end: int) -> list[str]:
+    """Remove instruction premises inside the measured CFG block."""
+    def internal(atom: str) -> bool:
+        match = re.match(r'instr_(?:pre|body)\s+(\([^)]*\)|0x[0-9a-fA-F]+|\d+)\s', atom)
+        if not match:
+            return False
+        address = match[1].strip("() ")
+        # Printed concrete addresses use either a numeral or a numeral plus offset.
+        terms = re.fullmatch(r'(0x[0-9a-fA-F]+|\d+)(?:\s*\+\s*(\d+))?', address)
+        if not terms:
+            return False
+        pc = int(terms[1], 0) + (int(terms[2]) if terms[2] else 0)
+        return start <= pc < end
+    return [atom for atom in atoms if not internal(atom)]
+
+
+def complete_register_file(atoms: list[str]) -> list[str]:
+    """Add shapes for missing general registers without replacing ownership."""
+    owned: set[str] = set()
+    for atom in atoms:
+        registers = []
+        if atom.startswith("reg_col "):
+            if not (atom.startswith("reg_col [") or "tmp_registers" in atom
+                    or atom == "reg_col zesu_ram_sys_regs"
+                    or atom.startswith(("reg_col match ", "reg_col (match "))):
+                raise ValueError(f"unexpanded register collection: {atom}")
+            registers = re.findall(r'KindReg "(x\d+)"', atom)
+            if "tmp_registers" in atom:
+                registers += list(TMP_REGISTERS)
+            if not registers and atom not in ("reg_col zesu_ram_sys_regs", "reg_col []"):
+                raise ValueError(f"unexpanded register collection: {atom}")
+        else:
+            match = re.match(r'^"(x\d+)"\s*↦ᵣ', atom)
+            if match:
+                registers = [match.group(1)]
+        for register in registers:
+            if register in owned:
+                raise ValueError(f"duplicate register resource: {register}")
+            owned.add(register)
+    missing = [f'(KindReg "x{index}", BitsShape 64)'
+               for index in range(1, 32) if f"x{index}" not in owned]
+    return atoms + (["reg_col [" + "; ".join(missing) + "]"] if missing else [])
+
+
+def flat_state_tactics(prefix: str, root: Path) -> str:
+    """Expand loaded project packages in a proof-mode capture.
+
+    Coq elaborates the reductions. Source text supplies constant names only.
+    The capture retains abstract frame parameters and does not split arrays.
+    """
+    loaded: dict[str, str] = {}
+    pending = [prefix]
+    imports = re.compile(
+        r"(?:From\s+([\w.]+)\s+)?Require\s+(?:Import|Export)\s+"
+        r"([^;]+?)\.(?=\s|$)")
+    while pending:
+        source = re.sub(r"\(\*.*?\*\)", "", pending.pop(), flags=re.S)
+        for match in imports.finditer(source):
+            for name in match[2].split():
+                module = (match[1] + "." if match[1] else "") + name
+                path = root / (module.replace(".", "/") + ".v")
+                if path.exists() and module not in loaded:
+                    loaded[module] = path.read_text()
+                    pending.append(loaded[module])
+    tactics = []
+    for module, source in [("", prefix), *loaded.items()]:
+        for name in re.findall(r"(?:Definition|Fixpoint)\s+(\w+)\b", source):
+            if not any(part in name.lower() for part in
+                       ("frame", "scratch", "handoff", "event", "stack", "register", "untouched", "tailwords", "memory", "slots")):
+                continue
+            constant = (module + "." if module else "") + name
+            unfold = name + "_unfold"
+            action = ("rewrite " + (module + "." if module else "") + unfold
+                      if re.search(r"Lemma\s+" + re.escape(unfold) + r"\b", source)
+                      else "unfold " + constant)
+            tactics.append(
+                "iMatchHyp ltac:(fun H P => "
+                "iEval (progress " + action + ") in H)")
+    return ("all: repeat first [" + " |\n".join(tactics) + "].\n") if tactics else ""
+
+
+def entry_witness_binders(binders: str, coq: list[tuple[str, str]],
+                          sorts: dict[str, str]) -> tuple[str, str]:
+    """Name captured entry witnesses in the block's parameter list."""
+    variables, _facts = local_parts(free_locals(coq, binders), sorts, True)
+    expanded = binders + "".join(f" ({name} : {kind})" for name, kind in variables)
+    return expanded, explicit_arguments(expanded)
+
+
+def substitute_witnesses(coq: list[tuple[str, str]], spatial: list[str],
+                         witnesses: dict[str, str]) -> tuple[list[tuple[str, str]], list[str]]:
+    """Use probe-recorded witnesses instead of fresh existential variables."""
+    known = {name for name, _kind in coq}
+    unknown = set(witnesses) - known
+    if unknown:
+        raise ValueError("witnesses absent from probe: " + ", ".join(sorted(unknown)))
+    def replace(text: str) -> str:
+        for name, expression in witnesses.items():
+            text = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                          lambda _match: "(" + expression + ")", text)
+        return text
+    return ([(name, replace(kind)) for name, kind in coq if name not in witnesses],
+            [replace(atom) for atom in spatial])
+
+
 def require_call_resources(atoms: list[str]) -> None:
     """Reject missing ownership. Never add inferred resources."""
     if "reg_col zesu_ram_sys_regs" not in atoms:
         raise ValueError("missing top-level reg_col zesu_ram_sys_regs")
     if not any(atom.startswith("reg_col ") and "tmp_registers" in atom
                for atom in atoms):
-        raise ValueError("missing top-level temporary register collection")
+        declared = set()
+        for atom in atoms:
+            direct = re.match(r'^"(x\d+)"\s*↦ᵣ', atom)
+            if direct:
+                declared.add(direct[1])
+            elif atom.startswith("reg_col "):
+                declared.update(re.findall(r'KindReg "(x\d+)"', atom))
+        # Keep mixed and conditional collections exactly as captured.
+        # A generated proof must establish the required branch ownership.
+        if not set(TMP_REGISTERS).issubset(declared):
+            raise ValueError("missing top-level temporary register collection")
 
 
 def require_open_resources(atoms: list[str], binders: str) -> None:
@@ -126,8 +348,18 @@ def require_open_resources(atoms: list[str], binders: str) -> None:
                 if kind == "iProp Sigma"}
     for atom in atoms:
         if (atom in abstract or atom in ("True", "emp")
-                or atom.startswith(("reg_col ", "spec_trace ", "mmio_range ",
+                or atom in ("writeSuccessNativeStaticResources",
+                            "WriteSuccessNativeContract.writeSuccessNativeStaticResources")
+                or atom.startswith(("writeSuccessTransactionsOwn ",
+                                    "writeSuccessTransactionsInvariant ",
+                                    "WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant ",
+                                    "writeSuccessPostTransactionDataResources ",
+                                    "WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources ",
+                                    "byteListItemResources ",
+                                    "(@byteListItemResources) ",
+                                    "reg_col ", "spec_trace ", "mmio_range ",
                                     "instr_pre ", "instr_body ", "⌜"))
+                or (atom.startswith("∀ ") and "instr_pre " in atom)
                 or re.match(r'"[^"]+"\s*(?:#\s*"[^"]+"\s*)?↦ᵣ', atom)):
             continue
         if "↦ₘ" in atom:
@@ -189,6 +421,8 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     spatial: list[str] = []
     target = coq
     lines = block.split("\n")
+    has_square_rule = any(IRIS_RULE.match(line.strip()) and line.strip().endswith("□")
+                          for line in lines)
     pending: list[str] = []
 
     def flush(into) -> None:
@@ -200,7 +434,8 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
             pending.clear()
             return
         if into is coq:
-            into.append((match.group("name"), match.group("body").strip()))
+            into.extend((name.strip(), match.group("body").strip())
+                        for name in match.group("name").split(","))
         else:
             into.append(match.group("body").strip())
         pending.clear()
@@ -217,8 +452,11 @@ def sections(block: str) -> tuple[list[tuple[str, str]], list[str], list[str]]:
             if target is None:
                 break
             continue
-        if HYPOTHESIS.match(stripped) and (pending or True):
+        if HYPOTHESIS.match(stripped):
             flush(target)
+            if target is persistent and not has_square_rule and stripped.startswith("_ :"):
+                # A goal without persistent hypotheses omits the square rule.
+                target = spatial
             pending.append(stripped)
         elif pending:
             pending.append(stripped)
@@ -281,7 +519,9 @@ def explicit_arguments(binders: str) -> str:
 def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     spatial: list[str], seal: bool, *,
                     call_resources: bool = False,
-                    sorts: dict[str, str] | None = None) -> str:
+                    sorts: dict[str, str] | None = None,
+                    witnesses: dict[str, str] | None = None) -> str:
+    coq, spatial = substitute_witnesses(coq, spatial, witnesses or {})
     spatial = [atom for body in spatial for atom in spatial_atoms(body)]
     if call_resources:
         spatial = normalize_temporaries(spatial)
@@ -301,7 +541,10 @@ def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     if "↦ᵣ" not in atom and "spec_trace" not in atom
                     and not atom.startswith(("∃", "⌜", "reg_col"))
                     and "-∗" not in atom else None)
-        if seal and coverage:
+        # Keep scalar words visible to load/store rules. Coverage alone does
+        # not establish that a block leaves a word untouched.
+        scalar_word = re.search(r"↦ₘ\s+", atom) is not None
+        if seal and coverage and not scalar_word:
             memory.append(atom)
             ranges.append(coverage)
         else:

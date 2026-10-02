@@ -1,0 +1,449 @@
+{
+  "raw_goals": "1 goal\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, old_ra, old_x5, old_data, old_size : bv 64\n  payload : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  H0 : bv_unsigned sp `mod` 16 = 0\n  H1 : 0 ≤ bv_unsigned sp - 16\n  H2 : bv_unsigned sp + 1764 < 0 + 1073741824\n  H3 : length payload = 20%nat\n  b : bv 64\n  H4 : Z.land (bv_unsigned b) 131072 = 0\n  b0 : bv 64\n  H5 : Z.land (bv_unsigned b0) 131072 = 0\n  b1 : bv 64\n  H6 : Z.land (bv_unsigned b1) 131072 = 0\n  b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19 : bv 64\n  H7 : -1 < bv_unsigned b19 < bv_modulus 64\n  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H9 : -1 < bv_unsigned b18 < bv_modulus 64\n  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H11 : -1 < bv_unsigned b17 < bv_modulus 64\n  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b16 < bv_modulus 64\n  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b15 < bv_modulus 64\n  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b14 < bv_modulus 64\n  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b13 < bv_modulus 64\n  H20 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b12 < bv_modulus 64\n  H22 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b11 < bv_modulus 64\n  H24 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b10 < bv_modulus 64\n  H26 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b9 < bv_modulus 64\n  H28 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b8 < bv_modulus 64\n  H30 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b1 < bv_modulus 64\n  H32 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b0 < bv_modulus 64\n  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b < bv_modulus 64\n  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64\n  H37 : -1 < bv_unsigned old_size < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_size < bv_half_modulus 64\n  H39 : -1 < bv_unsigned old_data < bv_modulus 64\n  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_data < bv_half_modulus 64\n  H41 : -1 < bv_unsigned old_x5 < bv_modulus 64\n  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_x5 < bv_half_modulus 64\n  H43 : -1 < bv_unsigned old_ra < bv_modulus 64\n  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_ra < bv_half_modulus 64\n  H45 : -1 < bv_unsigned sp < bv_modulus 64\n  H46 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  b2, b3 : bv 64\n  H47 : -1 < bv_unsigned b3 < bv_modulus 64\n  H48 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b3 < bv_half_modulus 64\n  H49 : -1 < bv_unsigned b2 < bv_modulus 64\n  H50 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : P\n  _ : True\n  _ : reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11));\n         (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15));\n         (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b2\n  _ : \"x11\" ↦ᵣ RVal_Bits b3\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : bv_unsigned (sp + 1744) ↦ₘ∗ payload\n  _ : spec_trace tail\n  --------------------------------------∗\n  POST\nBOUNDARY-LOCAL-SORT H50 : Prop\nBOUNDARY-LOCAL-SORT H49 : Prop\nBOUNDARY-LOCAL-SORT H48 : Prop\nBOUNDARY-LOCAL-SORT H47 : Prop\nBOUNDARY-LOCAL-SORT b3 : Set\nBOUNDARY-LOCAL-SORT b2 : Set\nBOUNDARY-LOCAL-SORT H46 : Prop\nBOUNDARY-LOCAL-SORT H45 : Prop\nBOUNDARY-LOCAL-SORT H44 : Prop\nBOUNDARY-LOCAL-SORT H43 : Prop\nBOUNDARY-LOCAL-SORT H42 : Prop\nBOUNDARY-LOCAL-SORT H41 : Prop\nBOUNDARY-LOCAL-SORT H40 : Prop\nBOUNDARY-LOCAL-SORT H39 : Prop\nBOUNDARY-LOCAL-SORT H38 : Prop\nBOUNDARY-LOCAL-SORT H37 : Prop\nBOUNDARY-LOCAL-SORT H36 : Prop\nBOUNDARY-LOCAL-SORT H35 : Prop\nBOUNDARY-LOCAL-SORT H34 : Prop\nBOUNDARY-LOCAL-SORT H33 : Prop\nBOUNDARY-LOCAL-SORT H32 : Prop\nBOUNDARY-LOCAL-SORT H31 : Prop\nBOUNDARY-LOCAL-SORT H30 : Prop\nBOUNDARY-LOCAL-SORT H29 : Prop\nBOUNDARY-LOCAL-SORT H28 : Prop\nBOUNDARY-LOCAL-SORT H27 : Prop\nBOUNDARY-LOCAL-SORT H26 : Prop\nBOUNDARY-LOCAL-SORT H25 : Prop\nBOUNDARY-LOCAL-SORT H24 : Prop\nBOUNDARY-LOCAL-SORT H23 : Prop\nBOUNDARY-LOCAL-SORT H22 : Prop\nBOUNDARY-LOCAL-SORT H21 : Prop\nBOUNDARY-LOCAL-SORT H20 : Prop\nBOUNDARY-LOCAL-SORT H19 : Prop\nBOUNDARY-LOCAL-SORT H18 : Prop\nBOUNDARY-LOCAL-SORT H17 : Prop\nBOUNDARY-LOCAL-SORT H16 : Prop\nBOUNDARY-LOCAL-SORT H15 : Prop\nBOUNDARY-LOCAL-SORT H14 : Prop\nBOUNDARY-LOCAL-SORT H13 : Prop\nBOUNDARY-LOCAL-SORT H12 : Prop\nBOUNDARY-LOCAL-SORT H11 : Prop\nBOUNDARY-LOCAL-SORT H10 : Prop\nBOUNDARY-LOCAL-SORT H9 : Prop\nBOUNDARY-LOCAL-SORT H8 : Prop\nBOUNDARY-LOCAL-SORT H7 : Prop\nBOUNDARY-LOCAL-SORT b19 : Set\nBOUNDARY-LOCAL-SORT b18 : Set\nBOUNDARY-LOCAL-SORT b17 : Set\nBOUNDARY-LOCAL-SORT b16 : Set\nBOUNDARY-LOCAL-SORT b15 : Set\nBOUNDARY-LOCAL-SORT b14 : Set\nBOUNDARY-LOCAL-SORT b13 : Set\nBOUNDARY-LOCAL-SORT b12 : Set\nBOUNDARY-LOCAL-SORT b11 : Set\nBOUNDARY-LOCAL-SORT b10 : Set\nBOUNDARY-LOCAL-SORT b9 : Set\nBOUNDARY-LOCAL-SORT b8 : Set\nBOUNDARY-LOCAL-SORT H6 : Prop\nBOUNDARY-LOCAL-SORT b1 : Set\nBOUNDARY-LOCAL-SORT H5 : Prop\nBOUNDARY-LOCAL-SORT b0 : Set\nBOUNDARY-LOCAL-SORT H4 : Prop\nBOUNDARY-LOCAL-SORT b : Set\nBOUNDARY-LOCAL-SORT H3 : Prop\nBOUNDARY-LOCAL-SORT H2 : Prop\nBOUNDARY-LOCAL-SORT H1 : Prop\nBOUNDARY-LOCAL-SORT H0 : Prop\nBOUNDARY-LOCAL-SORT POST : Type\nBOUNDARY-LOCAL-SORT P : Type\nBOUNDARY-LOCAL-SORT tail : Type\nBOUNDARY-LOCAL-SORT payload : Set\nBOUNDARY-LOCAL-SORT old_size : Set\nBOUNDARY-LOCAL-SORT old_data : Set\nBOUNDARY-LOCAL-SORT old_x5 : Set\nBOUNDARY-LOCAL-SORT old_ra : Set\nBOUNDARY-LOCAL-SORT sp : Set\nBOUNDARY-LOCAL-SORT H : Set\nBOUNDARY-LOCAL-SORT islaG0 : Type\nBOUNDARY-LOCAL-SORT Sigma : Type\n",
+  "local_sorts": {
+    "H50": "Prop",
+    "H49": "Prop",
+    "H48": "Prop",
+    "H47": "Prop",
+    "b3": "Set",
+    "b2": "Set",
+    "H46": "Prop",
+    "H45": "Prop",
+    "H44": "Prop",
+    "H43": "Prop",
+    "H42": "Prop",
+    "H41": "Prop",
+    "H40": "Prop",
+    "H39": "Prop",
+    "H38": "Prop",
+    "H37": "Prop",
+    "H36": "Prop",
+    "H35": "Prop",
+    "H34": "Prop",
+    "H33": "Prop",
+    "H32": "Prop",
+    "H31": "Prop",
+    "H30": "Prop",
+    "H29": "Prop",
+    "H28": "Prop",
+    "H27": "Prop",
+    "H26": "Prop",
+    "H25": "Prop",
+    "H24": "Prop",
+    "H23": "Prop",
+    "H22": "Prop",
+    "H21": "Prop",
+    "H20": "Prop",
+    "H19": "Prop",
+    "H18": "Prop",
+    "H17": "Prop",
+    "H16": "Prop",
+    "H15": "Prop",
+    "H14": "Prop",
+    "H13": "Prop",
+    "H12": "Prop",
+    "H11": "Prop",
+    "H10": "Prop",
+    "H9": "Prop",
+    "H8": "Prop",
+    "H7": "Prop",
+    "b19": "Set",
+    "b18": "Set",
+    "b17": "Set",
+    "b16": "Set",
+    "b15": "Set",
+    "b14": "Set",
+    "b13": "Set",
+    "b12": "Set",
+    "b11": "Set",
+    "b10": "Set",
+    "b9": "Set",
+    "b8": "Set",
+    "H6": "Prop",
+    "b1": "Set",
+    "H5": "Prop",
+    "b0": "Set",
+    "H4": "Prop",
+    "b": "Set",
+    "H3": "Prop",
+    "H2": "Prop",
+    "H1": "Prop",
+    "H0": "Prop",
+    "POST": "Type",
+    "P": "Type",
+    "tail": "Type",
+    "payload": "Set",
+    "old_size": "Set",
+    "old_data": "Set",
+    "old_x5": "Set",
+    "old_ra": "Set",
+    "sp": "Set",
+    "H": "Set",
+    "islaG0": "Type",
+    "Sigma": "Type"
+  },
+  "memory_word_widths": {},
+  "goals": [
+    {
+      "context": "1 goal\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, old_ra, old_x5, old_data, old_size : bv 64\n  payload : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  H0 : bv_unsigned sp `mod` 16 = 0\n  H1 : 0 ≤ bv_unsigned sp - 16\n  H2 : bv_unsigned sp + 1764 < 0 + 1073741824\n  H3 : length payload = 20%nat\n  b : bv 64\n  H4 : Z.land (bv_unsigned b) 131072 = 0\n  b0 : bv 64\n  H5 : Z.land (bv_unsigned b0) 131072 = 0\n  b1 : bv 64\n  H6 : Z.land (bv_unsigned b1) 131072 = 0\n  b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19 : bv 64\n  H7 : -1 < bv_unsigned b19 < bv_modulus 64\n  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H9 : -1 < bv_unsigned b18 < bv_modulus 64\n  H10 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H11 : -1 < bv_unsigned b17 < bv_modulus 64\n  H12 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b16 < bv_modulus 64\n  H14 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b15 < bv_modulus 64\n  H16 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b14 < bv_modulus 64\n  H18 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b13 < bv_modulus 64\n  H20 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b12 < bv_modulus 64\n  H22 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b11 < bv_modulus 64\n  H24 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b10 < bv_modulus 64\n  H26 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b9 < bv_modulus 64\n  H28 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b8 < bv_modulus 64\n  H30 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b1 < bv_modulus 64\n  H32 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b0 < bv_modulus 64\n  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b < bv_modulus 64\n  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64\n  H37 : -1 < bv_unsigned old_size < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_size < bv_half_modulus 64\n  H39 : -1 < bv_unsigned old_data < bv_modulus 64\n  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_data < bv_half_modulus 64\n  H41 : -1 < bv_unsigned old_x5 < bv_modulus 64\n  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_x5 < bv_half_modulus 64\n  H43 : -1 < bv_unsigned old_ra < bv_modulus 64\n  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed old_ra < bv_half_modulus 64\n  H45 : -1 < bv_unsigned sp < bv_modulus 64\n  H46 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  b2, b3 : bv 64\n  H47 : -1 < bv_unsigned b3 < bv_modulus 64\n  H48 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b3 < bv_half_modulus 64\n  H49 : -1 < bv_unsigned b2 < bv_modulus 64\n  H50 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : P\n  _ : True\n  _ : reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11));\n         (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15));\n         (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b2\n  _ : \"x11\" ↦ᵣ RVal_Bits b3\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : bv_unsigned (sp + 1744) ↦ₘ∗ payload\n  _ : spec_trace tail",
+      "conclusion": "POST\nBOUNDARY-LOCAL-SORT H50 : Prop\nBOUNDARY-LOCAL-SORT H49 : Prop\nBOUNDARY-LOCAL-SORT H48 : Prop\nBOUNDARY-LOCAL-SORT H47 : Prop\nBOUNDARY-LOCAL-SORT b3 : Set\nBOUNDARY-LOCAL-SORT b2 : Set\nBOUNDARY-LOCAL-SORT H46 : Prop\nBOUNDARY-LOCAL-SORT H45 : Prop\nBOUNDARY-LOCAL-SORT H44 : Prop\nBOUNDARY-LOCAL-SORT H43 : Prop\nBOUNDARY-LOCAL-SORT H42 : Prop\nBOUNDARY-LOCAL-SORT H41 : Prop\nBOUNDARY-LOCAL-SORT H40 : Prop\nBOUNDARY-LOCAL-SORT H39 : Prop\nBOUNDARY-LOCAL-SORT H38 : Prop\nBOUNDARY-LOCAL-SORT H37 : Prop\nBOUNDARY-LOCAL-SORT H36 : Prop\nBOUNDARY-LOCAL-SORT H35 : Prop\nBOUNDARY-LOCAL-SORT H34 : Prop\nBOUNDARY-LOCAL-SORT H33 : Prop\nBOUNDARY-LOCAL-SORT H32 : Prop\nBOUNDARY-LOCAL-SORT H31 : Prop\nBOUNDARY-LOCAL-SORT H30 : Prop\nBOUNDARY-LOCAL-SORT H29 : Prop\nBOUNDARY-LOCAL-SORT H28 : Prop\nBOUNDARY-LOCAL-SORT H27 : Prop\nBOUNDARY-LOCAL-SORT H26 : Prop\nBOUNDARY-LOCAL-SORT H25 : Prop\nBOUNDARY-LOCAL-SORT H24 : Prop\nBOUNDARY-LOCAL-SORT H23 : Prop\nBOUNDARY-LOCAL-SORT H22 : Prop\nBOUNDARY-LOCAL-SORT H21 : Prop\nBOUNDARY-LOCAL-SORT H20 : Prop\nBOUNDARY-LOCAL-SORT H19 : Prop\nBOUNDARY-LOCAL-SORT H18 : Prop\nBOUNDARY-LOCAL-SORT H17 : Prop\nBOUNDARY-LOCAL-SORT H16 : Prop\nBOUNDARY-LOCAL-SORT H15 : Prop\nBOUNDARY-LOCAL-SORT H14 : Prop\nBOUNDARY-LOCAL-SORT H13 : Prop\nBOUNDARY-LOCAL-SORT H12 : Prop\nBOUNDARY-LOCAL-SORT H11 : Prop\nBOUNDARY-LOCAL-SORT H10 : Prop\nBOUNDARY-LOCAL-SORT H9 : Prop\nBOUNDARY-LOCAL-SORT H8 : Prop\nBOUNDARY-LOCAL-SORT H7 : Prop\nBOUNDARY-LOCAL-SORT b19 : Set\nBOUNDARY-LOCAL-SORT b18 : Set\nBOUNDARY-LOCAL-SORT b17 : Set\nBOUNDARY-LOCAL-SORT b16 : Set\nBOUNDARY-LOCAL-SORT b15 : Set\nBOUNDARY-LOCAL-SORT b14 : Set\nBOUNDARY-LOCAL-SORT b13 : Set\nBOUNDARY-LOCAL-SORT b12 : Set\nBOUNDARY-LOCAL-SORT b11 : Set\nBOUNDARY-LOCAL-SORT b10 : Set\nBOUNDARY-LOCAL-SORT b9 : Set\nBOUNDARY-LOCAL-SORT b8 : Set\nBOUNDARY-LOCAL-SORT H6 : Prop\nBOUNDARY-LOCAL-SORT b1 : Set\nBOUNDARY-LOCAL-SORT H5 : Prop\nBOUNDARY-LOCAL-SORT b0 : Set\nBOUNDARY-LOCAL-SORT H4 : Prop\nBOUNDARY-LOCAL-SORT b : Set\nBOUNDARY-LOCAL-SORT H3 : Prop\nBOUNDARY-LOCAL-SORT H2 : Prop\nBOUNDARY-LOCAL-SORT H1 : Prop\nBOUNDARY-LOCAL-SORT H0 : Prop\nBOUNDARY-LOCAL-SORT POST : Type\nBOUNDARY-LOCAL-SORT P : Type\nBOUNDARY-LOCAL-SORT tail : Type\nBOUNDARY-LOCAL-SORT payload : Set\nBOUNDARY-LOCAL-SORT old_size : Set\nBOUNDARY-LOCAL-SORT old_data : Set\nBOUNDARY-LOCAL-SORT old_x5 : Set\nBOUNDARY-LOCAL-SORT old_ra : Set\nBOUNDARY-LOCAL-SORT sp : Set\nBOUNDARY-LOCAL-SORT H : Set\nBOUNDARY-LOCAL-SORT islaG0 : Type\nBOUNDARY-LOCAL-SORT Sigma : Type"
+    }
+  ],
+  "leader": "0x15180",
+  "exit": "0x15190",
+  "entry_state": "State_15180",
+  "entry_binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (old_ra : bv 64) (old_x5 : bv 64) (old_data : bv 64) (old_size : bv 64) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "entry_provenance": "(transactionRecipientOutputEntry sp old_ra old_x5 old_data old_size payload tail P)",
+  "callee": "writeOutputContract",
+  "callee_address": "0x10190",
+  "post_state": {
+    "entry": "0x15190",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (old_ra : bv 64) (old_x5 : bv 64) (old_data : bv 64) (old_size : bv 64) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "old_ra",
+        "bv 64"
+      ],
+      [
+        "old_x5",
+        "bv 64"
+      ],
+      [
+        "old_data",
+        "bv 64"
+      ],
+      [
+        "old_size",
+        "bv 64"
+      ],
+      [
+        "payload",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H1",
+        "0 ≤ bv_unsigned sp - 16"
+      ],
+      [
+        "H2",
+        "bv_unsigned sp + 1764 < 0 + 1073741824"
+      ],
+      [
+        "H3",
+        "length payload = 20%nat"
+      ],
+      [
+        "b8",
+        "bv 64"
+      ],
+      [
+        "b9",
+        "bv 64"
+      ],
+      [
+        "b10",
+        "bv 64"
+      ],
+      [
+        "b11",
+        "bv 64"
+      ],
+      [
+        "b12",
+        "bv 64"
+      ],
+      [
+        "b13",
+        "bv 64"
+      ],
+      [
+        "b14",
+        "bv 64"
+      ],
+      [
+        "b15",
+        "bv 64"
+      ],
+      [
+        "b16",
+        "bv 64"
+      ],
+      [
+        "b17",
+        "bv 64"
+      ],
+      [
+        "b18",
+        "bv 64"
+      ],
+      [
+        "b19",
+        "bv 64"
+      ],
+      [
+        "b2",
+        "bv 64"
+      ],
+      [
+        "b3",
+        "bv 64"
+      ]
+    ],
+    "spatial": [
+      "P",
+      "True",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+      "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11)); (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15)); (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]",
+      "\"x10\" ↦ᵣ RVal_Bits b2",
+      "\"x11\" ↦ᵣ RVal_Bits b3",
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "bv_unsigned (sp + 1744) ↦ₘ∗ payload",
+      "spec_trace tail",
+      "mmio_range (604086456 + 8) 16"
+    ],
+    "local_sorts": {
+      "H50": "Prop",
+      "H49": "Prop",
+      "H48": "Prop",
+      "H47": "Prop",
+      "b3": "Set",
+      "b2": "Set",
+      "H46": "Prop",
+      "H45": "Prop",
+      "H44": "Prop",
+      "H43": "Prop",
+      "H42": "Prop",
+      "H41": "Prop",
+      "H40": "Prop",
+      "H39": "Prop",
+      "H38": "Prop",
+      "H37": "Prop",
+      "H36": "Prop",
+      "H35": "Prop",
+      "H34": "Prop",
+      "H33": "Prop",
+      "H32": "Prop",
+      "H31": "Prop",
+      "H30": "Prop",
+      "H29": "Prop",
+      "H28": "Prop",
+      "H27": "Prop",
+      "H26": "Prop",
+      "H25": "Prop",
+      "H24": "Prop",
+      "H23": "Prop",
+      "H22": "Prop",
+      "H21": "Prop",
+      "H20": "Prop",
+      "H19": "Prop",
+      "H18": "Prop",
+      "H17": "Prop",
+      "H16": "Prop",
+      "H15": "Prop",
+      "H14": "Prop",
+      "H13": "Prop",
+      "H12": "Prop",
+      "H11": "Prop",
+      "H10": "Prop",
+      "H9": "Prop",
+      "H8": "Prop",
+      "H7": "Prop",
+      "b19": "Set",
+      "b18": "Set",
+      "b17": "Set",
+      "b16": "Set",
+      "b15": "Set",
+      "b14": "Set",
+      "b13": "Set",
+      "b12": "Set",
+      "b11": "Set",
+      "b10": "Set",
+      "b9": "Set",
+      "b8": "Set",
+      "H6": "Prop",
+      "b1": "Set",
+      "H5": "Prop",
+      "b0": "Set",
+      "H4": "Prop",
+      "b": "Set",
+      "H3": "Prop",
+      "H2": "Prop",
+      "H1": "Prop",
+      "H0": "Prop",
+      "POST": "Type",
+      "P": "Type",
+      "tail": "Type",
+      "payload": "Set",
+      "old_size": "Set",
+      "old_data": "Set",
+      "old_x5": "Set",
+      "old_ra": "Set",
+      "sp": "Set",
+      "H": "Set",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "imports": [
+      "ZesuSsz.Export.Snapshots"
+    ],
+    "outcome": "reached",
+    "derived_from": "0x15180",
+    "source_capture": "Rocq native zesu_block at 11186cbc"
+  },
+  "capture_method": "Rocq Show after complete native block with exact callee contract",
+  "source_capture": "Rocq native zesu_block at 11186cbc",
+  "entry": "0x15190",
+  "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (old_ra : bv 64) (old_x5 : bv 64) (old_data : bv 64) (old_size : bv 64) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "old_ra",
+      "bv 64"
+    ],
+    [
+      "old_x5",
+      "bv 64"
+    ],
+    [
+      "old_data",
+      "bv 64"
+    ],
+    [
+      "old_size",
+      "bv 64"
+    ],
+    [
+      "payload",
+      "list (bv 8)"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "H0",
+      "bv_unsigned sp `mod` 16 = 0"
+    ],
+    [
+      "H1",
+      "0 ≤ bv_unsigned sp - 16"
+    ],
+    [
+      "H2",
+      "bv_unsigned sp + 1764 < 0 + 1073741824"
+    ],
+    [
+      "H3",
+      "length payload = 20%nat"
+    ],
+    [
+      "b8",
+      "bv 64"
+    ],
+    [
+      "b9",
+      "bv 64"
+    ],
+    [
+      "b10",
+      "bv 64"
+    ],
+    [
+      "b11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "b19",
+      "bv 64"
+    ],
+    [
+      "b2",
+      "bv 64"
+    ],
+    [
+      "b3",
+      "bv 64"
+    ]
+  ],
+  "spatial": [
+    "P",
+    "True",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11)); (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15)); (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]",
+    "\"x10\" ↦ᵣ RVal_Bits b2",
+    "\"x11\" ↦ᵣ RVal_Bits b3",
+    "\"x2\" ↦ᵣ RVal_Bits sp",
+    "bv_unsigned (sp + 1744) ↦ₘ∗ payload",
+    "spec_trace tail",
+    "mmio_range (604086456 + 8) 16"
+  ],
+  "imports": [
+    "ZesuSsz.Export.Snapshots"
+  ],
+  "outcome": "reached",
+  "derived_from": "0x15180",
+  "state_entry": "0x15190"
+}

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -53,8 +54,43 @@ def read_states(path: Path) -> dict[int, dict]:
                                      if "context" in row else row.get("entry")))
             if leader in states:
                 raise ValueError(f"duplicate state at {hex(leader)}")
+            if row.get("bind_entry_witnesses"):
+                row["binders"], row["arguments"] = gen_boundary.entry_witness_binders(
+                    row["binders"], row.get("coq", []),
+                    row.get("local_sorts", row.get("sorts", {})))
             states[leader] = row
     return states
+
+
+def add_stack_resources(state: dict, spatial: list[str]) -> list[str]:
+    """Add the approved stack boundary with an explicit recorded bound."""
+    if "stack_size" not in state:
+        return spatial
+    pointer = state.get("stack_pointer", "sp")
+    has_exact = any(atom.startswith('"x2" ↦ᵣ') for atom in spatial)
+    if not re.fullmatch(r"[A-Za-z_][\w']*", pointer) and not has_exact:
+        raise ValueError("a stack expression requires exact x2 ownership")
+    if (re.fullmatch(r"[A-Za-z_][\w']*", pointer)
+            and pointer not in gen_boundary.explicit_arguments(state["binders"]).split()):
+        arguments = state.get("arguments", gen_boundary.explicit_arguments(state["binders"]))
+        state["binders"] += f" ({pointer} : bv 64)"
+        state["arguments"] = (arguments + f" {pointer}").strip()
+    exact = f'"x2" ↦ᵣ RVal_Bits (bv_to_bvn {pointer})'
+    if not has_exact:
+        spatial = [re.sub(r'\(KindReg "x2", BitsShape 64\);?\s*', '', atom)
+                   for atom in spatial]
+        spatial = [re.sub(r';\s*\]', ']', atom) for atom in spatial]
+        spatial.append(exact)
+    size = state["stack_size"]
+    if size:
+        scratch = f'(bv_unsigned {pointer} - {size}) ↦ₘ? {size}'
+        equivalents = {scratch, f'bv_unsigned ({pointer} - {size}) ↦ₘ? {size}'}
+        if not any(atom in equivalents for atom in spatial):
+            spatial.append(scratch)
+    facts = [f'⌜(bv_unsigned {pointer} `mod` 16 = 0)%Z⌝',
+             f'⌜(mapRamBase defaultMap <= bv_unsigned {pointer} - {size} /\\ '
+             f'bv_unsigned {pointer} < machineRamEnd defaultMap)%Z⌝']
+    return spatial + [fact for fact in facts if fact not in spatial]
 
 
 def state_source(leader: int, state: dict) -> str:
@@ -66,10 +102,47 @@ def state_source(leader: int, state: dict) -> str:
         coq, spatial = state.get("coq", []), state["spatial"]
     spatial = gen_boundary.normalize_temporaries(
         [atom for resource in spatial for atom in gen_boundary.spatial_atoms(resource)])
+    spatial = gen_boundary.fold_printed_resources(spatial)
+    spatial = add_stack_resources(state, spatial)
+    if state.get("block_exit") is not None:
+        spatial = gen_boundary.strip_internal_handoffs(
+            spatial, leader, int(str(state["block_exit"]), 0))
+    for successor in state.get("supplied_successors", []):
+        pc = address(successor)
+        spatial = gen_boundary.strip_internal_handoffs(spatial, pc, pc + 1)
+    if state.get("post_state"):
+        spatial = gen_boundary.post_state_register_precision(spatial, state["binders"], coq)
+        parameters = set(gen_boundary.explicit_arguments(state["binders"]).split())
+        unused = {name for name, kind in coq
+                  if kind == "bv 64" and name not in parameters
+                  and not any(re.search(r"(?<![\w'])" + re.escape(name)
+                                        + r"(?![\w'])", atom) for atom in spatial)
+                  and not any(re.search(r"(?<![\w'])" + re.escape(name)
+                                        + r"(?![\w'])", other_kind)
+                              for other_name, other_kind in coq
+                              if not re.fullmatch(r"H\d+", other_name))}
+        coq = [(name, kind) for name, kind in coq if name not in unused
+               and not (re.fullmatch(r"H\d+", name)
+                        and any(re.search(r"(?<![\w'])" + re.escape(value)
+                                          + r"(?![\w'])", kind) for value in unused))]
+    spatial = gen_boundary.preserve_register_precision(
+        spatial, (set(state.get("entry_unknown_registers", []))
+                  | ({"x1", "x5", "x10", "x11"}
+                     if (state.get("return_point")
+                         or leader in {pc + 4 for pc in call_sites.call_sites()})
+                     else set()))
+        - ({"x2"} if "stack_size" in state else set()))
+    deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
+    if deduplicated != spatial:
+        state["deduplicated"] = True
+    spatial = gen_boundary.complete_register_file(deduplicated)
     source = gen_boundary.boundary_source(
-        f"State_{leader:x}", state["binders"], coq, spatial,
-        seal=len(spatial) > gen_boundary.RULE_20_CONJUNCTS,
-        call_resources=True, sorts=state.get("local_sorts", state.get("sorts")))
+        state.get("name", f"State_{leader:x}"), state["binders"], coq, spatial,
+        seal=state.get("seal_memory", (len(spatial) > gen_boundary.RULE_20_CONJUNCTS
+              and not any(leader <= pc < address(state.get("block_exit", leader))
+                          for pc in call_sites.call_sites()))),
+        call_resources=True, sorts=state.get("local_sorts", state.get("sorts")),
+        witnesses=state.get("witnesses"))
     imports = ["ZesuSsz.Automation.All", "ZesuSsz.Automation.SealedCoverage",
                "isla.riscv64.riscv64", *state.get("imports", [])]
     return ("(* Generated by tools/block/gen_block.py. Do not edit. *)\n"
@@ -78,8 +151,10 @@ def state_source(leader: int, state: dict) -> str:
 
 
 def state_application(leader: int, state: dict) -> str:
+    if state.get("outcome") == "unreachable-successor":
+        return "False"
     args = state.get("arguments", gen_boundary.explicit_arguments(state["binders"]))
-    return f"State_{leader:x} {args}".strip()
+    return f"{state.get('name', f'State_{leader:x}')} {args}".strip()
 
 
 def generate(block: dict, states: dict[int, dict]) -> tuple[str, str]:
@@ -91,11 +166,17 @@ def generate(block: dict, states: dict[int, dict]) -> tuple[str, str]:
     if missing:
         raise ValueError("missing inferred states: " + ", ".join(missing))
     for value in needed:
-        state_source(value, states[value])
+        if states[value].get("outcome") != "unreachable-successor":
+            state_source(value, states[value])
+        elif value == leader:
+            raise ValueError("an entry cannot be an unreachable successor")
     _premises, _modules, _unknown = call_sites.premises(leader, end, strict=True)
     spec = {"name": f"block_{leader:x}", "entry": hex(leader), "exit": hex(end),
             "binders": states[leader]["binders"],
-            "imports": [f"{STATE_MODULE}.State_{value:x}" for value in needed],
+            "imports": [states[value].get("state_module",
+                        f"{STATE_MODULE}.{states[value].get('name', f'State_{value:x}')}")
+                        for value in needed
+                        if states[value].get("outcome") != "unreachable-successor"],
             "spec": state_application(leader, states[leader]),
             "successors": [{"address": hex(value),
                             "spec": state_application(value, states[value])}
@@ -146,11 +227,39 @@ def compile_module(block_path: Path, state_paths: list[Path], build_dir: Path,
     return result
 
 
+def split_blocks(blocks: list[dict], extra_leaders: set[int]) -> list[dict]:
+    """Split pinned instruction lists at explicit additional leaders."""
+    result = []
+    found = set()
+    for block in blocks:
+        start, end = address(block["start"]), address(block["end"])
+        cuts = sorted(point for point in extra_leaders if start <= point < end)
+        instruction_addresses = {address(item["pc"]) for item in block["instructions"]}
+        for point in cuts:
+            if point not in instruction_addresses:
+                raise ValueError(f"extra leader {hex(point)} is not an instruction boundary")
+        found.update(cuts)
+        boundaries = sorted({start, *cuts, end})
+        for left, right in zip(boundaries, boundaries[1:]):
+            part = dict(block, start=left, end=right, id=hex(left))
+            part["instructions"] = [item for item in block["instructions"]
+                                    if left <= address(item["pc"]) < right]
+            part["instructionCount"] = len(part["instructions"])
+            if right != end:
+                part["successors"] = [hex(right)]
+            result.append(part)
+    if extra_leaders - found:
+        raise ValueError("extra leaders outside pinned blocks: " +
+                         ", ".join(hex(point) for point in sorted(extra_leaders - found)))
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cfg", type=Path, default=Path("build/endpoint-cfg/zesu-cfg.json"))
     parser.add_argument("--states", type=Path, required=True)
     parser.add_argument("--leader", action="append", default=[])
+    parser.add_argument("--extra-leader", action="append", default=[])
     parser.add_argument("--out-dir", type=Path, default=STAGING)
     parser.add_argument("--build-dir", type=Path, default=BUILD_DIR)
     parser.add_argument("--seconds", type=int, default=300)
@@ -163,6 +272,7 @@ def main() -> int:
     cfg = json.loads(args.cfg.read_text())
     blocks = next(function["blocks"] for function in cfg["functions"]
                   if address(function["start"]) == 0x14d30)
+    blocks = split_blocks(blocks, {address(value) for value in args.extra_leader})
     leaders = {address(value) for value in args.leader}
     if leaders:
         blocks = [block for block in blocks if address(block["start"]) in leaders]

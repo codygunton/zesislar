@@ -12,6 +12,7 @@ Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.BoundedArithmetic.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
@@ -234,7 +235,7 @@ Ltac zesu_finish_v1 :=
   try (timeout 2 zesu_finish_pure_resources);
   try reflexivity;
   try (timeout 2 zesu_finish_integer_word_image);
-  try zesu_finish_packed_word_equality;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
   try (timeout 2 (lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
@@ -243,21 +244,21 @@ Ltac zesu_finish_v1 :=
   try simpl;
   try done;
   try assumption;
-  try zesu_finish_extract_alias;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_extract_alias));
   try (timeout 2 zesu_finish_list_slice_length);
   zesu_normalize_nat_powers;
-  try zesu_finish_tag_bound;
-  try zesu_finish_mask;
-  try zesu_finish_array_byte_lookup;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_tag_bound));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_mask));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_array_byte_lookup));
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
-  try zesu_finish_ram_known;
-  try zesu_finish_ram_address;
-  try zesu_finish_pointer_alignment;
-  try zesu_saturate_alignment;
-  try lia;
-  try bv_solve;
-  try zesu_finish_little_endian.
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_known));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_address));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_pointer_alignment));
+  try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment));
+  try zesu_finish_lia;
+  try (zesu_bounded_arithmetic ltac:(bv_solve));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_little_endian)).
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
@@ -285,7 +286,7 @@ Ltac zesu_finish_entailment :=
      hypotheses that a later side condition is solved from, and leaving
      them out stops `repeat progress` one step early. *)
   zesu_normalize_nat_powers;
-  try zesu_saturate_alignment.
+  try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment)).
 
 (* Anything else: the old chain, in the old order. *)
 Ltac zesu_finish_pure_goal :=
@@ -297,7 +298,7 @@ Ltac zesu_finish_pure_goal :=
   try (timeout 2 zesu_finish_pure_resources);
   try reflexivity;
   try (timeout 2 zesu_finish_integer_word_image);
-  try zesu_finish_packed_word_equality;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
   try (timeout 2 (lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
@@ -306,27 +307,27 @@ Ltac zesu_finish_pure_goal :=
   try simpl;
   try done;
   try assumption;
-  try zesu_finish_extract_alias;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_extract_alias));
   try (timeout 2 zesu_finish_list_slice_length);
   try zesu_finish_trace_tail;
   zesu_normalize_nat_powers;
-  try zesu_finish_tag_bound;
-  try zesu_finish_mask;
-  try zesu_finish_array_byte_lookup;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_tag_bound));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_mask));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_array_byte_lookup));
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
-  try zesu_finish_ram_known;
-  try zesu_finish_ram_address;
-  try zesu_finish_pointer_alignment;
-  try zesu_saturate_alignment;
-  try lia;
-  try bv_solve;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_known));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_address));
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_pointer_alignment));
+  try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment));
+  try zesu_finish_lia;
+  try (zesu_bounded_arithmetic ltac:(bv_solve));
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
      them and ask once more. `solve` keeps the step honest: it either
      closes the goal or leaves it exactly as it was. *)
-  try (timeout 5 (solve [zesu_witness_arith_if_enabled]));
-  try zesu_finish_little_endian.
+  try zesu_finish_witness_arithmetic;
+  try (zesu_bounded_arithmetic ltac:(zesu_finish_little_endian)).
 
 Ltac zesu_finish_dispatch :=
   lazymatch goal with
@@ -348,7 +349,11 @@ Ltac zesu_finish_v2 :=
   zesu_finish_dispatch.
 
 Ltac zesu_finish :=
-  tryif zesu_rule_set_v2_on then zesu_finish_v2 else zesu_finish_v1.
+  tryif zesu_rule_set_v2_on
+  then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
+       then try (zesu_bounded_arithmetic ltac:(zesu_finish_v2))
+       else zesu_finish_v2
+  else zesu_finish_v1.
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with

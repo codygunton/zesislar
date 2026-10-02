@@ -160,7 +160,10 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                         capture_output=True, text=True, timeout=3)
                 self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(len(list((state / "coqc-reservations").iterdir())), 16)
-            waiter = subprocess.Popen([str(guard), "reserve-coqc", str(os.getpid())],
+            request = subprocess.run([str(guard), "reserve-coqc", str(os.getpid())],
+                                     env={**self.environment, "ZESU_WRITER_ID": "writer-8"},
+                                     check=True, capture_output=True, text=True).stdout.strip()
+            waiter = subprocess.Popen([str(guard), "confirm-coqc", request],
                                       env={**self.environment, "ZESU_WRITER_ID": "writer-8"},
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             try:

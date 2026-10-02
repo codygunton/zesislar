@@ -39,19 +39,23 @@ Require Import ZesuSsz.Automation.ReturnWand.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ExistentialArrayRestore.
 Require Import ZesuSsz.Automation.OutcomeHandoff.
+Require Import ZesuSsz.Automation.InteriorByteSlice.
 Require Import ZesuSsz.Automation.ReturnBundle.
 Require Import ZesuSsz.Automation.ResourceGroups.
 
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ _ _) =>
-      first [zesu_outcome_handoff_if_enabled
+      first [zesu_lend_interior_byte_slice_if_enabled
+            | zesu_outcome_handoff_if_enabled
             | zesu_restore_existential_array_if_enabled
             | (zesu_step_sealed_open_on; zesu_open_sealed_load_handoff)
             | zesu_open_sealed_for_lookup_if_enabled
             | zesu_close_loaded_trace_if_enabled
             | zesu_close_matching_trace_tail
             | zesu_close_spec_tail_if_enabled]
+  | |- envs_entails _ ((_ ↦ₘ∗ _) ∗ _)%I =>
+      zesu_restore_interior_byte_slice_if_enabled
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>
       zesu_reduce_instr_lookup_if_enabled

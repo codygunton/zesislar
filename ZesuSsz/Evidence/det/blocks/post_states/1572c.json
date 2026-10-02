@@ -1,0 +1,376 @@
+{
+  "raw_goals": "1 goal\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, oldra, old5, olddata, oldsize : bv 64\n  bytes : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  b, b0, b1, b2, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18 : bv 64\n  H0 : length bytes = 720%nat\n  H1 : bv_unsigned sp `mod` 16 = 0\n  H2 : 0 ≤ bv_unsigned sp\n  H3 : bv_unsigned sp + 1896 < 0 + 1073741824\n  b19 : bv 64\n  H4 : Z.land (bv_unsigned b19) 131072 = 0\n  b20 : bv 64\n  H5 : Z.land (bv_unsigned b20) 131072 = 0\n  b21 : bv 64\n  H6 : Z.land (bv_unsigned b21) 131072 = 0\n  H7 : -1 < bv_unsigned b21 < bv_modulus 64\n  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64\n  H9 : -1 < bv_unsigned b20 < bv_modulus 64\n  H10 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64\n  H11 : -1 < bv_unsigned b19 < bv_modulus 64\n  H12 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b18 < bv_modulus 64\n  H14 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b17 < bv_modulus 64\n  H16 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b16 < bv_modulus 64\n  H18 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b15 < bv_modulus 64\n  H20 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b14 < bv_modulus 64\n  H22 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b13 < bv_modulus 64\n  H24 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b12 < bv_modulus 64\n  H26 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b11 < bv_modulus 64\n  H28 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b10 < bv_modulus 64\n  H30 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b9 < bv_modulus 64\n  H32 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b2 < bv_modulus 64\n  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b1 < bv_modulus 64\n  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64\n  H37 : -1 < bv_unsigned b0 < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64\n  H39 : -1 < bv_unsigned b < bv_modulus 64\n  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64\n  H41 : -1 < bv_unsigned oldsize < bv_modulus 64\n  H42 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed oldsize < bv_half_modulus 64\n  H43 : -1 < bv_unsigned olddata < bv_modulus 64\n  H44 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed olddata < bv_half_modulus 64\n  H45 : -1 < bv_unsigned old5 < bv_modulus 64\n  H46 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed old5 < bv_half_modulus 64\n  H47 : -1 < bv_unsigned oldra < bv_modulus 64\n  H48 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed oldra < bv_half_modulus 64\n  H49 : -1 < bv_unsigned sp < bv_modulus 64\n  H50 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  HsliceAddress : bv_unsigned sp + 312 + 688%nat = bv_unsigned (sp + 1000)\n  HsliceBounds : (688 + 32 <= length bytes)%nat\n  HsliceSize : bv_unsigned 32 = 32%nat\n  HsliceLength : bv_unsigned 32 = length (take 32 (drop 688 bytes))\n  b3, b4 : bv 64\n  H51 : -1 < bv_unsigned b4 < bv_modulus 64\n  H52 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b4 < bv_half_modulus 64\n  H53 : -1 < bv_unsigned b3 < bv_modulus 64\n  H54 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b3 < bv_half_modulus 64\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : \"x3\" ↦ᵣ RVal_Bits b\n  _ : \"x4\" ↦ᵣ RVal_Bits b0\n  _ : P\n  _ : True\n  \"Hrestore\" : bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes) -∗\n               (bv_unsigned sp + 312) ↦ₘ∗ bytes\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64);\n         (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64);\n         (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64);\n         (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64);\n         (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits b1));\n         (KindReg \"x9\", ExactShape (RVal_Bits b2));\n         (KindReg \"x18\", ExactShape (RVal_Bits b9));\n         (KindReg \"x19\", ExactShape (RVal_Bits b10));\n         (KindReg \"x20\", ExactShape (RVal_Bits b11));\n         (KindReg \"x21\", ExactShape (RVal_Bits b12));\n         (KindReg \"x22\", ExactShape (RVal_Bits b13));\n         (KindReg \"x23\", ExactShape (RVal_Bits b14));\n         (KindReg \"x24\", ExactShape (RVal_Bits b15));\n         (KindReg \"x25\", ExactShape (RVal_Bits b16));\n         (KindReg \"x26\", ExactShape (RVal_Bits b17));\n         (KindReg \"x27\", ExactShape (RVal_Bits b18))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b3\n  _ : \"x11\" ↦ᵣ RVal_Bits b4\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes)\n  _ : spec_trace tail\n  --------------------------------------∗\n  POST\n",
+  "local_sorts": {
+    "Sigma": "Type",
+    "islaG0": "Type",
+    "sp": "Type",
+    "oldra": "Type",
+    "old5": "Type",
+    "olddata": "Type",
+    "oldsize": "Type",
+    "bytes": "Type",
+    "tail": "Type",
+    "P": "Type",
+    "b": "Type",
+    "b0": "Type",
+    "b1": "Type",
+    "b2": "Type",
+    "b9": "Type",
+    "b10": "Type",
+    "b11": "Type",
+    "b12": "Type",
+    "b13": "Type",
+    "b14": "Type",
+    "b15": "Type",
+    "b16": "Type",
+    "b17": "Type",
+    "b18": "Type",
+    "H0": "Prop",
+    "H1": "Prop",
+    "H2": "Prop",
+    "H3": "Prop",
+    "b3": "Type",
+    "b4": "Type"
+  },
+  "memory_word_widths": {},
+  "goals": [
+    {
+      "context": "1 goal\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, oldra, old5, olddata, oldsize : bv 64\n  bytes : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  b, b0, b1, b2, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18 : bv 64\n  H0 : length bytes = 720%nat\n  H1 : bv_unsigned sp `mod` 16 = 0\n  H2 : 0 ≤ bv_unsigned sp\n  H3 : bv_unsigned sp + 1896 < 0 + 1073741824\n  b19 : bv 64\n  H4 : Z.land (bv_unsigned b19) 131072 = 0\n  b20 : bv 64\n  H5 : Z.land (bv_unsigned b20) 131072 = 0\n  b21 : bv 64\n  H6 : Z.land (bv_unsigned b21) 131072 = 0\n  H7 : -1 < bv_unsigned b21 < bv_modulus 64\n  H8 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64\n  H9 : -1 < bv_unsigned b20 < bv_modulus 64\n  H10 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64\n  H11 : -1 < bv_unsigned b19 < bv_modulus 64\n  H12 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b18 < bv_modulus 64\n  H14 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b17 < bv_modulus 64\n  H16 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b16 < bv_modulus 64\n  H18 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b15 < bv_modulus 64\n  H20 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b14 < bv_modulus 64\n  H22 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b13 < bv_modulus 64\n  H24 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b12 < bv_modulus 64\n  H26 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b11 < bv_modulus 64\n  H28 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b10 < bv_modulus 64\n  H30 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b9 < bv_modulus 64\n  H32 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b2 < bv_modulus 64\n  H34 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b1 < bv_modulus 64\n  H36 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64\n  H37 : -1 < bv_unsigned b0 < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64\n  H39 : -1 < bv_unsigned b < bv_modulus 64\n  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64\n  H41 : -1 < bv_unsigned oldsize < bv_modulus 64\n  H42 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed oldsize < bv_half_modulus 64\n  H43 : -1 < bv_unsigned olddata < bv_modulus 64\n  H44 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed olddata < bv_half_modulus 64\n  H45 : -1 < bv_unsigned old5 < bv_modulus 64\n  H46 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed old5 < bv_half_modulus 64\n  H47 : -1 < bv_unsigned oldra < bv_modulus 64\n  H48 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed oldra < bv_half_modulus 64\n  H49 : -1 < bv_unsigned sp < bv_modulus 64\n  H50 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  HsliceAddress : bv_unsigned sp + 312 + 688%nat = bv_unsigned (sp + 1000)\n  HsliceBounds : (688 + 32 <= length bytes)%nat\n  HsliceSize : bv_unsigned 32 = 32%nat\n  HsliceLength : bv_unsigned 32 = length (take 32 (drop 688 bytes))\n  b3, b4 : bv 64\n  H51 : -1 < bv_unsigned b4 < bv_modulus 64\n  H52 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b4 < bv_half_modulus 64\n  H53 : -1 < bv_unsigned b3 < bv_modulus 64\n  H54 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b3 < bv_half_modulus 64\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : \"x3\" ↦ᵣ RVal_Bits b\n  _ : \"x4\" ↦ᵣ RVal_Bits b0\n  _ : P\n  _ : True\n  \"Hrestore\" : bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes) -∗\n               (bv_unsigned sp + 312) ↦ₘ∗ bytes\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64);\n         (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64);\n         (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64);\n         (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64);\n         (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits b1));\n         (KindReg \"x9\", ExactShape (RVal_Bits b2));\n         (KindReg \"x18\", ExactShape (RVal_Bits b9));\n         (KindReg \"x19\", ExactShape (RVal_Bits b10));\n         (KindReg \"x20\", ExactShape (RVal_Bits b11));\n         (KindReg \"x21\", ExactShape (RVal_Bits b12));\n         (KindReg \"x22\", ExactShape (RVal_Bits b13));\n         (KindReg \"x23\", ExactShape (RVal_Bits b14));\n         (KindReg \"x24\", ExactShape (RVal_Bits b15));\n         (KindReg \"x25\", ExactShape (RVal_Bits b16));\n         (KindReg \"x26\", ExactShape (RVal_Bits b17));\n         (KindReg \"x27\", ExactShape (RVal_Bits b18))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b3\n  _ : \"x11\" ↦ᵣ RVal_Bits b4\n  _ : \"x2\" ↦ᵣ RVal_Bits sp\n  _ : bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes)\n  _ : spec_trace tail",
+      "conclusion": "POST"
+    }
+  ],
+  "leader": "0x1572c",
+  "exit": "0x1573c",
+  "entry_state": "State_1572c",
+  "entry_binders": "`{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "entry_provenance": "exactSourceRootEntry",
+  "callee": "writeOutputContract",
+  "callee_address": "0x10190",
+  "post_state": {
+    "entry": "0x1573c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "olddata",
+        "bv 64"
+      ],
+      [
+        "oldsize",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "b",
+        "bv 64"
+      ],
+      [
+        "b0",
+        "bv 64"
+      ],
+      [
+        "b1",
+        "bv 64"
+      ],
+      [
+        "b2",
+        "bv 64"
+      ],
+      [
+        "b9",
+        "bv 64"
+      ],
+      [
+        "b10",
+        "bv 64"
+      ],
+      [
+        "b11",
+        "bv 64"
+      ],
+      [
+        "b12",
+        "bv 64"
+      ],
+      [
+        "b13",
+        "bv 64"
+      ],
+      [
+        "b14",
+        "bv 64"
+      ],
+      [
+        "b15",
+        "bv 64"
+      ],
+      [
+        "b16",
+        "bv 64"
+      ],
+      [
+        "b17",
+        "bv 64"
+      ],
+      [
+        "b18",
+        "bv 64"
+      ],
+      [
+        "H0",
+        "length bytes = 720%nat"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H2",
+        "0 ≤ bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp + 1896 < 0 + 1073741824"
+      ],
+      [
+        "b3",
+        "bv 64"
+      ],
+      [
+        "b4",
+        "bv 64"
+      ]
+    ],
+    "spatial": [
+      "\"x3\" ↦ᵣ RVal_Bits b",
+      "\"x4\" ↦ᵣ RVal_Bits b0",
+      "P",
+      "True",
+      "bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes) -∗ (bv_unsigned sp + 312) ↦ₘ∗ bytes",
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+      "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b1)); (KindReg \"x9\", ExactShape (RVal_Bits b2)); (KindReg \"x18\", ExactShape (RVal_Bits b9)); (KindReg \"x19\", ExactShape (RVal_Bits b10)); (KindReg \"x20\", ExactShape (RVal_Bits b11)); (KindReg \"x21\", ExactShape (RVal_Bits b12)); (KindReg \"x22\", ExactShape (RVal_Bits b13)); (KindReg \"x23\", ExactShape (RVal_Bits b14)); (KindReg \"x24\", ExactShape (RVal_Bits b15)); (KindReg \"x25\", ExactShape (RVal_Bits b16)); (KindReg \"x26\", ExactShape (RVal_Bits b17)); (KindReg \"x27\", ExactShape (RVal_Bits b18))]",
+      "\"x10\" ↦ᵣ RVal_Bits b3",
+      "\"x11\" ↦ᵣ RVal_Bits b4",
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes)",
+      "spec_trace tail"
+    ],
+    "imports": [
+      "ZesuSsz.Export.Snapshots"
+    ],
+    "arguments": "sp oldra old5 olddata oldsize bytes tail P",
+    "outcome": "reached",
+    "source_resource": "native exact writeOutputContract return",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "sp": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "olddata": "Type",
+      "oldsize": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "b": "Type",
+      "b0": "Type",
+      "b1": "Type",
+      "b2": "Type",
+      "b9": "Type",
+      "b10": "Type",
+      "b11": "Type",
+      "b12": "Type",
+      "b13": "Type",
+      "b14": "Type",
+      "b15": "Type",
+      "b16": "Type",
+      "b17": "Type",
+      "b18": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "b3": "Type",
+      "b4": "Type"
+    }
+  },
+  "capture_method": "Rocq Show after complete native block with exact callee contract",
+  "source_capture": "/tmp/child-write-output-closed-mcp/capture_root_1573c.txt",
+  "entry": "0x1573c",
+  "binders": "`{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "islaG0",
+      "islaG Sigma"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "oldra",
+      "bv 64"
+    ],
+    [
+      "old5",
+      "bv 64"
+    ],
+    [
+      "olddata",
+      "bv 64"
+    ],
+    [
+      "oldsize",
+      "bv 64"
+    ],
+    [
+      "bytes",
+      "list (bv 8)"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "b",
+      "bv 64"
+    ],
+    [
+      "b0",
+      "bv 64"
+    ],
+    [
+      "b1",
+      "bv 64"
+    ],
+    [
+      "b2",
+      "bv 64"
+    ],
+    [
+      "b9",
+      "bv 64"
+    ],
+    [
+      "b10",
+      "bv 64"
+    ],
+    [
+      "b11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "H0",
+      "length bytes = 720%nat"
+    ],
+    [
+      "H1",
+      "bv_unsigned sp `mod` 16 = 0"
+    ],
+    [
+      "H2",
+      "0 ≤ bv_unsigned sp"
+    ],
+    [
+      "H3",
+      "bv_unsigned sp + 1896 < 0 + 1073741824"
+    ],
+    [
+      "b3",
+      "bv 64"
+    ],
+    [
+      "b4",
+      "bv 64"
+    ]
+  ],
+  "spatial": [
+    "\"x3\" ↦ᵣ RVal_Bits b",
+    "\"x4\" ↦ᵣ RVal_Bits b0",
+    "P",
+    "True",
+    "bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes) -∗ (bv_unsigned sp + 312) ↦ₘ∗ bytes",
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b1)); (KindReg \"x9\", ExactShape (RVal_Bits b2)); (KindReg \"x18\", ExactShape (RVal_Bits b9)); (KindReg \"x19\", ExactShape (RVal_Bits b10)); (KindReg \"x20\", ExactShape (RVal_Bits b11)); (KindReg \"x21\", ExactShape (RVal_Bits b12)); (KindReg \"x22\", ExactShape (RVal_Bits b13)); (KindReg \"x23\", ExactShape (RVal_Bits b14)); (KindReg \"x24\", ExactShape (RVal_Bits b15)); (KindReg \"x25\", ExactShape (RVal_Bits b16)); (KindReg \"x26\", ExactShape (RVal_Bits b17)); (KindReg \"x27\", ExactShape (RVal_Bits b18))]",
+    "\"x10\" ↦ᵣ RVal_Bits b3",
+    "\"x11\" ↦ᵣ RVal_Bits b4",
+    "\"x2\" ↦ᵣ RVal_Bits sp",
+    "bv_unsigned (sp + 1000) ↦ₘ∗ take 32 (drop 688 bytes)",
+    "spec_trace tail"
+  ],
+  "imports": [
+    "ZesuSsz.Export.Snapshots"
+  ],
+  "arguments": "sp oldra old5 olddata oldsize bytes tail P",
+  "outcome": "reached",
+  "source_resource": "native exact writeOutputContract return",
+  "state_entry": "0x1573c"
+}
