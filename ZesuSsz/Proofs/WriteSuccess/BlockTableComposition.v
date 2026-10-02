@@ -23,6 +23,8 @@ Require Import ZesuSsz.Generated.WriteSuccess.States.State_14e58.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_14e68.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_14e78.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_14e88.
+Require Import ZesuSsz.Generated.WriteSuccess.States.HeaderSuccessor_14e88.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteOutputContract.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_15118.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_15154.
 Require Import ZesuSsz.Generated.WriteSuccess.States.State_153a8.
@@ -65,12 +67,12 @@ Context (b1565c_sp : bv 64) (b1565c_index : bv 64) (b1565c_total : bv 64) (b1565
 Local Notation tableEntries := (writeSuccessBlockTable sp bytes tail P root oldData oldSize b15118_tag b15118_P b15118_sp b15154_sp b15154_tag b15154_old_data b15154_P b153a8_pointer b153a8_count b153a8_P b153a8_sp b153b4_sp b153b4_index b153b4_old11 b153b4_P b15558_pointer b15558_count b15558_value22 b15558_P b15558_sp b15614_pointer b15614_count b15614_P b15614_sp b1565c_sp b1565c_index b1565c_total b1565c_P).
 
 (* Composition treats each boundary predicate as an opaque interface. *)
-Local Opaque State_14e28 State_14e38 State_14e48 State_14e58 State_14e68 State_14e78 State_14e88 State_15118 State_15154 State_153a8 State_153b4 State_15558 State_15614 State_1565c State_1572c State_1573c Successor_15118_1511c Successor_15118_1513c Successor_15154_1515c Successor_15154_15194 Successor_153a8_15228 Successor_153a8_153b4 Successor_153b4_151d4 Successor_15558_153d4 Successor_15558_15564 Successor_15614_15590 Successor_15614_15620 Successor_1565c_14f00.
+Local Opaque HeaderSuccessor_14e88 State_14e28 State_14e38 State_14e48 State_14e58 State_14e68 State_14e78 State_14e88 State_15118 State_15154 State_153a8 State_153b4 State_15558 State_15614 State_1565c State_1572c State_1573c Successor_15118_1511c Successor_15118_1513c Successor_15154_1515c Successor_15154_15194 Successor_153a8_15228 Successor_153a8_153b4 Successor_153b4_151d4 Successor_15558_153d4 Successor_15558_15564 Successor_15614_15590 Successor_15614_15620 Successor_1565c_14f00.
 
 Local Lemma table_entry_14e28 :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e38
     (State_14e38 sp bytes tail P) -∗
   instr_body 0x14e28
@@ -79,7 +81,7 @@ Proof. exact (block_14e28 sp bytes tail P). Qed.
 Local Lemma table_entry_14e38 :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e48
     (State_14e48 sp bytes tail P) -∗
   instr_body 0x14e38
@@ -88,7 +90,7 @@ Proof. exact (block_14e38 sp bytes tail P). Qed.
 Local Lemma table_entry_14e48 :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e58
     (State_14e58 sp bytes tail P) -∗
   instr_body 0x14e48
@@ -97,7 +99,7 @@ Proof. exact (block_14e48 sp bytes tail P). Qed.
 Local Lemma table_entry_14e58 :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e68
     (State_14e68 sp bytes tail P) -∗
   instr_body 0x14e58
@@ -106,7 +108,7 @@ Proof. exact (block_14e58 sp bytes tail P). Qed.
 Local Lemma table_entry_14e68 :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e78
     (State_14e78 sp bytes tail P) -∗
   instr_body 0x14e68
@@ -115,9 +117,9 @@ Proof. exact (block_14e68 sp bytes tail P). Qed.
 Local Lemma table_entry_14e78 :
   instr_lookup_resources IslaTraces.write_success_blocks.Index.lookup -∗
   IslaTraces.write_success_blocks.Index.spec_instr_resources -∗
-  □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   instr_pre 0x14e88
-    (State_14e88 sp bytes tail P) -∗
+    (HeaderSuccessor_14e88 sp bytes tail P) -∗
   instr_body 0x14e78
     (State_14e78 sp bytes tail P).
 Proof. exact (block_14e78 sp bytes tail P). Qed.
@@ -198,8 +200,9 @@ Local Lemma table_entry_1565c :
 Proof. exact (block_1565c b1565c_sp b1565c_index b1565c_total b1565c_P). Qed.
 Lemma write_success_block_table_cases :
   instr_lookup_resources Index.lookup -∗ Index.spec_instr_resources -∗
+  □ instr_pre 0x10190 writeOutputContract -∗
   □ instr_pre 0x10190 zesuWriteOutputCallSpec -∗
-  □ instr_pre 0x14e88 (State_14e88 sp bytes tail P) -∗
+  □ instr_pre 0x14e88 (HeaderSuccessor_14e88 sp bytes tail P) -∗
   □ instr_pre 0x1573c (State_1573c P sp root oldData oldSize tail) -∗
   □ instr_pre 0x1513c (Successor_15118_1513c b15118_tag b15118_P b15118_sp) -∗
   □ instr_pre 0x1511c (Successor_15118_1511c b15118_tag b15118_P b15118_sp) -∗
@@ -217,7 +220,7 @@ Lemma write_success_block_table_cases :
   ∀ address state, ⌜(address, state) ∈ tableEntries⌝ -∗
     instr_body address state.
 Proof.
-  iIntros "#Hcode #Hspec #Houtput #Hedge0 #Hedge1 #Hedge2 #Hedge3 #Hedge4 #Hedge5 #Hedge6 #Hedge7 #Hedge8 #Hedge9 #Hedge10 #Hedge11 #Hedge12 #Hedge13 #Htable".
+  iIntros "#Hcode #Hspec #Houtput #Hgenericoutput #Hedge0 #Hedge1 #Hedge2 #Hedge3 #Hedge4 #Hedge5 #Hedge6 #Hedge7 #Hedge8 #Hedge9 #Hedge10 #Hedge11 #Hedge12 #Hedge13 #Htable".
   iEval (rewrite /block_table_pre /tableEntries /=) in "Htable".
   iDestruct "Htable" as
     "(#H14e28 & #H14e38 & #H14e48 & #H14e58 & #H14e68 & #H14e78 & #H1572c & #H15118 & #H15154 & #H153a8 & #H153b4 & #H15558 & #H15614 & #H1565c & _)".
@@ -229,7 +232,7 @@ Proof.
   iSplitL; first (iApply (table_entry_14e58 with "Hcode Hspec Houtput H14e68")).
   iSplitL; first (iApply (table_entry_14e68 with "Hcode Hspec Houtput H14e78")).
   iSplitL; first (iApply (table_entry_14e78 with "Hcode Hspec Houtput Hedge0")).
-  iSplitL; first (iApply (table_entry_1572c with "Hcode Hspec Houtput Hedge1")).
+  iSplitL; first (iApply (table_entry_1572c with "Hcode Hspec Hgenericoutput Hedge1")).
   iSplitL; first (iApply (table_entry_15118 with "Hcode Hspec Hedge2 Hedge3")).
   iSplitL; first (iApply (table_entry_15154 with "Hcode Hspec Hedge4 Hedge5")).
   iSplitL; first (iApply (table_entry_153a8 with "Hcode Hspec Hedge6 Hedge7")).
