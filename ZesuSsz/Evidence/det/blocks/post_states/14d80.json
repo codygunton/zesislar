@@ -1,0 +1,698 @@
+{
+  "state_entry": "0x14e14",
+  "entry": "0x14e14",
+  "outcome": "reached",
+  "binders": "`{!islaG Sigma} `{!threadG} (sp decoded ra s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 : bv 64) (object : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "islaG0",
+      "islaG Sigma"
+    ],
+    [
+      "H",
+      "threadG"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "decoded",
+      "bv 64"
+    ],
+    [
+      "ra",
+      "bv 64"
+    ],
+    [
+      "s0",
+      "bv 64"
+    ],
+    [
+      "s1",
+      "bv 64"
+    ],
+    [
+      "s2",
+      "bv 64"
+    ],
+    [
+      "s3",
+      "bv 64"
+    ],
+    [
+      "s4",
+      "bv 64"
+    ],
+    [
+      "s5",
+      "bv 64"
+    ],
+    [
+      "s6",
+      "bv 64"
+    ],
+    [
+      "s7",
+      "bv 64"
+    ],
+    [
+      "s8",
+      "bv 64"
+    ],
+    [
+      "s9",
+      "bv 64"
+    ],
+    [
+      "s10",
+      "bv 64"
+    ],
+    [
+      "s11",
+      "bv 64"
+    ],
+    [
+      "object",
+      "list (bv 8)"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "Halign",
+      "bv_unsigned sp `mod` 16 = 0"
+    ],
+    [
+      "H0",
+      "length object = 848%nat"
+    ],
+    [
+      "H1",
+      "bv_unsigned decoded `mod` 8 = 0"
+    ],
+    [
+      "H2",
+      "0 ≤ bv_unsigned decoded"
+    ],
+    [
+      "H3",
+      "bv_unsigned decoded + 848 < 0 + 1073741824"
+    ],
+    [
+      "H4",
+      "bv_unsigned (sp - 2000) `mod` 8 = 0"
+    ],
+    [
+      "H5",
+      "0 ≤ bv_unsigned (sp - 2000)"
+    ],
+    [
+      "H6",
+      "bv_unsigned (sp - 2000) + 312 < 0 + 1073741824"
+    ],
+    [
+      "borrowed_words",
+      "list (bv 64)"
+    ],
+    [
+      "Hborrowed_length",
+      "length borrowed_words = 16%nat"
+    ],
+    [
+      "b4",
+      "bv 64"
+    ],
+    [
+      "H7",
+      "Z.land (bv_unsigned b4) 131072 = 0"
+    ],
+    [
+      "b5",
+      "bv 64"
+    ],
+    [
+      "H8",
+      "Z.land (bv_unsigned b5) 131072 = 0"
+    ],
+    [
+      "b6",
+      "bv 64"
+    ],
+    [
+      "H9",
+      "Z.land (bv_unsigned b6) 131072 = 0"
+    ],
+    [
+      "b7",
+      "bv 64"
+    ],
+    [
+      "H10",
+      "Z.land (bv_unsigned b7) 131072 = 0"
+    ],
+    [
+      "b11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "b19",
+      "bv 64"
+    ],
+    [
+      "b20",
+      "bv 64"
+    ],
+    [
+      "b21",
+      "bv 64"
+    ],
+    [
+      "b22",
+      "bv 64"
+    ],
+    [
+      "b23",
+      "bv 64"
+    ],
+    [
+      "H11",
+      "-1 < bv_unsigned b23 < bv_modulus 64"
+    ],
+    [
+      "H12",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b23 < bv_half_modulus 64"
+    ],
+    [
+      "H13",
+      "-1 < bv_unsigned b22 < bv_modulus 64"
+    ],
+    [
+      "H14",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b22 < bv_half_modulus 64"
+    ],
+    [
+      "H15",
+      "-1 < bv_unsigned b21 < bv_modulus 64"
+    ],
+    [
+      "H16",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64"
+    ],
+    [
+      "H17",
+      "-1 < bv_unsigned b20 < bv_modulus 64"
+    ],
+    [
+      "H18",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64"
+    ],
+    [
+      "H19",
+      "-1 < bv_unsigned b19 < bv_modulus 64"
+    ],
+    [
+      "H20",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64"
+    ],
+    [
+      "H21",
+      "-1 < bv_unsigned b18 < bv_modulus 64"
+    ],
+    [
+      "H22",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64"
+    ],
+    [
+      "H23",
+      "-1 < bv_unsigned b17 < bv_modulus 64"
+    ],
+    [
+      "H24",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64"
+    ],
+    [
+      "H25",
+      "-1 < bv_unsigned b16 < bv_modulus 64"
+    ],
+    [
+      "H26",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64"
+    ],
+    [
+      "H27",
+      "-1 < bv_unsigned b15 < bv_modulus 64"
+    ],
+    [
+      "H28",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64"
+    ],
+    [
+      "H29",
+      "-1 < bv_unsigned b14 < bv_modulus 64"
+    ],
+    [
+      "H30",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64"
+    ],
+    [
+      "H31",
+      "-1 < bv_unsigned b13 < bv_modulus 64"
+    ],
+    [
+      "H32",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64"
+    ],
+    [
+      "H33",
+      "-1 < bv_unsigned b12 < bv_modulus 64"
+    ],
+    [
+      "H34",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64"
+    ],
+    [
+      "H35",
+      "-1 < bv_unsigned b11 < bv_modulus 64"
+    ],
+    [
+      "H36",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64"
+    ],
+    [
+      "H37",
+      "-1 < bv_unsigned b7 < bv_modulus 64"
+    ],
+    [
+      "H38",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b7 < bv_half_modulus 64"
+    ],
+    [
+      "H39",
+      "-1 < bv_unsigned b6 < bv_modulus 64"
+    ],
+    [
+      "H40",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b6 < bv_half_modulus 64"
+    ],
+    [
+      "H41",
+      "-1 < bv_unsigned b5 < bv_modulus 64"
+    ],
+    [
+      "H42",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b5 < bv_half_modulus 64"
+    ],
+    [
+      "H43",
+      "-1 < bv_unsigned b4 < bv_modulus 64"
+    ],
+    [
+      "H44",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b4 < bv_half_modulus 64"
+    ],
+    [
+      "H45",
+      "-1 < bv_unsigned s11 < bv_modulus 64"
+    ],
+    [
+      "H46",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s11 < bv_half_modulus 64"
+    ],
+    [
+      "H47",
+      "-1 < bv_unsigned s10 < bv_modulus 64"
+    ],
+    [
+      "H48",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s10 < bv_half_modulus 64"
+    ],
+    [
+      "H49",
+      "-1 < bv_unsigned s9 < bv_modulus 64"
+    ],
+    [
+      "H50",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s9 < bv_half_modulus 64"
+    ],
+    [
+      "H51",
+      "-1 < bv_unsigned s8 < bv_modulus 64"
+    ],
+    [
+      "H52",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s8 < bv_half_modulus 64"
+    ],
+    [
+      "H53",
+      "-1 < bv_unsigned s7 < bv_modulus 64"
+    ],
+    [
+      "H54",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s7 < bv_half_modulus 64"
+    ],
+    [
+      "H55",
+      "-1 < bv_unsigned s6 < bv_modulus 64"
+    ],
+    [
+      "H56",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s6 < bv_half_modulus 64"
+    ],
+    [
+      "H57",
+      "-1 < bv_unsigned s5 < bv_modulus 64"
+    ],
+    [
+      "H58",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s5 < bv_half_modulus 64"
+    ],
+    [
+      "H59",
+      "-1 < bv_unsigned s4 < bv_modulus 64"
+    ],
+    [
+      "H60",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s4 < bv_half_modulus 64"
+    ],
+    [
+      "H61",
+      "-1 < bv_unsigned s3 < bv_modulus 64"
+    ],
+    [
+      "H62",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s3 < bv_half_modulus 64"
+    ],
+    [
+      "H63",
+      "-1 < bv_unsigned s2 < bv_modulus 64"
+    ],
+    [
+      "H64",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s2 < bv_half_modulus 64"
+    ],
+    [
+      "H65",
+      "-1 < bv_unsigned s1 < bv_modulus 64"
+    ],
+    [
+      "H66",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s1 < bv_half_modulus 64"
+    ],
+    [
+      "H67",
+      "-1 < bv_unsigned s0 < bv_modulus 64"
+    ],
+    [
+      "H68",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s0 < bv_half_modulus 64"
+    ],
+    [
+      "H69",
+      "-1 < bv_unsigned ra < bv_modulus 64"
+    ],
+    [
+      "H70",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed ra < bv_half_modulus 64"
+    ],
+    [
+      "H71",
+      "-1 < bv_unsigned decoded < bv_modulus 64"
+    ],
+    [
+      "H72",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed decoded < bv_half_modulus 64"
+    ],
+    [
+      "H73",
+      "-1 < bv_unsigned sp < bv_modulus 64"
+    ],
+    [
+      "H74",
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64"
+    ],
+    [
+      "Hpacked",
+      "borrowed_words = IslarisMemory.u64s_of_bytes 16 (take (16 * 8) (drop 720 object))"
+    ]
+  ],
+  "spatial": [
+    "(bv_unsigned (sp - 2000) + 312) ↦ₘ∗ take 720 object",
+    "(bv_unsigned (sp - 2000) + 1032) ↦ₘ? 864",
+    "(bv_unsigned sp - 104) ↦ₘ s11",
+    "(bv_unsigned sp - 96) ↦ₘ s10",
+    "(bv_unsigned sp - 88) ↦ₘ s9",
+    "(bv_unsigned sp - 80) ↦ₘ s8",
+    "(bv_unsigned sp - 72) ↦ₘ s7",
+    "(bv_unsigned sp - 64) ↦ₘ s6",
+    "(bv_unsigned sp - 56) ↦ₘ s5",
+    "(bv_unsigned sp - 48) ↦ₘ s4",
+    "(bv_unsigned sp - 40) ↦ₘ s3",
+    "(bv_unsigned sp - 32) ↦ₘ s2",
+    "(bv_unsigned sp - 24) ↦ₘ s1",
+    "(bv_unsigned sp - 16) ↦ₘ s0",
+    "(bv_unsigned sp - 8) ↦ₘ ra",
+    "P",
+    "(bv_unsigned decoded + 720) ↦ₘ∗ borrowed_words -∗ bv_unsigned decoded ↦ₘ∗ object",
+    "(bv_unsigned (sp - 2000) + 24) ↦ₘ default 0%bv (borrowed_words !! 0%nat)",
+    "(bv_unsigned (sp - 2000) + 16) ↦ₘ default 0%bv (borrowed_words !! 1%nat)",
+    "(bv_unsigned (sp - 2000) + 40) ↦ₘ default 0%bv (borrowed_words !! 2%nat)",
+    "(bv_unsigned (sp - 2000) + 32) ↦ₘ default 0%bv (borrowed_words !! 3%nat)",
+    "(bv_unsigned (sp - 2000) + 56) ↦ₘ default 0%bv (borrowed_words !! 4%nat)",
+    "(bv_unsigned (sp - 2000) + 48) ↦ₘ default 0%bv (borrowed_words !! 5%nat)",
+    "(bv_unsigned (sp - 2000) + 64) ↦ₘ default 0%bv (borrowed_words !! 6%nat)",
+    "(bv_unsigned (sp - 2000) + 72) ↦ₘ default 0%bv (borrowed_words !! 7%nat)",
+    "bv_unsigned (sp - 2000) ↦ₘ? 8",
+    "(bv_unsigned (sp - 2000) + 8) ↦ₘ default 0%bv (borrowed_words !! 8%nat)",
+    "(bv_unsigned (sp - 2000) + 80) ↦ₘ default 0%bv (borrowed_words !! 9%nat)",
+    "(bv_unsigned (sp - 2000) + 96) ↦ₘ default 0%bv (borrowed_words !! 14%nat)",
+    "(bv_unsigned decoded + 720) ↦ₘ∗ borrowed_words",
+    "(bv_unsigned (sp - 2000) + 88) ↦ₘ default 0%bv (borrowed_words !! 15%nat)",
+    "(bv_unsigned (sp - 2000) + 296) ↦ₘ default 0%bv (borrowed_words !! 10%nat)",
+    "(bv_unsigned (sp - 2000) + 304) ↦ₘ default 0%bv (borrowed_words !! 11%nat)",
+    "(bv_unsigned (sp - 2000) + 96 + 8) ↦ₘ? 176",
+    "(bv_unsigned (sp - 2000) + 280) ↦ₘ default 0%bv (borrowed_words !! 12%nat)",
+    "(bv_unsigned (sp - 2000) + 288) ↦ₘ default 0%bv (borrowed_words !! 13%nat)",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits decoded)); (KindReg \"x9\", ExactShape (RVal_Bits b11)); (KindReg \"x18\", ExactShape (RVal_Bits b12)); (KindReg \"x19\", ExactShape (RVal_Bits b13)); (KindReg \"x20\", ExactShape (RVal_Bits b14)); (KindReg \"x21\", ExactShape (RVal_Bits b15)); (KindReg \"x22\", ExactShape (RVal_Bits b16)); (KindReg \"x23\", ExactShape (RVal_Bits b17)); (KindReg \"x24\", ExactShape (RVal_Bits b18)); (KindReg \"x25\", ExactShape (RVal_Bits b19)); (KindReg \"x26\", ExactShape (RVal_Bits b20)); (KindReg \"x27\", ExactShape (RVal_Bits b21))]",
+    "\"x10\" ↦ᵣ RVal_Bits b22",
+    "\"x11\" ↦ᵣ RVal_Bits b23",
+    "\"x2\" ↦ᵣ RVal_Bits (sp - 2000)%bv",
+    "bv_unsigned (Z_to_bv 64 85504 + 12288 + 18446744073709550533) ↦ₘ∗ [90%bv; 83%bv; 83%bv; 90%bv; 1%bv; 1%bv]",
+    "spec_trace tail"
+  ],
+  "imports": [
+    "ZesuSsz.Export.Snapshots"
+  ],
+  "local_sorts": {
+    "Hpacked": "Prop",
+    "H74": "Prop",
+    "H73": "Prop",
+    "H72": "Prop",
+    "H71": "Prop",
+    "H70": "Prop",
+    "H69": "Prop",
+    "H68": "Prop",
+    "H67": "Prop",
+    "H66": "Prop",
+    "H65": "Prop",
+    "H64": "Prop",
+    "H63": "Prop",
+    "H62": "Prop",
+    "H61": "Prop",
+    "H60": "Prop",
+    "H59": "Prop",
+    "H58": "Prop",
+    "H57": "Prop",
+    "H56": "Prop",
+    "H55": "Prop",
+    "H54": "Prop",
+    "H53": "Prop",
+    "H52": "Prop",
+    "H51": "Prop",
+    "H50": "Prop",
+    "H49": "Prop",
+    "H48": "Prop",
+    "H47": "Prop",
+    "H46": "Prop",
+    "H45": "Prop",
+    "H44": "Prop",
+    "H43": "Prop",
+    "H42": "Prop",
+    "H41": "Prop",
+    "H40": "Prop",
+    "H39": "Prop",
+    "H38": "Prop",
+    "H37": "Prop",
+    "H36": "Prop",
+    "H35": "Prop",
+    "H34": "Prop",
+    "H33": "Prop",
+    "H32": "Prop",
+    "H31": "Prop",
+    "H30": "Prop",
+    "H29": "Prop",
+    "H28": "Prop",
+    "H27": "Prop",
+    "H26": "Prop",
+    "H25": "Prop",
+    "H24": "Prop",
+    "H23": "Prop",
+    "H22": "Prop",
+    "H21": "Prop",
+    "H20": "Prop",
+    "H19": "Prop",
+    "H18": "Prop",
+    "H17": "Prop",
+    "H16": "Prop",
+    "H15": "Prop",
+    "H14": "Prop",
+    "H13": "Prop",
+    "H12": "Prop",
+    "H11": "Prop",
+    "b23": "Type",
+    "b22": "Type",
+    "b21": "Type",
+    "b20": "Type",
+    "b19": "Type",
+    "b18": "Type",
+    "b17": "Type",
+    "b16": "Type",
+    "b15": "Type",
+    "b14": "Type",
+    "b13": "Type",
+    "b12": "Type",
+    "b11": "Type",
+    "H10": "Prop",
+    "b7": "Type",
+    "H9": "Prop",
+    "b6": "Type",
+    "H8": "Prop",
+    "b5": "Type",
+    "H7": "Prop",
+    "b4": "Type",
+    "Hborrowed_length": "Prop",
+    "borrowed_words": "Type",
+    "H6": "Prop",
+    "H5": "Prop",
+    "H4": "Prop",
+    "H3": "Prop",
+    "H2": "Prop",
+    "H1": "Prop",
+    "H0": "Prop",
+    "Halign": "Prop",
+    "POST": "Type",
+    "P": "Type",
+    "tail": "Type",
+    "object": "Type",
+    "s11": "Type",
+    "s10": "Type",
+    "s9": "Type",
+    "s8": "Type",
+    "s7": "Type",
+    "s6": "Type",
+    "s5": "Type",
+    "s4": "Type",
+    "s3": "Type",
+    "s2": "Type",
+    "s1": "Type",
+    "s0": "Type",
+    "ra": "Type",
+    "decoded": "Type",
+    "sp": "Type",
+    "H": "Type",
+    "islaG0": "Type",
+    "Sigma": "Type"
+  },
+  "memory_word_widths": {
+    "(bv_unsigned (sp - 2000) + 288)": 64,
+    "(bv_unsigned (sp - 2000) + 280)": 64,
+    "(bv_unsigned (sp - 2000) + 304)": 64,
+    "(bv_unsigned (sp - 2000) + 296)": 64,
+    "(bv_unsigned (sp - 2000) + 88)": 64,
+    "(bv_unsigned (sp - 2000) + 96)": 64,
+    "(bv_unsigned (sp - 2000) + 80)": 64,
+    "(bv_unsigned (sp - 2000) + 8)": 64,
+    "(bv_unsigned (sp - 2000) + 72)": 64,
+    "(bv_unsigned (sp - 2000) + 64)": 64,
+    "(bv_unsigned (sp - 2000) + 48)": 64,
+    "(bv_unsigned (sp - 2000) + 56)": 64,
+    "(bv_unsigned (sp - 2000) + 32)": 64,
+    "(bv_unsigned (sp - 2000) + 40)": 64,
+    "(bv_unsigned (sp - 2000) + 16)": 64,
+    "(bv_unsigned (sp - 2000) + 24)": 64,
+    "(bv_unsigned sp - 8)": 64,
+    "(bv_unsigned sp - 16)": 64,
+    "(bv_unsigned sp - 24)": 64,
+    "(bv_unsigned sp - 32)": 64,
+    "(bv_unsigned sp - 40)": 64,
+    "(bv_unsigned sp - 48)": 64,
+    "(bv_unsigned sp - 56)": 64,
+    "(bv_unsigned sp - 64)": 64,
+    "(bv_unsigned sp - 72)": 64,
+    "(bv_unsigned sp - 80)": 64,
+    "(bv_unsigned sp - 88)": 64,
+    "(bv_unsigned sp - 96)": 64,
+    "(bv_unsigned sp - 104)": 64,
+    "(bv_unsigned (Z_to_bv 64 85504 + 12288 + 18446744073709550533))": 8,
+    "(bv_unsigned decoded + 720)": 64,
+    "(bv_unsigned (sp - 2000) + 312)": 8
+  },
+  "leader": "0x14d80",
+  "exit": "0x14e14",
+  "entry_state": "exactNativeCopyPost",
+  "entry_provenance": "WriteSuccessExactNativeCopy.exactNativeCopyPost with the original 848-byte object, the complete copied prefix, scratch ownership, saved registers, exact tag trace, and original-sp alignment.",
+  "callee": "writeOutputContract",
+  "callee_address": "0x10190",
+  "post_state": "State_14e14",
+  "capture_method": "rocq_check after the complete native block and exact output call; packing equality extracted after execution",
+  "source_capture": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactNativeCopy",
+  "raw_goals": "goal 8 is:\n  \n  Sigma : gFunctors\n  islaG0 : islaG Sigma\n  H : threadG\n  sp, decoded, ra, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11 : bv 64\n  object : list (bv 8)\n  tail : spec\n  P, POST : iProp Sigma\n  Halign : bv_unsigned sp `mod` 16 = 0\n  H0 : length object = 848%nat\n  H1 : bv_unsigned decoded `mod` 8 = 0\n  H2 : 0 ≤ bv_unsigned decoded\n  H3 : bv_unsigned decoded + 848 < 0 + 1073741824\n  H4 : bv_unsigned (sp - 2000) `mod` 8 = 0\n  H5 : 0 ≤ bv_unsigned (sp - 2000)\n  H6 : bv_unsigned (sp - 2000) + 312 < 0 + 1073741824\n  borrowed_words : list (bv 64)\n  Hborrowed_length : length borrowed_words = 16%nat\n  b4 : bv 64\n  H7 : Z.land (bv_unsigned b4) 131072 = 0\n  b5 : bv 64\n  H8 : Z.land (bv_unsigned b5) 131072 = 0\n  b6 : bv 64\n  H9 : Z.land (bv_unsigned b6) 131072 = 0\n  b7 : bv 64\n  H10 : Z.land (bv_unsigned b7) 131072 = 0\n  b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 : bv 64\n  H11 : -1 < bv_unsigned b23 < bv_modulus 64\n  H12 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b23 < bv_half_modulus 64\n  H13 : -1 < bv_unsigned b22 < bv_modulus 64\n  H14 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b22 < bv_half_modulus 64\n  H15 : -1 < bv_unsigned b21 < bv_modulus 64\n  H16 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b21 < bv_half_modulus 64\n  H17 : -1 < bv_unsigned b20 < bv_modulus 64\n  H18 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b20 < bv_half_modulus 64\n  H19 : -1 < bv_unsigned b19 < bv_modulus 64\n  H20 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b19 < bv_half_modulus 64\n  H21 : -1 < bv_unsigned b18 < bv_modulus 64\n  H22 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64\n  H23 : -1 < bv_unsigned b17 < bv_modulus 64\n  H24 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64\n  H25 : -1 < bv_unsigned b16 < bv_modulus 64\n  H26 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64\n  H27 : -1 < bv_unsigned b15 < bv_modulus 64\n  H28 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64\n  H29 : -1 < bv_unsigned b14 < bv_modulus 64\n  H30 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64\n  H31 : -1 < bv_unsigned b13 < bv_modulus 64\n  H32 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64\n  H33 : -1 < bv_unsigned b12 < bv_modulus 64\n  H34 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64\n  H35 : -1 < bv_unsigned b11 < bv_modulus 64\n  H36 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64\n  H37 : -1 < bv_unsigned b7 < bv_modulus 64\n  H38 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b7 < bv_half_modulus 64\n  H39 : -1 < bv_unsigned b6 < bv_modulus 64\n  H40 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b6 < bv_half_modulus 64\n  H41 : -1 < bv_unsigned b5 < bv_modulus 64\n  H42 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b5 < bv_half_modulus 64\n  H43 : -1 < bv_unsigned b4 < bv_modulus 64\n  H44 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b4 < bv_half_modulus 64\n  H45 : -1 < bv_unsigned s11 < bv_modulus 64\n  H46 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed s11 < bv_half_modulus 64\n  H47 : -1 < bv_unsigned s10 < bv_modulus 64\n  H48 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed s10 < bv_half_modulus 64\n  H49 : -1 < bv_unsigned s9 < bv_modulus 64\n  H50 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s9 < bv_half_modulus 64\n  H51 : -1 < bv_unsigned s8 < bv_modulus 64\n  H52 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s8 < bv_half_modulus 64\n  H53 : -1 < bv_unsigned s7 < bv_modulus 64\n  H54 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s7 < bv_half_modulus 64\n  H55 : -1 < bv_unsigned s6 < bv_modulus 64\n  H56 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s6 < bv_half_modulus 64\n  H57 : -1 < bv_unsigned s5 < bv_modulus 64\n  H58 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s5 < bv_half_modulus 64\n  H59 : -1 < bv_unsigned s4 < bv_modulus 64\n  H60 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s4 < bv_half_modulus 64\n  H61 : -1 < bv_unsigned s3 < bv_modulus 64\n  H62 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s3 < bv_half_modulus 64\n  H63 : -1 < bv_unsigned s2 < bv_modulus 64\n  H64 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s2 < bv_half_modulus 64\n  H65 : -1 < bv_unsigned s1 < bv_modulus 64\n  H66 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s1 < bv_half_modulus 64\n  H67 : -1 < bv_unsigned s0 < bv_modulus 64\n  H68 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed s0 < bv_half_modulus 64\n  H69 : -1 < bv_unsigned ra < bv_modulus 64\n  H70 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed ra < bv_half_modulus 64\n  H71 : -1 < bv_unsigned decoded < bv_modulus 64\n  H72 : 64%N ≠ 0%N\n        → - bv_half_modulus 64 ≤ bv_signed decoded < bv_half_modulus 64\n  H73 : -1 < bv_unsigned sp < bv_modulus 64\n  H74 : 64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64\n  Hpacked : borrowed_words =\n            IslarisMemory.u64s_of_bytes 16 (take (16 * 8) (drop 720 object))\n  ============================\n  _ : instr_lookup_resources lookup\n  _ : spec_instr_resources\n  _ : instr_pre 65936 writeOutputContract\n  _ : mmio_range (604086456 + 8) 16\n  _ : mmio_range (604086456 + 8) 16\n  --------------------------------------□\n  _ : (bv_unsigned (sp - 2000) + 312) ↦ₘ∗ take 720 object\n  _ : (bv_unsigned (sp - 2000) + 1032) ↦ₘ? 864\n  _ : (bv_unsigned sp - 104) ↦ₘ s11\n  _ : (bv_unsigned sp - 96) ↦ₘ s10\n  _ : (bv_unsigned sp - 88) ↦ₘ s9\n  _ : (bv_unsigned sp - 80) ↦ₘ s8\n  _ : (bv_unsigned sp - 72) ↦ₘ s7\n  _ : (bv_unsigned sp - 64) ↦ₘ s6\n  _ : (bv_unsigned sp - 56) ↦ₘ s5\n  _ : (bv_unsigned sp - 48) ↦ₘ s4\n  _ : (bv_unsigned sp - 40) ↦ₘ s3\n  _ : (bv_unsigned sp - 32) ↦ₘ s2\n  _ : (bv_unsigned sp - 24) ↦ₘ s1\n  _ : (bv_unsigned sp - 16) ↦ₘ s0\n  _ : (bv_unsigned sp - 8) ↦ₘ ra\n  _ : P\n  _ : (bv_unsigned decoded + 720) ↦ₘ∗ borrowed_words -∗\n      bv_unsigned decoded ↦ₘ∗ object\n  _ : (bv_unsigned (sp - 2000) + 24)\n      ↦ₘ default 0%bv (borrowed_words !! 0%nat)\n  _ : (bv_unsigned (sp - 2000) + 16)\n      ↦ₘ default 0%bv (borrowed_words !! 1%nat)\n  _ : (bv_unsigned (sp - 2000) + 40)\n      ↦ₘ default 0%bv (borrowed_words !! 2%nat)\n  _ : (bv_unsigned (sp - 2000) + 32)\n      ↦ₘ default 0%bv (borrowed_words !! 3%nat)\n  _ : (bv_unsigned (sp - 2000) + 56)\n      ↦ₘ default 0%bv (borrowed_words !! 4%nat)\n  _ : (bv_unsigned (sp - 2000) + 48)\n      ↦ₘ default 0%bv (borrowed_words !! 5%nat)\n  _ : (bv_unsigned (sp - 2000) + 64)\n      ↦ₘ default 0%bv (borrowed_words !! 6%nat)\n  _ : (bv_unsigned (sp - 2000) + 72)\n      ↦ₘ default 0%bv (borrowed_words !! 7%nat)\n  _ : bv_unsigned (sp - 2000) ↦ₘ? 8\n  _ : (bv_unsigned (sp - 2000) + 8) ↦ₘ default 0%bv (borrowed_words !! 8%nat)\n  _ : (bv_unsigned (sp - 2000) + 80)\n      ↦ₘ default 0%bv (borrowed_words !! 9%nat)\n  _ : (bv_unsigned (sp - 2000) + 96)\n      ↦ₘ default 0%bv (borrowed_words !! 14%nat)\n  _ : (bv_unsigned decoded + 720) ↦ₘ∗ borrowed_words\n  _ : (bv_unsigned (sp - 2000) + 88)\n      ↦ₘ default 0%bv (borrowed_words !! 15%nat)\n  _ : (bv_unsigned (sp - 2000) + 296)\n      ↦ₘ default 0%bv (borrowed_words !! 10%nat)\n  _ : (bv_unsigned (sp - 2000) + 304)\n      ↦ₘ default 0%bv (borrowed_words !! 11%nat)\n  _ : (bv_unsigned (sp - 2000) + 96 + 8) ↦ₘ? 176\n  _ : (bv_unsigned (sp - 2000) + 280)\n      ↦ₘ default 0%bv (borrowed_words !! 12%nat)\n  _ : (bv_unsigned (sp - 2000) + 288)\n      ↦ₘ default 0%bv (borrowed_words !! 13%nat)\n  _ : reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]\n  _ : reg_col zesu_ram_sys_regs\n  _ : reg_col\n        [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64);\n         (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64);\n         (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64);\n         (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64);\n         (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64);\n         (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64);\n         (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]\n  _ : reg_col\n        [(KindReg \"x8\", ExactShape (RVal_Bits decoded));\n         (KindReg \"x9\", ExactShape (RVal_Bits b11));\n         (KindReg \"x18\", ExactShape (RVal_Bits b12));\n         (KindReg \"x19\", ExactShape (RVal_Bits b13));\n         (KindReg \"x20\", ExactShape (RVal_Bits b14));\n         (KindReg \"x21\", ExactShape (RVal_Bits b15));\n         (KindReg \"x22\", ExactShape (RVal_Bits b16));\n         (KindReg \"x23\", ExactShape (RVal_Bits b17));\n         (KindReg \"x24\", ExactShape (RVal_Bits b18));\n         (KindReg \"x25\", ExactShape (RVal_Bits b19));\n         (KindReg \"x26\", ExactShape (RVal_Bits b20));\n         (KindReg \"x27\", ExactShape (RVal_Bits b21))]\n  _ : \"x10\" ↦ᵣ RVal_Bits b22\n  _ : \"x11\" ↦ᵣ RVal_Bits b23\n  _ : \"x2\" ↦ᵣ RVal_Bits (sp - 2000)%bv\n  _ : bv_unsigned (Z_to_bv 64 85504 + 12288 + 18446744073709550533)\n      ↦ₘ∗ [90%bv; 83%bv; 83%bv; 90%bv; 1%bv; 1%bv]\n  _ : spec_trace tail\n  --------------------------------------∗\n  POST\n",
+  "slot_provenance": {
+    "frame_pointer": "(sp - 2000)%bv",
+    "stack_24": "default 0%bv (borrowed_words !! 0%nat)",
+    "stack_16": "default 0%bv (borrowed_words !! 1%nat)",
+    "word_width": 64,
+    "packing": "borrowed_words = IslarisMemory.u64s_of_bytes 16 (take (16 * 8) (drop 720 object))",
+    "length": 16
+  }
+}
