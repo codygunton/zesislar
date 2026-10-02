@@ -24,12 +24,14 @@
       "local_unfold": true
     },
     "0x15b9c": {
-      "name": "encoderBooleanEntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "encoderBooleanContract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderBooleanContract",
+      "local_unfold": true
     },
     "0x15cb0": {
-      "name": "encoderU256EntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "encoderU256Contract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderU256Contract",
+      "local_unfold": true
     },
     "0x15ce4": {
       "name": "encoderInt1645Contract",

@@ -1,5 +1,6 @@
 (* Matching event prefixes determine a call's trace tail. *)
 Require Import ZesuSsz.Automation.SpecPrefix.
+Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import isla.isla.
 From iris.proofmode Require Import environments.
 
@@ -43,7 +44,6 @@ Ltac zesu_matching_trace_tail candidate generated declared :=
           lazymatch declared with
           | scons_snap ?expected ?predicate ?tail =>
               let _ := constr:(eq_refl : event = expected) in
-              let _ := constr:(eq_refl : accept = predicate) in
               zesu_matching_trace_tail candidate rest tail
           | scons ?expected ?tail =>
               let _ := constr:(eq_refl : event = expected) in
@@ -69,7 +69,19 @@ Ltac zesu_trace_prefix_inclusion :=
         apply zesu_scons_snap_plain_mono; zesu_trace_prefix_inclusion
     | |- scons_snap _ _ _ ⊆ scons_snap _ _ _ =>
         apply zesu_scons_snap_mono;
-        [first [solve [intros; assumption] | idtac] | zesu_trace_prefix_inclusion]
+        [solve [intros; assumption |
+           let snapshot := fresh "snapshot" in
+           let Hsnapshot := fresh "Hsnapshot" in
+           intros snapshot Hsnapshot;
+           lazymatch goal with
+           | Hsnapshot : ?read = Some ?payload |- ?read = Some ?expected =>
+               let Hequal := fresh "Hpayload" in
+               assert (Hequal : payload = expected) by
+                 (autounfold with zesu_selectors;
+                  zesu_normalize_stack_array_indices; reflexivity);
+               rewrite <- Hequal; exact Hsnapshot
+           end]
+         | zesu_trace_prefix_inclusion]
     end].
 
 Ltac zesu_close_matching_trace_tail :=
