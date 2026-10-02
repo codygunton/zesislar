@@ -871,5 +871,8 @@
   "register_bit_widths": {
     "x12": 64
   },
-  "generator_dependency": "native-capture-metadata.patch: register_bit_widths restores the captured x12 width."
+  "generator_dependency": "native-capture-metadata.patch: register_bit_widths restores the captured x12 width.",
+  "capture_status": "intermediate-before-native-memcpy",
+  "complete_block_successor": false,
+  "required_successor": "0x14d80"
 }
