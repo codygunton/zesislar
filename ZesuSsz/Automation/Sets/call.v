@@ -6,3 +6,4 @@ Require Export ZesuSsz.Automation.Switches.ReturnBundle.
 Require Export ZesuSsz.Automation.Switches.CallReturn.
 Require Export ZesuSsz.Automation.Switches.InstrPreAddress.
 Require Export ZesuSsz.Automation.Switches.InteriorByteSlice.
+Require Export ZesuSsz.Automation.Switches.BoundedArithmetic.

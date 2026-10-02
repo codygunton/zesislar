@@ -1,6 +1,7 @@
 (* Select the raw load trace when its source is an owned initialized array.
    A failed guard backtracks before instruction selection. *)
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -71,7 +72,9 @@ Ltac zesu_array_load_contains address width spatial :=
              assert (Hrange : (start <= address /\
                address + width <= start + Z.of_nat (length values) * stride)%Z)
                by (autorewrite with lithium_rewrite;
-                   first [cbn; lia | zesu_witness_arith]); clear Hrange
+                   first [cbn; zesu_finish_lia
+                         | zesu_bounded_arithmetic ltac:(zesu_witness_arith)]);
+             clear Hrange
             | zesu_array_load_contains address width rest]
   | Esnoc ?rest _ _ => zesu_array_load_contains address width rest
   end.

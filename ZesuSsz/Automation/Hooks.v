@@ -4,6 +4,7 @@ From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
+Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.TraceTailLemmas.
 Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
@@ -48,16 +49,30 @@ Ltac zesu_name_machine_bound expected name :=
       rename H into name
   end.
 
+(* Library solvers also call this primitive without passing through the
+   project finisher. The call set supplies the timeout switch. *)
+Ltac lia ::= zesu_bounded_arithmetic ltac:(Zify.zify; xlia zchecker).
+Ltac bv_solve ::= zesu_bounded_arithmetic ltac:(
+  bv_simplify_arith;
+  bv_saturate_unsigned;
+  bv_solve_unfold_tac;
+  unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
+  simpl; lia).
+
 Ltac zesu_solve_machine_bounds :=
-  solve [zesu_normalize_binary_nat_hypotheses;
-    zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve].
+  zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
+    zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve]).
 Ltac zesu_solve_machine_linear :=
-  first [solve [repeat match goal with
+  first [zesu_bounded_arithmetic ltac:(zesu_byte_index_arithmetic)
+    | zesu_bounded_arithmetic ltac:(first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
            end; zesu_normalize_machine_map; lia] |
     solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]])].
+(* Preserve the machine normalization used by the existing finisher. *)
+Ltac zesu_finish_lia ::= zesu_solve_machine_linear.
+
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
 Tactic Notation "bv_solve" := zesu_solve_machine_bounds.
