@@ -3,7 +3,6 @@ Require Import ZesuSsz.Automation.Sets.call.
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_01 Require Import instrs.
 Require Import ZesuSsz.Export.Snapshots.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWriteOutputCall.
 Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessOutputWhole.
 
 Definition writeOutputContract `{!islaG Sigma} `{!threadG} : iProp Sigma :=
@@ -26,6 +25,8 @@ Definition writeOutputContractFrame `{!islaG Sigma} `{!threadG}
       "x22"; "x23"; "x24"; "x25"; "x26"; "x27"] regs) ∗
    reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
      ["x12"; "x13"; "x14"; "x15"; "x16"; "x17"]))%I.
+Global Instance : LithiumUnfold (@writeOutputContractFrame) := I.
+Global Typeclasses Opaque writeOutputContractFrame.
 
 Lemma write_output_contract_return `{!islaG Sigma} `{!threadG}
     (data size ret sp : bv 64) (bytes : list (bv 8))

@@ -30,6 +30,7 @@ Require Import InstrSpecs.Specs.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SpecPrefix.
+Require Import ZesuSsz.Automation.TracePrefixTail.
 Require Import ZesuSsz.Automation.LoadedTrace.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
@@ -49,6 +50,7 @@ Ltac zesu_rule_set_v2_steps :=
             | (zesu_step_sealed_open_on; zesu_open_sealed_load_handoff)
             | zesu_open_sealed_for_lookup_if_enabled
             | zesu_close_loaded_trace_if_enabled
+            | zesu_close_matching_trace_tail
             | zesu_close_spec_tail_if_enabled]
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>

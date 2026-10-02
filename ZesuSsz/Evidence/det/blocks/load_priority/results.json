@@ -2,20 +2,23 @@
   {
     "leader": "0x14e88",
     "load_cleared": true,
-    "remaining": "encoder output trace inclusion",
-    "full_block_closed": false
+    "remaining": "successor BLK_STOP",
+    "full_block_closed": false,
+    "trace_inclusion_cleared": true
   },
   {
     "leader": "0x150fc",
     "load_cleared": true,
-    "remaining": "encoder output trace inclusion",
-    "full_block_closed": false
+    "remaining": "legacy return-register equalities",
+    "full_block_closed": false,
+    "trace_inclusion_cleared": true
   },
   {
     "leader": "0x151c4",
     "load_cleared": true,
-    "remaining": "encoder output trace inclusion",
-    "full_block_closed": false
+    "remaining": "legacy return-register equalities",
+    "full_block_closed": false,
+    "trace_inclusion_cleared": true
   },
   {
     "leader": "0x158f0",
