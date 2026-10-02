@@ -1,0 +1,6 @@
+{
+  "contract": "encoderU256EntryBoundary",
+  "target": "0x15cb0",
+  "results": "Six stalls; no complete block closure.",
+  "missing_entries": []
+}
