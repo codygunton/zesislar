@@ -150,6 +150,23 @@ class StatePartition(unittest.TestCase):
         self.assertIn('tmp_registers', normalized[0])
         self.assertEqual(normalized[0].count('BitsShape 64'), 7)
 
+    def test_direct_shape_ownership_removes_its_temporary_duplicate(self):
+        direct = '"x5" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝'
+        collection = 'reg_col (zip_with (fun r shape => (KindReg r, shape)) '
+        collection += 'tmp_registers [' + '; '.join(['BitsShape 64'] * 7) + '])'
+        result = gen_boundary.deduplicate_register_shapes([direct, collection])
+        self.assertEqual(result[0], direct)
+        self.assertNotIn('KindReg "x5"', result[1])
+        self.assertIn('KindReg "x6"', result[1])
+        gen_boundary.complete_register_file(result)
+
+    def test_printed_byte_list_fixpoint_keeps_its_explicit_arguments(self):
+        atom = '(fix byteListItemResources (address : Z) := body (address + 16)) Sigma islaG0 base items'
+        self.assertEqual(gen_boundary.fold_printed_resources([atom]),
+                         ['(@byteListItemResources) Sigma islaG0 base items'])
+        with self.assertRaisesRegex(ValueError, 'unbalanced'):
+            gen_boundary.fold_printed_resources(['(fix byteListItemResources (address : Z) := body'])
+
     def test_successor_precision_keeps_known_stack_pointer(self):
         atoms = ['"x2" ↦ᵣ RVal_Bits sp',
                  'reg_col [(KindReg "x8", ExactShape (RVal_Bits value))]']
