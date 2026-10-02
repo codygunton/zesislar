@@ -1,0 +1,272 @@
+[
+  {
+    "entry": "0x15584",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (pointer : bv 64) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactAuthorizationsInitialZero",
+    "source_resource": "(authorizationZeroEntry sp pointer tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15584.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "pointer",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 176 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 8 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "reg_col [(KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64)]",
+      "\"x18\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (BV 64 0))",
+      "(bv_unsigned sp + 168) \u21a6\u2098 pointer",
+      "spec_trace tail",
+      "P",
+      "instr_pre 87584 (authorizationZeroPost sp pointer tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp pointer tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "pointer": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInitialZero"
+    ],
+    "block_exit": "0x15590",
+    "stack_size": 0,
+    "stack_pointer": "sp"
+  },
+  {
+    "entry": "0x156dc",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
+    "module": "WriteSuccessExactWithdrawalsTailNative",
+    "source_resource": "(withdrawalTailEntry pointer count P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_156dc.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "pointer",
+        "bv 64"
+      ],
+      [
+        "count",
+        "bv 64"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn pointer)",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn count)",
+      "instr_pre 87700 (withdrawalTailPost pointer count P)",
+      "instr_pre 87784 (withdrawalTailPost pointer count P)",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "pointer count P sp",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "pointer": "Type",
+      "count": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsTailNative"
+    ],
+    "block_exit": "0x156e8",
+    "stack_size": 0,
+    "stack_pointer": "sp"
+  },
+  {
+    "entry": "0x15990",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64)",
+    "module": "WriteSuccessNativeSuffixScalarSetups",
+    "source_resource": "(writeSuccessSuffixJump15990Spec P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15990.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "instr_pre 88480 P",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "P sp",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "P": "Type"
+    },
+    "imports": [],
+    "block_exit": "0x15994",
+    "stack_size": 0,
+    "stack_pointer": "sp"
+  },
+  {
+    "entry": "0x1596c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTailBranchCallHandoff",
+    "source_resource": "(reg_col zesu_ram_sys_regs \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217\n     \"x8\" \u21a6\u1d63: (fun r => \u231cvalu_has_shape r (BitsShape 64)\u231d) \u2217\n     (bv_unsigned sp + 72) \u21a6\u2098 data \u2217 P \u2217 True)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_1596c.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "Halign",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "Hlow",
+        "mapRamBase defaultMap <= bv_unsigned sp"
+      ],
+      [
+        "Hhigh",
+        "bv_unsigned sp + 80 < machineRamEnd defaultMap"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x8\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
+      "(bv_unsigned sp + 72) \u21a6\u2098 data",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "Halign": "Prop",
+      "Hlow": "Prop",
+      "Hhigh": "Prop"
+    },
+    "imports": [],
+    "block_exit": "0x15974",
+    "stack_size": 0,
+    "stack_pointer": "sp"
+  }
+]

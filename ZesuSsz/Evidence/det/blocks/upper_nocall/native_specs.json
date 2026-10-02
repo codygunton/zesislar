@@ -1,0 +1,80 @@
+[
+  {
+    "name": "block_15584",
+    "entry": "0x15584",
+    "exit": "0x15590",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (pointer : bv 64) (tail : spec) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15584",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInitialZero"
+    ],
+    "spec": "State_15584 sp pointer tail P",
+    "successors": [
+      {
+        "address": "0x15620",
+        "spec": "authorizationZeroPost sp pointer tail P"
+      },
+      {
+        "address": "0x15590",
+        "spec": "authorizationZeroPost sp pointer tail P"
+      }
+    ]
+  },
+  {
+    "name": "block_156dc",
+    "entry": "0x156dc",
+    "exit": "0x156e8",
+    "binders": "`{!islaG Sigma} `{!threadG} (pointer : bv 64) (count : bv 64) (P : iProp Sigma) (sp : bv 64)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_156dc",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsTailNative"
+    ],
+    "spec": "State_156dc pointer count P sp",
+    "successors": [
+      {
+        "address": "0x15694",
+        "spec": "withdrawalTailPost pointer count P"
+      },
+      {
+        "address": "0x156e8",
+        "spec": "withdrawalTailPost pointer count P"
+      }
+    ]
+  },
+  {
+    "name": "block_15990",
+    "entry": "0x15990",
+    "exit": "0x15994",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_15990"
+    ],
+    "spec": "State_15990 P sp",
+    "successors": [
+      {
+        "address": "0x159a0",
+        "spec": "P"
+      }
+    ]
+  },
+  {
+    "name": "block_1596c",
+    "entry": "0x1596c",
+    "exit": "0x15974",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (P : iProp Sigma)",
+    "imports": [
+      "ZesuSsz.Generated.WriteSuccess.States.State_1596c"
+    ],
+    "spec": "State_1596c sp data P",
+    "successors": [
+      {
+        "address": "0x15974",
+        "spec": "\u231cdata <> BV 64 0\u231d \u2217 reg_col zesu_ram_sys_regs \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 \"x8\" \u21a6\u1d63 RVal_Bits data \u2217 (bv_unsigned sp + 72) \u21a6\u2098 data \u2217 P \u2217 True"
+      },
+      {
+        "address": "0x15994",
+        "spec": "\u231cdata = BV 64 0\u231d \u2217 reg_col zesu_ram_sys_regs \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 \"x8\" \u21a6\u1d63 RVal_Bits data \u2217 (bv_unsigned sp + 72) \u21a6\u2098 data \u2217 P \u2217 True"
+      }
+    ]
+  }
+]
