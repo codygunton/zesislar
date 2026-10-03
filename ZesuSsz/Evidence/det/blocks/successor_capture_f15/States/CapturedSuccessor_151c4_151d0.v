@@ -29,6 +29,7 @@ Definition CapturedSuccessor_151c4_151d0
    ("x2" ↦ᵣ RVal_Bits sp) ∗
    ((bv_unsigned sp - 16) ↦ₘ? 16) ∗
    (spec_trace tail) ∗
+   (mmio_range (604086456 + 8) 16) ∗
    (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
    (⌜(0 ≤ bv_unsigned sp - 16)%Z⌝) ∗
    (⌜(bv_unsigned sp < 0 + 1073741824)%Z⌝) ∗

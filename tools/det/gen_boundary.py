@@ -221,6 +221,11 @@ def deduplicate_register_shapes(atoms: list[str]) -> list[str]:
 def strip_internal_handoffs(atoms: list[str], start: int, end: int) -> list[str]:
     """Remove instruction premises inside the measured CFG block."""
     def internal(atom: str) -> bool:
+        literal = re.match(
+            r'instr_(?:pre|body)\s+\(bv_unsigned\s+\(BV\s+64\s+'
+            r'(0x[0-9a-fA-F]+|\d+)\)\)\s', atom)
+        if literal:
+            return start <= int(literal[1], 0) % (1 << 64) < end
         match = re.match(r'instr_(?:pre|body)\s+(\([^)]*\)|0x[0-9a-fA-F]+|\d+)\s', atom)
         if not match:
             return False
@@ -351,11 +356,17 @@ def require_open_resources(atoms: list[str], binders: str) -> None:
                 or atom in ("writeSuccessNativeStaticResources",
                             "WriteSuccessNativeContract.writeSuccessNativeStaticResources")
                 or atom.startswith(("writeSuccessTransactionsOwn ",
+                                    "WriteSuccessTransactionsSpec.writeSuccessTransactionsOwn ",
+                                    "writeSuccessExactCopiedTailWords ",
+                                    "Interfaces.writeSuccessExactCopiedTailWords ",
+                                    "writeSuccessTerminalSavedSlots ",
+                                    "WriteSuccessNativeContract.writeSuccessTerminalSavedSlots ",
                                     "writeSuccessTransactionsInvariant ",
                                     "WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant ",
                                     "writeSuccessPostTransactionDataResources ",
                                     "WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources ",
                                     "byteListItemResources ",
+                                    "WriteSuccessByteLists.byteListItemResources ",
                                     "(@byteListItemResources) ",
                                     "reg_col ", "spec_trace ", "mmio_range ",
                                     "instr_pre ", "instr_body ", "⌜"))

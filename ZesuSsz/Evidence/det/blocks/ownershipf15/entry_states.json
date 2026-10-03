@@ -71,8 +71,13 @@
     ],
     "persistent": [],
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem",
+      "ZesuSsz.Contracts.WriteSuccessHeader"
     ],
     "local_sorts": {
       "Sigma": "Type",

@@ -1,0 +1,179 @@
+{
+  "entry": "0x14ee4",
+  "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (values : list (bv 64)) (payload : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "values",
+      "list (bv 64)"
+    ],
+    [
+      "payload",
+      "list (bv 8)"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "b8",
+      "bv 64"
+    ],
+    [
+      "b9",
+      "bv 64"
+    ],
+    [
+      "stack2",
+      "bv 64"
+    ],
+    [
+      "H0",
+      "bv_unsigned sp + 1896 < 0 + 1073741824"
+    ],
+    [
+      "H1",
+      "0 ≤ bv_unsigned sp - 48"
+    ],
+    [
+      "H2",
+      "bv_unsigned sp `mod` 8 = 0"
+    ],
+    [
+      "H3",
+      "bv_unsigned sp `mod` 16 = 0"
+    ],
+    [
+      "H4",
+      "length values = 74%nat"
+    ],
+    [
+      "H5",
+      "length (WriteSuccessExactValueSpec.writeSuccessValueBlockHash values) = 32%nat"
+    ],
+    [
+      "b10",
+      "bv 64"
+    ],
+    [
+      "b11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "b19",
+      "bv 64"
+    ],
+    [
+      "b20",
+      "bv 64"
+    ],
+    [
+      "b21",
+      "bv 64"
+    ]
+  ],
+  "spatial": [
+    "(bv_unsigned sp + 1584) ↦ₘ∗ take 4 (drop 552 (IslarisMemory.bytes_of_u64s values))",
+    "(bv_unsigned sp + 1620) ↦ₘ∗ drop 588 (IslarisMemory.bytes_of_u64s values)",
+    "P",
+    "instr_pre 85764 (WriteSuccessExactValueSpec.writeSuccessExactValuePost sp values payload tail P)",
+    "(bv_unsigned sp - 16) ↦ₘ? 16",
+    "(bv_unsigned sp - 48) ↦ₘ? 8%nat",
+    "(bv_unsigned sp - 40) ↦ₘ 89232",
+    "(bv_unsigned sp - 32) ↦ₘ stack2",
+    "(bv_unsigned sp - 24) ↦ₘ b9",
+    "(bv_unsigned sp + 104) ↦ₘ? 16",
+    "(bv_unsigned sp + 1032) ↦ₘ∗ take 69 values",
+    "bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 4) ↦ₘ∗ payload",
+    "True",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11)); (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15)); (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]",
+    "\"x10\" ↦ᵣ RVal_Bits b20",
+    "\"x11\" ↦ᵣ RVal_Bits b21",
+    "\"x2\" ↦ᵣ RVal_Bits sp",
+    "bv_unsigned (sp + 1588) ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash values",
+    "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (sp - 16)%bv) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) 8%bv) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `mod` 256); Z_to_bv 8 ((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (WriteSuccessExactValueSpec.writeSuccessExactValueWord values 8) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))",
+    "mmio_range (604086456 + 8) 16"
+  ],
+  "local_sorts": {
+    "Sigma": "Type",
+    "sp": "Type",
+    "values": "Type",
+    "payload": "Type",
+    "tail": "Type",
+    "P": "Type",
+    "b8": "Type",
+    "b9": "Type",
+    "stack2": "Type",
+    "H0": "Prop",
+    "H1": "Prop",
+    "H2": "Prop",
+    "H3": "Prop",
+    "H4": "Prop",
+    "H5": "Prop",
+    "b10": "Type",
+    "b11": "Type",
+    "b12": "Type",
+    "b13": "Type",
+    "b14": "Type",
+    "b15": "Type",
+    "b16": "Type",
+    "b17": "Type",
+    "b18": "Type",
+    "b19": "Type",
+    "b20": "Type",
+    "b21": "Type"
+  },
+  "imports": [
+    "ZesuSsz.Export.Snapshots",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec"
+  ],
+  "outcome": "reached",
+  "derived_from": "0x14ed4",
+  "source_capture": "Rocq native zesu_block with the corrected single-event trace hook; declared memory opened by its equivalence lemma",
+  "memory_word_widths": {
+    "(bv_unsigned sp - 40)": 64,
+    "(BV 64 (604086456 + 16))": 64
+  }
+}

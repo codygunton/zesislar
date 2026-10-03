@@ -2,16 +2,9 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
-Require Import ZesuSsz.Export.Snapshots.
-Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import isla.spec.
+Require Import isla.opsem.
 
 Definition CapturedSuccessor_15148_15154
     `{!islaG Sigma} `{!threadG} (sp : bv 64) (value : bv 64) (oldra : bv 64) (old5 : bv 64) (old11 : bv 64) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
@@ -28,6 +21,7 @@ Definition CapturedSuccessor_15148_15154
    ("x2" ↦ᵣ RVal_Bits sp) ∗
    ((bv_unsigned sp - 16) ↦ₘ? 16) ∗
    (spec_trace tail) ∗
+   (mmio_range (604086456 + 8) 16) ∗
    (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
    (⌜(0 ≤ bv_unsigned sp - 16)%Z⌝) ∗
    (⌜(bv_unsigned sp < 0 + 1073741824)%Z⌝) ∗

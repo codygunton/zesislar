@@ -1,0 +1,325 @@
+{
+  "table_entries": 23,
+  "core_imports": [
+    "ZesuSsz.Automation.All",
+    "ZesuSsz.Automation.SealedCoverage",
+    "isla.riscv64.riscv64",
+    "ZesuSsz.Contracts.IslarisMachine",
+    "isla.spec",
+    "isla.opsem"
+  ],
+  "states": [
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedEntry_151d4",
+      "name": "CapturedEntry_151d4",
+      "imports": [],
+      "body_sha256": "6726879b481596f154d7ddb7ffa4470f0dcb9e1b81606b167d7c6da7cbd07a92"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_150fc_15108",
+      "name": "CapturedSuccessor_150fc_15108",
+      "imports": [],
+      "body_sha256": "06766a987ab37c4e2cfa59019c974e52f2824a02c18191749c77ae510e5548e3"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_15148_15154",
+      "name": "CapturedSuccessor_15148_15154",
+      "imports": [],
+      "body_sha256": "d99b254f8c0ff9ec7f900a269db9805074b3bbc7c7fa245e0dd1a670270a4b61"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_151c4_151d0",
+      "name": "CapturedSuccessor_151c4_151d0",
+      "imports": [],
+      "body_sha256": "8e6cdd23420b0b5b707d7faff9d2a0a90ab1df28f7952d6a3a6515b90fa7fc24"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_151d4_151dc",
+      "name": "CapturedSuccessor_151d4_151dc",
+      "imports": [],
+      "body_sha256": "f03be622af6c7d2c937b6a9d901cdd5a56f2677a30a1820a4401088347ceab74"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_151d4_153c0",
+      "name": "CapturedSuccessor_151d4_153c0",
+      "imports": [],
+      "body_sha256": "bbba8a01b415cfd41104f172115733ce01809ac416ab1c8340291042b7b40515"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_1521c_15228",
+      "name": "CapturedSuccessor_1521c_15228",
+      "imports": [],
+      "body_sha256": "e3bdd72ef6d86bc5ecac34e4490d176d2689a6d2208d37ef384a3992d27af054"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_1521c_153b4",
+      "name": "CapturedSuccessor_1521c_153b4",
+      "imports": [],
+      "body_sha256": "b77684a1f20a3b0be249410b1dc09d6762d64750ceae2e525b1a445f137c8a55"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_153c0_153d0",
+      "name": "CapturedSuccessor_153c0_153d0",
+      "imports": [],
+      "body_sha256": "3bc6ffd79c06f8b1fea6c3a294d118e6802ad8ca8efb4cfda76fc490249ab5b7"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_15574_15584",
+      "name": "CapturedSuccessor_15574_15584",
+      "imports": [],
+      "body_sha256": "cfecd45fe4d0170c189ee9bc2e469389d25a83999f609326c41f9d79a0d8f997"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.CapturedSuccessor_15620_1562c",
+      "name": "CapturedSuccessor_15620_1562c",
+      "imports": [],
+      "body_sha256": "8ef942000deebbd81aec6c1731901fbbe2e9a34c18cdffc72258e4223ce52604"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.HeaderSuccessor_14e88",
+      "name": "HeaderSuccessor_14e88",
+      "imports": [],
+      "body_sha256": "e60b11548bb69acccf65fa51664f448fecc1252ef9c1c537ac09c4f5f4bf3da9"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e28",
+      "name": "State_14e28",
+      "imports": [
+        "ZesuSsz.Contracts.WriteSuccessHeader"
+      ],
+      "body_sha256": "e4c95ac22bd94ca1584940f0ce964e1cfe7dde0cdcf85c7eb21123aa6c531ba2"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e38",
+      "name": "State_14e38",
+      "imports": [
+        "ZesuSsz.Contracts.WriteSuccessHeader"
+      ],
+      "body_sha256": "803ff07c5c194ca0d7315a70c5a4d3d0ac87690e8720d96ab090972318ac6ec6"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e48",
+      "name": "State_14e48",
+      "imports": [
+        "ZesuSsz.Contracts.WriteSuccessHeader"
+      ],
+      "body_sha256": "af60d1874f665822239255e14673c7854af0c33235f532bd592cbbd6cb3351e0"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e58",
+      "name": "State_14e58",
+      "imports": [
+        "ZesuSsz.Contracts.WriteSuccessHeader"
+      ],
+      "body_sha256": "1f86ad8623c05b51b3d256b06e40ca5a4f185a682cc9c73073af81ad0abb0a71"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e68",
+      "name": "State_14e68",
+      "imports": [
+        "ZesuSsz.Contracts.WriteSuccessHeader"
+      ],
+      "body_sha256": "dc3ddb7fb05a15b51fc478166b17708f8c74015410bf8f755cc1d65a05872b0e"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e78",
+      "name": "State_14e78",
+      "imports": [
+        "ZesuSsz.Contracts.WriteSuccessHeader"
+      ],
+      "body_sha256": "5518a0a9e3649b02c1487235bc5c88af4d92039d0c18adecc9ac6fd2198523df"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_14e88",
+      "name": "State_14e88",
+      "imports": [],
+      "body_sha256": "f8ae9b5d86963e7be25f56d2f3e3382b2c448efddb37c16b3dcf9aac4641a107"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_150fc",
+      "name": "State_150fc",
+      "imports": [],
+      "body_sha256": "a77f1e9bbcfc00ad685a6ed779f410d57659b1032b69dbefbed25afb716ca49a"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15118",
+      "name": "State_15118",
+      "imports": [],
+      "body_sha256": "166f11eb84891c198dcd07c0d012243e27f52475431843570885a4a90c503332"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15148",
+      "name": "State_15148",
+      "imports": [],
+      "body_sha256": "5cc5d8bc36d15283633d37c692a195ae096d4c159c1f9548f25d5d0fa15b74bb"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15154",
+      "name": "State_15154",
+      "imports": [],
+      "body_sha256": "4980c3e550215ae6d6a9b5ec49503fe335587328519eac321e561e956b954bf5"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_151c4",
+      "name": "State_151c4",
+      "imports": [],
+      "body_sha256": "8d07524484e7a81f0dff625a84f964f294bfb04d0265f5c983463d1e882355a3"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_1521c",
+      "name": "State_1521c",
+      "imports": [],
+      "body_sha256": "5ed88b7cdd2f6a55228540a4e631b761741497687964e4e90221c1027c54dd00"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_153a8",
+      "name": "State_153a8",
+      "imports": [],
+      "body_sha256": "94af320192233b3f577d30763c972ccd044046af633f75172f763346bab1af09"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_153b4",
+      "name": "State_153b4",
+      "imports": [],
+      "body_sha256": "bebb049486a773eafaf4097de3212461446bd32806fb7ca1150394eb8d6a331d"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_153c0",
+      "name": "State_153c0",
+      "imports": [],
+      "body_sha256": "6adeb0f7eeeaf824c90f4470d1034bf1d68e9a06cce2f1f485f709f6a4dad4fe"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15558",
+      "name": "State_15558",
+      "imports": [],
+      "body_sha256": "40fc338f86310737168d10504e031cd73df12905a4c73bb746d0784ac13573a7"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15574",
+      "name": "State_15574",
+      "imports": [],
+      "body_sha256": "68ebd0c31e11ca4d7deef22d064c284ae927f26e6e97137242a4800a556bf289"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15614",
+      "name": "State_15614",
+      "imports": [],
+      "body_sha256": "fefe0616ff08a71410cb58a26e399fcc26689b1a402b2768af5e37b4a2e39805"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15620",
+      "name": "State_15620",
+      "imports": [],
+      "body_sha256": "5526f6c8cbbff88468f30f0f3006a840b0b38ad937387e005610504523163d99"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_1565c",
+      "name": "State_1565c",
+      "imports": [
+        "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsBackEdge"
+      ],
+      "body_sha256": "e656f3e1f4b9d109b2487e43c0ca22153b4cdd37b314e2b8201e9bc2ca09de62"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_1572c",
+      "name": "State_1572c",
+      "imports": [
+        "ZesuSsz.Export.Snapshots"
+      ],
+      "body_sha256": "1cdb0cf6c438b31a5cd694aaecffb36e223b00a08d0bc1912ed4c2027152e6db"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_1573c",
+      "name": "State_1573c",
+      "imports": [],
+      "body_sha256": "b83134e3ee01b917be1018a2603009f99e4be1624595243fef1657ea4995e4a4"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.State_15750",
+      "name": "State_15750",
+      "imports": [],
+      "body_sha256": "a02e65557e65c415e3bfc19079b9656afbb396daff68fef01aff4e9a87f4b076"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1511c",
+      "name": "Successor_15118_1511c",
+      "imports": [],
+      "body_sha256": "271bc7e37f1e52bba2be0f64aed38ae1312c619ccb013da34993f935d3b63de1"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15118_1513c",
+      "name": "Successor_15118_1513c",
+      "imports": [],
+      "body_sha256": "a1334646fa1410b00a5ac6f60218bb30469b40a644f5564ec1dc18b21a7417e4"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15154_1515c",
+      "name": "Successor_15154_1515c",
+      "imports": [],
+      "body_sha256": "d3f2d2fe3a9bcb05ecf176cf4511ed50989775d90ae48631b440893cfbca252b"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15154_15194",
+      "name": "Successor_15154_15194",
+      "imports": [],
+      "body_sha256": "a3ea06ce97a1e1b85c63d39463d82552b7271ee11ec6aca185af6a4cae9d7c12"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_153a8_15228",
+      "name": "Successor_153a8_15228",
+      "imports": [],
+      "body_sha256": "e3e0c69998dd93db28e57e4da136390c9db6d87cde8497bf56df86b474d20758"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_153a8_153b4",
+      "name": "Successor_153a8_153b4",
+      "imports": [],
+      "body_sha256": "3605333b09dc81f0656ee3ad9d3642bcf4557b559dc969135c72f5af1a61671c"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_153b4_151d4",
+      "name": "Successor_153b4_151d4",
+      "imports": [],
+      "body_sha256": "bef24f0baa331183a746689931d4e762d97a39f2ea00fd809b13752576df32fd"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15558_153d4",
+      "name": "Successor_15558_153d4",
+      "imports": [],
+      "body_sha256": "24da95925713a691187c553949a5c3c8827f320c064f6189bbfee4b028656fdb"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15558_15564",
+      "name": "Successor_15558_15564",
+      "imports": [],
+      "body_sha256": "b16d951bf43017787aca1d5da6642d083a63b6d9b37104d415d6ab389126c881"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15614_15590",
+      "name": "Successor_15614_15590",
+      "imports": [],
+      "body_sha256": "a14da300b201d5e66abbd72ca45114ef12dc7110b5cd473330cdb63925ff103a"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15614_15620",
+      "name": "Successor_15614_15620",
+      "imports": [],
+      "body_sha256": "a61ad7775561ba2fd8eb226d23a7f10746be1dbe81c0515283ccdaa2d8e08db2"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_1565c_14f00",
+      "name": "Successor_1565c_14f00",
+      "imports": [
+        "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsBackEdge"
+      ],
+      "body_sha256": "f7b9c727817835e816830117c15a5f1b4cd393e0327b001ab3538065e5f48961"
+    },
+    {
+      "module": "ZesuSsz.Generated.WriteSuccess.States.Successor_15750_15754",
+      "name": "Successor_15750_15754",
+      "imports": [],
+      "body_sha256": "bc1a66429c20f678bc958af8ced98f51cec67076754e4bddbd5cc2ed0b3dddef"
+    }
+  ]
+}

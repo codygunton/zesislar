@@ -1,0 +1,13 @@
+{
+  "entry": "0x156e8",
+  "block_exit": "0x156f4",
+  "source_resource": "writeSuccessExactPostWithdrawalsBoundary (writeSuccessFrameSp witness) (bv_unsigned (writeSuccessWithdrawalsBase witness)) (writeSuccessWithdrawalsBytes witness) (writeSuccessExactPostWithdrawalsEvents witness) (writeSuccessExactPostWithdrawalsCallerFrame args witness \u2217 P)",
+  "binders": "`{!islaG Sigma} `{!threadG} {Decoded} `{!WriteSuccessMemoryRepresentation Decoded} (args : WriteSuccessArgs Decoded) (witness : writeSuccessNativeWitness Decoded) (P : iProp Sigma)",
+  "callee": "encoderIntContract",
+  "first_load_offset": 1136,
+  "frame_array_offset": 1032,
+  "frame_array_index": 13,
+  "frame_array_count": 69,
+  "source_module": "WriteSuccessExactPostWithdrawalsBefore156f4",
+  "status": "authoritative-entry-prepared"
+}

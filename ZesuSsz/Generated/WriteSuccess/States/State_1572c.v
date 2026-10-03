@@ -2,33 +2,62 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixRoot.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import isla.spec.
+Require Import isla.opsem.
 Require Import ZesuSsz.Export.Snapshots.
-Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec.
+
+Definition State_1572cMemoryRaw
+    `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma := (((bv_unsigned sp + 312) ↦ₘ∗ bytes) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@State_1572cMemoryRaw) := I.
+Global Typeclasses Opaque State_1572cMemoryRaw.
+Definition State_1572cMemory
+    `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma := State_1572cMemoryRaw sp oldra old5 olddata oldsize bytes tail P.
+Lemma State_1572cMemory_unfold `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
+  State_1572cMemory sp oldra old5 olddata oldsize bytes tail P ⊣⊢ State_1572cMemoryRaw sp oldra old5 olddata oldsize bytes tail P.
+Proof. done. Qed.
+Global Opaque State_1572cMemory.
+Global Instance zesu_sealed_State_1572cMemory `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) :
+  ZesuSealed (State_1572cMemory sp oldra old5 olddata oldsize bytes tail P) (State_1572cMemoryRaw sp oldra old5 olddata oldsize bytes tail P)
+    [((bv_unsigned sp + 312), ((bv_unsigned sp + 312)) + (1 * Z.of_nat (length (bytes))))] [] := State_1572cMemory_unfold sp oldra old5 olddata oldsize bytes tail P.
 
 Definition State_1572c
-    `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec) : iProp Sigma :=
-  ((reg_col zesu_ram_sys_regs) ∗
-   ("x1" ↦ᵣ RVal_Bits (bv_to_bvn (BV 64 87852))) ∗
-   ("x2" ↦ᵣ RVal_Bits (bv_to_bvn sp)) ∗
-   ("x10" ↦ᵣ RVal_Bits (bv_to_bvn oldData)) ∗
-   ("x11" ↦ᵣ RVal_Bits (bv_to_bvn oldSize)) ∗
-   (mmio_range (604086456 + 8) 16) ∗
-   (spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1000))) (scons (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 32))) tail))) ∗
-   (reg_col [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64); (KindReg "x8", BitsShape 64); (KindReg "x9", BitsShape 64); (KindReg "x12", BitsShape 64); (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64); (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64); (KindReg "x17", BitsShape 64); (KindReg "x18", BitsShape 64); (KindReg "x19", BitsShape 64); (KindReg "x20", BitsShape 64); (KindReg "x21", BitsShape 64); (KindReg "x22", BitsShape 64); (KindReg "x23", BitsShape 64); (KindReg "x24", BitsShape 64); (KindReg "x25", BitsShape 64); (KindReg "x26", BitsShape 64); (KindReg "x27", BitsShape 64)]) ∗
-   ((bv_unsigned sp + 1000) ↦ₘ root) ∗
+    `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) : iProp Sigma :=
+  ((reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [(ExactShape (RVal_Bits old5)); (BitsShape 64); (BitsShape 64); (BitsShape 64); (BitsShape 64); (BitsShape 64); (BitsShape 64)])) ∗
+   (reg_col zesu_ram_sys_regs) ∗
+   ("x2" ↦ᵣ RVal_Bits sp) ∗
+   ("x1" ↦ᵣ RVal_Bits oldra) ∗
+   ("x10" ↦ᵣ RVal_Bits olddata) ∗
+   ("x11" ↦ᵣ RVal_Bits oldsize) ∗
+   ("x3" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x4" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x8" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x9" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x12" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x13" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x14" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x15" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x16" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x17" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x18" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x19" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x20" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x21" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x22" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x23" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x24" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x25" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x26" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   ("x27" ↦ᵣ: λ v, ⌜valu_has_shape v (BitsShape 64)⌝ ∗ True) ∗
+   (mmio_range (machineOutputAddress defaultMap) 16) ∗
+   (spec_trace (writeOutputEvents (sp + BV 64 1000)%bv (BV 64 32) (take 32 (drop 688 bytes)) tail)) ∗
    (P) ∗
-   (reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn (BV 64 604086456))); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])) ∗
-   (⌜True⌝) ∗
-   (⌜True⌝) ∗
-   (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗
-   (⌜(bv_unsigned sp < machineRamEnd defaultMap)%Z⌝) ∗
-   (⌜(mapRamBase defaultMap ≤ bv_unsigned sp - 16)%Z⌝) ∗
+   (State_1572cMemory sp oldra old5 olddata oldsize bytes tail P) ∗
+   (⌜length bytes = 720%nat⌝) ∗
    (⌜(bv_unsigned sp `mod` 16 = 0)%Z⌝) ∗
+   (⌜(mapRamBase defaultMap <= bv_unsigned sp)%Z⌝) ∗
+   (⌜(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z⌝) ∗
    True)%I.
 Global Instance : LithiumUnfold (@State_1572c) := I.
 Global Typeclasses Opaque State_1572c.

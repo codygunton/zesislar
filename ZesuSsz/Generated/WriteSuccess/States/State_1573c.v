@@ -2,13 +2,9 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixRoot.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls.
-Require Import ZesuSsz.Export.Snapshots.
-Require Import ZesuSsz.Contracts.IslarisMemory.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import isla.spec.
+Require Import isla.opsem.
 
 Definition State_1573c
     `{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec) : iProp Sigma :=

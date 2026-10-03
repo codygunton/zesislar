@@ -49,6 +49,40 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_recorded_entry_premises_are_preserved(self):
+        source = gen_block.state_source(0x159a0, dict(
+            binders=BINDERS + ' (sp : bv 64)', coq=[], spatial=list(ATOMS),
+            entry_premises=['bv_unsigned sp + 96 < machineRamEnd defaultMap']))
+        self.assertIn('⌜bv_unsigned sp + 96 < machineRamEnd defaultMap⌝', source)
+
+    def test_recorded_prop_sort_does_not_retain_anonymous_register_value(self):
+        source = gen_block.state_source(0x159b0, dict(
+            binders=BINDERS, coq=[('old', 'bv 64'),
+                                 ('Hbound', 'bv_unsigned old < bv_modulus 64')],
+            local_sorts={'old': 'Type', 'Hbound': 'Prop'},
+            spatial=list(ATOMS) + ['"x9" ↦ᵣ RVal_Bits old'], post_state=True))
+        self.assertIn('(KindReg "x9", BitsShape 64)', source)
+        self.assertNotIn('∃ old', source)
+
+    def test_captured_successor_preserves_persistent_mmio_permission(self):
+        permission = 'mmio_range (machineOutputAddress defaultMap) 16'
+        state = dict(binders=BINDERS, coq=[], spatial=list(ATOMS),
+                     persistent=[permission, permission], post_state=True,
+                     seal_memory=False)
+        source = gen_block.state_source(0x1562c, state)
+        self.assertEqual(source.count(permission), 1)
+
+    def test_context_capture_preserves_persistent_mmio_permission(self):
+        permission = 'mmio_range (machineOutputAddress defaultMap) 16'
+        context = ('Sigma : gFunctors\n' + '============================\n'
+                   + '_ : ' + permission + '\n'
+                   + '--------------------------------------\u25a1\n'
+                   + '\n'.join('_ : ' + atom for atom in ATOMS) + '\n'
+                   + '--------------------------------------\u2217\nPOST')
+        source = gen_block.state_source(0x1562c, dict(
+            binders=BINDERS, context=context, seal_memory=False))
+        self.assertIn(permission, source)
+
     def test_return_point_discards_legacy_register_values(self):
         state = {"binders": BINDERS, "spatial": [ATOMS[0], ATOMS[2]] +
                  [f'"{register}" ↦ᵣ RVal_Bits (BV 64 8)'
@@ -198,6 +232,12 @@ class StatePartition(unittest.TestCase):
         atoms = ['instr_pre (88368 + 4) P', 'instr_pre 88380 Q', 'instr_pre 88384 R']
         self.assertEqual(gen_boundary.strip_internal_handoffs(atoms, 88368, 88384), [atoms[2]])
 
+    def test_concrete_bitvector_handoff_uses_its_unsigned_address(self):
+        atoms = ['instr_pre (bv_unsigned (BV 64 87512)) (OldPost P)',
+                 'instr_pre (bv_unsigned (BV 64 87524)) (NextPost P)']
+        self.assertEqual(gen_boundary.strip_internal_handoffs(atoms, 87512, 87513),
+                         [atoms[1]])
+
     def test_duplicate_register_ownership_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "duplicate register.*x5"):
             gen_boundary.complete_register_file(ATOMS + ['"x5" ↦ᵣ RVal_Bits value'])
@@ -288,6 +328,25 @@ class StatePartition(unittest.TestCase):
         source = gen_boundary.boundary_source('State', BINDERS + ' (P : iProp Sigma)', [],
                                               ATOMS + ['P'], False, call_resources=True)
         self.assertIn('(P) ∗', source)
+
+    def test_carried_frame_predicates_keep_their_names(self):
+        atoms = [
+            'writeSuccessExactCopiedTailWords sp bytes',
+            'Interfaces.writeSuccessExactCopiedTailWords sp bytes',
+            'writeSuccessTerminalSavedSlots witness',
+            'WriteSuccessNativeContract.writeSuccessTerminalSavedSlots witness',
+            'WriteSuccessByteLists.byteListItemResources base items',
+            'WriteSuccessTransactionsSpec.writeSuccessTransactionsOwn transactions',
+            'writeSuccessPostTransactionDataResources sp source decoded postData',
+            'WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources '
+            'sp source decoded postData',
+        ]
+        for atom in atoms:
+            with self.subTest(atom=atom):
+                source = gen_boundary.boundary_source(
+                    'State', BINDERS, [], ATOMS + [atom], False,
+                    call_resources=True)
+                self.assertIn('(' + atom + ') ∗', source)
 
     def test_state_does_not_extend_a_register_lambda_to_the_next_atom(self):
         atom = '"x10" ↦ᵣ: fun r10 => ⌜valu_has_shape r10 (BitsShape 64)⌝ ∗ True'
@@ -384,6 +443,17 @@ class StopInference(unittest.TestCase):
 
 
 class BlockGeneration(unittest.TestCase):
+    def test_block_keeps_explicit_selector_import(self):
+        states = {value: {'binders': BINDERS, 'spatial': ATOMS}
+                  for value in [0x14d30, 0x14d34]}
+        block = {'start': 0x14d30, 'end': 0x14d34,
+                 'successors': ['0x14d34'],
+                 'imports': ['ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads']}
+        with patch.object(call_sites, 'call_sites', return_value={}):
+            source, _ = gen_block.generate(block, states)
+        self.assertIn('Require Import ZesuSsz.Proofs.WriteSuccess.'
+                      'WriteSuccessExactTransactionsGasLoads.', source)
+
     def test_unreachable_successor_uses_false_without_a_state_import(self):
         states = {0x14d30: {'binders': BINDERS, 'spatial': ATOMS},
                   0x14d34: {'outcome': 'unreachable-successor'}}

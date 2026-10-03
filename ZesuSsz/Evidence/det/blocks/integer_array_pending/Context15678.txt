@@ -1,0 +1,105 @@
+Sigma : gFunctors
+islaG0 : islaG Sigma
+H : threadG
+Decoded : Type
+WriteSuccessMemoryRepresentation0 : WriteSuccessMemoryRepresentation Decoded
+args : WriteSuccessArgs Decoded
+witness : writeSuccessNativeWitness Decoded
+P : iProp Sigma
+s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, b10, b11 : bv 64
+|-
+--------------------------------------□
+"Hsys" : reg_col zesu_ram_sys_regs
+"Htmp" : reg_col
+           [(KindReg "x1", BitsShape 64); (KindReg "x12", BitsShape 64);
+            (KindReg "x13", BitsShape 64); (KindReg "x14", BitsShape 64);
+            (KindReg "x15", BitsShape 64); (KindReg "x16", BitsShape 64);
+            (KindReg "x17", BitsShape 64); (KindReg "x5", BitsShape 64);
+            (KindReg "x6", BitsShape 64); (KindReg "x7", BitsShape 64);
+            (KindReg "x28", BitsShape 64); (KindReg "x29", BitsShape 64);
+            (KindReg "x30", BitsShape 64); (KindReg "x31", BitsShape 64)]
+"Hregs" : reg_col
+            [(KindReg "x8", ExactShape (RVal_Bits s0));
+             (KindReg "x9", ExactShape (RVal_Bits s1));
+             (KindReg "x18", ExactShape (RVal_Bits s2));
+             (KindReg "x19", ExactShape (RVal_Bits s3));
+             (KindReg "x20", ExactShape (RVal_Bits s4));
+             (KindReg "x21", ExactShape (RVal_Bits s5));
+             (KindReg "x22", ExactShape (RVal_Bits s6));
+             (KindReg "x23", ExactShape (RVal_Bits s7));
+             (KindReg "x24", ExactShape (RVal_Bits s8));
+             (KindReg "x25", ExactShape (RVal_Bits s9));
+             (KindReg "x26", ExactShape (RVal_Bits s10));
+             (KindReg "x27", ExactShape (RVal_Bits s11))]
+"R10" : "x10" ↦ᵣ RVal_Bits b10
+"R11" : "x11" ↦ᵣ RVal_Bits b11
+"Rsp" : "x2" ↦ᵣ RVal_Bits (writeSuccessFrameSp witness)
+"Hscratch" : (bv_unsigned (writeSuccessFrameSp witness) - 80) ↦ₘ? 80
+"Hraw" : WriteSuccessByteLists.byteListItemResources
+           (bv_unsigned
+              (WriteSuccessValueSpec.writeSuccessValueWord
+                 (writeSuccessValues witness) 9))
+           (writeSuccessRawTransactions witness)
+"Hmmio" : mmio_range (machineOutputAddress defaultMap) 16
+"Htrace" : spec_trace
+             (WriteSuccessExactTailRawCallSpec.exactTailAfterRawEvents
+                witness)
+"Htrue" : True
+"Hcaller" : reg_col
+              [(KindReg "x3", BitsShape 64); (KindReg "x4", BitsShape 64)]
+"Hsaved" : writeSuccessTransactionBase witness
+           ↦ₘ∗ writeSuccessTransactionBytes witness
+"Hrest" : WriteSuccessTransactionsSpec.writeSuccessTransactionsOwn
+            (writeSuccessTransactions witness)
+"H104" : (bv_unsigned (writeSuccessFrameSp witness) + 104)
+         ↦ₘ Z_to_bv 64 (writeSuccessTransactionBase witness)
+"H112" : (bv_unsigned (writeSuccessFrameSp witness) + 112)
+         ↦ₘ Z_to_bv 64 (length (writeSuccessTransactions witness))
+"H120" : (bv_unsigned (writeSuccessFrameSp witness) + 120) ↦ₘ? 160
+"H1640" : (bv_unsigned (writeSuccessFrameSp witness) + 1640) ↦ₘ? 256
+"H0" : bv_unsigned (writeSuccessFrameSp witness) ↦ₘ? 8
+"Hcopied" : Interfaces.writeSuccessExactCopiedTailWords
+              (writeSuccessFrameSp witness)
+              (writeSuccessDecodedBytes witness)
+"Hsource" : (bv_unsigned (writeSuccessFrameSp witness) + 312)
+            ↦ₘ∗ writeSuccessSourceBytes witness
+"Hvalues" : (bv_unsigned (writeSuccessFrameSp witness) + 1032)
+            ↦ₘ∗ take 69 (writeSuccessValues witness)
+"HvaluePrefix" : (bv_unsigned (writeSuccessFrameSp witness) + 1584)
+                 ↦ₘ∗ take 4
+                       (drop 552
+                          (IslarisMemory.bytes_of_u64s
+                             (writeSuccessValues witness)))
+"Hhash" : (bv_unsigned (writeSuccessFrameSp witness) + 1588)
+          ↦ₘ∗ WriteSuccessExactValueSpec.writeSuccessValueBlockHash
+                (writeSuccessValues witness)
+"HvalueTail" : (bv_unsigned (writeSuccessFrameSp witness) + 1620)
+               ↦ₘ∗ drop 588
+                     (IslarisMemory.bytes_of_u64s
+                        (writeSuccessValues witness))
+"H1624" : (bv_unsigned (writeSuccessFrameSp witness) + 1624) ↦ₘ? 16
+"Hslots" : writeSuccessTerminalSavedSlots witness
+"Hdecoded" : bv_unsigned (writeSuccessDecodedPointer witness)
+             ↦ₘ∗ writeSuccessDecodedBytes witness
+"Hpayload" : bv_unsigned
+               (WriteSuccessValueSpec.writeSuccessValueWord
+                  (writeSuccessValues witness) 4)
+             ↦ₘ∗ writeSuccessPayload witness
+"Hwithdrawal" : bv_unsigned (writeSuccessWithdrawalsBase witness)
+                ↦ₘ∗ writeSuccessWithdrawalsBytes witness
+"Hpost" : WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources
+            (writeSuccessFrameSp witness) (writeSuccessSourceBytes witness)
+            (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)
+"Hstatic" : writeSuccessNativeStaticResources
+"Hinv" : WriteSuccessTransactionsSpec.writeSuccessTransactionsInvariant
+           (writeSuccessFrameSp witness)
+           (writeSuccessTransactionBase witness)
+           (writeSuccessTransactions witness) []
+           (writeSuccessTransactions witness)
+           (writeSuccessTransactionBytes witness) []
+           (writeSuccessTransactionBytes witness)
+"Hwell" : ⌜writeSuccessWitnessWellFormed args witness⌝
+"HP" : P
+"Htrue2" : True
+--------------------------------------∗
+False

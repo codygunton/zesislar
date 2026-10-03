@@ -340,16 +340,12 @@
     "H39": "Prop"
   },
   "imports": [
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsCount",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-    "ZesuSsz.Export.Snapshots",
-    "ZesuSsz.Contracts.IslarisMemory",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    "ZesuSsz.Automation.All",
+    "ZesuSsz.Automation.SealedCoverage",
+    "isla.riscv64.riscv64",
+    "ZesuSsz.Contracts.IslarisMachine",
+    "isla.spec",
+    "isla.opsem"
   ],
   "stack_pointer": "sp",
   "return_point": true,

@@ -268,7 +268,9 @@
       "(bv_unsigned sp - 16) \u21a6\u2098? 16",
       "spec_trace tail"
     ],
-    "persistent": [],
+    "persistent": [
+      "mmio_range (604086456 + 8) 16"
+    ],
     "arguments": "sp value oldra old5 old11 tail P",
     "local_sorts": {
       "Sigma": "Type",
@@ -334,16 +336,12 @@
       "H38": "Prop"
     },
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsNonceCall",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-      "ZesuSsz.Export.Snapshots",
-      "ZesuSsz.Contracts.IslarisMemory",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem"
     ],
     "stack_pointer": "sp",
     "return_point": true,
@@ -622,7 +620,9 @@
       "(bv_unsigned sp - 16) \u21a6\u2098? 16",
       "spec_trace tail"
     ],
-    "persistent": [],
+    "persistent": [
+      "mmio_range (604086456 + 8) 16"
+    ],
     "arguments": "sp value oldra old5 old11 tail P",
     "local_sorts": {
       "Sigma": "Type",
@@ -688,16 +688,12 @@
       "H38": "Prop"
     },
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-      "ZesuSsz.Export.Snapshots",
-      "ZesuSsz.Contracts.IslarisMemory",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem"
     ],
     "stack_pointer": "sp",
     "return_point": true,
@@ -977,7 +973,9 @@
       "(bv_unsigned sp - 16) \u21a6\u2098? 16",
       "spec_trace tail"
     ],
-    "persistent": [],
+    "persistent": [
+      "mmio_range (604086456 + 8) 16"
+    ],
     "arguments": "sp value oldra old5 old11 tail P",
     "local_sorts": {
       "Sigma": "Type",
@@ -1043,16 +1041,12 @@
       "H38": "Prop"
     },
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsAccessCountCall",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-      "ZesuSsz.Export.Snapshots",
-      "ZesuSsz.Contracts.IslarisMemory",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem"
     ],
     "stack_pointer": "sp",
     "return_point": true,
@@ -1333,7 +1327,9 @@
       "(bv_unsigned sp - 16) \u21a6\u2098? 16",
       "spec_trace tail"
     ],
-    "persistent": [],
+    "persistent": [
+      "mmio_range (604086456 + 8) 16"
+    ],
     "arguments": "sp savedX22 old22 old_ra old5 old_data old_size tail P",
     "local_sorts": {
       "Sigma": "Type",
@@ -1400,16 +1396,12 @@
       "H39": "Prop"
     },
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsReturnCount",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-      "ZesuSsz.Export.Snapshots",
-      "ZesuSsz.Contracts.IslarisMemory",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem"
     ],
     "stack_pointer": "sp",
     "return_point": true,
@@ -1693,7 +1685,9 @@
       "(bv_unsigned sp - 16) \u21a6\u2098? 16",
       "spec_trace tail"
     ],
-    "persistent": [],
+    "persistent": [
+      "mmio_range (604086456 + 8) 16"
+    ],
     "arguments": "sp count oldra old5 old11 tail P",
     "local_sorts": {
       "Sigma": "Type",
@@ -1760,16 +1754,12 @@
       "H39": "Prop"
     },
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsCount",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-      "ZesuSsz.Export.Snapshots",
-      "ZesuSsz.Contracts.IslarisMemory",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem"
     ],
     "stack_pointer": "sp",
     "return_point": true,
@@ -2047,7 +2037,9 @@
       "(bv_unsigned sp - 16) \u21a6\u2098? 16",
       "spec_trace tail"
     ],
-    "persistent": [],
+    "persistent": [
+      "mmio_range (604086456 + 8) 16"
+    ],
     "arguments": "sp value oldra old5 old11 tail P",
     "local_sorts": {
       "Sigma": "Type",
@@ -2113,16 +2105,12 @@
       "H38": "Prop"
     },
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsSignatureVCall",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-      "ZesuSsz.Export.Snapshots",
-      "ZesuSsz.Contracts.IslarisMemory",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem"
     ],
     "stack_pointer": "sp",
     "return_point": true,
