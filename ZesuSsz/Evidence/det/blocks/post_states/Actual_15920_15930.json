@@ -1,0 +1,93 @@
+{
+  "entry": "0x15930",
+  "source_predecessor": "0x15920",
+  "kind": "certified-successor-expansion",
+  "source_theorem": "write_success_exact_tail_fields_fifth_block",
+  "source_entry": "tailFieldsCallerReturn args witness oldS1 (BV64 0x15920) (writeSuccessPostBytes15910 (writeSuccessPostData witness)) (tailFieldsAfterFourthCallEvents witness)",
+  "source_post": "tailFieldsCallerReturn args witness oldS1 (BV64 0x15930) (writeSuccessPostBytes15920 (writeSuccessPostData witness)) (tailFieldsAfterFifthCallEvents witness)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "islaG0",
+      "islaG Sigma"
+    ],
+    [
+      "H",
+      "threadG"
+    ],
+    [
+      "Decoded",
+      "Type"
+    ],
+    [
+      "WriteSuccessMemoryRepresentation0",
+      "WriteSuccessMemoryRepresentation Decoded"
+    ],
+    [
+      "args",
+      "WriteSuccessArgs Decoded"
+    ],
+    [
+      "witness",
+      "writeSuccessNativeWitness Decoded"
+    ],
+    [
+      "oldS1",
+      "bv 64"
+    ],
+    [
+      "STOP",
+      "iProp Sigma"
+    ],
+    [
+      "stack2",
+      "bv 64"
+    ]
+  ],
+  "persistent": [],
+  "spatial": [
+    "reg_col zesu_ram_sys_regs",
+    "\"x1\" \u21a6\u1d63 RVal_Bits 88368%bv",
+    "\"x5\" \u21a6\u1d63 RVal_Bits 604086456%bv",
+    "\"x10\" \u21a6\u1d63 RVal_Bits (writeSuccessPostBytes15920 (writeSuccessPostData witness)).1",
+    "\"x11\" \u21a6\u1d63 RVal_Bits (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2",
+    "\"x6\" \u21a6\u1d63: \u03bb r6 : valu, \u231cvalu_has_shape r6 (BitsShape 64)\u231d",
+    "\"x2\" \u21a6\u1d63 RVal_Bits (writeSuccessFrameSp witness)",
+    "\"x8\" \u21a6\u1d63 RVal_Bits 0%bv",
+    "\"x9\" \u21a6\u1d63 RVal_Bits oldS1",
+    "bv_unsigned (writeSuccessFrameSp witness - 48) \u21a6\u2098\u2217 [Z_to_bv 8 (bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `mod` 256); Z_to_bv 8 ((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned (writeSuccessPostBytes15920 (writeSuccessPostData witness)).2 `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 40) \u21a6\u2098 89232",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 32) \u21a6\u2098 stack2",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 24) \u21a6\u2098 oldS1",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 16) \u21a6\u2098 0",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 8) \u21a6\u2098 88368",
+    "True",
+    "mmio_range (604086456 + 8) 16",
+    "spec_trace (tailFieldsAfterFifthCallEvents witness)",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "(bv_unsigned (writeSuccessFrameSp witness) - 80) \u21a6\u2098? 32",
+    "(bv_unsigned (writeSuccessFrameSp witness) + 920) \u21a6\u2098\u2217 [(writeSuccessPostBytes158e0 (writeSuccessPostData witness)).1; (writeSuccessPostBytes158e0 (writeSuccessPostData witness)).2]",
+    "(bv_unsigned (writeSuccessFrameSp witness) + 936) \u21a6\u2098\u2217 tailFieldsDescriptorWords (writeSuccessPostData witness)",
+    "(bv_unsigned (writeSuccessFrameSp witness) + 16) \u21a6\u2098\u2217 WriteSuccessExactTailFieldsCopiedJunction.tailFieldsCopiedWords (writeSuccessDecodedBytes witness)",
+    "writeSuccessDescriptorResources (writeSuccessPostBytes158e0 (writeSuccessPostData witness)) (writeSuccessPostBytes158e0Payload (writeSuccessPostData witness))",
+    "tailFieldsActivePayloads (writeSuccessDecodedBytes witness) (writeSuccessPostData witness)",
+    "tailFieldsCallerRest args witness",
+    "True",
+    "\u231cbv_unsigned (writeSuccessFrameSp witness) `mod` 16 = 0 \u2227 0 \u2264 bv_unsigned (writeSuccessFrameSp witness) - 80 \u2227 bv_unsigned (writeSuccessFrameSp witness) + 1896 < 0 + 1073741824\u231d",
+    "True"
+  ],
+  "direct_writers": [
+    {
+      "pc": "0x14d84",
+      "offset": 24
+    },
+    {
+      "pc": "0x14d8c",
+      "offset": 16
+    }
+  ],
+  "modern_contract_probe": "stalls at initialized scratch versus uninitialized48byte scratch"
+}
