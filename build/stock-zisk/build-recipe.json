@@ -1,7 +1,7 @@
 {
   "sources": {
     "zesu": {
-      "commit": "d8071c422f0faf2c52d85b401192fdffc31fd5ac",
+      "commit": "b5483dda21d72405c50a22cb6406a1231e51a579",
       "tracked_sources_unchanged": true
     },
     "zisk": {
@@ -14,33 +14,52 @@
     }
   },
   "zig_version": "0.16.0",
-  "jobs": 8,
+  "jobs": 24,
+  "description": "stock zesu built with the authors' recipe at a different zesu revision",
+  "zig_executable": "/usr/bin/zig",
+  "zig_executable_sha256": "9640c29ae441820b37f09052fc32ece316e7587b5a8c9d0df61aa558e2d4f336",
   "object_command": [
     "zig",
     "build",
     "rv64im-object",
     "-Doptimize=ReleaseFast",
-    "-j8",
+    "-j24",
     "--cache-dir",
-    "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk-author/zig-local",
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock/zig-local",
     "--global-cache-dir",
-    "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk-author/zig-global"
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock/zig-global"
   ],
   "link_command": [
     "zig",
     "build",
     "-Doptimize=ReleaseFast",
-    "-Dzesu_obj=/tmp/worker2-stock-zesu/zig-out/lib/zesu.o",
-    "-j8",
+    "-Dzesu_obj=/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/zig-out/lib/zesu.o",
+    "-j24",
     "--global-cache-dir",
-    "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk-author/zig-global"
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock/zig-global"
   ],
   "linker_script_sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd",
   "runtime_library_sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491",
-  "stock_object_sha256": "59bf42e9cccef4ef06f3fa2985e9081015c2cd16119330eeba6eb055bf5471f7",
-  "elf_sha256": "b2904b0802c8443a5734c8e236cc60b0ccceab631171b5798df874040e1d3a64",
-  "adapters": {
-    "exit.zig": "af4ebe06472c9dbffeea0601ba9521d0d3666b3bf28cddd969c66e1a09d84095"
+  "stock_object_sha256": "dcd4b1bec1b02f94d7c4bca3d8323c386cfc7b780995235d6947790bb68d1afe",
+  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "adapters": {},
+  "link_without_exit_adapter": {
+    "passed": true,
+    "host_sha256": "b2bce6c2d5fb4184e0cf7c8a35da52e33c5d733cc3aa6bd5c3dfe64a0cefebae"
+  },
+  "measurements": {
+    "object": {
+      "elapsed_seconds": 18.53,
+      "peak_rss_kib": 468188,
+      "workers": 24,
+      "exit_code": 0
+    },
+    "link": {
+      "elapsed_seconds": 3.066,
+      "peak_rss_kib": 301368,
+      "workers": 24,
+      "exit_code": 0
+    }
   },
   "preserved_inputs": [
     {
@@ -60,5 +79,16 @@
     "elapsed_seconds": 0.021,
     "peak_rss_kib": 19180,
     "workers": 1
+  },
+  "historical_reports": {
+    "source_commit": "c9165ca4",
+    "source_elf_sha256": "b2904b0802c8443a5734c8e236cc60b0ccceab631171b5798df874040e1d3a64",
+    "files": [
+      "inventory.json",
+      "INVENTORY.md",
+      "verification.json",
+      "comparison-generic-script/"
+    ],
+    "status": "Pilot evidence only. These files do not describe the selected ELF."
   }
 }
