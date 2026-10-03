@@ -20,7 +20,10 @@
       packages = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          endpointElf = binaryFv.packages.${system}.zesuSszDecodeRv64Elf;
+          endpointElf = import ./nix/endpoint-elf.nix {
+            inherit pkgs;
+            endpointElf = binaryFv.packages.${system}.zesuSszDecodeRv64Elf;
+          };
           target = import ./nix/target.nix {
             inherit pkgs endpointElf;
             zesuSource = zesu;

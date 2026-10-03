@@ -151,7 +151,7 @@ read-input-traces: $(READ_INPUT_TRACE_DIR)/instrs.v
 
 $(WRITE_SUCCESS_DUMP_STAMP): build/endpoint-elf build/endpoint-cfg experiments/islaris-write-success/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --cfg build/endpoint-cfg/zesu-cfg.json \
 	  --profile experiments/islaris-write-success/profile.json \
 	  --split-output-dir $(WRITE_SUCCESS_DUMP_DIR)
@@ -200,7 +200,7 @@ startup-traces: $(STARTUP_TRACE_DIR)/instrs.v
 
 $(STARTUP_DUMP): build/endpoint-elf experiments/islaris-startup/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --profile experiments/islaris-startup/profile.json --output $@
 
 $(STARTUP_TRACE_DIR)/instrs.v: $(STARTUP_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
@@ -216,7 +216,7 @@ main-traces: $(MAIN_TRACE_DIR)/instrs.v
 
 $(MAIN_DUMP): build/endpoint-elf experiments/islaris-main/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --profile experiments/islaris-main/profile.json --output $@
 
 $(MAIN_TRACE_DIR)/instrs.v: $(MAIN_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
@@ -229,22 +229,22 @@ $(MAIN_TRACE_DIR)/instrs.v: $(MAIN_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 
 $(ZKVM_EXIT_DUMP): build/endpoint-elf experiments/islaris-zkvm-exit/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --profile experiments/islaris-zkvm-exit/profile.json --output $@
 
 $(ALLOCATOR_GET_DUMP): build/endpoint-elf experiments/islaris-allocator-get/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --profile experiments/islaris-allocator-get/profile.json --output $@
 
 $(READ_INPUT_DUMP): build/endpoint-elf experiments/islaris-read-input/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --profile experiments/islaris-read-input/profile.json --output $@
 
 $(WRITE_FAILURE_DUMP): build/endpoint-elf experiments/islaris-write-failure/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
 	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
+	  --disassembly build/endpoint-elf/meta/disassembly.objdump \
 	  --profile experiments/islaris-write-failure/profile.json --output $@
 
 $(WRITE_FAILURE_TRACE_DIR)/instrs.v: $(WRITE_FAILURE_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
