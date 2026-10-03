@@ -41,5 +41,24 @@
   "elf_sha256": "b2904b0802c8443a5734c8e236cc60b0ccceab631171b5798df874040e1d3a64",
   "adapters": {
     "exit.zig": "af4ebe06472c9dbffeea0601ba9521d0d3666b3bf28cddd969c66e1a09d84095"
+  },
+  "preserved_inputs": [
+    {
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk/zisk-target/riscv64ima-zisk-zkvm-elf/release/libziskos_staticlib.a",
+      "archive_path": "/home/cody/zesislar-archive/stock-inputs/f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491-libziskos_staticlib.a",
+      "sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491",
+      "size_bytes": 3972438
+    },
+    {
+      "source_path": "/tmp/worker2-stock-zesu/zig-out/lib/zesu.o",
+      "archive_path": "/home/cody/zesislar-archive/stock-inputs/59bf42e9cccef4ef06f3fa2985e9081015c2cd16119330eeba6eb055bf5471f7-zesu.o",
+      "sha256": "59bf42e9cccef4ef06f3fa2985e9081015c2cd16119330eeba6eb055bf5471f7",
+      "size_bytes": 11670920
+    }
+  ],
+  "preservation_measurement": {
+    "elapsed_seconds": 0.021,
+    "peak_rss_kib": 19180,
+    "workers": 1
   }
 }
