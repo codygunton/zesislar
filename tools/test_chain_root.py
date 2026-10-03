@@ -1,3 +1,5 @@
+from contextlib import redirect_stderr
+import io
 import json
 from pathlib import Path
 import sys
@@ -11,6 +13,15 @@ import chain_root
 
 
 class ChainRootTests(unittest.TestCase):
+    def test_cli_rejects_a_legacy_boundary_as_the_chain_root(self):
+        with patch.object(sys, "argv", ["chain_root.py", "--entries", "/tmp/unused",
+                "--build-dir", "/tmp/unused", "--root", "0x14d80"]), \
+                redirect_stderr(io.StringIO()) as errors:
+            with self.assertRaises(SystemExit) as raised:
+                chain_root.main()
+        self.assertEqual(raised.exception.code, 2)
+        self.assertIn("Level 1 entry 0x14d30", errors.getvalue())
+
     def test_back_edge_uses_ancestry_not_addresses(self):
         blocks = {10: {"successors": ["0x5"]},
                   5: {"successors": ["0xf"]},
@@ -93,6 +104,22 @@ class ChainRootTests(unittest.TestCase):
                     side_effect=lambda path: entries.read_bytes().decode() if path == entries else '{}'), \
                     patch.object(chain_root, "graph", return_value=blocks):
                 with self.assertRaisesRegex(ValueError, 'root declaration'):
+                    chain_root.run(args)
+
+    def test_level1_root_rejects_changed_resources_with_same_provenance(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entries = root / "entry.json"
+            entries.write_text(json.dumps({"entry": "0x14d30", "outcome": "reached",
+                "binders": "(sp : bv 64)", "spatial": ["P"], "coq": [],
+                "root_provenance": {"source":
+                    "WriteSuccessNativeContract.writeSuccessNativeEntry"}}))
+            cfg = root / "cfg.json"
+            cfg.write_text(json.dumps({"functions": [{"start": 0x14d30,
+                "blocks": [{"start": 0x14d30, "successors": []}]}]}))
+            args = SimpleNamespace(entries=entries, root="0x14d30", cfg=cfg)
+            with patch.object(chain_root, "render_successor", return_value="changed resources"):
+                with self.assertRaisesRegex(ValueError, 'root resources differ'):
                     chain_root.run(args)
 
     def test_same_successor_variants_have_distinct_fingerprints(self):
