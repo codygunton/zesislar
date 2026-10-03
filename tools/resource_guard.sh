@@ -15,8 +15,8 @@
 #   gate-jobs [TARGET]   the concurrency a gate may use: 24
 #   coqc-count [nonwriter] count actual compilers, excluding shell wrappers
 #   wait                 block until one more job may start
-#   reserve-coqc PID     reserve one machine-wide compiler slot
-#   confirm-coqc TOKEN   recheck a reserved launch before starting it
+#   reserve-coqc PID     request a compiler launch without holding a slot
+#   confirm-coqc TOKEN   admit a compiler launch atomically
 #   watch                the polling loop; kills the youngest scope at 90 %
 #   scope NAME [--cpu SECONDS] -- CMD    run CMD in its own 6 GiB scope, registered
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
@@ -276,11 +276,9 @@ live_launches() {
   done
 }
 
-# A scratch compiler keeps a reservation until its child exits.
-# Pending reservations do not occupy slots until confirmation succeeds.
+# An admitted launch keeps its slot until its owner or compiler exits.
 live_reservations() {
-  local marker owner child now modified
-  now=$(date +%s)
+  local marker owner child
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
@@ -291,31 +289,34 @@ live_reservations() {
     if [[ "$child" =~ ^[0-9]+$ ]] && [ ! -d "$PROC_ROOT/$child" ]; then
       rm -f "$marker"; continue
     fi
-    if [ "$child" != pending ]; then
-      modified=$(stat -c %Y "$marker" 2>/dev/null) || continue
-      if (( now - modified > 60 )) && ! reservation_compiler "$marker" >/dev/null; then
-        rm -f "$marker"; continue
-      fi
-    fi
     echo "$marker"
   done
 }
 
-reservation_writer() { sed -n 's/^writer=//p' "$1"; }
+reservation_writer() {
+  local line
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in writer=*) printf '%s\n' "${line#writer=}" ;; esac
+  done < "$1"
+}
 
 # A recorder can be the marked child. Count its actual compiler once.
 reservation_compiler() {
-  local child descendant queue
+  local child descendant queue comm
   read -r child < "$1" || return 1
-  [[ "$child" =~ ^[0-9]+$ ]] || { child=${1##*/}; child=${child%%.*}; }
+  # An unmarked launch has no compiler yet. Its owner can include this scan.
+  [[ "$child" =~ ^[0-9]+$ ]] || return 1
   queue=$child
   while [ -n "$queue" ]; do
     descendant=${queue%% *}
     if [ "$queue" = "$descendant" ]; then queue=""; else queue=${queue#* }; fi
-    if [ "$(cat "$PROC_ROOT/$descendant/comm" 2>/dev/null)" = coqc ] && compiler_process "$descendant"; then
+    comm=""
+    { IFS= read -r comm < "$PROC_ROOT/$descendant/comm"; } 2>/dev/null || true
+    if [ "$comm" = coqc ] && compiler_process "$descendant"; then
       echo "$descendant"; return 0
     fi
-    child=$(cat "$PROC_ROOT/$descendant/task/$descendant/children" 2>/dev/null)
+    child=""
+    { IFS= read -r child < "$PROC_ROOT/$descendant/task/$descendant/children"; } 2>/dev/null || true
     for child in $child; do queue="${queue:+$queue }$child"; done
   done
   return 1
@@ -391,99 +392,111 @@ reservation_class() {
   fi
 }
 
-# The gate mutex serializes confirmation. A wanted gate cannot miss a launch.
+# A request has no file and holds no slot while it waits.
 reserve_coqc() {
-  local owner=$1 marker holder reason admission status held=""
-  [[ "$owner" =~ ^[0-9]+$ ]] || return 2
-  while kill -0 "$owner" 2>/dev/null; do
-    exec 7>>"$GATE_MUTEX"
-    flock 7
-    holder=""
-    if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ]; then
-      holder=$(lock_live_unlocked 2>/dev/null) || holder=""
-    fi
-    reason=$(hold_reason no-lock) || {
-      status=$?; flock -u 7; exec 7>&-; return "$status"
-    }
-    admission=$(compiler_admission_reason) || {
-      status=$?; flock -u 7; exec 7>&-; return "$status"
-    }
-    if [ -z "$reason$holder$admission" ]; then
-      marker=$(mktemp "$COQC_RESERVATIONS/$owner.XXXXXXXX")
-      local aggregate=""
-      [ -n "$WRITER_ID" ] || aggregate="${ZESU_AGGREGATE_SLICE:-}"
-      printf 'pending\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$marker"
-      flock -u 7
-      exec 7>&-
-      echo "$marker"
-      return 0
-    fi
-    reason=${reason:-${holder:+gate lock: $holder}}
-    reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then note "HOLD reservation: class=$(reservation_class) $reason"; held=$reason; fi
-    flock -u 7
-    exec 7>&-
-    sleep "$POLL_SECONDS"
-  done
-  return 3
+  local owner=$1 marker
+  if ! [[ "$owner" =~ ^[0-9]+$ ]] || ! kill -0 "$owner" 2>/dev/null; then
+    echo "resource guard: invalid reservation owner: $owner" >&2
+    return 2
+  fi
+  marker="$COQC_RESERVATIONS/$owner.$RANDOM.$RANDOM"
+  echo "$marker"
 }
 
 reservation_path() {
   [[ "$(dirname "$1")" == "$COQC_RESERVATIONS" && -f "$1" ]]
 }
 
-# A slot can wait while resources change. Recheck the complete launch
-# conditions under the reservation mutex immediately before the compiler.
+reservation_holders() {
+  local marker state writer holders=""
+  while IFS= read -r marker; do
+    read -r state < "$marker" || continue
+    writer=$(reservation_writer "$marker")
+    holders="${holders:+$holders,}${marker##*/}:$state:${writer:-batch}"
+  done < <(live_reservations)
+  echo "${holders:-none}"
+}
+
+# A confirmed slot remains valid while its owner lives. This read-only
+# check lets an admitted launch drain without joining the admission queue.
+confirmed_reservation() {
+  local marker=$1 owner state
+  owner=${marker##*/}; owner=${owner%%.*}
+  [[ "$owner" =~ ^[0-9]+$ ]] || return 1
+  kill -0 "$owner" 2>/dev/null || return 1
+  reservation_path "$marker" || return 1
+  read -r state < "$marker" || return 1
+  [ "$state" != pending ] || return 1
+  [ "$(reservation_writer "$marker")" = "$WRITER_ID" ]
+}
+
+# Take the slot atomically immediately before launch. An admitted caller
+# can confirm again without waiting for admission while it holds its slot.
 confirm_coqc() {
-  local marker=$1 reason holder admission owner status state confirming replacement held=""
+  local marker=$1 reason holder admission owner status state replacement aggregate held=""
+  confirmed_reservation "$marker" && return 0
   while :; do
     exec 7>>"$GATE_MUTEX"
-    flock 7
+    flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
     owner=${marker##*/}; owner=${owner%%.*}
-    if ! reservation_path "$marker" || ! kill -0 "$owner" 2>/dev/null \
-       || [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
+    if [[ "$(dirname "$marker")" != "$COQC_RESERVATIONS" ]] \
+       || ! [[ "$owner" =~ ^[0-9]+$ ]] || ! kill -0 "$owner" 2>/dev/null; then
+      echo "resource guard: invalid reservation path or dead owner: $marker" >&2
       flock -u 7; exec 7>&-; return 2
+    fi
+    if reservation_path "$marker"; then
+      if [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
+        echo "resource guard: reservation writer mismatch: $marker" >&2
+        flock -u 7; exec 7>&-; return 2
+      fi
+      if ! read -r state < "$marker"; then
+        echo "resource guard: cannot read reservation: $marker" >&2
+        flock -u 7; exec 7>&-; return 2
+      fi
+      if [ "$state" != pending ]; then
+        flock -u 7; exec 7>&-; return 0
+      fi
+      # Remove requests from the old protocol before any wait.
+      rm -f -- "$marker"
     fi
     holder=""
     if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ]; then
       holder=$(lock_live_unlocked 2>/dev/null) || holder=""
     fi
-    # A foreign pending launch must release its reservation for the gate.
-    # Waiting here would make the gate and this reservation wait on each other.
     if [ -n "$holder" ]; then
-      note "CANCEL reservation launch for gate: $holder"
-      echo "resource guard: reservation launch refused for gate: $holder" >&2
-      flock -u 7; exec 7>&-
-      return 3
+      echo "resource guard: confirmation refused by gate lock: $holder" >&2
+      flock -u 7; exec 7>&-; return 3
     fi
     reason=$(hold_reason no-lock) || {
-      status=$?; flock -u 7; exec 7>&-; return "$status"
+      status=$?; echo "resource guard: confirmation resource check failed ($status)" >&2
+      flock -u 7; exec 7>&-; return "$status"
     }
-    read -r state < "$marker" || { flock -u 7; exec 7>&-; return 2; }
-    confirming=1
-    [ "$state" != pending ] || confirming=0
-    admission=$(compiler_admission_reason "$confirming") || {
-      status=$?; flock -u 7; exec 7>&-; return "$status"
+    admission=$(compiler_admission_reason) || {
+      status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
+      flock -u 7; exec 7>&-; return "$status"
     }
-    # Admission can remove this token if its earlier confirmation expired.
-    if ! reservation_path "$marker"; then
-      flock -u 7; exec 7>&-; return 2
-    fi
     if [ -z "$reason$holder$admission" ]; then
-      [ -z "$held" ] || note "RESUME reservation launch: $held"
-      if [ "$state" = pending ]; then
-        replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
-          flock -u 7; exec 7>&-; return 2
-        }
-        sed '1s/^pending$/confirmed/' "$marker" > "$replacement"
-        mv -f -- "$replacement" "$marker"
+      replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
+        echo "resource guard: cannot create confirmation file" >&2
+        flock -u 7; exec 7>&-; return 2
+      }
+      aggregate=""
+      [ -n "$WRITER_ID" ] || aggregate="${ZESU_AGGREGATE_SLICE:-}"
+      if ! printf 'confirmed\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$replacement" \
+         || ! mv -f -- "$replacement" "$marker"; then
+        echo "resource guard: cannot publish reservation: $marker" >&2
+        rm -f -- "$replacement"
+        flock -u 7; exec 7>&-; return 2
       fi
-      flock -u 7; exec 7>&-
-      return 0
+      [ -z "$held" ] || note "RESUME reservation launch: $held"
+      flock -u 7; exec 7>&-; return 0
     fi
     reason=${reason:-${holder:+gate lock: $holder}}
     reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then note "HOLD reservation launch: class=$(reservation_class) $reason"; held=$reason; fi
+    if [ "$reason" != "$held" ]; then
+      note "HOLD reservation launch: class=$(reservation_class) $reason holders=$(reservation_holders)"
+      held=$reason
+    fi
     flock -u 7; exec 7>&-
     sleep "$POLL_SECONDS"
   done
@@ -491,10 +504,11 @@ confirm_coqc() {
 
 mark_coqc() {
   local marker=$1 child=$2
-  [[ "$child" =~ ^[0-9]+$ ]] || return 2
+  [[ "$child" =~ ^[0-9]+$ ]] || { echo "resource guard: invalid compiler PID: $child" >&2; return 2; }
   exec 7>>"$GATE_MUTEX"
   flock 7
   if ! reservation_path "$marker"; then
+    echo "resource guard: compiler reservation disappeared: $marker" >&2
     flock -u 7; exec 7>&-; return 2
   fi
   local writer replacement aggregate; writer=$(reservation_writer "$marker")
@@ -817,8 +831,11 @@ run_scope() {
     [[ "$cpu" =~ ^[1-9][0-9]*$ ]] || { echo "resource guard: invalid CPU limit" >&2; return 2; }
   fi
   [ "${1:-}" = "--" ] && shift
-  wait_for_gate
-  guard_wait || return $?
+  # An admitted launch must drain before a later gate can acquire its lock.
+  if ! reservation_path "${ZESU_COQC_RESERVATION:-}"; then
+    wait_for_gate
+    guard_wait || return $?
+  fi
   local status reservation="${ZESU_COQC_RESERVATION:-}" owned=0 child="" slice
   # Writers never enter a gate or batch aggregate.
   if [ -n "$WRITER_ID" ]; then

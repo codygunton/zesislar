@@ -1,0 +1,11 @@
+{
+  "blocks": [
+    "0x1568c",
+    "0x1573c"
+  ],
+  "source_waves": [
+    "deep_remaining_f15",
+    "word_trace1573c"
+  ],
+  "promotion_status": "staged; gates pending"
+}

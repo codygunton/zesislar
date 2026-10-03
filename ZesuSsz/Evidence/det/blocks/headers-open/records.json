@@ -1,0 +1,226 @@
+[
+  {
+    "variant": "headers-open",
+    "leader": "0x14e28",
+    "last": "0x14e34",
+    "n": 4,
+    "kind": "call:864(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e38"
+    ],
+    "lemma": "block_14e28",
+    "module": "Probe_14e28",
+    "stops": [],
+    "kept_succ": [
+      "0x14e38"
+    ],
+    "run": "A",
+    "seconds": 1.0,
+    "cpu": 0.0,
+    "peak_mib": 53,
+    "rc": 1,
+    "rss_samples": [
+      [
+        0,
+        26
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": false,
+    "at": [],
+    "goals": null,
+    "outcome": "error",
+    "error": [
+      "Error: Invalid character '-' in identifier \"A_headers-open_0x14e28_call\"."
+    ],
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers-open",
+    "leader": "0x14e38",
+    "last": "0x14e44",
+    "n": 4,
+    "kind": "call:848(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e48"
+    ],
+    "lemma": "block_14e38",
+    "module": "Probe_14e38",
+    "stops": [],
+    "kept_succ": [
+      "0x14e48"
+    ],
+    "run": "A",
+    "seconds": 1.0,
+    "cpu": 0.0,
+    "peak_mib": 55,
+    "rc": 1,
+    "rss_samples": [
+      [
+        0,
+        42
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": false,
+    "at": [],
+    "goals": null,
+    "outcome": "error",
+    "error": [
+      "Error: Invalid character '-' in identifier \"A_headers-open_0x14e38_call\"."
+    ],
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers-open",
+    "leader": "0x14e48",
+    "last": "0x14e54",
+    "n": 4,
+    "kind": "call:832(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e58"
+    ],
+    "lemma": "block_14e48",
+    "module": "Probe_14e48",
+    "stops": [],
+    "kept_succ": [
+      "0x14e58"
+    ],
+    "run": "A",
+    "seconds": 1.0,
+    "cpu": 0.0,
+    "peak_mib": 56,
+    "rc": 1,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": false,
+    "at": [],
+    "goals": null,
+    "outcome": "error",
+    "error": [
+      "Error: Invalid character '-' in identifier \"A_headers-open_0x14e48_call\"."
+    ],
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers-open",
+    "leader": "0x14e58",
+    "last": "0x14e64",
+    "n": 4,
+    "kind": "call:816(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e68"
+    ],
+    "lemma": "block_14e58",
+    "module": "Probe_14e58",
+    "stops": [],
+    "kept_succ": [
+      "0x14e68"
+    ],
+    "run": "A",
+    "seconds": 1.1,
+    "cpu": 0.0,
+    "peak_mib": 54,
+    "rc": 1,
+    "rss_samples": [
+      [
+        0,
+        48
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": false,
+    "at": [],
+    "goals": null,
+    "outcome": "error",
+    "error": [
+      "Error: Invalid character '-' in identifier \"A_headers-open_0x14e58_call\"."
+    ],
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers-open",
+    "leader": "0x14e68",
+    "last": "0x14e74",
+    "n": 4,
+    "kind": "call:800(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e78"
+    ],
+    "lemma": "block_14e68",
+    "module": "Probe_14e68",
+    "stops": [],
+    "kept_succ": [
+      "0x14e78"
+    ],
+    "run": "A",
+    "seconds": 1.0,
+    "cpu": 0.0,
+    "peak_mib": 56,
+    "rc": 1,
+    "rss_samples": [],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": false,
+    "at": [],
+    "goals": null,
+    "outcome": "error",
+    "error": [
+      "Error: Invalid character '-' in identifier \"A_headers-open_0x14e68_call\"."
+    ],
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers-open",
+    "leader": "0x14e78",
+    "last": "0x14e84",
+    "n": 4,
+    "kind": "call:784(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e88"
+    ],
+    "lemma": "block_14e78",
+    "module": "Probe_14e78",
+    "stops": [],
+    "kept_succ": [
+      "0x14e88"
+    ],
+    "run": "A",
+    "seconds": 1.1,
+    "cpu": 0.0,
+    "peak_mib": 54,
+    "rc": 1,
+    "rss_samples": [
+      [
+        0,
+        48
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": false,
+    "at": [],
+    "goals": null,
+    "outcome": "error",
+    "error": [
+      "Error: Invalid character '-' in identifier \"A_headers-open_0x14e78_call\"."
+    ],
+    "interior_handoffs_stripped": true
+  }
+]

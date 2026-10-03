@@ -1,0 +1,275 @@
+[
+  {
+    "variant": "concrete_capture_f15",
+    "leader": "0x150fc",
+    "last": "0x15104",
+    "n": 3,
+    "kind": "call:-1008(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15108"
+    ],
+    "lemma": "block_150fc",
+    "module": "Probe_150fc",
+    "stops": [],
+    "kept_succ": [
+      "0x15108"
+    ],
+    "run": "A",
+    "seconds": 9.1,
+    "cpu": 8.0,
+    "peak_mib": 1058,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        49
+      ],
+      [
+        5,
+        1020
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15100"
+    ],
+    "k_max": 2,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/concrete_capture_f15-A-driver/probes/A_concrete_capture_f15_0x150fc_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume\n    (reg_col\n       [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11));\n        (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15));\n        (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))])\n    (\u03bb x : bv 64 *",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "concrete_capture_f15",
+    "leader": "0x15148",
+    "last": "0x15150",
+    "n": 3,
+    "kind": "call:-1084(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15154"
+    ],
+    "lemma": "block_15148",
+    "module": "Probe_15148",
+    "stops": [],
+    "kept_succ": [
+      "0x15154"
+    ],
+    "run": "A",
+    "seconds": 8.1,
+    "cpu": 7.0,
+    "peak_mib": 1061,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        49
+      ],
+      [
+        5,
+        1044
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15148",
+      "0x1514c"
+    ],
+    "k_max": 2,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/concrete_capture_f15-A-driver/probes/A_concrete_capture_f15_0x15148_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume\n    (reg_col\n       [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11));\n        (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15));\n        (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits value)); (KindReg \"x27\", ExactShape (RVal_Bits b18))])\n    (\u03bb x : bv 64",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "concrete_capture_f15",
+    "leader": "0x151c4",
+    "last": "0x151cc",
+    "n": 3,
+    "kind": "call:-1208(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x151d0"
+    ],
+    "lemma": "block_151c4",
+    "module": "Probe_151c4",
+    "stops": [],
+    "kept_succ": [
+      "0x151d0"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.3,
+    "peak_mib": 1060,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        3
+      ],
+      [
+        5,
+        1016
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x151c8"
+    ],
+    "k_max": 2,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/concrete_capture_f15-A-driver/probes/A_concrete_capture_f15_0x151c4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume\n    (reg_col\n       [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11));\n        (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15));\n        (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))])\n    (\u03bb x : bv 64 *",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "concrete_capture_f15",
+    "leader": "0x153c0",
+    "last": "0x153cc",
+    "n": 4,
+    "kind": "call:-1720(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x153d0"
+    ],
+    "lemma": "block_153c0",
+    "module": "Probe_153c0",
+    "stops": [],
+    "kept_succ": [
+      "0x153d0"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.1,
+    "peak_mib": 1062,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        45
+      ],
+      [
+        5,
+        1026
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x153c4",
+      "0x153c8"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/concrete_capture_f15-A-driver/probes/A_concrete_capture_f15_0x153c0_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume\n    (reg_col\n       [(KindReg \"x8\", ExactShape (RVal_Bits b7)); (KindReg \"x9\", ExactShape (RVal_Bits b8)); (KindReg \"x18\", ExactShape (RVal_Bits b9)); (KindReg \"x19\", ExactShape (RVal_Bits b10));\n        (KindReg \"x20\", ExactShape (RVal_Bits b11)); (KindReg \"x21\", ExactShape (RVal_Bits b12)); (KindReg \"x22\", ExactShape (RVal_Bits savedX22)); (KindReg \"x23\", ExactShape (RVal_Bits b13));\n        (KindReg \"x24\", ExactShape (RVal_Bits b14)); (KindReg \"x25\", ExactShape (RVal_Bits b15)); (KindReg \"x26\", ExactShape (RVal_Bits b16)); (KindReg \"x27\", ExactShape (RVal_Bits b17))])\n    (\u03bb x : bv ",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "concrete_capture_f15",
+    "leader": "0x15574",
+    "last": "0x15580",
+    "n": 4,
+    "kind": "call:1940(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15584"
+    ],
+    "lemma": "block_15574",
+    "module": "Probe_15574",
+    "stops": [],
+    "kept_succ": [
+      "0x15584"
+    ],
+    "run": "A",
+    "seconds": 8.0,
+    "cpu": 7.4,
+    "peak_mib": 1068,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1017
+      ],
+      [
+        6,
+        1060
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15578",
+      "0x1557c"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/concrete_capture_f15-A-driver/probes/A_concrete_capture_f15_0x15574_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume\n    (reg_col\n       [(KindReg \"x8\", ExactShape (RVal_Bits b9)); (KindReg \"x9\", ExactShape (RVal_Bits b10)); (KindReg \"x18\", ExactShape (RVal_Bits count)); (KindReg \"x19\", ExactShape (RVal_Bits b11));\n        (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15));\n        (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))])\n    (\u03bb x : bv 6",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "concrete_capture_f15",
+    "leader": "0x15620",
+    "last": "0x15628",
+    "n": 3,
+    "kind": "call:1772(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x1562c"
+    ],
+    "lemma": "block_15620",
+    "module": "Probe_15620",
+    "stops": [],
+    "kept_succ": [
+      "0x1562c"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.0,
+    "peak_mib": 1055,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        26
+      ],
+      [
+        5,
+        1020
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15624"
+    ],
+    "k_max": 2,
+    "stop_hit": false,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/concrete_capture_f15-A-driver/probes/A_concrete_capture_f15_0x15620_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume\n    (reg_col\n       [(KindReg \"x8\", ExactShape (RVal_Bits b7)); (KindReg \"x9\", ExactShape (RVal_Bits b8)); (KindReg \"x18\", ExactShape (RVal_Bits b9)); (KindReg \"x19\", ExactShape (RVal_Bits b10));\n        (KindReg \"x20\", ExactShape (RVal_Bits b11)); (KindReg \"x21\", ExactShape (RVal_Bits b12)); (KindReg \"x22\", ExactShape (RVal_Bits b13)); (KindReg \"x23\", ExactShape (RVal_Bits b14));\n        (KindReg \"x24\", ExactShape (RVal_Bits b15)); (KindReg \"x25\", ExactShape (RVal_Bits b16)); (KindReg \"x26\", ExactShape (RVal_Bits b17)); (KindReg \"x27\", ExactShape (RVal_Bits b18))])\n    (\u03bb x : bv 64 *\u2097",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

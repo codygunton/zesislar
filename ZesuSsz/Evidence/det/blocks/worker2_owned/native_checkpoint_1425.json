@@ -1,0 +1,17 @@
+{
+  "contract": "encoderInt1645Contract",
+  "contract_result": "compiled_closed",
+  "int1645": {
+    "15108": "concrete successor reg_col matching residual",
+    "15128": "concrete successor reg_col matching residual",
+    "15564": "concrete one-tactic block compiled closed with tested shared helper; production rebuild pending"
+  },
+  "memcpy": {
+    "14d30": "source list witness required",
+    "151dc": "array slice witness and address equality required",
+    "15590": "array slice witness and address equality required",
+    "15694": "array slice witness and address equality required"
+  },
+  "classification": "diagnostics; no new closed block proofs",
+  "predecessor_14d80": "stalls at output call: entry lacks visible static bytes and payload trace"
+}

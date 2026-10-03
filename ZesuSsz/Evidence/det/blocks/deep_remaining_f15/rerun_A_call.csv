@@ -1,0 +1,2 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,deep_remaining_f15,0x1568c,2,branch,infer_boundary,reached,2,,,,,,5.0,4.8,1064,300,,0x156e8 0x15694

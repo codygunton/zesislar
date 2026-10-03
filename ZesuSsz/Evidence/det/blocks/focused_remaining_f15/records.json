@@ -1,0 +1,191 @@
+[
+  {
+    "variant": "focused_remaining_f15",
+    "leader": "0x151d4",
+    "last": "0x151d8",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151d4",
+    "stops": [],
+    "kept_succ": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "run": "A",
+    "seconds": 12.1,
+    "cpu": 11.2,
+    "peak_mib": 1856,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        19
+      ],
+      [
+        5,
+        1198
+      ],
+      [
+        10,
+        1738
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x151d8"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/focused_remaining_f15-A-driver/probes/A_focused_remaining_f15_0x151d4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_153c0",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "focused_remaining_f15",
+    "leader": "0x1521c",
+    "last": "0x15224",
+    "n": 3,
+    "kind": "branch",
+    "succ": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1521c",
+    "stops": [],
+    "kept_succ": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "run": "A",
+    "seconds": 8.0,
+    "cpu": 7.8,
+    "peak_mib": 1326,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1050
+      ],
+      [
+        6,
+        1199
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1521c",
+      "0x15220",
+      "0x15224"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/focused_remaining_f15-A-driver/probes/A_focused_remaining_f15_0x1521c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_153b4",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "focused_remaining_f15",
+    "leader": "0x1568c",
+    "last": "0x15690",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1568c",
+    "stops": [],
+    "kept_succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "run": "A",
+    "seconds": 6.1,
+    "cpu": 5.1,
+    "peak_mib": 1062,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        29
+      ],
+      [
+        5,
+        1046
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1568c",
+      "0x15690"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/focused_remaining_f15-A-driver/probes/A_focused_remaining_f15_0x1568c_call.out",
+    "pred_class": "C3",
+    "conclusion": "BLK_STOP_156e8",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "focused_remaining_f15",
+    "leader": "0x1573c",
+    "last": "0x1574c",
+    "n": 5,
+    "kind": "call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15750"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1573c",
+    "stops": [],
+    "kept_succ": [
+      "0x15750"
+    ],
+    "run": "A",
+    "seconds": 5.0,
+    "cpu": 4.5,
+    "peak_mib": 1025,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        1
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(87872"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/focused_remaining_f15-A-driver/probes/A_focused_remaining_f15_0x1573c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "\u2203 y : bv 64 *\u2097 (), (bv_unsigned sp + 912) \u21a6\u2098 y.1\u2097 \u2217 \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 912 < 0 + 1073741824\u231d \u2217\n    instr_pre (87872 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x8\" \u21a6\u1d63 RVal_Bits y.1\u2097 \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 (bv_unsigned sp + 912) \u21a6\u2098 y.1\u2097 \u2217 True)\nFile \"/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/focused_remaining_f15-A-driver/probes/A_focused_remaining_f15_0x1573c_call.v\", line 89, characters 0-7:\nWarning: The Unfocus command is deprecated [deprecated-unfocus,deprecated-since-8.8,deprecated,default]",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

@@ -1,0 +1,7 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,headers-open,0x14e28,4,call:864(ra) # 10190 <write_output>,block_14e28,error,1,,,,,,1.0,0.0,53,300,,0x14e38
+A,headers-open,0x14e38,4,call:848(ra) # 10190 <write_output>,block_14e38,error,1,,,,,,1.0,0.0,55,300,,0x14e48
+A,headers-open,0x14e48,4,call:832(ra) # 10190 <write_output>,block_14e48,error,1,,,,,,1.0,0.0,56,300,,0x14e58
+A,headers-open,0x14e58,4,call:816(ra) # 10190 <write_output>,block_14e58,error,1,,,,,,1.1,0.0,54,300,,0x14e68
+A,headers-open,0x14e68,4,call:800(ra) # 10190 <write_output>,block_14e68,error,1,,,,,,1.0,0.0,56,300,,0x14e78
+A,headers-open,0x14e78,4,call:784(ra) # 10190 <write_output>,block_14e78,error,1,,,,,,1.1,0.0,54,300,,0x14e88

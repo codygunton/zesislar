@@ -1,0 +1,189 @@
+[
+  {
+    "entry": "0x14f08",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (base : Z) (transactions : list writeSuccessTransaction) (processed : list writeSuccessTransaction) (transaction : writeSuccessTransaction) (rest : list writeSuccessTransaction) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactTransactionsLiveFieldRegion",
+    "source_resource": "(transactionIndexCellEntry sp (Z_to_bv 64 base)\n    (Z_to_bv 64 (Z.of_nat (length processed)))\n    (Z_to_bv 64 (Z.of_nat (length transactions)))\n    (transactionIndexSourceCaller sp base bytes (length processed)\n      (writeSuccessExactTransactionAfterTypeEvents sp transaction\n        (writeSuccessExactTransactionsEvents sp rest tail))\n      (transactionLoopSourceFrame sp base transactions processed (transaction :: rest) bytes P)))",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14f08.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "base",
+        "Z"
+      ],
+      [
+        "transactions",
+        "list writeSuccessTransaction"
+      ],
+      [
+        "processed",
+        "list writeSuccessTransaction"
+      ],
+      [
+        "transaction",
+        "writeSuccessTransaction"
+      ],
+      [
+        "rest",
+        "list writeSuccessTransaction"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "True"
+      ],
+      [
+        "H2",
+        "(bv_unsigned sp + 1896 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H3",
+        "True"
+      ],
+      [
+        "H4",
+        "True"
+      ],
+      [
+        "H5",
+        "transactionLoopSourceFacts sp base transactions processed (transaction :: rest) bytes"
+      ],
+      [
+        "H6",
+        "(288 * length processed + 288 <= length bytes)%nat"
+      ],
+      [
+        "H7",
+        "(base + Z.of_nat (length bytes) < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H8",
+        "(mapRamBase defaultMap \u2264 base)%Z"
+      ],
+      [
+        "H9",
+        "base `mod` 8 = 0"
+      ],
+      [
+        "H10",
+        "(bv_unsigned sp + 256 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H11",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp)%Z"
+      ],
+      [
+        "H12",
+        "(bv_unsigned sp `mod` 8 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (length transactions))))",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (length processed))))",
+      "(bv_unsigned sp + 104) \u21a6\u2098 Z_to_bv 64 base",
+      "(bv_unsigned sp + 248) \u21a6\u2098? 8",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+      "(bv_unsigned sp + 120) \u21a6\u2098? 128",
+      "(bv_unsigned sp + 256) \u21a6\u2098? 24",
+      "(bv_unsigned sp + 1640) \u21a6\u2098? 256",
+      "base \u21a6\u2098\u2217 bytes",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp + 1744))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 1))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp + 1744)) 1 = Some [default 0%bv (bytes !! (288 * length processed + 264)%nat)]) (WriteSuccessOutputSemantic.writeOutputPayloadsSpec (WriteSuccessOutputDescriptors.writeSuccessOptionalU64Descriptors sp (writeSuccessTransactionChainId transaction) ++ ((sp - 16)%bv, 8%bv) :: ((sp - 32)%bv, 16%bv) :: WriteSuccessOutputDescriptors.writeSuccessOptionalU128Descriptors sp (writeSuccessTransactionGasPriorityFee transaction) ++ ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessOptionalAddressDescriptors sp (writeSuccessTransactionTo transaction) ++ ((sp - 48)%bv, 32%bv) :: ((sp - 48)%bv, 8%bv) :: (writeSuccessTransactionDataPointer transaction, Z_to_bv 64 (Z.of_nat (length (writeSuccessTransactionData transaction)))) :: ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessAccessListsDescriptors sp (writeSuccessTransactionAccessEntries transaction) ++ ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessBlobHashesDescriptors sp (length (writeSuccessTransactionBlobHashes transaction)) ++ ((sp - 32)%bv, 16%bv) :: ((sp - 16)%bv, 8%bv) :: WriteSuccessOutputDescriptors.writeSuccessAuthorizationsDescriptors sp (length (writeSuccessTransactionAuthorizations transaction)) ++ [((sp - 16)%bv, 8%bv); ((sp - 48)%bv, 32%bv); ((sp - 48)%bv, 32%bv)]) (map WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessEncodeFragments.writeSuccessOptionalFragments WriteSuccessObservation.writeSuccessEncodeU64 (WriteSuccessRepresentation.writeSuccessOptionalWordValue (writeSuccessTransactionChainId transaction)) ++ WriteSuccessObservation.writeSuccessEncodeU64 (bv_unsigned (writeSuccessTransactionNonce transaction)) :: WriteSuccessObservation.writeSuccessEncodeU128 (WriteSuccessRepresentation.writeSuccessPairValue (writeSuccessTransactionGasPrice transaction)) :: WriteSuccessEncodeFragments.writeSuccessOptionalFragments WriteSuccessObservation.writeSuccessEncodeU128 (WriteSuccessRepresentation.writeSuccessOptionalPairValue (writeSuccessTransactionGasPriorityFee transaction)) ++ WriteSuccessObservation.writeSuccessEncodeU64 (bv_unsigned (writeSuccessTransactionGasLimit transaction)) :: WriteSuccessEncodeFragments.writeSuccessOptionalBytesFragments (option_map WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionTo transaction)) ++ WriteSuccessObservation.writeSuccessEncodeU256 (WriteSuccessRepresentation.writeSuccessWordsValue (writeSuccessTransactionValue transaction)) :: WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionData transaction)))) :: WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionData transaction) :: WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (map WriteSuccessRepresentation.writeSuccessAccessObservation (writeSuccessTransactionAccessEntries transaction)))) :: concat (map WriteSuccessEncodeFragments.writeSuccessAccessFragments (map WriteSuccessRepresentation.writeSuccessAccessObservation (writeSuccessTransactionAccessEntries transaction))) ++ WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (map WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionBlobHashes transaction)))) :: concat (map (\u03bb bytes0 : Endpoints.ByteString, [bytes0]) (map WriteSuccessOutputSemantic.writeSuccessPublicBytes (writeSuccessTransactionBlobHashes transaction))) ++ WriteSuccessObservation.writeSuccessEncodeU128 (WriteSuccessRepresentation.writeSuccessPairValue (writeSuccessTransactionMaxFeePerBlobGas transaction)) :: WriteSuccessObservation.writeSuccessEncodeU64 (Z.of_nat (length (map WriteSuccessRepresentation.writeSuccessAuthorizationObservationOfBytes (writeSuccessTransactionAuthorizations transaction)))) :: concat (map WriteSuccessEncodeFragments.writeSuccessAuthorizationFragments (map WriteSuccessRepresentation.writeSuccessAuthorizationObservationOfBytes (writeSuccessTransactionAuthorizations transaction))) ++ [WriteSuccessObservation.writeSuccessEncodeU64 (bv_unsigned (writeSuccessTransactionV transaction)); WriteSuccessObservation.writeSuccessEncodeU256 (WriteSuccessRepresentation.writeSuccessWordsValue (writeSuccessTransactionR transaction)); WriteSuccessObservation.writeSuccessEncodeU256 (WriteSuccessRepresentation.writeSuccessWordsValue (writeSuccessTransactionS transaction))])) (WriteSuccessOutputSemantic.writeOutputPayloadsSpec (WriteSuccessOutputDescriptors.writeSuccessTransactionsDescriptors sp rest) (writeSuccessExactTransactionsPayloads rest) tail))))",
+      "(bv_unsigned sp - 48) \u21a6\u2098? 48",
+      "(bv_unsigned sp + 112) \u21a6\u2098 Z_to_bv 64 (Z.of_nat (length transactions))",
+      "writeSuccessTransactionsOwn transactions",
+      "P"
+    ],
+    "persistent": [],
+    "register_collection_provenance": "Coq Eval compute in writeSuccessTransactionsOtherRegShapes; decoded printed ASCII register names",
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsIndexCell",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveFieldRegion",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveFieldRegion",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveFieldRegion",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveFieldRegion",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsLiveSpec"
+    ],
+    "arguments": "sp base transactions processed transaction rest bytes tail P",
+    "entry_provenance": "complete block entry captured from transactions_live_current_field_region; includes descriptor memory",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "base": "Type",
+      "transactions": "Type",
+      "processed": "Type",
+      "transaction": "Type",
+      "rest": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop",
+      "H5": "Prop",
+      "H6": "Prop",
+      "H7": "Prop",
+      "H8": "Prop",
+      "H9": "Prop",
+      "H10": "Prop",
+      "H11": "Prop",
+      "H12": "Prop"
+    },
+    "block_exit": "0x150f0",
+    "return_point": false,
+    "stack_size": 0,
+    "rerun_lemma": "infer_boundary"
+  }
+]

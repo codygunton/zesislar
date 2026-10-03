@@ -1,0 +1,90 @@
+[
+  {
+    "variant": "open_remaining_f15",
+    "leader": "0x1568c",
+    "last": "0x15690",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1568c",
+    "stops": [],
+    "kept_succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "run": "A",
+    "seconds": 5.0,
+    "cpu": 4.9,
+    "peak_mib": 1062,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1056
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1568c",
+      "0x15690"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/open_remaining_f15-A-driver/probes/A_open_remaining_f15_0x1568c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_156e8",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "open_remaining_f15",
+    "leader": "0x1573c",
+    "last": "0x1574c",
+    "n": 5,
+    "kind": "call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15750"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1573c",
+    "stops": [],
+    "kept_succ": [
+      "0x15750"
+    ],
+    "run": "A",
+    "seconds": 6.0,
+    "cpu": 5.2,
+    "peak_mib": 1032,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1015
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15744",
+      "0x15748"
+    ],
+    "k_max": 4,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/open_remaining_f15-A-driver/probes/A_open_remaining_f15_0x1573c_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 (),\n    \u231cwriteOutputEvents (sp - 16) 8\n       [Z_to_bv 8 (bv_unsigned capturedFrameWord912 `mod` 256); Z_to_bv 8 ((bv_unsigned capturedFrameWord912 `div` 256) `mod` 256);\n        Z_to_bv 8 (((bv_unsigned capturedFrameWord912 `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned capturedFrameWord912 `div` 256) `div` 256) `div` 256) `mod` 256);\n        Z_to_bv 8 (((((bv_unsigned capturedFrameWord912 `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);\n        Z_to_bv 8 ((((((bv_unsigned capturedFrameWord912 `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256);",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

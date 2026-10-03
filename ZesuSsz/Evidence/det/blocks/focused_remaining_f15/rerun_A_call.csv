@@ -1,0 +1,5 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,focused_remaining_f15,0x151d4,2,branch,infer_boundary,reached,2,,,,,,12.1,11.2,1856,300,,0x153c0 0x151dc
+A,focused_remaining_f15,0x1521c,3,branch,infer_boundary,reached,3,,,,,,8.0,7.8,1326,300,,0x153b4 0x15228
+A,focused_remaining_f15,0x1568c,2,branch,infer_boundary,reached,2,,,,,,6.1,5.1,1062,300,,0x156e8 0x15694
+A,focused_remaining_f15,0x1573c,5,call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,stalled,1,unknown,0x1573c,"ld s1, 0x388(sp)",load,"∃ y : bv 64 *ₗ (), (bv_unsigned sp + 912) ↦ₘ y.1ₗ ∗ ⌜bv_unsigned sp `mod` 8 = 0⌝ ∗ ⌜0 ≤ bv_unsigned sp + 912 < 0 + 1073741824⌝ ∗",5.0,4.5,1025,300,,0x15750

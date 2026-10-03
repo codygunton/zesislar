@@ -1,0 +1,2 @@
+run,variant,leader,n,kind,lemma,result,k,cls,stall_pc,stall_insn,stall_kind,concl1,wall_s,cpu_s,peak_mib,cap,stops,kept
+A,open_remaining_f15,0x1573c,5,call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>,infer_boundary,reached,5,,,,,,7.0,6.3,1058,300,,0x15750

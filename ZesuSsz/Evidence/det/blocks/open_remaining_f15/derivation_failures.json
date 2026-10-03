@@ -1,0 +1,6 @@
+[
+  {
+    "leader": "0x1573c",
+    "error": "Residual: \u2203 x : spec *\u2097 (),\n    \u231cwriteOutputEvents (sp - 16) 8\n       [Z_to_bv 8 (bv_unsigned capturedFrameWord912 `mod` 256); Z_to_bv 8 ((bv_unsigned capturedFrameWord912 `div` 256) `mod` 256);\n        Z_to_bv"
+  }
+]

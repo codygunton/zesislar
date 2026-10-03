@@ -1,0 +1,571 @@
+[
+  {
+    "entry": "0x14e28",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessHeaderChunk14e28",
+    "source_resource": "(writeSuccessHeaderAfterCopySpec sp bytes\n      (writeSuccessHeaderEventsAfterTag sp tail) tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14e28.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp + 1896 < machineRamEnd defaultMap"
+      ],
+      [
+        "H2",
+        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length bytes = 720%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
+      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessHeaderEventsAfterTag sp tail)",
+      "P",
+      "instr_pre 85640 (writeSuccessHeaderPost sp bytes tail P)",
+      "reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)"
+    ],
+    "persistent": [],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "return_point": true,
+    "block_exit": "0x14e38",
+    "stack_size": 0,
+    "rerun_lemma": "block_14e28"
+  },
+  {
+    "entry": "0x14e38",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessHeaderChunk14e38",
+    "source_resource": "(writeSuccessHeaderAfterCopySpec sp bytes\n      (writeSuccessHeaderEventsAfter1184 sp tail) tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14e38.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp + 1896 < machineRamEnd defaultMap"
+      ],
+      [
+        "H2",
+        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length bytes = 720%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
+      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessHeaderEventsAfter1184 sp tail)",
+      "P",
+      "instr_pre 85640 (writeSuccessHeaderPost sp bytes tail P)",
+      "reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)"
+    ],
+    "persistent": [],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "return_point": true,
+    "block_exit": "0x14e48",
+    "stack_size": 0,
+    "rerun_lemma": "block_14e38"
+  },
+  {
+    "entry": "0x14e48",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessHeaderChunk14e48",
+    "source_resource": "(writeSuccessHeaderAfterCopySpec sp bytes\n      (writeSuccessHeaderEventsAfter1216 sp tail) tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14e48.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp + 1896 < machineRamEnd defaultMap"
+      ],
+      [
+        "H2",
+        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length bytes = 720%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
+      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessHeaderEventsAfter1216 sp tail)",
+      "P",
+      "instr_pre 85640 (writeSuccessHeaderPost sp bytes tail P)",
+      "reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)"
+    ],
+    "persistent": [],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "return_point": true,
+    "block_exit": "0x14e58",
+    "stack_size": 0,
+    "rerun_lemma": "block_14e48"
+  },
+  {
+    "entry": "0x14e58",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessHeaderChunk14e58",
+    "source_resource": "(writeSuccessHeaderAfterCopySpec sp bytes\n      (writeSuccessHeaderEventsAfter1236 sp tail) tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14e58.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp + 1896 < machineRamEnd defaultMap"
+      ],
+      [
+        "H2",
+        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length bytes = 720%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
+      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessHeaderEventsAfter1236 sp tail)",
+      "P",
+      "instr_pre 85640 (writeSuccessHeaderPost sp bytes tail P)",
+      "reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)"
+    ],
+    "persistent": [],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "return_point": true,
+    "block_exit": "0x14e68",
+    "stack_size": 0,
+    "rerun_lemma": "block_14e58"
+  },
+  {
+    "entry": "0x14e68",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessHeaderChunk14e68",
+    "source_resource": "(writeSuccessHeaderAfterCopySpec sp bytes\n      (writeSuccessHeaderEventsAfter1268 sp tail) tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14e68.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp + 1896 < machineRamEnd defaultMap"
+      ],
+      [
+        "H2",
+        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length bytes = 720%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
+      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessHeaderEventsAfter1268 sp tail)",
+      "P",
+      "instr_pre 85640 (writeSuccessHeaderPost sp bytes tail P)",
+      "reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)"
+    ],
+    "persistent": [],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "return_point": true,
+    "block_exit": "0x14e78",
+    "stack_size": 0,
+    "rerun_lemma": "block_14e68"
+  },
+  {
+    "entry": "0x14e78",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessHeaderChunk14e78",
+    "source_resource": "(writeSuccessHeaderAfterCopySpec sp bytes\n      (writeSuccessHeaderEventsAfter1300 sp tail) tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_14e78.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "bv_unsigned sp + 1896 < machineRamEnd defaultMap"
+      ],
+      [
+        "H2",
+        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+      ],
+      [
+        "H3",
+        "bv_unsigned sp `mod` 16 = 0"
+      ],
+      [
+        "H4",
+        "length bytes = 720%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
+      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
+      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
+      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (writeSuccessHeaderEventsAfter1300 sp tail)",
+      "P",
+      "reg_col ((fun register => (KindReg register, BitsShape 64)) <$> tmp_registers)"
+    ],
+    "persistent": [],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "bytes": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "return_point": true,
+    "block_exit": "0x14e88",
+    "stack_size": 0,
+    "rerun_lemma": "block_14e78"
+  }
+]

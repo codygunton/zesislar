@@ -1,0 +1,589 @@
+[
+  {
+    "entry": "0x151d4",
+    "name": "Successor_153b4_151d4",
+    "state_module": "ZesuSsz.Generated.WriteSuccess.States.Successor_153b4_151d4",
+    "source_predecessor": "0x153b4",
+    "outcome": "reached",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (index : bv 64) (old11 : bv 64) (P : iProp Sigma)",
+    "arguments": "sp index old11 P",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "index",
+        "bv 64"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "(bv_unsigned sp + 280 < 0 + 1073741824)%Z"
+      ],
+      [
+        "H1",
+        "(0 \u2264 bv_unsigned sp)%Z"
+      ],
+      [
+        "H2",
+        "(bv_unsigned sp `mod` 8)%Z = 0%Z"
+      ],
+      [
+        "H9",
+        "(-1 < bv_unsigned index < bv_modulus 64)%Z"
+      ],
+      [
+        "H10",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed index < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H11",
+        "(-1 < bv_unsigned sp < bv_modulus 64)%Z"
+      ],
+      [
+        "H12",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed sp < bv_half_modulus 64)%Z"
+      ]
+    ],
+    "spatial": [
+      "P",
+      "reg_col [(KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "(bv_unsigned sp + 272) \u21a6\u2098 index",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (index + 1))",
+      "reg_col zesu_ram_sys_regs",
+      "(bv_unsigned sp + 264) \u21a6\u2098? 8"
+    ],
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsTail",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec",
+      "ZesuSsz.Automation.WordPayloads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
+    ],
+    "entry_unknown_registers": [
+      "x28",
+      "x29",
+      "x30",
+      "x31",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "index": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H9": "Prop",
+      "H10": "Prop",
+      "H11": "Prop",
+      "H12": "Prop"
+    },
+    "stack_size": 0,
+    "return_point": false,
+    "block_exit": "0x151dc",
+    "supplied_successors": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "rerun_lemma": "infer_boundary"
+  },
+  {
+    "entry": "0x1521c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (data : bv 64) (bytes : list (bv 8)) (P : iProp Sigma)",
+    "module": "WriteSuccessExactAccessListsStorageWholeBranch",
+    "source_resource": "(accessListsStorageWholeBranchEntry sp data bytes P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_1521c.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "data",
+        "bv 64"
+      ],
+      [
+        "bytes",
+        "list (bv 8)"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp + 1784 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H2",
+        "(mapRamBase defaultMap \u2264 bv_unsigned sp)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 8 = 0)%Z"
+      ],
+      [
+        "H4",
+        "length bytes = 40%nat"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn data)",
+      "reg_col [(KindReg \"x22\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "(bv_unsigned sp + 1744) \u21a6\u2098\u2217 bytes",
+      "P",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp data bytes P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "data": "Type",
+      "bytes": "Type",
+      "P": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "H4": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAccessListsStorageWholeBranch",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec",
+      "ZesuSsz.Automation.WordPayloads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
+    ],
+    "block_exit": "0x15228",
+    "stack_size": 0,
+    "stack_pointer": "sp",
+    "return_point": true,
+    "supplied_successors": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "rerun_lemma": "infer_boundary"
+  },
+  {
+    "entry": "0x1568c",
+    "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (oldra : bv 64) (old5 : bv 64) (base : Z) (row : list (bv 8)) (rest : list (list (bv 8))) (source : list (bv 8)) (tail : spec) (P : iProp Sigma)",
+    "module": "WriteSuccessExactWithdrawalsInitial",
+    "source_resource": "(withdrawalInitialEntry sp oldra old5 base row rest source tail P)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_1568c.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "oldra",
+        "bv 64"
+      ],
+      [
+        "old5",
+        "bv 64"
+      ],
+      [
+        "base",
+        "Z"
+      ],
+      [
+        "row",
+        "list (bv 8)"
+      ],
+      [
+        "rest",
+        "list (list (bv 8))"
+      ],
+      [
+        "source",
+        "list (bv 8)"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "H0",
+        "True"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
+      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (Z_to_bv 64 base))",
+      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn (Z_to_bv 64 (Z.of_nat (S (length rest)))))",
+      "reg_col [(KindReg \"x18\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64)]",
+      "base \u21a6\u2098\u2217 source",
+      "(bv_unsigned sp + 1744) \u21a6\u2098? 48",
+      "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+      "mmio_range (604086456 + 8) 16",
+      "spec_trace (Snapshots.writeOutputEvents (sp - 16) 8 [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row) `div` 256) `mod` 256); Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] (Snapshots.writeOutputEvents (sp - 16) 8 [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `mod` 256); Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] (Snapshots.writeOutputEvents (sp + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row)) (Snapshots.writeOutputEvents (sp - 16) 8 [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `mod` 256); Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] ((fix writeSuccessExactWithdrawalEvents (sp0 : bv 64) (rows : list (list (bv 8))) (tail0 : spec) {struct rows} : spec := match rows with | [] => tail0 | row0 :: rest0 => Snapshots.writeOutputEvents (sp0 - 16) 8 [Z_to_bv 8 (little_endian_to_bv 8 (take 8 row0) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 row0) `div` 256) `mod` 256); Z_to_bv 8 (((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 row0) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] (Snapshots.writeOutputEvents (sp0 - 16) 8 [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 8 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `mod` 256); Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 8 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] (Snapshots.writeOutputEvents (sp0 + 1768) 20 (WriteSuccessOutputSemantic.writeSuccessPrivateBytes (WriteSuccessRepresentation.writeSuccessBytesAt 24 20 row0)) (Snapshots.writeOutputEvents (sp0 - 16) 8 [Z_to_bv 8 (little_endian_to_bv 8 (take 8 (drop 16 row0)) `mod` 256); Z_to_bv 8 ((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `mod` 256); Z_to_bv 8 (((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((little_endian_to_bv 8 (take 8 (drop 16 row0)) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] (writeSuccessExactWithdrawalEvents sp0 rest0 tail0)))) end) sp rest tail)))))",
+      "P",
+      "instr_pre 87784 (withdrawalLoopExit sp base source tail P)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [ExactShape (RVal_Bits (bv_to_bvn old5)); BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
+    ],
+    "persistent": [],
+    "arguments": "sp oldra old5 base row rest source tail P",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "sp": "Type",
+      "oldra": "Type",
+      "old5": "Type",
+      "base": "Type",
+      "row": "Type",
+      "rest": "Type",
+      "source": "Type",
+      "tail": "Type",
+      "P": "Type",
+      "H0": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInitial",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPrologueSpec",
+      "ZesuSsz.Automation.WordPayloads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU256Spec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLimitCall",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsLoopSpec"
+    ],
+    "block_exit": "0x15694",
+    "stack_size": 0,
+    "stack_pointer": "sp",
+    "return_point": true,
+    "supplied_successors": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "rerun_lemma": "infer_boundary"
+  },
+  {
+    "entry": "0x1573c",
+    "outcome": "reached",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec)",
+    "arguments": "P sp root oldData oldSize tail",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "root",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "H0",
+        "(bv_unsigned sp + 1896 < 0 + 1073741824)%Z"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp < 0 + 1073741824)%Z"
+      ],
+      [
+        "H2",
+        "(0 \u2264 bv_unsigned sp - 16)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16)%Z = 0%Z"
+      ],
+      [
+        "b20",
+        "bv 64"
+      ],
+      [
+        "b21",
+        "bv 64"
+      ],
+      [
+        "H7",
+        "(-1 < bv_unsigned b21 < bv_modulus 64)%Z"
+      ],
+      [
+        "H8",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed b21 < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H9",
+        "(-1 < bv_unsigned b20 < bv_modulus 64)%Z"
+      ],
+      [
+        "H10",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed b20 < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H41",
+        "(-1 < bv_unsigned root < bv_modulus 64)%Z"
+      ],
+      [
+        "H42",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed root < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H43",
+        "(-1 < bv_unsigned sp < bv_modulus 64)%Z"
+      ],
+      [
+        "H44",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed sp < bv_half_modulus 64)%Z"
+      ]
+    ],
+    "spatial": [
+      "(bv_unsigned sp + 1000) \u21a6\u2098 root",
+      "P",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64)]",
+      "reg_col [(KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn b20)",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn b21)",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "spec_trace tail",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "mmio_range (604086456 + 8) 16",
+      "(bv_unsigned sp + 904) \u21a6\u2098? 8"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "P": "Type",
+      "sp": "Type",
+      "root": "Type",
+      "tail": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "b20": "Type",
+      "b21": "Type",
+      "H7": "Prop",
+      "H8": "Prop",
+      "H9": "Prop",
+      "H10": "Prop",
+      "H41": "Prop",
+      "H42": "Prop",
+      "H43": "Prop",
+      "H44": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixRoot",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec"
+    ],
+    "register_precision": "entry",
+    "anonymous_witness_facts": "omitted under coordinator ruling #1348",
+    "stack_size": 16,
+    "return_point": true,
+    "block_exit": "0x15750",
+    "supplied_successors": [
+      "0x15750"
+    ],
+    "rerun_lemma": "infer_boundary"
+  },
+  {
+    "entry": "0x15930",
+    "binders": "`{!islaG Sigma} `{!threadG}  (base : bv 64)",
+    "module": "WriteSuccessPost15930Loads",
+    "source_resource": "(InstrSpecs.Specs.zesu_ld_spec 0x15930 \"x10\" \"x2\" 24)",
+    "outcome": "reached",
+    "output": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/entries/Entry_15930.out",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "value",
+        "bv 64"
+      ],
+      [
+        "base",
+        "bv 64"
+      ],
+      [
+        "H0",
+        "(mapRamBase defaultMap \u2264 bv_unsigned base + 24 < machineRamEnd defaultMap)%Z"
+      ],
+      [
+        "H1",
+        "(bv_unsigned base `mod` 8 = 0)%Z"
+      ]
+    ],
+    "spatial": [
+      "reg_col zesu_ram_sys_regs",
+      "\"x10\" \u21a6\u1d63: \u03bb _ : valu, True",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn base)",
+      "(bv_unsigned base + 24) \u21a6\u2098 value",
+      "instr_pre (88368 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn value) \u2217 \"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn base) \u2217 (bv_unsigned base + 24) \u21a6\u2098 value \u2217 True)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "(bv_unsigned base + 16) \u21a6\u2098? 8"
+    ],
+    "persistent": [],
+    "arguments": "base",
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "value": "Type",
+      "base": "Type",
+      "H0": "Prop",
+      "H1": "Prop"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessPost15930Loads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    ],
+    "block_exit": "0x15940",
+    "stack_size": 80,
+    "stack_pointer": "base",
+    "return_point": true,
+    "supplied_successors": [
+      "0x15940"
+    ],
+    "rerun_lemma": "infer_boundary"
+  }
+]

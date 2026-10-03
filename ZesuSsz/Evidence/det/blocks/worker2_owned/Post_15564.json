@@ -1,0 +1,242 @@
+{
+  "entry": "0x15574",
+  "name": "Int1645Successor_15564_15574",
+  "binders": "`{!islaG Sigma} `{!threadG} (sp : bv 64) (low : bv 64) (high : bv 64) (oldra : bv 64) (old5 : bv 64) (tail : spec) (P : iProp Sigma)",
+  "coq": [
+    [
+      "Sigma",
+      "gFunctors"
+    ],
+    [
+      "islaG0",
+      "islaG Sigma"
+    ],
+    [
+      "sp",
+      "bv 64"
+    ],
+    [
+      "low",
+      "bv 64"
+    ],
+    [
+      "high",
+      "bv 64"
+    ],
+    [
+      "tail",
+      "spec"
+    ],
+    [
+      "P",
+      "iProp Sigma"
+    ],
+    [
+      "b1",
+      "bv 64"
+    ],
+    [
+      "b8",
+      "bv 64"
+    ],
+    [
+      "b9",
+      "bv 64"
+    ],
+    [
+      "b10",
+      "bv 64"
+    ],
+    [
+      "b11",
+      "bv 64"
+    ],
+    [
+      "b12",
+      "bv 64"
+    ],
+    [
+      "b13",
+      "bv 64"
+    ],
+    [
+      "b14",
+      "bv 64"
+    ],
+    [
+      "b15",
+      "bv 64"
+    ],
+    [
+      "b16",
+      "bv 64"
+    ],
+    [
+      "b17",
+      "bv 64"
+    ],
+    [
+      "b18",
+      "bv 64"
+    ],
+    [
+      "b19",
+      "bv 64"
+    ],
+    [
+      "b0",
+      "bv 64"
+    ],
+    [
+      "b2",
+      "bv 64"
+    ]
+  ],
+  "spatial": [
+    "P",
+    "(bv_unsigned sp + 152) \u21a6\u2098 low",
+    "reg_col []",
+    "(bv_unsigned sp + 144) \u21a6\u2098 high",
+    "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+    "reg_col zesu_ram_sys_regs",
+    "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
+    "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b8)); (KindReg \"x9\", ExactShape (RVal_Bits b9)); (KindReg \"x18\", ExactShape (RVal_Bits b10)); (KindReg \"x19\", ExactShape (RVal_Bits b11)); (KindReg \"x20\", ExactShape (RVal_Bits b12)); (KindReg \"x21\", ExactShape (RVal_Bits b13)); (KindReg \"x22\", ExactShape (RVal_Bits b14)); (KindReg \"x23\", ExactShape (RVal_Bits b15)); (KindReg \"x24\", ExactShape (RVal_Bits b16)); (KindReg \"x25\", ExactShape (RVal_Bits b17)); (KindReg \"x26\", ExactShape (RVal_Bits b18)); (KindReg \"x27\", ExactShape (RVal_Bits b19))]",
+    "\"x10\" \u21a6\u1d63 RVal_Bits b0",
+    "\"x11\" \u21a6\u1d63 RVal_Bits b2",
+    "\"x2\" \u21a6\u1d63 RVal_Bits sp",
+    "(bv_unsigned sp - 32) \u21a6\u2098? 32",
+    "spec_trace tail"
+  ],
+  "local_sorts": {
+    "H": "Prop",
+    "sp": "Type",
+    "low": "Type",
+    "high": "Type",
+    "H0": "Prop",
+    "H1": "Prop",
+    "H2": "Prop",
+    "H3": "Prop",
+    "b1": "Type",
+    "H4": "Prop",
+    "b8": "Type",
+    "b9": "Type",
+    "b10": "Type",
+    "b11": "Type",
+    "b12": "Type",
+    "b13": "Type",
+    "b14": "Type",
+    "b15": "Type",
+    "b16": "Type",
+    "b17": "Type",
+    "b18": "Type",
+    "b19": "Type",
+    "H5": "Prop",
+    "H6": "Prop",
+    "H7": "Prop",
+    "H8": "Prop",
+    "H9": "Prop",
+    "H10": "Prop",
+    "H11": "Prop",
+    "H12": "Prop",
+    "H13": "Prop",
+    "H14": "Prop",
+    "H15": "Prop",
+    "H16": "Prop",
+    "H17": "Prop",
+    "H18": "Prop",
+    "H19": "Prop",
+    "H20": "Prop",
+    "H21": "Prop",
+    "H22": "Prop",
+    "H23": "Prop",
+    "H24": "Prop",
+    "H25": "Prop",
+    "H26": "Prop",
+    "H27": "Prop",
+    "H28": "Prop",
+    "H29": "Prop",
+    "H30": "Prop",
+    "H31": "Prop",
+    "H32": "Prop",
+    "H33": "Prop",
+    "H34": "Prop",
+    "H35": "Prop",
+    "H36": "Prop",
+    "b0": "Type",
+    "b2": "Type",
+    "H37": "Prop",
+    "H38": "Prop",
+    "H39": "Prop",
+    "H40": "Prop",
+    "tail": "Type",
+    "P": "Type"
+  },
+  "imports": [
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsMaxBlobFee",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+    "ZesuSsz.Export.Snapshots",
+    "ZesuSsz.Contracts.IslarisMemory",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactBooleanSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixOptionalU64159b8Defs",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactOptionalU64NoneCallSpec",
+    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactEncoderU128"
+  ],
+  "outcome": "reached",
+  "post_state": true,
+  "return_point": true,
+  "seal_memory": false,
+  "stack_size": 32,
+  "stack_pointer": "sp",
+  "capture_file": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/ZesuSsz/Evidence/det/blocks/worker2_owned/Int1645Capture_15564.txt",
+  "capture_goal": 2,
+  "omitted_prop_hypotheses": [
+    "H",
+    "H0",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5",
+    "H6",
+    "H7",
+    "H8",
+    "H9",
+    "H10",
+    "H11",
+    "H12",
+    "H13",
+    "H14",
+    "H15",
+    "H16",
+    "H17",
+    "H18",
+    "H19",
+    "H20",
+    "H21",
+    "H22",
+    "H23",
+    "H24",
+    "H25",
+    "H26",
+    "H27",
+    "H28",
+    "H29",
+    "H30",
+    "H31",
+    "H32",
+    "H33",
+    "H34",
+    "H35",
+    "H36",
+    "H37",
+    "H38",
+    "H39",
+    "H40"
+  ]
+}

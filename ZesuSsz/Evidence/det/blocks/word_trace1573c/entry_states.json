@@ -1,0 +1,169 @@
+[
+  {
+    "entry": "0x1573c",
+    "outcome": "reached",
+    "binders": "`{!islaG Sigma} `{!threadG} (P : iProp Sigma) (sp : bv 64) (root : bv 64) (oldData : bv 64) (oldSize : bv 64) (tail : spec)",
+    "arguments": "P sp root oldData oldSize tail",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "islaG Sigma"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "P",
+        "iProp Sigma"
+      ],
+      [
+        "sp",
+        "bv 64"
+      ],
+      [
+        "root",
+        "bv 64"
+      ],
+      [
+        "tail",
+        "spec"
+      ],
+      [
+        "H0",
+        "(bv_unsigned sp + 1896 < 0 + 1073741824)%Z"
+      ],
+      [
+        "H1",
+        "(bv_unsigned sp < 0 + 1073741824)%Z"
+      ],
+      [
+        "H2",
+        "(0 \u2264 bv_unsigned sp - 16)%Z"
+      ],
+      [
+        "H3",
+        "(bv_unsigned sp `mod` 16)%Z = 0%Z"
+      ],
+      [
+        "b20",
+        "bv 64"
+      ],
+      [
+        "b21",
+        "bv 64"
+      ],
+      [
+        "H7",
+        "(-1 < bv_unsigned b21 < bv_modulus 64)%Z"
+      ],
+      [
+        "H8",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed b21 < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H9",
+        "(-1 < bv_unsigned b20 < bv_modulus 64)%Z"
+      ],
+      [
+        "H10",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed b20 < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H41",
+        "(-1 < bv_unsigned root < bv_modulus 64)%Z"
+      ],
+      [
+        "H42",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed root < bv_half_modulus 64)%Z"
+      ],
+      [
+        "H43",
+        "(-1 < bv_unsigned sp < bv_modulus 64)%Z"
+      ],
+      [
+        "H44",
+        "64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed sp < bv_half_modulus 64)%Z"
+      ],
+      [
+        "capturedFrameWord",
+        "bv 64"
+      ],
+      [
+        "capturedFrameWord912",
+        "bv 64"
+      ],
+      [
+        "capturedNext",
+        "spec"
+      ]
+    ],
+    "spatial": [
+      "(bv_unsigned sp + 1000) \u21a6\u2098 root",
+      "P",
+      "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
+      "reg_col zesu_ram_sys_regs",
+      "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64)]",
+      "reg_col [(KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
+      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn b20)",
+      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn b21)",
+      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
+      "spec_trace (writeOutputEvents (sp - 16) 8 [Z_to_bv 8 ((bv_unsigned capturedFrameWord912) `mod` 256); Z_to_bv 8 (((bv_unsigned capturedFrameWord912) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] capturedNext)",
+      "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])",
+      "mmio_range (604086456 + 8) 16",
+      "(bv_unsigned sp + 904) \u21a6\u2098 capturedFrameWord",
+      "(bv_unsigned sp + 912) \u21a6\u2098 capturedFrameWord912",
+      "\u231cwriteOutputEvents (sp - 16) 8 [Z_to_bv 8 ((bv_unsigned capturedFrameWord912) `mod` 256); Z_to_bv 8 (((bv_unsigned capturedFrameWord912) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((((bv_unsigned capturedFrameWord912) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)] capturedNext \u2286 tail\u231d"
+    ],
+    "local_sorts": {
+      "Sigma": "Type",
+      "islaG0": "Type",
+      "H": "Type",
+      "P": "Type",
+      "sp": "Type",
+      "root": "Type",
+      "tail": "Type",
+      "H0": "Prop",
+      "H1": "Prop",
+      "H2": "Prop",
+      "H3": "Prop",
+      "b20": "Type",
+      "b21": "Type",
+      "H7": "Prop",
+      "H8": "Prop",
+      "H9": "Prop",
+      "H10": "Prop",
+      "H41": "Prop",
+      "H42": "Prop",
+      "H43": "Prop",
+      "H44": "Prop",
+      "capturedFrameWord": "Type",
+      "capturedFrameWord912": "Type",
+      "capturedNext": "Type"
+    },
+    "imports": [
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessNativeSuffixRoot",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
+      "ZesuSsz.Export.Snapshots",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
+      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec"
+    ],
+    "register_precision": "entry",
+    "anonymous_witness_facts": "omitted under coordinator ruling #1348",
+    "stack_size": 16,
+    "return_point": true,
+    "block_exit": "0x15750",
+    "supplied_successors": [
+      "0x15750"
+    ],
+    "seal_memory": false,
+    "trace_provenance": "Orch ruling: express output prefix over the entry word at sp+912. Predecessor value relation remains a composition obligation.",
+    "rerun_lemma": "infer_boundary"
+  }
+]

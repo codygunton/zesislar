@@ -1,0 +1,296 @@
+[
+  {
+    "variant": "headers_open",
+    "leader": "0x14e28",
+    "last": "0x14e34",
+    "n": 4,
+    "kind": "call:864(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e38"
+    ],
+    "lemma": "block_14e28",
+    "module": "Probe_14e28",
+    "stops": [],
+    "kept_succ": [
+      "0x14e38"
+    ],
+    "run": "A",
+    "seconds": 9.1,
+    "cpu": 8.4,
+    "peak_mib": 1005,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        48
+      ],
+      [
+        5,
+        977
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e28",
+      "0x14e2c",
+      "0x14e30"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/headers_open-A-driver/probes/A_headers_open_0x14e28_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1184) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1184) 32 x.2\u2097 x.1\u2097) \u2217\n    \u231cbv_unsigned 32 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85556 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_to_bv 64 (85556 + 4)) sp (\u03bb _ : list (bv 64), bv_unsigned (sp + 1184) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers_open",
+    "leader": "0x14e38",
+    "last": "0x14e44",
+    "n": 4,
+    "kind": "call:848(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e48"
+    ],
+    "lemma": "block_14e38",
+    "module": "Probe_14e38",
+    "stops": [],
+    "kept_succ": [
+      "0x14e48"
+    ],
+    "run": "A",
+    "seconds": 9.1,
+    "cpu": 8.6,
+    "peak_mib": 1005,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        48
+      ],
+      [
+        5,
+        978
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e38",
+      "0x14e3c",
+      "0x14e40"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/headers_open-A-driver/probes/A_headers_open_0x14e38_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1216) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1216) 20 x.2\u2097 x.1\u2097) \u2217\n    \u231cbv_unsigned 20 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85572 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_to_bv 64 (85572 + 4)) sp (\u03bb _ : list (bv 64), bv_unsigned (sp + 1216) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers_open",
+    "leader": "0x14e48",
+    "last": "0x14e54",
+    "n": 4,
+    "kind": "call:832(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e58"
+    ],
+    "lemma": "block_14e48",
+    "module": "Probe_14e48",
+    "stops": [],
+    "kept_succ": [
+      "0x14e58"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.2,
+    "peak_mib": 1005,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        44
+      ],
+      [
+        5,
+        978
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e48",
+      "0x14e4c",
+      "0x14e50"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/headers_open-A-driver/probes/A_headers_open_0x14e48_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1236) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1236) 32 x.2\u2097 x.1\u2097) \u2217\n    \u231cbv_unsigned 32 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85588 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_to_bv 64 (85588 + 4)) sp (\u03bb _ : list (bv 64), bv_unsigned (sp + 1236) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers_open",
+    "leader": "0x14e58",
+    "last": "0x14e64",
+    "n": 4,
+    "kind": "call:816(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e68"
+    ],
+    "lemma": "block_14e58",
+    "module": "Probe_14e58",
+    "stops": [],
+    "kept_succ": [
+      "0x14e68"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.4,
+    "peak_mib": 1006,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        26
+      ],
+      [
+        5,
+        977
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e58",
+      "0x14e5c",
+      "0x14e60"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/headers_open-A-driver/probes/A_headers_open_0x14e58_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1268) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1268) 32 x.2\u2097 x.1\u2097) \u2217\n    \u231cbv_unsigned 32 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85604 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_to_bv 64 (85604 + 4)) sp (\u03bb _ : list (bv 64), bv_unsigned (sp + 1268) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers_open",
+    "leader": "0x14e68",
+    "last": "0x14e74",
+    "n": 4,
+    "kind": "call:800(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e78"
+    ],
+    "lemma": "block_14e68",
+    "module": "Probe_14e68",
+    "stops": [],
+    "kept_succ": [
+      "0x14e78"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.2,
+    "peak_mib": 1010,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        968
+      ],
+      [
+        6,
+        997
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e68",
+      "0x14e6c",
+      "0x14e70"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/headers_open-A-driver/probes/A_headers_open_0x14e68_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1300) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1300) 256 x.2\u2097 x.1\u2097) \u2217\n    \u231cbv_unsigned 256 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85620 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_to_bv 64 (85620 + 4)) sp (\u03bb _ : list (bv 64), bv_unsigned (sp + 1300) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 sp",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "headers_open",
+    "leader": "0x14e78",
+    "last": "0x14e84",
+    "n": 4,
+    "kind": "call:784(ra) # 10190 <write_output>",
+    "succ": [
+      "0x14e88"
+    ],
+    "lemma": "block_14e78",
+    "module": "Probe_14e78",
+    "stops": [],
+    "kept_succ": [
+      "0x14e88"
+    ],
+    "run": "A",
+    "seconds": 9.0,
+    "cpu": 8.4,
+    "peak_mib": 1005,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        968
+      ],
+      [
+        6,
+        993
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x14e78",
+      "0x14e7c",
+      "0x14e80"
+    ],
+    "k_max": 3,
+    "stop_hit": false,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/headers_open-A-driver/probes/A_headers_open_0x14e78_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list (bv 8) *\u2097 (), bv_unsigned (sp + 1556) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec_trace (Snapshots.writeOutputEvents (sp + 1556) 32 x.2\u2097 x.1\u2097) \u2217\n    \u231cbv_unsigned 32 = length x.2\u2097\u231d \u2217\n    instr_pre (bv_unsigned (Z_to_bv 64 (85636 + 4)))\n      (zesu_c_call_ret 0\n         [RVal_Bits b8; RVal_Bits b9; RVal_Bits b10; RVal_Bits b11; RVal_Bits b12; RVal_Bits b13; RVal_Bits b14; RVal_Bits b15; RVal_Bits b16; RVal_Bits b17; RVal_Bits b18; RVal_Bits b19]\n         (Z_to_bv 64 (85636 + 4)) sp (\u03bb _ : list (bv 64), bv_unsigned (sp + 1556) \u21a6\u2098\u2217 x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217 spec",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

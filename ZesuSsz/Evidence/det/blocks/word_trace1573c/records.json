@@ -1,0 +1,48 @@
+[
+  {
+    "variant": "open_remaining_f15",
+    "leader": "0x1573c",
+    "last": "0x1574c",
+    "n": 5,
+    "kind": "call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15750"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1573c",
+    "stops": [],
+    "kept_succ": [
+      "0x15750"
+    ],
+    "run": "A",
+    "seconds": 7.0,
+    "cpu": 6.3,
+    "peak_mib": 1058,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1015
+      ],
+      [
+        6,
+        1057
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15744",
+      "0x15748"
+    ],
+    "k_max": 4,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/word_trace1573c-A-driver/probes/A_open_remaining_f15_0x1573c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_15750\nFile \"/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/word_trace1573c-A-driver/probes/A_open_remaining_f15_0x1573c_call.v\", line 89, characters 0-7:\nWarning: The Unfocus command is deprecated [deprecated-unfocus,deprecated-since-8.8,deprecated,default]",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]

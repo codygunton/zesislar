@@ -1,0 +1,222 @@
+[
+  {
+    "variant": "remaining_capture_f15",
+    "leader": "0x151d4",
+    "last": "0x151d8",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_151d4",
+    "stops": [],
+    "kept_succ": [
+      "0x153c0",
+      "0x151dc"
+    ],
+    "run": "A",
+    "seconds": 4.1,
+    "cpu": 3.4,
+    "peak_mib": 1083,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        41
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(86484"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/remaining_capture_f15-A-driver/probes/A_remaining_capture_f15_0x151d4_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume ((bv_unsigned sp + 264) \u21a6\u2098? 8) (\u03bb x : bv 64 *\u2097 (), (bv_unsigned sp + 264) \u21a6\u2098 x.1\u2097)\n    (\u03bb x : bv 64 *\u2097 (), \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 264 < 0 + 1073741824\u231d \u2217\n       instr_pre (86484 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x10\" \u21a6\u1d63 RVal_Bits x.1\u2097 \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 (bv_unsigned sp + 264) \u21a6\u2098 x.1\u2097 \u2217 True))",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "remaining_capture_f15",
+    "leader": "0x1521c",
+    "last": "0x15224",
+    "n": 3,
+    "kind": "branch",
+    "succ": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1521c",
+    "stops": [],
+    "kept_succ": [
+      "0x153b4",
+      "0x15228"
+    ],
+    "run": "A",
+    "seconds": 9.1,
+    "cpu": 8.2,
+    "peak_mib": 1311,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        46
+      ],
+      [
+        5,
+        1068
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1521c",
+      "0x15220",
+      "0x15224"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/remaining_capture_f15-A-driver/probes/A_remaining_capture_f15_0x1521c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "BLK_STOP_153b4",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "remaining_capture_f15",
+    "leader": "0x1568c",
+    "last": "0x15690",
+    "n": 2,
+    "kind": "branch",
+    "succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1568c",
+    "stops": [],
+    "kept_succ": [
+      "0x156e8",
+      "0x15694"
+    ],
+    "run": "A",
+    "seconds": 6.0,
+    "cpu": 5.4,
+    "peak_mib": 1062,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1051
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x1568c",
+      "0x15690"
+    ],
+    "k_max": 2,
+    "stop_hit": true,
+    "at": [],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/remaining_capture_f15-A-driver/probes/A_remaining_capture_f15_0x1568c_call.out",
+    "pred_class": "C3",
+    "conclusion": "BLK_STOP_156e8",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "remaining_capture_f15",
+    "leader": "0x1573c",
+    "last": "0x1574c",
+    "n": 5,
+    "kind": "call:1480(ra) # 15d10 <ssz_decode_observation.Encoder.int__anon_1525>",
+    "succ": [
+      "0x15750"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_1573c",
+    "stops": [],
+    "kept_succ": [
+      "0x15750"
+    ],
+    "run": "A",
+    "seconds": 4.0,
+    "cpu": 3.4,
+    "peak_mib": 1025,
+    "rc": 0,
+    "rss_samples": [
+      [
+        0,
+        24
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [],
+    "k_max": 0,
+    "stop_hit": true,
+    "at": [
+      "(87868"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/remaining_capture_f15-A-driver/probes/A_remaining_capture_f15_0x1573c_call.out",
+    "pred_class": "unknown",
+    "conclusion": "subsume ((bv_unsigned sp + 904) \u21a6\u2098? 8) (\u03bb x : bv 64 *\u2097 (), (bv_unsigned sp + 904) \u21a6\u2098 x.1\u2097)\n    (\u03bb x : bv 64 *\u2097 (), \u231cbv_unsigned sp `mod` 8 = 0\u231d \u2217 \u231c0 \u2264 bv_unsigned sp + 904 < 0 + 1073741824\u231d \u2217\n       instr_pre (87868 + 4) (reg_col zesu_ram_sys_regs \u2217 \"x9\" \u21a6\u1d63 RVal_Bits x.1\u2097 \u2217 \"x2\" \u21a6\u1d63 RVal_Bits sp \u2217 (bv_unsigned sp + 904) \u21a6\u2098 x.1\u2097 \u2217 True))",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  },
+  {
+    "variant": "remaining_capture_f15",
+    "leader": "0x15930",
+    "last": "0x1593c",
+    "n": 4,
+    "kind": "call:728(ra) # 15c10 <ssz_decode_observation.Encoder.byteLists>",
+    "succ": [
+      "0x15940"
+    ],
+    "lemma": "infer_boundary",
+    "module": "Probe_15930",
+    "stops": [],
+    "kept_succ": [
+      "0x15940"
+    ],
+    "run": "A",
+    "seconds": 6.0,
+    "cpu": 5.8,
+    "peak_mib": 1282,
+    "rc": 0,
+    "rss_samples": [
+      [
+        1,
+        1114
+      ]
+    ],
+    "cap": 300,
+    "limit": null,
+    "pcs_seen": [
+      "0x15938"
+    ],
+    "k_max": 3,
+    "stop_hit": true,
+    "at": [
+      "(bv_unsigned"
+    ],
+    "goals": 1,
+    "raw_path": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/remaining_capture_f15-A-driver/probes/A_remaining_capture_f15_0x15930_call.out",
+    "pred_class": "C1",
+    "conclusion": "\u2203 x : spec *\u2097 list ByteListItem *\u2097 (),\n    (fix byteListItemResources (Sigma0 : gFunctors) (islaG1 : islaG Sigma0) (address : Z) (items : list ByteListItem) {struct items} : iProp Sigma0 :=\n       match items with\n       | [] => True\n       | item :: rest => address \u21a6\u2098 byteListData item \u2217 (address + 8) \u21a6\u2098 byteListSize item \u2217 bv_unsigned (byteListData item) \u21a6\u2098\u2217 byteListBytes item \u2217\n           \u231cbv_unsigned (byteListSize item) = length (byteListBytes item)\u231d \u2217 byteListItemResources Sigma0 islaG1 (address + 16) rest\n       end) Sigma islaG0 (bv_unsigned value) x.2\u2097 \u2217 mmio_range (604086456 + 8) 16 \u2217",
+    "outcome": "probe",
+    "interior_handoffs_stripped": true
+  }
+]
