@@ -89,17 +89,6 @@
     "peak_rss_kib": 19180,
     "workers": 1
   },
-  "historical_reports": {
-    "source_commit": "c9165ca4",
-    "source_elf_sha256": "b2904b0802c8443a5734c8e236cc60b0ccceab631171b5798df874040e1d3a64",
-    "files": [
-      "inventory.json",
-      "INVENTORY.md",
-      "verification.json",
-      "comparison-generic-script/"
-    ],
-    "status": "Pilot evidence only. These files do not describe the selected ELF."
-  },
   "build_dir": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock",
   "inputs": {
     "compiler/rustc": {
@@ -181,6 +170,22 @@
     "legacy/z3": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/z3",
       "sha256": "796dbda9afa35f2369d00e90c329d31a7d49afac75a683ddd14647f2c77f607a"
+    },
+    "generator/closure.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/closure.py",
+      "sha256": "c7b464c63ce6bd2b380f0dc359602359c9b6796ad68741f525a6088c0e41b4da"
+    },
+    "generator/riscv.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/riscv.py",
+      "sha256": "b964027f473a4dc65dee2a27566fabeddbeb770dc85f9a6d602192302c7d8405"
+    },
+    "generator/dwarf.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/dwarf.py",
+      "sha256": "209df16ac736802a423d4fc73049b99ab19f105e83107a7ded7b6064c46063e3"
+    },
+    "generator/inventory.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/inventory.py",
+      "sha256": "adc3bae421815d40b7908e9fc14e4bcf5d82182b605571edc57a27faa2e77a22"
     }
   },
   "legacy_tool_policy": "Retain the committed bin tools with explicit hashes for existing trace regeneration. The selected ELF build uses the separately recorded Zig and ELF tools.",
@@ -208,8 +213,37 @@
     "elf_layout": 1
   },
   "invalidated_derived": [],
-  "derived": {},
-  "artifact_identity": "4f314cdd789e2adafea80527c10737b3eee065e5c2652d7faca7f80f2741573b",
+  "derived": {
+    "inventory.json": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 2
+    },
+    "cfg.json": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 1
+    },
+    "regions.json": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 1
+    },
+    "dump-ranges.json": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 1
+    },
+    "verification.json": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 2
+    },
+    "decodeItem.raw.dump": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 1
+    },
+    "INVENTORY.md": {
+      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "schema_version": 1
+    }
+  },
+  "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
   "elf_layout": {
     "entry": 2148490032,
     "machine": "EM_RISCV",
@@ -440,6 +474,14 @@
     "zesu-zisk.elf": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
     "disassembly.objdump": "020ace7813b1c8a392291628095089bff281e3a50b4bb5dca25b3b5e9f50517b",
     "symbols.txt": "b85d63ce55b4b5772415933d9939ef74cebb0905570a200bd08e6c372a2e3e6c",
-    "elf-layout.txt": "660c5484710dc616d5a8b94ddfdd349e67c38613ca8a15d60d11322513f83a2e"
-  }
+    "elf-layout.txt": "660c5484710dc616d5a8b94ddfdd349e67c38613ca8a15d60d11322513f83a2e",
+    "inventory.json": "6cd9f08a263a86f6287005dab4ce7ec5c1c7459102e5aea95f9388f510cba54a",
+    "cfg.json": "8bff05c51ed731593d09403a8b0b80da19a06dadc7ddd5b66694371f137081e5",
+    "regions.json": "615c856b5cee2803c709e299d77272cc38aa38f3c3d3a6a25312cd32a4de3e6c",
+    "dump-ranges.json": "7eb3eea2ff05907669d59e8bbe2e752f68d21ecdce2f2461a965359ff3054586",
+    "verification.json": "964ac18c3d9bc1258660da1a83db6282386d8ea73bfa6a77cd0f4f0872893fcc",
+    "decodeItem.raw.dump": "e9f65ec0949d78b0d5dea1203580d67dabef8a6778228f9e60df4aa15749dc0c",
+    "INVENTORY.md": "f84132e279205e02dd6ee6ae38fe491ad2dc8c09afdf0f6b38ea6a9265ef50db"
+  },
+  "historical_comparison": "comparison-generic-script/ remains historical pilot evidence from c9165ca4."
 }

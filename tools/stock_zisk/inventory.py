@@ -133,6 +133,9 @@ def cfg_loops(instructions):
     graph = {}
     for row in instructions:
         pc, mnemonic = row['pc'], row['mnemonic']
+        if 'successors' in row:
+            graph[pc] = [target for target in row['successors'] if target in pcs]
+            continue
         targets = []
         if mnemonic in CONDITIONAL | {'j'}:
             target = branch_target(row)

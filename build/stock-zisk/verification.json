@@ -1,7 +1,19 @@
 {
-  "entry": "0x8013cd80",
-  "undefined_symbols": 0,
-  "elf_flags": 1,
-  "ZKVM_HEAP_POS": "0xa0d34530",
-  "ZKVM_HEAP_TOP": "0xbfff0000"
+  "schema": 2,
+  "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+  "static_closure": "passed under the inventory conditions",
+  "unsupported_instructions": [],
+  "unresolved_transfers": [],
+  "missing_callees": [],
+  "expected_unmodeled_operations": [
+    {
+      "function": "memcpy",
+      "pc": 2148402880,
+      "csr": 2067
+    }
+  ],
+  "trace_generation": "blocked: the exact target platform model needs review",
+  "entry_block_smoke": "not run",
+  "return_site_chain": "not run",
+  "proof_status": "not proved"
 }

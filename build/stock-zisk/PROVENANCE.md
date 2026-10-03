@@ -42,9 +42,9 @@ The original runtime command used `cargo +zisk build -p ziskos-staticlib`,
 ## Current evidence boundary
 
 The ELF, disassembly, symbol table, and layout describe the selected revision.
-The existing inventory, verification report, and comparison directory describe the earlier pilot.
-The recipe labels those files as historical evidence.
-The next step will replace the inventory with a scan of the selected ELF.
+The inventory, CFG, proposed regions, and raw decoder dump describe the selected ELF.
+The comparison directory remains historical pilot evidence from `c9165ca4`.
+The static inventory states its allocator and dispatch conditions explicitly.
 No execution test or proof establishes selected-target correctness at this checkpoint.
 The exact platform model remains pending.
 
@@ -68,3 +68,28 @@ The runtime compiler executables also have checked archive copies.
 This step reused the preserved runtime library.
 It did not independently rebuild the runtime.
 For a new output directory, supply the current recipe with `--runtime-build-recipe`.
+
+## Static regeneration
+
+The scanner decodes RV64IM instructions and transfers from ELF bytes.
+It checks dispatch instruction fields and reads the five targets from the jump table.
+It resolves allocator calls through the selected vtable under explicit entry conditions.
+The scanner rejects unknown targets and unsupported instruction encodings.
+The memcpy CSR operation remains an explicit runtime boundary.
+
+The selected object supplies decodeSingleTx DWARF ranges.
+The scanner checks function sizes, relocation deltas, instruction widths, opcodes, and register fields against the linked ELF.
+It expands those ranges to complete blocks.
+These regions remain proposals for contract review.
+
+```sh
+python3 tools/stock_zisk/closure.py \
+  --elf build/stock-zisk/zesu-zisk.elf \
+  --object _build/p0c-zesu-source/zig-out/lib/zesu.o \
+  --manifest build/stock-zisk/build-recipe.json \
+  --out build/stock-zisk/inventory.json --publish
+```
+
+`decodeItem.raw.dump` contains exact instruction bytes and original disassembly lines.
+It deliberately lacks an adopted platform configuration.
+The verification report names the blocked trace generation and the unrun proof checks.
