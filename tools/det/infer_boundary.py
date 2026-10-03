@@ -163,6 +163,7 @@ def stop_recording(address: str | None, after_return: bool) -> list[str]:
 
 def return_imports(after_return: bool) -> list[str]:
     return (["Require Import ZesuSsz.Automation.Switches.ReturnBundle.",
+             "Require Import ZesuSsz.Automation.ReturnWand.",
              "Require Import ZesuSsz.Automation.Switches.ReturnWand."]
             if after_return else [])
 

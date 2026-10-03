@@ -377,6 +377,7 @@ class StopInference(unittest.TestCase):
         source = infer_boundary.spec_source(record, stop='0x14d34', after_return=True)
         self.assertIn('instr_pre 0x14d34 BLK_STOP_14d34 -∗', source)
         self.assertIn('Switches.ReturnBundle', source)
+        self.assertIn('Require Import ZesuSsz.Automation.ReturnWand.', source)
         self.assertLess(source.index('zesu_enter_return_bundle_if_enabled.'),
                         source.index(infer_boundary.RAW_BEGIN))
         self.assertLess(source.index('zesu_enter_return_wand_if_enabled.'),
