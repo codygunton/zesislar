@@ -290,6 +290,10 @@ Ltac zesu_finish_entailment :=
 
 (* Anything else: the old chain, in the old order. *)
 Ltac zesu_finish_pure_goal :=
+  try (zesu_call_ownership_on;
+    repeat first [progress zesu_constant_word_array_index |
+                  progress zesu_constant_word_array_lookup];
+    try zesu_named_frame_scratch_address);
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -516,12 +520,18 @@ Ltac zesu_run_pass_v1 :=
     try zesu_finish_framed_wand;
     zesu_finish).
 
+Ltac zesu_call_byte_steps :=
+  zesu_call_ownership_on;
+  first [zesu_open_matching_payload_package |
+         zesu_choose_owned_payload_tail |
+         zesu_initialized_byte_scratch_tail].
+
 Ltac zesu_run_pass_v2 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_call_byte_steps | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).

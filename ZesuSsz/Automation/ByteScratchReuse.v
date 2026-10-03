@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.CallOwnership.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ByteArrays.
@@ -6,6 +7,7 @@ From iris.proofmode Require Import environments.
 
 (* Keep the initialized prefix when the caller requests its full scratch. *)
 Ltac zesu_initialized_byte_scratch_tail :=
+  zesu_call_ownership_on;
   let _ := constr:(_ : ZesuStepArrayLoadPriority) in
   lazymatch goal with
   | |- envs_entails _

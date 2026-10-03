@@ -3,6 +3,10 @@
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
+Require Export ZesuSsz.Automation.CallOwnership.
+Require Export ZesuSsz.Automation.WordArrayIndex.
+Require Export ZesuSsz.Automation.ByteScratchReuse.
+Require Export ZesuSsz.Automation.OwnedPayloadPackages.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.TraceTailLemmas.

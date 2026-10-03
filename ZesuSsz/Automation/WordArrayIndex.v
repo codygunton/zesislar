@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.CallOwnership.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
@@ -30,6 +31,7 @@ Ltac zesu_integer_offset expression :=
   end.
 
 Ltac zesu_constant_word_array_index :=
+  zesu_call_ownership_on;
   let _ := constr:(_ : ZesuStepArrayLoadPriority) in
   match goal with
   | |- context[array_region_start 64 ?start ?finish] =>
@@ -54,6 +56,7 @@ Ltac zesu_constant_word_array_index :=
 Print Assumptions zesu_word_array_offset_index.
 
 Ltac zesu_constant_word_array_lookup :=
+  zesu_call_ownership_on;
   let _ := constr:(_ : ZesuStepArrayLoadPriority) in
   match goal with
   | Hlookup : ?values !! Z.to_nat
@@ -87,6 +90,7 @@ Ltac zesu_constant_word_array_lookup :=
   end.
 
 Ltac zesu_named_frame_scratch_address :=
+  zesu_call_ownership_on;
   let _ := constr:(_ : ZesuStepArrayLoadPriority) in
   lazymatch goal with
   | |- bv_unsigned ?source = (bv_unsigned ?frame - 48)%Z =>
@@ -95,7 +99,7 @@ Ltac zesu_named_frame_scratch_address :=
       let Halias := fresh "HframeScratchAlias" in
       assert (Halias : source = (frame - BV 64 48)%bv) by
         (unfold head; bv_solve);
-      rewrite Halias; bv_solve
+      rewrite Halias; unfold head; bv_solve
   end.
 
 Lemma zesu_empty_word_array `{!islaG Sigma} (address : Z) :
@@ -115,7 +119,8 @@ Proof.
   iIntros "[%Hrange HG]". iFrame "HG".
   iApply zesu_empty_word_array. done.
 Qed.
-Definition zesu_simplify_empty_word_array_inst `{!islaG Sigma} :=
+Definition zesu_simplify_empty_word_array_inst `{!islaG Sigma}
+    `{!ZesuStepCallOwnership} :=
   [instance zesu_simplify_empty_word_array with 0%N].
 #[export] Existing Instance zesu_simplify_empty_word_array_inst | 0.
 Print Assumptions zesu_simplify_empty_word_array.

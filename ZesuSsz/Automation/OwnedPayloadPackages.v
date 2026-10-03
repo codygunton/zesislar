@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.CallOwnership.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
@@ -34,6 +35,7 @@ Ltac zesu_open_owned_array_fact_packages :=
     end).
 
 Ltac zesu_open_matching_payload_package :=
+  zesu_call_ownership_on;
   let _ := constr:(_ : ZesuStepArrayLoadPriority) in
   zesu_expose_environment_alias;
   lazymatch goal with
@@ -56,6 +58,7 @@ Ltac zesu_open_matching_payload_package :=
 
 (* Fix both witnesses from the owned array and its complete event prefix. *)
 Ltac zesu_choose_owned_payload_tail :=
+  zesu_call_ownership_on;
   let _ := constr:(_ : ZesuStepTracePrefixTail) in
   zesu_expose_environment_alias;
   lazymatch goal with
