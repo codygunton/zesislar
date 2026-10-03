@@ -19,6 +19,29 @@ Lemma zesu_scons_snap_mono event accept predicate (left right : spec) :
   left ⊆ right -> scons_snap event accept left ⊆ scons_snap event predicate right.
 Proof. unfold subseteq, spec_subseteq, scons_snap. naive_solver. Qed.
 
+Lemma zesu_scons_event_mono left_event right_event (left right : spec) :
+  left_event = right_event -> left ⊆ right ->
+  scons left_event left ⊆ scons right_event right.
+Proof. intros ->. apply zesu_scons_mono. Qed.
+
+Lemma zesu_scons_snap_plain_event_mono left_event right_event accept (left right : spec) :
+  left_event = right_event -> left ⊆ right ->
+  scons_snap left_event accept left ⊆ scons right_event right.
+Proof. intros ->. apply zesu_scons_snap_plain_mono. Qed.
+
+Lemma zesu_scons_snap_event_mono left_event right_event accept predicate (left right : spec) :
+  left_event = right_event ->
+  (forall snapshot, accept snapshot -> predicate snapshot) -> left ⊆ right ->
+  scons_snap left_event accept left ⊆ scons_snap right_event predicate right.
+Proof. intros ->. apply zesu_scons_snap_mono. Qed.
+
+Ltac zesu_trace_event_equal :=
+  first [reflexivity | bv_solve |
+    progress (repeat match goal with
+      | H : @eq (bv _) _ _ |- _ => progress subst
+      end); zesu_trace_event_equal |
+    progress f_equal; zesu_trace_event_equal].
+
 Ltac zesu_trace_prefix_head value :=
   lazymatch value with
   | scons _ _ => constr:(value)
@@ -36,17 +59,14 @@ Ltac zesu_matching_trace_tail candidate generated declared :=
           let declared := zesu_trace_prefix_head declared in
           lazymatch declared with
           | scons ?expected ?tail =>
-              let _ := constr:(eq_refl : event = expected) in
               zesu_matching_trace_tail candidate rest tail
           end
       | scons_snap ?event ?accept ?rest =>
           let declared := zesu_trace_prefix_head declared in
           lazymatch declared with
           | scons_snap ?expected ?predicate ?tail =>
-              let _ := constr:(eq_refl : event = expected) in
               zesu_matching_trace_tail candidate rest tail
           | scons ?expected ?tail =>
-              let _ := constr:(eq_refl : event = expected) in
               zesu_matching_trace_tail candidate rest tail
           end
       | _ =>
@@ -64,22 +84,27 @@ Ltac zesu_trace_prefix_inclusion :=
     end;
     lazymatch goal with
     | |- scons _ _ ⊆ scons _ _ =>
-        apply zesu_scons_mono; zesu_trace_prefix_inclusion
+        apply zesu_scons_event_mono;
+        [zesu_trace_event_equal | zesu_trace_prefix_inclusion]
     | |- scons_snap _ _ _ ⊆ scons _ _ =>
-        apply zesu_scons_snap_plain_mono; zesu_trace_prefix_inclusion
+        apply zesu_scons_snap_plain_event_mono;
+        [zesu_trace_event_equal | zesu_trace_prefix_inclusion]
     | |- scons_snap _ _ _ ⊆ scons_snap _ _ _ =>
-        apply zesu_scons_snap_mono;
-        [solve [intros; assumption |
+        apply zesu_scons_snap_event_mono;
+        [zesu_trace_event_equal
+        | solve [intros; assumption |
            let snapshot := fresh "snapshot" in
            let Hsnapshot := fresh "Hsnapshot" in
            intros snapshot Hsnapshot;
            lazymatch goal with
-           | Hsnapshot : ?read = Some ?payload |- ?read = Some ?expected =>
+           | Hsnapshot : ?read = Some ?payload |- ?expected_read = Some ?expected =>
+               let Hread := fresh "Hread" in
+               assert (Hread : read = expected_read) by zesu_trace_event_equal;
                let Hequal := fresh "Hpayload" in
                assert (Hequal : payload = expected) by
                  (autounfold with zesu_selectors;
                   zesu_normalize_stack_array_indices; reflexivity);
-               rewrite <- Hequal; exact Hsnapshot
+               try rewrite <- Hread; try rewrite <- Hequal; exact Hsnapshot
            end]
          | zesu_trace_prefix_inclusion]
     end].
