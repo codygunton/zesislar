@@ -165,6 +165,11 @@ def run(args) -> int:
     if root == 0x14d30 and provenance.get("source") != (
             "WriteSuccessNativeContract.writeSuccessNativeEntry"):
         raise ValueError("the Level 1 root declaration is not identified")
+    if root == 0x14d30:
+        checked_source = (HERE.parents[1] / "ZesuSsz/Generated/WriteSuccess/States"
+                          / "NativeRoot_14d30.v")
+        if render_successor(root_state) != checked_source.read_text():
+            raise ValueError("the root resources differ from the checked Level 1 state")
     root_state["root_provenance"] = {**provenance, "entry": hex(root),
         "capture_source": str(args.entries),
         "capture_sha256": hashlib.sha256(args.entries.read_bytes()).hexdigest()}
@@ -286,6 +291,8 @@ def main() -> int:
     parser.add_argument("--jobs", type=int, default=48)
     parser.add_argument("--seconds", type=int, default=300)
     args = parser.parse_args()
+    if gen_block.address(args.root) != 0x14d30:
+        parser.error("the native chain must start at the Level 1 entry 0x14d30")
     if not 1 <= args.jobs <= 48:
         parser.error("jobs must be between 1 and 48")
     if not 1 <= args.seconds <= 300:
