@@ -1,0 +1,45 @@
+{
+  "sources": {
+    "zesu": {
+      "commit": "d8071c422f0faf2c52d85b401192fdffc31fd5ac",
+      "tracked_sources_unchanged": true
+    },
+    "zisk": {
+      "commit": "fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3",
+      "tracked_sources_unchanged": true
+    },
+    "guest": {
+      "commit": "be591e90ecbd94b0a3185809ba5ed74268558fa3",
+      "tracked_sources_unchanged": true
+    }
+  },
+  "zig_version": "0.16.0",
+  "jobs": 8,
+  "object_command": [
+    "zig",
+    "build",
+    "rv64im-object",
+    "-Doptimize=ReleaseFast",
+    "-j8",
+    "--cache-dir",
+    "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk-author/zig-local",
+    "--global-cache-dir",
+    "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk-author/zig-global"
+  ],
+  "link_command": [
+    "zig",
+    "build",
+    "-Doptimize=ReleaseFast",
+    "-Dzesu_obj=/tmp/worker2-stock-zesu/zig-out/lib/zesu.o",
+    "-j8",
+    "--global-cache-dir",
+    "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk-author/zig-global"
+  ],
+  "linker_script_sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd",
+  "runtime_library_sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491",
+  "stock_object_sha256": "59bf42e9cccef4ef06f3fa2985e9081015c2cd16119330eeba6eb055bf5471f7",
+  "elf_sha256": "b2904b0802c8443a5734c8e236cc60b0ccceab631171b5798df874040e1d3a64",
+  "adapters": {
+    "exit.zig": "af4ebe06472c9dbffeea0601ba9521d0d3666b3bf28cddd969c66e1a09d84095"
+  }
+}
