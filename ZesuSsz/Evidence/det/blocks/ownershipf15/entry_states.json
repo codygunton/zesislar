@@ -45,7 +45,7 @@
       ],
       [
         "H2",
-        "mapRamBase defaultMap \u2264 bv_unsigned sp"
+        "mapRamBase defaultMap ≤ bv_unsigned sp"
       ],
       [
         "H3",
@@ -59,11 +59,11 @@
     "spatial": [
       "reg_col zesu_ram_sys_regs",
       "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64); (KindReg \"x8\", BitsShape 64); (KindReg \"x9\", BitsShape 64); (KindReg \"x10\", BitsShape 64); (KindReg \"x11\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x18\", BitsShape 64); (KindReg \"x19\", BitsShape 64); (KindReg \"x20\", BitsShape 64); (KindReg \"x21\", BitsShape 64); (KindReg \"x22\", BitsShape 64); (KindReg \"x23\", BitsShape 64); (KindReg \"x24\", BitsShape 64); (KindReg \"x25\", BitsShape 64); (KindReg \"x26\", BitsShape 64); (KindReg \"x27\", BitsShape 64)]",
-      "\"x2\" \u21a6\u1d63 RVal_Bits sp",
-      "(bv_unsigned sp + 104) \u21a6\u2098? 16",
-      "(bv_unsigned sp + 312) \u21a6\u2098\u2217 bytes",
-      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 take 592 bytes",
-      "(bv_unsigned sp + 1624) \u21a6\u2098? 272",
+      "\"x2\" ↦ᵣ RVal_Bits sp",
+      "(bv_unsigned sp + 104) ↦ₘ? 16",
+      "(bv_unsigned sp + 312) ↦ₘ∗ bytes",
+      "(bv_unsigned sp + 1032) ↦ₘ∗ take 592 bytes",
+      "(bv_unsigned sp + 1624) ↦ₘ? 272",
       "mmio_range (604086456 + 8) 16",
       "spec_trace (writeSuccessHeaderEventsAfter1300 sp tail)",
       "P",
@@ -71,8 +71,13 @@
     ],
     "persistent": [],
     "imports": [
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHeaderSpec",
-      "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls"
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Automation.SealedCoverage",
+      "isla.riscv64.riscv64",
+      "ZesuSsz.Contracts.IslarisMachine",
+      "isla.spec",
+      "isla.opsem",
+      "ZesuSsz.Contracts.WriteSuccessHeader"
     ],
     "local_sorts": {
       "Sigma": "Type",
@@ -144,11 +149,11 @@
     ],
     "spatial": [
       "reg_col zesu_ram_sys_regs",
-      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn low)",
-      "\"x22\" \u21a6\u1d63 RVal_Bits (bv_to_bvn high)",
-      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_ra)",
-      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_data)",
-      "\"x11\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old_size)",
+      "\"x8\" ↦ᵣ RVal_Bits (bv_to_bvn low)",
+      "\"x22\" ↦ᵣ RVal_Bits (bv_to_bvn high)",
+      "\"x1\" ↦ᵣ RVal_Bits (bv_to_bvn old_ra)",
+      "\"x10\" ↦ᵣ RVal_Bits (bv_to_bvn old_data)",
+      "\"x11\" ↦ᵣ RVal_Bits (bv_to_bvn old_size)",
       "P",
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
@@ -242,7 +247,7 @@
       ],
       [
         "H2",
-        "(mapRamBase defaultMap \u2264 bv_unsigned sp)%Z"
+        "(mapRamBase defaultMap ≤ bv_unsigned sp)%Z"
       ],
       [
         "H3",
@@ -255,12 +260,12 @@
     ],
     "spatial": [
       "reg_col zesu_ram_sys_regs",
-      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
-      "\"x1\" \u21a6\u1d63 RVal_Bits (bv_to_bvn oldra)",
-      "\"x8\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old8)",
-      "\"x9\" \u21a6\u1d63 RVal_Bits (bv_to_bvn old9)",
-      "\"x10\" \u21a6\u1d63 RVal_Bits (bv_to_bvn olddata)",
-      "(bv_unsigned sp + 1032) \u21a6\u2098\u2217 values",
+      "\"x2\" ↦ᵣ RVal_Bits (bv_to_bvn sp)",
+      "\"x1\" ↦ᵣ RVal_Bits (bv_to_bvn oldra)",
+      "\"x8\" ↦ᵣ RVal_Bits (bv_to_bvn old8)",
+      "\"x9\" ↦ᵣ RVal_Bits (bv_to_bvn old9)",
+      "\"x10\" ↦ᵣ RVal_Bits (bv_to_bvn olddata)",
+      "(bv_unsigned sp + 1032) ↦ₘ∗ values",
       "P",
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
     ],
@@ -343,7 +348,7 @@
       ],
       [
         "H1",
-        "(mapRamBase defaultMap \u2264 bv_unsigned sp + 32)%Z"
+        "(mapRamBase defaultMap ≤ bv_unsigned sp + 32)%Z"
       ],
       [
         "H2",
@@ -352,12 +357,12 @@
     ],
     "spatial": [
       "reg_col zesu_ram_sys_regs",
-      "\"x1\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
-      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
-      "\"x10\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
-      "\"x11\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
-      "(bv_unsigned sp + 40) \u21a6\u2098 pointer",
-      "(bv_unsigned sp + 32) \u21a6\u2098 count",
+      "\"x1\" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝",
+      "\"x2\" ↦ᵣ RVal_Bits (bv_to_bvn sp)",
+      "\"x10\" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝",
+      "\"x11\" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝",
+      "(bv_unsigned sp + 40) ↦ₘ pointer",
+      "(bv_unsigned sp + 32) ↦ₘ count",
       "instr_pre 88396 (writeSuccessPost1594cSetupSpec P)",
       "P",
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
@@ -436,7 +441,7 @@
       ],
       [
         "H1",
-        "(mapRamBase defaultMap \u2264 bv_unsigned sp + 48)%Z"
+        "(mapRamBase defaultMap ≤ bv_unsigned sp + 48)%Z"
       ],
       [
         "H2",
@@ -445,12 +450,12 @@
     ],
     "spatial": [
       "reg_col zesu_ram_sys_regs",
-      "\"x1\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
-      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
-      "\"x10\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
-      "\"x11\" \u21a6\u1d63: \u03bb value : valu, \u231cvalu_has_shape value (BitsShape 64)\u231d",
-      "(bv_unsigned sp + 56) \u21a6\u2098 pointer",
-      "(bv_unsigned sp + 48) \u21a6\u2098 count",
+      "\"x1\" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝",
+      "\"x2\" ↦ᵣ RVal_Bits (bv_to_bvn sp)",
+      "\"x10\" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝",
+      "\"x11\" ↦ᵣ: λ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝",
+      "(bv_unsigned sp + 56) ↦ₘ pointer",
+      "(bv_unsigned sp + 48) ↦ₘ count",
       "instr_pre 88412 (writeSuccessPost1595cSetupSpec P)",
       "P",
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"
@@ -521,7 +526,7 @@
       ],
       [
         "H0",
-        "(mapRamBase defaultMap \u2264 bv_unsigned sp + 64 < machineRamEnd defaultMap)%Z"
+        "(mapRamBase defaultMap ≤ bv_unsigned sp + 64 < machineRamEnd defaultMap)%Z"
       ],
       [
         "H1",
@@ -530,10 +535,10 @@
     ],
     "spatial": [
       "reg_col zesu_ram_sys_regs",
-      "\"x1\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
-      "\"x2\" \u21a6\u1d63 RVal_Bits (bv_to_bvn sp)",
-      "\"x10\" \u21a6\u1d63: \u03bb r : valu, \u231cvalu_has_shape r (BitsShape 64)\u231d",
-      "(bv_unsigned sp + 64) \u21a6\u2098 value",
+      "\"x1\" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝",
+      "\"x2\" ↦ᵣ RVal_Bits (bv_to_bvn sp)",
+      "\"x10\" ↦ᵣ: λ r : valu, ⌜valu_has_shape r (BitsShape 64)⌝",
+      "(bv_unsigned sp + 64) ↦ₘ value",
       "instr_pre 88424 (writeSuccessSuffixInt15968SetupSpec P)",
       "P",
       "reg_col (zip_with (fun r shape => (KindReg r, shape)) tmp_registers [BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64; BitsShape 64])"

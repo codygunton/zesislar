@@ -2,7 +2,9 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Export.Snapshots.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import isla.spec.
+Require Import isla.opsem.
 
 Definition State_1573cMemoryRaw
     `{!islaG Sigma} `{!threadG} (sp oldra old5 olddata oldsize : bv 64) (bytes : list (bv 8)) (tail : spec) (P : iProp Sigma) (b : bv 64) (b0 : bv 64) (b1 : bv 64) (b2 : bv 64) (b9 : bv 64) (b10 : bv 64) (b11 : bv 64) (b12 : bv 64) (b13 : bv 64) (b14 : bv 64) (b15 : bv 64) (b16 : bv 64) (b17 : bv 64) (b18 : bv 64) (b3 : bv 64) (b4 : bv 64) : iProp Sigma := (((bv_unsigned sp + 312) ↦ₘ∗ bytes) ∗

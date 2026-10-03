@@ -2,6 +2,9 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import isla.spec.
+Require Import isla.opsem.
 Require Import ZesuSsz.Export.Snapshots.
 
 Definition State_1572cMemoryRaw

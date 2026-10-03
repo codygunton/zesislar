@@ -1,9 +1,11 @@
+Require Import ZesuSsz.Automation.CallSet.
 (* Select the raw load trace when its source is an owned initialized array.
    A failed guard backtracks before instruction selection. *)
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ResourceGroups.
+Require Import ZesuSsz.Automation.UninitRegions.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import InstrSpecs.Lookup InstrSpecs.Specs.
 Require Import isla.riscv64.riscv64.
@@ -64,17 +66,21 @@ Ltac zesu_array_load_register register spatial :=
   | Esnoc ?rest _ _ => zesu_array_load_register register rest
   end.
 
+Ltac zesu_array_load_range start address width values stride :=
+  let Hrange := fresh "HarrayLoadRange" in
+  assert (Hrange : (start <= address /\
+    address + width <= start + Z.of_nat (length values) * stride)%Z)
+    by (autorewrite with lithium_rewrite;
+        rewrite ?length_take ?length_drop ?length_app;
+        first [cbn; zesu_finish_lia
+              | zesu_bounded_arithmetic ltac:(zesu_witness_arith)]);
+  clear Hrange.
+
 Ltac zesu_array_load_contains address width spatial :=
   lazymatch spatial with
   | Esnoc ?rest _ (@mem_mapsto_array _ _ ?bits ?start ?fraction ?values) =>
       let stride := eval vm_compute in (Z.of_N (bits / 8)) in
-      first [let Hrange := fresh "HarrayLoadRange" in
-             assert (Hrange : (start <= address /\
-               address + width <= start + Z.of_nat (length values) * stride)%Z)
-               by (autorewrite with lithium_rewrite;
-                   first [cbn; zesu_finish_lia
-                         | zesu_bounded_arithmetic ltac:(zesu_witness_arith)]);
-             clear Hrange
+      first [zesu_array_load_range start address width values stride
             | zesu_array_load_contains address width rest]
   | Esnoc ?rest _ _ => zesu_array_load_contains address width rest
   end.
@@ -88,6 +94,23 @@ Ltac zesu_array_load_find_owned address width :=
         | zesu_open_sealed_covering address;
           repeat iDestruct select (_ ∗ _)%I as "[? ?]";
           zesu_array_load_find_owned address width].
+
+(* Open an entry package before unfolding an unrelated frame resource. *)
+Ltac zesu_open_array_entry_bundle register :=
+  iMatchHyp ltac:(fun H body =>
+    let head := get_head body in
+    let instance := constr:(_ : LithiumUnfold head) in
+    let expanded := eval cbv beta zeta delta [head] in body in
+    lazymatch expanded with
+    | context [(register ↦ᵣ _)%I] =>
+        iEval (progress unfold head; cbv zeta) in H
+    end).
+
+Ltac zesu_prepare_array_entry_resources register :=
+  repeat first
+    [iDestruct select (∃ _, _)%I as (?) "?"
+    | progress (repeat iDestruct select (_ ∗ _)%I as "[? ?]")
+    | zesu_open_array_entry_bundle register].
 
 Ltac zesu_array_load_select :=
   lazymatch goal with
@@ -108,14 +131,12 @@ Ltac zesu_array_load_select :=
       lazymatch goal with
       | |- envs_entails _ (_ -∗ _)%I =>
           repeat first
-            [liUnfoldEarly
-            | lazymatch goal with
+            [lazymatch goal with
               | |- envs_entails _ (_ -∗ _)%I => iIntros "?"
               end
+            | liUnfoldEarly
             | liStep | liLetBindHint | liUnfoldLate];
-          repeat first
-            [progress (repeat iDestruct select (_ ∗ _)%I as "[? ?]")
-            | zesu_open_transparent_bundle_with_register register]
+          zesu_prepare_array_entry_resources register
       | _ => idtac
       end;
       lazymatch goal with
@@ -185,6 +206,92 @@ Ltac zesu_array_region_metadata_if_enabled :=
   end.
 
 
+Lemma zesu_literal_byte_coverage (root : bv 64) (offset count : Z)
+    (Hoffset : (0 <= offset < count)%Z)
+    (Hbound : (bv_unsigned root + count < bv_modulus 64)%Z) :
+  (bv_unsigned root <= (bv_unsigned root + offset) mod bv_modulus 64 <
+    bv_unsigned root + count)%Z.
+Proof. bv_solve. Qed.
+
+(* A literal pointer offset needs an array bound before modulo reduction. *)
+Ltac zesu_literal_byte_pointer_coverage :=
+  zesu_call_set_on;
+  repeat match goal with
+  | alias := _ |- ?statement =>
+      lazymatch statement with context[alias] => unfold alias end
+  end;
+  lazymatch goal with
+  | |- (bv_unsigned ?basePointer <= bv_unsigned ?pointer <
+         bv_unsigned ?basePointer + Z.of_nat (length ?bytes))%Z =>
+    assert_fails (has_evar basePointer);
+    assert_fails (has_evar pointer);
+    assert_fails (has_evar bytes);
+    let baseParts := ZesuSsz.Automation.UninitRegions.zesu_uninit_affine_pointer basePointer in
+    let pointerParts := ZesuSsz.Automation.UninitRegions.zesu_uninit_affine_pointer pointer in
+    lazymatch baseParts with (?root, 0%Z) =>
+      lazymatch pointerParts with (?actualRoot, ?offset) =>
+        constr_eq root actualRoot;
+        lazymatch offset with Z0 => idtac | Zpos _ => idtac end;
+        multimatch goal with
+        | Hlength : length bytes = ?count |- _ =>
+          let countZ := eval vm_compute in (Z.of_nat count) in
+          multimatch goal with
+          | Hbound : (bv_unsigned root + countZ < ?limit)%Z |- _ =>
+            rewrite Hlength;
+            bv_simplify_arith;
+            unfold bv_wrap;
+            try rewrite !Z.add_0_r;
+            try rewrite (Z.mod_small (bv_unsigned root) (bv_modulus 64)
+              (bv_unsigned_in_range _ root));
+            try rewrite <-!Z.add_assoc;
+            first
+            [ change (bv_unsigned root <= bv_unsigned root < bv_unsigned root + countZ)%Z;
+              let Hpositive := fresh "Hpositive" in
+              assert (Hpositive : (0 < countZ)%Z) by (vm_compute; done);
+              let Hlt := fresh "Hlt" in
+              pose proof (proj1 (Z.add_lt_mono_l 0 countZ (bv_unsigned root)) Hpositive) as Hlt;
+              rewrite Z.add_0_r in Hlt;
+              split; [apply Z.le_refl | exact Hlt]
+            | change (bv_unsigned root <=
+                (bv_unsigned root + offset) mod bv_modulus 64 <
+                bv_unsigned root + countZ)%Z;
+              apply zesu_literal_byte_coverage;
+              [vm_compute; done | eapply Z.lt_le_trans; [exact Hbound | vm_compute; done]] ]
+          end
+        end
+      end
+    end
+  end.
+
+Ltac zesu_preselect_covering_byte_array :=
+  let _ := constr:(_ : ZesuStepArrayLoadPriority) in
+  li_unfold_lets_in_context;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+    tryif has_evar address then fail 0 else idtac;
+    iMatchHyp ltac:(fun H owned =>
+      lazymatch owned with
+      | (?base ↦ₘ∗ ?bytes)%I =>
+        tryif has_evar base then fail 0 else idtac;
+        tryif has_evar bytes then fail 0 else idtac;
+        let element := type of bytes in
+        unify element (list (bv 8));
+        let Hcoverage := fresh "Hcoverage" in
+        assert (Hcoverage : (base <= address < base + length bytes)%Z)
+          by first [assumption | zesu_bounded_arithmetic ltac:(zesu_byte_pointer_arithmetic)
+                    | zesu_bounded_arithmetic ltac:(zesu_literal_byte_pointer_coverage)];
+        clear Hcoverage;
+        notypeclasses refine (tac_find_in_context
+          (FICMemMapstoSemantic address)
+          (find_in_context_mem_mapsto_semantic_inst address) _);
+        simpl;
+        iExists (MKArray 8 base bytes);
+        simpl;
+        liFindHyp FICSyntactic
+      end)
+  end.
+
+
 Ltac zesu_array_load_priority :=
-  first [zesu_word_array_lookup_if_enabled |
+  first [zesu_preselect_covering_byte_array | zesu_word_array_lookup_if_enabled |
     zesu_array_region_metadata_if_enabled | zesu_array_load_select].

@@ -21,9 +21,12 @@
    segment generator emits one for every boundary it produces. *)
 
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.BoundedArithmetic.
+Require Import ZesuSsz.Automation.UninitRegions.
+Require Import ZesuSsz.Automation.Hooks.
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
-From iris.proofmode Require Import environments.
+From iris.proofmode Require Import environments tactics.
 From Coq Require Import Lists.List Strings.String.
 Import ListNotations.
 
@@ -61,14 +64,49 @@ End sealed.
    address is rewritten in place, and nothing else is touched. *)
 (* `iMatchHyp` walks the whole context and backtracks; `iSelect _` offers
    only its last match and stops, which is no search at all. *)
+Ltac zesu_closed_coverage_term value :=
+  assert_fails (is_var value);
+  assert_fails (is_evar value);
+  lazymatch value with
+  | (fun _ => _) => fail
+  | ?function ?argument =>
+      zesu_closed_coverage_term function;
+      zesu_closed_coverage_term argument
+  | _ => idtac
+  end.
+
+Ltac zesu_declared_range_arithmetic ranges address :=
+  lazymatch ranges with
+  | (?lower, ?upper) :: ?rest =>
+      first [let Hcoverage := fresh "Hcoverage" in
+             assert (Hcoverage : (lower <= address < upper)%Z)
+               by (timeout 2 (first [zesu_finish_lia | bv_solve]));
+             clear Hcoverage
+            | zesu_declared_range_arithmetic rest address]
+  end.
+
+Ltac zesu_declared_ranges_hold ranges address :=
+  tryif zesu_closed_coverage_term (ranges, address)
+  then lazymatch eval vm_compute in (zesu_ranges_hold ranges address) with
+       | true => idtac
+       end
+  else zesu_declared_range_arithmetic ranges address.
+
+
 Ltac zesu_open_declared_cover address :=
   iMatchHyp ltac:(fun H sealed =>
     let instance := constr:(_ : ZesuSealed sealed _ _ _) in
     lazymatch type of instance with
-    | ZesuSealed _ _ ?ranges _ =>
-        lazymatch eval vm_compute in (zesu_ranges_hold ranges address) with
-        | true =>
-            iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance))) in H
+    | ZesuSealed _ ?raw ?ranges _ =>
+        zesu_declared_ranges_hold ranges address;
+        let head := get_head raw in
+        iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance))) in H;
+        lazymatch head with
+        | @mem_mapsto => idtac
+        | @mem_mapsto_array => idtac
+        | @mem_mapsto_uninit => idtac
+        | @bi_sep => idtac
+        | _ => iEval (unfold head) in H
         end
     end).
 
@@ -132,7 +170,18 @@ Ltac zesu_open_sealed_covering address :=
         |zesu_open_opaque_tail
         |zesu_open_transparent_bundle].
 
+Ltac zesu_normalize_lookup_address_aliases :=
+  repeat lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      match goal with
+      | local := _ : _ |- _ =>
+          lazymatch address with context [local] => unfold local end
+      end
+  end.
+
 Ltac zesu_open_sealed_for_lookup :=
+  li_unfold_lets_in_context;
+  zesu_normalize_lookup_address_aliases;
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
       zesu_open_sealed_covering address
@@ -177,7 +226,14 @@ Ltac zesu_open_sealed_load_handoff :=
                   | lazymatch opened with
                     | context[(?owned ↦ₘ∗ _)%I] => unify owned address
                     end];
-            iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance)); unfold head) in H
+            iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance))) in H;
+        lazymatch head with
+        | @mem_mapsto => idtac
+        | @mem_mapsto_array => idtac
+        | @mem_mapsto_uninit => idtac
+        | @bi_sep => idtac
+        | _ => iEval (unfold head) in H
+        end
         end
         | let head := get_head sealed in
           let _ := constr:(_ : LithiumUnfold head) in
@@ -202,3 +258,119 @@ Ltac zesu_step_sealed_open_on :=
 
 Ltac zesu_open_sealed_for_lookup_if_enabled :=
   zesu_step_sealed_open_on; zesu_open_sealed_for_lookup.
+
+(* A stalled handoff may demand another declaration of the same memory.
+   Open the goal declaration and only a matching owned declaration. *)
+Ltac zesu_open_declared_memory_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (?sealed ∗ _)%I =>
+      let instance := constr:(_ : ZesuSealed sealed _ _ _) in
+      lazymatch type of instance with
+      | ZesuSealed _ ?raw _ _ =>
+          let head := get_head raw in
+          let opened := eval unfold head in raw in
+          try (iMatchHyp ltac:(fun H owned =>
+            let owner := constr:(_ : ZesuSealed owned _ _ _) in
+            lazymatch type of owner with
+            | ZesuSealed _ ?ownedRaw _ _ =>
+                let ownedHead := get_head ownedRaw in
+                let ownedOpened := eval unfold ownedHead in ownedRaw in
+                unify ownedOpened opened;
+                iEval (rewrite (zesu_sealed_unfold (ZesuSealed := owner)); unfold ownedHead) in H
+            end));
+          iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance)));
+          iEval (unfold head);
+          repeat iDestruct select (_ ∗ _)%I as "[? ?]"
+      end
+  end.
+Ltac zesu_open_declared_memory_for_raw_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (?atom ∗ _)%I =>
+      let head := get_head atom in
+      lazymatch head with
+      | @mem_mapsto => idtac
+      | @mem_mapsto_array => idtac
+      | @mem_mapsto_uninit => idtac
+      end;
+      iMatchHyp ltac:(fun H owned =>
+        let owner := constr:(_ : ZesuSealed owned _ _ _) in
+        lazymatch type of owner with
+        | ZesuSealed _ ?raw _ _ =>
+            let rawHead := get_head raw in
+            let opened := eval unfold rawHead in raw in
+            lazymatch opened with
+            | (?first ∗ _)%I => unify first atom
+            | _ => unify opened atom
+            end;
+            iEval (rewrite (zesu_sealed_unfold (ZesuSealed := owner)); unfold rawHead) in H
+        end);
+      repeat iDestruct select (_ ∗ _)%I as "[? ?]"
+  end.
+
+Ltac zesu_with_uninit_target body action :=
+  lazymatch body with
+  | (?address ↦ₘ? ?size)%I => action address size
+  | (?left ∗ ?right)%I => first [zesu_with_uninit_target left action | zesu_with_uninit_target right action]
+  end.
+
+Ltac zesu_uninit_requested_range lower upper address size :=
+  tryif has_evar (lower, upper, address, size) then fail 0 else idtac;
+  let Hrange := fresh "HuninitRange" in
+  assert (Hrange : (0 <= size /\ lower <= address /\ address + size <= upper)%Z)
+    by zesu_region_bounds;
+  clear Hrange.
+
+Ltac zesu_uninit_declared_range ranges address size :=
+  lazymatch ranges with
+  | (?lower, ?upper) :: ?rest =>
+      first [zesu_uninit_requested_range lower upper address size
+            | zesu_uninit_declared_range rest address size]
+  end.
+
+Ltac zesu_uninit_owned_range body address size :=
+  lazymatch body with
+  | (?base ↦ₘ? ?count)%I =>
+      zesu_uninit_requested_range base (base + count)%Z address size
+  | (?left ∗ ?right)%I =>
+      first [zesu_uninit_owned_range left address size
+            | zesu_uninit_owned_range right address size]
+  end.
+
+Ltac zesu_open_declared_uninit_goal :=
+  lazymatch goal with
+  | |- envs_entails _ ?body =>
+      zesu_with_uninit_target body ltac:(fun address size =>
+      iMatchHyp ltac:(fun H owned =>
+        let owner := constr:(_ : ZesuSealed owned _ _ _) in
+        lazymatch type of owner with
+        | ZesuSealed _ ?raw ?ranges _ =>
+          zesu_uninit_declared_range ranges address size;
+          let head := get_head raw in
+          let opened := eval unfold head in raw in
+          zesu_uninit_owned_range opened address size;
+          iEval (rewrite (zesu_sealed_unfold (ZesuSealed := owner)); unfold head) in H
+        end));
+      repeat iDestruct select (_ ∗ _)%I as "[? ?]"
+  end.
+
+Ltac zesu_open_declared_memory_goal_if_enabled :=
+  zesu_step_sealed_open_on;
+  first [zesu_normalize_uninit_wrapped_address | zesu_open_declared_uninit_goal | zesu_open_declared_memory_goal | zesu_open_declared_memory_for_raw_goal].
+
+Ltac zesu_open_declared_memory_witness_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ ?T ?body) =>
+      let witness := zesu_tuple_witness T in
+      let instantiated := eval cbv beta in (body witness) in
+      lazymatch instantiated with
+      | (?sealed ∗ _)%I =>
+          let instance := constr:(_ : ZesuSealed sealed _ _ _) in
+          iExists witness; red_li_prod;
+          zesu_open_declared_memory_goal
+      end
+  end.
+Ltac zesu_open_declared_memory_witness_goal_if_enabled :=
+  zesu_step_sealed_open_on; zesu_open_declared_memory_witness_goal.
+
+Ltac zesu_normalize_uninit_wrapped_address_if_enabled :=
+  zesu_step_sealed_open_on; zesu_normalize_uninit_wrapped_address.

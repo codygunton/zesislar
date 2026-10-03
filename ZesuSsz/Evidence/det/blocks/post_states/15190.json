@@ -257,7 +257,11 @@
       "source_resource": "State_15190 sp old_ra old_x5 old_data old_size payload tail P",
       "capture": "Native execution stopped before successor selection; complete Iris context retained.",
       "artifact_sha256": "6e7dbca17f09a653268c750facbb7ecc40844173809ad2a02c8a9f67326906ce",
-      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. The entry memory seal opens through its ZesuSealed instance before capture. Each array remains whole."
+      "normalization": "Individual Coq locals replace grouped printing. The temporary list uses definitionally equal tmp_registers notation. Set sorts use Type. raw_goal retains original output. The entry memory seal opens through its ZesuSealed instance before capture. Each array remains whole.",
+      "native_predecessor": "ZesuSsz/Generated/WriteSuccess/Blocks/Block_15180.v",
+      "native_predecessor_commit": "8dd3e0d1",
+      "entry_capture": "ZesuSsz/Evidence/det/blocks/post_states/15180.json",
+      "entry_state": "ZesuSsz/Evidence/det/blocks/writeoutput_call0/States/State_15190.v"
     }
   }
 ]

@@ -31,6 +31,7 @@ From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SpecPrefix.
 Require Import ZesuSsz.Automation.TracePrefixTail.
+Require Import ZesuSsz.Automation.SharedSuffixWitness.
 Require Import ZesuSsz.Automation.LoadedTrace.
 Require Import ZesuSsz.Automation.LookupReduce.
 Require Import ZesuSsz.Automation.CallReturn.
@@ -43,19 +44,28 @@ Require Import ZesuSsz.Automation.InteriorByteSlice.
 Require Import ZesuSsz.Automation.ReturnBundle.
 Require Import ZesuSsz.Automation.ResourceGroups.
 
+Require Import ZesuSsz.Automation.ByteWordSlice.
+
 Ltac zesu_rule_set_v2_steps :=
   lazymatch goal with
+  | |- envs_entails _ (subsume (_ ↦ₘ∗ _) _ _) => zesu_lend_byte_words_if_enabled
   | |- envs_entails _ (@bi_exist _ _ _) =>
-      first [zesu_lend_interior_byte_slice_if_enabled
+      first [zesu_lend_byte_word_existential
+            | zesu_open_byte_word_seal
+            | zesu_select_shared_suffix_tuple
+            | zesu_select_owned_trace_memory_witness
+            | zesu_lend_interior_byte_slice_if_enabled
             | zesu_outcome_handoff_if_enabled
             | zesu_restore_existential_array_if_enabled
             | (zesu_step_sealed_open_on; zesu_open_sealed_load_handoff)
             | zesu_open_sealed_for_lookup_if_enabled
             | zesu_close_loaded_trace_if_enabled
             | zesu_close_matching_trace_tail
-            | zesu_close_spec_tail_if_enabled]
+            | zesu_close_spec_tail_if_enabled
+            | zesu_open_declared_memory_witness_goal_if_enabled]
   | |- envs_entails _ ((_ ↦ₘ∗ _) ∗ _)%I =>
-      zesu_restore_interior_byte_slice_if_enabled
+      first [zesu_restore_interior_byte_slice_if_enabled
+            | zesu_open_declared_byte_slice_goal]
   (* C7: the instruction a lookup holds, in the form the search reads. *)
   | |- envs_entails _ (subsume (instr _ _) _ _) =>
       zesu_reduce_instr_lookup_if_enabled
@@ -80,4 +90,6 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_open_sealed_for_lookup_if_enabled
   | |- envs_entails _ (find_in_context (FindRegMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled
+  | |- envs_entails _ (_ ∗ _)%I =>
+      zesu_open_declared_memory_goal_if_enabled
   end.

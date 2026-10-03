@@ -4,8 +4,7 @@ Require Import ZesuSsz.Automation.All.
    0x1572c to 0x1573c. Both boundary predicates
    are inferred, and the proof is the block automation alone.
 
-   The callee premise is the generic zesuWriteOutputCallSpec.
-   Regenerate this block with writeOutputContract before composition. *)
+   The callee premise is the exact writeOutputContract. *)
 
 Require Import isla.riscv64.riscv64.
 From IslaTraces.write_success_blocks Require Import Index.

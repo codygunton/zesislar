@@ -323,6 +323,96 @@ def substitute_witnesses(coq: list[tuple[str, str]], spatial: list[str],
             [replace(atom) for atom in spatial])
 
 
+def normalize_lent_arrays(atoms: list[str]) -> list[str]:
+    """Apply a captured array-return wand to its owned slice."""
+    atoms = list(atoms)
+    while True:
+        for index, atom in enumerate(atoms):
+            if atom.count("-∗") != 1 or any(term in atom for term in ("∃", "λ", "fun ")):
+                continue
+            borrowed, restored = (part.strip() for part in atom.split("-∗"))
+            if borrowed.count("↦ₘ∗") != 1 or restored.count("↦ₘ∗") != 1:
+                continue
+            owner = next((other for other, resource in enumerate(atoms)
+                          if other != index and resource == borrowed), None)
+            if owner is not None:
+                atoms = [resource for other, resource in enumerate(atoms)
+                         if other not in (index, owner)] + spatial_atoms(restored)
+                break
+        else:
+            return atoms
+
+def normalize_bitvector_addresses(atoms: list[str], widths: dict[str, int]) -> list[str]:
+    """Restore captured address widths before elaborating unsigned numerals."""
+    def replace(match):
+        value = match.group(1)
+        width = widths.get(value)
+        if not isinstance(width, int) or width <= 0:
+            raise ValueError(f"missing captured bit width for unsigned numeral: {value}")
+        return f"bv_unsigned (BV {width} {value})"
+    return [re.sub(r"bv_unsigned\s+(\d+)(?:%bv)?\b", replace, atom)
+            for atom in atoms]
+
+def normalize_memory_literals(atoms: list[str], widths: dict[str, int]) -> list[str]:
+    """Restore the captured bit width that Rocq omits from word numerals."""
+    def ungroup(address: str) -> str:
+        while address.startswith("(") and address.endswith(")"):
+            depth = 0
+            for index, character in enumerate(address):
+                depth += (character == "(") - (character == ")")
+                if depth == 0:
+                    break
+            if index != len(address) - 1:
+                break
+            address = address[1:-1].strip()
+        return address
+
+    def captured_width(address: str) -> int | None:
+        return next((width for key, width in widths.items()
+                     if ungroup(key) == ungroup(address)), None)
+
+    normalized = []
+    for atom in atoms:
+        for event in reversed(list(re.finditer(r"SWriteMem\s+", atom))):
+            start = event.end()
+            end = start
+            if atom[start] == "(":
+                depth = 1
+                end += 1
+                while depth and end < len(atom):
+                    depth += (atom[end] == "(") - (atom[end] == ")")
+                    end += 1
+            else:
+                while end < len(atom) and not atom[end].isspace():
+                    end += 1
+            value = re.match(r"\s+(\d+)%bv\b", atom[end:])
+            if value is not None:
+                address = atom[start:end]
+                width = captured_width(address)
+                if not isinstance(width, int) or width <= 0:
+                    raise ValueError(f"missing captured bit width for write event: {address}")
+                atom = (atom[:end] + f" (BV {width} {value.group(1)})"
+                        + atom[end + value.end():])
+        array = re.fullmatch(r"(.+?)\s*↦ₘ∗\s*(\[[^\[\]]*\])", atom)
+        if array is not None and re.search(r"\d+%bv\b", array.group(2)):
+            address, values = array.groups()
+            width = captured_width(address)
+            if not isinstance(width, int) or width <= 0:
+                raise ValueError(f"missing captured bit width for memory array: {atom}")
+            values = re.sub(r"(\d+)%bv\b", lambda value:
+                            f"(BV {width} {value.group(1)})", values)
+            atom = f"{address} ↦ₘ∗ {values}"
+        match = re.fullmatch(r"(.+?)\s*↦ₘ\s*(\d+)(?:%bv)?", atom)
+        if match is None:
+            normalized.append(atom)
+            continue
+        address, value = match.groups()
+        width = captured_width(address)
+        if not isinstance(width, int) or width <= 0:
+            raise ValueError(f"missing captured bit width for memory word: {atom}")
+        normalized.append(f"{address} ↦ₘ (BV {width} {value})")
+    return normalized
+
 def require_call_resources(atoms: list[str]) -> None:
     """Reject missing ownership. Never add inferred resources."""
     if "reg_col zesu_ram_sys_regs" not in atoms:
@@ -407,7 +497,7 @@ def local_parts(locals_: list[tuple[str, str]], sorts: dict[str, str],
                     sort = "Prop"
         if sort == "Prop":
             facts.append(f"⌜{kind}⌝")
-        elif sort == "Type" or not strict:
+        elif sort in ("Set", "Type") or not strict:
             variables.append((variable, kind))
         else:
             raise ValueError(f"missing Coq sort for local {variable}: {kind}")
@@ -516,17 +606,90 @@ def explicit_arguments(binders: str) -> str:
     return " ".join(names)
 
 
+def normalize_binary_count_bounds(expression: str) -> str:
+    """Keep successor-count bounds in binary arithmetic without changing them."""
+    count = r"([A-Za-z_][\w'’]*)"
+    comparison = r"(<=|≤|<)"
+    power = r"([0-9]+)\s*\^\s*([0-9]+)"
+    scoped = rf"\(\s*S\s+{count}\s*{comparison}\s*{power}\s*\)\s*%nat"
+    bare = rf"\bS\s+{count}\s*{comparison}\s*{power}"
+    def binary(match):
+        name, relation, base, exponent = match.groups()
+        return f"(Z.of_nat {name} + 1 {relation} {base} ^ {exponent})%Z"
+    return re.sub(bare, binary, re.sub(scoped, binary, expression))
+
+
+
+def prune_unowned_capture_locals(coq: list[tuple[str, str]], spatial: list[str],
+                                 binders: str, sorts: dict[str, str],
+                                 strict: bool) -> tuple[list[tuple[str, str]], list[str]]:
+    """Keep capture values and facts that owned resources or provenance use.
+
+    This changes only the emitted successor. The complete raw capture remains
+    the source for restoring a fact when a later native block requires it.
+    """
+    values, _facts = local_parts(free_locals(coq, binders), sorts, strict)
+    names = {name for name, _kind in values}
+    parameters = set(explicit_arguments(binders).split())
+    referenced_names = names | parameters
+    def references(text: str) -> set[str]:
+        return {name for name in referenced_names if re.search(
+            r"(?<![\w'])" + re.escape(name) + r"(?![\w'])", text)}
+    used = set().union(*(references(atom) for atom in spatial
+                        if not atom.startswith("⌜")))
+    # Dependent value types and proof facts can establish payload provenance.
+    # Follow them only from values that ownership already retains.
+    changed = True
+    while changed:
+        previous = set(used)
+        for name, kind in values:
+            if name in used:
+                used.update(references(kind))
+        provenance = [kind for name, kind in coq if name not in names]
+        provenance += [atom for atom in spatial if atom.startswith("⌜")]
+        for fact in provenance:
+            if re.search(r"(?<![<>=!])=(?!=)", fact) and references(fact) & used:
+                used.update(references(fact))
+        changed = used != previous
+    removed = names - used
+    def retained(text: str) -> bool:
+        return not (references(text) & removed)
+    kept_coq = [(name, kind) for name, kind in coq
+                if name not in removed and retained(kind)
+                and (name in names or references(kind) & used)]
+    kept_spatial = [atom for atom in spatial
+                    if not atom.startswith("⌜")
+                    or (retained(atom) and references(atom) & used)]
+    return kept_coq, kept_spatial
+
+
 def boundary_source(name: str, binders: str, coq: list[tuple[str, str]],
                     spatial: list[str], seal: bool, *,
                     call_resources: bool = False,
                     sorts: dict[str, str] | None = None,
-                    witnesses: dict[str, str] | None = None) -> str:
+                    witnesses: dict[str, str] | None = None,
+                    memory_word_widths: dict[str, int] | None = None,
+                    bitvector_address_widths: dict[str, int] | None = None,
+                    prune_unowned_locals: bool = False) -> str:
     coq, spatial = substitute_witnesses(coq, spatial, witnesses or {})
-    spatial = [atom for body in spatial for atom in spatial_atoms(body)]
+    coq = [(variable, normalize_binary_count_bounds(kind)) for variable, kind in coq]
+    spatial = [normalize_binary_count_bounds(atom)
+               for body in spatial for atom in spatial_atoms(body)]
+    address_widths = bitvector_address_widths or {}
+    spatial = normalize_bitvector_addresses(spatial, address_widths)
+    memory_widths = {
+        normalize_bitvector_addresses([address], address_widths)[0]: width
+        for address, width in (memory_word_widths or {}).items()
+    }
+    spatial = normalize_memory_literals(spatial, memory_widths)
+    spatial = normalize_lent_arrays(spatial)
     if call_resources:
         spatial = normalize_temporaries(spatial)
         require_call_resources(spatial)
         require_open_resources(spatial, binders)
+    if prune_unowned_locals:
+        coq, spatial = prune_unowned_capture_locals(
+            coq, spatial, binders, sorts or {}, call_resources)
     locals_, pure = local_parts(free_locals(coq, binders), sorts or {}, call_resources)
     existentials = "".join(
         f"∃ {variable} : {kind},\n   " for variable, kind in locals_
@@ -617,7 +780,10 @@ def main() -> int:
             stem, binders, coq, spatial,
             seal=len(spatial) > RULE_20_CONJUNCTS,
             call_resources=arguments.call_resources,
-            sorts=record.get("local_sorts", record.get("sorts"))))
+            sorts=record.get("local_sorts", record.get("sorts")),
+            memory_word_widths=record.get("memory_word_widths"),
+            bitvector_address_widths=record.get("bitvector_address_widths"),
+            prune_unowned_locals=record.get("prune_unowned_locals", False)))
         print(f"{record['lemma']}: {len(spatial)} conjuncts, "
               f"{'sealed' if len(spatial) > RULE_20_CONJUNCTS else 'open'}")
     if not emitted:

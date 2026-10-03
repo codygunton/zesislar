@@ -153,3 +153,39 @@ Definition subsume_mem_word_address_inst := [instance @subsume_mem_word_address]
 
 Global Existing Instance subsume_mem_word_address_inst | 1.
 Print Assumptions subsume_mem_word_address.
+
+From iris.proofmode Require Import environments.
+
+(* Normalize literal stack displacements only after proving no wrap. *)
+Ltac zesu_uninit_affine_pointer pointer :=
+  lazymatch pointer with
+  | bv_add ?base ?literal =>
+      lazymatch literal with
+      | @BV 64 ?value _ =>
+          let displacement := eval vm_compute in (bv_signed literal) in
+          let prefix := zesu_uninit_affine_pointer base in
+          lazymatch prefix with (?root, ?offset) =>
+            let total := eval vm_compute in (offset + displacement)%Z in
+            constr:((root, total))
+          end
+      end
+  | _ => constr:((pointer, 0%Z))
+  end.
+
+Ltac zesu_normalize_uninit_wrapped_address :=
+  lazymatch goal with
+  | |- envs_entails _ ?body =>
+      lazymatch body with
+      | context[(bv_unsigned ?pointer ↦ₘ? _)%I] =>
+          tryif has_evar pointer then fail 0 else idtac;
+          lazymatch pointer with bv_add _ _ => idtac end;
+          let parts := zesu_uninit_affine_pointer pointer in
+          lazymatch parts with (?root, ?offset) =>
+            lazymatch offset with Zneg _ => idtac end;
+            let Heq := fresh "HuninitAddress" in
+            assert (Heq : bv_unsigned pointer = (bv_unsigned root + offset)%Z)
+              by (timeout 2 zesu_region_bounds);
+            rewrite Heq; clear Heq
+          end
+      end
+  end.

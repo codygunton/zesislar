@@ -79,3 +79,86 @@ Ltac zesu_finish_packed_word_equality :=
              zesu_normalize_packed_word_value left];
       reflexivity
   end.
+
+Lemma zesu_u64_prefix_lookup (values : list (bv 64)) count index :
+  (index < count)%nat ->
+  take count values !!! index = default (BV 64 0) (values !! index).
+Proof.
+  intros Hindex.
+  rewrite (lookup_total_take _ count index Hindex) list_lookup_total_alt.
+  assert (Hzero : bv_0 64 = BV 64 0) by bv_solve.
+  change (default (bv_0 64) (values !! index) =
+    default (BV 64 0) (values !! index)).
+  by rewrite Hzero.
+Qed.
+
+Lemma zesu_u64_lookup_default (values : list (bv 64)) index :
+  values !!! index = default (BV 64 0) (values !! index).
+Proof.
+  rewrite list_lookup_total_alt.
+  assert (Hzero : bv_0 64 = BV 64 0) by bv_solve.
+  change (default (bv_0 64) (values !! index) =
+    default (BV 64 0) (values !! index)).
+  by rewrite Hzero.
+Qed.
+
+Ltac zesu_finish_u64_prefix_lookup :=
+  first [lazymatch goal with
+  | |- @eq (bv 64) (?values !!! ?index) ?requested =>
+      tryif has_evar values then fail 0 else idtac;
+      tryif has_evar index then fail 0 else idtac;
+      tryif has_evar requested then fail 0 else idtac;
+      let expanded := lazymatch requested with
+        | default _ (_ !! _) => requested
+        | _ => let head := get_head requested in
+               eval cbv beta delta [head] in requested
+        end in
+      lazymatch expanded with
+      | default (BV 64 0) (values !! index) =>
+          change (values !!! index = default (BV 64 0) (values !! index));
+          apply zesu_u64_lookup_default
+      end
+  end | lazymatch goal with
+  | |- @eq (bv 64) (take ?count ?values !!! ?index) ?requested =>
+      tryif has_evar values then fail 0 else idtac;
+      tryif has_evar index then fail 0 else idtac;
+      tryif has_evar requested then fail 0 else idtac;
+      let expanded := lazymatch requested with
+        | default _ (_ !! _) => requested
+        | _ => let head := get_head requested in
+               eval cbv beta delta [head] in requested
+        end in
+      lazymatch expanded with
+      | default (BV 64 0) (values !! index) =>
+          change (take count values !!! index =
+            default (BV 64 0) (values !! index));
+          apply zesu_u64_prefix_lookup; lia
+      end
+  end].
+
+Ltac zesu_finish_u64_lookup_symmetric :=
+  first [zesu_finish_u64_prefix_lookup
+  | lazymatch goal with
+    | |- @eq (bv 64) (default (BV 64 0) (?values !! ?index))
+                       (?values !!! ?index) =>
+        assert_fails (has_evar values);
+        assert_fails (has_evar index);
+        symmetry; apply zesu_u64_lookup_default
+    end].
+
+Ltac zesu_trace_u64_lookup_normalize fuel :=
+  lazymatch fuel with
+  | O => idtac
+  | S ?remaining =>
+      first [lazymatch goal with
+      | |- envs_entails _ (@bi_exist _ (li_prod spec unit) ?body) =>
+          lazymatch body with context[?values !!! ?index] =>
+            let T := type of values in
+            constr_eq T (list (bv 64));
+            assert_fails (has_evar values);
+            assert_fails (has_evar index);
+            progress rewrite (zesu_u64_lookup_default values index);
+            zesu_trace_u64_lookup_normalize remaining
+          end
+      end | idtac]
+  end.

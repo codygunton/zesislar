@@ -2,6 +2,8 @@ Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.TracePrefixTail.
+Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import ZesuSsz.Automation.BoundedArithmetic.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
@@ -56,6 +58,40 @@ Ltac zesu_byte_slice_start address base :=
   | _ => constr:(Z.to_nat (address - base))
   end.
 
+Ltac zesu_open_declared_byte_slice address count :=
+  iMatchHyp ltac:(fun H sealed =>
+    let instance := constr:(_ : ZesuSealed sealed _ _ _) in
+    lazymatch type of instance with
+    | ZesuSealed _ ?raw ?ranges _ =>
+        let head := get_head raw in
+        let opened := eval unfold head in raw in
+        let bytes := lazymatch opened with
+          | context[(_ ↦ₘ∗ ?bytes)%I] => bytes
+          end in
+        lazymatch type of bytes with list (bv 8) => idtac end;
+        let rec covered ranges :=
+          lazymatch ranges with
+          | (?low, ?high) :: ?rest =>
+              first [
+                let Hcoverage := fresh "HsliceCoverage" in
+                assert (Hcoverage :
+                  (low <= address /\ address + Z.of_nat count <= high)%Z)
+                  by (first [lia |
+                    lazymatch address with
+                    | bv_unsigned (?pointer + ?offset)%bv =>
+                        zesu_select_index_facts bytes count pointer low
+                    | bv_unsigned ?pointer =>
+                        zesu_select_index_facts bytes count pointer low
+                    end;
+                    zesu_bounded_arithmetic ltac:(bv_solve)]);
+                clear Hcoverage
+              | covered rest]
+          end in
+        covered ranges;
+        iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance)); unfold head) in H
+    end);
+  repeat iDestruct select (_ ∗ _)%I as "[? ?]".
+
 Ltac zesu_lend_interior_byte_slice :=
   zesu_expose_environment_alias;
   lazymatch goal with
@@ -70,7 +106,7 @@ Ltac zesu_lend_interior_byte_slice :=
           | context[(⌜?size = Z.of_nat (length slice)⌝)%I] =>
               let count := eval vm_compute in (Z.to_nat size) in
               assert_fails (has_evar count);
-              iMatchHyp ltac:(fun Harray resource =>
+              first [iMatchHyp ltac:(fun Harray resource =>
                 lazymatch resource with
                 | (?base ↦ₘ∗ ?bytes)%I =>
                     lazymatch type of bytes with list (bv 8) => idtac end;
@@ -117,6 +153,8 @@ Ltac zesu_lend_interior_byte_slice :=
                     | idtac];
                     iExists witness
                 end)
+              | zesu_open_declared_byte_slice address count;
+                zesu_lend_interior_byte_slice]
           end
       end
   end.
@@ -134,9 +172,12 @@ Ltac zesu_restore_interior_byte_slice :=
       iMatchHyp ltac:(fun Hrestore resource =>
         lazymatch resource with
         | (?borrowed -∗ ?whole)%I =>
-            constr_eq whole target;
+            assert_fails (has_evar whole);
+            assert_fails (has_evar borrowed);
+            unify whole target;
             iMatchHyp ltac:(fun Hslice returned =>
-              constr_eq returned borrowed;
+              assert_fails (has_evar returned);
+              unify returned borrowed;
               iPoseProof (Hrestore with Hslice) as "?")
         end)
   end.
@@ -144,3 +185,19 @@ Ltac zesu_restore_interior_byte_slice :=
 Ltac zesu_restore_interior_byte_slice_if_enabled :=
   let _ := constr:(_ : ZesuStepInteriorByteSlice) in
   zesu_restore_interior_byte_slice.
+
+Ltac zesu_open_declared_byte_slice_goal :=
+  let _ := constr:(_ : ZesuStepInteriorByteSlice) in
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ∗ ?bytes) ∗ _)%I =>
+      lazymatch type of bytes with list (bv 8) => idtac end;
+      assert_fails (has_evar address);
+      assert_fails (has_evar bytes);
+      let count := lazymatch bytes with
+        | take ?count _ => count
+        | _ => eval vm_compute in (length bytes)
+        end in
+      assert_fails (has_evar count);
+      zesu_open_declared_byte_slice address count
+  end.

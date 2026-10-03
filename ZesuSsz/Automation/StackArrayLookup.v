@@ -26,6 +26,8 @@
    `Subsume`. *)
 
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.BoundedArithmetic.
+Require Import ZesuMachineMap.Machine.
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -50,4 +52,27 @@ Ltac zesu_stack_array_range :=
 #[global] Hint Extern 9 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _)
     (mem_mapsto_kind_prop _ _) _) =>
   (apply tac_mem_mapsto_array_eq; zesu_stack_array_range)
+  : typeclass_instances.
+
+Ltac zesu_stack_array_linear_range :=
+  zesu_step_witness_arith_on;
+  lazymatch goal with
+  | |- (bv_unsigned ?base + ?offset <= bv_unsigned ?actual + ?delta < _) \/ _ =>
+      constr_eq base actual;
+      zesu_literal_Z offset;
+      zesu_literal_Z delta
+  | |- (bv_unsigned ?base + ?offset <= bv_unsigned (?actual + ?delta) < _) \/ _ =>
+      constr_eq base actual;
+      zesu_literal_Z offset;
+      zesu_literal_Z (bv_unsigned delta)
+  end;
+  zesu_witness_facts;
+  rewrite ?length_take ?length_drop ?length_app ?length_insert;
+  cbn;
+  try (cbv [machineRamEnd mapRamSize mapRamBase defaultMap] in * );
+  first [zesu_finish_lia | zesu_bounded_arithmetic ltac:(bv_solve)].
+
+#[global] Hint Extern 8 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _)
+    (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_array_eq; zesu_stack_array_linear_range)
   : typeclass_instances.

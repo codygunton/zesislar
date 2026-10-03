@@ -40,7 +40,7 @@
     ],
     [
       "H1",
-      "(0 \u2264 bv_unsigned sp - 16)%Z"
+      "(0 ≤ bv_unsigned sp - 16)%Z"
     ],
     [
       "H2",
@@ -112,7 +112,7 @@
     ],
     [
       "H6",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b18 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b18 < bv_half_modulus 64"
     ],
     [
       "H7",
@@ -120,7 +120,7 @@
     ],
     [
       "H8",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b17 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b17 < bv_half_modulus 64"
     ],
     [
       "H9",
@@ -128,7 +128,7 @@
     ],
     [
       "H10",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b16 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b16 < bv_half_modulus 64"
     ],
     [
       "H11",
@@ -136,7 +136,7 @@
     ],
     [
       "H12",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b15 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b15 < bv_half_modulus 64"
     ],
     [
       "H13",
@@ -144,7 +144,7 @@
     ],
     [
       "H14",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b14 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b14 < bv_half_modulus 64"
     ],
     [
       "H15",
@@ -152,7 +152,7 @@
     ],
     [
       "H16",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b13 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b13 < bv_half_modulus 64"
     ],
     [
       "H17",
@@ -160,7 +160,7 @@
     ],
     [
       "H18",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b12 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b12 < bv_half_modulus 64"
     ],
     [
       "H19",
@@ -168,7 +168,7 @@
     ],
     [
       "H20",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b11 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b11 < bv_half_modulus 64"
     ],
     [
       "H21",
@@ -176,7 +176,7 @@
     ],
     [
       "H22",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b10 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b10 < bv_half_modulus 64"
     ],
     [
       "H23",
@@ -184,7 +184,7 @@
     ],
     [
       "H24",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b9 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b9 < bv_half_modulus 64"
     ],
     [
       "H25",
@@ -192,7 +192,7 @@
     ],
     [
       "H26",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b8 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b8 < bv_half_modulus 64"
     ],
     [
       "H27",
@@ -200,7 +200,7 @@
     ],
     [
       "H28",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b7 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b7 < bv_half_modulus 64"
     ],
     [
       "H29",
@@ -208,7 +208,7 @@
     ],
     [
       "H30",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b0 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64"
     ],
     [
       "H31",
@@ -216,7 +216,7 @@
     ],
     [
       "H32",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed value < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed value < bv_half_modulus 64"
     ],
     [
       "H33",
@@ -224,7 +224,7 @@
     ],
     [
       "H34",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed sp < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed sp < bv_half_modulus 64"
     ],
     [
       "b1",
@@ -240,7 +240,7 @@
     ],
     [
       "H36",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b2 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b2 < bv_half_modulus 64"
     ],
     [
       "H37",
@@ -248,21 +248,21 @@
     ],
     [
       "H38",
-      "64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b1 < bv_half_modulus 64"
+      "64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b1 < bv_half_modulus 64"
     ]
   ],
   "spatial": [
     "P",
     "reg_col []",
-    "(bv_unsigned sp + 176) \u21a6\u2098 value",
+    "(bv_unsigned sp + 176) ↦ₘ value",
     "reg_col [(KindReg \"x3\", BitsShape 64); (KindReg \"x4\", BitsShape 64)]",
     "reg_col zesu_ram_sys_regs",
     "reg_col [(KindReg \"x1\", BitsShape 64); (KindReg \"x12\", BitsShape 64); (KindReg \"x13\", BitsShape 64); (KindReg \"x14\", BitsShape 64); (KindReg \"x15\", BitsShape 64); (KindReg \"x16\", BitsShape 64); (KindReg \"x17\", BitsShape 64); (KindReg \"x5\", BitsShape 64); (KindReg \"x6\", BitsShape 64); (KindReg \"x7\", BitsShape 64); (KindReg \"x28\", BitsShape 64); (KindReg \"x29\", BitsShape 64); (KindReg \"x30\", BitsShape 64); (KindReg \"x31\", BitsShape 64)]",
     "reg_col [(KindReg \"x8\", ExactShape (RVal_Bits b7)); (KindReg \"x9\", ExactShape (RVal_Bits b8)); (KindReg \"x18\", ExactShape (RVal_Bits b9)); (KindReg \"x19\", ExactShape (RVal_Bits b10)); (KindReg \"x20\", ExactShape (RVal_Bits b11)); (KindReg \"x21\", ExactShape (RVal_Bits b12)); (KindReg \"x22\", ExactShape (RVal_Bits b13)); (KindReg \"x23\", ExactShape (RVal_Bits b14)); (KindReg \"x24\", ExactShape (RVal_Bits b15)); (KindReg \"x25\", ExactShape (RVal_Bits b16)); (KindReg \"x26\", ExactShape (RVal_Bits b17)); (KindReg \"x27\", ExactShape (RVal_Bits b18))]",
     "reg_col [(KindReg \"x10\", BitsShape 64)]",
     "reg_col [(KindReg \"x11\", BitsShape 64)]",
-    "\"x2\" \u21a6\u1d63 RVal_Bits sp",
-    "(bv_unsigned sp - 16) \u21a6\u2098? 16",
+    "\"x2\" ↦ᵣ RVal_Bits sp",
+    "(bv_unsigned sp - 16) ↦ₘ? 16",
     "spec_trace tail"
   ],
   "persistent": [
@@ -333,16 +333,12 @@
     "H38": "Prop"
   },
   "imports": [
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsSignatureVCall",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessCalls",
-    "ZesuSsz.Export.Snapshots",
-    "ZesuSsz.Contracts.IslarisMemory",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactValueSpec",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessHashesLoopSpec",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactTransactionsGasLoads",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactAuthorizationsInt",
-    "ZesuSsz.Proofs.WriteSuccess.WriteSuccessExactWithdrawalsInt"
+    "ZesuSsz.Automation.All",
+    "ZesuSsz.Automation.SealedCoverage",
+    "isla.riscv64.riscv64",
+    "ZesuSsz.Contracts.IslarisMachine",
+    "isla.spec",
+    "isla.opsem"
   ],
   "stack_pointer": "sp",
   "return_point": true,
@@ -360,7 +356,7 @@
   "raw_capture": "/home/cody/zesislar/.worktrees/wp0-integration-worker-2/_build/agents/worker-build-2-wp0/successor_capture_f15-A-driver/probes/A_successor_capture_f15_0x15620_call.out",
   "trace_provenance": {
     "entry_spec_trace": [
-      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (\u03bb snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))"
+      "spec_trace (scons (SWriteMem (BV 64 (604086456 + 8)) (bv_to_bvn (sp - 16))) (scons_snap (SWriteMem (BV 64 (604086456 + 16)) (bv_to_bvn (BV 64 8))) (λ snapshot : seq_snapshot, read_mem_list (snap_mem snapshot) (bv_unsigned (sp - 16)) 8 = Some [Z_to_bv 8 (bv_unsigned value `mod` 256); Z_to_bv 8 ((bv_unsigned value `div` 256) `mod` 256); Z_to_bv 8 (((bv_unsigned value `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((bv_unsigned value `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 (((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256); Z_to_bv 8 ((((((((bv_unsigned value `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `div` 256) `mod` 256)]) tail))"
     ],
     "successor_spec_trace": [
       "spec_trace tail"

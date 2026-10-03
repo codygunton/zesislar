@@ -49,6 +49,114 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_captured_register_numeral_uses_recorded_width(self):
+        state = dict(binders=BINDERS, spatial=ATOMS +
+                     ['"x12" ↦ᵣ RVal_Bits 720%bv'])
+        default = gen_block.state_source(0x14d7c, state)
+        self.assertIn('RVal_Bits 720%bv', default)
+        state['register_bit_widths'] = {'x12': 64}
+        self.assertIn('RVal_Bits (BV 64 720)',
+                      gen_block.state_source(0x14d7c, state))
+
+    def test_captured_scope_metadata_is_opt_in(self):
+        state = dict(binders=BINDERS, spatial=ATOMS)
+        default = gen_block.state_source(0x14d7c, state)
+        self.assertNotIn('Local Open Scope', default)
+        self.assertEqual(default, gen_block.state_source(
+            0x14d7c, dict(state, open_scopes=[])))
+        self.assertIn('Local Open Scope Z_scope.', gen_block.state_source(
+            0x14d7c, dict(state, open_scopes=['Z_scope'])))
+
+    def test_captured_unsigned_numeral_keeps_its_bit_width(self):
+        atom = 'bv_unsigned 96709 ↦ₘ∗ bytes'
+        self.assertEqual(gen_boundary.normalize_bitvector_addresses(
+            [atom], {'96709': 64}), ['bv_unsigned (BV 64 96709) ↦ₘ∗ bytes'])
+        with self.assertRaisesRegex(ValueError, 'missing captured bit width'):
+            gen_boundary.normalize_bitvector_addresses([atom], {})
+        self.assertEqual(infer_boundary.bitvector_address_widths(
+            'BOUNDARY-ADDRESS-WIDTH 96709%bv : 64%N'), {'96709': 64})
+
+    def test_captured_array_numerals_keep_their_bit_width(self):
+        atom = 'bv_unsigned pointer ↦ₘ∗ [90%bv; 83%bv; byte]'
+        self.assertEqual(gen_boundary.normalize_memory_literals(
+            [atom], {'(bv_unsigned pointer)': 8}),
+            ['bv_unsigned pointer ↦ₘ∗ [(BV 8 90); (BV 8 83); byte]'])
+        with self.assertRaisesRegex(ValueError, 'missing captured bit width'):
+            gen_boundary.normalize_memory_literals([atom], {})
+        self.assertIn('@mem_mapsto_array', infer_boundary.PRINT_MEMORY_WIDTHS)
+
+    def test_captured_memory_numeral_keeps_its_bit_width(self):
+        atom = '(base - 8) ↦ₘ 89232%bv'
+        self.assertEqual(gen_boundary.normalize_memory_literals(
+            [atom, 'base ↦ₘ word'], {'(base - 8)': 64}),
+            ['(base - 8) ↦ₘ (BV 64 89232)', 'base ↦ₘ word'])
+        with self.assertRaisesRegex(ValueError, 'missing captured bit width'):
+            gen_boundary.normalize_memory_literals([atom], {})
+        event = 'spec_trace (scons (SWriteMem (BV 64 (port + 16)) 8%bv) tail)'
+        self.assertEqual(gen_boundary.normalize_memory_literals(
+            [event], {'(BV 64 (port + 16))': 64}),
+            ['spec_trace (scons (SWriteMem (BV 64 (port + 16)) (BV 64 8)) tail)'])
+
+    def test_captured_slice_and_return_wand_restore_the_array(self):
+        borrowed = '(base + 16) ↦ₘ∗ take 20 (drop 16 bytes)'
+        whole = 'base ↦ₘ∗ bytes'
+        self.assertEqual(gen_boundary.normalize_lent_arrays(
+            [borrowed, borrowed + ' -∗ ' + whole, 'spec_trace tail']),
+            ['spec_trace tail', whole])
+        unmatched = [borrowed + ' -∗ ' + whole, '(base + 17) ↦ₘ∗ bytes']
+        self.assertEqual(gen_boundary.normalize_lent_arrays(unmatched), unmatched)
+
+    def test_recorded_set_sort_is_a_value_witness(self):
+        source = gen_boundary.boundary_source(
+            'State', BINDERS, [('returned', 'bv 64')],
+            ATOMS + ['"x10" ↦ᵣ RVal_Bits returned'], seal=False,
+            call_resources=True, sorts={'returned': 'Set'})
+        self.assertIn('∃ returned : bv 64', source)
+
+    def test_captured_successor_preserves_persistent_mmio_permission(self):
+        permission = 'mmio_range (machineOutputAddress defaultMap) 16'
+        state = dict(binders=BINDERS, coq=[], spatial=list(ATOMS),
+                     persistent=[permission, permission], post_state=True,
+                     seal_memory=False)
+        source = gen_block.state_source(0x1562c, state)
+        self.assertEqual(source.count(permission), 1)
+
+    def test_context_capture_preserves_persistent_mmio_permission(self):
+        permission = 'mmio_range (machineOutputAddress defaultMap) 16'
+        context = ('Sigma : gFunctors\n' + '============================\n'
+                   + '_ : ' + permission + '\n'
+                   + '--------------------------------------\u25a1\n'
+                   + '\n'.join('_ : ' + atom for atom in ATOMS) + '\n'
+                   + '--------------------------------------\u2217\nPOST')
+        source = gen_block.state_source(0x1562c, dict(
+            binders=BINDERS, context=context, seal_memory=False))
+        self.assertIn(permission, source)
+
+    def test_binary_successor_count_bounds_keep_resources(self):
+        state = dict(binders=BINDERS, coq=[('remaining', 'nat'),
+                     ('Hcount', '(S remaining < 2 ^ 64)%nat')],
+                     spatial=list(ATOMS), local_sorts={'remaining': 'Type',
+                     'Hcount': 'Prop'}, seal_memory=False)
+        source = gen_block.state_source(0x15754, state)
+        self.assertIn('(Z.of_nat remaining + 1 < 2 ^ 64)%Z', source)
+        self.assertNotIn('(S remaining < 2 ^ 64)%nat', source)
+        self.assertIn('reg_col zesu_ram_sys_regs', source)
+        self.assertIn('spec_trace tail', source)
+
+
+    def test_binary_count_normalization_preserves_other_facts(self):
+        facts = {'(S remaining < 2 ^ 64)%nat':
+                 '(Z.of_nat remaining + 1 < 2 ^ 64)%Z',
+                 '(S count <= 3 ^ 32)%nat':
+                 '(Z.of_nat count + 1 <= 3 ^ 32)%Z',
+                 '(count < 2 ^ 64)%Z': '(count < 2 ^ 64)%Z',
+                 'length bytes = 32 * (processed + S remaining)':
+                 'length bytes = 32 * (processed + S remaining)'}
+        for source, expected in facts.items():
+            with self.subTest(source=source):
+                self.assertEqual(gen_boundary.normalize_binary_count_bounds(source), expected)
+
+
     def test_return_point_discards_legacy_register_values(self):
         state = {"binders": BINDERS, "spatial": [ATOMS[0], ATOMS[2]] +
                  [f'"{register}" ↦ᵣ RVal_Bits (BV 64 8)'
@@ -485,3 +593,34 @@ class ExtraLeaders(unittest.TestCase):
                          block["instructions"])
         with self.assertRaisesRegex(ValueError, "instruction boundary"):
             gen_block.split_blocks([block], {0x157cf})
+
+
+class SuccessorPruning(unittest.TestCase):
+    def test_unused_pure_locals_are_removed(self):
+        coq = [("kept", "bv 64"), ("unused", "bv 64"),
+               ("Hkept", "bv_unsigned kept < 1024"),
+               ("Hunused", "Z.land (bv_unsigned unused) 131072 = 0")]
+        sorts = {name: ("Prop" if name.startswith("H") else "Type")
+                 for name, _ in coq}
+        spatial = ['"x8" ↦ᵣ RVal_Bits kept',
+                   '⌜Z.land (bv_unsigned unused) 131072 = 0⌝']
+        emitted, atoms = gen_boundary.prune_unowned_capture_locals(
+            coq, spatial, BINDERS, sorts, True)
+        self.assertEqual(emitted, [coq[0], coq[2]])
+        self.assertEqual(atoms, [spatial[0]])
+        self.assertEqual(len(coq), 4)  # The raw capture is unchanged.
+
+    def test_owned_payload_provenance_is_preserved(self):
+        coq = [("words", "list (bv 64)"), ("bytes", "list (bv 8)"),
+               ("Hpacking", "words = u64s_of_bytes 16 bytes")]
+        sorts = {"words": "Type", "bytes": "Type", "Hpacking": "Prop"}
+        atoms = ["base ↦ₘ∗ words", "⌜words = u64s_of_bytes 16 bytes⌝"]
+        self.assertEqual(gen_boundary.prune_unowned_capture_locals(
+            coq, atoms, BINDERS, sorts, True), (coq, atoms))
+
+    def test_dependent_value_type_is_preserved(self):
+        coq = [("width", "N"), ("word", "bv width"), ("unused", "nat")]
+        sorts = {name: "Type" for name, _ in coq}
+        retained, _ = gen_boundary.prune_unowned_capture_locals(
+            coq, ['"x8" ↦ᵣ RVal_Bits word'], BINDERS, sorts, True)
+        self.assertEqual(retained, coq[:2])

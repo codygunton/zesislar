@@ -58,6 +58,42 @@ PRINT_LOCAL_SORTS = f'''all: (idtac "{SORT_BEGIN}";
   idtac "{SORT_END}").'''
 
 
+WIDTH_MARKER = "BOUNDARY-MEMORY-WIDTH"
+ADDRESS_WIDTH_MARKER = "BOUNDARY-ADDRESS-WIDTH"
+PRINT_MEMORY_WIDTHS = f'''all: try (iMatchHyp ltac:(fun H resource =>
+  first [lazymatch resource with
+    | @mem_mapsto _ _ ?width ?address _ _ =>
+        try (lazymatch address with
+          | context[@bv_unsigned ?addressWidth ?value] =>
+            let addressWidth := eval vm_compute in addressWidth in
+            idtac "{ADDRESS_WIDTH_MARKER}" value ":" addressWidth
+          end);
+        let width := eval vm_compute in width in
+        idtac "{WIDTH_MARKER}" address ":" width
+    end
+  | lazymatch resource with
+    | @mem_mapsto_array _ _ ?width ?address _ _ =>
+        try (lazymatch address with
+          | context[@bv_unsigned ?addressWidth ?value] =>
+            let addressWidth := eval vm_compute in addressWidth in
+            idtac "{ADDRESS_WIDTH_MARKER}" value ":" addressWidth
+          end);
+        let width := eval vm_compute in width in
+        idtac "{WIDTH_MARKER}" address ":" width
+    end
+  | lazymatch resource with
+    | spec_trace ?trace =>
+        let rec events trace := lazymatch trace with
+          | scons (SWriteMem ?address ?value) ?rest =>
+              let width := eval vm_compute in (bvn_n value) in
+              idtac "{WIDTH_MARKER}" address ":" width; events rest
+          | scons_snap (SWriteMem ?address ?value) _ ?rest =>
+              let width := eval vm_compute in (bvn_n value) in
+              idtac "{WIDTH_MARKER}" address ":" width; events rest
+          | _ => idtac
+          end in events trace
+    end]; fail)).'''
+
 # Islaris already resolves an instruction fetch from `instr_lookup_resources`
 # (InstrSpecs/Lookup.v). What it cannot do is see that resource inside a
 # folded project bundle, which is the corpus's largest gap: 122 proofs and
@@ -244,7 +280,7 @@ def spec_source(spec: dict, rule: str = "",
             # the goal the automation actually stopped on.
             f'all: idtac "{RAW_BEGIN}".', "Show.", f'all: idtac "{RAW_END}".',
             SHELVE_TERM_GOALS,
-            PRINT_LOCAL_SORTS,
+            PRINT_LOCAL_SORTS, PRINT_MEMORY_WIDTHS,
             "Show.", "Abort."]
     return "\n".join(
         ["Set Printing Width 200.", "Require Import isla.isla.",
@@ -291,7 +327,7 @@ def probe_source(module: Path, lemma: str, exit_address: str,
          end).''',
         "all: try liShow.",
         f'all: idtac "{RAW_BEGIN}".', "Show.", f'all: idtac "{RAW_END}".',
-        SHELVE_TERM_GOALS, PRINT_LOCAL_SORTS, "Show.", "Abort."]
+        SHELVE_TERM_GOALS, PRINT_LOCAL_SORTS, PRINT_MEMORY_WIDTHS, "Show.", "Abort."]
     source = (["Set Printing Width 200.", "Require Import isla.isla.",
                "From iris.proofmode Require Import environments.",
                "From IslaTraces.write_success_blocks Require Import Index."]
@@ -331,6 +367,8 @@ def goal_record(text: str) -> tuple[str, dict]:
     return selected, {
         "raw_goals": text,
         "local_sorts": local_sorts(text),
+        "memory_word_widths": memory_word_widths(text),
+        "bitvector_address_widths": bitvector_address_widths(text),
         "goals": [{"context": context, "conclusion": conclusion}
                   for context, conclusion in map(split_goal, split_goals(all_goals))],
     }
@@ -345,6 +383,28 @@ def local_sorts(text: str) -> dict[str, str]:
             for name, sort in re.findall(
                 rf"{SORT_MARKER}\s+(\S+)\s*:\s*(Prop|Set|Type)\b", block)}
 
+
+def bitvector_address_widths(text: str) -> dict[str, int]:
+    """Read numeral address widths from Rocq's concrete bitvector types."""
+    widths = {}
+    for value, width in re.findall(
+            rf"{ADDRESS_WIDTH_MARKER}\s+(\d+)(?:%bv)?\s*:\s*(\d+)%N\b", text):
+        width = int(width)
+        if value in widths and widths[value] != width:
+            raise ValueError(f"conflicting captured address widths: {value}")
+        widths[value] = width
+    return widths
+
+def memory_word_widths(text: str) -> dict[str, int]:
+    """Read memory widths from Rocq and reject an ambiguous capture."""
+    widths = {}
+    for address, width in re.findall(
+            rf"{WIDTH_MARKER}\s+([^\n]+?)\s*:\s*(\d+)%N\b", text):
+        width = int(width)
+        if address in widths and widths[address] != width:
+            raise ValueError(f"conflicting captured memory widths: {address}")
+        widths[address] = width
+    return widths
 
 def infer(module: Path, lemma: str, exit_address: str, build_dir: Path,
           driver: list[str], seconds: int, rule: str = "",

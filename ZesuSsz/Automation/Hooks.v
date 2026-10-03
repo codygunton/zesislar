@@ -29,6 +29,10 @@ Ltac zesu_has_initialized_array_root root spatial :=
              | bv_unsigned ?actualRoot => constr_eq actualRoot root
              | (bv_unsigned ?actualRoot + _)%Z => constr_eq actualRoot root
              end
+            | lazymatch goal with
+              | Hindex : (bv_unsigned root = address + Z.of_nat ?index)%Z |- _ =>
+                  is_var index
+              end
             | zesu_has_initialized_array_root root rest]
   | Esnoc ?rest _ _ => zesu_has_initialized_array_root root rest
   end.
@@ -52,16 +56,21 @@ Ltac zesu_name_machine_bound expected name :=
 (* Library solvers also call this primitive without passing through the
    project finisher. The call set supplies the timeout switch. *)
 Ltac lia ::= zesu_bounded_arithmetic ltac:(Zify.zify; xlia zchecker).
-Ltac bv_solve ::= zesu_bounded_arithmetic ltac:(
+Ltac bv_solve ::= first
+  [zesu_bounded_arithmetic ltac:(zesu_stack_pointer_arithmetic)
+  |zesu_bounded_arithmetic ltac:(zesu_byte_index_arithmetic)
+  |zesu_bounded_arithmetic ltac:(
+  try zesu_prepare_stack_nonwrap;
   bv_simplify_arith;
   bv_saturate_unsigned;
   bv_solve_unfold_tac;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia).
+  simpl; lia)].
 
 Ltac zesu_solve_machine_bounds :=
-  zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
-    zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve]).
+  first [zesu_bounded_arithmetic ltac:(zesu_byte_index_arithmetic)
+    | zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
 Ltac zesu_solve_machine_linear :=
   first [zesu_bounded_arithmetic ltac:(zesu_byte_index_arithmetic)
     | zesu_bounded_arithmetic ltac:(first [solve [repeat match goal with
@@ -101,10 +110,11 @@ Ltac zesu_normalize_symbolic_mem_address :=
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let Heq := fresh "HmemoryAddress" in
       assert (Heq : bv_unsigned pointer = (bv_unsigned base + integer)%Z) by
-        (repeat match goal with
-         | Hnat : (_ <= _)%nat |- _ => clear Hnat
-         | Hnat : (_ < _)%nat |- _ => clear Hnat
-         end; bv_solve);
+        (first [zesu_bounded_arithmetic ltac:(zesu_byte_index_arithmetic)
+          | repeat match goal with
+            | Hnat : (_ <= _)%nat |- _ => clear Hnat
+            | Hnat : (_ < _)%nat |- _ => clear Hnat
+            end; bv_solve]);
       rewrite Heq; clear Heq
     end
   end.
@@ -375,11 +385,16 @@ Ltac zesu_close_trace_inclusion :=
 
 Ltac zesu_open_trace_exist :=
   lazymatch goal with
-  | |- envs_entails _ (@bi_exist _ (li_prod spec unit) _) =>
-      match goal with
-      | |- context [scons _ ?tail] =>
+  | |- envs_entails _ (@bi_exist _ (li_prod spec unit) ?body) =>
+      let candidate := constr:(fun _ : list seq_label => False) in
+      let opened := eval cbv beta iota delta [li_fst] in
+        (body (candidate, tt)ₗ) in
+      lazymatch opened with
+      | (⌜scons_snap ?event _ ?rest ⊆ scons ?expected ?tail⌝ ∗ _)%I =>
+          constr_eq rest candidate;
+          constr_eq event expected;
           iExists (tail, tt)ₗ;
-          try (iSplit; [zesu_close_trace_inclusion |])
+          iSplit; [zesu_close_trace_inclusion |]
       end
   end.
 

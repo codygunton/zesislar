@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.CallSet.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
@@ -5,6 +6,7 @@ Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Automation.ArraySlices.
+Require Import ZesuSsz.Automation.TypedArrayRestore.
 Require Import ZesuSsz.Automation.Rewrites.
 Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -12,14 +14,19 @@ Require Import ZesuSsz.Automation.PackedWordValues.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.EntryPreparation.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
 Require Import ZesuSsz.Automation.V2Steps.
+Require Import ZesuSsz.Automation.TracePrefixTail.
+Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
 Require Import ZesuSsz.Automation.ConjunctMatch.
 Require Import ZesuSsz.Automation.ArrayLoadPreselect.
+Require Import ZesuSsz.Automation.GuardedMemorySelection.
+Require Import ZesuSsz.Automation.RegisterTupleWitness.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -49,6 +56,51 @@ Ltac zesu_finish_mask :=
   lazymatch goal with
   | |- bv_and _ _ = _ =>
       solve [apply bv_eq; rewrite bv_and_unsigned; simpl; assumption]
+  end.
+
+Ltac zesu_finish_known_mask :=
+  zesu_call_set_on;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND
+      (Val_Bool (bool_decide (bv_and _ _ = _)) = Val_Bool true) =>
+      unfold SHELVED_SIDECOND;
+      f_equal; apply bool_decide_eq_true_2;
+      zesu_finish_mask
+  | |- bv_and _ _ = _ => zesu_finish_mask
+  end.
+
+Ltac zesu_finish_known_alignment :=
+  zesu_call_set_on;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ => unfold SHELVED_SIDECOND
+  | _ => idtac
+  end;
+  lazymatch goal with
+  | |- Z.modulo ?value ?small = 0%Z =>
+      lazymatch small with Zpos _ => idtac end;
+      match goal with
+      | H : Z.modulo value ?large = 0%Z |- _ =>
+          lazymatch large with Zpos _ => idtac end;
+          apply Z.mod_divide; [discriminate |];
+          apply Z.divide_trans with large;
+          [let quotient := eval vm_compute in (large / small)%Z in
+           exists quotient; vm_compute; reflexivity
+          |apply Z.mod_divide; [discriminate | exact H]]
+      end
+  end.
+
+Ltac zesu_finish_deferred_byte_index :=
+  zesu_call_set_on;
+  let _ := constr:(_ : ZesuStepBoundedArithmetic) in
+  lazymatch goal with
+  | |- SHELVED_SIDECOND ?condition =>
+      lazymatch condition with
+      | (0 <= (bv_unsigned _ - _) / _)%Z => idtac
+      | (Z.to_nat ((bv_unsigned _ - _) / _) < length ?bytes)%nat =>
+          lazymatch type of bytes with list (bv 8) => idtac end
+      end;
+      unfold SHELVED_SIDECOND;
+      zesu_bounded_arithmetic ltac:(zesu_byte_pointer_arithmetic)
   end.
 
 Ltac zesu_finish_extract_alias :=
@@ -215,14 +267,26 @@ Ltac zesu_finish_selectors :=
    The two branches carry `time` labels in the WP1 probes, so the split can
    be measured. *)
 
+(* A deferred RAM bound must not enter the eight-byte value solver. *)
+Ltac zesu_finish_byte_pointer_sidecond :=
+  zesu_call_set_on;
+  lazymatch goal with
+  | |- SHELVED_SIDECOND (Val_Bool (bool_decide _) = Val_Bool true) =>
+      unfold SHELVED_SIDECOND;
+      f_equal; apply bool_decide_eq_true_2;
+      first [zesu_stack_pointer_arithmetic | zesu_byte_pointer_arithmetic]
+  end.
+
 Ltac zesu_finish_v1 :=
+  try (zesu_call_set_on; zesu_word_array_index_normalize);
   try autorewrite with zesu_indices;
   try (timeout 2 zesu_normalize_memory_constants);
   try (timeout 2 zesu_normalize_memory_addresses);
   try iAssumption;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
-      first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+      first [solve [zesu_finish_byte_pointer_sidecond] |
+        solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
         prepare_sidecond]
   | _ => unLET
   end;
@@ -234,6 +298,7 @@ Ltac zesu_finish_v1 :=
   try (timeout 2 zesu_finish_pure_resources);
   try reflexivity;
   try (timeout 2 zesu_finish_integer_word_image);
+  try (zesu_call_set_on; zesu_bounded_arithmetic ltac:(zesu_finish_u64_lookup_symmetric));
   try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
   try (timeout 2 (lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
@@ -265,15 +330,32 @@ Ltac zesu_finish_normalize :=
   try (timeout 2 zesu_normalize_memory_addresses).
 
 Ltac zesu_finish_shelved :=
-  first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+  first [solve [zesu_finish_byte_pointer_sidecond] |
+    solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
     prepare_sidecond].
 
 (* An Iris entailment. The entries the dispatch leaves out here are the
    ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
    and `bv_solve`. Everything that can act on an entailment keeps its old
    position relative to the others. *)
+(* Normalize loaded stack payloads before matching snapshot predicates. *)
+Ltac zesu_finish_stack_array_payload :=
+  let _ := constr:(_ : ZesuStepBoundedArithmetic) in
+  lazymatch goal with
+  | |- context[Z.to_nat (bv_unsigned (bv_add ?sp ?offset) -
+      (bv_unsigned ?sp + ?start))] =>
+      zesu_normalize_stack_array_indices;
+      autounfold with zesu_selectors
+  end.
+
 Ltac zesu_finish_entailment :=
+  try (zesu_call_set_on; zesu_step_witness_arith_on; zesu_witness_facts);
+  try (zesu_call_set_on; timeout 2 zesu_word_array_index_normalize);
+  try (zesu_call_set_on; timeout 2 zesu_trace_u64_lookup_normalize (16%nat));
   try autorewrite with zesu_indices;
+  try (timeout 2 zesu_restore_typed_array_goal ltac:(solve [zesu_finish_v1]));
+  try (zesu_call_set_on; timeout 2 zesu_word_array_index_normalize);
+  try (zesu_call_set_on; timeout 2 zesu_finish_stack_array_payload);
   try iAssumption;
   try (timeout 2 zesu_normalize_array_cursors);
   try (timeout 2 zesu_finish_pure_resources);
@@ -289,6 +371,7 @@ Ltac zesu_finish_entailment :=
 
 (* Anything else: the old chain, in the old order. *)
 Ltac zesu_finish_pure_goal :=
+  try (zesu_call_set_on; zesu_word_array_index_normalize);
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -297,6 +380,7 @@ Ltac zesu_finish_pure_goal :=
   try (timeout 2 zesu_finish_pure_resources);
   try reflexivity;
   try (timeout 2 zesu_finish_integer_word_image);
+  try (zesu_call_set_on; zesu_bounded_arithmetic ltac:(zesu_finish_u64_lookup_symmetric));
   try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
   try (timeout 2 (lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
@@ -347,12 +431,23 @@ Ltac zesu_finish_v2 :=
   end;
   zesu_finish_dispatch.
 
-Ltac zesu_finish :=
+Ltac zesu_finish_slow :=
   tryif zesu_rule_set_v2_on
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_bounded_arithmetic ltac:(zesu_finish_v2))
        else zesu_finish_v2
   else zesu_finish_v1.
+
+Ltac zesu_finish :=
+  tryif zesu_call_set_on then
+    lazymatch goal with
+    | |- bv _ => fail 1 "An orphan bitvector needs an owned witness"
+    | _ => idtac
+    end
+  else idtac;
+  first [solve [zesu_finish_known_mask] |
+    solve [zesu_finish_known_alignment] |
+    solve [zesu_finish_deferred_byte_index] | zesu_finish_slow].
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with
@@ -489,11 +584,14 @@ Ltac zesu_run_pass_steps :=
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_register_tuple_witness |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
-     zesu_liAStep | zesu_open_matching_two_level_frame |
+     zesu_normalize_uninit_wrapped_address_if_enabled |
+     (zesu_expose_environment_alias; zesu_prepare_entry_facts) |
+     zesu_guarded_uninit_key | zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure].
 
 Ltac zesu_run_pass_v1 :=
@@ -505,11 +603,14 @@ Ltac zesu_run_pass_v1 :=
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_register_tuple_witness |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
-     zesu_liAStep | zesu_open_matching_two_level_frame |
+     zesu_normalize_uninit_wrapped_address_if_enabled |
+     (zesu_expose_environment_alias; zesu_prepare_entry_facts) |
+     zesu_guarded_uninit_key | zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
@@ -520,7 +621,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -637,10 +738,13 @@ Ltac zesu_finish_array_branch :=
     end].
 
 Ltac zesu_instantiate_tuple :=
+  first [zesu_register_tuple_witness |
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ ?T _) =>
-      let witness := zesu_tuple_witness T in iExists witness
-  end.
+      let witness := zesu_tuple_witness T in
+      tryif zesu_call_set_on then assert_fails (has_evar witness) else idtac;
+      iExists witness
+  end].
 
 Ltac zesu_handoff := zesu_instantiate_tuple; zesu_run.
 

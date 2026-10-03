@@ -7,3 +7,5 @@ Require Export ZesuSsz.Automation.Switches.CallReturn.
 Require Export ZesuSsz.Automation.Switches.InstrPreAddress.
 Require Export ZesuSsz.Automation.Switches.InteriorByteSlice.
 Require Export ZesuSsz.Automation.Switches.BoundedArithmetic.
+Require Export ZesuSsz.Automation.Switches.ByteWordSlice.
+Require Export ZesuSsz.Automation.Switches.CallSet.
