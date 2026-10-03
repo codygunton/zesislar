@@ -49,6 +49,51 @@ class StrictCalls(unittest.TestCase):
 
 
 class StatePartition(unittest.TestCase):
+    def test_post_state_discards_only_unused_return_binders(self):
+        state = {"binders": BINDERS,
+                 "coq": [["saved", "bv 64"], ["returned", "bv 64"]],
+                 "spatial": ATOMS + ['"x8" ↦ᵣ RVal_Bits saved',
+                                     '"x10" ↦ᵣ RVal_Bits returned'],
+                 "post_state": True, "return_point": True,
+                 "local_sorts": {"saved": "Type", "returned": "Type"},
+                 "preserve_post_register_precision": True}
+        source = gen_block.state_source(0x150fc, state)
+        self.assertIn('∃ saved : bv 64', source)
+        self.assertNotIn('∃ returned : bv 64', source)
+        self.assertIn('"x8" ↦ᵣ RVal_Bits saved', source)
+
+    def test_explicit_byte_literal_width_is_preserved(self):
+        atom = '(0%Z) ↦ₘ∗ [(90%bv : bv 8); (83%bv : bv 8)]'
+        state = {"binders": BINDERS, "spatial": ATOMS + [atom]}
+        source = gen_block.state_source(0x150fc, state)
+        self.assertIn(atom, source)
+
+    def test_explicit_incomplete_register_file_stays_incomplete(self):
+        state = {"binders": BINDERS, "spatial": [ATOMS[0], ATOMS[2]],
+                 "complete_registers": False}
+        with patch.object(gen_boundary, "boundary_source", return_value="") as boundary, \
+             patch.object(gen_boundary, "complete_register_file") as complete:
+            gen_block.state_source(0x150fc, state)
+        complete.assert_not_called()
+        self.assertEqual(boundary.call_args.args[3], state["spatial"])
+
+    def test_explicit_sealed_memory_mode_is_preserved(self):
+        state = {"binders": BINDERS, "spatial": ATOMS,
+                 "seal_memory": True, "call_resources": False,
+                 "complete_registers": False}
+        with patch.object(gen_boundary, "boundary_source", return_value="") as boundary:
+            gen_block.state_source(0x150fc, state)
+        self.assertTrue(boundary.call_args.kwargs["seal"])
+        self.assertFalse(boundary.call_args.kwargs["call_resources"])
+        self.assertEqual(boundary.call_args.args[3], ATOMS)
+
+    def test_call_resource_mode_remains_enabled_by_default(self):
+        state = {"binders": BINDERS, "spatial": ATOMS,
+                 "complete_registers": False}
+        with patch.object(gen_boundary, "boundary_source", return_value="") as boundary:
+            gen_block.state_source(0x150fc, state)
+        self.assertTrue(boundary.call_args.kwargs["call_resources"])
+
     def test_return_point_discards_legacy_register_values(self):
         state = {"binders": BINDERS, "spatial": [ATOMS[0], ATOMS[2]] +
                  [f'"{register}" ↦ᵣ RVal_Bits (BV 64 8)'
@@ -107,6 +152,24 @@ class StatePartition(unittest.TestCase):
         self.assertEqual(gen_block.add_stack_resources(state, result), result)
         self.assertIn('(bv_unsigned sp - 16) ↦ₘ? 16', result)
 
+    def test_larger_stack_frame_does_not_add_overlapping_resource(self):
+        for resource in ['(bv_unsigned sp - 48) ↦ₘ? 48',
+                         'bv_unsigned (sp - 48) ↦ₘ? 48']:
+            state = {'binders': BINDERS, 'stack_size': 32}
+            result = gen_block.add_stack_resources(state, [resource])
+            self.assertEqual([atom for atom in result if '↦ₘ?' in atom], [resource])
+
+    def test_partial_stack_overlap_is_rejected(self):
+        state = {'binders': BINDERS, 'stack_size': 32}
+        with self.assertRaisesRegex(ValueError, 'partially overlaps'):
+            gen_block.add_stack_resources(state, ['(bv_unsigned sp - 16) ↦ₘ? 16'])
+
+    def test_adjacent_stack_region_is_preserved(self):
+        state = {'binders': BINDERS, 'stack_size': 32}
+        result = gen_block.add_stack_resources(state, ['(bv_unsigned sp - 48) ↦ₘ? 16'])
+        self.assertIn('(bv_unsigned sp - 48) ↦ₘ? 16', result)
+        self.assertIn('(bv_unsigned sp - 32) ↦ₘ? 32', result)
+
     def test_supplied_successor_removes_only_its_legacy_continuation(self):
         state = {'binders': BINDERS, 'spatial': ATOMS +
                  ['instr_pre 86280 P', 'instr_pre 89360 P'],
@@ -124,6 +187,15 @@ class StatePartition(unittest.TestCase):
             gen_block.state_source(0x15108, state)
         self.assertEqual(boundary.call_args.args[2], [])
         self.assertFalse(boundary.call_args.kwargs['seal'])
+
+    def test_post_state_can_preserve_actual_register_values(self):
+        state = {'binders': BINDERS, 'spatial': ATOMS + ['"x8" ↦ᵣ RVal_Bits b'],
+                 'coq': [('b', 'bv 64')], 'post_state': True,
+                 'preserve_post_register_precision': True, 'seal_memory': False}
+        with patch.object(gen_boundary, 'boundary_source', return_value='') as boundary:
+            gen_block.state_source(0x15108, state)
+        self.assertIn(('b', 'bv 64'), boundary.call_args.args[2])
+        self.assertIn('"x8" ↦ᵣ RVal_Bits b', boundary.call_args.args[3])
 
     def test_full_register_file_preserves_exact_values_and_does_not_duplicate(self):
         atoms = ATOMS + ['"x2" ↦ᵣ RVal_Bits sp', '"x12" ↦ᵣ RVal_Bits argument']
@@ -244,6 +316,12 @@ class StatePartition(unittest.TestCase):
         self.assertEqual(gen_boundary.spatial_atoms(atom), [atom])
         source = gen_boundary.boundary_source("State", BINDERS, [], [atom], seal=True)
         self.assertNotIn("Global Opaque", source)
+
+    def test_disjunction_keeps_each_branch_resources(self):
+        atom = '⌜tag = 0⌝ ∗ spec_trace absent ∨ ⌜tag <> 0⌝ ∗ spec_trace present'
+        self.assertEqual(gen_boundary.spatial_atoms(atom), [atom])
+        self.assertEqual(gen_boundary.spatial_atoms(f'(reg_col regs ∗ ({atom}))%I'),
+                         ['reg_col regs', atom])
 
     def test_exact_temporaries_keep_their_values(self):
         atoms = [f'"{register}" ↦ᵣ RVal_Bits v{index}'

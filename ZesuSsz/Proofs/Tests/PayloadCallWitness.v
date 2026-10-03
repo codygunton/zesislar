@@ -1,6 +1,8 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 
+Local Instance : ZesuStepCallOwnership := I.
+
 Lemma payload_call_witness_owned `{!islaG Sigma} `{!threadG}
     (address : Z) (bytes : list (bv 8)) (tail : spec) :
   address ↦ₘ∗ bytes ∗ mmio_range 0 16 ∗ spec_trace tail -∗
@@ -263,4 +265,44 @@ Proof.
     [assert_fails (iLeft; zesu_choose_array_tail); iRight; done
     | iClear "Hcheck"; done]).
   all: exact 0%nat.
+Qed.
+
+Lemma owned_tuple_continuation_selects_address `{!islaG Sigma} `{!threadG} :
+  0 ↦ₘ (BV 8 1) ∗ 8 ↦ₘ (BV 8 1) ∗
+  instr_pre 4 (0 ↦ₘ (BV 8 1)) -∗
+  ∃ witness : Z *ₗ unit,
+    witness.1ₗ ↦ₘ (BV 8 1) ∗ instr_pre 4 (witness.1ₗ ↦ₘ (BV 8 1)).
+Proof.
+  iIntros "(Hzero & Height & Hpre)".
+  zesu_match_owned_tuple. iFrame.
+Qed.
+Print Assumptions owned_tuple_continuation_selects_address.
+
+Lemma owned_tuple_rejects_wrong_continuation `{!islaG Sigma} `{!threadG} :
+  0 ↦ₘ (BV 8 1) ∗ instr_pre 8 (0 ↦ₘ (BV 8 1)) -∗
+  (∃ witness : Z *ₗ unit,
+    witness.1ₗ ↦ₘ (BV 8 1) ∗ instr_pre 4 (witness.1ₗ ↦ₘ (BV 8 1))) ∨ True.
+Proof.
+  iIntros "(Hzero & Hpre)".
+  assert_fails (iLeft; zesu_match_owned_tuple).
+  iRight. done.
+Qed.
+
+Lemma owned_tuple_rejects_unresolved_body `{!islaG Sigma} `{!threadG} :
+  (True : iProp Sigma) -∗ True.
+Proof.
+  iIntros "_".
+  let body := open_constr:(_ : (unit *ₗ unit) -> iProp Sigma) in
+    assert_fails (zesu_check_owned_tuple_shape unit unit body).
+  done.
+Qed.
+
+Lemma owned_tuple_rejects_unresolved_type `{!islaG Sigma} `{!threadG} :
+  (True : iProp Sigma) -∗ True.
+Proof.
+  iIntros "_".
+  let kind := open_constr:(_ : Type) in
+  let body := constr:(λ _ : kind *ₗ unit, (True : iProp Sigma)%I) in
+    assert_fails (zesu_check_owned_tuple_shape kind unit body).
+  done.
 Qed.

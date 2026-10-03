@@ -2,6 +2,8 @@
 
 From iris.proofmode Require Import environments intro_patterns ltac_tactics reduction.
 Require Import ZesuSsz.Automation.ReturnBundle.
+Require Export ZesuSsz.Automation.CallOwnership.
+Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ArraySlices.
 Require Export ZesuSsz.Automation.ByteScratchReuse.
 Require Export ZesuSsz.Automation.WordArrayIndex.
@@ -223,6 +225,24 @@ Ltac zesu_fresh_owned_tuple kind :=
   | _ => open_constr:(_ : kind)
   end.
 
+Ltac zesu_match_owned_tuple_continuations requested :=
+  lazymatch requested with
+  | (?atom ∗ ?rest)%I =>
+      lazymatch atom with
+      | instr_pre' _ _ _ =>
+          first [assert_fails (has_evar atom) |
+            iMatchHyp ltac:(fun Howned owned =>
+              assert_fails (has_evar owned); unify atom owned)]
+      | _ => idtac
+      end;
+      zesu_match_owned_tuple_continuations rest
+  | instr_pre' _ _ _ =>
+      first [assert_fails (has_evar requested) |
+        iMatchHyp ltac:(fun Howned owned =>
+          assert_fails (has_evar owned); unify requested owned)]
+  | _ => idtac
+  end.
+
 Ltac zesu_match_owned_tuple_atoms requested :=
   lazymatch requested with
   | (?atom ∗ ?rest)%I =>
@@ -233,12 +253,77 @@ Ltac zesu_match_owned_tuple_atoms requested :=
   | _ => idtac
   end.
 
+(* Preserve registered unfolding before the complete-resource fallback. *)
+Ltac zesu_introduce_entry_resource :=
+  zesu_call_ownership_on;
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (?resource -∗ _)%I =>
+      lazymatch resource with
+      | (⌜_⌝)%I => fail
+      | _ => first [liAAsm | liAExp | liAOther | progress liUnfoldEarly | liStep | iIntros "?"]
+      end
+  end.
+
+Ltac zesu_close_owned_instr_pre_subsume :=
+  zesu_call_ownership_on;
+  lazymatch goal with
+  | |- envs_entails _ (@subsume ?Sigma unit (instr _ _) ?requested ?continuation) =>
+      let target := eval cbv beta in (requested tt) in
+      let rest := eval cbv beta in (continuation tt) in
+      constr_eq rest (True : iProp Sigma)%I;
+      assert_fails (has_evar target);
+      lazymatch target with
+      | instr_pre' ?guard ?address ?resources =>
+          iMatchHyp ltac:(fun Howned owned =>
+            match owned with
+            | instr_pre' ?actual_guard ?actual_address ?actual_resources =>
+                constr_eq actual_guard guard;
+                let actual_head := get_head actual_resources in
+                let requested_head := get_head resources in
+                constr_eq actual_head requested_head;
+                let Haddress := fresh "Hpre_address" in
+                assert (Haddress : actual_address = address) by first [reflexivity | bv_solve];
+                let Hresources := fresh "Hpre_resources" in
+                assert (Hresources : actual_resources = resources)
+                  by first [reflexivity | f_equal; bv_solve];
+                iIntros "_"; iExists tt; iSplitL;
+                  [try rewrite <- Haddress; try rewrite <- Hresources; iExact Howned | done]
+            end)
+      end
+  end.
+
+(* Normalize only closed words inside the requested continuation. *)
+Ltac zesu_normalize_instr_pre_constants :=
+  zesu_call_ownership_on;
+  match goal with
+  | |- context[instr_pre' _ _ ?resources] =>
+      match resources with
+      | context[@bv_add 64 ?left ?right] =>
+          let value := constr:(@bv_add 64 left right) in
+          assert_fails (has_evar value);
+          let integer := eval vm_compute in (bv_unsigned value) in
+          lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
+          let Hconstant := fresh "Hpre_constant" in
+          assert (Hconstant : value = BV 64 integer) by
+            (apply bv_eq; vm_compute; reflexivity);
+          rewrite Hconstant; clear Hconstant
+      end
+  end.
+
+Ltac zesu_check_owned_tuple_shape A B body :=
+  assert_fails (has_evar (li_prod A B));
+  assert_fails (has_evar body).
+
 Ltac zesu_match_owned_tuple :=
+  zesu_call_ownership_on;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
+      tryif zesu_call_ownership_on then zesu_check_owned_tuple_shape A B body else idtac;
       let witness := zesu_fresh_owned_tuple (li_prod A B) in
       let requested := eval cbv beta iota zeta delta [li_fst li_snd] in
         (body witness) in
+      tryif zesu_call_ownership_on then zesu_match_owned_tuple_continuations requested else idtac;
       zesu_match_owned_tuple_atoms requested;
       assert_fails (has_evar witness);
       iExists witness
@@ -618,6 +703,7 @@ Lemma zesu_val_bits_injective n (x y : bv n) :
 Proof. intros H. injection H as H. simplify_eq. reflexivity. Qed.
 
 Ltac zesu_normalize_rval_bits_equality :=
+  tryif zesu_call_ownership_on then zesu_expose_environment_alias else idtac;
   match goal with
   | |- RegVal_Base (Val_Bits (bv_to_bvn ?actual)) =
       RegVal_Base (Val_Bits (bv_to_bvn ?expected)) → envs_entails _ _ =>
@@ -642,12 +728,34 @@ Ltac zesu_normalize_rval_bits_equality :=
       iIntros (H); apply zesu_rval_bits_injective in H; subst actual
   end.
 
-Ltac zesu_liAStep :=
+Ltac zesu_liAStep_legacy :=
+ liEnsureInvariant;
+ try progress (unfold TRACE_LET);
+ try liAIntroduceLetInGoal;
+ first [
+    zesu_normalize_find_mem_address
+  | zesu_liAWriteMem
+  | zesu_liAReadMem
+  | liAAsm
+  | liAExp
+  | liAOther
+  | liUnfoldEarly
+  | zesu_liInstrPreMatch
+  | zesu_preserve_current_unsigned
+  | liStep
+  | liLetBindHint
+  | liUnfoldLate
+ ]; liSimpl.
+
+
+Ltac zesu_liAStep_call :=
+ tryif zesu_call_ownership_on then zesu_expose_environment_alias else idtac;
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
     zesu_normalize_rval_bits_equality
+  | zesu_introduce_entry_resource
   | zesu_constant_word_array_lookup
   | zesu_constant_word_array_index
   | zesu_open_matching_payload_package
@@ -661,7 +769,9 @@ Ltac zesu_liAStep :=
   | liAOther
   | liUnfoldEarly
   | zesu_liInstrPreMatch
+  | zesu_close_owned_instr_pre_subsume
   | zesu_match_payload_witness
+  | zesu_normalize_instr_pre_constants
   | zesu_match_owned_tuple
   | zesu_expose_owned_saved_list
   | zesu_expose_owned_pair_at_call
@@ -672,6 +782,9 @@ Ltac zesu_liAStep :=
   | liLetBindHint
   | liUnfoldLate
  ]; liSimpl.
+
+Ltac zesu_liAStep :=
+  tryif zesu_call_ownership_on then zesu_liAStep_call else zesu_liAStep_legacy.
 
 Ltac liAStep ::= zesu_liAStep.
 

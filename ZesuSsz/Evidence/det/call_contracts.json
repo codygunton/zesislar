@@ -11,12 +11,14 @@
       "local_unfold": true
     },
     "0x15bc8": {
-      "name": "encoderOptionalEntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "encoderOptionalU64Contract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderOptionalU64Contract",
+      "local_unfold": true
     },
     "0x15c10": {
-      "name": "encoderByteListsEntryBoundary",
-      "module": "ZesuSsz.Proofs.WriteSuccess.Interfaces"
+      "name": "encoderByteListsContract",
+      "module": "ZesuSsz.Proofs.WriteSuccess.WriteSuccessEncoderByteListsContract",
+      "local_unfold": true
     },
     "0x15c6c": {
       "name": "encoderBytesContract",

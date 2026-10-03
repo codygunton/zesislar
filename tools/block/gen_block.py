@@ -85,7 +85,25 @@ def add_stack_resources(state: dict, spatial: list[str]) -> list[str]:
     if size:
         scratch = f'(bv_unsigned {pointer} - {size}) ↦ₘ? {size}'
         equivalents = {scratch, f'bv_unsigned ({pointer} - {size}) ↦ₘ? {size}'}
-        if not any(atom in equivalents for atom in spatial):
+        covered = any(atom in equivalents for atom in spatial)
+        if re.fullmatch(r"[A-Za-z_][\w']*", pointer):
+            base = re.escape(pointer)
+            regions = [
+                rf'\(?bv_unsigned {base} - (\d+)\)? ↦ₘ\? (\d+)',
+                rf'bv_unsigned \({base} - (\d+)\) ↦ₘ\? (\d+)',
+            ]
+            for atom in spatial:
+                region = next((match for pattern in regions
+                               if (match := re.fullmatch(pattern, atom))), None)
+                if region is None:
+                    continue
+                distance, count = map(int, region.groups())
+                start, end = -distance, count - distance
+                if start <= -size and end >= 0:
+                    covered = True
+                elif max(start, -size) < min(end, 0):
+                    raise ValueError('stack resource partially overlaps the call frame')
+        if not covered:
             spatial.append(scratch)
     facts = [f'⌜(bv_unsigned {pointer} `mod` 16 = 0)%Z⌝',
              f'⌜(mapRamBase defaultMap <= bv_unsigned {pointer} - {size} /\\ '
@@ -111,7 +129,21 @@ def state_source(leader: int, state: dict) -> str:
         pc = address(successor)
         spatial = gen_boundary.strip_internal_handoffs(spatial, pc, pc + 1)
     if state.get("post_state"):
-        spatial = gen_boundary.post_state_register_precision(spatial, state["binders"], coq)
+        if not state.get("preserve_post_register_precision", False):
+            spatial = gen_boundary.post_state_register_precision(spatial, state["binders"], coq)
+    spatial = gen_boundary.preserve_register_precision(
+        spatial, (set(state.get("entry_unknown_registers", []))
+                  | ({"x1", "x5", "x10", "x11"}
+                     if (state.get("return_point")
+                         or leader in {pc + 4 for pc in call_sites.call_sites()})
+                     else set()))
+        - ({"x2"} if "stack_size" in state else set()))
+    deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
+    if deduplicated != spatial:
+        state["deduplicated"] = True
+    spatial = (gen_boundary.complete_register_file(deduplicated)
+               if state.get("complete_registers", True) else deduplicated)
+    if state.get("post_state"):
         parameters = set(gen_boundary.explicit_arguments(state["binders"]).split())
         unused = {name for name, kind in coq
                   if kind == "bv 64" and name not in parameters
@@ -125,23 +157,13 @@ def state_source(leader: int, state: dict) -> str:
                and not (re.fullmatch(r"H\d+", name)
                         and any(re.search(r"(?<![\w'])" + re.escape(value)
                                           + r"(?![\w'])", kind) for value in unused))]
-    spatial = gen_boundary.preserve_register_precision(
-        spatial, (set(state.get("entry_unknown_registers", []))
-                  | ({"x1", "x5", "x10", "x11"}
-                     if (state.get("return_point")
-                         or leader in {pc + 4 for pc in call_sites.call_sites()})
-                     else set()))
-        - ({"x2"} if "stack_size" in state else set()))
-    deduplicated = gen_boundary.deduplicate_register_shapes(spatial)
-    if deduplicated != spatial:
-        state["deduplicated"] = True
-    spatial = gen_boundary.complete_register_file(deduplicated)
     source = gen_boundary.boundary_source(
         state.get("name", f"State_{leader:x}"), state["binders"], coq, spatial,
         seal=state.get("seal_memory", (len(spatial) > gen_boundary.RULE_20_CONJUNCTS
               and not any(leader <= pc < address(state.get("block_exit", leader))
                           for pc in call_sites.call_sites()))),
-        call_resources=True, sorts=state.get("local_sorts", state.get("sorts")),
+        call_resources=state.get("call_resources", True),
+        sorts=state.get("local_sorts", state.get("sorts")),
         witnesses=state.get("witnesses"))
     imports = ["ZesuSsz.Automation.All", "ZesuSsz.Automation.SealedCoverage",
                "isla.riscv64.riscv64", *state.get("imports", [])]

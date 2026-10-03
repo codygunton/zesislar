@@ -43,6 +43,7 @@ class GateCapTest(unittest.TestCase):
         binary = self.root / "bin"
         binary.mkdir()
         for name, body in {
+            "free": "#!/bin/sh\necho 'Mem: 2147483648 0 0 0 0 2147483648'\n",
             "systemctl": "#!/bin/sh\nexit 0\n",
             "pgrep": "#!/bin/sh\necho \"${GATE_TEST_COQC:-0}\"\n",
             "python3": (

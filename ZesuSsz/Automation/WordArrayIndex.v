@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
+Require Import ZesuSsz.Automation.CallOwnership.
 From iris.proofmode Require Import environments.
 Open Scope Z_scope.
 
@@ -115,7 +116,8 @@ Proof.
   iIntros "[%Hrange HG]". iFrame "HG".
   iApply zesu_empty_word_array. done.
 Qed.
-Definition zesu_simplify_empty_word_array_inst `{!islaG Sigma} :=
+Definition zesu_simplify_empty_word_array_inst `{!islaG Sigma}
+    `{!ZesuStepCallOwnership} :=
   [instance zesu_simplify_empty_word_array with 0%N].
 #[export] Existing Instance zesu_simplify_empty_word_array_inst | 0.
 Print Assumptions zesu_simplify_empty_word_array.

@@ -16,7 +16,8 @@ class ResourceGuard(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             environment = {key: value for key, value in os.environ.items()
                            if not key.startswith("ZESU_")}
-            environment.update(ZESU_GUARD_STATE=directory, **variables)
+            environment.update(ZESU_GUARD_STATE=directory,
+                               ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"), **variables)
             return subprocess.run(["bash"], input=LIBRARY + "\n" + script,
                                   text=True, capture_output=True, env=environment, timeout=20)
 

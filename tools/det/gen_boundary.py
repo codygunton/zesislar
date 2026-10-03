@@ -74,6 +74,9 @@ def spatial_atoms(body: str) -> list[str]:
             depth += 1
         elif character in ")]}⌝":
             depth -= 1
+        elif character == "∨" and depth == 0:
+            # Each disjunct can contain its own separating conjunctions.
+            return [body]
         elif character == "∗" and depth == 0 and body[index - 1:index] != "ₘ":
             # A wand or a register predicate binds the following chain.
             prefix = body[:index]
