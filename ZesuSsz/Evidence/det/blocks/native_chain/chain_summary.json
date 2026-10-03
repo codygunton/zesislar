@@ -1,0 +1,10 @@
+{
+  "root": "0x14d30",
+  "captures": 1,
+  "reached": 0,
+  "furthest_leader": "0x14d30",
+  "chain_depth": 0,
+  "worker_limit": 48,
+  "pending": 0,
+  "errors": 0
+}
