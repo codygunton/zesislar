@@ -80,4 +80,6 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_open_sealed_for_lookup_if_enabled
   | |- envs_entails _ (find_in_context (FindRegMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled
+  | |- envs_entails _ (_ ∗ _)%I =>
+      zesu_open_declared_memory_goal_if_enabled
   end.

@@ -23,7 +23,7 @@
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
-From iris.proofmode Require Import environments.
+From iris.proofmode Require Import environments tactics.
 From Coq Require Import Lists.List Strings.String.
 Import ListNotations.
 
@@ -202,3 +202,30 @@ Ltac zesu_step_sealed_open_on :=
 
 Ltac zesu_open_sealed_for_lookup_if_enabled :=
   zesu_step_sealed_open_on; zesu_open_sealed_for_lookup.
+
+(* A stalled handoff may demand another declaration of the same memory.
+   Open the goal declaration and only a matching owned declaration. *)
+Ltac zesu_open_declared_memory_goal :=
+  lazymatch goal with
+  | |- envs_entails _ (?sealed ∗ _)%I =>
+      let instance := constr:(_ : ZesuSealed sealed _ _ _) in
+      lazymatch type of instance with
+      | ZesuSealed _ ?raw _ _ =>
+          let head := get_head raw in
+          let opened := eval unfold head in raw in
+          try (iMatchHyp ltac:(fun H owned =>
+            let owner := constr:(_ : ZesuSealed owned _ _ _) in
+            lazymatch type of owner with
+            | ZesuSealed _ ?ownedRaw _ _ =>
+                let ownedHead := get_head ownedRaw in
+                let ownedOpened := eval unfold ownedHead in ownedRaw in
+                unify ownedOpened opened;
+                iEval (rewrite (zesu_sealed_unfold (ZesuSealed := owner)); unfold ownedHead) in H
+            end));
+          iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance)));
+          iEval (unfold head);
+          repeat iDestruct select (_ ∗ _)%I as "[? ?]"
+      end
+  end.
+Ltac zesu_open_declared_memory_goal_if_enabled :=
+  zesu_step_sealed_open_on; zesu_open_declared_memory_goal.
