@@ -14,6 +14,32 @@ Proof.
 Qed.
 Print Assumptions array_slice_stack_index.
 
+Lemma bv_mul_low_signed (a b : bv 64) :
+ bv_extract 0 64 (bv_sign_extend 128 a * bv_sign_extend 128 b) = (a * b)%bv.
+Proof. bv_solve. Qed.
+Print Assumptions bv_mul_low_signed.
+Lemma byte_array_mul_offset (base cursor count : bv 64) :
+ (bv_unsigned base + bv_unsigned cursor * bv_unsigned count < 2 ^ 64)%Z ->
+ array_region_start 8 (bv_unsigned base)
+  (bv_unsigned (base + bv_extract 0 64 (bv_sign_extend 128 cursor * bv_sign_extend 128 count))) =
+ Z.to_nat (bv_unsigned cursor * bv_unsigned count).
+Proof.
+ intros Hbound. rewrite bv_mul_low_signed.
+ unfold array_region_start. cbn. rewrite Z.div_1_r.
+ have Haddress : bv_unsigned (base + cursor * count) =
+   (bv_unsigned base + bv_unsigned cursor * bv_unsigned count)%Z by bv_solve.
+ rewrite Haddress. f_equal. lia.
+Qed.
+Print Assumptions byte_array_mul_offset.
+
+Lemma byte_array_region_offset (base : Z) (start : nat) :
+  array_region_start 8 base (base + Z.of_nat start) = start.
+Proof.
+  unfold array_region_start. cbn. rewrite Z.div_1_r.
+  replace (base + Z.of_nat start - base)%Z with (Z.of_nat start) by lia.
+  rewrite Nat2Z.id. reflexivity.
+Qed.
+
 Lemma array_region_start_equal (a b : Z) :
   a = b -> array_region_start 8 a b = 0%nat.
 Proof. intros ->. unfold array_region_start. rewrite Z.sub_diag. reflexivity. Qed.

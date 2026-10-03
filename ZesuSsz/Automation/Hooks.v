@@ -1,12 +1,20 @@
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
-From iris.proofmode Require Import environments.
+From iris.proofmode Require Import environments intro_patterns ltac_tactics reduction.
+Require Import ZesuSsz.Automation.ReturnBundle.
+Require Import ZesuSsz.Automation.ArraySlices.
+Require Export ZesuSsz.Automation.ByteScratchReuse.
+Require Export ZesuSsz.Automation.WordArrayIndex.
+Require Export ZesuSsz.Automation.OwnedPayloadPackages.
+Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.TraceTailLemmas.
 Require Import ZesuSsz.Automation.InstrPre.
+Require Import ZesuSsz.Automation.SpecPrefix.
+Require Import ZesuSsz.Automation.TraceRefinement.
 Require Import ZesuMachineMap.Machine.
 
 (** Give Lithium its separating-conjunction goal form. *)
@@ -165,6 +173,267 @@ Ltac zesu_tuple_witness T :=
       let head := open_constr:(_ : A) in
       let tail := zesu_tuple_witness B in constr:(li_pair head tail)
   | unit => constr:(tt)
+  end.
+
+Create HintDb zesu_payloads.
+
+Ltac zesu_payload_trace requested :=
+  lazymatch requested with
+  | (spec_trace ?trace ∗ ?rest)%I => constr:(trace)
+  | (?other ∗ ?rest)%I => zesu_payload_trace rest
+  end.
+
+(* Select payload witnesses only when owned resources and the complete
+   payload trace match. Variable types alone do not establish that match. *)
+Ltac zesu_match_owned_payload witness body :=
+  let requested := eval cbv beta iota zeta delta [li_fst li_snd]
+    in (body witness) in
+  lazymatch requested with
+  | (?resource ∗ ?rest)%I =>
+      let trace := zesu_payload_trace rest in
+      iSelect resource ltac:(fun Hresource =>
+        iMatchHyp ltac:(fun Htrace owned =>
+          lazymatch owned with
+          | spec_trace ?available =>
+              assert_fails (has_evar trace);
+              assert_fails (has_evar available);
+              first [unify trace available; iExists witness |
+                let Hpayload := fresh "Hpayload" in
+                assert (Hpayload : trace = available) by
+                  (autorewrite with zesu_payloads; reflexivity);
+                iEval (rewrite <- Hpayload) in Htrace;
+                clear Hpayload; iExists witness |
+                let Hrefinement := fresh "HtraceRefinement" in
+                assert (Hrefinement : trace ⊆ available) by
+                  (autorewrite with zesu_payloads;
+                   timeout 2 (zesu_prove_trace_refinement 32%nat));
+                iPoseProof (spec_trace_mono available trace Hrefinement
+                  with Htrace) as Htrace;
+                clear Hrefinement; iExists witness]
+          end))
+  end.
+
+Ltac zesu_fresh_owned_tuple kind :=
+  lazymatch kind with
+  | li_prod ?A ?B =>
+      let left := zesu_fresh_owned_tuple A in
+      let right := zesu_fresh_owned_tuple B in
+      constr:((left, right)ₗ)
+  | unit => constr:(tt)
+  | _ => open_constr:(_ : kind)
+  end.
+
+Ltac zesu_match_owned_tuple_atoms requested :=
+  lazymatch requested with
+  | (?atom ∗ ?rest)%I =>
+      first [assert_fails (has_evar atom) |
+        iMatchHyp ltac:(fun Howned owned =>
+          assert_fails (has_evar owned); unify atom owned)];
+      zesu_match_owned_tuple_atoms rest
+  | _ => idtac
+  end.
+
+Ltac zesu_match_owned_tuple :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
+      let witness := zesu_fresh_owned_tuple (li_prod A B) in
+      let requested := eval cbv beta iota zeta delta [li_fst li_snd] in
+        (body witness) in
+      zesu_match_owned_tuple_atoms requested;
+      assert_fails (has_evar witness);
+      iExists witness
+  end.
+
+Ltac zesu_open_requested_register_col :=
+ lazymatch goal with
+ | |- envs_entails _ ((reg_col (?head :: ?rest) ∗ _) %I) =>
+     let shapes := constr:(head :: rest) in
+     lazymatch shapes with context [ExactShape _] => iEval (rewrite reg_col_cons) end
+ | |- envs_entails _ (reg_col (?head :: ?rest)) =>
+     let shapes := constr:(head :: rest) in
+     lazymatch shapes with context [ExactShape _] => iEval (rewrite reg_col_cons) end
+ end.
+Ltac zesu_find_owned_exact_register r shapes :=
+ lazymatch shapes with
+ | ((KindReg r, ExactShape ?value) :: _) => constr:(value)
+ | (_ :: ?rest) => zesu_find_owned_exact_register r rest
+ end.
+Ltac zesu_match_register_witness :=
+ lazymatch goal with
+ | |- envs_entails _ (@bi_exist _ (li_prod valu unit) ?body) =>
+   let requested := eval cbv beta iota zeta delta [li_fst li_snd] in (body (RegVal_Poison, tt)ₗ) in
+   lazymatch requested with
+   | context [(?r ↦ᵣ RegVal_Poison)%I] =>
+     pm_reduce;
+     iMatchHyp ltac:(fun Hcol owned =>
+       lazymatch owned with
+       | reg_col ?shapes => let value := zesu_find_owned_exact_register r shapes in iExists (value, tt)ₗ
+       end)
+   end
+ end.
+Ltac zesu_open_owned_return_register :=
+ lazymatch goal with
+ | |- envs_entails _ ((reg_col ((KindReg ?r, _) :: _) ∗ _) %I) =>
+   iMatchHyp ltac:(fun Howned owned =>
+    try iEval (rewrite <- reg_mapsto_pred_eq) in Howned;
+    let entry := iTypeOf Howned in
+    lazymatch entry with
+    | Some (_, (r ↦ᵣ: ?body)%I) =>
+      iEval (rewrite reg_mapsto_pred_eq) in Howned;
+      let value := fresh "returnValue" in
+      let Hvalue := iFresh in let Hrest := iFresh in
+      let pattern := constr:(IList [[IIdent Hvalue; IIdent Hrest]]) in
+      iDestruct Howned as (value) pattern;
+      let word := fresh "returnWord" in let Heq := fresh "HreturnValue" in
+      iDestruct Hrest as (word) "[%Heq Hrest]"; subst value;
+      try zesu_open_return_bundle "Hrest"
+    end)
+ end.
+
+Ltac zesu_choose_array_tail :=
+ lazymatch goal with
+ | |- envs_entails _ (@bi_exist _ (li_prod (list (bv 8)) unit) ?body) =>
+   let requested := eval cbv beta iota zeta delta [li_fst li_snd] in (body ([], tt)ₗ) in
+   lazymatch requested with
+   | (⌜_ = take _ (drop ?index ?bytes)⌝ ∗ _)%I =>
+     assert_fails (has_evar index); assert_fails (has_evar bytes);
+     let Hbound := fresh "HsliceBound" in
+     assert (Hbound : (index <= length bytes)%nat) by
+       (repeat match goal with Hsrc : ?address = (?base + Z.of_nat ?start)%Z |- context [array_region_start 8 ?base ?address] => rewrite Hsrc byte_array_region_offset end; lia);
+     clear Hbound; iExists (drop index bytes, tt)ₗ
+   end
+ end.
+Ltac zesu_solve_array_tail_pure :=
+ lazymatch goal with
+ | |- envs_entails _ _ => fail
+ | |- context [array_region_start 8 _ _] => idtac
+ end;
+ solve [repeat match goal with Hsrc : ?address = (?base + Z.of_nat ?start)%Z |- context [array_region_start 8 ?base ?address] => rewrite Hsrc byte_array_region_offset end;
+   rewrite ?Z.mul_1_l ?length_drop ?take_ge; cbn;
+   first [reflexivity | bv_solve | lia]].
+
+Ltac zesu_check_list_bound count fuel :=
+  lazymatch count with
+  | O => idtac
+  | S ?rest => lazymatch fuel with S ?remaining => zesu_check_list_bound rest remaining end
+  end.
+
+Ltac zesu_expose_fixed_values values count Hcount :=
+  lazymatch count with
+  | O => let Heq := fresh "HsavedEquation" in
+      destruct values eqn:Heq; [clear Hcount | cbn in Hcount; lia]
+  | S ?restCount =>
+      let head := fresh "savedValue" in let rest := fresh "savedRest" in
+      let Heq := fresh "HsavedEquation" in
+      destruct values as [|head rest] eqn:Heq; [cbn in Hcount; lia |];
+      cbn in Hcount;
+      let Hrest := fresh "HsavedLength" in
+      assert (Hrest : length rest = restCount) by lia;
+      clear Hcount; zesu_expose_fixed_values rest restCount Hrest
+  end.
+
+Ltac zesu_expose_owned_saved_list :=
+  multimatch goal with Hcount : length ?values = ?count |- _ =>
+    let bound := eval vm_compute in count in
+    zesu_check_list_bound bound 16%nat;
+    iMatchHyp ltac:(fun Hregisters owned =>
+      lazymatch owned with
+      | reg_col ?shapes =>
+          lazymatch shapes with context [values] =>
+            zesu_expose_fixed_values values bound Hcount
+          end
+      end)
+  end.
+
+Ltac zesu_expose_owned_pair_at_call :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod spec (li_prod (list (bv 8)) unit)) ?body) =>
+    let candidate := constr:((fun _ : list seq_label => False, ([] : list (bv 8), tt)ₗ)ₗ) in
+    let requested := eval cbv beta iota zeta delta [li_fst li_snd] in (body candidate) in
+    lazymatch requested with
+    | ((?address ↦ₘ∗ _) ∗ _)%I =>
+      assert_fails (has_evar address);
+      let source :=
+        lazymatch address with
+        | bv_unsigned (?base + ?offset)%bv =>
+          let delta := eval vm_compute in (bv_unsigned offset) in
+          let literal := lazymatch delta with Z0 => constr:(delta) | Zpos _ => constr:(delta) | Zneg _ => constr:(delta) end in
+          constr:((bv_unsigned base + literal)%Z)
+        | _ => constr:(address)
+        end in
+      let next :=
+        lazymatch source with
+        | (?base + ?offset)%Z =>
+          let delta := eval vm_compute in (offset + 8)%Z in constr:((base + delta)%Z)
+        | _ => constr:((source + 8)%Z)
+        end in
+      let Hsource := fresh "HsourceAddress" in
+      assert (Hsource : (source = address)%Z) by bv_solve;
+      let Hnext := fresh "HnextWord" in
+      assert (Hnext : (next = source + 8)%Z) by lia;
+      let low := open_constr:(_ : bv 64) in
+      let high := open_constr:(_ : bv 64) in
+      iSelect (source ↦ₘ low)%I ltac:(fun Hlow =>
+        iSelect (next ↦ₘ high)%I ltac:(fun Hhigh =>
+          assert_fails (has_evar low); assert_fails (has_evar high);
+          iEval (try rewrite Hnext) in Hhigh;
+          let Hbytes := iFresh in
+          iPoseProof (mem_mapsto_u64_pair_to_byte_array source low high) as Hbytes;
+          iSpecialize (Hbytes with Hlow);
+          iSpecialize (Hbytes with Hhigh);
+          let objectBytes := fresh "objectBytes" in
+          pose (objectBytes := bv_to_little_endian 8 8 (bv_unsigned low) ++
+            bv_to_little_endian 8 8 (bv_unsigned high));
+          iEval (fold objectBytes; try rewrite Hsource) in Hbytes;
+          clear Hsource Hnext))
+    end
+  end.
+
+Ltac zesu_infer_owned_payload_tail :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod spec (li_prod (list ?A) unit)) ?body) =>
+    multimatch goal with items : list A |- _ =>
+      let tail := open_constr:(_ : spec) in
+      let witness := constr:((tail, (items, tt)ₗ)ₗ) in
+      let requested := eval cbv beta iota zeta delta [li_fst li_snd] in (body witness) in
+      lazymatch requested with
+      | (?resource ∗ ?rest)%I =>
+        let trace := zesu_payload_trace rest in
+        iSelect resource ltac:(fun Hresource =>
+          iMatchHyp ltac:(fun Htrace owned =>
+            lazymatch owned with
+            | spec_trace ?available =>
+              assert_fails (has_evar available);
+              let Hrefinement := fresh "HtraceRefinement" in
+              assert (Hrefinement : trace ⊆ available) by
+                (autorewrite with zesu_payloads; try (case_decide; try contradiction; cbn);
+                 timeout 2 (zesu_prove_trace_refinement 32%nat));
+              assert_fails (has_evar trace);
+              assert_fails (has_evar tail);
+              iPoseProof (spec_trace_mono available trace Hrefinement with Htrace) as Htrace;
+              clear Hrefinement; iExists witness
+            end))
+      end
+    end
+  end.
+
+Ltac zesu_match_payload_witness :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod spec (li_prod (list ?A) unit)) ?body) =>
+      multimatch goal with items : list A, tail : spec |- _ =>
+        let witness := constr:((tail, (items, tt)ₗ)ₗ) in
+        zesu_match_owned_payload witness body
+      end
+  | |- envs_entails _ (@bi_exist _ (li_prod (list ?A) (li_prod spec unit)) ?body) =>
+      multimatch goal with items : list A, tail : spec |- _ =>
+        let witness := constr:((items, (tail, tt)ₗ)ₗ) in
+        zesu_match_owned_payload witness body
+      end
+  | |- envs_entails _ (@bi_exist _ (li_prod spec unit) ?body) =>
+      multimatch goal with tail : spec |- _ =>
+        let witness := constr:((tail, tt)ₗ) in
+        zesu_match_owned_payload witness body
+      end
   end.
 
 Ltac zesu_liInstrPreMatch :=
@@ -331,12 +600,60 @@ Ltac zesu_preserve_current_unsigned :=
           end
   end.
 
+Lemma zesu_masked_register_bool_decide (value mask : bv 64) :
+  Z.land (bv_unsigned value) (bv_unsigned mask) = 0 →
+  Val_Bool (bool_decide (bv_and value mask = BV 64 0)) = Val_Bool true.
+Proof.
+  intro Hmask.
+  have Hbv : bv_and value mask = BV 64 0 by bv_solve.
+  rewrite Hbv bool_decide_true; reflexivity.
+Qed.
+
+Lemma zesu_rval_bits_injective n (x y : bv n) :
+  RVal_Bits x = RVal_Bits y → x = y.
+Proof. intros H. injection H as H. simplify_eq. reflexivity. Qed.
+
+Lemma zesu_val_bits_injective n (x y : bv n) :
+  Val_Bits x = Val_Bits y → x = y.
+Proof. intros H. injection H as H. simplify_eq. reflexivity. Qed.
+
+Ltac zesu_normalize_rval_bits_equality :=
+  match goal with
+  | |- RegVal_Base (Val_Bits (bv_to_bvn ?actual)) =
+      RegVal_Base (Val_Bits (bv_to_bvn ?expected)) → envs_entails _ _ =>
+      is_var actual;
+      let H := fresh "Hbits" in
+      intro H; apply zesu_rval_bits_injective in H; subst actual
+  | |- Val_Bits (bv_to_bvn ?actual) = Val_Bits (bv_to_bvn ?expected)
+      → envs_entails _ _ =>
+      is_var actual;
+      let H := fresh "Hbits" in
+      intro H; apply zesu_val_bits_injective in H; subst actual
+  | H : Val_Bits (bv_to_bvn ?actual) = Val_Bits (bv_to_bvn ?expected) |- _ =>
+      is_var actual;
+      apply zesu_val_bits_injective in H; subst actual
+  | H : RegVal_Base (Val_Bits (bv_to_bvn ?actual)) = RegVal_Base (Val_Bits (bv_to_bvn ?expected)) |- _ =>
+      is_var actual;
+      apply zesu_rval_bits_injective in H; subst actual
+  | |- envs_entails _ (⌜RegVal_Base (Val_Bits (bv_to_bvn ?actual)) =
+      RegVal_Base (Val_Bits (bv_to_bvn ?expected))⌝ -∗ _)%I =>
+      is_var actual;
+      let H := fresh "Hbits" in
+      iIntros (H); apply zesu_rval_bits_injective in H; subst actual
+  end.
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_normalize_find_mem_address
+    zesu_normalize_rval_bits_equality
+  | zesu_constant_word_array_lookup
+  | zesu_constant_word_array_index
+  | zesu_open_matching_payload_package
+  | zesu_choose_owned_payload_tail
+  | zesu_initialized_byte_scratch_tail
+  | zesu_normalize_find_mem_address
   | zesu_liAWriteMem
   | zesu_liAReadMem
   | liAAsm
@@ -344,6 +661,12 @@ Ltac zesu_liAStep :=
   | liAOther
   | liUnfoldEarly
   | zesu_liInstrPreMatch
+  | zesu_match_payload_witness
+  | zesu_match_owned_tuple
+  | zesu_expose_owned_saved_list
+  | zesu_expose_owned_pair_at_call
+  | zesu_infer_owned_payload_tail
+  | zesu_close_spec_tail_if_enabled
   | zesu_preserve_current_unsigned
   | liStep
   | liLetBindHint

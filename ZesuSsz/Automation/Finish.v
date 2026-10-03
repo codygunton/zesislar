@@ -47,6 +47,8 @@ Ltac zesu_finish_tag_bound :=
 
 Ltac zesu_finish_mask :=
   lazymatch goal with
+  | |- Val_Bool (bool_decide (bv_and _ _ = BV 64 0)) = Val_Bool true =>
+      solve [apply zesu_masked_register_bool_decide; cbn; assumption]
   | |- bv_and _ _ = _ =>
       solve [apply bv_eq; rewrite bv_and_unsigned; simpl; assumption]
   end.
@@ -226,6 +228,7 @@ Ltac zesu_finish_v1 :=
         prepare_sidecond]
   | _ => unLET
   end;
+  try zesu_normalize_rval_bits_equality;
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -256,6 +259,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_bounded_arithmetic ltac:(zesu_finish_pointer_alignment));
   try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment));
   try zesu_finish_lia;
+  try solve [zesu_named_frame_scratch_address];
   try (zesu_bounded_arithmetic ltac:(bv_solve));
   try (zesu_bounded_arithmetic ltac:(zesu_finish_little_endian)).
 
@@ -289,6 +293,7 @@ Ltac zesu_finish_entailment :=
 
 (* Anything else: the old chain, in the old order. *)
 Ltac zesu_finish_pure_goal :=
+  try zesu_normalize_rval_bits_equality;
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -320,6 +325,7 @@ Ltac zesu_finish_pure_goal :=
   try (zesu_bounded_arithmetic ltac:(zesu_finish_pointer_alignment));
   try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment));
   try zesu_finish_lia;
+  try solve [zesu_named_frame_scratch_address];
   try (zesu_bounded_arithmetic ltac:(bv_solve));
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
@@ -485,7 +491,11 @@ Ltac zesu_finish_initialized_array_read :=
    its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [zesu_open_requested_instr_bundle |
+    [zesu_constant_word_array_lookup | zesu_constant_word_array_index |
+     zesu_open_matching_payload_package | zesu_choose_owned_payload_tail |
+     zesu_initialized_byte_scratch_tail | zesu_match_owned_tuple | zesu_choose_array_tail | zesu_solve_array_tail_pure |
+     zesu_open_owned_return_register | zesu_match_register_witness |
+     zesu_open_requested_register_col | zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
@@ -501,7 +511,11 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_open_requested_instr_bundle |
+    [zesu_constant_word_array_lookup | zesu_constant_word_array_index |
+     zesu_open_matching_payload_package | zesu_choose_owned_payload_tail |
+     zesu_initialized_byte_scratch_tail | zesu_match_owned_tuple | zesu_choose_array_tail | zesu_solve_array_tail_pure |
+     zesu_open_owned_return_register | zesu_match_register_witness |
+     zesu_open_requested_register_col | zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
      zesu_open_matching_resource_package | zesu_finish_pure_resources |
