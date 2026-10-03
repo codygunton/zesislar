@@ -1,5 +1,5 @@
 
-/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-step2-artifacts/zesu-zisk.elf:     file format elf64-littleriscv
+zesu-zisk.elf:     file format elf64-littleriscv
 
 
 Disassembly of section .text:

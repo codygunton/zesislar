@@ -47,3 +47,24 @@ The recipe labels those files as historical evidence.
 The next step will replace the inventory with a scan of the selected ELF.
 No execution test or proof establishes selected-target correctness at this checkpoint.
 The exact platform model remains pending.
+
+## Manifest checks
+
+Run `python3 tools/stock_zisk/build.py --check --out build/stock-zisk`.
+The check verifies source commits, source trees, empty patches, and build flags.
+It checks the author recipe files and compiler executables against their hashes.
+It checks preserved inputs, runtime inputs, the ELF layout, and every ELF section's bytes.
+It regenerates the disassembly, symbol table, and layout report from the selected ELF.
+The artifact identity binds later generated files to the recorded inputs and ELF.
+Each derived file must declare that identity and its schema version.
+A rebuild invalidates previously registered derived files.
+
+The committed `bin/*` tools remain available for existing trace regeneration.
+The manifest records their hashes.
+The selected ELF build uses the separately recorded Zig and ELF tools.
+This checkpoint does not migrate existing tools to Nix.
+
+The runtime compiler executables also have checked archive copies.
+This step reused the preserved runtime library.
+It did not independently rebuild the runtime.
+For a new output directory, supply the current recipe with `--runtime-build-recipe`.

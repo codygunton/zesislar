@@ -2,15 +2,24 @@
   "sources": {
     "zesu": {
       "commit": "b5483dda21d72405c50a22cb6406a1231e51a579",
-      "tracked_sources_unchanged": true
+      "tracked_sources_unchanged": true,
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source",
+      "tree": "322fdbcf246141e65b9e31b570389d13e1b1d9ee",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "zisk": {
       "commit": "fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3",
-      "tracked_sources_unchanged": true
+      "tracked_sources_unchanged": true,
+      "path": "/tmp/worker2-stock-zisk-toolchain",
+      "tree": "5201a988acf28db8c0093509377bca06ee2ef563",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "guest": {
       "commit": "be591e90ecbd94b0a3185809ba5ed74268558fa3",
-      "tracked_sources_unchanged": true
+      "tracked_sources_unchanged": true,
+      "path": "/tmp/worker2-stock-zesu-zkvm",
+      "tree": "6e50777a2e7976e350e0e0c92a3a2b3c6d7004a4",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   },
   "zig_version": "0.16.0",
@@ -90,5 +99,347 @@
       "comparison-generic-script/"
     ],
     "status": "Pilot evidence only. These files do not describe the selected ELF."
+  },
+  "build_dir": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock",
+  "inputs": {
+    "compiler/rustc": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98-rustc",
+      "sha256": "3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98"
+    },
+    "compiler/cargo": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072-cargo",
+      "sha256": "dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072"
+    },
+    "compiler/cargo-zisk": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315-cargo-zisk",
+      "sha256": "14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315"
+    },
+    "guest/Makefile": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/Makefile",
+      "sha256": "0738a995e69ead8f01db449d4cb05506fd2da7c3f840c911fbf1ab3cbc0b6082"
+    },
+    "guest/build.zig": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig",
+      "sha256": "87fd8bafd76349a02aab91b8895aa2c74ada9a80701eb8caa8de17e3f8248a7b"
+    },
+    "guest/build.zig.zon": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig.zon",
+      "sha256": "e2a74ae07565be08d66613747b7b7ebd5017b1c30091b5e973c52cdadc3c2f00"
+    },
+    "guest/src/zisk_host.zig": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/src/zisk_host.zig",
+      "sha256": "b2bce6c2d5fb4184e0cf7c8a35da52e33c5d733cc3aa6bd5c3dfe64a0cefebae"
+    },
+    "linker": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+      "sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd"
+    },
+    "runtime": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491-libziskos_staticlib.a",
+      "sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491"
+    },
+    "object": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/zig-out/lib/zesu.o",
+      "sha256": "dcd4b1bec1b02f94d7c4bca3d8323c386cfc7b780995235d6947790bb68d1afe"
+    },
+    "compiler/zig": {
+      "path": "/usr/bin/zig",
+      "sha256": "9640c29ae441820b37f09052fc32ece316e7587b5a8c9d0df61aa558e2d4f336"
+    },
+    "compiler/riscv64-elf-objdump": {
+      "path": "/usr/bin/riscv64-elf-objdump",
+      "sha256": "a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260"
+    },
+    "compiler/riscv64-elf-readelf": {
+      "path": "/usr/bin/riscv64-elf-readelf",
+      "sha256": "d42bc4b515628277b93bed06290d81f1ea971be8f2a0fe4ced76be1b60f98cfb"
+    },
+    "builder/build.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/build.py",
+      "sha256": "2a5c2d417cc1e1ecb4d8b032970ade50ca8f56b8f8969340ee7f9e4a831b5b0e"
+    },
+    "builder/manifest.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/manifest.py",
+      "sha256": "91daedba380d4590d0b30d3cd4e9f81553fc92b3194029eaedc84d6b6eb74297"
+    },
+    "legacy/riscv64-linux-gnu-as": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-as",
+      "sha256": "f685923c9eef8c7f8a4e1157afc818c027436dcd5e798fbac021146bd8f153d6"
+    },
+    "legacy/riscv64-linux-gnu-ld": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-ld",
+      "sha256": "e7df162a0c0e5ddf6604a9765250aec166f77b05c2db4cdaa7fac3cd9a9cfbe5"
+    },
+    "legacy/riscv64-linux-gnu-nm": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-nm",
+      "sha256": "466f4fc027a3d8086ac7f5364f7fc3851ad68c226a0893b1b67b838341293e67"
+    },
+    "legacy/riscv64-linux-gnu-objdump": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-objdump",
+      "sha256": "a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260"
+    },
+    "legacy/z3": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/z3",
+      "sha256": "796dbda9afa35f2369d00e90c329d31a7d49afac75a683ddd14647f2c77f607a"
+    }
+  },
+  "legacy_tool_policy": "Retain the committed bin tools with explicit hashes for existing trace regeneration. The selected ELF build uses the separately recorded Zig and ELF tools.",
+  "runtime_provenance": {
+    "container_image_id": "sha256:3c7565636c6516f21c630b4b7e803de59574e9381b50e2b4ae082b2b20751318",
+    "source_commit": "fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3",
+    "release": "v1.2.0-alpha",
+    "command": [
+      "cargo",
+      "+zisk",
+      "build",
+      "-p",
+      "ziskos-staticlib",
+      "--target",
+      "riscv64ima-zisk-zkvm-elf",
+      "--release",
+      "--locked",
+      "--config",
+      "profile.release.lto=\"fat\""
+    ],
+    "compiler_identity_note": "These hashes identify the preserved runtime build executables. This step reused the archive and did not rebuild the runtime."
+  },
+  "schema_versions": {
+    "manifest": 1,
+    "elf_layout": 1
+  },
+  "invalidated_derived": [],
+  "derived": {},
+  "artifact_identity": "4f314cdd789e2adafea80527c10737b3eee065e5c2652d7faca7f80f2741573b",
+  "elf_layout": {
+    "entry": 2148490032,
+    "machine": "EM_RISCV",
+    "flags": 1,
+    "segments": [
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 1,
+        "p_offset": 4096,
+        "p_vaddr": 2147483648,
+        "p_paddr": 2147483648,
+        "p_filesz": 1113464,
+        "p_memsz": 1113464,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 4,
+        "p_offset": 1117568,
+        "p_vaddr": 2148597120,
+        "p_paddr": 2148597120,
+        "p_filesz": 35064,
+        "p_memsz": 35064,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 6,
+        "p_offset": 1155072,
+        "p_vaddr": 2688745472,
+        "p_paddr": 2688745472,
+        "p_filesz": 0,
+        "p_memsz": 9454880,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 6,
+        "p_offset": 1156384,
+        "p_vaddr": 2698200352,
+        "p_paddr": 2698200352,
+        "p_filesz": 16,
+        "p_memsz": 16,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_RISCV_ATTRIBUTES",
+        "p_flags": 4,
+        "p_offset": 1156400,
+        "p_vaddr": 0,
+        "p_paddr": 0,
+        "p_filesz": 106,
+        "p_memsz": 106,
+        "p_align": 1
+      }
+    ],
+    "sections": [
+      {
+        "name": "",
+        "sh_name": 0,
+        "sh_type": "SHT_NULL",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 0,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 0,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".text",
+        "sh_name": 1,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 6,
+        "sh_addr": 2147483648,
+        "sh_offset": 4096,
+        "sh_size": 1113464,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 16,
+        "sh_entsize": 0,
+        "sha256": "fa4ad2a3d017f654c67a0a90ddee7c008199a70208a7ea9d9a2553e812aa1d42"
+      },
+      {
+        "name": ".rodata",
+        "sh_name": 7,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 50,
+        "sh_addr": 2148597120,
+        "sh_offset": 1117568,
+        "sh_size": 35064,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 16,
+        "sh_entsize": 0,
+        "sha256": "7af6b59e84ff65bfcca3adbc3f9dea8e9fa8fb539e929508db0e0f5e270ecd2f"
+      },
+      {
+        "name": ".init_array",
+        "sh_name": 15,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 2,
+        "sh_addr": 2148632184,
+        "sh_offset": 1152632,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".fini_array",
+        "sh_name": 27,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 2,
+        "sh_addr": 2148632184,
+        "sh_offset": 1152632,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".data",
+        "sh_name": 39,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 2,
+        "sh_addr": 2688745472,
+        "sh_offset": 1152632,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".bss",
+        "sh_name": 45,
+        "sh_type": "SHT_NOBITS",
+        "sh_flags": 2097155,
+        "sh_addr": 2688745472,
+        "sh_offset": 1155072,
+        "sh_size": 9454880,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 8,
+        "sh_entsize": 0
+      },
+      {
+        "name": ".zesu_heap_vars",
+        "sh_name": 50,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 3,
+        "sh_addr": 2698200352,
+        "sh_offset": 1156384,
+        "sh_size": 16,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "2fe9caadebcd6644b284cf696914d031949e0843c9a2b8f13fd22ae627403179"
+      },
+      {
+        "name": ".riscv.attributes",
+        "sh_name": 66,
+        "sh_type": "SHT_RISCV_ATTRIBUTES",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 1156400,
+        "sh_size": 106,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "af5b701e3f5ecdf809555d26d92211e3354beb845bd38a63447481d3ff4c7eaf"
+      },
+      {
+        "name": ".symtab",
+        "sh_name": 84,
+        "sh_type": "SHT_SYMTAB",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 1156512,
+        "sh_size": 1537080,
+        "sh_link": 11,
+        "sh_info": 64002,
+        "sh_addralign": 8,
+        "sh_entsize": 24,
+        "sha256": "8c1fc651d8497c921fc361a94b86d480473f325225fc3150c89a9e16487b4f9d"
+      },
+      {
+        "name": ".shstrtab",
+        "sh_name": 92,
+        "sh_type": "SHT_STRTAB",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 2693592,
+        "sh_size": 110,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "852a1d4c7e736ee38cff54c4252d08521da2563ed00047b98e6d10e301b059c9"
+      },
+      {
+        "name": ".strtab",
+        "sh_name": 102,
+        "sh_type": "SHT_STRTAB",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 2693702,
+        "sh_size": 377285,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "c888a62f623684a9d08a1e8e56c45a8acf540825a8b97e7d0c6ac44e6b30ebf6"
+      }
+    ]
+  },
+  "artifacts": {
+    "zesu-zisk.elf": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+    "disassembly.objdump": "020ace7813b1c8a392291628095089bff281e3a50b4bb5dca25b3b5e9f50517b",
+    "symbols.txt": "b85d63ce55b4b5772415933d9939ef74cebb0905570a200bd08e6c372a2e3e6c",
+    "elf-layout.txt": "660c5484710dc616d5a8b94ddfdd349e67c38613ca8a15d60d11322513f83a2e"
   }
 }
