@@ -21,7 +21,7 @@ The repository and installed configuration hashes are equal.
 | Input | SHA-256 |
 |---|---|
 | `build/endpoint-elf/bin/zesu-ssz-decode` | `3e13afeae5719e10c65a89ea1b8a9afdb60b360e7e18faa81c31a71a44dcd8fb` |
-| `build/endpoint-elf/meta/disassembly.txt` | `80d0a3bcdfabbe99156a62efbc9470a40f3c55b39388c3de6112aa3a42d73fad` |
+| `build/endpoint-elf/meta/disassembly.objdump` | `80d0a3bcdfabbe99156a62efbc9470a40f3c55b39388c3de6112aa3a42d73fad` |
 | `ZesuSsz/riscv64_zesu.toml` | `76a2a8f4896670b9e7c7651731abf696b2429af7863a5f07f735f8b7a006c297` |
 | `/home/cody/islaris/_opam/etc/islaris/riscv64_zesu.toml` | `76a2a8f4896670b9e7c7651731abf696b2429af7863a5f07f735f8b7a006c297` |
 | `ZesuSsz/Evidence/generate_islaris_dump.py` | `0436cf8899814946746b2f0bd4a67d5294943a06bb5f0071dfabed6fad4360c8` |
@@ -37,7 +37,7 @@ The final command removes the package field and adds the Dune dependencies.
 
 ```sh
 python3 ZesuSsz/Evidence/generate_islaris_dump.py \
-  --disassembly build/endpoint-elf/meta/disassembly.txt \
+  --disassembly build/endpoint-elf/meta/disassembly.objdump \
   --profile experiments/islaris-startup/profile.json \
   --output build/islaris-dumps/startup.dump
 
