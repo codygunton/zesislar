@@ -2,7 +2,8 @@
 
 This checkpoint states the memcpy contract and records allocator data.
 It does not prove either runtime service.
-C4 must approve the memcpy statement before a proof uses a runtime premise.
+The earlier D3 decision permits the named ZisK CSR premise.
+The rung-2 trust text must state this exact service premise.
 
 ## Memcpy boundary
 

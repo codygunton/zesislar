@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "claim": "All 20 indexes and the root import probe compiled. No Level 1 proof claim.",
+  "worker_count": 6,
+  "limits": {
+    "wall_seconds_per_module": 60,
+    "memory_kib_per_module": 2097152
+  },
+  "build": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 1251882,
+    "rss_kb": 986856,
+    "target": "q3-one-path-indexes-resume"
+  },
+  "module_measurements": [
+    {
+      "source": "ZesuSsz/Evidence/StockImportProbe.v",
+      "elapsed_seconds": 0.502,
+      "peak_rss_kib": 704820,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_allocatorAlloc.v",
+      "elapsed_seconds": 0.803,
+      "peak_rss_kib": 643928,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_allocatorFree.v",
+      "elapsed_seconds": 0.752,
+      "peak_rss_kib": 632500,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_allocatorRemap.v",
+      "elapsed_seconds": 0.603,
+      "peak_rss_kib": 590884,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeItem.v",
+      "elapsed_seconds": 0.753,
+      "peak_rss_kib": 628272,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeParentHeader.v",
+      "elapsed_seconds": 0.952,
+      "peak_rss_kib": 754460,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeSingleTx.v",
+      "elapsed_seconds": 0.602,
+      "peak_rss_kib": 622824,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_dispatch.v",
+      "elapsed_seconds": 0.551,
+      "peak_rss_kib": 597404,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_shared_tail.v",
+      "elapsed_seconds": 0.702,
+      "peak_rss_kib": 630676,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_0.v",
+      "elapsed_seconds": 1.204,
+      "peak_rss_kib": 753416,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_1.v",
+      "elapsed_seconds": 1.153,
+      "peak_rss_kib": 756284,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_2.v",
+      "elapsed_seconds": 1.153,
+      "peak_rss_kib": 764764,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_3.v",
+      "elapsed_seconds": 1.454,
+      "peak_rss_kib": 826132,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_4.v",
+      "elapsed_seconds": 2.055,
+      "peak_rss_kib": 986856,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_ensureTotalCapacity.v",
+      "elapsed_seconds": 0.602,
+      "peak_rss_kib": 626864,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_memcpyStub.v",
+      "elapsed_seconds": 0.552,
+      "peak_rss_kib": 587664,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_nextUint64.v",
+      "elapsed_seconds": 0.652,
+      "peak_rss_kib": 607648,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_sliceAccessList.v",
+      "elapsed_seconds": 0.702,
+      "peak_rss_kib": 643760,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_sliceBytes32.v",
+      "elapsed_seconds": 0.703,
+      "peak_rss_kib": 632820,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_txAccessList.v",
+      "elapsed_seconds": 1.052,
+      "peak_rss_kib": 734904,
+      "exit": 0,
+      "limit_failure": null
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/decodeItem/instrs.v",
+      "elapsed_seconds": 0.653,
+      "peak_rss_kib": 627824,
+      "exit": 0,
+      "limit_failure": null
+    }
+  ],
+  "maximum_target_seconds": 2.055,
+  "maximum_module_peak_rss_kib": 986856,
+  "source_sha256": {
+    "generated/isla-traces/stock-zisk/closure/index_allocatorAlloc.v": "93aa705d37f3ac0dd3fd593505c966084ab62e674a4483278159cf1ddff22990",
+    "generated/isla-traces/stock-zisk/closure/index_allocatorFree.v": "d6b36f22232661b923bb658424aaf32df28e42f1b6455ac71c4536bc85f2ab3c",
+    "generated/isla-traces/stock-zisk/closure/index_allocatorRemap.v": "38a4a76dec0c7ba18155e6266927047a4c28cfa116a62fcb89b572a51e7becb2",
+    "generated/isla-traces/stock-zisk/closure/index_decodeItem.v": "36e90f90acc82aefef2ceccab7d26ffd7086ad2b94c58b1f459239c722bc68c6",
+    "generated/isla-traces/stock-zisk/closure/index_decodeParentHeader.v": "c751495327e1980a3dd0981043b428bcec9755732178bc525c3fa9c08cf71cb6",
+    "generated/isla-traces/stock-zisk/closure/index_decodeSingleTx.v": "651b85d8c9fda08dbf5252c6ea652c8bff8144f1dcea9aeb1f5eda57703a128e",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_dispatch.v": "2884e736c15f407c6ca09cc59c06802a369ffd84680370356ef706600e9a3234",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_shared_tail.v": "20d749fde109e5eec592e1209d7e6e0a70ab54ffed7cb943b675928478c6a45f",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_0.v": "e1282cd07edfb5575e032e795efc737f7f0bef388713da90a4111da510eafcf0",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_1.v": "92e1711afa277e9ea1849922fe212e1d41d25c0dda3e0a82806d80fd29230dea",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_2.v": "5374435acdc963c2655b9db827e911d0fbcc87fa807a0b4ebf9ae9f05e7f3fb7",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_3.v": "5af8c4df2f65c50e94ea04865c248cf0a517b4c984968b1620012662a309f4d4",
+    "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_4.v": "d1e3bd4f960f5ee17be12abf482eff71970fe4732fab955e5d152108566cf2be",
+    "generated/isla-traces/stock-zisk/closure/index_ensureTotalCapacity.v": "7754781f97c2254c4b8a7294bc4ddbd148368f52082828f6071b6fda6cb16e2a",
+    "generated/isla-traces/stock-zisk/closure/index_memcpyStub.v": "80aca4971270a4b61b3b8487c9ab642f352e13d8c006f97359bf968142f1798c",
+    "generated/isla-traces/stock-zisk/closure/index_nextUint64.v": "da3bfef2089f5e084b29569df0ce267a4aaa6fc8a4d27c0bf8ef1bb894105856",
+    "generated/isla-traces/stock-zisk/closure/index_sliceAccessList.v": "4f1aaf9d595fe1b4cc357eec53a013cb93d4a5df35916b62f1d07c519a1c3eee",
+    "generated/isla-traces/stock-zisk/closure/index_sliceBytes32.v": "fbf15934ff59798f47b9302bdbbcc8a95fc8f581185c0cbcd7e4fc6ad6ac7dab",
+    "generated/isla-traces/stock-zisk/closure/index_txAccessList.v": "b8962ad5e14401c8c6330d5c671e9746f3e61348614d25c550df546b56cc92ed",
+    "generated/isla-traces/stock-zisk/decodeItem/instrs.v": "1d5551d5fda206fb34ba530e370455e947503fd0ac6000cd7ddc16688ee1253e",
+    "ZesuStock/CalleeIdentity.v": "0dab53751f0c45d14ebe9b72b0c374e9a9b51a893c8fb95a376f12951f52b0f8",
+    "ZesuStock/dune": "ebd685bb284cedbc712224f70d8fe1639f2fb1268bd5acb43b4835bbc5612b10",
+    "ZesuSsz/dune": "8aef09718f30a89f65d33a684914c5a401c830af5d46d910f76ec78c6faf1ea9",
+    "ZesuSsz/Evidence/StockImportProbe.v": "53c3fbf1a3109df7ac71efcb0cdfaa35d4ef710d6e994fe17976ac2a26af12f7",
+    "generated/isla-traces/stock-zisk/decodeItem/dune": "1055898dcafb9c58c05f662ad870f16e6b334687441148c2136c030809f86ecd",
+    "generated/isla-traces/stock-zisk/closure/dune": "e7c99180c27c35976354e8f88996401c6e28242218f18561b7982d41975da757"
+  },
+  "launch_hashes_verified": 20,
+  "machine_sample": {
+    "scope": "After the build. This sample does not measure build utilization.",
+    "time_utc": "2026-10-04T07:59:29Z",
+    "cpu_percent": 0.41,
+    "load": [
+      "1.56",
+      "2.80",
+      "4.21"
+    ],
+    "available_memory_kib": 134233192,
+    "swap_used_kib": 8379084,
+    "during_build_sample_available": false
+  },
+  "candidate_changed": false,
+  "dependencies": {
+    "ZesuSsz": [
+      "ZesuStock",
+      "ZesuSsz.Stock.DecodeItem",
+      "ZesuSsz.Stock.Closure"
+    ],
+    "ZesuStock": [],
+    "ZesuSsz.Stock.DecodeItem": [
+      "ZesuStock"
+    ],
+    "ZesuSsz.Stock.Closure": [
+      "ZesuStock"
+    ]
+  },
+  "completed_module_count": 4281,
+  "prior_gate_interruption": {
+    "record_path": "_build/trace-validation/one-path-indexes.jsonl",
+    "completed_modules": 402,
+    "elapsed_seconds": 221.419,
+    "cause": "worker-build-1 check-iris held the gate; the guard refused closure/a80042094.v before compilation."
+  },
+  "check_fast": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 287382,
+    "rss_kb": 2080636,
+    "target": "check-fast",
+    "worker_count": 2,
+    "watch_elapsed_seconds": 350
+  },
+  "check_iris": "The coordinator runs this gate at root integration checkpoints."
+}

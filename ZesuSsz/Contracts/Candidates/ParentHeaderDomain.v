@@ -8,12 +8,12 @@ Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Import ListNotations.
 Open Scope Z_scope.
 
-(* The selected inventory has SHA256 f816d3e0e7eb7080cefd27796f19db4f5fa94e7619bb3de872691e49f79e6894.
+(* The selected inventory has SHA256 029862546bf8cf51b2a71b6278b23cbc84774bd714abf7b35a0435d06668b1cb.
    Its decoded CFG gives these 20 call PCs and the shown targets. The three
    optional Uint64Field entries call nextUint64; all other entries call
    decodeItem directly, including three inlined required integers. *)
 Definition parentHeaderInventorySha256 : string :=
-  "f816d3e0e7eb7080cefd27796f19db4f5fa94e7619bb3de872691e49f79e6894"%string.
+  "029862546bf8cf51b2a71b6278b23cbc84774bd714abf7b35a0435d06668b1cb"%string.
 
 Inductive ParentHeaderFieldKind :=
 | RequiredSkip | RequiredUint64 | OptionalSkip | OptionalUint64.

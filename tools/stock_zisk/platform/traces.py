@@ -54,8 +54,10 @@ def ensure_callee_theory(out):
     dune = out / "dune"
     if dune.exists():
         text = dune.read_text()
-        if "ZesuSsz.CalleeIdentity" not in text:
-            dune.write_text(text.replace("RecordUpdate Ltac2)", "RecordUpdate Ltac2 ZesuSsz.CalleeIdentity)"))
+        text = text.replace("ZesuSsz.CalleeIdentity", "ZesuStock")
+        if "ZesuStock" not in text:
+            text = text.replace("RecordUpdate Ltac2)", "RecordUpdate Ltac2 ZesuStock)")
+        dune.write_text(text)
 
 def generate_indexes(args, rows, recipe, elf):
     supported = [row for row in rows if row["kind"] != "runtime"]
@@ -256,7 +258,7 @@ def main():
     # upstream package declaration and use the established theory dependencies.
     dune=args.out / "dune"
     text=dune.read_text();text=re.sub(r"^ \(package islaris\)\n","",text,flags=re.M)
-    text=text.replace("(theories isla isla.riscv64)","(theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2 ZesuSsz.CalleeIdentity)")
+    text=text.replace("(theories isla isla.riscv64)","(theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2 ZesuStock)")
     dune.write_text(text)
     prefix = "generated/isla-traces/stock-zisk/" + ("closure" if args.closure else "decodeItem") + "/"
     files={prefix + p.name:sha(p)
