@@ -359,3 +359,20 @@ clean:
 .PHONY: distclean
 distclean: clean
 	rm -rf $(TRACE_DIR)
+
+# Preserve selected instruction traces and check approved native region indexes.
+STOCK_DECODE_TRACE_DIR ?= generated/isla-traces/stock-zisk/decodeItem
+STOCK_CLOSURE_TRACE_DIR ?= generated/isla-traces/stock-zisk/closure
+STOCK_TRACE_MANIFEST ?= build/stock-zisk/build-recipe.json
+.PHONY: traces-closure-indexes
+traces-closure-indexes:
+	$(PYTHON) tools/stock_zisk/platform/traces.py --manifest $(STOCK_TRACE_MANIFEST) \
+	  --dump build/stock-zisk/decodeItem.raw.dump --out $(STOCK_DECODE_TRACE_DIR) \
+	  --coqdir ZesuSsz.Stock.DecodeItem --jobs 6
+	$(PYTHON) tools/stock_zisk/platform/bind_traces.py --out $(STOCK_DECODE_TRACE_DIR) \
+	  --check-manifest $(STOCK_TRACE_MANIFEST) --trace-name decodeItem
+	$(PYTHON) tools/stock_zisk/platform/traces.py --closure --indexes \
+	  --manifest $(STOCK_TRACE_MANIFEST) --out $(STOCK_CLOSURE_TRACE_DIR) \
+	  --coqdir ZesuSsz.Stock.Closure --jobs 6
+	$(PYTHON) tools/stock_zisk/platform/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
+	  --check-manifest $(STOCK_TRACE_MANIFEST) --trace-name closure
