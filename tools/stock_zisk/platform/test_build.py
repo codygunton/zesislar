@@ -152,6 +152,21 @@ class TraceCoverageTests(unittest.TestCase):
         self.assertEqual(edges, [(8, 12)])
         self.assertEqual(exits, [{"pc": "0xc", "kind": "return", "target": None}])
 
+    def test_exports_use_one_pure_theory(self):
+        from exports import make_commitment, render_exports
+        text = render_exports("sample", make_commitment([], [], []))
+        self.assertIn("Require Import ZesuStock.CalleeIdentity.", text)
+        self.assertNotIn("ZesuSsz.CalleeIdentity", text)
+
+    def test_generated_theory_uses_stock_dependency(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            dune = out / "dune"
+            dune.write_text("(theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2 ZesuSsz.CalleeIdentity)")
+            traces.ensure_callee_theory(out)
+            self.assertIn("Ltac2 ZesuStock)", dune.read_text())
+            self.assertNotIn("ZesuSsz.CalleeIdentity", dune.read_text())
+
 class LinkTests(unittest.TestCase):
     def setUp(self):
         self.base = Path("/home/cody/isla-snapshots/riscv64.ir").read_text()

@@ -14,7 +14,7 @@
   },
   "load_paths": "Private build paths within the worktree",
   "initial_header_import_failure": "Fixed by the direct Contracts.ZiskRuntime import",
-  "runtime_statement_approval": "C4 remains required before a proof uses a runtime premise",
+  "runtime_statement_approval": "D3 permits the named ZisK CSR premise. The rung-2 trust text must state its exact statement.",
   "check_fast": {
     "exit": 0,
     "wall_seconds": 243,

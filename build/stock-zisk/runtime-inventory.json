@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "a13bdac56ece9146d195c2d52947d3d9a6d224965aa6be35074355f637ee8a9e",
+  "artifact_identity": "08b0b5ea4b45b074f43ee5c4d95368fbf6b0cc4a8e1b00228b4d290f1d6cbbc2",
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "source": {
     "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",
@@ -166,6 +166,6 @@
     "Relate decoder-entry allocator state to initialization and prior calls.",
     "Preserve free-list ownership and live allocation disjointness.",
     "Establish heap capacity and arithmetic bounds for allocations.",
-    "Approve the runtime service statement under C4 before using a premise."
+    "Record the exact named service premise in the rung-2 trust text."
   ]
 }

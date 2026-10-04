@@ -78,7 +78,7 @@ def record(image, recipe, source):
             'Relate decoder-entry allocator state to initialization and prior calls.',
             'Preserve free-list ownership and live allocation disjointness.',
             'Establish heap capacity and arithmetic bounds for allocations.',
-            'Approve the runtime service statement under C4 before using a premise.']}
+            'Record the exact named service premise in the rung-2 trust text.']}
 
 
 def main():

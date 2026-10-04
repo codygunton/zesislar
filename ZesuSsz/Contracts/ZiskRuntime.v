@@ -118,8 +118,9 @@ Definition ziskMemcpyExit {Observation} (args : ZiskMemcpyArguments)
   ziskRuntimePc after = Z.land (ziskMemcpyReturnAddress args) (-2) /\
   ziskRuntimeObservations after = ziskRuntimeObservations before.
 
-(** C4 must approve this statement before a proof uses it as a runtime premise.
-    No theorem, axiom, or admitted proof supplies that premise here. *)
+(** The earlier D3 decision permits named ZisK CSR contract premises.
+    The rung-2 trust text must state this exact service premise.
+    This file supplies no service correctness or termination proof. *)
 Record ZiskMemcpyServiceContract : Type := {
   ziskMemcpyEntryPc : Z;
   ziskMemcpyAllows : forall Observation : Type,

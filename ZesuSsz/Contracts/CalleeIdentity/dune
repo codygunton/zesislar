@@ -1,5 +1,0 @@
-(include_subdirs no)
-
-(coq.theory
- (name ZesuSsz.CalleeIdentity)
- (modules CalleeId))

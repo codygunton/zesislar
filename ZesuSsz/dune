@@ -9,4 +9,5 @@
  (plugins zesu-signature-gates.plugin)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail EvmSailRlp SailStdpp
+   ZesuStock ZesuSsz.Stock.DecodeItem ZesuSsz.Stock.Closure
    lithium iris stdpp RecordUpdate Ltac2))

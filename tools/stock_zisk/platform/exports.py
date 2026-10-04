@@ -77,7 +77,7 @@ def render_exports(name, commitment):
         constructor = "CalleeEntry" if call["callee"]["kind"] == "entry" else "CalleeVtableSlot"
         calls.append(f"  ({call['pc']}%Z, {constructor} {call['callee']['identity']}%Z, {call['continuation']}%Z)")
     return (MARKER + "From Coq Require Import Lists.List ZArith.ZArith Strings.String.\n"
-            + "Require Import ZesuSsz.CalleeIdentity.CalleeId.\n"
+            + "Require Import ZesuStock.CalleeIdentity.\n"
             + "Import ListNotations.\n"
             + f"Definition {name}_instruction_bytes_sha256 : string :=\n"
             + f"  \"{commitment['instruction_bytes_sha256']}\"%string.\n"
