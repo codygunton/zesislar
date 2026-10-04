@@ -1,0 +1,53 @@
+import json
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+out = Path(__file__).resolve().parent
+samples = []
+
+def cpu():
+    return [int(v) for v in Path('/proc/stat').read_text().splitlines()[0].split()[1:]]
+
+before = cpu()
+started = time.monotonic()
+with (out / 'chain.log').open('w') as log:
+    child = subprocess.Popen(sys.argv[1:], stdout=log, stderr=subprocess.STDOUT)
+    while child.poll() is None:
+        time.sleep(1)
+        after = cpu()
+        total = sum(after) - sum(before)
+        idle = after[3] - before[3]
+        mem = {line.split(':')[0]: int(line.split()[1])
+               for line in Path('/proc/meminfo').read_text().splitlines()}
+        processes = []
+        for directory in Path('/proc').iterdir():
+            if not directory.name.isdigit():
+                continue
+            try:
+                text = (directory / 'cmdline').read_bytes().replace(b'\x00', b' ').decode(errors='replace')
+                if 'coqc' not in text or 'worker2-child-platform' not in text:
+                    continue
+                stat = (directory / 'stat').read_text().split(') ', 1)[1].split()
+                status = (directory / 'status').read_text().splitlines()
+                rss = next((int(line.split()[1]) for line in status if line.startswith('VmRSS:')), 0)
+                processes.append({'pid': int(directory.name), 'cpu_ticks': int(stat[11]) + int(stat[12]),
+                                  'rss_kib': rss, 'comm': (directory / 'comm').read_text().strip(),
+                                  'command': text[:600]})
+            except (FileNotFoundError, ProcessLookupError, PermissionError):
+                pass
+        samples.append({'elapsed_seconds': round(time.monotonic() - started, 3),
+                        'total_cpu_percent': round(100 * (total-idle) / total, 3) if total else None,
+                        'load': Path('/proc/loadavg').read_text().strip(),
+                        'available_memory_kib': mem['MemAvailable'],
+                        'swap_used_kib': mem['SwapTotal'] - mem['SwapFree'],
+                        'processes': processes})
+        before = after
+    rc = child.wait()
+(out / 'machine-measurements.json').write_text(json.dumps({
+    'command': sys.argv[1:], 'rc': rc, 'elapsed_seconds': round(time.monotonic() - started, 3),
+    'sample_interval_seconds': 1, 'samples': samples}, indent=2) + '\n')
+print('Chain exit:', rc, 'elapsed:', round(time.monotonic()-started, 3), flush=True)
+print((out / 'chain.log').read_text()[-2500:], flush=True)
+sys.exit(rc)
