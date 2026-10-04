@@ -5,6 +5,7 @@ Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 
@@ -142,7 +143,8 @@ Definition decodeItemEntryAt800d6a38 `{!islaG Sigma} `{!threadG}
     (lengthBytes frameBytes : list byte) (loaded : bv 64) : iProp Sigma :=
   (⌜decodeItemSavedFrameFacts args frameBytes⌝ ∗
    "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 0x800d6a38) ∗
-   decodeItemFoldCheckedResources args n payloadStart lengthBytes frameBytes loaded ∗
+   decodeItemByteFoldResources args false n n payloadStart
+     lengthBytes frameBytes loaded ∗
    decodeItemBranchContinuation args)%I.
 
 Definition decodeItemEntryAt800d6a64 `{!islaG Sigma} `{!threadG}
@@ -190,7 +192,8 @@ Definition decodeItemEntryAt800d6ad8 `{!islaG Sigma} `{!threadG}
     (lengthBytes frameBytes : list byte) (loaded : bv 64) : iProp Sigma :=
   (⌜decodeItemSavedFrameFacts args frameBytes⌝ ∗
    "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 0x800d6ad8) ∗
-   decodeItemFoldCheckedResources args n payloadStart lengthBytes frameBytes loaded ∗
+   decodeItemByteFoldResources args true n n payloadStart
+     lengthBytes frameBytes loaded ∗
    decodeItemBranchContinuation args)%I.
 
 (* Pending machine bridge. The prologue must create the exact saved frame
