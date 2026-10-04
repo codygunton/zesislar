@@ -117,3 +117,13 @@ Check (@decodeItemAllowsC1A : DecodeItemArgs -> DecodeItemOutcome -> Prop).
 Check (@decodeItemAllowsC1B : DecodeItemArgs -> DecodeItemOutcome -> Prop).
 Check (eq_refl : decodeItemAllowsC1A = decodeItemAllows C1AResult).
 Check (eq_refl : decodeItemAllowsC1B = decodeItemAllows C1BResult).
+Check (@decodeItemC1ASailAgreement : Prop).
+Check (@decodeItemC1BSailAgreement : Prop).
+Check (@decodeItemC1BWrapDivergence : Prop).
+Check (@decodeItemWrapWitness :
+  candidateDecodeItem decodeItemWrapWitnessInput =
+    candidateSuccess false 9 (word64Modulus - 9) /\
+  binaryWrapCase 9 (word64Modulus - 9) 0 /\
+  ~ headerFits decodeItemWrapWitnessInput).
+Print Assumptions decodeItemWrapWitness.
+Ltac2 Eval exact_axioms 'decodeItemWrapWitness (approved_library_axioms ()).

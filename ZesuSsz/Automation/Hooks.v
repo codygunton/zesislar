@@ -12,6 +12,7 @@ Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 
 Global Typeclasses Opaque IslarisContractSpec.
 Global Instance : LithiumUnfold (@IslarisContractSpec) := I.
@@ -23,6 +24,11 @@ Global Instance : LithiumUnfold (@ParentHeaderTailHandoffSpec) := I.
 Global Typeclasses Opaque decodeItemEntryResources decodeItemExitResources.
 Global Instance : LithiumUnfold (@decodeItemEntryResources) := I.
 Global Instance : LithiumUnfold (@decodeItemExitResources) := I.
+Global Typeclasses Opaque decodeItemByteFoldResources
+  decodeItemByteFoldStringHeader decodeItemByteFoldListHeader.
+Global Instance : LithiumUnfold (@decodeItemByteFoldResources) := I.
+Global Instance : LithiumUnfold (@decodeItemByteFoldStringHeader) := I.
+Global Instance : LithiumUnfold (@decodeItemByteFoldListHeader) := I.
 
 (** Give Lithium its separating-conjunction goal form. *)
 Ltac zesu_prepare_uninit_goal :=
