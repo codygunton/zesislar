@@ -40,5 +40,6 @@ function stateless_input_load_n_word(s, off, n) = {
     assert(0 <= s.bytes & 0 <= s.len & s.bytes + s.len <= shim_input_length(shim_input_bytes),
            "input slice outside backing bytes");
     assert(0 <= off & off < s.len, "input word offset outside slice");
+    assert(0 <= n & n <= 32, "input word byte count outside range");
     word_from_bits(get_slice_int(256, shim_load_n(s, off, n, 0), 0))
 }

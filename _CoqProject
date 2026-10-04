@@ -4,6 +4,7 @@
 -Q _build/default/MachineMap ZesuMachineMap
 -R _build/default/generated/isla-traces IslaTraces
 -Q _build/default/generated/evm-sail-coq EvmSail
+-Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp
 -Q _build/default/generated/sail-stdpp SailStdpp
 
 -arg -w -arg -notation-overridden

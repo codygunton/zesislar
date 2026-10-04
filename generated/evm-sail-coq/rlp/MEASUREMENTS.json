@@ -57,8 +57,8 @@
     },
     {
       "module": "generated/evm-sail-coq/rlp/evm_rlp.v",
-      "elapsed_seconds": 3.661,
-      "peak_rss_kib": 882960,
+      "elapsed_seconds": 5.164,
+      "peak_rss_kib": 886472,
       "exit_code": 0,
       "limit": null
     }

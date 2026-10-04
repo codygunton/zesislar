@@ -259,6 +259,7 @@ Definition stateless_input_load_n_word {ex119428_ : Z} {ex119427_ : Z}
            returnM ((Z.leb ((Z.add ex119427_ ex119428_)) ((shim_input_length (w__0)))))))) >>= fun w__2 =>
    assert_exp' w__2 "input slice outside backing bytes" >>= fun _ =>
    assert_exp' (andb ((Z.leb (0) (off))) ((Z.ltb (off) ex119428_))) "input word offset outside slice" >>= fun _ =>
+   assert_exp' (andb ((Z.leb (0) (n))) ((Z.leb (n) (32)))) "input word byte count outside range" >>= fun _ =>
    (shim_load_n (s) (off) (n) (0)) >>= fun (w__3 : Z) =>
    returnM (((word_from_bits ((get_slice_int (256) (w__3) (0)))).(word_value)))) >>= fun semanticResult =>
    returnM (Build_word (semanticResult)).
