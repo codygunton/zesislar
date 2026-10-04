@@ -1,4 +1,6 @@
 From Coq Require Import List ZArith.
+From stdpp Require Import bitvector.definitions.
+Require Import SailStdpp.MachineWord.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeader.
@@ -93,7 +95,12 @@ Record NextUint64Call := {
   nextSlicePointer : Z;
   nextResultPointer : Z;
   nextStackPointer : Z;
-  nextReturnAddress : Z
+  nextReturnAddress : Z;
+  nextSavedS0 : bv 64;
+  nextSavedS1 : bv 64;
+  nextSavedS2 : bv 64;
+  nextSavedS3 : bv 64;
+  nextSavedS4 : bv 64
 }.
 
 Record NextUint64Return := {

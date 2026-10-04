@@ -1,4 +1,5 @@
 From Coq Require Import List ZArith.
+From stdpp Require Import bitvector.definitions.
 Require Import isla.isla isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.Level1.
@@ -44,7 +45,19 @@ Record ParentHeaderCall := {
   headerInputBytes : list byte;
   headerResultPointer : Z;
   headerStackPointer : Z;
-  headerReturnAddress : Z
+  headerReturnAddress : Z;
+  headerSavedS0 : bv 64;
+  headerSavedS1 : bv 64;
+  headerSavedS2 : bv 64;
+  headerSavedS3 : bv 64;
+  headerSavedS4 : bv 64;
+  headerSavedS5 : bv 64;
+  headerSavedS6 : bv 64;
+  headerSavedS7 : bv 64;
+  headerSavedS8 : bv 64;
+  headerBeforeFrame : list byte;
+  headerMemcpySourceBefore : list byte;
+  headerMemcpyScratchBefore : list byte
 }.
 
 Definition parentHeaderDomain (args : ParentHeaderCall) : Prop :=
