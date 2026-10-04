@@ -2,19 +2,15 @@ From Coq Require Import List ZArith.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeader.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
 
 Import ListNotations.
 Open Scope Z_scope.
 
-(* Temporary identity only. Replace this record with the reviewed service
-   contract from Contracts/ZiskRuntime.v before any rung-2 proof. It grants
-   no memory effect, return behavior, or execution premise. *)
-Record PendingMemcpyService := {
-  pendingMemcpyTargetPc : Z
-}.
-
-Definition selectedMemcpy : PendingMemcpyService :=
-  {| pendingMemcpyTargetPc := 0x800e06c0 |}.
+(* The selected service states memory and return behavior.
+   It supplies no service correctness proof or execution premise. *)
+Definition selectedMemcpy : ZiskMemcpyServiceContract :=
+  ziskMemcpyContract 0x800e06c0.
 
 (* ELF 0x800d5d68 passes 0x50 bytes to the memcpy tail at 0x800d5da0.
    The first 72 bytes hold ParentHeader. Bytes 72 and 73 hold the error tag.

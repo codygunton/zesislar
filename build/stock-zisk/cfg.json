@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "14a867dff5200166a6cc14b87aa871b81fb7f55ad502af8cbb58dacd0e9ce12d",
+  "artifact_identity": "a13bdac56ece9146d195c2d52947d3d9a6d224965aa6be35074355f637ee8a9e",
   "functions": [
     {
       "name": "rlp.decodeItem",

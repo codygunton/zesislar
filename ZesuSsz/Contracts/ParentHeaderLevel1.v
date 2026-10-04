@@ -5,6 +5,7 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
 
 Open Scope Z_scope.
 
@@ -73,13 +74,13 @@ Record ParentHeaderTailCall := {
 }.
 
 (* The tail transfer is at 0x800d5da0. The original ra is restored before
-   the jump. This relation stops before memcpy executes. The placeholder
-   supplies only its target identity; it gives no post-call result. *)
-Definition parentHeaderTailAllows (memcpy : PendingMemcpyService)
+   the jump. This relation stops before memcpy executes. The service contract
+   supplies its entry identity here. This handoff gives no post-call result. *)
+Definition parentHeaderTailAllows (memcpy : ZiskMemcpyServiceContract)
     (args : ParentHeaderCall) (tail : ParentHeaderTailCall) : Prop :=
   parentHeaderDomain args /\
-  memcpy.(pendingMemcpyTargetPc) = 0x800e06c0 /\
-  tail.(tailTargetPc) = memcpy.(pendingMemcpyTargetPc) /\
+  memcpy.(ziskMemcpyEntryPc) = 0x800e06c0 /\
+  tail.(tailTargetPc) = memcpy.(ziskMemcpyEntryPc) /\
   tail.(tailDestination) = args.(headerResultPointer) /\
   tail.(tailSource) = 0x80114fb8 /\
   tail.(tailLength) = 80 /\
@@ -94,7 +95,7 @@ Definition ParentHeaderDirectHandoffSpec {Sigma : gFunctors}
     parentHeaderDirectAllows resources.
 
 Definition ParentHeaderTailHandoffSpec {Sigma : gFunctors}
-    (HG : islaG Sigma) (HT : threadG) (memcpy : PendingMemcpyService)
+    (HG : islaG Sigma) (HT : threadG) (memcpy : ZiskMemcpyServiceContract)
     (resources : @IslarisContractResources Sigma HG HT
       ParentHeaderCall ParentHeaderTailCall) : iProp Sigma :=
   @IslarisContractSpec riscv64_arch Sigma HG HT
@@ -108,7 +109,7 @@ Definition ParentHeaderDirectHandoffCorrect
   forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG),
     ⊢ ParentHeaderDirectHandoffSpec HG HT (resources Sigma HG HT).
 
-Definition ParentHeaderTailHandoffCorrect (memcpy : PendingMemcpyService)
+Definition ParentHeaderTailHandoffCorrect (memcpy : ZiskMemcpyServiceContract)
     (resources : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG),
       @IslarisContractResources Sigma HG HT
         ParentHeaderCall ParentHeaderTailCall) : Prop :=
