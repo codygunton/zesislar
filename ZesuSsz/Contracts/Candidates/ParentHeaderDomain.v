@@ -118,20 +118,15 @@ Proof.
   exact (Hmatch pc remaining Hsite Hcall).
 Qed.
 
-(* These narrowed targets remain candidates. A machine proof must connect
-   its actual call arguments to the exact reached PC/slice pairs. *)
-Definition nextUint64CandidateTarget (parentInput : list byte) (pc : Z)
-    (call : NextUint64Call) : Prop :=
-  allContiguousHeadersFit parentInput /\
-  List.In pc parentHeaderNextUint64CallSites /\
-  candidateCallInputAt parentInput pc call.(nextInputBytes) /\
-  nextUint64Domain call.
-
-Definition parentHeaderCandidateTarget (args : ParentHeaderCall)
-    (callInputAt : Z -> list byte -> Prop) : Prop :=
-  parentHeaderEntryLayout
-    args.(headerInputPointer) (Z.of_nat (List.length args.(headerInputBytes)))
-    args.(headerResultPointer) args.(headerStackPointer)
-    args.(headerReturnAddress) /\
-  allContiguousHeadersFit args.(headerInputBytes) /\
-  reachedCallCorrespondence args.(headerInputBytes) callInputAt.
+(* This pure walk identifies a possible nested length wrap. The machine
+   proof must connect each reached call to the walked slice. *)
+Definition nestedWrapOccurs (input : list byte) : Prop :=
+  exists pc remaining isList headerLength payloadLength,
+    pc <> 0x800d5cf4 /\
+    List.In pc
+      (parentHeaderDecodeItemCallSites ++ parentHeaderNextUint64CallSites) /\
+    candidateCallInputAt input pc remaining /\
+    candidateDecodeItem remaining =
+      candidateSuccess isList headerLength payloadLength /\
+    binaryWrapCase headerLength payloadLength
+      ((headerLength + payloadLength) mod word64Modulus).
