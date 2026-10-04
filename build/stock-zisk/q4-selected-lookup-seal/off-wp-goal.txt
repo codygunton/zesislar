@@ -1,0 +1,529 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  args : DecodeItemArgs
+  n, i, payloadStart : Z
+  lengthBytes, frameBytes : list (bv 8)
+  loaded : bv 64
+  next : bv 8
+  H0 : i < n
+  H1 : nth_error lengthBytes (Z.to_nat i) = Some next
+  H2 : length frameBytes = 16%nat
+  H3 : RlpDecodeItemByteFold.decodeItemByteFoldFacts args n i payloadStart
+         lengthBytes
+  ============================
+  _ : instr_lookup_resources
+        (λ address : Z,
+           if address =? 2148362592
+           then Some a800d6960.a800d6960
+           else
+            if address =? 2148362596
+            then Some a800d6964.a800d6964
+            else
+             if address =? 2148362600
+             then Some a800d6968.a800d6968
+             else
+              if address =? 2148362604
+              then Some a800d696c.a800d696c
+              else
+               if address =? 2148362608
+               then Some a800d6970.a800d6970
+               else
+                if address =? 2148362612
+                then Some a800d6974.a800d6974
+                else
+                 if address =? 2148362616
+                 then Some a800d6978.a800d6978
+                 else
+                  if address =? 2148362620
+                  then Some a800d697c.a800d697c
+                  else
+                   if address =? 2148362624
+                   then Some a800d6980.a800d6980
+                   else
+                    if address =? 2148362628
+                    then Some a800d6984.a800d6984
+                    else
+                     if address =? 2148362632
+                     then Some a800d6988.a800d6988
+                     else
+                      if address =? 2148362636
+                      then Some a800d698c.a800d698c
+                      else
+                       if address =? 2148362640
+                       then Some a800d6990.a800d6990
+                       else
+                        if address =? 2148362644
+                        then Some a800d6994.a800d6994
+                        else
+                         if address =? 2148362648
+                         then Some a800d6998.a800d6998
+                         else
+                          if address =? 2148362652
+                          then Some a800d699c.a800d699c
+                          else
+                           if address =? 2148362656
+                           then Some a800d69a0.a800d69a0
+                           else
+                            if address =? 2148362660
+                            then Some a800d69a4.a800d69a4
+                            else
+                             if address =? 2148362664
+                             then Some a800d69a8.a800d69a8
+                             else
+                              if address =? 2148362668
+                              then Some a800d69ac.a800d69ac
+                              else
+                               if address =? 2148362672
+                               then Some a800d69b0.a800d69b0
+                               else
+                                if address =? 2148362676
+                                then Some a800d69b4.a800d69b4
+                                else
+                                 if address =? 2148362680
+                                 then Some a800d69b8.a800d69b8
+                                 else
+                                  if address =? 2148362684
+                                  then Some a800d69bc.a800d69bc
+                                  else
+                                   if address =? 2148362688
+                                   then Some a800d69c0.a800d69c0
+                                   else
+                                    if address =? 2148362692
+                                    then Some a800d69c4.a800d69c4
+                                    else
+                                     if address =? 2148362696
+                                     then Some a800d69c8.a800d69c8
+                                     else
+                                      if address =? 2148362700
+                                      then Some a800d69cc.a800d69cc
+                                      else
+                                       if address =? 2148362704
+                                       then Some a800d69d0.a800d69d0
+                                       else
+                                        if address =? 2148362708
+                                        then Some a800d69d4.a800d69d4
+                                        else
+                                         if address =? 2148362712
+                                         then Some a800d69d8.a800d69d8
+                                         else
+                                          if address =? 2148362716
+                                          then Some a800d69dc.a800d69dc
+                                          else
+                                           if address =? 2148362720
+                                           then Some a800d69e0.a800d69e0
+                                           else
+                                            if address =? 2148362724
+                                            then Some a800d69e4.a800d69e4
+                                            else
+                                             if address =? 2148362728
+                                             then Some a800d69e8.a800d69e8
+                                             else
+                                              if address =? 2148362732
+                                              then Some a800d69ec.a800d69ec
+                                              else
+                                               if address =? 2148362736
+                                               then Some a800d69f0.a800d69f0
+                                               else
+                                                if address =? 2148362740
+                                                then Some a800d69f4.a800d69f4
+                                                else
+                                                 if address =? 2148362744
+                                                 then
+                                                 Some a800d69f8.a800d69f8
+                                                 else
+                                                 if address =? 2148362748
+                                                 then
+                                                 Some a800d69fc.a800d69fc
+                                                 else
+                                                 if address =? 2148362752
+                                                 then
+                                                 Some a800d6a00.a800d6a00
+                                                 else
+                                                 if address =? 2148362756
+                                                 then
+                                                 Some a800d6a04.a800d6a04
+                                                 else
+                                                 if address =? 2148362760
+                                                 then
+                                                 Some a800d6a08.a800d6a08
+                                                 else
+                                                 if address =? 2148362764
+                                                 then
+                                                 Some a800d6a0c.a800d6a0c
+                                                 else
+                                                 if address =? 2148362768
+                                                 then
+                                                 Some a800d6a10.a800d6a10
+                                                 else
+                                                 if address =? 2148362772
+                                                 then
+                                                 Some a800d6a14.a800d6a14
+                                                 else
+                                                 if address =? 2148362776
+                                                 then
+                                                 Some a800d6a18.a800d6a18
+                                                 else
+                                                 if address =? 2148362780
+                                                 then
+                                                 Some a800d6a1c.a800d6a1c
+                                                 else
+                                                 if address =? 2148362784
+                                                 then
+                                                 Some a800d6a20.a800d6a20
+                                                 else
+                                                 if address =? 2148362788
+                                                 then
+                                                 Some a800d6a24.a800d6a24
+                                                 else
+                                                 if address =? 2148362792
+                                                 then
+                                                 Some a800d6a28.a800d6a28
+                                                 else
+                                                 if address =? 2148362796
+                                                 then
+                                                 Some a800d6a2c.a800d6a2c
+                                                 else
+                                                 if address =? 2148362800
+                                                 then
+                                                 Some a800d6a30.a800d6a30
+                                                 else
+                                                 if address =? 2148362804
+                                                 then
+                                                 Some a800d6a34.a800d6a34
+                                                 else
+                                                 if address =? 2148362808
+                                                 then
+                                                 Some a800d6a38.a800d6a38
+                                                 else
+                                                 if address =? 2148362812
+                                                 then
+                                                 Some a800d6a3c.a800d6a3c
+                                                 else
+                                                 if address =? 2148362816
+                                                 then
+                                                 Some a800d6a40.a800d6a40
+                                                 else
+                                                 if address =? 2148362820
+                                                 then
+                                                 Some a800d6a44.a800d6a44
+                                                 else
+                                                 if address =? 2148362824
+                                                 then
+                                                 Some a800d6a48.a800d6a48
+                                                 else
+                                                 if address =? 2148362828
+                                                 then
+                                                 Some a800d6a4c.a800d6a4c
+                                                 else
+                                                 if address =? 2148362832
+                                                 then
+                                                 Some a800d6a50.a800d6a50
+                                                 else
+                                                 if address =? 2148362836
+                                                 then
+                                                 Some a800d6a54.a800d6a54
+                                                 else
+                                                 if address =? 2148362840
+                                                 then
+                                                 Some a800d6a58.a800d6a58
+                                                 else
+                                                 if address =? 2148362844
+                                                 then
+                                                 Some a800d6a5c.a800d6a5c
+                                                 else
+                                                 if address =? 2148362848
+                                                 then
+                                                 Some a800d6a60.a800d6a60
+                                                 else
+                                                 if address =? 2148362852
+                                                 then
+                                                 Some a800d6a64.a800d6a64
+                                                 else
+                                                 if address =? 2148362856
+                                                 then
+                                                 Some a800d6a68.a800d6a68
+                                                 else
+                                                 if address =? 2148362860
+                                                 then
+                                                 Some a800d6a6c.a800d6a6c
+                                                 else
+                                                 if address =? 2148362864
+                                                 then
+                                                 Some a800d6a70.a800d6a70
+                                                 else
+                                                 if address =? 2148362868
+                                                 then
+                                                 Some a800d6a74.a800d6a74
+                                                 else
+                                                 if address =? 2148362872
+                                                 then
+                                                 Some a800d6a78.a800d6a78
+                                                 else
+                                                 if address =? 2148362876
+                                                 then
+                                                 Some a800d6a7c.a800d6a7c
+                                                 else
+                                                 if address =? 2148362880
+                                                 then
+                                                 Some a800d6a80.a800d6a80
+                                                 else
+                                                 if address =? 2148362884
+                                                 then
+                                                 Some a800d6a84.a800d6a84
+                                                 else
+                                                 if address =? 2148362888
+                                                 then
+                                                 Some a800d6a88.a800d6a88
+                                                 else
+                                                 if address =? 2148362892
+                                                 then
+                                                 Some a800d6a8c.a800d6a8c
+                                                 else
+                                                 if address =? 2148362896
+                                                 then
+                                                 Some a800d6a90.a800d6a90
+                                                 else
+                                                 if address =? 2148362900
+                                                 then
+                                                 Some a800d6a94.a800d6a94
+                                                 else
+                                                 if address =? 2148362904
+                                                 then
+                                                 Some a800d6a98.a800d6a98
+                                                 else
+                                                 if address =? 2148362908
+                                                 then
+                                                 Some a800d6a9c.a800d6a9c
+                                                 else
+                                                 if address =? 2148362912
+                                                 then
+                                                 Some a800d6aa0.a800d6aa0
+                                                 else
+                                                 if address =? 2148362916
+                                                 then
+                                                 Some a800d6aa4.a800d6aa4
+                                                 else
+                                                 if address =? 2148362920
+                                                 then
+                                                 Some a800d6aa8.a800d6aa8
+                                                 else
+                                                 if address =? 2148362924
+                                                 then
+                                                 Some a800d6aac.a800d6aac
+                                                 else
+                                                 if address =? 2148362928
+                                                 then
+                                                 Some a800d6ab0.a800d6ab0
+                                                 else
+                                                 if address =? 2148362932
+                                                 then
+                                                 Some a800d6ab4.a800d6ab4
+                                                 else
+                                                 if address =? 2148362936
+                                                 then
+                                                 Some a800d6ab8.a800d6ab8
+                                                 else
+                                                 if address =? 2148362940
+                                                 then
+                                                 Some a800d6abc.a800d6abc
+                                                 else
+                                                 if address =? 2148362944
+                                                 then
+                                                 Some a800d6ac0.a800d6ac0
+                                                 else
+                                                 if address =? 2148362948
+                                                 then
+                                                 Some a800d6ac4.a800d6ac4
+                                                 else
+                                                 if address =? 2148362952
+                                                 then
+                                                 Some a800d6ac8.a800d6ac8
+                                                 else
+                                                 if address =? 2148362956
+                                                 then
+                                                 Some a800d6acc.a800d6acc
+                                                 else
+                                                 if address =? 2148362960
+                                                 then
+                                                 Some a800d6ad0.a800d6ad0
+                                                 else
+                                                 if address =? 2148362964
+                                                 then
+                                                 Some a800d6ad4.a800d6ad4
+                                                 else
+                                                 if address =? 2148362968
+                                                 then
+                                                 Some a800d6ad8.a800d6ad8
+                                                 else
+                                                 if address =? 2148362972
+                                                 then
+                                                 Some a800d6adc.a800d6adc
+                                                 else
+                                                 if address =? 2148362976
+                                                 then
+                                                 Some a800d6ae0.a800d6ae0
+                                                 else
+                                                 if address =? 2148362980
+                                                 then
+                                                 Some a800d6ae4.a800d6ae4
+                                                 else
+                                                 if address =? 2148362984
+                                                 then
+                                                 Some a800d6ae8.a800d6ae8
+                                                 else
+                                                 if address =? 2148362988
+                                                 then
+                                                 Some a800d6aec.a800d6aec
+                                                 else
+                                                 if address =? 2148362992
+                                                 then
+                                                 Some a800d6af0.a800d6af0
+                                                 else
+                                                 if address =? 2148362996
+                                                 then
+                                                 Some a800d6af4.a800d6af4
+                                                 else
+                                                 if address =? 2148363000
+                                                 then
+                                                 Some a800d6af8.a800d6af8
+                                                 else
+                                                 if address =? 2148363004
+                                                 then
+                                                 Some a800d6afc.a800d6afc
+                                                 else
+                                                 if address =? 2148363008
+                                                 then
+                                                 Some a800d6b00.a800d6b00
+                                                 else
+                                                 if address =? 2148363012
+                                                 then
+                                                 Some a800d6b04.a800d6b04
+                                                 else
+                                                 if address =? 2148363016
+                                                 then
+                                                 Some a800d6b08.a800d6b08
+                                                 else
+                                                 if address =? 2148363020
+                                                 then
+                                                 Some a800d6b0c.a800d6b0c
+                                                 else
+                                                 if address =? 2148363024
+                                                 then
+                                                 Some a800d6b10.a800d6b10
+                                                 else
+                                                 if address =? 2148363028
+                                                 then
+                                                 Some a800d6b14.a800d6b14
+                                                 else
+                                                 if address =? 2148363032
+                                                 then
+                                                 Some a800d6b18.a800d6b18
+                                                 else
+                                                 if address =? 2148363036
+                                                 then
+                                                 Some a800d6b1c.a800d6b1c
+                                                 else
+                                                 if address =? 2148363040
+                                                 then
+                                                 Some a800d6b20.a800d6b20
+                                                 else
+                                                 if address =? 2148363044
+                                                 then
+                                                 Some a800d6b24.a800d6b24
+                                                 else
+                                                 if address =? 2148363048
+                                                 then
+                                                 Some a800d6b28.a800d6b28
+                                                 else
+                                                 if address =? 2148363052
+                                                 then
+                                                 Some a800d6b2c.a800d6b2c
+                                                 else None)
+  --------------------------------------□
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))
+  _ : "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n))
+  _ : "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))
+  _ : "x13"
+      ↦ᵣ RVal_Bits
+           (Z_to_bv 64
+              (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)))
+  _ : "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1))
+  _ : "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + i))
+  _ : "x16" ↦ᵣ RVal_Bits loaded
+  _ : "x2"
+      ↦ᵣ RVal_Bits
+           (Z_to_bv 64
+              (decodeItemStackPointer args -
+               RlpDecodeItem.decodeItemStackBytes))
+  _ : "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))
+  _ : "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))
+  _ : decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args
+  _ : decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args
+  _ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+      ↦ₘ∗ frameBytes
+  _ : if Z_lt_dec (i + 1) n
+      then
+       instr_pre 2148362788
+         ((reg_col zesu_ram_sys_regs ∗
+           "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
+           "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
+           "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
+           "x13"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (RlpDecodeItem.bigEndian
+                      (take (Z.to_nat (i + 1)) lengthBytes))) ∗
+           "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
+           "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + (i + 1))) ∗
+           "x16" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned next)) ∗
+           "x2"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (decodeItemStackPointer args -
+                    RlpDecodeItem.decodeItemStackBytes)) ∗
+           "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
+           "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
+           decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
+           decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
+           (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+           ↦ₘ∗ frameBytes ∗
+           ⌜length frameBytes = 16%nat
+            ∧ RlpDecodeItemByteFold.decodeItemByteFoldFacts args n 
+                (i + 1) payloadStart lengthBytes⌝ ∗ True) ∗ True)
+      else
+       instr_pre 2148362808
+         (⌜(i + 1)%Z = n⌝ ∗
+          (reg_col zesu_ram_sys_regs ∗
+           "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
+           "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
+           "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
+           "x13"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (RlpDecodeItem.bigEndian
+                      (take (Z.to_nat (i + 1)) lengthBytes))) ∗
+           "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
+           "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + (i + 1))) ∗
+           "x16" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned next)) ∗
+           "x2"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (decodeItemStackPointer args -
+                    RlpDecodeItem.decodeItemStackBytes)) ∗
+           "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
+           "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
+           decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
+           decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
+           (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+           ↦ₘ∗ frameBytes ∗
+           ⌜length frameBytes = 16%nat
+            ∧ RlpDecodeItemByteFold.decodeItemByteFoldFacts args n 
+                (i + 1) payloadStart lengthBytes⌝ ∗ True) ∗ True)
+  _ : True
+  _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362788)
+  --------------------------------------∗
+  WPasm a800d6a24.a800d6a24
