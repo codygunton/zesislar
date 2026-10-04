@@ -1,0 +1,751 @@
+{
+  "schema_version": 1,
+  "checkpoint": "Generic RAM fault pruning",
+  "base_commit": "5a46d91455e44a7a9988170f151ad16c24e29fed",
+  "root_contract_checkpoint": "07e16234",
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "instructions": 116,
+  "blocks": 24,
+  "branches": 14,
+  "loops": 2,
+  "runs": {
+    "off": {
+      "counts": {
+        "missing-entry": 23,
+        "entry-stall": 0,
+        "execution-stall": 1,
+        "reached": 0,
+        "closed": 0,
+        "promoted": 0
+      },
+      "blocks": [
+        {
+          "entry": "0x800d6960",
+          "class": "execution-stall",
+          "driver_outcomes": [
+            "error",
+            "error"
+          ]
+        },
+        {
+          "entry": "0x800d6974",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d697c",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d698c",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69a4",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69b0",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69d8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69e0",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69e8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a00",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a08",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a14",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a24",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a38",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a40",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a64",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a6c",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a78",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6aa8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ab4",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ac4",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ad8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ae0",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6b08",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        }
+      ],
+      "pending_goals_per_probe": [
+        4,
+        4
+      ],
+      "native_block_endpoints": [
+        "0x800d6974",
+        "0x800d6ae0"
+      ],
+      "raw_driver_outcomes": [
+        "error",
+        "error"
+      ],
+      "raw_driver_errors": [
+        "successor ownership depends on a diagnostic stop premise",
+        "successor ownership depends on a diagnostic stop premise"
+      ],
+      "native_execution_residuals": 4,
+      "handoff_theorem_closed": false,
+      "performance": {
+        "elapsed_seconds": 34.599,
+        "maximum_module_seconds": 33.476,
+        "peak_module_mib": 1437.06640625,
+        "requested_workers": 2,
+        "worker_cap": 6,
+        "observed_compiler_workers": 4,
+        "cpu_percent_range": [
+          8.117,
+          21.407
+        ],
+        "load_ranges": [
+          [
+            "5",
+            "6"
+          ],
+          [
+            ".",
+            "."
+          ],
+          [
+            "3",
+            "8"
+          ]
+        ],
+        "available_memory_kib_min": 117185480,
+        "swap_used_kib_max": 8370328
+      },
+      "reproduction_command": [
+        "python3",
+        "tools/block/chain_root.py",
+        "--entries",
+        "_build/q4-ram-fault/off/selected-root.json",
+        "--cfg",
+        "build/stock-zisk/inventory.json",
+        "--root",
+        "0x800d6960",
+        "--terminal",
+        "0",
+        "--out",
+        "_build/q4-ram-fault/off/out",
+        "--publish-dir",
+        "_build/q4-ram-fault/off/published",
+        "--build-dir",
+        "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+        "--root-declaration",
+        "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+        "--root-source",
+        "_build/q4-ram-fault/off/selected-root.v",
+        "--proof-dir",
+        "ZesuSsz/Proofs/DecodeItem",
+        "--stage-dir",
+        "_build/q4-ram-fault/off/stage",
+        "--trace-import",
+        "ZesuSsz.Stock.Closure.index_decodeItem",
+        "--code-premises",
+        "_build/q4-ram-fault/off/selected-code-premises.txt",
+        "--jobs",
+        "2",
+        "--seconds",
+        "300",
+        "--baseline-out",
+        "_build/q4-ram-fault/off/baseline.json"
+      ]
+    },
+    "on": {
+      "counts": {
+        "missing-entry": 23,
+        "entry-stall": 0,
+        "execution-stall": 1,
+        "reached": 0,
+        "closed": 0,
+        "promoted": 0
+      },
+      "blocks": [
+        {
+          "entry": "0x800d6960",
+          "class": "execution-stall",
+          "driver_outcomes": [
+            "error",
+            "error"
+          ]
+        },
+        {
+          "entry": "0x800d6974",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d697c",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d698c",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69a4",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69b0",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69d8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69e0",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d69e8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a00",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a08",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a14",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a24",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a38",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a40",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a64",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a6c",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6a78",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6aa8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ab4",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ac4",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ad8",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6ae0",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        },
+        {
+          "entry": "0x800d6b08",
+          "class": "missing-entry",
+          "driver_outcomes": [
+            "missing-entry"
+          ]
+        }
+      ],
+      "pending_goals_per_probe": [
+        0,
+        0
+      ],
+      "native_block_endpoints": [
+        "0x800d6ae0",
+        "0x800d6974"
+      ],
+      "raw_driver_outcomes": [
+        "error",
+        "error"
+      ],
+      "raw_driver_errors": [
+        "successor ownership depends on a diagnostic stop premise",
+        "successor ownership depends on a diagnostic stop premise"
+      ],
+      "native_execution_residuals": 0,
+      "handoff_theorem_closed": false,
+      "performance": {
+        "elapsed_seconds": 44.797,
+        "maximum_module_seconds": 43.504,
+        "peak_module_mib": 1656.01953125,
+        "requested_workers": 2,
+        "worker_cap": 6,
+        "observed_compiler_workers": 4,
+        "cpu_percent_range": [
+          4.127,
+          21.324
+        ],
+        "load_ranges": [
+          [
+            "5",
+            "6"
+          ],
+          [
+            ".",
+            "."
+          ],
+          [
+            "0",
+            "8"
+          ]
+        ],
+        "available_memory_kib_min": 117130764,
+        "swap_used_kib_max": 8370328
+      },
+      "reproduction_command": [
+        "python3",
+        "tools/block/chain_root.py",
+        "--entries",
+        "_build/q4-ram-fault/on/selected-root.json",
+        "--cfg",
+        "build/stock-zisk/inventory.json",
+        "--root",
+        "0x800d6960",
+        "--terminal",
+        "0",
+        "--out",
+        "_build/q4-ram-fault/on/out",
+        "--publish-dir",
+        "_build/q4-ram-fault/on/published",
+        "--build-dir",
+        "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+        "--root-declaration",
+        "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+        "--root-source",
+        "_build/q4-ram-fault/on/selected-root.v",
+        "--proof-dir",
+        "ZesuSsz/Proofs/DecodeItem",
+        "--stage-dir",
+        "_build/q4-ram-fault/on/stage",
+        "--trace-import",
+        "ZesuSsz.Stock.Closure.index_decodeItem",
+        "--code-premises",
+        "_build/q4-ram-fault/on/selected-code-premises.txt",
+        "--jobs",
+        "2",
+        "--seconds",
+        "300",
+        "--baseline-out",
+        "_build/q4-ram-fault/on/baseline.json"
+      ]
+    }
+  },
+  "archived_outputs": {
+    "_build/q4-ram-fault/off/out/post_states/800d6960.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/7f5c63d20790520c11e669aa5fc0a29c1f9eaf0e209ec1fedffd02b8ff18084d.json",
+      "sha256": "7f5c63d20790520c11e669aa5fc0a29c1f9eaf0e209ec1fedffd02b8ff18084d",
+      "bytes": 450590
+    },
+    "_build/q4-ram-fault/off/baseline.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/09963e7d1d17110cdf92bda16962f83b28e437684820210e4f6b725364a70aeb.json",
+      "sha256": "09963e7d1d17110cdf92bda16962f83b28e437684820210e4f6b725364a70aeb",
+      "bytes": 2971
+    },
+    "_build/q4-ram-fault/off/chain.log": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/bbd82b3f034d717a9929762092a225ba5035c50dd3424c63c6dbe9e8409dc597.log",
+      "sha256": "bbd82b3f034d717a9929762092a225ba5035c50dd3424c63c6dbe9e8409dc597",
+      "bytes": 62
+    },
+    "_build/q4-ram-fault/off/machine-measurements.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/343cd8f63a34d5afd6f36f5144a7d8f5753c49e010223e3d5d7141abd2bef287.json",
+      "sha256": "343cd8f63a34d5afd6f36f5144a7d8f5753c49e010223e3d5d7141abd2bef287",
+      "bytes": 388562
+    },
+    "_build/q4-ram-fault/on/out/post_states/800d6960.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/27ed03bf0b47fdbf6720b9403cd4c5502e24f9a6040930cec2501ea23d459082.json",
+      "sha256": "27ed03bf0b47fdbf6720b9403cd4c5502e24f9a6040930cec2501ea23d459082",
+      "bytes": 139849
+    },
+    "_build/q4-ram-fault/on/baseline.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/09963e7d1d17110cdf92bda16962f83b28e437684820210e4f6b725364a70aeb.json",
+      "sha256": "09963e7d1d17110cdf92bda16962f83b28e437684820210e4f6b725364a70aeb",
+      "bytes": 2971
+    },
+    "_build/q4-ram-fault/on/chain.log": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/b6b07f6609d2271f7f48784dcc92627d54168acece9b43c1719f48f7b042b2dc.log",
+      "sha256": "b6b07f6609d2271f7f48784dcc92627d54168acece9b43c1719f48f7b042b2dc",
+      "bytes": 62
+    },
+    "_build/q4-ram-fault/on/machine-measurements.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/7ff47aec1e4f6d049ac6eea3646680f9417fb14d76ee0ff8cc9295d9acdd9c8c.json",
+      "sha256": "7ff47aec1e4f6d049ac6eea3646680f9417fb14d76ee0ff8cc9295d9acdd9c8c",
+      "bytes": 421161
+    },
+    "_build/q4-ram-fault/gate/chain.log": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/cd0c030caf3e344eb2f4c9203e76a16663516f0c5751719cafb8e05601e64de9.log",
+      "sha256": "cd0c030caf3e344eb2f4c9203e76a16663516f0c5751719cafb8e05601e64de9",
+      "bytes": 44842
+    },
+    "_build/q4-ram-fault/gate/machine-measurements.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/ram-fault-evidence/0b63eabc6492ff43a36f560c0dcffc577c8bf45291e47d3d863f4abbdd6135dd.json",
+      "sha256": "0b63eabc6492ff43a36f560c0dcffc577c8bf45291e47d3d863f4abbdd6135dd",
+      "bytes": 377975
+    }
+  },
+  "previous_report": {
+    "path": "build/stock-zisk/q4-q9-stack-write/REPORT.json",
+    "sha256": "c64d088e35cba2cdffcba283f14b5f2a0779ddade0bc7f7151a70d0d8b77dd73",
+    "modified": false
+  },
+  "comparison": {
+    "only_change": "ZesuSsz.Automation.Switches.RamFault import",
+    "contract_changed": false,
+    "driver_changed": false,
+    "root_resources_changed": false,
+    "architecture_changed": false,
+    "handwritten_v_manifest_inputs_added": false,
+    "runtime_proof_premises": 0
+  },
+  "hook": {
+    "class": "ZesuStepRamFault",
+    "global_default_enabled": false,
+    "assertion_limit_seconds": 2,
+    "pc_specific_rules": 0,
+    "function_specific_rules": 0,
+    "bounds_source": "existing entry layout",
+    "proof": "derive the positive bound and apply the negated branch hypothesis"
+  },
+  "manual_proof_growth": {
+    "native_contract_lines": 0,
+    "hook_lines": 13,
+    "regression_lemmas": 5,
+    "regression_source_lines": 40
+  },
+  "returns": [
+    {
+      "pc": "0x800d69a0",
+      "reached": false,
+      "class": "missing-entry"
+    },
+    {
+      "pc": "0x800d69d4",
+      "reached": false,
+      "class": "missing-entry"
+    },
+    {
+      "pc": "0x800d6a60",
+      "reached": false,
+      "class": "missing-entry"
+    },
+    {
+      "pc": "0x800d6aa4",
+      "reached": false,
+      "class": "missing-entry"
+    },
+    {
+      "pc": "0x800d6b04",
+      "reached": false,
+      "class": "missing-entry"
+    },
+    {
+      "pc": "0x800d6b2c",
+      "reached": false,
+      "class": "missing-entry"
+    }
+  ],
+  "limitations": [
+    "All four RAM fault branches close. Both root probes reach their diagnostic block stops.",
+    "The driver rejects successor ownership because it depends on a diagnostic stop premise.",
+    "No root handoff theorem closes. No native Level 1 contract theorem is proved.",
+    "The report classifies the root block as execution-stall because its handoff remains rejected.",
+    "The symbolic terminal remains inactive. All six returns remain unreached.",
+    "MCP automatically restarted after accumulated pet RSS exceeded 16384 MiB. A fresh session and final verification passed.",
+    "The saved sealing patch remains separate and is not part of this checkpoint."
+  ],
+  "inputs": {
+    "ZesuSsz/Automation/Hooks.v": {
+      "sha256": "63811be83c6d9e0295c66afec5a1a5a780c4699d37494496cc31fb61532525dc"
+    },
+    "ZesuSsz/Automation/Switches/RamFault.v": {
+      "sha256": "9da7ae7cb3a812a4bb45a0c3983f77761ccecb8d9754ff7c6c6b43bc16f7605a"
+    },
+    "ZesuSsz/Proofs/Tests/RamFaultHook.v": {
+      "sha256": "c10e6a7e142d93fb4c96c2817bb0b6983b7298f4b6f92437e84d7b6153f884dc"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItem.v": {
+      "sha256": "08d908f159e655749c72c7ab5b3ce8b01c5e34ae55db655ab8ab371bcdbcfa42"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+    },
+    "ZesuSsz/Contracts/DecodeItemSelected.v": {
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    },
+    "tools/block/chain_root.py": {
+      "sha256": "5791a4c5dffb200d7a0099c49f734e1283dfc72fee5410b594dc75675a0d0c8e"
+    },
+    "tools/block/chain_state.py": {
+      "sha256": "db474094b7795e992d0dd02aef399bd151767b8161936e236a01a709cf6cb2b9"
+    },
+    "build/stock-zisk/inventory.json": {
+      "sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d"
+    },
+    "Scaffolding/probes/q49_decode_item_store_residual.txt": {
+      "sha256": "1d98b480712a2ac9696cca2a16dfc6e2bb7738770cf6cd27aab58b14bfc0ae36"
+    }
+  },
+  "verification": {
+    "MCP": "mcp-results.json",
+    "regression_compile": "passed",
+    "verified_lemmas": 5,
+    "assumptions": [],
+    "check_fast": "passed",
+    "check_fast_workers": 6,
+    "check_fast_elapsed_seconds": 146.264,
+    "check_iris": "not run, parent instruction",
+    "new_sources_staged_before_gate": true
+  },
+  "outputs": {
+    "build/stock-zisk/q4-q9-ram-fault/mcp-results.json": {
+      "sha256": "48c3f6a91ab09aa2af483109072fb120093f03fc768ffe9127a2613891ee1a38"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/selected-root.json": {
+      "sha256": "58b401474491ad250e74d73d41af18e4804cfa833e2a75c8d154e2396bf7c969"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/selected-code-premises.txt": {
+      "sha256": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/selected-root.v.txt": {
+      "sha256": "88ea867a77d96f3ad31e6f49c3da8ab40f212365257f9f3ed2c87fb02f077b66"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/chain_800d6960_800d6974_2a72b59387bcd853.v.txt": {
+      "sha256": "da8958530b85e3507989d921b928fbd273f660cebbfa65da316237f525fe7e5a"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/chain_800d6960_800d6ae0_2a72b59387bcd853.v.txt": {
+      "sha256": "34279d7d3ba202c6f01132fe18ded066877b449cd9947e6e0c9e9aae05ceed76"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/observations.json": {
+      "sha256": "0412454e6fcff78a636c7d9c72449b5d57193e88c64a8f07691ee2833c723210"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/off/first-residuals.json": {
+      "sha256": "fc72b2b557c4700f1093b524b45012081ac9724e10feb0ec2661b46efac10a74"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/selected-root.json": {
+      "sha256": "95f7e6cfead4d33c5edaf8b93f1c15ba6bfffcef8acd9fc1c7c68c4d1f8e1f44"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/selected-code-premises.txt": {
+      "sha256": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/selected-root.v.txt": {
+      "sha256": "6b71830be9199298bfe13006fc914ee725516dad9760bfb0e1df005d27574e17"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/chain_800d6960_800d6ae0_2a72b59387bcd853.v.txt": {
+      "sha256": "1d335eaec64800d929b9cd4f4b40bc8a281eee2ea61d80921bb164d77c37ac44"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/chain_800d6960_800d6974_2a72b59387bcd853.v.txt": {
+      "sha256": "85bc59418b14f08ec4aa071231ce0e2fcb29041640d0fd6f96f807c48973dbad"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/observations.json": {
+      "sha256": "511147945063b5f8ec7ecf93c2c3275e0fc0c338bc787a3b17293d3217a9e43d"
+    },
+    "build/stock-zisk/q4-q9-ram-fault/on/first-residuals.json": {
+      "sha256": "84b32e66e59eb7e169f86e914373dc1cde6e484d58f62405f2a18975b99b1298"
+    }
+  }
+}

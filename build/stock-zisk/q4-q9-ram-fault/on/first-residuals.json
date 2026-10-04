@@ -1,0 +1,1 @@
+[{"class":"diagnostic-stop-handoff","entry":"0x800d6960","exit":"0x800d6ae0","conclusion":"BLK_STOP_800d6ae0","error":"successor ownership depends on a diagnostic stop premise"},{"class":"diagnostic-stop-handoff","entry":"0x800d6960","exit":"0x800d6974","conclusion":"BLK_STOP_800d6974","error":"successor ownership depends on a diagnostic stop premise"}]

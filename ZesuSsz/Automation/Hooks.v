@@ -477,12 +477,25 @@ Ltac zesu_signed_address_if_enabled :=
     end;
     exfalso; bv_solve].
 
+Class ZesuStepRamFault : Prop := zesu_step_ram_fault : True.
+
+(* Entry layout bounds refute a negated widened RAM bound. *)
+Ltac zesu_ram_fault_if_enabled :=
+  let _ := constr:(_ : ZesuStepRamFault) in
+  match goal with
+  | Hfault : ~ ?bound |- _ =>
+      lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
+      lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
+      solve [exfalso; apply Hfault; timeout 2 zesu_stack_arithmetic]
+  end.
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
     zesu_expose_instruction_lookup
+  | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
   | zesu_stack_write_if_enabled
   | zesu_normalize_find_mem_address

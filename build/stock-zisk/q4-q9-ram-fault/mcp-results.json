@@ -1,0 +1,236 @@
+{
+  "compile": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"output\":\"\",\"dune_build_warning\":\"dune could not build 'ZesuSsz/Proofs/Tests/RamFaultHook.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 30 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "output": "",
+      "dune_build_warning": "dune could not build 'ZesuSsz/Proofs/Tests/RamFaultHook.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+      "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 30 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+    },
+    "isError": false
+  },
+  "development": {
+    "start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":800,\"goals\":\"base, stop, sp, size, offset, width : Z\\nHlayout : ram_fault_test_layout base stop sp size offset width\\nHfault : \u00ac bv_signed\\n    (bv_zero_extend 128\\n       (Z_to_bv 64 sp + Z_to_bv 64 (- size) + Z_to_bv 64 offset) +\\n     Z_to_bv 128 width) \u2264 bv_signed (Z_to_bv 128 stop)\\n|-False\",\"file\":\"ZesuSsz/Proofs/Tests/RamFaultHook.v\",\"theorem\":\"ram_fault_upper\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 800,
+        "goals": "base, stop, sp, size, offset, width : Z\nHlayout : ram_fault_test_layout base stop sp size offset width\nHfault : \u00ac bv_signed\n    (bv_zero_extend 128\n       (Z_to_bv 64 sp + Z_to_bv 64 (- size) + Z_to_bv 64 offset) +\n     Z_to_bv 128 width) \u2264 bv_signed (Z_to_bv 128 stop)\n|-False",
+        "file": "ZesuSsz/Proofs/Tests/RamFaultHook.v",
+        "theorem": "ram_fault_upper",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "multi": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"zesu_ram_fault_if_enabled.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"focus_depth\":0},{\"tactic\":\"repeat zesu_liAStep.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"focus_depth\":0}],\"from_state_id\":800}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "zesu_ram_fault_if_enabled.",
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "focus_depth": 0
+          },
+          {
+            "tactic": "repeat zesu_liAStep.",
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "focus_depth": 0
+          }
+        ],
+        "from_state_id": 800
+      },
+      "isError": false
+    },
+    "check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":2,\"check_time_ms\":11,\"state_id\":802,\"from_state_id\":800,\"feedback\":[[\"Qed.\",\"ram_fault_upper is defined\"]],\"proof_tactics\":[\"zesu_ram_fault_if_enabled.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 2,
+        "check_time_ms": 11,
+        "state_id": 802,
+        "from_state_id": 800,
+        "feedback": [
+          [
+            "Qed.",
+            "ram_fault_upper is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "zesu_ram_fault_if_enabled.",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    }
+  },
+  "verification": [
+    {
+      "name": "ram_fault_disabled",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "ram_fault_upper",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "ram_fault_lower",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "ram_fault_missing_layout",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "ram_fault_normal_branch",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":false,\"error\":\"rocq_verify aborted: pet RSS exceeded 16384 MB. The proof state was lost; pet has been restarted. Retry with a smaller term, avoid vm_compute on large inputs, or split the work.\",\"reason\":\"memory_exhausted\",\"pet_restarted\":true}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "rocq_verify aborted: pet RSS exceeded 16384 MB. The proof state was lost; pet has been restarted. Retry with a smaller term, avoid vm_compute on large inputs, or split the work.",
+          "reason": "memory_exhausted",
+          "pet_restarted": true
+        },
+        "isError": false
+      }
+    }
+  ],
+  "recovery_verification": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"verification_method\":\"shared_defs\",\"assumptions\":[],\"note\":\"Verified using shared-definitions template (definitions placed outside Module M for type compatibility).\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "verification_method": "shared_defs",
+      "assumptions": [],
+      "note": "Verified using shared-definitions template (definitions placed outside Module M for type compatibility)."
+    },
+    "isError": false
+  },
+  "health": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/islaris/_opam/bin/coqc\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":true,\"pid\":1368733},\"warnings\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "ok": true,
+      "server_version": "0.3.1",
+      "switch": "islaris",
+      "switch_prefix": "/home/cody/islaris/_opam",
+      "switch_is_local": true,
+      "switch_source": "opam_env",
+      "toolchain": {
+        "coqc": {
+          "path": "/home/cody/islaris/_opam/bin/coqc",
+          "version": "8.19.2+lsp 4.14.4"
+        },
+        "pet": {
+          "path": "/home/cody/islaris/_opam/bin/pet",
+          "version": "0.2.4-dev",
+          "pytanque_importable": true
+        }
+      },
+      "pet": {
+        "running": true,
+        "pid": 1368733
+      },
+      "warnings": []
+    },
+    "isError": false
+  }
+}
