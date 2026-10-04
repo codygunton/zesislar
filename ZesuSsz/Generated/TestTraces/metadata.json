@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "snapshot_sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+  "config_sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6",
+  "fixtures": [
+    {
+      "module": "SdX1X2Off8",
+      "definition": "trace_sd_x1_x2_8",
+      "address": 2148362596,
+      "opcode": "00113423",
+      "isla_sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e",
+      "rocq_sha256": "82b25e8da493c0688cff97aeedc38fb988ad52028ac4536722930c0265846d2d"
+    },
+    {
+      "module": "LdX16X10Off80",
+      "definition": "trace_ld_x16_x10_80",
+      "address": 2148472380,
+      "opcode": "05053803",
+      "isla_sha256": "abecaf9f7891c0fa205c9b3ba1da6fd0ee8426e299460d032afbf9e76528a670",
+      "rocq_sha256": "4516cd4ec2b626cfd4ccc9dfbc656ac383f2432e9c3278e73dcc639e9fbad444"
+    }
+  ]
+}

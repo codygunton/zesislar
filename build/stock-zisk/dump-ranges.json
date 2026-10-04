@@ -1,0 +1,242 @@
+{
+  "schema": 1,
+  "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+  "functions": [
+    {
+      "name": "rlp.decodeItem",
+      "start": 2148362592,
+      "end": 2148363056
+    },
+    {
+      "name": "rlp_decode.nextUint64",
+      "start": 2148360820,
+      "end": 2148361032
+    },
+    {
+      "name": "rlp_decode.decodeParentHeader",
+      "start": 2148359352,
+      "end": 2148360820
+    },
+    {
+      "name": "rlp_decode.decodeTxFields",
+      "start": 2147484940,
+      "end": 2147496240
+    },
+    {
+      "name": "rlp_decode.txAccessList",
+      "start": 2147483648,
+      "end": 2147484940
+    },
+    {
+      "name": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+      "start": 2148316172,
+      "end": 2148316600
+    },
+    {
+      "name": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "start": 2148362108,
+      "end": 2148362592
+    },
+    {
+      "name": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+      "start": 2148361556,
+      "end": 2148362108
+    },
+    {
+      "name": "alt_fl_alloc.alloc",
+      "start": 2147755156,
+      "end": 2147755900
+    },
+    {
+      "name": "alt_fl_alloc.remap",
+      "start": 2147754380,
+      "end": 2147754416
+    },
+    {
+      "name": "alt_fl_alloc.free",
+      "start": 2147753784,
+      "end": 2147754380
+    },
+    {
+      "name": "memcpy",
+      "start": 2148402880,
+      "end": 2148402892
+    }
+  ],
+  "inline_decodeSingleTx": [
+    {
+      "start": 2147734116,
+      "end": 2147734168,
+      "successors": [
+        2147734272
+      ]
+    },
+    {
+      "start": 2147734168,
+      "end": 2147734192,
+      "successors": [
+        2147734192
+      ]
+    },
+    {
+      "start": 2147734192,
+      "end": 2147734200,
+      "successors": [
+        2147734200
+      ]
+    },
+    {
+      "start": 2147734200,
+      "end": 2147734224,
+      "successors": [
+        2147734224
+      ]
+    },
+    {
+      "start": 2147734224,
+      "end": 2147734232,
+      "successors": [
+        2147736148,
+        2147734232
+      ]
+    },
+    {
+      "start": 2147734272,
+      "end": 2147734280,
+      "successors": [
+        2147736684,
+        2147734280
+      ]
+    },
+    {
+      "start": 2147734280,
+      "end": 2147734292,
+      "successors": [
+        2147734456,
+        2147734292
+      ]
+    },
+    {
+      "start": 2147734292,
+      "end": 2147734304,
+      "successors": [
+        2147734304
+      ]
+    },
+    {
+      "start": 2147734304,
+      "end": 2147734312,
+      "successors": [
+        2147736684,
+        2147734312
+      ]
+    },
+    {
+      "start": 2147734312,
+      "end": 2147734332,
+      "successors": [
+        2147734168,
+        2147734332
+      ]
+    },
+    {
+      "start": 2147734332,
+      "end": 2147734344,
+      "successors": [
+        2147734200,
+        2147734344
+      ]
+    },
+    {
+      "start": 2147734344,
+      "end": 2147734368,
+      "successors": [
+        2147734200,
+        2147734368
+      ]
+    },
+    {
+      "start": 2147734368,
+      "end": 2147734392,
+      "successors": [
+        2147734392
+      ]
+    },
+    {
+      "start": 2147734392,
+      "end": 2147734404,
+      "successors": [
+        2147734200,
+        2147734404
+      ]
+    },
+    {
+      "start": 2147734404,
+      "end": 2147734420,
+      "successors": [
+        2147734200,
+        2147734420
+      ]
+    },
+    {
+      "start": 2147734420,
+      "end": 2147734456,
+      "successors": [
+        2147734192
+      ]
+    },
+    {
+      "start": 2147734456,
+      "end": 2147734472,
+      "successors": [
+        2147736684,
+        2147734472
+      ]
+    },
+    {
+      "start": 2147734472,
+      "end": 2147734496,
+      "successors": [
+        2147734496
+      ]
+    },
+    {
+      "start": 2147734496,
+      "end": 2147734504,
+      "successors": [
+        2147736684,
+        2147734504
+      ]
+    },
+    {
+      "start": 2147734504,
+      "end": 2147734516,
+      "successors": [
+        2147736684,
+        2147734516
+      ]
+    },
+    {
+      "start": 2147734516,
+      "end": 2147734552,
+      "successors": [
+        2147734552
+      ]
+    },
+    {
+      "start": 2147734552,
+      "end": 2147734576,
+      "successors": [
+        2147734576
+      ]
+    },
+    {
+      "start": 2147734576,
+      "end": 2147734584,
+      "successors": [
+        2147734232,
+        2147734584
+      ]
+    }
+  ]
+}

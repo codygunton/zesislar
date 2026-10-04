@@ -7,10 +7,10 @@ Require Import ZesuSsz.Contracts.OutputEvents.
 
 Import ListNotations.
 
-Definition writeOutputEvents (data size : bv 64) (payload : list (bv 8))
+Definition writeOutputEvents (outputAddress sizeAddress data size : bv 64) (payload : list (bv 8))
     (tail : spec) : spec :=
-  scons (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data)
-    (scons_snap (SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size)
+  scons (SWriteMem outputAddress data)
+    (scons_snap (SWriteMem sizeAddress size)
       (fun snapshot =>
         read_mem_list snapshot.(snap_mem) (bv_unsigned data)
           (Z.to_N (bv_unsigned size)) = Some payload)
@@ -59,11 +59,11 @@ Lemma write_snapshot_payload labels address value snapshot dataAddress payload :
   traceWritePayload labels address value dataAddress payload.
 Proof. intros Hin Hread. exists snapshot. auto. Qed.
 
-Lemma write_output_events_payload data size payload tail firstSnapshot
+Lemma write_output_events_payload outputAddress sizeAddress data size payload tail firstSnapshot
     writeSnapshot labels :
-  writeOutputEvents data size payload tail
-    (SWriteMem (BV 64 (machineOutputAddress defaultMap)) data firstSnapshot ::
-     SWriteMem (BV 64 (machineOutputSizeAddress defaultMap)) size writeSnapshot :: labels) ->
+  writeOutputEvents outputAddress sizeAddress data size payload tail
+    (SWriteMem outputAddress data firstSnapshot ::
+     SWriteMem sizeAddress size writeSnapshot :: labels) ->
   read_mem_list writeSnapshot.(snap_mem) (bv_unsigned data)
     (Z.to_N (bv_unsigned size)) = Some payload.
 Proof.

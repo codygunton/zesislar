@@ -1,0 +1,456 @@
+val zz5izDzKz5i64 = "%i->%i64" : (%i) ->  %i64
+
+val zz5i64zDzKz5i = "%i64->%i" : (%i64) ->  %i
+
+enum zwrite_kind {
+  zWrite_plain,
+  zWrite_RISCV_release,
+  zWrite_RISCV_strong_release,
+  zWrite_RISCV_conditional,
+  zWrite_RISCV_conditional_release,
+  zWrite_RISCV_conditional_strong_release
+}
+
+union zexception {
+  z__dummy_exnz3: %unit
+}
+
+union zExceptionType {
+  zE_Fetch_Access_Fault: %unit,
+  zE_Load_Access_Fault: %unit,
+  zE_SAMO_Access_Fault: %unit
+}
+
+union zMemoryOpResultzIozK {
+  zMemExceptionzIozK: %union zExceptionType,
+  zMemValuezIozK: %bool
+}
+
+#tuplestruct ztuplez3z5bv_z5unit ztuplez3z5bv_z5unit0 ztuplez3z5bv_z5unit1
+
+struct ztuplez3z5bv_z5unit {
+  ztuplez3z5bv_z5unit0: %bv,
+  ztuplez3z5bv_z5unit1: %unit
+}
+
+union zMemoryOpResultzIz8bzCuz9zK {
+  zMemExceptionzIz8bzCuz9zK: %union zExceptionType,
+  zMemValuezIz8bzCuz9zK: %struct ztuplez3z5bv_z5unit
+}
+
+union zAccessTypezIuzK {
+  zExecutezIuzK: %unit,
+  zReadzIuzK: %unit,
+  zWritezIuzK: %unit
+}
+
+#mangled zWrite zWritezIuzK
+
+#mangled zRead zReadzIuzK
+
+#mangled zExecute zExecutezIuzK
+
+#mangled zAccessType zAccessTypezIuzK
+
+#mangled zMemValue zMemValuezIozK
+
+#mangled zMemException zMemExceptionzIozK
+
+#mangled zMemValue zMemValuezIz8bzCuz9zK
+
+#mangled zMemException zMemExceptionzIz8bzCuz9zK
+
+#mangled zMemoryOpResult zMemoryOpResultzIozK
+
+#mangled zMemoryOpResult zMemoryOpResultzIz8bzCuz9zK
+
+val zundefined_bitvector = "undefined_bitvector" : (%i) ->  %bv
+
+val zand_bool = "and_bool" : (%bool, %bool) ->  %bool
+
+val zor_bool = "or_bool" : (%bool, %bool) ->  %bool
+
+val zeq_int = "eq_int" : (%i, %i) ->  %bool
+
+val zlteq_int = "lteq" : (%i, %i) ->  %bool
+
+val zgteq_int = "gteq" : (%i, %i) ->  %bool
+
+val zsail_zzero_extend = "zero_extend" : (%bv, %i) ->  %bv
+
+val zappend_64 = "append_64" : (%bv, %bv64) ->  %bv
+
+val zunsigned = "sail_unsigned" : (%bv) ->  %i
+
+val zadd_atom = "add_int" : (%i, %i) ->  %i
+
+val zmult_atom = "mult_int" : (%i, %i) ->  %i
+
+register zzzisk_input_end : %bv64
+
+register zzzisk_free_input : %bv64
+
+val zphys_mem_read : (%union zAccessTypezIuzK, %bv64, %i64, %bool, %bool, %bool, %bool) ->  %union zMemoryOpResultzIz8bzCuz9zK
+
+val zphys_mem_write : (%enum zwrite_kind, %bv64, %i64, %bv, %unit) ->  %union zMemoryOpResultzIozK
+
+val zzzisk_width : (%i) ->  %bool
+
+fn zzzisk_width(zw) {
+  zz40 : %bool `0 28:25-28:58;
+  zz49 : %i `0 28:25-28:31;
+  zz49 = zz5i64zDzKz5i(1) `0 28:25-28:31;
+  zz40 = zeq_int(zw, zz49) `0 28:25-28:31;
+  zz41 : %bool `0 28:25-28:58;
+  jump zz40 goto 28 `0 28:25-28:58;
+  zz42 : %bool `0 28:34-28:58;
+  zz48 : %i `0 28:34-28:40;
+  zz48 = zz5i64zDzKz5i(2) `0 28:34-28:40;
+  zz42 = zeq_int(zw, zz48) `0 28:34-28:40;
+  zz43 : %bool `0 28:34-28:58;
+  jump zz42 goto 25 `0 28:34-28:58;
+  zz44 : %bool `0 28:43-28:58;
+  zz47 : %i `0 28:43-28:49;
+  zz47 = zz5i64zDzKz5i(4) `0 28:43-28:49;
+  zz44 = zeq_int(zw, zz47) `0 28:43-28:49;
+  zz45 : %bool `0 28:43-28:58;
+  jump zz44 goto 22 `0 28:43-28:58;
+  zz46 : %i `0 28:52-28:58;
+  zz46 = zz5i64zDzKz5i(8) `0 28:52-28:58;
+  zz45 = zeq_int(zw, zz46) `0 28:52-28:58;
+  goto 23;
+  zz45 = true `0 28:43-28:58;
+  zz43 = zz45 `0 28:43-28:58;
+  goto 26;
+  zz43 = true `0 28:34-28:58;
+  zz41 = zz43 `0 28:34-28:58;
+  goto 29;
+  zz41 = true `0 28:25-28:58;
+  return = zz41 `0 28:25-28:58;
+  end;
+}
+
+val zzzisk_contains : (%bv64, %i, %i, %i) ->  %bool
+
+fn zzzisk_contains(za, zw, zlo, zhi) {
+  zz40 : %bool `0 33:1-33:58;
+  zz40 = zzzisk_width(zw) `0 33:1-33:14;
+  zz41 : %bool `0 33:1-33:58;
+  jump zz40 goto 6 `0 33:1-33:58;
+  zz41 = false `0 33:1-33:58;
+  goto 24;
+  zz42 : %bool `0 33:17-33:58;
+  zz47 : %i `0 33:17-33:34;
+  zz48 : %bv `0 33:17-33:28;
+  zz48 = za `0 33:17-33:28;
+  zz47 = zunsigned(zz48) `0 33:17-33:28;
+  zz42 = zgteq_int(zz47, zlo) `0 33:17-33:34;
+  zz43 : %bool `0 33:17-33:58;
+  jump zz42 goto 16 `0 33:17-33:58;
+  zz43 = false `0 33:17-33:58;
+  goto 23;
+  zz44 : %i `0 33:37-33:58;
+  zz45 : %i `0 33:37-33:52;
+  zz46 : %bv `0 33:37-33:48;
+  zz46 = za `0 33:37-33:48;
+  zz45 = zunsigned(zz46) `0 33:37-33:48;
+  zz44 = zadd_atom(zz45, zw) `0 33:37-33:52;
+  zz43 = zlteq_int(zz44, zhi) `0 33:37-33:58;
+  zz41 = zz43 `0 33:17-33:58;
+  return = zz41 `0 33:1-33:58;
+  end;
+}
+
+val zchecked_mem_read : (%union zAccessTypezIuzK, %bv64, %i64, %bool, %bool, %bool, %bool) ->  %union zMemoryOpResultzIz8bzCuz9zK
+
+fn zchecked_mem_read(zt, za, zw, zaq, zrl, zres, zmeta) {
+  zz40 : %union zMemoryOpResultzIz8bzCuz9zK `0 38:1-56:2;
+  jump zt is zExecutezIuzK goto 17 `0 39:2-39:11;
+  zz450 : %bool `0 39:15-41:44;
+  zz452 : %i `0 39:18-39:61;
+  zz452 = zz5i64zDzKz5i(2147483648) `0 39:18-39:61;
+  zz453 : %i `0 39:18-39:61;
+  zz453 = zz5i64zDzKz5i(2148597112) `0 39:18-39:61;
+  zz454 : %i `0 39:18-39:61;
+  zz454 = zz5i64zDzKz5i(zw) `0 39:18-39:61;
+  zz450 = zzzisk_contains(za, zz454, zz452, zz453) `0 39:18-39:61;
+  jump zz450 goto 15 `0 39:15-41:44;
+  zz451 : %union zExceptionType `0 41:8-41:44;
+  zz451 = zE_Fetch_Access_Fault(()) `0 41:21-41:43;
+  zz40 = zMemExceptionzIz8bzCuz9zK(zz451) `0 41:8-41:44;
+  goto 16;
+  zz40 = zphys_mem_read(zt, za, zw, zaq, zrl, zres, zmeta) `0 40:8-40:49;
+  goto 140;
+  jump zt is zReadzIuzK goto 137 `0 42:2-42:9;
+  zz42 : %bool `0 43:3-53:43;
+  zz447 : %i `0 43:6-43:49;
+  zz447 = zz5i64zDzKz5i(2684354560) `0 43:6-43:49;
+  zz448 : %i `0 43:6-43:49;
+  zz448 = zz5i64zDzKz5i(3221225472) `0 43:6-43:49;
+  zz449 : %i `0 43:6-43:49;
+  zz449 = zz5i64zDzKz5i(zw) `0 43:6-43:49;
+  zz42 = zzzisk_contains(za, zz449, zz447, zz448) `0 43:6-43:49;
+  jump zz42 goto 135 `0 43:3-53:43;
+  zz43 : %bool `0 45:8-53:43;
+  zz440 : %bool `0 45:11-45:45;
+  zz444 : %i `0 45:11-45:36;
+  zz446 : %bv `0 45:11-45:22;
+  zz446 = za `0 45:11-45:22;
+  zz444 = zunsigned(zz446) `0 45:11-45:22;
+  zz445 : %i `0 45:11-45:36;
+  zz445 = zz5i64zDzKz5i(1073741824) `0 45:11-45:36;
+  zz440 = zeq_int(zz444, zz445) `0 45:11-45:36;
+  zz441 : %bool `0 45:11-45:45;
+  jump zz440 goto 40 `0 45:11-45:45;
+  zz441 = false `0 45:11-45:45;
+  goto 45;
+  zz442 : %i `0 45:39-45:45;
+  zz442 = zz5i64zDzKz5i(8) `0 45:39-45:45;
+  zz443 : %i `0 45:39-45:45;
+  zz443 = zz5i64zDzKz5i(zw) `0 45:39-45:45;
+  zz441 = zeq_int(zz443, zz442) `0 45:39-45:45;
+  zz43 = zz441 `0 45:11-45:45;
+  jump zz43 goto 117 `0 45:8-53:43;
+  zz412 : %bool `0 47:8-53:43;
+  zz426 : %bool `0 47:11-49:54;
+  zz431 : %bool `0 47:12-48:69;
+  zz437 : %i `0 47:12-47:55;
+  zz437 = zz5i64zDzKz5i(1073741824) `0 47:12-47:55;
+  zz438 : %i `0 47:12-47:55;
+  zz438 = zz5i64zDzKz5i(2147483648) `0 47:12-47:55;
+  zz439 : %i `0 47:12-47:55;
+  zz439 = zz5i64zDzKz5i(zw) `0 47:12-47:55;
+  zz431 = zzzisk_contains(za, zz439, zz437, zz438) `0 47:12-47:55;
+  zz432 : %bool `0 47:12-48:69;
+  jump zz431 goto 61 `0 47:12-48:69;
+  zz432 = false `0 47:12-48:69;
+  goto 70;
+  zz433 : %i `0 48:12-48:69;
+  zz436 : %bv `0 48:44-48:68;
+  zz436 = zzzisk_input_end `0 48:44-48:68;
+  zz433 = zunsigned(zz436) `0 48:44-48:68;
+  zz434 : %i `0 48:12-48:69;
+  zz434 = zz5i64zDzKz5i(1073741824) `0 48:12-48:69;
+  zz435 : %i `0 48:12-48:69;
+  zz435 = zz5i64zDzKz5i(zw) `0 48:12-48:69;
+  zz432 = zzzisk_contains(za, zz435, zz434, zz433) `0 48:12-48:69;
+  zz426 = zz432 `0 47:12-48:69;
+  zz427 : %bool `0 47:11-49:54;
+  jump zz426 goto 81 `0 47:11-49:54;
+  zz428 : %i `0 49:11-49:54;
+  zz428 = zz5i64zDzKz5i(2148597120) `0 49:11-49:54;
+  zz429 : %i `0 49:11-49:54;
+  zz429 = zz5i64zDzKz5i(2148632184) `0 49:11-49:54;
+  zz430 : %i `0 49:11-49:54;
+  zz430 = zz5i64zDzKz5i(zw) `0 49:11-49:54;
+  zz427 = zzzisk_contains(za, zz430, zz428, zz429) `0 49:11-49:54;
+  goto 82;
+  zz427 = true `0 47:11-49:54;
+  zz412 = zz427 `0 47:11-49:54;
+  jump zz412 goto 115 `0 47:8-53:43;
+  zz413 : %bool `0 51:8-53:43;
+  zz423 : %i `0 51:11-51:54;
+  zz423 = zz5i64zDzKz5i(1073741832) `0 51:11-51:54;
+  zz424 : %i `0 51:11-51:54;
+  zz424 = zz5i64zDzKz5i(2147483648) `0 51:11-51:54;
+  zz425 : %i `0 51:11-51:54;
+  zz425 = zz5i64zDzKz5i(zw) `0 51:11-51:54;
+  zz413 = zzzisk_contains(za, zz425, zz423, zz424) `0 51:11-51:54;
+  jump zz413 goto 97 `0 51:8-53:43;
+  zz422 : %union zExceptionType `0 53:8-53:43;
+  zz422 = zE_Load_Access_Fault(()) `0 53:21-53:42;
+  zz40 = zMemExceptionzIz8bzCuz9zK(zz422) `0 53:8-53:43;
+  goto 114;
+  zz414 : %struct ztuplez3z5bv_z5unit `0 52:8-52:50;
+  zz415 : %bv `0 52:8-52:50;
+  zz416 : %i64 `0 52:17-52:45;
+  zz419 : %i `0 52:39-52:44;
+  zz419 = zz5i64zDzKz5i(8) `0 52:39-52:44;
+  zz420 : %i `0 52:39-52:44;
+  zz420 = zz5i64zDzKz5i(zw) `0 52:39-52:44;
+  zz421 : %i `0 52:39-52:44;
+  zz421 = zmult_atom(zz419, zz420) `0 52:39-52:44;
+  zz416 = zz5izDzKz5i64(zz421) `0 52:39-52:44;
+  zz417 : %bv `0 52:17-52:45;
+  zz417 = 0b0 `0 52:17-52:45;
+  zz418 : %i `0 52:17-52:45;
+  zz418 = zz5i64zDzKz5i(zz416) `0 52:17-52:45;
+  zz415 = zsail_zzero_extend(zz417, zz418) `0 52:17-52:45;
+  zz414 = struct ztuplez3z5bv_z5unit {ztuplez3z5bv_z5unit0 = zz415, ztuplez3z5bv_z5unit1 = ()} `0 52:8-52:50;
+  zz40 = zMemValuezIz8bzCuz9zK(zz414) `0 52:8-52:50;
+  goto 116;
+  zz40 = zphys_mem_read(zt, za, zw, zaq, zrl, zres, zmeta) `0 50:8-50:49;
+  goto 134;
+  zz44 : %struct ztuplez3z5bv_z5unit `0 46:8-46:62;
+  zz45 : %bv `0 46:8-46:62;
+  zz46 : %i64 `0 46:17-46:57;
+  zz49 : %i `0 46:51-46:56;
+  zz49 = zz5i64zDzKz5i(8) `0 46:51-46:56;
+  zz410 : %i `0 46:51-46:56;
+  zz410 = zz5i64zDzKz5i(zw) `0 46:51-46:56;
+  zz411 : %i `0 46:51-46:56;
+  zz411 = zmult_atom(zz49, zz410) `0 46:51-46:56;
+  zz46 = zz5izDzKz5i64(zz411) `0 46:51-46:56;
+  zz47 : %bv `0 46:17-46:57;
+  zz47 = zzzisk_free_input `0 46:17-46:57;
+  zz48 : %i `0 46:17-46:57;
+  zz48 = zz5i64zDzKz5i(zz46) `0 46:17-46:57;
+  zz45 = zsail_zzero_extend(zz47, zz48) `0 46:17-46:57;
+  zz44 = struct ztuplez3z5bv_z5unit {ztuplez3z5bv_z5unit0 = zz45, ztuplez3z5bv_z5unit1 = ()} `0 46:8-46:62;
+  zz40 = zMemValuezIz8bzCuz9zK(zz44) `0 46:8-46:62;
+  goto 136;
+  zz40 = zphys_mem_read(zt, za, zw, zaq, zrl, zres, zmeta) `0 44:8-44:49;
+  goto 140;
+  zz41 : %union zExceptionType `0 55:7-55:42;
+  zz41 = zE_SAMO_Access_Fault(()) `0 55:20-55:41;
+  zz40 = zMemExceptionzIz8bzCuz9zK(zz41) `0 55:7-55:42;
+  return = zz40 `0 38:1-56:2;
+  end;
+}
+
+val zchecked_mem_write : (%enum zwrite_kind, %bv64, %i64, %bv, %unit) ->  %union zMemoryOpResultzIozK
+
+fn zchecked_mem_write(zwk, za, zw, zdata, zmeta) {
+  zz40 : %bool `0 62:1-64:41;
+  zz42 : %i `0 62:4-62:47;
+  zz42 = zz5i64zDzKz5i(2684354560) `0 62:4-62:47;
+  zz43 : %i `0 62:4-62:47;
+  zz43 = zz5i64zDzKz5i(3221225472) `0 62:4-62:47;
+  zz44 : %i `0 62:4-62:47;
+  zz44 = zz5i64zDzKz5i(zw) `0 62:4-62:47;
+  zz40 = zzzisk_contains(za, zz44, zz42, zz43) `0 62:4-62:47;
+  jump zz40 goto 13 `0 62:1-64:41;
+  zz41 : %union zExceptionType `0 64:6-64:41;
+  zz41 = zE_SAMO_Access_Fault(()) `0 64:19-64:40;
+  return = zMemExceptionzIozK(zz41) `0 64:6-64:41;
+  goto 14;
+  return = zphys_mem_write(zwk, za, zw, zdata, zmeta) `0 63:6-63:42;
+  end;
+}
+
+val zwithin_phys_mem : (%bv64, %i) ->  %bool
+
+fn zwithin_phys_mem(za, zw) {
+  zz40 : %bool `0 68:1-71:44;
+  zz412 : %i `0 68:1-68:44;
+  zz412 = zz5i64zDzKz5i(1073741824) `0 68:1-68:44;
+  zz413 : %i `0 68:1-68:44;
+  zz413 = zz5i64zDzKz5i(2147483648) `0 68:1-68:44;
+  zz40 = zzzisk_contains(za, zw, zz412, zz413) `0 68:1-68:44;
+  zz41 : %bool `0 68:1-71:44;
+  jump zz40 goto 36 `0 68:1-71:44;
+  zz42 : %bool `0 69:1-71:44;
+  zz410 : %i `0 69:1-69:44;
+  zz410 = zz5i64zDzKz5i(2147483648) `0 69:1-69:44;
+  zz411 : %i `0 69:1-69:44;
+  zz411 = zz5i64zDzKz5i(2148597112) `0 69:1-69:44;
+  zz42 = zzzisk_contains(za, zw, zz410, zz411) `0 69:1-69:44;
+  zz43 : %bool `0 69:1-71:44;
+  jump zz42 goto 33 `0 69:1-71:44;
+  zz44 : %bool `0 70:1-71:44;
+  zz48 : %i `0 70:1-70:44;
+  zz48 = zz5i64zDzKz5i(2148597120) `0 70:1-70:44;
+  zz49 : %i `0 70:1-70:44;
+  zz49 = zz5i64zDzKz5i(2148632184) `0 70:1-70:44;
+  zz44 = zzzisk_contains(za, zw, zz48, zz49) `0 70:1-70:44;
+  zz45 : %bool `0 70:1-71:44;
+  jump zz44 goto 30 `0 70:1-71:44;
+  zz46 : %i `0 71:1-71:44;
+  zz46 = zz5i64zDzKz5i(2684354560) `0 71:1-71:44;
+  zz47 : %i `0 71:1-71:44;
+  zz47 = zz5i64zDzKz5i(3221225472) `0 71:1-71:44;
+  zz45 = zzzisk_contains(za, zw, zz46, zz47) `0 71:1-71:44;
+  goto 31;
+  zz45 = true `0 70:1-71:44;
+  zz43 = zz45 `0 70:1-71:44;
+  goto 34;
+  zz43 = true `0 69:1-71:44;
+  zz41 = zz43 `0 69:1-71:44;
+  goto 37;
+  zz41 = true `0 68:1-71:44;
+  return = zz41 `0 68:1-71:44;
+  end;
+}
+
+val zwithin_mmio_readable : (%bv64, %i) ->  %bool
+
+fn zwithin_mmio_readable(za, zw) {
+  return = false `0 74:38-74:43;
+  end;
+}
+
+val zwithin_mmio_writable : (%bv64, %i) ->  %bool
+
+fn zwithin_mmio_writable(za, zw) {
+  return = false `0 76:38-76:43;
+  end;
+}
+
+register zx10 : %bv64
+
+val zcheck_cycle_count = "cycle_count" : (%unit) ->  %unit
+
+val zzzisk_smoke_fetch : (%bv32) ->  %unit
+
+fn zzzisk_smoke_fetch(zaddress) {
+  zz410 : %unit `0 83:1-83:20;
+  zz410 = zcheck_cycle_count(()) `0 83:1-83:20;
+  zz40 : %union zMemoryOpResultzIz8bzCuz9zK `0 84:1-86:3;
+  zz43 : %union zAccessTypezIuzK `0 84:14-84:103;
+  zz43 = zExecutezIuzK(()) `0 84:31-84:40;
+  zz44 : %bv64 `0 84:14-84:103;
+  zz47 : %i `0 84:42-84:71;
+  zz47 = zz5i64zDzKz5i(64) `0 84:42-84:71;
+  zz48 : %bv `0 84:42-84:71;
+  zz48 = zaddress `0 84:42-84:71;
+  zz49 : %bv `0 84:42-84:71;
+  zz49 = zsail_zzero_extend(zz48, zz47) `0 84:42-84:71;
+  zz44 = zz49 `0 84:42-84:71;
+  zz45 : %i `0 84:14-84:103;
+  zz45 = zz5i64zDzKz5i(4) `0 84:14-84:103;
+  zz46 : %i64 `0 84:14-84:103;
+  zz46 = zz5izDzKz5i64(zz45) `0 84:14-84:103;
+  zz40 = zchecked_mem_read(zz43, zz44, zz46, false, false, false, false) `0 84:14-84:103;
+  zz41 : %bv64 `0 85:7-85:96;
+  jump zz40 is zMemValuezIz8bzCuz9zK goto 22 `0 85:22-85:33;
+  zz41 = 0x0000000000000001 `0 85:37-85:55;
+  goto 26;
+  jump zz40 is zMemExceptionzIz8bzCuz9zK goto 25 `0 85:57-85:72;
+  zz41 = 0x0000000000000000 `0 85:76-85:94;
+  goto 26;
+  exit match `0 85:7-85:96;
+  zx10 = zz41 `0 85:7-85:96;
+  zz42 : %unit `0 85:1-85:96;
+  zz42 = () `0 85:1-85:96;
+  return = () `0 86:1-86:3;
+  end;
+}
+
+val zinitializze_registers : (%unit) ->  %unit
+
+fn zinitializze_registers(zgsz353) {
+  zz45 : %i `1;
+  zz45 = zz5i64zDzKz5i(64) `2;
+  zz47 : %bv `3;
+  zz47 = zundefined_bitvector(zz45) `4;
+  zzzisk_input_end = zz47 `5;
+  zz46 : %unit `6;
+  zz46 = () `7;
+  zz42 : %i `8;
+  zz42 = zz5i64zDzKz5i(64) `9;
+  zz44 : %bv `10;
+  zz44 = zundefined_bitvector(zz42) `11;
+  zzzisk_free_input = zz44 `12;
+  zz43 : %unit `13;
+  zz43 = () `14;
+  zz40 : %i `15;
+  zz40 = zz5i64zDzKz5i(64) `16;
+  zz41 : %bv `17;
+  zz41 = zundefined_bitvector(zz40) `18;
+  zx10 = zz41 `19;
+  return = () `20;
+  end;
+}
+
+files "/home/cody/zesislar/.worktrees/worker2-child-platform/tools/stock_zisk/platform/adapter.sail"
+

@@ -1,0 +1,934 @@
+{
+  "sources": {
+    "zesu": {
+      "commit": "b5483dda21d72405c50a22cb6406a1231e51a579",
+      "tracked_sources_unchanged": true,
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source",
+      "tree": "322fdbcf246141e65b9e31b570389d13e1b1d9ee",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "zisk": {
+      "commit": "fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3",
+      "tracked_sources_unchanged": true,
+      "path": "/tmp/worker2-stock-zisk-toolchain",
+      "tree": "5201a988acf28db8c0093509377bca06ee2ef563",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "guest": {
+      "commit": "be591e90ecbd94b0a3185809ba5ed74268558fa3",
+      "tracked_sources_unchanged": true,
+      "path": "/tmp/worker2-stock-zesu-zkvm",
+      "tree": "6e50777a2e7976e350e0e0c92a3a2b3c6d7004a4",
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "zig_version": "0.16.0",
+  "jobs": 24,
+  "description": "stock zesu built with the authors' recipe at a different zesu revision",
+  "zig_executable": "/usr/bin/zig",
+  "zig_executable_sha256": "9640c29ae441820b37f09052fc32ece316e7587b5a8c9d0df61aa558e2d4f336",
+  "object_command": [
+    "zig",
+    "build",
+    "rv64im-object",
+    "-Doptimize=ReleaseFast",
+    "-j24",
+    "--cache-dir",
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock/zig-local",
+    "--global-cache-dir",
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock/zig-global"
+  ],
+  "link_command": [
+    "zig",
+    "build",
+    "-Doptimize=ReleaseFast",
+    "-Dzesu_obj=/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/zig-out/lib/zesu.o",
+    "-j24",
+    "--global-cache-dir",
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock/zig-global"
+  ],
+  "linker_script_sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd",
+  "runtime_library_sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491",
+  "stock_object_sha256": "dcd4b1bec1b02f94d7c4bca3d8323c386cfc7b780995235d6947790bb68d1afe",
+  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "adapters": {},
+  "link_without_exit_adapter": {
+    "passed": true,
+    "host_sha256": "b2bce6c2d5fb4184e0cf7c8a35da52e33c5d733cc3aa6bd5c3dfe64a0cefebae"
+  },
+  "measurements": {
+    "object": {
+      "elapsed_seconds": 18.53,
+      "peak_rss_kib": 468188,
+      "workers": 24,
+      "exit_code": 0
+    },
+    "link": {
+      "elapsed_seconds": 3.066,
+      "peak_rss_kib": 301368,
+      "workers": 24,
+      "exit_code": 0
+    }
+  },
+  "preserved_inputs": [
+    {
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-stock-zisk/_build/agents/worker2-stock-zisk/zisk-target/riscv64ima-zisk-zkvm-elf/release/libziskos_staticlib.a",
+      "archive_path": "/home/cody/zesislar-archive/stock-inputs/f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491-libziskos_staticlib.a",
+      "sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491",
+      "size_bytes": 3972438
+    },
+    {
+      "source_path": "/tmp/worker2-stock-zesu/zig-out/lib/zesu.o",
+      "archive_path": "/home/cody/zesislar-archive/stock-inputs/59bf42e9cccef4ef06f3fa2985e9081015c2cd16119330eeba6eb055bf5471f7-zesu.o",
+      "sha256": "59bf42e9cccef4ef06f3fa2985e9081015c2cd16119330eeba6eb055bf5471f7",
+      "size_bytes": 11670920
+    }
+  ],
+  "preservation_measurement": {
+    "elapsed_seconds": 0.021,
+    "peak_rss_kib": 19180,
+    "workers": 1
+  },
+  "build_dir": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/agents/worker-build-2/stock",
+  "inputs": {
+    "compiler/rustc": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98-rustc",
+      "sha256": "3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98"
+    },
+    "compiler/cargo": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072-cargo",
+      "sha256": "dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072"
+    },
+    "compiler/cargo-zisk": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315-cargo-zisk",
+      "sha256": "14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315"
+    },
+    "guest/Makefile": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/Makefile",
+      "sha256": "0738a995e69ead8f01db449d4cb05506fd2da7c3f840c911fbf1ab3cbc0b6082"
+    },
+    "guest/build.zig": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig",
+      "sha256": "87fd8bafd76349a02aab91b8895aa2c74ada9a80701eb8caa8de17e3f8248a7b"
+    },
+    "guest/build.zig.zon": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig.zon",
+      "sha256": "e2a74ae07565be08d66613747b7b7ebd5017b1c30091b5e973c52cdadc3c2f00"
+    },
+    "guest/src/zisk_host.zig": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/src/zisk_host.zig",
+      "sha256": "b2bce6c2d5fb4184e0cf7c8a35da52e33c5d733cc3aa6bd5c3dfe64a0cefebae"
+    },
+    "linker": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+      "sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd"
+    },
+    "runtime": {
+      "path": "/home/cody/zesislar-archive/stock-inputs/f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491-libziskos_staticlib.a",
+      "sha256": "f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491"
+    },
+    "object": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/zig-out/lib/zesu.o",
+      "sha256": "dcd4b1bec1b02f94d7c4bca3d8323c386cfc7b780995235d6947790bb68d1afe"
+    },
+    "compiler/zig": {
+      "path": "/usr/bin/zig",
+      "sha256": "9640c29ae441820b37f09052fc32ece316e7587b5a8c9d0df61aa558e2d4f336"
+    },
+    "compiler/riscv64-elf-objdump": {
+      "path": "/usr/bin/riscv64-elf-objdump",
+      "sha256": "a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260"
+    },
+    "compiler/riscv64-elf-readelf": {
+      "path": "/usr/bin/riscv64-elf-readelf",
+      "sha256": "d42bc4b515628277b93bed06290d81f1ea971be8f2a0fe4ced76be1b60f98cfb"
+    },
+    "builder/build.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/build.py",
+      "sha256": "2a5c2d417cc1e1ecb4d8b032970ade50ca8f56b8f8969340ee7f9e4a831b5b0e"
+    },
+    "builder/manifest.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/manifest.py",
+      "sha256": "d25bf1c4a18ea14cce92a738d4b00f62f5c24f1fa3c70cd6b7076857f2310df3"
+    },
+    "legacy/riscv64-linux-gnu-as": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-as",
+      "sha256": "f685923c9eef8c7f8a4e1157afc818c027436dcd5e798fbac021146bd8f153d6"
+    },
+    "legacy/riscv64-linux-gnu-ld": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-ld",
+      "sha256": "e7df162a0c0e5ddf6604a9765250aec166f77b05c2db4cdaa7fac3cd9a9cfbe5"
+    },
+    "legacy/riscv64-linux-gnu-nm": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-nm",
+      "sha256": "466f4fc027a3d8086ac7f5364f7fc3851ad68c226a0893b1b67b838341293e67"
+    },
+    "legacy/riscv64-linux-gnu-objdump": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-objdump",
+      "sha256": "a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260"
+    },
+    "legacy/z3": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/z3",
+      "sha256": "796dbda9afa35f2369d00e90c329d31a7d49afac75a683ddd14647f2c77f607a"
+    },
+    "generator/closure.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/closure.py",
+      "sha256": "c55da1702313ba5fdb7da5b0bc1b8337f95ce21aae1bec2cf632723d7e52d54f"
+    },
+    "generator/riscv.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/riscv.py",
+      "sha256": "b964027f473a4dc65dee2a27566fabeddbeb770dc85f9a6d602192302c7d8405"
+    },
+    "generator/dwarf.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/dwarf.py",
+      "sha256": "209df16ac736802a423d4fc73049b99ab19f105e83107a7ded7b6064c46063e3"
+    },
+    "generator/inventory.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/inventory.py",
+      "sha256": "adc3bae421815d40b7908e9fc14e4bcf5d82182b605571edc57a27faa2e77a22"
+    },
+    "platform-audit/snapshot": {
+      "path": "/home/cody/isla-snapshots/riscv64.ir",
+      "sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a"
+    },
+    "platform-audit/core/src/mem.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+      "sha256": "8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91"
+    },
+    "platform-audit/transpilers/common/src/elf_extraction.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/transpilers/common/src/elf_extraction.rs",
+      "sha256": "0d5e95e716d6e21768866ed9c8956fde1f2895885f3fc99fd43cdf0251f2e85a"
+    },
+    "platform-audit/emulator/src/emu_context.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/emulator/src/emu_context.rs",
+      "sha256": "5833070dc289a74f8aeb08d36e9acc09267ed8186b7785cccbd0aa18d1611f1f"
+    },
+    "platform-audit/ziskos/entrypoint/src/lib.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/lib.rs",
+      "sha256": "9754f8c636daa302557b9ee7ebecc7627bda798eee4187999e81231a10274590"
+    },
+    "platform-audit/zisk/zisk.ld": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+      "sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd"
+    },
+    "platform/tools/stock_zisk/platform/adapter.sail": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/adapter.sail",
+      "sha256": "d07bd6d12b5ec244e67c474320d5d08a91cb7aa202a5350eaba342ce3f05c63b"
+    },
+    "platform/tools/stock_zisk/platform/bin/isla-footprint": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bin/isla-footprint",
+      "sha256": "316357d80657f8792cc168cba5a52b85adcfb3f5291584a2e09dae74d687b2f4"
+    },
+    "platform/tools/stock_zisk/platform/bind_traces.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bind_traces.py",
+      "sha256": "91586c522f2f0c72f39ea89503895be5e227654abd8d1d20850a5ec12197a6c4"
+    },
+    "platform/tools/stock_zisk/platform/build.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/build.py",
+      "sha256": "6fde01540390fbb74c5545be9108bcaf6debc72d27c0cb703dd2146d7dace037"
+    },
+    "platform/tools/stock_zisk/platform/compiler/LICENCE": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/LICENCE",
+      "sha256": "cbefa8a8ed644f541fca50ea24607b973469ee1eb020b4cb9db1ac701e7eb114"
+    },
+    "platform/tools/stock_zisk/platform/compiler/dune": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune",
+      "sha256": "a85696076e4f082e20bc319af99fa620da70a4d81695978cd0bb5f5bd0eac994"
+    },
+    "platform/tools/stock_zisk/platform/compiler/dune-project": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune-project",
+      "sha256": "50341da40e1af361988d57caffa6e766d893c3a1eefdd516ef1cf481964f5ce3"
+    },
+    "platform/tools/stock_zisk/platform/compiler/jib_ir.ml": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/jib_ir.ml",
+      "sha256": "57cd730b553bc1cc82fd7041486453b1e1aa41dbc2c6c762c81fa7eebc2801b6"
+    },
+    "platform/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+      "sha256": "40a2fc10436d26b073c126549da5d1daf73fec67b8a5f2b0367fcbeeb7be7b84"
+    },
+    "platform/tools/stock_zisk/platform/fragment.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/fragment.py",
+      "sha256": "36d92d6966b00538a08b3d438d2c04c37099ca5dca2bdbd7bc97eb6dbc1ed841"
+    },
+    "platform/tools/stock_zisk/platform/smoke.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/smoke.py",
+      "sha256": "64395604fe2a1efa1cc5817787f688caeb09c729a875bfd90fd98a4496e65994"
+    },
+    "platform/tools/stock_zisk/platform/test_build.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/test_build.py",
+      "sha256": "94093b0982407565479fa499c7aaa540388ede3f508bb07ed57cdf8bc678ce83"
+    },
+    "platform/tools/stock_zisk/platform/traces.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/traces.py",
+      "sha256": "3308c144fb836f79aa418de6deb9225c59d4cdcf9ce42c9fc139f3a0f7c783d1"
+    },
+    "platform/sail": {
+      "path": "/home/cody/islaris/_opam/bin/sail",
+      "sha256": "a3e55921a1dbd52a77ba2efb89ed6ea18cbc43b1da8d3ad47bd5fa08d3de58af"
+    },
+    "platform/base_snapshot": {
+      "path": "/home/cody/isla-snapshots/riscv64.ir",
+      "sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a"
+    },
+    "platform/isla_footprint": {
+      "path": "/home/cody/isla/target/release/isla-footprint",
+      "sha256": "c4d86501b85fb471ffac1ba4fc09b0051233b3416c2889ab67c2f3db1d9e8cc2"
+    },
+    "platform/islaris": {
+      "path": "/home/cody/islaris/_opam/bin/islaris",
+      "sha256": "45a51764fb4c6b2b34136db940654bb83e4259b706d7dd5981241d949497b44f"
+    },
+    "platform/sail_plugin": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+      "sha256": "cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429"
+    },
+    "platform/config": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/riscv64_zesu.toml",
+      "sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6"
+    },
+    "machine-map/ZesuSsz/Contracts/Machine.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/Machine.v",
+      "sha256": "2c97133b3d7b0615512546eef4ba2d2373ddf4e165d5c7f8b8680d740b44ee2e"
+    },
+    "machine-map/InstrSpecs/Machine.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/InstrSpecs/Machine.v",
+      "sha256": "1a8b0f0be3397d23c6b00ba151c3bc96d12a9d445197779506c2f5ab36ddf9ae"
+    },
+    "machine-map/ZesuSsz/Export/Adequacy.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Export/Adequacy.v",
+      "sha256": "f67c3fae5b7465447942e311f67356d13ebab568392b241626f24c0f6f742ba2"
+    },
+    "machine-map/ZesuSsz/Contracts/OutputEvents.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/OutputEvents.v",
+      "sha256": "4c0bb9783b9a7517845c6f73d62b1dc000da2dc5d902cb7332a261ff2a19acf4"
+    },
+    "machine-map/ZesuSsz/Export/Snapshots.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Export/Snapshots.v",
+      "sha256": "06486bb68aa4f950be5eca4f797b8bd99fb4e01341492a6684746f00c7394823"
+    },
+    "machine-map/ZesuSsz/Automation/Hooks.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/Hooks.v",
+      "sha256": "1a0316efb3401dde4a8c0d575e4c9c76380de567ecb596b6d289a8d800cf61a1"
+    },
+    "machine-map/tools/machine_config.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/machine_config.py",
+      "sha256": "39f537d0656a642de380eb17d72aa18a9d1222dafd7892bf45240520c89800cf"
+    },
+    "machine-map/tools/test_machine_config.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/test_machine_config.py",
+      "sha256": "4e4b26e4e57050005d93b5462f3a550a81365ba46354af110429a87b6bad92f8"
+    },
+    "machine-map/tools/stock_zisk/machine_map/generate.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/machine_map/generate.py",
+      "sha256": "58bcf5feaae8601ea9f472cb7223ed23d80768735df22c0f6d1c2b7f635d3ce2"
+    },
+    "machine-map/ZesuSsz/Automation/BitvectorFacts.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/BitvectorFacts.v",
+      "sha256": "0640586eca9cef77707865743606eeab87cb0e5f6c949a19c72f2646cf390b1c"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/ByteArraysWrite.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+      "sha256": "226990987f10898759b18e0e6a28bcabf5a248adfcf7da7a8e0dfc1cca1e084a"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/ByteArraysRead.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+      "sha256": "89e5767e15fac290305e81108b92c48e14f1f068c04ab8b200f80cae73d07af7"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/ByteArrayHookExport.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+      "sha256": "29009f54a63f28a18016e93febe7cdb2703321756cead5abd0cfe7fd0f47c2a1"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/Finish.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/Finish.v",
+      "sha256": "d6c9c8b3edc005aa7563d2d8dfc84f5a83aa4cefa86105843203c14922443d3b"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/RuleSetV2.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/RuleSetV2.v",
+      "sha256": "8b127d4f430cfc0f19f10747c20701901323a697d89d78b0ae7c484e970d9aa6"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/NonRaising.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/NonRaising.v",
+      "sha256": "15d2f7214f8767d10f83884e1e9b03b874a996e8d4238c0c0d29fe0f7e6ed99b"
+    },
+    "machine-map/ZesuSsz/Proofs/Tests/NonRaisingLegacy.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+      "sha256": "39f967cd71f8c6778573247e0b0671296240333589ef4a424edcba85f1a13156"
+    },
+    "machine-map/ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla",
+      "sha256": "abecaf9f7891c0fa205c9b3ba1da6fd0ee8426e299460d032afbf9e76528a670"
+    },
+    "machine-map/ZesuSsz/Generated/TestTraces/LdX16X10Off80.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/LdX16X10Off80.v",
+      "sha256": "4516cd4ec2b626cfd4ccc9dfbc656ac383f2432e9c3278e73dcc639e9fbad444"
+    },
+    "machine-map/ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla",
+      "sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e"
+    },
+    "machine-map/ZesuSsz/Generated/TestTraces/SdX1X2Off8.v": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
+      "sha256": "82b25e8da493c0688cff97aeedc38fb988ad52028ac4536722930c0265846d2d"
+    },
+    "machine-map/ZesuSsz/Generated/TestTraces/metadata.json": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/metadata.json",
+      "sha256": "4bf623c36a8edec8c951ca49931de8e521467c19a89ac8d30ba365330cb2647b"
+    }
+  },
+  "legacy_tool_policy": "Retain the committed bin tools with explicit hashes for existing trace regeneration. The selected ELF build uses the separately recorded Zig and ELF tools.",
+  "runtime_provenance": {
+    "container_image_id": "sha256:3c7565636c6516f21c630b4b7e803de59574e9381b50e2b4ae082b2b20751318",
+    "source_commit": "fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3",
+    "release": "v1.2.0-alpha",
+    "command": [
+      "cargo",
+      "+zisk",
+      "build",
+      "-p",
+      "ziskos-staticlib",
+      "--target",
+      "riscv64ima-zisk-zkvm-elf",
+      "--release",
+      "--locked",
+      "--config",
+      "profile.release.lto=\"fat\""
+    ],
+    "compiler_identity_note": "These hashes identify the preserved runtime build executables. This step reused the archive and did not rebuild the runtime."
+  },
+  "schema_versions": {
+    "manifest": 1,
+    "elf_layout": 1,
+    "platform": 1,
+    "machine_map": 1
+  },
+  "invalidated_derived": [],
+  "derived": {
+    "platform/CHECKPOINT.md": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/adapter.ir": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/build-report.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/riscv64-zisk.ir": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/sail_plugin_isla.cmxs": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/address_wrap.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/empty_header_crossing.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/empty_input.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/executable_text.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/gap.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/header_byte.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/header_data_join.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/header_half.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/header_word.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/heap.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/input.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/input_end_crossing.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/input_write.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/misaligned_ram.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/misaligned_ram_write.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/output.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/oversized_input_end.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/ram.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/ram_end_crossing.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/read_only_data.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/report.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/rodata_end_crossing.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/rodata_write.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/section_crossing.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/special_word.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/stack.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/system.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/text_data_read.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/text_end_crossing.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/smoke/zero_fallback.isla": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform/manifest-fragment.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "inventory.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 2
+    },
+    "cfg.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "regions.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "dump-ranges.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "verification.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 2
+    },
+    "decodeItem.raw.dump": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "INVENTORY.md": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "PLATFORM.md": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "platform-audit.json": {
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+      "schema_version": 1
+    },
+    "signed-address-comparison.json": {
+      "schema_version": 1,
+      "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4"
+    }
+  },
+  "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+  "elf_layout": {
+    "entry": 2148490032,
+    "machine": "EM_RISCV",
+    "flags": 1,
+    "segments": [
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 1,
+        "p_offset": 4096,
+        "p_vaddr": 2147483648,
+        "p_paddr": 2147483648,
+        "p_filesz": 1113464,
+        "p_memsz": 1113464,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 4,
+        "p_offset": 1117568,
+        "p_vaddr": 2148597120,
+        "p_paddr": 2148597120,
+        "p_filesz": 35064,
+        "p_memsz": 35064,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 6,
+        "p_offset": 1155072,
+        "p_vaddr": 2688745472,
+        "p_paddr": 2688745472,
+        "p_filesz": 0,
+        "p_memsz": 9454880,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_LOAD",
+        "p_flags": 6,
+        "p_offset": 1156384,
+        "p_vaddr": 2698200352,
+        "p_paddr": 2698200352,
+        "p_filesz": 16,
+        "p_memsz": 16,
+        "p_align": 4096
+      },
+      {
+        "p_type": "PT_RISCV_ATTRIBUTES",
+        "p_flags": 4,
+        "p_offset": 1156400,
+        "p_vaddr": 0,
+        "p_paddr": 0,
+        "p_filesz": 106,
+        "p_memsz": 106,
+        "p_align": 1
+      }
+    ],
+    "sections": [
+      {
+        "name": "",
+        "sh_name": 0,
+        "sh_type": "SHT_NULL",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 0,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 0,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".text",
+        "sh_name": 1,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 6,
+        "sh_addr": 2147483648,
+        "sh_offset": 4096,
+        "sh_size": 1113464,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 16,
+        "sh_entsize": 0,
+        "sha256": "fa4ad2a3d017f654c67a0a90ddee7c008199a70208a7ea9d9a2553e812aa1d42"
+      },
+      {
+        "name": ".rodata",
+        "sh_name": 7,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 50,
+        "sh_addr": 2148597120,
+        "sh_offset": 1117568,
+        "sh_size": 35064,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 16,
+        "sh_entsize": 0,
+        "sha256": "7af6b59e84ff65bfcca3adbc3f9dea8e9fa8fb539e929508db0e0f5e270ecd2f"
+      },
+      {
+        "name": ".init_array",
+        "sh_name": 15,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 2,
+        "sh_addr": 2148632184,
+        "sh_offset": 1152632,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".fini_array",
+        "sh_name": 27,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 2,
+        "sh_addr": 2148632184,
+        "sh_offset": 1152632,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".data",
+        "sh_name": 39,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 2,
+        "sh_addr": 2688745472,
+        "sh_offset": 1152632,
+        "sh_size": 0,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": ".bss",
+        "sh_name": 45,
+        "sh_type": "SHT_NOBITS",
+        "sh_flags": 2097155,
+        "sh_addr": 2688745472,
+        "sh_offset": 1155072,
+        "sh_size": 9454880,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 8,
+        "sh_entsize": 0
+      },
+      {
+        "name": ".zesu_heap_vars",
+        "sh_name": 50,
+        "sh_type": "SHT_PROGBITS",
+        "sh_flags": 3,
+        "sh_addr": 2698200352,
+        "sh_offset": 1156384,
+        "sh_size": 16,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "2fe9caadebcd6644b284cf696914d031949e0843c9a2b8f13fd22ae627403179"
+      },
+      {
+        "name": ".riscv.attributes",
+        "sh_name": 66,
+        "sh_type": "SHT_RISCV_ATTRIBUTES",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 1156400,
+        "sh_size": 106,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "af5b701e3f5ecdf809555d26d92211e3354beb845bd38a63447481d3ff4c7eaf"
+      },
+      {
+        "name": ".symtab",
+        "sh_name": 84,
+        "sh_type": "SHT_SYMTAB",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 1156512,
+        "sh_size": 1537080,
+        "sh_link": 11,
+        "sh_info": 64002,
+        "sh_addralign": 8,
+        "sh_entsize": 24,
+        "sha256": "8c1fc651d8497c921fc361a94b86d480473f325225fc3150c89a9e16487b4f9d"
+      },
+      {
+        "name": ".shstrtab",
+        "sh_name": 92,
+        "sh_type": "SHT_STRTAB",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 2693592,
+        "sh_size": 110,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "852a1d4c7e736ee38cff54c4252d08521da2563ed00047b98e6d10e301b059c9"
+      },
+      {
+        "name": ".strtab",
+        "sh_name": 102,
+        "sh_type": "SHT_STRTAB",
+        "sh_flags": 0,
+        "sh_addr": 0,
+        "sh_offset": 2693702,
+        "sh_size": 377285,
+        "sh_link": 0,
+        "sh_info": 0,
+        "sh_addralign": 1,
+        "sh_entsize": 0,
+        "sha256": "c888a62f623684a9d08a1e8e56c45a8acf540825a8b97e7d0c6ac44e6b30ebf6"
+      }
+    ]
+  },
+  "artifacts": {
+    "zesu-zisk.elf": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+    "disassembly.objdump": "020ace7813b1c8a392291628095089bff281e3a50b4bb5dca25b3b5e9f50517b",
+    "symbols.txt": "b85d63ce55b4b5772415933d9939ef74cebb0905570a200bd08e6c372a2e3e6c",
+    "elf-layout.txt": "660c5484710dc616d5a8b94ddfdd349e67c38613ca8a15d60d11322513f83a2e",
+    "platform/CHECKPOINT.md": "1334a85d33db5e0d4256f76c55c240c0418a4036b047c00b0c5c98fab64cb3e0",
+    "platform/adapter.ir": "aae232b0b56265fc921edd2143e4e3b50679b55014ac627127a9743160f3cbea",
+    "platform/build-report.json": "8017ded329d22c3768baf8139d5d5988b312462c4a651851306beeaf14148972",
+    "platform/riscv64-zisk.ir": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+    "platform/sail_plugin_isla.cmxs": "cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429",
+    "platform/smoke/address_wrap.isla": "261e0285d6507ecf49d1bc08eaea25b7125f4f9e82d3b82b3a207538de1912b4",
+    "platform/smoke/empty_header_crossing.isla": "55cf299e1398294e7a437b604c116047e09026d755754fe6e974c455125e60d5",
+    "platform/smoke/empty_input.isla": "37b3fdc6cd1e81d9966097a1cd1a3fcbe8a66cc6208f1475db742adce6186b50",
+    "platform/smoke/executable_text.isla": "f3c8eb72ed1453803e79ee340bf3f324b2964ff403070a1b82708641f97192da",
+    "platform/smoke/gap.isla": "5ae38ede02db38e594e40665e6eba067807a012c1a61d4cfe55f0a04df77d037",
+    "platform/smoke/header_byte.isla": "04203de869093cb2a81d54011c0dc786444824e5e570a20479ec34f9116a0652",
+    "platform/smoke/header_data_join.isla": "7d3778909d2a065818bf66046dadd3794fcda07ab578d3c6a4a6e2752e2d0560",
+    "platform/smoke/header_half.isla": "481df8187b6e1b1a4fa2766cfcc55b6617488c0c675903ee5b56cfa3b3132c30",
+    "platform/smoke/header_word.isla": "5acb1cd0eabc4684b4c42b00045d41b22061f28c7b2ef3e3db278d73f1f922eb",
+    "platform/smoke/heap.isla": "d35b4450632ec733e6f9898dd74a6ffe17d1201e1f6979a9c60a45c832d60f6a",
+    "platform/smoke/input.isla": "a402755a4af2abc8da67570173b4a62dcd83ea5131026a5d9986c7fe7f1c5a1e",
+    "platform/smoke/input_end_crossing.isla": "3e47edd62c6b264202db9f87d26671472131e5fb0dac95a06352132d157248b0",
+    "platform/smoke/input_write.isla": "80ec33e78e3baead8c4df148fb35c4e979707236f8c7489321886c3b61c7f68d",
+    "platform/smoke/misaligned_ram.isla": "e143f47c9b14ec5e64ae2fc1c0faa053e7042bf63ee8b1fe1194d14bc95efad8",
+    "platform/smoke/misaligned_ram_write.isla": "ee99663160224146a5885f0b616b52fb8af8e6decbd10260a3cca3e9b3327ddb",
+    "platform/smoke/output.isla": "4f6871314f943016d63659087196e0af5e28242e4b88520268d6c54f82dd607c",
+    "platform/smoke/oversized_input_end.isla": "51c155d577b1566f7a913db6a15099b602854cdc40c02652afb9cdfc07488c07",
+    "platform/smoke/ram.isla": "2b00ca64486b09dd9e0515557dba26a8ce53bfcf08c9c9d83c276782cd53fef7",
+    "platform/smoke/ram_end_crossing.isla": "f358ad4064c77d04375e7800385a83a06bb24e296a886399b062d319d9e13e23",
+    "platform/smoke/read_only_data.isla": "b37c5c47072b345361b619688134e0dd9299120dcf98d13ff65e8be719ef4a17",
+    "platform/smoke/report.json": "98d46c1d640d13472a1457feffc797a9b161e495638a13a8b353b8f47ecf3f51",
+    "platform/smoke/rodata_end_crossing.isla": "7c0d973505c1637edca6f1d8536bee78b2970402c548f3e914cd96ed395845df",
+    "platform/smoke/rodata_write.isla": "d1ecff9cc4fc59e4848a598618c343ca3cd84d4d255ee069493d51bcee07cf5b",
+    "platform/smoke/section_crossing.isla": "34449c60556dfb8609a434a27050f942ba9b5af6f5f279f6dd1278c8bd68d68e",
+    "platform/smoke/special_word.isla": "28bc825c275126e05974ca4c9dc93c0c53e2a9380922715b39ad02189c46a83a",
+    "platform/smoke/stack.isla": "85ead43b04fe869181ae131b14b9b5b529f4c257cee037318abb89216d7d4c6a",
+    "platform/smoke/system.isla": "78f216e9bdf5695f93c75c39886ba36356245eb2c574aff4195370f0fc69216c",
+    "platform/smoke/text_data_read.isla": "870bf785331443795cb56b98335580fe3cca2305aa3b6452adc2218d11c5abbd",
+    "platform/smoke/text_end_crossing.isla": "c74e26eb94ac03a00028e9f0bb92617e4b7db6ced8fd8c16fa552cda64350161",
+    "platform/smoke/zero_fallback.isla": "2262101b58012ea17bd00b14554f752ce5b1f8f6a69688a35742c11210270053",
+    "platform/manifest-fragment.json": "5ec77526723eb868fb7574b213f77cd52575b8307881cdb4c116b656c447d123",
+    "inventory.json": "353bcecbc2f3df96400d3f76c6749d8938eaca919aef1eece39294d1277a97c9",
+    "cfg.json": "2bd0e89475ff01d7442a4ea95bf6ad92dbb2f1895791bbac9a679de93cd4100a",
+    "regions.json": "c3ccd38d9a0cefffcda84acba619e1a7c0c2f703d5c1b7d9ef973cc0a9cc9e36",
+    "dump-ranges.json": "2e78c561123f9ee6375fb9bbec941492572c22aaa084b164c7d7126881d8f945",
+    "verification.json": "41008086a9ceabf8e4d3c8fc954f6bf6bc7c1d24d524a946cb9d9e1106a97048",
+    "decodeItem.raw.dump": "6c2c1c92dcb7f2d3f00872b2b5dcf604fb4311635d025ae393af3182bc51cd79",
+    "INVENTORY.md": "88b5bc22fdbbe33284db50ebd3d89fa5012ed7090ddd7aa891a0c8f05e892e93",
+    "PLATFORM.md": "c84a8890afae05f15f84dc3c2af65c6284df6e5f9d2c353db7d34fec81f5f5a1",
+    "platform-audit.json": "54960277971b973411232c831b8dbf660a06f78295d7c5544b8d1106c973cc2e",
+    "signed-address-comparison.json": "ef7aba914d2feab3f17e2c9a91b48dafe9a402a1b8ee283bf4c9d7ea7fe68870"
+  },
+  "toolchain_identity_decision": {
+    "decision": "Retain the committed bin tools with explicit hashes for P0-C.",
+    "reviewer": "orch",
+    "review_date": "2026-10-03",
+    "basis": "The coordinator accepted this choice after reviewing steps 1 through 4."
+  },
+  "archived_comparison": {
+    "source_commit": "c9165ca4bb2e0411678113ddae36740cc61ef035",
+    "archive_root": "/home/cody/zesislar-archive/2026-10-03",
+    "git_bundle": {
+      "path": "git/zesislar-all.bundle",
+      "sha256": "dc48089dfb1eb2f1c98c02000e72be5222de98841f82d17b38205484ae69bcce"
+    },
+    "git_mirror": "git/mirror.git",
+    "source_directory": "build/stock-zisk/comparison-generic-script",
+    "files": {
+      "INVENTORY.md": "3c85f915ca1a8275e5a7c44da6b189dc893399efebbe7576e144ca325e1a952a",
+      "PROVENANCE.md": "a025ebb94a53118c5ab140db538911d5446ac927149aefd1576df62d02bef8bb",
+      "SHA256SUMS": "e40c4ca127a55061a2d045763751017a698a90946f3e1f66a4fedc740ace1be7",
+      "build-recipe.json": "c06b7289f0ed423ca77e459eb1d3137b857de03723cd5c6983aee4c55d3d0898",
+      "disassembly.objdump": "a80192d253fffcc6135268e634495e7c266054b91e65653930fe111b8f74ec9a",
+      "elf-layout.txt": "ece0e1273bf963d49f6b1dbba3b02c55001f7c753a565a65958b6b681b264d92",
+      "inventory.json": "aac37299b958946034e8c5c258d3289e8e8a6bb3a2f5970f10b2a530d1765236",
+      "symbols.txt": "05ce4b7ca74e20da00ffada074e7294aa80fc6e7e75f89badbc2d4a73344966b",
+      "verification.json": "bd76e719db7494a85e585015d54ebe158e75521570df81204dab200ca293f83c",
+      "zesu-zisk.elf": "fd6afe8510cf14009f268259af617c59d72f19f31575045c79687e44b363e5ad"
+    },
+    "untracked_archive": {
+      "path": "wt/worker2-stock-zisk.tar",
+      "sha256": "1de30f2865a14afe6ac6142b6d1c071d3f7cd11a1dd5144595439d11e0282759",
+      "note": "The tar stores untracked worktree files. The Git archive stores this tracked comparison."
+    }
+  },
+  "platform": {
+    "kind": "dedicated-zisk-platform-layer",
+    "snapshot": "build/stock-zisk/platform/riscv64-zisk.ir",
+    "config": "ZesuSsz/riscv64_zesu.toml",
+    "replaced_hooks": [
+      "checked_mem_read",
+      "checked_mem_write",
+      "within_phys_mem",
+      "within_mmio_readable",
+      "within_mmio_writable"
+    ],
+    "registers": {
+      "zisk_input_end": "input section end; dynamic decoder resource",
+      "zisk_free_input": "current target free_input; dynamic decoder resource"
+    },
+    "input_relation": "The selected emulator merges its zero header and multiple-of-eight input into one section. Its end equals 0x40000008 + input_len.",
+    "source": "core/src/mem.rs:240-293,366-388; emulator/src/emu_context.rs:50-71",
+    "instruction_semantics": "unchanged; all non-platform declarations remain byte-identical",
+    "runtime_boundary": "memcpy CSR0x813 remains an explicit runtime service; this platform does not implement it"
+  },
+  "machine_map": {
+    "kind": "stock-zisk",
+    "source": "ZesuSsz/Contracts/Machine.v",
+    "generator": "tools/stock_zisk/machine_map/generate.py",
+    "dynamic_registers": [
+      "zisk_input_end",
+      "zisk_free_input"
+    ]
+  },
+  "project_root": "/home/cody/zesislar/.worktrees/p0c-stock-target"
+}
