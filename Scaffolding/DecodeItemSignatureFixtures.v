@@ -10,6 +10,21 @@ Definition fixtureExtraPremise : Prop :=
   False -> DecodeItemComplianceStatement.
 Fail Check (eq_refl : fixtureExtraPremise = ReviewedDecodeItemComplianceType).
 
+Definition fixtureMissingRamStackBound (inputPointer inputLength resultPointer
+    stackPointer returnAddress : Z) : Prop :=
+  0 <= inputPointer /\ 0 <= inputLength /\
+  inputPointer + inputLength < word64Modulus /\
+  0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
+  decodeItemStackBytes <= stackPointer < word64Modulus /\
+  separateRanges inputPointer inputLength resultPointer 40 /\
+  separateRanges inputPointer inputLength
+    (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
+  separateRanges resultPointer 40
+    (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
+Fail Check (eq_refl : fixtureMissingRamStackBound =
+                 ReviewedDecodeItemEntryLayout).
+
 Definition fixtureChangedDomainModel (returnAddress : Z) :
     IslarisContractModel DecodeItemArgs DecodeItemOutcome :=
   let model := decodeItemSelectedModel returnAddress in

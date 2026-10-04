@@ -1,6 +1,7 @@
 From Coq Require Import List String ZArith.
 From stdpp Require Import bitvector.definitions.
 Require Import SailStdpp.MachineWord EvmSailRlp.evm_rlp_types.
+Require Import ZesuMachineMap.Machine.
 Import ListNotations.
 Open Scope Z_scope.
 
@@ -78,6 +79,8 @@ Definition decodeItemEntryLayout (inputPointer inputLength resultPointer
   inputPointer + inputLength < word64Modulus /\
   0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
   decodeItemStackBytes <= stackPointer < word64Modulus /\
+  mapRamBase defaultMap + decodeItemStackBytes <= stackPointer /\
+  stackPointer <= machineRamEnd defaultMap /\
   separateRanges inputPointer inputLength resultPointer 40 /\
   separateRanges inputPointer inputLength
     (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
