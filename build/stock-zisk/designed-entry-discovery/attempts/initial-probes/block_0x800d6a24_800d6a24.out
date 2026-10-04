@@ -1,0 +1,4 @@
+
+Theorem_not_found: [find_thm] Theorem found but failed with Coq error:
+ The reference Proof was not found in the current environment.!
+exit=1 ms=1757 rss_kb=147000

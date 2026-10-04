@@ -1,0 +1,85 @@
+
+PROBE-BEGIN
+Tactic call zesu_run ran for 0.02 secs (0.017u,0.002s) (success)
+Tactic call zesu_run ran for 0.009 secs (0.008u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+chain_record_active is defined
+CHAIN-GOAL-BEGIN "active"
+CHAIN-GOAL-LOCAL BLK_STOP_800d6a24 : (iProp Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT BLK_STOP_800d6a24 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL oldCursor : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT oldCursor : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL oldAcc : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT oldAcc : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END
+CHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END
+CHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END
+CHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END
+CHAIN-GOAL-SORT n : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END
+CHAIN-GOAL-SORT args : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END
+CHAIN-GOAL-SORT H : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END
+CHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END
+CHAIN-GOAL-ENV iris CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (instr_pre 2148362788 BLK_STOP_800d6a24) CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" decodeItemSelectedCode CHAIN-FIELD-END
+CHAIN-GOAL-CONCLUSION
+(find_in_context (FindInstrKind 2148362772 false)
+   (λ ik : instr_kind,
+      match ik with
+      | IKInstr (Some t) => (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -∗ "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362772) -∗ WPasm t)%I
+      | IKInstr None =>
+          (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -∗ ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 2148362772)) snil ⊆ Pκs⌝ ∗ True)%I
+      | IKPre l' Q => (⌜implb l' false⌝ ∗ (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -∗ Q))%I
+      end)) CHAIN-FIELD-END
+CHAIN-GOAL-END
+chain_record_shelved is defined
+CHAIN-GOAL-BEGIN "shelved"
+CHAIN-GOAL-LOCAL BLK_STOP_800d6a24 : (iProp Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT BLK_STOP_800d6a24 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL oldCursor : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT oldCursor : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL oldAcc : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT oldAcc : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END
+CHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END
+CHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END
+CHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END
+CHAIN-GOAL-SORT n : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END
+CHAIN-GOAL-SORT args : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END
+CHAIN-GOAL-SORT H : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END
+CHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END
+CHAIN-GOAL-ENV iris CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (instr_pre 2148362788 BLK_STOP_800d6a24) CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" decodeItemSelectedCode CHAIN-FIELD-END
+CHAIN-GOAL-CONCLUSION
+(find_in_context (FindInstrKind 2148362772 false)
+   (λ ik : instr_kind,
+      match ik with
+      | IKInstr (Some t) => (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -∗ "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362772) -∗ WPasm t)%I
+      | IKInstr None =>
+          (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -∗ ∃ Pκs : spec, spec_trace Pκs ∗ ⌜scons (SInstrTrap (Z_to_bv 64 2148362772)) snil ⊆ Pκs⌝ ∗ True)%I
+      | IKPre l' Q => (⌜implb l' false⌝ ∗ (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -∗ Q))%I
+      end)) CHAIN-FIELD-END
+CHAIN-GOAL-END
+PROBE-END
+exit=0 ms=2216 rss_kb=916004
