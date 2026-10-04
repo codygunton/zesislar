@@ -71,7 +71,7 @@ Definition nextUint64EntryLayout (inputPointer inputLength slicePointer
   separateRanges slicePointer 16 resultPointer 16 /\
   separateRanges slicePointer 16
     (stackPointer - nextUint64StackBytes) nextUint64StackBytes /\
-  0 <= returnAddress < word64Modulus /\ returnAddress mod 2 = 0.
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
 
 Definition parentHeaderEntryLayout (inputPointer inputLength resultPointer
     stackPointer returnAddress : Z) : Prop :=
@@ -84,7 +84,7 @@ Definition parentHeaderEntryLayout (inputPointer inputLength resultPointer
     (stackPointer - parentHeaderStackBytes) parentHeaderStackBytes /\
   separateRanges resultPointer 80
     (stackPointer - parentHeaderStackBytes) parentHeaderStackBytes /\
-  0 <= returnAddress < word64Modulus /\ returnAddress mod 2 = 0.
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
 
 (* The nextUint64 input is a two-word slice at a1. The result is 16 bytes
    at a0. On success, the input slice advances by the consumed item size.
