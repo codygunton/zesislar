@@ -15,3 +15,5 @@ This condition excludes an input when a reached child has an overflowing long-le
 Sail's slice and cursor checks keep each read inside its backing bytes. They do not imply `headerFits` for every binary child call from the outer condition. A successful Sail `rlp_decode_item` also checks that the full length is positive and fits the remaining cursor. That success can support the child condition after a proof connects Sail's cursor to the same binary call. Sail rejection gives no such precondition for the binary call. The same-slice correspondence and each nested C1-A fact remain explicit composition obligations.
 
 The candidate domain would narrow the public rung-2 claim. The current proof plan keeps the outer domain and the nested obligations separate until the user reviews this choice.
+
+Q29 found that this condition still includes field-boundary truncations that Sail accepts. Selected ELF guards reject several missing required fields by static analysis. The [pinned vectors](../ZesuSsz/Evidence/PARENT_HEADER_VECTORS.json) record the mismatch. The candidate needs revision before it can support unconditional Sail agreement.
