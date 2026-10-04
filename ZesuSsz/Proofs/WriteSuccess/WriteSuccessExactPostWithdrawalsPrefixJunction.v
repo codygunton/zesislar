@@ -36,7 +36,7 @@ Definition writeSuccessPostWithdrawals156f4UntouchedRaw
    writeSuccessTerminalSavedSlots witness ∗
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗ writeSuccessDecodedBytes witness ∗
    bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ writeSuccessPayload witness ∗
-   WriteSuccessByteLists.byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
+   ByteLists.byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
      (writeSuccessRawTransactions witness) ∗
    WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources sp
      (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness)
@@ -75,7 +75,7 @@ Lemma writeSuccessPostWithdrawals156f4UntouchedRaw_unfold
    writeSuccessTerminalSavedSlots witness ∗
    bv_unsigned (writeSuccessDecodedPointer witness) ↦ₘ∗ writeSuccessDecodedBytes witness ∗
    bv_unsigned (writeSuccessValueWord values 4) ↦ₘ∗ writeSuccessPayload witness ∗
-   WriteSuccessByteLists.byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
+   ByteLists.byteListItemResources (bv_unsigned (writeSuccessValueWord values 9))
      (writeSuccessRawTransactions witness) ∗
    WriteSuccessPostTransactionResources.writeSuccessPostTransactionDataResources sp
      (writeSuccessSourceBytes witness) (writeSuccessDecodedBytes witness)

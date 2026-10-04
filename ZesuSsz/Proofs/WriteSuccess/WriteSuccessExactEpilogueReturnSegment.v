@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Automation.CallReturnFrames.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallReturnFrames.
 Require Import ZesuSsz.Automation.Resources.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.

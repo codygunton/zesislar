@@ -1,6 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 From iris.proofmode Require Import environments.
-Require Import ZesuSsz.Automation.CallReturnFrames.
+Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessCallReturnFrames.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 Require Import isla.riscv64.riscv64.

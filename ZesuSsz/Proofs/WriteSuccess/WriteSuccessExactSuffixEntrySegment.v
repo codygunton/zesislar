@@ -40,7 +40,7 @@ Proof.
   zesu_expose_code_lists; zesu_reduce_introduced_code_lists.
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
   zesu_run.
-  iExists (WriteSuccessEvents.writeOutputEventsAny
+  iExists (OutputEvents.writeOutputEventsAny
     (sp + BV 64 1744)%bv (BV 64 32)
     (writeSuccessHashesEvents sp remaining tail), tt)ₗ.
   zesu_run.

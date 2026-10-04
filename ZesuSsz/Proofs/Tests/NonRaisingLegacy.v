@@ -2,7 +2,7 @@ Require Import ZesuSsz.Automation.All.
 Require ZesuSsz.Automation.Legacy.Finish.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
+Require Import ZesuSsz.Automation.BitvectorFacts.
 From IslaTraces.write_success_32 Require Import a15048.
 
 Lemma test_nonraising_legacy_pure (n : nat) : n + 0 = n.
