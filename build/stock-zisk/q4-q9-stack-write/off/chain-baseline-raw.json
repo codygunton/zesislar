@@ -1,0 +1,338 @@
+{
+  "schema": 1,
+  "capture_only": true,
+  "block_count": 24,
+  "blocks": [
+    {
+      "entry": "0x800d6960",
+      "outcomes": [
+        "execution-stall",
+        "execution-stall"
+      ],
+      "observations": 2
+    },
+    {
+      "entry": "0x800d6974",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d697c",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d698c",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69a4",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69b0",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69d8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e0",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a00",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a08",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a14",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a24",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a38",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a40",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a64",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a6c",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a78",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6aa8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ab4",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ac4",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ad8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ae0",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6b08",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    }
+  ],
+  "first_residuals": {
+    "execution-stall": {
+      "entry": "0x800d6960",
+      "residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "returnAddress",
+            "Z"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "BLK_STOP_800d6974",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6ae0",
+            "(iProp Sigma)"
+          ],
+          [
+            "H0",
+            "(decodeItemDomainAt returnAddress decodeItemC1BDomain args)"
+          ],
+          [
+            "b",
+            "(bv 64)"
+          ],
+          [
+            "H1",
+            "(Z.land (bv_unsigned b) 131072 = 0)"
+          ],
+          [
+            "n",
+            "(bv 64)"
+          ],
+          [
+            "b0",
+            "(bv 64)"
+          ],
+          [
+            "H2",
+            "(Z.land (bv_unsigned b0) 131072 = 0)"
+          ],
+          [
+            "H3",
+            "(Z.land (bvn_unsigned n) 131072 = 0)"
+          ],
+          [
+            "H4",
+            "(bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)) >= bv_signed 2684354560)"
+          ],
+          [
+            "H5",
+            "(bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8) \u2264 bv_signed 3221225472)"
+          ],
+          [
+            "b1",
+            "bool"
+          ],
+          [
+            "H6",
+            "(-1 < bv_unsigned b0 < bv_modulus 64)"
+          ],
+          [
+            "H7",
+            "(64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b0 < bv_half_modulus 64)"
+          ],
+          [
+            "H8",
+            "(-1 < bv_unsigned n < bv_modulus 64)"
+          ],
+          [
+            "H9",
+            "(64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64)"
+          ],
+          [
+            "H10",
+            "(-1 < bv_unsigned b < bv_modulus 64)"
+          ],
+          [
+            "H11",
+            "(64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64)"
+          ]
+        ],
+        "persistent": [
+          "(instr_lookup_resources\n   (\u03bb address : Z,\n      if address =? 2148362592\n      then Some a800d6960\n      else\n       if address =? 2148362596\n       then Some a800d6964\n       else\n        if address =? 2148362600\n        then Some a800d6968\n        else\n         if address =? 2148362604\n         then Some a800d696c\n         else\n          if address =? 2148362608\n          then Some a800d6970\n          else\n           if address =? 2148362612\n           then Some a800d6974\n           else\n            if address =? 2148362616\n            then Some a800d6978\n            else\n             if address =? 2148362620\n             then Some a800d697c\n             else\n              if address =? 2148362624\n              then Some a800d6980\n              else\n               if address =? 2148362628\n               then Some a800d6984\n               else\n                if address =? 2148362632\n                then Some a800d6988\n                else\n                 if address =? 2148362636\n                 then Some a800d698c\n                 else\n                  if address =? 2148362640\n                  then Some a800d6990\n                  else\n                   if address =? 2148362644\n                   then Some a800d6994\n                   else\n                    if address =? 2148362648\n                    then Some a800d6998\n                    else\n                     if address =? 2148362652\n                     then Some a800d699c\n                     else\n                      if address =? 2148362656\n                      then Some a800d69a0\n                      else\n                       if address =? 2148362660 then Some a800d69a4 else if address =? 2148362664 then Some a800d69a8 else if address =? 2148362668 then Some a800d69ac else if ... then ... else ...))"
+        ],
+        "spatial": [
+          "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+          "(instr_pre 2148362612 BLK_STOP_800d6974)",
+          "(\"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)))%I",
+          "(\"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)))%I",
+          "(\"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)))%I",
+          "(\"x8\" \u21a6\u1d63 RVal_Bits (decodeItemSavedFramePointer args))%I",
+          "(decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args)%I",
+          "(decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args)%I",
+          "((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) \u21a6\u2098? RlpDecodeItem.decodeItemStackBytes)%I",
+          "(instr_pre returnAddress (\u2203 after : DecodeItemOutcome, \u231cdecodeItemDomainAt returnAddress decodeItemC1BDomain args \u2227 DecodeMeaningModuloKnownBugs args after\u231d \u2217 decodeItemExitResources args after))",
+          "(\"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362596))%I",
+          "(\"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv)%I",
+          "(reg_col zesu_ram_sys_regs)",
+          "(\"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)))%I"
+        ],
+        "local_sorts": {
+          "H11": "Prop",
+          "H10": "Prop",
+          "H9": "Prop",
+          "H8": "Prop",
+          "H7": "Prop",
+          "H6": "Prop",
+          "b1": "Type",
+          "H5": "Prop",
+          "H4": "Prop",
+          "H3": "Prop",
+          "H2": "Prop",
+          "b0": "Type",
+          "n": "Type",
+          "H1": "Prop",
+          "b": "Type",
+          "H0": "Prop",
+          "BLK_STOP_800d6ae0": "Type",
+          "BLK_STOP_800d6974": "Type",
+          "args": "Type",
+          "returnAddress": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 64%N\u231d \u2217 (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217 WPasm HIDDEN))%I\n      | MKArray n' a' values =>\n          if (n' =? 64)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `mod` 8 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 64%N = n', a' \u21a6\u2098\u2217 <[i:=eq_rect 64%N bv (Z_to_bv 64 (decodeItemReturnAddress args)) n' Heq]> values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n              (a'\n               \u21a6\u2098\u2217 (take i values ++\n                    Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))) (Z.ones (Z.of_N n')))\n                    :: Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                       :: Z_to_bv n' (Z.land ((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                          :: Z_to_bv n' (Z.land (((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                             :: Z_to_bv n' (Z.land ((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                :: Z_to_bv n'\n                                     (Z.land (((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                   :: Z_to_bv n'\n                                        (Z.land ((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                           (Z.ones (Z.of_N n')))\n                                      :: Z_to_bv n'\n                                           (Z.land\n                                              (((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                              (Z.ones (Z.of_N n'))) :: drop (i + N.to_nat 8) values) -\u2217 WPasm HIDDEN))%I\n      | MKUninit a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\n           (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217\n            a' \u21a6\u2098? (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') -\u2217\n            (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)\n            \u21a6\u2098? (a' + length - (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)) -\u2217 WPasm HIDDEN))%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SWriteMem (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) (Z_to_bv 64 (decodeItemReturnAddress args))) Pks' \u2286 Pks\u231d \u2217\n             (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {
+          "(decodeItemOutputPointer args)": 8,
+          "(decodeItemInputPointer args)": 8
+        },
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL H11 : (64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H11 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H10 : (-1 < bv_unsigned b < bv_modulus 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H10 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H9 : (64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H9 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H8 : (-1 < bv_unsigned n < bv_modulus 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H8 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H7 : (64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b0 < bv_half_modulus 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H7 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H6 : (-1 < bv_unsigned b0 < bv_modulus 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H6 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL b1 : bool CHAIN-FIELD-END\nCHAIN-GOAL-SORT b1 : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H5 : (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8) \u2264 bv_signed 3221225472) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H5 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H4 : (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)) >= bv_signed 2684354560) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H4 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H3 : (Z.land (bvn_unsigned n) 131072 = 0) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H3 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H2 : (Z.land (bv_unsigned b0) 131072 = 0) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H2 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL b0 : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT b0 : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H1 : (Z.land (bv_unsigned b) 131072 = 0) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H1 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL b : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT b : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H0 : (decodeItemDomainAt returnAddress decodeItemC1BDomain args) CHAIN-FIELD-END\nCHAIN-GOAL-SORT H0 : Prop CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-PERSISTENT\"\n(instr_lookup_resources\n   (\u03bb address : Z,\n      if address =? 2148362592\n      then Some a800d6960\n      else\n       if address =? 2148362596\n       then Some a800d6964\n       else\n        if address =? 2148362600\n        then Some a800d6968\n        else\n         if address =? 2148362604\n         then Some a800d696c\n         else\n          if address =? 2148362608\n          then Some a800d6970\n          else\n           if address =? 2148362612\n           then Some a800d6974\n           else\n            if address =? 2148362616\n            then Some a800d6978\n            else\n             if address =? 2148362620\n             then Some a800d697c\n             else\n              if address =? 2148362624\n              then Some a800d6980\n              else\n               if address =? 2148362628\n               then Some a800d6984\n               else\n                if address =? 2148362632\n                then Some a800d6988\n                else\n                 if address =? 2148362636\n                 then Some a800d698c\n                 else\n                  if address =? 2148362640\n                  then Some a800d6990\n                  else\n                   if address =? 2148362644\n                   then Some a800d6994\n                   else\n                    if address =? 2148362648\n                    then Some a800d6998\n                    else\n                     if address =? 2148362652\n                     then Some a800d699c\n                     else\n                      if address =? 2148362656\n                      then Some a800d69a0\n                      else\n                       if address =? 2148362660 then Some a800d69a4 else if address =? 2148362664 then Some a800d69a8 else if address =? 2148362668 then Some a800d69ac else if ... then ... else ...))\nCHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)))%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)))%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)))%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"x8\" \u21a6\u1d63 RVal_Bits (decodeItemSavedFramePointer args))%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args)%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args)%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) \u21a6\u2098? RlpDecodeItem.decodeItemStackBytes)%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\"\n(instr_pre returnAddress (\u2203 after : DecodeItemOutcome, \u231cdecodeItemDomainAt returnAddress decodeItemC1BDomain args \u2227 DecodeMeaningModuloKnownBugs args after\u231d \u2217 decodeItemExitResources args after))\nCHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362596))%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv)%I CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (reg_col zesu_ram_sys_regs) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (\"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)))%I CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 64%N\u231d \u2217 (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217 WPasm HIDDEN))%I\n      | MKArray n' a' values =>\n          if (n' =? 64)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `mod` 8 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 64%N = n', a' \u21a6\u2098\u2217 <[i:=eq_rect 64%N bv (Z_to_bv 64 (decodeItemReturnAddress args)) n' Heq]> values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n              (a'\n               \u21a6\u2098\u2217 (take i values ++\n                    Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))) (Z.ones (Z.of_N n')))\n                    :: Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                       :: Z_to_bv n' (Z.land ((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                          :: Z_to_bv n' (Z.land (((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                             :: Z_to_bv n' (Z.land ((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                :: Z_to_bv n'\n                                     (Z.land (((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                   :: Z_to_bv n'\n                                        (Z.land ((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                           (Z.ones (Z.of_N n')))\n                                      :: Z_to_bv n'\n                                           (Z.land\n                                              (((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                              (Z.ones (Z.of_N n'))) :: drop (i + N.to_nat 8) values) -\u2217 WPasm HIDDEN))%I\n      | MKUninit a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\n           (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217\n            a' \u21a6\u2098? (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') -\u2217\n            (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)\n            \u21a6\u2098? (a' + length - (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)) -\u2217 WPasm HIDDEN))%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SWriteMem (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) (Z_to_bv 64 (decodeItemReturnAddress args))) Pks' \u2286 Pks\u231d \u2217\n             (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end)) CHAIN-FIELD-END\nCHAIN-MEMORY-WIDTH (decodeItemOutputPointer args) : 8%N\nCHAIN-MEMORY-WIDTH (decodeItemInputPointer args) : 8%N\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nBLK_STOP_800d6974 : (iProp Sigma)\nBLK_STOP_800d6ae0 : (iProp Sigma)\nH0 : (decodeItemDomainAt returnAddress decodeItemC1BDomain args)\nb : (bv 64)\nH1 : (Z.land (bv_unsigned b) 131072 = 0)\nn : (bv 64)\nb0 : (bv 64)\nH2 : (Z.land (bv_unsigned b0) 131072 = 0)\nH3 : (Z.land (bvn_unsigned n) 131072 = 0)\nH4 : (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)) >= bv_signed 2684354560)\nH5 : (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8) \u2264 bv_signed 3221225472)\nb1 : bool\nH6 : (-1 < bv_unsigned b0 < bv_modulus 64)\nH7 : (64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b0 < bv_half_modulus 64)\nH8 : (-1 < bv_unsigned n < bv_modulus 64)\nH9 : (64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64)\nH10 : (-1 < bv_unsigned b < bv_modulus 64)\nH11 : (64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64)\n============================\n_ : (instr_lookup_resources\n   (\u03bb address : Z,\n      if address =? 2148362592\n      then Some a800d6960\n      else\n       if address =? 2148362596\n       then Some a800d6964\n       else\n        if address =? 2148362600\n        then Some a800d6968\n        else\n         if address =? 2148362604\n         then Some a800d696c\n         else\n          if address =? 2148362608\n          then Some a800d6970\n          else\n           if address =? 2148362612\n           then Some a800d6974\n           else\n            if address =? 2148362616\n            then Some a800d6978\n            else\n             if address =? 2148362620\n             then Some a800d697c\n             else\n              if address =? 2148362624\n              then Some a800d6980\n              else\n               if address =? 2148362628\n               then Some a800d6984\n               else\n                if address =? 2148362632\n                then Some a800d6988\n                else\n                 if address =? 2148362636\n                 then Some a800d698c\n                 else\n                  if address =? 2148362640\n                  then Some a800d6990\n                  else\n                   if address =? 2148362644\n                   then Some a800d6994\n                   else\n                    if address =? 2148362648\n                    then Some a800d6998\n                    else\n                     if address =? 2148362652\n                     then Some a800d699c\n                     else\n                      if address =? 2148362656\n                      then Some a800d69a0\n                      else\n                       if address =? 2148362660 then Some a800d69a4 else if address =? 2148362664 then Some a800d69a8 else if address =? 2148362668 then Some a800d69ac else if ... then ... else ...))\n--------------------------------------\u25a1\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : (instr_pre 2148362612 BLK_STOP_800d6974)\n_ : (\"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)))%I\n_ : (\"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)))%I\n_ : (\"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)))%I\n_ : (\"x8\" \u21a6\u1d63 RVal_Bits (decodeItemSavedFramePointer args))%I\n_ : (decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args)%I\n_ : (decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args)%I\n_ : ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) \u21a6\u2098? RlpDecodeItem.decodeItemStackBytes)%I\n_ : (instr_pre returnAddress (\u2203 after : DecodeItemOutcome, \u231cdecodeItemDomainAt returnAddress decodeItemC1BDomain args \u2227 DecodeMeaningModuloKnownBugs args after\u231d \u2217 decodeItemExitResources args after))\n_ : (\"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362596))%I\n_ : (\"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv)%I\n_ : (reg_col zesu_ram_sys_regs)\n_ : (\"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)))%I"
+      },
+      "residual_pcs": [
+        2148362596,
+        2148362596,
+        2148362596
+      ]
+    }
+  }
+}

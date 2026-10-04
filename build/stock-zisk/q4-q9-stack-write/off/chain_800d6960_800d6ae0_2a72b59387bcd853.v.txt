@@ -1,0 +1,157 @@
+Set Printing Width 200.
+Require Import isla.isla.
+From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Stock.Closure.index_decodeItem.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Automation.Switches.InstructionLookup.
+Require Import ZesuSsz.Automation.Sets.call.
+Require Import ZesuSsz.Automation.Switches.ReturnBundle.
+Require Import ZesuSsz.Automation.ReturnWand.
+Require Import ZesuSsz.Automation.Switches.ReturnWand.
+Ltac chain_print_environment marker environment :=
+  lazymatch environment with
+  | environments.Enil => idtac
+  | environments.Esnoc ?rest ?name ?resource =>
+      chain_print_environment marker rest;
+      idtac marker resource "CHAIN-FIELD-END"
+  end.
+Ltac chain_print_goal phase :=
+  idtac "CHAIN-GOAL-BEGIN" phase;
+  try (multimatch goal with
+    | Hlocal : ?T |- _ =>
+      idtac "CHAIN-GOAL-LOCAL" Hlocal ":" T "CHAIN-FIELD-END";
+      let S := type of T in
+      idtac "CHAIN-GOAL-SORT" Hlocal ":" S "CHAIN-FIELD-END";
+      try (lazymatch goal with
+        | Hlocal := ?value : _ |- _ =>
+          idtac "CHAIN-GOAL-VALUE" Hlocal ":" value "CHAIN-FIELD-END"
+        end);
+      fail
+    end);
+  lazymatch goal with
+  | |- envs_entails ?environment ?conclusion =>
+      idtac "CHAIN-GOAL-ENV" "iris" "CHAIN-FIELD-END";
+      let persistent := eval cbv [environments.env_intuitionistic] in
+        (environments.env_intuitionistic environment) in
+      let spatial := eval cbv [environments.env_spatial] in
+        (environments.env_spatial environment) in
+      chain_print_environment "CHAIN-GOAL-PERSISTENT" persistent;
+      chain_print_environment "CHAIN-GOAL-SPATIAL" spatial;
+      idtac "CHAIN-GOAL-CONCLUSION" conclusion "CHAIN-FIELD-END"
+  | |- ?conclusion =>
+      idtac "CHAIN-GOAL-ENV" "coq" "CHAIN-FIELD-END";
+      idtac "CHAIN-GOAL-CONCLUSION" conclusion "CHAIN-FIELD-END"
+  end.
+
+(* Native successor capture; no resources added. *)
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Automation.Switches.InstructionLookup.
+
+Definition NativeRootState_800d6960
+    `{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs) : iProp Sigma :=
+  ((decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args) ∗
+   (instr_pre returnAddress (∃ after : DecodeItemOutcome, ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\ DecodeMeaningModuloKnownBugs args after⌝ ∗ decodeItemExitResources args after)) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@NativeRootState_800d6960) := I.
+Global Typeclasses Opaque NativeRootState_800d6960.
+
+
+Lemma infer_boundary `{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs)  (BLK_STOP_800d6ae0 : iProp Sigma)  (BLK_STOP_800d6974 : iProp Sigma) :
+  instr_pre 0x800d6974 BLK_STOP_800d6974 -∗
+  instr_pre 0x800d6ae0 BLK_STOP_800d6ae0 -∗
+  decodeItemSelectedCode -∗
+  instr_body 0x800d6960
+    (NativeRootState_800d6960 returnAddress args).
+Proof.
+idtac "PROBE-BEGIN".
+try intros.
+idtac.
+try zesu_block.
+all: try zesu_enter_return_bundle_if_enabled.
+all: try zesu_enter_return_wand_if_enabled.
+
+all: try liShow.
+all: try (lazymatch goal with
+  | |- envs_entails ?D _ => lazymatch D with
+      | context [reg_mapsto _ "PC" _ (RVal_Bits ?v)] => idtac "CHAIN-RESIDUAL-PC" v
+      end
+  end).
+Ltac chain_record_active := lazymatch goal with |- ?G => chain_print_goal "active"; try (iMatchHyp ltac:(fun H resource =>
+  first [lazymatch resource with
+    | @mem_mapsto _ _ ?width ?address _ _ =>
+        try (lazymatch address with
+          | context[@bv_unsigned ?addressWidth ?value] =>
+            let addressWidth := eval vm_compute in addressWidth in
+            idtac "BOUNDARY-ADDRESS-WIDTH" value ":" addressWidth
+          end);
+        let width := eval vm_compute in width in
+        idtac "CHAIN-MEMORY-WIDTH" address ":" width
+    end
+  | lazymatch resource with
+    | @mem_mapsto_array _ _ ?width ?address _ _ =>
+        try (lazymatch address with
+          | context[@bv_unsigned ?addressWidth ?value] =>
+            let addressWidth := eval vm_compute in addressWidth in
+            idtac "BOUNDARY-ADDRESS-WIDTH" value ":" addressWidth
+          end);
+        let width := eval vm_compute in width in
+        idtac "CHAIN-MEMORY-WIDTH" address ":" width
+    end
+  | lazymatch resource with
+    | spec_trace ?trace =>
+        let rec events trace := lazymatch trace with
+          | scons (SWriteMem ?address ?value) ?rest =>
+              let width := eval vm_compute in (bvn_n value) in
+              idtac "CHAIN-TRACE-WIDTH" address ":" width; events rest
+          | scons_snap (SWriteMem ?address ?value) _ ?rest =>
+              let width := eval vm_compute in (bvn_n value) in
+              idtac "CHAIN-TRACE-WIDTH" address ":" width; events rest
+          | _ => idtac
+          end in events trace
+    end]; fail)); idtac "CHAIN-GOAL-END" end.
+all: chain_record_active.
+Unshelve.
+all: try liShow.
+Ltac chain_record_shelved := lazymatch goal with |- ?G => chain_print_goal "shelved"; try (iMatchHyp ltac:(fun H resource =>
+  first [lazymatch resource with
+    | @mem_mapsto _ _ ?width ?address _ _ =>
+        try (lazymatch address with
+          | context[@bv_unsigned ?addressWidth ?value] =>
+            let addressWidth := eval vm_compute in addressWidth in
+            idtac "BOUNDARY-ADDRESS-WIDTH" value ":" addressWidth
+          end);
+        let width := eval vm_compute in width in
+        idtac "CHAIN-MEMORY-WIDTH" address ":" width
+    end
+  | lazymatch resource with
+    | @mem_mapsto_array _ _ ?width ?address _ _ =>
+        try (lazymatch address with
+          | context[@bv_unsigned ?addressWidth ?value] =>
+            let addressWidth := eval vm_compute in addressWidth in
+            idtac "BOUNDARY-ADDRESS-WIDTH" value ":" addressWidth
+          end);
+        let width := eval vm_compute in width in
+        idtac "CHAIN-MEMORY-WIDTH" address ":" width
+    end
+  | lazymatch resource with
+    | spec_trace ?trace =>
+        let rec events trace := lazymatch trace with
+          | scons (SWriteMem ?address ?value) ?rest =>
+              let width := eval vm_compute in (bvn_n value) in
+              idtac "CHAIN-TRACE-WIDTH" address ":" width; events rest
+          | scons_snap (SWriteMem ?address ?value) _ ?rest =>
+              let width := eval vm_compute in (bvn_n value) in
+              idtac "CHAIN-TRACE-WIDTH" address ":" width; events rest
+          | _ => idtac
+          end in events trace
+    end]; fail)); idtac "CHAIN-GOAL-END" end.
+all: chain_record_shelved.
+Abort.
+Goal True. idtac "PROBE-END". Abort.

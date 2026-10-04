@@ -1,0 +1,1861 @@
+{
+  "command": [
+    "make",
+    "check-fast",
+    "CHECK_AGENT=worker2-child-platform",
+    "AGENT_JOBS=4",
+    "FAST_JOBS=4"
+  ],
+  "rc": 2,
+  "elapsed_seconds": 70.281,
+  "sample_interval_seconds": 1,
+  "samples": [
+    {
+      "elapsed_seconds": 1.02,
+      "total_cpu_percent": 6.188,
+      "load": "2.13 2.52 2.59 8/4073 731234",
+      "available_memory_kib": 141608800,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 146,
+          "rss_kib": 949800,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 140,
+          "rss_kib": 947756,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 2.041,
+      "total_cpu_percent": 8.312,
+      "load": "2.13 2.52 2.59 7/4072 731487",
+      "available_memory_kib": 141103724,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 247,
+          "rss_kib": 960040,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 241,
+          "rss_kib": 957996,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 3.061,
+      "total_cpu_percent": 8.613,
+      "load": "2.13 2.52 2.59 6/4071 731743",
+      "available_memory_kib": 140644028,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 349,
+          "rss_kib": 984616,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 343,
+          "rss_kib": 980524,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 4.08,
+      "total_cpu_percent": 6.787,
+      "load": "2.13 2.52 2.59 3/4073 731953",
+      "available_memory_kib": 141427756,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 451,
+          "rss_kib": 1009672,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 444,
+          "rss_kib": 1007632,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 5.1,
+      "total_cpu_percent": 5.835,
+      "load": "2.13 2.52 2.59 5/4066 732135",
+      "available_memory_kib": 140512668,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 553,
+          "rss_kib": 1034248,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 546,
+          "rss_kib": 1032208,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 6.121,
+      "total_cpu_percent": 6.713,
+      "load": "2.28 2.54 2.59 5/4059 732458",
+      "available_memory_kib": 140452444,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 655,
+          "rss_kib": 1048584,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 648,
+          "rss_kib": 1048592,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 7.14,
+      "total_cpu_percent": 5.981,
+      "load": "2.28 2.54 2.59 5/4068 733082",
+      "available_memory_kib": 141234996,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 757,
+          "rss_kib": 1060872,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 750,
+          "rss_kib": 1060880,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 8.161,
+      "total_cpu_percent": 8.053,
+      "load": "2.28 2.54 2.59 7/4064 734412",
+      "available_memory_kib": 140920104,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 858,
+          "rss_kib": 1081488,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 851,
+          "rss_kib": 1081496,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 9.181,
+      "total_cpu_percent": 8.585,
+      "load": "2.28 2.54 2.59 4/4059 735839",
+      "available_memory_kib": 140915576,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 960,
+          "rss_kib": 1093776,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 953,
+          "rss_kib": 1095832,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 10.199,
+      "total_cpu_percent": 5.795,
+      "load": "2.50 2.58 2.61 5/4062 736830",
+      "available_memory_kib": 140922712,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 1062,
+          "rss_kib": 1112208,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 1056,
+          "rss_kib": 1108120,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 11.217,
+      "total_cpu_percent": 8.026,
+      "load": "2.50 2.58 2.61 6/4060 737654",
+      "available_memory_kib": 140909372,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 1163,
+          "rss_kib": 1122448,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 1157,
+          "rss_kib": 1120408,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 12.236,
+      "total_cpu_percent": 7.947,
+      "load": "2.50 2.58 2.61 5/4060 738377",
+      "available_memory_kib": 140918040,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 730456,
+          "cpu_ticks": 0,
+          "rss_kib": 4204,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730460,
+          "cpu_ticks": 0,
+          "rss_kib": 5944,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6ae0_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730468,
+          "cpu_ticks": 0,
+          "rss_kib": 4208,
+          "comm": "timeout",
+          "command": "timeout 360 nice -n 10 bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730471,
+          "cpu_ticks": 0,
+          "rss_kib": 5892,
+          "comm": "bash",
+          "command": "bash tools/coqc_scratch.sh _build/q4-stack-write-run/on/stage/chain_800d6960_800d6974_2a72b59387bcd853.v /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform "
+        },
+        {
+          "pid": 730666,
+          "cpu_ticks": 0,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730692,
+          "cpu_ticks": 0,
+          "rss_kib": 5948,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730738,
+          "cpu_ticks": 0,
+          "rss_kib": 6544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh scope scratch-coqc -- .bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-cor"
+        },
+        {
+          "pid": 730769,
+          "cpu_ticks": 1264,
+          "rss_kib": 1140884,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        },
+        {
+          "pid": 730782,
+          "cpu_ticks": 0,
+          "rss_kib": 5992,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/.bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core"
+        },
+        {
+          "pid": 730898,
+          "cpu_ticks": 1259,
+          "rss_kib": 1136796,
+          "comm": "coqc",
+          "command": "/home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/coq-core/kernel -I /home/cody/islaris/_opam/lib/coq-core/lib -I /home/cody/islaris/_opam"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 13.255,
+      "total_cpu_percent": 4.339,
+      "load": "2.50 2.58 2.61 4/4063 739039",
+      "available_memory_kib": 143101640,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 14.273,
+      "total_cpu_percent": 4.943,
+      "load": "2.50 2.58 2.61 4/4073 739629",
+      "available_memory_kib": 142582644,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 15.291,
+      "total_cpu_percent": 3.363,
+      "load": "2.38 2.56 2.60 2/4085 740194",
+      "available_memory_kib": 143195032,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 16.309,
+      "total_cpu_percent": 3.537,
+      "load": "2.38 2.56 2.60 3/4080 740707",
+      "available_memory_kib": 142625944,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 17.327,
+      "total_cpu_percent": 3.596,
+      "load": "2.38 2.56 2.60 4/4086 741062",
+      "available_memory_kib": 142959940,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 18.344,
+      "total_cpu_percent": 3.379,
+      "load": "2.38 2.56 2.60 1/4071 741317",
+      "available_memory_kib": 143477292,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 19.361,
+      "total_cpu_percent": 2.029,
+      "load": "2.38 2.56 2.60 3/4076 741662",
+      "available_memory_kib": 143505536,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 20.379,
+      "total_cpu_percent": 3.935,
+      "load": "2.35 2.55 2.60 3/4068 741937",
+      "available_memory_kib": 143068648,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 21.397,
+      "total_cpu_percent": 2.243,
+      "load": "2.35 2.55 2.60 1/4072 742128",
+      "available_memory_kib": 143619632,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 22.416,
+      "total_cpu_percent": 2.166,
+      "load": "2.35 2.55 2.60 3/4062 742273",
+      "available_memory_kib": 142723836,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 23.435,
+      "total_cpu_percent": 3.575,
+      "load": "2.35 2.55 2.60 3/4054 742624",
+      "available_memory_kib": 143512812,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 24.453,
+      "total_cpu_percent": 3.683,
+      "load": "2.35 2.55 2.60 2/4041 742925",
+      "available_memory_kib": 143495156,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 25.47,
+      "total_cpu_percent": 2.627,
+      "load": "2.24 2.52 2.59 6/4047 743466",
+      "available_memory_kib": 143491996,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 26.489,
+      "total_cpu_percent": 5.122,
+      "load": "2.24 2.52 2.59 4/4046 744285",
+      "available_memory_kib": 143119492,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 744273,
+          "cpu_ticks": 0,
+          "rss_kib": 6296,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh reserve-coqc 731952 "
+        },
+        {
+          "pid": 744279,
+          "cpu_ticks": 0,
+          "rss_kib": 2528,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh reserve-coqc 731952 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 27.507,
+      "total_cpu_percent": 3.87,
+      "load": "2.24 2.52 2.59 2/4057 744769",
+      "available_memory_kib": 143399272,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 744735,
+          "cpu_ticks": 0,
+          "rss_kib": 6380,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp6h2xrec/state/coqc-reservations/731952.29002.27227 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 28.529,
+      "total_cpu_percent": 3.429,
+      "load": "2.24 2.52 2.59 3/4065 745767",
+      "available_memory_kib": 142815220,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 745189,
+          "cpu_ticks": 0,
+          "rss_kib": 6452,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpittkd9gt/state/coqc-reservations/731952.32252.8058 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 29.548,
+      "total_cpu_percent": 5.507,
+      "load": "2.24 2.52 2.59 4/4061 746595",
+      "available_memory_kib": 142955136,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 30.565,
+      "total_cpu_percent": 2.165,
+      "load": "2.14 2.50 2.58 2/4066 747050",
+      "available_memory_kib": 143351600,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 31.584,
+      "total_cpu_percent": 5.208,
+      "load": "2.14 2.50 2.58 3/4063 747739",
+      "available_memory_kib": 143272300,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 32.602,
+      "total_cpu_percent": 5.071,
+      "load": "2.14 2.50 2.58 5/4063 748513",
+      "available_memory_kib": 143155728,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 748504,
+          "cpu_ticks": 0,
+          "rss_kib": 6380,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmp4gbbrij7/state/coqc-reservations/731952.28865.25546 "
+        },
+        {
+          "pid": 748510,
+          "cpu_ticks": 0,
+          "rss_kib": 2592,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmp4gbbrij7/state/coqc-reservations/731952.28865.25546 "
+        },
+        {
+          "pid": 748512,
+          "cpu_ticks": 0,
+          "rss_kib": 2716,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmp4gbbrij7/state/coqc-reservations/731952.28865.25546 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 33.62,
+      "total_cpu_percent": 4.235,
+      "load": "2.14 2.50 2.58 2/4064 749166",
+      "available_memory_kib": 143413440,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 34.64,
+      "total_cpu_percent": 4.258,
+      "load": "2.14 2.50 2.58 5/4054 749924",
+      "available_memory_kib": 142723068,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 749912,
+          "cpu_ticks": 0,
+          "rss_kib": 6376,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh coqc-count nonwriter "
+        },
+        {
+          "pid": 749918,
+          "cpu_ticks": 0,
+          "rss_kib": 2560,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh coqc-count nonwriter "
+        },
+        {
+          "pid": 749920,
+          "cpu_ticks": 0,
+          "rss_kib": 2684,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh coqc-count nonwriter "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 35.658,
+      "total_cpu_percent": 5.054,
+      "load": "1.97 2.46 2.56 4/4054 750949",
+      "available_memory_kib": 142882928,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 750897,
+          "cpu_ticks": 0,
+          "rss_kib": 6428,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.29937.1168 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 36.676,
+      "total_cpu_percent": 2.642,
+      "load": "1.97 2.46 2.56 2/4050 752057",
+      "available_memory_kib": 143232404,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 751966,
+          "cpu_ticks": 0,
+          "rss_kib": 6440,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.6496.20505 "
+        },
+        {
+          "pid": 751983,
+          "cpu_ticks": 0,
+          "rss_kib": 2508,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.6496.20505 "
+        },
+        {
+          "pid": 751988,
+          "cpu_ticks": 0,
+          "rss_kib": 2508,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.6496.20505 "
+        },
+        {
+          "pid": 751989,
+          "cpu_ticks": 0,
+          "rss_kib": 3104,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.6496.20505 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 37.695,
+      "total_cpu_percent": 5.12,
+      "load": "1.97 2.46 2.56 7/4038 753354",
+      "available_memory_kib": 143309652,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 753199,
+          "cpu_ticks": 0,
+          "rss_kib": 6456,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.9869.25155 "
+        },
+        {
+          "pid": 753326,
+          "cpu_ticks": 0,
+          "rss_kib": 2592,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.9869.25155 "
+        },
+        {
+          "pid": 753327,
+          "cpu_ticks": 0,
+          "rss_kib": 3080,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpp_92ejmk/state/coqc-reservations/731952.9869.25155 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 38.714,
+      "total_cpu_percent": 5.177,
+      "load": "1.97 2.46 2.56 4/4041 754614",
+      "available_memory_kib": 143257936,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 39.731,
+      "total_cpu_percent": 4.266,
+      "load": "1.97 2.46 2.56 2/4048 755236",
+      "available_memory_kib": 143276376,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 40.749,
+      "total_cpu_percent": 4.138,
+      "load": "2.05 2.47 2.57 5/4048 756074",
+      "available_memory_kib": 142572192,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 41.768,
+      "total_cpu_percent": 5.625,
+      "load": "2.05 2.47 2.57 4/4039 756826",
+      "available_memory_kib": 142396184,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 42.784,
+      "total_cpu_percent": 2.531,
+      "load": "2.05 2.47 2.57 2/4060 757341",
+      "available_memory_kib": 143167040,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 43.801,
+      "total_cpu_percent": 3.276,
+      "load": "2.05 2.47 2.57 2/4065 757672",
+      "available_memory_kib": 143270036,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 44.819,
+      "total_cpu_percent": 4.86,
+      "load": "2.05 2.47 2.57 3/4078 758581",
+      "available_memory_kib": 143301028,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 758065,
+          "cpu_ticks": 0,
+          "rss_kib": 6480,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpr1jr9wau/state/coqc-reservations/731952.22960.8718 "
+        },
+        {
+          "pid": 758558,
+          "cpu_ticks": 0,
+          "rss_kib": 2640,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpr1jr9wau/state/coqc-reservations/731952.22960.8718 "
+        },
+        {
+          "pid": 758559,
+          "cpu_ticks": 0,
+          "rss_kib": 3100,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpr1jr9wau/state/coqc-reservations/731952.22960.8718 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 45.838,
+      "total_cpu_percent": 4.542,
+      "load": "2.13 2.47 2.57 4/4090 759132",
+      "available_memory_kib": 143251920,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 46.857,
+      "total_cpu_percent": 7.061,
+      "load": "2.13 2.47 2.57 3/4084 759778",
+      "available_memory_kib": 143095560,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 47.877,
+      "total_cpu_percent": 6.105,
+      "load": "2.13 2.47 2.57 5/4081 760229",
+      "available_memory_kib": 142395576,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 760216,
+          "cpu_ticks": 0,
+          "rss_kib": 6292,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh reserve-coqc 731952 "
+        },
+        {
+          "pid": 760222,
+          "cpu_ticks": 0,
+          "rss_kib": 2544,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh reserve-coqc 731952 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 48.895,
+      "total_cpu_percent": 3.403,
+      "load": "2.13 2.47 2.57 2/4072 760771",
+      "available_memory_kib": 142883040,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 49.912,
+      "total_cpu_percent": 4.642,
+      "load": "2.13 2.47 2.57 3/4066 761708",
+      "available_memory_kib": 143036704,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 761450,
+          "cpu_ticks": 0,
+          "rss_kib": 6392,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpdi37j2wm/state/coqc-reservations/731952.4812.7340 "
+        },
+        {
+          "pid": 761625,
+          "cpu_ticks": 0,
+          "rss_kib": 2604,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpdi37j2wm/state/coqc-reservations/731952.4812.7340 "
+        },
+        {
+          "pid": 761626,
+          "cpu_ticks": 0,
+          "rss_kib": 3072,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh confirm-coqc /tmp/tmpdi37j2wm/state/coqc-reservations/731952.4812.7340 "
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 50.93,
+      "total_cpu_percent": 3.935,
+      "load": "2.28 2.50 2.58 6/4063 762282",
+      "available_memory_kib": 143074892,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 51.948,
+      "total_cpu_percent": 2.721,
+      "load": "2.28 2.50 2.58 3/4061 762799",
+      "available_memory_kib": 143075368,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 52.966,
+      "total_cpu_percent": 5.392,
+      "load": "2.28 2.50 2.58 4/4049 763046",
+      "available_memory_kib": 142660756,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 53.985,
+      "total_cpu_percent": 5.034,
+      "load": "2.28 2.50 2.58 4/4027 763258",
+      "available_memory_kib": 142191156,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 55.002,
+      "total_cpu_percent": 3.281,
+      "load": "2.28 2.50 2.58 2/4028 763441",
+      "available_memory_kib": 143103924,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 56.021,
+      "total_cpu_percent": 4.708,
+      "load": "2.26 2.49 2.57 4/4035 763745",
+      "available_memory_kib": 143045348,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 57.038,
+      "total_cpu_percent": 4.605,
+      "load": "2.26 2.49 2.57 2/4034 763954",
+      "available_memory_kib": 143151284,
+      "swap_used_kib": 8370412,
+      "processes": []
+    },
+    {
+      "elapsed_seconds": 58.054,
+      "total_cpu_percent": 3.076,
+      "load": "2.26 2.49 2.57 3/4069 764257",
+      "available_memory_kib": 143086252,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764057,
+          "cpu_ticks": 0,
+          "rss_kib": 6512,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764060,
+          "cpu_ticks": 0,
+          "rss_kib": 6536,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764061,
+          "cpu_ticks": 0,
+          "rss_kib": 6592,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 0,
+          "rss_kib": 6472,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 59.073,
+      "total_cpu_percent": 4.492,
+      "load": "2.26 2.49 2.57 5/4066 764477",
+      "available_memory_kib": 141092676,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764057,
+          "cpu_ticks": 0,
+          "rss_kib": 6516,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6540,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764061,
+          "cpu_ticks": 0,
+          "rss_kib": 6596,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 1,
+          "rss_kib": 6476,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 60.092,
+      "total_cpu_percent": 5.307,
+      "load": "2.26 2.49 2.57 5/4071 764968",
+      "available_memory_kib": 141327604,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6540,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 1,
+          "rss_kib": 6476,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        },
+        {
+          "pid": 764530,
+          "cpu_ticks": 0,
+          "rss_kib": 6532,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764593,
+          "cpu_ticks": 0,
+          "rss_kib": 6516,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 61.111,
+      "total_cpu_percent": 4.015,
+      "load": "2.40 2.52 2.58 2/4073 765147",
+      "available_memory_kib": 142258076,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6540,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 1,
+          "rss_kib": 6476,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        },
+        {
+          "pid": 764530,
+          "cpu_ticks": 0,
+          "rss_kib": 6532,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 62.13,
+      "total_cpu_percent": 4.297,
+      "load": "2.40 2.52 2.58 5/4071 765383",
+      "available_memory_kib": 142013100,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6540,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 1,
+          "rss_kib": 6476,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        },
+        {
+          "pid": 764530,
+          "cpu_ticks": 0,
+          "rss_kib": 6532,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 63.149,
+      "total_cpu_percent": 4.681,
+      "load": "2.40 2.52 2.58 2/4073 765644",
+      "available_memory_kib": 142205460,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6540,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 1,
+          "rss_kib": 6476,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        },
+        {
+          "pid": 764530,
+          "cpu_ticks": 0,
+          "rss_kib": 6532,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 64.169,
+      "total_cpu_percent": 2.901,
+      "load": "2.40 2.52 2.58 6/4076 765884",
+      "available_memory_kib": 142199192,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6548,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 764062,
+          "cpu_ticks": 1,
+          "rss_kib": 6484,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        },
+        {
+          "pid": 765656,
+          "cpu_ticks": 0,
+          "rss_kib": 6492,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 65.19,
+      "total_cpu_percent": 6.746,
+      "load": "2.40 2.52 2.58 5/4073 766404",
+      "available_memory_kib": 141734532,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 764060,
+          "cpu_ticks": 1,
+          "rss_kib": 6548,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 765656,
+          "cpu_ticks": 0,
+          "rss_kib": 6492,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 765983,
+          "cpu_ticks": 0,
+          "rss_kib": 6508,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 66.209,
+      "total_cpu_percent": 4.795,
+      "load": "2.60 2.56 2.59 5/4058 766735",
+      "available_memory_kib": 142436460,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 765656,
+          "cpu_ticks": 0,
+          "rss_kib": 6492,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 766466,
+          "cpu_ticks": 0,
+          "rss_kib": 6476,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris/_opam/lib/coq-core/interp -I /home/cody/islaris/_opam/lib/"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 67.228,
+      "total_cpu_percent": 1.366,
+      "load": "2.60 2.56 2.59 3/4054 766894",
+      "available_memory_kib": 143017056,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 765656,
+          "cpu_ticks": 0,
+          "rss_kib": 6492,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 68.246,
+      "total_cpu_percent": 3.741,
+      "load": "2.60 2.56 2.59 3/4047 767142",
+      "available_memory_kib": 142404352,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 765656,
+          "cpu_ticks": 0,
+          "rss_kib": 6492,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 69.263,
+      "total_cpu_percent": 2.872,
+      "load": "2.60 2.56 2.59 3/4050 767350",
+      "available_memory_kib": 143102876,
+      "swap_used_kib": 8370412,
+      "processes": [
+        {
+          "pid": 765656,
+          "cpu_ticks": 0,
+          "rss_kib": 6496,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 767346,
+          "cpu_ticks": 0,
+          "rss_kib": 2732,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        },
+        {
+          "pid": 767347,
+          "cpu_ticks": 0,
+          "rss_kib": 2548,
+          "comm": "bash",
+          "command": "bash /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/tools/resource_guard.sh scope dune-coqc -- /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_opam/lib/coq-core/boot -I /home/cody/islaris/_opam/lib/coq-core/clib -I /home/cody/islaris/_opam/lib/coq-core/config -I /home/cody/islaris/_opam/lib/coq-core/engine -I /home/cody/islaris/_opam/lib/coq-core/gramlib -I /home/cody/islaris"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 70.281,
+      "total_cpu_percent": 3.938,
+      "load": "2.64 2.57 2.60 3/4043 767661",
+      "available_memory_kib": 142453288,
+      "swap_used_kib": 8370412,
+      "processes": []
+    }
+  ]
+}

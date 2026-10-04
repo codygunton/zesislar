@@ -1,0 +1,61 @@
+python3 tools/stock_zisk/platform/traces.py --ensure-native-indexes \
+  --manifest build/stock-zisk/build-recipe.json --cache-dir /home/cody/zesislar/.worktrees/worker2-child-platform/_build/stock-zisk/native-trace-cache \
+  --decode-out generated/isla-traces/stock-zisk/decodeItem --closure-out generated/isla-traces/stock-zisk/closure \
+  --dump build/stock-zisk/decodeItem.raw.dump --jobs 6
+Regenerated deterministic files match the tracked manifest
+Regenerated deterministic files match the tracked manifest
+uncached checks: machine config, tests, hygiene, spec shapes
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py'
+...s.......s.s..................................................s..............0xa -> 0x14 reached
+0xa -> 0x1e reached
+0x14 -> 0xa reached
+0x1e -> 0x28 reached
+...............0xa -> 0x999 error
+......................................s........................sss......sss..........................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 339 tests in 47.592s
+
+OK (skipped=11)
+assumptions: 1 checked; 0 changed
+CHANGED M.v f
+assumptions: 1 checked; 1 changed
+calls in [0x156e8, 0x15744): 0 premises, 0 contract modules
+spec record written to /tmp/tmpfvi3c1l7/spec.json
+python3 -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.101s
+
+OK
+Checked 4 artifacts and 22 inputs: b360195ac7dcbc20046adf905abbe9021b9fc06a423bd5038d1fc6b49163051d
+Checked 5 artifacts and 22 inputs: b360195ac7dcbc20046adf905abbe9021b9fc06a423bd5038d1fc6b49163051d
+Checked 4 artifacts and 22 inputs: b360195ac7dcbc20046adf905abbe9021b9fc06a423bd5038d1fc6b49163051d
+python3 -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
+python3 tools/stock_zisk/machine_map/generate.py --build build/stock-zisk --check
+fatal: cannot change to '_build/p0c-zesu-source': No such file or directory
+Traceback (most recent call last):
+  File "/home/cody/zesislar/.worktrees/worker2-child-platform/tools/stock_zisk/machine_map/generate.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/home/cody/zesislar/.worktrees/worker2-child-platform/tools/stock_zisk/machine_map/generate.py", line 90, in main
+    manifest.check(args.build, PINS)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/cody/zesislar/.worktrees/worker2-child-platform/tools/stock_zisk/manifest.py", line 185, in check
+    actual = subprocess.check_output(['git', '-C', path, 'rev-parse', 'HEAD'], text=True).strip()
+             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 473, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               **kwargs).stdout
+               ^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', '-C', '_build/p0c-zesu-source', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+make: *** [Makefile:122: check-evidence-tools] Error 1
