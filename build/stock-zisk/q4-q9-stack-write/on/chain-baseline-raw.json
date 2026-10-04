@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "capture_only": true,
+  "block_count": 24,
+  "blocks": [
+    {
+      "entry": "0x800d6960",
+      "outcomes": [
+        "error",
+        "error"
+      ],
+      "observations": 2
+    },
+    {
+      "entry": "0x800d6974",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d697c",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d698c",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69a4",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69b0",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69d8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e0",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a00",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a08",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a14",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a24",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a38",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a40",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a64",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a6c",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a78",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6aa8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ab4",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ac4",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ad8",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ae0",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6b08",
+      "outcomes": [
+        "missing-entry"
+      ],
+      "observations": 0
+    }
+  ],
+  "first_residuals": {}
+}
