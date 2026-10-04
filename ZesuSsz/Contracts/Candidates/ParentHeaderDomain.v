@@ -1,6 +1,7 @@
 From Coq Require Import List String ZArith.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 
@@ -60,7 +61,7 @@ Fixpoint reachedFieldSlices (schedule : list (Z * ParentHeaderFieldKind))
                   option_map (cons (pc, remaining))
                     (reachedFieldSlices later
                       (skipn (Z.to_nat (headerLength + payloadLength)) remaining))
-              else None
+              else Some [(pc, remaining)]
           end
       end
   end.
@@ -130,3 +131,11 @@ Definition nestedWrapOccurs (input : list byte) : Prop :=
       candidateSuccess isList headerLength payloadLength /\
     binaryWrapCase headerLength payloadLength
       ((headerLength + payloadLength) mod word64Modulus).
+
+Lemma hostileNestedWrapOccurs : nestedWrapOccurs fittingOuterHeader.
+Proof.
+  exists 0x800d5d34, hostileNestedHeader, false, 9,
+    (word64Modulus - 1).
+  vm_compute; repeat split; eauto; try congruence.
+  eexists; split; [reflexivity | right; left; reflexivity].
+Qed.
