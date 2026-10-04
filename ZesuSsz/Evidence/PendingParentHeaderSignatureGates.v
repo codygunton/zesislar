@@ -15,6 +15,7 @@ Definition ReviewedParentHeaderPlainTarget :
 Definition ReviewedNextUint64CandidateTarget :
     list byte -> Z -> NextUint64Call -> Prop :=
   fun parentInput pc call =>
+    allContiguousHeadersFit parentInput /\
     List.In pc parentHeaderNextUint64CallSites /\
     candidateCallInputAt parentInput pc call.(nextInputBytes) /\
     nextUint64Domain call.

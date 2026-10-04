@@ -18,3 +18,12 @@ Fail Check (fixtureNextCandidateExtra :
   list byte -> Z -> NextUint64Call -> Prop).
 Fail Check (fixtureParentCandidateExtra :
   ParentHeaderCall -> (Z -> list byte -> Prop) -> Prop).
+
+Definition fixtureNextCandidateMissingParentDomain :
+    list byte -> Z -> NextUint64Call -> Prop :=
+  fun parentInput pc call =>
+    List.In pc parentHeaderNextUint64CallSites /\
+    candidateCallInputAt parentInput pc call.(nextInputBytes) /\
+    nextUint64Domain call.
+Fail Check (eq_refl : fixtureNextCandidateMissingParentDomain =
+  ReviewedNextUint64CandidateTarget).

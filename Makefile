@@ -184,7 +184,8 @@ check-signatures:
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
 	  --cache=enabled -j$(FAST_JOBS) @install \
 	  ZesuSsz/Evidence/SignatureGateFixtures.vo \
-	  ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.vo
+	  ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.vo \
+	  ZesuSsz/Evidence/ParentHeaderDifferential.vo
 
 .PHONY: check-iris
 check-iris: check-evidence-tools

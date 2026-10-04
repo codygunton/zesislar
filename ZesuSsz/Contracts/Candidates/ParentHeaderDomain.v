@@ -122,6 +122,7 @@ Qed.
    its actual call arguments to the exact reached PC/slice pairs. *)
 Definition nextUint64CandidateTarget (parentInput : list byte) (pc : Z)
     (call : NextUint64Call) : Prop :=
+  allContiguousHeadersFit parentInput /\
   List.In pc parentHeaderNextUint64CallSites /\
   candidateCallInputAt parentInput pc call.(nextInputBytes) /\
   nextUint64Domain call.
