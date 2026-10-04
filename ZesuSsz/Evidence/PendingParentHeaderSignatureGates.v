@@ -2,6 +2,7 @@ From Coq Require Import List ZArith.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
+Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderDomain.
 Open Scope Z_scope.
 
@@ -19,3 +20,13 @@ Definition ReviewedNestedWrapTrigger : list byte -> Prop :=
         ((headerLength + payloadLength) mod word64Modulus).
 
 Check (eq_refl : nestedWrapOccurs = ReviewedNestedWrapTrigger).
+Check (eq_refl : nextUint64Domain = fun args =>
+  nextUint64EntryLayout
+    (nextInputPointer args) (Z.of_nat (List.length (nextInputBytes args)))
+    (nextSlicePointer args) (nextResultPointer args)
+    (nextStackPointer args) (nextReturnAddress args)).
+Check (eq_refl : parentHeaderDomain = fun args =>
+  parentHeaderEntryLayout
+    (headerInputPointer args) (Z.of_nat (List.length (headerInputBytes args)))
+    (headerResultPointer args) (headerStackPointer args)
+    (headerReturnAddress args)).
