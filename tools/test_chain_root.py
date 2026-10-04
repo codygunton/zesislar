@@ -19,14 +19,16 @@ NEEDS_WRITE_SUCCESS = unittest.skipUnless(
 
 
 class ChainRootTests(unittest.TestCase):
-    def test_cli_rejects_a_legacy_boundary_as_the_chain_root(self):
-        with patch.object(sys, "argv", ["chain_root.py", "--entries", "/tmp/unused",
-                "--build-dir", "/tmp/unused", "--root", "0x14d80"]), \
-                redirect_stderr(io.StringIO()) as errors:
-            with self.assertRaises(SystemExit) as raised:
-                chain_root.main()
-        self.assertEqual(raised.exception.code, 2)
-        self.assertIn("Level 1 entry 0x14d30", errors.getvalue())
+    def test_cli_accepts_an_explicit_root(self):
+        arguments = ["chain_root.py", "--entries", "/tmp/unused", "--cfg", "/tmp/cfg",
+            "--build-dir", "/tmp/build", "--root", "0x1000", "--terminal", "0x2000",
+            "--out", "/tmp/out", "--publish-dir", "/tmp/published",
+            "--root-declaration", "Fixture.root", "--root-source", "/tmp/root.v",
+            "--proof-dir", "/tmp/proofs", "--stage-dir", "/tmp/stage",
+            "--trace-import", "Fixture.Traces", "--code-premises", "/tmp/premises"]
+        with patch.object(sys, "argv", arguments), patch.object(chain_root, "run", return_value=0) as run:
+            self.assertEqual(chain_root.main(), 0)
+        self.assertEqual(run.call_args.args[0].root, "0x1000")
 
     def test_back_edge_uses_ancestry_not_addresses(self):
         blocks = {10: {"successors": ["0x5"]},
@@ -84,7 +86,8 @@ class ChainRootTests(unittest.TestCase):
             root = Path(directory)
             entries = root / "entry.json"
             entries.write_text(json.dumps({"entry": "0xa", "outcome": "reached",
-                "binders": "(sp : bv 64)", "spatial": ["P"], "coq": []}))
+                "binders": "(sp : bv 64)", "spatial": ["P"], "coq": [],
+                "root_provenance": {"source": "fixture"}}))
             cfg = root / "cfg.json"
             cfg.write_text(json.dumps({"functions": [{"start": 10, "blocks": [
                 {"start": 10, "end": 14, "successors": ["0x999"]}]}]}))
@@ -112,23 +115,74 @@ class ChainRootTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'root declaration'):
                     chain_root.run(args)
 
-    @NEEDS_WRITE_SUCCESS
-
     def test_level1_root_rejects_changed_resources_with_same_provenance(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             entries = root / "entry.json"
-            entries.write_text(json.dumps({"entry": "0x14d30", "outcome": "reached",
+            entries.write_text(json.dumps({"entry": "0xa", "outcome": "reached",
                 "binders": "(sp : bv 64)", "spatial": ["P"], "coq": [],
-                "root_provenance": {"source":
-                    "WriteSuccessNativeContract.writeSuccessNativeEntry"}}))
+                "root_provenance": {"source": "Fixture.root"}}))
             cfg = root / "cfg.json"
-            cfg.write_text(json.dumps({"functions": [{"start": 0x14d30,
-                "blocks": [{"start": 0x14d30, "successors": []}]}]}))
-            args = SimpleNamespace(entries=entries, root="0x14d30", cfg=cfg)
+            cfg.write_text(json.dumps({"functions": [{"start": 10,
+                "blocks": [{"start": 10, "successors": []}]}]}))
+            checked = root / "Root.v"
+            checked.write_text("checked resources")
+            args = SimpleNamespace(entries=entries, root="0xa", cfg=cfg,
+                                   root_source=checked, root_declaration="Fixture.root")
             with patch.object(chain_root, "render_successor", return_value="changed resources"):
                 with self.assertRaisesRegex(ValueError, 'root resources differ'):
                     chain_root.run(args)
+
+    def test_graph_accepts_stock_entry_and_rows(self):
+        graph = chain_root.graph({"functions": [{"entry": 10, "rows": [
+            {"pc": 10, "kind": "return"}], "blocks": [
+            {"start": 10, "end": 14, "successors": []}]}]}, 10)
+        self.assertEqual(graph[10]["instructions"][0]["kind"], "return")
+
+    def test_probe_source_uses_explicit_resources_and_trace_import(self):
+        options = {"trace_import": "Fixture.Traces", "code_premises": ["  P -∗"]}
+        source = "From Legacy.Traces Require Import Index.\n" + "\n".join(chain_root.infer_boundary.CODE_PREMISES)
+        with patch.object(chain_root.infer_boundary, "spec_source", return_value=source):
+            actual = chain_root.probe_source({}, options, 20)
+        self.assertIn("Require Import Fixture.Traces.", actual)
+        self.assertIn("  P -∗", actual)
+        self.assertNotIn("Legacy.Traces", actual)
+
+    def test_baseline_preserves_missing_and_unknown_locations(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "baseline.json"
+            captures = [
+                {"entry": "0xa", "outcome": "stalled", "residual_pcs": [10],
+                 "pending_goals": [{"conclusion": "entry residual"}]},
+                {"entry": "0x14", "outcome": "stalled", "residual_pcs": [24],
+                 "pending_goals": [{"conclusion": "execution residual"}]},
+                {"entry": "0x1e", "outcome": "stalled"},
+                {"entry": "0x28", "outcome": "closed"},
+                {"entry": "0x32", "outcome": "reached"}]
+            chain_root.write_baseline(path, dict.fromkeys([10, 20, 30, 40, 50, 60]), captures)
+            result = json.loads(path.read_text())
+        self.assertEqual([row["outcomes"] for row in result["blocks"]], [
+            ["entry-stall"], ["execution-stall"], ["unknown-stall"],
+            ["closed"], ["reached"], ["missing-entry"]])
+        self.assertEqual(result["first_residuals"]["entry-stall"]["residual"]["conclusion"],
+                         "entry residual")
+
+    def test_pc_marker_rejects_an_unevaluated_expression(self):
+        output = ("CHAIN-RESIDUAL-PC (bv_to_bvn (Z_to_bv 64 4100))\n"
+                  "CHAIN-RESIDUAL-PC (bv_to_bvn (bv_add (Z_to_bv 64 4096) offset))\n")
+        self.assertEqual(chain_root.residual_pc_markers(output), ([4100], "unknown"))
+        self.assertEqual(chain_root.residual_pc_markers(output.splitlines()[0]), ([4100], "known"))
+
+    def test_compiler_uses_explicit_staging(self):
+        with tempfile.TemporaryDirectory() as directory:
+            stage = Path(directory) / "stage"
+            done = SimpleNamespace(stdout="output", stderr="errors")
+            with patch.object(chain_root.subprocess, "run", return_value=done) as run:
+                text = chain_root.compile_probe("Goal True. Abort.", "Probe", Path("/tmp/build"),
+                                                1, {"stage_dir": str(stage)})
+            self.assertEqual((stage / "Probe.v").read_text(), "Goal True. Abort.")
+            self.assertIn(str(stage / "Probe.v"), run.call_args.args[0])
+            self.assertEqual(text, "output\nerrors")
 
     def test_same_successor_variants_have_distinct_fingerprints(self):
         first = {"coq": [["H", "x = 0"]], "spatial": ["p ↦ₘ x"]}

@@ -11,7 +11,7 @@
     },
     "tools/stock_zisk/platform/bind_traces.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bind_traces.py",
-      "sha256": "91586c522f2f0c72f39ea89503895be5e227654abd8d1d20850a5ec12197a6c4"
+      "sha256": "9c47662a662cdc145c3b2aae54cb3205a2acf79e04bb7134781349ddf6541524"
     },
     "tools/stock_zisk/platform/build.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/build.py",
@@ -47,11 +47,11 @@
     },
     "tools/stock_zisk/platform/test_build.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/test_build.py",
-      "sha256": "94093b0982407565479fa499c7aaa540388ede3f508bb07ed57cdf8bc678ce83"
+      "sha256": "f98a109a7e704ecc171249e298ab525804bbccfb22615e19d09782031c7a399a"
     },
     "tools/stock_zisk/platform/traces.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/traces.py",
-      "sha256": "3308c144fb836f79aa418de6deb9225c59d4cdcf9ce42c9fc139f3a0f7c783d1"
+      "sha256": "b5560f22ab20eae80567c1d16f769dd01310b5c279527e17a8d94c2f75c8b0ec"
     },
     "sail": {
       "path": "/home/cody/islaris/_opam/bin/sail",

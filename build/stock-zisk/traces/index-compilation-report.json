@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "claim": "Compilation evidence only. This report does not establish a Level 1 contract proof.",
+  "worker_count": 6,
+  "limits": {
+    "wall_seconds_per_module": 60,
+    "memory_kib_per_module": 2097152
+  },
+  "build": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 1738595,
+    "rss_kb": 991476,
+    "target": "q3-final-indexes"
+  },
+  "indexes": [
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_allocatorAlloc.v",
+      "elapsed_seconds": 0.702,
+      "peak_rss_kib": 644036,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "43b77d32970346b1a4c7721b789a8299834414ad33f2e5dfee6467ec8e8b43ba"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_allocatorFree.v",
+      "elapsed_seconds": 0.652,
+      "peak_rss_kib": 631864,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "cfa34a894cb2a7b294b3fe300b696da9070d39cc95b174505af8ea70e7f6f681"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_allocatorRemap.v",
+      "elapsed_seconds": 0.552,
+      "peak_rss_kib": 592504,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "6eee5799a0e5171ab5c6d5cab6c486a1760cf3321a36701658f9f61884c417ed"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeItem.v",
+      "elapsed_seconds": 0.702,
+      "peak_rss_kib": 631552,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "167790cf3693bb595726a1101e3dd5508d0ae2c79995ae7d160f8eeb77b92b37"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeParentHeader.v",
+      "elapsed_seconds": 1.053,
+      "peak_rss_kib": 754496,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "a646e3bff70eedf63843cff32906e3088fe4fbcf762f4e51c922cc1cbe29ae82"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeSingleTx.v",
+      "elapsed_seconds": 0.652,
+      "peak_rss_kib": 623108,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "7849ba220f7e8b0b6af417057a477dff0923660336bc540479ce1c40d4f0418f"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_dispatch.v",
+      "elapsed_seconds": 0.501,
+      "peak_rss_kib": 596912,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "ab96b8886acb8977f5f27d15e4dcfd816881b239a24c450e4a7fcaf270a8418e"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_shared_tail.v",
+      "elapsed_seconds": 0.652,
+      "peak_rss_kib": 634788,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "ddc57e07cc76ff4135a383a267a381f61a7b5308526078c26565dbce2f490f4d"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_0.v",
+      "elapsed_seconds": 1.102,
+      "peak_rss_kib": 755412,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "e5b8823a2fd38909b4b1ad2d7634fe134679546b35576c3e34bcb991d1fb6504"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_1.v",
+      "elapsed_seconds": 1.103,
+      "peak_rss_kib": 759304,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "5d39fea9dc57a85cc79ee55a4bb44f327f6969c01e6c7d536ba5deabe06e2641"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_2.v",
+      "elapsed_seconds": 1.154,
+      "peak_rss_kib": 771248,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "cbcb03a9ab68bfa0229442d342742f51af83cfb61462f8a935913e5229c81292"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_3.v",
+      "elapsed_seconds": 1.353,
+      "peak_rss_kib": 827412,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "4cfd265409d08f96a80948c5856b93673625a368002bb8e5b55121118b728356"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_decodeTxFields_type_4.v",
+      "elapsed_seconds": 2.005,
+      "peak_rss_kib": 991476,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "3fbed41ea1bc28a1bc65d36909d9616965ffd7077e9736bdae933cba183ebec4"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_ensureTotalCapacity.v",
+      "elapsed_seconds": 0.652,
+      "peak_rss_kib": 629912,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "a599fdd0676b2bb210af4ce2d39d055f45d221652cbaebdfb545d055ca961d91"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_memcpyStub.v",
+      "elapsed_seconds": 0.602,
+      "peak_rss_kib": 589752,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "c9fb0be10b5b06d6a74b94f4b33e2d8af1137f9680c7bef3259615f7167d3d4f"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_nextUint64.v",
+      "elapsed_seconds": 0.551,
+      "peak_rss_kib": 609100,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "bcca2c22e98100c96490f718191f5f6de2f987e7bf9a60af27c2ac390134aa02"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_sliceAccessList.v",
+      "elapsed_seconds": 0.652,
+      "peak_rss_kib": 641992,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "75031ba1f85e2573b9fbce553ccd9e8ae0d8250a60b8e7a766a7876c94fd0a40"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_sliceBytes32.v",
+      "elapsed_seconds": 0.702,
+      "peak_rss_kib": 634688,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "baab66dbb2ff0f270877cd411a89319bd45da86f6cd78bf6b7125be09690e373"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/closure/index_txAccessList.v",
+      "elapsed_seconds": 1.003,
+      "peak_rss_kib": 736896,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "bca1327fcd0c711b6b241ffd7502f19aed3f0a79fd4747bd09a87d5f472c43b2"
+    },
+    {
+      "source": "generated/isla-traces/stock-zisk/decodeItem/instrs.v",
+      "elapsed_seconds": 0.552,
+      "peak_rss_kib": 627632,
+      "exit": 0,
+      "limit_failure": null,
+      "source_sha256": "060973844f0ca2796e10b154575a3e16328cd69775a34718423f23718aa1fb7b"
+    }
+  ],
+  "maximum_index_seconds": 2.005,
+  "maximum_index_peak_rss_kib": 991476,
+  "callee_identity": {
+    "source": "ZesuSsz/Contracts/CalleeIdentity/CalleeId.v",
+    "elapsed_seconds": 0.201,
+    "peak_rss_kib": 302972,
+    "exit": 0,
+    "limit_failure": null
+  },
+  "machine_sample": {
+    "time_utc": "2026-10-04T05:55:55Z",
+    "total_cpu_percent": 4.83,
+    "load": [
+      "4.30",
+      "22.00",
+      "27.90"
+    ],
+    "available_memory_kib": 142698148,
+    "swap_used_kib": 8046252,
+    "compiler_processes": [
+      "1837559  104 430568 /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_op",
+      "1837567  105 417184 /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_op",
+      "1837571  105 408356 /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_op",
+      "1837574  100 389504 /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_op",
+      "1837576  105 360096 /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_op",
+      "1837633  109 260308 /home/cody/islaris/_opam/bin/coqc -q -w -notation-overridden -w -redundant-canonical-projection -w -deprecated-native-compiler-option -w -native-compiler-disabled -native-compiler ondemand -boot -I /home/cody/islaris/_op"
+    ]
+  },
+  "all_generated_source_hashes_verified": 9267,
+  "completed_module_count": 4639,
+  "generated_sources_changed": false
+}
