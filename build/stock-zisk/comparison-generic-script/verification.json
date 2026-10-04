@@ -1,7 +1,0 @@
-{
-  "entry": "0x80000000",
-  "undefined_symbols": 0,
-  "ZKVM_HEAP_POS": "0xa0d34530",
-  "ZKVM_HEAP_TOP": "0xbfff0000",
-  "elf_flags": 1
-}

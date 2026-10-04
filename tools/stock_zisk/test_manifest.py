@@ -91,6 +91,27 @@ class ManifestTests(unittest.TestCase):
     def test_valid(self):
         manifest.check(self.out, self.pins)
 
+    def test_missing_disassembly(self):
+        report = self.out/'disassembly.objdump'
+        report.unlink()
+        manifest.check(self.out, self.pins)
+        self.assertEqual(report.read_text(), 'report\n')
+
+    def test_wrong_regenerated_disassembly(self):
+        report = self.out/'disassembly.objdump'
+        report.unlink()
+        with patch('manifest.normalized_report', return_value='changed\n'):
+            with self.assertRaisesRegex(ValueError, 'disassembly.objdump regeneration'):
+                manifest.check(self.out, self.pins)
+        self.assertFalse(report.exists())
+
+    def test_corrupt_disassembly(self):
+        report = self.out/'disassembly.objdump'
+        report.write_text('changed\n')
+        with self.assertRaisesRegex(ValueError, 'disassembly.objdump'):
+            manifest.check(self.out, self.pins)
+        self.assertEqual(report.read_text(), 'changed\n')
+
     def test_changed_recipe(self):
         for field, value in [('object_command', ['zig', 'build', 'zisk-object']),
                              ('adapters', {'exit.zig': 'unapproved'})]:

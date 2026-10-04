@@ -149,7 +149,7 @@
     },
     "builder/manifest.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/manifest.py",
-      "sha256": "91daedba380d4590d0b30d3cd4e9f81553fc92b3194029eaedc84d6b6eb74297"
+      "sha256": "d8a8b68adcd65d73535cac19097e1e0b1eaafb5616fcc08cc48366948fc332c6"
     },
     "legacy/riscv64-linux-gnu-as": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-as",
@@ -173,7 +173,7 @@
     },
     "generator/closure.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/closure.py",
-      "sha256": "492534de4a683c8b2cae5b13aa6e870e82d9e2ae5050f8a6108db7e0844f4a6d"
+      "sha256": "9cf95ed6a986d301e57ff294982f687444998bd431cb039d4d5aaf8db3f3ace9"
     },
     "generator/riscv.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/riscv.py",
@@ -239,43 +239,43 @@
   "invalidated_derived": [],
   "derived": {
     "inventory.json": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 2
     },
     "cfg.json": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     },
     "regions.json": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     },
     "dump-ranges.json": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     },
     "verification.json": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 2
     },
     "decodeItem.raw.dump": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     },
     "INVENTORY.md": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     },
     "PLATFORM.md": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     },
     "platform-audit.json": {
-      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
       "schema_version": 1
     }
   },
-  "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+  "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
   "elf_layout": {
     "entry": 2148490032,
     "machine": "EM_RISCV",
@@ -507,21 +507,47 @@
     "disassembly.objdump": "020ace7813b1c8a392291628095089bff281e3a50b4bb5dca25b3b5e9f50517b",
     "symbols.txt": "b85d63ce55b4b5772415933d9939ef74cebb0905570a200bd08e6c372a2e3e6c",
     "elf-layout.txt": "660c5484710dc616d5a8b94ddfdd349e67c38613ca8a15d60d11322513f83a2e",
-    "inventory.json": "546ad1790bcca5442f7a22e9052b5d40145ce7354ee8e02ea8b849bb0c07c657",
-    "cfg.json": "7e272fcd9cde873a74cd56cafca66465c13ded015d55ef421ce3da3394258732",
-    "regions.json": "d73190cca074d15708da97a4077d39b0c89891fb763e62c87bfea9f1896f75d6",
-    "dump-ranges.json": "35d18ef8fe5a0cf582cc7dfd8bff2ae6c5e41f29bb60e17ca831bcd2903347d2",
-    "verification.json": "33d400f3fd986693648e1e9d558eead57ac20b4ba3ca96e5daeeccf492ee8fe9",
-    "decodeItem.raw.dump": "f3fb208a1463a35c31f56559ec4332e487c280f61be12ee3dad666fab5d81998",
+    "inventory.json": "3cdbdd1182f11e72655d6f00ab306339e23589f8d39d6869c2a19182fe3e7dc9",
+    "cfg.json": "c3e02c307c96d4d074dd3696deafce4fa3716a8655578ca1d4dc004e45c25f25",
+    "regions.json": "36fed117dfd2614bbaaf09569617cd2a10fa61b2f3f38c25556b57f5a1e3e040",
+    "dump-ranges.json": "0e95621f0340366c6bb8359387a7d6af4ffe5540ee42bacfd0f2529aa23e200a",
+    "verification.json": "0b043a7f1b17e8df57f136b5825e2119f2ffd8261587dfc65bcc84d90bacb46e",
+    "decodeItem.raw.dump": "186a0de4716796afc545e64d4b33bccea70dcb999cccdca6e7cf534b125adfa7",
     "INVENTORY.md": "f84132e279205e02dd6ee6ae38fe491ad2dc8c09afdf0f6b38ea6a9265ef50db",
     "PLATFORM.md": "e79b54400d02bda8b1c91e4de2a5199bbd6107e309b428a048a95ce3e1c1a9c4",
-    "platform-audit.json": "0affa856247e49708f3149ce8d0352215467d85118a2982712ad1b75e232b8f1"
+    "platform-audit.json": "4d4509f46c813b60498b2b2f53a6bdb4a03aa4f860687d7b94c7df22a4705fdc"
   },
-  "historical_comparison": "comparison-generic-script/ remains historical pilot evidence from c9165ca4.",
   "toolchain_identity_decision": {
     "decision": "Retain the committed bin tools with explicit hashes for P0-C.",
     "reviewer": "orch",
     "review_date": "2026-10-03",
     "basis": "The coordinator accepted this choice after reviewing steps 1 through 4."
+  },
+  "archived_comparison": {
+    "source_commit": "c9165ca4bb2e0411678113ddae36740cc61ef035",
+    "archive_root": "/home/cody/zesislar-archive/2026-10-03",
+    "git_bundle": {
+      "path": "git/zesislar-all.bundle",
+      "sha256": "dc48089dfb1eb2f1c98c02000e72be5222de98841f82d17b38205484ae69bcce"
+    },
+    "git_mirror": "git/mirror.git",
+    "source_directory": "build/stock-zisk/comparison-generic-script",
+    "files": {
+      "INVENTORY.md": "3c85f915ca1a8275e5a7c44da6b189dc893399efebbe7576e144ca325e1a952a",
+      "PROVENANCE.md": "a025ebb94a53118c5ab140db538911d5446ac927149aefd1576df62d02bef8bb",
+      "SHA256SUMS": "e40c4ca127a55061a2d045763751017a698a90946f3e1f66a4fedc740ace1be7",
+      "build-recipe.json": "c06b7289f0ed423ca77e459eb1d3137b857de03723cd5c6983aee4c55d3d0898",
+      "disassembly.objdump": "a80192d253fffcc6135268e634495e7c266054b91e65653930fe111b8f74ec9a",
+      "elf-layout.txt": "ece0e1273bf963d49f6b1dbba3b02c55001f7c753a565a65958b6b681b264d92",
+      "inventory.json": "aac37299b958946034e8c5c258d3289e8e8a6bb3a2f5970f10b2a530d1765236",
+      "symbols.txt": "05ce4b7ca74e20da00ffada074e7294aa80fc6e7e75f89badbc2d4a73344966b",
+      "verification.json": "bd76e719db7494a85e585015d54ebe158e75521570df81204dab200ca293f83c",
+      "zesu-zisk.elf": "fd6afe8510cf14009f268259af617c59d72f19f31575045c79687e44b363e5ad"
+    },
+    "untracked_archive": {
+      "path": "wt/worker2-stock-zisk.tar",
+      "sha256": "1de30f2865a14afe6ac6142b6d1c071d3f7cd11a1dd5144595439d11e0282759",
+      "note": "The tar stores untracked worktree files. The Git archive stores this tracked comparison."
+    }
   }
 }

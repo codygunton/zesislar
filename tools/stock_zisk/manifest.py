@@ -187,6 +187,10 @@ def check(out, pins):
         if name not in recipe['artifacts']:
             raise ValueError(f'Unchecked derived artifact: {name}')
     for name, sha in recipe['artifacts'].items():
+        if name == 'disassembly.objdump' and not (out/name).exists():
+            report = normalized_report(REPORTS[name], out/'zesu-zisk.elf').encode()
+            require_equal(hashlib.sha256(report).hexdigest(), sha, f'{name} regeneration')
+            (out/name).write_bytes(report)
         require_equal(digest(out/name), sha, name)
     listed = {}
     for line in (out/'SHA256SUMS').read_text().splitlines():

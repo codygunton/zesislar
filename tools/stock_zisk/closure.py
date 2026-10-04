@@ -335,7 +335,8 @@ def publish(out, recipe, record):
         recipe.setdefault('derived',{})[name] = {'artifact_identity':identity,'schema_version':version}
     recipe['invalidated_derived'] = [name for name in recipe.get('invalidated_derived',[]) if name not in files]
     recipe.pop('historical_reports',None)
-    recipe['historical_comparison'] = 'comparison-generic-script/ remains historical pilot evidence from c9165ca4.'
+    if 'archived_comparison' not in recipe:
+        recipe['historical_comparison'] = 'comparison-generic-script/ remains historical pilot evidence from c9165ca4.'
     manifest.refresh(out,recipe)
 
 
