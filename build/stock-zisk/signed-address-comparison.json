@@ -1,0 +1,67 @@
+{
+  "boundary": "seven retained stock fixture modules",
+  "baseline_logs": [
+    "_build/map-stock-tests.log",
+    "_build/map-more-tests.log"
+  ],
+  "on_logs": [
+    "_build/map-arithmetic-tests.log",
+    "_build/map-legacy-test.log"
+  ],
+  "default_instance": false,
+  "production_enablers": [],
+  "fixture_enablers": [
+    "ByteArraysWrite",
+    "ByteArraysRead",
+    "ByteArrayHookExport",
+    "Finish",
+    "RuleSetV2",
+    "NonRaising",
+    "NonRaisingLegacy"
+  ],
+  "baseline_failed_theorems": [
+    "test_write_word_to_byte_array",
+    "test_read_word_from_byte_array",
+    "test_all_exports_byte_array_hooks",
+    "test_zesu_block",
+    "test_rule_set_v2_block",
+    "test_nonraising_live_machine_load",
+    "test_nonraising_legacy_machine_load"
+  ],
+  "on_gains": [
+    "test_write_word_to_byte_array",
+    "test_read_word_from_byte_array",
+    "test_all_exports_byte_array_hooks",
+    "test_zesu_block",
+    "test_rule_set_v2_block",
+    "test_nonraising_live_machine_load",
+    "test_nonraising_legacy_machine_load"
+  ],
+  "on_losses": [],
+  "off_failed_theorems": [
+    "test_write_word_to_byte_array",
+    "test_read_word_from_byte_array",
+    "test_all_exports_byte_array_hooks",
+    "test_zesu_block",
+    "test_rule_set_v2_block",
+    "test_nonraising_live_machine_load",
+    "test_nonraising_legacy_machine_load"
+  ],
+  "off_changed_outcomes": [],
+  "on_closed_theorems": [
+    "test_write_word_to_byte_array",
+    "test_read_word_from_byte_array",
+    "test_all_exports_byte_array_hooks",
+    "test_zesu_block",
+    "test_rule_set_v2_block",
+    "test_nonraising_live_machine_load",
+    "test_nonraising_legacy_machine_load"
+  ],
+  "off_verification": "rocq_compile_file on seven class-absent scratch modules",
+  "on_verification": "focused Dune builds, jobs6; MCP compile_file on load, store, legacy fixture modules",
+  "schema_version": 1,
+  "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "snapshot_sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+  "fixture_metadata_sha256": "4bf623c36a8edec8c951ca49931de8e521467c19a89ac8d30ba365330cb2647b"
+}

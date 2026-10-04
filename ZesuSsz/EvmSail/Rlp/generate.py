@@ -26,6 +26,7 @@ EXCLUDED = (
     "decode_legacy_tx", "decode_access_list_tx", "decode_fee_market_tx",
     "decode_blob_tx", "decode_set_code_tx", "decode_block_header_ssz",
 )
+BLOB_HANDOFF_RECORD = "BLOB_HANDOFF_EXPERIMENT.json"
 
 
 def digest(path: Path) -> str:
@@ -121,6 +122,14 @@ def main() -> None:
             "inputShimSha256": digest(here / "shim/input.sail"),
             "roots": ROOTS,
             "excludedDecoders": EXCLUDED,
+            "blobDecoderGenerationMethod": {
+                "method": "staged typed prefix handoff",
+                "evidencePath": "ZesuSsz/EvmSail/Rlp/" + BLOB_HANDOFF_RECORD,
+                "evidenceSha256": digest(here / BLOB_HANDOFF_RECORD),
+                "sourceInliningCheck": "exact pinned decode_blob_tx reconstruction",
+                "compiledWithinModuleLimits": True,
+                "includedInThisSnapshot": False,
+            },
             "generationSeconds": elapsed,
             "generationPeakRssKiB": resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss,
             "snapshotSha256": {name: digest(args.output / name) for name in names},

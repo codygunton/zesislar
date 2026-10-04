@@ -4,7 +4,10 @@ Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.BitvectorFacts.
-Require Import ZesuSsz.Generated.TestTraces.SdX1X2Off1992.
+Require Import ZesuSsz.Generated.TestTraces.SdX1X2Off8.
+
+#[local] Instance stock_signed_address_rule : ZesuStepSignedAddress := I.
+
 
 Import ZesuSsz.Automation.Hooks.
 
@@ -16,8 +19,8 @@ Import ZesuSsz.Automation.Hooks.
 Lemma test_write_word_to_byte_array `{!islaG Sigma} `{!threadG}
     (base value : bv 64) (bytes : list (bv 8)) :
   length bytes = 2048%nat ->
-  instr 0x14d34 (Some trace_sd_x1_x2_1992) -∗
-  instr_body 0x14d34 (
+  instr 0x800d6964 (Some trace_sd_x1_x2_8) -∗
+  instr_body 0x800d6964 (
     reg_col zesu_sys_regs ∗
     "x2" ↦ᵣ RVal_Bits base ∗
     "x1" ↦ᵣ RVal_Bits value ∗
@@ -25,14 +28,14 @@ Lemma test_write_word_to_byte_array `{!islaG Sigma} `{!threadG}
     ⌜(mapRamBase defaultMap) <= bv_unsigned base ∧
       bv_unsigned base + 2048 <= (machineRamEnd defaultMap)⌝ ∗
     bv_unsigned base ↦ₘ∗ bytes ∗
-    instr_pre 0x14d38 (
+    instr_pre 0x800d6968 (
       reg_col zesu_sys_regs ∗
       "x2" ↦ᵣ RVal_Bits base ∗
       "x1" ↦ᵣ RVal_Bits value ∗
       bv_unsigned base ↦ₘ∗
-        (take 1992 bytes ++
+        (take 8 bytes ++
          bv_to_little_endian 8 8 (bv_unsigned value) ++
-         drop 2000 bytes) ∗ True) ∗ True).
+         drop 16 bytes) ∗ True) ∗ True).
 Proof.
   move => Hlength.
   iStartProof.

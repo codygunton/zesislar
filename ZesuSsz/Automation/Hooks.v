@@ -8,6 +8,11 @@ Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.TraceTailLemmas.
 Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
+Require Import ZesuSsz.Automation.BitvectorFacts.
+Require Import ZesuSsz.Contracts.Level1.
+
+Global Typeclasses Opaque IslarisContractSpec.
+Global Instance : LithiumUnfold (@IslarisContractSpec) := I.
 
 (** Give Lithium its separating-conjunction goal form. *)
 Ltac zesu_prepare_uninit_goal :=
@@ -191,10 +196,16 @@ Ltac zesu_normalize_output_address :=
   lazymatch goal with
   | |- envs_entails _
       (WPasm (WriteMem _ _ (RVal_Bits (bv_to_bvn ?address)) _ _ _ _ :t: _)) =>
-      first [replace address with (BV 64 (machineOutputAddress defaultMap))
-               by (vm_compute; bv_solve)
-            |replace address with (BV 64 (machineOutputSizeAddress defaultMap))
-               by (vm_compute; bv_solve)
+      first [let output := eval vm_compute in (machineOutputAddress defaultMap) in
+             lazymatch output with
+             | Some ?output => replace address with (Z_to_bv 64 output)
+                 by (vm_compute; bv_solve)
+             end
+            |let size := eval vm_compute in (machineOutputSizeAddress defaultMap) in
+             lazymatch size with
+             | Some ?size => replace address with (Z_to_bv 64 size)
+                 by (vm_compute; bv_solve)
+             end
             |idtac]
   | _ => idtac
   end.
@@ -292,12 +303,31 @@ Ltac zesu_preserve_current_unsigned :=
           end
   end.
 
+(* Signed widened addresses retain the unsigned source value.
+   Close an impossible branch before Lithium searches exception registers. *)
+Ltac zesu_signed_address_if_enabled :=
+  let _ := constr:(_ : ZesuStepSignedAddress) in
+  solve [unLET;
+    progress (repeat match goal with
+    | H : context [bv_signed (bv_zero_extend 128 ?value + ?offset)] |- _ =>
+        rewrite (zesu_signed_zero_extend_add_64_128 value offset) in H;
+          last bv_solve
+    | H : context [bv_signed (bv_zero_extend 128 ?value)] |- _ =>
+        rewrite (zesu_signed_zero_extend_64_128 value) in H
+    end);
+    repeat match goal with
+    | H : context [bv_unsigned (?left + ?right)] |- _ =>
+        rewrite bv_add_unsigned bv_wrap_small in H; last bv_solve
+    end;
+    exfalso; bv_solve].
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_normalize_find_mem_address
+    zesu_signed_address_if_enabled
+  | zesu_normalize_find_mem_address
   | zesu_liAWriteMem
   | zesu_liAReadMem
   | liAAsm

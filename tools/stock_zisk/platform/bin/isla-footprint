@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+"""Select the dedicated platform for the unmodified Islaris frontend."""
+import os
+from pathlib import Path
+import sys
+ROOT = Path(__file__).resolve().parents[4]
+args = sys.argv[1:]
+if not args or args[0] != "riscv64.ir":
+    raise SystemExit("The platform wrapper requires the pinned riscv64.ir architecture")
+args = args[1:]
+index = args.index("-C")
+args[index + 1] = str(ROOT / "ZesuSsz/riscv64_zesu.toml")
+os.environ["LD_LIBRARY_PATH"] = "/home/cody/isla"
+binary = "/home/cody/isla/target/release/isla-footprint"
+os.execv(binary, [binary, "-A", str(ROOT / "build/stock-zisk/platform/riscv64-zisk.ir"), "-T", "1", "--timeout", "45"] + args)

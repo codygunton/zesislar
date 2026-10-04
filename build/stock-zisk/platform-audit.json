@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+  "status": "Source and ELF audit. The selected platform adapter is manifest-bound. Decoder obligations remain unproved.",
+  "constants": {
+    "INPUT_ADDR": 1073741824,
+    "MAX_INPUT_SIZE": 1073741824,
+    "RAM_ADDR": 2684354560,
+    "RAM_SIZE": 536870912,
+    "STACK_SIZE": 4194304,
+    "SYS_SIZE": 65536,
+    "OUTPUT_MAX_SIZE": 131072,
+    "ROM_ADDR": 2147483648,
+    "ROM_SIZE": 134217728
+  },
+  "load_segments": [
+    {
+      "start": 2147483648,
+      "end": 2148597112,
+      "flags": 1,
+      "file_bytes": 1113464
+    },
+    {
+      "start": 2148597120,
+      "end": 2148632184,
+      "flags": 4,
+      "file_bytes": 35064
+    },
+    {
+      "start": 2688745472,
+      "end": 2698200352,
+      "flags": 6,
+      "file_bytes": 0
+    },
+    {
+      "start": 2698200352,
+      "end": 2698200368,
+      "flags": 6,
+      "file_bytes": 16
+    }
+  ],
+  "symbols": {
+    "_init_stack_top": 2688548864,
+    "ZKVM_HEAP_POS": 2698200352,
+    "ZKVM_HEAP_TOP": 2698200360,
+    "__zesu_heap_bottom": 2698200368,
+    "__zesu_heap_top": 3221159936,
+    "alt_fl_alloc.state": 2689810432,
+    "alt_fl_alloc.free_lists": 2689810440
+  },
+  "initial_heap_words": {
+    "ZKVM_HEAP_POS": 2698200368,
+    "ZKVM_HEAP_TOP": 3221159936
+  },
+  "memory_behavior": {
+    "widths": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "misaligned": "supported by indexed byte slices",
+    "input_header_8byte_read": "returns Mem.free_input",
+    "unpopulated_input_reads": "return zero from INPUT_ADDR+8 to the input limit",
+    "RAM_initialization": "zero-filled before ELF data and startup effects"
+  },
+  "misaligned_code_evidence": {
+    "pc": "0x80001164",
+    "instruction": "ld a2,0(a1)",
+    "region": "decodeTxFields legacy arm",
+    "source": "src/stateless/rlp_decode.zig:471-481",
+    "example": "dd80808094000000000000000000000000000000000000000080801b8080",
+    "payload_offset": 5,
+    "classification": "Source and selected-instruction inspection. No selected-ELF execution."
+  },
+  "snapshot": {
+    "commit": "b58da9170470a422c9396983ac8f87f0a63ba6f8",
+    "path": "/home/cody/isla-snapshots/riscv64.ir",
+    "sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a"
+  },
+  "source_evidence": {
+    "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs": "8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91",
+    "/tmp/worker2-stock-zisk-toolchain/transpilers/common/src/elf_extraction.rs": "0d5e95e716d6e21768866ed9c8956fde1f2895885f3fc99fd43cdf0251f2e85a",
+    "/tmp/worker2-stock-zisk-toolchain/emulator/src/emu_context.rs": "5833070dc289a74f8aeb08d36e9acc09267ed8186b7785cccbd0aa18d1611f1f",
+    "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/lib.rs": "9754f8c636daa302557b9ee7ebecc7627bda798eee4187999e81231a10274590",
+    "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd"
+  },
+  "measurement": {
+    "elapsed_seconds": 1.212,
+    "peak_rss_kib": 37504,
+    "workers": 1
+  },
+  "selected_adapter": {
+    "path": "platform/riscv64-zisk.ir",
+    "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+    "changed_hooks": 5,
+    "unchanged_functions": 732
+  }
+}

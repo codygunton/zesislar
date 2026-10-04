@@ -22,6 +22,14 @@
     "decode_set_code_tx",
     "decode_block_header_ssz"
   ],
+  "blobDecoderGenerationMethod": {
+    "method": "staged typed prefix handoff",
+    "evidencePath": "ZesuSsz/EvmSail/Rlp/BLOB_HANDOFF_EXPERIMENT.json",
+    "evidenceSha256": "a1ad3bab74918881d92e23cc37ea488aa5515e2d0e72269b9fcfff820b8f2ff6",
+    "sourceInliningCheck": "exact pinned decode_blob_tx reconstruction",
+    "compiledWithinModuleLimits": true,
+    "includedInThisSnapshot": false
+  },
   "generationSeconds": 46.440106005989946,
   "generationPeakRssKiB": 170680,
   "snapshotSha256": {
