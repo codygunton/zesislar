@@ -1,0 +1,417 @@
+{
+  "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+  "decision": "P0-E is not established at the frozen revision.",
+  "method": "Read-only Git blobs and archive/project records. No restores, deletions, builds, or Root edits. Later Q12 changes are excluded.",
+  "conditions": [
+    {
+      "condition": 1,
+      "status": "missing evidence",
+      "evidence_or_gap": "The archive inventory records refs, patches, tars, and ignored-file filters; complete removal-to-archive coverage remains unverified.",
+      "sources": [
+        "docs/ai/P0A_PRESERVATION_INVENTORY.md"
+      ],
+      "remaining_work": [
+        "Match each removed ref and file to an archive entry. Confirm excluded ignored files are regenerable."
+      ]
+    },
+    {
+      "condition": 2,
+      "status": "coordinator-reported pass",
+      "evidence_or_gap": "The inventory reports bundle, dirty-file, and plan restoration checks; this review checked archive locations without restoration.",
+      "sources": [
+        "docs/ai/P0A_PRESERVATION_INVENTORY.md"
+      ],
+      "remaining_work": [
+        "Attach the executed restoration log and a complete retrievable archive map."
+      ]
+    },
+    {
+      "condition": 3,
+      "status": "missing evidence",
+      "evidence_or_gap": "The frozen tree retains 410 historical evidence files and stale fork documentation; no complete current retention justification exists.",
+      "sources": [
+        "README.md",
+        "flake.nix",
+        "nix/target.nix",
+        "docs/ai/P0B_MIGRATION_MANIFEST.md"
+      ],
+      "remaining_work": [
+        "Review every retained dependency and test against the stock target. Resolve historical evidence and stale entry documentation."
+      ]
+    },
+    {
+      "condition": 4,
+      "status": "failed",
+      "evidence_or_gap": "The manifest hashes disagree with frozen Hooks.v, ParentHeaderRootFacts.v, and ParentHeaderLevel1.v.",
+      "sources": [
+        "build/stock-zisk/build-recipe.json",
+        "ZesuSsz/Automation/Hooks.v",
+        "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+        "ZesuSsz/Contracts/ParentHeaderLevel1.v"
+      ],
+      "remaining_work": [
+        "Bind the frozen source bytes and refresh dependent identities. Explicitly connect the specification manifest to the restart manifest."
+      ]
+    },
+    {
+      "condition": 5,
+      "status": "coordinator-reported pass",
+      "evidence_or_gap": "PLATFORM.md records the approved adapter, target regions, dynamic input resources, runtime boundary, and remaining initialization obligations.",
+      "sources": [
+        "build/stock-zisk/PLATFORM.md",
+        "build/stock-zisk/platform/build-report.json",
+        "build/stock-zisk/platform/smoke/report.json"
+      ],
+      "remaining_work": [
+        "Retain the platform approval and explicit obligations in the restart record. Do not treat smoke traces as correspondence proofs."
+      ]
+    },
+    {
+      "condition": 6,
+      "status": "coordinator-reported pass",
+      "evidence_or_gap": "The frozen signature gate checks closed types and axioms; negative fixtures belong to check-fast, which the coordinator reports green.",
+      "sources": [
+        "Makefile",
+        "ZesuSsz/Evidence/SignatureGates.v",
+        "ZesuSsz/Evidence/SignatureGateFixtures.v",
+        "ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.ml"
+      ],
+      "remaining_work": []
+    },
+    {
+      "condition": 7,
+      "status": "missing evidence",
+      "evidence_or_gap": "The green gate reports compilation; the frozen rung-1 manifest lacks per-module compilation measurements for the specification and input shim.",
+      "sources": [
+        "generated/evm-sail-coq/rlp/SOURCE.json",
+        "ZesuSsz/EvmSail/Rlp/shim/input.sail",
+        "Makefile"
+      ],
+      "remaining_work": [
+        "Attach exact-source compilation measurements for the retained specification and shim."
+      ]
+    },
+    {
+      "condition": 8,
+      "status": "verified evidence",
+      "evidence_or_gap": "The frozen production theories contain no admit/Admitted tokens or Scaffolding/EvmSailTransactions imports; later transaction roots lack a production theory mapping.",
+      "sources": [
+        "ZesuSsz/dune",
+        "Scaffolding/DecodeItemComplianceStatement.v",
+        "Scaffolding/ParentHeaderComplianceStatement.v",
+        "docs/TRUST.md"
+      ],
+      "remaining_work": []
+    },
+    {
+      "condition": 9,
+      "status": "coordinator-reported pass",
+      "evidence_or_gap": "The coordinator reports both gates green at 223f9d79 and cp-p0d-11; actual commands, worker counts, and logs remain unavailable.",
+      "sources": [
+        "Makefile"
+      ],
+      "remaining_work": [
+        "Attach exact gate commands, worker counts, and logs to the checkpoint."
+      ]
+    },
+    {
+      "condition": 10,
+      "status": "failed",
+      "evidence_or_gap": "The frozen Q10 clone failed check-signatures, skipped check-iris, and used 96 external inputs; later Q12 results do not apply.",
+      "sources": [
+        "build/stock-zisk/q10-clean-checkout-report.json"
+      ],
+      "remaining_work": [
+        "Document toolchain fetch/build requirements. Remove undeclared worktree dependencies. Reproduce both gates from the exact candidate on an isolated host."
+      ]
+    },
+    {
+      "condition": 11,
+      "status": "missing evidence",
+      "evidence_or_gap": "A commit cannot prove workspace cleanliness; no exact restart approval or STATUS.md exists in the frozen evidence.",
+      "sources": [
+        "Makefile"
+      ],
+      "remaining_work": [
+        "Record tracked-tree cleanliness and explicit integration approval for the candidate."
+      ]
+    },
+    {
+      "condition": 12,
+      "status": "verified evidence",
+      "evidence_or_gap": "The frozen TRUST.md states partial correctness and requires Phase-5 termination with Export/Executor.v.",
+      "sources": [
+        "docs/TRUST.md"
+      ],
+      "remaining_work": []
+    }
+  ],
+  "source_hashes": [
+    {
+      "path": "Makefile",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "d3b868d31a4527c7b9373ffdf50f732cb40661a0",
+      "sha256": "73b329f3884b5858d8e3a7c52a4c3d3231155af726ee617506624a57fa1fe4d4"
+    },
+    {
+      "path": "README.md",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "2f10ae6a4f867cb7d66dee6df2fbe13bc06b3800",
+      "sha256": "18cead984105cb5665b6ac116bfa07ee1494d1cc2cd23bb958cfe5f61cac1146"
+    },
+    {
+      "path": "docs/TRUST.md",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "d81c44f7f785beabff69605819e7c59350b1aafa",
+      "sha256": "dc2ef5f4ada61f1d550173d9dd71963ab8400a6ec69faf38c8e47dbdb37b70b6"
+    },
+    {
+      "path": "flake.nix",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "2979f266319be5e4b09513d1684d7eda578f13aa",
+      "sha256": "08bd2811f2793240a7399f77df2e57228afb5c9bbd5afd8670ceebb55bd41b2d"
+    },
+    {
+      "path": "nix/target.nix",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "a515483893ff740a90ac7bca01015a4db14aa4b6",
+      "sha256": "a2c85e7f42cd767dbdb83c3627f96df0c281836e444c1386a6d805791da82e6c"
+    },
+    {
+      "path": "build/stock-zisk/BUILD.md",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "e43e5d7acd74e308ae5811dfaa07f45fee9b524a",
+      "sha256": "3c9d12b0b1d8074d8410588a4f7be97f89be3c9c8ad318e295c686821f1a3c27"
+    },
+    {
+      "path": "build/stock-zisk/PLATFORM.md",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "5c845689cfc1abb9bef1ea5f0ec9cef7f40a9a13",
+      "sha256": "c84a8890afae05f15f84dc3c2af65c6284df6e5f9d2c353db7d34fec81f5f5a1"
+    },
+    {
+      "path": "build/stock-zisk/build-recipe.json",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "210c023aa186d8604060954ec1fd15b54b76e06c",
+      "sha256": "8639f14001a03002e04531b49acb8bb47a48425ced54d698b407b9544c6b41b9"
+    },
+    {
+      "path": "build/stock-zisk/q10-clean-checkout-report.json",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "7defa14bae152044b3951ccbd870912538b4a6e9",
+      "sha256": "27312d9afab52ca8e2757e8d7a18657ec79725c68582b7c622bb5666fd90e709"
+    },
+    {
+      "path": "build/stock-zisk/platform/build-report.json",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "37beee217b4bc5cf0dc4e4a246549207e1919f56",
+      "sha256": "8017ded329d22c3768baf8139d5d5988b312462c4a651851306beeaf14148972"
+    },
+    {
+      "path": "build/stock-zisk/platform/smoke/report.json",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "3303d7335795ecaf4aa55ebdb32dda1160005ac5",
+      "sha256": "98d46c1d640d13472a1457feffc797a9b161e495638a13a8b353b8f47ecf3f51"
+    },
+    {
+      "path": "build/stock-zisk/traces/index-compilation-report.json",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "f69548f1b892072aa23847d334e095ca9d3f55ab",
+      "sha256": "b10e88d662cf9415bae5d09a0757de5f2afaaddde28b1d8864d3f649793e0872"
+    },
+    {
+      "path": "generated/evm-sail-coq/rlp/SOURCE.json",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "615bf787f5374fc0b62acef9118d2ec29527d66f",
+      "sha256": "d76ad3f88b3033bfa718ec1b64c5e690189f89dbc96b35f92939d6c8442ae498"
+    },
+    {
+      "path": "generated/evm-sail-coq/rlp/dune",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "6386e3d5e88ab1001530b75379e099cd438b2259",
+      "sha256": "343bf7883cdaab67da3d8401c41008ca769be515dae9db95df616910661f100a"
+    },
+    {
+      "path": "ZesuSsz/EvmSail/Rlp/shim/input.sail",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "a05dc81e1eb0a6b71bf2ad100b8c980e1a9f4433",
+      "sha256": "e80d32b97ed05d80cb7b1a37755c95377f4ed4ffdcea062eaf24ce59e436c0c1"
+    },
+    {
+      "path": "ZesuSsz/Evidence/SignatureGates.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "985144faba97bdd6bc30d0352693bf5dd1bf1c74",
+      "sha256": "722a381479dc7d08470d08592732845a143c085743e17864286a96e984c5ec5d"
+    },
+    {
+      "path": "ZesuSsz/Evidence/SignatureGateFixtures.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "bbec443f32f59c84cdf9e91dc503260e9c17cbf9",
+      "sha256": "5e489127747b25d9e295f7be4e3c7889b80204d6ed9858345e138c6857889616"
+    },
+    {
+      "path": "ZesuSsz/Evidence/SignatureAxiomAllowlist.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "90a2da3aee37b6cb0ecbb738a5d94e931e68a636",
+      "sha256": "5344ad130ed39fd960857e69b96fa8d36b2e3e363a0b292cd0e1e71e711d2e6b"
+    },
+    {
+      "path": "ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.ml",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "2cd1921066d29d3e65dd5f97da7c42a28bfd8b97",
+      "sha256": "00ed7fc5d6bff8fef8368e5e3347f8bd4b46bbe7ed17e28b5cd96878c2dcb475"
+    },
+    {
+      "path": "ZesuSsz/dune",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "93ce2908193055fca9d71570da89b7c2f73f7419",
+      "sha256": "61de1d30481b5932f9bda70112374cb779ce8b5ecb256bd21f69e9de31a4ddfe"
+    },
+    {
+      "path": "Scaffolding/DecodeItemComplianceStatement.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "d6cd5a6d0669fdd019a97b569b134efafda21eb8",
+      "sha256": "8407d9d04f8cf4b451219adb21fefb15fa15048d247cd4ad099558ead7ceef1d"
+    },
+    {
+      "path": "Scaffolding/ParentHeaderComplianceStatement.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "05f87b6932d77f193e908ac026257ce3d66be6ae",
+      "sha256": "dfb1a75b09ee2191bbb25f4be69b9acb90098697abf4cb04bca3e16fbf173326"
+    },
+    {
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "d29492e0e4facb94883fb7f9c6e7ceef3043d917",
+      "sha256": "8b10e759b9dcb7a9d0976d2eb0f2b2e81d6a1ca0369caf607955d7777455a8aa"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "c67a69f4e0589d80f6b2ac838d91ce5093be0e1d",
+      "sha256": "0f62480c0e58ec613b903a312bb65796b89efcb545e4892c1f0a125021af399a"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "scope": "frozen Git blob",
+      "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+      "git_blob": "76d15b03c0e5b9e6b1e2a6c1759543d44632fbc5",
+      "sha256": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6"
+    },
+    {
+      "path": "/home/cody/zesislar/docs/ai/plan/PLAN_STOCK_LADDER.md",
+      "scope": "external current project record; not frozen revision content",
+      "sha256": "74f18b0b1a8754e7f75a1e43f5e4fe08297a7af45ca95ba641c1165ebdc823c1"
+    },
+    {
+      "path": "/home/cody/zesislar/docs/ai/P0A_PRESERVATION_INVENTORY.md",
+      "scope": "external current project record; not frozen revision content",
+      "sha256": "e56d33bce07fca00b6073c065ea32a756268b1f2b0d936d3284ae6ebd81ed4a8"
+    },
+    {
+      "path": "/home/cody/zesislar/docs/ai/P0B_MIGRATION_MANIFEST.md",
+      "scope": "external current project record; not frozen revision content",
+      "sha256": "394af332b018d365dbcca44dc6b8db32d845e579bd65b018b01c0aa501d90e3b"
+    },
+    {
+      "path": "/home/cody/zesislar-archive/2026-10-03/SHA256SUMS",
+      "scope": "archive record read only",
+      "sha256": "76e99a8e2ad4419ad34e1e0e28f327527434db694c5736a0cff8b0f9fba6cb1c"
+    },
+    {
+      "path": "/home/cody/zesislar-archive/2026-10-03/git/refs-source.txt",
+      "scope": "archive record read only",
+      "sha256": "17062c79b4f4e086fef670b47741884595f168c78ac133f8b0c9f4ec5e5671d8"
+    },
+    {
+      "path": "/home/cody/zesislar-archive/2026-10-03/git/worktrees.txt",
+      "scope": "archive record read only",
+      "sha256": "42bd30be5a2c13075cd44fcfad8089ab4491a01ee43fd6ba5d50e743ffed90a5"
+    },
+    {
+      "path": "/home/cody/zesislar-archive/2026-10-03/git/stash-list.txt",
+      "scope": "archive record read only",
+      "sha256": "5d7f066192e296aa6c0f0f7ca218792ddd705a2a486aa97107af4f94fa515150"
+    }
+  ],
+  "manifest_check": {
+    "project_blob_hashes_checked": 70,
+    "mismatches": [
+      {
+        "input_name": "machine-map/ZesuSsz/Automation/Hooks.v",
+        "frozen_path": "ZesuSsz/Automation/Hooks.v",
+        "recorded_sha256": "b2a154cc9d7ee0cfd5944d82f3e6624522cbc5c9a71068fc956c7f88e7d2d7a1",
+        "frozen_sha256": "8b10e759b9dcb7a9d0976d2eb0f2b2e81d6a1ca0369caf607955d7777455a8aa"
+      },
+      {
+        "input_name": "runtime-statement/ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+        "frozen_path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+        "recorded_sha256": "ab02ac05fcb705dbc6f4d28554aba4565762201fe75eb08285fb67dec7035cd1",
+        "frozen_sha256": "0f62480c0e58ec613b903a312bb65796b89efcb545e4892c1f0a125021af399a"
+      },
+      {
+        "input_name": "runtime-statement/ZesuSsz/Contracts/ParentHeaderLevel1.v",
+        "frozen_path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+        "recorded_sha256": "eb9cc11512675ca16bbdb5b0b5f8606b99cd9aed7175cbc620e93dafff825449",
+        "frozen_sha256": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6"
+      }
+    ],
+    "derived_identity_labels_consistent": true
+  },
+  "production_scan": {
+    "admit_or_Admitted_tokens": 0,
+    "Scaffolding_or_EvmSailTransactions_import_matches": 0,
+    "scope": "comment-stripped .v files under ZesuSsz, InstrSpecs, and ZesuStock",
+    "limitation": "Static scan; not an independent build or full dependency audit."
+  },
+  "gate_evidence": {
+    "source": "Parent relayed orch mailbox announcement",
+    "revision": "223f9d79b2b7b62e73fcf86d2b46c6a9449c4613",
+    "tag": "cp-p0d-11",
+    "check_fast": "green, coordinator-reported",
+    "check_iris": "green, coordinator-reported",
+    "actual_commands": null,
+    "worker_counts": null,
+    "log_paths": null,
+    "declared_commands_source": "Frozen Makefile targets check-fast and check-iris; declarations do not prove execution."
+  },
+  "remaining_infra_conditions": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    10
+  ],
+  "parent_review_condition_5": {
+    "status": "partial",
+    "evidence": "PLATFORM.md records the approved boundary.",
+    "gap": "MachineMap lacks populated-section extents and read/write/execute permission bits.",
+    "assigned_item": "Phase 0 item D"
+  }
+}
