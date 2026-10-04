@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "3648f3ec117bcc9a7dc18bcb7aaf7d5bcf962f279babe7dd79c755dd9aca3eed",
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "source": {
     "path": "_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",
@@ -8,23 +8,23 @@
   },
   "runtime_source_evidence": {
     "ziskos/entrypoint/src/dma/memcpy.s": {
-      "path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/dma/memcpy.s",
+      "path": "_build/stock-zisk/sources/zisk/ziskos/entrypoint/src/dma/memcpy.s",
       "sha256": "f249b68cc72a3dfc1525c47d3c7c03037bb3105c7fc68a3a26ed7af82ecdaf6c"
     },
     "transpilers/riscv/src/riscv2zisk_context.rs": {
-      "path": "/tmp/worker2-stock-zisk-toolchain/transpilers/riscv/src/riscv2zisk_context.rs",
+      "path": "_build/stock-zisk/sources/zisk/transpilers/riscv/src/riscv2zisk_context.rs",
       "sha256": "7db3f348137bf8276ec6d96c9528bf0130fcffcc15dbe6135c64fb115bcf5d48"
     },
     "core/src/operations/dma_memcpy.rs": {
-      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/operations/dma_memcpy.rs",
+      "path": "_build/stock-zisk/sources/zisk/core/src/operations/dma_memcpy.rs",
       "sha256": "c1c78cb150cbbc367914af373a7e153db6b6839b03de88c21c84933e58aa6724"
     },
     "core/src/mem.rs": {
-      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+      "path": "_build/stock-zisk/sources/zisk/core/src/mem.rs",
       "sha256": "8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91"
     },
     "core/src/zisk_inst_builder.rs": {
-      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/zisk_inst_builder.rs",
+      "path": "_build/stock-zisk/sources/zisk/core/src/zisk_inst_builder.rs",
       "sha256": "3da8705df1451bd6acc8f7aba941355aef199e07c9e473c4efbb91175238b84a"
     }
   },
