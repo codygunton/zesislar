@@ -34,10 +34,9 @@ Definition parentHeaderReturnPc : Z := 0x800d5f58.
 Definition nextUint64ReturnPc : Z := 0x800d6300.
 
 (* The CFG lists 17 direct decodeItem call sites. The first site decodes
-   the outer header; all later sites need their own C1-A check. The three
-   nextUint64 sites also need C1-A for their call to decodeItem at 0x62b4.
-   A future machine proof must connect callInputAt to the actual a1/a2
-   slice at each reached site. This obligation is not a public domain. *)
+   the outer header. The three nextUint64 sites also call decodeItem.
+   A machine proof must connect each call to its actual a1/a2 slice.
+   Nested length wraps use the same C1-B known-bug relation. *)
 Definition parentHeaderDecodeItemCallSites : list Z :=
   [0x800d5cf4; 0x800d5d34; 0x800d5dbc; 0x800d5de8;
    0x800d5e14; 0x800d5e40; 0x800d5e6c; 0x800d5e98;
@@ -106,7 +105,6 @@ Record NextUint64Return := {
 Definition nextUint64RootResult (call : NextUint64Call)
     (ret : NextUint64Return) : Prop :=
   inputAddressFits call.(nextInputPointer) call.(nextInputBytes) /\
-  headerFits call.(nextInputBytes) /\
   match candidateDecodeItem call.(nextInputBytes) with
   | candidateError =>
       nextUint64Error16 ret.(nextResultBytes) /\

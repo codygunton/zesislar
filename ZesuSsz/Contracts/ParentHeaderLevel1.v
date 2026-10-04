@@ -13,14 +13,12 @@ Open Scope Z_scope.
    Their fixed exit PCs name return instructions or a tail jump. A complete
    root proof must execute each return through the caller return address,
    including the memcpy tail path, and establish the exact output relation.
-   nestedC1AObligation remains a separate composition proof obligation;
-   the outer headerFits condition does not establish it. *)
+   nested wrap classification remains a separate composition obligation. *)
 Definition nextUint64Domain (args : NextUint64Call) : Prop :=
   nextUint64EntryLayout
     args.(nextInputPointer) (Z.of_nat (List.length args.(nextInputBytes)))
     args.(nextSlicePointer) args.(nextResultPointer)
-    args.(nextStackPointer) args.(nextReturnAddress) /\
-  headerFits args.(nextInputBytes).
+    args.(nextStackPointer) args.(nextReturnAddress).
 
 Definition nextUint64Allows (args : NextUint64Call)
     (ret : NextUint64Return) : Prop :=
@@ -53,8 +51,7 @@ Definition parentHeaderDomain (args : ParentHeaderCall) : Prop :=
   parentHeaderEntryLayout
     args.(headerInputPointer) (Z.of_nat (List.length args.(headerInputBytes)))
     args.(headerResultPointer) args.(headerStackPointer)
-    args.(headerReturnAddress) /\
-  headerFits args.(headerInputBytes).
+    args.(headerReturnAddress).
 
 (* This direct-return schema describes the 80-byte error union. A later
    decoder proof must strengthen success with the exact input-to-field
