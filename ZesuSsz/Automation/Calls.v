@@ -45,10 +45,10 @@ Proof.
     iApply (IH values); [lia | iExact "Htail"].
 Qed.
 
-Definition zesu_call_ret `{!islaG Sigma} `{!threadG}
-    (stack_size : Z) (regs : list valu) (ret sp : bv 64)
+Definition machine_call_ret `{!islaG Sigma} `{!threadG}
+    (machine : MachineMap) (stack_size : Z) (regs : list valu) (ret sp : bv 64)
     (Q : list (bv 64) -> iProp Sigma) : iProp Sigma :=
-  reg_col zesu_ram_sys_regs ∗
+  reg_col (machine_sys_regs machine) ∗
   reg_col ((fun r => (KindReg r, BitsShape 64)) <$>
     (["x1"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17"] ++ tmp_registers)) ∗
   reg_col (zip_with (fun r v => (KindReg r, ExactShape v))
@@ -59,14 +59,14 @@ Definition zesu_call_ret `{!islaG Sigma} `{!threadG}
   "x2" ↦ᵣ RVal_Bits sp ∗
   (bv_unsigned sp - stack_size) ↦ₘ? stack_size ∗ Q [b10; b11].
 
-Global Instance : LithiumUnfold (@zesu_call_ret) := I.
+Global Instance : LithiumUnfold (@machine_call_ret) := I.
 
-Definition zesu_call `{!islaG Sigma} `{!threadG} (stack_size : Z)
+Definition machine_call `{!islaG Sigma} `{!threadG} (machine : MachineMap) (stack_size : Z)
     (P : list (bv 64) -> bv 64 ->
       ((list (bv 64) -> iProp Sigma) -> iProp Sigma) -> iProp Sigma) :
     iProp Sigma :=
   ∃ (sp ret : bv 64),
-  reg_col zesu_ram_sys_regs ∗
+  reg_col (machine_sys_regs machine) ∗
   reg_col ((fun r => (KindReg r, BitsShape 64)) <$> tmp_registers) ∗
   "x10" ↦ᵣ: fun r10 => ∃ b10 : bv 64, ⌜r10 = RVal_Bits b10⌝ ∗
   "x11" ↦ᵣ: fun r11 => ∃ b11 : bv 64, ⌜r11 = RVal_Bits b11⌝ ∗
@@ -92,19 +92,24 @@ Definition zesu_call `{!islaG Sigma} `{!threadG} (stack_size : Z)
   ⌜bv_unsigned sp `mod` 16 = 0⌝ ∗
   ⌜bv_extract 0 1 ret = BV 1 0⌝ ∗ ⌜bv_extract 1 1 ret = BV 1 0⌝ ∗
   ⌜bv_extract 0 2 ret = BV 2 0⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned sp - stack_size /\
-    bv_unsigned sp < (machineRamEnd defaultMap)⌝ ∗
+  ⌜(mapRamBase machine) <= bv_unsigned sp - stack_size /\
+    bv_unsigned sp < (machineRamEnd machine)⌝ ∗
   (bv_unsigned sp - stack_size) ↦ₘ? stack_size ∗
   P [b10; b11; b12; b13; b14; b15; b16; b17] sp (fun Q =>
     instr_pre (bv_unsigned ret)
-      (zesu_call_ret stack_size
+      (machine_call_ret machine stack_size
         [r8; r9; r18; r19; r20; r21; r22; r23; r24; r25; r26; r27]
         ret sp Q)).
 
+Global Instance : LithiumUnfold (@machine_call) := I.
+
+Definition zesu_call_ret `{!islaG Sigma} `{!threadG} :=
+  @machine_call_ret Sigma _ _ defaultMap.
+Definition zesu_call `{!islaG Sigma} `{!threadG} :=
+  @machine_call Sigma _ _ defaultMap.
+Global Instance : LithiumUnfold (@zesu_call_ret) := I.
 Global Instance : LithiumUnfold (@zesu_call) := I.
-
-Global Typeclasses Opaque zesu_call.
-
+Global Typeclasses Opaque machine_call machine_call_ret zesu_call.
 Notation zesu_c_call := zesu_call.
 Notation zesu_c_call_ret := zesu_call_ret.
 
@@ -125,7 +130,7 @@ Global Instance : LithiumUnfold (@zesu_call_preserved_frame) := I.
 
 (** Open the standard call boundary without unfolding temporary collections. *)
 Ltac zesu_unpack_call Hspec :=
-  iEval (unfold zesu_c_call) in Hspec;
+  iEval (unfold zesu_c_call, machine_call) in Hspec;
   iDestruct Hspec as (sp ret) "(Hsys & Htmp & Hrest)";
   iEval (rewrite reg_mapsto_pred_eq /reg_mapsto_pred_def) in "Hrest";
   iDestruct "Hrest" as (r10) "(R10 & Hrest)";

@@ -1,0 +1,17 @@
+(trace
+  (declare-const v2 (_ BitVec 64)) ; SourceLoc { file: 56, line1: 100, char1: 4, line2: 100, char2: 26 }
+  (assume (= (bvand (|mstatus| ((_ field |bits|) )) #x0000000000020000) #x0000000000000000))
+  (assert (= (bvand v2 #x0000000000020000) #x0000000000000000))
+  (cycle)
+  (declare-const v3 (_ BitVec 64)) ; SourceLoc { file: 56, line1: 107, char1: 15, line2: 107, char2: 21 }
+  (read-reg |PC| nil v3)
+  (define-const v4 (bvadd v3 #x0000000000000004))
+  (write-reg |nextPC| nil v4)
+  (define-enum |iop| 6 (|RISCV_ADDI| |RISCV_SLTI| |RISCV_SLTIU| |RISCV_XORI| |RISCV_ORI| |RISCV_ANDI|))
+  (declare-const v5 (_ BitVec 64)) ; SourceLoc { file: 11, line1: 117, char1: 11, line2: 117, char2: 13 }
+  (read-reg |x2| nil v5)
+  (define-const v6 (bvadd v5 #xfffffffffffffff0))
+  (write-reg |x2| nil v6)
+  (define-enum |Retired| 2 (|RETIRE_SUCCESS| |RETIRE_FAIL|))
+  (read-reg |nextPC| nil v4)
+  (write-reg |PC| nil v4))

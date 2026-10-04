@@ -1,0 +1,66 @@
+{
+  "root_commit": "56480c9a2d328f1568b3a96345f37c715c560ca6",
+  "manifest_sha256": "51b5f665eb54da30e41a2ba3fe165f413d734acaa5b2520899e7389953688976",
+  "command": [
+    "/usr/bin/python3",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/q6-native-index-patch/new/tools/stock_zisk/platform/traces.py",
+    "--ensure-native-indexes",
+    "--manifest",
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/build-recipe.json",
+    "--cache-dir",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/q6-native-index-patch/actual-restore/cache",
+    "--decode-out",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/q6-native-index-patch/actual-restore/decodeItem",
+    "--closure-out",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/q6-native-index-patch/actual-restore/closure",
+    "--dump",
+    "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/decodeItem.raw.dump",
+    "--jobs",
+    "6"
+  ],
+  "results": [
+    {
+      "stage": "seed-cache",
+      "elapsed_seconds": 5.129,
+      "validated_files": {
+        "decodeItem": 235,
+        "closure": 9028
+      }
+    },
+    {
+      "stage": "restore-missing-indexes",
+      "elapsed_seconds": 6.032,
+      "validated_files": {
+        "decodeItem": 235,
+        "closure": 9028
+      }
+    },
+    {
+      "stage": "restore-empty-directories",
+      "elapsed_seconds": 5.203,
+      "validated_files": {
+        "decodeItem": 235,
+        "closure": 9028
+      }
+    }
+  ],
+  "root_files_unchanged": 9268,
+  "measurements_preserved": true,
+  "measurements_excluded_from_cache": true,
+  "gates_run": false,
+  "canonical_hashes_match_current_manifest": true,
+  "check_fast": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 479,
+    "rss_kb": 159716,
+    "target": "check-fast",
+    "workers": 2,
+    "watch_wall_seconds": 65
+  },
+  "default_cache": "WORKTREE/_build/stock-zisk/native-trace-cache",
+  "shared_by_default": false,
+  "shared_override": "STOCK_NATIVE_TRACE_CACHE_DIR",
+  "inventory_semantics_changed": false,
+  "candidate_pin_changed": false
+}

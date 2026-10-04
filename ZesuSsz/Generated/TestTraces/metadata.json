@@ -5,6 +5,14 @@
   "config_sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6",
   "fixtures": [
     {
+      "module": "EntryAddi",
+      "definition": "trace_entry_addi",
+      "address": 2148362592,
+      "opcode": "ff010113",
+      "isla_sha256": "fccf1c17289ce68b6187997a19589e4d75d10b4d6fe285357af7821663891e8c",
+      "rocq_sha256": "d9e514be60dd28c2af4331d7bde4b8da7963add8a5ba58aead4aec5cf8ee5a28"
+    },
+    {
       "module": "SdX1X2Off8",
       "definition": "trace_sd_x1_x2_8",
       "address": 2148362596,

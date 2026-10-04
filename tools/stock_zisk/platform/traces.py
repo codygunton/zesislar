@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import resource
+import shutil
 import subprocess
 import sys
 import time
@@ -69,7 +70,7 @@ def generate_indexes(args, rows, recipe, elf):
     coverage = args.out / "coverage.json"
     if not frozen.exists():
         frozen.write_bytes(coverage.read_bytes())
-    previous = json.loads(frozen.read_text())
+    previous = json.loads(coverage.read_text())
     if previous["elf_sha256"] != sha(elf):
         raise ValueError("The frozen selected ELF changed")
     dump_path = args.out.parent / (args.out.name + ".selected.dump")
@@ -77,7 +78,7 @@ def generate_indexes(args, rows, recipe, elf):
     if sha(dump_path) != previous["dump_sha256"] or dump_path.read_text() != expected_dump:
         raise ValueError("The frozen instruction dump differs from the selected ELF")
     for path, value in previous["files"].items():
-        if Path(path).name in {"instrs.v", "dune"}:
+        if not re.fullmatch(r"a[0-9a-f]+\.(v|isla)", Path(path).name):
             continue
         if sha(args.out / Path(path).name) != value:
             raise ValueError("The frozen trace changed: " + path)
@@ -143,7 +144,7 @@ def canonical_decodeitem(args, rows, elf):
     ensure_callee_theory(args.out)
     if not frozen.exists():
         frozen.write_bytes(coverage.read_bytes())
-    previous = json.loads(frozen.read_text())
+    previous = json.loads(coverage.read_text())
     supported = [row for row in rows if row["kind"] != "runtime"]
     validate_instruction_modules(args.out, [row["pc"] for row in supported])
     dump = args.out.parent / (args.out.name + ".selected.dump")
@@ -156,10 +157,9 @@ def canonical_decodeitem(args, rows, elf):
         if previous[key] != sha(path):
             raise ValueError("The cached DecodeItem input changed: " + key)
     for path, value in previous["files"].items():
-        if Path(path).name == "dune": continue
-        actual = args.out / Path(path).name
-        value_now = hashlib.sha256(native_prefix(actual.read_text()).encode()).hexdigest() if actual.name == "instrs.v" else sha(actual)
-        if value_now != value:
+        if not re.fullmatch(r"a[0-9a-f]+\.(v|isla)", Path(path).name):
+            continue
+        if sha(args.out / Path(path).name) != value:
             raise ValueError("The cached DecodeItem file changed: " + path)
     cache = {}
     for row in supported:
@@ -184,9 +184,11 @@ def canonical_decodeitem(args, rows, elf):
         result = subprocess.run(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode:
             raise RuntimeError(result.stdout.decode()[-2000:])
-        for name in [f"a{row['pc']:x}.v" for row in supported] + ["instrs.v"]:
-            if (output / name).read_text() != native_prefix((args.out / name).read_text()):
+        for row in supported:
+            name = f"a{row['pc']:x}.v"
+            if (output / name).read_bytes() != (args.out / name).read_bytes():
                 raise ValueError("The frontend changed the cached DecodeItem file: " + name)
+        (args.out / "instrs.v").write_bytes((output / "instrs.v").read_bytes())
     with elf.open("rb") as stream:
         commitments = selected_commitments(json.loads((args.manifest.parent / "inventory.json").read_text()),
             Image(ELFFile(stream)), {"decodeItem": {row["pc"] for row in supported}})
@@ -201,6 +203,86 @@ def canonical_decodeitem(args, rows, elf):
     coverage.write_text(json.dumps(report, indent=2) + "\n")
     print(f"Validated {len(supported)} DecodeItem instructions with the native index")
 
+def native_records(recipe, group):
+    prefix = "generated/isla-traces/stock-zisk/" + group + "/"
+    records = {name[len(prefix):]: record["sha256"]
+               for name, record in recipe["project_derived"].items()
+               if name.startswith(prefix) and name[len(prefix):] not in
+                  {"manifest-fragment.json", "generation-measurement.json"}}
+    if not records or "coverage.json" not in records:
+        raise ValueError("The manifest has no native trace dataset: " + group)
+    if any(Path(name).name != name for name in records):
+        raise ValueError("A native trace record contains an invalid filename")
+    return records
+
+
+def native_dataset_matches(directory, records, dump):
+    if any(not (directory / name).is_file() or sha(directory / name) != value
+           for name, value in records.items()):
+        return False
+    report = json.loads((directory / "coverage.json").read_text())
+    return dump.is_file() and sha(dump) == report["dump_sha256"]
+
+
+def ensure_native_indexes(args):
+    recipe = json.loads(args.manifest.read_text())
+    args.cache_dir.mkdir(parents=True, exist_ok=True)
+    binder = ROOT / "tools/stock_zisk/platform/bind_traces.py"
+    for group, out, coqdir in [
+            ("decodeItem", args.decode_out, "ZesuSsz.Stock.DecodeItem"),
+            ("closure", args.closure_out, "ZesuSsz.Stock.Closure")]:
+        records = native_records(recipe, group)
+        key = hashlib.sha256(json.dumps(records, sort_keys=True).encode()).hexdigest()
+        cache = args.cache_dir / group / key
+        dump = out.parent / (out.name + ".selected.dump")
+        check = [sys.executable, str(binder), "--out", str(out),
+                 "--check-manifest", str(args.manifest), "--trace-name", group]
+        if not native_dataset_matches(out, records, dump):
+            if native_dataset_matches(cache, records, cache / "selected.dump"):
+                out.mkdir(parents=True, exist_ok=True)
+                for name in records:
+                    shutil.copy2(cache / name, out / name)
+                shutil.copy2(cache / "selected.dump", dump)
+                print("Restored validated native indexes:", group, flush=True)
+            else:
+                command = [sys.executable, str(Path(__file__).resolve()),
+                           "--manifest", str(args.manifest), "--dump", str(args.dump),
+                           "--coqdir", coqdir, "--jobs", str(args.jobs)]
+                if group == "closure":
+                    command.append("--closure")
+                required = {name: value for name, value in records.items()
+                            if name in {"coverage.json", "dune"}
+                            or re.fullmatch(r"a[0-9a-f]+\.(v|isla)", name)}
+                if native_dataset_matches(out, required, dump):
+                    subprocess.run(command + ["--out", str(out)], check=True)
+                else:
+                    out.parent.mkdir(parents=True, exist_ok=True)
+                    with tempfile.TemporaryDirectory(prefix="native-traces-", dir=out.parent) as directory:
+                        fresh = Path(directory) / group
+                        subprocess.run(command + ["--out", str(fresh)], check=True)
+                        subprocess.run(check[:3] + [str(fresh)] + check[4:], check=True)
+                        out.mkdir(parents=True, exist_ok=True)
+                        for name in records:
+                            shutil.copy2(fresh / name, out / name)
+                        shutil.copy2(fresh.parent / (fresh.name + ".selected.dump"), dump)
+        subprocess.run(check, check=True)
+        # Each cache entry contains only files checked against the tracked manifest.
+        # Measurements stay in their original output directory.
+        if not native_dataset_matches(cache, records, cache / "selected.dump"):
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.TemporaryDirectory(prefix="native-cache-", dir=cache.parent) as directory:
+                staged = Path(directory)
+                for name in records:
+                    shutil.copy2(out / name, staged / name)
+                shutil.copy2(dump, staged / "selected.dump")
+                if cache.exists():
+                    # A corrupt cache does not invalidate the checked output dataset.
+                    continue
+                try:
+                    staged.rename(cache)
+                except FileExistsError:
+                    pass
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--manifest",type=Path,default=Path("build/stock-zisk/build-recipe.json"))
@@ -210,8 +292,19 @@ def main():
     ap.add_argument("--jobs",type=int,default=6)
     ap.add_argument("--closure",action="store_true")
     ap.add_argument("--indexes",action="store_true")
+    ap.add_argument("--ensure-native-indexes", action="store_true")
+    ap.add_argument("--cache-dir", type=Path, default=ROOT / "_build/stock-zisk/native-trace-cache")
+    ap.add_argument("--decode-out", type=Path, default=ROOT / "generated/isla-traces/stock-zisk/decodeItem")
+    ap.add_argument("--closure-out", type=Path, default=ROOT / "generated/isla-traces/stock-zisk/closure")
     args=ap.parse_args()
     if not 1 <= args.jobs <= 6: raise ValueError("Use one to six workers for this child")
+    args.manifest = args.manifest.resolve()
+    if args.ensure_native_indexes:
+        args.cache_dir = args.cache_dir.resolve()
+        args.decode_out = args.decode_out.resolve()
+        args.closure_out = args.closure_out.resolve()
+        ensure_native_indexes(args)
+        return
     args.out = args.out.resolve()
     args.dump = args.dump.resolve()
     args.manifest = args.manifest.resolve()
