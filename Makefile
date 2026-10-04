@@ -134,7 +134,7 @@ check-proof-hygiene:
 # Dune aliases, after the uncached Python checks of `check-evidence-tools`
 # (machine config, tools and Evidence unit tests, hygiene, spec shapes).
 # InstrSpecs, ZesuMachineMap, EvmSail and SailStdpp build as dependencies.
-# No retained target reads generated/isla-traces.
+# Native index datasets must exist before retained Dune targets start.
 RETAINED_TARGETS := \
   @ZesuSsz/Contracts/all \
   @ZesuSsz/Automation/all \
@@ -143,7 +143,7 @@ RETAINED_TARGETS := \
   @ZesuSsz/Proofs/Tests/all \
   @ZesuSsz/Tests/all
 .PHONY: check-fast
-check-fast: check-evidence-tools check-signatures
+check-fast: stock-native-indexes check-evidence-tools check-signatures
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
@@ -159,7 +159,7 @@ check-signatures:
 	  ZesuSsz/Evidence/ParentHeaderDifferential.vo
 
 .PHONY: check-iris
-check-iris: check-evidence-tools
+check-iris: stock-native-indexes check-evidence-tools
 	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
@@ -360,3 +360,14 @@ traces-closure-indexes:
 	  --coqdir ZesuSsz.Stock.Closure --jobs 6
 	$(PYTHON) tools/stock_zisk/platform/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
 	  --check-manifest $(STOCK_TRACE_MANIFEST) --trace-name closure
+
+# Restore tracked native index datasets before checkers or Dune start.
+STOCK_NATIVE_TRACE_CACHE_DIR ?= $(CURDIR)/_build/stock-zisk/native-trace-cache
+.PHONY: stock-native-indexes
+stock-native-indexes:
+	$(PYTHON) $(STOCK_TRACE_DRIVER) --ensure-native-indexes \
+	  --manifest $(STOCK_TRACE_MANIFEST) --cache-dir $(STOCK_NATIVE_TRACE_CACHE_DIR) \
+	  --decode-out $(STOCK_DECODE_TRACE_DIR) --closure-out $(STOCK_CLOSURE_TRACE_DIR) \
+	  --dump $(DUMP) --jobs $(TRACE_JOBS)
+
+check-evidence-tools check-signatures: stock-native-indexes

@@ -1,0 +1,35 @@
+{
+  "target": "@all",
+  "status": "failed",
+  "exit": 1,
+  "error_class": "rocq_error",
+  "elapsed_ms": 3832847,
+  "peak_rss_kib": 978372,
+  "worker_count": 2,
+  "log_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261004-053214-worker2-q6-all.log",
+  "log_sha256": "31f22fd77ee3ca5baf58f3b45c6cc37542e65e361ee821cf16ec67831f001fd8",
+  "first_error": {
+    "file": "generated/isla-traces/write_success_09/a14d34_spec.v",
+    "line": 14,
+    "error": "Attempt to save an incomplete proof"
+  },
+  "first_removed_reference": {
+    "file": "generated/isla-traces/write_success_10/a14d80_spec.v",
+    "line": 8,
+    "error": "The reference zesu_ld_array_at_spec was not found in the current environment."
+  },
+  "failure_scope": "Stale ignored fork trace specifications entered the @all target.",
+  "guard_wait": {
+    "measured": false,
+    "duration_seconds": null,
+    "note": "No separate guard-wait measurement exists in the build record or saved build output. Wall time does not measure guard wait."
+  },
+  "coordinator_reported_comparison": {
+    "target": "Root check-iris",
+    "wall_minutes": 47,
+    "cpu_seconds": 29,
+    "reported_cause": "guard scopes",
+    "provenance": "Orch report relayed by worker-build-2. This worker did not measure these values."
+  },
+  "new_builds_run": false
+}

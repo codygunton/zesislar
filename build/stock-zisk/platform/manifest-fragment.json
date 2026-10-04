@@ -47,11 +47,11 @@
     },
     "tools/stock_zisk/platform/test_build.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/test_build.py",
-      "sha256": "3785abc39c98260c196d00766929add4f20c8e5ff165818147e5f8edee04e078"
+      "sha256": "7df6b9c509bb9eaf428d14b33b2726c9bcf3cf77b845e42efffea3a4cd9a223c"
     },
     "tools/stock_zisk/platform/traces.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/traces.py",
-      "sha256": "6426ae55ffdaabe7b6a1b3229b1493e860bc5edb532df41417922ca81bd07a4b"
+      "sha256": "68f14924ff59a83ded8b9f1033adc3ff3136d970415ab294121d25c560a2afd3"
     },
     "sail": {
       "path": "/home/cody/islaris/_opam/bin/sail",

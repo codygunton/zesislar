@@ -185,4 +185,80 @@ class LinkTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Missing platform hook"):
             build.link(self.base, self.adapter.replace("fn zchecked_mem_read(", "fn zchanged(", 1))
 
+class NativeIndexCacheTests(unittest.TestCase):
+    def fixture(self, directory):
+        import argparse, hashlib, json
+        root = Path(directory)
+        manifest = root / "manifest.json"
+        records, datasets = {}, {}
+        for group, index in [("decodeItem", "instrs.v"), ("closure", "index_sample.v")]:
+            out = root / group
+            out.mkdir()
+            dump = out.parent / (out.name + ".selected.dump")
+            dump.write_text("4: 00000013 addi\n")
+            data = {index: "native index", "a4.v": "instruction", "a4.isla": "trace", "dune": "theory"}
+            data["coverage.json"] = json.dumps({"dump_sha256": traces.sha(dump)})
+            for name, content in data.items():
+                (out / name).write_text(content)
+                records[f"generated/isla-traces/stock-zisk/{group}/{name}"] = {"sha256": traces.sha(out/name)}
+            (out / "generation-measurement.json").write_text("frozen measurement")
+            datasets[group] = data
+        manifest.write_text(json.dumps({"project_derived": records}))
+        args = argparse.Namespace(manifest=manifest, cache_dir=root / "cache",
+            decode_out=root / "decodeItem", closure_out=root / "closure", dump=root / "raw.dump", jobs=1)
+        return args, datasets
+
+    def test_validated_cache_restores_index_and_dump(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            args, datasets = self.fixture(directory)
+            with patch.object(traces.subprocess, "run") as run:
+                traces.ensure_native_indexes(args)
+                self.assertEqual(run.call_count, 2)
+                (args.decode_out / "instrs.v").unlink()
+                (args.decode_out.parent / "decodeItem.selected.dump").unlink()
+                run.reset_mock()
+                traces.ensure_native_indexes(args)
+                self.assertEqual(run.call_count, 2)
+                self.assertTrue(all("--check-manifest" in call.args[0] for call in run.call_args_list))
+            self.assertEqual((args.decode_out / "instrs.v").read_text(), "native index")
+            self.assertEqual((args.decode_out / "generation-measurement.json").read_text(), "frozen measurement")
+            self.assertFalse(any(args.cache_dir.rglob("generation-measurement.json")))
+
+    def test_corrupt_cache_regenerates_from_valid_instruction_cache(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            args, datasets = self.fixture(directory)
+            with patch.object(traces.subprocess, "run"):
+                traces.ensure_native_indexes(args)
+            next((args.cache_dir / "decodeItem").rglob("instrs.v")).write_text("corrupt")
+            (args.decode_out / "instrs.v").unlink()
+            def command(cmd, **kwargs):
+                if "--coqdir" in cmd:
+                    (Path(cmd[cmd.index("--out")+1]) / "instrs.v").write_text("native index")
+            with patch.object(traces.subprocess, "run", side_effect=command) as run:
+                traces.ensure_native_indexes(args)
+                self.assertEqual(sum("--coqdir" in call.args[0] for call in run.call_args_list), 1)
+            self.assertEqual((args.decode_out / "instrs.v").read_text(), "native index")
+
+    def test_cold_factory_checks_fresh_outputs_before_installation(self):
+        import shutil
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            args, datasets = self.fixture(directory)
+            shutil.rmtree(args.decode_out)
+            shutil.rmtree(args.closure_out)
+            def command(cmd, **kwargs):
+                if "--coqdir" in cmd:
+                    out = Path(cmd[cmd.index("--out")+1]); out.mkdir()
+                    group = "closure" if "--closure" in cmd else "decodeItem"
+                    for name, content in datasets[group].items():
+                        (out/name).write_text(content)
+                    (out.parent/(out.name+".selected.dump")).write_text("4: 00000013 addi\n")
+            with patch.object(traces.subprocess, "run", side_effect=command) as run:
+                traces.ensure_native_indexes(args)
+                self.assertEqual(sum("--coqdir" in call.args[0] for call in run.call_args_list), 2)
+                self.assertEqual(sum("--check-manifest" in call.args[0] for call in run.call_args_list), 4)
+            self.assertEqual((args.closure_out / "index_sample.v").read_text(), "native index")
+
 if __name__ == "__main__": unittest.main()
