@@ -53,6 +53,25 @@ class ManifestTests(unittest.TestCase):
             add('compiler/'+name, self.root/'compiler'/name)
         for name in manifest.LEGACY_TOOLS:
             add('legacy/'+name, self.root/'legacy'/name)
+        add('sail/compiler', self.root/'sail/compiler')
+        add('sail/shim', self.root/'sail/input.sail')
+        plugin = self.root/'sail/plugin'
+        plugin.write_text('plugin\n')
+        inputs['sail/compiler']['plugin'] = manifest.file_record(plugin)
+        inputs['sail/compiler']['revision'] = 'sail-pin'
+        for group, field in [('rlp', 'snapshotSha256'), ('transactions', 'modulesSha256')]:
+            directory = self.root/'sail'/group
+            directory.mkdir()
+            snapshot = directory/'decoder.v'
+            snapshot.write_text('generated snapshot\n')
+            source = directory/'SOURCE.json'
+            source.write_text(json.dumps({
+                'sailCompilerSha256': inputs['sail/compiler']['sha256'],
+                'sailCoqPluginSha256': inputs['sail/compiler']['plugin']['sha256'],
+                'sailCompilerRevision': 'sail-pin',
+                'inputShimSha256': inputs['sail/shim']['sha256'],
+                field: {'decoder.v': manifest.digest(snapshot)}}))
+            inputs[f'sail/{group}/SOURCE.json'] = manifest.file_record(source)
         build = self.root/'build'
         self.recipe = {
             'sources': sources, 'zig_version': '0.16.0', 'jobs': 2, 'build_dir': str(build),
@@ -90,6 +109,29 @@ class ManifestTests(unittest.TestCase):
 
     def test_valid(self):
         manifest.check(self.out, self.pins)
+
+    def test_changed_sail_snapshot(self):
+        for group in ['rlp', 'transactions']:
+            with self.subTest(group=group):
+                path = self.root/'sail'/group/'decoder.v'
+                original = path.read_bytes()
+                path.write_text('changed snapshot\n')
+                with self.assertRaisesRegex(ValueError, 'decoder.v differs'):
+                    manifest.check(self.out, self.pins)
+                path.write_bytes(original)
+
+    def test_changed_sail_plugin(self):
+        Path(self.recipe['inputs']['sail/compiler']['plugin']['path']).write_text('changed plugin')
+        with self.assertRaisesRegex(ValueError, 'Sail Coq plugin differs'):
+            manifest.check(self.out, self.pins)
+
+    def test_sail_compiler_disagrees_with_snapshot(self):
+        compiler = self.recipe['inputs']['sail/compiler']
+        Path(compiler['path']).write_text('another compiler')
+        compiler['sha256'] = manifest.digest(compiler['path'])
+        manifest.refresh(self.out, self.recipe)
+        with self.assertRaisesRegex(ValueError, 'SOURCE.json compiler differs'):
+            manifest.check(self.out, self.pins)
 
     def add_project_artifact(self):
         path = self.root/'generated/trace.v'

@@ -71,7 +71,8 @@ def record_build(args, recipe, previous):
             ['git', '-C', str(path), 'rev-parse', 'HEAD^{tree}'], text=True).strip()
         source['patch_sha256'] = hashlib.sha256(b'').hexdigest()
     inputs = {name: record for name, record in previous['inputs'].items()
-              if name.startswith('compiler/') and name.split('/')[-1] in ['rustc', 'cargo', 'cargo-zisk']}
+              if name.startswith('sail/') or
+              (name.startswith('compiler/') and name.split('/')[-1] in ['rustc', 'cargo', 'cargo-zisk'])}
     for name in ['Makefile', 'build.zig', 'build.zig.zon', 'src/zisk_host.zig']:
         inputs['guest/'+name] = file_record(args.guest/'zisk'/name)
     inputs['linker'] = file_record(args.guest/'zisk/zisk.ld')
@@ -121,6 +122,29 @@ def require_equal(actual, expected, label):
         raise ValueError(f'{label} differs: {actual!r} != {expected!r}')
 
 
+def check_sail_inputs(inputs):
+    """Check snapshot files and their recorded compiler and source identities."""
+    compiler = inputs['sail/compiler']
+    shim = inputs['sail/shim']
+    plugin = compiler['plugin']
+    require_equal(digest(plugin['path']), plugin['sha256'], 'Sail Coq plugin')
+    for name in ['sail/rlp/SOURCE.json', 'sail/transactions/SOURCE.json']:
+        record = inputs[name]
+        source = json.loads(Path(record['path']).read_text())
+        require_equal(source['sailCompilerSha256'], compiler['sha256'], name+' compiler')
+        require_equal(source['sailCoqPluginSha256'], plugin['sha256'], name+' plugin')
+        require_equal(source['inputShimSha256'], shim['sha256'], name+' shim')
+        require_equal(source['sailCompilerRevision'], compiler['revision'], name+' revision')
+        snapshots = source.get('snapshotSha256', source.get('modulesSha256', {}))
+        if not snapshots:
+            raise ValueError(f'Missing Sail snapshot identities: {name}')
+        for filename, sha in snapshots.items():
+            require_equal(digest(Path(record['path']).parent/filename), sha, name+' '+filename)
+        for field, dependency in record.get('dependencies', {}).items():
+            require_equal(dependency['sha256'], source[field], name+' '+field)
+            require_equal(digest(dependency['path']), dependency['sha256'], name+' '+field)
+
+
 def project_artifact_path(recipe, name, binding):
     """Keep external generated artifacts inside the declared project root."""
     relative = Path(name)
@@ -165,6 +189,7 @@ def check(out, pins):
         '--global-cache-dir', str(build_dir/'zig-global')], 'Link recipe')
     for name, record in recipe['inputs'].items():
         require_equal(digest(record['path']), record['sha256'], name)
+    check_sail_inputs(recipe['inputs'])
     for name in ['Makefile', 'build.zig', 'build.zig.zon', 'src/zisk_host.zig']:
         record = recipe['inputs']['guest/'+name]
         expected_path = Path(recipe['sources']['guest']['path'])/'zisk'/name
