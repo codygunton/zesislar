@@ -18,11 +18,4 @@ This choice excludes a reached child whose long-length header wraps, even when t
 
 ## C4: seven Sail host externs
 
-Decide whether to supply verified bodies or approve named premises for these seven externs:
-
-- Scratch: `host_scratch_reserve`, `host_scratch_store_byte`, `host_scratch_store_stateless_input`, `host_scratch_store_word`, and `host_scratch_truncate`.
-- Hash: `scratch_keccak256` and `stateless_input_keccak256`.
-
-Each premise must state completion, exact return values, scratch effects, input preservation, and unrelated-state preservation where applicable. The [extern audit](C4_TRANSACTION_HOST_EXTERNS.md) gives each declared type and its reached roots.
-
-The Rocq lemma `transactionProjectionIgnoresHashOutputs` proves that changing constructed `sender` and `signing_hash` leaves `TransactionProjection` unchanged. It does not prove that the full Sail decoder action ignores either hash. C4 still needs the action-level state contract and a bridge from the Q18 transaction type to the C2 transaction type. Named premises remain part of the final trust claim unless their bodies receive proofs.
+Decided 2026-10-04 by the user: all seven reached externs are named premises. No verified implementation and no keccak verification is required. The premises must appear explicitly in each reviewed compliance type and in the gate's runtime-premise list, separately from global axioms.
