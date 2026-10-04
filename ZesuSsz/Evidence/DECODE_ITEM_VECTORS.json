@@ -1,0 +1,1124 @@
+{
+  "label": "Pinned Sail execution through SailRun; no selected-ELF execution or proof",
+  "sail_action": "SailRun.runRlpDecodeItem",
+  "candidate_basis": "Contracts.RlpDecodeItem.candidateDecodeItem; not proved against the selected ELF",
+  "scope": "All byte tags have an RLP form. Invalid-tag-shape cases have incomplete long headers. Integer canonicality belongs to an integer decoder, so item Success does not establish integer acceptance.",
+  "source_revision": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+  "compiler_revision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+  "fixture": {
+    "input_pointer": 4096,
+    "output_pointer": 8192,
+    "stack_pointer": 12288,
+    "return_address": 16384,
+    "before_output_bytes": [
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199
+    ]
+  },
+  "hashes": {
+    "vector_inputs_sha256": "0562fa6f034d4272889fb4ba5da6ab9537c67bbd31e19b62b958f292cf4b755c",
+    "generator_sha256": "57dbdd94c784e47058d204e40052d2005bf6b0ace903fc48e3456c971a43e5a1",
+    "oracle_sha256": "e475dc756c5b847b9bb3350aec3a26b06a98ca0062a9f666870cef0f05eafbb9",
+    "sail_run_sha256": "2830aab2ca40000a340967780b03800f97ecdb0539c28e41b882549ce8f67e98",
+    "contract_sha256": "1ee2fd169ff2669f71dbf3c61cd4a97f4e29ac0fa10479a086f5aa0fa397bf10",
+    "generated_rlp_action_sha256": "5d5b80a77f0c58cfe2d838364cd49a05457a29ab99d845db9717aa248ad2238c",
+    "generated_rlp_types_sha256": "53eeb02464f73b6d65c1d29e5cfe134473d1e4c2a0aab484433b1bc595485852",
+    "generated_source_manifest_sha256": "d76ad3f88b3033bfa718ec1b64c5e690189f89dbc96b35f92939d6c8442ae498",
+    "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+  },
+  "vectors": [
+    {
+      "name": "single_byte",
+      "classes": [
+        "valid"
+      ],
+      "input_bytes": [
+        127
+      ],
+      "input_hex": "7f",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 1,
+        "content_length": 1,
+        "source_bytes": 0,
+        "source_length": 1
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0010000000000000010000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 0,
+          "payload_length": 1,
+          "payload_pointer": 4096,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0010000000000000010000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "empty_string",
+      "classes": [
+        "valid",
+        "empty_payload"
+      ],
+      "input_bytes": [
+        128
+      ],
+      "input_hex": "80",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 1,
+        "content_length": 0,
+        "source_bytes": 0,
+        "source_length": 1
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0100000000000000000000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 1,
+          "payload_length": 0,
+          "payload_pointer": 1,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0100000000000000000000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "one_byte_string",
+      "classes": [
+        "valid"
+      ],
+      "input_bytes": [
+        129,
+        128
+      ],
+      "input_hex": "8180",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 2,
+        "content_length": 1,
+        "source_bytes": 0,
+        "source_length": 2
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000010000000000000000b1b2b3b4b5b6b702000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 1,
+          "payload_length": 1,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 2
+        },
+        "expected_40_byte_image_hex": "0110000000000000010000000000000000b1b2b3b4b5b6b702000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "short_string",
+      "classes": [
+        "valid"
+      ],
+      "input_bytes": [
+        131,
+        1,
+        2,
+        3
+      ],
+      "input_hex": "83010203",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 4,
+        "content_length": 3,
+        "source_bytes": 0,
+        "source_length": 4
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000030000000000000000b1b2b3b4b5b6b704000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 1,
+          "payload_length": 3,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 4
+        },
+        "expected_40_byte_image_hex": "0110000000000000030000000000000000b1b2b3b4b5b6b704000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "empty_list",
+      "classes": [
+        "valid",
+        "empty_payload"
+      ],
+      "input_bytes": [
+        192
+      ],
+      "input_hex": "c0",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": true,
+        "full_length": 1,
+        "content_length": 0,
+        "source_bytes": 0,
+        "source_length": 1
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000000000000000000001b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": true,
+          "header_length": 1,
+          "payload_length": 0,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0110000000000000000000000000000001b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "short_list",
+      "classes": [
+        "valid"
+      ],
+      "input_bytes": [
+        194,
+        1,
+        2
+      ],
+      "input_hex": "c20102",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": true,
+        "full_length": 3,
+        "content_length": 2,
+        "source_bytes": 0,
+        "source_length": 3
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000020000000000000001b1b2b3b4b5b6b703000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": true,
+          "header_length": 1,
+          "payload_length": 2,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 3
+        },
+        "expected_40_byte_image_hex": "0110000000000000020000000000000001b1b2b3b4b5b6b703000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "long_string_56",
+      "classes": [
+        "valid",
+        "long_length"
+      ],
+      "input_bytes": [
+        184,
+        56,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129,
+        129
+      ],
+      "input_hex": "b8388181818181818181818181818181818181818181818181818181818181818181818181818181818181818181818181818181818181818181",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 58,
+        "content_length": 56,
+        "source_bytes": 0,
+        "source_length": 58
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0210000000000000380000000000000000b1b2b3b4b5b6b73a000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 2,
+          "payload_length": 56,
+          "payload_pointer": 4098,
+          "consumed_mod_2_64": 58
+        },
+        "expected_40_byte_image_hex": "0210000000000000380000000000000000b1b2b3b4b5b6b73a000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "long_list_56",
+      "classes": [
+        "valid",
+        "long_length"
+      ],
+      "input_bytes": [
+        248,
+        56,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "input_hex": "f8388080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": true,
+        "full_length": 58,
+        "content_length": 56,
+        "source_bytes": 0,
+        "source_length": 58
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0210000000000000380000000000000001b1b2b3b4b5b6b73a000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": true,
+          "header_length": 2,
+          "payload_length": 56,
+          "payload_pointer": 4098,
+          "consumed_mod_2_64": 58
+        },
+        "expected_40_byte_image_hex": "0210000000000000380000000000000001b1b2b3b4b5b6b73a000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "empty_input",
+      "classes": [
+        "empty_input"
+      ],
+      "input_bytes": [],
+      "input_hex": "",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "short_string_missing_byte",
+      "classes": [
+        "short_input",
+        "truncated"
+      ],
+      "input_bytes": [
+        129
+      ],
+      "input_hex": "81",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "short_list_missing_byte",
+      "classes": [
+        "short_input",
+        "truncated"
+      ],
+      "input_bytes": [
+        193
+      ],
+      "input_hex": "c1",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "long_string_missing_length",
+      "classes": [
+        "truncated",
+        "invalid_tag_shape"
+      ],
+      "input_bytes": [
+        184
+      ],
+      "input_hex": "b8",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "long_list_missing_length",
+      "classes": [
+        "truncated",
+        "invalid_tag_shape"
+      ],
+      "input_bytes": [
+        248
+      ],
+      "input_hex": "f8",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "long_string_short_payload",
+      "classes": [
+        "truncated"
+      ],
+      "input_bytes": [
+        184,
+        56,
+        1
+      ],
+      "input_hex": "b83801",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "long_list_short_payload",
+      "classes": [
+        "truncated"
+      ],
+      "input_bytes": [
+        248,
+        56,
+        128
+      ],
+      "input_hex": "f83880",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "max_tag_missing_length",
+      "classes": [
+        "truncated",
+        "invalid_tag_shape"
+      ],
+      "input_bytes": [
+        255
+      ],
+      "input_hex": "ff",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "string_trailing_byte",
+      "classes": [
+        "trailing_bytes"
+      ],
+      "input_bytes": [
+        128,
+        0
+      ],
+      "input_hex": "8000",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 1,
+        "content_length": 0,
+        "source_bytes": 0,
+        "source_length": 1
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0100000000000000000000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 1,
+          "payload_length": 0,
+          "payload_pointer": 1,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0100000000000000000000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "list_trailing_byte",
+      "classes": [
+        "trailing_bytes"
+      ],
+      "input_bytes": [
+        192,
+        0
+      ],
+      "input_hex": "c000",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": true,
+        "full_length": 1,
+        "content_length": 0,
+        "source_bytes": 0,
+        "source_length": 1
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000000000000000000001b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": true,
+          "header_length": 1,
+          "payload_length": 0,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0110000000000000000000000000000001b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "noncanonical_single_byte",
+      "classes": [
+        "noncanonical_integer"
+      ],
+      "input_bytes": [
+        129,
+        1
+      ],
+      "input_hex": "8101",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 2,
+        "content_length": 1,
+        "source_bytes": 0,
+        "source_length": 2
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000010000000000000000b1b2b3b4b5b6b702000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 1,
+          "payload_length": 1,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 2
+        },
+        "expected_40_byte_image_hex": "0110000000000000010000000000000000b1b2b3b4b5b6b702000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "noncanonical_integer_zero",
+      "classes": [
+        "noncanonical_integer"
+      ],
+      "input_bytes": [
+        0
+      ],
+      "input_hex": "00",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 1,
+        "content_length": 1,
+        "source_bytes": 0,
+        "source_length": 1
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0010000000000000010000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 0,
+          "payload_length": 1,
+          "payload_pointer": 4096,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0010000000000000010000000000000000b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "noncanonical_integer_leading_zero",
+      "classes": [
+        "noncanonical_integer"
+      ],
+      "input_bytes": [
+        130,
+        0,
+        5
+      ],
+      "input_hex": "820005",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 3,
+        "content_length": 2,
+        "source_bytes": 0,
+        "source_length": 3
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0110000000000000020000000000000000b1b2b3b4b5b6b703000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 1,
+          "payload_length": 2,
+          "payload_pointer": 4097,
+          "consumed_mod_2_64": 3
+        },
+        "expected_40_byte_image_hex": "0110000000000000020000000000000000b1b2b3b4b5b6b703000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "noncanonical_long_zero",
+      "classes": [
+        "noncanonical_length"
+      ],
+      "input_bytes": [
+        184,
+        0
+      ],
+      "input_hex": "b800",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 2,
+        "content_length": 0,
+        "source_bytes": 0,
+        "source_length": 2
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0210000000000000000000000000000000b1b2b3b4b5b6b702000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 2,
+          "payload_length": 0,
+          "payload_pointer": 4098,
+          "consumed_mod_2_64": 2
+        },
+        "expected_40_byte_image_hex": "0210000000000000000000000000000000b1b2b3b4b5b6b702000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "noncanonical_long_leading_zero",
+      "classes": [
+        "noncanonical_length"
+      ],
+      "input_bytes": [
+        185,
+        0,
+        56,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "input_hex": "b900380101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101",
+      "sail_outcome": {
+        "kind": "Success",
+        "is_list": false,
+        "full_length": 59,
+        "content_length": 56,
+        "source_bytes": 0,
+        "source_length": 59
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "0310000000000000380000000000000000b1b2b3b4b5b6b73b000000000000000000c2c3c4c5c6c7"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 3,
+          "payload_length": 56,
+          "payload_pointer": 4099,
+          "consumed_mod_2_64": 59
+        },
+        "expected_40_byte_image_hex": "0310000000000000380000000000000000b1b2b3b4b5b6b73b000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "length_2_64_minus_10",
+      "classes": [
+        "near_2_64"
+      ],
+      "input_bytes": [
+        191,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        246
+      ],
+      "input_hex": "bffffffffffffffff6",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": true,
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Error"
+        },
+        "expected_40_byte_image_hex": "00000000000000000000000000000000000000000000000000000000000000000400000000000000"
+      }
+    },
+    {
+      "name": "length_2_64_minus_9_wrap",
+      "classes": [
+        "near_2_64",
+        "eight_byte_length_wrap"
+      ],
+      "input_bytes": [
+        191,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        247
+      ],
+      "input_hex": "bffffffffffffffff7",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": false,
+        "expected_40_byte_image_hex": null
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 9,
+          "payload_length": 18446744073709551607,
+          "payload_pointer": 4105,
+          "consumed_mod_2_64": 0
+        },
+        "expected_40_byte_image_hex": "0910000000000000f7ffffffffffffff00b1b2b3b4b5b6b700000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "length_2_64_minus_8_wrap",
+      "classes": [
+        "near_2_64",
+        "eight_byte_length_wrap"
+      ],
+      "input_bytes": [
+        191,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        248
+      ],
+      "input_hex": "bffffffffffffffff8",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": false,
+        "expected_40_byte_image_hex": null
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": false,
+          "header_length": 9,
+          "payload_length": 18446744073709551608,
+          "payload_pointer": 4105,
+          "consumed_mod_2_64": 1
+        },
+        "expected_40_byte_image_hex": "0910000000000000f8ffffffffffffff00b1b2b3b4b5b6b701000000000000000000c2c3c4c5c6c7"
+      }
+    },
+    {
+      "name": "list_length_2_64_minus_9_wrap",
+      "classes": [
+        "near_2_64",
+        "eight_byte_length_wrap"
+      ],
+      "input_bytes": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        247
+      ],
+      "input_hex": "fffffffffffffffff7",
+      "sail_outcome": {
+        "kind": "Reject",
+        "fatal_error": "RlpDecode"
+      },
+      "c1_a": {
+        "in_domain": false,
+        "expected_40_byte_image_hex": null
+      },
+      "c1_b": {
+        "in_domain": true,
+        "candidate": {
+          "kind": "Success",
+          "is_list": true,
+          "header_length": 9,
+          "payload_length": 18446744073709551607,
+          "payload_pointer": 4105,
+          "consumed_mod_2_64": 0
+        },
+        "expected_40_byte_image_hex": "0910000000000000f7ffffffffffffff01b1b2b3b4b5b6b700000000000000000000c2c3c4c5c6c7"
+      }
+    }
+  ]
+}
