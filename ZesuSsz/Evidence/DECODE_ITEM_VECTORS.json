@@ -58,7 +58,7 @@
     "generator_sha256": "57dbdd94c784e47058d204e40052d2005bf6b0ace903fc48e3456c971a43e5a1",
     "oracle_sha256": "e475dc756c5b847b9bb3350aec3a26b06a98ca0062a9f666870cef0f05eafbb9",
     "sail_run_sha256": "2830aab2ca40000a340967780b03800f97ecdb0539c28e41b882549ce8f67e98",
-    "contract_sha256": "1ee2fd169ff2669f71dbf3c61cd4a97f4e29ac0fa10479a086f5aa0fa397bf10",
+    "contract_sha256": "c725c231b4db56243ce2786ccde2ccee8a35ad4264efb602afc57a77b0f15898",
     "generated_rlp_action_sha256": "5d5b80a77f0c58cfe2d838364cd49a05457a29ab99d845db9717aa248ad2238c",
     "generated_rlp_types_sha256": "53eeb02464f73b6d65c1d29e5cfe134473d1e4c2a0aab484433b1bc595485852",
     "generated_source_manifest_sha256": "d76ad3f88b3033bfa718ec1b64c5e690189f89dbc96b35f92939d6c8442ae498",
