@@ -18,7 +18,7 @@ ORACLE = ROOT / "ZesuSsz/Evidence/DecodeItemVectorOracle.v"
 MODULUS = 1 << 64
 INPUT_POINTER = 0x1000
 OUTPUT_POINTER = 0x2000
-STACK_POINTER = 0x3000
+STACK_POINTER = 0xA0001000
 RETURN_ADDRESS = 0x4000
 BEFORE = bytes(range(0xA0, 0xA0 + 40))
 
@@ -176,7 +176,10 @@ def generate(build_dir: Path) -> dict:
         raise RuntimeError(f"missing vector classes: {sorted(required - covered)}")
     if not (INPUT_POINTER + max(len(case.data) for case in cases)
             < OUTPUT_POINTER < OUTPUT_POINTER + 40
-            < STACK_POINTER - 16 < STACK_POINTER < RETURN_ADDRESS < MODULUS):
+            < STACK_POINTER - 16 < STACK_POINTER < MODULUS
+            and 0xA0000000 + 16 <= STACK_POINTER <= 0xC0000000
+            and 0 <= RETURN_ADDRESS < MODULUS
+            and RETURN_ADDRESS % 4 == 0):
         raise RuntimeError("the fixed C1-A/B entry layout is invalid")
     for case in cases:
         if len(case.data) >= OUTPUT_POINTER - INPUT_POINTER:
