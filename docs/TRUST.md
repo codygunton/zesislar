@@ -25,7 +25,7 @@ decoder-only snapshot under `generated/evm-sail-coq/rlp/` covers the first two d
 rungs. Its input shim (`ZesuSsz/EvmSail/Rlp/shim/input.sail`) defines byte access,
 big-endian word loads, zero padding past the slice end, and assertion failures for
 invalid direct access. The evaluator `ZesuSsz/Compliance/SailRun.v` runs `sail_model_init`
-before it installs input bytes. It marks `Fail "exit"` as RLP rejection only under four
+before it installs input bytes. It marks `Fail "exit"` as RLP rejection only under six
 audited entry actions and 16 pinned fatal-error sites. It marks other failures, choices,
 and unsupported host effects as `UnsupportedOrInternalFailure`. A Rocq lemma connects
 supported evaluator outcomes to `liftState`. The generated rung-1 and rung-2 snapshot
@@ -41,10 +41,14 @@ public theorem needs its own reviewed closed type and axiom check.
 
 ## Known limits
 
-The blob transaction decoder still exceeds the 2 GiB module limit after a bounded
-record-extraction experiment. The full transaction decoder, keccak operations, scratch
-operations, and their host assumptions remain outside the current executable reference
-boundary. The C1 wrap decision and the later transaction-domain decisions remain open.
+The bounded record-extraction experiment crossed the 2 GiB module limit. A second,
+typed seven-field prefix handoff compiled the complete blob decoder below that limit.
+The staged source inlines exactly to pinned `decode_blob_tx`; the pinned source did not
+change. `BLOB_HANDOFF_EXPERIMENT.json` records the generation method and measurements.
+The committed rung-1/2 snapshot still excludes the blob decoder. The full transaction
+decoder, keccak operations, scratch operations, and their host assumptions remain outside
+the current executable reference boundary. The C1 wrap decision and the later
+transaction-domain decisions remain open.
 No present result claims unconditional binary equality with Sail.
 
 QEMU traces and vector audits are evidence for review. They are not premises in a machine

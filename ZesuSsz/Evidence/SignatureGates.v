@@ -6,6 +6,7 @@ Require Import ZesuSsz.Compliance.EvmSailAdapter.
 Require Import ZesuSsz.Compliance.RlpInputBounds.
 Require Import ZesuSsz.Compliance.SailRun.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
@@ -111,3 +112,8 @@ Check (@intendedValidRlpClassHeaderFits :
 Print Assumptions intendedValidRlpClassHeaderFits.
 Ltac2 Eval exact_axioms 'intendedValidRlpClassHeaderFits
   (approved_library_axioms ()).
+
+Check (@decodeItemAllowsC1A : DecodeItemArgs -> DecodeItemOutcome -> Prop).
+Check (@decodeItemAllowsC1B : DecodeItemArgs -> DecodeItemOutcome -> Prop).
+Check (eq_refl : decodeItemAllowsC1A = decodeItemAllows C1AResult).
+Check (eq_refl : decodeItemAllowsC1B = decodeItemAllows C1BResult).
