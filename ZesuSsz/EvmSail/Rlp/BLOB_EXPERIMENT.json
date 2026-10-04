@@ -1,0 +1,52 @@
+{
+  "experiment": "P0-D Q5 EIP-4844 record extraction",
+  "referenceRevision": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+  "sailCompilerRevision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+  "sailCompilerSha256": "517d6d68de8947926a0950d59de544350bf3ec289153e6ba63c6cfd5a664e16b",
+  "sailCoqPluginSha256": "8052ba334e708171eb74a6946678984408ae2f548c50ef03fee3780c074c2468",
+  "stagedTransactionsSha256": "8aa0fb78cf9e09ec481c147e62fb43236e8a821307a9d326b6af4476607ff8a6",
+  "generatedModuleSha256": "b9d6552509f90f26f333196b738e9f5407777e2b1b833b63846fd3a6d4691a2d",
+  "sourceRelation": {
+    "check": "Inlining the pure helper and substituting its 19 ordered arguments exactly reconstructs the pinned source function.",
+    "recordFields": 21,
+    "orderedArguments": 19,
+    "sailTypecheck": "passed"
+  },
+  "limits": {
+    "nonProofSeconds": 60,
+    "nonProofPeakRssKiB": 2097152
+  },
+  "prerequisite": "The runner requires cached SailStdpp Real.vo in its private Dune directory. The prerequisite build is outside the measured decoder run.",
+  "measurements": {
+    "generation": {
+      "seconds": 48.431,
+      "peakRssKiB": 179640,
+      "workers": 1,
+      "status": "passed"
+    },
+    "evm_blob_types.v": {
+      "seconds": 1.104,
+      "peakRssKiB": 590280,
+      "workers": 1,
+      "status": "passed"
+    },
+    "blob_tx_record": {
+      "seconds": 0.001,
+      "status": "passed"
+    },
+    "decode_blob_tx": {
+      "seconds": null,
+      "status": "censored_at_memory_limit",
+      "note": "Rocq did not finish the definition before the module crossed the 2 GiB limit."
+    },
+    "evm_blob.v": {
+      "seconds": 19.972,
+      "peakRssKiB": 2099840,
+      "workers": 1,
+      "status": "killed_at_memory_limit"
+    }
+  },
+  "remainingDependency": "decode_blob_tx still contains 14 dependent rlp_decode_item and 14 rlp_cursor_advance steps, followed by rlp_cursor_expect_end and tx_sig_span.",
+  "result": "The record extraction does not produce a compliant rung-3 Rocq module.",
+  "decisionNeeded": "Allow one staged typed prefix/suffix handoff experiment for the dependent cursor walk, or choose a scoped X1 architecture exception."
+}

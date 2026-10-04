@@ -1,0 +1,43 @@
+{
+  "label": "Pinned Sail execution through SailRun, not selected-ELF execution",
+  "referenceRevision": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+  "vectorSourcesSha256": {
+    "vectors_test.zig": "01f13d919075828c9c427ee9be55481760ffb2d1e9ab552e59f4f83f5399c831",
+    "v13_test.zig": "611a7268ee26d7214efa54c8ebc9089f1ddba01ea390afb5f8c6dcc3a41219bb"
+  },
+  "action": "SailRun.runRlpDecodeItem",
+  "tags": {
+    "0": "Success",
+    "1": "Reject(RlpDecode)",
+    "2": "UnsupportedOrInternalFailure"
+  },
+  "outerItemResults": {
+    "V1": 0,
+    "V2": 0,
+    "V3": 0,
+    "V4 RLP suffix": 0,
+    "V5": 0,
+    "V6": 0,
+    "V7": 0,
+    "V8": 0,
+    "V9a": 0,
+    "V9b": 0,
+    "V9c": 0,
+    "V9d": 1,
+    "V10 RLP suffix": 0,
+    "V11 RLP suffix": 0,
+    "V12": 0,
+    "V13": 0
+  },
+  "fieldItemResults": {
+    "V5 nonce RLP": 0,
+    "V6 nonce RLP": 0,
+    "V7 gas price RLP": 0,
+    "V8 nonce RLP": 0,
+    "V10 typed v RLP": 0,
+    "V11 hash list RLP": 0,
+    "V12 to RLP": 0,
+    "V13 legacy v RLP": 0
+  },
+  "scope": "The decoder-only closure has no transaction entry point. These results establish RLP item parsing only. They do not classify complete transaction acceptance, canonical numeric checks, typed transaction selection, blob limits, or Zig conversion behavior."
+}
