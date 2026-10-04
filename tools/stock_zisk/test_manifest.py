@@ -91,6 +91,38 @@ class ManifestTests(unittest.TestCase):
     def test_valid(self):
         manifest.check(self.out, self.pins)
 
+    def add_project_artifact(self):
+        path = self.root/'generated/trace.v'
+        path.parent.mkdir()
+        path.write_text('selected trace\n')
+        self.recipe['project_root'] = str(self.root)
+        self.recipe['project_derived'] = {'generated/trace.v': {
+            'path': str(path), 'artifact_identity': self.recipe['artifact_identity'],
+            'schema_version': 1}}
+        manifest.refresh(self.out, self.recipe)
+        return path
+
+    def test_project_artifact(self):
+        self.add_project_artifact()
+        manifest.check(self.out, self.pins)
+
+    def test_changed_project_artifact(self):
+        self.add_project_artifact().write_text('changed trace\n')
+        with self.assertRaisesRegex(ValueError, 'generated/trace.v differs'):
+            manifest.check(self.out, self.pins)
+
+    def test_project_artifact_escape(self):
+        self.add_project_artifact()
+        binding = self.recipe['project_derived']['generated/trace.v']
+        binding['path'] = str(self.root/'elsewhere.v')
+        with self.assertRaisesRegex(ValueError, 'project path'):
+            manifest.refresh(self.out, self.recipe)
+
+    def test_platform_changes_identity(self):
+        before = manifest.artifact_identity(self.recipe)
+        self.recipe['platform'] = {'kind': 'dedicated-zisk-platform-layer'}
+        self.assertNotEqual(before, manifest.artifact_identity(self.recipe))
+
     def test_missing_disassembly(self):
         report = self.out/'disassembly.objdump'
         report.unlink()

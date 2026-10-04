@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
-  "status": "Source and ELF audit only. No selected-target platform model is adopted.",
+  "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
+  "status": "Source and ELF audit. The selected platform adapter is manifest-bound. Decoder obligations remain unproved.",
   "constants": {
     "INPUT_ADDR": 1073741824,
     "MAX_INPUT_SIZE": 1073741824,
@@ -89,5 +89,11 @@
     "elapsed_seconds": 1.212,
     "peak_rss_kib": 37504,
     "workers": 1
+  },
+  "selected_adapter": {
+    "path": "platform/riscv64-zisk.ir",
+    "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+    "changed_hooks": 5,
+    "unchanged_functions": 732
   }
 }

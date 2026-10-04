@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "inputs": {
+    "tools/stock_zisk/platform/adapter.sail": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/adapter.sail",
+      "sha256": "d07bd6d12b5ec244e67c474320d5d08a91cb7aa202a5350eaba342ce3f05c63b"
+    },
+    "tools/stock_zisk/platform/bin/isla-footprint": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bin/isla-footprint",
+      "sha256": "316357d80657f8792cc168cba5a52b85adcfb3f5291584a2e09dae74d687b2f4"
+    },
+    "tools/stock_zisk/platform/bind_traces.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bind_traces.py",
+      "sha256": "91586c522f2f0c72f39ea89503895be5e227654abd8d1d20850a5ec12197a6c4"
+    },
+    "tools/stock_zisk/platform/build.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/build.py",
+      "sha256": "6fde01540390fbb74c5545be9108bcaf6debc72d27c0cb703dd2146d7dace037"
+    },
+    "tools/stock_zisk/platform/compiler/LICENCE": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/LICENCE",
+      "sha256": "cbefa8a8ed644f541fca50ea24607b973469ee1eb020b4cb9db1ac701e7eb114"
+    },
+    "tools/stock_zisk/platform/compiler/dune": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune",
+      "sha256": "a85696076e4f082e20bc319af99fa620da70a4d81695978cd0bb5f5bd0eac994"
+    },
+    "tools/stock_zisk/platform/compiler/dune-project": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune-project",
+      "sha256": "50341da40e1af361988d57caffa6e766d893c3a1eefdd516ef1cf481964f5ce3"
+    },
+    "tools/stock_zisk/platform/compiler/jib_ir.ml": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/jib_ir.ml",
+      "sha256": "57cd730b553bc1cc82fd7041486453b1e1aa41dbc2c6c762c81fa7eebc2801b6"
+    },
+    "tools/stock_zisk/platform/compiler/sail_plugin_isla.ml": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+      "sha256": "40a2fc10436d26b073c126549da5d1daf73fec67b8a5f2b0367fcbeeb7be7b84"
+    },
+    "tools/stock_zisk/platform/fragment.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/fragment.py",
+      "sha256": "36d92d6966b00538a08b3d438d2c04c37099ca5dca2bdbd7bc97eb6dbc1ed841"
+    },
+    "tools/stock_zisk/platform/smoke.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/smoke.py",
+      "sha256": "64395604fe2a1efa1cc5817787f688caeb09c729a875bfd90fd98a4496e65994"
+    },
+    "tools/stock_zisk/platform/test_build.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/test_build.py",
+      "sha256": "94093b0982407565479fa499c7aaa540388ede3f508bb07ed57cdf8bc678ce83"
+    },
+    "tools/stock_zisk/platform/traces.py": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/traces.py",
+      "sha256": "3308c144fb836f79aa418de6deb9225c59d4cdcf9ce42c9fc139f3a0f7c783d1"
+    },
+    "sail": {
+      "path": "/home/cody/islaris/_opam/bin/sail",
+      "sha256": "a3e55921a1dbd52a77ba2efb89ed6ea18cbc43b1da8d3ad47bd5fa08d3de58af"
+    },
+    "base_snapshot": {
+      "path": "/home/cody/isla-snapshots/riscv64.ir",
+      "sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a"
+    },
+    "isla_footprint": {
+      "path": "/home/cody/isla/target/release/isla-footprint",
+      "sha256": "c4d86501b85fb471ffac1ba4fc09b0051233b3416c2889ab67c2f3db1d9e8cc2"
+    },
+    "islaris": {
+      "path": "/home/cody/islaris/_opam/bin/islaris",
+      "sha256": "45a51764fb4c6b2b34136db940654bb83e4259b706d7dd5981241d949497b44f"
+    },
+    "sail_plugin": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+      "sha256": "cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429"
+    },
+    "config": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/riscv64_zesu.toml",
+      "sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6"
+    }
+  },
+  "derived": {
+    "build/stock-zisk/platform/CHECKPOINT.md": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/CHECKPOINT.md",
+      "sha256": "1334a85d33db5e0d4256f76c55c240c0418a4036b047c00b0c5c98fab64cb3e0",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/adapter.ir": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/adapter.ir",
+      "sha256": "aae232b0b56265fc921edd2143e4e3b50679b55014ac627127a9743160f3cbea",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/build-report.json": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/build-report.json",
+      "sha256": "8017ded329d22c3768baf8139d5d5988b312462c4a651851306beeaf14148972",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/riscv64-zisk.ir": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/riscv64-zisk.ir",
+      "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/sail_plugin_isla.cmxs": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+      "sha256": "cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/address_wrap.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/address_wrap.isla",
+      "sha256": "261e0285d6507ecf49d1bc08eaea25b7125f4f9e82d3b82b3a207538de1912b4",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/empty_header_crossing.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/empty_header_crossing.isla",
+      "sha256": "55cf299e1398294e7a437b604c116047e09026d755754fe6e974c455125e60d5",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/empty_input.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/empty_input.isla",
+      "sha256": "37b3fdc6cd1e81d9966097a1cd1a3fcbe8a66cc6208f1475db742adce6186b50",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/executable_text.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/executable_text.isla",
+      "sha256": "f3c8eb72ed1453803e79ee340bf3f324b2964ff403070a1b82708641f97192da",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/gap.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/gap.isla",
+      "sha256": "5ae38ede02db38e594e40665e6eba067807a012c1a61d4cfe55f0a04df77d037",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/header_byte.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/header_byte.isla",
+      "sha256": "04203de869093cb2a81d54011c0dc786444824e5e570a20479ec34f9116a0652",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/header_data_join.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/header_data_join.isla",
+      "sha256": "7d3778909d2a065818bf66046dadd3794fcda07ab578d3c6a4a6e2752e2d0560",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/header_half.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/header_half.isla",
+      "sha256": "481df8187b6e1b1a4fa2766cfcc55b6617488c0c675903ee5b56cfa3b3132c30",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/header_word.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/header_word.isla",
+      "sha256": "5acb1cd0eabc4684b4c42b00045d41b22061f28c7b2ef3e3db278d73f1f922eb",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/heap.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/heap.isla",
+      "sha256": "d35b4450632ec733e6f9898dd74a6ffe17d1201e1f6979a9c60a45c832d60f6a",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/input.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/input.isla",
+      "sha256": "a402755a4af2abc8da67570173b4a62dcd83ea5131026a5d9986c7fe7f1c5a1e",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/input_end_crossing.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/input_end_crossing.isla",
+      "sha256": "3e47edd62c6b264202db9f87d26671472131e5fb0dac95a06352132d157248b0",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/input_write.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/input_write.isla",
+      "sha256": "80ec33e78e3baead8c4df148fb35c4e979707236f8c7489321886c3b61c7f68d",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/misaligned_ram.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/misaligned_ram.isla",
+      "sha256": "e143f47c9b14ec5e64ae2fc1c0faa053e7042bf63ee8b1fe1194d14bc95efad8",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/misaligned_ram_write.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/misaligned_ram_write.isla",
+      "sha256": "ee99663160224146a5885f0b616b52fb8af8e6decbd10260a3cca3e9b3327ddb",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/output.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/output.isla",
+      "sha256": "4f6871314f943016d63659087196e0af5e28242e4b88520268d6c54f82dd607c",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/oversized_input_end.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/oversized_input_end.isla",
+      "sha256": "51c155d577b1566f7a913db6a15099b602854cdc40c02652afb9cdfc07488c07",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/ram.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/ram.isla",
+      "sha256": "2b00ca64486b09dd9e0515557dba26a8ce53bfcf08c9c9d83c276782cd53fef7",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/ram_end_crossing.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/ram_end_crossing.isla",
+      "sha256": "f358ad4064c77d04375e7800385a83a06bb24e296a886399b062d319d9e13e23",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/read_only_data.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/read_only_data.isla",
+      "sha256": "b37c5c47072b345361b619688134e0dd9299120dcf98d13ff65e8be719ef4a17",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/report.json": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/report.json",
+      "sha256": "98d46c1d640d13472a1457feffc797a9b161e495638a13a8b353b8f47ecf3f51",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/rodata_end_crossing.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/rodata_end_crossing.isla",
+      "sha256": "7c0d973505c1637edca6f1d8536bee78b2970402c548f3e914cd96ed395845df",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/rodata_write.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/rodata_write.isla",
+      "sha256": "d1ecff9cc4fc59e4848a598618c343ca3cd84d4d255ee069493d51bcee07cf5b",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/section_crossing.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/section_crossing.isla",
+      "sha256": "34449c60556dfb8609a434a27050f942ba9b5af6f5f279f6dd1278c8bd68d68e",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/special_word.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/special_word.isla",
+      "sha256": "28bc825c275126e05974ca4c9dc93c0c53e2a9380922715b39ad02189c46a83a",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/stack.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/stack.isla",
+      "sha256": "85ead43b04fe869181ae131b14b9b5b529f4c257cee037318abb89216d7d4c6a",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/system.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/system.isla",
+      "sha256": "78f216e9bdf5695f93c75c39886ba36356245eb2c574aff4195370f0fc69216c",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/text_data_read.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/text_data_read.isla",
+      "sha256": "870bf785331443795cb56b98335580fe3cca2305aa3b6452adc2218d11c5abbd",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/text_end_crossing.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/text_end_crossing.isla",
+      "sha256": "c74e26eb94ac03a00028e9f0bb92617e4b7db6ced8fd8c16fa552cda64350161",
+      "schema_version": 1
+    },
+    "build/stock-zisk/platform/smoke/zero_fallback.isla": {
+      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/smoke/zero_fallback.isla",
+      "sha256": "2262101b58012ea17bd00b14554f752ce5b1f8f6a69688a35742c11210270053",
+      "schema_version": 1
+    }
+  },
+  "platform": {
+    "kind": "dedicated-zisk-platform-layer",
+    "snapshot": "build/stock-zisk/platform/riscv64-zisk.ir",
+    "config": "ZesuSsz/riscv64_zesu.toml",
+    "replaced_hooks": [
+      "checked_mem_read",
+      "checked_mem_write",
+      "within_phys_mem",
+      "within_mmio_readable",
+      "within_mmio_writable"
+    ],
+    "registers": {
+      "zisk_input_end": "input section end; dynamic decoder resource",
+      "zisk_free_input": "current target free_input; dynamic decoder resource"
+    },
+    "input_relation": "The selected emulator merges its zero header and multiple-of-eight input into one section. Its end equals 0x40000008 + input_len.",
+    "source": "core/src/mem.rs:240-293,366-388; emulator/src/emu_context.rs:50-71",
+    "instruction_semantics": "unchanged; all non-platform declarations remain byte-identical",
+    "runtime_boundary": "memcpy CSR0x813 remains an explicit runtime service; this platform does not implement it"
+  }
+}

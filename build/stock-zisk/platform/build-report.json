@@ -1,0 +1,63 @@
+{
+  "replacements": [
+    {
+      "name": "zchecked_mem_read",
+      "original_sha256": "6dd22ac846c1ac991be124d358cdad09778123a86a66a1178bd40c4eea3028c0",
+      "generated_sha256": "285ad2ce55e6fcbe679b56563ff03977409e2194e7d6f3a591bf78e60328c3a9"
+    },
+    {
+      "name": "zchecked_mem_write",
+      "original_sha256": "3fc0156dc6369ecb90d58c3b949e2bb1252075cde9e281df1386ffa4ff6e7801",
+      "generated_sha256": "2a56ee4962d22276e37960312a0ca9f974c20f53d32cbb8a439fa6659c0c434a"
+    },
+    {
+      "name": "zwithin_phys_mem",
+      "original_sha256": "fa6fbf5b5573cc4c69ef61dc05653172b77807a612955f6fd0ac0324a6b29d42",
+      "generated_sha256": "e0e18ba154517d2b422bc217de6397e6f45ef9500970ee79bfb51225a484377f"
+    },
+    {
+      "name": "zwithin_mmio_readable",
+      "original_sha256": "c4ec853790c1c3b5cffaa9a62defb6815bf97ac4fd1f2afe61034a4a907028a0",
+      "generated_sha256": "830aa6578727081b324f5cba53ad8c812e4686f7ec79b4e93a2e94cbb870063f"
+    },
+    {
+      "name": "zwithin_mmio_writable",
+      "original_sha256": "fdacc9242377dabb7b2924dd5eda4a607caca91e1b99f725365b1385db987223",
+      "generated_sha256": "f5f806ffe1ee0949a308a78be15d4feca6fb84c294124713f2462c8e70e4b495"
+    }
+  ],
+  "unchanged_function_count": 732,
+  "non_platform_functions_byte_identical": true,
+  "non_platform_declarations_byte_identical": true,
+  "schema_version": 1,
+  "base_sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a",
+  "snapshot_sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
+  "adapter_source_sha256": "d07bd6d12b5ec244e67c474320d5d08a91cb7aa202a5350eaba342ce3f05c63b",
+  "sail_sha256": "a3e55921a1dbd52a77ba2efb89ed6ea18cbc43b1da8d3ad47bd5fa08d3de58af",
+  "plugin_sha256": "cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429",
+  "compiler_patch": "Remove obsolete Initial_check.opt_undefined_gen assignment; Sail 0.17 generates undefined values by default.",
+  "command": [
+    "/home/cody/islaris/_opam/bin/sail",
+    "--plugin",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+    "-isla",
+    "-isla_preserve",
+    "checked_mem_read",
+    "-isla_preserve",
+    "checked_mem_write",
+    "-isla_preserve",
+    "within_phys_mem",
+    "-isla_preserve",
+    "within_mmio_readable",
+    "-isla_preserve",
+    "within_mmio_writable",
+    "-isla_preserve",
+    "zisk_smoke_fetch",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/tools/stock_zisk/platform/adapter.sail",
+    "-o",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/build/stock-zisk/platform/adapter"
+  ],
+  "seconds": 0.137,
+  "peak_rss_kib": 34944,
+  "workers": 6
+}

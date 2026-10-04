@@ -5,41 +5,64 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Export.Executor.
 
-Definition zesu_ram_sys_regs_map (mstatusBits satp : bv 64) : reg_map :=
-  <[ "rv_enable_pmp" := RVal_Bool (mapEnablePmp defaultMap) ]> $
-  <[ "rv_enable_misaligned_access" := RVal_Bool (mapEnableMisalignedAccess defaultMap) ]> $
-  <[ "rv_ram_base" := RVal_Bits (BV 64 (mapRamBase defaultMap)) ]> $
-  <[ "rv_ram_size" := RVal_Bits (BV 64 (mapRamSize defaultMap)) ]> $
-  <[ "rv_rom_base" := RVal_Bits (BV 64 (mapRomBase defaultMap)) ]> $
-  <[ "rv_rom_size" := RVal_Bits (BV 64 (mapRomSize defaultMap)) ]> $
-  <[ "rv_clint_base" := RVal_Bits (BV 64 (mapClintBase defaultMap)) ]> $
-  <[ "rv_clint_size" := RVal_Bits (BV 64 (mapClintSize defaultMap)) ]> $
-  <[ "rv_htif_tohost" := RVal_Bits (BV 64 (mapHtifTohost defaultMap)) ]> $
-  <[ "cur_privilege" := RVal_Enum (mapPrivilege defaultMap) ]> $
+Definition machine_static_sys_regs_map (machine : MachineMap) (mstatusBits satp : bv 64) : reg_map :=
+  <[ "rv_enable_pmp" := RVal_Bool (mapEnablePmp machine) ]> $
+  <[ "rv_enable_misaligned_access" := RVal_Bool (mapEnableMisalignedAccess machine) ]> $
+  <[ "rv_ram_base" := RVal_Bits (Z_to_bv 64 (mapRamBase machine)) ]> $
+  <[ "rv_ram_size" := RVal_Bits (Z_to_bv 64 (mapRamSize machine)) ]> $
+  <[ "rv_rom_base" := RVal_Bits (Z_to_bv 64 (mapRomBase machine)) ]> $
+  <[ "rv_rom_size" := RVal_Bits (Z_to_bv 64 (mapRomSize machine)) ]> $
+  <[ "rv_clint_base" := RVal_Bits (Z_to_bv 64 (mapClintBase machine)) ]> $
+  <[ "rv_clint_size" := RVal_Bits (Z_to_bv 64 (mapClintSize machine)) ]> $
+  <[ "rv_htif_tohost" := RVal_Bits (Z_to_bv 64 (mapHtifTohost machine)) ]> $
+  <[ "cur_privilege" := RVal_Enum (mapPrivilege machine) ]> $
   <[ "misa" := RegVal_Struct [
-      ("bits", RVal_Bits (BV 64 (mapMisa defaultMap)))] ]> $
-  <[ "mtvec" := RegVal_Struct [("bits", RVal_Bits (BV 64 (mapMtvec defaultMap)))] ]> $
+      ("bits", RVal_Bits (Z_to_bv 64 (mapMisa machine)))] ]> $
+  <[ "mtvec" := RegVal_Struct [("bits", RVal_Bits (Z_to_bv 64 (mapMtvec machine)))] ]> $
   <[ "mstatus" := RegVal_Struct [("bits", RVal_Bits mstatusBits)] ]> $
   <[ "satp" := RVal_Bits satp ]> $ ∅.
+
+(** The stock loader establishes inputEnd = input base + 8 + input length
+    and freeInput = 0. These dynamic values remain explicit resources.
+    This initialization lemma does not prove the loader behavior. *)
+Definition machine_ram_sys_regs_map (machine : MachineMap)
+    (mstatusBits satp inputEnd freeInput : bv 64) : reg_map :=
+  let registers := machine_static_sys_regs_map machine mstatusBits satp in
+  if mapZiskPlatform machine then
+    <["zisk_input_end" := RVal_Bits inputEnd]>
+      (<["zisk_free_input" := RVal_Bits freeInput]> registers)
+  else registers.
+
+Definition zesu_ram_sys_regs_map := machine_ram_sys_regs_map defaultMap.
 
 Section sys_regs.
   Context `{!islaG Sigma} `{!threadG}.
 
-  Lemma zesu_ram_sys_regs_init mstatusBits satp regs :
-    Z.land (bv_unsigned mstatusBits) (mapMstatusMask defaultMap) = mapMstatusValue defaultMap ->
+  Lemma machine_ram_sys_regs_init machine mstatusBits satp inputEnd freeInput regs :
+    Z.land (bv_unsigned mstatusBits) (mapMstatusMask machine) = mapMstatusValue machine ->
     regs_ctx regs -∗
-    ([∗ map] register ↦ value ∈ zesu_ram_sys_regs_map mstatusBits satp,
+    ([∗ map] register ↦ value ∈ machine_ram_sys_regs_map machine mstatusBits satp inputEnd freeInput,
       register ↦ᵣ value) ==∗
-    regs_ctx regs ∗ reg_col zesu_ram_sys_regs.
+    regs_ctx regs ∗ reg_col (machine_sys_regs machine).
   Proof.
     move => Hstatus.
+    unfold machine_ram_sys_regs_map.
+    destruct (mapZiskPlatform machine) eqn:Hplatform;
     repeat (rewrite big_sepM_insert; [|by vm_compute]).
-    iIntros "Hctx Hregisters".
-    simpl. iModIntro.
-    rewrite -(right_id True%I _ (reg_col zesu_ram_sys_regs)).
-    iRevert "Hregisters".
-    repeat liAStep; liShow.
+    all: iIntros "Hctx Hregisters".
+    all: simpl; iModIntro.
+    all: rewrite -(right_id True%I _ (reg_col (machine_sys_regs machine))).
+    all: iRevert "Hregisters".
+    all: unfold machine_sys_regs; rewrite Hplatform.
+    all: cbn [machine_static_sys_regs]; repeat liAStep; liShow.
   Qed.
+  Lemma zesu_ram_sys_regs_init mstatusBits satp inputEnd freeInput regs :
+    Z.land (bv_unsigned mstatusBits) (mapMstatusMask defaultMap) = mapMstatusValue defaultMap ->
+    regs_ctx regs -∗
+    ([∗ map] register ↦ value ∈ zesu_ram_sys_regs_map mstatusBits satp inputEnd freeInput,
+      register ↦ᵣ value) ==∗
+    regs_ctx regs ∗ reg_col zesu_ram_sys_regs.
+  Proof. apply machine_ram_sys_regs_init. Qed.
 End sys_regs.
 
 Lemma zesu_adequacy Sigma `{!Arch} `{!islaPreG Sigma}

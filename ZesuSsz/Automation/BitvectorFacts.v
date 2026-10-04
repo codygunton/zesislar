@@ -1,5 +1,4 @@
 (* Generic bit-vector facts, moved from the writeSuccess proof tree. *)
-Require Import ZesuSsz.Automation.AllLegacy.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
@@ -27,4 +26,22 @@ Proof.
   pose proof (bv_unsigned_in_range 64 left).
   pose proof (bv_unsigned_in_range 64 right).
   unfold bv_modulus in *. cbn in *. lia.
+Qed.
+
+(* Select this rule explicitly. Unselected proofs keep their search order. *)
+Class ZesuStepSignedAddress : Prop := zesu_step_signed_address : True.
+
+Lemma zesu_signed_zero_extend_64_128 (value : bv 64) :
+  bv_signed (bv_zero_extend 128 value) = bv_unsigned value.
+Proof. rewrite bv_zero_extend_signed bv_swrap_small; bv_solve. Qed.
+
+Lemma zesu_signed_zero_extend_add_64_128
+    (value : bv 64) (offset : bv 128) :
+  bv_unsigned offset < 2 ^ 64 ->
+  bv_signed (bv_zero_extend 128 value + offset) =
+    bv_unsigned value + bv_unsigned offset.
+Proof.
+  move => Hoffset.
+  rewrite bv_add_signed bv_zero_extend_signed.
+  rewrite !bv_swrap_small; bv_solve.
 Qed.

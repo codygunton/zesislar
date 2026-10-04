@@ -289,7 +289,8 @@ def publish(out, recipe, record):
             'static_closure':'passed under the inventory conditions',
             'unsupported_instructions':[],'unresolved_transfers':[],'missing_callees':[],
             'expected_unmodeled_operations':[{'function':f['name'],**r} for f in functions for r in f['runtime_operations']],
-            'trace_generation':'blocked: the exact target platform model needs review',
+            'trace_generation':('not run: the selected platform adapter is recorded'
+                if recipe.get('platform') else 'blocked: the exact target platform model needs review'),
             'entry_block_smoke':'not run','return_site_chain':'not run','proof_status':'not proved'})}
     for name,(_,payload) in files.items():
         (out/name).write_text(json.dumps(payload,indent=2)+'\n')
@@ -328,7 +329,9 @@ def publish(out, recipe, record):
         'The ELF symbol gives memcpy three instructions. Its following padding instruction lies outside that symbol.',
         'The decodeSingleTx proposal adds five instructions to obtain complete blocks around its DWARF ranges.',
         'The region proposals do not establish approved Level 1 boundaries.',
-        'Trace generation waits for the exact platform model. The entry smoke and return chains did not run.', '']
+        ('The selected platform adapter is recorded. Selected-ELF trace generation is a separate checkpoint.'
+            if recipe.get('platform') else 'Trace generation waits for the exact platform model.'),
+        'The entry smoke and return chains did not run.', '']
     (out/'INVENTORY.md').write_text('\n'.join(lines))
     files['INVENTORY.md'] = (1,None)
     for name,(version,_) in files.items():

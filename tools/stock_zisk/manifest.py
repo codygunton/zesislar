@@ -55,6 +55,7 @@ def artifact_identity(recipe):
               'linker_script_sha256', 'runtime_library_sha256',
               'stock_object_sha256', 'elf_sha256', 'adapters',
               'zig_executable_sha256', 'inputs', 'runtime_provenance', 'schema_versions']
+    fields += [name for name in ['platform', 'machine_map'] if name in recipe]
     payload = {key: recipe[key] for key in fields}
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
@@ -102,6 +103,10 @@ def refresh(out, recipe):
         if binding['artifact_identity'] != recipe['artifact_identity']:
             raise ValueError(f'Stale derived artifact: {name}')
         recipe['artifacts'][name] = digest(out/name)
+    for name, binding in recipe.get('project_derived', {}).items():
+        if binding['artifact_identity'] != recipe['artifact_identity']:
+            raise ValueError(f'Stale project artifact: {name}')
+        binding['sha256'] = digest(project_artifact_path(recipe, name, binding))
     (out/'build-recipe.json').write_text(json.dumps(recipe, indent=2)+'\n')
     sums = {**recipe['artifacts'], 'build-recipe.json': digest(out/'build-recipe.json')}
     for name in ['PROVENANCE.md', 'INVENTORY.md']:
@@ -113,6 +118,19 @@ def refresh(out, recipe):
 def require_equal(actual, expected, label):
     if actual != expected:
         raise ValueError(f'{label} differs: {actual!r} != {expected!r}')
+
+
+def project_artifact_path(recipe, name, binding):
+    """Keep external generated artifacts inside the declared project root."""
+    relative = Path(name)
+    if relative.is_absolute() or '..' in relative.parts:
+        raise ValueError(f'Invalid project artifact: {name}')
+    root = Path(recipe['project_root']).resolve()
+    path = (root/relative).resolve()
+    if not path.is_relative_to(root):
+        raise ValueError(f'Project artifact leaves its root: {name}')
+    require_equal(Path(binding['path']).resolve(), path, f'{name} project path')
+    return path
 
 
 def check(out, pins):
@@ -205,5 +223,11 @@ def check(out, pins):
     for name, command in REPORTS.items():
         actual = normalized_report(command, out/'zesu-zisk.elf')
         require_equal((out/name).read_text(), actual, f'{name} regeneration')
-    print(f"Checked {len(recipe['artifacts'])} artifacts and {len(recipe['inputs'])} inputs: {recipe['artifact_identity']}")
+    for name, binding in recipe.get('project_derived', {}).items():
+        require_equal(binding['artifact_identity'], recipe['artifact_identity'], f'{name} identity')
+        if not binding.get('schema_version'):
+            raise ValueError(f'Missing schema version: {name}')
+        require_equal(digest(project_artifact_path(recipe, name, binding)), binding['sha256'], name)
+    count = len(recipe['artifacts']) + len(recipe.get('project_derived', {}))
+    print(f"Checked {count} artifacts and {len(recipe['inputs'])} inputs: {recipe['artifact_identity']}")
     return recipe

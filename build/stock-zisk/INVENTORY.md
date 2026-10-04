@@ -39,4 +39,5 @@ The only expected unmodeled operation is memcpy CSR 0x813.
 The ELF symbol gives memcpy three instructions. Its following padding instruction lies outside that symbol.
 The decodeSingleTx proposal adds five instructions to obtain complete blocks around its DWARF ranges.
 The region proposals do not establish approved Level 1 boundaries.
-Trace generation waits for the exact platform model. The entry smoke and return chains did not run.
+The selected platform adapter is recorded. Selected-ELF trace generation is a separate checkpoint.
+The entry smoke and return chains did not run.

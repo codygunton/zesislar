@@ -1,9 +1,9 @@
 # Selected ZisK platform checkpoint
 
-The selected-target platform model remains unimplemented.
-This checkpoint records source facts and a proposal for review.
-It does not approve a replacement abstraction or change a contract.
-Trace generation, the entry smoke test, and the return chains remain blocked.
+The selected target uses a dedicated platform adapter on the pinned RISC-V model.
+The adapter changes five platform hooks.
+Every other pinned IR declaration remains byte-identical.
+This checkpoint records source facts, smoke traces, and the remaining proof obligations.
 
 ## Artifact and source identities
 
@@ -89,13 +89,13 @@ An eight-byte-aligned raw address therefore gives these loads a misaligned paylo
 This evidence combines source inspection and selected instruction bytes.
 It is not an execution of the selected ELF.
 
-## Current Sail interface and exact limitations
+## Pinned Sail interface and prior configuration
 
-The current project configuration defines one RAM interval and one generic ROM interval.
-It disables PMP and misaligned accesses.
-Its legacy RAM interval ends at `0x40000000`.
-It does not describe the selected target.
-See `ZesuSsz/riscv64_zesu.toml:39-57`.
+The prior project configuration defined one RAM interval and one generic ROM interval.
+It disabled PMP and misaligned accesses.
+Its RAM interval ended at `0x40000000`.
+It did not describe the selected target.
+See `ZesuSsz/riscv64_zesu.toml:39-57` at commit `ff46a274`.
 
 The pinned IR exposes `rv_ram_base`, `rv_ram_size`, generic ROM and CLINT fields, and `rv_htif_tohost`.
 See `riscv64.ir:19535-19633`.
@@ -103,7 +103,7 @@ Its physical-memory test checks interval membership, without an ELF permission t
 See `riscv64.ir:19636` and the `zwithin_phys_mem` definition.
 Its checked reads and writes also dispatch to generic device handlers.
 See `riscv64.ir:21449,21480,22034,22555`.
-The configured HTIF address lies inside the target input interval.
+The prior configured HTIF address lay inside the target input interval.
 Moving that address would not establish equivalence with ZisK.
 
 The snapshot also supports locked PMP entries.
@@ -115,21 +115,22 @@ However, PMP settings alone do not supply ZisK's special input value or zero-rea
 They also introduce system-register resources absent from the current project configuration.
 No PMP-based platform contract was adopted here.
 
-## Proposed decision
+## Implemented platform
 
-I recommend a dedicated ZisK platform adapter for the pinned Sail model.
-The adapter should classify addresses from this ELF and the pinned target constants.
-It should enforce the target permissions, widths, initialization, and input-read behavior directly.
-It should remove generic ROM, CLINT, and HTIF dispatch from the selected decoder platform.
-It should retain separately stated contracts for reachable ZisK services.
+The coordinator approved the dedicated ZisK platform adapter.
+The adapter classifies addresses from this ELF and the pinned target constants.
+It enforces permissions, widths, and input-read behavior directly.
+The initial-state relation must supply ELF data, zero RAM, and the populated input section.
+The adapter removes generic ROM, CLINT, and HTIF dispatch from the selected platform.
+Reachable ZisK services require separately stated contracts.
 The current closure needs the `memcpy` CSR service.
-The adapter must preserve the instruction semantics outside its platform hooks.
-Its source, compiler, generated snapshot, and tests must enter the manifest.
+The adapter preserves instruction semantics outside its platform hooks.
+The manifest binds its source, compiler, generated snapshot, configuration, and tests.
 
-The following table separates proposed enforcement from the required proofs.
-No entry in its enforcement column describes an implemented model yet.
+The following table separates platform enforcement from the required proofs.
+Initialization remains an explicit obligation on the initial-state relation.
 
-| Region | Pinned source | Proposed direct enforcement | Remaining proof obligation |
+| Region | Pinned source | Direct enforcement | Remaining proof obligation |
 |---|---|---|---|
 | Input | `core/src/mem.rs:107-109,366-388` | The adapter permits reads and denies writes. It implements the special word and whole-access zero fallback. | The state relation matches the input bytes, populated sections, and `free_input`. Caller proofs establish each decoder's permitted input footprint. |
 | Executable text | `transpilers/common/src/elf_extraction.rs:175-230` | The adapter permits instruction fetches in executable segments. It denies data reads from the selected execute-only segment. | The code resources match the selected instruction bytes. Each control transfer stays within its approved region or callee contract. |
@@ -140,9 +141,12 @@ No entry in its enforcement column describes an implemented model yet.
 | Heap | `zesu-zkvm/zisk/zisk.ld:147-153`; `core/src/mem.rs:113-115` | Initialization supplies the ELF heap words. The adapter applies the RAM rules. | The allocator proof preserves its bounds, metadata, free lists, and live allocations. |
 | System and output | `core/src/mem.rs:121-127,644-653` | The adapter preserves the target RAM locations and any applicable target effects. | Each reachable runtime contract states its memory and observable effects. The current decoder closure needs the memcpy CSR contract. |
 
-This proposal needs review before implementation because it changes the platform contract and system-register resources.
-The coordinator must assign ownership of any contract or shared automation changes.
-The existing file ownership permits the audit and configurations, but it does not authorize those shared changes.
+The coordinator approved the adapter and the machine-map changes.
+The map carries zisk_input_end and zisk_free_input as explicit dynamic resources.
+The input relation binds the section end to 0x40000008 + input_len.
+The selected emulator merges its zero header with the input bytes.
+The adapter checks the fixed input interval even if the section-end register exceeds that interval.
+The initial-state relation must bound the input length and supply the zero header bytes.
 
 A correspondence proof is an alternative that also needs explicit approval.
 That alternative must state a relation between initialized ZisK states and the chosen Sail states.
@@ -166,8 +170,9 @@ No such proof or abstraction accompanies this checkpoint.
 The source audit checked the target constants, load segments, stack symbol, and initialized heap words.
 Its measurement was 1.212 seconds, 37504 KiB peak memory, and one worker.
 The static closure and manifest checks pass under their recorded conditions.
-The selected-target model enforces nothing yet because no selected model was adopted.
-The raw dump remains unconfigured.
-The entry proof and every return-site chain remain unrun.
-The coordinator must obtain the platform decision before this work continues.
-Independent artifact cleanup may continue while that decision remains pending.
+The adapter passed 29 platform smoke traces and three link tests.
+The selected configuration enables misaligned accesses and disables generic device windows.
+The linked snapshot has SHA256 `2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e`.
+The entry probe and return chains remain separate checkpoints.
+The memcpy CSR boundary remains unsupported by this instruction model.
+The smoke traces do not prove decoder correctness or discharge the obligation column.

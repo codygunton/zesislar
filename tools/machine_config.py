@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import tomllib
 from pathlib import Path
 
 
@@ -29,6 +30,8 @@ DEFAULT_FIELDS = {
 
 
 def read_machine(source: str, instance: str = "defaultMap") -> dict:
+    if instance == "forkMap":
+        raise ValueError("The historical forkMap cannot configure the stock platform.")
     schema = re.search(r"Record MachineMap\s*:.*?\{(.*?)\}\.", source, re.S)
     record = re.search(
         r"Definition " + re.escape(instance) + r"\s*:\s*MachineMap\s*:=\s*\{\|(.*?)\|\}\.",
@@ -36,9 +39,10 @@ def read_machine(source: str, instance: str = "defaultMap") -> dict:
     )
     if schema is None or record is None:
         raise ValueError("The source must contain the MachineMap schema and instance.")
-    types = dict(re.findall(r"(map\w+)\s*:\s*(Z|bool|string)\b", schema.group(1)))
-    values = dict(re.findall(r"(map\w+)\s*:=\s*([^;]+?)(?:;|$)", record.group(1)))
-    if set(types) != set(values):
+    types = dict(re.findall(r"(map\w+)\s*:\s*(option\s+Z|Z|bool|string)\b", schema.group(1)))
+    fields = re.findall(r"(map\w+)\s*:=\s*([^;]+?)(?:;|$)", record.group(1))
+    values = dict(fields)
+    if set(types) != set(values) or len(fields) != len(values):
         raise ValueError("The MachineMap instance must define every field exactly once.")
     result = {}
     for field, kind in types.items():
@@ -47,6 +51,13 @@ def read_machine(source: str, instance: str = "defaultMap") -> dict:
             if value not in {"true", "false"}:
                 raise ValueError(f"The field {field} must contain a Boolean literal.")
             result[field] = value == "true"
+        elif kind.startswith("option"):
+            if value == "None":
+                result[field] = None
+            elif value.startswith("Some "):
+                result[field] = int(value[5:].removesuffix("%Z").strip(), 0)
+            else:
+                raise ValueError(f"The field {field} must contain Some address or None.")
         elif kind == "string":
             result[field] = json.loads(value.removesuffix("%string"))
         else:
@@ -71,8 +82,19 @@ def validate_machine(machine: dict) -> None:
     heap_start, heap_end = machine["mapHeapBase"], machine["mapHeapEnd"]
     input_start = machine["mapInputBufferAddress"]
     input_end = input_start + machine["mapInputCapacity"]
-    if not base <= heap_start < heap_end <= input_start < input_end <= end:
-        raise ValueError("The heap and input buffer must fit RAM without overlap.")
+    if not base <= heap_start < heap_end <= end:
+        raise ValueError("The heap must fit RAM.")
+    if not 0 <= input_start < input_end <= 2**64:
+        raise ValueError("The input range must fit the 64-bit address space.")
+    if input_start < end and base < input_end:
+        raise ValueError("The read-only input range must not overlap writable RAM.")
+    if not machine["mapZiskPlatform"]:
+        raise ValueError("The production map must select the stock ZisK platform.")
+    if any(machine[f"map{name}{field}"] for name in ["Rom", "Clint"]
+           for field in ["Base", "Size"]) or machine["mapHtifTohost"]:
+        raise ValueError("The stock platform must disable generic device windows.")
+    if not machine["mapEnableMisalignedAccess"]:
+        raise ValueError("The stock platform must permit misaligned accesses.")
 
 
 def toml_value(value: object, hexadecimal: bool = True) -> str:
@@ -84,6 +106,17 @@ def toml_value(value: object, hexadecimal: bool = True) -> str:
 
 
 def generate_config(template: str, machine: dict) -> str:
+    validate_machine(machine)
+    settings = tomllib.loads(template)
+    dynamic = {"zisk_input_end", "zisk_free_input"}
+    registers = settings.get("registers", {})
+    for section in ["defaults", "reset"]:
+        if dynamic.intersection(registers.get(section, {})):
+            raise ValueError("The adapter input registers must remain dynamic.")
+    if any(register in constraint for register in dynamic
+           for constraints in settings.get("constraints", {}).values()
+           for constraint in (constraints if isinstance(constraints, list) else [constraints])):
+        raise ValueError("The adapter input registers must remain dynamic.")
     sections = dict(re.findall(r"(?ms)^\[([^\]]+)\]\n(.*?)(?=^\[|\Z)", template))
     defaults = sections["registers.defaults"]
     for setting, field in DEFAULT_FIELDS.items():

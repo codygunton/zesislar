@@ -1,4 +1,7 @@
-# Machine description for the Zesu SSZ decoder binary.
+# Platform description for the selected stock ZisK ELF.
+# Use build/stock-zisk/platform/riscv64-zisk.ir.
+# Generic device registers remain declared but unused.
+# zisk_input_end and zisk_free_input remain symbolic decoder resources.
 #
 # Start from islaris-tutorial's riscv64_tutorial.toml and adjust for the
 # exact extensions and privilege mode Zesu uses.
@@ -43,15 +46,15 @@ rv_enable_rvc = false
 rv_enable_fdext = false
 rv_enable_pmp = false
 rv_enable_dirty_update = false
-rv_enable_misaligned_access = false
+rv_enable_misaligned_access = true
 rv_mtval_has_illegal_inst_bits = false
-rv_ram_base = "0x0000000000000000"
-rv_ram_size = "0x0000000040000000"
-rv_rom_base = "0x0000000040002000"
-rv_rom_size = "0x0000000000000100"
-rv_clint_base = "0x0000000040010000"
-rv_clint_size = "0x00000000000c0000"
-rv_htif_tohost = "0x0000000040001000"
+rv_ram_base = "0x00000000a0000000"
+rv_ram_size = "0x0000000020000000"
+rv_rom_base = "0x0000000000000000"
+rv_rom_size = "0x0000000000000000"
+rv_clint_base = "0x0000000000000000"
+rv_clint_size = "0x0000000000000000"
+rv_htif_tohost = "0x0000000000000000"
 rv_insns_per_tick = 10
 
 [reads]

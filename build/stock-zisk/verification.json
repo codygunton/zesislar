@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "artifact_identity": "81422783e55cd920e511ad647793839aa039504aea921e408f8040b7f49d93d4",
+  "artifact_identity": "097190076492da019ff5220a618b0e8bb2f8b020d9ad40ed5e5fdd78611103e4",
   "static_closure": "passed under the inventory conditions",
   "unsupported_instructions": [],
   "unresolved_transfers": [],
@@ -12,7 +12,7 @@
       "csr": 2067
     }
   ],
-  "trace_generation": "blocked: the exact target platform model needs review",
+  "trace_generation": "not run: the selected platform adapter is recorded",
   "entry_block_smoke": "not run",
   "return_site_chain": "not run",
   "proof_status": "not proved"
