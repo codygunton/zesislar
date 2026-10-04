@@ -1,4 +1,3 @@
-Require Import ZesuSsz.Automation.All.
 From Coq Require Import List ZArith.
 From stdpp Require Import bitvector.definitions.
 Require Import SailStdpp.MachineWord EvmSailRlp.evm_rlp_types.
