@@ -1,0 +1,103 @@
+1 goal
+  
+  Sigma : gFunctors
+  islaG0 : islaG Sigma
+  H : threadG
+  args : DecodeItemArgs
+  n, i, payloadStart : Z
+  lengthBytes, frameBytes : list (bv 8)
+  loaded : bv 64
+  next : bv 8
+  H0 : i < n
+  H1 : nth_error lengthBytes (Z.to_nat i) = Some next
+  H2 : length frameBytes = 16%nat
+  H3 : RlpDecodeItemByteFold.decodeItemByteFoldFacts args n i payloadStart
+         lengthBytes
+  ============================
+  _ : instr_lookup_resources
+        (SelectedCodeLookup.selectedCodeLookup index_decodeItem.instr_map)
+  --------------------------------------□
+  _ : reg_col zesu_ram_sys_regs
+  _ : "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))
+  _ : "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n))
+  _ : "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))
+  _ : "x13"
+      ↦ᵣ RVal_Bits
+           (Z_to_bv 64
+              (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)))
+  _ : "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1))
+  _ : "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + i))
+  _ : "x16" ↦ᵣ RVal_Bits loaded
+  _ : "x2"
+      ↦ᵣ RVal_Bits
+           (Z_to_bv 64
+              (decodeItemStackPointer args -
+               RlpDecodeItem.decodeItemStackBytes))
+  _ : "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))
+  _ : "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))
+  _ : decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args
+  _ : decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args
+  _ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+      ↦ₘ∗ frameBytes
+  _ : if Z_lt_dec (i + 1) n
+      then
+       instr_pre 2148362788
+         ((reg_col zesu_ram_sys_regs ∗
+           "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
+           "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
+           "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
+           "x13"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (RlpDecodeItem.bigEndian
+                      (take (Z.to_nat (i + 1)) lengthBytes))) ∗
+           "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
+           "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + (i + 1))) ∗
+           "x16" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned next)) ∗
+           "x2"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (decodeItemStackPointer args -
+                    RlpDecodeItem.decodeItemStackBytes)) ∗
+           "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
+           "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
+           decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
+           decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
+           (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+           ↦ₘ∗ frameBytes ∗
+           ⌜length frameBytes = 16%nat
+            ∧ RlpDecodeItemByteFold.decodeItemByteFoldFacts args n 
+                (i + 1) payloadStart lengthBytes⌝ ∗ True) ∗ True)
+      else
+       instr_pre 2148362808
+         (⌜(i + 1)%Z = n⌝ ∗
+          (reg_col zesu_ram_sys_regs ∗
+           "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
+           "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
+           "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
+           "x13"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (RlpDecodeItem.bigEndian
+                      (take (Z.to_nat (i + 1)) lengthBytes))) ∗
+           "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
+           "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + (i + 1))) ∗
+           "x16" ↦ᵣ RVal_Bits (Z_to_bv 64 (bv_unsigned next)) ∗
+           "x2"
+           ↦ᵣ RVal_Bits
+                (Z_to_bv 64
+                   (decodeItemStackPointer args -
+                    RlpDecodeItem.decodeItemStackBytes)) ∗
+           "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
+           "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
+           decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
+           decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
+           (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+           ↦ₘ∗ frameBytes ∗
+           ⌜length frameBytes = 16%nat
+            ∧ RlpDecodeItemByteFold.decodeItemByteFoldFacts args n 
+                (i + 1) payloadStart lengthBytes⌝ ∗ True) ∗ True)
+  _ : True
+  _ : "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362788)
+  --------------------------------------∗
+  WPasm a800d6a24.a800d6a24

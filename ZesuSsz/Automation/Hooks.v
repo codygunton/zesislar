@@ -14,6 +14,7 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
 Require Import ZesuSsz.Contracts.ParentHeaderSelected.
@@ -26,6 +27,11 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
+
+(* Keep the selected table named during search and simplification.
+   Explicit computation still resolves one selected instruction. *)
+Global Typeclasses Opaque selectedCodeLookup.
+Arguments selectedCodeLookup : simpl never.
 
 Class ZesuStepInstructionLookup : Prop :=
   zesu_step_instruction_lookup : True.
