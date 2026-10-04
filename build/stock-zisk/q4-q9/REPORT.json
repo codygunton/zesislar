@@ -1,0 +1,447 @@
+{
+  "schema_version": 1,
+  "checkpoint": "Q4/Q9 native Level 1 baseline",
+  "base_commit": "1cfcc8d5ca9fd6793eded8c937b3fedc5b559735",
+  "artifact_identity": "99aa7538b89d0192121cd1c841ea55d67b02aa59b42851ef9608ac2fccdae2c5",
+  "inputs": {
+    "build/stock-zisk/build-recipe.json": {
+      "sha256": "8639f14001a03002e04531b49acb8bb47a48425ced54d698b407b9544c6b41b9"
+    },
+    "build/stock-zisk/inventory.json": {
+      "sha256": "7456547bbcc6026aa6232b88fe3c8049fabbd49cb968c9d9fda12628a5089848"
+    },
+    "build/stock-zisk/zesu-zisk.elf": {
+      "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+    },
+    "build/stock-zisk/platform/riscv64-zisk.ir": {
+      "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e"
+    },
+    "build/stock-zisk/decodeItem.raw.dump": {
+      "sha256": "85dbf46e60c070d11050c325a40f9991ba239569d70e42ecdf236a4e3ee41e3b"
+    },
+    "ZesuSsz/riscv64_zesu.toml": {
+      "sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6"
+    },
+    "ZesuSsz/Contracts/Level1.v": {
+      "sha256": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItem.v": {
+      "sha256": "28129e53391f3f1b8c4029e94dfd9f39d80601c922c80d53bf3725cbe67a87d2"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+    },
+    "ZesuSsz/Contracts/DecodeItemSelected.v": {
+      "sha256": "a1cfdc698d5afd76e5004da539350ace76998d72461ed21ea3b5f1c4cd499aaa"
+    },
+    "ZesuSsz/Compliance/KnownBugs.v": {
+      "sha256": "e848cbefd85786c7e5f8e69028ed64b1535e7eb7745b74d503e5054bcce04d72"
+    },
+    "ZesuSsz/Evidence/decode_item_block_design.json": {
+      "sha256": "64c5784a140424fdf3fe68415d779f457f1f3eda35442cc40c1b38852a6a44c2"
+    },
+    "generated/isla-traces/stock-zisk/closure/index_decodeItem.v": {
+      "sha256": "36e90f90acc82aefef2ceccab7d26ffd7086ad2b94c58b1f459239c722bc68c6"
+    },
+    "generated/isla-traces/stock-zisk/closure/coverage.json": {
+      "sha256": "c097dbb090e161e1f5eacbb492684abb9c3efa95751bb52ac025b51e01fd91ea"
+    },
+    "ZesuSsz/Automation/All.v": {
+      "sha256": "eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f"
+    },
+    "ZesuSsz/Automation/Hooks.v": {
+      "sha256": "4838f06a7038aead4a7272e1e98d1bbd2a954e50a8f79c2aefd74c7d91238c92"
+    },
+    "ZesuSsz/Automation/Finish.v": {
+      "sha256": "6d05e216a9dd0784f24ce7c38d012ce6598f98a0ba05db1a7aa1c21a115700bc"
+    },
+    "InstrSpecs/Lookup.v": {
+      "sha256": "8b3e81382635e5b81a401f59894125194d8b1ca0e780a80b430f535f95de1cab"
+    },
+    "tools/block/chain_root.py": {
+      "sha256": "5791a4c5dffb200d7a0099c49f734e1283dfc72fee5410b594dc75675a0d0c8e"
+    },
+    "tools/block/chain_state.py": {
+      "sha256": "db474094b7795e992d0dd02aef399bd151767b8161936e236a01a709cf6cb2b9"
+    },
+    "tools/block/chain_goals.py": {
+      "sha256": "e9567727215311445f2bfa01db3a93041bbf1dbd36fcd7c7b20448da810d308e"
+    },
+    "tools/det/infer_boundary.py": {
+      "sha256": "a77657e7c9e43741e37d1f9dd87f4806a3e5034cc240e2fe753febaca9b0ce5d"
+    },
+    "tools/det/gen_boundary.py": {
+      "sha256": "87895fa4258ae4018fcbace248d01aae3b42ffb2d0310d12251d19e29b308074"
+    },
+    "tools/coqc_scratch.sh": {
+      "sha256": "2332297ed9fb30178839fbf7a6144adfdbec252a5a19c982d39a03a3bd8417dc"
+    }
+  },
+  "function": "rlp.decodeItem",
+  "entry": "0x800d6960",
+  "region_end_exclusive": "0x800d6b30",
+  "instructions": 116,
+  "blocks": 24,
+  "branches": 14,
+  "loops": 2,
+  "returns": [
+    {
+      "return_pc": "0x800d69a0",
+      "block_entry": "0x800d698c",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d69d4",
+      "block_entry": "0x800d69b0",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6a60",
+      "block_entry": "0x800d6a40",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6aa4",
+      "block_entry": "0x800d6a78",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6b04",
+      "block_entry": "0x800d6ae0",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6b2c",
+      "block_entry": "0x800d6b08",
+      "block_status": "missing-entry",
+      "return_reached": false
+    }
+  ],
+  "block_results": [
+    {
+      "entry": "0x800d6960",
+      "status": "entry-stall",
+      "reason": "folded selected code at instruction lookup",
+      "observations": 2
+    },
+    {
+      "entry": "0x800d6974",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d697c",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d698c",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69a4",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69b0",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69d8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e0",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a00",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a08",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a14",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a24",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a38",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a40",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a64",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a6c",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a78",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6aa8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ab4",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ac4",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ad8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ae0",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6b08",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    }
+  ],
+  "counts": {
+    "missing-entry": 23,
+    "entry-stall": 1,
+    "execution-stall": 0,
+    "reached": 0,
+    "closed": 0,
+    "promoted": 0,
+    "composed": 0
+  },
+  "chain_probe_observations": 2,
+  "chain_rc": 0,
+  "driver_baseline_location": "unknown-stall",
+  "classification_evidence": "Both pending goals request literal FindInstrKind 2148362592 false.",
+  "native_correctness": "unproved",
+  "statement": "DecodeItemSelectedComplianceStatement",
+  "root_model": "decodeItemSelectedModel returnAddress",
+  "domain": "decodeItemC1BDomain",
+  "return_boundary": "symbolic returnAddress; unchanged C1-B and known-bug result continuation",
+  "runtime_correctness_premises_added": 0,
+  "execution_premises_added": 0,
+  "rules_added": 0,
+  "previous_lookup_repair_applied": false,
+  "invariants_proved": 0,
+  "callee_contracts_discharged": 0,
+  "unresolved_indirect_transfers": [],
+  "new_axioms": 0,
+  "termination": "pending Phase 5",
+  "manual_proof_growth": {
+    "native_proof_lines": 0,
+    "diagnostic_tactic_lines": 7,
+    "instruction_handoff_lines": 0,
+    "iRename_select_uses": 0
+  },
+  "first_residual_classes": [
+    "folded-selected-code-lookup"
+  ],
+  "terminal_marker": {
+    "literal": 0,
+    "changes_return_resource": false,
+    "used_in_this_run": false,
+    "limitation": "The driver requires a literal terminal. A symbolic terminal is required before probing ret blocks."
+  },
+  "performance": {
+    "elapsed_seconds": 3.042,
+    "peak_module_mib": 757.203125,
+    "requested_workers": 6,
+    "observed_compiler_workers": 2,
+    "module_limits": {
+      "seconds": 300,
+      "memory_gib": 6
+    },
+    "cpu_scope": "total machine percentage per sample; per-process CPU ticks recorded",
+    "measurement_file": "machine-measurements.json",
+    "compiler_cpu_ticks_observed": {
+      "4105429": 87,
+      "4105507": 83
+    }
+  },
+  "verification": {
+    "focused_dependencies": "passed; six workers; cache enabled",
+    "native_traces": "checked against tracked manifest",
+    "mcp": "mcp-final-checks.json",
+    "check_fast": "passed",
+    "check_iris": "not run by parent instruction",
+    "check_fast_attempts": [
+      {
+        "result": "failed",
+        "cause": "The hygiene checker found Abort in temporary tools/ scratch files.",
+        "fix": "Moved both scratch files to _build/; preserved their source bytes in the report."
+      },
+      {
+        "result": "passed",
+        "workers": 6,
+        "cache_enabled": true
+      }
+    ],
+    "check_fast_command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=worker2-child-platform",
+      "AGENT_JOBS=6",
+      "FAST_JOBS=6",
+      "TRACE_JOBS=6"
+    ]
+  },
+  "outputs": {
+    "build/stock-zisk/q4-q9/chain-baseline-raw.json": {
+      "sha256": "f5e7d94ab58c1fd2bab2178e2d508e7d75894c67a6e37c65d5229a3795427035"
+    },
+    "build/stock-zisk/q4-q9/chain-root-observations.json": {
+      "sha256": "2cce77c224ca18a0075e279c26d5103a71d09966b0b78fb386a267153991f9be"
+    },
+    "build/stock-zisk/q4-q9/chain.log.txt": {
+      "sha256": "17931cf700f096ea75b7a8c6caaa4810c7701c198fc3f7befe09266ec2f93119"
+    },
+    "build/stock-zisk/q4-q9/chain_800d6960_800d6974_2a72b59387bcd853.v.txt": {
+      "sha256": "1111a5c88dfc7cb686c96ed3a2bf63949f4b18a2c730252e88ce60c9b3127e4c"
+    },
+    "build/stock-zisk/q4-q9/chain_800d6960_800d6ae0_2a72b59387bcd853.v.txt": {
+      "sha256": "fb1c7ec26dcd346724cc91e3b06e7d96b5620f414a131dcea00484c8d62ae919"
+    },
+    "build/stock-zisk/q4-q9/first-entry-stall.json": {
+      "sha256": "26718541cee01f5b97201171131bcbe97784a52c13288c056f6c65eea973a39c"
+    },
+    "build/stock-zisk/q4-q9/machine-measurements.json": {
+      "sha256": "33728a7a03565c0cb6d5b2aa0bcc101b692e3f9da01adfa245dc8134ec54fefb"
+    },
+    "build/stock-zisk/q4-q9/mcp-final-checks.json": {
+      "sha256": "a12c0fef75a55242b9ea92c668ca61b47cec25c1a736c3c1428e0263ed34faf5"
+    },
+    "build/stock-zisk/q4-q9/measurement-driver.py.txt": {
+      "sha256": "83898cb464477853dd477e8ef5bef200854178e4dbac84c7f95cc98b60fd746f"
+    },
+    "build/stock-zisk/q4-q9/native-contract-mcp.json": {
+      "sha256": "24b8e47b72290d64ec904d85792365c0f945f6c4a066e993625e00a10eab6615"
+    },
+    "build/stock-zisk/q4-q9/native-contract.v.txt": {
+      "sha256": "3cd4ced30301ccd14a3cd36c0188d179093e6e9ccf804c810593d9d7e069de8c"
+    },
+    "build/stock-zisk/q4-q9/selected-code-premises.txt": {
+      "sha256": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae"
+    },
+    "build/stock-zisk/q4-q9/selected-root.json": {
+      "sha256": "d1ce38607b7568c6fa34f88f0ae55e98b16c0f7b9b43ef5f6470802831f55681"
+    },
+    "build/stock-zisk/q4-q9/selected-root.v.txt": {
+      "sha256": "af850da7df2d365703ab71326a6846405a8f341a66cbf05df7dc42844071d9ee"
+    },
+    "build/stock-zisk/q4-q9/check-fast.log.txt": {
+      "sha256": "8dd7d78768cc49df00e3e244992cccd2cffe5da4534e23263b30bfb116664ba9"
+    }
+  },
+  "instruction_bytes_sha256": "5bad4d04622f09ad9c73ad9339173649a0a95d6e0d787d6a8eec453c018588a2",
+  "native_instruction_steps_completed": 0,
+  "automation": {
+    "exact_contract": "zesu_block with Automation.All",
+    "chain": "zesu_block with existing Automation.Sets.call",
+    "new_instances": 0,
+    "new_hooks": 0
+  },
+  "reproduction_command": [
+    "python3",
+    "tools/block/chain_root.py",
+    "--entries",
+    "build/stock-zisk/q4-q9/selected-root.json",
+    "--cfg",
+    "build/stock-zisk/inventory.json",
+    "--root",
+    "0x800d6960",
+    "--terminal",
+    "0",
+    "--out",
+    "_build/q4-q9-replay/chain",
+    "--publish-dir",
+    "_build/q4-q9-replay/published",
+    "--build-dir",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+    "--root-declaration",
+    "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+    "--root-source",
+    "build/stock-zisk/q4-q9/selected-root.v.txt",
+    "--proof-dir",
+    "ZesuSsz/Proofs/DecodeItem",
+    "--stage-dir",
+    "_build/q4-q9-replay/stage",
+    "--trace-import",
+    "ZesuSsz.Stock.Closure.index_decodeItem",
+    "--code-premises",
+    "build/stock-zisk/q4-q9/selected-code-premises.txt",
+    "--jobs",
+    "6",
+    "--seconds",
+    "300",
+    "--baseline-out",
+    "_build/q4-q9-replay/baseline.json"
+  ]
+}

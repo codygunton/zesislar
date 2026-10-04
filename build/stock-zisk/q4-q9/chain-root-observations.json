@@ -1,0 +1,186 @@
+[
+  {
+    "entry": "0x800d6960",
+    "exit": "0x800d6ae0",
+    "state_entry": "0x800d6ae0",
+    "binders": "`{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs)",
+    "imports": [
+      "ZesuSsz.Contracts.Level1",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "predecessor_fingerprint": "2a72b59387bcd853",
+    "root_provenance": {
+      "source": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+      "kind": "contract-entry",
+      "execution_claim": false,
+      "contract_statement": "ZesuSsz.Contracts.DecodeItemSelected.DecodeItemSelectedComplianceStatement",
+      "entry": "0x800d6960",
+      "capture_source": "_build/q4-bound/entries.json",
+      "capture_sha256": "d1ce38607b7568c6fa34f88f0ae55e98b16c0f7b9b43ef5f6470802831f55681"
+    },
+    "capture_only": true,
+    "elapsed_seconds": 2.43,
+    "pending_goals": [
+      {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "returnAddress",
+            "Z"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "BLK_STOP_800d6ae0",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6974",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362612 BLK_STOP_800d6974)",
+          "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6974": "Type",
+          "BLK_STOP_800d6ae0": "Type",
+          "args": "Type",
+          "returnAddress": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nBLK_STOP_800d6ae0 : (iProp Sigma)\nBLK_STOP_800d6974 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362612 BLK_STOP_800d6974)\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : decodeItemSelectedCode"
+      }
+    ],
+    "shelved_goals": [],
+    "raw_goals": "PROBE-BEGIN\nTactic call zesu_run ran for 0.046 secs (0.042u,0.002s) (success)\nTactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)\nCHAIN-GOAL-BEGIN \"active\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\nCHAIN-GOAL-END\nCHAIN-GOAL-BEGIN \"shelved\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\nCHAIN-GOAL-END\nPROBE-END\nexit=0 ms=1678 rss_kb=771556\n\nWarning:\n/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp\nwas previously bound to EvmSail.rlp; it is remapped to EvmSailRlp\n[overriding-logical-loadpath,filesystem,default]\n",
+    "residual_pcs": [],
+    "residual_location": "unknown",
+    "performance": {
+      "rc": 0,
+      "wall_seconds": 1.678,
+      "peak_mib": 753.47265625
+    },
+    "outcome": "stalled"
+  },
+  {
+    "entry": "0x800d6960",
+    "exit": "0x800d6974",
+    "state_entry": "0x800d6974",
+    "binders": "`{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs)",
+    "imports": [
+      "ZesuSsz.Contracts.Level1",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Automation.Sets.call"
+    ],
+    "predecessor_fingerprint": "2a72b59387bcd853",
+    "root_provenance": {
+      "source": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+      "kind": "contract-entry",
+      "execution_claim": false,
+      "contract_statement": "ZesuSsz.Contracts.DecodeItemSelected.DecodeItemSelectedComplianceStatement",
+      "entry": "0x800d6960",
+      "capture_source": "_build/q4-bound/entries.json",
+      "capture_sha256": "d1ce38607b7568c6fa34f88f0ae55e98b16c0f7b9b43ef5f6470802831f55681"
+    },
+    "capture_only": true,
+    "elapsed_seconds": 2.55,
+    "pending_goals": [
+      {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "returnAddress",
+            "Z"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "BLK_STOP_800d6974",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6ae0",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+          "(instr_pre 2148362612 BLK_STOP_800d6974)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6ae0": "Type",
+          "BLK_STOP_800d6974": "Type",
+          "args": "Type",
+          "returnAddress": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nBLK_STOP_800d6974 : (iProp Sigma)\nBLK_STOP_800d6ae0 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : (instr_pre 2148362612 BLK_STOP_800d6974)\n_ : decodeItemSelectedCode"
+      }
+    ],
+    "shelved_goals": [],
+    "raw_goals": "PROBE-BEGIN\nTactic call zesu_run ran for 0.043 secs (0.043u,0.s) (success)\nTactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)\nCHAIN-GOAL-BEGIN \"active\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\nCHAIN-GOAL-END\nCHAIN-GOAL-BEGIN \"shelved\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\nCHAIN-GOAL-END\nPROBE-END\nexit=0 ms=1786 rss_kb=775376\n\nWarning:\n/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp\nwas previously bound to EvmSail.rlp; it is remapped to EvmSailRlp\n[overriding-logical-loadpath,filesystem,default]\n",
+    "residual_pcs": [],
+    "residual_location": "unknown",
+    "performance": {
+      "rc": 0,
+      "wall_seconds": 1.786,
+      "peak_mib": 757.203125
+    },
+    "outcome": "stalled"
+  }
+]
