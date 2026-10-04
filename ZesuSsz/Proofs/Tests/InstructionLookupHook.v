@@ -7,6 +7,8 @@ Definition lookup_hook_code `{!islaG Sigma} `{!threadG}
 Definition lookup_hook_other_code `{!islaG Sigma} `{!threadG}
     (lookup : Z -> option isla_trace) : iProp Sigma :=
   instr_lookup_resources lookup.
+Global Instance : LithiumUnfold (@lookup_hook_code) := I.
+Global Instance : LithiumUnfold (@lookup_hook_other_code) := I.
 Global Typeclasses Opaque lookup_hook_code lookup_hook_other_code.
 
 Section disabled.

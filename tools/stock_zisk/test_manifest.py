@@ -74,6 +74,7 @@ class ManifestTests(unittest.TestCase):
             inputs[f'sail/{group}/SOURCE.json'] = manifest.file_record(source)
         build = self.root/'build'
         self.recipe = {
+            'project_root': str(self.root),
             'sources': sources, 'zig_version': '0.16.0', 'jobs': 2, 'build_dir': str(build),
             'zig_executable': inputs['compiler/zig']['path'],
             'zig_executable_sha256': inputs['compiler/zig']['sha256'],
@@ -164,6 +165,20 @@ class ManifestTests(unittest.TestCase):
         before = manifest.artifact_identity(self.recipe)
         self.recipe['platform'] = {'kind': 'dedicated-zisk-platform-layer'}
         self.assertNotEqual(before, manifest.artifact_identity(self.recipe))
+
+    def test_checkout_location_does_not_change_identity(self):
+        original = copy.deepcopy(self.recipe)
+        original['project_root'] = str(self.root)
+        relocated = copy.deepcopy(original)
+        other = str(self.root.parent/'another-checkout')
+        def move(value):
+            if isinstance(value, dict):
+                return {key: move(item) for key, item in value.items()}
+            if isinstance(value, list):
+                return [move(item) for item in value]
+            return value.replace(str(self.root), other) if isinstance(value, str) else value
+        relocated = move(relocated)
+        self.assertEqual(manifest.artifact_identity(original), manifest.artifact_identity(relocated))
 
     def test_missing_disassembly(self):
         report = self.out/'disassembly.objdump'

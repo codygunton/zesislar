@@ -117,7 +117,29 @@ RETURN_CLAUSES = {
 
 LOOP_HINTS = {
     0x800D6A24: {
+        "header_pc": address(0x800D6A24),
         "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt",
+        "header_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
+        "init_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources",
+        "checked_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources",
+        "pure_lemmas": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_entry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_preservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_exit",
+        },
+        "machine_obligations": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldEntry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldPreservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldExit",
+        },
+        "symbolic_parameters": {
+            "i": {"register": "x15", "register_value": "payloadStart + i"},
+            "n": {"register": "x14", "register_value": "n + 1"},
+            "pointer": {"symbol": "payloadStart", "register_bindings": {
+                "x11": "payloadStart + n", "x15": "payloadStart + i"}},
+            "accumulator": {"register": "x13", "register_value": "bigEndian(firstn i lengthBytes)"},
+        },
+        "body_edge_condition": "i < n",
         "preheader": address(0x800D6A14), "backedge": address(0x800D6A34),
         "exit": address(0x800D6A38),
         "register_bindings": {"x10": "outputPointer", "x11": "payloadStart + n",
@@ -129,7 +151,29 @@ LOOP_HINTS = {
         "body_guard": "0 <= i < n <= 8 and 1 <= n",
     },
     0x800D6AC4: {
+        "header_pc": address(0x800D6AC4),
         "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt",
+        "header_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
+        "init_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources",
+        "checked_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources",
+        "pure_lemmas": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_entry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_preservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_exit",
+        },
+        "machine_obligations": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldEntry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldPreservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldExit",
+        },
+        "symbolic_parameters": {
+            "i": {"register": "x15", "register_value": "payloadStart + i"},
+            "n": {"register": "x14", "register_value": "n + 1"},
+            "pointer": {"symbol": "payloadStart", "register_bindings": {
+                "x11": "payloadStart + n", "x15": "payloadStart + i"}},
+            "accumulator": {"register": "x13", "register_value": "bigEndian(firstn i lengthBytes)"},
+        },
+        "body_edge_condition": "i < n",
         "preheader": address(0x800D6AB4), "backedge": address(0x800D6AD4),
         "exit": address(0x800D6AD8),
         "register_bindings": {"x10": "outputPointer", "x11": "payloadStart + n",
@@ -308,6 +352,10 @@ def build() -> dict:
         "level1_contract_sha256": sha256(ROOT / "ZesuSsz/Contracts/RlpDecodeItemContract.v"),
         "byte_fold_schema_sha256": sha256(ROOT / "ZesuSsz/Contracts/RlpDecodeItemByteFold.v"),
         "byte_fold_sites_sha256": sha256(ROOT / "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v"),
+        "byte_fold_blocks_sha256": sha256(ROOT / "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v"),
+        "byte_fold_pure_sha256": sha256(ROOT / "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"),
+        "byte_fold_machine_obligations_sha256": sha256(
+            ROOT / "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v"),
         "generator_sha256": sha256(Path(__file__)),
     }
     return {

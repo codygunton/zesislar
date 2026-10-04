@@ -1,24 +1,24 @@
 {
-  "artifact_identity": "a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82",
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
   "inputs": {
     "static-sites/collect.py": {
-      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/static_sites/collect.py",
+      "path": "tools/stock_zisk/static_sites/collect.py",
       "sha256": "66cdec5b119e7b0515bddef3fe2a6d403d7df9326c3984f7bb9de61facea6bab"
     },
     "static-sites/test_collect.py": {
-      "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/static_sites/test_collect.py",
+      "path": "tools/stock_zisk/static_sites/test_collect.py",
       "sha256": "ef5aa82844412c4badaaabd9871cc5e667e833f2a76b6f6e4775f09a3c08f565"
     }
   },
   "derived": {
     "static-sites/sites.json": {
-      "sha256": "8a277c3f4c6f9630d9af62b1ab615d4127fcbad5166576023b8d664004289112",
-      "artifact_identity": "a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82",
+      "sha256": "2517c34a21f9980853fa92c9693fba31e982ac32a1e2b50b0b8f901e187808a2",
+      "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
       "schema_version": 1
     },
     "static-sites/README.md": {
       "sha256": "200254f825ebbb3506a1ad4353c94ab31dbce014716d30558bdf8c5452dad013",
-      "artifact_identity": "a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82",
+      "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
       "schema_version": 1
     }
   }
