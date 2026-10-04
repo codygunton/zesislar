@@ -21,13 +21,16 @@
     "true": "unconditional"
   },
   "hashes": {
-    "inventory_sha256": "353bcecbc2f3df96400d3f76c6749d8938eaca919aef1eece39294d1277a97c9",
+    "inventory_sha256": "e97443d69c8b43471ff410a4ba3a21fb60f12195b004d6ac16a695f3f8c48256",
     "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
-    "raw_dump_sha256": "6c2c1c92dcb7f2d3f00872b2b5dcf604fb4311635d025ae393af3182bc51cd79",
-    "level1_contract_sha256": "ccb0a2276dc4ee450bc8d21e53a10c7bbd5ab889869cc2884afc604af775aa8d",
+    "raw_dump_sha256": "48c0c2570b0475e9de0b2206f144b9fa316557e719b19f494e06eb901f27ad1e",
+    "level1_contract_sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
     "byte_fold_schema_sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
     "byte_fold_sites_sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
-    "generator_sha256": "1efdf25d7b1ba16ed49062cd7584bd50dd58ea78deb5da6ce2e8d55d3dff0632"
+    "byte_fold_blocks_sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+    "byte_fold_pure_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
+    "byte_fold_machine_obligations_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
+    "generator_sha256": "ac67bbaab6b54b44b448a3e5252c2ac46b6005362e8a3d81ca413c77335aedbb"
   },
   "blocks": [
     {
@@ -532,7 +535,43 @@
         "return_continuation": "decodeItemReturnAddress args and saved x8"
       },
       "invariant_hint": {
+        "header_pc": "0x800d6a24",
         "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt",
+        "header_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
+        "init_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources",
+        "checked_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources",
+        "pure_lemmas": {
+          "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_entry",
+          "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_preservation",
+          "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_exit"
+        },
+        "machine_obligations": {
+          "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldEntry",
+          "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldPreservation",
+          "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldExit"
+        },
+        "symbolic_parameters": {
+          "i": {
+            "register": "x15",
+            "register_value": "payloadStart + i"
+          },
+          "n": {
+            "register": "x14",
+            "register_value": "n + 1"
+          },
+          "pointer": {
+            "symbol": "payloadStart",
+            "register_bindings": {
+              "x11": "payloadStart + n",
+              "x15": "payloadStart + i"
+            }
+          },
+          "accumulator": {
+            "register": "x13",
+            "register_value": "bigEndian(firstn i lengthBytes)"
+          }
+        },
+        "body_edge_condition": "i < n",
         "preheader": "0x800d6a14",
         "backedge": "0x800d6a34",
         "exit": "0x800d6a38",
@@ -867,7 +906,43 @@
         "return_continuation": "decodeItemReturnAddress args and saved x8"
       },
       "invariant_hint": {
+        "header_pc": "0x800d6ac4",
         "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt",
+        "header_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
+        "init_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources",
+        "checked_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources",
+        "pure_lemmas": {
+          "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_entry",
+          "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_preservation",
+          "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_exit"
+        },
+        "machine_obligations": {
+          "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldEntry",
+          "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldPreservation",
+          "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldExit"
+        },
+        "symbolic_parameters": {
+          "i": {
+            "register": "x15",
+            "register_value": "payloadStart + i"
+          },
+          "n": {
+            "register": "x14",
+            "register_value": "n + 1"
+          },
+          "pointer": {
+            "symbol": "payloadStart",
+            "register_bindings": {
+              "x11": "payloadStart + n",
+              "x15": "payloadStart + i"
+            }
+          },
+          "accumulator": {
+            "register": "x13",
+            "register_value": "bigEndian(firstn i lengthBytes)"
+          }
+        },
+        "body_edge_condition": "i < n",
         "preheader": "0x800d6ab4",
         "backedge": "0x800d6ad4",
         "exit": "0x800d6ad8",
