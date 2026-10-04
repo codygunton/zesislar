@@ -1,0 +1,337 @@
+{
+  "schema": 1,
+  "count": 55,
+  "files": [
+    {
+      "path": "ZesuSsz/Evidence/block-run/blocks102_A_f3db2e77.csv",
+      "sha256": "eedcf13ee5f2a2be66365642bc1e13802a3bb754f7068799aa8f85f16861dc88",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/block-run/blocks102_A_v2.csv",
+      "sha256": "a75255d6beca5b4ab06db8d51e9297d07932486689782ec760a1f92346c15b2d",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/block-run/blocks26_A_e91fbe10.csv",
+      "sha256": "ef4d6755a186f8b98979ac42fc016f73db2e0f50e3972bf3ca859ecd8a5930a9",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/README.md",
+      "sha256": "f16f4bed5552b36b77c4d0e704e04ac3574fcdcb27e310041c9f95cd349b5b32",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/acceptance.json",
+      "sha256": "8002e9c99e41d7c75d89d826b4a42cb8eb30c1661eccf32cb9842b1ded92fd1c",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/assumptions-after.log",
+      "sha256": "5d69ada79cb82f493a8b49bb42adbd2555cb1ecb772d2bcbdc7db0af7062db07",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/assumptions-before.log",
+      "sha256": "5d69ada79cb82f493a8b49bb42adbd2555cb1ecb772d2bcbdc7db0af7062db07",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/audited-58-names.txt",
+      "sha256": "49686ef2fd53e7480efe7dd9bd0172f4d1f57b173c47903dcf215b4cbc98e753",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/baseline-coqdep.err.txt",
+      "sha256": "0ddb09ee230e98d286e04ed7a1a77fc0416aa57774523054d4f12bcd68199112",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/baseline-coqdep.out.txt",
+      "sha256": "b05311be72a0ef719c6f85a48b810b7c54ebd64aa715700b4f3279e0f6487a21",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/before-after-assumptions-equality.json",
+      "sha256": "b4f0eafebc57023f701064d21397e64d6f4f5fdbf0adb839a0278372ca5b9ec0",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/before-assumptions-exact.json",
+      "sha256": "39c56ff733efd3e41096d3fd6fda9345f0b4a3eb35b379a5e25acc1299159cb4",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/before-zesuCompliance-axiom.txt",
+      "sha256": "18e738a31ec67d0afd6a2f4f706199dca57687d432e6411933e98550eb906d27",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cache-trim.log",
+      "sha256": "a3bb2121fe622afdc931d48e2c86d5645d883c02bbb0dc64fba18db9cd3a37b4",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/candidate-source-sha256.json",
+      "sha256": "b371fcc94bfb788e26112543d3adfa1b17d26d0a7bee28ca1c0d2e8538dde1ba",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cleanup-apply.log",
+      "sha256": "05049753980f1914b2b6ed7cdc5f7994200fe941f511121f485ebce085d5030b",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cleanup-audit.json",
+      "sha256": "a398b215a157f961b0f9e544d4c6aead836232ec7241c0e92bff1b2c0f052527",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cleanup-before.json",
+      "sha256": "f47bf3e3e2e220b239f892b57f739e863adfffde6e7cf25b862394c0b4371ff0",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cleanup-result.json",
+      "sha256": "76302e74d59d13b6d7ea204f79b1792ffbe256c3e9d420c780d154a63faf6546",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cleanup-ruling.md",
+      "sha256": "bd47ee477381f49c4655f1aa9a7b1a9b001a909c609f590179b81d2b696acdc0",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/cleanup-space.json",
+      "sha256": "8a0bbb46dfd7d320e0e48f4ca931a5c6c5f32cdf8b79a6ed45eff6fb29b51b1d",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/closure-addendum.json",
+      "sha256": "e661fd4bc49b8b41cad7ebe6eb7aaa84da56e97b2f7f2d849577f8707e8899a2",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/coqdep-audit.json",
+      "sha256": "4ae7443b275001c549f0fb2559be7f9822bff4749855d9091c9ff4ba45091057",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/disk-hygiene.log",
+      "sha256": "cb52e4bd9b4fc60d9435432790065afa19358bcaaff2e81d3e901b11e2aee837",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/dune_exclusions.txt",
+      "sha256": "a69c2a281c2e9dee157cf4ce7a2ab913e18deadee868e7a8d60213753707a03c",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/gate-receipts.json",
+      "sha256": "18b969e607df6ce6aa505749914b6983ba3d05e47d5a355999e212465ec3f6a0",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/green-1bd760f5db927ef08ccbfb883410992b6c4b2bf5.json",
+      "sha256": "24cf7f6c3941cbed69ba22ddb3d1836951ab7e9ea6dbfbfdf6d5d86f64f8ad91",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/kept-19-unique-names.txt",
+      "sha256": "93ce5a267496053be407016ca00a5bf3e9d49af18c8b04f5ac0be3c0b77c41b2",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/local-deletion-candidates.txt",
+      "sha256": "7f46b1f417d3aff0536f47f44b819f5a99dafd57daddcb1ee185f78e0fbee4c2",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/after-split-adequacy.log",
+      "sha256": "f5f264e66d350b7fef7f1d4a33c6279d83e2774e072473689991d4267df37cb3",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/after-split-contract.log",
+      "sha256": "6c324151a7f255678350570619218ad0a8fa68093eee70ed6b5b9d9c92d93dd2",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/after-split-driver.log",
+      "sha256": "db8aabb485b67cc4f02c547ea8efd8160896037012735379f12ae894e84df577",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/after-split-main.log",
+      "sha256": "0bda7fde4fb004b07d4a9aec95279dd7b81e2d5f56c86272b94d4c964719c93f",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/after-split-shell.log",
+      "sha256": "d4b4b2888159b9a7e390657c77d387d1cd50315a61969095245555076f8632c5",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/baseline-focused-driver.log",
+      "sha256": "83f8257f6e862d133cf24d699ecd249932eb5c19c744d122bba2df0f34f8b14f",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/baseline-focused.log",
+      "sha256": "1758aeb21f9223d66ea071a3daacb541a6187c9e27e8c8678965ebf6e41968cf",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/before-split-adequacy.log",
+      "sha256": "f5f264e66d350b7fef7f1d4a33c6279d83e2774e072473689991d4267df37cb3",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/before-split-contract.log",
+      "sha256": "6c324151a7f255678350570619218ad0a8fa68093eee70ed6b5b9d9c92d93dd2",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/before-split-driver.log",
+      "sha256": "d9c93edf7cf74c16ab68c6c22ce91110463510abe530e03083a2a1cf30f2dbb1",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/before-split-main.log",
+      "sha256": "0bda7fde4fb004b07d4a9aec95279dd7b81e2d5f56c86272b94d4c964719c93f",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/before-split-shell.log",
+      "sha256": "d4b4b2888159b9a7e390657c77d387d1cd50315a61969095245555076f8632c5",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/candidate-fast-driver.log",
+      "sha256": "f2da3540eaf0c1c34b5af1d53a54fc528c709b0fc2fa5684ce613fe219901812",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/candidate-fast-final-driver.log",
+      "sha256": "e2435e3b5b61f8f0379f46228f45777e0deb5c1260b9cace71ee21b59b4a9cf2",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/candidate-fast-final.log",
+      "sha256": "9a8ebe9959f083d80bf5f5a42cdc377c4497511c6586a9ec3fb549847dcfcb59",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/candidate-fast-retry-driver.log",
+      "sha256": "017dcb4f402f7b32d489289e13359c27b274a3ac8d9fa8c52bc025aba949736d",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/candidate-full-driver.log",
+      "sha256": "0705978cb81cb13ac3165f57314e5b28fffbd9a5c2c6de88e92593f34a1e40cd",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/candidate-full.log",
+      "sha256": "fa37ece45136e79d33c22732d753b5791ae35835ab59d522ce3ed97c03ce09fe",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/logs/mcp-before-failure.json",
+      "sha256": "1b70dd24deee836c040c65e3a253ded4e740acab668db4e2dd7c3f1575789711",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/manifest-sha256.json",
+      "sha256": "a8c20fd0191c46b1cd6c500494729f287195a933f4de3713ccdcb6164bb8ef56",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/refreeze-imports.json",
+      "sha256": "7e2075658a993077994277f184ea7d29677d350aaf66be4a5cec0b26d9b5c126",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/removed_modules.txt",
+      "sha256": "6d87c44fa1eaf41baf708486a3385ea703ba6bec21d6f6856026492d2fbd3fbd",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/removed_scripts.txt",
+      "sha256": "9caf5b6ca2d1e319eed4aa5d4e58f4116a0be8b2da603f598c3397ebdecc7012",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/retained_modules.txt",
+      "sha256": "7aac567ef33b3d7ba9863d9c8fd3850368d85d05d842f5a3f292142203d14c12",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/scope-reconciliation.json",
+      "sha256": "1c983437aacf6101e35a8d31b958cee9d14478e17c2fad0b20747e7a0d663524",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/debt/tier1-214a4766/shell-python-consumer-audit.json",
+      "sha256": "983b1b273c14e83ac2aeba81ffe8bedbe628c55cb2438af77fb9f508b989b25f",
+      "archive": "/home/cody/zesislar-archive/2026-10-03/git/mirror.git",
+      "ref": "fdec052eec24c6f6efdcbcf8314a63bb6aca39e4"
+    }
+  ],
+  "verification": "Archive git blobs equal tracked working-tree bytes before removal."
+}
