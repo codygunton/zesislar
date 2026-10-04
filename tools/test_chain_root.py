@@ -19,6 +19,146 @@ NEEDS_WRITE_SUCCESS = unittest.skipUnless(
 
 
 class ChainRootTests(unittest.TestCase):
+    def test_generalized_template_preserves_parameters_provenance_and_debts(self):
+        state = {"binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs)",
+                 "coq": [["captured", "bv 64"]], "spatial": ["captured ownership"],
+                 "root_provenance": {"source": "root"}, "provenance": {"source": "root"},
+                 "pending_goals": [{"conclusion": "False"}], "shelved_goals": ["debt"]}
+        hint = {"header_pc": "0x14", "rocq_predicate": "Fixture.foldAt",
+                "symbolic_parameters": {"i": {"register": "x15"}},
+                "register_bindings": {"x15": "payloadStart + i"}, "design_sha256": "frozen"}
+        header = chain_root.generalized_header(state, hint)
+        for key in ("binders", "root_provenance", "provenance", "pending_goals", "shelved_goals"):
+            self.assertEqual(header[key], state[key])
+        self.assertEqual(header["coq"], [])
+        self.assertIn("Fixture.foldAt 0x14 args n i payloadStart lengthBytes frameBytes loaded",
+                      header["spatial"][0])
+        self.assertIn("∃ (n i payloadStart : Z)", header["spatial"][0])
+        self.assertEqual(state["spatial"], ["captured ownership"])
+        with self.assertRaisesRegex(ValueError, "existing DecodeItemArgs"):
+            chain_root.generalized_header({**state, "binders": "(sp : bv 64)"}, hint)
+
+    def test_generalized_header_requires_closed_entailment_before_requeue(self):
+        for outcome in ("closed", "conditional", "residual"):
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                entries, cfg = root / "entries.json", root / "cfg.json"
+                entries.write_text(json.dumps({"entry": "0xa", "outcome": "reached",
+                    "binders": "(args : DecodeItemArgs)", "spatial": ["P"], "coq": [],
+                    "root_provenance": {"source": "fixture"}}))
+                cfg.write_text(json.dumps({"functions": [{"start": 10, "blocks": [
+                    {"start": 10, "end": 14, "successors": ["0x14"]},
+                    {"start": 20, "end": 24, "successors": ["0x14", "0x1e"]},
+                    {"start": 30, "end": 34, "successors": []}]}]}))
+                hint = {"header_pc": "0x14", "rocq_predicate": "Fixture.foldAt",
+                        "symbolic_parameters": {}, "register_bindings": {}, "exit": "0x1e",
+                        "design_sha256": "frozen", "machine_obligations": {
+                            kind: "Fixture." + kind for kind in ("entry", "preservation", "exit")},
+                        "pure_lemmas": {kind: "Fixture.pure" for kind in ("entry", "preservation", "exit")}}
+                args = SimpleNamespace(entries=entries, cfg=cfg, root="0xa", terminal="0x28",
+                    out=root / "out", publish_dir=root / "published", jobs=1,
+                    build_dir=root, seconds=1)
+                visited = []
+                def capture(state, block, successor, build, seconds):
+                    visited.append((block["start"], state))
+                    return {"outcome": "reached", "entry": hex(block["start"]),
+                            "exit": hex(successor), "coq": [], "spatial": ["P"],
+                            "pending_goals": [], "shelved_goals": []}
+                with patch.object(chain_root, "load_invariant_hints", return_value={20: hint}), \
+                     patch.object(chain_root, "probe", side_effect=capture), \
+                     patch.object(chain_root, "render_successor", return_value="state"), \
+                     patch.object(chain_root, "check_subsumption", return_value={"outcome": outcome}):
+                    # Machine propositions remain pending even when the entailments close.
+                    self.assertEqual(chain_root.run(args), 1)
+                records = json.loads((args.out / "post_states/a.json").read_text())
+                self.assertEqual(bool(records[0].get("requeued_generalized_header")), outcome == "closed")
+                headers = [state for pc, state in visited if pc == 20]
+                self.assertEqual(bool(headers), outcome == "closed")
+                if headers:
+                    self.assertTrue(all(state["name"] == "GeneralizedHeader_14" for state in headers))
+                    back = json.loads((args.out / "post_states/14.json").read_text())
+                    self.assertEqual(next(row for row in back if row["exit"] == "0x14")["invariant_edge"], "preservation")
+                    self.assertEqual(next(row for row in back if row["exit"] == "0x1e")["invariant_exit"]["status"], "pending")
+                summary = json.loads((args.out / "chain_summary.json").read_text())
+                self.assertTrue(all(row["status"] == "pending" for row in summary["invariant_obligations"]))
+
+    def test_root_header_generalizes_before_execution(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entries, cfg = root / "entries.json", root / "cfg.json"
+            state = {"entry": "0xa", "outcome": "reached", "binders": "(args : DecodeItemArgs)",
+                     "spatial": ["P"], "coq": [], "root_provenance": {"source": "fixture"}}
+            entries.write_text(json.dumps(state))
+            cfg.write_text(json.dumps({"functions": [{"start": 10, "blocks": [
+                {"start": 10, "end": 14, "successors": ["0xa"]}]}]}))
+            args = SimpleNamespace(entries=entries, cfg=cfg, root="0xa", terminal="0x28",
+                out=root / "out", publish_dir=root / "published", jobs=1, build_dir=root, seconds=1)
+            hint = {"header_pc": "0xa", "rocq_predicate": "Fixture.foldAt", "exit": "0x28",
+                    "symbolic_parameters": {}, "register_bindings": {}, "design_sha256": "frozen",
+                    "machine_obligations": {kind: "Fixture." + kind for kind in ("entry", "preservation", "exit")},
+                    "pure_lemmas": {kind: "Fixture.pure" for kind in ("entry", "preservation", "exit")}}
+            with patch.object(chain_root, "load_invariant_hints", return_value={10: hint}), \
+                 patch.object(chain_root, "check_subsumption", return_value={"outcome": "conditional"}), \
+                 patch.object(chain_root, "probe") as probe:
+                self.assertEqual(chain_root.run(args), 1)
+            probe.assert_not_called()
+            summary = json.loads((args.out / "chain_summary.json").read_text())
+            self.assertEqual(summary["root_generalization"]["outcome"], "conditional")
+            self.assertEqual(summary["captures"], 0)
+
+    def test_shelved_debts_distinguish_probe_identities(self):
+        state = {"spatial": ["P"], "pending_goals": []}
+        left = {**state, "shelved_goals": [{"conclusion": "x < 8"}]}
+        right = {**state, "shelved_goals": [{"conclusion": "x < 9"}]}
+        self.assertNotEqual(chain_root.fingerprint(left), chain_root.fingerprint(right))
+        self.assertNotEqual(chain_root.fingerprint(left), chain_root.fingerprint(state))
+        self.assertEqual(chain_root.fingerprint({**state, "shelved_goals": []}),
+                         chain_root.fingerprint(state))
+
+    def test_parser_retains_inherited_debts_for_every_outcome(self):
+        state = {"binders": "(returnAddress : Z)", "imports": [],
+                 "pending_goals": [{"conclusion": "x < 8"}],
+                 "shelved_goals": [{"conclusion": "False"}]}
+        block = {"start": 10, "end": 14, "successors": []}
+        fixture = (Path(__file__).parent / "fixtures/chain_goals_native.log").read_text()
+        cases = {
+            "closed": "No more goals.",
+            "stalled": fixture,
+            "reached": fixture.replace("CHAIN-GOAL-CONCLUSION True%I",
+                "CHAIN-GOAL-CONCLUSION " + chain_root.boundary_stop("returnAddress")),
+            "error": "compile error"}
+        with patch.object(chain_root.gen_block.call_sites, "premises", return_value=([], [], [])):
+            for outcome, output in cases.items():
+                with self.subTest(outcome=outcome):
+                    # These are synthetic parser inputs, not native execution evidence.
+                    output += "\n" + chain_root.probes.END + (
+                        "\nexit=1 ms=1 rss_kb=1\n" if outcome == "error" else
+                        "\nexit=0 ms=1 rss_kb=1\n")
+                    record = chain_root.parse_probe(output, state, block, "returnAddress")[0]
+                    self.assertEqual(record["outcome"], outcome)
+                    self.assertEqual(record["inherited_debts"]["pending_goals"], state["pending_goals"])
+                    self.assertEqual(record["inherited_debts"]["shelved_goals"], state["shelved_goals"])
+                    record["inherited_debts"]["pending_goals"].clear()
+                    self.assertEqual(len(state["pending_goals"]), 1)
+
+    def test_probe_exception_retains_root_debts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entries, cfg = root / "entries.json", root / "cfg.json"
+            entries.write_text(json.dumps({"entry": "0xa", "outcome": "reached",
+                "binders": "(args : DecodeItemArgs)", "spatial": ["P"], "coq": [],
+                "root_provenance": {"source": "fixture"},
+                "pending_goals": [{"conclusion": "x < 8"}], "shelved_goals": ["debt"]}))
+            cfg.write_text(json.dumps({"functions": [{"start": 10, "blocks": [
+                {"start": 10, "end": 14, "successors": []}]}]}))
+            args = SimpleNamespace(entries=entries, cfg=cfg, root="0xa", terminal="0x28",
+                out=root / "out", publish_dir=root / "published", jobs=1, build_dir=root, seconds=1)
+            with patch.object(chain_root, "probe", side_effect=ValueError("malformed capture")):
+                self.assertEqual(chain_root.run(args), 1)
+            record = json.loads((args.out / "post_states/a.json").read_text())[0]
+            self.assertEqual(record["inherited_debts"]["pending_goals"], [{"conclusion": "x < 8"}])
+            self.assertEqual(record["inherited_debts"]["shelved_goals"], ["debt"])
+
     def test_cli_accepts_an_explicit_root(self):
         arguments = ["chain_root.py", "--entries", "/tmp/unused", "--cfg", "/tmp/cfg",
             "--build-dir", "/tmp/build", "--root", "0x1000", "--terminal", "0x2000",
@@ -141,7 +281,9 @@ class ChainRootTests(unittest.TestCase):
 
     def test_probe_source_uses_explicit_resources_and_trace_import(self):
         options = {"trace_import": "Fixture.Traces", "code_premises": ["  P -∗"]}
-        source = "From Legacy.Traces Require Import Index.\n" + "\n".join(chain_root.infer_boundary.CODE_PREMISES)
+        source = ("From Legacy.Traces Require Import Index.\nLemma infer_boundary :\n"
+                  + "\n".join(chain_root.infer_boundary.CODE_PREMISES)
+                  + "\n  instr_body 0xa P.\nProof.\nAbort.\n")
         with patch.object(chain_root.infer_boundary, "spec_source", return_value=source):
             actual = chain_root.probe_source({}, options, 20)
         self.assertIn("Require Import Fixture.Traces.", actual)
@@ -267,3 +409,149 @@ class ChainRootTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ChainRootInvariantTests(unittest.TestCase):
+    def fixture(self, directory, terminal="returnAddress"):
+        root = Path(directory)
+        entries = root / "entries.json"
+        entries.write_text(json.dumps({"entry": "0xa", "outcome": "reached",
+            "binders": "(returnAddress : Z)", "spatial": ["P"], "coq": [],
+            "root_provenance": {"source": "Fixture.root"}}))
+        cfg = root / "cfg.json"
+        cfg.write_text(json.dumps({"functions": [{"entry": 10, "blocks": [
+            {"start": 10, "end": 14, "successors": [20]},
+            {"start": 20, "end": 24, "successors": [20, 30]},
+            {"start": 30, "end": 34, "successors": [],
+             "instructions": [{"kind": "return", "rs1": 1, "imm": 0}]}]}]}))
+        return SimpleNamespace(entries=entries, root="0xa", cfg=cfg,
+            out=root / "out", publish_dir=root / "publish", terminal=terminal,
+            jobs=1, seconds=1, build_dir=root)
+
+    @staticmethod
+    def capture(state, block, successor, build, seconds):
+        return {"outcome": "reached", "entry": hex(block["start"]),
+            "exit": chain_root.boundary_address(successor), "coq": [], "spatial": ["P"],
+            "pending_goals": [], "shelved_goals": []}
+
+    def test_symbolic_return_is_reached_without_numeric_sentinel(self):
+        with tempfile.TemporaryDirectory() as directory:
+            args = self.fixture(directory)
+            with patch.object(chain_root, "probe", side_effect=self.capture), \
+                    patch.object(chain_root, "render_successor", return_value="state"), \
+                    patch.object(chain_root, "check_subsumption", return_value={"outcome": "closed"}):
+                self.assertEqual(chain_root.run(args), 0)
+            record = json.loads((args.out / "post_states/1e.json").read_text())[0]
+            self.assertTrue(record["terminal"])
+            self.assertEqual(record["exit"], "returnAddress")
+            self.assertEqual(record["derived_state"]["state_entry"], "returnAddress")
+
+    def test_failed_back_edge_entailment_fails_completion(self):
+        with tempfile.TemporaryDirectory() as directory:
+            args = self.fixture(directory, "0x28")
+            with patch.object(chain_root, "probe", side_effect=self.capture), \
+                    patch.object(chain_root, "render_successor", return_value="state"), \
+                    patch.object(chain_root, "check_subsumption", return_value={"outcome": "conditional"}):
+                self.assertEqual(chain_root.run(args), 1)
+            report = json.loads((args.out / "chain_summary.json").read_text())
+            self.assertEqual(report["failed_subsumptions"], 1)
+            self.assertTrue(report["capture_only"])
+
+    def test_symbolic_terminal_rejects_command_injection(self):
+        for value in ["returnAddress. Qed.", "returnAddress; admit", "returnAddress\nQed", "(returnAddress"]:
+            with self.assertRaises(ValueError):
+                chain_root.terminal_target(value)
+        self.assertEqual(chain_root.terminal_target("decodeItemReturnAddress args"),
+                         "decodeItemReturnAddress args")
+
+    def test_q27_hints_match_real_cfg_headers(self):
+        root = Path(__file__).resolve().parents[1]
+        cfg = json.loads((root / "build/stock-zisk/cfg.json").read_text())
+        entry = 0x800d6960
+        blocks = chain_root.graph(cfg, entry)
+        hints = chain_root.load_invariant_hints(root / "ZesuSsz/Evidence/decode_item_block_design.json", blocks, entry)
+        self.assertEqual(set(hints), {0x800d6a24, 0x800d6ac4})
+        obligations = chain_root.invariant_obligations(hints)
+        self.assertEqual(len(obligations), 6)
+        self.assertTrue(all(row["status"] == "pending" for row in obligations))
+        self.assertTrue(all(row["capture_only"] for row in obligations))
+
+    def test_conflicting_register_hint_is_rejected(self):
+        root = Path(__file__).resolve().parents[1]
+        cfg = json.loads((root / "build/stock-zisk/cfg.json").read_text())
+        design = json.loads((root / "ZesuSsz/Evidence/decode_item_block_design.json").read_text())
+        next(row["invariant_hint"] for row in design["blocks"] if "invariant_hint" in row)["register_bindings"]["x15"] = "wrong"
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "design.json"
+            path.write_text(json.dumps(design))
+            with self.assertRaisesRegex(ValueError, "conflicts"):
+                chain_root.load_invariant_hints(path, chain_root.graph(cfg, 0x800d6960), 0x800d6960)
+
+    def test_symbolic_source_keeps_return_expression_in_premise(self):
+        source = ('Lemma infer_boundary (returnAddress : Z) :\n'
+                  '  instr_lookup_resources -∗\n  instr_body 0xa P.\nProof.\n'
+                  'all: idtac "' + chain_root.infer_boundary.RAW_BEGIN + '".\nAbort.\n')
+        state = {"name": "Fixture", "binders": "(returnAddress : Z)"}
+        block = {"start": 10, "end": 14, "successors": []}
+        with patch.object(chain_root.infer_boundary, "spec_source", return_value=source), \
+                patch.object(chain_root.gen_block.call_sites, "premises", return_value=([], [], [])), \
+                patch.object(chain_root.gen_block.call_sites, "contracts", return_value={}), \
+                patch.object(chain_root.gen_block.call_sites, "call_sites", return_value={}), \
+                patch.object(chain_root, "render_successor", return_value="Definition Fixture := P."):
+            rendered = chain_root.render_probe(state, block, "returnAddress")
+        self.assertTrue(rendered.startswith("Require Import ZesuSsz.Automation.All.\n"))
+        self.assertIn("instr_pre (returnAddress) CHAIN_STOP_return_", rendered)
+        self.assertNotIn("BLK_STOP_", rendered)
+
+
+    def test_self_edge_preserves_instr_body_for_both_successors(self):
+        source = ('Lemma infer_boundary (returnAddress : Z) :\n'
+                  '  instr_lookup_resources -∗\n  instr_body 0xa P.\nProof.\n'
+                  'all: idtac "' + chain_root.infer_boundary.RAW_BEGIN + '".\nAbort.\n')
+        state = {"name": "Fixture", "binders": "(returnAddress : Z)"}
+        block = {"start": 10, "end": 14, "successors": [10, 20]}
+        for successor in [10, 20]:
+            with self.subTest(successor=successor), \
+                    patch.object(chain_root.infer_boundary, "spec_source", return_value=source), \
+                    patch.object(chain_root.gen_block.call_sites, "premises", return_value=([], [], [])), \
+                    patch.object(chain_root.gen_block.call_sites, "contracts", return_value={}), \
+                    patch.object(chain_root.gen_block.call_sites, "call_sites", return_value={}), \
+                    patch.object(chain_root, "render_successor", return_value="Definition Fixture := P."):
+                rendered = chain_root.render_probe(state, block, successor)
+            self.assertEqual(rendered.count("instr_body 0xa P."), 1)
+            self.assertIn("instr_pre 0xa BLK_STOP_a -∗", rendered)
+            self.assertIn("instr_pre 0x14 BLK_STOP_14 -∗", rendered)
+            self.assertIn("instr_body 0xa P.\nProof.", rendered)
+
+
+    def test_self_edge_with_folded_code_premises_keeps_conclusion(self):
+        source = ('Lemma infer_boundary (args : DecodeItemArgs) :\n'
+                  + "\n".join(chain_root.infer_boundary.CODE_PREMISES)
+                  + '\n  instr_body 0xa P.\nProof.\n'
+                  + 'all: idtac "' + chain_root.infer_boundary.RAW_BEGIN + '".\nAbort.\n')
+        state = {"name": "Fixture", "binders": "(args : DecodeItemArgs)",
+                 "probe_options": {"trace_import": "Fixture.Traces",
+                                   "code_premises": ["  decodeItemSelectedCode args -∗"]}}
+        block = {"start": 10, "end": 14, "successors": [10, 20]}
+        for successor in [10, 20]:
+            with self.subTest(successor=successor), \
+                    patch.object(chain_root.infer_boundary, "spec_source", return_value=source), \
+                    patch.object(chain_root.gen_block.call_sites, "premises", return_value=([], [], [])), \
+                    patch.object(chain_root.gen_block.call_sites, "contracts", return_value={}), \
+                    patch.object(chain_root.gen_block.call_sites, "call_sites", return_value={}), \
+                    patch.object(chain_root, "render_successor", return_value="Definition Fixture := P."):
+                rendered = chain_root.render_probe(state, block, successor)
+            self.assertNotIn("instr_lookup_resources", rendered)
+            self.assertIn("decodeItemSelectedCode args -∗", rendered)
+            self.assertEqual(rendered.count("instr_body 0xa P."), 1)
+            self.assertIn("instr_pre 0xa BLK_STOP_a -∗", rendered)
+            self.assertIn("instr_pre 0x14 BLK_STOP_14 -∗", rendered)
+
+
+    def test_numeric_source_preserves_recorder_blank_line(self):
+        source = ("Lemma infer_boundary :\n  instr_lookup_resources -∗\n"
+                  "  instr_body 0xa P.\nProof.\n"
+                  "all: try zesu_enter_return_wand_if_enabled.\nall: try liShow.\nAbort.\n")
+        with patch.object(chain_root.infer_boundary, "spec_source", return_value=source):
+            actual = chain_root.probe_source({}, None, 20)
+        self.assertIn("all: try zesu_enter_return_wand_if_enabled.\n\nall: try liShow.", actual)

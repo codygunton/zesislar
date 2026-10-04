@@ -1,0 +1,16 @@
+(* Native successor capture; no resources added. *)
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.SealedCoverage.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Automation.Switches.InstructionLookup.
+
+Definition SelectedDecodeItemRoot
+    `{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs) : iProp Sigma :=
+  ((decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args) ∗
+   (instr_pre returnAddress (∃ after : DecodeItemOutcome, ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\ DecodeMeaningModuloKnownBugs args after⌝ ∗ decodeItemExitResources args after)) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@SelectedDecodeItemRoot) := I.
+Global Typeclasses Opaque SelectedDecodeItemRoot.
