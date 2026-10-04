@@ -3,6 +3,7 @@
 -Q _build/default/InstrSpecs InstrSpecs
 -Q _build/default/MachineMap ZesuMachineMap
 -R _build/default/generated/isla-traces IslaTraces
+-Q _build/default/ZesuSsz/Contracts/CalleeIdentity ZesuSsz.CalleeIdentity
 -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem
 -Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure
 -Q _build/default/generated/evm-sail-coq EvmSail

@@ -10,8 +10,12 @@ import resource
 import subprocess
 import sys
 import time
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from indexes import approved_regions, validate_indexes
+from exports import native_prefix, append_exports, selected_commitments
 sys.path.insert(0,str(ROOT / "tools/stock_zisk"))
 from closure import Image
 from elftools.elf.elffile import ELFFile
@@ -46,6 +50,155 @@ def selected_rows(args, image):
     if not rows: raise ValueError("The input dump contains no instructions")
     return rows
 
+def ensure_callee_theory(out):
+    dune = out / "dune"
+    if dune.exists():
+        text = dune.read_text()
+        if "ZesuSsz.CalleeIdentity" not in text:
+            dune.write_text(text.replace("RecordUpdate Ltac2)", "RecordUpdate Ltac2 ZesuSsz.CalleeIdentity)"))
+
+def generate_indexes(args, rows, recipe, elf):
+    supported = [row for row in rows if row["kind"] != "runtime"]
+    ensure_callee_theory(args.out)
+    validate_instruction_modules(args.out, [row["pc"] for row in supported])
+    inventory_path = args.manifest.parent / "inventory.json"
+    regions = approved_regions(json.loads(inventory_path.read_text()), {row["pc"] for row in supported})
+    frozen = args.out / "generation-measurement.json"
+    coverage = args.out / "coverage.json"
+    if not frozen.exists():
+        frozen.write_bytes(coverage.read_bytes())
+    previous = json.loads(frozen.read_text())
+    if previous["elf_sha256"] != sha(elf):
+        raise ValueError("The frozen selected ELF changed")
+    dump_path = args.out.parent / (args.out.name + ".selected.dump")
+    expected_dump = "\n".join(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}" for row in supported) + "\n"
+    if sha(dump_path) != previous["dump_sha256"] or dump_path.read_text() != expected_dump:
+        raise ValueError("The frozen instruction dump differs from the selected ELF")
+    for path, value in previous["files"].items():
+        if Path(path).name in {"instrs.v", "dune"}:
+            continue
+        if sha(args.out / Path(path).name) != value:
+            raise ValueError("The frozen trace changed: " + path)
+    for key, path in [("platform_snapshot_sha256", ROOT / "build/stock-zisk/platform/riscv64-zisk.ir"),
+                      ("config_sha256", ROOT / "ZesuSsz/riscv64_zesu.toml")]:
+        if previous[key] != sha(path):
+            raise ValueError("The frozen trace input changed: " + key)
+    cache = {}
+    by_pc = {row["pc"]: row for row in supported}
+    for row in supported:
+        opcode = row["word"].to_bytes(4, "little").hex()
+        path = args.out / f"a{row['pc']:x}.isla"
+        if opcode in cache and sha(Path(cache[opcode])) != sha(path):
+            raise ValueError("Equal opcodes have different cached traces")
+        cache[opcode] = str(path)
+    with tempfile.TemporaryDirectory(prefix="zisk-index-") as directory:
+        stage = Path(directory)
+        cache_wrapper = ROOT / "tools/stock_zisk/platform/cache_footprint.py"
+        if not os.access(cache_wrapper, os.X_OK):
+            raise ValueError("The cached footprint wrapper is not executable")
+        (stage / "isla-footprint").symlink_to(cache_wrapper)
+        (stage / "cache.json").write_text(json.dumps(cache))
+        env = dict(os.environ, OPAM_SWITCH_PREFIX="/home/cody/islaris/_opam", ZISK_TRACE_CACHE=str(stage / "cache.json"))
+        env["PATH"] = str(stage) + ":" + str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin") + ":" + env["PATH"]
+        for name, pcs in regions.items():
+            output = stage / name
+            output.mkdir()
+            dump = stage / (name + ".dump")
+            dump.write_text("\n".join(f"{pc:x}: {by_pc[pc]['word']:08x} {by_pc[pc]['mnemonic']}" for pc in sorted(pcs)) + "\n")
+            command = [str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin/islaris"), str(dump),
+                       "--arch=riscv64", "--coqdir=" + args.coqdir, f"-j{args.jobs}", "-o", str(output)]
+            result = subprocess.run(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode:
+                raise RuntimeError(result.stdout.decode()[-2000:])
+            for pc in pcs:
+                if (output / f"a{pc:x}.v").read_bytes() != (args.out / f"a{pc:x}.v").read_bytes():
+                    raise ValueError(f"The frontend changed the cached instruction at {pc:#x}")
+            (args.out / ("index_" + name + ".v")).write_bytes((output / "instrs.v").read_bytes())
+    validate_indexes(args.out, regions, args.coqdir)
+    with elf.open("rb") as stream:
+        commitments = selected_commitments(json.loads(inventory_path.read_text()), Image(ELFFile(stream)), regions)
+    for name, commitment in commitments.items():
+        append_exports(args.out / ("index_" + name + ".v"), name, commitment)
+    (args.out / "instrs.v").unlink(missing_ok=True)
+    descriptor = {"schema_version": 1, "coqdir": args.coqdir,
+                  "elf_sha256": previous["elf_sha256"],
+                  "platform_snapshot_sha256": previous["platform_snapshot_sha256"],
+                  "config_sha256": previous["config_sha256"],
+                  "regions": {name: [hex(pc) for pc in sorted(pcs)] for name, pcs in regions.items()}}
+    (args.out / "indexes.json").write_text(json.dumps(descriptor, indent=2) + "\n")
+    files = {"generated/isla-traces/stock-zisk/closure/" + path.name: sha(path) for path in sorted(args.out.iterdir())
+             if path.is_file() and path.name not in {"coverage.json", "manifest-fragment.json", "generation-measurement.json"}}
+    report = {key: previous[key] for key in ["elf_sha256", "platform_snapshot_sha256", "config_sha256", "dump_sha256",
+              "instruction_count", "generated_count", "unsupported_runtime_boundaries", "full_closure_coverage"]}
+    report.update(schema_version=2, files=files, indexes=descriptor, commitments=commitments,
+                  unmodeled_instructions=previous["unsupported_runtime_boundaries"])
+    coverage.write_text(json.dumps(report, indent=2) + "\n")
+    print(f"Validated {len(supported)} instructions in {len(regions)} native indexes")
+
+def canonical_decodeitem(args, rows, elf):
+    coverage = args.out / "coverage.json"
+    frozen = args.out / "generation-measurement.json"
+    ensure_callee_theory(args.out)
+    if not frozen.exists():
+        frozen.write_bytes(coverage.read_bytes())
+    previous = json.loads(frozen.read_text())
+    supported = [row for row in rows if row["kind"] != "runtime"]
+    validate_instruction_modules(args.out, [row["pc"] for row in supported])
+    dump = args.out.parent / (args.out.name + ".selected.dump")
+    expected_dump = "\n".join(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}" for row in supported) + "\n"
+    if dump.read_text() != expected_dump or sha(dump) != previous["dump_sha256"]:
+        raise ValueError("The cached DecodeItem dump differs from the selected ELF")
+    for key, path in [("elf_sha256", elf),
+                      ("platform_snapshot_sha256", ROOT / "build/stock-zisk/platform/riscv64-zisk.ir"),
+                      ("config_sha256", ROOT / "ZesuSsz/riscv64_zesu.toml")]:
+        if previous[key] != sha(path):
+            raise ValueError("The cached DecodeItem input changed: " + key)
+    for path, value in previous["files"].items():
+        if Path(path).name == "dune": continue
+        actual = args.out / Path(path).name
+        value_now = hashlib.sha256(native_prefix(actual.read_text()).encode()).hexdigest() if actual.name == "instrs.v" else sha(actual)
+        if value_now != value:
+            raise ValueError("The cached DecodeItem file changed: " + path)
+    cache = {}
+    for row in supported:
+        opcode = row["word"].to_bytes(4, "little").hex()
+        path = args.out / f"a{row['pc']:x}.isla"
+        if opcode in cache and sha(Path(cache[opcode])) != sha(path):
+            raise ValueError("Equal opcodes have different cached traces")
+        cache[opcode] = str(path)
+    with tempfile.TemporaryDirectory(prefix="zisk-decode-index-") as directory:
+        stage = Path(directory)
+        cache_wrapper = ROOT / "tools/stock_zisk/platform/cache_footprint.py"
+        if not os.access(cache_wrapper, os.X_OK):
+            raise ValueError("The cached footprint wrapper is not executable")
+        (stage / "isla-footprint").symlink_to(cache_wrapper)
+        (stage / "cache.json").write_text(json.dumps(cache))
+        output = stage / "output"
+        output.mkdir()
+        env = dict(os.environ, OPAM_SWITCH_PREFIX="/home/cody/islaris/_opam", ZISK_TRACE_CACHE=str(stage / "cache.json"))
+        env["PATH"] = str(stage) + ":" + str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin") + ":" + env["PATH"]
+        command = [str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin/islaris"), str(dump),
+                   "--arch=riscv64", "--coqdir=" + args.coqdir, f"-j{args.jobs}", "-o", str(output)]
+        result = subprocess.run(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if result.returncode:
+            raise RuntimeError(result.stdout.decode()[-2000:])
+        for name in [f"a{row['pc']:x}.v" for row in supported] + ["instrs.v"]:
+            if (output / name).read_text() != native_prefix((args.out / name).read_text()):
+                raise ValueError("The frontend changed the cached DecodeItem file: " + name)
+    with elf.open("rb") as stream:
+        commitments = selected_commitments(json.loads((args.manifest.parent / "inventory.json").read_text()),
+            Image(ELFFile(stream)), {"decodeItem": {row["pc"] for row in supported}})
+    append_exports(args.out / "instrs.v", "decodeItem", commitments["decodeItem"])
+    files = {"generated/isla-traces/stock-zisk/decodeItem/" + path.name: sha(path)
+             for path in sorted(args.out.iterdir()) if path.is_file()
+             and path.name not in {"coverage.json", "manifest-fragment.json", "generation-measurement.json"}}
+    report = {key: previous[key] for key in ["elf_sha256", "platform_snapshot_sha256", "config_sha256", "dump_sha256",
+              "instruction_count", "generated_count", "unsupported_runtime_boundaries", "full_closure_coverage"]}
+    report.update(schema_version=2, files=files, commitments=commitments,
+                  unmodeled_instructions=previous["unsupported_runtime_boundaries"])
+    coverage.write_text(json.dumps(report, indent=2) + "\n")
+    print(f"Validated {len(supported)} DecodeItem instructions with the native index")
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--manifest",type=Path,default=Path("build/stock-zisk/build-recipe.json"))
@@ -54,6 +207,7 @@ def main():
     ap.add_argument("--coqdir",default="ZesuSsz.Stock.DecodeItem")
     ap.add_argument("--jobs",type=int,default=6)
     ap.add_argument("--closure",action="store_true")
+    ap.add_argument("--indexes",action="store_true")
     args=ap.parse_args()
     if not 1 <= args.jobs <= 6: raise ValueError("Use one to six workers for this child")
     args.out = args.out.resolve()
@@ -68,6 +222,15 @@ def main():
             if actual["word"] != row["word"]: raise ValueError("The inventory instruction bytes changed")
             if actual["kind"] == "unsupported":
                 raise ValueError(f"Unsupported {actual['extension']} at {actual['pc']:#x}: {actual['word']:#010x}")
+    if args.indexes and not args.closure:
+        raise ValueError("Bounded indexes require closure selection")
+    args.indexes = args.closure
+    if (args.out / "coverage.json").exists():
+        if args.indexes:
+            generate_indexes(args, rows, recipe, elf)
+        else:
+            canonical_decodeitem(args, rows, elf)
+        return
     unsupported=[{"pc":hex(r["pc"]),"opcode":f"{r['word']:08x}",
        "name":"memcpy CSR0x813 runtime service", "reason":"The pinned instruction model does not implement this ZisK service"}
        for r in rows if r["kind"] == "runtime"]
@@ -93,9 +256,11 @@ def main():
     # upstream package declaration and use the established theory dependencies.
     dune=args.out / "dune"
     text=dune.read_text();text=re.sub(r"^ \(package islaris\)\n","",text,flags=re.M)
-    text=text.replace("(theories isla isla.riscv64)","(theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2)")
+    text=text.replace("(theories isla isla.riscv64)","(theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2 ZesuSsz.CalleeIdentity)")
     dune.write_text(text)
-    files={str(p.relative_to(ROOT)):sha(p) for p in sorted(args.out.iterdir()) if p.is_file()}
+    prefix = "generated/isla-traces/stock-zisk/" + ("closure" if args.closure else "decodeItem") + "/"
+    files={prefix + p.name:sha(p)
+           for p in sorted(args.out.iterdir()) if p.is_file()}
     report={"schema_version":1,"elf_sha256":sha(elf),"manifest_sha256":sha(args.manifest),
        "platform_snapshot_sha256":sha(ROOT / "build/stock-zisk/platform/riscv64-zisk.ir"),
        "config_sha256":sha(ROOT / "ZesuSsz/riscv64_zesu.toml"),"dump_sha256":sha(dump),
@@ -106,4 +271,8 @@ def main():
     (args.out / "coverage.json").write_text(json.dumps(report,indent=2)+"\n")
     print(f"Generated {generated_count}/{len(rows)} traces with {args.jobs} workers in {report['seconds']} seconds")
     for boundary in unsupported: print("REFUSED runtime boundary:",boundary)
+    if args.indexes:
+        generate_indexes(args, rows, recipe, elf)
+    else:
+        canonical_decodeitem(args, rows, elf)
 if __name__ == "__main__": main()

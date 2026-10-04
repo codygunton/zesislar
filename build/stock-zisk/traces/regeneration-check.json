@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "sources": {
+    "tools/stock_zisk/platform/traces.py": "a64c33940c47566746253fc1992dd4e5334af2889c7e62f72f590bd7b8346159",
+    "tools/stock_zisk/platform/bind_traces.py": "9c47662a662cdc145c3b2aae54cb3205a2acf79e04bb7134781349ddf6541524",
+    "tools/stock_zisk/platform/indexes.py": "3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace",
+    "tools/stock_zisk/platform/exports.py": "fcb19189ffbc1328f8ac05c89ecdf51a91c812c78281e681e0d6222ecf419e77",
+    "tools/stock_zisk/platform/cache_footprint.py": "435e341ce28bd83fc96a745fb93eec8dd8aaac9d4bac745d5a61d262ca0da8ea",
+    "tools/stock_zisk/platform/test_build.py": "f98a109a7e704ecc171249e298ab525804bbccfb22615e19d09782031c7a399a",
+    "ZesuSsz/Contracts/CalleeIdentity/CalleeId.v": "0dab53751f0c45d14ebe9b72b0c374e9a9b51a893c8fb95a376f12951f52b0f8",
+    "ZesuSsz/Contracts/CalleeIdentity/dune": "c461161c64c9bc9d55c7466a684ff316aedbcd693253a95da17a824fa89135b6"
+  },
+  "focused_tests": 14,
+  "mcp_rendered_module_compiled": true,
+  "nested_callee_theory_dune_built": true,
+  "cached_reproduction_both_groups": true,
+  "fresh_decodeItem_reproduction": true,
+  "boundary_policy": {
+    "cfg": "intra-function edges only; calls are neither edges nor exits",
+    "calls": "callee identity and pc+4 continuation",
+    "memcpy": "all three instructions bound; CSR is explicitly unmodeled"
+  },
+  "group_reports": {
+    "decodeItem": {
+      "coverage_sha256": "94aacd8c70d1696b5aa4097c8461577c207381e26ba09109dabf61e41d4108c6",
+      "generated_count": 116,
+      "bound_byte_count": 464,
+      "call_sites": 0,
+      "cfg_edges": 124,
+      "measurement_sha256": "6bb8b996b185cb02998a35e1f31b9b25c9b61885117b31bf68e703e2c8474d1a"
+    },
+    "closure": {
+      "coverage_sha256": "12cf1f8284d62de24b2c2a7f5af81bae3a7ebc5b1cb720579a3c644d1dbe6b58",
+      "generated_count": 4503,
+      "bound_byte_count": 18016,
+      "call_sites": 143,
+      "cfg_edges": 4865,
+      "measurement_sha256": "1aa39399c4a7216db40d366fe72f1840897cb6815538b32a1c60291fe665423b"
+    }
+  },
+  "fresh_generation_measurement": {
+    "seconds": 11.724,
+    "peak_rss_kib": 68580,
+    "workers": 6
+  },
+  "parent_integration": {
+    "cache_wrapper_executable": true,
+    "cache_wrapper_mode_guard": true,
+    "aborted_missing_execute_permission_run": true,
+    "cached_reproduction_both_groups": true,
+    "cached_reproduction_seconds": 25,
+    "focused_tests": 14,
+    "guard_rechecks": 2,
+    "sources": {
+      "tools/stock_zisk/platform/traces.py": "b5560f22ab20eae80567c1d16f769dd01310b5c279527e17a8d94c2f75c8b0ec",
+      "tools/stock_zisk/manifest.py": "dafe272c7be45ae75b85dbc8866e6664008e07264b6225d31d43b16f5b6f0103"
+    },
+    "gates": {
+      "check_fast": {
+        "exit": 0,
+        "wall_seconds": 462,
+        "dune_ms": 378657,
+        "peak_child_rss_kib": 1923492,
+        "workers": 2
+      },
+      "check_iris": {
+        "exit": 0,
+        "wall_seconds": 54,
+        "dune_ms": 230,
+        "peak_child_rss_kib": 58284,
+        "workers": 2
+      }
+    }
+  }
+}

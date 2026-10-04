@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 
 from elftools.elf.elffile import ELFFile
 
@@ -228,6 +229,15 @@ def check(out, pins):
         if not binding.get('schema_version'):
             raise ValueError(f'Missing schema version: {name}')
         require_equal(digest(project_artifact_path(recipe, name, binding)), binding['sha256'], name)
+    for name, trace in recipe.get('traces', {}).items():
+        if trace.get('manifest_binding_pending'):
+            raise ValueError(f'Unbound trace group: {name}')
+        root = Path(recipe['project_root'])
+        subprocess.run([sys.executable,
+            str(root/'tools/stock_zisk/platform/bind_traces.py'),
+            '--out', str(root/'generated/isla-traces/stock-zisk'/name),
+            '--trace-name', name, '--check-manifest', str(out/'build-recipe.json')],
+            check=True)
     count = len(recipe['artifacts']) + len(recipe.get('project_derived', {}))
     print(f"Checked {count} artifacts and {len(recipe['inputs'])} inputs: {recipe['artifact_identity']}")
     return recipe
