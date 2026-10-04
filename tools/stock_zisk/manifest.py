@@ -58,7 +58,23 @@ def artifact_identity(recipe):
               'zig_executable_sha256', 'inputs', 'runtime_provenance', 'schema_versions']
     fields += [name for name in ['platform', 'machine_map'] if name in recipe]
     payload = {key: recipe[key] for key in fields}
+    if 'project_root' in recipe:
+        payload = relative_project_paths(payload, recipe['project_root'])
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
+def relative_project_paths(value, root):
+    """Remove the checkout location from project paths and command arguments."""
+    prefix = str(Path(root).resolve())
+    if isinstance(value, dict):
+        return {key: relative_project_paths(item, root) for key, item in value.items()}
+    if isinstance(value, list):
+        return [relative_project_paths(item, root) for item in value]
+    if isinstance(value, str):
+        if value == prefix:
+            return '.'
+        return value.replace(prefix+'/', '')
+    return value
 
 
 def record_build(args, recipe, previous):

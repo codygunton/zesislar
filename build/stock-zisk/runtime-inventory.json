@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "artifact_identity": "a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82",
+  "artifact_identity": "3648f3ec117bcc9a7dc18bcb7aaf7d5bcf962f279babe7dd79c755dd9aca3eed",
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "source": {
-    "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",
+    "path": "_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",
     "sha256": "66e548f814a2fa34a3af727926bad32058d07a5dfe8aba09c34d81930474cf82"
   },
   "runtime_source_evidence": {
