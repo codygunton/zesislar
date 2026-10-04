@@ -33,106 +33,76 @@ FAST_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs check-fast 2>/dev/nu
 GUARD_LOCKED = $(if $(wildcard $(GUARD)),$(GUARD) locked $(1) --,)
 
 CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/agents/check-local
-CHECK_LOCAL_JOBS ?= $(GATE_JOBS)
+CHECK_LOCAL_JOBS ?= $(AGENT_JOBS)
 CHECK_AGENT ?= infra
 AGENT_BUILD_DIR ?= $(CURDIR)/_build/agents/$(CHECK_AGENT)
 AGENT_JOBS ?= $(GATE_JOBS)
 export AGENT_BUILD_DIR
 export AGENT_JOBS
 
-PROG      ?= entrypoints
-LOAD_ADDR ?= 0x10300000
-
-DUMP      := build/endpoint-entry-dump/entrypoints.dump
-TRACE_DIR := generated/isla-traces/entrypoints
-TRACE_COQ := IslaTraces.entrypoints
-
-COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
+STOCK_DIR ?= build/stock-zisk
+STOCK_ELF ?= $(STOCK_DIR)/zesu-zisk.elf
+STOCK_MANIFEST ?= $(STOCK_DIR)/build-recipe.json
+STOCK_CFG ?= $(STOCK_DIR)/cfg.json
+PROG ?= decodeItem
+DUMP ?= $(STOCK_DIR)/$(PROG).raw.dump
+TRACE_DIR ?= generated/isla-traces/stock-zisk/$(PROG)
+TRACE_COQ ?= ZesuSsz.Stock.DecodeItem
+TRACE_JOBS ?= 6
 
 ISLA_CFG := riscv64_zesu.toml
-ISLA_ETC := $(shell opam var --switch=$(OPAM_SWITCH) prefix)/etc/islaris
+STOCK_SNAPSHOT ?= $(STOCK_DIR)/platform/riscv64-zisk.ir
 
 .PHONY: all
 all: proof
 
 # --- pinned target ------------------------------------------------------
 
-.PHONY: target-source
-target-source:
-	nix run .#link-zesu-source
+# The stock manifest checks the pinned sources, ELF, and derived reports.
+.PHONY: stock-check disasm cfg endpoint
+stock-check:
+	$(PYTHON) tools/stock_zisk/build.py --check --out $(STOCK_DIR)
 
-.PHONY: disasm
-disasm: $(DUMP)
+disasm cfg endpoint: stock-check
 
-$(DUMP):
-	mkdir -p build
-	nix build .#endpoint-entry-dump --out-link build/endpoint-entry-dump
+# Generate traces with the selected platform snapshot and config.
+STOCK_TRACE_DRIVER ?= tools/stock_zisk/platform/traces.py
+.PHONY: traces traces-closure
+traces: stock-check
+	@test -f "$(STOCK_TRACE_DRIVER)" || { echo "The stock trace driver is absent: $(STOCK_TRACE_DRIVER)"; exit 2; }
+	$(PYTHON) $(STOCK_TRACE_DRIVER) --manifest $(STOCK_MANIFEST) \
+	  --dump $(DUMP) --out $(TRACE_DIR) --coqdir $(TRACE_COQ) --jobs $(TRACE_JOBS)
 
-# --- install the isla config -------------------------------------------
-ZesuSsz/$(ISLA_CFG): ZesuSsz/Contracts/Machine.v tools/machine_config.py
-	$(PYTHON) tools/machine_config.py --config $@
-
-$(ISLA_ETC)/$(ISLA_CFG): ZesuSsz/$(ISLA_CFG)
-	install -m644 $< $@
-
-.PHONY: install-isla-config
-install-isla-config: $(ISLA_ETC)/$(ISLA_CFG)
-
-# --- generate traces ---------------------------------------------------
-$(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(TRACE_DIR)
-	$(OPAM) islaris $(DUMP) -j 6 -o $(TRACE_DIR) \
-	  --coqdir=$(TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	       $(TRACE_DIR)/dune
-
-.PHONY: traces
-traces: $(TRACE_DIR)/instrs.v
+traces-closure: stock-check
+	$(PYTHON) $(STOCK_TRACE_DRIVER) --manifest $(STOCK_MANIFEST) \
+	  --closure --out $(TRACE_DIR) --coqdir $(TRACE_COQ) --jobs $(TRACE_JOBS)
 
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
-trace-one:
+trace-one: stock-check
 	@test -n "$(OP)" || { echo "usage: make trace-one OP=<opcode>"; exit 1; }
 	@rev=$$(echo $(OP) | sed 's/../& /g' | tr -d ' \n' | fold -w2 | tac | tr -d '\n'); \
 	  echo "# opcode $(OP), bytes reversed: $$rev"; \
-	  isla-footprint riscv64.ir -f isla_footprint_no_init \
-	    -C $(ISLARIS_REPO)/etc/riscv64_isla_coq.toml \
+	  isla-footprint $(STOCK_SNAPSHOT) -f isla_footprint_no_init \
+	    -C ZesuSsz/$(ISLA_CFG) \
 	    --simplify-registers --tree -s -x -i $$rev $(CONSTR)
 
 .PHONY: regs
 regs:
-	@grep -oP '^register z\K[A-Za-z_0-9]+ : .*' $(ISLA_SNAP_REPO)/riscv64.ir | sort
+	@grep -oP '^register z\K[A-Za-z_0-9]+ : .*' $(STOCK_SNAPSHOT) | sort
 
 # --- build proofs -------------------------------------------------------
 .PHONY: proof
-proof: traces
-	$(OPAM) dune build --root . @all
+proof: check-local
 
 .PHONY: proof-verbose
-proof-verbose: traces
-	$(OPAM) dune build --root . @all --display short
+proof-verbose:
+	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) @all --display short
 
 # --- housekeeping -------------------------------------------------------
 .PHONY: doctor
 doctor:
 	@bash ZesuSsz/Toolchain/doctor.sh
-
-.PHONY: endpoint
-endpoint:
-	nix build .#endpoint-elf
-
-build/endpoint-elf:
-	mkdir -p build
-	nix build .#endpoint-elf --out-link $@
-
-build/endpoint-cfg:
-	mkdir -p build
-	nix build .#endpoint-cfg --out-link $@
-
-.PHONY: cfg
-cfg:
-	nix build .#endpoint-cfg
 
 .PHONY: check-evm-sail-snapshot
 check-evm-sail-snapshot:
@@ -194,7 +164,7 @@ check-iris: check-evidence-tools
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
-	  @ZesuSsz/Proofs/all
+	  @all
 
 # One gate, alone: `gate.sh` wants the gate lock first, so no new batch
 # starts, waits for running job scopes to finish, runs the uncached
@@ -311,25 +281,35 @@ chain:
 	  --build-dir $(DET_BUILD_DIR) $(if $(RULE),--rule $(RULE),) \
 	  $(if $(ALT),--alt $(ALT),)
 
-# Run each writeSuccess CFG block with its selected entry state.
-BLOCK_BUILD_DIR ?= $(CURDIR)/_build/agents/worker-build-2-block
+# Run each selected stock CFG block with its entry state.
+BLOCK_BUILD_DIR ?= $(AGENT_BUILD_DIR)
+BLOCK_CFG ?= $(STOCK_CFG)
+BLOCK_FUNCTION ?= rlp.decodeItem
+BLOCK_PROOF_DIR ?= $(if $(STATES),$(STATES),ZesuSsz/Proofs/DecodeItem)
+BLOCK_TRACE_IMPORT ?= $(TRACE_COQ).instrs
+BLOCK_ENTRIES ?= $(STOCK_DIR)/block_entries.json
 RULES ?= v2
 CAP ?= 600
-BLOCK_JOBS ?= 16
-BLOCK_PREPARE_JOBS ?= 16
-.PHONY: block-run block-prepare
-block-prepare:
+BLOCK_JOBS ?= $(AGENT_JOBS)
+BLOCK_PREPARE_JOBS ?= $(AGENT_JOBS)
+.PHONY: block-run block-prepare block-entries
+block-entries:
+	$(PYTHON) tools/block/entries.py --cfg $(BLOCK_CFG) --function $(BLOCK_FUNCTION) \
+	  --proof-dir $(BLOCK_PROOF_DIR) --output $(BLOCK_ENTRIES)
+
+block-prepare: block-entries
 	mkdir -p $(BLOCK_BUILD_DIR)
 	unset ARISTOTLE_API_KEY OPEN_ROUTER_API_KEY PROVER_API_KEY; \
 	  ZESU_MAX_COQC=40 $(GUARD_BATCH) worker-build-2-block-prepare -- $(PYTHON) tools/build_record.py \
 	  --build-dir $(BLOCK_BUILD_DIR) --target block-prepare -- $(OPAM) dune build --root . \
 	  --build-dir $(BLOCK_BUILD_DIR) --cache=enabled -j$(BLOCK_PREPARE_JOBS) @ZesuSsz/Automation/all \
 	  ZesuSsz/Automation/Sets/v2.vo $(if $(wildcard ZesuSsz/Automation/Sets/call.v),ZesuSsz/Automation/Sets/call.vo,) \
-	  $$($(PYTHON) tools/block/entries.py --targets) $(if $(IMPORT_MODULE),$(subst .,/,$(IMPORT_MODULE)).vo,)
+	  $$($(PYTHON) tools/block/entries.py --targets --output $(BLOCK_ENTRIES) --proof-dir $(BLOCK_PROOF_DIR)) $(if $(IMPORT_MODULE),$(subst .,/,$(IMPORT_MODULE)).vo,)
 
-block-run: build/endpoint-cfg block-prepare
+block-run: stock-check block-prepare
 	RULES=$(RULES) CAP=$(CAP) ZESU_MAX_COQC=40 $(GUARD_BATCH) worker-build-2-block -- $(PYTHON) tools/block/blockrun.py \
 	  --build-dir $(BLOCK_BUILD_DIR) --jobs $(BLOCK_JOBS) \
+	  --cfg $(BLOCK_CFG) --function $(BLOCK_FUNCTION) --entries $(BLOCK_ENTRIES) --proof-dir $(BLOCK_PROOF_DIR) --trace-import $(BLOCK_TRACE_IMPORT) \
 	  $(if $(STATES),--states $(STATES),) $(if $(LEADERS),--leaders $(LEADERS),) \
 	  $(if $(BLOCK_OUTPUT_DIR),--output-dir $(BLOCK_OUTPUT_DIR),) $(if $(BASELINE),--compare $(BASELINE),) $(if $(IMPORT_MODULE),--import-module $(IMPORT_MODULE),)
 
@@ -344,7 +324,7 @@ guard-report:
 	@$(GUARD) report
 
 .PHONY: check-local
-check-local: check-evm-sail-snapshot check-evidence-tools traces
+check-local: check-evm-sail-snapshot check-evidence-tools
 	$(GUARD_BATCH) check-local -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(CHECK_LOCAL_BUILD_DIR) \
 	  --target check-local -- $(OPAM) dune build --root . \
