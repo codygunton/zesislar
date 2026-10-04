@@ -3,6 +3,7 @@
 The retained production targets depend on the stock native indexes.
 `make check-fast` and `make check-iris` restore or regenerate these indexes before Dune starts.
 The factory checks the files and commitments against `build-recipe.json`.
+The Makefile creates the selected build directories before Dune starts.
 
 The default dataset cache is `_build/stock-zisk/native-trace-cache` in each worktree.
 Worktrees do not share this cache by default.

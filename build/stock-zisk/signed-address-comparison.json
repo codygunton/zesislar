@@ -60,7 +60,7 @@
   "off_verification": "rocq_compile_file on seven class-absent scratch modules",
   "on_verification": "focused Dune builds, jobs6; MCP compile_file on load, store, legacy fixture modules",
   "schema_version": 1,
-  "artifact_identity": "99aa7538b89d0192121cd1c841ea55d67b02aa59b42851ef9608ac2fccdae2c5",
+  "artifact_identity": "f2b00f2f25ba83f4af3022fec11408a5d22a94db0d71c508e33c8ba3ff19dcc8",
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "snapshot_sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
   "fixture_metadata_sha256": "4bf623c36a8edec8c951ca49931de8e521467c19a89ac8d30ba365330cb2647b"

@@ -1,0 +1,51 @@
+{
+  "task": "Q12 build parent and external-input classification",
+  "base_commit": "41e45a132a8cbefea6d634d7851ad545540b4ecc",
+  "makefile_sha256": "a910c8c735c386ecfd171345a1e0e146a5090567469dcfbcc10e6f8a3205f801",
+  "root_check_fast": {
+    "watch_seconds": 52,
+    "workers": 2,
+    "dune": {
+      "error_class": null,
+      "exit": 0,
+      "ms": 467,
+      "rss_kb": 155936,
+      "target": "check-fast"
+    }
+  },
+  "clean_clone": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-q12-clean",
+    "revision": "41e45a132a8cbefea6d634d7851ad545540b4ecc",
+    "applied_change": "The reviewed Makefile patch only.",
+    "build_parent_existed_before_test": false,
+    "shared_native_cache": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/stock-zisk/native-trace-cache",
+    "cold_generation_reference": "q10-clean-checkout-report.json",
+    "watch_seconds": 650,
+    "workers": 2,
+    "dune": {
+      "error_class": null,
+      "exit": 0,
+      "ms": 386378,
+      "rss_kb": 2051664,
+      "target": "check-fast"
+    }
+  },
+  "classification": {
+    "records": 96,
+    "declared_toolchain": 20,
+    "project_files": 76,
+    "tracked_in_root_and_clone": 68,
+    "no_unclassified_records": true,
+    "files": [
+      "q12-external-input-classification.json",
+      "q12-external-input-classification.md"
+    ]
+  },
+  "limits": {
+    "isolated_host_tested": false,
+    "retrieval_gaps": "Listed per record in the classification reports.",
+    "guard_wait_measured_separately": false,
+    "machine_utilization_measured": false
+  },
+  "check_iris": "The coordinator owns this gate."
+}
