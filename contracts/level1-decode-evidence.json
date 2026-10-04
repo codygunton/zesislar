@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "contract": "sszDecode",
-  "qualified": "ssz_decode_root.decodeInput",
-  "allocatorVtableAddress": 96168,
-  "calleePreservedIntegerRegisters": [1, 2, 8, 9, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
-  "observableClauses": ["entryPc", "boundaryAbi", "addressSeparation", "inputSize", "allocatorDescriptor", "exitPc", "statusOutcome", "preservedInputRegion", "initializedSuccessPrefix", "integerCallFrame", "stepCount"],
-  "unobservableClauses": ["referenceDecodeMeaning", "knownBugRelation", "completeDecodedRepresentation", "savedReturnWord", "memoryPermissions", "MMIOExclusions", "fileBytesLoadedFaithfully", "ConfiguredMachinePre", "endpointStateFrame", "nonintegerCallFrame"]
-}

@@ -4,46 +4,8 @@
  (name ZesuSsz)
  (modules
   (:standard \
-   Contracts.Machine
-   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry
-   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntry15740
-   Proofs.WriteSuccess.WriteSuccessSuffixHashesEntryCallerResources))
+   Contracts.Machine))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
-   isla isla.riscv64 InstrSpecs EvmSail SailStdpp IslaTraces.zkvm_exit
-   IslaTraces.write_failure IslaTraces.main IslaTraces.startup
-   IslaTraces.allocator_get IslaTraces.read_input
-   IslaTraces.write_success_00 IslaTraces.write_success_01 IslaTraces.write_success_02 IslaTraces.write_success_03
-   IslaTraces.write_success_04 IslaTraces.write_success_05 IslaTraces.write_success_06 IslaTraces.write_success_07
-   IslaTraces.write_success_08 IslaTraces.write_success_09 IslaTraces.write_success_10 IslaTraces.write_success_11
-   IslaTraces.write_success_12 IslaTraces.write_success_13 IslaTraces.write_success_14 IslaTraces.write_success_15
-   IslaTraces.write_success_16 IslaTraces.write_success_17 IslaTraces.write_success_18 IslaTraces.write_success_19
-   IslaTraces.write_success_20 IslaTraces.write_success_21 IslaTraces.write_success_22 IslaTraces.write_success_23
-   IslaTraces.write_success_24 IslaTraces.write_success_25 IslaTraces.write_success_26 IslaTraces.write_success_27
-   IslaTraces.write_success_28 IslaTraces.write_success_29 IslaTraces.write_success_30 IslaTraces.write_success_31
-   IslaTraces.write_success_32 IslaTraces.write_success_33 IslaTraces.write_success_34 IslaTraces.write_success_35
-   IslaTraces.write_success_36 IslaTraces.write_success_37 IslaTraces.write_success_38 IslaTraces.write_success_39
-   IslaTraces.write_success_40 IslaTraces.write_success_41 IslaTraces.write_success_42 IslaTraces.write_success_43
-   IslaTraces.write_success_44 IslaTraces.write_success_45 IslaTraces.write_success_46 IslaTraces.write_success_47
-   IslaTraces.write_success_48 IslaTraces.write_success_49 IslaTraces.write_success_50 IslaTraces.write_success_51
-   IslaTraces.write_success_52 IslaTraces.write_success_53 IslaTraces.write_success_54 IslaTraces.write_success_55
-   IslaTraces.write_success_56 IslaTraces.write_success_57 IslaTraces.write_success_58 IslaTraces.write_success_59
-   IslaTraces.write_success_60 IslaTraces.write_success_61 IslaTraces.write_success_62 IslaTraces.write_success_63
-   IslaTraces.write_success_64 IslaTraces.write_success_65 IslaTraces.write_success_66 IslaTraces.write_success_67
-   IslaTraces.write_success_68 IslaTraces.write_success_69 IslaTraces.write_success_70 IslaTraces.write_success_71
-   IslaTraces.write_success_72 IslaTraces.write_success_73 IslaTraces.write_success_74 IslaTraces.write_success_75
-   IslaTraces.write_success_76 IslaTraces.write_success_77 IslaTraces.write_success_78 IslaTraces.write_success_79
-   IslaTraces.write_success_80 IslaTraces.write_success_81 IslaTraces.write_success_82 IslaTraces.write_success_83
-   IslaTraces.write_success_84 IslaTraces.write_success_85 IslaTraces.write_success_86 IslaTraces.write_success_87
-   IslaTraces.write_success_88 IslaTraces.write_success_89 IslaTraces.write_success_90 IslaTraces.write_success_91
-   IslaTraces.write_success_92 IslaTraces.write_success_93 IslaTraces.write_success_94 IslaTraces.write_success_95
-   IslaTraces.write_success_96 IslaTraces.write_success_97 IslaTraces.write_success_98 IslaTraces.write_success_99
-   IslaTraces.write_success_100 IslaTraces.write_success_101 IslaTraces.write_success_102 IslaTraces.write_success_103
-   IslaTraces.write_success_104 IslaTraces.write_success_105 IslaTraces.write_success_106 IslaTraces.write_success_107
-   IslaTraces.write_success_108 IslaTraces.write_success_109 IslaTraces.write_success_110 IslaTraces.write_success_111
-   IslaTraces.write_success_112 IslaTraces.write_success_113 IslaTraces.write_success_114 IslaTraces.write_success_115
-   IslaTraces.write_success_116 IslaTraces.write_success_117 IslaTraces.write_success_118 IslaTraces.write_success_119
-   IslaTraces.write_success_120 IslaTraces.write_success_121 IslaTraces.write_success_122 IslaTraces.write_success_123
-   IslaTraces.write_success_124 IslaTraces.write_success_125 IslaTraces.write_success_126 IslaTraces.write_success_127
-   IslaTraces.write_success_blocks
+   isla isla.riscv64 InstrSpecs EvmSail SailStdpp
    lithium iris stdpp RecordUpdate Ltac2))

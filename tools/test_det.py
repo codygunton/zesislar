@@ -9,6 +9,12 @@ from unittest.mock import patch
 
 import importlib.util
 
+# P0-B removed the writeSuccess proof tree. These tests read its modules,
+# so they run only in a checkout that still has it.
+NEEDS_WRITE_SUCCESS = unittest.skipUnless(
+    (Path(__file__).resolve().parents[1] / "ZesuSsz/Proofs/WriteSuccess").is_dir(),
+    "reads ZesuSsz/Proofs/WriteSuccess, removed in P0-B")
+
 DET = Path(__file__).resolve().parent / "det"
 sys.path.insert(0, str(DET))
 
@@ -184,11 +190,14 @@ class CallSites(unittest.TestCase):
 
 
 class ExistingSegment(unittest.TestCase):
+    @NEEDS_WRITE_SUCCESS
     def test_exact_range_finds_the_suffix_module(self):
         path, lemma = segment.existing_segment(0x15744, 0x15754)
         self.assertEqual(path.name, "WriteSuccessExactSuffixEntrySegment.v")
         self.assertEqual(lemma, "write_success_exact_suffix_entry_segment")
         self.assertIsNone(segment.existing_segment(0x15748, 0x15754))
+
+    @NEEDS_WRITE_SUCCESS
 
     def test_exit_premise_before_entry_finds_the_third_tail_module(self):
         path, lemma = segment.existing_segment(0x159b8, 0x159d8)
@@ -212,6 +221,8 @@ class ExistingSegment(unittest.TestCase):
             self.assertEqual(command[command.index("--build-dir") + 1],
                              str(root / "build"))
 
+    @NEEDS_WRITE_SUCCESS
+
     def test_generation_reports_probe_outcome_and_class(self):
         path, lemma = segment.existing_segment(0x15744, 0x15754)
         with tempfile.TemporaryDirectory() as directory:
@@ -232,6 +243,7 @@ class ExistingSegment(unittest.TestCase):
 
 
 class ProbeGoals(unittest.TestCase):
+    @NEEDS_WRITE_SUCCESS
     def test_existing_probe_shelves_term_goals_before_show(self):
         path, lemma = segment.existing_segment(0x159b8, 0x159d8)
         source = infer_boundary.probe_source(path, lemma, "0x159d8", [])
@@ -240,6 +252,8 @@ class ProbeGoals(unittest.TestCase):
         self.assertIn(f'all: idtac "{infer_boundary.RAW_END}".', source)
         self.assertLess(source.index(infer_boundary.SHELVE_TERM_GOALS),
                         source.rindex("\nShow."))
+
+    @NEEDS_WRITE_SUCCESS
 
     def test_closed_probe_needs_no_goal_for_raw_markers(self):
         path, lemma = segment.existing_segment(0x159b8, 0x159d8)
@@ -263,6 +277,8 @@ class ProbeGoals(unittest.TestCase):
                          ["spec", "subsume left right"])
         self.assertEqual(infer_boundary.conclusion_text(selected)[1],
                          "subsume left right")
+
+    @NEEDS_WRITE_SUCCESS
 
     def test_record_preserves_second_goal(self):
         path, lemma = segment.existing_segment(0x159b8, 0x159d8)

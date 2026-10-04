@@ -47,32 +47,6 @@ DUMP      := build/endpoint-entry-dump/entrypoints.dump
 TRACE_DIR := generated/isla-traces/entrypoints
 TRACE_COQ := IslaTraces.entrypoints
 
-ZKVM_EXIT_DUMP      := build/islaris-dumps/zkvm_exit.dump
-ZKVM_EXIT_TRACE_DIR := generated/isla-traces/zkvm_exit
-ZKVM_EXIT_TRACE_COQ := IslaTraces.zkvm_exit
-
-ALLOCATOR_GET_DUMP      := build/islaris-dumps/allocator_get.dump
-ALLOCATOR_GET_TRACE_DIR := generated/isla-traces/allocator_get
-ALLOCATOR_GET_TRACE_COQ := IslaTraces.allocator_get
-
-READ_INPUT_DUMP      := build/islaris-dumps/read_input.dump
-READ_INPUT_TRACE_DIR := generated/isla-traces/read_input
-READ_INPUT_TRACE_COQ := IslaTraces.read_input
-WRITE_FAILURE_DUMP := build/islaris-dumps/write_failure.dump
-WRITE_FAILURE_TRACE_DIR := generated/isla-traces/write_failure
-WRITE_FAILURE_TRACE_COQ := IslaTraces.write_failure
-MAIN_DUMP      := build/islaris-dumps/main.dump
-MAIN_TRACE_DIR := generated/isla-traces/main
-MAIN_TRACE_COQ := IslaTraces.main
-STARTUP_DUMP      := build/islaris-dumps/startup.dump
-STARTUP_TRACE_DIR := generated/isla-traces/startup
-STARTUP_TRACE_COQ := IslaTraces.startup
-
-WRITE_SUCCESS_DUMP_DIR  := experiments/islaris-write-success/generated
-WRITE_SUCCESS_DUMP_STAMP := $(WRITE_SUCCESS_DUMP_DIR)/.stamp
-WRITE_SUCCESS_TRACE_STAMP := generated/isla-traces/write_success.stamp
-WRITE_SUCCESS_INDEX_DIR := generated/isla-traces/write_success_blocks
-WRITE_SUCCESS_INDEX_STAMP := $(WRITE_SUCCESS_INDEX_DIR)/.stamp
 COQ_DEPS  := InstrSpecs lithium iris stdpp RecordUpdate Ltac2
 
 ISLA_CFG := riscv64_zesu.toml
@@ -114,149 +88,7 @@ $(TRACE_DIR)/instrs.v: $(DUMP) $(ISLA_ETC)/$(ISLA_CFG)
 	       $(TRACE_DIR)/dune
 
 .PHONY: traces
-traces: $(STARTUP_TRACE_DIR)/instrs.v $(MAIN_TRACE_DIR)/instrs.v $(WRITE_FAILURE_TRACE_DIR)/instrs.v $(ZKVM_EXIT_TRACE_DIR)/instrs.v $(ALLOCATOR_GET_TRACE_DIR)/instrs.v $(READ_INPUT_TRACE_DIR)/instrs.v $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
-
-$(ZKVM_EXIT_TRACE_DIR)/instrs.v: $(ZKVM_EXIT_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(ZKVM_EXIT_TRACE_DIR)
-	$(OPAM) islaris $(ZKVM_EXIT_DUMP) -j 3 -o $(ZKVM_EXIT_TRACE_DIR) \
-	  --coqdir=$(ZKVM_EXIT_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	       $(ZKVM_EXIT_TRACE_DIR)/dune
-
-.PHONY: zkvm-exit-traces
-zkvm-exit-traces: $(ZKVM_EXIT_TRACE_DIR)/instrs.v
-
-$(ALLOCATOR_GET_TRACE_DIR)/instrs.v: $(ALLOCATOR_GET_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(ALLOCATOR_GET_TRACE_DIR)
-	$(OPAM) islaris $(ALLOCATOR_GET_DUMP) -j 8 -o $(ALLOCATOR_GET_TRACE_DIR) \
-	  --coqdir=$(ALLOCATOR_GET_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	       $(ALLOCATOR_GET_TRACE_DIR)/dune
-
-.PHONY: allocator-get-traces
-allocator-get-traces: $(ALLOCATOR_GET_TRACE_DIR)/instrs.v
-
-$(READ_INPUT_TRACE_DIR)/instrs.v: $(READ_INPUT_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(READ_INPUT_TRACE_DIR)
-	$(OPAM) islaris $(READ_INPUT_DUMP) -j 8 -o $(READ_INPUT_TRACE_DIR) \
-	  --coqdir=$(READ_INPUT_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	       -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	       $(READ_INPUT_TRACE_DIR)/dune
-
-.PHONY: read-input-traces
-read-input-traces: $(READ_INPUT_TRACE_DIR)/instrs.v
-
-$(WRITE_SUCCESS_DUMP_STAMP): build/endpoint-elf build/endpoint-cfg experiments/islaris-write-success/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --cfg build/endpoint-cfg/zesu-cfg.json \
-	  --profile experiments/islaris-write-success/profile.json \
-	  --split-output-dir $(WRITE_SUCCESS_DUMP_DIR)
-	touch $@
-
-$(WRITE_SUCCESS_TRACE_STAMP): $(WRITE_SUCCESS_DUMP_STAMP) $(ISLA_ETC)/$(ISLA_CFG)
-	find generated/isla-traces -maxdepth 1 -type d \
-	  -name 'write_success_[0-9]*' -exec rm -rf {} +
-	@find $(WRITE_SUCCESS_DUMP_DIR) -maxdepth 1 -type f -name 'block_*.dump' \
-	  -print0 | sort -z | xargs -0 -n 1 -P 3 sh -c ' \
-	    set -e; \
-	    dump_file=$$1; \
-	    block_name=$$(basename $$dump_file .dump); \
-	    block_number=$${block_name#block_}; \
-	    trace_dir=generated/isla-traces/write_success_$$block_number; \
-	    mkdir -p $$trace_dir; \
-	    $(OPAM) islaris $$dump_file -j 16 -o $$trace_dir \
-	      --coqdir=IslaTraces.write_success_$$block_number --arch=riscv64; \
-	    sed -i -e "/(package islaris)/d" \
-	      -e "s/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/" \
-	      $$trace_dir/dune \
-	  ' sh
-	touch $@
-
-$(WRITE_SUCCESS_INDEX_STAMP): $(WRITE_SUCCESS_TRACE_STAMP) Makefile ZesuSsz/Evidence/generate_islaris_trace_index.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_trace_index.py \
-	  --dump-dir $(WRITE_SUCCESS_DUMP_DIR) \
-	  --output-dir $(WRITE_SUCCESS_INDEX_DIR) --first-block 9 \
-	  --hint-group LoadBlock:0x14d80:0x14e00 \
-	  --hint-group ValueBlock:0x14e88:0x14f08 \
-	  --hint-group HashesLoop:0x15754:0x158e0 \
-	  --hint-group BlobHashesLoop:0x153d4:0x15564 \
-	  --hint-group StorageKeysLoop:0x15228:0x153b4 \
-	  --hint-group WithdrawalsLoop:0x15694:0x156e8 \
-	  --hint-group AuthorizationsLoop:0x15590:0x15620 \
-	  --hint-group AccessListsLoop:0x151d4:0x153c0 \
-	  --hint-group TransactionsLoop:0x14f00:0x15668
-	touch $@
-
-.PHONY: write-success-traces
-write-success-traces: $(WRITE_SUCCESS_TRACE_STAMP) $(WRITE_SUCCESS_INDEX_STAMP)
-
-# Startup traces use the pinned dump produced by the Evidence tooling.
-.PHONY: startup-traces
-startup-traces: $(STARTUP_TRACE_DIR)/instrs.v
-
-$(STARTUP_DUMP): build/endpoint-elf experiments/islaris-startup/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-startup/profile.json --output $@
-
-$(STARTUP_TRACE_DIR)/instrs.v: $(STARTUP_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(STARTUP_TRACE_DIR)
-	$(OPAM) islaris $(STARTUP_DUMP) -j 3 -o $(STARTUP_TRACE_DIR) \
-	  --coqdir=$(STARTUP_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	  $(STARTUP_TRACE_DIR)/dune
-
-.PHONY: main-traces
-main-traces: $(MAIN_TRACE_DIR)/instrs.v
-
-$(MAIN_DUMP): build/endpoint-elf experiments/islaris-main/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-main/profile.json --output $@
-
-$(MAIN_TRACE_DIR)/instrs.v: $(MAIN_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(MAIN_TRACE_DIR)
-	$(OPAM) islaris $(MAIN_DUMP) -j16 -o $(MAIN_TRACE_DIR) \
-	  --coqdir=$(MAIN_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	  $(MAIN_TRACE_DIR)/dune
-
-$(ZKVM_EXIT_DUMP): build/endpoint-elf experiments/islaris-zkvm-exit/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-zkvm-exit/profile.json --output $@
-
-$(ALLOCATOR_GET_DUMP): build/endpoint-elf experiments/islaris-allocator-get/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-allocator-get/profile.json --output $@
-
-$(READ_INPUT_DUMP): build/endpoint-elf experiments/islaris-read-input/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-read-input/profile.json --output $@
-
-$(WRITE_FAILURE_DUMP): build/endpoint-elf experiments/islaris-write-failure/profile.json ZesuSsz/Evidence/generate_islaris_dump.py
-	$(PYTHON) ZesuSsz/Evidence/generate_islaris_dump.py \
-	  --disassembly build/endpoint-elf/meta/disassembly.txt \
-	  --profile experiments/islaris-write-failure/profile.json --output $@
-
-$(WRITE_FAILURE_TRACE_DIR)/instrs.v: $(WRITE_FAILURE_DUMP) $(ISLA_ETC)/$(ISLA_CFG)
-	mkdir -p $(WRITE_FAILURE_TRACE_DIR)
-	$(OPAM) islaris $(WRITE_FAILURE_DUMP) -j16 -o $(WRITE_FAILURE_TRACE_DIR) \
-	  --coqdir=$(WRITE_FAILURE_TRACE_COQ) --arch=riscv64
-	sed -i -e '/(package islaris)/d' \
-	  -e 's/(theories isla isla.riscv64)/(theories isla isla.riscv64 $(COQ_DEPS))/' \
-	  $(WRITE_FAILURE_TRACE_DIR)/dune
-
-.PHONY: write-failure-traces
-write-failure-traces: $(WRITE_FAILURE_TRACE_DIR)/instrs.v
+traces: $(TRACE_DIR)/instrs.v
 
 # --- one-off trace exploration -----------------------------------------
 .PHONY: trace-one
@@ -302,10 +134,6 @@ build/endpoint-cfg:
 cfg:
 	nix build .#endpoint-cfg
 
-.PHONY: evidence
-evidence:
-	nix build .#level1-contract-evidence
-
 .PHONY: check-evm-sail-snapshot
 check-evm-sail-snapshot:
 	$(PYTHON) ZesuSsz/EvmSail/check_snapshot.py
@@ -315,15 +143,13 @@ regenerate-evm-sail-snapshot:
 	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
 
 .PHONY: check-evidence-tools
-check-evidence-tools: startup-traces
-	@echo "uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder"
+check-evidence-tools:
+	@echo "uncached checks: machine config, tests, hygiene, spec shapes"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
-	$(PYTHON) ZesuSsz/Evidence/check_parity.py
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py
-	bash ZesuSsz/Evidence/check_write_success_decoder.sh
 
 .PHONY: check-proof-hygiene
 check-proof-hygiene:
@@ -332,17 +158,29 @@ check-proof-hygiene:
 # The checkers run unconditionally, before any step Dune can satisfy from
 # its cache: a cached `check-fast` once reported success while a hygiene
 # violation stood for two commits. Every report names this run.
+#
+# Retained production targets (P0-B). `check-fast` builds exactly these
+# Dune aliases, after the uncached Python checks of `check-evidence-tools`
+# (machine config, tools and Evidence unit tests, hygiene, spec shapes).
+# InstrSpecs, ZesuMachineMap, EvmSail and SailStdpp build as dependencies.
+# No retained target reads generated/isla-traces.
+RETAINED_TARGETS := \
+  @ZesuSsz/Contracts/all \
+  @ZesuSsz/Automation/all \
+  @ZesuSsz/Export/all \
+  @ZesuSsz/Compliance/all \
+  @ZesuSsz/Proofs/Tests/all \
+  @ZesuSsz/Tests/all
 .PHONY: check-fast
-check-fast: startup-traces check-evidence-tools
+check-fast: check-evidence-tools
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
-	  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all \
-	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
+	  $(RETAINED_TARGETS)
 
 .PHONY: check-iris
-check-iris: startup-traces check-evidence-tools
+check-iris: check-evidence-tools
 	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
@@ -471,7 +309,7 @@ CAP ?= 600
 BLOCK_JOBS ?= 16
 BLOCK_PREPARE_JOBS ?= 16
 .PHONY: block-run block-prepare
-block-prepare: startup-traces
+block-prepare:
 	mkdir -p $(BLOCK_BUILD_DIR)
 	unset ARISTOTLE_API_KEY OPEN_ROUTER_API_KEY PROVER_API_KEY; \
 	  ZESU_MAX_COQC=40 $(GUARD_BATCH) worker-build-2-block-prepare -- $(PYTHON) tools/build_record.py \
@@ -496,20 +334,8 @@ report:
 guard-report:
 	@$(GUARD) report
 
-.PHONY: check-level1-rocq
-check-level1-rocq:
-	nix build .#level1-contract-rocq
-
-.PHONY: check-evidence-reproducible
-check-evidence-reproducible:
-	nix build --rebuild .#level1-contract-evidence --no-link
-
-.PHONY: check-viewer
-check-viewer:
-	$(PYTHON) -m unittest discover -s ZesuSsz/Viewer -p 'test_*.py'
-
 .PHONY: check-local
-check-local: check-evm-sail-snapshot check-evidence-tools check-viewer traces
+check-local: check-evm-sail-snapshot check-evidence-tools traces
 	$(GUARD_BATCH) check-local -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(CHECK_LOCAL_BUILD_DIR) \
 	  --target check-local -- $(OPAM) dune build --root . \

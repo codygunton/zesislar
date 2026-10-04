@@ -1,5 +1,0 @@
-Require Import ZesuSsz.Automation.All.
-From ZesuSsz.Proofs.WriteSuccess Require Export
-  WriteSuccessExactTransactionsWideSignatureSuffixSpec
-  WriteSuccessExactTransactionsRecipientWideSignatureSuffixHandoff
-  WriteSuccessExactTransactionsSignatureSuffixTailHandoff.

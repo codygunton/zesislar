@@ -14,6 +14,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "det"))
 import closed_cleanup_assumptions as audit  # noqa: E402
 import closed_cleanup_rewrite as rewrite  # noqa: E402
 
+# P0-B removed the writeSuccess proof tree. These tests read its modules,
+# so they run only in a checkout that still has it.
+NEEDS_WRITE_SUCCESS = unittest.skipUnless(
+    (Path(__file__).resolve().parents[1] / "ZesuSsz/Proofs/WriteSuccess").is_dir(),
+    "reads ZesuSsz/Proofs/WriteSuccess, removed in P0-B")
+
 
 class RewriteTests(unittest.TestCase):
     def test_exact_proof_span(self) -> None:
@@ -40,6 +46,7 @@ class RewriteTests(unittest.TestCase):
 
 
 class AssumptionTests(unittest.TestCase):
+    @NEEDS_WRITE_SUCCESS
     def test_scratch_uses_qualified_lemma(self) -> None:
         source = audit.scratch_text("WriteSuccessEncoderOptionalNoneBoolean.v",
                                     ["encoder_optional_none_boolean"])

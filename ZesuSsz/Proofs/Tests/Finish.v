@@ -3,8 +3,8 @@ Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessBitvector.
-From IslaTraces.write_success_32 Require Import a15048.
+Require Import ZesuSsz.Automation.BitvectorFacts.
+Require Import ZesuSsz.Generated.TestTraces.LdX16X10Off80.
 
 Import ZesuSsz.Automation.Hooks.
 
@@ -45,7 +45,7 @@ Print Assumptions finish_introduced_code_list.
 Lemma test_zesu_block `{!islaG Sigma} `{!threadG}
     (base : bv 64) (bytes : list (bv 8)) :
   length bytes = 288%nat ->
-  instr 0x15048 (Some a15048) -∗
+  instr 0x15048 (Some trace_ld_x16_x10_80) -∗
   instr_body 0x15048 (
     reg_col zesu_sys_regs ∗
     "x10" ↦ᵣ RVal_Bits base ∗
