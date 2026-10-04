@@ -6,6 +6,8 @@ Require Import ZesuSsz.Compliance.SailRun.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
+Import ListNotations.
+Open Scope Z_scope.
 
 (* The ABI assigns a0 to output, a1 to input, and a2 to input length.
    The caller owns the 40-byte result and the 16-byte stack frame. *)
@@ -65,6 +67,49 @@ Definition decodeItemC1ASailResult
     (decodeItemInputBytes args) (decodeItemBeforeStorage args) after
     (runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args)).
 
+Definition decodeItemC1ASailAgreement : Prop :=
+  forall args after,
+    decodeItemC1ADomain args ->
+    decodeItemAllowsC1A args after ->
+    decodeItemC1ASailResult args after.
+
+Definition decodeItemC1BSailAgreement : Prop :=
+  forall args after,
+    decodeItemC1BDomain args ->
+    headerFits (decodeItemInputBytes args) ->
+    decodeItemAllowsC1B args after ->
+    decodeItemC1ASailResult args after.
+
+Definition decodeItemBinaryWrap (args : DecodeItemArgs) : Prop :=
+  exists isList headerLength payloadLength,
+    candidateDecodeItem (decodeItemInputBytes args) =
+      candidateSuccess isList headerLength payloadLength /\
+    binaryWrapCase headerLength payloadLength
+      ((headerLength + payloadLength) mod word64Modulus).
+
+Definition decodeItemWrapWitnessInput : list byte :=
+  List.map (Z_to_bv 8) [191; 255; 255; 255; 255; 255; 255; 255; 247].
+
+Lemma decodeItemWrapWitness :
+  candidateDecodeItem decodeItemWrapWitnessInput =
+    candidateSuccess false 9 (word64Modulus - 9) /\
+  binaryWrapCase 9 (word64Modulus - 9) 0 /\
+  ~ headerFits decodeItemWrapWitnessInput.
+Proof.
+  vm_compute; repeat split; try congruence.
+  intros [H | [H | H]]; discriminate.
+Qed.
+
+Definition decodeItemC1BWrapDivergence : Prop :=
+  forall args after,
+    decodeItemC1BDomain args ->
+    decodeItemAllowsC1B args after ->
+    decodeItemBinaryWrap args ->
+    candidateResult40 (decodeItemInputPointer args)
+      (decodeItemInputBytes args) (decodeItemBeforeStorage args) after /\
+    runRlpDecodeItem (decodeItemInputBytes args)
+      (decodeItemSailCursor args) = Reject RlpDecode.
+
 Definition decodeItemEntryResources `{!islaG Sigma} `{!threadG}
     (domain : DecodeItemArgs -> Prop) (args : DecodeItemArgs) : iProp Sigma :=
   (reg_col zesu_sys_regs ∗
@@ -89,3 +134,10 @@ Definition decodeItemExitResources `{!islaG Sigma} `{!threadG}
    decodeItemOutputPointer args ↦ₘ∗ after ∗
    (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ? decodeItemStackBytes ∗
    True)%I.
+
+Definition decodeItemResources `{!islaG Sigma} `{!threadG}
+    (code : iProp Sigma) (domain : DecodeItemArgs -> Prop) :
+    IslarisContractResources DecodeItemArgs DecodeItemOutcome :=
+  {| islarisCode := code;
+     islarisEntry := decodeItemEntryResources domain;
+     islarisExit := decodeItemExitResources |}.
