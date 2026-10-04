@@ -1,0 +1,20 @@
+{
+  "baseline": "Q2 arithmetic in 29061e98",
+  "class": "ZesuStepSignedAddress",
+  "default_instance": false,
+  "frozen_source": "worker2-child-platform/_build/NegativeImmediateResidual.v",
+  "off_changed_outcomes": [],
+  "off_residuals": [
+    "negative_immediate_lower_residual",
+    "negative_immediate_upper_residual"
+  ],
+  "on_gains": [
+    "negative_immediate_lower_residual",
+    "negative_immediate_upper_residual"
+  ],
+  "on_losses": [],
+  "positive_fixture_regressions": "all seven retained fixture modules pass at jobs6",
+  "probe_scope": "arithmetic residuals only; no decodeItem root contract proof",
+  "negative_source": "sp + sign-encoded negative immediate + positive immediate",
+  "rule_constants": "no machine address, PC, immediate, offset, or fixture constant"
+}

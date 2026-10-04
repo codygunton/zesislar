@@ -327,6 +327,13 @@ Ltac zesu_preserve_current_unsigned :=
    Close an impossible branch before Lithium searches exception registers. *)
 Ltac zesu_signed_address_if_enabled :=
   let _ := constr:(_ : ZesuStepSignedAddress) in
+  match goal with
+  | H : ~ ?bound |- _ =>
+      lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
+      lazymatch bound with
+      | context [bv_zero_extend 128 _] => idtac
+      end
+  end;
   solve [unLET;
     progress (repeat match goal with
     | H : context [bv_signed (bv_zero_extend 128 ?value + ?offset)] |- _ =>
@@ -337,7 +344,11 @@ Ltac zesu_signed_address_if_enabled :=
     end);
     repeat match goal with
     | H : context [bv_unsigned (?left + ?right)] |- _ =>
-        rewrite bv_add_unsigned bv_wrap_small in H; last bv_solve
+        first [rewrite bv_add_unsigned bv_wrap_small in H; last bv_solve
+              |rewrite (zesu_unsigned_add_signed_64 left right) in H;
+                 last bv_solve]
+    | H : context [bv_unsigned (?left - ?right)] |- _ =>
+        rewrite (zesu_unsigned_sub_no_wrap_64 left right) in H; last bv_solve
     end;
     exfalso; bv_solve].
 

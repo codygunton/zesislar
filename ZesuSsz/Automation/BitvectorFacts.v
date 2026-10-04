@@ -45,3 +45,13 @@ Proof.
   rewrite bv_add_signed bv_zero_extend_signed.
   rewrite !bv_swrap_small; bv_solve.
 Qed.
+
+Lemma zesu_unsigned_add_signed_64 (left right : bv 64) :
+  0 <= bv_unsigned left + bv_signed right < 2 ^ 64 ->
+  bv_unsigned (left + right) = bv_unsigned left + bv_signed right.
+Proof. move => Hsum. bv_solve. Qed.
+
+Lemma zesu_unsigned_sub_no_wrap_64 (left right : bv 64) :
+  bv_unsigned right <= bv_unsigned left ->
+  bv_unsigned (left - right) = bv_unsigned left - bv_unsigned right.
+Proof. move => Hsub. rewrite bv_sub_unsigned bv_wrap_small; bv_solve. Qed.
