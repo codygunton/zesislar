@@ -1,0 +1,69 @@
+{
+  "class": "folded-selected-code-lookup",
+  "entry": "0x800d6960",
+  "residual_pc": "0x800d6960",
+  "pc_evidence": "literal FindInstrKind address; no owned PC exists before fetch",
+  "next_instruction": {
+    "opcode": "0xff010113",
+    "assembly": "addi sp,sp,-16"
+  },
+  "required_code": "decodeItemSelectedCode; unchanged selected instr_map",
+  "residual": {
+    "phase": "active",
+    "coq": [
+      [
+        "Sigma",
+        "gFunctors"
+      ],
+      [
+        "islaG0",
+        "(islaG Sigma)"
+      ],
+      [
+        "H",
+        "threadG"
+      ],
+      [
+        "returnAddress",
+        "Z"
+      ],
+      [
+        "args",
+        "DecodeItemArgs"
+      ],
+      [
+        "BLK_STOP_800d6ae0",
+        "(iProp Sigma)"
+      ],
+      [
+        "BLK_STOP_800d6974",
+        "(iProp Sigma)"
+      ]
+    ],
+    "persistent": [],
+    "spatial": [
+      "(instr_pre 2148362612 BLK_STOP_800d6974)",
+      "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+      "decodeItemSelectedCode"
+    ],
+    "local_sorts": {
+      "BLK_STOP_800d6974": "Type",
+      "BLK_STOP_800d6ae0": "Type",
+      "args": "Type",
+      "returnAddress": "Type",
+      "H": "Type",
+      "islaG0": "Type",
+      "Sigma": "Type"
+    },
+    "local_values": {},
+    "conclusion": "(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end))",
+    "environment": "iris",
+    "memory_word_widths": {},
+    "trace_value_widths": {},
+    "address_widths": {},
+    "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (NativeRootState_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (NativeRootState_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (NativeRootState_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+    "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nBLK_STOP_800d6ae0 : (iProp Sigma)\nBLK_STOP_800d6974 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362612 BLK_STOP_800d6974)\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : decodeItemSelectedCode"
+  },
+  "bridge": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup instr_map)",
+  "lookup_resource_exposed": false
+}

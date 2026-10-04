@@ -1,0 +1,1022 @@
+python3 tools/stock_zisk/platform/traces.py --ensure-native-indexes \
+  --manifest build/stock-zisk/build-recipe.json --cache-dir /home/cody/zesislar/.worktrees/worker2-child-platform/_build/stock-zisk/native-trace-cache \
+  --decode-out generated/isla-traces/stock-zisk/decodeItem --closure-out generated/isla-traces/stock-zisk/closure \
+  --dump build/stock-zisk/decodeItem.raw.dump --jobs 6
+Regenerated deterministic files match the tracked manifest
+Regenerated deterministic files match the tracked manifest
+uncached checks: machine config, tests, hygiene, spec shapes
+python3 tools/machine_config.py --check
+python3 -m unittest discover -s tools -p 'test_*.py'
+...s.......s.s..................................................s..............0xa -> 0x14 reached
+0xa -> 0x1e reached
+0x14 -> 0xa reached
+0x1e -> 0x28 reached
+...............0xa -> 0x999 error
+......................................s........................sss......sss........................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 337 tests in 47.640s
+
+OK (skipped=11)
+assumptions: 1 checked; 0 changed
+CHANGED M.v f
+assumptions: 1 checked; 1 changed
+calls in [0x156e8, 0x15744): 0 premises, 0 contract modules
+spec record written to /tmp/tmpu6w2tvmx/spec.json
+python3 -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+PYTHONPATH=ZesuSsz/Evidence python3 -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
+....................................................................
+----------------------------------------------------------------------
+Ran 68 tests in 0.024s
+
+OK
+python3 ZesuSsz/Evidence/check_proof_hygiene.py
+warning: 1 baseline forbidden-name occurrences remain
+python3 ZesuSsz/Evidence/check_spec_shapes.py
+python3 tools/check_sail_host_axioms.py
+C4 host axiom gate: six roots, seven approved names, no extra axioms
+mkdir -p "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform" "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/check-local" "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform" "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/infra"
+opam exec --switch=/home/cody/islaris -- dune build --root . --build-dir /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform \
+  --cache=enabled -j6 @install \
+  ZesuSsz/Evidence/SignatureGateFixtures.vo \
+  ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.vo \
+  ZesuSsz/Evidence/ParentHeaderDifferential.vo
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+eq_refl : nestedWrapOccurs = ReviewedNestedWrapTrigger
+     : nestedWrapOccurs = ReviewedNestedWrapTrigger
+eq_refl
+:
+nextUint64Domain =
+(fun args : NextUint64Call =>
+ nextUint64EntryLayout (nextInputPointer args)
+   (Z.of_nat (length (nextInputBytes args))) (nextSlicePointer args)
+   (nextResultPointer args) (nextStackPointer args)
+   (nextReturnAddress args))
+     : nextUint64Domain =
+       (fun args : NextUint64Call =>
+        nextUint64EntryLayout (nextInputPointer args)
+          (Z.of_nat (length (nextInputBytes args)))
+          (nextSlicePointer args) (nextResultPointer args)
+          (nextStackPointer args) (nextReturnAddress args))
+eq_refl
+:
+parentHeaderDomain =
+(fun args : ParentHeaderCall =>
+ parentHeaderEntryLayout (headerInputPointer args)
+   (Z.of_nat (length (headerInputBytes args))) (headerResultPointer args)
+   (headerStackPointer args) (headerReturnAddress args))
+     : parentHeaderDomain =
+       (fun args : ParentHeaderCall =>
+        parentHeaderEntryLayout (headerInputPointer args)
+          (Z.of_nat (length (headerInputBytes args)))
+          (headerResultPointer args) (headerStackPointer args)
+          (headerReturnAddress args))
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+reviewed_control : ReviewedControlType
+     : ReviewedControlType
+Closed under the global context
+- : unit = ()
+@ReferenceRlpItem : ReviewedRlpItemType
+     : ReviewedRlpItemType
+@ReferenceRlpHeader : ReviewedRlpHeaderType
+     : ReviewedRlpHeaderType
+@ReferenceRlpNode : ReviewedRlpNodeType
+     : ReviewedRlpNodeType
+@ReferenceParentHeaderFields : ReviewedParentHeaderFieldsType
+     : ReviewedParentHeaderFieldsType
+eq_refl : @ReferenceRlpItem = @ReviewedRlpItemRelation
+     : @ReferenceRlpItem = @ReviewedRlpItemRelation
+eq_refl : @ReferenceRlpHeader = @ReviewedRlpHeaderRelation
+     : @ReferenceRlpHeader = @ReviewedRlpHeaderRelation
+eq_refl : @ReferenceRlpNode = @ReviewedRlpNodeRelation
+     : @ReferenceRlpNode = @ReviewedRlpNodeRelation
+eq_refl : @ReferenceParentHeaderFields = @ReviewedParentHeaderFieldsRelation
+     : @ReferenceParentHeaderFields = @ReviewedParentHeaderFieldsRelation
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+- : unit = ()
+- : unit = ()
+- : unit = ()
+- : unit = ()
+encodeResult : ReviewedEncodeResultType
+     : ReviewedEncodeResultType
+@relateItem : ReviewedRelateItemType
+     : ReviewedRelateItemType
+intendedValidRlpClassHeaderFits
+:
+∀ input : list byte, intendedValidRlpClass input → headerFits input
+     : ∀ input : list byte, intendedValidRlpClass input → headerFits input
+Closed under the global context
+- : unit = ()
+decodeItemAllowsC1B : DecodeItemArgs → DecodeItemOutcome → Prop
+     : DecodeItemArgs → DecodeItemOutcome → Prop
+eq_refl : decodeItemAllowsC1B = decodeItemAllows C1BResult
+     : decodeItemAllowsC1B = decodeItemAllows C1BResult
+eq_refl : knownBugs = [RlpLongLengthWrap]
+     : knownBugs = [RlpLongLengthWrap]
+DecodeMeaningModuloKnownBugs : DecodeItemArgs → DecodeItemOutcome → Prop
+     : DecodeItemArgs → DecodeItemOutcome → Prop
+eq_refl : DecodeMeaningModuloKnownBugs = ReviewedDecodeMeaningModuloKnownBugs
+     : DecodeMeaningModuloKnownBugs = ReviewedDecodeMeaningModuloKnownBugs
+decodeItemWrapWitness
+:
+candidateDecodeItem decodeItemWrapWitnessInput =
+candidateSuccess false 9 (word64Modulus - 9)
+∧ binaryWrapCase 9 (word64Modulus - 9) 0
+  ∧ ¬ headerFits decodeItemWrapWitnessInput
+     : candidateDecodeItem decodeItemWrapWitnessInput =
+       candidateSuccess false 9 (word64Modulus - 9)
+       ∧ binaryWrapCase 9 (word64Modulus - 9) 0
+         ∧ ¬ headerFits decodeItemWrapWitnessInput
+Closed under the global context
+- : unit = ()
+ParentHeaderMeaningModuloKnownBugs : ParentHeaderCall → list byte → Prop
+     : ParentHeaderCall → list byte → Prop
+eq_refl
+:
+ParentHeaderMeaningModuloKnownBugs =
+ReviewedParentHeaderMeaningModuloKnownBugs
+     : ParentHeaderMeaningModuloKnownBugs =
+       ReviewedParentHeaderMeaningModuloKnownBugs
+emptyParentListMissesRequired
+:
+parentHeaderMissingRequiredField [Z_to_bv 8 192]
+     : parentHeaderMissingRequiredField [Z_to_bv 8 192]
+Closed under the global context
+- : unit = ()
+eq_refl : @memcpyServicePremise = @ReviewedMemcpyServicePremise
+     : @memcpyServicePremise = @ReviewedMemcpyServicePremise
+eq_refl : parentHeaderMemcpyLength = 80
+     : parentHeaderMemcpyLength = 80
+eq_refl : parentHeaderMemcpySource = 2148618168
+     : parentHeaderMemcpySource = 2148618168
+eq_refl : @nextUint64SelectedCode = @ReviewedNextUint64SelectedCode
+     : @nextUint64SelectedCode = @ReviewedNextUint64SelectedCode
+eq_refl : @parentHeaderSelectedCode = @ReviewedParentHeaderSelectedCode
+     : @parentHeaderSelectedCode = @ReviewedParentHeaderSelectedCode
+NextUint64SelectedCorrect : Prop
+     : Prop
+ParentHeaderSelectedCorrect : Prop
+     : Prop
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+fixture_axiom : ReviewedFunctionType
+     : ReviewedFunctionType
+Axioms:
+functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+fixture_alias_weak_domain : ReviewedRlpItemType
+     : ReviewedRlpItemType
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+/home/cody/zesislar/.worktrees/worker2-child-platform/tools/resource_guard.sh batch check-fast -- \
+  python3 tools/build_record.py --build-dir /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform \
+  --target check-fast -- opam exec --switch=/home/cody/islaris -- dune build --root . \
+  --build-dir /home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform --cache=enabled -j6 \
+  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all @ZesuSsz/Export/all @ZesuSsz/Compliance/all @ZesuSsz/Proofs/Tests/all @ZesuSsz/Tests/all
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+     = Success (3, 517)
+     : SailOutcome (Z * Z)
+     = Success (true, true, None, None, None)
+     : SailOutcome
+         (bool * bool * option Z * option blob_gas_used_typ * option Z)
+     = Success (3, 543)
+     : SailOutcome (Z * Z)
+     = Success (true, true, Some 1000000000, None, None)
+     : SailOutcome
+         (bool * bool * option Z * option blob_gas_used_typ * option Z)
+     = Success (3, 603)
+     : SailOutcome (Z * Z)
+     = Success (true, true, Some 48743138495, Some 131072, Some 393216)
+     : SailOutcome
+         (bool * bool * option Z * option blob_gas_used_typ * option Z)
+     = Reject RlpDecode
+     : SailOutcome (Z * Z)
+     = Reject RlpDecode
+     : SailOutcome
+         (bool * bool * option Z * option blob_gas_used_typ * option Z)
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call liARun ran for 2.253 secs (2.21u,0.036s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call liARun ran for 3.31 secs (3.278u,0.02s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call metadata pure ran for 0.01 secs (0.01u,0.s) (success)
+Tactic call metadata suffix ran for 0.036 secs (0.036u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.016 secs (0.013u,0.002s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.004 secs (0.004u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.487 secs (0.482u,0.003s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.074 secs (0.048u,0.025s) (success)
+Tactic call zesu_run ran for 0.011 secs (0.011u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.009 secs (0.009u,0.s) (success)
+Tactic call zesu_run ran for 0.024 secs (0.024u,0.s) (success)
+Tactic call zesu_run ran for 0.014 secs (0.014u,0.s) (success)
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 3.802 secs (3.758u,0.031s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.093 secs (0.08u,0.012s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.154 secs (0.15u,0.003s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.023 secs (0.023u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 3.616 secs (3.566u,0.036s) (success)
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.26 secs (0.252u,0.006s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.305 secs (0.303u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.076 secs (0.075u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 3.603 secs (3.544u,0.046s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.062 secs (0.062u,0.s) (success)
+Tactic call zesu_run ran for 0.032 secs (0.032u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Tactic call zesu_run ran for 0.039 secs (0.039u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Tactic call
+wrapped word lookup candidate ran for 0.112 secs (0.111u,0.s)
+(success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Tactic call zesu_run ran for 4.144 secs (4.108u,0.022s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.011 secs (0.011u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.014 secs (0.014u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.135 secs (0.135u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.004 secs (0.004u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.018 secs (0.018u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.083 secs (0.071u,0.012s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.143 secs (0.143u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.109 secs (0.109u,0.s) (success)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Tactic call zesu_run ran for 0.008 secs (0.008u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0.002 secs (0.002u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.003 secs (0.003u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.144 secs (0.144u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Closed under the global context
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Tactic call zesu_run ran for 5.627 secs (5.553u,0.052s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.024 secs (0.024u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.021 secs (0.021u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.02 secs (0.02u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.021 secs (0.021u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Tactic call zesu_run ran for 0.019 secs (0.019u,0.s) (success)
+Tactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)
+Closed under the global context
+Warning:
+/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform/default/generated/evm-sail-coq/rlp
+was previously bound to EvmSail.rlp; it is remapped to EvmSailRlp
+[overriding-logical-loadpath,filesystem,default]

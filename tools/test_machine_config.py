@@ -46,6 +46,22 @@ class MachineConfigTests(unittest.TestCase):
         self.assertIsNone(self.machine["mapZkvmExitPc"])
         validate_machine(self.machine)
 
+    def test_populated_section_permissions(self):
+        sections = self.machine['mapPopulatedSections']
+        self.assertEqual(len(sections), 4)
+        self.assertEqual([(s['sectionReadable'], s['sectionWritable'], s['sectionExecutable'])
+                          for s in sections],
+                         [(False, False, True), (True, False, False),
+                          (True, True, False), (True, True, False)])
+        self.assertEqual(sections[2]['sectionFileEnd'], sections[2]['sectionBase'])
+        self.assertEqual(sections[2]['sectionEnd'], sections[3]['sectionBase'])
+
+    def test_rejects_invalid_populated_extent(self):
+        source = self.source.replace('sectionFileEnd := 0x8010fd78',
+                                     'sectionFileEnd := 0xffffffffffffffff')
+        with self.assertRaisesRegex(ValueError, 'populated section extent'):
+            read_machine(source)
+
     def test_rejects_input_overlapping_writable_ram(self):
         machine = copy.deepcopy(self.machine)
         machine["mapInputBufferAddress"] = machine["mapRamBase"]

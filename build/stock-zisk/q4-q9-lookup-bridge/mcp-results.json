@@ -1,0 +1,209 @@
+{
+  "health": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/islaris/_opam/bin/coqc\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":true,\"pid\":2976797},\"warnings\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "ok": true,
+      "server_version": "0.3.1",
+      "switch": "islaris",
+      "switch_prefix": "/home/cody/islaris/_opam",
+      "switch_is_local": true,
+      "switch_source": "opam_env",
+      "toolchain": {
+        "coqc": {
+          "path": "/home/cody/islaris/_opam/bin/coqc",
+          "version": "8.19.2+lsp 4.14.4"
+        },
+        "pet": {
+          "path": "/home/cody/islaris/_opam/bin/pet",
+          "version": "0.2.4-dev",
+          "pytanque_importable": true
+        }
+      },
+      "pet": {
+        "running": true,
+        "pid": 2976797
+      },
+      "warnings": []
+    },
+    "isError": false
+  },
+  "start": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"state_id\":697,\"goals\":\"\\n|-DecodeItemSelectedComplianceStatement\",\"file\":\"tools/stock_zisk/platform/q4/NativeContractLookupBridge.v\",\"theorem\":\"native_decodeItem_selected\",\"proof_finished\":false,\"focus_depth\":0}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "state_id": 697,
+      "goals": "\n|-DecodeItemSelectedComplianceStatement",
+      "file": "tools/stock_zisk/platform/q4/NativeContractLookupBridge.v",
+      "theorem": "native_decodeItem_selected",
+      "proof_finished": false,
+      "focus_depth": 0
+    },
+    "isError": false
+  },
+  "unfold": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"goals\":\"returnAddress : Z\\nSigma : gFunctors\\nHG : islaG Sigma\\nHT : threadG\\n|-islarisCode DecodeItemArgs DecodeItemOutcome\\n  (islarisContractResources DecodeItemArgs DecodeItemOutcome\\n     (decodeItemSelectedModel returnAddress) Sigma HG HT) -∗\\n∀ args : DecodeItemArgs,\\n  instr_body RlpDecodeItem.decodeItemEntry\\n    (islarisEntry DecodeItemArgs DecodeItemOutcome\\n       (islarisContractResources DecodeItemArgs DecodeItemOutcome\\n          (decodeItemSelectedModel returnAddress) Sigma HG HT) args ∗\\n     instr_pre returnAddress\\n       (∃ outcome : DecodeItemOutcome,\\n          ⌜islarisContractAllows DecodeItemArgs DecodeItemOutcome\\n             (decodeItemSelectedModel returnAddress) args outcome⌝ ∗\\n          islarisExit DecodeItemArgs DecodeItemOutcome\\n            (islarisContractResources DecodeItemArgs DecodeItemOutcome\\n               (decodeItemSelectedModel returnAddress) Sigma HG HT) args\\n            outcome))\",\"proof_finished\":false,\"commands_run\":3,\"check_time_ms\":1,\"state_id\":700,\"from_state_id\":697,\"focus_depth\":0}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "goals": "returnAddress : Z\nSigma : gFunctors\nHG : islaG Sigma\nHT : threadG\n|-islarisCode DecodeItemArgs DecodeItemOutcome\n  (islarisContractResources DecodeItemArgs DecodeItemOutcome\n     (decodeItemSelectedModel returnAddress) Sigma HG HT) -∗\n∀ args : DecodeItemArgs,\n  instr_body RlpDecodeItem.decodeItemEntry\n    (islarisEntry DecodeItemArgs DecodeItemOutcome\n       (islarisContractResources DecodeItemArgs DecodeItemOutcome\n          (decodeItemSelectedModel returnAddress) Sigma HG HT) args ∗\n     instr_pre returnAddress\n       (∃ outcome : DecodeItemOutcome,\n          ⌜islarisContractAllows DecodeItemArgs DecodeItemOutcome\n             (decodeItemSelectedModel returnAddress) args outcome⌝ ∗\n          islarisExit DecodeItemArgs DecodeItemOutcome\n            (islarisContractResources DecodeItemArgs DecodeItemOutcome\n               (decodeItemSelectedModel returnAddress) Sigma HG HT) args\n            outcome))",
+      "proof_finished": false,
+      "commands_run": 3,
+      "check_time_ms": 1,
+      "state_id": 700,
+      "from_state_id": 697,
+      "focus_depth": 0
+    },
+    "isError": false
+  },
+  "step_multi": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"results\":[{\"tactic\":\"zesu_block.\",\"feedback\":\"Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)\\nTactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)\\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)\",\"success\":true,\"goals\":\"returnAddress : Z\\nSigma : gFunctors\\nHG : islaG Sigma\\nHT : threadG\\nargs : DecodeItemArgs\\n|-_ : decodeItemSelectedCode\\n--------------------------------------∗\\nfind_in_context (FindInstrKind 2148362592 false)\\n  (λ ik : instr_kind,\\n     match ik with\\n     | IKInstr (Some t) =>\\n         decodeItemEntryResources\\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n         instr_pre returnAddress\\n           (∃ outcome : DecodeItemOutcome,\\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n              decodeItemExitResources args outcome) -∗\\n         \\\"PC\\\" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362592) -∗ WPasm t\\n     | IKInstr None =>\\n         decodeItemEntryResources\\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n         instr_pre returnAddress\\n           (∃ outcome : DecodeItemOutcome,\\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n              decodeItemExitResources args outcome) -∗\\n         ∃ Pκs : spec, spec_trace Pκs ∗\\n           ⌜scons (SInstrTrap (Z_to_bv 64 2148362592)) snil ⊆ Pκs⌝ ∗ True\\n     | IKPre l' Q => ⌜implb l' false⌝ ∗\\n         (decodeItemEntryResources\\n            (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n          instr_pre returnAddress\\n            (∃ outcome : DecodeItemOutcome,\\n               ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n                ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n               decodeItemExitResources args outcome) -∗ \\n          Q)\\n     end)\",\"proof_finished\":false,\"focus_depth\":0}],\"from_state_id\":700}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "results": [
+        {
+          "tactic": "zesu_block.",
+          "feedback": "Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)\nTactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)",
+          "success": true,
+          "goals": "returnAddress : Z\nSigma : gFunctors\nHG : islaG Sigma\nHT : threadG\nargs : DecodeItemArgs\n|-_ : decodeItemSelectedCode\n--------------------------------------∗\nfind_in_context (FindInstrKind 2148362592 false)\n  (λ ik : instr_kind,\n     match ik with\n     | IKInstr (Some t) =>\n         decodeItemEntryResources\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n         instr_pre returnAddress\n           (∃ outcome : DecodeItemOutcome,\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n              decodeItemExitResources args outcome) -∗\n         \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362592) -∗ WPasm t\n     | IKInstr None =>\n         decodeItemEntryResources\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n         instr_pre returnAddress\n           (∃ outcome : DecodeItemOutcome,\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n              decodeItemExitResources args outcome) -∗\n         ∃ Pκs : spec, spec_trace Pκs ∗\n           ⌜scons (SInstrTrap (Z_to_bv 64 2148362592)) snil ⊆ Pκs⌝ ∗ True\n     | IKPre l' Q => ⌜implb l' false⌝ ∗\n         (decodeItemEntryResources\n            (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n          instr_pre returnAddress\n            (∃ outcome : DecodeItemOutcome,\n               ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n                ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n               decodeItemExitResources args outcome) -∗ \n          Q)\n     end)",
+          "proof_finished": false,
+          "focus_depth": 0
+        }
+      ],
+      "from_state_id": 700
+    },
+    "isError": false
+  },
+  "check": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"goals\":\"returnAddress : Z\\nSigma : gFunctors\\nHG : islaG Sigma\\nHT : threadG\\nargs : DecodeItemArgs\\n|-_ : decodeItemSelectedCode\\n--------------------------------------∗\\nfind_in_context (FindInstrKind 2148362592 false)\\n  (λ ik : instr_kind,\\n     match ik with\\n     | IKInstr (Some t) =>\\n         decodeItemEntryResources\\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n         instr_pre returnAddress\\n           (∃ outcome : DecodeItemOutcome,\\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n              decodeItemExitResources args outcome) -∗\\n         \\\"PC\\\" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362592) -∗ WPasm t\\n     | IKInstr None =>\\n         decodeItemEntryResources\\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n         instr_pre returnAddress\\n           (∃ outcome : DecodeItemOutcome,\\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n              decodeItemExitResources args outcome) -∗\\n         ∃ Pκs : spec, spec_trace Pκs ∗\\n           ⌜scons (SInstrTrap (Z_to_bv 64 2148362592)) snil ⊆ Pκs⌝ ∗ True\\n     | IKPre l' Q => ⌜implb l' false⌝ ∗\\n         (decodeItemEntryResources\\n            (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n          instr_pre returnAddress\\n            (∃ outcome : DecodeItemOutcome,\\n               ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n                ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n               decodeItemExitResources args outcome) -∗ \\n          Q)\\n     end)\",\"proof_finished\":false,\"commands_run\":1,\"check_time_ms\":0,\"state_id\":701,\"from_state_id\":700,\"feedback\":[[\"zesu_block.\",\"Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)\\nTactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)\\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)\"]],\"focus_depth\":0}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "goals": "returnAddress : Z\nSigma : gFunctors\nHG : islaG Sigma\nHT : threadG\nargs : DecodeItemArgs\n|-_ : decodeItemSelectedCode\n--------------------------------------∗\nfind_in_context (FindInstrKind 2148362592 false)\n  (λ ik : instr_kind,\n     match ik with\n     | IKInstr (Some t) =>\n         decodeItemEntryResources\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n         instr_pre returnAddress\n           (∃ outcome : DecodeItemOutcome,\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n              decodeItemExitResources args outcome) -∗\n         \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362592) -∗ WPasm t\n     | IKInstr None =>\n         decodeItemEntryResources\n           (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n         instr_pre returnAddress\n           (∃ outcome : DecodeItemOutcome,\n              ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n               ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n              decodeItemExitResources args outcome) -∗\n         ∃ Pκs : spec, spec_trace Pκs ∗\n           ⌜scons (SInstrTrap (Z_to_bv 64 2148362592)) snil ⊆ Pκs⌝ ∗ True\n     | IKPre l' Q => ⌜implb l' false⌝ ∗\n         (decodeItemEntryResources\n            (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n          instr_pre returnAddress\n            (∃ outcome : DecodeItemOutcome,\n               ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n                ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n               decodeItemExitResources args outcome) -∗ \n          Q)\n     end)",
+      "proof_finished": false,
+      "commands_run": 1,
+      "check_time_ms": 0,
+      "state_id": 701,
+      "from_state_id": 700,
+      "feedback": [
+        [
+          "zesu_block.",
+          "Tactic call zesu_run ran for 0.01 secs (0.01u,0.s) (success)\nTactic call zesu_run ran for 0.007 secs (0.007u,0.s) (success)\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)"
+        ]
+      ],
+      "focus_depth": 0
+    },
+    "isError": false
+  },
+  "compile_file": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"output\":\"Tactic call zesu_run ran for 0.005 secs (0.005u,0.s) (success)\\nTactic call zesu_run ran for 0.005 secs (0.005u,0.s) (success)\\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)\\n1 goal\\n  \\n  returnAddress : Z\\n  Sigma : gFunctors\\n  HG : islaG Sigma\\n  HT : threadG\\n  args : DecodeItemArgs\\n  ============================\\n  _ : decodeItemSelectedCode\\n  --------------------------------------∗\\n  find_in_context (FindInstrKind 2148362592 false)\\n    (λ ik : instr_kind,\\n       match ik with\\n       | IKInstr (Some t) =>\\n           decodeItemEntryResources\\n             (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n           instr_pre returnAddress\\n             (∃ outcome : DecodeItemOutcome,\\n                ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n                 ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n                decodeItemExitResources args outcome) -∗\\n           \\\"PC\\\" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362592) -∗ WPasm t\\n       | IKInstr None =>\\n           decodeItemEntryResources\\n             (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n           instr_pre returnAddress\\n             (∃ outcome : DecodeItemOutcome,\\n                ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n                 ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n                decodeItemExitResources args outcome) -∗\\n           ∃ Pκs : spec, spec_trace Pκs ∗\\n             ⌜scons (SInstrTrap (Z_to_bv 64 2148362592)) snil ⊆ Pκs⌝ ∗ True\\n       | IKPre l' Q => ⌜implb l' false⌝ ∗\\n           (decodeItemEntryResources\\n              (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\\n            instr_pre returnAddress\\n              (∃ outcome : DecodeItemOutcome,\\n                 ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n                  ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\\n                 decodeItemExitResources args outcome) -∗ \\n            Q)\\n       end)\",\"timing\":{\"total_sentences\":13,\"top_slowest\":[{\"line\":1,\"characters\":[0,38],\"name\":\"Require~Import~ZesuSsz.Automat...\",\"duration_seconds\":0.701},{\"line\":13,\"characters\":[496,507],\"name\":\"zesu_block.\",\"duration_seconds\":0.199},{\"line\":2,\"characters\":[39,75],\"name\":\"Require~Import~isla.riscv64.ri...\",\"duration_seconds\":0.04},{\"line\":14,\"characters\":[510,515],\"name\":\"Show.\",\"duration_seconds\":0.001},{\"line\":3,\"characters\":[76,116],\"name\":\"Require~Import~ZesuSsz.Contrac...\",\"duration_seconds\":0.0}],\"last_completed\":{\"line\":15,\"characters\":[516,522],\"name\":\"Abort.\",\"duration_seconds\":0.0}},\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 699 interactive session(s) in this workspace may be holding stale dependency state — call rocq_start again to refresh.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "output": "Tactic call zesu_run ran for 0.005 secs (0.005u,0.s) (success)\nTactic call zesu_run ran for 0.005 secs (0.005u,0.s) (success)\nTactic call zesu_run ran for 0. secs (0.u,0.s) (failure after 1 backtracking)\n1 goal\n  \n  returnAddress : Z\n  Sigma : gFunctors\n  HG : islaG Sigma\n  HT : threadG\n  args : DecodeItemArgs\n  ============================\n  _ : decodeItemSelectedCode\n  --------------------------------------∗\n  find_in_context (FindInstrKind 2148362592 false)\n    (λ ik : instr_kind,\n       match ik with\n       | IKInstr (Some t) =>\n           decodeItemEntryResources\n             (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n           instr_pre returnAddress\n             (∃ outcome : DecodeItemOutcome,\n                ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n                 ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n                decodeItemExitResources args outcome) -∗\n           \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362592) -∗ WPasm t\n       | IKInstr None =>\n           decodeItemEntryResources\n             (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n           instr_pre returnAddress\n             (∃ outcome : DecodeItemOutcome,\n                ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n                 ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n                decodeItemExitResources args outcome) -∗\n           ∃ Pκs : spec, spec_trace Pκs ∗\n             ⌜scons (SInstrTrap (Z_to_bv 64 2148362592)) snil ⊆ Pκs⌝ ∗ True\n       | IKPre l' Q => ⌜implb l' false⌝ ∗\n           (decodeItemEntryResources\n              (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗\n            instr_pre returnAddress\n              (∃ outcome : DecodeItemOutcome,\n                 ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args\n                  ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗\n                 decodeItemExitResources args outcome) -∗ \n            Q)\n       end)",
+      "timing": {
+        "total_sentences": 13,
+        "top_slowest": [
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.701
+          },
+          {
+            "line": 13,
+            "characters": [
+              496,
+              507
+            ],
+            "name": "zesu_block.",
+            "duration_seconds": 0.199
+          },
+          {
+            "line": 2,
+            "characters": [
+              39,
+              75
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.04
+          },
+          {
+            "line": 14,
+            "characters": [
+              510,
+              515
+            ],
+            "name": "Show.",
+            "duration_seconds": 0.001
+          },
+          {
+            "line": 3,
+            "characters": [
+              76,
+              116
+            ],
+            "name": "Require~Import~ZesuSsz.Contrac...",
+            "duration_seconds": 0
+          }
+        ],
+        "last_completed": {
+          "line": 15,
+          "characters": [
+            516,
+            522
+          ],
+          "name": "Abort.",
+          "duration_seconds": 0
+        }
+      },
+      "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 699 interactive session(s) in this workspace may be holding stale dependency state — call rocq_start again to refresh."
+    },
+    "isError": false
+  },
+  "verify": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":false,\"reason\":\"compile_error\",\"error\":\"<proof>, line 2, characters 0-38:\\n     2 | Require Import ZesuSsz.Automation.All.\\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nWarning: Use of “Require” inside a module is fragile. It is not recommended\\nto use this functionality in finished proof scripts.\\n[require-in-module,fragile,default]\\n\\n<proof>, line 29, characters 83-111:\\n    29 | exact M.native_decodeItem_selected || apply M.native_decodeItem_selected || eapply M.native_decodeItem_selected.\\n                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nError: The reference M.native_decodeItem_selected was not found in the current environment.\",\"hint\":\"The theorem name in the proof does not match the expected name. Ensure your proof defines a theorem with the exact name provided.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": false,
+      "reason": "compile_error",
+      "error": "<proof>, line 2, characters 0-38:\n     2 | Require Import ZesuSsz.Automation.All.\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nWarning: Use of “Require” inside a module is fragile. It is not recommended\nto use this functionality in finished proof scripts.\n[require-in-module,fragile,default]\n\n<proof>, line 29, characters 83-111:\n    29 | exact M.native_decodeItem_selected || apply M.native_decodeItem_selected || eapply M.native_decodeItem_selected.\n                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError: The reference M.native_decodeItem_selected was not found in the current environment.",
+      "hint": "The theorem name in the proof does not match the expected name. Ensure your proof defines a theorem with the exact name provided."
+    },
+    "isError": false
+  }
+}

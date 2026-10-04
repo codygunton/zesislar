@@ -39,15 +39,23 @@ def read_machine(source: str, instance: str = "defaultMap") -> dict:
     )
     if schema is None or record is None:
         raise ValueError("The source must contain the MachineMap schema and instance.")
-    types = dict(re.findall(r"(map\w+)\s*:\s*(option\s+Z|Z|bool|string)\b", schema.group(1)))
-    fields = re.findall(r"(map\w+)\s*:=\s*([^;]+?)(?:;|$)", record.group(1))
+    types = dict(re.findall(r"(map\w+)\s*:\s*(list\s+MachineSection|option\s+Z|Z|bool|string)\b", schema.group(1)))
+    body = record.group(1)
+    sections = re.search(r"mapPopulatedSections\s*:=\s*(\[.*?\])\s*;", body, re.S)
+    if sections:
+        body = body[:sections.start(1)] + 'SECTIONS' + body[sections.end(1):]
+    fields = re.findall(r"(map\w+)\s*:=\s*([^;]+?)(?:;|$)", body)
     values = dict(fields)
     if set(types) != set(values) or len(fields) != len(values):
         raise ValueError("The MachineMap instance must define every field exactly once.")
     result = {}
     for field, kind in types.items():
         value = values[field].strip()
-        if kind == "bool":
+        if kind.startswith('list'):
+            if sections is None:
+                raise ValueError('The map must contain populated section literals.')
+            result[field] = read_sections(sections.group(1))
+        elif kind == "bool":
             if value not in {"true", "false"}:
                 raise ValueError(f"The field {field} must contain a Boolean literal.")
             result[field] = value == "true"
@@ -63,6 +71,33 @@ def read_machine(source: str, instance: str = "defaultMap") -> dict:
         else:
             result[field] = int(value, 0)
     validate_machine(result)
+    return result
+
+
+def read_sections(source: str) -> list:
+    records = re.findall(r'\{\|(.*?)\|\}', source, re.S)
+    remainder = re.sub(r'\{\|.*?\|\}', '', source, flags=re.S)
+    if remainder.strip('[]; \n\t'):
+        raise ValueError('Invalid populated section list.')
+    result = []
+    addresses = {'sectionBase', 'sectionEnd', 'sectionFileEnd'}
+    permissions = {'sectionReadable', 'sectionWritable', 'sectionExecutable'}
+    for record in records:
+        fields = re.findall(r'(section\w+)\s*:=\s*([^;]+)', record)
+        if len(fields) != 6 or {key for key, _ in fields} != addresses | permissions:
+            raise ValueError('Each populated section must define every field once.')
+        section = {}
+        for key, raw in fields:
+            value = raw.strip()
+            if key in permissions:
+                if value not in {'true', 'false'}:
+                    raise ValueError('Invalid populated section permission.')
+                section[key] = value == 'true'
+            else:
+                section[key] = int(value, 0)
+        if not 0 <= section['sectionBase'] <= section['sectionFileEnd'] <= section['sectionEnd'] <= 2**64:
+            raise ValueError('Invalid populated section extent.')
+        result.append(section)
     return result
 
 
