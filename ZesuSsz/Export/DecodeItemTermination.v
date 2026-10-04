@@ -120,7 +120,7 @@ Definition decodeItemEntryTraceBound (start : seq_local_state)
 
 Definition decodeItemPhysicalEntry (args : DecodeItemArgs)
     (start : seq_local_state) (before : seq_global_state) : Prop :=
-  decodeItemC1ADomain args /\
+  decodeItemC1BDomain args /\
   seq_nb_state start = false /\
   decodeItemEntryTraceBound start before /\
   physicalRegister64 (seq_regs start) "PC" (Z_to_bv 64 decodeItemEntry) /\
@@ -156,11 +156,11 @@ Definition decodeItemPhysicalReturn (args : DecodeItemArgs)
   physicalMemoryBytes after (decodeItemInputPointer args)
     (decodeItemInputBytes args) /\
   physicalMemoryBytes after (decodeItemOutputPointer args) result /\
-  decodeItemAllowsC1A args result.
+  decodeItemAllowsC1B args result.
 
 (* This internal candidate states the intended bound. The selected-ELF
    trace binding, machine conditions, and block summaries remain open. *)
-Definition decodeItemC1ATerminationCandidate
+Definition decodeItemC1BTerminationCandidate
     (instructionLimit stepLimit : DecodeItemArgs -> nat) : Prop :=
   forall args start before,
     decodeItemPhysicalEntry args start before ->

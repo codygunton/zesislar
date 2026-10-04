@@ -5,12 +5,14 @@ Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
 Require Import ZesuSsz.Compliance.RlpInputBounds.
 Require Import ZesuSsz.Compliance.SailRun.
+Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
+Import ListNotations.
 
 Declare ML Module "zesu-signature-gates.plugin".
 
@@ -113,13 +115,20 @@ Print Assumptions intendedValidRlpClassHeaderFits.
 Ltac2 Eval exact_axioms 'intendedValidRlpClassHeaderFits
   (approved_library_axioms ()).
 
-Check (@decodeItemAllowsC1A : DecodeItemArgs -> DecodeItemOutcome -> Prop).
 Check (@decodeItemAllowsC1B : DecodeItemArgs -> DecodeItemOutcome -> Prop).
-Check (eq_refl : decodeItemAllowsC1A = decodeItemAllows C1AResult).
 Check (eq_refl : decodeItemAllowsC1B = decodeItemAllows C1BResult).
-Check (@decodeItemC1ASailAgreement : Prop).
-Check (@decodeItemC1BSailAgreement : Prop).
-Check (@decodeItemC1BWrapDivergence : Prop).
+Check (eq_refl : knownBugs = [RlpLongLengthWrap]).
+
+Definition ReviewedDecodeMeaningModuloKnownBugs
+    (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
+  decodeItemAllows C1BResult args after /\
+  (decodeItemSailResult args after \/
+   exists bug, List.In bug knownBugs /\ decodeItemBugApplies bug args after).
+
+Check (@DecodeMeaningModuloKnownBugs :
+  DecodeItemArgs -> DecodeItemOutcome -> Prop).
+Check (eq_refl : DecodeMeaningModuloKnownBugs =
+                 ReviewedDecodeMeaningModuloKnownBugs).
 Check (@decodeItemWrapWitness :
   candidateDecodeItem decodeItemWrapWitnessInput =
     candidateSuccess false 9 (word64Modulus - 9) /\
