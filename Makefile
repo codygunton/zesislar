@@ -182,7 +182,9 @@ check-fast: check-evidence-tools check-signatures
 .PHONY: check-signatures
 check-signatures:
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
-	  --cache=enabled -j$(FAST_JOBS) @install ZesuSsz/Evidence/SignatureGateFixtures.vo
+	  --cache=enabled -j$(FAST_JOBS) @install \
+	  ZesuSsz/Evidence/SignatureGateFixtures.vo \
+	  ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.vo
 
 .PHONY: check-iris
 check-iris: check-evidence-tools

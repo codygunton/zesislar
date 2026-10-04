@@ -18,7 +18,10 @@ class ParentHeaderCandidateMapTest(unittest.TestCase):
 
         schedule = source.split("Definition parentHeaderFieldSchedule", 1)[1]
         schedule = schedule.split("].", 1)[0]
-        rows = re.findall(r"\(0x([0-9a-f]+), (SkipField|Uint64Field)\)", schedule)
+        rows = re.findall(
+            r"\(0x([0-9a-f]+), (RequiredSkip|RequiredUint64|OptionalSkip|OptionalUint64)\)",
+            schedule,
+        )
         self.assertEqual(len(rows), 19)
         sites = [0x800D5CF4] + [int(pc, 16) for pc, _ in rows]
 
@@ -27,6 +30,12 @@ class ParentHeaderCandidateMapTest(unittest.TestCase):
                         if row["name"] == "rlp_decode.decodeParentHeader")
         calls = [row for row in function["calls"] if row["kind"] == "call"]
         self.assertEqual(sites, [row["pc"] for row in calls])
+
+        self.assertEqual([kind for _, kind in rows],
+                         ["RequiredSkip"] * 9 + ["RequiredUint64"] * 3 +
+                         ["OptionalSkip"] * 3 +
+                         ["OptionalUint64", "OptionalSkip", "OptionalUint64",
+                          "OptionalUint64"])
 
         next_uint64 = {0x800D615C, 0x800D621C, 0x800D6250}
         for call in calls:
