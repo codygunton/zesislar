@@ -19,6 +19,7 @@ Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
+Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
@@ -89,6 +90,13 @@ Global Instance : LithiumUnfold (@decodeItemFoldCheckedResources) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldEntryObligation) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldPreservationObligation) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldExitObligation) := I.
+Global Typeclasses Opaque decodeItemEntryAt800d6a24
+  decodeItemEntryAt800d6ac4 decodeItemBodyAt800d6a24
+  decodeItemBodyAt800d6ac4.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a24) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ac4) := I.
+Global Instance : LithiumUnfold (@decodeItemBodyAt800d6a24) := I.
+Global Instance : LithiumUnfold (@decodeItemBodyAt800d6ac4) := I.
 Global Typeclasses Opaque decodeItemBranchContinuation decodeItemBranchBase
   decodeItemEntryAt800d6974 decodeItemEntryAt800d697c
   decodeItemEntryAt800d69a4 decodeItemEntryAt800d69d8
