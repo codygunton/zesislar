@@ -1,7 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ByteListResources.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessByteLists.
+Require Import ZesuSsz.Automation.ByteLists.
 
 Lemma byte_list_processed_append `{!islaG Sigma} (address : Z)
     (done : list ByteListItem) (item : ByteListItem) :

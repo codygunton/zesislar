@@ -1,15 +1,10 @@
-import json
-import os
 import unittest
-from pathlib import Path
 
 from generate_islaris_dump import (
     control_flow_constraints,
     cfg_ranges,
     configured_spec_annotations,
     effective_address_constraints,
-    INSTRUCTION,
-    load_array_view,
     load_store_spec_annotations,
     jump_spec_annotations,
     split_control_flow_range,
@@ -67,77 +62,15 @@ class EffectiveAddressConstraintsTest(unittest.TestCase):
         )
         self.assertEqual(load_store_spec_annotations("lw a0,0(s0)"), [])
 
-    def test_generates_byte_array_load_specs(self):
+    def test_array_loads_keep_raw_traces(self):
         view = {"base": "a0", "offset": 0, "kind": "byte"}
-        common = [
-            "//@import: InstrSpecs.Specs",
-            None,
-            "//@spec_tactic: all: (try solve_zesu_ld_array_at; "
-            "try bv_solve; try lia).",
-        ]
-        expected = list(common)
-        expected[1] = (
-            '//@spec: zesu_ld_byte_array_at_spec pc "x15" "x10" '
-            '(120) (0) (120)'
-        )
+        for instruction in ("ld a5,120(a0)", "ld a0,256(a0)", "lbu t2,268(a0)"):
+            self.assertEqual(
+                load_store_spec_annotations(instruction, array_view=view), [])
         self.assertEqual(
-            load_store_spec_annotations("ld a5,120(a0)", array_view=view),
-            expected,
-        )
-        expected = list(common)
-        expected[1] = (
-            '//@spec: zesu_ld_same_byte_array_at_spec pc "x10" '
-            '(256) (0) (256)'
-        )
-        self.assertEqual(
-            load_store_spec_annotations("ld a0,256(a0)", array_view=view),
-            expected,
-        )
-        expected = list(common)
-        expected[1] = (
-            '//@spec: zesu_lbu_byte_array_at_spec pc "x7" "x10" '
-            '(268) (0) (268)'
-        )
-        self.assertEqual(
-            load_store_spec_annotations("lbu t2,268(a0)", array_view=view),
-            expected,
-        )
-
-    def test_scopes_all_transaction_byte_array_loads(self):
-        root = Path(os.environ.get("ZESU_SSZ_ROOT", Path(__file__).parents[2]))
-        profile = json.loads(
-            (root / "experiments/islaris-write-success/profile.json").read_text()
-        )
-        generated = root / "experiments/islaris-write-success/generated"
-        if not generated.is_dir():
-            self.skipTest("generated writeSuccess dumps are unavailable")
-        selected = {}
-        for dump in generated.glob("block_*.dump"):
-            for line in dump.read_text().splitlines():
-                match = INSTRUCTION.match(line)
-                if match is None:
-                    continue
-                pc = int(match.group(1), 16)
-                view = load_array_view(pc, profile)
-                annotations = load_store_spec_annotations(
-                    match.group(2), profile["memoryBaseRegisters"], view
-                )
-                byte_specs = [line for line in annotations
-                              if "byte_array_at_spec" in line]
-                if byte_specs:
-                    selected[pc] = byte_specs[0].split()[1]
-        self.assertEqual(len(selected), 63)
-        self.assertEqual(
-            list(selected.values()).count("zesu_ld_byte_array_at_spec"), 30
-        )
-        self.assertEqual(
-            list(selected.values()).count("zesu_ld_same_byte_array_at_spec"), 1
-        )
-        self.assertEqual(
-            list(selected.values()).count("zesu_lbu_byte_array_at_spec"), 32
-        )
-        self.assertEqual(min(selected), 0x14F1C)
-        self.assertEqual(max(selected), 0x15498)
+            load_store_spec_annotations(
+                "ld a5,8(a0)", array_view={"base": "a0", "offset": 0, "kind": "word"}),
+            [])
 
     def test_generates_same_register_jalr_spec(self):
         self.assertEqual(

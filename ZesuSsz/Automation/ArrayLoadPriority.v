@@ -6,6 +6,7 @@ Require Import ZesuSsz.Automation.SealedCoverage.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import InstrSpecs.Lookup InstrSpecs.Specs.
+Require Import ZesuSsz.Automation.ByteArrayLoadSpec.
 Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
 

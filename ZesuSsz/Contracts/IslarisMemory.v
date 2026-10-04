@@ -347,47 +347,6 @@ Section array_regions.
     iExact "Hvalues".
   Qed.
 
-  Lemma mem_mapsto_array_recombine_u64_read (a : Z)
-      (values : list (bv 8)) (start : nat)
-      (suffixAddress wordAddress : Z) :
-    a ↦ₘ∗ take start values -∗
-    suffixAddress ↦ₘ∗ drop (start + 8) values -∗
-    wordAddress ↦ₘ
-      Z_to_bv 64
-        (little_endian_to_bv 8 (take 8 (drop start values))) -∗
-    ⌜suffixAddress = (a + Z.of_nat (start + 8))%Z⌝ -∗
-    ⌜wordAddress =
-      (a + Z.of_N (8 `div` 8) * Z.of_nat start)%Z⌝ -∗
-    ⌜(start + 8 <= length values)%nat⌝ -∗
-    a ↦ₘ∗ values.
-  Proof.
-    iIntros "Hprefix Hsuffix Hword"
-      (HsuffixAddress HwordAddress Hbounds).
-    subst suffixAddress wordAddress.
-    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hword") as "Hmiddle".
-    have HmiddleLength : length (take 8 (drop start values)) = 8%nat.
-    { rewrite length_take length_drop. lia. }
-    iEval (rewrite (u64_bytes_roundtrip _ HmiddleLength)) in "Hmiddle".
-    iPoseProof (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
-      (take start values) (take 8 (drop start values)) start with
-      "Hprefix Hmiddle") as "Hleft".
-    { rewrite length_take. lia. }
-    iPoseProof (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
-      (take start values ++ take 8 (drop start values))
-      (drop (start + 8) values) (start + 8) with
-      "Hleft") as "Hcombine".
-    { rewrite length_app length_take HmiddleLength. lia. }
-    have HsuffixAddress :
-        (a + Z.of_N (8 `div` 8) * Z.of_nat (start + 8))%Z =
-        (a + Z.of_nat (start + 8))%Z.
-    { change (a + 1 * Z.of_nat (start + 8) =
-        a + Z.of_nat (start + 8))%Z. lia. }
-    iEval (rewrite HsuffixAddress) in "Hcombine".
-    iPoseProof ("Hcombine" with "Hsuffix") as "Hvalues".
-    iEval (rewrite take_take_drop take_drop) in "Hvalues".
-    iExact "Hvalues".
-  Qed.
-
   Lemma mem_mapsto_array_recombine_u8_read (a : Z)
       (values : list (bv 8)) (start : nat) (value : bv 8)
       (suffixAddress byteAddress : Z) :

@@ -11,6 +11,12 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent / "block"))
 import chain_root
 
+# P0-B removed the writeSuccess proof tree. These tests read its modules,
+# so they run only in a checkout that still has it.
+NEEDS_WRITE_SUCCESS = unittest.skipUnless(
+    (Path(__file__).resolve().parents[1] / "ZesuSsz/Generated/WriteSuccess").is_dir(),
+    "reads ZesuSsz/Generated/WriteSuccess, removed in P0-B")
+
 
 class ChainRootTests(unittest.TestCase):
     def test_cli_rejects_a_legacy_boundary_as_the_chain_root(self):
@@ -105,6 +111,8 @@ class ChainRootTests(unittest.TestCase):
                     patch.object(chain_root, "graph", return_value=blocks):
                 with self.assertRaisesRegex(ValueError, 'root declaration'):
                     chain_root.run(args)
+
+    @NEEDS_WRITE_SUCCESS
 
     def test_level1_root_rejects_changed_resources_with_same_provenance(self):
         with tempfile.TemporaryDirectory() as directory:

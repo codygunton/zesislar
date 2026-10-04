@@ -75,60 +75,6 @@ Definition zesu_ld_array_spec `{!islaG Σ} `{!threadG}
 
 Global Instance : LithiumUnfold (@zesu_ld_array_spec) := I.
 
-Definition zesu_ld_array_at_spec `{!islaG Σ} `{!threadG}
-    (pc : Z) (Rdst Rbase : string) (offset arrayOffset : Z)
-    (index : nat) : iProp Σ :=
-  ∃ (base : bv 64) (values : list (bv 64)),
-  reg_col zesu_instr_sys_regs ∗
-  Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
-  (bv_unsigned base + arrayOffset) ↦ₘ∗ values ∗
-  ⌜(bv_unsigned base + offset =
-      bv_unsigned base + arrayOffset + 8 * Z.of_nat index)%Z⌝ ∗
-  ⌜(index < length values)%nat⌝ ∗
-  ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
-  instr_pre (pc + 4) (
-    reg_col zesu_instr_sys_regs ∗
-    Rdst ↦ᵣ RVal_Bits (default (BV 64 0) (values !! index)) ∗
-    Rbase ↦ᵣ RVal_Bits base ∗
-    (bv_unsigned base + arrayOffset) ↦ₘ∗ values ∗ True).
-
-Global Instance : LithiumUnfold (@zesu_ld_array_at_spec) := I.
-
-Definition zesu_ld_byte_array_at_spec `{!islaG Σ} `{!threadG}
-    (pc : Z) (Rdst Rbase : string) (offset arrayOffset : Z)
-    (index : nat) : iProp Σ :=
-  ∃ (base word : bv 64) (values : list (bv 8)),
-  reg_col zesu_instr_sys_regs ∗
-  Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
-  (match index with
-   | O =>
-       (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
-       (bv_unsigned base + offset) ↦ₘ word
-   | S _ =>
-       (bv_unsigned base + offset) ↦ₘ word ∗
-       (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values
-   end) ∗
-  (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
-    drop (index + 8) values ∗
-  ⌜(offset = arrayOffset + Z.of_nat index)%Z⌝ ∗
-  ⌜(index + 8 <= length values)%nat⌝ ∗
-  ⌜word = Z_to_bv 64
-    (little_endian_to_bv 8 (take 8 (drop index values)))⌝ ∗
-  ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
-  instr_pre (pc + 4) (
-    reg_col zesu_instr_sys_regs ∗
-    Rdst ↦ᵣ RVal_Bits
-      word ∗
-    Rbase ↦ᵣ RVal_Bits base ∗
-    (bv_unsigned base + offset) ↦ₘ word ∗
-    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
-    (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
-      drop (index + 8) values ∗ True).
-
-Global Instance : LithiumUnfold (@zesu_ld_byte_array_at_spec) := I.
-
 Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
     (pc : Z) (R : string) (offset arrayOffset : Z)
     (index : nat) : iProp Σ :=
@@ -155,59 +101,6 @@ Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
       drop (index + 8) values ∗ True).
 
 Global Instance : LithiumUnfold (@zesu_ld_same_byte_array_at_spec) := I.
-
-Definition zesu_lbu_byte_array_at_spec `{!islaG Σ} `{!threadG}
-    (pc : Z) (Rdst Rbase : string) (offset arrayOffset : Z)
-    (index : nat) : iProp Σ :=
-  ∃ (base : bv 64) (byte : bv 8) (values : list (bv 8)),
-  reg_col zesu_instr_sys_regs ∗
-  Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
-  (bv_unsigned base + offset) ↦ₘ byte ∗
-  (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
-  (bv_unsigned base + arrayOffset + Z.of_nat (index + 1)) ↦ₘ∗
-    drop (index + 1) values ∗
-  ⌜(offset = arrayOffset + Z.of_nat index)%Z⌝ ∗
-  ⌜(index < length values)%nat⌝ ∗
-  ⌜values !! index = Some byte⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
-  instr_pre (pc + 4) (
-    reg_col zesu_instr_sys_regs ∗
-    Rdst ↦ᵣ RVal_Bits
-      (bv_zero_extend 64 byte) ∗
-    Rbase ↦ᵣ RVal_Bits base ∗
-    (bv_unsigned base + offset) ↦ₘ byte ∗
-    (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
-    (bv_unsigned base + arrayOffset + Z.of_nat (index + 1)) ↦ₘ∗
-      drop (index + 1) values ∗ True).
-
-Global Instance : LithiumUnfold (@zesu_lbu_byte_array_at_spec) := I.
-
-Ltac solve_zesu_ld_array_at :=
-  multimatch goal with
-  | Hactual : ?values !! ?actual = Some ?loaded
-    |- bv_sign_extend 64 ?loaded =
-      default (BV 64 0) (?values !! ?index) =>
-    lazymatch actual with
-    | Z.to_nat ((bv_unsigned (?base + ?offsetBv) - ?arrayBase) `div` 8) =>
-      match goal with
-      | Haddress : (bv_unsigned base + ?offset =
-          arrayBase + 8 * ?indexZ)%Z |- _ =>
-        let Hbaseadd := fresh "Hbaseadd" in
-        assert (Hbaseadd :
-          bv_unsigned (base + offsetBv) = bv_unsigned base + offset) by
-          bv_solve;
-        let Hindex := fresh "Hindex" in
-        assert (Hindex : actual = index) by
-          (rewrite Hbaseadd Haddress;
-           replace (arrayBase + 8 * indexZ - arrayBase)%Z with
-             (indexZ * 8)%Z by ring;
-           try rewrite Z.div_mul; lia);
-        rewrite Hindex in Hactual;
-        rewrite Hactual;
-        bv_solve
-      end
-    end
-  end.
 
 Ltac solve_zesu_ld_array :=
   multimatch goal with

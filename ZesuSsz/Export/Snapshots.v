@@ -3,7 +3,7 @@ Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List.
 Require Import isla.opsem.
 Require Import isla.spec.
-Require Import ZesuSsz.Proofs.WriteSuccess.WriteSuccessEvents.
+Require Import ZesuSsz.Contracts.OutputEvents.
 
 Import ListNotations.
 

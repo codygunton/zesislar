@@ -17,6 +17,12 @@ import gen_coverage
 import infer_boundary
 import gen_segment
 
+# P0-B removed the writeSuccess proof tree. These tests read its modules,
+# so they run only in a checkout that still has it.
+NEEDS_WRITE_SUCCESS = unittest.skipUnless(
+    (Path(__file__).resolve().parents[1] / "ZesuSsz/Proofs/WriteSuccess").is_dir(),
+    "reads ZesuSsz/Proofs/WriteSuccess, removed in P0-B")
+
 spec = importlib.util.spec_from_file_location("block_gen", TOOLS / "block/gen_block.py")
 gen_block = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gen_block)
@@ -335,6 +341,7 @@ class StatePartition(unittest.TestCase):
 
 
 class StopInference(unittest.TestCase):
+    @NEEDS_WRITE_SUCCESS
     def test_stop_record_names_stop_when_it_differs_from_original_exit(self):
         module = Path('ZesuSsz/Proofs/WriteSuccess/WriteSuccessExactTailFieldsThirdSegment.v')
         lemma = 'write_success_exact_tail_fields_third_segment'

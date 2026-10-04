@@ -47,16 +47,10 @@ Require Export ZesuSsz.Automation.V2Steps.
    address. *)
 Require Export ZesuSsz.Automation.SealedCoverage.
 
-(* C4: let the search find a specification in the spec table.
-
-   Careful: the table answers a load instruction with `zesu_ld_spec`,
-   whose precondition asks for a bare `↦ₘ` word. A block that loads out
-   of an array cannot meet that, and without the table the same
-   instruction runs its Isla trace and Islaris's own `MKArray` branch
-   handles it. A segment that reads from a stack array wants
-   `StackArrayLookup.v` and not this. The conflict is in the final
-   handoff's frontier. *)
-Require Export ZesuSsz.Automation.SpecTable.
+(* C4, the spec-table rule, left this set with P0-B: it read the
+   writeSuccess trace index `IslaTraces.write_success_blocks.Index`.
+   A generated trace index registers one lookup instance per address
+   itself. *)
 
 (* C2: a word array satisfies a wanted byte array. *)
 Require Export ZesuSsz.Automation.WordArrayBytes.
