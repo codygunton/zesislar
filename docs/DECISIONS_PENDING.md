@@ -12,9 +12,11 @@ Choosing C1-B does not permit unconditional machine–Sail equality. Both choice
 
 ## Rung 2: nested-header domain
 
-**Recommended: approve the candidate `allContiguousHeadersFit`.** The planned Rocq condition requires `headerFits` for the outer input and every reached child slice. The child slices follow the parent-header field walk. The existing `nestedC1AObligation` lists the call-site proof duty. The lemmas `outerHeaderFits` and `nestedHeaderDoesNotFit` prove that the outer condition alone does not discharge it.
+**Decision open: the candidate `allContiguousHeadersFit` needs revision.** The Rocq condition requires `headerFits` for the outer input and every reached child slice. The child slices follow the parent-header field walk. The existing `nestedC1AObligation` lists the call-site proof duty. The lemmas `outerHeaderFits` and `nestedHeaderDoesNotFit` prove that the outer condition alone does not discharge it.
 
-This choice excludes a reached child whose long-length header wraps, even when the outer header fits. It keeps truncated and other malformed inputs when their reached headers satisfy `headerFits`. The alternative retains the outer domain and requires a separate `nestedC1AObligation` proof at each call. Sail cursor checks alone do not discharge those binary obligations. See [the domain note](RUNG2_DOMAIN_NOTE.md).
+The candidate excludes a reached child whose long-length header wraps, even when the outer header fits. It keeps truncated and other malformed inputs when their reached headers satisfy `headerFits`. The plain form retains the outer domain and requires a separate `nestedC1AObligation` proof at each call. Sail cursor checks alone do not discharge those binary obligations. See [the domain note](RUNG2_DOMAIN_NOTE.md).
+
+The [Q29 vectors](../ZesuSsz/Evidence/PARENT_HEADER_VECTORS.json) show a remaining mismatch. Both domains include 20 field-boundary truncations, and Sail accepts them. Selected ELF guards reject several missing required fields by static analysis. Do not claim unconditional Sail agreement on this candidate domain.
 
 ## C4: seven Sail host externs
 
