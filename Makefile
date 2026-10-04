@@ -315,15 +315,13 @@ regenerate-evm-sail-snapshot:
 	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
 
 .PHONY: check-evidence-tools
-check-evidence-tools: startup-traces
-	@echo "uncached checks: machine config, tests, parity, hygiene, spec shapes, decoder"
+check-evidence-tools:
+	@echo "uncached checks: machine config, tests, hygiene, spec shapes"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
-	$(PYTHON) ZesuSsz/Evidence/check_parity.py
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py
-	bash ZesuSsz/Evidence/check_write_success_decoder.sh
 
 .PHONY: check-proof-hygiene
 check-proof-hygiene:
@@ -332,14 +330,26 @@ check-proof-hygiene:
 # The checkers run unconditionally, before any step Dune can satisfy from
 # its cache: a cached `check-fast` once reported success while a hygiene
 # violation stood for two commits. Every report names this run.
+#
+# Retained production targets (P0-B). `check-fast` builds exactly these
+# Dune aliases, after the uncached Python checks of `check-evidence-tools`
+# (machine config, tools and Evidence unit tests, hygiene, spec shapes).
+# InstrSpecs, ZesuMachineMap, EvmSail and SailStdpp build as dependencies.
+# No retained target reads generated/isla-traces.
+RETAINED_TARGETS := \
+  @ZesuSsz/Contracts/all \
+  @ZesuSsz/Automation/all \
+  @ZesuSsz/Export/all \
+  @ZesuSsz/Compliance/all \
+  @ZesuSsz/Proofs/Tests/all \
+  @ZesuSsz/Tests/all
 .PHONY: check-fast
-check-fast: startup-traces check-evidence-tools
+check-fast: check-evidence-tools
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
-	  @ZesuSsz/Contracts/all @ZesuSsz/Automation/all \
-	  @ZesuSsz/Export/all @ZesuSsz/Compliance/all
+	  $(RETAINED_TARGETS)
 
 .PHONY: check-iris
 check-iris: startup-traces check-evidence-tools

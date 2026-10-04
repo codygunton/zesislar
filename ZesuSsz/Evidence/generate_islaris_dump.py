@@ -54,32 +54,19 @@ def load_store_spec_annotations(
     operand = instruction.split(maxsplit=1)[1].split(",", 1)[0]
     if operand not in RISCV_ABI_REGISTERS or base not in RISCV_ABI_REGISTERS:
         return []
-    spec = f"zesu_{opcode}_spec"
+    # A load from an array view keeps its raw Isla trace: AGENTS.md
+    # forbids a `//@spec:` for a load or store from an array.
     if (opcode in {"ld", "lbu"} and array_view is not None
             and base == array_view["base"]):
-        array_offset = int(array_view["offset"])
-        element_width = 1 if byte_array else 8
-        index = (int(offset) - array_offset) // element_width
-        if index >= 0 and int(offset) == array_offset + element_width * index:
-            spec = f"zesu_{opcode}_{'byte_' if byte_array else ''}array_at_spec"
-            if byte_array and opcode == "ld" and operand == base:
-                spec = "zesu_ld_same_byte_array_at_spec"
-            arguments = (f'"{RISCV_ABI_REGISTERS[operand]}" '
-                         + ("" if spec == "zesu_ld_same_byte_array_at_spec"
-                            else f'"{RISCV_ABI_REGISTERS[base]}" ')
-                         + f'({offset}) ({array_offset}) ({index})')
+        return []
+    spec = f"zesu_{opcode}_spec"
     if opcode == "ld" and operand == base and not byte_array:
         spec = "zesu_ld_same_spec"
         arguments = f'"{RISCV_ABI_REGISTERS[operand]}" ({offset})'
-    elif "array_at_spec" not in spec:
+    else:
         arguments = (f'"{RISCV_ABI_REGISTERS[operand]}" '
                      f'"{RISCV_ABI_REGISTERS[base]}" ({offset})')
     tactic = "all: (try bv_solve; try lia)."
-    if spec == "zesu_ld_array_spec":
-        tactic = ("all: (try (solve_zesu_ld_array_with H0 H1 H8); "
-                  "try bv_solve; try lia).")
-    if "array_at_spec" in spec:
-        tactic = "all: (try solve_zesu_ld_array_at; try bv_solve; try lia)."
     return [
         "//@import: InstrSpecs.Specs",
         f"//@spec: {spec} pc {arguments}",

@@ -4,7 +4,7 @@ Require Import ZesuSsz.Automation.Hooks.
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.BitvectorFacts.
-From IslaTraces.write_success_00 Require Import a14d34.
+Require Import ZesuSsz.Generated.TestTraces.SdX1X2Off1992.
 
 Import ZesuSsz.Automation.Hooks.
 
@@ -16,7 +16,7 @@ Import ZesuSsz.Automation.Hooks.
 Lemma test_write_word_to_byte_array `{!islaG Sigma} `{!threadG}
     (base value : bv 64) (bytes : list (bv 8)) :
   length bytes = 2048%nat ->
-  instr 0x14d34 (Some a14d34) -∗
+  instr 0x14d34 (Some trace_sd_x1_x2_1992) -∗
   instr_body 0x14d34 (
     reg_col zesu_sys_regs ∗
     "x2" ↦ᵣ RVal_Bits base ∗

@@ -16,8 +16,15 @@ import blockrun
 import analyze
 import runner
 
+# P0-B removed the writeSuccess proof tree. These tests read its modules,
+# so they run only in a checkout that still has it.
+NEEDS_WRITE_SUCCESS = unittest.skipUnless(
+    (Path(__file__).resolve().parents[1] / "ZesuSsz/Proofs/WriteSuccess").is_dir(),
+    "reads ZesuSsz/Proofs/WriteSuccess, removed in P0-B")
+
 
 class BlockTests(unittest.TestCase):
+    @NEEDS_WRITE_SUCCESS
     def test_scanner_keeps_selected_pre_entry(self):
         candidates = entries.scan(ROOT / "ZesuSsz/Proofs/WriteSuccess")
         selected = json.loads((ROOT / "ZesuSsz/Evidence/det/block_entries.json").read_text())
@@ -30,6 +37,8 @@ class BlockTests(unittest.TestCase):
         lines = ["  instr_pre 0x1004 (", "    P) -∗", "  instr_pre 0x1008 Q -∗",
                  "  instr_body 0x1000 R."]
         self.assertEqual(blockrun.drop_premises(lines, {0x1004}), lines[2:])
+
+    @NEEDS_WRITE_SUCCESS
 
     def test_variant_a_keeps_successor(self):
         block = dict(leader="0x14e28", last="0x14e34", succ=["0x14e38"])

@@ -130,10 +130,6 @@ class GateCapTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(record.read_text().splitlines(),
                          [f"zesuaggregate1000p123r1.slice|{self.root}/_build/agents/infra|24"])
-        # The real Makefile retains the uncached executable check.
-        makefile = (GATE.parents[2] / "Makefile").read_text()
-        target = makefile.split("check-evidence-tools: startup-traces", 1)[1].split(".PHONY: check-fast", 1)[0]
-        self.assertIn("bash ZesuSsz/Evidence/check_write_success_decoder.sh", target)
 
     def test_drain_timeout_does_not_start_gate(self):
         result = self.gate(GATE_TEST_COQC="1", GATE_TEST_DRAIN_FAIL="1",

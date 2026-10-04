@@ -224,35 +224,6 @@ Ltac zesu_liAWriteMemFocused :=
         (tac_fast_apply (li_wp_write_mem_zesu _ _ _ _ _ _ _ _ _) _)
   end.
 
-Ltac zesu_liASnapshotWriteMem :=
-  lazymatch goal with
-  | |- envs_entails ?Delta
-      (WPasm (WriteMem _ _ _ _ _ _ _ :t: _)) =>
-      unshelve (notypeclasses refine
-        (tac_fast_apply
-          (li_wp_write_mmio_snapshot_zesu _ _ _ _ _ _ _ _ _ _) _))
-  end.
-
-Ltac zesu_liASnapshotWriteMemFocused :=
-  zesu_normalize_output_address;
-  lazymatch goal with
-  | |- envs_entails ?Delta
-      (WPasm (WriteMem _ _ _ _ _ _ _ :t: _)) =>
-      notypeclasses refine
-        (tac_fast_apply
-          (li_wp_write_mmio_snapshot_zesu _ _ _ _ _ _ _ _ _ _) _)
-  end.
-
-Ltac zesu_liASnapshotWriteMemAt claimAddress :=
-  zesu_normalize_output_address;
-  lazymatch goal with
-  | |- envs_entails ?Delta
-      (WPasm (WriteMem _ _ _ _ _ _ _ :t: _)) =>
-      notypeclasses refine
-        (tac_fast_apply
-          (li_wp_write_mmio_snapshot_zesu _ _ _ _ _ _ _ _ _ claimAddress) _)
-  end.
-
 Ltac zesu_liAAsmNoWrite :=
   lazymatch goal with
   | |- envs_entails _ (WPasm (WriteMem _ _ _ _ _ _ _ :t: _)) => fail 1
@@ -295,16 +266,6 @@ Ltac zesu_liAStepBeforeObservable :=
   | liLetBindHint
   | liUnfoldLate
  ]; liSimpl.
-
-Ltac zesu_liAStepSnapshotWrite :=
- liEnsureInvariant;
- try liAIntroduceLetInGoal;
- zesu_liASnapshotWriteMemFocused.
-
-Ltac zesu_liAStepSnapshotWriteAt claimAddress :=
- liEnsureInvariant;
- try liAIntroduceLetInGoal;
- zesu_liASnapshotWriteMemAt claimAddress.
 
 Ltac zesu_liAStepGenericWrite :=
  liEnsureInvariant;

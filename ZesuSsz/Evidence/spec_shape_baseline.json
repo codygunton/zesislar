@@ -1,4 +1,10 @@
 {
+  "ZesuSsz/Automation/ByteArrayLoadSpec.v": {
+    "unfold_without_typeclasses_opaque": 1
+  },
+  "ZesuSsz/Automation/ByteLists.v": {
+    "unfold_without_typeclasses_opaque": 1
+  },
   "ZesuSsz/Automation/Calls.v": {
     "unfold_without_typeclasses_opaque": 2
   },
