@@ -30,7 +30,8 @@ from modules import find_proof
 
 BR = W / "_build/agents/worker-build-2-block"
 BUILD = W / "_build/agents" / os.environ.get("BUILD_NAME", "worker-build-2-block")
-PROOF_DIR = W / "ZesuSsz/Proofs/WriteSuccess"
+PROOF_DIR = None
+TRACE_IMPORT = None
 ADDR = re.compile(r"instr_(?:body|pre)\s+\(?\s*(0x[0-9a-fA-F]+|\d+)")
 
 
@@ -108,7 +109,7 @@ def source(block, lemma, module, variant_run="A"):
     calls, mods, _ = call_premises(lo, hi + 4)
     calls = [c for c in calls if int(c.split()[2], 16) not in kept]
     # Import the contract module only for premises we add: importing it when the
-    # lemma already names the call spec changes the search (0x14e28: 13 s -> >600 s).
+    # lemma already names the call spec changes the search.
     mods = mods if calls else []
     stops = []
     if variant_run == "A":
@@ -138,7 +139,7 @@ def source(block, lemma, module, variant_run="A"):
     meta = {"stops": [hex(a) for a in stops], "kept_succ": [hex(a) for a in succ if a in kept]}
     return "\n".join(["Require Import ZesuSsz.Automation.All.", "Set Printing Width 200.", "Require Import isla.isla.",
                       "From iris.proofmode Require Import environments.",
-                      "From IslaTraces.write_success_blocks Require Import Index."]
+                      f"Require Import {TRACE_IMPORT}."]
                      + lines[:proof.declaration_line]
                      + [f"Require Import {module}." for module in EXTRA_IMPORTS]
                      + [f"Require Import {m}." for m in mods]
@@ -208,10 +209,10 @@ def _run_one(job):
 
 
 def main():
-    global BR, BUILD, PROOF_DIR, EXTRA_IMPORTS
+    global BR, BUILD, PROOF_DIR, EXTRA_IMPORTS, TRACE_IMPORT
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--cfg", type=Path, default=W / "build/endpoint-cfg/zesu-cfg.json")
-    parser.add_argument("--entries", type=Path, default=W / "ZesuSsz/Evidence/det/block_entries.json")
+    parser.add_argument("--cfg", type=Path, default=W / "build/stock-zisk/cfg.json")
+    parser.add_argument("--entries", type=Path, default=W / "build/stock-zisk/block_entries.json")
     parser.add_argument("--build-dir", type=Path, default=BUILD)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--states", type=Path, help="Use generated .v entry modules in this directory.")
@@ -219,6 +220,9 @@ def main():
     parser.add_argument("--compare", type=Path, help="Compare outcomes against a baseline CSV.")
     parser.add_argument("--import-module", action="append", default=[])
     parser.add_argument("--jobs", type=int, default=int(os.environ.get("JOBS", "24")))
+    parser.add_argument("--function")
+    parser.add_argument("--proof-dir", type=Path)
+    parser.add_argument("--trace-import")
     args = parser.parse_args()
     if not 1 <= args.jobs <= 48:
         parser.error("The worker count must be between 1 and 48.")
@@ -230,19 +234,28 @@ def main():
     if RULES == "call" and not (W / "ZesuSsz/Automation/Sets/call.v").exists():
         print("call set unavailable", flush=True)
         return 0
+    for name in ("function", "proof_dir", "trace_import"):
+        if getattr(args, name) is None:
+            parser.error("--" + name.replace("_", "-") + " is required.")
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*", args.trace_import):
+        parser.error("The trace import has an invalid name.")
+    TRACE_IMPORT = args.trace_import
+    PROOF_DIR = args.proof_dir.resolve()
+    if not PROOF_DIR.is_dir():
+        parser.error(f"The proof directory is absent: {PROOF_DIR}")
     BUILD = args.build_dir.resolve()
     BR = (args.output_dir or BUILD).resolve()
     BR.mkdir(parents=True, exist_ok=True)
-    selected = json.loads(args.entries.read_text())
+    selected = json.loads(args.entries.read_text()) if args.entries.exists() else {}
     if args.states:
         PROOF_DIR = args.states.resolve()
         selected = {leader: candidates[0] for leader, candidates in entries.scan(PROOF_DIR).items()}
-    data = entries.blocks(args.cfg, selected)
+    data = entries.blocks(args.cfg, selected, args.function)
     only = set(args.leaders.split(",")) if args.leaders else None
     if only and only - {block["leader"] for block in data}:
         parser.error("A requested leader is absent from the CFG.")
-    jobs = [("b102", b) for b in data if not only or b["leader"] in only]
-    result_file = BR / f"results_{RUNV}{'' if RULES == 'v2' else '_' + RULES}_b102.jsonl"
+    jobs = [("blocks", b) for b in data if not only or b["leader"] in only]
+    result_file = BR / f"results_{RUNV}{'' if RULES == 'v2' else '_' + RULES}_blocks.jsonl"
     if result_file.exists():
         parser.error(f"The output already exists: {result_file}")
     with ThreadPoolExecutor(args.jobs) as executor:

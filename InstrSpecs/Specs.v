@@ -23,7 +23,8 @@ Definition rv64_sd_spec `{!islaG Σ} `{!threadG}
   Rsrc ↦ᵣ RVal_Bits src ∗ Rbase ↦ᵣ RVal_Bits base ∗
   (bv_unsigned base + offset) ↦ₘ? 8 ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜ram_start <= bv_unsigned base + offset < ram_end⌝ ∗
+  ⌜ram_start <= bv_unsigned base + offset ∧
+    bv_unsigned base + offset + 8 <= ram_end⌝ ∗
   instr_pre (pc + 4) (
     reg_col system_regs ∗
     Rsrc ↦ᵣ RVal_Bits src ∗ Rbase ↦ᵣ RVal_Bits base ∗
@@ -31,9 +32,13 @@ Definition rv64_sd_spec `{!islaG Σ} `{!threadG}
 
 Global Instance : LithiumUnfold (@rv64_sd_spec) := I.
 
-Definition zesu_sd_spec `{!islaG Σ} `{!threadG} :=
-  @rv64_sd_spec Σ _ _ zesu_sys_regs (mapRamBase defaultMap) (machineRamEnd defaultMap).
+Definition machine_sd_spec `{!islaG Σ} `{!threadG} (machine : MachineMap) :=
+  @rv64_sd_spec Σ _ _ (machine_sys_regs machine) (mapRamBase machine) (machineRamEnd machine).
 
+Global Instance : LithiumUnfold (@machine_sd_spec) := I.
+
+Definition zesu_sd_spec `{!islaG Σ} `{!threadG} :=
+  @machine_sd_spec Σ _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_sd_spec) := I.
 
 Definition rv64_ld_spec `{!islaG Σ} `{!threadG}
@@ -44,7 +49,8 @@ Definition rv64_ld_spec `{!islaG Σ} `{!threadG}
   Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
   (bv_unsigned base + offset) ↦ₘ value ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜ram_start <= bv_unsigned base + offset < ram_end⌝ ∗
+  ⌜ram_start <= bv_unsigned base + offset ∧
+    bv_unsigned base + offset + 8 <= ram_end⌝ ∗
   instr_pre (pc + 4) (
     reg_col system_regs ∗
     Rdst ↦ᵣ RVal_Bits value ∗ Rbase ↦ᵣ RVal_Bits base ∗
@@ -52,34 +58,45 @@ Definition rv64_ld_spec `{!islaG Σ} `{!threadG}
 
 Global Instance : LithiumUnfold (@rv64_ld_spec) := I.
 
-Definition zesu_ld_spec `{!islaG Σ} `{!threadG} :=
-  @rv64_ld_spec Σ _ _ zesu_sys_regs (mapRamBase defaultMap) (machineRamEnd defaultMap).
+Definition machine_ld_spec `{!islaG Σ} `{!threadG} (machine : MachineMap) :=
+  @rv64_ld_spec Σ _ _ (machine_sys_regs machine) (mapRamBase machine) (machineRamEnd machine).
 
+Global Instance : LithiumUnfold (@machine_ld_spec) := I.
+
+Definition zesu_ld_spec `{!islaG Σ} `{!threadG} :=
+  @machine_ld_spec Σ _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_ld_spec) := I.
 
-Definition zesu_ld_array_spec `{!islaG Σ} `{!threadG}
+Definition machine_ld_array_spec `{!islaG Σ} `{!threadG}
+    (machine : MachineMap)
     (pc : Z) (Rdst Rbase : string) (offset : Z) : iProp Σ :=
   ∃ (value base : bv 64) (arrayBase : Z) (values : list (bv 64))
       (index : nat),
-  reg_col zesu_instr_sys_regs ∗
+  reg_col (machine_sys_regs machine) ∗
   Rdst ↦ᵣ: (fun _ => True)%I ∗ Rbase ↦ᵣ RVal_Bits base ∗
   arrayBase ↦ₘ∗ values ∗
   ⌜(bv_unsigned base + offset = arrayBase + 8 * Z.of_nat index)%Z⌝ ∗
   ⌜values !! index = Some value⌝ ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
+  ⌜mapRamBase machine <= bv_unsigned base + offset ∧
+    bv_unsigned base + offset + 8 <= machineRamEnd machine⌝ ∗
   instr_pre (pc + 4) (
-    reg_col zesu_instr_sys_regs ∗
+    reg_col (machine_sys_regs machine) ∗
     Rdst ↦ᵣ RVal_Bits value ∗ Rbase ↦ᵣ RVal_Bits base ∗
     arrayBase ↦ₘ∗ values ∗ True).
 
+Global Instance : LithiumUnfold (@machine_ld_array_spec) := I.
+
+Definition zesu_ld_array_spec `{!islaG Σ} `{!threadG} :=
+  @machine_ld_array_spec Σ _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_ld_array_spec) := I.
 
-Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
+Definition machine_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
+    (machine : MachineMap)
     (pc : Z) (R : string) (offset arrayOffset : Z)
     (index : nat) : iProp Σ :=
   ∃ (base word : bv 64) (values : list (bv 8)),
-  reg_col zesu_instr_sys_regs ∗
+  reg_col (machine_sys_regs machine) ∗
   R ↦ᵣ RVal_Bits base ∗
   (bv_unsigned base + offset) ↦ₘ word ∗
   (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
@@ -90,9 +107,10 @@ Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
   ⌜word = Z_to_bv 64
     (little_endian_to_bv 8 (take 8 (drop index values)))⌝ ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
+  ⌜mapRamBase machine <= bv_unsigned base + offset ∧
+    bv_unsigned base + offset + 8 <= machineRamEnd machine⌝ ∗
   instr_pre (pc + 4) (
-    reg_col zesu_instr_sys_regs ∗
+    reg_col (machine_sys_regs machine) ∗
     R ↦ᵣ RVal_Bits
       word ∗
     (bv_unsigned base + offset) ↦ₘ word ∗
@@ -100,6 +118,10 @@ Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG}
     (bv_unsigned base + arrayOffset + Z.of_nat (index + 8)) ↦ₘ∗
       drop (index + 8) values ∗ True).
 
+Global Instance : LithiumUnfold (@machine_ld_same_byte_array_at_spec) := I.
+
+Definition zesu_ld_same_byte_array_at_spec `{!islaG Σ} `{!threadG} :=
+  @machine_ld_same_byte_array_at_spec Σ _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_ld_same_byte_array_at_spec) := I.
 
 Ltac solve_zesu_ld_array :=
@@ -163,48 +185,61 @@ Ltac solve_zesu_ld_array_with Haddress Hexpected Hactual :=
     end
   end.
 
-Definition zesu_ld_same_spec `{!islaG Σ} `{!threadG}
+Definition machine_ld_same_spec `{!islaG Σ} `{!threadG}
+    (machine : MachineMap)
     (pc : Z) (R : string) (offset : Z) : iProp Σ :=
   ∃ (value base : bv 64),
-  reg_col zesu_instr_sys_regs ∗
+  reg_col (machine_sys_regs machine) ∗
   R ↦ᵣ RVal_Bits base ∗ (bv_unsigned base + offset) ↦ₘ value ∗
   ⌜bv_unsigned base `mod` 8 = 0⌝ ∗
-  ⌜(mapRamBase defaultMap) <= bv_unsigned base + offset < (machineRamEnd defaultMap)⌝ ∗
+  ⌜mapRamBase machine <= bv_unsigned base + offset ∧
+    bv_unsigned base + offset + 8 <= machineRamEnd machine⌝ ∗
   instr_pre (pc + 4) (
-    reg_col zesu_instr_sys_regs ∗
+    reg_col (machine_sys_regs machine) ∗
     R ↦ᵣ RVal_Bits value ∗ (bv_unsigned base + offset) ↦ₘ value ∗ True).
 
+Global Instance : LithiumUnfold (@machine_ld_same_spec) := I.
+
+Definition zesu_ld_same_spec `{!islaG Σ} `{!threadG} :=
+  @machine_ld_same_spec Σ _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_ld_same_spec) := I.
 
-Definition zesu_jalr_same_spec `{!islaG Σ} `{!threadG}
+Definition machine_jalr_same_spec `{!islaG Σ} `{!threadG}
+    (machine : MachineMap)
     (pc : Z) (R : string) (offset : bv 64) : iProp Σ :=
   ∃ base : bv 64,
-  reg_col zesu_instr_sys_regs ∗ R ↦ᵣ RVal_Bits base ∗
+  reg_col (machine_sys_regs machine) ∗ R ↦ᵣ RVal_Bits base ∗
   ⌜bv_extract 0 2 (base + offset) = BV 2 0⌝ ∗
   instr_pre
     (bv_unsigned
       (bv_or (bv_and (base + offset)
         (BV 64 18446744073709551614)) (BV 64 0))) (
-    reg_col zesu_instr_sys_regs ∗
+    reg_col (machine_sys_regs machine) ∗
     R ↦ᵣ RVal_Bits (Z_to_bv 64 (pc + 4)) ∗ True).
 
+Global Instance : LithiumUnfold (@machine_jalr_same_spec) := I.
+
+Definition zesu_jalr_same_spec `{!islaG Σ} `{!threadG} :=
+  @machine_jalr_same_spec Σ _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_jalr_same_spec) := I.
 
-Definition a15680_addi_spec `{!islaG Σ} `{!threadG} (pc : Z) : iProp Σ :=
+Definition machine_move_x9_x10_spec `{!islaG Σ} `{!threadG}
+    (machine : MachineMap) (pc : Z) : iProp Σ :=
   ∃ src : bv 64,
-  reg_col zesu_sys_regs ∗
+  reg_col (machine_sys_regs machine) ∗
   "x9" ↦ᵣ RVal_Bits src ∗
   "x10" ↦ᵣ: (fun _ => True)%I ∗
   instr_pre (pc + 4) (
-    reg_col zesu_sys_regs ∗
+    reg_col (machine_sys_regs machine) ∗
     "x9" ↦ᵣ RVal_Bits src ∗
     "x10" ↦ᵣ RVal_Bits src ∗ True).
-Global Instance : LithiumUnfold (@a15680_addi_spec) := I.
+Global Instance : LithiumUnfold (@machine_move_x9_x10_spec) := I.
 
-Definition a15684_auipc_spec `{!islaG Σ} `{!threadG} (pc : Z) : iProp Σ :=
-  reg_col zesu_sys_regs ∗
+Definition machine_auipc_zero_x1_spec `{!islaG Σ} `{!threadG}
+    (machine : MachineMap) (pc : Z) : iProp Σ :=
+  reg_col (machine_sys_regs machine) ∗
   "x1" ↦ᵣ: (fun _ => True)%I ∗
   instr_pre (pc + 4) (
-    reg_col zesu_sys_regs ∗
+    reg_col (machine_sys_regs machine) ∗
     "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 pc) ∗ True).
-Global Instance : LithiumUnfold (@a15684_auipc_spec) := I.
+Global Instance : LithiumUnfold (@machine_auipc_zero_x1_spec) := I.

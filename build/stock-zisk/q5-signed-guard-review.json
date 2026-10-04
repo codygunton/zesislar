@@ -1,0 +1,12 @@
+{
+  "frozen_source": "worker2-child-platform/_build/q4-arithmetic-next-residual.json",
+  "positive_shape": "envs_entails context (WPasm first and WPasm second), with positive widened bounds",
+  "guard": "require a negated Z.le or Z.ge bound containing zero_extend128 before arithmetic",
+  "disabled_outcomes": "class lookup is unchanged and precedes the guard",
+  "positive_result": "the hook rejects this shape before arithmetic; the goal remains unchanged",
+  "positive_mcp_check_ms": 3,
+  "negative_result": "both previously frozen lower/upper residual proofs compile",
+  "fixture_regressions": "all seven enabled retained modules pass at jobs6",
+  "native_replay_limit": "held platform state is unavailable on this MCP server; Add LoadPath is rejected by MCP validation",
+  "native_replay_owner": "platform"
+}

@@ -26,38 +26,65 @@ def scan(directory):
     return entries
 
 
-def blocks(cfg, entries):
+def address(value):
+    return int(value, 0) if isinstance(value, str) else value
+
+
+def blocks(cfg, entries, function_name):
     functions = json.loads(cfg.read_text())["functions"]
-    function = next(f for f in functions if f["name"].endswith(".writeSuccess"))
+    selected = [f for f in functions if f["name"] == function_name]
+    if len(selected) != 1:
+        raise ValueError(f"The CFG must contain exactly one function named {function_name}.")
+    function = selected[0]
     result = []
     for block in function["blocks"]:
-        tail = block["instructions"][-1]
+        instructions = block.get("instructions")
+        if instructions is None:
+            instructions = [row for row in function["rows"]
+                            if address(block["start"]) <= row["pc"] < address(block["end"])]
+        if not instructions:
+            raise ValueError("The CFG contains an empty block.")
+        tail = instructions[-1]
         mnemonic = tail["mnemonic"]
-        kind = "call:" + tail["operands"] if mnemonic in ("jal", "jalr") else (
-            "ret" if mnemonic == "ret" else "jump" if mnemonic == "j" else
-            "branch" if mnemonic.startswith("b") else "fall")
-        entry = entries.get(block["id"])
-        result.append(dict(leader=block["id"], last=hex(tail["pc"]), n=block["instructionCount"], kind=kind,
-                           succ=block["successors"] or (["ret"] if mnemonic == "ret" else []),
-                           instructions=block["instructions"],
+        kind = tail.get("kind")
+        if kind is None:
+            kind = ("call" if mnemonic in ("jal", "jalr") else
+                    "return" if mnemonic == "ret" else "jump" if mnemonic == "j" else
+                    "branch" if mnemonic.startswith("b") else "fall")
+        leader = hex(address(block.get("id", block.get("start"))))
+        picks = entries.get(leader)
+        # scan() returns candidate lists, while persisted entries contain one pick.
+        entry = picks[0] if isinstance(picks, list) and picks else picks
+        result.append(dict(leader=leader, last=hex(address(tail["pc"])), n=len(instructions),
+                           kind="ret" if kind == "return" else kind,
+                           succ=[hex(address(pc)) for pc in block["successors"]] or
+                                (["ret"] if kind == "return" else []),
+                           instructions=instructions,
                            pick=[entry["lemma"], entry["module"]] if entry else None))
     return result
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--cfg", type=Path, default=ROOT / "build/endpoint-cfg/zesu-cfg.json")
+    parser.add_argument("--cfg", type=Path, default=ROOT / "build/stock-zisk/cfg.json")
     parser.add_argument("--targets", action="store_true", help="Print selected Dune proof targets.")
-    parser.add_argument("--output", type=Path, default=ROOT / "ZesuSsz/Evidence/det/block_entries.json")
+    parser.add_argument("--output", type=Path, default=ROOT / "build/stock-zisk/block_entries.json")
+    parser.add_argument("--function", help="Select an exact CFG function name.")
+    parser.add_argument("--proof-dir", type=Path, required=True)
     args = parser.parse_args()
+    if not args.proof_dir.is_dir():
+        parser.error(f"The proof directory is absent: {args.proof_dir}")
     if args.targets:
-        selected = json.loads(args.output.read_text())
-        print(" ".join(f"ZesuSsz/Proofs/WriteSuccess/{module}.vo"
+        selected = json.loads(args.output.read_text()) if args.output.exists() else {
+            leader: candidates[0] for leader, candidates in scan(args.proof_dir).items()}
+        print(" ".join(str(args.proof_dir / f"{module}.vo")
                        for module in sorted({entry["module"] for entry in selected.values()})))
         return
-    found = scan(ROOT / "ZesuSsz/Proofs/WriteSuccess")
+    if not args.function:
+        parser.error("--function is required to select CFG blocks.")
+    found = scan(args.proof_dir)
     existing = json.loads(args.output.read_text()) if args.output.exists() else {}
-    leaders = {block["leader"] for block in blocks(args.cfg, {})}
+    leaders = {block["leader"] for block in blocks(args.cfg, {}, args.function)}
     result = {}
     for leader in sorted((existing or found).keys() & leaders):
         candidates = found.get(leader, [])
@@ -65,6 +92,7 @@ def main():
         if selected not in candidates:
             raise ValueError(f"The selected entry for {leader} is absent.")
         result[leader] = selected
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
 
 
