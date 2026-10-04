@@ -173,7 +173,7 @@
     },
     "generator/closure.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/closure.py",
-      "sha256": "c7b464c63ce6bd2b380f0dc359602359c9b6796ad68741f525a6088c0e41b4da"
+      "sha256": "492534de4a683c8b2cae5b13aa6e870e82d9e2ae5050f8a6108db7e0844f4a6d"
     },
     "generator/riscv.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/riscv.py",
@@ -186,6 +186,30 @@
     "generator/inventory.py": {
       "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/inventory.py",
       "sha256": "adc3bae421815d40b7908e9fc14e4bcf5d82182b605571edc57a27faa2e77a22"
+    },
+    "platform-audit/snapshot": {
+      "path": "/home/cody/isla-snapshots/riscv64.ir",
+      "sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a"
+    },
+    "platform-audit/core/src/mem.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+      "sha256": "8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91"
+    },
+    "platform-audit/transpilers/common/src/elf_extraction.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/transpilers/common/src/elf_extraction.rs",
+      "sha256": "0d5e95e716d6e21768866ed9c8956fde1f2895885f3fc99fd43cdf0251f2e85a"
+    },
+    "platform-audit/emulator/src/emu_context.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/emulator/src/emu_context.rs",
+      "sha256": "5833070dc289a74f8aeb08d36e9acc09267ed8186b7785cccbd0aa18d1611f1f"
+    },
+    "platform-audit/ziskos/entrypoint/src/lib.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/lib.rs",
+      "sha256": "9754f8c636daa302557b9ee7ebecc7627bda798eee4187999e81231a10274590"
+    },
+    "platform-audit/zisk/zisk.ld": {
+      "path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+      "sha256": "51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd"
     }
   },
   "legacy_tool_policy": "Retain the committed bin tools with explicit hashes for existing trace regeneration. The selected ELF build uses the separately recorded Zig and ELF tools.",
@@ -215,35 +239,43 @@
   "invalidated_derived": [],
   "derived": {
     "inventory.json": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 2
     },
     "cfg.json": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 1
     },
     "regions.json": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 1
     },
     "dump-ranges.json": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 1
     },
     "verification.json": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 2
     },
     "decodeItem.raw.dump": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 1
     },
     "INVENTORY.md": {
-      "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "schema_version": 1
+    },
+    "PLATFORM.md": {
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
+      "schema_version": 1
+    },
+    "platform-audit.json": {
+      "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
       "schema_version": 1
     }
   },
-  "artifact_identity": "f6d708ac34f6e4d92984f9ffed460a405f9059ea88c442ba03e0557f89821b5c",
+  "artifact_identity": "f28063eef5d0f027aaed427b5d8338df99562e727ae5e063cae3d42134ee4328",
   "elf_layout": {
     "entry": 2148490032,
     "machine": "EM_RISCV",
@@ -475,13 +507,21 @@
     "disassembly.objdump": "020ace7813b1c8a392291628095089bff281e3a50b4bb5dca25b3b5e9f50517b",
     "symbols.txt": "b85d63ce55b4b5772415933d9939ef74cebb0905570a200bd08e6c372a2e3e6c",
     "elf-layout.txt": "660c5484710dc616d5a8b94ddfdd349e67c38613ca8a15d60d11322513f83a2e",
-    "inventory.json": "6cd9f08a263a86f6287005dab4ce7ec5c1c7459102e5aea95f9388f510cba54a",
-    "cfg.json": "8bff05c51ed731593d09403a8b0b80da19a06dadc7ddd5b66694371f137081e5",
-    "regions.json": "615c856b5cee2803c709e299d77272cc38aa38f3c3d3a6a25312cd32a4de3e6c",
-    "dump-ranges.json": "7eb3eea2ff05907669d59e8bbe2e752f68d21ecdce2f2461a965359ff3054586",
-    "verification.json": "964ac18c3d9bc1258660da1a83db6282386d8ea73bfa6a77cd0f4f0872893fcc",
-    "decodeItem.raw.dump": "e9f65ec0949d78b0d5dea1203580d67dabef8a6778228f9e60df4aa15749dc0c",
-    "INVENTORY.md": "f84132e279205e02dd6ee6ae38fe491ad2dc8c09afdf0f6b38ea6a9265ef50db"
+    "inventory.json": "546ad1790bcca5442f7a22e9052b5d40145ce7354ee8e02ea8b849bb0c07c657",
+    "cfg.json": "7e272fcd9cde873a74cd56cafca66465c13ded015d55ef421ce3da3394258732",
+    "regions.json": "d73190cca074d15708da97a4077d39b0c89891fb763e62c87bfea9f1896f75d6",
+    "dump-ranges.json": "35d18ef8fe5a0cf582cc7dfd8bff2ae6c5e41f29bb60e17ca831bcd2903347d2",
+    "verification.json": "33d400f3fd986693648e1e9d558eead57ac20b4ba3ca96e5daeeccf492ee8fe9",
+    "decodeItem.raw.dump": "f3fb208a1463a35c31f56559ec4332e487c280f61be12ee3dad666fab5d81998",
+    "INVENTORY.md": "f84132e279205e02dd6ee6ae38fe491ad2dc8c09afdf0f6b38ea6a9265ef50db",
+    "PLATFORM.md": "e79b54400d02bda8b1c91e4de2a5199bbd6107e309b428a048a95ce3e1c1a9c4",
+    "platform-audit.json": "0affa856247e49708f3149ce8d0352215467d85118a2982712ad1b75e232b8f1"
   },
-  "historical_comparison": "comparison-generic-script/ remains historical pilot evidence from c9165ca4."
+  "historical_comparison": "comparison-generic-script/ remains historical pilot evidence from c9165ca4.",
+  "toolchain_identity_decision": {
+    "decision": "Retain the committed bin tools with explicit hashes for P0-C.",
+    "reviewer": "orch",
+    "review_date": "2026-10-03",
+    "basis": "The coordinator accepted this choice after reviewing steps 1 through 4."
+  }
 }
