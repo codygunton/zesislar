@@ -39,6 +39,7 @@ make check-iris CHECK_AGENT=worker-build-2-e FAST_JOBS=2 AGENT_JOBS=2 STOCK_NATI
 
 The fetch command verifies pinned source revisions and all declared input hashes.
 It fetches missing source checkouts from the upstream repositories.
+All three pinned checkouts use project-relative paths under `_build`.
 It copies the stock object from the declared host archive when the object is absent.
 It does not change the manifest or artifact identity.
 The cache is optional.
