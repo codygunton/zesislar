@@ -23,6 +23,11 @@ FUNCTIONS = {
 }
 CALL = re.compile(r"fatal_error\s*\(\s*RlpDecode\s*\)")
 FUNCTION = re.compile(r"^\s*function\s+([A-Za-z_][A-Za-z_0-9]*)\b")
+PUBLIC_ROOT = re.compile(r"^Definition\s+(run(?:Rlp|ParentHeader)\w+)\b", re.MULTILINE)
+APPROVED_ROOTS = {
+    "runRlpDecodeItem", "runRlpRefHdr", "runRlpNodeCursor",
+    "runParentHeaderFields", "runRlpDecodeU256", "runRlpDecodeUint64",
+}
 
 
 def reachable_sites(source: Path, names: set[str]) -> set[int]:
@@ -50,6 +55,9 @@ class SailFatalSitesTest(unittest.TestCase):
         generated = (Path(__file__).resolve().parents[2]
                      / "generated/evm-sail-coq/rlp/evm_rlp.v").read_text()
         self.assertEqual(len(CALL.findall(generated)), 16)
+        runner = (Path(__file__).resolve().parents[1]
+                  / "Compliance/SailRun.v").read_text()
+        self.assertEqual(set(PUBLIC_ROOT.findall(runner)), APPROVED_ROOTS)
 
 
 if __name__ == "__main__":

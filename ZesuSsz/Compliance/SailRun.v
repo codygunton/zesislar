@@ -131,6 +131,22 @@ Definition runParentHeaderFields {base len : Z} (bytes : list byte)
       (evm_rlp.decode_parent_header_fields cursor fieldIndex fields)
   else UnsupportedOrInternalFailure "invalid parent-header field index".
 
+(* These two integer decoders are subcalls of the audited
+   decode_parent_header_fields root. Their direct RlpDecode sites are
+   decoding.sail:511 and :524; rlp_decode_u256 also reaches :494 through
+   rlp_decode_word. No additional fatal_error site enters this closure. *)
+Definition runRlpDecodeU256 {base len contentLen : Z} (bytes : list byte)
+    (field : RlpFieldRef base len contentLen) :=
+  if (0 <=? contentLen) && (contentLen <=? len) then
+    runDecoder bytes base len (evm_rlp.rlp_decode_u256 field)
+  else UnsupportedOrInternalFailure "invalid RLP field content length".
+
+Definition runRlpDecodeUint64 {base len contentLen : Z} (bytes : list byte)
+    (field : RlpFieldRef base len contentLen) :=
+  if (0 <=? contentLen) && (contentLen <=? len) then
+    runDecoder bytes base len (evm_rlp.rlp_decode_uint64 field)
+  else UnsupportedOrInternalFailure "invalid RLP field content length".
+
 Example emptyRlpHeaderRejects :
   runRlpRefHdr [] (@Build_StatelessInputSliceFields 0 0 0 0) = Reject RlpDecode.
 Proof. vm_compute. reflexivity. Qed.

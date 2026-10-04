@@ -1,6 +1,7 @@
 From Coq Require Import Lists.List Logic.FunctionalExtensionality ZArith.ZArith.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
+Require Import ZesuSsz.Compliance.SailRun.
 Require Import ZesuSsz.Evidence.SignatureGates.
 
 Theorem fixture_false : False -> ReviewedControlType.
@@ -43,3 +44,24 @@ Theorem fixture_inherited_binders :
   ReviewedControlType.
 Proof. intros; apply reviewed_control. Qed.
 Fail Check (@fixture_inherited_binders : ReviewedControlType).
+
+(* A definition alias can hide removal of the valid-input domain. *)
+Definition weak_domain_alias : ReviewedRlpItemType :=
+  fun _ _ bytes cursor outcome => runRlpDecodeItem bytes cursor = outcome.
+Definition fixture_alias_weak_domain := weak_domain_alias.
+Check (@fixture_alias_weak_domain : ReviewedRlpItemType).
+Fail Check (eq_refl :
+  @fixture_alias_weak_domain = @ReviewedRlpItemRelation).
+
+(* A definition must not smuggle an evaluator parameter into the public type. *)
+Definition fixture_evaluator_parameter
+    (evaluator : ReviewedRlpItemType) : ReviewedRlpItemType := evaluator.
+Fail Check (@fixture_evaluator_parameter : ReviewedRlpItemType).
+
+(* Closing a Section must not hide a generalized premise. *)
+Section GeneralizedPremise.
+  Context (extraPremise : Prop).
+  Theorem fixture_section_generalized : extraPremise -> ReviewedControlType.
+  Proof. intros; exact reviewed_control. Qed.
+End GeneralizedPremise.
+Fail Check (@fixture_section_generalized : ReviewedControlType).

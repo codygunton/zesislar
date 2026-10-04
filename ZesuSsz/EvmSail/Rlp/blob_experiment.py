@@ -28,6 +28,7 @@ parser.add_argument('--compiler-build', type=Path)
 parser.add_argument('--build-dir', type=Path)
 parser.add_argument('--switch', default='/home/cody/islaris')
 parser.add_argument('--run', action='store_true')
+parser.add_argument('--handoff', action='store_true')
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[3]
 check_source(args.evm_source, EVM_REVISION)
@@ -125,8 +126,86 @@ assert parameters == [helper_fields[field].strip() for field in original_fields
                       if helper_fields[field].strip() in mapping]
 s = s[:head] + helper + body + s[tail:]
 assert s.replace(helper, '', 1).replace(new, old, 1) == p.read_text()
+module_name = 'evm_blob'
+if args.handoff:
+    record_stage = s
+    blob_start = s.index('function decode_blob_tx forall')
+    walk_start = s.index('    let chain_f = rlp_decode_item(fields);', blob_start)
+    walk_end = s.index('    let data_f = rlp_decode_item(fields);', walk_start)
+    walk = s[walk_start:walk_end]
+    assert walk.count('rlp_decode_item(') == walk.count('rlp_cursor_advance(') == 7
+    handoff = '''/* Existential handoff after the first seven blob-transaction fields. */
+type BlobTxAnyField = {
+    'off 'full 'content, rlp_field_ref_valid('off, 'full, 'content).
+    RlpFieldRef('off, 'full, 'content)
+}
+
+struct BlobTxPrefixFields(
+    'chain_off : Int, 'chain_len : Int, 'chain_content : Int,
+    'next_off : Int, 'next_len : Int
+), rlp_field_ref_valid('chain_off, 'chain_len, 'chain_content)
+   & source_valid_range('next_off, 'next_len)
+   & 'chain_off <= 'next_off = {
+    chain_f : RlpFieldRef('chain_off, 'chain_len, 'chain_content),
+    nonce_f : BlobTxAnyField,
+    mp_f : BlobTxAnyField,
+    mf_f : BlobTxAnyField,
+    gas_f : BlobTxAnyField,
+    to_f : BlobTxAnyField,
+    value_f : BlobTxAnyField,
+    fields : RlpCursor('next_off, 'next_len),
+}
+
+type BlobTxPrefix = {
+    'chain_off 'chain_len 'chain_content 'next_off 'next_len,
+    rlp_field_ref_valid('chain_off, 'chain_len, 'chain_content)
+    & source_valid_range('next_off, 'next_len)
+    & 'chain_off <= 'next_off.
+    BlobTxPrefixFields('chain_off, 'chain_len, 'chain_content, 'next_off, 'next_len)
+}
+
+function blob_tx_prefix_pack forall
+    'chain_off 'chain_len 'chain_content 'next_off 'next_len,
+    rlp_field_ref_valid('chain_off, 'chain_len, 'chain_content)
+    & source_valid_range('next_off, 'next_len)
+    & 'chain_off <= 'next_off. (
+    chain_f : RlpFieldRef('chain_off, 'chain_len, 'chain_content),
+    nonce_f : BlobTxAnyField, mp_f : BlobTxAnyField,
+    mf_f : BlobTxAnyField, gas_f : BlobTxAnyField,
+    to_f : BlobTxAnyField, value_f : BlobTxAnyField,
+    fields : RlpCursor('next_off, 'next_len)
+) -> BlobTxPrefixFields('chain_off, 'chain_len, 'chain_content, 'next_off, 'next_len) =
+    struct {
+        chain_f = chain_f, nonce_f = nonce_f, mp_f = mp_f, mf_f = mf_f,
+        gas_f = gas_f, to_f = to_f, value_f = value_f, fields = fields
+    }
+
+function decode_blob_tx_prefix forall 'source_off 'source_len,
+    source_valid_range('source_off, 'source_len). (
+    fields : RlpCursor('source_off, 'source_len)
+) -> BlobTxPrefix = {
+''' + walk + '''    blob_tx_prefix_pack(chain_f, nonce_f, mp_f, mf_f,
+                        gas_f, to_f, value_f, fields)
+}
+
+'''
+    wrapper = '''    let prefix = decode_blob_tx_prefix(fields);
+    let chain_f = prefix.chain_f;
+    let nonce_f = prefix.nonce_f;
+    let mp_f = prefix.mp_f;
+    let mf_f = prefix.mf_f;
+    let gas_f = prefix.gas_f;
+    let to_f = prefix.to_f;
+    let value_f = prefix.value_f;
+    let fields = prefix.fields;
+'''
+    s = s[:blob_start] + handoff + s[blob_start:walk_start] + wrapper + s[walk_end:]
+    assert s.replace(handoff, '', 1).replace(wrapper, walk, 1) == record_stage
+    module_name = 'evm_blob_handoff'
 p.write_text(s)
-(stage / 'slice.commands').write_text(':slice_roots decode_blob_tx initialize_registers\n:slice_keep_std\n:slice\n:recheck_types\n:rewrites coq\n:target coq, evm_blob\n:quit\n')
+(stage / 'slice.commands').write_text(
+    ':slice_roots decode_blob_tx initialize_registers\n:slice_keep_std\n:slice\n'
+    ':recheck_types\n:rewrites coq\n:target coq, ' + module_name + '\n:quit\n')
 print(stage)
 
 if args.run:
@@ -189,13 +268,13 @@ if args.run:
     text = (stage / 'generation.log').read_text()
     if 'Error:' in text or 'Type error' in text:
         raise SystemExit('Sail reported an error despite exit status zero.')
-    if 'Definition decode_blob_tx' not in (stage / 'output/evm_blob.v').read_text():
+    if 'Definition decode_blob_tx' not in (stage / 'output' / (module_name + '.v')).read_text():
         raise SystemExit('Sail did not generate the blob decoder definition.')
 
     stdpp = build_dir / 'default/generated/sail-stdpp'
     if not (stdpp / 'Real.vo').is_file():
         raise SystemExit('Build generated/sail-stdpp/Real.vo in the private Dune directory first.')
-    for name in ('evm_blob_types.v', 'evm_blob.v'):
+    for name in (module_name + '_types.v', module_name + '.v'):
         result = bounded(name, [
             'opam', 'exec', '--switch=' + args.switch, '--', 'coqc',
             '-Q', str(stdpp), 'SailStdpp', '-Q', 'output', '', '-time',
