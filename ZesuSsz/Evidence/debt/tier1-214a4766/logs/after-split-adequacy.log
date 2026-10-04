@@ -1,9 +1,0 @@
-ASSUMPTIONS_BEGIN zesu_adequacy
-Closed under the global context
-ASSUMPTIONS_END zesu_adequacy
-ASSUMPTIONS_BEGIN zesu_ram_sys_regs_init
-Closed under the global context
-ASSUMPTIONS_END zesu_ram_sys_regs_init
-ASSUMPTIONS_BEGIN completed_run_through_decoder
-Closed under the global context
-ASSUMPTIONS_END completed_run_through_decoder

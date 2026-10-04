@@ -5,11 +5,12 @@ Require Import ZesuSsz.Stock.Closure.index_decodeItem.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.SelectedCodeLookup.
+Require Import InstrSpecs.Lookup.
 
 Definition decodeItemSelectedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  ([∗ list] instruction ∈
-    ZesuSsz.Stock.Closure.index_decodeItem.instr_map,
-    instr instruction.1 (Some instruction.2))%I.
+  instr_lookup_resources
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).
 
 Definition decodeItemSelectedModel (returnAddress : Z) :
     IslarisContractModel DecodeItemArgs DecodeItemOutcome :=

@@ -15,6 +15,12 @@ Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.ParentHeaderRequiredFields.
 Require Import ZesuSsz.Contracts.ParentHeaderRung2.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import ZesuSsz.Contracts.ParentHeaderSelected.
+Require Import ZesuSsz.Stock.Closure.index_nextUint64.
+Require Import ZesuSsz.Stock.Closure.index_decodeParentHeader.
+Require Import ZesuSsz.Stock.Closure.index_memcpyStub.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
@@ -166,3 +172,27 @@ Definition ReviewedMemcpyServicePremise `{!islaG Sigma} `{!threadG} :
 Check (eq_refl : @memcpyServicePremise = @ReviewedMemcpyServicePremise).
 Check (eq_refl : parentHeaderMemcpyLength = 80%Z).
 Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
+
+Definition ReviewedNextUint64SelectedCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (([∗ list] instruction ∈
+     ZesuSsz.Stock.Closure.index_nextUint64.instr_map,
+     instr instruction.1 (Some instruction.2)) ∗
+   decodeItemSelectedCode)%I.
+
+Definition ReviewedParentHeaderSelectedCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (([∗ list] instruction ∈
+     ZesuSsz.Stock.Closure.index_decodeParentHeader.instr_map,
+     instr instruction.1 (Some instruction.2)) ∗
+   nextUint64SelectedCode ∗
+   ([∗ list] instruction ∈
+     ZesuSsz.Stock.Closure.index_memcpyStub.instr_map,
+     instr instruction.1 (Some instruction.2)) ∗
+   memcpyServicePremise)%I.
+
+Check (eq_refl : @nextUint64SelectedCode = @ReviewedNextUint64SelectedCode).
+Check (eq_refl : @parentHeaderSelectedCode =
+                 @ReviewedParentHeaderSelectedCode).
+Check (@NextUint64SelectedCorrect : Prop).
+Check (@ParentHeaderSelectedCorrect : Prop).

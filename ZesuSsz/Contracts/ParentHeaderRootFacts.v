@@ -1,4 +1,6 @@
 From Coq Require Import List ZArith.
+From stdpp Require Import bitvector.definitions.
+Require Import SailStdpp.MachineWord.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeader.
@@ -69,7 +71,7 @@ Definition nextUint64EntryLayout (inputPointer inputLength slicePointer
   separateRanges slicePointer 16 resultPointer 16 /\
   separateRanges slicePointer 16
     (stackPointer - nextUint64StackBytes) nextUint64StackBytes /\
-  0 <= returnAddress < word64Modulus /\ returnAddress mod 2 = 0.
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
 
 Definition parentHeaderEntryLayout (inputPointer inputLength resultPointer
     stackPointer returnAddress : Z) : Prop :=
@@ -82,7 +84,7 @@ Definition parentHeaderEntryLayout (inputPointer inputLength resultPointer
     (stackPointer - parentHeaderStackBytes) parentHeaderStackBytes /\
   separateRanges resultPointer 80
     (stackPointer - parentHeaderStackBytes) parentHeaderStackBytes /\
-  0 <= returnAddress < word64Modulus /\ returnAddress mod 2 = 0.
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
 
 (* The nextUint64 input is a two-word slice at a1. The result is 16 bytes
    at a0. On success, the input slice advances by the consumed item size.
@@ -93,7 +95,12 @@ Record NextUint64Call := {
   nextSlicePointer : Z;
   nextResultPointer : Z;
   nextStackPointer : Z;
-  nextReturnAddress : Z
+  nextReturnAddress : Z;
+  nextSavedS0 : bv 64;
+  nextSavedS1 : bv 64;
+  nextSavedS2 : bv 64;
+  nextSavedS3 : bv 64;
+  nextSavedS4 : bv 64
 }.
 
 Record NextUint64Return := {

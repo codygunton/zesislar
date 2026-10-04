@@ -1,0 +1,1027 @@
+{
+  "source_report": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/q10-clean-checkout-report.json",
+  "revision": "4c9c98cc5ff04db70f4d39cb9ea55c07e036059c",
+  "artifact_identity": "4ad11523ab08e5dc872be67790b3a105dd1596d711a4e2c426c22b40488c6e69",
+  "classification_counts": {
+    "declared toolchain input": 20,
+    "project file that belongs in the tree or needs a documented fetch/build step": 76
+  },
+  "record_count": 96,
+  "records": [
+    {
+      "original_path": "/home/cody/zesislar-archive/stock-inputs/3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98-rustc",
+      "input_name": "compiler/rustc",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK toolchain/bin/rustc",
+      "declared_pin": "SHA256 3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98",
+      "retrieval_or_build_step": "Retrieve the preserved executable with this hash, or reproduce the ZisK runtime toolchain. Verify its hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe gives no archive retrieval URL or complete compiler build recipe."
+    },
+    {
+      "original_path": "/home/cody/zesislar-archive/stock-inputs/dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072-cargo",
+      "input_name": "compiler/cargo",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK toolchain/bin/cargo",
+      "declared_pin": "SHA256 dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072",
+      "retrieval_or_build_step": "Retrieve the preserved executable with this hash, or reproduce the ZisK runtime toolchain. Verify its hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe gives no archive retrieval URL or complete compiler build recipe."
+    },
+    {
+      "original_path": "/home/cody/zesislar-archive/stock-inputs/14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315-cargo-zisk",
+      "input_name": "compiler/cargo-zisk",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK toolchain/bin/cargo-zisk",
+      "declared_pin": "SHA256 14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315",
+      "retrieval_or_build_step": "Retrieve the preserved executable with this hash, or reproduce the ZisK runtime toolchain. Verify its hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe gives no archive retrieval URL or complete compiler build recipe."
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zesu-zkvm/zisk/Makefile",
+      "input_name": "guest/Makefile",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared guest checkout/zisk/Makefile",
+      "declared_pin": "guest commit be591e90ecbd94b0a3185809ba5ed74268558fa3; SHA256 0738a995e69ead8f01db449d4cb05506fd2da7c3f840c911fbf1ab3cbc0b6082",
+      "retrieval_or_build_step": "Fetch https://github.com/Consensys/zesu-zkvm.git at the declared guest commit. Read zisk/Makefile.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig",
+      "input_name": "guest/build.zig",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared guest checkout/zisk/build.zig",
+      "declared_pin": "guest commit be591e90ecbd94b0a3185809ba5ed74268558fa3; SHA256 87fd8bafd76349a02aab91b8895aa2c74ada9a80701eb8caa8de17e3f8248a7b",
+      "retrieval_or_build_step": "Fetch https://github.com/Consensys/zesu-zkvm.git at the declared guest commit. Read zisk/build.zig.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig.zon",
+      "input_name": "guest/build.zig.zon",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared guest checkout/zisk/build.zig.zon",
+      "declared_pin": "guest commit be591e90ecbd94b0a3185809ba5ed74268558fa3; SHA256 e2a74ae07565be08d66613747b7b7ebd5017b1c30091b5e973c52cdadc3c2f00",
+      "retrieval_or_build_step": "Fetch https://github.com/Consensys/zesu-zkvm.git at the declared guest commit. Read zisk/build.zig.zon.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zesu-zkvm/zisk/src/zisk_host.zig",
+      "input_name": "guest/src/zisk_host.zig",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared guest checkout/zisk/src/zisk_host.zig",
+      "declared_pin": "guest commit be591e90ecbd94b0a3185809ba5ed74268558fa3; SHA256 b2bce6c2d5fb4184e0cf7c8a35da52e33c5d733cc3aa6bd5c3dfe64a0cefebae",
+      "retrieval_or_build_step": "Fetch https://github.com/Consensys/zesu-zkvm.git at the declared guest commit. Read zisk/src/zisk_host.zig.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+      "input_name": "linker",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared guest checkout/zisk/zisk.ld",
+      "declared_pin": "guest commit be591e90ecbd94b0a3185809ba5ed74268558fa3; SHA256 51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd",
+      "retrieval_or_build_step": "Fetch https://github.com/Consensys/zesu-zkvm.git at the declared guest commit. Read zisk/zisk.ld.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar-archive/stock-inputs/f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491-libziskos_staticlib.a",
+      "input_name": "runtime",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared runtime build/riscv64ima-zisk-zkvm-elf/release/libziskos_staticlib.a",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; runtime image sha256:3c7565636c6516f21c630b4b7e803de59574e9381b50e2b4ae082b2b20751318; SHA256 f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491",
+      "retrieval_or_build_step": "Fetch the pinned ZisK source. Run the recorded cargo +zisk runtime command in the recorded environment. Verify the archive hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The image ID is not a registry retrieval reference. The preserved runtime archive has no retrieval URL."
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/zig-out/lib/zesu.o",
+      "input_name": "object",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared zesu checkout/zig-out/lib/zesu.o",
+      "declared_pin": "zesu commit b5483dda21d72405c50a22cb6406a1231e51a579; Zig 0.16.0; SHA256 dcd4b1bec1b02f94d7c4bca3d8323c386cfc7b780995235d6947790bb68d1afe",
+      "retrieval_or_build_step": "Fetch the selected zesu revision. Run zig build rv64im-object -Doptimize=ReleaseFast with the recorded cache and jobs flags.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/usr/bin/zig",
+      "input_name": "compiler/zig",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared toolchain/bin/zig",
+      "declared_pin": "Zig 0.16.0; SHA256 9640c29ae441820b37f09052fc32ece316e7587b5a8c9d0df61aa558e2d4f336",
+      "retrieval_or_build_step": "Install Zig 0.16.0 for the declared host. Verify the executable hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe gives no distribution URL or host package pin."
+    },
+    {
+      "original_path": "/usr/bin/riscv64-elf-objdump",
+      "input_name": "compiler/riscv64-elf-objdump",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared toolchain/bin/riscv64-elf-objdump",
+      "declared_pin": "SHA256 a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260",
+      "retrieval_or_build_step": "Install the selected RISC-V ELF binutils. Verify the executable hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe gives no binutils package version or retrieval URL."
+    },
+    {
+      "original_path": "/usr/bin/riscv64-elf-readelf",
+      "input_name": "compiler/riscv64-elf-readelf",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared toolchain/bin/riscv64-elf-readelf",
+      "declared_pin": "SHA256 d42bc4b515628277b93bed06290d81f1ea971be8f2a0fe4ced76be1b60f98cfb",
+      "retrieval_or_build_step": "Install the selected RISC-V ELF binutils. Verify the executable hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe gives no binutils package version or retrieval URL."
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/build.py",
+      "input_name": "builder/build.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/build.py",
+      "declared_pin": "SHA256 2a5c2d417cc1e1ecb4d8b032970ade50ca8f56b8f8969340ee7f9e4a831b5b0e",
+      "retrieval_or_build_step": "Use tools/stock_zisk/build.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/manifest.py",
+      "input_name": "builder/manifest.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/manifest.py",
+      "declared_pin": "SHA256 dafe272c7be45ae75b85dbc8866e6664008e07264b6225d31d43b16f5b6f0103",
+      "retrieval_or_build_step": "Use tools/stock_zisk/manifest.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-as",
+      "input_name": "legacy/riscv64-linux-gnu-as",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "bin/riscv64-linux-gnu-as",
+      "declared_pin": "SHA256 f685923c9eef8c7f8a4e1157afc818c027436dcd5e798fbac021146bd8f153d6",
+      "retrieval_or_build_step": "Use bin/riscv64-linux-gnu-as from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-ld",
+      "input_name": "legacy/riscv64-linux-gnu-ld",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "bin/riscv64-linux-gnu-ld",
+      "declared_pin": "SHA256 e7df162a0c0e5ddf6604a9765250aec166f77b05c2db4cdaa7fac3cd9a9cfbe5",
+      "retrieval_or_build_step": "Use bin/riscv64-linux-gnu-ld from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-nm",
+      "input_name": "legacy/riscv64-linux-gnu-nm",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "bin/riscv64-linux-gnu-nm",
+      "declared_pin": "SHA256 466f4fc027a3d8086ac7f5364f7fc3851ad68c226a0893b1b67b838341293e67",
+      "retrieval_or_build_step": "Use bin/riscv64-linux-gnu-nm from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-objdump",
+      "input_name": "legacy/riscv64-linux-gnu-objdump",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "bin/riscv64-linux-gnu-objdump",
+      "declared_pin": "SHA256 a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260",
+      "retrieval_or_build_step": "Use bin/riscv64-linux-gnu-objdump from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/z3",
+      "input_name": "legacy/z3",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "bin/z3",
+      "declared_pin": "SHA256 796dbda9afa35f2369d00e90c329d31a7d49afac75a683ddd14647f2c77f607a",
+      "retrieval_or_build_step": "Use bin/z3 from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/closure.py",
+      "input_name": "generator/closure.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/closure.py",
+      "declared_pin": "SHA256 c55da1702313ba5fdb7da5b0bc1b8337f95ce21aae1bec2cf632723d7e52d54f",
+      "retrieval_or_build_step": "Use tools/stock_zisk/closure.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/riscv.py",
+      "input_name": "generator/riscv.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/riscv.py",
+      "declared_pin": "SHA256 b964027f473a4dc65dee2a27566fabeddbeb770dc85f9a6d602192302c7d8405",
+      "retrieval_or_build_step": "Use tools/stock_zisk/riscv.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/dwarf.py",
+      "input_name": "generator/dwarf.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/dwarf.py",
+      "declared_pin": "SHA256 209df16ac736802a423d4fc73049b99ab19f105e83107a7ded7b6064c46063e3",
+      "retrieval_or_build_step": "Use tools/stock_zisk/dwarf.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/inventory.py",
+      "input_name": "generator/inventory.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/inventory.py",
+      "declared_pin": "SHA256 adc3bae421815d40b7908e9fc14e4bcf5d82182b605571edc57a27faa2e77a22",
+      "retrieval_or_build_step": "Use tools/stock_zisk/inventory.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/isla-snapshots/riscv64.ir",
+      "input_name": "platform-audit/snapshot",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared isla-snapshots/riscv64.ir",
+      "declared_pin": "SHA256 1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a; observed matching checkout b58da9170470a422c9396983ac8f87f0a63ba6f8",
+      "retrieval_or_build_step": "Fetch rems-project/isla-snapshots. Retrieve riscv64.ir and verify its hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe declares the snapshot hash, but does not declare its source commit."
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+      "input_name": "platform-audit/core/src/mem.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/core/src/mem.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read core/src/mem.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/transpilers/common/src/elf_extraction.rs",
+      "input_name": "platform-audit/transpilers/common/src/elf_extraction.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/transpilers/common/src/elf_extraction.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 0d5e95e716d6e21768866ed9c8956fde1f2895885f3fc99fd43cdf0251f2e85a",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read transpilers/common/src/elf_extraction.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/emulator/src/emu_context.rs",
+      "input_name": "platform-audit/emulator/src/emu_context.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/emulator/src/emu_context.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 5833070dc289a74f8aeb08d36e9acc09267ed8186b7785cccbd0aa18d1611f1f",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read emulator/src/emu_context.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/lib.rs",
+      "input_name": "platform-audit/ziskos/entrypoint/src/lib.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/ziskos/entrypoint/src/lib.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 9754f8c636daa302557b9ee7ebecc7627bda798eee4187999e81231a10274590",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read ziskos/entrypoint/src/lib.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+      "input_name": "platform-audit/zisk/zisk.ld",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "declared guest checkout/zisk/zisk.ld",
+      "declared_pin": "guest commit be591e90ecbd94b0a3185809ba5ed74268558fa3; SHA256 51a1c76452ad24d0682ece29d344b48f89cdce95d90bc71d62570c3d485537bd",
+      "retrieval_or_build_step": "Fetch https://github.com/Consensys/zesu-zkvm.git at the declared guest commit. Read zisk/zisk.ld.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/adapter.sail",
+      "input_name": "platform/tools/stock_zisk/platform/adapter.sail",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/adapter.sail",
+      "declared_pin": "SHA256 d07bd6d12b5ec244e67c474320d5d08a91cb7aa202a5350eaba342ce3f05c63b",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/adapter.sail from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bin/isla-footprint",
+      "input_name": "platform/tools/stock_zisk/platform/bin/isla-footprint",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/bin/isla-footprint",
+      "declared_pin": "SHA256 316357d80657f8792cc168cba5a52b85adcfb3f5291584a2e09dae74d687b2f4",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/bin/isla-footprint from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bind_traces.py",
+      "input_name": "platform/tools/stock_zisk/platform/bind_traces.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/bind_traces.py",
+      "declared_pin": "SHA256 158a90111fc74e589cdf5eeaf7fb615bceeea0d5b7f1fa5324012cbf96d69bdf",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/bind_traces.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/build.py",
+      "input_name": "platform/tools/stock_zisk/platform/build.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/build.py",
+      "declared_pin": "SHA256 6fde01540390fbb74c5545be9108bcaf6debc72d27c0cb703dd2146d7dace037",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/build.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/LICENCE",
+      "input_name": "platform/tools/stock_zisk/platform/compiler/LICENCE",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/compiler/LICENCE",
+      "declared_pin": "SHA256 cbefa8a8ed644f541fca50ea24607b973469ee1eb020b4cb9db1ac701e7eb114",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/compiler/LICENCE from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune",
+      "input_name": "platform/tools/stock_zisk/platform/compiler/dune",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/compiler/dune",
+      "declared_pin": "SHA256 a85696076e4f082e20bc319af99fa620da70a4d81695978cd0bb5f5bd0eac994",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/compiler/dune from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune-project",
+      "input_name": "platform/tools/stock_zisk/platform/compiler/dune-project",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/compiler/dune-project",
+      "declared_pin": "SHA256 50341da40e1af361988d57caffa6e766d893c3a1eefdd516ef1cf481964f5ce3",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/compiler/dune-project from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/jib_ir.ml",
+      "input_name": "platform/tools/stock_zisk/platform/compiler/jib_ir.ml",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/compiler/jib_ir.ml",
+      "declared_pin": "SHA256 57cd730b553bc1cc82fd7041486453b1e1aa41dbc2c6c762c81fa7eebc2801b6",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/compiler/jib_ir.ml from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+      "input_name": "platform/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+      "declared_pin": "SHA256 40a2fc10436d26b073c126549da5d1daf73fec67b8a5f2b0367fcbeeb7be7b84",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/compiler/sail_plugin_isla.ml from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/fragment.py",
+      "input_name": "platform/tools/stock_zisk/platform/fragment.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/fragment.py",
+      "declared_pin": "SHA256 36d92d6966b00538a08b3d438d2c04c37099ca5dca2bdbd7bc97eb6dbc1ed841",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/fragment.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/smoke.py",
+      "input_name": "platform/tools/stock_zisk/platform/smoke.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/smoke.py",
+      "declared_pin": "SHA256 64395604fe2a1efa1cc5817787f688caeb09c729a875bfd90fd98a4496e65994",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/smoke.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/test_build.py",
+      "input_name": "platform/tools/stock_zisk/platform/test_build.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/test_build.py",
+      "declared_pin": "SHA256 7df6b9c509bb9eaf428d14b33b2726c9bcf3cf77b845e42efffea3a4cd9a223c",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/test_build.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/traces.py",
+      "input_name": "platform/tools/stock_zisk/platform/traces.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/traces.py",
+      "declared_pin": "SHA256 68f14924ff59a83ded8b9f1033adc3ff3136d970415ab294121d25c560a2afd3",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/traces.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/islaris/_opam/bin/sail",
+      "input_name": "platform/sail",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared opam switch/bin/sail",
+      "declared_pin": "SHA256 a3e55921a1dbd52a77ba2efb89ed6ea18cbc43b1da8d3ad47bd5fa08d3de58af",
+      "retrieval_or_build_step": "Create the documented opam switch. Retrieve the selected Sail executable and verify its hash. Local metadata reports Sail/libsail 0.17.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe has no opam lock file or Sail package-source pin."
+    },
+    {
+      "original_path": "/home/cody/isla-snapshots/riscv64.ir",
+      "input_name": "platform/base_snapshot",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared isla-snapshots/riscv64.ir",
+      "declared_pin": "SHA256 1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a; observed matching checkout b58da9170470a422c9396983ac8f87f0a63ba6f8",
+      "retrieval_or_build_step": "Fetch rems-project/isla-snapshots. Retrieve riscv64.ir and verify its hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe declares the snapshot hash, but does not declare its source commit."
+    },
+    {
+      "original_path": "/home/cody/isla/target/release/isla-footprint",
+      "input_name": "platform/isla_footprint",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared isla/target/release/isla-footprint",
+      "declared_pin": "SHA256 c4d86501b85fb471ffac1ba4fc09b0051233b3416c2889ab67c2f3db1d9e8cc2",
+      "retrieval_or_build_step": "Fetch Isla. Run cargo build --release with its Z3 dependency. Verify the executable hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe has no Isla source commit or complete Rust/Z3 build pin."
+    },
+    {
+      "original_path": "/home/cody/islaris/_opam/bin/islaris",
+      "input_name": "platform/islaris",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared opam switch/bin/islaris",
+      "declared_pin": "SHA256 45a51764fb4c6b2b34136db940654bb83e4259b706d7dd5981241d949497b44f",
+      "retrieval_or_build_step": "Build and install Islaris and its pinned proof libraries. Verify the executable hash.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": "The recipe has no Islaris source commit or complete opam lock file."
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+      "input_name": "platform/sail_plugin",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "build/stock-zisk/platform/sail_plugin_isla.cmxs",
+      "declared_pin": "SHA256 cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429",
+      "retrieval_or_build_step": "Use the tracked file build/stock-zisk/platform/sail_plugin_isla.cmxs. To rebuild, run tools/stock_zisk/platform/build.py with the declared Sail/libsail switch.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/riscv64_zesu.toml",
+      "input_name": "platform/config",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/riscv64_zesu.toml",
+      "declared_pin": "SHA256 2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6",
+      "retrieval_or_build_step": "Use ZesuSsz/riscv64_zesu.toml from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/Machine.v",
+      "input_name": "machine-map/ZesuSsz/Contracts/Machine.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Contracts/Machine.v",
+      "declared_pin": "SHA256 2c97133b3d7b0615512546eef4ba2d2373ddf4e165d5c7f8b8680d740b44ee2e",
+      "retrieval_or_build_step": "Use ZesuSsz/Contracts/Machine.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/InstrSpecs/Machine.v",
+      "input_name": "machine-map/InstrSpecs/Machine.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "InstrSpecs/Machine.v",
+      "declared_pin": "SHA256 1a8b0f0be3397d23c6b00ba151c3bc96d12a9d445197779506c2f5ab36ddf9ae",
+      "retrieval_or_build_step": "Use InstrSpecs/Machine.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Export/Adequacy.v",
+      "input_name": "machine-map/ZesuSsz/Export/Adequacy.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Export/Adequacy.v",
+      "declared_pin": "SHA256 f67c3fae5b7465447942e311f67356d13ebab568392b241626f24c0f6f742ba2",
+      "retrieval_or_build_step": "Use ZesuSsz/Export/Adequacy.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/OutputEvents.v",
+      "input_name": "machine-map/ZesuSsz/Contracts/OutputEvents.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Contracts/OutputEvents.v",
+      "declared_pin": "SHA256 4c0bb9783b9a7517845c6f73d62b1dc000da2dc5d902cb7332a261ff2a19acf4",
+      "retrieval_or_build_step": "Use ZesuSsz/Contracts/OutputEvents.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Export/Snapshots.v",
+      "input_name": "machine-map/ZesuSsz/Export/Snapshots.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Export/Snapshots.v",
+      "declared_pin": "SHA256 06486bb68aa4f950be5eca4f797b8bd99fb4e01341492a6684746f00c7394823",
+      "retrieval_or_build_step": "Use ZesuSsz/Export/Snapshots.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/Hooks.v",
+      "input_name": "machine-map/ZesuSsz/Automation/Hooks.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Automation/Hooks.v",
+      "declared_pin": "SHA256 b2a154cc9d7ee0cfd5944d82f3e6624522cbc5c9a71068fc956c7f88e7d2d7a1",
+      "retrieval_or_build_step": "Use ZesuSsz/Automation/Hooks.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/machine_config.py",
+      "input_name": "machine-map/tools/machine_config.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/machine_config.py",
+      "declared_pin": "SHA256 39f537d0656a642de380eb17d72aa18a9d1222dafd7892bf45240520c89800cf",
+      "retrieval_or_build_step": "Use tools/machine_config.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/test_machine_config.py",
+      "input_name": "machine-map/tools/test_machine_config.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/test_machine_config.py",
+      "declared_pin": "SHA256 4e4b26e4e57050005d93b5462f3a550a81365ba46354af110429a87b6bad92f8",
+      "retrieval_or_build_step": "Use tools/test_machine_config.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/machine_map/generate.py",
+      "input_name": "machine-map/tools/stock_zisk/machine_map/generate.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/machine_map/generate.py",
+      "declared_pin": "SHA256 58bcf5feaae8601ea9f472cb7223ed23d80768735df22c0f6d1c2b7f635d3ce2",
+      "retrieval_or_build_step": "Use tools/stock_zisk/machine_map/generate.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/BitvectorFacts.v",
+      "input_name": "machine-map/ZesuSsz/Automation/BitvectorFacts.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Automation/BitvectorFacts.v",
+      "declared_pin": "SHA256 6519893611a03dd3aca0cd874b191fb8510d1afce997d03440fbdabf4c856671",
+      "retrieval_or_build_step": "Use ZesuSsz/Automation/BitvectorFacts.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+      "declared_pin": "SHA256 226990987f10898759b18e0e6a28bcabf5a248adfcf7da7a8e0dfc1cca1e084a",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/ByteArraysWrite.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+      "declared_pin": "SHA256 89e5767e15fac290305e81108b92c48e14f1f068c04ab8b200f80cae73d07af7",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/ByteArraysRead.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+      "declared_pin": "SHA256 29009f54a63f28a18016e93febe7cdb2703321756cead5abd0cfe7fd0f47c2a1",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/ByteArrayHookExport.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/Finish.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/Finish.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/Finish.v",
+      "declared_pin": "SHA256 d6c9c8b3edc005aa7563d2d8dfc84f5a83aa4cefa86105843203c14922443d3b",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/Finish.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/RuleSetV2.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/RuleSetV2.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/RuleSetV2.v",
+      "declared_pin": "SHA256 8b127d4f430cfc0f19f10747c20701901323a697d89d78b0ae7c484e970d9aa6",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/RuleSetV2.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/NonRaising.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/NonRaising.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/NonRaising.v",
+      "declared_pin": "SHA256 15d2f7214f8767d10f83884e1e9b03b874a996e8d4238c0c0d29fe0f7e6ed99b",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/NonRaising.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+      "declared_pin": "SHA256 39f967cd71f8c6778573247e0b0671296240333589ef4a424edcba85f1a13156",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/NonRaisingLegacy.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla",
+      "declared_pin": "SHA256 abecaf9f7891c0fa205c9b3ba1da6fd0ee8426e299460d032afbf9e76528a670",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/LdX16X10Off80.v",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/LdX16X10Off80.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/LdX16X10Off80.v",
+      "declared_pin": "SHA256 4516cd4ec2b626cfd4ccc9dfbc656ac383f2432e9c3278e73dcc639e9fbad444",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/LdX16X10Off80.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla",
+      "declared_pin": "SHA256 e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
+      "declared_pin": "SHA256 82b25e8da493c0688cff97aeedc38fb988ad52028ac4536722930c0265846d2d",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/SdX1X2Off8.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/metadata.json",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/metadata.json",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/metadata.json",
+      "declared_pin": "SHA256 5556b117be7e44a84524c2fa8d0726862b12e265dbaa20dda561e28a93322e5e",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/metadata.json from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/indexes.py",
+      "input_name": "traces/tools/stock_zisk/platform/indexes.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/indexes.py",
+      "declared_pin": "SHA256 3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/indexes.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/cache_footprint.py",
+      "input_name": "traces/tools/stock_zisk/platform/cache_footprint.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/cache_footprint.py",
+      "declared_pin": "SHA256 435e341ce28bd83fc96a745fb93eec8dd8aaac9d4bac745d5a61d262ca0da8ea",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/cache_footprint.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/exports.py",
+      "input_name": "traces/tools/stock_zisk/platform/exports.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/platform/exports.py",
+      "declared_pin": "SHA256 de452dd154d1494e24ca2447d41e28c02466c561a7f922ff8efa27fdff01641e",
+      "retrieval_or_build_step": "Use tools/stock_zisk/platform/exports.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/Makefile",
+      "input_name": "traces/Makefile",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "Makefile",
+      "declared_pin": "SHA256 960ead8857c282eda928e5d2c29d03a10a2187c39f28c2cbd57da114de029996",
+      "retrieval_or_build_step": "Use Makefile from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_CoqProject",
+      "input_name": "traces/_CoqProject",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "_CoqProject",
+      "declared_pin": "SHA256 110ce833f885b99f30e231a8898dbe59a102e72d5bf927b8afdbbf31c9a3b023",
+      "retrieval_or_build_step": "Use _CoqProject from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/ZiskRuntime.v",
+      "input_name": "runtime-statement/ZesuSsz/Contracts/ZiskRuntime.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Contracts/ZiskRuntime.v",
+      "declared_pin": "SHA256 2a794e3b05b24591864717fff8d10fac171ed49305a88dcc052e9134648a6064",
+      "retrieval_or_build_step": "Use ZesuSsz/Contracts/ZiskRuntime.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "input_name": "runtime-statement/ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "declared_pin": "SHA256 ab02ac05fcb705dbc6f4d28554aba4565762201fe75eb08285fb67dec7035cd1",
+      "retrieval_or_build_step": "Use ZesuSsz/Contracts/ParentHeaderRootFacts.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "input_name": "runtime-statement/ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "declared_pin": "SHA256 eb9cc11512675ca16bbdb5b0b5f8606b99cd9aed7175cbc620e93dafff825449",
+      "retrieval_or_build_step": "Use ZesuSsz/Contracts/ParentHeaderLevel1.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/runtime_inventory.py",
+      "input_name": "runtime-statement/tools/stock_zisk/runtime_inventory.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/stock_zisk/runtime_inventory.py",
+      "declared_pin": "SHA256 8d0f0522ebfc6da0b9638a64afec016000e7072512080e65ae5b359bb1c773d9",
+      "retrieval_or_build_step": "Use tools/stock_zisk/runtime_inventory.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/dma/memcpy.s",
+      "input_name": "runtime-service/ziskos/entrypoint/src/dma/memcpy.s",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/ziskos/entrypoint/src/dma/memcpy.s",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 f249b68cc72a3dfc1525c47d3c7c03037bb3105c7fc68a3a26ed7af82ecdaf6c",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read ziskos/entrypoint/src/dma/memcpy.s.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/transpilers/riscv/src/riscv2zisk_context.rs",
+      "input_name": "runtime-service/transpilers/riscv/src/riscv2zisk_context.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/transpilers/riscv/src/riscv2zisk_context.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 7db3f348137bf8276ec6d96c9528bf0130fcffcc15dbe6135c64fb115bcf5d48",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read transpilers/riscv/src/riscv2zisk_context.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/core/src/operations/dma_memcpy.rs",
+      "input_name": "runtime-service/core/src/operations/dma_memcpy.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/core/src/operations/dma_memcpy.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 c1c78cb150cbbc367914af373a7e153db6b6839b03de88c21c84933e58aa6724",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read core/src/operations/dma_memcpy.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+      "input_name": "runtime-service/core/src/mem.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/core/src/mem.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read core/src/mem.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/tmp/worker2-stock-zisk-toolchain/core/src/zisk_inst_builder.rs",
+      "input_name": "runtime-service/core/src/zisk_inst_builder.rs",
+      "class": "declared toolchain input",
+      "expected_local_location": "declared ZisK checkout/core/src/zisk_inst_builder.rs",
+      "declared_pin": "ZisK commit fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3; SHA256 3da8705df1451bd6acc8f7aba941355aef199e07c9e473c4efbb91175238b84a",
+      "retrieval_or_build_step": "Fetch https://github.com/0xPolygonHermez/zisk.git at the declared ZisK commit. Read core/src/zisk_inst_builder.rs.",
+      "tracked_in_root_and_clean_clone": false,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuStock/CalleeIdentity.v",
+      "input_name": "traces/ZesuStock/CalleeIdentity.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuStock/CalleeIdentity.v",
+      "declared_pin": "SHA256 0dab53751f0c45d14ebe9b72b0c374e9a9b51a893c8fb95a376f12951f52b0f8",
+      "retrieval_or_build_step": "Use ZesuStock/CalleeIdentity.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuStock/dune",
+      "input_name": "traces/ZesuStock/dune",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuStock/dune",
+      "declared_pin": "SHA256 ebd685bb284cedbc712224f70d8fe1639f2fb1268bd5acb43b4835bbc5612b10",
+      "retrieval_or_build_step": "Use ZesuStock/dune from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/dune",
+      "input_name": "traces/ZesuSsz/dune",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/dune",
+      "declared_pin": "SHA256 61de1d30481b5932f9bda70112374cb779ce8b5ecb256bd21f69e9de31a4ddfe",
+      "retrieval_or_build_step": "Use ZesuSsz/dune from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/InstrSpecs/Specs.v",
+      "input_name": "machine-map/InstrSpecs/Specs.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "InstrSpecs/Specs.v",
+      "declared_pin": "SHA256 dd4b321368ca940f2faf1810e3c9e0aaee794cf68aaece8a19007dd6ab3f64b2",
+      "retrieval_or_build_step": "Use InstrSpecs/Specs.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/Calls.v",
+      "input_name": "machine-map/ZesuSsz/Automation/Calls.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Automation/Calls.v",
+      "declared_pin": "SHA256 30561eb68a70e4e497fdeeb966ea8d262259614374b06527dd7171dc9fcbacd3",
+      "retrieval_or_build_step": "Use ZesuSsz/Automation/Calls.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/EntryAddi.isla",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/EntryAddi.isla",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/EntryAddi.isla",
+      "declared_pin": "SHA256 fccf1c17289ce68b6187997a19589e4d75d10b4d6fe285357af7821663891e8c",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/EntryAddi.isla from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/EntryAddi.v",
+      "input_name": "machine-map/ZesuSsz/Generated/TestTraces/EntryAddi.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Generated/TestTraces/EntryAddi.v",
+      "declared_pin": "SHA256 d9e514be60dd28c2af4331d7bde4b8da7963add8a5ba58aead4aec5cf8ee5a28",
+      "retrieval_or_build_step": "Use ZesuSsz/Generated/TestTraces/EntryAddi.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/StockExecutor.v",
+      "input_name": "machine-map/ZesuSsz/Proofs/Tests/StockExecutor.v",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "ZesuSsz/Proofs/Tests/StockExecutor.v",
+      "declared_pin": "SHA256 9f431f03f5189d8239d13e2074c134270a96769dd7e60d9181346992ed672015",
+      "retrieval_or_build_step": "Use ZesuSsz/Proofs/Tests/StockExecutor.v from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/block/blockrun.py",
+      "input_name": "build-entry/tools/block/blockrun.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/block/blockrun.py",
+      "declared_pin": "SHA256 651dfe5a27218b2576abad12e272db846061d1c6cb77930ced43df95b0bd8106",
+      "retrieval_or_build_step": "Use tools/block/blockrun.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/block/entries.py",
+      "input_name": "build-entry/tools/block/entries.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/block/entries.py",
+      "declared_pin": "SHA256 a274cf5c9f389306b038837f1bdfc9d327fde984bcee90bf11894ac57c55df73",
+      "retrieval_or_build_step": "Use tools/block/entries.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/test_block_entries.py",
+      "input_name": "build-entry/tools/test_block_entries.py",
+      "class": "project file that belongs in the tree or needs a documented fetch/build step",
+      "expected_local_location": "tools/test_block_entries.py",
+      "declared_pin": "SHA256 adf01278b8aea4fb31ea3cba281049bf36f9a817f3d784aa98ae95f920eb451b",
+      "retrieval_or_build_step": "Use tools/test_block_entries.py from the clean checkout. Do not use the original worktree path.",
+      "tracked_in_root_and_clean_clone": true,
+      "documentation_gap": null
+    }
+  ],
+  "host_requirements": [
+    {
+      "component": "opam proof environment",
+      "requirement": "Declare one opam switch and lock its package sources and versions. Include Coq, Iris, Lithium, stdpp, stdpp-bitvector, isla-lang, Islaris, OCaml, and Dune.",
+      "observed": "The opam package metadata reports coq/coq-core 8.19.0. Both opam exec coqc --version and the explicit switch coqc report 8.19.2+lsp, compiled with OCaml 4.14.4. The switch reports Dune 3.23.1, Iris dev.2024-09-10.1.6f24ed4b, Lithium dev.2024-09-11.0.7945a29d, stdpp and stdpp-bitvector dev.2024-09-10.3.a1a12e00.",
+      "gap": "The package version is a metadata label for a pinned LSP fork. The executable agrees with MCP health. The local Islaris opam file requires Dune >=3.10.0 and <3.11.0, unlike the installed Dune. A complete environment lock remains absent. This report selects no new host pin."
+    },
+    {
+      "component": "Sail adapter environment",
+      "requirement": "Declare Sail/libsail 0.17 and a compatible OCaml/Dune environment. Build the tracked plugin sources before the adapter.",
+      "observed": "tools/stock_zisk/platform/build.py invokes /home/cody/islaris explicitly. The plugin is tracked in build/stock-zisk/platform/sail_plugin_isla.cmxs.",
+      "gap": "The recipe records executable hashes, but no complete opam lock or relocatable switch path."
+    },
+    {
+      "component": "Isla and base snapshot",
+      "requirement": "Declare Isla, its Rust compiler, Z3 headers and shared library, and the base snapshot hash. Configure LD_LIBRARY_PATH when required.",
+      "observed": "The local Isla checkout is b8e614bda4a20e42c37d8b216853653133d04322. The local snapshot checkout is b58da9170470a422c9396983ac8f87f0a63ba6f8. Its HEAD:riscv64.ir matches the recorded hash. The local Islaris checkout is b519affd56b66802b343f6da3de80b56f9829472.",
+      "gap": "These source revisions are observations. The selected recipe does not declare them as source pins."
+    },
+    {
+      "component": "Zig and ELF tools",
+      "requirement": "Install Zig 0.16.0 and the selected riscv64-elf-objdump/readelf binaries. Verify their manifest hashes.",
+      "observed": "The manifest records /usr/bin locations and executable hashes.",
+      "gap": "The manifest has no host distribution, package version, or retrieval URL for these tools."
+    },
+    {
+      "component": "ZisK runtime host",
+      "requirement": "Fetch ZisK fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3. Install cargo-zisk and its +zisk toolchain. Build ziskos-staticlib for riscv64ima-zisk-zkvm-elf with the recorded locked release command.",
+      "observed": "The runtime uses container image ID sha256:3c7565636c6516f21c630b4b7e803de59574e9381b50e2b4ae082b2b20751318. Pinned upstream tools/test-env/Dockerfile starts from Ubuntu 22.04. Its dependency script installs LLVM, Clang, build-essential, libclang, libomp, libgmp, protobuf, NASM, OpenMPI, libsodium, and Rust.",
+      "gap": "The image ID has no registry retrieval reference. Its mutable upstream Dockerfile cannot reproduce the recorded image alone. The preserved Rust executables and runtime archive have no retrieval URLs."
+    },
+    {
+      "component": "general project host",
+      "requirement": "Declare Git, Python dependencies, GNU make, Bash, and the resource-guard host tools. Create the private build parent before Dune runs.",
+      "observed": "Q10 failed because _build/agents did not exist. Q10 also lacked /usr/bin/time and used tools/build_record.py.",
+      "gap": "Q10 used an existing host environment. It did not test a host without external dependencies."
+    }
+  ],
+  "interpretation": "Expected local locations describe required roles. They do not change current paths or select a new repository layout.",
+  "classification_ruling": "The coordinator requires tracked bin wrappers in the project class. Manifest-pinned ZisK source files belong in the toolchain class.",
+  "coq_version_check": {
+    "opam_switch": "/home/cody/islaris",
+    "opam_bin": "/home/cody/islaris/_opam/bin",
+    "explicit_executable": "/home/cody/islaris/_opam/bin/coqc",
+    "executable_version": "8.19.2+lsp",
+    "executable_sha256": "cdea055626239eac587cf71c154535acbceccff12016e47f0538f55c764fbd5f",
+    "package_metadata": {
+      "coq": "8.19.0",
+      "coq-core": "8.19.0"
+    },
+    "observed_coq_core_pin": "git+https://github.com/ejgallego/coq.git#v8.19+lsp",
+    "observed_pin_revision": "7078415b8cbaa3fc5ee8ec3caca610c609a3f166",
+    "overlay_version": "8.19.0",
+    "conclusion": "The executable and MCP report agree. Opam reports the pinned fork metadata version. These observations do not select project pins."
+  }
+}
