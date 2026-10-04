@@ -1201,23 +1201,82 @@ Instance Countable_register_ExecutionProfile : Countable register_ExecutionProfi
   reflexivity.
 Defined.
 
+Variant register_list_byte :=
+  | shim_input_bytes
+.
+
+Definition num_of_register_list_byte (r : register_list_byte) : Z :=
+  match r with
+  | shim_input_bytes => 0
+  end.
+Definition register_list_byte_of_num (i : Z) : register_list_byte :=
+  match i with
+  | 0 => shim_input_bytes
+  | _ => shim_input_bytes
+  end.
+Lemma register_list_byte_num_of_roundtrip (x : register_list_byte) : register_list_byte_of_num (num_of_register_list_byte x) = x.
+  destruct x; reflexivity.
+Qed.
+Lemma num_of_register_list_byte_injective (x y : register_list_byte) : num_of_register_list_byte x = num_of_register_list_byte y -> x = y.
+  intro.
+  rewrite <- (register_list_byte_num_of_roundtrip x).
+  rewrite <- (register_list_byte_num_of_roundtrip y).
+  congruence.
+Qed.
+Definition register_list_byte_eq_dec (x y : register_list_byte) : {x = y} + {x <> y}.
+  refine (match Z.eq_dec (num_of_register_list_byte x) (num_of_register_list_byte y) with
+  | left e => left (num_of_register_list_byte_injective x y e)
+  | right ne => right _
+  end).
+  congruence.
+Defined.
+Definition register_list_byte_beq (x y : register_list_byte) : bool :=
+  Z.eqb (num_of_register_list_byte x) (num_of_register_list_byte y).
+Lemma register_list_byte_beq_iff x y : register_list_byte_beq x y = true <-> x = y.
+  unfold register_list_byte_beq.
+  rewrite Z.eqb_eq.
+  split; [apply num_of_register_list_byte_injective | congruence].
+Qed.
+Lemma register_list_byte_beq_refl x : register_list_byte_beq x x = true.
+apply register_list_byte_beq_iff; reflexivity.
+Qed.
+Hint Rewrite register_list_byte_beq_iff : register_beq_iffs.
+Hint Rewrite register_list_byte_beq_refl : register_beq_refls.
+Definition register_list_byte_list : list (string * register_list_byte) := [
+  ("shim_input_bytes", shim_input_bytes)
+].
+
+Instance Decidable_eq_register_list_byte : EqDecision register_list_byte := register_list_byte_eq_dec.
+Instance Countable_register_list_byte : Countable register_list_byte. refine {|
+  encode x := encode (num_of_register_list_byte x);
+  decode x := register_list_byte_of_num <$> decode x
+|}.
+  intro s; rewrite decode_encode; simpl.
+  rewrite register_list_byte_num_of_roundtrip.
+  reflexivity.
+Defined.
+
 
 Variant register : Type :=
   | R_ExecutionProfile :> register_ExecutionProfile -> register
+  | R_list_byte :> register_list_byte -> register
 .
 
 Definition type_of_register (r : register) : Type :=
   match r with
   | R_ExecutionProfile _ => ExecutionProfile
+  | R_list_byte _ => ((list byte))
   end.
 
   Definition register_encode (r : register) : positive :=
     match r with
     | R_ExecutionProfile r => encode (0, encode r)
+    | R_list_byte r => encode (1, encode r)
     end.
   Definition register_decode (x : positive) : option register :=
     match decode x with
     | Some (0, y) => r ← decode y; mret (R_ExecutionProfile r)
+    | Some (1, y) => r ← decode y; mret (R_list_byte r)
     | _ => None
     end.
   Lemma register_decode_encode r : register_decode (register_encode r) = Some r.
@@ -1252,10 +1311,14 @@ Definition register_transport {P : Type -> Type} {r r' : register} : r = r' -> P
 refine (
   match r, r' with
   | R_ExecutionProfile r, R_ExecutionProfile r' => fun _ x => x
-
+  | R_list_byte r, R_list_byte r' => fun _ x => x
+  | _, _ => fun e _ => _
   end
 ).
-(* no wildcard case *)
+  all:
+  enough (H : type_of_register r0 = type_of_register r1);
+  [ simpl in H; congruence
+  | rewrite e; reflexivity].
 Defined.
 
 Lemma register_transport_sound {P} {r : register} (e : r = r) (p : P (type_of_register r)) :
@@ -1267,7 +1330,8 @@ Qed.
 Definition register_beq (r r' : register) : bool :=
   match r, r' with
   | R_ExecutionProfile r, R_ExecutionProfile r' => register_ExecutionProfile_beq r r'
-
+  | R_list_byte r, R_list_byte r' => register_list_byte_beq r r'
+  | _, _ => false
   end.
 
 Lemma register_beq_refl (r : register) : register_beq r r = true.
@@ -1277,11 +1341,13 @@ Qed.
 Definition register_eq_cast (P : Type -> Type) (r r' : register) : P (type_of_register r) -> option (P (type_of_register r')) :=
   match r, r' with
   | R_ExecutionProfile r, R_ExecutionProfile r' => fun p => if register_ExecutionProfile_beq r r' then Some p else None
-
+  | R_list_byte r, R_list_byte r' => fun p => if register_list_byte_beq r r' then Some p else None
+  | _, _ => fun _ => None
   end.
 
 Definition register_list : list (string * register) := List.concat [
-  List.map (fun '(s, r) => (s, R_ExecutionProfile r)) register_ExecutionProfile_list
+  List.map (fun '(s, r) => (s, R_ExecutionProfile r)) register_ExecutionProfile_list;
+  List.map (fun '(s, r) => (s, R_list_byte r)) register_list_byte_list
 ].
 
 Definition string_of_register (r : register) : string :=
@@ -1317,18 +1383,22 @@ Qed.
 #[export] Instance Decidable_eq_register_values `(r : register) : EqDecision (type_of_register r) | 100 :=
 match r with
   | R_ExecutionProfile _ => _
+  | R_list_byte _ => _
 end.
 #[export] Instance Inhabited_register_values `(r : register) : Inhabited (type_of_register r) | 100 :=
   match r with
   | R_ExecutionProfile _ => _
+  | R_list_byte _ => _
 end.
 #[export] Instance Countable_register_values `(r : register) : Countable (type_of_register r) | 100.
 refine {|
   encode := match r with
   | R_ExecutionProfile _ => encode
+  | R_list_byte _ => encode
   end;
   decode := match r with
   | R_ExecutionProfile _ => decode
+  | R_list_byte _ => decode
   end;
 |}.
 abstract (destruct r; apply decode_encode).
@@ -1338,26 +1408,36 @@ Definition k_execution_profile_ref : register_ref _ :=
   Build_register_ref register type_of_register _ "k_execution_profile" k_execution_profile (fun x => x) (fun x => x).
 Instance dummy_register_ExecutionProfile : Inhabited (register_ref _) := populate k_execution_profile_ref.
 
+Definition shim_input_bytes_ref : register_ref _ :=
+  Build_register_ref register type_of_register _ "shim_input_bytes" shim_input_bytes (fun x => x) (fun x => x).
+Instance dummy_register_list_byte : Inhabited (register_ref _) := populate shim_input_bytes_ref.
+
 
 (* Definitions to support the lifting to the sequential monad *)
 Record regstate := {
   ExecutionProfile_s : register_ExecutionProfile -> ExecutionProfile;
+  list_byte_s : register_list_byte -> list byte;
 }.
 Notation "{[ r 'with' 'ExecutionProfile_s' := e ]}" :=
-  {| ExecutionProfile_s := e |} (at level 1, only parsing).
+  match r with Build_regstate _ (_ as f1) => Build_regstate e f1 end (at level 1).
+Notation "{[ r 'with' 'list_byte_s' := e ]}" :=
+  match r with Build_regstate (_ as f0) _ => Build_regstate f0 e end (at level 1).
 
 Definition init_regstate : regstate := Build_regstate
+  inhabitant
   inhabitant
 .
 
 Definition register_lookup (reg : register) (rs : regstate) : type_of_register reg :=
   match reg with
   | R_ExecutionProfile r => rs.(ExecutionProfile_s) r
+  | R_list_byte r => rs.(list_byte_s) r
   end.
 
 Definition register_set (reg : register) : type_of_register reg -> regstate -> regstate :=
   match reg with
   | R_ExecutionProfile r => fun v rs => {[ rs with ExecutionProfile_s := fun r' => if register_ExecutionProfile_beq r' r then v else rs.(ExecutionProfile_s) r' ]}
+  | R_list_byte r => fun v rs => {[ rs with list_byte_s := fun r' => if register_list_byte_beq r' r then v else rs.(list_byte_s) r' ]}
   end.
 
 Lemma register_lookup_set (r : register) regs v: register_lookup r (register_set r v regs) = v.

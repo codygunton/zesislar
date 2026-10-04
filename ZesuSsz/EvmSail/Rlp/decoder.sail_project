@@ -47,5 +47,6 @@ evm_rlp {
     kernel/selfdestruct.sail,
     kernel/lifecycle.sail,
     lib/ssz/stateless_input.sail,
-    lib/rlp/codecs/withdrawals.sail
+    lib/rlp/codecs/withdrawals.sail,
+    shim/input.sail
 }

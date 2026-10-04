@@ -175,46 +175,103 @@ Definition stateless_input_slice_suffix {base : Z} {source_len : Z}
 
 Definition fatal_error {a : Type} (_reason : FatalError) : M (a) := exit tt  : M (a).
 
-Axiom stateless_input_byte_at :
-  forall
+Fixpoint shim_byte_at (bytes : list (mword 8)) (index : Z) : M (byte) :=
+   match bytes with
+   | [] => assert_exp' false "input index outside backing bytes" >>= fun _ => exit tt
+   | head :: tail =>
+      (if Z.eqb (index) (0) then returnM (head)
+       else (shim_byte_at (tail) ((Z.sub (index) (1))))  : M (mword 8))
+       : M (mword 8)
+   end
+    : M (mword 8).
 
-  (_ : StatelessInputSlice) (_ : stateless_input_length)
-  (*(0 <=? ex122005_) && ((0 <=? ex122006_) && ((ex122005_ + ex122006_) <=? (2 ^ 32 - 1)))*) (*(0 <=?
-    ex122007_) &&
-    (ex122007_ <=? (2 ^ 32 - 1))*),
-  M (byte).
+Fixpoint shim_input_length (bytes : list (mword 8)) : Z :=
+   match bytes with | [] => 0 | _ :: tail => Z.add (1) ((shim_input_length (tail))) end.
 
-Axiom stateless_input_load_n_word :
-  forall
-
-  (_ : StatelessInputSlice) (_ : stateless_input_length) (_ : word_byte_count)
-  (*(0 <=? ex122010_) && ((0 <=? ex122011_) && ((ex122010_ + ex122011_) <=? (2 ^ 32 - 1)))*) (*(0 <=?
-    ex122012_) &&
-    (ex122012_ <=? (2 ^ 32 - 1))*) (*(0 <=? ex122013_) && (ex122013_ <=? 32)*),
-  M (word).
-
-Definition stateless_input_slice_byte {ex116916_ : Z} {ex116915_ : Z}
-(s : StatelessInputSliceFields ex116915_ ex116916_) (off : Z)
+Definition stateless_input_byte_at {ex119403_ : Z} {ex119402_ : Z}
+(s : StatelessInputSliceFields ex119402_ ex119403_) (off : stateless_input_length)
+(*(0 <=? ex119402_) && ((0 <=? ex119403_) && ((ex119402_ + ex119403_) <=? (2 ^ 32 - 1)))*)
 (*(0 <=? off) && (off <=? (2 ^ 32 - 1))*)
-(*(0 <=? ex116915_) && ((0 <=? ex116916_) && ((ex116915_ + ex116916_) <=? (2 ^ 32 - 1)))*)
 : M (byte) :=
-   (if Z.ltb (off) ex116916_ return M (mword 8) then
-      (stateless_input_byte_at
-         (@existT _ _ ex116916_ (@existT _ _ ex116915_ ((s : StatelessInputSliceFields ex116915_ ex116916_))))
-         (Build_stateless_input_length ((off))))
+   let off := (off).(stateless_input_length_value) in
+   (and_boolM (returnM ((Z.leb (0) ex119402_)))
+      (and_boolM (returnM ((Z.leb (0) ex119403_)))
+         (read_reg shim_input_bytes >>= fun (w__0 : list (mword 8)) =>
+          returnM ((Z.leb ((Z.add ex119402_ ex119403_)) ((shim_input_length (w__0)))))))) >>= fun w__2 =>
+   assert_exp' w__2 "input slice outside backing bytes" >>= fun _ =>
+   assert_exp' (andb ((Z.leb (0) (off))) ((Z.ltb (off) ex119403_))) "input byte offset outside slice" >>= fun _ =>
+   read_reg shim_input_bytes >>= fun (w__3 : list (mword 8)) =>
+   (shim_byte_at (w__3) ((Z.add ex119402_ (off))))
+    : M (mword 8).
+
+Definition stateless_input_slice_byte {ex119408_ : Z} {ex119407_ : Z}
+(s : StatelessInputSliceFields ex119407_ ex119408_) (off : Z)
+(*(0 <=? off) && (off <=? (2 ^ 32 - 1))*)
+(*(0 <=? ex119407_) && ((0 <=? ex119408_) && ((ex119407_ + ex119408_) <=? (2 ^ 32 - 1)))*)
+: M (byte) :=
+   (if Z.ltb (off) ex119408_ return M (mword 8) then
+      (stateless_input_byte_at (s) (Build_stateless_input_length ((off))))
        : M (mword 8)
     else returnM ((Ox"00")))
     : M (mword 8).
 
-Definition stateless_input_slice_load_n {ex116920_ : Z} {ex116919_ : Z}
-(s : StatelessInputSliceFields ex116919_ ex116920_) (off : Z) (n : Z)
-(*(0 <=? off) && ((off <=? (2 ^ 32 - 1)) && ((0 <=? n) && (n <=? 32)))*)
-(*(0 <=? ex116919_) && ((0 <=? ex116920_) && ((ex116919_ + ex116920_) <=? (2 ^ 32 - 1)))*)
+Fixpoint _rec_shim_load_n {ex119412_ : Z} {ex119411_ : Z}
+(s : StatelessInputSliceFields ex119411_ ex119412_) (off : Z) (remaining : Z) (value : Z)
+(_reclimit : Z)
+(*(0 <=? ex119411_) && ((0 <=? ex119412_) && ((ex119411_ + ex119412_) <=? (2 ^ 32 - 1)))*)
+(_acc : Acc (Zwf 0) _reclimit)
+{struct _acc} : M (Z).
+exact (
+   assert_exp' (Z.geb (_reclimit) (0)) "recursion limit reached" >>= fun _ =>
+   (if Z.eqb (remaining) (0) then returnM (value)
+    else
+      (if Z.ltb (off) ex119412_ return M (Z) then
+         read_reg shim_input_bytes >>= fun (w__0 : list (mword 8)) =>
+         (shim_byte_at (w__0) ((Z.add ex119411_ (off)))) >>= fun (w__1 : mword 8) =>
+         returnM ((uint (w__1)))
+       else returnM (0)) >>= fun next =>
+      (_rec_shim_load_n _ _ (s) ((Z.add (off) (1))) ((Z.sub (remaining) (1)))
+         ((Z.add ((Z.mul (value) (256))) (next))) ((Z.sub (_reclimit) (1)))
+         (_limit_reduces_bool _acc ltac:(assumption)))
+       : M (Z))
+    : M (Z)
+).
+Defined.
+
+
+Definition shim_load_n {ex119420_ : Z} {ex119419_ : Z}
+(s : StatelessInputSliceFields ex119419_ ex119420_) (off : Z) (remaining : Z) (value : Z)
+(*(0 <=? ex119419_) && ((0 <=? ex119420_) && ((ex119419_ + ex119420_) <=? (2 ^ 32 - 1)))*)
+: M (Z) :=
+   (_rec_shim_load_n (s) (off) (remaining) (value) ((remaining  : Z)) (Zwf_guarded _))  : M (Z).
+
+Definition stateless_input_load_n_word {ex119428_ : Z} {ex119427_ : Z}
+(s : StatelessInputSliceFields ex119427_ ex119428_) (off : stateless_input_length)
+(n : word_byte_count)
+(*(0 <=? ex119427_) && ((0 <=? ex119428_) && ((ex119427_ + ex119428_) <=? (2 ^ 32 - 1)))*)
+(*(0 <=? off) && (off <=? (2 ^ 32 - 1))*) (*(0 <=? n) && (n <=? 32)*)
 : M (word) :=
-   ((if Z.ltb (off) ex116920_ return M (Z) then
-       ((stateless_input_load_n_word
-           (@existT _ _ ex116920_ (@existT _ _ ex116919_ ((s : StatelessInputSliceFields ex116919_ ex116920_))))
-           (Build_stateless_input_length ((off))) (Build_word_byte_count ((n)))) >>= fun semanticResult =>
+   let off := (off).(stateless_input_length_value) in
+   let n := (n).(word_byte_count_value) in
+   ((and_boolM (returnM ((Z.leb (0) ex119427_)))
+       (and_boolM (returnM ((Z.leb (0) ex119428_)))
+          (read_reg shim_input_bytes >>= fun (w__0 : list (mword 8)) =>
+           returnM ((Z.leb ((Z.add ex119427_ ex119428_)) ((shim_input_length (w__0)))))))) >>= fun w__2 =>
+   assert_exp' w__2 "input slice outside backing bytes" >>= fun _ =>
+   assert_exp' (andb ((Z.leb (0) (off))) ((Z.ltb (off) ex119428_))) "input word offset outside slice" >>= fun _ =>
+   assert_exp' (andb ((Z.leb (0) (n))) ((Z.leb (n) (32)))) "input word byte count outside range" >>= fun _ =>
+   (shim_load_n (s) (off) (n) (0)) >>= fun (w__3 : Z) =>
+   returnM (((word_from_bits ((get_slice_int (256) (w__3) (0)))).(word_value)))) >>= fun semanticResult =>
+   returnM (Build_word (semanticResult)).
+
+Definition stateless_input_slice_load_n {ex119434_ : Z} {ex119433_ : Z}
+(s : StatelessInputSliceFields ex119433_ ex119434_) (off : Z) (n : Z)
+(*(0 <=? off) && ((off <=? (2 ^ 32 - 1)) && ((0 <=? n) && (n <=? 32)))*)
+(*(0 <=? ex119433_) && ((0 <=? ex119434_) && ((ex119433_ + ex119434_) <=? (2 ^ 32 - 1)))*)
+: M (word) :=
+   ((if Z.ltb (off) ex119434_ return M (Z) then
+       ((stateless_input_load_n_word (s) (Build_stateless_input_length ((off)))
+           (Build_word_byte_count ((n)))) >>= fun semanticResult =>
         returnM (semanticResult).(word_value))
         : M (Z)
      else returnM ((ZERO_WORD).(word_value)))
@@ -767,10 +824,10 @@ Definition rlp_uint64_append (_width : Z) (prefix : Z) (next : mword 8)
 : Z :=
    Z.add ((Z.mul (prefix) (256))) ((uint (next))).
 
-Fixpoint _rec_rlp_uint64_width {ex117654_ : Z} {ex117653_ : Z}
-(content : StatelessInputSliceFields ex117653_ ex117654_) (width : Z) (_reclimit : Z)
+Fixpoint _rec_rlp_uint64_width {ex120168_ : Z} {ex120167_ : Z}
+(content : StatelessInputSliceFields ex120167_ ex120168_) (width : Z) (_reclimit : Z)
 (*(0 <=? width) && (width <=? 8)*)
-(*(0 <=? ex117653_) && ((0 <=? ex117654_) && ((ex117653_ + ex117654_) <=? (2 ^ 32 - 1)))*)
+(*(0 <=? ex120167_) && ((0 <=? ex120168_) && ((ex120167_ + ex120168_) <=? (2 ^ 32 - 1)))*)
 (_acc : Acc (Zwf 0) _reclimit)
 {struct _acc} : M (Z).
 exact (
@@ -786,16 +843,16 @@ exact (
 Defined.
 
 
-Definition rlp_uint64_width {ex117659_ : Z} {ex117658_ : Z}
-(content : StatelessInputSliceFields ex117658_ ex117659_) (width : Z)
+Definition rlp_uint64_width {ex120173_ : Z} {ex120172_ : Z}
+(content : StatelessInputSliceFields ex120172_ ex120173_) (width : Z)
 (*(0 <=? width) && (width <=? 8)*)
-(*(0 <=? ex117658_) && ((0 <=? ex117659_) && ((ex117658_ + ex117659_) <=? (2 ^ 32 - 1)))*)
+(*(0 <=? ex120172_) && ((0 <=? ex120173_) && ((ex120172_ + ex120173_) <=? (2 ^ 32 - 1)))*)
 : M (Z) :=
    (_rec_rlp_uint64_width (content) (width) ((width  : Z)) (Zwf_guarded _))  : M (Z).
 
-Definition rlp_ref_hdr {ex117664_ : Z} {ex117663_ : Z}
-(b : StatelessInputSliceFields ex117663_ ex117664_)
-(*(0 <=? ex117663_) && ((0 <=? ex117664_) && ((ex117663_ + ex117664_) <=? (2 ^ 32 - 1)))*)
+Definition rlp_ref_hdr {ex120178_ : Z} {ex120177_ : Z}
+(b : StatelessInputSliceFields ex120177_ ex120178_)
+(*(0 <=? ex120177_) && ((0 <=? ex120178_) && ((ex120177_ + ex120178_) <=? (2 ^ 32 - 1)))*)
 : M ((bool * source_pointer * Z)) :=
    (let source_len := b.(StatelessInputSliceFields_len) in
    (if Z.eqb (source_len) (0) return M (unit) then (fatal_error (RlpDecode))  : M (unit)
@@ -901,9 +958,9 @@ Definition rlp_single_ref {source_off : Z} {source_len : Z}
        : M ({syn_content_len & (RlpFieldRef source_off source_len syn_content_len)}%type))
     : M ({content_len & (RlpFieldRef source_off source_len content_len)}%type).
 
-Definition rlp_node_cursor {ex117762_ : Z} {ex117761_ : Z}
-(node : StatelessInputSliceFields ex117761_ ex117762_)
-(*(0 <=? ex117761_) && ((0 <=? ex117762_) && ((ex117761_ + ex117762_) <=? (2 ^ 32 - 1)))*)
+Definition rlp_node_cursor {ex120276_ : Z} {ex120275_ : Z}
+(node : StatelessInputSliceFields ex120275_ ex120276_)
+(*(0 <=? ex120275_) && ((0 <=? ex120276_) && ((ex120275_ + ex120276_) <=? (2 ^ 32 - 1)))*)
 : M ({source_len & {source_off & (RlpCursor source_off source_len)}}%type) :=
    (if Z.eqb (node.(StatelessInputSliceFields_len)) (0)
       return
@@ -913,7 +970,7 @@ Definition rlp_node_cursor {ex117762_ : Z} {ex117761_ : Z}
     else
       (rlp_single_ref (node)) >>= fun '(@existT _ _ __item item) =>
       (rlp_decode_list (item)) >>= fun dependentResult =>
-      returnM (@existT _ _ __item (@existT _ _ (ex117761_ + (ex117762_ - __item)) (dependentResult)) : {source_len & {source_off & (StatelessInputSliceFields source_off source_len)}}%type))
+      returnM (@existT _ _ __item (@existT _ _ (ex120275_ + (ex120276_ - __item)) (dependentResult)) : {source_len & {source_off & (StatelessInputSliceFields source_off source_len)}}%type))
     : M ({source_len & {source_off & (StatelessInputSliceFields source_off source_len)}}%type).
 
 Definition rlp_item_content {source_off : Z} {source_len : Z} {content_len : Z}
@@ -1176,6 +1233,7 @@ Definition decode_parent_header_fields {source_off : Z} {source_len : Z}
 Definition initialize_registers '(tt : unit) : unit := tt.
 
 Definition sail_model_init (_ : unit) : M (unit) :=
+   write_reg shim_input_bytes ([]) >>
    write_reg k_execution_profile DEFAULT_EXECUTION_PROFILE >> returnM ((initialize_registers (tt))).
 
 

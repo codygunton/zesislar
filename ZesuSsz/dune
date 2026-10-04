@@ -8,5 +8,5 @@
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (plugins zesu-signature-gates.plugin)
  (theories
-   isla isla.riscv64 InstrSpecs EvmSail SailStdpp
+   isla isla.riscv64 InstrSpecs EvmSail EvmSailRlp SailStdpp
    lithium iris stdpp RecordUpdate Ltac2))
