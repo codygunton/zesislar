@@ -91,8 +91,8 @@ Proof. intros [_ Hvalue]. exact Hvalue. Qed.
    for skipped fields 0..8, three times for skipped fields 12..14, and once
    for skipped field 16 when present. Each nextUint64 calls decodeItem for
    fields 9, 10, 11, 15, 17, and 18 when present. There are at most 20
-   nested calls. Each child's C1-A headerFits must be established separately.
-   This counterexample shows that a fitting outer header gives no such fact. *)
+   nested calls. A nested length wrap uses the C1-B known-bug relation.
+   This counterexample shows that a fitting outer header does not rule it out. *)
 Definition hostileNestedHeader : list byte :=
   mword_of_int 191 :: List.repeat (mword_of_int 255) 8.
 
