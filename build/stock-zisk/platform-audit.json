@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "f2b00f2f25ba83f4af3022fec11408a5d22a94db0d71c508e33c8ba3ff19dcc8",
+  "artifact_identity": "a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82",
   "status": "Source and ELF audit. The selected platform adapter is manifest-bound. Decoder obligations remain unproved.",
   "constants": {
     "INPUT_ADDR": 1073741824,

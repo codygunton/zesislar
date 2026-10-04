@@ -9,6 +9,33 @@ from pathlib import Path
 BEGIN = "(* BEGIN GENERATED STOCK MAP *)"
 END = "(* END GENERATED STOCK MAP *)"
 
+
+def load_sections(recipe):
+    """Retain every ELF load extent, including zero-filled writable memory."""
+    sections = []
+    for segment in recipe['elf_layout']['segments']:
+        if segment['p_type'] != 'PT_LOAD':
+            continue
+        base, size, file_size = (segment[key] for key in ['p_vaddr', 'p_memsz', 'p_filesz'])
+        if not 0 <= file_size <= size or base < 0 or base + size > 1 << 64:
+            raise ValueError('Invalid ELF load extent')
+        flags = segment['p_flags']
+        if flags & ~7:
+            raise ValueError('Unsupported ELF load permissions')
+        sections.append({'sectionBase': base, 'sectionEnd': base + size,
+                         'sectionFileEnd': base + file_size,
+                         'sectionReadable': bool(flags & 4),
+                         'sectionWritable': bool(flags & 2),
+                         'sectionExecutable': bool(flags & 1)})
+    return sections
+
+
+def section_literal(section):
+    values = [f'{key} := {str(value).lower() if isinstance(value, bool) else hex(value)}'
+              for key, value in section.items()]
+    return '{| ' + '; '.join(values) + ' |}'
+
+
 def render(recipe, audit, symbols):
     by_name = {}
     for row in symbols.splitlines():
@@ -21,6 +48,8 @@ def render(recipe, audit, symbols):
     c = audit["constants"]
     a = audit["symbols"]
     values = {
+        "mapPopulatedSections": '[\n    ' + ';\n    '.join(
+            section_literal(section) for section in load_sections(recipe)) + '\n  ]',
         "mapRamBase": c["RAM_ADDR"], "mapRamSize": c["RAM_SIZE"],
         "mapTextBase": text["start"], "mapTextEnd": text["end"],
         "mapRodataBase": rodata["start"], "mapRodataEnd": rodata["end"],
