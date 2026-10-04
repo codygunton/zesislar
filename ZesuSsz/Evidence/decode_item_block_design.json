@@ -1,0 +1,1077 @@
+{
+  "schema_version": 1,
+  "label": "Static CFG design and invariant hints; no block proof or ELF execution",
+  "proof_status": "design_only",
+  "source_inventory": "build/stock-zisk/inventory.json",
+  "function": "rlp.decodeItem",
+  "entry_pc": "0x800d6960",
+  "end_pc_exclusive": "0x800d6b30",
+  "instruction_count": 116,
+  "block_count": 24,
+  "conditional_branch_count": 14,
+  "loop_count": 2,
+  "edge_condition_scope": "register values before the source block's final instruction",
+  "condition_ops": {
+    "eq": "equal bits",
+    "ne": "unequal bits",
+    "s_lt": "signed less than",
+    "s_ge": "signed greater or equal",
+    "u_lt": "unsigned less than",
+    "u_ge": "unsigned greater or equal",
+    "true": "unconditional"
+  },
+  "hashes": {
+    "inventory_sha256": "353bcecbc2f3df96400d3f76c6749d8938eaca919aef1eece39294d1277a97c9",
+    "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+    "raw_dump_sha256": "6c2c1c92dcb7f2d3f00872b2b5dcf604fb4311635d025ae393af3182bc51cd79",
+    "level1_contract_sha256": "ccb0a2276dc4ee450bc8d21e53a10c7bbd5ab889869cc2884afc604af775aa8d",
+    "byte_fold_schema_sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+    "byte_fold_sites_sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+    "generator_sha256": "1efdf25d7b1ba16ed49062cd7584bd50dd58ea78deb5da6ce2e8d55d3dff0632"
+  },
+  "blocks": [
+    {
+      "entry_pc": "0x800d6960",
+      "end_pc_exclusive": "0x800d6974",
+      "entry_class": "entry_prologue",
+      "incoming_edges": [
+        {
+          "from_block": "caller",
+          "from_instruction": null,
+          "kind": "entry",
+          "path_condition": {
+            "op": "true"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ae0",
+        "0x800d6974"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098? 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources"
+      }
+    },
+    {
+      "entry_pc": "0x800d6974",
+      "end_pc_exclusive": "0x800d697c",
+      "entry_class": "prefix_load",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6960",
+          "from_instruction": "0x800d6970",
+          "source_terminator": "beq",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "ne",
+            "left": "x12",
+            "right": "0"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d69a4",
+        "0x800d697c"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d697c",
+      "end_pc_exclusive": "0x800d698c",
+      "entry_class": "literal_byte_write",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6974",
+          "from_instruction": "0x800d6978",
+          "source_terminator": "blt",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "s_ge",
+            "left": "x13",
+            "right": "0"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d698c"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d698c",
+      "end_pc_exclusive": "0x800d69a4",
+      "entry_class": "literal_or_short_string_return",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d697c",
+          "from_instruction": "0x800d6988",
+          "source_terminator": "sd",
+          "kind": "fallthrough",
+          "path_condition": {
+            "op": "true"
+          }
+        },
+        {
+          "from_block": "0x800d69e8",
+          "from_instruction": "0x800d69fc",
+          "source_terminator": "jal",
+          "kind": "jump",
+          "path_condition": {
+            "op": "true"
+          }
+        }
+      ],
+      "successor_pcs": [],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x12"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "return_clause": {
+        "return_instruction_pc": "0x800d69a0",
+        "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+        "cases": [
+          {
+            "incoming_from": "0x800d697c",
+            "candidate": "candidateSuccess false 0 1",
+            "payload_pointer": "inputPointer"
+          },
+          {
+            "incoming_from": "0x800d69e8",
+            "candidate": "candidateSuccess false 1 (prefix - 128)",
+            "payload_pointer": "inputPointer + 1"
+          }
+        ]
+      }
+    },
+    {
+      "entry_pc": "0x800d69a4",
+      "end_pc_exclusive": "0x800d69b0",
+      "entry_class": "high_prefix_dispatch",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6974",
+          "from_instruction": "0x800d6978",
+          "source_terminator": "blt",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "s_lt",
+            "left": "x13",
+            "right": "0"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d69d8",
+        "0x800d69b0"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "branch_constant_facts": {
+        "x14": 128
+      }
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "end_pc_exclusive": "0x800d69d8",
+      "entry_class": "empty_string_return",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d69a4",
+          "from_instruction": "0x800d69ac",
+          "source_terminator": "bne",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "eq",
+            "left": "x13",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "return_clause": {
+        "return_instruction_pc": "0x800d69d4",
+        "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+        "cases": [
+          {
+            "candidate": "candidateSuccess false 1 0",
+            "payload_pointer": "1 (empty-string sentinel)"
+          }
+        ]
+      }
+    },
+    {
+      "entry_pc": "0x800d69d8",
+      "end_pc_exclusive": "0x800d69e0",
+      "entry_class": "short_string_class_test",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d69a4",
+          "from_instruction": "0x800d69ac",
+          "source_terminator": "bne",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "ne",
+            "left": "x13",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6a00",
+        "0x800d69e0"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "branch_constant_facts": {
+        "x14": 183
+      }
+    },
+    {
+      "entry_pc": "0x800d69e0",
+      "end_pc_exclusive": "0x800d69e8",
+      "entry_class": "short_string_length_test",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d69d8",
+          "from_instruction": "0x800d69dc",
+          "source_terminator": "bltu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x14",
+            "right": "x13"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ae0",
+        "0x800d69e8"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d69e8",
+      "end_pc_exclusive": "0x800d6a00",
+      "entry_class": "short_string_write",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d69e0",
+          "from_instruction": "0x800d69e4",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x13",
+            "right": "x12"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d698c"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a00",
+      "end_pc_exclusive": "0x800d6a08",
+      "entry_class": "list_or_long_string_dispatch",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d69d8",
+          "from_instruction": "0x800d69dc",
+          "source_terminator": "bltu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x14",
+            "right": "x13"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6a64",
+        "0x800d6a08"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "branch_constant_facts": {
+        "x14": 192
+      }
+    },
+    {
+      "entry_pc": "0x800d6a08",
+      "end_pc_exclusive": "0x800d6a14",
+      "entry_class": "long_string_width_test",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a00",
+          "from_instruction": "0x800d6a04",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x13",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ae0",
+        "0x800d6a14"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a14",
+      "end_pc_exclusive": "0x800d6a24",
+      "entry_class": "long_string_fold_initialization",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a08",
+          "from_instruction": "0x800d6a10",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x14",
+            "right": "x12"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6a24"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x14"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a24",
+      "end_pc_exclusive": "0x800d6a38",
+      "entry_class": "long_string_fold_header",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a14",
+          "from_instruction": "0x800d6a20",
+          "source_terminator": "add",
+          "kind": "fallthrough",
+          "path_condition": {
+            "op": "true"
+          }
+        },
+        {
+          "from_block": "0x800d6a24",
+          "from_instruction": "0x800d6a34",
+          "source_terminator": "bne",
+          "kind": "loop_backedge",
+          "path_condition": {
+            "op": "ne",
+            "left": "x15",
+            "right": "x11"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6a24",
+        "0x800d6a38"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "invariant_hint": {
+        "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt",
+        "preheader": "0x800d6a14",
+        "backedge": "0x800d6a34",
+        "exit": "0x800d6a38",
+        "register_bindings": {
+          "x10": "outputPointer",
+          "x11": "payloadStart + n",
+          "x12": "inputLength",
+          "x13": "bigEndian(firstn i lengthBytes)",
+          "x14": "n + 1",
+          "x15": "payloadStart + i",
+          "x16": "arbitrary loaded byte register",
+          "x2": "stackPointer - 16",
+          "x1": "returnAddress",
+          "x8": "stackPointer"
+        },
+        "body_guard": "0 <= i < n <= 8 and 1 <= n"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a38",
+      "end_pc_exclusive": "0x800d6a40",
+      "entry_class": "long_string_length_check",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a24",
+          "from_instruction": "0x800d6a34",
+          "source_terminator": "bne",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "eq",
+            "left": "x15",
+            "right": "x11"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ae0",
+        "0x800d6a40"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a40",
+      "end_pc_exclusive": "0x800d6a64",
+      "entry_class": "long_string_return",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a38",
+          "from_instruction": "0x800d6a3c",
+          "source_terminator": "bltu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x12",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x13",
+          "x14"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "return_clause": {
+        "return_instruction_pc": "0x800d6a60",
+        "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+        "cases": [
+          {
+            "candidate": "candidateSuccess false (1 + width) bigEndian(lengthBytes)",
+            "payload_pointer": "inputPointer + 1 + width",
+            "wrap": "C1A requires headerFits; C1B records binaryWrapCase"
+          }
+        ]
+      }
+    },
+    {
+      "entry_pc": "0x800d6a64",
+      "end_pc_exclusive": "0x800d6a6c",
+      "entry_class": "short_or_long_list_dispatch",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a00",
+          "from_instruction": "0x800d6a04",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x13",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6aa8",
+        "0x800d6a6c"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "branch_constant_facts": {
+        "x14": 248
+      }
+    },
+    {
+      "entry_pc": "0x800d6a6c",
+      "end_pc_exclusive": "0x800d6a78",
+      "entry_class": "short_list_length_test",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a64",
+          "from_instruction": "0x800d6a68",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x13",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ae0",
+        "0x800d6a78"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a78",
+      "end_pc_exclusive": "0x800d6aa8",
+      "entry_class": "short_list_return",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a6c",
+          "from_instruction": "0x800d6a74",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x13",
+            "right": "x12"
+          }
+        }
+      ],
+      "successor_pcs": [],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "return_clause": {
+        "return_instruction_pc": "0x800d6aa4",
+        "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+        "cases": [
+          {
+            "candidate": "candidateSuccess true 1 (prefix - 192)",
+            "payload_pointer": "inputPointer + 1"
+          }
+        ]
+      }
+    },
+    {
+      "entry_pc": "0x800d6aa8",
+      "end_pc_exclusive": "0x800d6ab4",
+      "entry_class": "long_list_width_test",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6a64",
+          "from_instruction": "0x800d6a68",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x13",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ae0",
+        "0x800d6ab4"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ab4",
+      "end_pc_exclusive": "0x800d6ac4",
+      "entry_class": "long_list_fold_initialization",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6aa8",
+          "from_instruction": "0x800d6ab0",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x14",
+            "right": "x12"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ac4"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x14"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ac4",
+      "end_pc_exclusive": "0x800d6ad8",
+      "entry_class": "long_list_fold_header",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6ab4",
+          "from_instruction": "0x800d6ac0",
+          "source_terminator": "add",
+          "kind": "fallthrough",
+          "path_condition": {
+            "op": "true"
+          }
+        },
+        {
+          "from_block": "0x800d6ac4",
+          "from_instruction": "0x800d6ad4",
+          "source_terminator": "bne",
+          "kind": "loop_backedge",
+          "path_condition": {
+            "op": "ne",
+            "left": "x15",
+            "right": "x11"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6ac4",
+        "0x800d6ad8"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "invariant_hint": {
+        "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt",
+        "preheader": "0x800d6ab4",
+        "backedge": "0x800d6ad4",
+        "exit": "0x800d6ad8",
+        "register_bindings": {
+          "x10": "outputPointer",
+          "x11": "payloadStart + n",
+          "x12": "inputLength",
+          "x13": "bigEndian(firstn i lengthBytes)",
+          "x14": "n + 1",
+          "x15": "payloadStart + i",
+          "x16": "arbitrary loaded byte register",
+          "x2": "stackPointer - 16",
+          "x1": "returnAddress",
+          "x8": "stackPointer"
+        },
+        "body_guard": "0 <= i < n <= 8 and 1 <= n"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ad8",
+      "end_pc_exclusive": "0x800d6ae0",
+      "entry_class": "long_list_length_check",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6ac4",
+          "from_instruction": "0x800d6ad4",
+          "source_terminator": "bne",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "eq",
+            "left": "x15",
+            "right": "x11"
+          }
+        }
+      ],
+      "successor_pcs": [
+        "0x800d6b08",
+        "0x800d6ae0"
+      ],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "end_pc_exclusive": "0x800d6b08",
+      "entry_class": "error_return",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6960",
+          "from_instruction": "0x800d6970",
+          "source_terminator": "beq",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "eq",
+            "left": "x12",
+            "right": "0"
+          }
+        },
+        {
+          "from_block": "0x800d69e0",
+          "from_instruction": "0x800d69e4",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x13",
+            "right": "x12"
+          }
+        },
+        {
+          "from_block": "0x800d6a08",
+          "from_instruction": "0x800d6a10",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x14",
+            "right": "x12"
+          }
+        },
+        {
+          "from_block": "0x800d6a38",
+          "from_instruction": "0x800d6a3c",
+          "source_terminator": "bltu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x12",
+            "right": "x14"
+          }
+        },
+        {
+          "from_block": "0x800d6a6c",
+          "from_instruction": "0x800d6a74",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x13",
+            "right": "x12"
+          }
+        },
+        {
+          "from_block": "0x800d6aa8",
+          "from_instruction": "0x800d6ab0",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x14",
+            "right": "x12"
+          }
+        },
+        {
+          "from_block": "0x800d6ad8",
+          "from_instruction": "0x800d6adc",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_lt",
+            "left": "x12",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "return_clause": {
+        "return_instruction_pc": "0x800d6b04",
+        "contract": "C1AResult or C1BResult / candidateResult40 / errorResult40",
+        "cases": [
+          {
+            "candidate": "candidateError",
+            "error_byte_at_32": 4
+          }
+        ]
+      }
+    },
+    {
+      "entry_pc": "0x800d6b08",
+      "end_pc_exclusive": "0x800d6b30",
+      "entry_class": "long_list_return",
+      "incoming_edges": [
+        {
+          "from_block": "0x800d6ad8",
+          "from_instruction": "0x800d6adc",
+          "source_terminator": "bgeu",
+          "kind": "conditional",
+          "path_condition": {
+            "op": "u_ge",
+            "left": "x12",
+            "right": "x14"
+          }
+        }
+      ],
+      "successor_pcs": [],
+      "needed_resources": {
+        "register_live_in_hint": [
+          "x2",
+          "x10",
+          "x11",
+          "x13",
+          "x14"
+        ],
+        "system_register_collection": "reg_col zesu_sys_regs",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "return_clause": {
+        "return_instruction_pc": "0x800d6b2c",
+        "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+        "cases": [
+          {
+            "candidate": "candidateSuccess true (1 + width) bigEndian(lengthBytes)",
+            "payload_pointer": "inputPointer + 1 + width",
+            "wrap": "C1A requires headerFits; C1B records binaryWrapCase"
+          }
+        ]
+      }
+    }
+  ]
+}
