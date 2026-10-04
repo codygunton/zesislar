@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "artifact_identity": "a13bdac56ece9146d195c2d52947d3d9a6d224965aa6be35074355f637ee8a9e",
+  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",
+    "sha256": "66e548f814a2fa34a3af727926bad32058d07a5dfe8aba09c34d81930474cf82"
+  },
+  "runtime_source_evidence": {
+    "ziskos/entrypoint/src/dma/memcpy.s": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/dma/memcpy.s",
+      "sha256": "f249b68cc72a3dfc1525c47d3c7c03037bb3105c7fc68a3a26ed7af82ecdaf6c"
+    },
+    "transpilers/riscv/src/riscv2zisk_context.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/transpilers/riscv/src/riscv2zisk_context.rs",
+      "sha256": "7db3f348137bf8276ec6d96c9528bf0130fcffcc15dbe6135c64fb115bcf5d48"
+    },
+    "core/src/operations/dma_memcpy.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/operations/dma_memcpy.rs",
+      "sha256": "c1c78cb150cbbc367914af373a7e153db6b6839b03de88c21c84933e58aa6724"
+    },
+    "core/src/mem.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+      "sha256": "8290f0b15fd044075b460ebd7cf94c888969065953d65c12af19fb33ee23fe91"
+    },
+    "core/src/zisk_inst_builder.rs": {
+      "path": "/tmp/worker2-stock-zisk-toolchain/core/src/zisk_inst_builder.rs",
+      "sha256": "3da8705df1451bd6acc8f7aba941355aef199e07c9e473c4efbb91175238b84a"
+    }
+  },
+  "evidence_class": "Static ELF and source analysis. No selected-ELF execution or proof.",
+  "allocator_vtable": {
+    "name": "alt_fl_alloc.vtable",
+    "address": 2148611800,
+    "size": 32,
+    "type": "STT_OBJECT",
+    "bytes": "9424048000000000b0210480000000008c21048000000000381f048000000000",
+    "slots": [
+      {
+        "name": "alt_fl_alloc.alloc",
+        "address": 2147755156,
+        "size": 744,
+        "type": "STT_FUNC",
+        "offset": 0,
+        "entry_bytes": "37150000"
+      },
+      {
+        "name": "alt_fl_alloc.resize",
+        "address": 2147754416,
+        "size": 740,
+        "type": "STT_FUNC",
+        "offset": 8,
+        "entry_bytes": "130101ff"
+      },
+      {
+        "name": "alt_fl_alloc.remap",
+        "address": 2147754380,
+        "size": 36,
+        "type": "STT_FUNC",
+        "offset": 16,
+        "entry_bytes": "130101ff"
+      },
+      {
+        "name": "alt_fl_alloc.free",
+        "address": 2147753784,
+        "size": 596,
+        "type": "STT_FUNC",
+        "offset": 24,
+        "entry_bytes": "130101ff"
+      }
+    ]
+  },
+  "allocator_state": {
+    "name": "alt_fl_alloc.state",
+    "address": 2689810432,
+    "size": 1,
+    "type": "STT_OBJECT",
+    "section": ".bss",
+    "initialization": "ELF NOBITS zero initialization; not a decoder-entry invariant"
+  },
+  "free_lists": {
+    "name": "alt_fl_alloc.free_lists",
+    "address": 2689810440,
+    "size": 176,
+    "type": "STT_OBJECT",
+    "section": ".bss",
+    "initialization": "ELF NOBITS zero initialization; not a decoder-entry invariant",
+    "word_bytes": 8,
+    "class_count": 22,
+    "initial_heads": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "heap_words": {
+    "ZKVM_HEAP_POS": {
+      "name": "ZKVM_HEAP_POS",
+      "address": 2698200352,
+      "size": 0,
+      "type": "STT_NOTYPE",
+      "word_bytes": 8,
+      "bytes": "3045d3a000000000",
+      "initial_value": 2698200368
+    },
+    "ZKVM_HEAP_TOP": {
+      "name": "ZKVM_HEAP_TOP",
+      "address": 2698200360,
+      "size": 0,
+      "type": "STT_NOTYPE",
+      "word_bytes": 8,
+      "bytes": "0000ffbf00000000",
+      "initial_value": 3221159936
+    },
+    "__zesu_heap_bottom": {
+      "name": "__zesu_heap_bottom",
+      "address": 2698200368,
+      "size": 0,
+      "type": "STT_NOTYPE"
+    },
+    "__zesu_heap_top": {
+      "name": "__zesu_heap_top",
+      "address": 3221159936,
+      "size": 0,
+      "type": "STT_NOTYPE"
+    }
+  },
+  "memcpy": {
+    "name": "memcpy",
+    "address": 2148402880,
+    "size": 12,
+    "type": "STT_FUNC",
+    "bytes": "73a035813300c50067800000",
+    "csr": 2067,
+    "destination_register": "x10",
+    "source_register": "x11",
+    "length_register": "x12",
+    "return_register": "x1",
+    "extra_params_address": 2688552704,
+    "integer_register_clobbers": [],
+    "overlap": "permitted; source snapshot follows the scratch count store",
+    "source_boundary": "one complete populated readable section; scalar input zero fallback does not apply",
+    "observable_effect": "no public service event; memory changes include the scratch word and destination",
+    "status": "Statement only. No service correctness or termination proof."
+  },
+  "proof_obligations": [
+    "Relate decoder-entry allocator state to initialization and prior calls.",
+    "Preserve free-list ownership and live allocation disjointness.",
+    "Establish heap capacity and arithmetic bounds for allocations.",
+    "Approve the runtime service statement under C4 before using a premise."
+  ]
+}

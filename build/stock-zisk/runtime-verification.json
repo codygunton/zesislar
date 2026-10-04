@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "purpose": "Type and assumptions checks. No runtime correctness proof.",
+  "mcp_toolchain": "Coq 8.19.2+lsp 4.14.4; pet 0.2.4-dev",
+  "compiled_modules": {
+    "ZesuSsz/Contracts/ZiskRuntime.v": "ce30322b038cb6f38a615154b1060078940ad8b657ab8680e11b020fea352e70",
+    "ZesuSsz/Contracts/ParentHeaderRootFacts.v": "f87ed0b0fad128b7f852a261b32b1bb43cc6bc318a8822d808be0bbea67a5c6c",
+    "ZesuSsz/Contracts/ParentHeaderLevel1.v": "b5a622a377fd4eb18fcecb391f690a1a97a1affb7c9a2ea4ce307a822811f518"
+  },
+  "selectedMemcpy_verification": {
+    "success": true,
+    "method": "module_m",
+    "assumptions": []
+  },
+  "load_paths": "Private build paths within the worktree",
+  "initial_header_import_failure": "Fixed by the direct Contracts.ZiskRuntime import",
+  "runtime_statement_approval": "C4 remains required before a proof uses a runtime premise",
+  "check_fast": {
+    "exit": 0,
+    "wall_seconds": 243,
+    "dune_ms": 193876,
+    "peak_child_rss_kib": 2076996,
+    "workers": 2
+  },
+  "check_iris": {
+    "exit": 0,
+    "wall_seconds": 114,
+    "dune_ms": 222,
+    "peak_child_rss_kib": 57768,
+    "workers": 2
+  }
+}
