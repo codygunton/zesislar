@@ -1,0 +1,57 @@
+{
+  "experiment": "P0-D Q9 typed prefix/suffix handoff for EIP-4844 decoding",
+  "referenceRevision": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+  "sailCompilerRevision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+  "sailCompilerSha256": "517d6d68de8947926a0950d59de544350bf3ec289153e6ba63c6cfd5a664e16b",
+  "sailCoqPluginSha256": "8052ba334e708171eb74a6946678984408ae2f548c50ef03fee3780c074c2468",
+  "stagedTransactionsSha256": "69e90ce7ca8af5b11344a73cdc7bf8c9f96f32e6bb888d4a949d456a40fd3ffe",
+  "generatedModuleSha256": "7bdd8c51f4245e3c3e53903c97e25eff1fd5b180fbc69361bbf56c31877a328c",
+  "sourceRelation": {
+    "check": "Inlining the typed prefix helper and pure record helper exactly reconstructs the pinned decode_blob_tx source.",
+    "prefixDecodeSteps": 7,
+    "prefixAdvanceSteps": 7,
+    "remainingDecodeSteps": 7,
+    "remainingAdvanceSteps": 7,
+    "packedFields": 8,
+    "recordFields": 21,
+    "sailTypecheck": "passed"
+  },
+  "limits": {
+    "nonProofSeconds": 60,
+    "nonProofPeakRssKiB": 2097152
+  },
+  "prerequisite": "The runner requires cached SailStdpp Real.vo in its private Dune directory.",
+  "measurements": {
+    "generation": {
+      "seconds": 13.937,
+      "peakRssKiB": 189580,
+      "workers": 1,
+      "status": "passed"
+    },
+    "evm_blob_handoff_types.v": {
+      "seconds": 1.204,
+      "peakRssKiB": 586216,
+      "workers": 1,
+      "status": "passed"
+    },
+    "evm_blob_handoff.v": {
+      "seconds": 1.003,
+      "peakRssKiB": 588300,
+      "workers": 1,
+      "status": "passed"
+    },
+    "blob_tx_prefix_pack": {
+      "seconds": 0.001,
+      "status": "passed"
+    },
+    "decode_blob_tx_prefix": {
+      "seconds": 0.308,
+      "status": "passed"
+    },
+    "decode_blob_tx": {
+      "seconds": 0.232,
+      "status": "passed"
+    }
+  },
+  "result": "The typed handoff compiles the complete blob decoder closure within both module limits."
+}
