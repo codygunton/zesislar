@@ -1,9 +1,0 @@
-{
-  "islaConfig": "riscv64_zesu.toml",
-  "ranges": [
-    [
-      "0x10120",
-      "0x1012c"
-    ]
-  ]
-}
