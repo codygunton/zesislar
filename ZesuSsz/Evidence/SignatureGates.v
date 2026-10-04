@@ -1,4 +1,5 @@
 From Coq Require Import Lists.List ZArith.ZArith.
+From stdpp Require Import bitvector.definitions.
 From Ltac2 Require Import Ltac2.
 Require Import SailStdpp.MachineWord.
 Require Import EvmSailRlp.evm_rlp_types.
@@ -9,6 +10,9 @@ Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
+Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
+Require Import ZesuSsz.Contracts.ParentHeaderRequiredFields.
+Require Import ZesuSsz.Contracts.ParentHeaderRung2.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
@@ -136,3 +140,19 @@ Check (@decodeItemWrapWitness :
   ~ headerFits decodeItemWrapWitnessInput).
 Print Assumptions decodeItemWrapWitness.
 Ltac2 Eval exact_axioms 'decodeItemWrapWitness (approved_library_axioms ()).
+
+Definition ReviewedParentHeaderMeaningModuloKnownBugs
+    (args : ParentHeaderCall) (result : list byte) : Prop :=
+  parentHeaderDomain args /\
+  (parentHeaderSuccessAgreement args.(headerInputBytes) result \/
+   parentHeaderRejectionAgreement args.(headerInputBytes) result).
+
+Check (@ParentHeaderMeaningModuloKnownBugs :
+  ParentHeaderCall -> list byte -> Prop).
+Check (eq_refl : ParentHeaderMeaningModuloKnownBugs =
+                 ReviewedParentHeaderMeaningModuloKnownBugs).
+Check (@emptyParentListMissesRequired :
+  parentHeaderMissingRequiredField [Z_to_bv 8 192]).
+Print Assumptions emptyParentListMissesRequired.
+Ltac2 Eval exact_axioms 'emptyParentListMissesRequired
+  (approved_library_axioms ()).
