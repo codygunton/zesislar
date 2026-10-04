@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "4ad11523ab08e5dc872be67790b3a105dd1596d711a4e2c426c22b40488c6e69",
+  "artifact_identity": "99aa7538b89d0192121cd1c841ea55d67b02aa59b42851ef9608ac2fccdae2c5",
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "source": {
     "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",
