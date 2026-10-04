@@ -372,3 +372,10 @@ stock-native-indexes:
 	  --dump $(DUMP) --jobs $(TRACE_JOBS)
 
 check-evidence-tools check-signatures: stock-native-indexes
+
+# Dune requires the parent of an absolute build directory to exist.
+.PHONY: build-directories
+build-directories:
+	mkdir -p "$(AGENT_BUILD_DIR)" "$(CHECK_LOCAL_BUILD_DIR)" "$(BLOCK_BUILD_DIR)" "$(DET_BUILD_DIR)"
+
+proof-verbose check-fast check-signatures check-iris check-local block-prepare: | build-directories

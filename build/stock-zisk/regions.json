@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "99aa7538b89d0192121cd1c841ea55d67b02aa59b42851ef9608ac2fccdae2c5",
+  "artifact_identity": "f2b00f2f25ba83f4af3022fec11408a5d22a94db0d71c508e33c8ba3ff19dcc8",
   "transaction_regions": [
     {
       "name": "dispatch",

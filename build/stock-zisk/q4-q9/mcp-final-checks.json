@@ -1,0 +1,27 @@
+{
+  "health": {
+    "ok": true,
+    "coqc_version": "8.19.2+lsp 4.14.4",
+    "switch_prefix": "/home/cody/islaris/_opam"
+  },
+  "interactive": {
+    "start": true,
+    "check": true,
+    "step_multi": true,
+    "proof_finished": false,
+    "first_residual": "folded-selected-code-lookup"
+  },
+  "compile_file": {
+    "success": true,
+    "mode": "full",
+    "timing": true,
+    "interpretation": "diagnostic compiles through Abort; no theorem is exported",
+    "zesu_block_seconds": 0.185
+  },
+  "verify": {
+    "success": false,
+    "reason": "compile_error",
+    "error": "The reference M.native_decodeItem_selected was not found in the current environment.",
+    "interpretation": "Abort leaves the exact correctness statement unproved"
+  }
+}
