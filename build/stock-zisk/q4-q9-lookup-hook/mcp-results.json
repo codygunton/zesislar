@@ -1,0 +1,189 @@
+{
+  "health": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/islaris/_opam/bin/coqc\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":true,\"pid\":2976797},\"warnings\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "ok": true,
+      "server_version": "0.3.1",
+      "switch": "islaris",
+      "switch_prefix": "/home/cody/islaris/_opam",
+      "switch_is_local": true,
+      "switch_source": "opam_env",
+      "toolchain": {
+        "coqc": {
+          "path": "/home/cody/islaris/_opam/bin/coqc",
+          "version": "8.19.2+lsp 4.14.4"
+        },
+        "pet": {
+          "path": "/home/cody/islaris/_opam/bin/pet",
+          "version": "0.2.4-dev",
+          "pytanque_importable": true
+        }
+      },
+      "pet": {
+        "running": true,
+        "pid": 2976797
+      },
+      "warnings": []
+    },
+    "isError": false
+  },
+  "development": {
+    "start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":726,\"goals\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nH : threadG\\ntrace : isla_trace\\nfirst, second : Z\\n|-lookup_hook_code (\u03bb _ : Z, Some trace) -\u2217\\nfind_in_context (FindInstrKind first false)\\n  (\u03bb _ : fic_A (FindInstrKind first false),\\n     find_in_context (FindInstrKind second false)\\n       (\u03bb _ : fic_A (FindInstrKind second false), True))\",\"file\":\"ZesuSsz/Proofs/Tests/InstructionLookupHook.v\",\"theorem\":\"lookup_hook_reuses_table\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 726,
+        "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\ntrace : isla_trace\nfirst, second : Z\n|-lookup_hook_code (\u03bb _ : Z, Some trace) -\u2217\nfind_in_context (FindInstrKind first false)\n  (\u03bb _ : fic_A (FindInstrKind first false),\n     find_in_context (FindInstrKind second false)\n       (\u03bb _ : fic_A (FindInstrKind second false), True))",
+        "file": "ZesuSsz/Proofs/Tests/InstructionLookupHook.v",
+        "theorem": "lookup_hook_reuses_table",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "step_multi": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"iStartProof. iIntros \\\"Hcode\\\". repeat zesu_liAStep. done.\",\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Expected a single focused goal but 0 goals are focused.\"}],\"from_state_id\":726}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "iStartProof. iIntros \"Hcode\". repeat zesu_liAStep. done.",
+            "success": false,
+            "reason": "tactic_failed",
+            "error": "Coq: Expected a single focused goal but 0 goals are focused."
+          }
+        ],
+        "from_state_id": 726
+      },
+      "isError": false
+    },
+    "check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Expected a single focused goal but 0 goals are focused.\",\"failed_command\":\"done.\",\"command_index\":3,\"commands_run\":3,\"last_valid_state_id\":729,\"goals_at_failure\":null,\"hint\":\"Use rocq_check(body='...', from_state=729) or rocq_step_multi(tactics=[...], from_state=729).\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "reason": "tactic_failed",
+        "error": "Coq: Expected a single focused goal but 0 goals are focused.",
+        "failed_command": "done.",
+        "command_index": 3,
+        "commands_run": 3,
+        "last_valid_state_id": 729,
+        "goals_at_failure": null,
+        "hint": "Use rocq_check(body='...', from_state=729) or rocq_step_multi(tactics=[...], from_state=729)."
+      },
+      "isError": false
+    },
+    "qed": {
+      "success": true,
+      "state_id": 730,
+      "proof_finished": true,
+      "commands_run": 1,
+      "check_time_ms": 2,
+      "body": "Qed."
+    }
+  },
+  "native_timeout": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Timeout!\",\"failed_command\":\"zesu_block.\",\"command_index\":3,\"commands_run\":3,\"last_valid_state_id\":710,\"goals_at_failure\":\"returnAddress : Z\\nSigma : gFunctors\\nHG : islaG Sigma\\nHT : threadG\\n|-islarisCode DecodeItemArgs DecodeItemOutcome\\n  (islarisContractResources DecodeItemArgs DecodeItemOutcome\\n     (decodeItemSelectedModel returnAddress) Sigma HG HT) -\u2217\\n\u2200 args : DecodeItemArgs,\\n  instr_body RlpDecodeItem.decodeItemEntry\\n    (islarisEntry DecodeItemArgs DecodeItemOutcome\\n       (islarisContractResources DecodeItemArgs DecodeItemOutcome\\n          (decodeItemSelectedModel returnAddress) Sigma HG HT) args \u2217\\n     instr_pre returnAddress\\n       (\u2203 outcome : DecodeItemOutcome,\\n          \u231cislarisContractAllows DecodeItemArgs DecodeItemOutcome\\n             (decodeItemSelectedModel returnAddress) args outcome\u231d \u2217\\n          islarisExit DecodeItemArgs DecodeItemOutcome\\n            (islarisContractResources DecodeItemArgs DecodeItemOutcome\\n               (decodeItemSelectedModel returnAddress) Sigma HG HT) args\\n            outcome))\",\"hint\":\"Use rocq_check(body='...', from_state=710) or rocq_step_multi(tactics=[...], from_state=710).\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": false,
+      "reason": "tactic_failed",
+      "error": "Coq: Timeout!",
+      "failed_command": "zesu_block.",
+      "command_index": 3,
+      "commands_run": 3,
+      "last_valid_state_id": 710,
+      "goals_at_failure": "returnAddress : Z\nSigma : gFunctors\nHG : islaG Sigma\nHT : threadG\n|-islarisCode DecodeItemArgs DecodeItemOutcome\n  (islarisContractResources DecodeItemArgs DecodeItemOutcome\n     (decodeItemSelectedModel returnAddress) Sigma HG HT) -\u2217\n\u2200 args : DecodeItemArgs,\n  instr_body RlpDecodeItem.decodeItemEntry\n    (islarisEntry DecodeItemArgs DecodeItemOutcome\n       (islarisContractResources DecodeItemArgs DecodeItemOutcome\n          (decodeItemSelectedModel returnAddress) Sigma HG HT) args \u2217\n     instr_pre returnAddress\n       (\u2203 outcome : DecodeItemOutcome,\n          \u231cislarisContractAllows DecodeItemArgs DecodeItemOutcome\n             (decodeItemSelectedModel returnAddress) args outcome\u231d \u2217\n          islarisExit DecodeItemArgs DecodeItemOutcome\n            (islarisContractResources DecodeItemArgs DecodeItemOutcome\n               (decodeItemSelectedModel returnAddress) Sigma HG HT) args\n            outcome))",
+      "hint": "Use rocq_check(body='...', from_state=710) or rocq_step_multi(tactics=[...], from_state=710)."
+    },
+    "isError": false
+  },
+  "regression_verification": {
+    "reuse": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      },
+      "isError": false
+    },
+    "disabled": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    "other_wrapper": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    }
+  },
+  "final_compile": {
+    "success": true,
+    "file": "ZesuSsz/Proofs/Tests/InstructionLookupHook.v",
+    "timing": {
+      "sentences": 32,
+      "slowest_seconds": 0.702,
+      "second_wrapper_seconds": 0.018
+    },
+    "tool": "rocq_compile_file",
+    "assumptions": []
+  }
+}

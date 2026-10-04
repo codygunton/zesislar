@@ -1,0 +1,27 @@
+{
+  "command": [
+    "make",
+    "check-fast",
+    "CHECK_AGENT=worker2-child-platform",
+    "AGENT_JOBS=6",
+    "FAST_JOBS=6"
+  ],
+  "exit": 0,
+  "build_record": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 107744,
+    "rss_kb": 2210720,
+    "target": "check-fast"
+  },
+  "tests": {
+    "tools": 339,
+    "manifest": 16,
+    "machine_map": 4,
+    "static_sites": 2,
+    "evidence": 68
+  },
+  "deterministic_trace_groups": "both matched tracked manifest",
+  "hygiene": "passed",
+  "spec_shapes": "passed"
+}
