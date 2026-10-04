@@ -2,17 +2,20 @@ open Names
 open Printer
 open Ltac2_plugin
 
-let constant_of_term sigma term =
+let rec constant_of_term sigma term =
   match EConstr.kind sigma term with
   | Constr.Const (constant, _) -> constant
+  | Constr.App (head, _) -> constant_of_term sigma head
   | _ -> CErrors.user_err Pp.(str "The axiom gate requires a constant")
 
 let check_axioms term allowed env sigma =
   let target = constant_of_term sigma term in
   let allowed = List.map (constant_of_term sigma) allowed in
   let state = Conv_oracle.get_transp_state (Environ.oracle env) in
+  let reference = GlobRef.ConstRef target in
+  let instance, _ = UnivGen.fresh_global_instance env reference in
   let assumptions =
-    Assumptions.assumptions state (GlobRef.ConstRef target) (EConstr.to_constr sigma term)
+    Assumptions.assumptions state reference instance
   in
   let actual =
     ContextObjectMap.fold

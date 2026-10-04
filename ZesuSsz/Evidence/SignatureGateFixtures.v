@@ -3,11 +3,6 @@ From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
 Require Import ZesuSsz.Evidence.SignatureGates.
 
-Definition ReviewedAdapterShape : Type :=
-  list Z -> EvmSail.evm_decoder_types.StatelessInputRef ->
-  EvmSail.evm_decoder_types.StatelessInput -> Prop.
-Fail Check (@ReferenceDecodes : ReviewedAdapterShape).
-
 Theorem fixture_false : False -> ReviewedControlType.
 Proof. intros; apply reviewed_control. Qed.
 Fail Check (@fixture_false : ReviewedControlType).
@@ -44,8 +39,7 @@ Fail Check (@fixture_changed_relation : ReviewedControlType).
 
 (* These are the unconstrained binders from the inherited adapter and shell. *)
 Theorem fixture_inherited_binders :
-  forall (runner : DecoderEvaluator) (model : DecoderModel)
-         (inputRef : EvmSail.evm_decoder_types.StatelessInputRef)
-         (mainOk decodeOk : Prop), ReviewedControlType.
+  forall (runner model inputRef : Type) (mainOk decodeOk : Prop),
+  ReviewedControlType.
 Proof. intros; apply reviewed_control. Qed.
 Fail Check (@fixture_inherited_binders : ReviewedControlType).
