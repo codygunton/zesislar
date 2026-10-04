@@ -4,11 +4,12 @@ Import ListNotations.
 
 (** Reviewed divergence classes for the pinned stock Zesu endpoint. *)
 Inductive KnownBug : Type :=
-(* Stock rlp.zig adds the decoded payload length to the long-string and
-   long-list header lengths without rejecting uint64 wrap. The selected ELF
-   has add/bltu at 0x800d6a38/0x800d6a3c for strings and add/bgeu at
-   0x800d6ad8/0x800d6adc for lists. Earlier pilot addresses are superseded
-   by these selected-ELF sites. *)
+(* build/stock-zisk/static-sites/sites.json records selected-object DWARF.
+   It links src/stateless/mpt/rlp.zig:52 to the
+   long-string add at 0x800d6a38 (3387e600) and bltu at 0x800d6a3c
+   (6362e60a). It links rlp.zig:67 to the long-list add at 0x800d6ad8
+   (3387e600) and bgeu at 0x800d6adc (6376e602). These selected-ELF
+   sites add the payload and header lengths modulo 2^64. *)
 | RlpLongLengthWrap.
 
 (** This fixed list prevents later proofs from adding exceptions. *)

@@ -72,3 +72,24 @@ No present result claims unconditional binary equality with Sail.
 QEMU traces and vector audits are evidence for review. They are not premises in a machine
 or compliance theorem. The vector audit executes Sail RLP actions only. It does not execute
 the selected ELF or establish complete transaction behavior.
+
+## Rung 2 runtime premise and call records
+
+Rung 2 models the reachable parent-header memcpy call as an 80-byte copy from
+`0x80114fb8` to the result buffer. The service also writes the count to eight scratch
+bytes at `0xa0400f00`. The selected index commits the CSR 0x813 bytes at `0x800e06c0`,
+but Isla has no trace for that instruction. The closed code resource therefore assumes
+the named persistent `instr_pre` service premise at that PC. This premise uses
+`ZiskRuntime.ziskMemcpyAllows` and returns control to the recorded caller address. The
+runtime premise is separate from the empty library-axiom allow-list. Separate source,
+destination, and scratch ownership excludes overlap; the generic overlapping-copy
+behavior is outside this rung-2 premise. No Rocq proof establishes this ZisK runtime
+behavior.
+
+The selected call records carry `s0`-`s4` for `nextUint64` and `s0`-`s8` for
+`decodeParentHeader`. The parent-header record also carries its 400-byte frame and exact
+source and scratch snapshots. These values make ABI preservation and memory framing
+explicit within the existing Level 1 resource interface. They are not public outputs.
+The rung-2 compliance propositions are statements only; no machine proof or termination
+proof discharges them. A later proof must establish the memcpy return alignment and
+instantiate its runtime permissions.

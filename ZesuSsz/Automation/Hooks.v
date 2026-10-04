@@ -14,6 +14,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
+Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 
@@ -35,6 +37,15 @@ Global Instance : LithiumUnfold (@ziskMemcpyServiceEntry) := I.
 Global Instance : LithiumUnfold (@ziskMemcpyServiceExit) := I.
 Global Instance : LithiumUnfold (@ziskMemcpyServiceInstrSpec) := I.
 Global Instance : LithiumUnfold (@memcpyServicePremise) := I.
+Global Typeclasses Opaque nextUint64SelectedCode nextUint64SelectedEntry
+  nextUint64SelectedExit parentHeaderSelectedCode
+  parentHeaderSelectedEntry parentHeaderSelectedExit.
+Global Instance : LithiumUnfold (@nextUint64SelectedCode) := I.
+Global Instance : LithiumUnfold (@nextUint64SelectedEntry) := I.
+Global Instance : LithiumUnfold (@nextUint64SelectedExit) := I.
+Global Instance : LithiumUnfold (@parentHeaderSelectedCode) := I.
+Global Instance : LithiumUnfold (@parentHeaderSelectedEntry) := I.
+Global Instance : LithiumUnfold (@parentHeaderSelectedExit) := I.
 Global Typeclasses Opaque decodeItemByteFoldResources
   decodeItemByteFoldStringHeader decodeItemByteFoldListHeader.
 Global Instance : LithiumUnfold (@decodeItemByteFoldResources) := I.
