@@ -1,8 +1,13 @@
 # Trust boundary
 
 Rocq checks each completed theorem term. The current restart work has no completed
-rung-1 compliance theorem. Its decoder result types are candidates until the user
-selects decision C1. Machine proofs establish partial correctness only. Phase 5 of the
+rung-1 compliance theorem. The user selected C1-B: the public result records exact
+machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
+The `KnownBugs` list has one constructor. A wrap case requires the exact binary
+result and Sail rejection. `headerFits` remains a caller lemma, not a public domain.
+Rung 2 does not narrow its domain. A nested wrap uses the same known bug on the
+reached slice. The candidate reached-slice walk needs machine-call correspondence
+before a proof can use it. Machine proofs establish partial correctness only. Phase 5 of the
 active plan must prove termination with the verified executor in `ZesuSsz/Export/Executor.v`.
 
 ## Selected artifact and machine semantics
@@ -39,7 +44,8 @@ an empty library-axiom allow-list; runtime premises are listed separately from g
 axioms. The gate does not yet check a compliance theorem because none exists. Every later
 public theorem needs its own reviewed closed type and axiom check.
 
-The rung-3 transaction snapshot declares seven approved C4 host extern axioms.
+The user approved seven named C4 host premises for the rung-3 transaction snapshot.
+Its generated roots declare those seven host extern axioms.
 `SailHostPremises` states their required completion, return values, scratch changes,
 input preservation, and unrelated-state preservation. It treats the digest function
 as an explicit assumption; this work does not verify Keccak-256. The uncached
@@ -58,8 +64,9 @@ The staged source inlines exactly to pinned `decode_blob_tx`; the pinned source 
 change. `BLOB_HANDOFF_EXPERIMENT.json` records the generation method and measurements.
 The committed rung-1/2 snapshot still excludes the blob decoder. The full transaction
 decoder, keccak operations, scratch operations, and their host assumptions remain outside
-the current executable reference boundary. The C1 wrap decision and the later
-transaction-domain decisions remain open.
+the current executable reference boundary. The later transaction-domain decisions
+remain open. Rung-2 rejection agreement also needs a decision for truncated headers:
+Sail can accept a truncated header that the selected binary rejects.
 No present result claims unconditional binary equality with Sail.
 
 QEMU traces and vector audits are evidence for review. They are not premises in a machine

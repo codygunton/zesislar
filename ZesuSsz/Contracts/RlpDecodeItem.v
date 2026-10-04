@@ -148,12 +148,6 @@ Definition candidateResult40 (inputPointer : Z) (input before after : list byte)
         ((headerLength + payloadLength) mod word64Modulus)
   end.
 
-(* C1-A restricts the public claim. Every caller must prove headerFits. *)
-Definition C1AResult (inputPointer : Z) (input before after : list byte) : Prop :=
-  inputAddressFits inputPointer input /\
-  headerFits input /\
-  candidateResult40 inputPointer input before after.
-
 (* C1-B keeps the wrap result and states its arithmetic case explicitly.
    A wrap result does not grant ownership of its claimed payload range. *)
 Definition C1BResult (inputPointer : Z) (input before after : list byte) : Prop :=

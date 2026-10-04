@@ -2,6 +2,7 @@ From Coq Require Import Lists.List Logic.FunctionalExtensionality ZArith.ZArith.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
 Require Import ZesuSsz.Compliance.SailRun.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Evidence.SignatureGates.
 
 Theorem fixture_false : False -> ReviewedControlType.
@@ -15,6 +16,12 @@ Fail Check (@fixture_evaluator : ReviewedControlType).
 Theorem fixture_decoder_contract : ReviewedControlType -> ReviewedControlType.
 Proof. intros; apply reviewed_control. Qed.
 Fail Check (@fixture_decoder_contract : ReviewedControlType).
+
+Definition fixture_decode_item_extra (_ : False) :=
+  DecodeMeaningModuloKnownBugs.
+Fail Check (@fixture_decode_item_extra :
+  DecodeItemArgs -> DecodeItemOutcome -> Prop).
+
 
 Definition ReviewedFunctionType : Prop :=
   (fun x : nat => x) = (fun x : nat => x).

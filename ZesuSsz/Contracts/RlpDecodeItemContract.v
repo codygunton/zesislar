@@ -3,6 +3,7 @@ Require Import EvmSailRlp.evm_rlp_types.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 Require Import ZesuSsz.Compliance.SailRun.
+Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
@@ -32,9 +33,6 @@ Definition decodeItemArgsWellFormed (args : DecodeItemArgs) : Prop :=
     (decodeItemOutputPointer args) (decodeItemStackPointer args)
     (decodeItemReturnAddress args).
 
-Definition decodeItemC1ADomain (args : DecodeItemArgs) : Prop :=
-  decodeItemArgsWellFormed args /\ headerFits (decodeItemInputBytes args).
-
 Definition decodeItemC1BDomain (args : DecodeItemArgs) : Prop :=
   decodeItemArgsWellFormed args.
 
@@ -48,9 +46,6 @@ Definition decodeItemAllows
   R (decodeItemInputPointer args) (decodeItemInputBytes args)
     (decodeItemBeforeStorage args) after.
 
-Definition decodeItemAllowsC1A : DecodeItemArgs -> DecodeItemOutcome -> Prop :=
-  decodeItemAllows C1AResult.
-
 Definition decodeItemAllowsC1B : DecodeItemArgs -> DecodeItemOutcome -> Prop :=
   decodeItemAllows C1BResult.
 
@@ -60,32 +55,33 @@ Definition decodeItemSailCursor (args : DecodeItemArgs) :
      StatelessInputSliceFields_len :=
        Z.of_nat (List.length (decodeItemInputBytes args)) |}.
 
-Definition decodeItemC1ASailResult
+Definition decodeItemSailResult
     (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
   @relateItem 0 (Z.of_nat (List.length (decodeItemInputBytes args)))
     (decodeItemInputPointer args)
     (decodeItemInputBytes args) (decodeItemBeforeStorage args) after
     (runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args)).
 
-Definition decodeItemC1ASailAgreement : Prop :=
-  forall args after,
-    decodeItemC1ADomain args ->
-    decodeItemAllowsC1A args after ->
-    decodeItemC1ASailResult args after.
+Definition decodeItemBugApplies (bug : KnownBug)
+    (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
+  match bug with
+  | RlpLongLengthWrap =>
+      exists isList headerLength payloadLength,
+        candidateDecodeItem (decodeItemInputBytes args) =
+          candidateSuccess isList headerLength payloadLength /\
+        binaryWrapCase headerLength payloadLength
+          ((headerLength + payloadLength) mod word64Modulus) /\
+        candidateResult40 (decodeItemInputPointer args)
+          (decodeItemInputBytes args) (decodeItemBeforeStorage args) after /\
+        runRlpDecodeItem (decodeItemInputBytes args)
+          (decodeItemSailCursor args) = Reject RlpDecode
+  end.
 
-Definition decodeItemC1BSailAgreement : Prop :=
-  forall args after,
-    decodeItemC1BDomain args ->
-    headerFits (decodeItemInputBytes args) ->
-    decodeItemAllowsC1B args after ->
-    decodeItemC1ASailResult args after.
-
-Definition decodeItemBinaryWrap (args : DecodeItemArgs) : Prop :=
-  exists isList headerLength payloadLength,
-    candidateDecodeItem (decodeItemInputBytes args) =
-      candidateSuccess isList headerLength payloadLength /\
-    binaryWrapCase headerLength payloadLength
-      ((headerLength + payloadLength) mod word64Modulus).
+Definition DecodeMeaningModuloKnownBugs
+    (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
+  decodeItemAllowsC1B args after /\
+  (decodeItemSailResult args after \/
+   exists bug, List.In bug knownBugs /\ decodeItemBugApplies bug args after).
 
 Definition decodeItemWrapWitnessInput : list byte :=
   List.map (Z_to_bv 8) [191; 255; 255; 255; 255; 255; 255; 255; 247].
@@ -99,16 +95,6 @@ Proof.
   vm_compute; repeat split; try congruence.
   intros [H | [H | H]]; discriminate.
 Qed.
-
-Definition decodeItemC1BWrapDivergence : Prop :=
-  forall args after,
-    decodeItemC1BDomain args ->
-    decodeItemAllowsC1B args after ->
-    decodeItemBinaryWrap args ->
-    candidateResult40 (decodeItemInputPointer args)
-      (decodeItemInputBytes args) (decodeItemBeforeStorage args) after /\
-    runRlpDecodeItem (decodeItemInputBytes args)
-      (decodeItemSailCursor args) = Reject RlpDecode.
 
 Definition decodeItemEntryResources `{!islaG Sigma} `{!threadG}
     (domain : DecodeItemArgs -> Prop) (args : DecodeItemArgs) : iProp Sigma :=
