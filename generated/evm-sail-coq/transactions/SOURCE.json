@@ -1,0 +1,249 @@
+{
+  "evmSailRevision": "d0e4aabdde52f9158d191dbc8add444abffd9a6a",
+  "sailCompilerRevision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
+  "sailCompilerSha256": "517d6d68de8947926a0950d59de544350bf3ec289153e6ba63c6cfd5a664e16b",
+  "sailCoqPluginSha256": "8052ba334e708171eb74a6946678984408ae2f548c50ef03fee3780c074c2468",
+  "projectSha256": "9d356eec32b613e26932da544f95cf103d5327219898bd07e6272096cba86a4a",
+  "stagedTransactionsSha256": "36ec0cf2caaecfe872f92ffa51f6b043b149c3432040411637ec428b94c4f95b",
+  "inputShimSha256": "e80d32b97ed05d80cb7b1a37755c95377f4ed4ffdcea062eaf24ce59e436c0c1",
+  "sourceRelation": "Each field-walk and record replacement reconstructs the pinned source text exactly.",
+  "roots": [
+    "decode_legacy_tx",
+    "decode_access_list_tx",
+    "decode_fee_market_tx",
+    "decode_blob_tx",
+    "decode_set_code_tx",
+    "rlp_decode_tx"
+  ],
+  "c4PremiseCandidates": [
+    {
+      "name": "host_scratch_reserve",
+      "source": "sail/host/scratch.sail",
+      "line": 14,
+      "declaredType": "forall 'off 'len, 0 <= 'off & 'off <= scratch_region_bound & 0 <= 'len & 'len <= scratch_region_bound. (int('off), int('len)) -> bool"
+    },
+    {
+      "name": "host_scratch_store_byte",
+      "source": "sail/host/scratch.sail",
+      "line": 25,
+      "declaredType": "forall 'off, 0 <= 'off & 'off <= scratch_region_bound. ( int('off), byte, ) -> ScratchSliceLength('off + 1)"
+    },
+    {
+      "name": "host_scratch_store_stateless_input",
+      "source": "sail/host/scratch.sail",
+      "line": 33,
+      "declaredType": "forall 'dst 'off 'len, 0 <= 'dst & 'dst <= scratch_region_bound & stateless_input_valid_range( 'off, 'len, ). ( int('dst), StatelessInputSliceFields('off, 'len), ) -> ScratchSliceLength('dst + 'len)"
+    },
+    {
+      "name": "host_scratch_store_word",
+      "source": "sail/host/scratch.sail",
+      "line": 106,
+      "declaredType": "forall 'off 'len, 0 <= 'off & 'off <= scratch_region_bound & 0 <= 'len & 'len <= 32. (int('off), word, int('len)) -> ScratchSliceLength( 'off + 'len, )"
+    },
+    {
+      "name": "host_scratch_truncate",
+      "source": "sail/host/scratch.sail",
+      "line": 119,
+      "declaredType": "scratch_pointer -> unit"
+    },
+    {
+      "name": "stateless_input_keccak256",
+      "source": "sail/primitives/crypto.sail",
+      "line": 55,
+      "declaredType": "StatelessInputSlice -> hash"
+    },
+    {
+      "name": "scratch_keccak256",
+      "source": "sail/primitives/crypto.sail",
+      "line": 57,
+      "declaredType": "ScratchSlice -> hash"
+    }
+  ],
+  "reachedExternsByRoot": {
+    "decode_legacy_tx": [
+      "host_scratch_reserve",
+      "host_scratch_store_byte",
+      "host_scratch_store_stateless_input",
+      "host_scratch_store_word",
+      "host_scratch_truncate",
+      "scratch_keccak256"
+    ],
+    "decode_access_list_tx": [
+      "host_scratch_reserve",
+      "host_scratch_store_byte",
+      "host_scratch_store_stateless_input",
+      "host_scratch_store_word",
+      "host_scratch_truncate",
+      "scratch_keccak256"
+    ],
+    "decode_fee_market_tx": [
+      "host_scratch_reserve",
+      "host_scratch_store_byte",
+      "host_scratch_store_stateless_input",
+      "host_scratch_store_word",
+      "host_scratch_truncate",
+      "scratch_keccak256"
+    ],
+    "decode_blob_tx": [
+      "host_scratch_reserve",
+      "host_scratch_store_byte",
+      "host_scratch_store_stateless_input",
+      "host_scratch_store_word",
+      "host_scratch_truncate",
+      "scratch_keccak256"
+    ],
+    "decode_set_code_tx": [
+      "host_scratch_reserve",
+      "host_scratch_store_byte",
+      "host_scratch_store_stateless_input",
+      "host_scratch_store_word",
+      "host_scratch_truncate",
+      "scratch_keccak256"
+    ],
+    "rlp_decode_tx": [
+      "host_scratch_reserve",
+      "host_scratch_store_byte",
+      "host_scratch_store_stateless_input",
+      "host_scratch_store_word",
+      "host_scratch_truncate",
+      "scratch_keccak256",
+      "stateless_input_keccak256"
+    ]
+  },
+  "measurements": {
+    "decode_legacy_tx": {
+      "generation": {
+        "seconds": 48.729,
+        "peakRssKiB": 185828,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_legacy_tx_types.v": {
+        "seconds": 1.103,
+        "peakRssKiB": 588356,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_legacy_tx.v": {
+        "seconds": 0.502,
+        "peakRssKiB": 566288,
+        "exit": 0,
+        "withinLimits": true
+      }
+    },
+    "decode_access_list_tx": {
+      "generation": {
+        "seconds": 12.732,
+        "peakRssKiB": 199888,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_access_list_tx_types.v": {
+        "seconds": 1.003,
+        "peakRssKiB": 590020,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_access_list_tx.v": {
+        "seconds": 0.602,
+        "peakRssKiB": 559080,
+        "exit": 0,
+        "withinLimits": true
+      }
+    },
+    "decode_fee_market_tx": {
+      "generation": {
+        "seconds": 13.232,
+        "peakRssKiB": 200656,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_fee_market_tx_types.v": {
+        "seconds": 1.003,
+        "peakRssKiB": 586124,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_fee_market_tx.v": {
+        "seconds": 0.602,
+        "peakRssKiB": 564200,
+        "exit": 0,
+        "withinLimits": true
+      }
+    },
+    "decode_blob_tx": {
+      "generation": {
+        "seconds": 14.338,
+        "peakRssKiB": 199988,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_blob_tx_types.v": {
+        "seconds": 1.103,
+        "peakRssKiB": 587484,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_blob_tx.v": {
+        "seconds": 1.003,
+        "peakRssKiB": 583044,
+        "exit": 0,
+        "withinLimits": true
+      }
+    },
+    "decode_set_code_tx": {
+      "generation": {
+        "seconds": 13.435,
+        "peakRssKiB": 200016,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_set_code_tx_types.v": {
+        "seconds": 1.103,
+        "peakRssKiB": 588228,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_decode_set_code_tx.v": {
+        "seconds": 0.803,
+        "peakRssKiB": 565236,
+        "exit": 0,
+        "withinLimits": true
+      }
+    },
+    "rlp_decode_tx": {
+      "generation": {
+        "seconds": 20.455,
+        "peakRssKiB": 199172,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_rlp_decode_tx_types.v": {
+        "seconds": 1.404,
+        "peakRssKiB": 592336,
+        "exit": 0,
+        "withinLimits": true
+      },
+      "evm_rlp_decode_tx.v": {
+        "seconds": 1.704,
+        "peakRssKiB": 599152,
+        "exit": 0,
+        "withinLimits": true
+      }
+    }
+  },
+  "modulesSha256": {
+    "evm_decode_legacy_tx_types.v": "7157e71014f9094351cb6d0a903a24df07ed1b14951115e61bd367f22bb6016c",
+    "evm_decode_legacy_tx.v": "1d98f7557fa9e2effab8a7f9158295ee354797acedbb44484acd07c40d694b91",
+    "evm_decode_access_list_tx_types.v": "050e7ba2a864267e364258c2e32dcd5ea316e47adf0ae59b04bbe93ff3d71d9d",
+    "evm_decode_access_list_tx.v": "aec85d83ea92072e27d2e222c75975670f6822a4253864fcb8b5e38b1f52f131",
+    "evm_decode_fee_market_tx_types.v": "a8e6538b5544c6ccf200b081a281d275d688c9740cb264d338df701753b02185",
+    "evm_decode_fee_market_tx.v": "c5f644cae4ee4da35dee0254527f96f9ec69bcad183b765fa3ae745e16aca707",
+    "evm_decode_blob_tx_types.v": "9273c81a19f1392c446e3fd362d0174f2cc1aa4eca2aad1cc3bed303f7ee335a",
+    "evm_decode_blob_tx.v": "d3ed2f0562af8751187e415af166be24988e0ea6f5acb922bfa0c99b490e5ddf",
+    "evm_decode_set_code_tx_types.v": "58a6f9b55a623edaefdd20e93d508032914523f052193db7c7138c44d53b138e",
+    "evm_decode_set_code_tx.v": "736d8d97c997051ff056b9b7b934e5025f2943dcf2488a6c229df9bab9ba24d5",
+    "evm_rlp_decode_tx_types.v": "5d173fe82e8dbe76995af82717403c9fa70c1e34456fe6b4e27e644240a5daee",
+    "evm_rlp_decode_tx.v": "39d2764808273e932d922d68276114859b2cb6cedc456c84a1cfbd5d90b646d2"
+  }
+}
