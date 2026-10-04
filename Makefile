@@ -160,7 +160,8 @@ check-signatures:
 	  --cache=enabled -j$(FAST_JOBS) @install \
 	  ZesuSsz/Evidence/SignatureGateFixtures.vo \
 	  ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.vo \
-	  ZesuSsz/Evidence/ParentHeaderDifferential.vo
+	  ZesuSsz/Evidence/ParentHeaderDifferential.vo \
+	  Scaffolding/DecodeItemSignatureFixtures.vo
 
 .PHONY: check-iris
 check-iris: stock-native-indexes check-evidence-tools
