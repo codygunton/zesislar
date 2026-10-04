@@ -1,36 +1,38 @@
-From Coq Require Import Lists.List ZArith.ZArith.
-Require Import EvmSail.evm_decoder_types.
+From Coq Require Import List ZArith.
+Require Import SailStdpp.MachineWord SailStdpp.Prompt_monad.
+Require Import EvmSailRlp.evm_rlp_types EvmSailRlp.evm_rlp.
+Require Import ZesuSsz.Compliance.RlpInputBounds ZesuSsz.Compliance.SailRun.
 
-Import ListNotations.
+Open Scope Z_scope.
 
-(** An evaluator gives meaning to the prompt monad and its host operations.
-    A later proof must supply and validate one concrete evaluator. *)
-Record DecoderEvaluator : Type := {
-  evaluates : forall A, M A -> list Z -> option A -> Prop;
-  (** This field records the determinism assumption for the reference
-      evaluator. *)
-  evaluates_functional : forall A m bytes r1 r2,
-    evaluates A m bytes r1 -> evaluates A m bytes r2 -> r1 = r2
-}.
+(* Each relation uses one public wrapper with a fixed generated action,
+   initialized input register, initial state, and concrete evaluator. *)
+Definition ReferenceRlpItem {base len : Z} (bytes : list byte)
+    (cursor : RlpCursor base len)
+    (outcome : SailOutcome
+      ({full_len & {content_len & RlpFieldRef base full_len content_len}}%type))
+    : Prop :=
+  validInputSlice bytes base len = true /\
+  runRlpDecodeItem bytes cursor = outcome.
 
-(** The generated action remains a field because Coq 8 cannot compile its
-    large well-founded recursion in practical time.  A Rocq 9 build can set
-    this field to [EvmSail.evm_decoder.decode_stateless_input]. *)
-Record DecoderModel : Type := {
-  decodeAction : StatelessInputRef -> M StatelessInput
-}.
+Definition ReferenceRlpHeader {base len : Z} (bytes : list byte)
+    (cursor : StatelessInputSliceFields base len)
+    (outcome : SailOutcome (bool * source_pointer * Z)) : Prop :=
+  validInputSlice bytes base len = true /\
+  runRlpRefHdr bytes cursor = outcome.
 
-Definition ReferenceDecodes
-    (runner : DecoderEvaluator)
-    (model : DecoderModel)
-    (bytes : list Z)
-    (inputRef : StatelessInputRef)
-  (decoded : StatelessInput) : Prop :=
-  evaluates runner StatelessInput (decodeAction model inputRef) bytes (Some decoded).
+Definition ReferenceRlpNode {base len : Z} (bytes : list byte)
+    (node : StatelessInputSliceFields base len)
+    (outcome : SailOutcome
+      ({source_len & {source_off & RlpCursor source_off source_len}}%type))
+    : Prop :=
+  validInputSlice bytes base len = true /\
+  runRlpNodeCursor bytes node = outcome.
 
-Definition ReferenceRejects
-    (runner : DecoderEvaluator)
-    (model : DecoderModel)
-    (bytes : list Z)
-    (inputRef : StatelessInputRef) : Prop :=
-  evaluates runner StatelessInput (decodeAction model inputRef) bytes None.
+Definition ReferenceParentHeaderFields {base len : Z} (bytes : list byte)
+    (cursor : StatelessInputSliceFields base len)
+    (fieldIndex : parent_header_field_cursor) (fields : ParentHeaderFields)
+    (outcome : SailOutcome ParentHeaderFields) : Prop :=
+  validInputSlice bytes base len = true /\
+  0 <= parent_header_field_cursor_value fieldIndex <= 19 /\
+  runParentHeaderFields bytes cursor fieldIndex fields = outcome.

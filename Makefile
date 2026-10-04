@@ -172,12 +172,17 @@ RETAINED_TARGETS := \
   @ZesuSsz/Proofs/Tests/all \
   @ZesuSsz/Tests/all
 .PHONY: check-fast
-check-fast: check-evidence-tools
+check-fast: check-evidence-tools check-signatures
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
 	  $(RETAINED_TARGETS)
+
+.PHONY: check-signatures
+check-signatures:
+	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
+	  --cache=enabled -j$(FAST_JOBS) ZesuSsz/Evidence/SignatureGateFixtures.vo
 
 .PHONY: check-iris
 check-iris: check-evidence-tools

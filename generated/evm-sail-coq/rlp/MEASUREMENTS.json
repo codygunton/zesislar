@@ -1,0 +1,66 @@
+{
+  "base": "d483b1e3",
+  "compilerVersion": "8.19.2+lsp 4.14.4",
+  "method": "Dune built both modules together. A bounded compiler replay measured each generated module with the same Dune arguments.",
+  "elapsedLimitSeconds": 60,
+  "memoryLimitKiB": 2097152,
+  "modules": [
+    {
+      "worker_limit": 20,
+      "cpu_user_seconds": 0.769718,
+      "cpu_system_seconds": 0.043310999999999995,
+      "machine_busy_percent": 3.2614322691975843,
+      "load_average": [
+        1.41845703125,
+        3.83154296875,
+        3.1240234375
+      ],
+      "available_memory_kib": 184645980,
+      "swap_used_kib": 8046312,
+      "module": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "elapsed_seconds": 0.9052131189964712,
+      "peak_rss_kib": 582824,
+      "exit_code": 0,
+      "limit": null
+    },
+    {
+      "worker_limit": 20,
+      "cpu_user_seconds": 2.619793,
+      "cpu_system_seconds": 0.099698,
+      "machine_busy_percent": 3.5566630797983803,
+      "load_average": [
+        1.54541015625,
+        3.8173828125,
+        3.123046875
+      ],
+      "available_memory_kib": 184525432,
+      "swap_used_kib": 8046312,
+      "module": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "elapsed_seconds": 2.760850138962269,
+      "peak_rss_kib": 886956,
+      "exit_code": 0,
+      "limit": null
+    }
+  ],
+  "compilerBuild": {
+    "seconds": 118.139,
+    "peakRssKiB": 474648,
+    "jobs": 24
+  },
+  "shimModules": [
+    {
+      "module": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "elapsed_seconds": 2.255,
+      "peak_rss_kib": 596364,
+      "exit_code": 0,
+      "limit": null
+    },
+    {
+      "module": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "elapsed_seconds": 5.164,
+      "peak_rss_kib": 886472,
+      "exit_code": 0,
+      "limit": null
+    }
+  ]
+}

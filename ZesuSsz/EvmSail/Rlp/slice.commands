@@ -1,0 +1,7 @@
+:slice_roots rlp_decode_item rlp_ref_hdr rlp_node_cursor decode_parent_header_fields initialize_registers
+:slice_keep_std
+:slice
+:recheck_types
+:rewrites coq
+:target coq, evm_rlp
+:quit

@@ -1,0 +1,4 @@
+(coq.theory
+ (name EvmSailRlp)
+ (modules evm_rlp_types evm_rlp)
+ (theories SailStdpp stdpp stdpp.bitvector))
