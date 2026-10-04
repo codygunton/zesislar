@@ -83,7 +83,7 @@ Definition decodeItemEntryLayout (inputPointer inputLength resultPointer
     (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
   separateRanges resultPointer 40
     (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
-  0 <= returnAddress < word64Modulus /\ returnAddress mod 2 = 0.
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
 
 Definition noWrapConsumed (headerLength payloadLength consumed : Z) : Prop :=
   0 <= headerLength /\ 0 <= payloadLength /\
