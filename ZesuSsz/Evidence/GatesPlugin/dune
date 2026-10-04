@@ -1,0 +1,7 @@
+(include_subdirs no)
+
+(library
+ (name signature_gates_plugin)
+ (public_name zesu-signature-gates.plugin)
+ (modules signature_gates_plugin)
+ (libraries coq-core.vernac coq-core.plugins.ltac2))
