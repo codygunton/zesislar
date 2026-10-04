@@ -5,6 +5,8 @@ Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
 Require Import ZesuSsz.Compliance.RlpInputBounds.
 Require Import ZesuSsz.Compliance.SailRun.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
@@ -95,3 +97,17 @@ Ltac2 Eval exact_axioms 'ReferenceRlpItem (approved_library_axioms ()).
 Ltac2 Eval exact_axioms 'ReferenceRlpHeader (approved_library_axioms ()).
 Ltac2 Eval exact_axioms 'ReferenceRlpNode (approved_library_axioms ()).
 Ltac2 Eval exact_axioms 'ReferenceParentHeaderFields (approved_library_axioms ()).
+
+Definition ReviewedEncodeResultType : Type :=
+  Z -> list byte -> list byte -> list byte -> candidateItem -> Prop.
+Definition ReviewedRelateItemType : Type :=
+  forall base len : Z, Z -> list byte -> list byte -> list byte ->
+  SailItemOutcome base len -> Prop.
+
+Check (@encodeResult : ReviewedEncodeResultType).
+Check (@relateItem : ReviewedRelateItemType).
+Check (@intendedValidRlpClassHeaderFits :
+  forall input, intendedValidRlpClass input -> headerFits input).
+Print Assumptions intendedValidRlpClassHeaderFits.
+Ltac2 Eval exact_axioms 'intendedValidRlpClassHeaderFits
+  (approved_library_axioms ()).
