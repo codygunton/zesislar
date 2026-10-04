@@ -25,3 +25,7 @@ The captures are diagnostics.
 No native contract theorem is proved.
 The inactive terminal marker does not constrain the symbolic return resource.
 The driver needs a symbolic terminal before a return probe.
+
+The host archive stores bulky logs and utilization samples.
+The report records their paths, hashes, and bounded measurements.
+The report keeps exact proof sources and residuals.
