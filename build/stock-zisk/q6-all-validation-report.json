@@ -31,5 +31,19 @@
     "reported_cause": "guard scopes",
     "provenance": "Orch report relayed by worker-build-2. This worker did not measure these values."
   },
-  "new_builds_run": false
+  "new_builds_run": false,
+  "retry": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 929,
+    "rss_kb": 315868,
+    "target": "q6-stock-all",
+    "workers": 2,
+    "watch_wall_seconds": 2
+  },
+  "legacy_datasets": {
+    "count": 135,
+    "archive": "/home/cody/zesislar-archive/worker-build-2-20261004-legacy-traces",
+    "action": "Moved outside the Dune source tree under the coordinator ruling."
+  }
 }

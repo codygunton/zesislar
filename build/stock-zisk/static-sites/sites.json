@@ -1,0 +1,374 @@
+{
+  "schema": 1,
+  "artifact_identity": "99aa7538b89d0192121cd1c841ea55d67b02aa59b42851ef9608ac2fccdae2c5",
+  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "object_sha256": "dcd4b1bec1b02f94d7c4bca3d8323c386cfc7b780995235d6947790bb68d1afe",
+  "classification": "Static analysis. No selected-ELF execution claim.",
+  "dwarf_relocation": {
+    "method": "Selected-object DWARF with checked code relocation deltas, sizes, instruction widths, opcodes, and register fields. Link relocation may change immediate fields.",
+    "code_section_deltas": {
+      "1": 2147483648,
+      "6": 2148383292
+    },
+    "anchor_count": 388,
+    "relocation_counts": {
+      "2": 62020,
+      "1": 44997,
+      "34": 17589,
+      "38": 17589
+    }
+  },
+  "sites": [
+    {
+      "name": "I1-long-string",
+      "source": "src/stateless/mpt/rlp.zig",
+      "source_line": 52,
+      "source_sha256": "5a03a59895fb8b3ab7bb5d26827c73c2caf6e4eed2f73967855786ea4d748ad6",
+      "source_text": "if (1 + len_len + len > input.len) return error.InvalidRlp;",
+      "arithmetic_class": "RV64 ADD computes (length + header_size) modulo 2^64. BLTU compares input_size with this unsigned result.",
+      "instructions": [
+        {
+          "pc": "0x800d6a38",
+          "word": "00e68733",
+          "bytes_little_endian": "3387e600",
+          "decoded": {
+            "pc": 2148362808,
+            "size": 4,
+            "word": 15107891,
+            "rd": 14,
+            "rs1": 13,
+            "rs2": 14,
+            "funct3": 0,
+            "kind": "plain",
+            "mnemonic": "add",
+            "imm": 14
+          },
+          "dwarf_source": [
+            {
+              "start": 2148362808,
+              "file": "rlp.zig",
+              "line": 52,
+              "column": 25,
+              "end": 2148362812
+            }
+          ]
+        },
+        {
+          "pc": "0x800d6a3c",
+          "word": "0ae66263",
+          "bytes_little_endian": "6362e60a",
+          "decoded": {
+            "pc": 2148362812,
+            "size": 4,
+            "word": 182870627,
+            "rd": 4,
+            "rs1": 12,
+            "rs2": 14,
+            "funct3": 6,
+            "kind": "branch",
+            "mnemonic": "bltu",
+            "imm": 174,
+            "target": 2148362976
+          },
+          "dwarf_source": [
+            {
+              "start": 2148362812,
+              "file": "rlp.zig",
+              "line": 52,
+              "column": 38,
+              "end": 2148362816
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "I1-long-list",
+      "source": "src/stateless/mpt/rlp.zig",
+      "source_line": 67,
+      "source_sha256": "5a03a59895fb8b3ab7bb5d26827c73c2caf6e4eed2f73967855786ea4d748ad6",
+      "source_text": "if (1 + len_len + payload_len > input.len) return error.InvalidRlp;",
+      "arithmetic_class": "RV64 ADD computes (payload_length + header_size) modulo 2^64. BGEU takes the success branch when input_size is at least this unsigned result.",
+      "instructions": [
+        {
+          "pc": "0x800d6ad8",
+          "word": "00e68733",
+          "bytes_little_endian": "3387e600",
+          "decoded": {
+            "pc": 2148362968,
+            "size": 4,
+            "word": 15107891,
+            "rd": 14,
+            "rs1": 13,
+            "rs2": 14,
+            "funct3": 0,
+            "kind": "plain",
+            "mnemonic": "add",
+            "imm": 14
+          },
+          "dwarf_source": [
+            {
+              "start": 2148362968,
+              "file": "rlp.zig",
+              "line": 67,
+              "column": 25,
+              "end": 2148362972
+            }
+          ]
+        },
+        {
+          "pc": "0x800d6adc",
+          "word": "02e67663",
+          "bytes_little_endian": "6376e602",
+          "decoded": {
+            "pc": 2148362972,
+            "size": 4,
+            "word": 48658019,
+            "rd": 12,
+            "rs1": 12,
+            "rs2": 14,
+            "funct3": 7,
+            "kind": "branch",
+            "mnemonic": "bgeu",
+            "imm": 46,
+            "target": 2148363016
+          },
+          "dwarf_source": [
+            {
+              "start": 2148362972,
+              "file": "rlp.zig",
+              "line": 67,
+              "column": 46,
+              "end": 2148362976
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "I2-legacy-v-cast",
+      "source": "src/stateless/rlp_decode.zig",
+      "source_line": 345,
+      "source_sha256": "a51e4748e0ab0b7469bd491a3d49273bbe16f83163bd7a865604631955babc5c",
+      "source_text": "tx.chain_id = @intCast((v_raw - 35) / 2);",
+      "arithmetic_class": "The subtraction uses the low two limbs of v_raw. SRLI, SLLI, and OR retain the low 64 bits of (v_raw - 35) / 2. SD stores these bits at result offset 160. This sequence has no check of discarded bits.",
+      "instructions": [
+        {
+          "pc": "0x80002ab4",
+          "word": "fddd0813",
+          "bytes_little_endian": "1308ddfd",
+          "decoded": {
+            "pc": 2147494580,
+            "size": 4,
+            "word": 4259121171,
+            "rd": 16,
+            "rs1": 26,
+            "rs2": 29,
+            "funct3": 0,
+            "kind": "plain",
+            "mnemonic": "addi",
+            "imm": -35
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494580,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 47,
+              "end": 2147494612
+            }
+          ]
+        },
+        {
+          "pc": "0x80002acc",
+          "word": "01a838b3",
+          "bytes_little_endian": "b338a801",
+          "decoded": {
+            "pc": 2147494604,
+            "size": 4,
+            "word": 27801779,
+            "rd": 17,
+            "rs1": 16,
+            "rs2": 26,
+            "funct3": 3,
+            "kind": "plain",
+            "mnemonic": "sltu",
+            "imm": 26
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494580,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 47,
+              "end": 2147494612
+            }
+          ]
+        },
+        {
+          "pc": "0x80002ad0",
+          "word": "011b88b3",
+          "bytes_little_endian": "b3881b01",
+          "decoded": {
+            "pc": 2147494608,
+            "size": 4,
+            "word": 18581683,
+            "rd": 17,
+            "rs1": 23,
+            "rs2": 17,
+            "funct3": 0,
+            "kind": "plain",
+            "mnemonic": "add",
+            "imm": 17
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494580,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 47,
+              "end": 2147494612
+            }
+          ]
+        },
+        {
+          "pc": "0x80002ad4",
+          "word": "00185293",
+          "bytes_little_endian": "93521800",
+          "decoded": {
+            "pc": 2147494612,
+            "size": 4,
+            "word": 1594003,
+            "rd": 5,
+            "rs1": 16,
+            "rs2": 1,
+            "funct3": 5,
+            "kind": "plain",
+            "mnemonic": "srli",
+            "imm": 1
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494612,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 53,
+              "end": 2147494616
+            }
+          ]
+        },
+        {
+          "pc": "0x80002adc",
+          "word": "fff88893",
+          "bytes_little_endian": "9388f8ff",
+          "decoded": {
+            "pc": 2147494620,
+            "size": 4,
+            "word": 4294477971,
+            "rd": 17,
+            "rs1": 17,
+            "rs2": 31,
+            "funct3": 0,
+            "kind": "plain",
+            "mnemonic": "addi",
+            "imm": -1
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494620,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 47,
+              "end": 2147494624
+            }
+          ]
+        },
+        {
+          "pc": "0x80002ae0",
+          "word": "03f89893",
+          "bytes_little_endian": "9398f803",
+          "decoded": {
+            "pc": 2147494624,
+            "size": 4,
+            "word": 66623635,
+            "rd": 17,
+            "rs1": 17,
+            "rs2": 31,
+            "funct3": 1,
+            "kind": "plain",
+            "mnemonic": "slli",
+            "imm": 63
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494624,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 53,
+              "end": 2147494632
+            }
+          ]
+        },
+        {
+          "pc": "0x80002ae4",
+          "word": "0112ed33",
+          "bytes_little_endian": "33ed1201",
+          "decoded": {
+            "pc": 2147494628,
+            "size": 4,
+            "word": 18017587,
+            "rd": 26,
+            "rs1": 5,
+            "rs2": 17,
+            "funct3": 6,
+            "kind": "plain",
+            "mnemonic": "or",
+            "imm": 17
+          },
+          "dwarf_source": [
+            {
+              "start": 2147494624,
+              "file": "rlp_decode.zig",
+              "line": 345,
+              "column": 53,
+              "end": 2147494632
+            }
+          ]
+        },
+        {
+          "pc": "0x80002e38",
+          "word": "0ba83023",
+          "bytes_little_endian": "2330a80b",
+          "decoded": {
+            "pc": 2147495480,
+            "size": 4,
+            "word": 195571747,
+            "rd": 0,
+            "rs1": 16,
+            "rs2": 26,
+            "funct3": 3,
+            "kind": "store",
+            "mnemonic": "sd",
+            "imm": 160,
+            "width": 8
+          },
+          "dwarf_source": [
+            {
+              "start": 2147495368,
+              "file": "rlp_decode.zig",
+              "line": 415,
+              "column": 5,
+              "end": 2147495584
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "The selected long-list comparison uses BGEU, not BLTU.",
+    "The selected long-list addition occurs at source line 67, not review line 64.",
+    "The selected narrowing cast occurs at source line 345, not review line 340.",
+    "The retained arithmetic sequence does not prove a complete decoder path."
+  ]
+}

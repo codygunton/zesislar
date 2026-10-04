@@ -117,6 +117,7 @@ check-evidence-tools:
 	@echo "uncached checks: machine config, tests, hygiene, spec shapes"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
+	$(PYTHON) -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py

@@ -1,0 +1,537 @@
+{
+  "revision": "4c9c98cc5ff04db70f4d39cb9ea55c07e036059c",
+  "clone": "/home/cody/zesislar/.worktrees/worker2-q10-clean",
+  "method": "Local git clone with --no-hardlinks; main branch; empty trace cache; no repairs.",
+  "check_fast": {
+    "error_class": "rocq_error",
+    "exit": 2,
+    "ms": 1236525,
+    "rss_kb": 82844,
+    "target": "q10-clean-check-fast"
+  },
+  "failure": {
+    "stage": "check-signatures",
+    "message": "Dune could not create the external build directory because _build/agents did not exist."
+  },
+  "workers": {
+    "compiler": 2,
+    "trace_factory": 6
+  },
+  "cold_generation": {
+    "decodeItem": {
+      "generated": 116,
+      "selected": 116,
+      "seconds": 30.097
+    },
+    "closure": {
+      "generated": 4503,
+      "selected": 4504,
+      "seconds": 1126.192,
+      "bounded_indexes": 19
+    },
+    "manifest_validation": "Both deterministic datasets matched the tracked manifest."
+  },
+  "unit_tests": {
+    "tools": 337,
+    "evidence": 68,
+    "result": "passed"
+  },
+  "check_iris": {
+    "run": false,
+    "reason": "The coordinator owns check-iris under its gate ruling."
+  },
+  "external_dependencies": {
+    "inputs_outside_clone": [
+      {
+        "name": "compiler/rustc",
+        "path": "/home/cody/zesislar-archive/stock-inputs/3514d9b0f9c8b7d8960821bf63414fd2155210c65ceed44063075c0b5c0efd98-rustc",
+        "exists": true
+      },
+      {
+        "name": "compiler/cargo",
+        "path": "/home/cody/zesislar-archive/stock-inputs/dfc588b313486f8e76c4c2fe9288728b9df9e4a1d0722c4a3e33a51c3f460072-cargo",
+        "exists": true
+      },
+      {
+        "name": "compiler/cargo-zisk",
+        "path": "/home/cody/zesislar-archive/stock-inputs/14158b20f9eb66fc3ad1824f15c9235ef66e4bf10a10acda16289a7b0452d315-cargo-zisk",
+        "exists": true
+      },
+      {
+        "name": "guest/Makefile",
+        "path": "/tmp/worker2-stock-zesu-zkvm/zisk/Makefile",
+        "exists": true
+      },
+      {
+        "name": "guest/build.zig",
+        "path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig",
+        "exists": true
+      },
+      {
+        "name": "guest/build.zig.zon",
+        "path": "/tmp/worker2-stock-zesu-zkvm/zisk/build.zig.zon",
+        "exists": true
+      },
+      {
+        "name": "guest/src/zisk_host.zig",
+        "path": "/tmp/worker2-stock-zesu-zkvm/zisk/src/zisk_host.zig",
+        "exists": true
+      },
+      {
+        "name": "linker",
+        "path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+        "exists": true
+      },
+      {
+        "name": "runtime",
+        "path": "/home/cody/zesislar-archive/stock-inputs/f119db4b30124f276483679d2ccf7c1089bb1d51b16bfc172e082e206693e491-libziskos_staticlib.a",
+        "exists": true
+      },
+      {
+        "name": "object",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/p0c-zesu-source/zig-out/lib/zesu.o",
+        "exists": true
+      },
+      {
+        "name": "compiler/zig",
+        "path": "/usr/bin/zig",
+        "exists": true
+      },
+      {
+        "name": "compiler/riscv64-elf-objdump",
+        "path": "/usr/bin/riscv64-elf-objdump",
+        "exists": true
+      },
+      {
+        "name": "compiler/riscv64-elf-readelf",
+        "path": "/usr/bin/riscv64-elf-readelf",
+        "exists": true
+      },
+      {
+        "name": "builder/build.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/build.py",
+        "exists": true
+      },
+      {
+        "name": "builder/manifest.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/manifest.py",
+        "exists": true
+      },
+      {
+        "name": "legacy/riscv64-linux-gnu-as",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-as",
+        "exists": true
+      },
+      {
+        "name": "legacy/riscv64-linux-gnu-ld",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-ld",
+        "exists": true
+      },
+      {
+        "name": "legacy/riscv64-linux-gnu-nm",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-nm",
+        "exists": true
+      },
+      {
+        "name": "legacy/riscv64-linux-gnu-objdump",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/riscv64-linux-gnu-objdump",
+        "exists": true
+      },
+      {
+        "name": "legacy/z3",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/bin/z3",
+        "exists": true
+      },
+      {
+        "name": "generator/closure.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/closure.py",
+        "exists": true
+      },
+      {
+        "name": "generator/riscv.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/riscv.py",
+        "exists": true
+      },
+      {
+        "name": "generator/dwarf.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/dwarf.py",
+        "exists": true
+      },
+      {
+        "name": "generator/inventory.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/inventory.py",
+        "exists": true
+      },
+      {
+        "name": "platform-audit/snapshot",
+        "path": "/home/cody/isla-snapshots/riscv64.ir",
+        "exists": true
+      },
+      {
+        "name": "platform-audit/core/src/mem.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+        "exists": true
+      },
+      {
+        "name": "platform-audit/transpilers/common/src/elf_extraction.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/transpilers/common/src/elf_extraction.rs",
+        "exists": true
+      },
+      {
+        "name": "platform-audit/emulator/src/emu_context.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/emulator/src/emu_context.rs",
+        "exists": true
+      },
+      {
+        "name": "platform-audit/ziskos/entrypoint/src/lib.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/lib.rs",
+        "exists": true
+      },
+      {
+        "name": "platform-audit/zisk/zisk.ld",
+        "path": "/tmp/worker2-stock-zesu-zkvm/zisk/zisk.ld",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/adapter.sail",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/adapter.sail",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/bin/isla-footprint",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bin/isla-footprint",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/bind_traces.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/bind_traces.py",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/build.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/build.py",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/compiler/LICENCE",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/LICENCE",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/compiler/dune",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/compiler/dune-project",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/dune-project",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/compiler/jib_ir.ml",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/jib_ir.ml",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/compiler/sail_plugin_isla.ml",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/fragment.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/fragment.py",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/smoke.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/smoke.py",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/test_build.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/test_build.py",
+        "exists": true
+      },
+      {
+        "name": "platform/tools/stock_zisk/platform/traces.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/traces.py",
+        "exists": true
+      },
+      {
+        "name": "platform/sail",
+        "path": "/home/cody/islaris/_opam/bin/sail",
+        "exists": true
+      },
+      {
+        "name": "platform/base_snapshot",
+        "path": "/home/cody/isla-snapshots/riscv64.ir",
+        "exists": true
+      },
+      {
+        "name": "platform/isla_footprint",
+        "path": "/home/cody/isla/target/release/isla-footprint",
+        "exists": true
+      },
+      {
+        "name": "platform/islaris",
+        "path": "/home/cody/islaris/_opam/bin/islaris",
+        "exists": true
+      },
+      {
+        "name": "platform/sail_plugin",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+        "exists": true
+      },
+      {
+        "name": "platform/config",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/riscv64_zesu.toml",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Contracts/Machine.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/Machine.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/InstrSpecs/Machine.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/InstrSpecs/Machine.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Export/Adequacy.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Export/Adequacy.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Contracts/OutputEvents.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/OutputEvents.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Export/Snapshots.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Export/Snapshots.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Automation/Hooks.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/Hooks.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/tools/machine_config.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/machine_config.py",
+        "exists": true
+      },
+      {
+        "name": "machine-map/tools/test_machine_config.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/test_machine_config.py",
+        "exists": true
+      },
+      {
+        "name": "machine-map/tools/stock_zisk/machine_map/generate.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/machine_map/generate.py",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Automation/BitvectorFacts.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/BitvectorFacts.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/Finish.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/Finish.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/RuleSetV2.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/RuleSetV2.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/NonRaising.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/NonRaising.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/LdX16X10Off80.isla",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/LdX16X10Off80.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/LdX16X10Off80.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/SdX1X2Off8.isla",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/metadata.json",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/metadata.json",
+        "exists": true
+      },
+      {
+        "name": "traces/tools/stock_zisk/platform/indexes.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/indexes.py",
+        "exists": true
+      },
+      {
+        "name": "traces/tools/stock_zisk/platform/cache_footprint.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/cache_footprint.py",
+        "exists": true
+      },
+      {
+        "name": "traces/tools/stock_zisk/platform/exports.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/platform/exports.py",
+        "exists": true
+      },
+      {
+        "name": "traces/Makefile",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/Makefile",
+        "exists": true
+      },
+      {
+        "name": "traces/_CoqProject",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_CoqProject",
+        "exists": true
+      },
+      {
+        "name": "runtime-statement/ZesuSsz/Contracts/ZiskRuntime.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/ZiskRuntime.v",
+        "exists": true
+      },
+      {
+        "name": "runtime-statement/ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+        "exists": true
+      },
+      {
+        "name": "runtime-statement/ZesuSsz/Contracts/ParentHeaderLevel1.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Contracts/ParentHeaderLevel1.v",
+        "exists": true
+      },
+      {
+        "name": "runtime-statement/tools/stock_zisk/runtime_inventory.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/stock_zisk/runtime_inventory.py",
+        "exists": true
+      },
+      {
+        "name": "runtime-service/ziskos/entrypoint/src/dma/memcpy.s",
+        "path": "/tmp/worker2-stock-zisk-toolchain/ziskos/entrypoint/src/dma/memcpy.s",
+        "exists": true
+      },
+      {
+        "name": "runtime-service/transpilers/riscv/src/riscv2zisk_context.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/transpilers/riscv/src/riscv2zisk_context.rs",
+        "exists": true
+      },
+      {
+        "name": "runtime-service/core/src/operations/dma_memcpy.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/core/src/operations/dma_memcpy.rs",
+        "exists": true
+      },
+      {
+        "name": "runtime-service/core/src/mem.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/core/src/mem.rs",
+        "exists": true
+      },
+      {
+        "name": "runtime-service/core/src/zisk_inst_builder.rs",
+        "path": "/tmp/worker2-stock-zisk-toolchain/core/src/zisk_inst_builder.rs",
+        "exists": true
+      },
+      {
+        "name": "traces/ZesuStock/CalleeIdentity.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuStock/CalleeIdentity.v",
+        "exists": true
+      },
+      {
+        "name": "traces/ZesuStock/dune",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuStock/dune",
+        "exists": true
+      },
+      {
+        "name": "traces/ZesuSsz/dune",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/dune",
+        "exists": true
+      },
+      {
+        "name": "machine-map/InstrSpecs/Specs.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/InstrSpecs/Specs.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Automation/Calls.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Automation/Calls.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/EntryAddi.isla",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/EntryAddi.isla",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Generated/TestTraces/EntryAddi.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Generated/TestTraces/EntryAddi.v",
+        "exists": true
+      },
+      {
+        "name": "machine-map/ZesuSsz/Proofs/Tests/StockExecutor.v",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/ZesuSsz/Proofs/Tests/StockExecutor.v",
+        "exists": true
+      },
+      {
+        "name": "build-entry/tools/block/blockrun.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/block/blockrun.py",
+        "exists": true
+      },
+      {
+        "name": "build-entry/tools/block/entries.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/block/entries.py",
+        "exists": true
+      },
+      {
+        "name": "build-entry/tools/test_block_entries.py",
+        "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/tools/test_block_entries.py",
+        "exists": true
+      }
+    ],
+    "project_root": "/home/cody/zesislar/.worktrees/p0c-stock-target",
+    "note": "These recorded paths refer to local sources, binaries, and the original worktree. This clone did not test an isolated host."
+  },
+  "machine_utilization": {
+    "measured": false
+  },
+  "guard_wait": {
+    "measured_separately": false
+  },
+  "repairs": [],
+  "measurement_start_failure": "/usr/bin/time was absent. The retry used tools/build_record.py without changes to the clone."
+}
