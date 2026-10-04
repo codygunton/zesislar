@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "checkpoint": "Q4/Q9 unchanged-driver rerun after selected-code lookup bridge",
+  "base_commit": "12a62158ccaebea44d19625ab4facc0dd86fce3d",
+  "artifact_identity": "f2b00f2f25ba83f4af3022fec11408a5d22a94db0d71c508e33c8ba3ff19dcc8",
+  "inputs": {
+    "build/stock-zisk/build-recipe.json": {
+      "sha256": "d313bac98aa533285cff474a436c7c01f960d09449d8b82f0122be475b605ab6"
+    },
+    "build/stock-zisk/inventory.json": {
+      "sha256": "7ba89254bb2b2bc810311a2795840d131fcabecd993b4a7d227da2688ff5efae"
+    },
+    "build/stock-zisk/zesu-zisk.elf": {
+      "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+    },
+    "build/stock-zisk/platform/riscv64-zisk.ir": {
+      "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e"
+    },
+    "build/stock-zisk/decodeItem.raw.dump": {
+      "sha256": "4985f6716ca9f4f6b4bbdaf292f4251cd6e2adcd190280f2df7ee61cf32ae322"
+    },
+    "ZesuSsz/riscv64_zesu.toml": {
+      "sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6"
+    },
+    "ZesuSsz/Contracts/Level1.v": {
+      "sha256": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItem.v": {
+      "sha256": "c725c231b4db56243ce2786ccde2ccee8a35ad4264efb602afc57a77b0f15898"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+    },
+    "ZesuSsz/Contracts/DecodeItemSelected.v": {
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    },
+    "ZesuSsz/Compliance/KnownBugs.v": {
+      "sha256": "3c33b577c074de65ce4bdc554d787458754af24ab1bb006f19bfe5d9cfc945ce"
+    },
+    "ZesuSsz/Evidence/decode_item_block_design.json": {
+      "sha256": "64c5784a140424fdf3fe68415d779f457f1f3eda35442cc40c1b38852a6a44c2"
+    },
+    "generated/isla-traces/stock-zisk/closure/index_decodeItem.v": {
+      "sha256": "36e90f90acc82aefef2ceccab7d26ffd7086ad2b94c58b1f459239c722bc68c6"
+    },
+    "generated/isla-traces/stock-zisk/closure/coverage.json": {
+      "sha256": "c097dbb090e161e1f5eacbb492684abb9c3efa95751bb52ac025b51e01fd91ea"
+    },
+    "ZesuSsz/Automation/All.v": {
+      "sha256": "eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f"
+    },
+    "ZesuSsz/Automation/Hooks.v": {
+      "sha256": "8b10e759b9dcb7a9d0976d2eb0f2b2e81d6a1ca0369caf607955d7777455a8aa"
+    },
+    "ZesuSsz/Automation/Finish.v": {
+      "sha256": "6d05e216a9dd0784f24ce7c38d012ce6598f98a0ba05db1a7aa1c21a115700bc"
+    },
+    "InstrSpecs/Lookup.v": {
+      "sha256": "8b3e81382635e5b81a401f59894125194d8b1ca0e780a80b430f535f95de1cab"
+    },
+    "tools/block/chain_root.py": {
+      "sha256": "5791a4c5dffb200d7a0099c49f734e1283dfc72fee5410b594dc75675a0d0c8e"
+    },
+    "tools/block/chain_state.py": {
+      "sha256": "db474094b7795e992d0dd02aef399bd151767b8161936e236a01a709cf6cb2b9"
+    },
+    "tools/block/chain_goals.py": {
+      "sha256": "e9567727215311445f2bfa01db3a93041bbf1dbd36fcd7c7b20448da810d308e"
+    },
+    "tools/det/infer_boundary.py": {
+      "sha256": "a77657e7c9e43741e37d1f9dd87f4806a3e5034cc240e2fe753febaca9b0ce5d"
+    },
+    "tools/det/gen_boundary.py": {
+      "sha256": "87895fa4258ae4018fcbace248d01aae3b42ffb2d0310d12251d19e29b308074"
+    },
+    "tools/coqc_scratch.sh": {
+      "sha256": "2332297ed9fb30178839fbf7a6144adfdbec252a5a19c982d39a03a3bd8417dc"
+    },
+    "ZesuSsz/Contracts/SelectedCodeLookup.v": {
+      "sha256": "e8d1e66aeed684f8385a3df4aba6406ab89137e4922577fdd61148e9819dc1c8"
+    },
+    "ZesuSsz/Contracts/NextUint64Selected.v": {
+      "sha256": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07"
+    },
+    "ZesuSsz/Contracts/ParentHeaderSelected.v": {
+      "sha256": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c"
+    }
+  },
+  "function": "rlp.decodeItem",
+  "entry": "0x800d6960",
+  "region_end_exclusive": "0x800d6b30",
+  "instructions": 116,
+  "blocks": 24,
+  "branches": 14,
+  "loops": 2,
+  "returns": [
+    {
+      "return_pc": "0x800d69a0",
+      "block_entry": "0x800d698c",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d69d4",
+      "block_entry": "0x800d69b0",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6a60",
+      "block_entry": "0x800d6a40",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6aa4",
+      "block_entry": "0x800d6a78",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6b04",
+      "block_entry": "0x800d6ae0",
+      "block_status": "missing-entry",
+      "return_reached": false
+    },
+    {
+      "return_pc": "0x800d6b2c",
+      "block_entry": "0x800d6b08",
+      "block_status": "missing-entry",
+      "return_reached": false
+    }
+  ],
+  "block_results": [
+    {
+      "entry": "0x800d6960",
+      "status": "entry-stall",
+      "reason": "folded selected code at instruction lookup",
+      "observations": 2
+    },
+    {
+      "entry": "0x800d6974",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d697c",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d698c",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69a4",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69b0",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69d8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e0",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d69e8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a00",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a08",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a14",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a24",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a38",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a40",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a64",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a6c",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6a78",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6aa8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ab4",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ac4",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ad8",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6ae0",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    },
+    {
+      "entry": "0x800d6b08",
+      "status": "missing-entry",
+      "reason": "no native predecessor state reached this block",
+      "observations": 0
+    }
+  ],
+  "counts": {
+    "missing-entry": 23,
+    "entry-stall": 1,
+    "execution-stall": 0,
+    "reached": 0,
+    "closed": 0,
+    "promoted": 0,
+    "composed": 0
+  },
+  "chain_probe_observations": 2,
+  "chain_rc": 0,
+  "driver_baseline_location": "unknown-stall",
+  "classification_evidence": "Both pending goals request literal FindInstrKind 2148362592 false.",
+  "native_correctness": "unproved",
+  "statement": "DecodeItemSelectedComplianceStatement",
+  "root_model": "decodeItemSelectedModel returnAddress",
+  "domain": "decodeItemC1BDomain",
+  "return_boundary": "symbolic returnAddress; unchanged C1-B and known-bug result continuation",
+  "runtime_correctness_premises_added": 0,
+  "execution_premises_added": 0,
+  "rules_added": 0,
+  "previous_lookup_repair_applied": false,
+  "invariants_proved": 0,
+  "callee_contracts_discharged": 0,
+  "unresolved_indirect_transfers": [],
+  "new_axioms": 0,
+  "termination": "pending Phase 5",
+  "manual_proof_growth": {
+    "native_proof_lines": 0,
+    "diagnostic_tactic_lines": 7,
+    "instruction_handoff_lines": 0,
+    "iRename_select_uses": 0
+  },
+  "first_residual_classes": [
+    "folded-selected-code-lookup"
+  ],
+  "terminal_marker": {
+    "literal": 0,
+    "changes_return_resource": false,
+    "used_in_this_run": false,
+    "limitation": "The driver requires a literal terminal. A symbolic terminal is required before probing ret blocks."
+  },
+  "performance": {
+    "elapsed_seconds": 4.06,
+    "peak_module_mib": 917.07421875,
+    "requested_workers": 6,
+    "observed_compiler_workers": 2,
+    "module_limits": {
+      "seconds": 300,
+      "memory_gib": 6
+    },
+    "cpu_scope": "total machine percentage per sample; per-process CPU ticks recorded",
+    "measurement_file": "machine-measurements.json",
+    "compiler_cpu_ticks_observed": {
+      "1253829": 40,
+      "1253893": 136
+    }
+  },
+  "verification": {
+    "focused_dependencies": "passed; six workers; cache enabled",
+    "native_traces": "checked against tracked manifest",
+    "mcp": "mcp-results.json",
+    "check_fast": "passed",
+    "check_iris": "not run by parent instruction",
+    "check_fast_attempts": [
+      {
+        "result": "passed",
+        "workers": 6,
+        "cache_enabled": true
+      }
+    ],
+    "check_fast_command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=worker2-child-platform",
+      "AGENT_JOBS=6",
+      "FAST_JOBS=6",
+      "TRACE_JOBS=6"
+    ],
+    "check_fast_log_normalization": "Trailing whitespace removed."
+  },
+  "outputs": {
+    "build/stock-zisk/q4-q9-lookup-bridge/chain-baseline-raw.json": {
+      "sha256": "f5e7d94ab58c1fd2bab2178e2d508e7d75894c67a6e37c65d5229a3795427035"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/chain-root-observations.json": {
+      "sha256": "bc69e9d095b6d076f6f9be24dd17731042520a2fde4c308493f98e746d7e93c8"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/chain.log.txt": {
+      "sha256": "17931cf700f096ea75b7a8c6caaa4810c7701c198fc3f7befe09266ec2f93119"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/chain_800d6960_800d6974_2a72b59387bcd853.v.txt": {
+      "sha256": "1111a5c88dfc7cb686c96ed3a2bf63949f4b18a2c730252e88ce60c9b3127e4c"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/chain_800d6960_800d6ae0_2a72b59387bcd853.v.txt": {
+      "sha256": "fb1c7ec26dcd346724cc91e3b06e7d96b5620f414a131dcea00484c8d62ae919"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/first-entry-stall.json": {
+      "sha256": "83624178c347d5208628b6cd163cdbad48152cde70c19e0164e37a8487ed4835"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/machine-measurements.json": {
+      "sha256": "8ab40180bb012236289a2495d9b7523a54e0b6a34228e20092deb496c98a096b"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/mcp-results.json": {
+      "sha256": "b636b93740f72bb68fcb9b79e60868b2d1856380de3e0bc057242a33885d1eaa"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/measurement-driver.py.txt": {
+      "sha256": "83898cb464477853dd477e8ef5bef200854178e4dbac84c7f95cc98b60fd746f"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/native-contract.v.txt": {
+      "sha256": "3cd4ced30301ccd14a3cd36c0188d179093e6e9ccf804c810593d9d7e069de8c"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/selected-code-premises.txt": {
+      "sha256": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/selected-root.json": {
+      "sha256": "d1ce38607b7568c6fa34f88f0ae55e98b16c0f7b9b43ef5f6470802831f55681"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/selected-root.v.txt": {
+      "sha256": "af850da7df2d365703ab71326a6846405a8f341a66cbf05df7dc42844071d9ee"
+    },
+    "build/stock-zisk/q4-q9-lookup-bridge/check-fast.log.txt": {
+      "sha256": "b2232de33993fd658f58b6b7f40fd9a1b5ed82970fe2104de23abd6f6bbb8aaa"
+    }
+  },
+  "instruction_bytes_sha256": "5bad4d04622f09ad9c73ad9339173649a0a95d6e0d787d6a8eec453c018588a2",
+  "native_instruction_steps_completed": 0,
+  "automation": {
+    "exact_contract": "zesu_block with Automation.All",
+    "chain": "zesu_block with existing Automation.Sets.call",
+    "new_instances": 0,
+    "new_hooks": 0
+  },
+  "reproduction_command": [
+    "python3",
+    "tools/block/chain_root.py",
+    "--entries",
+    "build/stock-zisk/q4-q9-lookup-bridge/selected-root.json",
+    "--cfg",
+    "build/stock-zisk/inventory.json",
+    "--root",
+    "0x800d6960",
+    "--terminal",
+    "0",
+    "--out",
+    "_build/q4-q9-lookup-bridge-replay/chain",
+    "--publish-dir",
+    "_build/q4-q9-lookup-bridge-replay/published",
+    "--build-dir",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+    "--root-declaration",
+    "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+    "--root-source",
+    "build/stock-zisk/q4-q9-lookup-bridge/selected-root.v.txt",
+    "--proof-dir",
+    "ZesuSsz/Proofs/DecodeItem",
+    "--stage-dir",
+    "_build/q4-q9-lookup-bridge-replay/stage",
+    "--trace-import",
+    "ZesuSsz.Stock.Closure.index_decodeItem",
+    "--code-premises",
+    "build/stock-zisk/q4-q9-lookup-bridge/selected-code-premises.txt",
+    "--jobs",
+    "6",
+    "--seconds",
+    "300",
+    "--baseline-out",
+    "_build/q4-q9-lookup-bridge-replay/baseline.json"
+  ],
+  "root_checkpoint": "8ec2bfbe",
+  "previous_baseline": {
+    "commit": "13a5e56086f86c2561de70832c5f659db68a3cd7",
+    "path": "build/stock-zisk/q4-q9/REPORT.json",
+    "sha256": "481a54faf9353bc6de8d4f1899f7548ab45a6a6878a0dcbb2b8363b75d037421",
+    "modified": false
+  },
+  "contract_bridge": {
+    "source": "ZesuSsz/Contracts/DecodeItemSelected.v",
+    "lookup_source": "ZesuSsz/Contracts/SelectedCodeLookup.v",
+    "code": "instr_lookup_resources (selectedCodeLookup instr_map)",
+    "resource_remains_folded": true
+  },
+  "driver_runs": 1,
+  "comparison": {
+    "counts_changed": false,
+    "instruction_progress_changed": false,
+    "prior_peak_module_mib": 757.203125,
+    "new_imports": [
+      "ZesuSsz.Contracts.NextUint64Selected",
+      "ZesuSsz.Contracts.ParentHeaderSelected"
+    ],
+    "context_note": "The All dependency tree now includes the selected nextUint64 and parent-header traces."
+  },
+  "old_baseline_files_verified_unchanged": 17,
+  "root_provenance_preserved_byte_identical": true
+}
