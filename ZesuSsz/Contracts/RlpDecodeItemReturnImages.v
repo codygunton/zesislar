@@ -5,17 +5,9 @@ Require Import SailStdpp.MachineWord EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.ResultImage.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
+Require Import ZesuSsz.Contracts.RlpDecodeItemReturnImageDef.
 Import ListNotations.
 Open Scope Z_scope.
-
-(* The five success returns write four fields and preserve two gaps.
-   This list is the complete selected 40-byte Ok image, parameterized by
-   the three stored eight-byte words and the caller's padding bytes. *)
-Definition decodeItemOkBytes (before pointerBytes lengthBytes consumedBytes : list byte)
-    (isList : bool) : list byte :=
-  pointerBytes ++ lengthBytes ++ [Z_to_bv 8 (if isList then 1 else 0)] ++
-  firstn 7 (skipn 17 before) ++ consumedBytes ++
-  [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before).
 
 Lemma fieldImage_middle prefix field suffix :
   fieldImage (prefix ++ field ++ suffix) (length prefix) field.
