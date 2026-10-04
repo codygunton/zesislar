@@ -11,6 +11,7 @@ import argparse
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 import sys
@@ -44,9 +45,44 @@ def fingerprint(state: dict) -> str:
 
 
 def graph(cfg: dict, root: int) -> dict[int, dict]:
-    function = next(row for row in cfg["functions"]
-                    if gen_block.address(row["start"]) == root)
-    return {gen_block.address(row["start"]): row for row in function["blocks"]}
+    functions = [row for row in cfg["functions"]
+                 if gen_block.address(row.get("entry", row.get("start"))) == root]
+    if len(functions) != 1:
+        raise ValueError("The CFG must identify exactly one root function.")
+    function = functions[0]
+    blocks = {}
+    for original in function["blocks"]:
+        block = dict(original)
+        if "instructions" not in block and "rows" in function:
+            block["instructions"] = [row for row in function["rows"]
+                                     if gen_block.address(block["start"]) <= gen_block.address(row["pc"]) < gen_block.address(block["end"])]
+        blocks[gen_block.address(block["start"])] = block
+    return blocks
+
+
+def probe_source(spec, options, successor):
+    source = infer_boundary.spec_source(spec, stop=hex(successor), after_return=True)
+    if options:
+        source = source.replace("\n".join(infer_boundary.CODE_PREMISES),
+                                "\n".join(options["code_premises"]))
+        source = re.sub(r"^From \S+ Require Import Index\.$",
+                        "Require Import " + options["trace_import"] + ".", source, flags=re.M)
+    return source
+
+
+def compile_probe(source, name, build, seconds, options):
+    if not options:
+        return infer_boundary.run(source, name, build, seconds)
+    directory = Path(options["stage_dir"])
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / f"{name}.v"
+    path.write_text(source)
+    environment = {**os.environ, "ZESU_COQC_SECONDS": str(seconds)}
+    done = subprocess.run(
+        ["timeout", str(seconds + 60), "nice", "-n", "10", "bash",
+         str(infer_boundary.SCRATCH), str(path), str(build)],
+        capture_output=True, text=True, env=environment)
+    return done.stdout + "\n" + done.stderr
 
 
 def back_edges(blocks: dict[int, dict], root: int) -> set[tuple[int, int]]:
@@ -70,6 +106,18 @@ def back_edges(blocks: dict[int, dict], root: int) -> set[tuple[int, int]]:
     return result
 
 
+def residual_pc_markers(output):
+    markers = re.findall(r"CHAIN-RESIDUAL-PC([^\n]*)", output)
+    result = []
+    for marker in markers:
+        match = re.fullmatch(
+            r"\s*\(?(?:bv_to_bvn\s*\()?Z_to_bv\s+64\s+(0x[0-9a-fA-F]+|\d+)\s*\)*\s*",
+            marker)
+        if match:
+            result.append(int(match.group(1), 0))
+    return result, "known" if markers and len(markers) == len(result) else "unknown"
+
+
 def probe(state: dict, block: dict, successor: int, build: Path,
           seconds: int) -> list[dict]:
     leader = gen_block.address(block["start"])
@@ -83,7 +131,7 @@ def probe(state: dict, block: dict, successor: int, build: Path,
     spec = {"name": name, "entry": hex(leader), "exit": hex(gen_block.address(block["end"])),
             "binders": state["binders"], "imports": imports,
             "spec": f"{state['name']} {arguments}".strip()}
-    source = infer_boundary.spec_source(spec, stop=hex(successor), after_return=True)
+    source = probe_source(spec, state.get("probe_options", {}), successor)
     # The native recorder identifies the stop conclusion. A separate check
     # cannot refer to that binder in pure goals that discarded it.
     source = source.replace("\n".join(infer_boundary.stop_recording(hex(successor), False)), "")
@@ -106,11 +154,17 @@ def probe(state: dict, block: dict, successor: int, build: Path,
     source = source.replace(marker, instances + "\n" + marker, 1)
     begin = source.index(f'all: idtac "{infer_boundary.RAW_BEGIN}".')
     end = source.index("Abort.", begin) + len("Abort.")
-    source = (source[:begin] + recording("active") + "\nUnshelve.\nall: try liShow.\n"
+    marker = r'''all: try (lazymatch goal with
+  | |- envs_entails ?D _ => lazymatch D with
+      | context [reg_mapsto _ "PC" _ (RVal_Bits ?v)] => idtac "CHAIN-RESIDUAL-PC" v
+      end
+  end).
+'''
+    source = (source[:begin] + marker + recording("active") + "\nUnshelve.\nall: try liShow.\n"
               + recording("shelved") + "\nAbort." + source[end:])
     # Admission waiting does not consume the proof's time allowance.
     subprocess.run([str(HERE.parent / "resource_guard.sh"), "wait"], check=True)
-    output = infer_boundary.run(source, name, build, seconds)
+    output = compile_probe(source, name, build, seconds, state.get("probe_options", {}))
     goals = parse_goals(output, phase="active")
     shelved = parse_goals(output, phase="shelved")
     def identity(goal):
@@ -131,6 +185,7 @@ def probe(state: dict, block: dict, successor: int, build: Path,
                   for pc in [successor, *other])]}
     record["shelved_goals"] = shelved
     record["raw_goals"] = output
+    record["residual_pcs"], record["residual_location"] = residual_pc_markers(output)
     measurements = re.findall(r"exit=(-?\d+) ms=(\d+) rss_kb=(\d+)", output)
     if measurements:
         rc, milliseconds, rss = map(int, measurements[-1])
@@ -138,6 +193,8 @@ def probe(state: dict, block: dict, successor: int, build: Path,
                                   "peak_mib": rss / 1024}
     if probes.END not in output or not measurements or rc != 0:
         record.update(outcome="error", error_lines=output.splitlines()[-12:])
+    elif not goals and not shelved and "No more goals." in output:
+        record.update(outcome="closed")
     elif reached:
         return [{**record, **goal, "outcome": "reached"} for goal in reached]
     elif goals and not record["shelved_goals"] and all(
@@ -152,24 +209,56 @@ def probe(state: dict, block: dict, successor: int, build: Path,
     return [record]
 
 
+def write_baseline(path, blocks, captures):
+    observations = {}
+    for record in captures:
+        observations.setdefault(gen_block.address(record["entry"]), []).append(record)
+    rows = []
+    first_residuals = {}
+    for pc in sorted(blocks):
+        records = observations.get(pc, [])
+        outcomes = []
+        for record in records:
+            outcome = record["outcome"]
+            if outcome == "stalled":
+                locations = record.get("residual_pcs", [])
+                outcome = ("unknown-stall" if not locations or record.get("residual_location") == "unknown" else
+                           "entry-stall" if all(value == pc for value in locations) else
+                           "execution-stall")
+                residual = (record.get("pending_goals") or record.get("shelved_goals") or [
+                    {"raw_goals": record.get("raw_goals", "")}])[0]
+                first_residuals.setdefault(outcome, {"entry": hex(pc), "residual": residual,
+                                                   "residual_pcs": locations})
+            outcomes.append(outcome)
+        rows.append({"entry": hex(pc), "outcomes": outcomes or ["missing-entry"],
+                     "observations": len(records)})
+    atomic_json(path, {"schema": 1, "capture_only": True, "block_count": len(blocks),
+                       "blocks": rows, "first_residuals": first_residuals})
+
+
 def run(args) -> int:
     states = gen_block.read_states(args.entries)
     root = gen_block.address(args.root)
-    if root not in states:
-        raise ValueError("the Level 1 root state is missing")
     blocks = graph(json.loads(args.cfg.read_text()), root)
+    if root not in states:
+        if getattr(args, "baseline_out", None):
+            write_baseline(args.baseline_out, blocks, [])
+        raise ValueError("the Level 1 root state is missing")
     loops = back_edges(blocks, root)
     root_state = states[root]
-    root_state["name"] = f"NativeRootState_{root:x}"
     provenance = root_state.get("root_provenance", {})
-    if root == 0x14d30 and provenance.get("source") != (
-            "WriteSuccessNativeContract.writeSuccessNativeEntry"):
-        raise ValueError("the Level 1 root declaration is not identified")
-    if root == 0x14d30:
-        checked_source = (HERE.parents[1] / "ZesuSsz/Generated/WriteSuccess/States"
-                          / "NativeRoot_14d30.v")
-        if render_successor(root_state) != checked_source.read_text():
-            raise ValueError("the root resources differ from the checked Level 1 state")
+    declaration = getattr(args, "root_declaration", None)
+    if not provenance.get("source") or (declaration and provenance["source"] != declaration):
+        raise ValueError("The Level 1 root declaration is not identified.")
+    checked_source = getattr(args, "root_source", None)
+    if checked_source and render_successor(root_state) != checked_source.read_text():
+        raise ValueError("The root resources differ from the checked Level 1 state.")
+    root_state["name"] = f"NativeRootState_{root:x}"
+    if getattr(args, "trace_import", None):
+        root_state["probe_options"] = {
+            "trace_import": args.trace_import, "stage_dir": str(args.stage_dir),
+            "code_premises": args.code_premises.read_text().splitlines()}
+        infer_boundary.PROOF_DIR = args.proof_dir
     root_state["root_provenance"] = {**provenance, "entry": hex(root),
         "capture_source": str(args.entries),
         "capture_sha256": hashlib.sha256(args.entries.read_bytes()).hexdigest()}
@@ -223,6 +312,7 @@ def run(args) -> int:
                             next_state = normalize_successor(record, entry=successor,
                                 binders=state["binders"], name=f"NativeState_{successor:x}_{fingerprint(record)}",
                                 imports=state.get("imports", []), provenance=root_state["root_provenance"])
+                            next_state["probe_options"] = state.get("probe_options", {})
                             next_state["pending_goals"] = (state.get("pending_goals", [])
                                 + state.get("shelved_goals", [])
                                 + record["pending_goals"] + record["shelved_goals"])
@@ -275,24 +365,34 @@ def run(args) -> int:
         "furthest_leader": hex(furthest[1]), "chain_depth": furthest[0],
         "worker_limit": worker_limit, "pending": 0,
         "errors": sum(r["outcome"] == "error" for r in captures)})
+    if getattr(args, "baseline_out", None):
+        write_baseline(args.baseline_out, blocks, captures)
     return 1 if any(record["outcome"] == "error" for record in captures) else 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--entries", type=Path, required=True)
-    parser.add_argument("--cfg", type=Path, default=Path("build/endpoint-cfg/zesu-cfg.json"))
-    parser.add_argument("--root", default="0x14d30")
-    parser.add_argument("--terminal", default="0x14d10",
+    parser.add_argument("--cfg", type=Path, required=True)
+    parser.add_argument("--root", required=True)
+    parser.add_argument("--terminal", required=True,
                         help="the Level 1 return boundary for CFG ret blocks")
-    parser.add_argument("--out", type=Path, default=Path("ZesuSsz/Evidence/det/blocks/native_chain"))
-    parser.add_argument("--publish-dir", type=Path, default=Path("ZesuSsz/Evidence/det/blocks/post_states"))
+    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--publish-dir", type=Path, required=True)
     parser.add_argument("--build-dir", type=Path, required=True)
-    parser.add_argument("--jobs", type=int, default=48)
+    parser.add_argument("--jobs", type=int, default=1)
     parser.add_argument("--seconds", type=int, default=300)
+    parser.add_argument("--root-declaration", required=True)
+    parser.add_argument("--root-source", type=Path, required=True)
+    parser.add_argument("--proof-dir", type=Path, required=True)
+    parser.add_argument("--stage-dir", type=Path, required=True)
+    parser.add_argument("--trace-import", required=True)
+    parser.add_argument("--code-premises", type=Path, required=True)
+    parser.add_argument("--baseline-out", type=Path,
+                        help="Write coverage and residuals for the separate block baseline.")
     args = parser.parse_args()
-    if gen_block.address(args.root) != 0x14d30:
-        parser.error("the native chain must start at the Level 1 entry 0x14d30")
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*", args.trace_import):
+        parser.error("The trace import has an invalid name.")
     if not 1 <= args.jobs <= 48:
         parser.error("jobs must be between 1 and 48")
     if not 1 <= args.seconds <= 300:
