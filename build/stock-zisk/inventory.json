@@ -85461,5 +85461,5 @@
     "The decodeTxFields index is between 0 and 4. Caller resource and bound proofs remain separate."
   ],
   "claim": "Conditional static inventory. This report is not a machine-code proof.",
-  "artifact_identity": "7b98aa248fb821f9508202849f909469d271e68d651e558ddbe5a3f18c461b5d"
+  "artifact_identity": "a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82"
 }

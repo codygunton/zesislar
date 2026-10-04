@@ -2,8 +2,15 @@ From Coq Require Import Strings.String Lists.List ZArith.ZArith.
 
 Import ListNotations.
 
+(* Each loaded extent uses an exclusive end address. *)
+Record MachineSection : Type := {
+  sectionBase : Z; sectionEnd : Z; sectionFileEnd : Z;
+  sectionReadable : bool; sectionWritable : bool; sectionExecutable : bool
+}.
+
 (** The map selects layout and platform configuration independently of instruction semantics. *)
 Record MachineMap : Type := {
+  mapPopulatedSections : list MachineSection;
   mapRamBase : Z; mapRamSize : Z;
   mapTextBase : Z; mapTextEnd : Z;
   mapRodataBase : Z; mapRodataEnd : Z;
@@ -27,6 +34,7 @@ Record MachineMap : Type := {
 }.
 
 Definition forkMap : MachineMap := {|
+  mapPopulatedSections := [];
   mapRamBase := 0; mapRamSize := 0x40000000;
   mapTextBase := 0x10120; mapTextEnd := 0x171f8;
   mapRodataBase := 0x17200; mapRodataEnd := 0x179cc;
@@ -53,6 +61,12 @@ Definition forkMap : MachineMap := {|
 (* BEGIN GENERATED STOCK MAP *)
 (** ELF SHA256: e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95. *)
 Definition defaultMap : MachineMap := {|
+  mapPopulatedSections := [
+    {| sectionBase := 0x80000000; sectionEnd := 0x8010fd78; sectionFileEnd := 0x8010fd78; sectionReadable := false; sectionWritable := false; sectionExecutable := true |};
+    {| sectionBase := 0x8010fd80; sectionEnd := 0x80118678; sectionFileEnd := 0x80118678; sectionReadable := true; sectionWritable := false; sectionExecutable := false |};
+    {| sectionBase := 0xa0430000; sectionEnd := 0xa0d34520; sectionFileEnd := 0xa0430000; sectionReadable := true; sectionWritable := true; sectionExecutable := false |};
+    {| sectionBase := 0xa0d34520; sectionEnd := 0xa0d34530; sectionFileEnd := 0xa0d34530; sectionReadable := true; sectionWritable := true; sectionExecutable := false |}
+  ];
   mapRamBase := 0xa0000000;
   mapRamSize := 0x20000000;
   mapTextBase := 0x80000000;

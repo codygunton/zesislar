@@ -1,5 +1,5 @@
 // Raw selected-ELF bytes. Trace generation requires a reviewed platform.
-// Artifact identity: 7b98aa248fb821f9508202849f909469d271e68d651e558ddbe5a3f18c461b5d
+// Artifact identity: a0424515001885f5dcfa51d01560066a8428cacaa56554d364d110cf29515a82
     800d6960:	ff010113          	addi	sp,sp,-16
     800d6964:	00113423          	sd	ra,8(sp)
     800d6968:	00813023          	sd	s0,0(sp)
