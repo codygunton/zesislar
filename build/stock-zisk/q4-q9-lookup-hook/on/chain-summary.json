@@ -1,0 +1,10 @@
+{
+  "root": "0x800d6960",
+  "captures": 2,
+  "reached": 0,
+  "furthest_leader": "0x800d6960",
+  "chain_depth": 0,
+  "worker_limit": 6,
+  "pending": 0,
+  "errors": 0
+}
