@@ -1,0 +1,1187 @@
+{
+  "schema_version": 1,
+  "checkpoint": "Q4/Q9 generic stack-write rule",
+  "root_checkpoint": "07e16234",
+  "base_commit": "ee6cbb83ba9e0a098f9d933f3c100f1555a7dbe9",
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "inputs": {
+    "build/stock-zisk/build-recipe.json": {
+      "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99"
+    },
+    "build/stock-zisk/inventory.json": {
+      "sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d"
+    },
+    "build/stock-zisk/zesu-zisk.elf": {
+      "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+    },
+    "build/stock-zisk/platform/riscv64-zisk.ir": {
+      "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e"
+    },
+    "build/stock-zisk/decodeItem.raw.dump": {
+      "sha256": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a"
+    },
+    "ZesuSsz/riscv64_zesu.toml": {
+      "sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6"
+    },
+    "ZesuSsz/Contracts/Level1.v": {
+      "sha256": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItem.v": {
+      "sha256": "08d908f159e655749c72c7ab5b3ce8b01c5e34ae55db655ab8ab371bcdbcfa42"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+    },
+    "ZesuSsz/Contracts/DecodeItemSelected.v": {
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    },
+    "ZesuSsz/Compliance/KnownBugs.v": {
+      "sha256": "3c33b577c074de65ce4bdc554d787458754af24ab1bb006f19bfe5d9cfc945ce"
+    },
+    "ZesuSsz/Evidence/decode_item_block_design.json": {
+      "sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd"
+    },
+    "generated/isla-traces/stock-zisk/closure/index_decodeItem.v": {
+      "sha256": "36e90f90acc82aefef2ceccab7d26ffd7086ad2b94c58b1f459239c722bc68c6"
+    },
+    "generated/isla-traces/stock-zisk/closure/coverage.json": {
+      "sha256": "c097dbb090e161e1f5eacbb492684abb9c3efa95751bb52ac025b51e01fd91ea"
+    },
+    "ZesuSsz/Automation/All.v": {
+      "sha256": "eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f"
+    },
+    "ZesuSsz/Automation/Hooks.v": {
+      "sha256": "c571fe8585f6a0321d24faea869b8ae84a51fcad7da5b17860bcd92f49ae369c"
+    },
+    "ZesuSsz/Automation/Finish.v": {
+      "sha256": "6d05e216a9dd0784f24ce7c38d012ce6598f98a0ba05db1a7aa1c21a115700bc"
+    },
+    "InstrSpecs/Lookup.v": {
+      "sha256": "8b3e81382635e5b81a401f59894125194d8b1ca0e780a80b430f535f95de1cab"
+    },
+    "tools/block/chain_root.py": {
+      "sha256": "5791a4c5dffb200d7a0099c49f734e1283dfc72fee5410b594dc75675a0d0c8e"
+    },
+    "tools/block/chain_state.py": {
+      "sha256": "db474094b7795e992d0dd02aef399bd151767b8161936e236a01a709cf6cb2b9"
+    },
+    "tools/block/chain_goals.py": {
+      "sha256": "e9567727215311445f2bfa01db3a93041bbf1dbd36fcd7c7b20448da810d308e"
+    },
+    "tools/det/infer_boundary.py": {
+      "sha256": "a77657e7c9e43741e37d1f9dd87f4806a3e5034cc240e2fe753febaca9b0ce5d"
+    },
+    "tools/det/gen_boundary.py": {
+      "sha256": "87895fa4258ae4018fcbace248d01aae3b42ffb2d0310d12251d19e29b308074"
+    },
+    "tools/coqc_scratch.sh": {
+      "sha256": "2332297ed9fb30178839fbf7a6144adfdbec252a5a19c982d39a03a3bd8417dc"
+    },
+    "ZesuSsz/Contracts/SelectedCodeLookup.v": {
+      "sha256": "e8d1e66aeed684f8385a3df4aba6406ab89137e4922577fdd61148e9819dc1c8"
+    },
+    "ZesuSsz/Contracts/NextUint64Selected.v": {
+      "sha256": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07"
+    },
+    "ZesuSsz/Contracts/ParentHeaderSelected.v": {
+      "sha256": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c"
+    },
+    "ZesuSsz/Automation/Switches/InstructionLookup.v": {
+      "sha256": "ba2858ace8517d85a808aaea054b9e828ac19f76bf4c30f406238ae9c3e4dbce"
+    },
+    "ZesuSsz/Proofs/Tests/InstructionLookupHook.v": {
+      "sha256": "0f9cd8bf95e83557075577a3bfca0a09154aa91208c59e5ac9f6d4d9ef3d5f39"
+    },
+    "ZesuSsz/Automation/ResourceGroups.v": {
+      "sha256": "0201606b2145f7ff3c2db1d2a3c4fe515ab6779c555bd3e95308f6ead94ee6d5"
+    },
+    "ZesuSsz/Automation/Switches/StackWrite.v": {
+      "sha256": "c30777138cb1ba24e45ec641cd7ff7be924eec17e6d6def984164ca28ae39f9f"
+    },
+    "ZesuSsz/Proofs/Tests/StackWriteHook.v": {
+      "sha256": "2537d02cf503c230a41d4eeb13806a37b91a95b1447f0b7aba3d1308211278df"
+    },
+    "Scaffolding/probes/q49_decode_item_store_residual.txt": {
+      "sha256": "1d98b480712a2ac9696cca2a16dfc6e2bb7738770cf6cd27aab58b14bfc0ae36"
+    },
+    "ZesuSsz/Automation/PureFacts.v": {
+      "sha256": "7a26f434d59639bffa33935a5c6e0ec900ab6ca1a4671c539f54977c043ca41e"
+    }
+  },
+  "previous_baseline": {
+    "path": "build/stock-zisk/q4-q9-lookup-hook/REPORT.json",
+    "sha256": "44d39540ab4007c136857038bc36f09c0eefa18fa83385b4733daf25140c3ff7",
+    "modified": false
+  },
+  "function": "rlp.decodeItem",
+  "entry": "0x800d6960",
+  "instructions": 116,
+  "blocks": 24,
+  "branches": 14,
+  "loops": 2,
+  "runs": {
+    "off": {
+      "counts": {
+        "missing-entry": 23,
+        "entry-stall": 0,
+        "execution-stall": 1,
+        "reached": 0,
+        "closed": 0,
+        "promoted": 0
+      },
+      "block_results": [
+        {
+          "entry": "0x800d6960",
+          "status": "execution-stall",
+          "native_outcomes": [
+            "execution-stall",
+            "execution-stall"
+          ],
+          "observations": 2
+        },
+        {
+          "entry": "0x800d6974",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d697c",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d698c",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69a4",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69b0",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69d8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69e0",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69e8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a00",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a08",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a14",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a24",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a38",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a40",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a64",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a6c",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a78",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6aa8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ab4",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ac4",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ad8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ae0",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6b08",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        }
+      ],
+      "native_capture_count": 2,
+      "driver_errors": [],
+      "normal_branch_reached": [],
+      "raw_outcomes": [
+        "stalled",
+        "stalled"
+      ],
+      "residual_classes": [
+        "stack-memory-lookup",
+        "exception-register-lookup"
+      ],
+      "performance": {
+        "elapsed_seconds_including_admission_wait": 14.201,
+        "maximum_module_seconds": 12.767,
+        "peak_module_mib": 1110.40625,
+        "worker_limit": 6,
+        "observed_compiler_workers": 3,
+        "total_cpu_percent_range": [
+          0.719,
+          5.223
+        ],
+        "available_memory_kib_min": 136050020,
+        "swap_used_kib_max": 8370408
+      },
+      "reproduction_command": [
+        "python3",
+        "tools/block/chain_root.py",
+        "--entries",
+        "_build/q4-stack-write-run/off/selected-root.json",
+        "--cfg",
+        "build/stock-zisk/inventory.json",
+        "--root",
+        "0x800d6960",
+        "--terminal",
+        "0",
+        "--out",
+        "_build/q4-stack-write-run/off/out",
+        "--publish-dir",
+        "_build/q4-stack-write-run/off/published",
+        "--build-dir",
+        "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+        "--root-declaration",
+        "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+        "--root-source",
+        "_build/q4-stack-write-run/off/selected-root.v",
+        "--proof-dir",
+        "ZesuSsz/Proofs/DecodeItem",
+        "--stage-dir",
+        "_build/q4-stack-write-run/off/stage",
+        "--trace-import",
+        "ZesuSsz.Stock.Closure.index_decodeItem",
+        "--code-premises",
+        "_build/q4-stack-write-run/off/selected-code-premises.txt",
+        "--jobs",
+        "2",
+        "--seconds",
+        "300",
+        "--baseline-out",
+        "_build/q4-stack-write-run/off/baseline.json"
+      ]
+    },
+    "on": {
+      "counts": {
+        "missing-entry": 23,
+        "entry-stall": 0,
+        "execution-stall": 1,
+        "reached": 0,
+        "closed": 0,
+        "promoted": 0
+      },
+      "block_results": [
+        {
+          "entry": "0x800d6960",
+          "status": "execution-stall",
+          "native_outcomes": [
+            "error",
+            "error"
+          ],
+          "observations": 2
+        },
+        {
+          "entry": "0x800d6974",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d697c",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d698c",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69a4",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69b0",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69d8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69e0",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d69e8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a00",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a08",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a14",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a24",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a38",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a40",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a64",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a6c",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6a78",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6aa8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ab4",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ac4",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ad8",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6ae0",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        },
+        {
+          "entry": "0x800d6b08",
+          "status": "missing-entry",
+          "native_outcomes": [
+            "missing-entry"
+          ],
+          "observations": 0
+        }
+      ],
+      "native_capture_count": 2,
+      "driver_errors": [
+        {
+          "entry": "0x800d6960",
+          "exit": "0x800d6974",
+          "error": "successor ownership depends on a diagnostic stop premise"
+        },
+        {
+          "entry": "0x800d6960",
+          "exit": "0x800d6ae0",
+          "error": "successor ownership depends on a diagnostic stop premise"
+        }
+      ],
+      "normal_branch_reached": [
+        "BLK_STOP_800d6974",
+        "BLK_STOP_800d6ae0"
+      ],
+      "raw_outcomes": [
+        "error",
+        "error"
+      ],
+      "residual_classes": [
+        "exception-register-lookup"
+      ],
+      "performance": {
+        "elapsed_seconds_including_admission_wait": 28.386,
+        "maximum_module_seconds": 26.269,
+        "peak_module_mib": 1429.98828125,
+        "worker_limit": 6,
+        "observed_compiler_workers": 2,
+        "total_cpu_percent_range": [
+          1.078,
+          4.831
+        ],
+        "available_memory_kib_min": 137655788,
+        "swap_used_kib_max": 8370408
+      },
+      "reproduction_command": [
+        "python3",
+        "tools/block/chain_root.py",
+        "--entries",
+        "_build/q4-stack-write-run/on/selected-root.json",
+        "--cfg",
+        "build/stock-zisk/inventory.json",
+        "--root",
+        "0x800d6960",
+        "--terminal",
+        "0",
+        "--out",
+        "_build/q4-stack-write-run/on/out",
+        "--publish-dir",
+        "_build/q4-stack-write-run/on/published",
+        "--build-dir",
+        "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+        "--root-declaration",
+        "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+        "--root-source",
+        "_build/q4-stack-write-run/on/selected-root.v",
+        "--proof-dir",
+        "ZesuSsz/Proofs/DecodeItem",
+        "--stage-dir",
+        "_build/q4-stack-write-run/on/stage",
+        "--trace-import",
+        "ZesuSsz.Stock.Closure.index_decodeItem",
+        "--code-premises",
+        "_build/q4-stack-write-run/on/selected-code-premises.txt",
+        "--jobs",
+        "2",
+        "--seconds",
+        "300",
+        "--baseline-out",
+        "_build/q4-stack-write-run/on/baseline.json"
+      ]
+    }
+  },
+  "first_residual_classes": [
+    {
+      "mode": "off",
+      "class": "stack-memory-lookup",
+      "entry": "0x800d6960",
+      "exit": "0x800d6974",
+      "residual_pcs": [
+        2148362596,
+        2148362596,
+        2148362596
+      ]
+    },
+    {
+      "mode": "off",
+      "class": "exception-register-lookup",
+      "entry": "0x800d6960",
+      "exit": "0x800d6974",
+      "residual_pcs": [
+        2148362596,
+        2148362596,
+        2148362596
+      ]
+    },
+    {
+      "mode": "on",
+      "class": "exception-register-lookup",
+      "entry": "0x800d6960",
+      "exit": "0x800d6974",
+      "residual_pcs": [
+        2148362600,
+        2148362600,
+        2148362596,
+        2148362596
+      ]
+    }
+  ],
+  "returns": [
+    {
+      "return_pc": "0x800d69a0",
+      "return_reached": false,
+      "status": "missing-entry"
+    },
+    {
+      "return_pc": "0x800d69d4",
+      "return_reached": false,
+      "status": "missing-entry"
+    },
+    {
+      "return_pc": "0x800d6a60",
+      "return_reached": false,
+      "status": "missing-entry"
+    },
+    {
+      "return_pc": "0x800d6aa4",
+      "return_reached": false,
+      "status": "missing-entry"
+    },
+    {
+      "return_pc": "0x800d6b04",
+      "return_reached": false,
+      "status": "missing-entry"
+    },
+    {
+      "return_pc": "0x800d6b2c",
+      "return_reached": false,
+      "status": "missing-entry"
+    }
+  ],
+  "hook": {
+    "class": "ZesuStepStackWrite",
+    "global_default_enabled": false,
+    "pc_specific_rules": 0,
+    "function_specific_rules": 0,
+    "assertion_limit_seconds": 2,
+    "instruction_semantics_changed": false,
+    "existing_uninitialized_write_semantics_reused": true,
+    "exception_branch_rule_added": false
+  },
+  "comparison": {
+    "root_resources_changed": false,
+    "root_provenance_changed": false,
+    "only_root_change": "stack switch import",
+    "driver_changed": false,
+    "contract_changed_by_worker": false,
+    "runtime_proof_premises": 0
+  },
+  "manual_proof_growth": {
+    "native_contract_lines_added": 0,
+    "regression_lemmas": 7,
+    "regression_source_lines": 93,
+    "hook_lines_added": 71,
+    "switch_source_lines": 3
+  },
+  "verification": {
+    "mcp": "mcp-results.json",
+    "regression_compile": "passed",
+    "regression_verification_assumptions": [],
+    "frame_selection_verification_assumptions": [],
+    "check_fast": "passed",
+    "check_fast_workers": 6,
+    "block_worker_limit": 6,
+    "check_iris": "not run, coordinator instruction",
+    "new_sources_staged_before_gate": true
+  },
+  "manifest": {
+    "recipe_changed": false,
+    "handwritten_v_inputs_added": false
+  },
+  "setup_failures": [
+    "The first scratch build rejected an assertion scope.",
+    "A stale switch artifact rejected the first baseline replay.",
+    "MCP reused stale imports after a shell rebuild. A fresh import sequence resolved this failure.",
+    "MCP restarted pet when accumulated RSS exceeded 16384 MiB. Fresh sessions and verification passed.",
+    "The first gate lacked the private pinned source checkout. fetch_inputs.py restored the declared inputs.",
+    "Queued jobs waited for the root Iris lock. The worker stopped only waiting jobs.",
+    "The writer admission rejected the batch gate before compilation.",
+    "A concurrent dependency refresh held the private Dune lock. The gate will run sequentially.",
+    "The native stack resource used IAnon. A named-only selector failed until the generic rename supported both."
+  ],
+  "limitations": [
+    "Captures are diagnostics, not a native contract theorem.",
+    "The normal branch reaches its block stop. Four exception goals request medeleg.",
+    "The driver rejects successor ownership because it depends on a diagnostic stop premise.",
+    "The report classifies that mixed block as execution-stall and preserves both raw driver errors.",
+    "No native contract theorem is proved.",
+    "The terminal marker remains inactive and does not constrain the symbolic return resource.",
+    "The unchanged driver needs a symbolic terminal before any return probe.",
+    "Admission waiting is separate from measured compiler time."
+  ],
+  "outputs": {
+    "build/stock-zisk/q4-q9-stack-write/mcp-results.json": {
+      "sha256": "ced351e27d998bc2d2e277a71b21fd11f2980e4397e4c99e04fb7c645a301217"
+    },
+    "build/stock-zisk/q4-q9-stack-write/native-frame-selection.v.txt": {
+      "sha256": "dd5997b6a5c5a1df80e9d8305d7c51c736c08427adb130b605c0a05c905f9b8d"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/chain-baseline-raw.json": {
+      "sha256": "48e6cabd0fd411b89fe18423feaef2cfe96d3f9526fd42affad976144c077d0d"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/chain-summary.json": {
+      "sha256": "75abdfdcaf616466fb73de89a5b9c58d7c36d911c48b0022180caac37166f853"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/chain_800d6960_800d6974_2a72b59387bcd853.v.txt": {
+      "sha256": "f4cef436dce1928804e724c7c174b11c94203a932d36c653785798247057f349"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/chain_800d6960_800d6ae0_2a72b59387bcd853.v.txt": {
+      "sha256": "a2795d09545e01b28a979a443232c5cc342cb1a3c0dda4a5a6c7e661d51c7846"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/first-residuals.json": {
+      "sha256": "716e33669c14324f1a083a57f3dd8294ff1af45fb152f7d59b91a1a078227977"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/observations-800d6960.json": {
+      "sha256": "511eb3a526aaa36131ebcfc8ed18756b1b5426ef4468f56a32a088d779eee4b0"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/selected-code-premises.txt": {
+      "sha256": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/selected-root.json": {
+      "sha256": "95d1d12a69f4c70934f0d1eae756e482f119ef2eb8975d1ca2dce77e8fa8c896"
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/selected-root.v.txt": {
+      "sha256": "6532de5b22a90cda25d6369dbf18e7f1eb1af1d2ea80b9190e9e13c34b525f81"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/chain-baseline-raw.json": {
+      "sha256": "09963e7d1d17110cdf92bda16962f83b28e437684820210e4f6b725364a70aeb"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/chain-summary.json": {
+      "sha256": "068122f497255cfcfe4009bf3c5c8bcd8ca23ce0789cacac69571837450c93bc"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/chain_800d6960_800d6974_2a72b59387bcd853.v.txt": {
+      "sha256": "da8958530b85e3507989d921b928fbd273f660cebbfa65da316237f525fe7e5a"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/chain_800d6960_800d6ae0_2a72b59387bcd853.v.txt": {
+      "sha256": "34279d7d3ba202c6f01132fe18ded066877b449cd9947e6e0c9e9aae05ceed76"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/first-residuals.json": {
+      "sha256": "fa225dd80dc7707cfa03ab71901f7ad7c0ed256325f7ce786983e3049e0b43aa"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/observations-800d6960.json": {
+      "sha256": "f3b27c6fa869dad4c4dc966eea735957b075d40c6ecb17c654afae8b150bd8a0"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/selected-code-premises.txt": {
+      "sha256": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/selected-root.json": {
+      "sha256": "58b401474491ad250e74d73d41af18e4804cfa833e2a75c8d154e2396bf7c969"
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/selected-root.v.txt": {
+      "sha256": "88ea867a77d96f3ad31e6f49c3da8ab40f212365257f9f3ed2c87fb02f077b66"
+    }
+  },
+  "archived_outputs": {
+    "build/stock-zisk/q4-q9-stack-write/admission-gate-admission-wait.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/admission-gate-admission-wait.json",
+      "sha256": "312798e3816cd04f6ddd7b8e51cacfd007c2073e49ca641b588c095644626ddc",
+      "bytes": 4699130,
+      "measurements": {
+        "command": [
+          "make",
+          "check-fast",
+          "CHECK_AGENT=worker2-child-platform",
+          "AGENT_JOBS=4",
+          "FAST_JOBS=4"
+        ],
+        "rc": -15,
+        "elapsed_seconds": 1524.199,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          0.678,
+          14.941
+        ],
+        "available_memory_kib_range": [
+          127659568,
+          145199008
+        ],
+        "swap_used_kib_range": [
+          8370412,
+          8370436
+        ],
+        "sample_count": 1501
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/admission-on-admission-wait.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/admission-on-admission-wait.json",
+      "sha256": "a3dd767ab53f45fe6b7cd8b4d37ba6b2f03cd20bd1ac5a808a02290603ad4a36",
+      "bytes": 4804066,
+      "measurements": {
+        "command": [
+          "python3",
+          "tools/block/chain_root.py",
+          "--entries",
+          "_build/q4-stack-write-run/on/selected-root.json",
+          "--cfg",
+          "build/stock-zisk/inventory.json",
+          "--root",
+          "0x800d6960",
+          "--terminal",
+          "0",
+          "--out",
+          "_build/q4-stack-write-run/on/out",
+          "--publish-dir",
+          "_build/q4-stack-write-run/on/published",
+          "--build-dir",
+          "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+          "--root-declaration",
+          "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+          "--root-source",
+          "_build/q4-stack-write-run/on/selected-root.v",
+          "--proof-dir",
+          "ZesuSsz/Proofs/DecodeItem",
+          "--stage-dir",
+          "_build/q4-stack-write-run/on/stage",
+          "--trace-import",
+          "ZesuSsz.Stock.Closure.index_decodeItem",
+          "--code-premises",
+          "_build/q4-stack-write-run/on/selected-code-premises.txt",
+          "--jobs",
+          "6",
+          "--seconds",
+          "300",
+          "--baseline-out",
+          "_build/q4-stack-write-run/on/baseline.json"
+        ],
+        "rc": -15,
+        "elapsed_seconds": 1878.499,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          0.477,
+          14.941
+        ],
+        "available_memory_kib_range": [
+          114921432,
+          145199008
+        ],
+        "swap_used_kib_range": [
+          8370412,
+          8370436
+        ],
+        "sample_count": 1849
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/admission-gate-writer-rejection.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/admission-gate-writer-rejection.json",
+      "sha256": "e467a1ac2724642846418259c37c59560df1d77e22a03ece36507881379356e4",
+      "bytes": 119902,
+      "measurements": {
+        "command": [
+          "make",
+          "check-fast",
+          "CHECK_AGENT=worker2-child-platform",
+          "AGENT_JOBS=4",
+          "FAST_JOBS=4"
+        ],
+        "rc": 2,
+        "elapsed_seconds": 70.281,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          1.366,
+          8.613
+        ],
+        "available_memory_kib_range": [
+          140452444,
+          143619632
+        ],
+        "swap_used_kib_range": [
+          8370412,
+          8370412
+        ],
+        "sample_count": 69
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/admission-gate-dune-lock.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/admission-gate-dune-lock.json",
+      "sha256": "422136f8afe1c1da73f30c56b7696ecbc09f3e0ef247011337612f1e14bb149f",
+      "bytes": 31971,
+      "measurements": {
+        "command": [
+          "make",
+          "check-fast",
+          "CHECK_AGENT=worker2-child-platform",
+          "AGENT_JOBS=4",
+          "FAST_JOBS=4"
+        ],
+        "rc": 2,
+        "elapsed_seconds": 57.75,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          0.293,
+          5.126
+        ],
+        "available_memory_kib_range": [
+          138563116,
+          140338772
+        ],
+        "swap_used_kib_range": [
+          8370408,
+          8370412
+        ],
+        "sample_count": 57
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/first-gate-failure.log.txt": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/first-gate-failure.log.txt",
+      "sha256": "20b8ca0dcdcf64b3cd517b6a912b48263138c86814a7bfc93a958c47fa77fcf1",
+      "bytes": 3543
+    },
+    "build/stock-zisk/q4-q9-stack-write/fetch-inputs.log.txt": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/fetch-inputs.log.txt",
+      "sha256": "0c05d0f9ff5f73a2d33a95f0190352f73984fb983db734bc41948ee8e09f0128",
+      "bytes": 2802
+    },
+    "build/stock-zisk/q4-q9-stack-write/check-fast.log.txt": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/check-fast.log.txt",
+      "sha256": "571f5e0b05a1ca81a861d5974d295352b0ef733e2f9aba2847b2af6234fd15e4",
+      "bytes": 46850
+    },
+    "build/stock-zisk/q4-q9-stack-write/check-fast-measurements.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/check-fast-measurements.json",
+      "sha256": "f5dea7c8e47cde3c03f70247a9654293eaeaa0a07bdce8839bbc1ac7ef1fa378",
+      "bytes": 384341,
+      "measurements": {
+        "command": [
+          "make",
+          "check-fast",
+          "CHECK_AGENT=worker2-child-platform",
+          "AGENT_JOBS=6",
+          "FAST_JOBS=6"
+        ],
+        "rc": 0,
+        "elapsed_seconds": 143.97,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          0.247,
+          10.393
+        ],
+        "available_memory_kib_range": [
+          133997828,
+          140419732
+        ],
+        "swap_used_kib_range": [
+          8370408,
+          8370408
+        ],
+        "sample_count": 142
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/machine-measurements.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/off/machine-measurements.json",
+      "sha256": "2ab9b380025bb87a6fff3ab5c60e81f7c741554e1292a816974cc26099e439b4",
+      "bytes": 77075,
+      "measurements": {
+        "command": [
+          "python3",
+          "tools/block/chain_root.py",
+          "--entries",
+          "_build/q4-stack-write-run/off/selected-root.json",
+          "--cfg",
+          "build/stock-zisk/inventory.json",
+          "--root",
+          "0x800d6960",
+          "--terminal",
+          "0",
+          "--out",
+          "_build/q4-stack-write-run/off/out",
+          "--publish-dir",
+          "_build/q4-stack-write-run/off/published",
+          "--build-dir",
+          "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+          "--root-declaration",
+          "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+          "--root-source",
+          "_build/q4-stack-write-run/off/selected-root.v",
+          "--proof-dir",
+          "ZesuSsz/Proofs/DecodeItem",
+          "--stage-dir",
+          "_build/q4-stack-write-run/off/stage",
+          "--trace-import",
+          "ZesuSsz.Stock.Closure.index_decodeItem",
+          "--code-premises",
+          "_build/q4-stack-write-run/off/selected-code-premises.txt",
+          "--jobs",
+          "2",
+          "--seconds",
+          "300",
+          "--baseline-out",
+          "_build/q4-stack-write-run/off/baseline.json"
+        ],
+        "rc": 0,
+        "elapsed_seconds": 14.201,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          0.719,
+          5.223
+        ],
+        "available_memory_kib_range": [
+          136050020,
+          138774372
+        ],
+        "swap_used_kib_range": [
+          8370408,
+          8370408
+        ],
+        "sample_count": 14
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/machine-measurements.json": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/on/machine-measurements.json",
+      "sha256": "a79f4c8ed2b7e89e5172bfc4905f0d95143112792600e9805015bc7b6c92dc30",
+      "bytes": 160333,
+      "measurements": {
+        "command": [
+          "python3",
+          "tools/block/chain_root.py",
+          "--entries",
+          "_build/q4-stack-write-run/on/selected-root.json",
+          "--cfg",
+          "build/stock-zisk/inventory.json",
+          "--root",
+          "0x800d6960",
+          "--terminal",
+          "0",
+          "--out",
+          "_build/q4-stack-write-run/on/out",
+          "--publish-dir",
+          "_build/q4-stack-write-run/on/published",
+          "--build-dir",
+          "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform",
+          "--root-declaration",
+          "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+          "--root-source",
+          "_build/q4-stack-write-run/on/selected-root.v",
+          "--proof-dir",
+          "ZesuSsz/Proofs/DecodeItem",
+          "--stage-dir",
+          "_build/q4-stack-write-run/on/stage",
+          "--trace-import",
+          "ZesuSsz.Stock.Closure.index_decodeItem",
+          "--code-premises",
+          "_build/q4-stack-write-run/on/selected-code-premises.txt",
+          "--jobs",
+          "2",
+          "--seconds",
+          "300",
+          "--baseline-out",
+          "_build/q4-stack-write-run/on/baseline.json"
+        ],
+        "rc": 1,
+        "elapsed_seconds": 28.386,
+        "sample_interval_seconds": 1,
+        "total_cpu_percent_range": [
+          1.078,
+          4.831
+        ],
+        "available_memory_kib_range": [
+          137655788,
+          140405368
+        ],
+        "swap_used_kib_range": [
+          8370408,
+          8370408
+        ],
+        "sample_count": 28
+      }
+    },
+    "build/stock-zisk/q4-q9-stack-write/off/chain.log.txt": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/off/chain.log.txt",
+      "sha256": "7346405ddae857d267274646f661b575232b316418414852b20024a2b3f17f6f",
+      "bytes": 66
+    },
+    "build/stock-zisk/q4-q9-stack-write/on/chain.log.txt": {
+      "archive_path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence/on/chain.log.txt",
+      "sha256": "bbd82b3f034d717a9929762092a225ba5035c50dd3424c63c6dbe9e8409dc597",
+      "bytes": 62
+    }
+  },
+  "evidence_storage": {
+    "source_commit": "c73e8b77",
+    "archive_root": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/c73e8b77-stack-write-evidence",
+    "proof_sources_and_residuals_retained": true
+  }
+}

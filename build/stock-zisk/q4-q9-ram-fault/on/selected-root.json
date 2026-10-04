@@ -1,0 +1,26 @@
+[
+  {
+    "name": "SelectedDecodeItemRoot",
+    "entry": "0x800d6960",
+    "binders": "`{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs)",
+    "coq": [],
+    "spatial": [
+      "decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args",
+      "instr_pre returnAddress (\u2203 after : DecodeItemOutcome, \u231cdecodeItemDomainAt returnAddress decodeItemC1BDomain args /\\ DecodeMeaningModuloKnownBugs args after\u231d \u2217 decodeItemExitResources args after)"
+    ],
+    "imports": [
+      "ZesuSsz.Contracts.Level1",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Automation.Switches.InstructionLookup",
+      "ZesuSsz.Automation.Switches.StackWrite",
+      "ZesuSsz.Automation.Switches.RamFault"
+    ],
+    "root_provenance": {
+      "source": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel",
+      "kind": "contract-entry",
+      "execution_claim": false,
+      "contract_statement": "ZesuSsz.Contracts.DecodeItemSelected.DecodeItemSelectedComplianceStatement"
+    }
+  }
+]

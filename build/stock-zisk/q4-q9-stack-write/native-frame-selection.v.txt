@@ -1,0 +1,17 @@
+Require Import ZesuSsz.Automation.Hooks ZesuSsz.Automation.All ZesuSsz.Automation.PureFacts.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.Switches.StackWrite.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+
+Lemma native_stack_selection `{!islaG Sigma} (returnAddress : Z)
+    (args : DecodeItemArgs)
+    (Hdomain : decodeItemDomainAt returnAddress decodeItemC1BDomain args) :
+    (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)
+      ↦ₘ? RlpDecodeItem.decodeItemStackBytes -∗
+    find_in_context (FindMemMapsTo (bv_unsigned
+      (Z_to_bv 64 (decodeItemStackPointer args) + BV 64 18446744073709551600 + BV 64 8)))
+      (fun _ => True%I).
+Proof.
+  iStartProof. iIntros "Hframe".
+  zesu_stack_write_if_enabled. done.
+Qed.
