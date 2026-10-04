@@ -7,5 +7,5 @@
    Contracts.Machine))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
  (theories
-   isla isla.riscv64 InstrSpecs EvmSail SailStdpp
+   isla isla.riscv64 InstrSpecs EvmSail EvmSailRlp SailStdpp
    lithium iris stdpp RecordUpdate Ltac2))

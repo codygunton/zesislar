@@ -74,6 +74,7 @@ def main() -> None:
         source = stage / "source"
         shutil.copytree(args.evm_source / "sail", source)
         shutil.copy(here / "decoder.sail_project", source)
+        shutil.copytree(here / "shim", source / "shim")
         # Sail's native slice_keep_std recognizes a directory named sail/lib.
         library = stage / "sail"
         library.mkdir()
@@ -117,6 +118,7 @@ def main() -> None:
             "sailCoqPluginSha256": digest(plugin),
             "sailProjectSha256": digest(here / "decoder.sail_project"),
             "sliceCommandsSha256": digest(here / "slice.commands"),
+            "inputShimSha256": digest(here / "shim/input.sail"),
             "roots": ROOTS,
             "excludedDecoders": EXCLUDED,
             "generationSeconds": elapsed,

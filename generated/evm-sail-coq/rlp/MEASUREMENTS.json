@@ -46,5 +46,21 @@
     "seconds": 118.139,
     "peakRssKiB": 474648,
     "jobs": 24
-  }
+  },
+  "shimModules": [
+    {
+      "module": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "elapsed_seconds": 2.255,
+      "peak_rss_kib": 596364,
+      "exit_code": 0,
+      "limit": null
+    },
+    {
+      "module": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "elapsed_seconds": 3.661,
+      "peak_rss_kib": 882960,
+      "exit_code": 0,
+      "limit": null
+    }
+  ]
 }
