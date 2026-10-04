@@ -2,6 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 From stdpp Require Import bitvector.definitions.
 From Ltac2 Require Import Ltac2.
 Require Import SailStdpp.MachineWord.
+Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Compliance.EvmSailAdapter.
 Require Import ZesuSsz.Compliance.RlpInputBounds.
@@ -13,6 +14,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.ParentHeaderRequiredFields.
 Require Import ZesuSsz.Contracts.ParentHeaderRung2.
+Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
@@ -156,3 +158,11 @@ Check (@emptyParentListMissesRequired :
 Print Assumptions emptyParentListMissesRequired.
 Ltac2 Eval exact_axioms 'emptyParentListMissesRequired
   (approved_library_axioms ()).
+
+Definition ReviewedMemcpyServicePremise `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (□ instr_pre memcpyCsrPc ziskMemcpyServiceInstrSpec)%I.
+
+Check (eq_refl : @memcpyServicePremise = @ReviewedMemcpyServicePremise).
+Check (eq_refl : parentHeaderMemcpyLength = 80%Z).
+Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
