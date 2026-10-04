@@ -19,7 +19,6 @@ Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
-Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 
@@ -89,32 +88,6 @@ Global Instance : LithiumUnfold (@decodeItemFoldCheckedResources) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldEntryObligation) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldPreservationObligation) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldExitObligation) := I.
-Global Typeclasses Opaque decodeItemBranchContinuation decodeItemBranchBase
-  decodeItemEntryAt800d6974 decodeItemEntryAt800d697c
-  decodeItemEntryAt800d69a4 decodeItemEntryAt800d69d8
-  decodeItemEntryAt800d69e0 decodeItemEntryAt800d69e8
-  decodeItemEntryAt800d6a00 decodeItemEntryAt800d6a08
-  decodeItemEntryAt800d6a14 decodeItemEntryAt800d6a38
-  decodeItemEntryAt800d6a64 decodeItemEntryAt800d6a6c
-  decodeItemEntryAt800d6aa8 decodeItemEntryAt800d6ab4
-  decodeItemEntryAt800d6ad8.
-Global Instance : LithiumUnfold (@decodeItemBranchContinuation) := I.
-Global Instance : LithiumUnfold (@decodeItemBranchBase) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6974) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d697c) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d69a4) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d69d8) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d69e0) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d69e8) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a00) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a08) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a14) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a38) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a64) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a6c) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6aa8) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ab4) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ad8) := I.
 
 (** Give Lithium its separating-conjunction goal form. *)
 Ltac zesu_prepare_uninit_goal :=
