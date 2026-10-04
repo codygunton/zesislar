@@ -106,6 +106,59 @@ class ChainRootTests(unittest.TestCase):
             self.assertEqual(summary["root_generalization"]["outcome"], "conditional")
             self.assertEqual(summary["captures"], 0)
 
+    def test_shelved_debts_distinguish_probe_identities(self):
+        state = {"spatial": ["P"], "pending_goals": []}
+        left = {**state, "shelved_goals": [{"conclusion": "x < 8"}]}
+        right = {**state, "shelved_goals": [{"conclusion": "x < 9"}]}
+        self.assertNotEqual(chain_root.fingerprint(left), chain_root.fingerprint(right))
+        self.assertNotEqual(chain_root.fingerprint(left), chain_root.fingerprint(state))
+        self.assertEqual(chain_root.fingerprint({**state, "shelved_goals": []}),
+                         chain_root.fingerprint(state))
+
+    def test_parser_retains_inherited_debts_for_every_outcome(self):
+        state = {"binders": "(returnAddress : Z)", "imports": [],
+                 "pending_goals": [{"conclusion": "x < 8"}],
+                 "shelved_goals": [{"conclusion": "False"}]}
+        block = {"start": 10, "end": 14, "successors": []}
+        fixture = (Path(__file__).parent / "fixtures/chain_goals_native.log").read_text()
+        cases = {
+            "closed": "No more goals.",
+            "stalled": fixture,
+            "reached": fixture.replace("CHAIN-GOAL-CONCLUSION True%I",
+                "CHAIN-GOAL-CONCLUSION " + chain_root.boundary_stop("returnAddress")),
+            "error": "compile error"}
+        with patch.object(chain_root.gen_block.call_sites, "premises", return_value=([], [], [])):
+            for outcome, output in cases.items():
+                with self.subTest(outcome=outcome):
+                    # These are synthetic parser inputs, not native execution evidence.
+                    output += "\n" + chain_root.probes.END + (
+                        "\nexit=1 ms=1 rss_kb=1\n" if outcome == "error" else
+                        "\nexit=0 ms=1 rss_kb=1\n")
+                    record = chain_root.parse_probe(output, state, block, "returnAddress")[0]
+                    self.assertEqual(record["outcome"], outcome)
+                    self.assertEqual(record["inherited_debts"]["pending_goals"], state["pending_goals"])
+                    self.assertEqual(record["inherited_debts"]["shelved_goals"], state["shelved_goals"])
+                    record["inherited_debts"]["pending_goals"].clear()
+                    self.assertEqual(len(state["pending_goals"]), 1)
+
+    def test_probe_exception_retains_root_debts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entries, cfg = root / "entries.json", root / "cfg.json"
+            entries.write_text(json.dumps({"entry": "0xa", "outcome": "reached",
+                "binders": "(args : DecodeItemArgs)", "spatial": ["P"], "coq": [],
+                "root_provenance": {"source": "fixture"},
+                "pending_goals": [{"conclusion": "x < 8"}], "shelved_goals": ["debt"]}))
+            cfg.write_text(json.dumps({"functions": [{"start": 10, "blocks": [
+                {"start": 10, "end": 14, "successors": []}]}]}))
+            args = SimpleNamespace(entries=entries, cfg=cfg, root="0xa", terminal="0x28",
+                out=root / "out", publish_dir=root / "published", jobs=1, build_dir=root, seconds=1)
+            with patch.object(chain_root, "probe", side_effect=ValueError("malformed capture")):
+                self.assertEqual(chain_root.run(args), 1)
+            record = json.loads((args.out / "post_states/a.json").read_text())[0]
+            self.assertEqual(record["inherited_debts"]["pending_goals"], [{"conclusion": "x < 8"}])
+            self.assertEqual(record["inherited_debts"]["shelved_goals"], ["debt"])
+
     def test_cli_accepts_an_explicit_root(self):
         arguments = ["chain_root.py", "--entries", "/tmp/unused", "--cfg", "/tmp/cfg",
             "--build-dir", "/tmp/build", "--root", "0x1000", "--terminal", "0x2000",
