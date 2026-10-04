@@ -39,6 +39,17 @@ an empty library-axiom allow-list; runtime premises are listed separately from g
 axioms. The gate does not yet check a compliance theorem because none exists. Every later
 public theorem needs its own reviewed closed type and axiom check.
 
+The rung-3 transaction snapshot declares seven approved C4 host extern axioms.
+`SailHostPremises` states their required completion, return values, scratch changes,
+input preservation, and unrelated-state preservation. It treats the digest function
+as an explicit assumption; this work does not verify Keccak-256. The uncached
+`check_sail_host_axioms.py` gate checks the exact names in each of the six generated
+roots, separately from the empty library-axiom allow-list. The generated roots have
+no Dune theory mapping, and their monadic externs are not yet connected to the
+standalone host-state relations. No closed rung-3 compliance type exists yet, so no
+public theorem consumes these premises. A reviewed type, generator binding, and
+separate axiom gate for that theorem remain required.
+
 ## Known limits
 
 The bounded record-extraction experiment crossed the 2 GiB module limit. A second,

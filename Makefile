@@ -150,6 +150,7 @@ check-evidence-tools:
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py
+	$(PYTHON) tools/check_sail_host_axioms.py
 
 .PHONY: check-proof-hygiene
 check-proof-hygiene:
@@ -182,7 +183,10 @@ check-fast: check-evidence-tools check-signatures
 .PHONY: check-signatures
 check-signatures:
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
-	  --cache=enabled -j$(FAST_JOBS) @install ZesuSsz/Evidence/SignatureGateFixtures.vo
+	  --cache=enabled -j$(FAST_JOBS) @install \
+	  ZesuSsz/Evidence/SignatureGateFixtures.vo \
+	  ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.vo \
+	  ZesuSsz/Evidence/ParentHeaderDifferential.vo
 
 .PHONY: check-iris
 check-iris: check-evidence-tools
