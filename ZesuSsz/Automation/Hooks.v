@@ -19,6 +19,31 @@ Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
+Require Import InstrSpecs.Lookup.
+Require Import ZesuSsz.Automation.ResourceGroups.
+
+Class ZesuStepInstructionLookup : Prop :=
+  zesu_step_instruction_lookup : True.
+
+(* Expose only a code wrapper whose head reduces to a lookup resource. *)
+Ltac zesu_expose_instruction_lookup :=
+  let _ := constr:(_ : ZesuStepInstructionLookup) in
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>
+      zesu_expose_environment_alias;
+      iMatchHyp ltac:(fun H body =>
+        lazymatch body with
+        | instr_lookup_resources _ => fail
+        | _ =>
+            let head := get_head body in
+            let expanded := eval cbv beta delta [head] in body in
+            lazymatch expanded with
+            | instr_lookup_resources _ =>
+                progress iEval (unfold head) in H;
+                iDestruct H as "#?"
+            end
+        end)
+  end.
 
 Global Typeclasses Opaque IslarisContractSpec.
 Global Instance : LithiumUnfold (@IslarisContractSpec) := I.
@@ -387,7 +412,8 @@ Ltac zesu_liAStep :=
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_signed_address_if_enabled
+    zesu_expose_instruction_lookup
+  | zesu_signed_address_if_enabled
   | zesu_normalize_find_mem_address
   | zesu_liAWriteMem
   | zesu_liAReadMem
