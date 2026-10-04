@@ -42,7 +42,17 @@ def fingerprint(state: dict) -> str:
     payload = {key: state.get(key) for key in
                ("binders", "coq", "persistent", "spatial", "local_sorts", "pending_goals",
                 "memory_word_widths", "trace_value_widths", "address_widths")}
+    # Empty shelves retain the existing frozen probe identities.
+    if state.get("shelved_goals"):
+        payload["shelved_goals"] = state["shelved_goals"]
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:16]
+
+
+
+def inherited_debts(state):
+    """Keep predecessor debts in every outcome, including parser failures."""
+    return {kind: deepcopy(state.get(kind, []))
+            for kind in ("pending_goals", "shelved_goals")}
 
 
 def graph(cfg: dict, root: int) -> dict[int, dict]:
@@ -323,6 +333,7 @@ def parse_probe(output: str, state: dict, block: dict, successor: int | str) -> 
               "imports": imports, "predecessor_fingerprint": token,
               "root_provenance": state.get("root_provenance"),
               "capture_only": True, "elapsed_seconds": 0,
+              "inherited_debts": inherited_debts(state),
               "pending_goals": [goal for goal in goals if not any(
                   goal["conclusion"].strip() == infer_boundary.stop_name(hex(pc))
                   for pc in other) and goal["conclusion"].strip() != target]}
@@ -536,6 +547,7 @@ def run(args) -> int:
                     except Exception as error:
                         record = {**(record or {}), "entry": hex(leader), "exit": boundary_address(successor),
                                   "outcome": "error", "error": str(error)}
+                    record["inherited_debts"] = inherited_debts(state)
                     captures.append(record)
                     if record["outcome"] in {"reached", "unreachable-successor"}:
                         # Preserve the first publisher's canonical capture. Distinct
