@@ -620,6 +620,113 @@ Ltac zesu_ram_fault_if_enabled :=
       solve [exfalso; apply Hfault; timeout 2 zesu_stack_arithmetic]
   end].
 
+(* Inspect applications without unfolding the proof context. *)
+Ltac zesu_handoff_closed_term term :=
+  tryif is_var term then fail 0 else
+  tryif has_evar term then fail 0 else
+  lazymatch term with
+  | (fun _ => _) => fail 0
+  | (forall _, _) => fail 0
+  | (let _ := _ in _) => fail 0
+  | ?function ?argument =>
+      zesu_handoff_closed_term function; zesu_handoff_closed_term argument
+  | _ => idtac
+  end.
+
+(* Evaluate closed integer terms without unfolding symbolic record projections. *)
+Ltac zesu_handoff_closed_Z term continuation :=
+  tryif zesu_handoff_closed_term term then
+    let reduced := eval vm_compute in term in continuation reduced
+  else lazymatch term with
+  | Z.add ?left ?right =>
+      zesu_handoff_closed_Z left ltac:(fun left =>
+        zesu_handoff_closed_Z right ltac:(fun right =>
+          let reduced := constr:(Z.add left right) in continuation reduced))
+  | Z.sub ?left ?right =>
+      zesu_handoff_closed_Z left ltac:(fun left =>
+        zesu_handoff_closed_Z right ltac:(fun right =>
+          let reduced := constr:(Z.sub left right) in continuation reduced))
+  | Z.mul ?left ?right =>
+      zesu_handoff_closed_Z left ltac:(fun left =>
+        zesu_handoff_closed_Z right ltac:(fun right =>
+          let reduced := constr:(Z.mul left right) in continuation reduced))
+  | Z.opp ?value =>
+      zesu_handoff_closed_Z value ltac:(fun value =>
+        let reduced := constr:(Z.opp value) in continuation reduced)
+  | _ => continuation term
+  end.
+
+Ltac zesu_handoff_goal_address_if_enabled :=
+  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  lazymatch goal with
+  | |- envs_entails _ ?target =>
+      lazymatch target with
+      | context [(?address ↦ₘ{?q}∗ _)%I] =>
+          zesu_expose_environment_alias;
+          iMatchHyp ltac:(fun name body =>
+            lazymatch body with
+            | (?available ↦ₘ{?fraction} ?value)%I =>
+                tryif constr_eq address available then fail 0 else
+                zesu_handoff_closed_Z address ltac:(fun addressNorm =>
+                  zesu_handoff_closed_Z available ltac:(fun availableNorm =>
+                    let Heq := fresh "HhandoffAddress" in
+                    assert (Heq : address = available) by
+                      (change (addressNorm = availableNorm); ring);
+                    rewrite Heq; clear Heq))
+            end)
+      end
+  end.
+
+Ltac zesu_handoff_memory_if_enabled :=
+  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  lazymatch goal with |- envs_entails _ _ => idtac end;
+  zesu_expose_environment_alias;
+  iMatchHyp ltac:(fun name body =>
+    lazymatch body with
+    | (?address ↦ₘ{?q}? ?count)%I =>
+        zesu_handoff_closed_Z count ltac:(fun normalized =>
+          let Hzero := fresh "HhandoffEmpty" in
+          assert (Hzero : count = 0%Z) by (change (normalized = 0%Z); lia);
+          iEval (rewrite Hzero mem_mapsto_uninit_0) in name;
+          clear Hzero; iDestruct name as %?)
+    end).
+
+Ltac zesu_handoff_adjacent_words_if_enabled :=
+  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  lazymatch goal with
+  | |- envs_entails _ (subsume (?address ↦ₘ ?low) ?requested ?G) =>
+      let width := type of low in constr_eq width (bv 64);
+      zesu_expose_environment_alias;
+      iMatchHyp ltac:(fun name body =>
+        lazymatch body with
+        | (?other ↦ₘ ?high)%I =>
+            let width := type of high in constr_eq width (bv 64);
+            zesu_handoff_closed_Z other ltac:(fun otherNorm =>
+              zesu_handoff_closed_Z address ltac:(fun addressNorm =>
+                let Heq := fresh "HhandoffAdjacent" in
+                assert (Heq : other = (address + 8)%Z) by
+                  (change (otherNorm = addressNorm + 8)%Z; ring);
+                iEval (rewrite Heq) in name; clear Heq;
+                iApply (subsume_mem_adjacent_u64_byte_array _ _ _ low high)))
+        end)
+  end.
+
+Ltac zesu_handoff_facts_if_enabled :=
+  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  lazymatch goal with
+  | |- envs_entails _ (subsume _ _ _) =>
+      progress zesu_saturate_derived_facts
+  end.
+
+Ltac zesu_handoff_integer_equality_if_enabled :=
+  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  lazymatch goal with
+  | |- @eq Z ?left ?right =>
+      zesu_handoff_closed_Z left ltac:(fun leftNorm =>
+        zesu_handoff_closed_Z right ltac:(fun rightNorm =>
+          change (leftNorm = rightNorm); solve [lia | ring]))
+  end.
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
@@ -629,6 +736,11 @@ Ltac zesu_liAStep :=
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
   | zesu_stack_write_if_enabled
+  | zesu_handoff_goal_address_if_enabled
+  | zesu_handoff_memory_if_enabled
+  | zesu_handoff_adjacent_words_if_enabled
+  | zesu_handoff_facts_if_enabled
+  | zesu_handoff_integer_equality_if_enabled
   | zesu_normalize_find_mem_address
   | zesu_liAWriteMem
   | zesu_liAReadMem
