@@ -9,7 +9,8 @@ Definition decodeItemEntryAt800d6a24 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
   (∃ (n i payloadStart : Z) (lengthBytes frameBytes : list byte)
        (loaded : bv 64),
-    ⌜decodeItemDomainAt (decodeItemReturnAddress args)
+    ⌜i < n /\
+      decodeItemDomainAt (decodeItemReturnAddress args)
         decodeItemC1BDomain args /\
       decodeItemSavedFrameFacts args frameBytes⌝ ∗
     decodeItemByteFoldStringHeader args n i payloadStart
@@ -20,14 +21,15 @@ Definition decodeItemEntryAt800d6ac4 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
   (∃ (n i payloadStart : Z) (lengthBytes frameBytes : list byte)
        (loaded : bv 64),
-    ⌜decodeItemDomainAt (decodeItemReturnAddress args)
+    ⌜i < n /\
+      decodeItemDomainAt (decodeItemReturnAddress args)
         decodeItemC1BDomain args /\
       decodeItemSavedFrameFacts args frameBytes⌝ ∗
     decodeItemByteFoldListHeader args n i payloadStart
       lengthBytes frameBytes loaded ∗
     decodeItemBranchContinuation args)%I.
 
-(* A body entry adds the loop guard without changing the header resources. *)
+(* Body entries use the same guard and resources as their headers. *)
 Definition decodeItemBodyAt800d6a24 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
   (∃ (n i payloadStart : Z) (lengthBytes frameBytes : list byte)

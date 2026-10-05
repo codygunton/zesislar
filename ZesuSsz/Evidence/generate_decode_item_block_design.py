@@ -33,9 +33,10 @@ def block_entry_binding(start: int) -> dict:
     if start == 0x800D6960:
         module = ENTRY_MODULES["entry_prologue"]
         name = "decodeItemEntryResources"
-        binders = [("domain", "DecodeItemArgs -> Prop"),
+        binders = [("returnAddress", "Z"),
                    ("args", "DecodeItemArgs")]
-        arguments = ["decodeItemC1BDomain", "args"]
+        arguments = ["(decodeItemDomainAt returnAddress decodeItemC1BDomain)",
+                     "args"]
     elif start in FOLD_PCS:
         module = ENTRY_MODULES["long_string_fold_header"]
         name = f"decodeItemEntryAt{start:08x}"
@@ -447,6 +448,7 @@ def build() -> dict:
         "loop_count": function["loop_count"],
         "table_convention": {
             "entry_type": "(Z * iProp Sigma)",
+            "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
             "universal_binders": "Each row's binders, in their listed order",
             "resource_application": "Apply resource_predicate to arguments in order",
             "internal_existentials": {
@@ -454,7 +456,16 @@ def build() -> dict:
                 "binders": ["n", "i", "payloadStart", "lengthBytes",
                             "frameBytes", "loaded"],
             },
-            "other_entries": "No block locals are existential inside the entry predicate",
+            "register_existentials": {
+                address(0x800D6960): ["a3", "a4", "a5", "a6"],
+                address(0x800D6974): ["x13", "x14", "x15", "x16"],
+                address(0x800D697C): ["x14", "x15", "x16"],
+                address(0x800D69A4): ["x14", "x15", "x16"],
+                **{address(pc): ["x15", "x16"] for pc in sorted({
+                    0x800D69D8, 0x800D69E0, 0x800D69E8, 0x800D6A00,
+                    0x800D6A08, 0x800D6A64, 0x800D6A6C, 0x800D6AA8})},
+            },
+            "other_entries": "Listed table binders are universal; unlisted write-register values can be existential inside entry predicates",
             "continuations": "Outcome existentials inside shared continuations are not table locals",
         },
         "edge_condition_scope": "register values before the source block's final instruction",
