@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "base_commit": "d0c051391dc9c6d59d04a792f58a7c96ff30723e",
+  "patches": [
+    {
+      "path": "/tmp/worker2-i10-integration.patch",
+      "sha256": "2dd2d62745bf3e7ebbd9ce91844cc8c147014d48b264aa22d3c46a3d7c51945a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i8-witness/rules.patch",
+      "sha256": "863b31724e3e0d236f20bed79a2774310d9b56c1119ee1cdf6b9041930dd697d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/s8-configuration/guard.patch",
+      "sha256": "5b72f35ccded9640381b7b994b9776fc8b1a5336805db682c36983f190ff2225"
+    }
+  ],
+  "i7_rule_already_in_base": true,
+  "native_reruns": "Pending coordinator root announcement",
+  "manual_rocq_proof_lines": 0,
+  "i10_python_lines": 538,
+  "unavailable_evidence": [
+    {
+      "path": "compilation-Hooks.json",
+      "expected_sha256": "2a4d7b964b1bf7eb047f7370cc7850ac73d8d9c17e15e7bf202ade71e8deef97",
+      "reason": "An earlier failed dependency compilation record was overwritten. Final verification and frozen captures remain retained."
+    }
+  ]
+}

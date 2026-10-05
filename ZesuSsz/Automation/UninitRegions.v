@@ -37,7 +37,7 @@ Ltac zesu_region_bounds :=
       | _ => clear H
       end
     end;
-    timeout 2 bv_solve].
+    bv_solve].
 
 Global Hint Extern 0 (ZesuRegionBounds ?P) =>
   (change P; zesu_region_bounds) : typeclass_instances.

@@ -27,7 +27,9 @@ Do not write an operational lemma per instruction. Do not write a template
 generator. Do not transliterate an Iris invariant into an operational one.
 Do not write a `//@spec:` for a load or store from an array. Do not split an
 array in a proof script. Do not redefine a Lithium hook outside
-`ZesuSsz/Automation/Hooks.v`. Do not use these names: `IslaInstructionSegment`,
+`ZesuSsz/Automation/Hooks.v`. Do not use a wall-clock deadline (`timeout`, a timed `first` or `try`, a
+time-limited solver call) in any tactic a production proof can reach; bound search by steps
+or leave it unbounded, and reject symbolic terms before `vm_compute`. Do not use these names: `IslaInstructionSegment`,
 `writeSuccessTraceAssumptions`, `zesu_ld_byte_array_at_spec`,
 `zesu_lbu_byte_array_at_spec`, `zesu_ld_array_at_spec`,
 `solve_zesu_ld_array_at`, `mem_mapsto_array_recombine_u64_read` outside

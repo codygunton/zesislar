@@ -434,10 +434,10 @@ Ltac zesu_stack_write_if_enabled :=
             | (?lower ↦ₘ? ?count)%I =>
                 let Heq := fresh "HstackAddress" in
                 assert (Heq : address = integer) by
-                  (timeout 2 zesu_stack_arithmetic);
+                  (zesu_stack_arithmetic);
                 let Hbound := fresh "HstackRegion" in
                 assert (Hbound : (lower <= integer < lower + count)%Z) by
-                  (timeout 2 zesu_stack_arithmetic);
+                  (zesu_stack_arithmetic);
                 rewrite Heq; clear Heq;
                 iRename H into "HstackWriteFrame";
                 iExists (MKUninit lower count);
@@ -477,6 +477,61 @@ Ltac zesu_tuple_witness T :=
 
 Class ZesuStepRecordWitness : Prop :=
   zesu_step_record_witness : True.
+
+Class ZesuStepListWitness : Prop :=
+  zesu_step_list_witness : True.
+Class ZesuStepTupleWitness : Prop :=
+  zesu_step_tuple_witness : True.
+
+(* Only the requested list shape permits extraction of owned pure facts. *)
+Ltac zesu_list_cons_witness_if_enabled :=
+  let _ := constr:(_ : ZesuStepListWitness) in
+  lazymatch goal with
+  | |- exists (head : ?A) (tail : list ?A),
+      ?values = head :: tail /\ length tail = ?count =>
+      eapply zesu_list_cons_witness;
+      first [assumption |
+        repeat first [progress zesu_split_folded_pure |
+          match goal with H : _ /\ _ |- _ => destruct H end];
+        assumption]
+  end.
+
+Ltac zesu_primitive_tuple_witness T :=
+  let guard := constr:(ltac:(assert_fails (has_evar T); exact I) : True) in
+  lazymatch T with
+  | li_prod ?A ?B =>
+      let allowed := lazymatch A with
+        | Z => constr:(true) | nat => constr:(true) | N => constr:(true)
+        | bool => constr:(true) | list _ => constr:(true) | bv _ => constr:(true)
+      end in
+      let head := open_constr:(_ : A) in
+      let tail := zesu_primitive_tuple_witness B in
+      constr:(li_pair head tail)
+  | unit => constr:(tt)
+  end.
+
+(* Resource matching must determine these data evars before Qed can close. *)
+Ltac zesu_primitive_tuple_if_enabled :=
+  let _ := constr:(_ : ZesuStepTupleWitness) in
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
+      let T := constr:(li_prod A B) in
+      assert_fails (has_evar T);
+      let witness := zesu_primitive_tuple_witness T in
+      notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+  end.
+
+(* Tuple guards use the owned widened comparison without adding a premise. *)
+Ltac zesu_primitive_tuple_guard_if_enabled :=
+  let _ := constr:(_ : ZesuStepTupleWitness) in
+  lazymatch goal with
+  | |- Z.lt _ _ => idtac | |- Z.le _ _ => idtac | |- Z.ge _ _ => idtac
+  end;
+  solve [progress (repeat match goal with
+    | H : context [bv_signed (bv_zero_extend 128 ?value)] |- _ =>
+        rewrite (zesu_signed_zero_extend_64_128 value) in H
+    end); first [assumption | bv_solve]].
 
 Ltac zesu_record_constructor_witness T :=
   let guard := constr:(ltac:(
@@ -696,7 +751,7 @@ Ltac zesu_ram_fault_assert :=
           lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
           lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
           let Hpositive := fresh "HramBound" in
-          assert (Hpositive : bound) by (timeout 2 zesu_stack_arithmetic);
+          assert (Hpositive : bound) by (zesu_stack_arithmetic);
           let Htrue := fresh "HramDecision" in
           assert (Htrue : condition = true) by
             (apply bool_decide_true; exact Hpositive);
@@ -721,7 +776,7 @@ Ltac zesu_ram_fault_if_enabled :=
   | Hfault : ~ ?bound |- _ =>
       lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
       lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
-      solve [exfalso; apply Hfault; timeout 2 zesu_stack_arithmetic]
+      solve [exfalso; apply Hfault; zesu_stack_arithmetic]
   end].
 
 (* Inspect applications without unfolding the proof context. *)
@@ -878,9 +933,9 @@ Ltac zesu_array_bounds_if_enabled :=
   unLET;
   lazymatch goal with
   | |- 0 <= ?address - ?base =>
-      timeout 2 solve [zesu_integer_array_facts; bv_solve | lia]
+      solve [zesu_integer_array_facts; bv_solve | lia]
   | |- (?index + ?width <= length ?storage)%nat =>
-      timeout 2 solve [
+      solve [
         zesu_integer_array_facts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
@@ -908,14 +963,14 @@ Ltac zesu_integer_array_address_if_enabled :=
             lazymatch type of values with list (bv ?width) =>
               let Heq := fresh "HarrayAddress" in
               assert (Heq : bv_unsigned pointer = integer) by
-                (timeout 2 zesu_stack_arithmetic);
+                (zesu_stack_arithmetic);
               let Hrange := fresh "HarrayAddressRange" in
               assert (Hrange : (lower <= integer < lower +
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
-                (timeout 2 (repeat first [progress zesu_split_folded_pure |
+                ((repeat first [progress zesu_split_folded_pure |
                   match goal with Hpure : _ /\ _ |- _ => destruct Hpure end];
                   zesu_normalize_binary_nat_hypotheses; bv_solve));
-              timeout 2 zesu_integer_array_facts;
+              zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
         end))
@@ -944,6 +999,7 @@ Ltac zesu_liAStep :=
   | liAOther
   | liUnfoldEarly
   | zesu_record_witness_if_enabled
+  | zesu_primitive_tuple_if_enabled
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
   | liStep

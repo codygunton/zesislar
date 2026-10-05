@@ -26,6 +26,16 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 
+(* A nonempty owned list supplies its head and tail without guessing data. *)
+Lemma zesu_list_cons_witness {A : Type} (values : list A) (count : nat) :
+  length values = S count ->
+  exists head tail, values = head :: tail /\ length tail = count.
+Proof.
+  destruct values as [|head tail]; simpl; [discriminate|].
+  intro Hlength. exists head, tail. split; [reflexivity|].
+  now injection Hlength.
+Qed.
+
 Class ZesuDerivedFacts (premise derived : Prop) : Prop :=
   zesu_derived_facts : premise -> derived.
 
