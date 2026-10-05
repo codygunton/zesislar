@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "label": "Phase 1 WP5 seven lookup stalls and seventeen contract gaps; full captures archived by hash",
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "manifest_binding_pending": true,
+  "inputs": {
+    "ZesuSsz/Evidence/decode_item_block_design.json": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+    "build/stock-zisk/designed-entry-discovery/entries.json": "043a0972645873fe2a81522aa624cf406934c4bc4636a7c189f6d6def55a6631",
+    "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+    "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+    "tools/block/discovery.py": "4403bc9306d731b06a935ad80bff5ee0eb0efd63ff39bdfa70461b436d88038e",
+    "tools/block/chain_root.py": "554ff4a1527c872a8e1288eb323afa873a4f420139c40fffe7d619deba9a5771",
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+    "build/stock-zisk/designed-entry-discovery/attempts/measured-report.json": "bb92a0fbb9b37598c000b54c12c45b6b39c7ece418df0f0a95647a4de3e45f2d"
+  },
+  "derived": {
+    "build/stock-zisk/designed-entry-discovery/entries.json": "043a0972645873fe2a81522aa624cf406934c4bc4636a7c189f6d6def55a6631",
+    "build/stock-zisk/designed-entry-discovery/report.json": "b0d5defa73536faf13ed9b9224c62f839006daaa5722cbb699ae1b3b8f93f652",
+    "build/stock-zisk/designed-entry-discovery/archive-provenance.json": "9b116882aabc68b82017699cfdf1d5d59a27f2623d5ded9737c2ed07f246a484",
+    "build/stock-zisk/designed-entry-discovery/README.md": "ba1d267aca2413bd56a0f601ebf870545a9a6e6504264b71450a314b38f63f68"
+  },
+  "archive_provenance": {
+    "path": "build/stock-zisk/designed-entry-discovery/archive-provenance.json",
+    "sha256": "9b116882aabc68b82017699cfdf1d5d59a27f2623d5ded9737c2ed07f246a484"
+  }
+}

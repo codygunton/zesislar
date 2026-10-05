@@ -1,0 +1,240 @@
+[
+  {
+    "entry": "0x800d6960",
+    "name": "DesignedEntry_800d6960",
+    "binders": "`{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs)",
+    "arguments": "returnAddress args",
+    "spatial": [
+      "decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "declaration": "decodeItemEntryResources",
+      "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+    },
+    "root_provenance": {
+      "source": "decodeItemEntryResources",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  },
+  {
+    "entry": "0x800d6a14",
+    "name": "DesignedEntry_800d6a14",
+    "binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z) (lengthBytes frameBytes : list byte) (oldAcc oldCursor loaded : bv 64)",
+    "arguments": "args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded",
+    "spatial": [
+      "decodeItemFoldInitResources args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
+      "declaration": "decodeItemFoldInitResources",
+      "sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+    },
+    "root_provenance": {
+      "source": "decodeItemFoldInitResources",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  },
+  {
+    "entry": "0x800d6a24",
+    "name": "DesignedEntry_800d6a24",
+    "binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n i payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64)",
+    "arguments": "args n i payloadStart lengthBytes frameBytes loaded",
+    "spatial": [
+      "decodeItemStringFoldAt 0x800d6a24 args n i payloadStart lengthBytes frameBytes loaded"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
+      "declaration": "decodeItemStringFoldAt",
+      "sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3"
+    },
+    "root_provenance": {
+      "source": "decodeItemStringFoldAt",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  },
+  {
+    "entry": "0x800d6a38",
+    "name": "DesignedEntry_800d6a38",
+    "binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64)",
+    "arguments": "args n payloadStart lengthBytes frameBytes loaded",
+    "spatial": [
+      "decodeItemByteFoldResources args false n n payloadStart lengthBytes frameBytes loaded"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+      "declaration": "decodeItemByteFoldResources",
+      "sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355"
+    },
+    "root_provenance": {
+      "source": "decodeItemByteFoldResources",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  },
+  {
+    "entry": "0x800d6ab4",
+    "name": "DesignedEntry_800d6ab4",
+    "binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z) (lengthBytes frameBytes : list byte) (oldAcc oldCursor loaded : bv 64)",
+    "arguments": "args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded",
+    "spatial": [
+      "decodeItemFoldInitResources args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
+      "declaration": "decodeItemFoldInitResources",
+      "sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+    },
+    "root_provenance": {
+      "source": "decodeItemFoldInitResources",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  },
+  {
+    "entry": "0x800d6ac4",
+    "name": "DesignedEntry_800d6ac4",
+    "binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n i payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64)",
+    "arguments": "args n i payloadStart lengthBytes frameBytes loaded",
+    "spatial": [
+      "decodeItemListFoldAt 0x800d6ac4 args n i payloadStart lengthBytes frameBytes loaded"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
+      "declaration": "decodeItemListFoldAt",
+      "sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3"
+    },
+    "root_provenance": {
+      "source": "decodeItemListFoldAt",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  },
+  {
+    "entry": "0x800d6ad8",
+    "name": "DesignedEntry_800d6ad8",
+    "binders": "`{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64)",
+    "arguments": "args n payloadStart lengthBytes frameBytes loaded",
+    "spatial": [
+      "decodeItemByteFoldResources args true n n payloadStart lengthBytes frameBytes loaded"
+    ],
+    "coq": [],
+    "imports": [
+      "ZesuSsz.Automation.All",
+      "ZesuSsz.Contracts.DecodeItemSelected",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+      "ZesuSsz.Contracts.RlpDecodeItemContract",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+      "SailStdpp.MachineWord"
+    ],
+    "entry_source": {
+      "path": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+      "declaration": "decodeItemByteFoldResources",
+      "sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355"
+    },
+    "root_provenance": {
+      "source": "decodeItemByteFoldResources",
+      "diagnostic_only": true
+    },
+    "probe_options": {
+      "trace_import": "ZesuSsz.Stock.Closure.index_decodeItem",
+      "code_premises": [
+        "  decodeItemSelectedCode -\u2217"
+      ]
+    }
+  }
+]
