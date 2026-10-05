@@ -8,6 +8,8 @@ import coqc_primary
 import coqc_certificate
 import json
 import tempfile
+from unittest.mock import patch
+import subprocess
 
 
 class CoqcPrimaryTests(unittest.TestCase):
@@ -62,6 +64,25 @@ class CoqcPrimaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'terminated conclusion'):
             coqc_primary.decode_active(first.replace('True CHAIN-FIELD-END', 'True'))
 
+    def test_diagnostic_local_definitions_keep_their_bodies_without_weakening_default_parser(self):
+        output = ('CHAIN-GOAL-BEGIN active\n'
+            'CHAIN-GOAL-LOCAL LET : nat CHAIN-FIELD-END\n'
+            'CHAIN-GOAL-SORT LET : Set CHAIN-FIELD-END\n'
+            'CHAIN-GOAL-VALUE LET : 3 + 4 CHAIN-FIELD-END\n'
+            'CHAIN-GOAL-ENV coq CHAIN-FIELD-END\n'
+            'CHAIN-GOAL-CONCLUSION LET = 7 CHAIN-FIELD-END\nCHAIN-GOAL-END\n')
+        with self.assertRaisesRegex(ValueError, 'unresolved native local definitions'):
+            coqc_primary.chain_goals.parse_goals(output)
+        goals = coqc_primary.decode_active(output)
+        self.assertEqual(goals[0]['local_values'], {'LET': '3 + 4'})
+        self.assertIn('LET := 3 + 4 : nat', goals[0]['context'])
+
+    def test_missing_primary_or_recorder_keeps_active_group_unavailable(self):
+        self.assertIsNone(coqc_primary.diagnostic_active('Error: inconsistent assumptions'))
+        self.assertIsNone(coqc_primary.diagnostic_active('COQC-PRIMARY-BEGIN\nproof limit exceeded: time'))
+        self.assertEqual(coqc_primary.diagnostic_active(
+            'COQC-PRIMARY-BEGIN\nChars 1 - 2 [Show~Existentials.] 0.01 secs'), [])
+
     def test_native_certificate_requires_kernel_artifact_and_no_inherited_debts(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -87,3 +108,44 @@ class CoqcPrimaryTests(unittest.TestCase):
                 self.assertFalse(coqc_certificate.native_closed({**evidence, **update}, rendered))
             artifact.write_bytes(b'changed object')
             self.assertFalse(coqc_certificate.native_closed(evidence, rendered))
+
+
+class CompletionBudgetTests(unittest.TestCase):
+    rendered = CoqcPrimaryTests.rendered
+    def test_cpu_instrumentation_preserves_tactic_without_wall_timeout(self):
+        source = coqc_primary.instrument(self.rendered(), cpu_seconds=1200)
+        self.assertNotIn('Timeout ', source)
+        self.assertIn('\ntry zesu_block.\n', source)
+        self.assertIn('Show Existentials.\nQed.', source)
+        for invalid in (0, 1201, -1, 1.5):
+            with self.assertRaisesRegex(ValueError, 'CPU budget'):
+                coqc_primary.instrument(self.rendered(), cpu_seconds=invalid)
+
+    def test_completion_compile_sets_both_monitors_and_cpu_guard(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root/'Profile.v'
+            source.write_text('Set Ltac Profiling.\n')
+            policy = coqc_primary.budget_policy(cpu_seconds=1200)
+            with patch.object(coqc_primary.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, '', '')) as run:
+                coqc_primary.compile_source(source, root/'out', root/'build', policy=policy)
+            environment = run.call_args.kwargs['env']
+            self.assertEqual(environment['ZESU_PRIMARY_CPU_LIMIT'], '1200')
+            self.assertEqual(environment['ZESU_PROOF_CPU_LIMIT'], '1200')
+            self.assertEqual(environment['ZESU_PRIMARY_WALL_LIMIT'], 'none')
+            self.assertEqual(environment['ZESU_SCRATCH_WALL_SECONDS'], 'none')
+            self.assertEqual(source.read_text(), 'Set Ltac Profiling.\n')
+
+    def test_certificate_cpu_policy_requires_matching_compiler_limits(self):
+        policy = coqc_primary.budget_policy(cpu_seconds=1200)
+        evidence = {'proof_budget': policy, 'primary_timeout': None}
+        compiler = {'limits': {'cpu_seconds': 1200, 'module_seconds': None, 'rss_kib': 6291456}}
+        self.assertTrue(coqc_certificate.valid_budget(evidence, compiler))
+        for field, value in (('cpu_seconds', 300), ('module_seconds', 300), ('rss_kib', 0)):
+            changed = {'limits': {**compiler['limits'], field: value}}
+            self.assertFalse(coqc_certificate.valid_budget(evidence, changed))
+
+    def test_default_budget_remains_historical_wall_policy(self):
+        self.assertEqual(coqc_primary.budget_policy(), {'kind': 'wall', 'cpu_seconds': None,
+            'wall_seconds': 300, 'memory_kib': 6291456})
+        self.assertEqual(coqc_primary.completion_environment(coqc_primary.budget_policy())['ZESU_SCRATCH_WALL_SECONDS'], '300')
