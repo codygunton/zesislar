@@ -1,0 +1,412 @@
+{
+  "schema": 1,
+  "label": "Frozen comparisons; no proof premises",
+  "archive_root": "/home/cody/zesislar-archive/sha256",
+  "artifacts": {
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6960_800d6974.mcp.json": {
+      "sha256": "6d1527e52b93f02ede5457196d7f90e7538e22eb9cb0c68477834b4efa4de993",
+      "archive_path": "/home/cody/zesislar-archive/sha256/6d/6d1527e52b93f02ede5457196d7f90e7538e22eb9cb0c68477834b4efa4de993",
+      "bytes": 13380
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6960_800d6974.out": {
+      "sha256": "aafb9e5bddbb8f4cddb08e4007a7dc3d8482f3e6324afbf0bb24423ee0bea1d7",
+      "archive_path": "/home/cody/zesislar-archive/sha256/aa/aafb9e5bddbb8f4cddb08e4007a7dc3d8482f3e6324afbf0bb24423ee0bea1d7",
+      "bytes": 3507
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6960_800d6ae0.mcp.json": {
+      "sha256": "928eafc51c9add7e85a64e2abe42023331f083c94f68c48a01687587b12db9bd",
+      "archive_path": "/home/cody/zesislar-archive/sha256/92/928eafc51c9add7e85a64e2abe42023331f083c94f68c48a01687587b12db9bd",
+      "bytes": 13381
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6960_800d6ae0.out": {
+      "sha256": "5943929734af93109c2a331bd670633e6a92c18b9ae1e3eddddc5e59d146f5e4",
+      "archive_path": "/home/cody/zesislar-archive/sha256/59/5943929734af93109c2a331bd670633e6a92c18b9ae1e3eddddc5e59d146f5e4",
+      "bytes": 3509
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a14_800d6a24.mcp.json": {
+      "sha256": "d4f0137fb0e960149b0049df1b9454ecbc3d0519a47261fc864d60bbf7d9af09",
+      "archive_path": "/home/cody/zesislar-archive/sha256/d4/d4f0137fb0e960149b0049df1b9454ecbc3d0519a47261fc864d60bbf7d9af09",
+      "bytes": 14701
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a14_800d6a24.out": {
+      "sha256": "e5f0cbfbfbc3ae1fe71bf46476146d9591867793886ff4e70b54bae8aa4cf9c7",
+      "archive_path": "/home/cody/zesislar-archive/sha256/e5/e5f0cbfbfbc3ae1fe71bf46476146d9591867793886ff4e70b54bae8aa4cf9c7",
+      "bytes": 4588
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a24_800d6a24.mcp.json": {
+      "sha256": "aed0e799183b0c46d3c5a70988ba5b640b7610f34dfa355142d627a696bccce7",
+      "archive_path": "/home/cody/zesislar-archive/sha256/ae/aed0e799183b0c46d3c5a70988ba5b640b7610f34dfa355142d627a696bccce7",
+      "bytes": 301
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a24_800d6a24.out": {
+      "sha256": "4179c4b296197064ab186515a3f73cac9e1c58428759a01db67507e322155f6b",
+      "archive_path": "/home/cody/zesislar-archive/sha256/41/4179c4b296197064ab186515a3f73cac9e1c58428759a01db67507e322155f6b",
+      "bytes": 165
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a38_800d6a40.mcp.json": {
+      "sha256": "340b6dcc4422db84b164cf62d7c34118064a4d3e413a9c75b1d8c171baeda38d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/34/340b6dcc4422db84b164cf62d7c34118064a4d3e413a9c75b1d8c171baeda38d",
+      "bytes": 14608
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a38_800d6a40.out": {
+      "sha256": "bdaa5f2fb4cfe920ad07f3c8a686e6162e07fae6a2693a74917fc970d83b935e",
+      "archive_path": "/home/cody/zesislar-archive/sha256/bd/bdaa5f2fb4cfe920ad07f3c8a686e6162e07fae6a2693a74917fc970d83b935e",
+      "bytes": 4480
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a38_800d6ae0.mcp.json": {
+      "sha256": "91bcdabafd1f38dd5118033b7814d59161927cea4717fba960ba079b52cbea1f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/91/91bcdabafd1f38dd5118033b7814d59161927cea4717fba960ba079b52cbea1f",
+      "bytes": 14603
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a38_800d6ae0.out": {
+      "sha256": "4a5a3805c34b967e548bf2026ac09d3b916e8f24ac50915cc97d34b8bd6d8f36",
+      "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a5a3805c34b967e548bf2026ac09d3b916e8f24ac50915cc97d34b8bd6d8f36",
+      "bytes": 4476
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ab4_800d6ac4.mcp.json": {
+      "sha256": "8cb55ec905877d9c3c5ddcb0bc630acd8f57ed4de04a5ac20844290c46be2142",
+      "archive_path": "/home/cody/zesislar-archive/sha256/8c/8cb55ec905877d9c3c5ddcb0bc630acd8f57ed4de04a5ac20844290c46be2142",
+      "bytes": 14699
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ab4_800d6ac4.out": {
+      "sha256": "e7b569868f7ed72f15f8834e7a273c7b1fdd2b95e4a997b5b77e0e7e15149e5f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/e7/e7b569868f7ed72f15f8834e7a273c7b1fdd2b95e4a997b5b77e0e7e15149e5f",
+      "bytes": 4586
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ac4_800d6ac4.mcp.json": {
+      "sha256": "bd9e9f0e1ee1e5cfd013a9aa7273f5613d1450d694b54849ceaeab633ad4f6ba",
+      "archive_path": "/home/cody/zesislar-archive/sha256/bd/bd9e9f0e1ee1e5cfd013a9aa7273f5613d1450d694b54849ceaeab633ad4f6ba",
+      "bytes": 301
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ac4_800d6ac4.out": {
+      "sha256": "112d8dd8b5ce1597ff5bb69b54046cec747d878da67f260bbd7b1bdd75304c7e",
+      "archive_path": "/home/cody/zesislar-archive/sha256/11/112d8dd8b5ce1597ff5bb69b54046cec747d878da67f260bbd7b1bdd75304c7e",
+      "bytes": 165
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ad8_800d6ae0.mcp.json": {
+      "sha256": "1330bb7af602e6fbf4a7471201ba492c5460103c138aab0e2440d9999694fc2a",
+      "archive_path": "/home/cody/zesislar-archive/sha256/13/1330bb7af602e6fbf4a7471201ba492c5460103c138aab0e2440d9999694fc2a",
+      "bytes": 14608
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ad8_800d6ae0.out": {
+      "sha256": "3a203e561a50657e73be95f0b25dc3f39f9d4cffb22eede0ec1e00e0f7a1ba0d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/3a/3a203e561a50657e73be95f0b25dc3f39f9d4cffb22eede0ec1e00e0f7a1ba0d",
+      "bytes": 4480
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ad8_800d6b08.mcp.json": {
+      "sha256": "611404f60d5e220078a024c4d5459e4a3257a3ffd42202c3dd6275bd21d6b67f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/61/611404f60d5e220078a024c4d5459e4a3257a3ffd42202c3dd6275bd21d6b67f",
+      "bytes": 14603
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ad8_800d6b08.out": {
+      "sha256": "b7dfe898561702c9d8acb98a18a277652dd94856d36294b4eea119ad858f25f5",
+      "archive_path": "/home/cody/zesislar-archive/sha256/b7/b7dfe898561702c9d8acb98a18a277652dd94856d36294b4eea119ad858f25f5",
+      "bytes": 4476
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-report.json": {
+      "sha256": "131b7781403c02cd13b21b7a6bfc83420e3685b91d0bd0998f88b75d4012693e",
+      "archive_path": "/home/cody/zesislar-archive/sha256/13/131b7781403c02cd13b21b7a6bfc83420e3685b91d0bd0998f88b75d4012693e",
+      "bytes": 231518
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/measured-report.json": {
+      "sha256": "bb92a0fbb9b37598c000b54c12c45b6b39c7ece418df0f0a95647a4de3e45f2d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/bb/bb92a0fbb9b37598c000b54c12c45b6b39c7ece418df0f0a95647a4de3e45f2d",
+      "bytes": 352680
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/report-before-helper-binding.json": {
+      "sha256": "76282f9a70bae24a284100a2e2d7a0b65999aa116188ef2dcd7940c740fd9571",
+      "archive_path": "/home/cody/zesislar-archive/sha256/76/76282f9a70bae24a284100a2e2d7a0b65999aa116188ef2dcd7940c740fd9571",
+      "bytes": 363544
+    },
+    "build/stock-zisk/designed-entry-discovery/entries.json": {
+      "sha256": "043a0972645873fe2a81522aa624cf406934c4bc4636a7c189f6d6def55a6631",
+      "archive_path": "/home/cody/zesislar-archive/sha256/04/043a0972645873fe2a81522aa624cf406934c4bc4636a7c189f6d6def55a6631",
+      "bytes": 8833
+    },
+    "build/stock-zisk/designed-entry-discovery/manifest-fragment.json": {
+      "sha256": "586ba8e256a07a9c0279b7364641b029f8e52e687316abf911a2da7395d7acaa",
+      "archive_path": "/home/cody/zesislar-archive/sha256/58/586ba8e256a07a9c0279b7364641b029f8e52e687316abf911a2da7395d7acaa",
+      "bytes": 8639
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6960_800d6974.mcp.json": {
+      "sha256": "6d1527e52b93f02ede5457196d7f90e7538e22eb9cb0c68477834b4efa4de993",
+      "archive_path": "/home/cody/zesislar-archive/sha256/6d/6d1527e52b93f02ede5457196d7f90e7538e22eb9cb0c68477834b4efa4de993",
+      "bytes": 13380
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6960_800d6974.out": {
+      "sha256": "aafb9e5bddbb8f4cddb08e4007a7dc3d8482f3e6324afbf0bb24423ee0bea1d7",
+      "archive_path": "/home/cody/zesislar-archive/sha256/aa/aafb9e5bddbb8f4cddb08e4007a7dc3d8482f3e6324afbf0bb24423ee0bea1d7",
+      "bytes": 3507
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6960_800d6ae0.mcp.json": {
+      "sha256": "928eafc51c9add7e85a64e2abe42023331f083c94f68c48a01687587b12db9bd",
+      "archive_path": "/home/cody/zesislar-archive/sha256/92/928eafc51c9add7e85a64e2abe42023331f083c94f68c48a01687587b12db9bd",
+      "bytes": 13381
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6960_800d6ae0.out": {
+      "sha256": "5943929734af93109c2a331bd670633e6a92c18b9ae1e3eddddc5e59d146f5e4",
+      "archive_path": "/home/cody/zesislar-archive/sha256/59/5943929734af93109c2a331bd670633e6a92c18b9ae1e3eddddc5e59d146f5e4",
+      "bytes": 3509
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a14_800d6a24.mcp.json": {
+      "sha256": "58c689fa7b7804d9895bdba3db7d2d2812487ba49e2a5cde7ce6ae5d5fe5dd66",
+      "archive_path": "/home/cody/zesislar-archive/sha256/58/58c689fa7b7804d9895bdba3db7d2d2812487ba49e2a5cde7ce6ae5d5fe5dd66",
+      "bytes": 14699
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a14_800d6a24.out": {
+      "sha256": "af66cfc4bb517d85af2422886d835a0fb6a59bf4470f968334e3952300597e6b",
+      "archive_path": "/home/cody/zesislar-archive/sha256/af/af66cfc4bb517d85af2422886d835a0fb6a59bf4470f968334e3952300597e6b",
+      "bytes": 4586
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a24_800d6a24.mcp.json": {
+      "sha256": "4b309b100f3fa8256883fb1ec0bc731062f45f9a22cc2f97eb8d3266831d73f0",
+      "archive_path": "/home/cody/zesislar-archive/sha256/4b/4b309b100f3fa8256883fb1ec0bc731062f45f9a22cc2f97eb8d3266831d73f0",
+      "bytes": 14787
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a24_800d6a24.out": {
+      "sha256": "656f94d771b33f221b7d5d1c2bb3230eb1e6d70085d00d5f03a6c2792b77b51b",
+      "archive_path": "/home/cody/zesislar-archive/sha256/65/656f94d771b33f221b7d5d1c2bb3230eb1e6d70085d00d5f03a6c2792b77b51b",
+      "bytes": 4642
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a24_800d6a38.mcp.json": {
+      "sha256": "75786e84c9f51f1f204a2b84f073aed2c743a936447f98c417322017f983f940",
+      "archive_path": "/home/cody/zesislar-archive/sha256/75/75786e84c9f51f1f204a2b84f073aed2c743a936447f98c417322017f983f940",
+      "bytes": 14792
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a24_800d6a38.out": {
+      "sha256": "c3cb2ea8515e2b31d1cea26a922d0195a691256fd34baf605d09560a414adb35",
+      "archive_path": "/home/cody/zesislar-archive/sha256/c3/c3cb2ea8515e2b31d1cea26a922d0195a691256fd34baf605d09560a414adb35",
+      "bytes": 4646
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a38_800d6a40.mcp.json": {
+      "sha256": "340b6dcc4422db84b164cf62d7c34118064a4d3e413a9c75b1d8c171baeda38d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/34/340b6dcc4422db84b164cf62d7c34118064a4d3e413a9c75b1d8c171baeda38d",
+      "bytes": 14608
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a38_800d6a40.out": {
+      "sha256": "bdaa5f2fb4cfe920ad07f3c8a686e6162e07fae6a2693a74917fc970d83b935e",
+      "archive_path": "/home/cody/zesislar-archive/sha256/bd/bdaa5f2fb4cfe920ad07f3c8a686e6162e07fae6a2693a74917fc970d83b935e",
+      "bytes": 4480
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a38_800d6ae0.mcp.json": {
+      "sha256": "91bcdabafd1f38dd5118033b7814d59161927cea4717fba960ba079b52cbea1f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/91/91bcdabafd1f38dd5118033b7814d59161927cea4717fba960ba079b52cbea1f",
+      "bytes": 14603
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a38_800d6ae0.out": {
+      "sha256": "4a5a3805c34b967e548bf2026ac09d3b916e8f24ac50915cc97d34b8bd6d8f36",
+      "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a5a3805c34b967e548bf2026ac09d3b916e8f24ac50915cc97d34b8bd6d8f36",
+      "bytes": 4476
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ab4_800d6ac4.mcp.json": {
+      "sha256": "ea50c08bf2fe21f7441fa6dba9324075bfcc31d02f18f5fb8335ccfc0286404d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/ea/ea50c08bf2fe21f7441fa6dba9324075bfcc31d02f18f5fb8335ccfc0286404d",
+      "bytes": 14697
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ab4_800d6ac4.out": {
+      "sha256": "e6d6b0f1a7eca7805dbea8383f0ef382274294b67d9e3d6c5f83e31a83f6f349",
+      "archive_path": "/home/cody/zesislar-archive/sha256/e6/e6d6b0f1a7eca7805dbea8383f0ef382274294b67d9e3d6c5f83e31a83f6f349",
+      "bytes": 4584
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ac4_800d6ac4.mcp.json": {
+      "sha256": "3343cc9fd2e435860b3ae4a0964a8dd77bb664c56df03a217f4c24d957491fa9",
+      "archive_path": "/home/cody/zesislar-archive/sha256/33/3343cc9fd2e435860b3ae4a0964a8dd77bb664c56df03a217f4c24d957491fa9",
+      "bytes": 14789
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ac4_800d6ac4.out": {
+      "sha256": "2a518ffa803157c9e41c8d2c965a2b17a57a26df65511463eab6de57d3c1c0fc",
+      "archive_path": "/home/cody/zesislar-archive/sha256/2a/2a518ffa803157c9e41c8d2c965a2b17a57a26df65511463eab6de57d3c1c0fc",
+      "bytes": 4644
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ac4_800d6ad8.mcp.json": {
+      "sha256": "0b83c2d62165aaffb03870b24b2d6eb04841a75fb865765c7e1ad02a4bf6ebc5",
+      "archive_path": "/home/cody/zesislar-archive/sha256/0b/0b83c2d62165aaffb03870b24b2d6eb04841a75fb865765c7e1ad02a4bf6ebc5",
+      "bytes": 14793
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ac4_800d6ad8.out": {
+      "sha256": "3a937163a40aca5d8a39f51c0989310af4f3bd6d8213281a7e4732bca723299a",
+      "archive_path": "/home/cody/zesislar-archive/sha256/3a/3a937163a40aca5d8a39f51c0989310af4f3bd6d8213281a7e4732bca723299a",
+      "bytes": 4647
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ad8_800d6ae0.mcp.json": {
+      "sha256": "1330bb7af602e6fbf4a7471201ba492c5460103c138aab0e2440d9999694fc2a",
+      "archive_path": "/home/cody/zesislar-archive/sha256/13/1330bb7af602e6fbf4a7471201ba492c5460103c138aab0e2440d9999694fc2a",
+      "bytes": 14608
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ad8_800d6ae0.out": {
+      "sha256": "3a203e561a50657e73be95f0b25dc3f39f9d4cffb22eede0ec1e00e0f7a1ba0d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/3a/3a203e561a50657e73be95f0b25dc3f39f9d4cffb22eede0ec1e00e0f7a1ba0d",
+      "bytes": 4480
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ad8_800d6b08.mcp.json": {
+      "sha256": "611404f60d5e220078a024c4d5459e4a3257a3ffd42202c3dd6275bd21d6b67f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/61/611404f60d5e220078a024c4d5459e4a3257a3ffd42202c3dd6275bd21d6b67f",
+      "bytes": 14603
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ad8_800d6b08.out": {
+      "sha256": "b7dfe898561702c9d8acb98a18a277652dd94856d36294b4eea119ad858f25f5",
+      "archive_path": "/home/cody/zesislar-archive/sha256/b7/b7dfe898561702c9d8acb98a18a277652dd94856d36294b4eea119ad858f25f5",
+      "bytes": 4476
+    },
+    "build/stock-zisk/designed-entry-discovery/report.json": {
+      "sha256": "33be700f31fa97145a7e52d1ccc2be518805e4f7f9124126b52b721cf6ca9d91",
+      "archive_path": "/home/cody/zesislar-archive/sha256/33/33be700f31fa97145a7e52d1ccc2be518805e4f7f9124126b52b721cf6ca9d91",
+      "bytes": 364559
+    },
+    "ZesuSsz/Evidence/decode_item_block_design.json": {
+      "sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+      "archive_path": "/home/cody/zesislar-archive/sha256/dc/dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+      "bytes": 37489
+    },
+    "build/stock-zisk/cfg.json": {
+      "sha256": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+      "archive_path": "/home/cody/zesislar-archive/sha256/98/98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+      "bytes": 1775038
+    },
+    "build/stock-zisk/build-recipe.json": {
+      "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+      "archive_path": "/home/cody/zesislar-archive/sha256/ed/ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+      "bytes": 4174612
+    },
+    "tools/block/discovery.py": {
+      "sha256": "4403bc9306d731b06a935ad80bff5ee0eb0efd63ff39bdfa70461b436d88038e",
+      "archive_path": "/home/cody/zesislar-archive/sha256/44/4403bc9306d731b06a935ad80bff5ee0eb0efd63ff39bdfa70461b436d88038e",
+      "bytes": 19044
+    },
+    "tools/block/chain_root.py": {
+      "sha256": "554ff4a1527c872a8e1288eb323afa873a4f420139c40fffe7d619deba9a5771",
+      "archive_path": "/home/cody/zesislar-archive/sha256/55/554ff4a1527c872a8e1288eb323afa873a4f420139c40fffe7d619deba9a5771",
+      "bytes": 33172
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
+      "archive_path": "/home/cody/zesislar-archive/sha256/b4/b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
+      "bytes": 5772
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": {
+      "sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+      "archive_path": "/home/cody/zesislar-archive/sha256/3e/3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+      "bytes": 6413
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": {
+      "sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+      "archive_path": "/home/cody/zesislar-archive/sha256/8f/8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+      "bytes": 1428
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": {
+      "sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+      "archive_path": "/home/cody/zesislar-archive/sha256/40/40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+      "bytes": 3227
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6960_800d6ae0.v": {
+      "sha256": "c126c2be89fdbe7268956c8eb9c6b70dd9a08675c4249a786f0d0669cdd145f9",
+      "archive_path": "/home/cody/zesislar-archive/sha256/c1/c126c2be89fdbe7268956c8eb9c6b70dd9a08675c4249a786f0d0669cdd145f9",
+      "bytes": 7008
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a14_800d6a24.v": {
+      "sha256": "d4fdc3ee21dfc96fb0dbd9f1e9dffd2e2750a583f682228723d86c8143733299",
+      "archive_path": "/home/cody/zesislar-archive/sha256/d4/d4fdc3ee21dfc96fb0dbd9f1e9dffd2e2750a583f682228723d86c8143733299",
+      "bytes": 7129
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ab4_800d6ac4.v": {
+      "sha256": "852c284fe1ab52ec3844cf47bc1fe9143fca5b3c718f6776226a4e9c3937bac8",
+      "archive_path": "/home/cody/zesislar-archive/sha256/85/852c284fe1ab52ec3844cf47bc1fe9143fca5b3c718f6776226a4e9c3937bac8",
+      "bytes": 7129
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a24_800d6a24.v": {
+      "sha256": "9766d6a82815dd76c5c36168a120b430b827b1d1429c6b6bb328fd7c1f1079d7",
+      "archive_path": "/home/cody/zesislar-archive/sha256/97/9766d6a82815dd76c5c36168a120b430b827b1d1429c6b6bb328fd7c1f1079d7",
+      "bytes": 7156
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a38_800d6ae0.v": {
+      "sha256": "afacdf214049d9f67053d2ab8651cadf0569ed5e476317330e38bd10c723828c",
+      "archive_path": "/home/cody/zesislar-archive/sha256/af/afacdf214049d9f67053d2ab8651cadf0569ed5e476317330e38bd10c723828c",
+      "bytes": 7150
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ac4_800d6ac4.v": {
+      "sha256": "a8b3e9d39fc6ad2ec676c5a203d9c8c98d443e6306817b7140b3dbcfadddac9f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/a8/a8b3e9d39fc6ad2ec676c5a203d9c8c98d443e6306817b7140b3dbcfadddac9f",
+      "bytes": 7154
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6960_800d6974.v": {
+      "sha256": "c9d5481c1b1b8083775cdc70702a99e20edf5a9831c8aa1c506deb9447dbd374",
+      "archive_path": "/home/cody/zesislar-archive/sha256/c9/c9d5481c1b1b8083775cdc70702a99e20edf5a9831c8aa1c506deb9447dbd374",
+      "bytes": 7008
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a38_800d6a40.v": {
+      "sha256": "f4959caf1dfef673cd734d819c2bff807520a0d371cf4b2f6c6fce87bcea22d0",
+      "archive_path": "/home/cody/zesislar-archive/sha256/f4/f4959caf1dfef673cd734d819c2bff807520a0d371cf4b2f6c6fce87bcea22d0",
+      "bytes": 7150
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ad8_800d6b08.v": {
+      "sha256": "9c243dc88b51a3c46e89b4dd03677028197af045545c88898c071ed90b27c89b",
+      "archive_path": "/home/cody/zesislar-archive/sha256/9c/9c243dc88b51a3c46e89b4dd03677028197af045545c88898c071ed90b27c89b",
+      "bytes": 7149
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ad8_800d6ae0.v": {
+      "sha256": "be53edfec66313f47acd34dc912aecce36aaf2cf19d814be77506d1a530f7193",
+      "archive_path": "/home/cody/zesislar-archive/sha256/be/be53edfec66313f47acd34dc912aecce36aaf2cf19d814be77506d1a530f7193",
+      "bytes": 7149
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6a24_800d6a38.v": {
+      "sha256": "b5eee11099480cabfe094eeb583dbf7e72363d47de0c72a735da09fa921c66e5",
+      "archive_path": "/home/cody/zesislar-archive/sha256/b5/b5eee11099480cabfe094eeb583dbf7e72363d47de0c72a735da09fa921c66e5",
+      "bytes": 7156
+    },
+    "build/stock-zisk/designed-entry-discovery/probes/block_0x800d6ac4_800d6ad8.v": {
+      "sha256": "f87169f7da6ed84f5cb29198ed1c7ee21f80841fde40d663b70dda357cf89c70",
+      "archive_path": "/home/cody/zesislar-archive/sha256/f8/f87169f7da6ed84f5cb29198ed1c7ee21f80841fde40d663b70dda357cf89c70",
+      "bytes": 7154
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6960_800d6974.v": {
+      "sha256": "c9d5481c1b1b8083775cdc70702a99e20edf5a9831c8aa1c506deb9447dbd374",
+      "archive_path": "/home/cody/zesislar-archive/sha256/c9/c9d5481c1b1b8083775cdc70702a99e20edf5a9831c8aa1c506deb9447dbd374",
+      "bytes": 7008
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6960_800d6ae0.v": {
+      "sha256": "c126c2be89fdbe7268956c8eb9c6b70dd9a08675c4249a786f0d0669cdd145f9",
+      "archive_path": "/home/cody/zesislar-archive/sha256/c1/c126c2be89fdbe7268956c8eb9c6b70dd9a08675c4249a786f0d0669cdd145f9",
+      "bytes": 7008
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a14_800d6a24.v": {
+      "sha256": "6999055d9395cb47483819266229a25d63a4f788ef3bc1a012d144e1819396f1",
+      "archive_path": "/home/cody/zesislar-archive/sha256/69/6999055d9395cb47483819266229a25d63a4f788ef3bc1a012d144e1819396f1",
+      "bytes": 7130
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a24_800d6a24.v": {
+      "sha256": "1d52cdf81c47e345509d8b1946a80c52dd49c7c5ec5d4c14eb533ca8d6c4f373",
+      "archive_path": "/home/cody/zesislar-archive/sha256/1d/1d52cdf81c47e345509d8b1946a80c52dd49c7c5ec5d4c14eb533ca8d6c4f373",
+      "bytes": 7050
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a38_800d6a40.v": {
+      "sha256": "f4959caf1dfef673cd734d819c2bff807520a0d371cf4b2f6c6fce87bcea22d0",
+      "archive_path": "/home/cody/zesislar-archive/sha256/f4/f4959caf1dfef673cd734d819c2bff807520a0d371cf4b2f6c6fce87bcea22d0",
+      "bytes": 7150
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6a38_800d6ae0.v": {
+      "sha256": "afacdf214049d9f67053d2ab8651cadf0569ed5e476317330e38bd10c723828c",
+      "archive_path": "/home/cody/zesislar-archive/sha256/af/afacdf214049d9f67053d2ab8651cadf0569ed5e476317330e38bd10c723828c",
+      "bytes": 7150
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ab4_800d6ac4.v": {
+      "sha256": "25c5dc98c20552b7be4c6c1d3888a895245bb9c584e0e1e319397b7ad2079dfa",
+      "archive_path": "/home/cody/zesislar-archive/sha256/25/25c5dc98c20552b7be4c6c1d3888a895245bb9c584e0e1e319397b7ad2079dfa",
+      "bytes": 7130
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ac4_800d6ac4.v": {
+      "sha256": "388b07e5383c93d879a78c642ba9ad12d2592ee8dc4a50aa3a948ccc3006c2ea",
+      "archive_path": "/home/cody/zesislar-archive/sha256/38/388b07e5383c93d879a78c642ba9ad12d2592ee8dc4a50aa3a948ccc3006c2ea",
+      "bytes": 7048
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ad8_800d6ae0.v": {
+      "sha256": "be53edfec66313f47acd34dc912aecce36aaf2cf19d814be77506d1a530f7193",
+      "archive_path": "/home/cody/zesislar-archive/sha256/be/be53edfec66313f47acd34dc912aecce36aaf2cf19d814be77506d1a530f7193",
+      "bytes": 7149
+    },
+    "build/stock-zisk/designed-entry-discovery/attempts/initial-probes/block_0x800d6ad8_800d6b08.v": {
+      "sha256": "9c243dc88b51a3c46e89b4dd03677028197af045545c88898c071ed90b27c89b",
+      "archive_path": "/home/cody/zesislar-archive/sha256/9c/9c243dc88b51a3c46e89b4dd03677028197af045545c88898c071ed90b27c89b",
+      "bytes": 7149
+    }
+  }
+}
