@@ -228,19 +228,50 @@ Ltac zesu_name_machine_bound expected name :=
       rename H into name
   end.
 
-(* Library solvers also call this primitive without passing through the
-   project finisher. The call set supplies the timeout switch. *)
+(* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
+Ltac zesu_low_mask_if_enabled :=
+  let _ := constr:(_ : ZesuStepLowMask) in
+  lazymatch goal with
+  | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) =
+       bv_unsigned (Z_to_bv ?low ?result) =>
+      lazymatch type of value with bv ?width =>
+        let Hwidth := fresh "HmaskWidth" in
+        assert (Hwidth : (low <= width)%N) by
+          first [assumption | vm_compute; congruence];
+        let Hmask := fresh "HlowMask" in
+        assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
+          first [assumption | vm_compute; reflexivity];
+        first [lazymatch result with (bv_unsigned ?root + ?integer)%Z =>
+            constr_eq root value;
+            lazymatch integer with bv_unsigned _ => fail | _ => idtac end;
+            let Hoffset := fresh "HmaskOffset" in
+            assert (Hoffset : offset = Z_to_bv width integer) by
+              first [reflexivity | apply bv_eq; vm_compute; reflexivity];
+            first [exact (zesu_unsigned_low_mask_add_integer width low value mask integer Hwidth Hmask)
+              | rewrite Hoffset;
+                exact (zesu_unsigned_low_mask_add_integer width low value mask integer Hwidth Hmask)]
+          end
+        | solve [
+            rewrite (zesu_unsigned_low_mask_add width low value offset mask Hwidth Hmask);
+            reflexivity
+          ]]
+      end
+  end.
+
+(* Library solvers also call these primitives without the project finisher. *)
 Ltac lia ::= zesu_bounded_arithmetic ltac:(Zify.zify; xlia zchecker).
-Ltac bv_solve ::= zesu_bounded_arithmetic ltac:(
+Ltac bv_solve ::= first [solve [zesu_low_mask_if_enabled] |
+  zesu_bounded_arithmetic ltac:(
   bv_simplify_arith;
   bv_saturate_unsigned;
   bv_solve_unfold_tac;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia).
+  simpl; lia)].
 
 Ltac zesu_solve_machine_bounds :=
-  zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
-    zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve]).
+  first [solve [zesu_low_mask_if_enabled] |
+    zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
 Ltac zesu_solve_machine_linear :=
   first [zesu_bounded_arithmetic ltac:(zesu_byte_index_arithmetic)
     | zesu_bounded_arithmetic ltac:(first [solve [repeat match goal with
