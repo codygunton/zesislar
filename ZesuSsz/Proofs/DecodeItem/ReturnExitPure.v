@@ -5,6 +5,7 @@ Require Import SailStdpp.MachineWord EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
+Require Import ZesuSsz.Contracts.RlpDecodeItemReturnImageDef.
 Require Import ZesuSsz.Contracts.RlpDecodeItemReturnImages.
 Require Import ZesuSsz.Compliance.SailRun.
 Require Import ZesuSsz.Compliance.DecodeItemPathAgreement.
