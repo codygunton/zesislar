@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "item": "Q56-low-mask-alias",
+  "root": "9b3214f60b1eb5a8cf612261d0eeb8a8337a090e",
+  "audit_sha256": "622e5e6d1314a019dbd42db05d1d74c02cd28bbf19724a5d835fa5b669d4294f",
+  "scope": "Expose a local definition only when it is the unsigned left operand or the masked addition operand. Unfold selected aliases in the goal only. Keep every other hypothesis and local definition unchanged.",
+  "source_hashes": {
+    "ZesuSsz/Automation/Hooks.v": "dbf397e632be678814b34492f7b43a6a39ebdd69b5487f642944cfb925db3025",
+    "ZesuSsz/Proofs/Tests/LowMaskHook.v": "52c1f44e64101e2c44c8b0d5c2b734337404e534777d6b7024753d57755ec9e8",
+    "Scaffolding/probes/q56-low-mask/AliasedOff.v": "ed99e0a6d76799d621520a20cc8da02bde0f03060f4f2e9b6c88caec5ddc38bc",
+    "Scaffolding/probes/q56-low-mask/AliasedOn.v": "0d33f96b1c3bdc460ebd7428dc444dab0eaf52584b0754f33332888b6c577c36"
+  },
+  "regressions": 10,
+  "mcp_before_root": [
+    {
+      "mode": "Off",
+      "sha256": "db90fe2783ed59f1eae672393da9a329e5e5aad45759ace684791dfab4ae2e13",
+      "archive": "/home/cody/zesislar-archive/sha256/db/db90fe2783ed59f1eae672393da9a329e5e5aad45759ace684791dfab4ae2e13",
+      "bytes": 10803,
+      "elapsed_s": 7.421066381968558,
+      "peak_scope_bytes": 723439616,
+      "assumptions": [
+        []
+      ]
+    },
+    {
+      "mode": "On",
+      "sha256": "14278807915f1860dbb7588cf11870ce7fc843cdc516dc83871d45ed7807330e",
+      "archive": "/home/cody/zesislar-archive/sha256/14/14278807915f1860dbb7588cf11870ce7fc843cdc516dc83871d45ed7807330e",
+      "bytes": 8977,
+      "elapsed_s": 7.280510456999764,
+      "peak_scope_bytes": 724627456,
+      "assumptions": [
+        []
+      ]
+    },
+    {
+      "mode": "Tests",
+      "sha256": "f5cc2c17df4595e790e126712cd1bb9694d5d6e3c92d95f59cbf85412da0344e",
+      "archive": "/home/cody/zesislar-archive/sha256/f5/f5cc2c17df4595e790e126712cd1bb9694d5d6e3c92d95f59cbf85412da0344e",
+      "bytes": 13777,
+      "elapsed_s": 13.297949385014363,
+      "peak_scope_bytes": 1277239296,
+      "assumptions": [
+        []
+      ]
+    }
+  ],
+  "gate_before_root": {
+    "start": "2026-10-05T06:58:16.488512+00:00",
+    "end": "2026-10-05T07:00:46.068541+00:00",
+    "elapsed_s": 149.58003481093328,
+    "exit": 0,
+    "jobs": 6,
+    "peak_child_rss_kib": 2143152
+  },
+  "gate": {
+    "start": "2026-10-05T07:01:16.001050+00:00",
+    "end": "2026-10-05T07:04:15.313711+00:00",
+    "elapsed_s": 179.31266424804926,
+    "exit": 0,
+    "jobs": 6,
+    "peak_child_rss_kib": 2232828
+  },
+  "gate_total_s": 328.89269905898254,
+  "host": {
+    "load": [
+      4.947265625,
+      3.4228515625,
+      2.21875
+    ],
+    "memory": {
+      "MemAvailable": "138237580 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "34352 kB"
+    }
+  },
+  "mcp_after_root": [
+    {
+      "mode": "Off",
+      "elapsed_s": 7.896039546933025,
+      "peak_scope_bytes": 722489344,
+      "archive": "/home/cody/zesislar-archive/sha256/79/79aa6830de7e134a455e5639aaaf52c786a6f691786d7759f42f305f5d01a9b0",
+      "sha256": "79aa6830de7e134a455e5639aaaf52c786a6f691786d7759f42f305f5d01a9b0",
+      "bytes": 10800,
+      "calls": [
+        {
+          "tool": "rocq_health",
+          "elapsed_s": 0.5639184640021995,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_start",
+          "elapsed_s": 1.4386522100539878,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.004672653041779995,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_step_multi",
+          "elapsed_s": 0.012519925949163735,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.014103446039371192,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_compile_file",
+          "elapsed_s": 1.6697873360244557,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_verify",
+          "elapsed_s": 3.408135039964691,
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "tool": "rocq_diag",
+          "elapsed_s": 0.0022366619668900967,
+          "success": true,
+          "assumptions": null
+        }
+      ]
+    },
+    {
+      "mode": "On",
+      "elapsed_s": 6.268647314980626,
+      "peak_scope_bytes": 724062208,
+      "archive": "/home/cody/zesislar-archive/sha256/bb/bb5e434e0d0d1fb68f70c3a63c1001fa1f97b2fcccb24c39880e034edbec636c",
+      "sha256": "bb5e434e0d0d1fb68f70c3a63c1001fa1f97b2fcccb24c39880e034edbec636c",
+      "bytes": 8985,
+      "calls": [
+        {
+          "tool": "rocq_health",
+          "elapsed_s": 0.48508766293525696,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_start",
+          "elapsed_s": 1.3587869389448315,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.005413367063738406,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_step_multi",
+          "elapsed_s": 0.008265743963420391,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.006284806993789971,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_compile_file",
+          "elapsed_s": 1.4705214319983497,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_verify",
+          "elapsed_s": 2.1005605700192973,
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "tool": "rocq_diag",
+          "elapsed_s": 0.0022453450364992023,
+          "success": true,
+          "assumptions": null
+        }
+      ]
+    },
+    {
+      "mode": "Tests",
+      "elapsed_s": 12.280164342955686,
+      "peak_scope_bytes": 1275523072,
+      "archive": "/home/cody/zesislar-archive/sha256/a3/a369c9fb2c5a2d5f35c46f3a8f40b3b5f3380dc395bac603d6769ed27b4165bc",
+      "sha256": "a369c9fb2c5a2d5f35c46f3a8f40b3b5f3380dc395bac603d6769ed27b4165bc",
+      "bytes": 13787,
+      "calls": [
+        {
+          "tool": "rocq_health",
+          "elapsed_s": 1.430483696050942,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_start",
+          "elapsed_s": 1.1290206690318882,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_step_multi",
+          "elapsed_s": 0.011939076008275151,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.004522016970440745,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_compile_file",
+          "elapsed_s": 2.1293553900904953,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_verify",
+          "elapsed_s": 6.765290737967007,
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "tool": "rocq_diag",
+          "elapsed_s": 0.002093518036417663,
+          "success": true,
+          "assumptions": null
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "label": "check-fast.log",
+      "sha256": "09da223f3cf6b59c876a423eda065194ddacd7357379669feea1fc0387469896",
+      "archive": "/home/cody/zesislar-archive/sha256/09/09da223f3cf6b59c876a423eda065194ddacd7357379669feea1fc0387469896",
+      "bytes": 67218
+    },
+    {
+      "label": "check-fast-before-root.log",
+      "sha256": "6e47779db3a8bcc82c315e89c3bffed1c50820144b8b48b6747ee52bafa374f5",
+      "archive": "/home/cody/zesislar-archive/sha256/6e/6e47779db3a8bcc82c315e89c3bffed1c50820144b8b48b6747ee52bafa374f5",
+      "bytes": 48541
+    },
+    {
+      "label": "alias-focused.log",
+      "sha256": "f74460033a0ed14511d495de6ea4c503e642e25d2afcfa6c1cf7f64ff88c1488",
+      "archive": "/home/cody/zesislar-archive/sha256/f7/f74460033a0ed14511d495de6ea4c503e642e25d2afcfa6c1cf7f64ff88c1488",
+      "bytes": 2282
+    }
+  ],
+  "working_base": "d00a9f90d9d0fc5298b4f370cee7e53f76dfd521",
+  "window": {
+    "start": "2026-10-05T06:56:00.422000+00:00",
+    "end": "2026-10-05T07:06:54.360460+00:00",
+    "child_min": 10.898974333333333,
+    "tokens_child": 2572824,
+    "token_start_event": "2026-10-05T06:52:41.837Z",
+    "token_end_event": "2026-10-05T07:05:44.055Z"
+  }
+}

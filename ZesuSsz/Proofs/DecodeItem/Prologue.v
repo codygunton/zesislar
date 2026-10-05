@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.Switches.WordArrayHandoff.
 Require Import ZesuSsz.Automation.Switches.InstructionLookup.
 Require Import ZesuSsz.Automation.Switches.StackWrite.
 Require Import ZesuSsz.Automation.Switches.RamFault.
@@ -29,40 +30,25 @@ Proof.
     progress iIntros "?"].
   repeat iDestruct select (_ ∗ _)%I as "[? ?]".
   zesu_run_until decode_item_prologue_at_branch.
-  zesu_expose_environment_alias.
-  iRename select ((decodeItemStackPointer args + -16 + 0) ↦ₘ decodeItemSavedFramePointer args)%I into "Hlow".
-  iRename select ((decodeItemStackPointer args + -16 + 8) ↦ₘ Z_to_bv 64 (decodeItemReturnAddress args))%I into "Hhigh".
-  iEval (replace (decodeItemStackPointer args + -16 + 8)%Z with
-    (decodeItemStackPointer args + -16 + 0 + 8)%Z by lia) in "Hhigh".
-  iDestruct (mem_mapsto_u64_pair_to_byte_array with "Hlow Hhigh") as "Hframe".
-  iRename select ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? (decodeItemStackPointer args + -16 + 0 - (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)))%I into "Hempty".
-  iEval (replace (decodeItemStackPointer args + -16 + 0 -
-    (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))%Z
-    with 0%Z by (unfold RlpDecodeItem.decodeItemStackBytes; lia)) in "Hempty".
-  iEval (rewrite mem_mapsto_uninit_0) in "Hempty".
-  iDestruct "Hempty" as %HframeRange.
-  zesu_run.
-  all: try solve [exfalso; apply Hnonzero; rewrite H11; reflexivity].
-  1: (unfold RlpDecodeItem.decodeItemStackBytes; bv_solve).
-  destruct H as [Hra Hdom]. subst returnAddress.
-  iExists (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))), tt)ₗ.
-  iEval (replace (decodeItemStackPointer args + -16 + 0)%Z with
-    (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)%Z
-    by (unfold RlpDecodeItem.decodeItemStackBytes; lia)) in "Hframe".
-  iFrame "Hframe".
-  iSplit; last done.
-  iSplit.
-  { iPureIntro. split.
-    - apply decodeItemSavedFrameFacts_machine_words. exact Hdom.
-    - unfold decodeItemDomainAt. split; [reflexivity | exact Hdom]. }
-  iEval (unfold decodeItemBranchContinuation).
-  iEval (unfold decodeItemBranchContinuationAt).
-  iFrame.
+  all: try match goal with Hdomain : decodeItemDomainAt ?ret decodeItemC1BDomain ?arguments |- _ =>
+    is_var ret; destruct Hdomain as [Hreturn Hdomain]; subst ret
+  end.
+  all: zesu_run.
+  all: try solve [exfalso; apply Hnonzero;
+    match goal with Hzero : _ = _ |- _ => rewrite Hzero; reflexivity end].
+  all: try solve [lazymatch goal with
+    | |- envs_entails _ _ => fail
+    | _ => prepare_sidecond; first [reflexivity | assumption | lia |
+        (unfold RlpDecodeItem.decodeItemStackBytes; bv_solve)]
+    end].
 Unshelve.
 all: prepare_sidecond.
 all: try reflexivity.
 all: try (unfold RlpDecodeItem.decodeItemStackBytes; lia).
 all: try bv_solve.
+Unshelve.
+all: try (unfold RlpDecodeItem.decodeItemStackBytes;
+  exact (zesu_Z_to_bv_add 64 (decodeItemStackPointer args) (-16))).
 Qed.
 
 Print Assumptions decodeItemPrologueTo6974Bridge_correct.
