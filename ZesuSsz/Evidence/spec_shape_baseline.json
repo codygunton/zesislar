@@ -24,6 +24,10 @@
     "uninferable_existentials": 24,
     "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed."
   },
+  "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": {
+    "uninferable_existentials": 4,
+    "reason": "The 698c and 6ae0 join targets package four output witnesses. The machine edge proof supplies their concrete values from register and memory resources."
+  },
   "ZesuSsz/Proofs/Tests/InstrPreFlex.v": {
     "unfold_without_typeclasses_opaque": 1
   },
