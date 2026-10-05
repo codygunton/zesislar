@@ -851,6 +851,30 @@ Ltac zesu_integer_array_facts :=
       progress zesu_integer_array_emit_facts H
   end.
 
+Class ZesuStepArrayBounds : Prop :=
+  zesu_step_array_bounds : True.
+
+Ltac zesu_array_bounds_if_enabled :=
+  let enabled := constr:(_ : ZesuStepArrayBounds) in
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ => unshelve_sidecond
+  | _ => idtac
+  end;
+  unLET;
+  lazymatch goal with
+  | |- 0 <= ?address - ?base =>
+      timeout 2 solve [zesu_integer_array_facts; bv_solve | lia]
+  | |- (?index + ?width <= length ?storage)%nat =>
+      timeout 2 solve [
+        zesu_integer_array_facts;
+        repeat match goal with
+        | |- context [?base + ?offset - ?base] =>
+            replace (base + offset - base) with offset by lia
+        end;
+        rewrite ?length_app ?length_take ?length_drop;
+        cbn [length]; lia]
+  end.
+
 Ltac zesu_integer_array_address_if_enabled :=
   let _ := constr:(_ : ZesuStepIntegerArrayAddress) in
   zesu_expose_environment_alias;
@@ -861,12 +885,11 @@ Ltac zesu_integer_array_address_if_enabled :=
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
       let expanded := eval cbv beta zeta in pointer in
-      zesu_integer_pointer_root expanded ltac:(fun base =>
+      zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
-            constr_eq lower base;
             lazymatch type of values with list (bv ?width) =>
               let Heq := fresh "HarrayAddress" in
               assert (Heq : bv_unsigned pointer = integer) by
