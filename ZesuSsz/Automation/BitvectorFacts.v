@@ -55,3 +55,32 @@ Lemma zesu_unsigned_sub_no_wrap_64 (left right : bv 64) :
   bv_unsigned right <= bv_unsigned left ->
   bv_unsigned (left - right) = bv_unsigned left - bv_unsigned right.
 Proof. move => Hsub. rewrite bv_sub_unsigned bv_wrap_small; bv_solve. Qed.
+
+Class ZesuStepLowMask : Prop := zesu_step_low_mask : True.
+
+Lemma zesu_unsigned_low_mask_add (width low : N)
+    (value offset mask : bv width) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_unsigned (bv_and (value + offset) mask) =
+    bv_unsigned (Z_to_bv low (bv_unsigned value + bv_unsigned offset)).
+Proof.
+  intros Hwidth Hmask.
+  rewrite bv_and_unsigned Hmask -bv_wrap_land bv_add_unsigned Z_to_bv_unsigned.
+  apply bv_wrap_bv_wrap. exact Hwidth.
+Qed.
+
+Lemma zesu_unsigned_low_mask_add_integer (width low : N)
+    (value mask : bv width) (offset : Z) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_unsigned (bv_and (value + Z_to_bv width offset) mask) =
+    bv_unsigned (Z_to_bv low (bv_unsigned value + offset)).
+Proof.
+  intros Hwidth Hmask.
+  rewrite bv_and_unsigned Hmask -bv_wrap_land bv_add_unsigned !Z_to_bv_unsigned.
+  rewrite (bv_wrap_bv_wrap low width _ Hwidth).
+  rewrite -(bv_wrap_add_idemp_r low (bv_unsigned value) (bv_wrap width offset)).
+  rewrite (bv_wrap_bv_wrap low width _ Hwidth).
+  apply bv_wrap_add_idemp_r.
+Qed.
