@@ -132,6 +132,17 @@ It verifies the unchanged source hash before that start.
 A failed fresh start leaves the primary unavailable.
 The runner executes no secondary pass and claims no contract closure.
 
+`compare_ram_fault.py` compares 38 off/on pairs on one announced root.
+Both arms use the same domain, code premises, abstract successors, and frozen primary bodies.
+The off arm removes only the RamFault imports.
+Kernel checks confirm the absence or presence of the switch instance before any primary probe.
+The comparison measures the complete RamFault switch effect.
+It does not isolate the Assert rule from other rules under that switch.
+Historical results remain separate because their root and domain differ.
+Each primary call records its exact arguments and timeout.
+Secondary diagnostics remain disabled during this controlled comparison.
+Each arm reports setup failures separately from native proof outcomes.
+
 `tools/block/replay_secondary.py` reads the immutable primary report and archive index.
 It selects only the recorded primary Coq timeouts.
 It verifies each frozen source and primary capture before the diagnostic replay.
