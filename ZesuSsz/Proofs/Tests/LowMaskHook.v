@@ -20,6 +20,12 @@ Section enabled.
     bv_unsigned (Z_to_bv 8 (bv_unsigned value + 64)).
   Proof. zesu_low_mask_if_enabled. Qed.
 
+  Lemma low_mask_audit_aliases (prefix : bv 64) :
+    let LET0 := (prefix + BV 64 64)%bv in
+    let LET2 := bv_and LET0 (BV 64 255) in
+    bv_unsigned LET2 = bv_unsigned (Z_to_bv 8 (bv_unsigned prefix + 64)).
+  Proof. intros LET0 LET2. bv_solve. Qed.
+
   Lemma low_mask_halfword_wrap (value : bv 32) :
     bv_unsigned (bv_and (value + BV 32 65536) (BV 32 65535)) =
     bv_unsigned (Z_to_bv 16 (bv_unsigned value + 65536)).
