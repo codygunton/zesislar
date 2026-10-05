@@ -1,0 +1,588 @@
+{
+  "blocks": [
+    {
+      "entry_pc": "0x800d6960",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x12",
+        "x2",
+        "x8"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6974",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x11",
+        "x13",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d697c",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x10",
+        "x11",
+        "x12"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x12"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d698c",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x10",
+        "x12",
+        "x2",
+        "zisk_free_input",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x1",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d69a4",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x10",
+        "x11",
+        "x2",
+        "zisk_free_input",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x1",
+        "x11",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d69d8",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d69e0",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x12",
+        "x13"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d69e8",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x10",
+        "x11",
+        "x13"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x11",
+        "x12"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a00",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a08",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x12",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a14",
+      "regs_read": [
+        "PC",
+        "x11",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "x11",
+        "x13",
+        "x14",
+        "x15"
+      ],
+      "regs_assumed": [
+        "mstatus"
+      ]
+    },
+    {
+      "entry_pc": "0x800d6a24",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x11",
+        "x13",
+        "x15",
+        "x16",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13",
+        "x15",
+        "x16"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a38",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x12",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a40",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x10",
+        "x11",
+        "x13",
+        "x14",
+        "x2",
+        "zisk_free_input",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x1",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a64",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a6c",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x12",
+        "x13"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6a78",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x10",
+        "x11",
+        "x12",
+        "x13",
+        "x14",
+        "x2",
+        "zisk_free_input",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x1",
+        "x11",
+        "x12",
+        "x14",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6aa8",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x12",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6ab4",
+      "regs_read": [
+        "PC",
+        "x11",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "x11",
+        "x13",
+        "x14",
+        "x15"
+      ],
+      "regs_assumed": [
+        "mstatus"
+      ]
+    },
+    {
+      "entry_pc": "0x800d6ac4",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x11",
+        "x13",
+        "x15",
+        "x16",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x13",
+        "x15",
+        "x16"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6ad8",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "x12",
+        "x13",
+        "x14"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x14"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x10",
+        "x11",
+        "x2",
+        "zisk_free_input",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x1",
+        "x11",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    },
+    {
+      "entry_pc": "0x800d6b08",
+      "regs_read": [
+        "PC",
+        "mcause",
+        "medeleg",
+        "mstatus",
+        "satp",
+        "x1",
+        "x10",
+        "x11",
+        "x12",
+        "x13",
+        "x14",
+        "x2",
+        "zisk_free_input",
+        "zisk_input_end"
+      ],
+      "regs_written": [
+        "PC",
+        "cur_privilege",
+        "mcause",
+        "mepc",
+        "mstatus",
+        "mtval",
+        "x1",
+        "x12",
+        "x2",
+        "x8"
+      ],
+      "regs_assumed": []
+    }
+  ]
+}

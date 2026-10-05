@@ -83,3 +83,18 @@ Its report utility keeps exact first conclusions and hashes the complete goals.
 The timeout utility separates a failed entry query from a failed tactic transaction.
 The last valid goal after a tactic timeout does not show execution progress.
 A reached abstract successor remains a diagnostic result.
+
+Design-schema discovery requires `--binding-report` from `tools/block/check_entry_bindings.py`.
+The checker validates each source hash and each declared binder name, type, and order.
+It checks argument arity and compiles the unchanged ordered applications through Rocq MCP.
+The JSON expression order remains authoritative.
+Same-type swaps require specification review.
+The consumer rejects failed checks, changed sources, and changed ordered applications.
+The legacy entry mode retains its existing interface for frozen comparisons.
+
+`tools/block/trace_registers.py` extracts footprints from manifest-bound native trace files.
+It emits design and CFG fragments without changing either source file.
+`regs_read` and `regs_written` include PC and all explicit native register events.
+`regs_assumed` contains names referenced through Assume without an explicit event in that block.
+The native frontend removes internal nextPC events from the raw Isla traces.
+The exporter does not infer register liveness from disassembly fields.
