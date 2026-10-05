@@ -434,10 +434,10 @@ Ltac zesu_stack_write_if_enabled :=
             | (?lower ↦ₘ? ?count)%I =>
                 let Heq := fresh "HstackAddress" in
                 assert (Heq : address = integer) by
-                  (timeout 2 zesu_stack_arithmetic);
+                  (zesu_stack_arithmetic);
                 let Hbound := fresh "HstackRegion" in
                 assert (Hbound : (lower <= integer < lower + count)%Z) by
-                  (timeout 2 zesu_stack_arithmetic);
+                  (zesu_stack_arithmetic);
                 rewrite Heq; clear Heq;
                 iRename H into "HstackWriteFrame";
                 iExists (MKUninit lower count);
@@ -696,7 +696,7 @@ Ltac zesu_ram_fault_assert :=
           lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
           lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
           let Hpositive := fresh "HramBound" in
-          assert (Hpositive : bound) by (timeout 2 zesu_stack_arithmetic);
+          assert (Hpositive : bound) by (zesu_stack_arithmetic);
           let Htrue := fresh "HramDecision" in
           assert (Htrue : condition = true) by
             (apply bool_decide_true; exact Hpositive);
@@ -721,7 +721,7 @@ Ltac zesu_ram_fault_if_enabled :=
   | Hfault : ~ ?bound |- _ =>
       lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
       lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
-      solve [exfalso; apply Hfault; timeout 2 zesu_stack_arithmetic]
+      solve [exfalso; apply Hfault; zesu_stack_arithmetic]
   end].
 
 (* Inspect applications without unfolding the proof context. *)
@@ -878,9 +878,9 @@ Ltac zesu_array_bounds_if_enabled :=
   unLET;
   lazymatch goal with
   | |- 0 <= ?address - ?base =>
-      timeout 2 solve [zesu_integer_array_facts; bv_solve | lia]
+      solve [zesu_integer_array_facts; bv_solve | lia]
   | |- (?index + ?width <= length ?storage)%nat =>
-      timeout 2 solve [
+      solve [
         zesu_integer_array_facts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
@@ -908,14 +908,14 @@ Ltac zesu_integer_array_address_if_enabled :=
             lazymatch type of values with list (bv ?width) =>
               let Heq := fresh "HarrayAddress" in
               assert (Heq : bv_unsigned pointer = integer) by
-                (timeout 2 zesu_stack_arithmetic);
+                (zesu_stack_arithmetic);
               let Hrange := fresh "HarrayAddressRange" in
               assert (Hrange : (lower <= integer < lower +
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
-                (timeout 2 (repeat first [progress zesu_split_folded_pure |
+                ((repeat first [progress zesu_split_folded_pure |
                   match goal with Hpure : _ /\ _ |- _ => destruct Hpure end];
                   zesu_normalize_binary_nat_hypotheses; bv_solve));
-              timeout 2 zesu_integer_array_facts;
+              zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
         end))

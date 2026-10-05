@@ -38,14 +38,16 @@ Ltac zesu_finish_mask :=
 
 Ltac zesu_finish_constant :=
   lazymatch goal with
-  | |- @eq (bv _) _ _ =>
-      timeout 1 (solve [apply bv_eq; vm_compute; reflexivity])
+  | |- @eq (bv _) ?left ?right =>
+      is_closed_term left; is_closed_term right;
+      (solve [apply bv_eq; vm_compute; reflexivity])
   end.
 
 Ltac zesu_normalize_memory_constants :=
   repeat match goal with
   | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
       let value := constr:(bv_add left right) in
+      is_closed_term value;
       let integer := eval vm_compute in (bv_unsigned value) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Hconstant := fresh "Hconstant" in
@@ -160,23 +162,23 @@ Ltac zesu_finish_known_list_shape :=
 
 Ltac zesu_finish :=
   try autorewrite with zesu_indices;
-  try (timeout 2 zesu_normalize_memory_constants);
-  try (timeout 2 zesu_normalize_memory_addresses);
+  try (zesu_normalize_memory_constants);
+  try (zesu_normalize_memory_addresses);
   try iAssumption;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
-      first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+      first [solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
         prepare_sidecond]
   | _ => unLET
   end;
   try autorewrite with zesu_indices;
   try iAssumption;
-  try (timeout 2 zesu_normalize_array_cursors);
-  try (timeout 2 zesu_finish_known_list_shape);
-  try (timeout 2 zesu_finish_pure_resources);
+  try (zesu_normalize_array_cursors);
+  try (zesu_finish_known_list_shape);
+  try (zesu_finish_pure_resources);
   try reflexivity;
   try zesu_finish_packed_word_equality;
-  try (timeout 2 (lazymatch goal with
+  try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
         solve [zesu_array_eight_value]
@@ -206,7 +208,7 @@ Ltac zesu_finish_framed_wand :=
         end in
       iSplit;
       [iIntros "?"; rewrite ?Z_to_bv_bv_unsigned;
-       timeout 5 (iFrame "∗");
+       (iFrame "∗");
        iEval (rewrite !bi.sep_True) in Hpost; iExact Hpost | done]
   end.
 
@@ -346,7 +348,7 @@ Ltac zesu_instantiate_tuple :=
 
 Ltac zesu_handoff := zesu_instantiate_tuple; zesu_run.
 
-Ltac zesu_frame_handoff := timeout 5 (iFrame "∗"; zesu_run).
+Ltac zesu_frame_handoff := (iFrame "∗"; zesu_run).
 
 Tactic Notation "zesu_pack" constr(witness) :=
   iExists witness;

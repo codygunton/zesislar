@@ -198,8 +198,22 @@ Print Assumptions array_byte_eight_low_first.
 
 Ltac zesu_array_eight_value :=
   zesu_normalize_array_byte_lookups;
-  first [timeout 2 (rewrite zesu_assemble_8_bytes) |
-    timeout 2 (rewrite array_byte_eight_low_first)];
+  lazymatch goal with
+  | |- context[bv_or (bv_shiftl _ (BV 64 32))
+      (bv_or
+        (bv_or (bv_shiftl (bv_zero_extend 64 ?b1) (BV 64 8))
+          (bv_zero_extend 64 ?b0))
+        (bv_or (bv_shiftl (bv_zero_extend 64 ?b2) (BV 64 16))
+          (bv_shiftl (bv_zero_extend 64 ?b3) (BV 64 24))))] =>
+      rewrite (array_byte_eight_low_first b0 b1 b2 b3)
+  | |- context[bv_or (bv_shiftl _ (BV 64 32))
+      (bv_or
+        (bv_or (bv_shiftl (bv_zero_extend 64 ?b3) (BV 64 24))
+          (bv_shiftl (bv_zero_extend 64 ?b2) (BV 64 16)))
+        (bv_or (bv_shiftl (bv_zero_extend 64 ?b1) (BV 64 8))
+          (bv_zero_extend 64 ?b0)))] =>
+      rewrite (zesu_assemble_8_bytes b0 b1 b2 b3)
+  end;
   match goal with
   | |- context[take 8 (drop ?offset ?bytes)] =>
       rewrite (zesu_take_8_drop bytes offset ltac:(lia))

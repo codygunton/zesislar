@@ -35,7 +35,7 @@ Ltac zesu_finish_little_endian :=
       first
         [let reduced := eval vm_compute in value in
          lazymatch reduced with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
-         solve [timeout 2 (vm_compute; reflexivity)]
+         solve [(vm_compute; reflexivity)]
         |rewrite /Z_to_little_endian /=;
          rewrite !Z.land_ones; [|lia..];
          rewrite !Z.shiftr_div_pow2; [|lia..];
@@ -71,14 +71,16 @@ Ltac zesu_finish_list_slice_length :=
 
 Ltac zesu_finish_constant :=
   lazymatch goal with
-  | |- @eq (bv _) _ _ =>
-      timeout 1 (solve [apply bv_eq; vm_compute; reflexivity])
+  | |- @eq (bv _) ?left ?right =>
+      is_closed_term left; is_closed_term right;
+      (solve [apply bv_eq; vm_compute; reflexivity])
   end.
 
 Ltac zesu_normalize_memory_constants :=
   repeat match goal with
   | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
       let value := constr:(bv_add left right) in
+      is_closed_term value;
       let integer := eval vm_compute in (bv_unsigned value) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Hconstant := fresh "Hconstant" in
@@ -195,7 +197,7 @@ Ltac zesu_finish_known_list_shape :=
 Ltac zesu_finish_selectors :=
   lazymatch goal with
   | |- @eq _ _ _ =>
-      timeout 2 (autounfold with zesu_selectors;
+      (autounfold with zesu_selectors;
         zesu_normalize_stack_array_indices; reflexivity)
   end.
 
@@ -218,26 +220,26 @@ Ltac zesu_finish_selectors :=
 
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
-  try (timeout 2 zesu_normalize_memory_constants);
-  try (timeout 2 zesu_normalize_memory_addresses);
+  try (zesu_normalize_memory_constants);
+  try (zesu_normalize_memory_addresses);
   try iAssumption;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
       first [solve [zesu_array_bounds_if_enabled] |
-        solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+        solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
         prepare_sidecond]
   | _ => unLET
   end;
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
-  try (timeout 2 zesu_normalize_array_cursors);
-  try (timeout 2 zesu_finish_known_list_shape);
-  try (timeout 2 zesu_finish_pure_resources);
+  try (zesu_normalize_array_cursors);
+  try (zesu_finish_known_list_shape);
+  try (zesu_finish_pure_resources);
   try reflexivity;
-  try (timeout 2 zesu_finish_integer_word_image);
+  try (zesu_finish_integer_word_image);
   try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
-  try (timeout 2 (lazymatch goal with
+  try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
         solve [zesu_array_eight_value]
@@ -246,7 +248,7 @@ Ltac zesu_finish_v1 :=
   try done;
   try assumption;
   try (zesu_bounded_arithmetic ltac:(zesu_finish_extract_alias));
-  try (timeout 2 zesu_finish_list_slice_length);
+  try (zesu_finish_list_slice_length);
   zesu_normalize_nat_powers;
   try (zesu_bounded_arithmetic ltac:(zesu_finish_tag_bound));
   try (zesu_bounded_arithmetic ltac:(zesu_finish_mask));
@@ -263,12 +265,12 @@ Ltac zesu_finish_v1 :=
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
-  try (timeout 2 zesu_normalize_memory_constants);
-  try (timeout 2 zesu_normalize_memory_addresses).
+  try (zesu_normalize_memory_constants);
+  try (zesu_normalize_memory_addresses).
 
 Ltac zesu_finish_shelved :=
   first [solve [zesu_array_bounds_if_enabled] |
-        solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+        solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
     prepare_sidecond].
 
 (* An Iris entailment. The entries the dispatch leaves out here are the
@@ -278,8 +280,8 @@ Ltac zesu_finish_shelved :=
 Ltac zesu_finish_entailment :=
   try autorewrite with zesu_indices;
   try iAssumption;
-  try (timeout 2 zesu_normalize_array_cursors);
-  try (timeout 2 zesu_finish_pure_resources);
+  try (zesu_normalize_array_cursors);
+  try (zesu_finish_pure_resources);
   try simpl;
   try done;
   try assumption;
@@ -295,13 +297,13 @@ Ltac zesu_finish_pure_goal :=
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
-  try (timeout 2 zesu_normalize_array_cursors);
-  try (timeout 2 zesu_finish_known_list_shape);
-  try (timeout 2 zesu_finish_pure_resources);
+  try (zesu_normalize_array_cursors);
+  try (zesu_finish_known_list_shape);
+  try (zesu_finish_pure_resources);
   try reflexivity;
-  try (timeout 2 zesu_finish_integer_word_image);
+  try (zesu_finish_integer_word_image);
   try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
-  try (timeout 2 (lazymatch goal with
+  try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
         solve [zesu_array_eight_value]
@@ -310,7 +312,7 @@ Ltac zesu_finish_pure_goal :=
   try done;
   try assumption;
   try (zesu_bounded_arithmetic ltac:(zesu_finish_extract_alias));
-  try (timeout 2 zesu_finish_list_slice_length);
+  try (zesu_finish_list_slice_length);
   try zesu_finish_trace_tail;
   zesu_normalize_nat_powers;
   try (zesu_bounded_arithmetic ltac:(zesu_finish_tag_bound));
@@ -365,7 +367,7 @@ Ltac zesu_finish_framed_wand :=
         end in
       iSplit;
       [iIntros "?"; rewrite ?Z_to_bv_bv_unsigned;
-       timeout 5 (iFrame "∗");
+       (iFrame "∗");
        iEval (rewrite !bi.sep_True) in Hpost; iExact Hpost | done]
   end.
 
@@ -484,8 +486,8 @@ Ltac zesu_finish_initialized_array_read :=
    same file compiles in 24.3 seconds, against 30.0 seconds on
    `origin/islaris-native`; `make pass-cost` reproduces both, three
    interleaved runs each. An alternative in this list is tried on every
-   step where all the others fail, and this automation wraps several of
-   its own tactics in `timeout`. *)
+   step where all the others fail. The former automation wrapped several
+   of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
     [zesu_open_requested_instr_bundle |
@@ -647,7 +649,7 @@ Ltac zesu_instantiate_tuple :=
 
 Ltac zesu_handoff := zesu_instantiate_tuple; zesu_run.
 
-Ltac zesu_frame_handoff := timeout 5 (iFrame "∗"; zesu_run).
+Ltac zesu_frame_handoff := (iFrame "∗"; zesu_run).
 
 Tactic Notation "zesu_pack" constr(witness) :=
   iExists witness;
