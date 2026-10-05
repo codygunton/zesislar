@@ -10,6 +10,27 @@
   "block_count": 24,
   "conditional_branch_count": 14,
   "loop_count": 2,
+  "table_convention": {
+    "entry_type": "(Z * iProp Sigma)",
+    "universal_binders": "Each row's binders, in their listed order",
+    "resource_application": "Apply resource_predicate to arguments in order",
+    "internal_existentials": {
+      "entry_pcs": [
+        "0x800d6a24",
+        "0x800d6ac4"
+      ],
+      "binders": [
+        "n",
+        "i",
+        "payloadStart",
+        "lengthBytes",
+        "frameBytes",
+        "loaded"
+      ]
+    },
+    "other_entries": "No block locals are existential inside the entry predicate",
+    "continuations": "Outcome existentials inside shared continuations are not table locals"
+  },
   "edge_condition_scope": "register values before the source block's final instruction",
   "condition_ops": {
     "eq": "equal bits",
@@ -30,7 +51,7 @@
     "byte_fold_blocks_sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
     "byte_fold_pure_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
     "byte_fold_machine_obligations_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
-    "generator_sha256": "b5d41b8b8f8c686ece536613797c01a97358ccc9d7936486d7fc89f54ffbed71"
+    "generator_sha256": "958498d4d82a2b50d124fb29429a64c6d2b413489e49109e8d22d78da58bec16"
   },
   "blocks": [
     {
