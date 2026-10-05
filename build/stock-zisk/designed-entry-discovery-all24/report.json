@@ -1,0 +1,3006 @@
+{
+  "schema": 1,
+  "label": "Phase 1 WP5 designed-entry discovery; no proof completion claim",
+  "capture_only": true,
+  "probe_imports": [
+    "ZesuSsz.Contracts.RlpDecodeItemContract",
+    "ZesuSsz.Contracts.DecodeItemSelected",
+    "SailStdpp.MachineWord",
+    "ZesuSsz.Automation.Switches.InstructionLookup",
+    "ZesuSsz.Automation.Switches.StackWrite",
+    "ZesuSsz.Automation.Switches.RamFault"
+  ],
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "inputs": {
+    "ZesuSsz/Evidence/decode_item_block_design.json": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+    "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+    "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+    "tools/block/discovery.py": "57f0686e4863357973eebb9d176b47543577156b72eaee0043e3950f664582b6",
+    "tools/block/chain_root.py": "3d85ca72df9f3af983f98da7a9cd812ae9235f90ac40ae7545793d375063642f",
+    "tools/block/entry_schema.py": "3e0690123742042919b696e259266f64a0eed84ea9dbf52879137a54bfc273a7",
+    "_build/discovery-all24/code-premises.txt": "c19b65aa41ddb56ba88233a63b6daa7fc114e86792ba2d0aad10825d5e2340ae",
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
+    "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
+    "ZesuSsz/Automation/Switches/InstructionLookup.v": "ba2858ace8517d85a808aaea054b9e828ac19f76bf4c30f406238ae9c3e4dbce",
+    "ZesuSsz/Automation/Switches/StackWrite.v": "c30777138cb1ba24e45ec641cd7ff7be924eec17e6d6def984164ca28ae39f9f",
+    "ZesuSsz/Automation/Switches/RamFault.v": "9da7ae7cb3a812a4bb45a0c3983f77761ccecb8d9754ff7c6c6b43bc16f7605a",
+    "_CoqProject": "110ce833f885b99f30e231a8898dbe59a102e72d5bf927b8afdbbf31c9a3b023",
+    "tools/rocq_mcp_guarded.sh": "3dba1644640fda0441f39b41ee03c260c1dc9d26e7c49988f32024ce35d677d8",
+    "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+    "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+    "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+    "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+    "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+    "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
+    "tools/det/call_sites.py": "95315282ae58db72775843b8219bae10e58a7f32a1168f615b362705e25fdd63",
+    "tools/residual/goals.py": "5ff1892330bd5825bdbd8a69355abfa79ba50b2e1c1ff6bc2e331fa7846881d1",
+    "tools/det/gen_coverage.py": "b88c17653ad5da38fa206f31618fb7356f4acb6bec27c66dc3ef76e531a3902d",
+    "tools/det/gen_boundary.py": "87895fa4258ae4018fcbace248d01aae3b42ffb2d0310d12251d19e29b308074",
+    "tools/residual/modules.py": "75167478e34cc16b8ceac305cd4f5993897dc92027793631d655fac1a2fa5b41",
+    "tools/det/timed.py": "cdb55c58bf0d9c1b7948969b74d3d88f97c2bebc4a42e9767daaab9c89cf8527",
+    "tools/det/probes.py": "42121d4ae45daf5339ae8b1503abb8c382e8022a753e82ea4d8e9aa00293d5db",
+    "tools/residual/population.py": "18da2728177fe500cd4cc7eac171e44605bb39e9609d7450dcc20044e2b96a5e",
+    "tools/residual/signals.py": "0142478ea435b853e27d80bd47fb5539d4ba1902f619861772915df81332a7ae",
+    "tools/residual/classify.py": "554d03a97c7b613211e7ebc240de23bf45e990700b7a5d4b06556faf95057759",
+    "tools/residual/signature.py": "f91130df90a2374bef1b22bdebe326ff9b8d27c99e3fc49bbc8f765981071cb5",
+    "tools/det/infer_boundary.py": "a77657e7c9e43741e37d1f9dd87f4806a3e5034cc240e2fe753febaca9b0ce5d",
+    "tools/det/gen_segment.py": "e3977508858fe60348a284348c9445b7075741bacc098cf863b48dd647d4d79c",
+    "tools/block/gen_block.py": "fcb0663e76488806cc0f67a59c992baca7126fddd8d99c01aa5a941c386bb5fe",
+    "tools/block/chain_state.py": "db474094b7795e992d0dd02aef399bd151767b8161936e236a01a709cf6cb2b9",
+    "tools/block/chain_subsumption.py": "6ba04f176f4ec0d1194e0efd971054f669b06d435d023a415a504ee44b6496db",
+    "tools/block/chain_widths.py": "d4d39605f74d136193fae3b2c45a52bd3d2869318c1e3c0c13289391430af33d",
+    "tools/block/chain_goals.py": "e9567727215311445f2bfa01db3a93041bbf1dbd36fcd7c7b20448da810d308e",
+    "ZesuSsz/Evidence/det/call_sites.json": "2ee95a017b058edb9aa5fd7cd5ddfdaef83de09d890e277a8c0863d76f9ab1bb",
+    "ZesuSsz/Evidence/det/call_contracts.json": "7ac4a83aad420a6d03e8e46276ff6cb7703276572edb5fa17e32d24f43531cf7",
+    "tools/rocq_coqc_guarded.sh": "9cb0b297ff91924f3c23d7aab8eecc8776987b43f47e5f7bcb8b46850e536541",
+    "ZesuSsz/Automation/Hooks.v": "4e3ce6516b24a0c61b9a84486e92e076237b0630f8add329ee0e05c586738949",
+    "ZesuSsz/Contracts/SelectedCodeLookup.v": "e8d1e66aeed684f8385a3df4aba6406ab89137e4922577fdd61148e9819dc1c8",
+    "generated/isla-traces/stock-zisk/closure/index_decodeItem.v": "36e90f90acc82aefef2ceccab7d26ffd7086ad2b94c58b1f459239c722bc68c6"
+  },
+  "block_count": 24,
+  "workers": 6,
+  "new_block_runs": 24,
+  "reused_block_runs": 0,
+  "elapsed_seconds": 768.6075973929837,
+  "resumed_capture_run_seconds": null,
+  "peak_worker_mib_upper_bound": 3172.734375,
+  "peak_pet_mib": 3036.0,
+  "machine_before": {
+    "cpu_count": 64,
+    "load": [
+      3.02783203125,
+      2.3515625,
+      2.041015625
+    ],
+    "memory": {
+      "MemAvailable": "124864000 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "18332 kB"
+    },
+    "cpu_ticks": "cpu  98266654 378277127 38936298 4984708247 2552129 4799692 2268212 0 0 0"
+  },
+  "machine_after": {
+    "cpu_count": 64,
+    "load": [
+      2.58154296875,
+      3.73291015625,
+      3.5244140625
+    ],
+    "memory": {
+      "MemAvailable": "124519080 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "18332 kB"
+    },
+    "cpu_ticks": "cpu  98584608 378310401 38969059 4989232422 2553468 4803436 2271040 0 0 0"
+  },
+  "classes": {
+    "automation-search-timeout": 9,
+    "setup-timeout": 3,
+    "contract-gap": 1,
+    "abstract-successor-reached": 11
+  },
+  "original_report": {
+    "sha256": "170bf0ad0141e5428360e337ae02ecd0338fba08138587e7578eff2c46294916",
+    "archive_path": "/home/cody/zesislar-archive/sha256/17/170bf0ad0141e5428360e337ae02ecd0338fba08138587e7578eff2c46294916",
+    "bytes": 1306650
+  },
+  "raw_classes": {
+    "mcp-error": 9,
+    "setup-error": 3,
+    "entry-stall": 1,
+    "reached": 11
+  },
+  "dispatch_utc": "2026-10-05T00:58:37Z",
+  "capture_end_utc": "2026-10-05T01:13:43.282396+00:00",
+  "source_root_checkpoint": "97db5c7e",
+  "contract_blocks_closed": 0,
+  "postprocessing_inputs": {
+    "tools/block/archive_discovery.py": "493fac2ec3a6f48686aea20fadbf443f24b0bf5bc50515f2cc6c406e6df585d9"
+  },
+  "artifacts": {
+    "index": {
+      "path": "build/stock-zisk/designed-entry-discovery-all24/archive-index.json",
+      "sha256": "389dafd2f351c93926a9c3d9911f2a59f25c5547889f51a0ffe717415aa57aa8"
+    }
+  },
+  "blocks": [
+    {
+      "entry": "0x800d6960",
+      "entry_class": "entry_prologue",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "root"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "8b44cda0a16efed07ab82f77094d56afa232a33fe2495e7bf7ed6a3de061d935",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "declaration": "decodeItemEntryResources",
+          "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources (decodeItemC1BDomain) (args)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "decodeItemC1BDomain",
+            "args"
+          ],
+          "binders": [
+            {
+              "name": "domain",
+              "type": "DecodeItemArgs -> Prop"
+            },
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemContract.v": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6960",
+          "exit": "0x800d6ae0",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 62.78,
+            "peak_mib": 1905.734375
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "3f9af87e767e3bab3e294d5b483ee4a96b39333ab346f72b7aa11210145197f2",
+          "pet_peak_mib": 1767.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\ndomain : DecodeItemArgs \u2192 Prop\nargs : DecodeItemArgs\nBLK_STOP_800d6ae0, BLK_STOP_800d6974 : iProp Sigma\n|-instr_pre 2148362612 BLK_STOP_800d6974 -\u2217 instr_pre 2148362976 BLK_STOP_800d6ae0 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362592 (DesignedEntry_800d6960 domain args)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "ba35ef0a563592efbf311019df7b57921d4ef1176e553d00f6e1e25102e6ff60",
+            "archive_path": "/home/cody/zesislar-archive/sha256/ba/ba35ef0a563592efbf311019df7b57921d4ef1176e553d00f6e1e25102e6ff60",
+            "bytes": 5311
+          },
+          "cpu_seconds": 62.74,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6960",
+          "exit": "0x800d6974",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 65.666,
+            "peak_mib": 3172.734375
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "1c6ba213c2ee37c1bfd210ccab45a972bc0c8a08f9efe92a19f401d7d1f6eeb5",
+          "pet_peak_mib": 3036.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\ndomain : DecodeItemArgs \u2192 Prop\nargs : DecodeItemArgs\nBLK_STOP_800d6974, BLK_STOP_800d6ae0 : iProp Sigma\n|-instr_pre 2148362976 BLK_STOP_800d6ae0 -\u2217 instr_pre 2148362612 BLK_STOP_800d6974 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362592 (DesignedEntry_800d6960 domain args)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "36fa0ddcc5e35f0fd8af7dbd582e6beac0b6e71d2ff90e22d0010869995e31d5",
+            "archive_path": "/home/cody/zesislar-archive/sha256/36/36fa0ddcc5e35f0fd8af7dbd582e6beac0b6e71d2ff90e22d0010869995e31d5",
+            "bytes": 7341
+          },
+          "cpu_seconds": 128.20000000000002,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6974",
+      "entry_class": "prefix_load",
+      "outcomes": [
+        "setup-timeout"
+      ],
+      "executed": false,
+      "first_residual": null,
+      "setup_error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "1735479e4c646092438d8c54b296f0d4857bef1df4e713a29ab7f3176403ae5c",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6974",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (frameBytes)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "setup-error"
+      ],
+      "setup_diagnosis": "rocq_start server query timed out; Pet restarted; no proof phase began",
+      "captures": [
+        {
+          "entry": "0x800d6974",
+          "exit": "0x800d69a4",
+          "outcome": "setup-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 299.119,
+            "peak_mib": 144.5234375
+          },
+          "error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": false,
+          "source_sha256": "30632656044c80f3d321bd3a5634c0c4d09e0435a75a3eb73614eab07c568768",
+          "pet_peak_mib": 0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_start",
+            "reason": "server-query-timeout",
+            "pet_restarted": true,
+            "proof_execution": false,
+            "pet_peak_available": false
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "93441e01b8e9e39ea27db537ad9b99815e613bae51715666ff2454befa6bdde3",
+            "archive_path": "/home/cody/zesislar-archive/sha256/93/93441e01b8e9e39ea27db537ad9b99815e613bae51715666ff2454befa6bdde3",
+            "bytes": 4101
+          },
+          "cpu_seconds": 1.0,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6974",
+          "exit": "0x800d697c",
+          "outcome": "setup-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 299.118,
+            "peak_mib": 146.0234375
+          },
+          "error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": false,
+          "source_sha256": "55c181cb607de3f3a037d970ffa87f13d0f2944ad41fff2a847cb64d3fd278c1",
+          "pet_peak_mib": 0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_start",
+            "reason": "server-query-timeout",
+            "pet_restarted": true,
+            "proof_execution": false,
+            "pet_peak_available": false
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "a2c7823190eb28ffb6fc65a3395e38bb5789ba79a2e846babe7e78aad56c95cc",
+            "archive_path": "/home/cody/zesislar-archive/sha256/a2/a2c7823190eb28ffb6fc65a3395e38bb5789ba79a2e846babe7e78aad56c95cc",
+            "bytes": 4116
+          },
+          "cpu_seconds": 1.0699999999999998,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d697c",
+      "entry_class": "literal_byte_write",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "096030ecb3c51d07d09a93bc9fae111fb8dd6e94651da6825bd3ed99ddb8ad3e",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d697c",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d697c",
+          "exit": "0x800d698c",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 45.838,
+            "peak_mib": 1485.88671875
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "dfb518ae5105c8bd2ed26be953c8dd92d7af8b8e68e41d38082e3536686e8c61",
+          "pet_peak_mib": 1349.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nframeBytes : list (bv 8)\nx13 : bv 64\nBLK_STOP_800d698c : iProp Sigma\n|-instr_pre 2148362636 BLK_STOP_800d698c -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362620 (DesignedEntry_800d697c args frameBytes x13)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "9307832169fde2d1edc57583413a3790c7f4f8a7ea16b079292d36156ace321d",
+            "archive_path": "/home/cody/zesislar-archive/sha256/93/9307832169fde2d1edc57583413a3790c7f4f8a7ea16b079292d36156ace321d",
+            "bytes": 5337
+          },
+          "cpu_seconds": 45.77,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d698c",
+      "entry_class": "literal_or_short_string_return",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "join",
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "6b00bb9ebb8eaa5074b8fb93b5e2d503ffa289c7860ff7a600cf33550da666d3",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+          "declaration": "decodeItemEntryAt800d698c",
+          "sha256": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (locals) (pointerBytes) (lengthBytes)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "locals",
+            "pointerBytes",
+            "lengthBytes"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            },
+            {
+              "name": "pointerBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "lengthBytes",
+              "type": "list byte"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d698c",
+          "exit": "decodeItemReturnAddress args",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 46.947,
+            "peak_mib": 1491.5078125
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "6a7a4669df237736c9563d585373a21ea13557611f7f7943b61091f67d832283",
+          "pet_peak_mib": 1354.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nlocals : DecodeItemReturnLocals\npointerBytes, lengthBytes : list (bv 8)\nCHAIN_STOP_return_658fd25ceb9ba5f3 : iProp Sigma\n|-instr_pre (decodeItemReturnAddress args) CHAIN_STOP_return_658fd25ceb9ba5f3 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362636 (DesignedEntry_800d698c args locals pointerBytes lengthBytes)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "16a2d715b5b67ef7652fa0646554f03707674d0067d52d4758c917ab906e5e43",
+            "archive_path": "/home/cody/zesislar-archive/sha256/16/16a2d715b5b67ef7652fa0646554f03707674d0067d52d4758c917ab906e5e43",
+            "bytes": 6028
+          },
+          "cpu_seconds": 46.9,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d69a4",
+      "entry_class": "high_prefix_dispatch",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": true,
+      "first_residual": {
+        "conclusion": "(find_in_context (FindRegMapsTo \"x14\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo _ => (\"x14\" \u21a6\u1d63 RVal_Bits 128%bv -\u2217 WPasm HIDDEN)%I\n      | RKCol regs => li_tactic (regcol_compute_hint (regcol_lookup (KindReg \"x14\")) regs) (\u03bb '(i, _), (\"x14\" \u21a6\u1d63 RVal_Bits 128%bv -\u2217 reg_col (delete i regs) -\u2217 WPasm HIDDEN)%I)\n      end))",
+        "full_goal": {
+          "sha256": "136016c219b673f6436d638ed94fdc3add8a6673c7980c3d4351fa526b12b832",
+          "archive_path": "/home/cody/zesislar-archive/sha256/13/136016c219b673f6436d638ed94fdc3add8a6673c7980c3d4351fa526b12b832",
+          "bytes": 11218
+        }
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "337510171878ed962432256039cbf6937a68cd6f5434193be0b94642d1e44e98",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d69a4",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "entry-stall"
+      ],
+      "specification_diagnosis": {
+        "resource": "x14",
+        "instruction_pc": "0x800d69a8",
+        "instruction": "addi x14,x0,128",
+        "reason": "The supplied entry has no old x14 ownership for li_wp_write_reg",
+        "reviewer": "Child A; confirmed by Child C from immutable sources and captures"
+      },
+      "captures": [
+        {
+          "entry": "0x800d69a4",
+          "exit": "0x800d69d8",
+          "outcome": "stalled",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 4.262,
+            "peak_mib": 1124.1796875
+          },
+          "residual_pcs": [
+            2148362660
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "8db89f40a00f86e159480eb57a1eee46bdf7e79a84ecccaaf9c69548909aa23a",
+          "pet_peak_mib": 970.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 1,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "a992515f47e8dede53e869e71592ef7a1d6fb129f80ba7cbdf159ed22f180683",
+            "archive_path": "/home/cody/zesislar-archive/sha256/a9/a992515f47e8dede53e869e71592ef7a1d6fb129f80ba7cbdf159ed22f180683",
+            "bytes": 29229
+          },
+          "cpu_seconds": 4.1899999999999995,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d69a4",
+          "exit": "0x800d69b0",
+          "outcome": "stalled",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 4.073,
+            "peak_mib": 1791.73046875
+          },
+          "residual_pcs": [
+            2148362660
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "c8b08daf2437e64fdb6daf73f15da54ca1af97858593bb5ac7f154844b64d6fd",
+          "pet_peak_mib": 1616.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 1,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "0d373c9f55eec831573056f6b8634f3254d4a1652483866c6ac5588be9ac987a",
+            "archive_path": "/home/cody/zesislar-archive/sha256/0d/0d373c9f55eec831573056f6b8634f3254d4a1652483866c6ac5588be9ac987a",
+            "bytes": 37865
+          },
+          "cpu_seconds": 8.240000000000002,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d69b0",
+      "entry_class": "empty_string_return",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "065ec9c63d0f2073b21c71b744532e817267f27b181d397abc21b47726293f95",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+          "declaration": "decodeItemEntryAt800d69b0",
+          "sha256": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (locals)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d69b0",
+          "exit": "decodeItemReturnAddress args",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 47.366,
+            "peak_mib": 1496.26953125
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "5945d7b439a7b044a3a4edaaa2aaf4f1bba441ebf41017691cda62dd52e379a5",
+          "pet_peak_mib": 1357.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nlocals : DecodeItemReturnLocals\nCHAIN_STOP_return_658fd25ceb9ba5f3 : iProp Sigma\n|-instr_pre (decodeItemReturnAddress args) CHAIN_STOP_return_658fd25ceb9ba5f3 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362672 (DesignedEntry_800d69b0 args locals)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "e9669cd4d9691035b421cd78dd3956bfc8626d5150bfa8f03d9a5b8579e214d0",
+            "archive_path": "/home/cody/zesislar-archive/sha256/e9/e9669cd4d9691035b421cd78dd3956bfc8626d5150bfa8f03d9a5b8579e214d0",
+            "bytes": 5789
+          },
+          "cpu_seconds": 47.26,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d69d8",
+      "entry_class": "short_string_class_test",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "0cec71fdd38e43fe456f27317b9cd2d9fe4f6835d41d0f5844c4989309323bb5",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d69d8",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d69d8",
+          "exit": "0x800d6a00",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 12.263,
+            "peak_mib": 1379.02734375
+          },
+          "residual_pcs": [
+            2148362712,
+            2148362712
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "b546da55717cfb6480121a7a3f7a8abfcba72b4fc225fcdcf7ee89258b4b70a1",
+          "pet_peak_mib": 1237.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "a4ef29ec40dd0722baa6f135c301921574820e9001c1f30a040a111fe4e7baeb",
+            "archive_path": "/home/cody/zesislar-archive/sha256/a4/a4ef29ec40dd0722baa6f135c301921574820e9001c1f30a040a111fe4e7baeb",
+            "bytes": 38109
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a00",
+          "cpu_seconds": 12.229999999999999,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d69d8",
+          "exit": "0x800d69e0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 12.738,
+            "peak_mib": 2409.09375
+          },
+          "residual_pcs": [
+            2148362712,
+            2148362712
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "7ebe80be4fcdf3bbb2f0216b1123fbba69bf440773ede59905cc27d382048e04",
+          "pet_peak_mib": 2268.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "f027f9c181dd767b377fbef3e02f28198172b2a35cf32d0b8544a671131c0d3b",
+            "archive_path": "/home/cody/zesislar-archive/sha256/f0/f027f9c181dd767b377fbef3e02f28198172b2a35cf32d0b8544a671131c0d3b",
+            "bytes": 46764
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d69e0",
+          "cpu_seconds": 24.869999999999997,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d69e0",
+      "entry_class": "short_string_length_test",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "3f6a77933748d984ffb6fe5bd38819657d9758ebd674449f5a584c1c276a10ba",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d69e0",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d69e0",
+          "exit": "0x800d6ae0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 22.88,
+            "peak_mib": 1434.16796875
+          },
+          "residual_pcs": [
+            2148362720,
+            2148362720
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "6f8a8e4abc587888235421b05ce3218c4ab71d1ebd16fd0de3f19cfebe043797",
+          "pet_peak_mib": 1287.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "f15e998784d8b1559194cbaa34d531d48dc0c0b7b3bb04605c398a643247d224",
+            "archive_path": "/home/cody/zesislar-archive/sha256/f1/f15e998784d8b1559194cbaa34d531d48dc0c0b7b3bb04605c398a643247d224",
+            "bytes": 38619
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ae0",
+          "cpu_seconds": 22.799999999999997,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d69e0",
+          "exit": "0x800d69e8",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 23.726,
+            "peak_mib": 2565.16796875
+          },
+          "residual_pcs": [
+            2148362720,
+            2148362720
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "92027c5631270a5685d2be83df975c56b53832eeac7b553489e6457deb2ffcad",
+          "pet_peak_mib": 2426.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "8ab26d89b2ce61792552f3fddfda100834bba254c864fe8e435b775e1c265b91",
+            "archive_path": "/home/cody/zesislar-archive/sha256/8a/8ab26d89b2ce61792552f3fddfda100834bba254c864fe8e435b775e1c265b91",
+            "bytes": 47257
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d69e8",
+          "cpu_seconds": 46.47,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d69e8",
+      "entry_class": "short_string_write",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "dbc87352651d5c878aa034dccac31520c8d016b97d65c03828bbd98fac14ce36",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d69e8",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d69e8",
+          "exit": "0x800d698c",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 50.752,
+            "peak_mib": 1507.6328125
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "67455ffa0a999cd180c344ec1906a767eeff6758dad6256706587ecaf424c1ec",
+          "pet_peak_mib": 1362.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nframeBytes : list (bv 8)\nx13 : bv 64\nBLK_STOP_800d698c : iProp Sigma\n|-instr_pre 2148362636 BLK_STOP_800d698c -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362728 (DesignedEntry_800d69e8 args frameBytes x13)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "185f11137307947d229124e66130de92d4e2c9458eb89ca650ee40393678fcb1",
+            "archive_path": "/home/cody/zesislar-archive/sha256/18/185f11137307947d229124e66130de92d4e2c9458eb89ca650ee40393678fcb1",
+            "bytes": 5336
+          },
+          "cpu_seconds": 50.730000000000004,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a00",
+      "entry_class": "list_or_long_string_dispatch",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "fd4b202fb2e60e47b48469bb983e79a2f3f28fd0281fa4c52cf402da5c505d7a",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6a00",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a00",
+          "exit": "0x800d6a64",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 25.687,
+            "peak_mib": 1424.28125
+          },
+          "residual_pcs": [
+            2148362752,
+            2148362752
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "bcbc1713e7e97e0bd8bf4e3dc775697f3484ac863f3a41a7ac51b2692c43faab",
+          "pet_peak_mib": 1284.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "03c2b298301012c1e8d92d6d83a71f78aed0b3b6970552fec68e1dcf48498f71",
+            "archive_path": "/home/cody/zesislar-archive/sha256/03/03c2b298301012c1e8d92d6d83a71f78aed0b3b6970552fec68e1dcf48498f71",
+            "bytes": 38069
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a64",
+          "cpu_seconds": 25.55,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6a00",
+          "exit": "0x800d6a08",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 24.739,
+            "peak_mib": 2555.7265625
+          },
+          "residual_pcs": [
+            2148362752,
+            2148362752
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "83e4502c5448654cae2ba318fa58e63acd3eadcca3e94a23fd3ab511e935a786",
+          "pet_peak_mib": 2417.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "06a7c23ba949702bacf5452aa5e2a0037f6e7e5744f187fc253cca7b5aa2f056",
+            "archive_path": "/home/cody/zesislar-archive/sha256/06/06a7c23ba949702bacf5452aa5e2a0037f6e7e5744f187fc253cca7b5aa2f056",
+            "bytes": 46733
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a08",
+          "cpu_seconds": 50.22,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a08",
+      "entry_class": "long_string_width_test",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "547cd4c7b0ec63b64ca9817c59fa3ead6f3920237c2c7a7da666f995546b02f8",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6a08",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a08",
+          "exit": "0x800d6ae0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 30.713,
+            "peak_mib": 1449.40234375
+          },
+          "residual_pcs": [
+            2148362760,
+            2148362760
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "ba7ffcd64fbb1c89449b0a8e69e3d552ef330fea5847bcfb5943b7d4224eb29a",
+          "pet_peak_mib": 1312.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "be82ddbfc1eb262fc763d7cf1b90ee6615e29fc4473087826105f45b59cd7251",
+            "archive_path": "/home/cody/zesislar-archive/sha256/be/be82ddbfc1eb262fc763d7cf1b90ee6615e29fc4473087826105f45b59cd7251",
+            "bytes": 41668
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ae0",
+          "cpu_seconds": 30.630000000000003,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6a08",
+          "exit": "0x800d6a14",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 29.089,
+            "peak_mib": 2600.89453125
+          },
+          "residual_pcs": [
+            2148362760,
+            2148362760
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "0d3959d5ead1adc2242604d853adf6c3f2e9bfe5a04af6397850aac0f89f2f53",
+          "pet_peak_mib": 2463.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "7a2db5a32d2ec7c954ba6889c0199ae4f6056bc3bd6b8476bda4f79f3454a9f9",
+            "archive_path": "/home/cody/zesislar-archive/sha256/7a/7a2db5a32d2ec7c954ba6889c0199ae4f6056bc3bd6b8476bda4f79f3454a9f9",
+            "bytes": 50325
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a14",
+          "cpu_seconds": 59.58999999999999,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a14",
+      "entry_class": "long_string_fold_initialization",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "dff4e11ed07a222c897d303a59bfd9a01258aa8e957df23bcc01d8690f06d406",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6a14",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "oldAcc",
+            "oldCursor",
+            "loaded"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "n",
+              "type": "Z"
+            },
+            {
+              "name": "payloadStart",
+              "type": "Z"
+            },
+            {
+              "name": "lengthBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "oldAcc",
+              "type": "bv 64"
+            },
+            {
+              "name": "oldCursor",
+              "type": "bv 64"
+            },
+            {
+              "name": "loaded",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a14",
+          "exit": "0x800d6a24",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 5.513,
+            "peak_mib": 1306.234375
+          },
+          "residual_pcs": [
+            2148362772
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "23242b585933c1b81f7a1537749b5a20da4fd476920dc3f2321ff389fc57917e",
+          "pet_peak_mib": 1123.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "c36e987ff7f81fc7b626d9dd39eb2087800545056f298efb52281e10c73a0fe4",
+            "archive_path": "/home/cody/zesislar-archive/sha256/c3/c36e987ff7f81fc7b626d9dd39eb2087800545056f298efb52281e10c73a0fe4",
+            "bytes": 33932
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a24",
+          "cpu_seconds": 5.42,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a24",
+      "entry_class": "long_string_fold_header",
+      "outcomes": [
+        "setup-timeout"
+      ],
+      "executed": false,
+      "first_residual": null,
+      "setup_error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "entry_roles": [
+        "loop-header",
+        "join"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "33e68bbe8d2ba45d2789db2f2558fda6681770b8e9fa994cd38a5ba2217a5c2b",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v",
+          "declaration": "decodeItemEntryAt800d6a24",
+          "sha256": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "setup-error"
+      ],
+      "setup_diagnosis": "rocq_start server query timed out; Pet restarted; no proof phase began",
+      "captures": [
+        {
+          "entry": "0x800d6a24",
+          "exit": "0x800d6a24",
+          "outcome": "setup-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 299.12,
+            "peak_mib": 146.34765625
+          },
+          "error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": false,
+          "source_sha256": "cec87784ffe73de185c4ef25b5c28e9f7a3bba20631441585ae5161e9e8ce858",
+          "pet_peak_mib": 0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_start",
+            "reason": "server-query-timeout",
+            "pet_restarted": true,
+            "proof_execution": false,
+            "pet_peak_available": false
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "ae29328b5ee3c1863d927378293efa6b808c5d0dfd705f017dee531258c14e9b",
+            "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae29328b5ee3c1863d927378293efa6b808c5d0dfd705f017dee531258c14e9b",
+            "bytes": 4359
+          },
+          "cpu_seconds": 1.0899999999999999,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6a24",
+          "exit": "0x800d6a38",
+          "outcome": "setup-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 299.119,
+            "peak_mib": 146.34765625
+          },
+          "error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": false,
+          "source_sha256": "12065657695592f159cd73f6b1d149f4c5a19f2d82d065a2086bfa7014042d17",
+          "pet_peak_mib": 0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_start",
+            "reason": "server-query-timeout",
+            "pet_restarted": true,
+            "proof_execution": false,
+            "pet_peak_available": false
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "5b597c55dd13c0bc0c0482ee9aad640ddf8d27008e99a3cf7e73ff6bc1877252",
+            "archive_path": "/home/cody/zesislar-archive/sha256/5b/5b597c55dd13c0bc0c0482ee9aad640ddf8d27008e99a3cf7e73ff6bc1877252",
+            "bytes": 4360
+          },
+          "cpu_seconds": 1.1099999999999999,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a38",
+      "entry_class": "long_string_length_check",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "2af54bbaff710b0a890633733cd2c3efce6f4951b15966faceac71722888156d",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6a38",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (loaded)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "loaded"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "n",
+              "type": "Z"
+            },
+            {
+              "name": "payloadStart",
+              "type": "Z"
+            },
+            {
+              "name": "lengthBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "loaded",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a38",
+          "exit": "0x800d6ae0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 9.297,
+            "peak_mib": 1388.87109375
+          },
+          "residual_pcs": [
+            2148362808,
+            2148362808
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "9cf2abebb7163578891d7da20557229e79341fa28246165ac22f96a0ae552208",
+          "pet_peak_mib": 1251.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "16eb8aa355c82a3381ce293adff46434c7e7d282303820191d22eca7bbea2734",
+            "archive_path": "/home/cody/zesislar-archive/sha256/16/16eb8aa355c82a3381ce293adff46434c7e7d282303820191d22eca7bbea2734",
+            "bytes": 43368
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ae0",
+          "cpu_seconds": 9.209999999999999,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6a38",
+          "exit": "0x800d6a40",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 9.375,
+            "peak_mib": 2396.671875
+          },
+          "residual_pcs": [
+            2148362808,
+            2148362808
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "14518e7a45b84218993cc2241b89e66040a6fcaf2a13048e0119a3bb9206b02a",
+          "pet_peak_mib": 2259.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "d77fc562775f8c645f560b23462893391a0ec65f7362b419720250db89ef3898",
+            "archive_path": "/home/cody/zesislar-archive/sha256/d7/d77fc562775f8c645f560b23462893391a0ec65f7362b419720250db89ef3898",
+            "bytes": 51995
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a40",
+          "cpu_seconds": 18.55,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a40",
+      "entry_class": "long_string_return",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "f7efa6c313221556e9e35ccd3c952849753d2230396aec7e5a897d3a771f7cad",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+          "declaration": "decodeItemEntryAt800d6a40",
+          "sha256": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (locals)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a40",
+          "exit": "decodeItemReturnAddress args",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 45.744,
+            "peak_mib": 1494.27734375
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "ecb3e592100763b278cf91ba84e1faff3fc761b4857c2398eb6f9b1f3a19b552",
+          "pet_peak_mib": 1353.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nlocals : DecodeItemReturnLocals\nCHAIN_STOP_return_658fd25ceb9ba5f3 : iProp Sigma\n|-instr_pre (decodeItemReturnAddress args) CHAIN_STOP_return_658fd25ceb9ba5f3 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362816 (DesignedEntry_800d6a40 args locals)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "ac1a492b5aecbff6b244c8bdda49bca84e9086311dd82f03b92653cb93e4fb9c",
+            "archive_path": "/home/cody/zesislar-archive/sha256/ac/ac1a492b5aecbff6b244c8bdda49bca84e9086311dd82f03b92653cb93e4fb9c",
+            "bytes": 5782
+          },
+          "cpu_seconds": 45.67999999999999,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a64",
+      "entry_class": "short_or_long_list_dispatch",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "eac54bd832037cb0bf028e352ab06c955ddd29333d26be7bd008a8c14e8a8229",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6a64",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a64",
+          "exit": "0x800d6aa8",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 23.538,
+            "peak_mib": 1423.98828125
+          },
+          "residual_pcs": [
+            2148362852,
+            2148362852
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "64611ae8dd4fcfad5532921435c2517d10052ab45a9ba1a1feb1ddddafc3e5e1",
+          "pet_peak_mib": 1280.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "1d89027f2fbd6a757e390a61e182da054b15e6eeef2e6c122920d9a1d02bb80f",
+            "archive_path": "/home/cody/zesislar-archive/sha256/1d/1d89027f2fbd6a757e390a61e182da054b15e6eeef2e6c122920d9a1d02bb80f",
+            "bytes": 38099
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6aa8",
+          "cpu_seconds": 23.490000000000002,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6a64",
+          "exit": "0x800d6a6c",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 23.246,
+            "peak_mib": 2542.41015625
+          },
+          "residual_pcs": [
+            2148362852,
+            2148362852
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "8c1d367fcb6935d308320054e37fdd1a0e98b71e3ef62d6f699b3ec11fc1d19b",
+          "pet_peak_mib": 2399.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "abcc3d42c9184cfdbcce8181c7700c8309f1bc7f900fc00cc8e8dcd1a12205f3",
+            "archive_path": "/home/cody/zesislar-archive/sha256/ab/abcc3d42c9184cfdbcce8181c7700c8309f1bc7f900fc00cc8e8dcd1a12205f3",
+            "bytes": 46745
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a6c",
+          "cpu_seconds": 46.64,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a6c",
+      "entry_class": "short_list_length_test",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "0e4828d35615bd217183cdf62278e72b678867388cb05b71be057c0a5ea397b7",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6a6c",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a6c",
+          "exit": "0x800d6ae0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 28.472,
+            "peak_mib": 1447.44140625
+          },
+          "residual_pcs": [
+            2148362860,
+            2148362860
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "097ca1583a1485c09f3d59180e7d7360b4e65cb7739a242955d6f6ff98af90f3",
+          "pet_peak_mib": 1308.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "2754c4c60f026311b73b6f14af47306133c9812a90264b70ce3f2dc205c1c40f",
+            "archive_path": "/home/cody/zesislar-archive/sha256/27/2754c4c60f026311b73b6f14af47306133c9812a90264b70ce3f2dc205c1c40f",
+            "bytes": 41698
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ae0",
+          "cpu_seconds": 28.409999999999997,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6a6c",
+          "exit": "0x800d6a78",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 27.855,
+            "peak_mib": 2604.421875
+          },
+          "residual_pcs": [
+            2148362860,
+            2148362860
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "c68f384f6fd9b7317e085b5c6f953bc9789785877a70d6649191fe5aad607447",
+          "pet_peak_mib": 2464.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "aa2d09f26d8e798f2dd7b0d4319aa02411752b1a68ac62647454d5effd51e95c",
+            "archive_path": "/home/cody/zesislar-archive/sha256/aa/aa2d09f26d8e798f2dd7b0d4319aa02411752b1a68ac62647454d5effd51e95c",
+            "bytes": 50354
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6a78",
+          "cpu_seconds": 56.21000000000001,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a78",
+      "entry_class": "short_list_return",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "21c300fc2af79faa7962205ff3a62319c26ce166a2dfac17630d797681a950a7",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+          "declaration": "decodeItemEntryAt800d6a78",
+          "sha256": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (locals)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6a78",
+          "exit": "decodeItemReturnAddress args",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 48.908,
+            "peak_mib": 1527.60546875
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "51a99a6f5aafeb215e24c7d82aca6f5ffa1f609409ec10075b4521bc5b202366",
+          "pet_peak_mib": 1388.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nlocals : DecodeItemReturnLocals\nCHAIN_STOP_return_658fd25ceb9ba5f3 : iProp Sigma\n|-instr_pre (decodeItemReturnAddress args) CHAIN_STOP_return_658fd25ceb9ba5f3 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362872 (DesignedEntry_800d6a78 args locals)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "881c3835db2dba58d21042c767cbceae3800954ffbc1ec4823b819fcd7ecd3d0",
+            "archive_path": "/home/cody/zesislar-archive/sha256/88/881c3835db2dba58d21042c767cbceae3800954ffbc1ec4823b819fcd7ecd3d0",
+            "bytes": 5794
+          },
+          "cpu_seconds": 48.940000000000005,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6aa8",
+      "entry_class": "long_list_width_test",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "8bbbfafd9c0ec2f051bf8408512aa3cc2156615da53fa1afdd9f8fa06cde2ba8",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6aa8",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (frameBytes) (x13)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "frameBytes",
+            "x13"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6aa8",
+          "exit": "0x800d6ae0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 26.923,
+            "peak_mib": 1447.2578125
+          },
+          "residual_pcs": [
+            2148362920,
+            2148362920
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "afe10a3daec115567cb0e760f9fd92f5b0fd3e0f8e55c95f1d3213ea6b5b46c2",
+          "pet_peak_mib": 1309.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "0d8da218c34da1c2686ec43614395dd8356afe9f9dc472b39475a425f4767188",
+            "archive_path": "/home/cody/zesislar-archive/sha256/0d/0d8da218c34da1c2686ec43614395dd8356afe9f9dc472b39475a425f4767188",
+            "bytes": 41654
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ae0",
+          "cpu_seconds": 26.889999999999997,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6aa8",
+          "exit": "0x800d6ab4",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 26.948,
+            "peak_mib": 2664.625
+          },
+          "residual_pcs": [
+            2148362920,
+            2148362920
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "0f1e76fcb88951f0e8c1cd1b4f34e67162535cf29d7eede9937e0c77f6c3e587",
+          "pet_peak_mib": 2527.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "a0ad285116b8208623e0d54ec7925ad49849c243ca9172dcef157aa3457b6d32",
+            "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0ad285116b8208623e0d54ec7925ad49849c243ca9172dcef157aa3457b6d32",
+            "bytes": 50303
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ab4",
+          "cpu_seconds": 53.75,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ab4",
+      "entry_class": "long_list_fold_initialization",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "02fc7f3e76dbe511afb6ac7082ba79cba308a25c9b7eab0ae6a25348cdea7096",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6ab4",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "oldAcc",
+            "oldCursor",
+            "loaded"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "n",
+              "type": "Z"
+            },
+            {
+              "name": "payloadStart",
+              "type": "Z"
+            },
+            {
+              "name": "lengthBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "oldAcc",
+              "type": "bv 64"
+            },
+            {
+              "name": "oldCursor",
+              "type": "bv 64"
+            },
+            {
+              "name": "loaded",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6ab4",
+          "exit": "0x800d6ac4",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 5.304,
+            "peak_mib": 1308.37890625
+          },
+          "residual_pcs": [
+            2148362932
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "f60d9d13a800c9e85be26452fa372fb139229791b24aac4b10e8acd068325540",
+          "pet_peak_mib": 1131.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "18f5d99581a7df466e3c1a3219b685550a520f8bed180256ad63b330b60c0a0d",
+            "archive_path": "/home/cody/zesislar-archive/sha256/18/18f5d99581a7df466e3c1a3219b685550a520f8bed180256ad63b330b60c0a0d",
+            "bytes": 33948
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ac4",
+          "cpu_seconds": 5.210000000000001,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ac4",
+      "entry_class": "long_list_fold_header",
+      "outcomes": [
+        "setup-timeout"
+      ],
+      "executed": false,
+      "first_residual": null,
+      "setup_error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "entry_roles": [
+        "loop-header",
+        "join"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "098a83540d7f5faeda5c45fc806cc4f4198ce567311aa60911eca943aa0d538a",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v",
+          "declaration": "decodeItemEntryAt800d6ac4",
+          "sha256": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "setup-error"
+      ],
+      "setup_diagnosis": "rocq_start server query timed out; Pet restarted; no proof phase began",
+      "captures": [
+        {
+          "entry": "0x800d6ac4",
+          "exit": "0x800d6ac4",
+          "outcome": "setup-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 299.118,
+            "peak_mib": 144.34765625
+          },
+          "error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": false,
+          "source_sha256": "afb9e23764c9df86399ed75675073973a9c9c3edfc6e0331ea4febb3ced6440f",
+          "pet_peak_mib": 0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_start",
+            "reason": "server-query-timeout",
+            "pet_restarted": true,
+            "proof_execution": false,
+            "pet_peak_available": false
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "93d538445f30e4c1f4e0627a8ffbfb5fca2c459db4c950c9b843e9191fe78648",
+            "archive_path": "/home/cody/zesislar-archive/sha256/93/93d538445f30e4c1f4e0627a8ffbfb5fca2c459db4c950c9b843e9191fe78648",
+            "bytes": 4346
+          },
+          "cpu_seconds": 1.08,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6ac4",
+          "exit": "0x800d6ad8",
+          "outcome": "setup-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 299.119,
+            "peak_mib": 144.34765625
+          },
+          "error": "rocq_start timed out after 299.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": false,
+          "source_sha256": "53212413d3abd33e31a2b8eabf220b81b2baa9a7e8e0bab19ff495e05009d1f0",
+          "pet_peak_mib": 0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_start",
+            "reason": "server-query-timeout",
+            "pet_restarted": true,
+            "proof_execution": false,
+            "pet_peak_available": false
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "d0d22e6f606651747ce0fe6861349be7aa90d69b1ffcf6b0c0067190b6daa6bf",
+            "archive_path": "/home/cody/zesislar-archive/sha256/d0/d0d22e6f606651747ce0fe6861349be7aa90d69b1ffcf6b0c0067190b6daa6bf",
+            "bytes": 4361
+          },
+          "cpu_seconds": 1.1100000000000003,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ad8",
+      "entry_class": "long_list_length_check",
+      "outcomes": [
+        "abstract-successor-reached"
+      ],
+      "executed": true,
+      "first_residual": null,
+      "setup_error": null,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "112788434f99e7f880edb4a2f769cdcb409f7105ec20bfacef1c5c31a785fdf9",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+          "declaration": "decodeItemEntryAt800d6ad8",
+          "sha256": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (loaded)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "loaded"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "n",
+              "type": "Z"
+            },
+            {
+              "name": "payloadStart",
+              "type": "Z"
+            },
+            {
+              "name": "lengthBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "loaded",
+              "type": "bv 64"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
+          "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+            "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "reached"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6ad8",
+          "exit": "0x800d6b08",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 13.456,
+            "peak_mib": 1401.9765625
+          },
+          "residual_pcs": [
+            2148362968,
+            2148362968
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "4a361c3de42c3080ad12db40d5300a087e65a827174ffe8fe0a8deb72ab94970",
+          "pet_peak_mib": 1243.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "917fdddda151ffdd2a23fc6f3317ac5eb9d5cd9969c1e7a1fcdad92dd125897c",
+            "archive_path": "/home/cody/zesislar-archive/sha256/91/917fdddda151ffdd2a23fc6f3317ac5eb9d5cd9969c1e7a1fcdad92dd125897c",
+            "bytes": 43364
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6b08",
+          "cpu_seconds": 13.46,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        },
+        {
+          "entry": "0x800d6ad8",
+          "exit": "0x800d6ae0",
+          "outcome": "abstract-successor-reached",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 13.612,
+            "peak_mib": 2552.98828125
+          },
+          "residual_pcs": [
+            2148362968,
+            2148362968
+          ],
+          "residual_location": "known",
+          "proof_phase_entered": true,
+          "source_sha256": "d1e634635b3f1aaf038cc21dadb9d3d9b08b64850cf677e606a6726fa64c8dc3",
+          "pet_peak_mib": 2415.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "7a27b76cd9d58a54d0f37eb1222f58e7931288e7898aaf8694e9aefe89422e7b",
+            "archive_path": "/home/cody/zesislar-archive/sha256/7a/7a27b76cd9d58a54d0f37eb1222f58e7931288e7898aaf8694e9aefe89422e7b",
+            "bytes": 52029
+          },
+          "abstract_stop_conclusion": "BLK_STOP_800d6ae0",
+          "cpu_seconds": 26.95,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ae0",
+      "entry_class": "error_return",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "join",
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "7f7a6939d9064bde8cdf54c5e37b112b7745efec6631755bb3f02b7a63c3c565",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+          "declaration": "decodeItemEntryAt800d6ae0",
+          "sha256": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (locals)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6ae0",
+          "exit": "decodeItemReturnAddress args",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 48.178,
+            "peak_mib": 1535.88671875
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "8e0c50fbc09853f8d6d0a0f48691c5d828071b16ab4ac7313b8ed62cb2960848",
+          "pet_peak_mib": 1396.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nlocals : DecodeItemReturnLocals\nCHAIN_STOP_return_658fd25ceb9ba5f3 : iProp Sigma\n|-instr_pre (decodeItemReturnAddress args) CHAIN_STOP_return_658fd25ceb9ba5f3 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148362976 (DesignedEntry_800d6ae0 args locals)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "1443d5ac03ec62d65facc85ab6fd8fa91c2bab7703324b3eafd8cf4a12de1dc1",
+            "archive_path": "/home/cody/zesislar-archive/sha256/14/1443d5ac03ec62d65facc85ab6fd8fa91c2bab7703324b3eafd8cf4a12de1dc1",
+            "bytes": 5792
+          },
+          "cpu_seconds": 48.120000000000005,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6b08",
+      "entry_class": "long_list_return",
+      "outcomes": [
+        "automation-search-timeout"
+      ],
+      "executed": true,
+      "first_residual": {
+        "class": "automation-search-timeout",
+        "progressed_goal": "unavailable; the tactic transaction timed out before the recorder",
+        "failed_command": "try zesu_block.",
+        "last_valid_goal_scope": "Each capture retains the rolled-back last valid goal"
+      },
+      "setup_error": null,
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "55ef0c797f0b7de42d64b768f334fd94bc90201b59489d2feabef57b953199bf",
+        "design_entry_sha256": "635bb3afcc5a7158117b49da9e0c1e5aa56f8698abf11f95c977a5379c3de18a",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+          "declaration": "decodeItemEntryAt800d6b08",
+          "sha256": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1"
+        },
+        "resource_predicates": [
+          "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (locals)"
+        ],
+        "design_contract": {
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
+          "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
+          "source_hashes": {
+            "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+            "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+            "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+            "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
+          }
+        }
+      },
+      "raw_outcomes": [
+        "mcp-error"
+      ],
+      "captures": [
+        {
+          "entry": "0x800d6b08",
+          "exit": "decodeItemReturnAddress args",
+          "outcome": "automation-search-timeout",
+          "performance": {
+            "rc": 1,
+            "wall_seconds": 44.613,
+            "peak_mib": 1502.015625
+          },
+          "error": "Coq: Timeout!",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "proof_phase_entered": true,
+          "source_sha256": "f55f31fb97d18cc3418a1aa8069fb04dfd8399df7c4a13e4e295fb0ca1fe9b55",
+          "pet_peak_mib": 1361.0,
+          "rss_uses_unique_processes": true,
+          "inherited_debts": {
+            "pending_goals": [],
+            "shelved_goals": []
+          },
+          "search_failure": {
+            "stage": "rocq_check",
+            "reason": "Coq-tactic-timeout",
+            "progressed_residual_available": false,
+            "goal_scope": "The failed transaction returned its last valid state"
+          },
+          "last_valid_goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\nlocals : DecodeItemReturnLocals\nCHAIN_STOP_return_658fd25ceb9ba5f3 : iProp Sigma\n|-instr_pre (decodeItemReturnAddress args) CHAIN_STOP_return_658fd25ceb9ba5f3 -\u2217 decodeItemSelectedCode -\u2217 instr_body 2148363016 (DesignedEntry_800d6b08 args locals)",
+          "failed_command": "try zesu_block.",
+          "pending_goal_count": 0,
+          "shelved_goal_count": 0,
+          "full_capture": {
+            "sha256": "bc9be35037e732ce273bc7900cdcc8676ece143b27fbf869c42548c194b21a95",
+            "archive_path": "/home/cody/zesislar-archive/sha256/bc/bc9be35037e732ce273bc7900cdcc8676ece143b27fbf869c42548c194b21a95",
+            "bytes": 5788
+          },
+          "cpu_seconds": 44.62,
+          "module_limit_seconds": 300,
+          "module_limit_gib": 6
+        }
+      ]
+    }
+  ],
+  "machine_cpu_busy_percent": 7.944569600748564,
+  "setup_peak_memory_note": "The setup-timeout captures exclude Pet memory because rocq_start did not report its PID"
+}
