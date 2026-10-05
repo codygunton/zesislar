@@ -29,7 +29,7 @@ Record DecodeItemReturnLocals : Type := {
 
 Definition decodeItemReturnEntryCore `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (returnA1 locals) ∗
    "x12" ↦ᵣ RVal_Bits (returnA2 locals) ∗

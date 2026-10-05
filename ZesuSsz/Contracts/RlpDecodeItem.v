@@ -74,7 +74,7 @@ Definition separateRanges (first firstLength second secondLength : Z) : Prop :=
 (* These address facts accompany the Level 1 input, result, stack, and
    continuation resources. The resource ownership remains a proof obligation. *)
 Definition decodeItemEntryLayout (inputPointer inputLength resultPointer
-    stackPointer returnAddress : Z) : Prop :=
+    stackPointer returnAddress inputEnd : Z) : Prop :=
   0 <= inputPointer /\ 0 <= inputLength /\
   inputPointer + inputLength < word64Modulus /\
   0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
@@ -93,7 +93,9 @@ Definition decodeItemEntryLayout (inputPointer inputLength resultPointer
    (mapRamBase defaultMap <= inputPointer /\
     inputPointer + inputLength <= machineRamEnd defaultMap)) /\
   mapRamBase defaultMap <= resultPointer /\
-  resultPointer + 40 <= machineRamEnd defaultMap.
+  resultPointer + 40 <= machineRamEnd defaultMap /\
+  0 <= inputEnd < word64Modulus /\
+  inputPointer + inputLength <= inputEnd.
 
 Definition noWrapConsumed (headerLength payloadLength consumed : Z) : Prop :=
   0 <= headerLength /\ 0 <= payloadLength /\
