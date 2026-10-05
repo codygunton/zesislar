@@ -65,11 +65,8 @@ def source_module(path):
     return str(PurePosixPath(path).with_suffix("")).replace("/", ".")
 
 
-def entry_state(block, root, trace_import, code_premises):
-    """Use supplied expressions without synthesizing resources or local values."""
-    fields = contract_fields(block)
-    if fields is None:
-        return None
+def verify_sources(fields, root):
+    """Verify every declared source before parsing or rendering its entry."""
     root = Path(root).resolve()
     for path, expected in fields["source_hashes"].items():
         source = (root / path).resolve()
@@ -77,6 +74,15 @@ def entry_state(block, root, trace_import, code_premises):
             raise ValueError("The entry source escapes the repository")
         if hashlib.sha256(source.read_bytes()).hexdigest().lower() != expected.lower():
             raise ValueError("The executable entry source hash changed: " + path)
+    return root
+
+
+def entry_state(block, root, trace_import, code_premises):
+    """Use supplied expressions without synthesizing resources or local values."""
+    fields = contract_fields(block)
+    if fields is None:
+        return None
+    root = verify_sources(fields, root)
     owners = {}
     for key in ("entry_definition", "resource_predicate"):
         name = fields[key]

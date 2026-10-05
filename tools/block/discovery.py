@@ -25,6 +25,7 @@ sys.path.insert(0, str(HERE))
 import chain_root
 import gen_block
 import entry_schema
+import check_entry_bindings
 
 
 def digest(path):
@@ -273,6 +274,7 @@ def main():
     parser.add_argument('--trace-import', help='Use this trace module for design-schema entries')
     parser.add_argument('--code-premises', type=Path, help='Read explicit code premises for design-schema entries')
     parser.add_argument('--probe-import', action='append', default=[], help='Import an explicit module in each design-schema probe')
+    parser.add_argument('--binding-report', type=Path, help='Require successful source and application validation for design-schema entries')
     parser.add_argument('--cfg', type=Path, required=True)
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
@@ -284,9 +286,9 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.jobs <= 6 or not 1 <= args.seconds <= 300:
         parser.error('The driver permits one to six workers and at most 300 seconds per MCP call')
-    if not args.entries and (not args.trace_import or not args.code_premises):
-        parser.error('Design-schema entries require --trace-import and --code-premises')
-    if args.entries and (args.trace_import or args.code_premises or args.probe_import):
+    if not args.entries and (not args.trace_import or not args.code_premises or not args.binding_report):
+        parser.error('Design-schema entries require --trace-import, --code-premises, and --binding-report')
+    if args.entries and (args.trace_import or args.code_premises or args.probe_import or args.binding_report):
         parser.error('Legacy entries already contain their probe options')
     design = json.loads(args.design.read_text())
     manifest = json.loads(args.manifest.read_text())
@@ -299,6 +301,7 @@ def main():
     if args.entries:
         states = gen_block.read_states(args.entries)
     else:
+        check_entry_bindings.validate_report(args.binding_report, args.design, Path.cwd())
         states, entry_errors = entry_schema.design_states(
             design, Path.cwd(), args.trace_import, args.code_premises.read_text().splitlines())
     for module in args.probe_import:
@@ -313,6 +316,9 @@ def main():
         return str(resolved.relative_to(Path.cwd())) if resolved.is_relative_to(Path.cwd()) else str(resolved)
     input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__)]
     input_paths.append(args.entries if args.entries else args.code_premises)
+    if args.binding_report:
+        input_paths.append(args.binding_report)
+        input_paths.extend([Path(check_entry_bindings.__file__), HERE/'entry_bindings.py', HERE/'trace_registers.py'])
     input_paths.extend(Path(module.replace('.', '/') + '.v') for module in args.probe_import
                        if Path(module.replace('.', '/') + '.v').is_file())
     input_paths.extend(path for path in (Path('_CoqProject'), Path(args.mcp_command)) if path.is_file())

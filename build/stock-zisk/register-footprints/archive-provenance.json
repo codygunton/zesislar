@@ -1,0 +1,9 @@
+{
+  "label": "Formatting-only reduction; all instruction records remain in report.json",
+  "original_report": {
+    "sha256": "5dab92ee84eee1e93dbe86aae42df2570b8fff53de36f9dee9bc16d9a34616bf",
+    "archive_path": "/home/cody/zesislar-archive/sha256/5d/5dab92ee84eee1e93dbe86aae42df2570b8fff53de36f9dee9bc16d9a34616bf",
+    "bytes": 61298
+  },
+  "retained_report_sha256": "e58657c21f72ce9e788fbd86519d0ff042efb17b9e1cc74e03ab020b31fca08b"
+}
