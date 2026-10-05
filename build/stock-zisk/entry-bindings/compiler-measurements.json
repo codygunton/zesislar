@@ -1,0 +1,19 @@
+{
+  "positive": {
+    "USER_UNIT": "zesudet-entry-application-check-2889062-23323.scope",
+    "CPU_USAGE_NSEC": "1075791000",
+    "MEMORY_PEAK": "892203008",
+    "MEMORY_SWAP_PEAK": "0",
+    "__REALTIME_TIMESTAMP": "1791164837751169",
+    "MESSAGE": "zesudet-entry-application-check-2889062-23323.scope: Consumed 1.075s CPU time over 1.078s wall clock time, 850.8M memory peak."
+  },
+  "negative": {
+    "USER_UNIT": "zesudet-entry-application-check-2892546-3895.scope",
+    "CPU_USAGE_NSEC": "951018000",
+    "MEMORY_PEAK": "845864960",
+    "MEMORY_SWAP_PEAK": "0",
+    "__REALTIME_TIMESTAMP": "1791164841483015",
+    "MESSAGE": "zesudet-entry-application-check-2892546-3895.scope: Consumed 951ms CPU time over 953ms wall clock time, 806.6M memory peak."
+  },
+  "label": "Measured compiler scopes; wall times in MESSAGE exclude MCP startup"
+}
