@@ -2,6 +2,7 @@
 -Q _build/default/ZesuSsz ZesuSsz
 -Q _build/default/ZesuStock ZesuStock
 -Q _build/default/InstrSpecs InstrSpecs
+-Q _build/default/Scaffolding Scaffolding
 -Q _build/default/MachineMap ZesuMachineMap
 -R _build/default/generated/isla-traces IslaTraces
 -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem
