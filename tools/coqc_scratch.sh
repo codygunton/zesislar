@@ -25,6 +25,16 @@ import time
 from pathlib import Path
 
 
+wall_text = os.environ.get("ZESU_SCRATCH_WALL_SECONDS", "300")
+if wall_text == "none":
+    if not 0 < int(os.environ.get("ZESU_PRIMARY_CPU_LIMIT", "0")) <= 1200:
+        raise SystemExit("an unlimited wall budget requires an explicit CPU budget")
+    wall_limit = None
+else:
+    wall_limit = float(wall_text)
+    if not 0 < wall_limit <= 300:
+        raise SystemExit("the scratch wall budget must be between zero and 300 seconds")
+
 source = Path(sys.argv[1])
 build_dir = Path(sys.argv[2])
 sys.path.insert(0, sys.argv[4])
@@ -82,8 +92,8 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
                               if line.startswith("VmRSS:"))
             except (FileNotFoundError, ProcessLookupError, StopIteration):
                 rss_kb = 0
-            if elapsed > 300 or rss_kb > 6 * 1024 * 1024:
-                limit = "time" if elapsed > 300 else "memory"
+            if (wall_limit is not None and elapsed > wall_limit) or rss_kb > 6 * 1024 * 1024:
+                limit = "time" if wall_limit is not None and elapsed > wall_limit else "memory"
                 process.terminate()
                 try:
                     process.wait(timeout=2)

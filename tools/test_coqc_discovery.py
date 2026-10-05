@@ -10,6 +10,24 @@ import coqc_discovery
 
 
 class CoqcDiscoveryTests(unittest.TestCase):
+    def test_import_targets_keep_qualified_names_and_reject_empty_selection(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            for name in ('ZesuSsz/Automation/All.v','ZesuSsz/Contracts/Entry.v'):
+                path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('')
+            source='Require Import ZesuSsz.Automation.All ZesuSsz.Contracts.Entry.\n'
+            self.assertEqual(coqc_discovery.native_import_targets([source],root),
+                ['ZesuSsz/Automation/All.vo','ZesuSsz/Contracts/Entry.vo'])
+            with self.assertRaisesRegex(ValueError,'zero targets'):
+                coqc_discovery.native_import_targets(['Require Import Unknown.Module.\n'],root)
+    def test_changed_automation_selection_includes_every_entry(self):
+        baseline={'blocks':[{'entry':hex(i),'outcomes':['primary-unavailable']
+            if i<12 else ['native-residual']} for i in range(24)]}
+        self.assertEqual(len(coqc_discovery.selection(baseline,True)),24)
+        self.assertEqual(len(coqc_discovery.selection(baseline,False)),12)
+        baseline['blocks'][0]['outcomes']=['native-residual']
+        with self.assertRaisesRegex(ValueError,'exactly12'):
+            coqc_discovery.selection(baseline,False)
     def test_archive_binding_precedes_baseline_reuse(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
