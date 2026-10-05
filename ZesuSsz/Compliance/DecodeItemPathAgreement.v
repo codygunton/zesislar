@@ -8,23 +8,14 @@ Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
+Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Import ListNotations.
 Open Scope Z_scope.
 
 (* Each success observation names the fixed SailRun evaluator on the same
    bytes as the machine result. The field metadata must match the return. *)
-Definition decodeItemSailSuccess (args : DecodeItemArgs)
-    (isList : bool) (headerLength payloadLength : Z) : Prop :=
-  exists fullLength contentLength
-      (field : RlpFieldRef 0 fullLength contentLength),
-    runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args) =
-      Success (@existT Z (fun full => {content : Z & RlpFieldRef 0 full content})
-        fullLength
-        (@existT Z (fun content => RlpFieldRef 0 fullLength content)
-          contentLength field)) /\
-    RlpFieldRef_is_list field = isList /\
-    fullLength - contentLength = headerLength /\
-    contentLength = payloadLength.
+Definition decodeItemSailSuccess :=
+  ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemSailSuccess.
 
 Lemma decodeItemDomainInputFits args :
   decodeItemC1BDomain args ->
