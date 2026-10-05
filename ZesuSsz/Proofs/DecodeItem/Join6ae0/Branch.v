@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Switches.RecordWitness.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.InstructionLookup.
 Require Import ZesuSsz.Automation.Switches.RamFault.
@@ -55,19 +56,6 @@ Proof.
       (Z_to_bv 64 (decodeItemInputLength args)) Hguard) as Hsigned
   end.
   zesu_run_until decode_item_error_at_return_witness.
-  1: {
-  zesu_expose_environment_alias.
-  iExists ({|
-    returnA1 := Z_to_bv 64 (decodeItemInputPointer args);
-    returnA2 := Z_to_bv 64 (decodeItemInputLength args);
-    returnA3 := masked;
-    returnA4 := Z_to_bv 64 183;
-    returnA5 := x15;
-    returnA6 := x16;
-    returnStorage := decodeItemBeforeStorage args;
-    returnFrame := frameBytes
-  |}, tt)ₗ.
-  zesu_run. }
   all: try solve [exfalso; unLET; bv_solve].
 Unshelve.
 all: try solve [exfalso; unLET;
