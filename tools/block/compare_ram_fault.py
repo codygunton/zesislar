@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare the complete RamFault switch on one fixed root and domain."""
+"""Compare historical imports with approved switches on one fixed root and domain."""
 import argparse
 import asyncio
 import copy
@@ -29,21 +29,60 @@ def primary_body(source):
     return source.split('Proof.\n', 1)[1].split('Abort.', 1)[0]
 
 
-def verify_pair(off, on, historical):
-    line = 'Require Import ' + SWITCH + '.\n'
-    if line not in on or line in off or on.replace(line, '') != off:
-        raise ValueError('The paired sources differ beyond the RamFault import')
+def verify_pair(off, on, historical, allowed_imports=None):
+    if allowed_imports is None:
+        line = 'Require Import ' + SWITCH + '.\n'
+        if line not in on or line in off or on.replace(line, '') != off:
+            raise ValueError('The paired sources differ beyond the RamFault import')
+    else:
+        imports = lambda source: {line[len('Require Import '):-1] for line in source.splitlines()
+                                  if line.startswith('Require Import ') and line.endswith('.')}
+        additions = imports(on) - imports(off)
+        if imports(off) - imports(on) or not additions <= set(allowed_imports):
+            raise ValueError('The paired sources contain an unauthorized import change')
+        reduced = on
+        for name in additions:
+            reduced = reduced.replace('Require Import ' + name + '.\n', '')
+        if reduced != off:
+            raise ValueError('The paired sources differ beyond approved switch imports')
     if primary_body(on) != primary_body(historical):
         raise ValueError('The frozen primary body changed')
     return hashlib.sha256(primary_body(on).encode()).hexdigest()
 
 
-def activation_source(imports, enabled):
+def switch_class(module):
+    """Resolve one declared switch class to its full source namespace."""
+    if not module.startswith('ZesuSsz.Automation.Switches.'):
+        raise ValueError('The activation query requires a switch module name')
+    name = 'ZesuStep' + module.rsplit('.', 1)[-1]
+    root = Path(__file__).resolve().parents[2]
+    owners = [path for path in (root/'ZesuSsz/Automation').rglob('*.v')
+              if re.search(r'^\s*Class\s+' + re.escape(name) + r'\b', path.read_text(), re.M)]
+    if len(owners) != 1:
+        raise ValueError('The switch class needs exactly one source declaration: ' + name)
+    namespace = '.'.join(owners[0].relative_to(root).with_suffix('').parts)
+    return namespace + '.' + name
+
+
+def activation_source(imports, enabled, queried_switches=()):
     rows = list(dict.fromkeys(['ZesuSsz.Automation.All', *imports]))
     if (SWITCH in rows) != enabled:
         raise ValueError('The switch imports do not match the arm')
-    return '\n'.join('Require Import ' + row + '.' for row in rows) + '\n' + (
-        '' if enabled else 'Fail ') + 'Check (ltac:(typeclasses eauto) : ZesuStepRamFault).\n'
+    ram_class = switch_class(SWITCH)
+    source = '\n'.join('Require Import ' + row + '.' for row in rows) + '\nCheck ' + ram_class + '.\n' + (
+        '' if enabled else 'Fail ') + 'Check (ltac:(typeclasses eauto) : ' + ram_class + ').\n'
+    if queried_switches:
+        source += 'Goal True.\nProof.\n'
+        for module in queried_switches:
+            if not module.startswith('ZesuSsz.Automation.Switches.') or not re.fullmatch(r'[A-Za-z_][A-Za-z_0-9]*', module.rsplit('.', 1)[-1]):
+                raise ValueError('The activation query requires a switch module name')
+            name = switch_class(module)
+            source = source.replace('Goal True.\nProof.\n', 'Check ' + name + '.\nGoal True.\nProof.\n', 1)
+            source += ('tryif (let evidence := constr:(ltac:(typeclasses eauto) : ' + name +
+                       ') in idtac) then idtac "SCOPE ' + name + ' ACTIVE" else idtac "SCOPE ' + name + ' INACTIVE".\n')
+        source += 'exact I.\nQed.\n'
+    return source
+
 
 
 def worker(job):
@@ -52,7 +91,7 @@ def worker(job):
 
 
 APPROVED_CAPTURE_FILES = {'tools/block/compare_ram_fault.py', 'tools/block/discovery.py',
-                          'tools/block/feedback_mcp.py', 'tools/block/feedback_mcp.sh'}
+                          'tools/block/complete_goals_mcp.py', 'tools/block/complete_goals_mcp.sh', 'tools/block/feedback_mcp.py', 'tools/block/feedback_mcp.sh'}
 
 
 def verify_resume_inputs(previous, current, workspace):
@@ -116,6 +155,8 @@ def main():
     for name in ('root-commit', 'design', 'cfg', 'manifest', 'binding-report',
                  'primary', 'archive-index', 'build-dir', 'out'):
         parser.add_argument('--' + name, required=True)
+    parser.add_argument('--on-import', action='append', default=[])
+    parser.add_argument('--off-policy', choices=('ram-fault-disabled', 'historical'), default='ram-fault-disabled')
     args = parser.parse_args()
     root = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     expected = subprocess.check_output(['git', 'rev-parse', args.root_commit], text=True).strip()
@@ -141,7 +182,7 @@ def main():
         args.design, args.cfg, args.manifest, args.binding_report, args.primary, args.archive_index,
         __file__, discovery.__file__, chain_root.__file__, entry_schema.__file__,
         'tools/block/native_diagnostics.py', 'tools/block/setup_fallback.py',
-        'tools/block/feedback_mcp.py', 'tools/block/feedback_mcp.sh', 'tools/rocq_mcp_guarded.sh', 'tools/block/entry_check_coqc.sh', '_CoqProject')}
+        'tools/block/complete_goals_mcp.py', 'tools/block/complete_goals_mcp.sh', 'tools/block/feedback_mcp.py', 'tools/block/feedback_mcp.sh', 'tools/rocq_mcp_guarded.sh', 'tools/block/entry_check_coqc.sh', '_CoqProject')}
     from rocq_mcp import server
     from rocq_mcp import interactive
     import pytanque.client
@@ -166,7 +207,9 @@ def main():
             sources, targets = {}, {}
             for arm in imports:
                 state = copy.deepcopy(original)
-                if arm == 'switch-off':
+                if arm == 'switch-on':
+                    state['imports'] = list(dict.fromkeys(state['imports'] + args.on_import))
+                if arm == 'switch-off' and args.off_policy == 'ram-fault-disabled':
                     state['imports'] = [name for name in state['imports'] if name != SWITCH]
                 source = chain_root.render_probe(state, block, chain_root.terminal_target(target))
                 sources[arm], targets[arm] = source, state
@@ -177,7 +220,8 @@ def main():
                        if Path(path).name == name and Path(path).parent.name == 'probes')
             if digest(old['archive_path']) != old['sha256']:
                 raise ValueError('A frozen historical source changed')
-            body = verify_pair(sources['switch-off'], sources['switch-on'], Path(old['archive_path']).read_text())
+            body = verify_pair(sources['switch-off'], sources['switch-on'], Path(old['archive_path']).read_text(),
+                               [SWITCH, *args.on_import] if args.on_import else None)
             pairs.append({'entry': row['entry_pc'], 'target': target, 'primary_body_sha256': body,
                           'historical_source': old,
                           'sources': {arm: hashlib.sha256(source.encode()).hexdigest() for arm, source in sources.items()}})
@@ -189,6 +233,7 @@ def main():
                     'build_dir': str(Path(args.build_dir).resolve()), 'secondary_enabled': False,
                     'probe_targets': [target],
                     'feedback_dir': str(out/arm/'feedback'/Path(name).stem),
+                    'complete_dir': str(out/arm/'complete'/Path(name).stem),
                     'load_before_start': old_block['outcomes'] == ['primary-unavailable']}
                 jobs.append((arm, row, block, targets[arm], options))
     if len(pairs) != 38:
@@ -196,12 +241,14 @@ def main():
     activation = {}
     for arm in imports:
         path = out/(arm.replace('-', '_') + '_Activation.v')
-        path.write_text(activation_source(sorted(imports[arm]), arm == 'switch-on'))
+        path.write_text(activation_source(sorted(imports[arm]), arm == 'switch-on' or args.off_policy == 'historical', args.on_import))
         health, result = asyncio.run(check_entry_bindings.compile_queries(workspace, path, 60))
         activation[arm] = {'source': str(path), 'sha256': digest(path), 'health': health, 'result': result}
         (out/'activation.json').write_text(json.dumps(activation, indent=2)+'\n')
         if not result.get('success'):
             raise ValueError('The switch activation check failed: ' + arm)
+        if arm == 'switch-on' and any('SCOPE ' + switch_class(name) + ' ACTIVE' not in result.get('output', '') for name in args.on_import):
+            raise ValueError('An approved ON switch is inactive')
     input_record = out/'run-inputs.json'
     resume_changes = {}
     if input_record.exists():
@@ -228,7 +275,10 @@ def main():
     for path, expected_hash in inputs.items():
         if digest(path) != expected_hash:
             raise ValueError('A comparison input changed: ' + path)
-    report = {'label': 'Full RamFault switch comparison; no sole-Assert causal claim',
+    report = {'label': ('Historical baseline versus all approved switches' if args.on_import else
+                         'Full RamFault switch comparison; no sole-Assert causal claim'),
+        'arm_imports': {arm: sorted(names) for arm,names in imports.items()},
+        'on_additions': args.on_import, 'off_policy': args.off_policy,
         'root_commit': root, 'inputs': inputs, 'pairs': pairs, 'activation': activation,
         'historical_primary': previous['raw_report'], 'historical_comparison': 'Different root/domain; descriptive only',
         'resume_input_changes': resume_changes, 'reused_boundaries': len(reused), 'new_boundaries': len(pending),

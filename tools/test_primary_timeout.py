@@ -17,6 +17,18 @@ import discovery
 
 class PrimaryTimeoutTests(unittest.TestCase):
     def test_primary_has_one_sentence_and_the_full_300_second_budget(self):
+        self.exercise_primary()
+
+    def test_export_exception_keeps_the_primary_outcome_and_marks_missing_groups(self):
+        self.exercise_primary('exception')
+
+    def test_failed_export_response_marks_group_coverage_incomplete(self):
+        self.exercise_primary('response')
+
+    def test_primary_rpc_exception_cannot_claim_complete_native_coverage(self):
+        self.exercise_primary('primary-rpc')
+
+    def exercise_primary(self, export_failure=None):
         if importlib.util.find_spec('rocq_mcp') is None:
             # Use the installed MCP interpreter, not a copied SDK implementation.
             executable = shutil.which('rocq-mcp')
@@ -47,8 +59,21 @@ class PrimaryTimeoutTests(unittest.TestCase):
 
             async def call_tool(self, name, arguments):
                 events.append((name, arguments))
+                if name == 'rocq_check' and arguments.get('body') == 'try zesu_block.' and export_failure == 'primary-rpc':
+                    raise RuntimeError('The primary transport failed')
                 if name == 'rocq_health':
                     value = {'ok': True, 'toolchain': {'pet': {'path': 'pinned-pet'}}}
+                elif name == 'rocq_complete_goals':
+                    if export_failure == 'exception':
+                        raise RuntimeError('The capture transport failed')
+                    if export_failure == 'response':
+                        return SimpleNamespace(structuredContent={'success': False, 'error': 'The capture export failed'})
+                    from complete_goals_mcp import write_export
+                    class Complete:
+                        def to_json(self):
+                            return {'goals': [{'ty': 'True', 'hyps': []}], 'stack': [[[], [{'ty': 'stack debt'}]]],
+                                    'shelf': [{'ty': 'shelved debt'}], 'given_up': [{'ty': 'given-up debt'}]}
+                    value = write_export(Complete(), options['complete_dir'], arguments['from_state'])
                 elif name == 'rocq_diag':
                     value = {}
                 else:
@@ -68,7 +93,8 @@ class PrimaryTimeoutTests(unittest.TestCase):
                 'mcp.client': SimpleNamespace(),
                 'mcp.client.stdio': SimpleNamespace(stdio_client=stdio)}
             options = {'mcp_command': 'fake', 'workspace': temporary, 'out': temporary,
-                       'seconds': 300, 'terminal': '0x20', 'secondary_enabled': False}
+                       'seconds': 300, 'terminal': '0x20', 'secondary_enabled': False,
+                       'complete_dir': str(Path(temporary)/'complete')}
             original_state = {'marker': 'entry resources'}
             with patch.dict(sys.modules, modules), \
                     patch.object(discovery, 'time', SimpleNamespace(monotonic=lambda: 10)), \
@@ -87,11 +113,32 @@ class PrimaryTimeoutTests(unittest.TestCase):
             self.assertEqual(calls[0]['body'], 'idtac.')
             self.assertEqual(calls[0]['timeout'], 60)
             self.assertEqual(heavy[0]['from_state'], returned_states[1])
+            if export_failure == 'primary-rpc':
+                self.assertEqual(result['captures'][0]['outcome'], 'mcp-error')
+                self.assertFalse(result['captures'][0]['complete_native_coverage'])
+                self.assertEqual([value['checkpoint'] for value in result['captures'][0]['complete_exports']], ['entry', 'preparation'])
+                self.assertEqual(len(calls), 2)
+                return
             self.assertEqual(calls[2]['from_state'], returned_states[2])
             step = next(row for row in result['captures'][0]['primary_steps']
                         if row['label'] == 'primary-unchanged-zesu_block')
             self.assertEqual([row['timeout_seconds'] for row in step['sentence_budgets']], [300])
             self.assertEqual(len(step['sdk']['sha256']), 64)
+            exports = result['captures'][0]['complete_exports']
+            self.assertEqual([value['checkpoint'] for value in exports], ['entry', 'preparation', 'primary', 'recorders', 'termination'])
+            self.assertEqual(result['captures'][0]['outcome'], 'reached')
+            self.assertEqual(result['captures'][0]['complete_native_coverage'], not bool(export_failure))
+            self.assertIn('post-Abort', exports[-1]['scope'])
+            for value in exports:
+                self.assertEqual(value['coverage'], 'unavailable' if export_failure else 'complete')
+                if not export_failure:
+                    self.assertEqual(value['stack_frame_goal_counts'], [{'left': 0, 'right': 1}])
+                    self.assertEqual(value['shelved_goals'], 1)
+                    self.assertEqual(value['given_up_goals'], 1)
+                self.assertEqual(value['primary_capture_sha256'], discovery.digest(next(Path(temporary).glob('probes/*.mcp.json'))))
+                self.assertEqual(value['source_sha256'], discovery.digest(next(Path(temporary).glob('probes/*.v'))))
+            if not export_failure:
+                self.assertEqual([value['state_id'] for value in exports], returned_states)
             self.observed_calls = events
             self.probe_result = result
 
