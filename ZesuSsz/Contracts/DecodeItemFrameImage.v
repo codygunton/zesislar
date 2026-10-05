@@ -4,6 +4,8 @@ Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
+Require Import ZesuSsz.Automation.ByteArrays.
+Require Import ZesuSsz.Automation.PureFacts.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -96,3 +98,18 @@ Qed.
 
 Print Assumptions littleEndian_machine_bytes.
 Print Assumptions decodeItemSavedFrameFacts_machine_words.
+
+Global Instance decodeItemSavedFrameFacts_derived
+    (returnAddress : Z) (args : DecodeItemArgs)
+    `{!ZesuStepWordArrayHandoff} :
+  ZesuDerivedFacts
+    (decodeItemDomainAt returnAddress decodeItemC1BDomain args)
+    (decodeItemSavedFrameFacts args
+      (bv_to_little_endian 8 8
+         (bv_unsigned (decodeItemSavedFramePointer args)) ++
+       bv_to_little_endian 8 8
+         (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))).
+Proof.
+  intros [_ Hdomain].
+  exact (decodeItemSavedFrameFacts_machine_words args Hdomain).
+Qed.

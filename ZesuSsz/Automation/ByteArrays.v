@@ -496,8 +496,58 @@ Section byte_array_uninit_subsumption.
 
 End byte_array_uninit_subsumption.
 
+Lemma zesu_Z_to_bv_add (width : N) (left right : Z) :
+  (Z_to_bv width left + Z_to_bv width right)%bv =
+  Z_to_bv width (left + right).
+Proof.
+  apply bv_eq.
+  rewrite bv_add_unsigned !Z_to_bv_unsigned bv_wrap_add_idemp.
+  reflexivity.
+Qed.
+
+Class ZesuStepWordArrayHandoff : Prop := zesu_step_word_array_handoff : True.
+
 Section word_byte_array_subsumption.
   Context `{!islaG Sigma}.
+
+  Lemma subsume_mem_adjacent_words_byte_array
+      (A : Type) (a1 a2 : Z) (lowBytes highBytes : N)
+      (low : bv (8 * lowBytes)) (high : bv (8 * highBytes))
+      (requested : A -> list (bv 8)) (G : A -> iProp Sigma) :
+    (∃ x : A, ⌜a1 = a2⌝ ∗
+      ⌜requested x =
+        bv_to_little_endian (N.to_nat lowBytes) 8 (bv_unsigned low) ++
+        bv_to_little_endian (N.to_nat highBytes) 8 (bv_unsigned high)⌝ ∗
+      (a1 + Z.of_N lowBytes) ↦ₘ high ∗ G x)%I ⊢
+    subsume (a1 ↦ₘ low) (fun x => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hlow".
+    iDestruct "Hrule" as (x) "(-> & %Hbytes & Hhigh & HG)".
+    iExists x. iSplitL "Hlow Hhigh"; last iExact "HG".
+    rewrite Hbytes.
+    iDestruct (mem_mapsto_mapsto_to_byte_array_N with "Hlow") as "Hlow".
+    iDestruct (mem_mapsto_mapsto_to_byte_array_N with "Hhigh") as "Hhigh".
+    iApply (mem_mapsto_array_app_combine_at 8 a2 (DfracOwn 1) _ _
+      (N.to_nat lowBytes) with "Hlow").
+    { rewrite length_bv_to_little_endian; lia. }
+    rewrite /= Z.mul_1_l.
+    replace (Z.of_nat (N.to_nat lowBytes)) with (Z.of_N lowBytes) by lia.
+    iExact "Hhigh".
+  Qed.
+
+  Lemma subsume_mem_adjacent_u64_byte_array
+      (A : Type) (a1 a2 : Z) (low high : bv 64)
+      (requested : A -> list (bv 8)) (G : A -> iProp Sigma)
+      `{!ZesuStepWordArrayHandoff} :
+    (∃ x : A, ⌜a1 = a2⌝ ∗
+      ⌜requested x = bv_to_little_endian 8 8 (bv_unsigned low) ++
+        bv_to_little_endian 8 8 (bv_unsigned high)⌝ ∗
+      (a1 + 8) ↦ₘ high ∗ G x)%I ⊢
+    subsume (a1 ↦ₘ low) (fun x => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    exact (subsume_mem_adjacent_words_byte_array A a1 a2 8 8
+      low high requested G).
+  Qed.
 
   Lemma subsume_mem_optional_object_array
       (A : Type) (a1 a2 : Z) (value : bv 64)
