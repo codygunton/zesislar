@@ -1,0 +1,631 @@
+{
+  "item": "I3",
+  "source_root": "27dc1aed53bd825800d3e43771e43f7e6cec196a",
+  "measurement_root": "ec815e76cf7d3538c6db8e442a9ed466810bbd81",
+  "raw_native_report": {
+    "sha256": "96f51086182b3c24d1fc7d4dc7c3d2f38bea5ae2d531e4f6eaa32962159b7c75",
+    "archive_path": "/home/cody/zesislar-archive/sha256/96/96f51086182b3c24d1fc7d4dc7c3d2f38bea5ae2d531e4f6eaa32962159b7c75",
+    "bytes": 495699
+  },
+  "measured_native_helper": {
+    "sha256": "0f7835a385d79e566be67ff3ac445e36395930dd51ce0775de796c9242cd913f",
+    "archive_path": "/home/cody/zesislar-archive/sha256/0f/0f7835a385d79e566be67ff3ac445e36395930dd51ce0775de796c9242cd913f",
+    "bytes": 23217
+  },
+  "local_attempt_bundle": {
+    "sha256": "d5b3ab83974f7c5edd4f836ed04bf879d7051526b21dd1913faf26b38e6a9cc7",
+    "archive_path": "/home/cody/zesislar-archive/sha256/d5/d5b3ab83974f7c5edd4f836ed04bf879d7051526b21dd1913faf26b38e6a9cc7",
+    "bytes": 1771520
+  },
+  "obligations": [
+    {
+      "obligation": "decodeItemJoin698cFrom697c",
+      "source_pc": "0x800d697c",
+      "join_pc": "0x800d698c",
+      "automatic_closed": false,
+      "native_outcome": "primary-unavailable",
+      "first_residual_class": "setup-unavailable",
+      "first_residual": "rocq_start timed out after 60.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "native_groups_counts": null,
+      "native_evidence": {
+        "sha256": "fff70c463b4c2d5ec1aad796e07c61b1153acff9a7212aa21aa1bffe18061c8f",
+        "archive_path": "/home/cody/zesislar-archive/sha256/ff/fff70c463b4c2d5ec1aad796e07c61b1153acff9a7212aa21aa1bffe18061c8f",
+        "bytes": 3140
+      },
+      "source": {
+        "sha256": "020177c4aeea58176e61542d299ca820f77e20bd41d3bb4c868cf3eb953ff1e6",
+        "archive_path": "/home/cody/zesislar-archive/sha256/02/020177c4aeea58176e61542d299ca820f77e20bd41d3bb4c868cf3eb953ff1e6",
+        "bytes": 4923
+      },
+      "full_exports": [],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin698cFrom69e8",
+      "source_pc": "0x800d69e8",
+      "join_pc": "0x800d698c",
+      "automatic_closed": false,
+      "native_outcome": "primary-unavailable",
+      "first_residual_class": "setup-unavailable",
+      "first_residual": "rocq_start timed out after 60.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "native_groups_counts": null,
+      "native_evidence": {
+        "sha256": "2d7096a66844c02a6711369843b22f60178af0d7f2e07782cde49e9a72f63060",
+        "archive_path": "/home/cody/zesislar-archive/sha256/2d/2d7096a66844c02a6711369843b22f60178af0d7f2e07782cde49e9a72f63060",
+        "bytes": 3138
+      },
+      "source": {
+        "sha256": "fb5e5cbe7350f5c8e6cdc49dd08065c47e77fdbe87e9ce947cdb590e85dd0b78",
+        "archive_path": "/home/cody/zesislar-archive/sha256/fb/fb5e5cbe7350f5c8e6cdc49dd08065c47e77fdbe87e9ce947cdb590e85dd0b78",
+        "bytes": 4923
+      },
+      "full_exports": [],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6a24From6a14",
+      "source_pc": "0x800d6a14",
+      "join_pc": "0x800d6a24",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "fold-witness-with-source-domain-gap",
+      "first_residual": "\u2203 x : bv 64 *\u2097 list (bv 8) *\u2097 list (bv 8) *\u2097 Z *\u2097 Z *\u2097 Z *\u2097 (), \u231cx.5\u2097 < x.6\u2097\u231d \u2217 \u231cdecodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args \u2227 decodeItemSavedFrameFacts args x.2\u2097\u231d \u2217\n  decodeItemByteFoldStringHeader args x.6\u2097 x.5\u2097 x.4\u2097 x.3\u2097 x.2\u2097 x.1\u2097 \u2217 decodeItemBranchContinuation args",
+      "native_groups_counts": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "ae07b3cd26f4d9e9674c8fd52f1b2ecb4bbc78c9efd365e5d49122c1897df75f",
+        "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae07b3cd26f4d9e9674c8fd52f1b2ecb4bbc78c9efd365e5d49122c1897df75f",
+        "bytes": 32766
+      },
+      "source": {
+        "sha256": "2b64d96dbcbb9b774dfcd4f023b29e635ec19830a585e29482f8b9c504e2d1a8",
+        "archive_path": "/home/cody/zesislar-archive/sha256/2b/2b64d96dbcbb9b774dfcd4f023b29e635ec19830a585e29482f8b9c504e2d1a8",
+        "bytes": 5253
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "b6f65136b7a83c9cddb69a6fd7c7e85ffb8d070edaa65921a41e8aafbf751038",
+            "archive_path": "/home/cody/zesislar-archive/sha256/b6/b6f65136b7a83c9cddb69a6fd7c7e85ffb8d070edaa65921a41e8aafbf751038",
+            "bytes": 620
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "b6f65136b7a83c9cddb69a6fd7c7e85ffb8d070edaa65921a41e8aafbf751038",
+            "archive_path": "/home/cody/zesislar-archive/sha256/b6/b6f65136b7a83c9cddb69a6fd7c7e85ffb8d070edaa65921a41e8aafbf751038",
+            "bytes": 620
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "b6535a7e40e87af00648b3d10f122e5ab3d23b44872a10027fed7b105d377392",
+            "archive_path": "/home/cody/zesislar-archive/sha256/b6/b6535a7e40e87af00648b3d10f122e5ab3d23b44872a10027fed7b105d377392",
+            "bytes": 3837
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6a24Backedge",
+      "source_pc": "0x800d6a24",
+      "join_pc": "0x800d6a24",
+      "automatic_closed": false,
+      "native_outcome": "primary-unavailable",
+      "first_residual_class": "setup-unavailable",
+      "first_residual": "rocq_start timed out after 60.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "native_groups_counts": null,
+      "native_evidence": {
+        "sha256": "424cd7475d53183ab888d28c542418305e596ca5dbd32b58924818a2c34e0cfe",
+        "archive_path": "/home/cody/zesislar-archive/sha256/42/424cd7475d53183ab888d28c542418305e596ca5dbd32b58924818a2c34e0cfe",
+        "bytes": 3159
+      },
+      "source": {
+        "sha256": "f89b100a937fb396e99c4a4745d8c0e8da7d51346e3e8f85e3bc02cf2209eef9",
+        "archive_path": "/home/cody/zesislar-archive/sha256/f8/f89b100a937fb396e99c4a4745d8c0e8da7d51346e3e8f85e3bc02cf2209eef9",
+        "bytes": 5275
+      },
+      "full_exports": [],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ac4From6ab4",
+      "source_pc": "0x800d6ab4",
+      "join_pc": "0x800d6ac4",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "fold-witness-with-source-domain-gap",
+      "first_residual": "\u2203 x : bv 64 *\u2097 list (bv 8) *\u2097 list (bv 8) *\u2097 Z *\u2097 Z *\u2097 Z *\u2097 (), \u231cx.5\u2097 < x.6\u2097\u231d \u2217 \u231cdecodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args \u2227 decodeItemSavedFrameFacts args x.2\u2097\u231d \u2217\n  decodeItemByteFoldListHeader args x.6\u2097 x.5\u2097 x.4\u2097 x.3\u2097 x.2\u2097 x.1\u2097 \u2217 decodeItemBranchContinuation args",
+      "native_groups_counts": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "d8760b9fa9f596822c9341e379a2bc06b0210b032c310e593ee46716ad1c3854",
+        "archive_path": "/home/cody/zesislar-archive/sha256/d8/d8760b9fa9f596822c9341e379a2bc06b0210b032c310e593ee46716ad1c3854",
+        "bytes": 32748
+      },
+      "source": {
+        "sha256": "e98c7dfa9b7741e1767ce47c33b631f1c313de9f30168df93e050d2fd6d96121",
+        "archive_path": "/home/cody/zesislar-archive/sha256/e9/e98c7dfa9b7741e1767ce47c33b631f1c313de9f30168df93e050d2fd6d96121",
+        "bytes": 5253
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "3c33f748d61ad84d642c95817249955eb68efd903ff2cd504caaf3a8e80b8951",
+            "archive_path": "/home/cody/zesislar-archive/sha256/3c/3c33f748d61ad84d642c95817249955eb68efd903ff2cd504caaf3a8e80b8951",
+            "bytes": 620
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "3c33f748d61ad84d642c95817249955eb68efd903ff2cd504caaf3a8e80b8951",
+            "archive_path": "/home/cody/zesislar-archive/sha256/3c/3c33f748d61ad84d642c95817249955eb68efd903ff2cd504caaf3a8e80b8951",
+            "bytes": 620
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "fb4a307379fbc1ac63c49e3d3ec305ea7d457c2061d4204338fa66af6dfc1dd9",
+            "archive_path": "/home/cody/zesislar-archive/sha256/fb/fb4a307379fbc1ac63c49e3d3ec305ea7d457c2061d4204338fa66af6dfc1dd9",
+            "bytes": 3835
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ac4Backedge",
+      "source_pc": "0x800d6ac4",
+      "join_pc": "0x800d6ac4",
+      "automatic_closed": false,
+      "native_outcome": "primary-unavailable",
+      "first_residual_class": "setup-unavailable",
+      "first_residual": "rocq_start timed out after 60.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "native_groups_counts": null,
+      "native_evidence": {
+        "sha256": "dd29a139aa6dbf0b0e66f71d0415aab60fbb75953bc58540729212fbc3a5f1e6",
+        "archive_path": "/home/cody/zesislar-archive/sha256/dd/dd29a139aa6dbf0b0e66f71d0415aab60fbb75953bc58540729212fbc3a5f1e6",
+        "bytes": 3157
+      },
+      "source": {
+        "sha256": "7dc48b21cc7910408d35722a72cb4bc2fb441c4f85a860ebbe30771ddd707a46",
+        "archive_path": "/home/cody/zesislar-archive/sha256/7d/7dc48b21cc7910408d35722a72cb4bc2fb441c4f85a860ebbe30771ddd707a46",
+        "bytes": 5275
+      },
+      "full_exports": [],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6970",
+      "source_pc": "0x800d6960",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "primary-unavailable",
+      "first_residual_class": "setup-unavailable",
+      "first_residual": "rocq_start timed out after 60.0s. Retry with `rocq_start(..., timeout=<seconds>)` (e.g. `timeout=180` for files with heavy library imports). Server-side defaults: ROCQ_PET_TIMEOUT (base, default 30s), ROCQ_QUERY_TIMEOUT_CAP (cap, default 300s). If the response also includes `clamped_timeout`, you have hit `ROCQ_QUERY_TIMEOUT_CAP`; call `rocq_diag` for memory headroom and consider `rocq_start(..., force_restart=True)` instead of bumping further.",
+      "native_groups_counts": null,
+      "native_evidence": {
+        "sha256": "e25417de73253ae994b7dbd7c7bbf9542cb02418ed15c20e3a4a3ab575a6bf13",
+        "archive_path": "/home/cody/zesislar-archive/sha256/e2/e25417de73253ae994b7dbd7c7bbf9542cb02418ed15c20e3a4a3ab575a6bf13",
+        "bytes": 3154
+      },
+      "source": {
+        "sha256": "37fd649b2b2a42a9e46735c55669df98617c9f7d97b643c600df84178337a3f5",
+        "archive_path": "/home/cody/zesislar-archive/sha256/37/37fd649b2b2a42a9e46735c55669df98617c9f7d97b643c600df84178337a3f5",
+        "bytes": 4910
+      },
+      "full_exports": [],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From69e0",
+      "source_pc": "0x800d69e0",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "storage-cons-witness",
+      "first_residual": "\u2203 (hd : bv 8) (tl : list (bv 8)), decodeItemBeforeStorage args = hd :: tl \u2227 length tl = 39%nat",
+      "native_groups_counts": {
+        "goals": 2,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "372032aaf0412ed226d93fe18c51aa3a0d6d2e5f5e62732d00371e8d615322bd",
+        "archive_path": "/home/cody/zesislar-archive/sha256/37/372032aaf0412ed226d93fe18c51aa3a0d6d2e5f5e62732d00371e8d615322bd",
+        "bytes": 38768
+      },
+      "source": {
+        "sha256": "a9dd8db638105f544df94fcde0b03ba4e4d618c3df19cb574aef33367dbe66b0",
+        "archive_path": "/home/cody/zesislar-archive/sha256/a9/a9dd8db638105f544df94fcde0b03ba4e4d618c3df19cb574aef33367dbe66b0",
+        "bytes": 5070
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "4980bd5b74ccb67665881985d4b872e6ab40ddbe26c3a87bfa220303c7d1345f",
+            "archive_path": "/home/cody/zesislar-archive/sha256/49/4980bd5b74ccb67665881985d4b872e6ab40ddbe26c3a87bfa220303c7d1345f",
+            "bytes": 730
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "4980bd5b74ccb67665881985d4b872e6ab40ddbe26c3a87bfa220303c7d1345f",
+            "archive_path": "/home/cody/zesislar-archive/sha256/49/4980bd5b74ccb67665881985d4b872e6ab40ddbe26c3a87bfa220303c7d1345f",
+            "bytes": 730
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "4cc74d6308d221c3830cb61978bb7a615d20b87be6222bce39b2f253d41d4b3f",
+            "archive_path": "/home/cody/zesislar-archive/sha256/4c/4cc74d6308d221c3830cb61978bb7a615d20b87be6222bce39b2f253d41d4b3f",
+            "bytes": 4850
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6a08",
+      "source_pc": "0x800d6a08",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "storage-cons-witness",
+      "first_residual": "\u2203 (hd : bv 8) (tl : list (bv 8)), decodeItemBeforeStorage args = hd :: tl \u2227 length tl = 39%nat",
+      "native_groups_counts": {
+        "goals": 2,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "2820ca7324d60a87ea1b8fd669da2b8a030d0d729af2ce645e0495ff2da05ed4",
+        "archive_path": "/home/cody/zesislar-archive/sha256/28/2820ca7324d60a87ea1b8fd669da2b8a030d0d729af2ce645e0495ff2da05ed4",
+        "bytes": 43078
+      },
+      "source": {
+        "sha256": "38b411488b9f7071bee1396f17e481315bb3485c528538c7f27d6d4eb18d3495",
+        "archive_path": "/home/cody/zesislar-archive/sha256/38/38b411488b9f7071bee1396f17e481315bb3485c528538c7f27d6d4eb18d3495",
+        "bytes": 5438
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "621594454d0e76a56feffe70371d747d159e0bf09ac6c03a7a3f2c824c26b137",
+            "archive_path": "/home/cody/zesislar-archive/sha256/62/621594454d0e76a56feffe70371d747d159e0bf09ac6c03a7a3f2c824c26b137",
+            "bytes": 939
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "621594454d0e76a56feffe70371d747d159e0bf09ac6c03a7a3f2c824c26b137",
+            "archive_path": "/home/cody/zesislar-archive/sha256/62/621594454d0e76a56feffe70371d747d159e0bf09ac6c03a7a3f2c824c26b137",
+            "bytes": 939
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "28cdc7ddb186b17b16a5e1e45b8dae4dafcdad6514fdf4ae8222e042d89976af",
+            "archive_path": "/home/cody/zesislar-archive/sha256/28/28cdc7ddb186b17b16a5e1e45b8dae4dafcdad6514fdf4ae8222e042d89976af",
+            "bytes": 5506
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6a38",
+      "source_pc": "0x800d6a38",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "source-domain-gap",
+      "first_residual": "decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args",
+      "native_groups_counts": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "d8adc65125153644fad7d097723c6ea601575432eb6a95bb7494eb82cffc264b",
+        "archive_path": "/home/cody/zesislar-archive/sha256/d8/d8adc65125153644fad7d097723c6ea601575432eb6a95bb7494eb82cffc264b",
+        "bytes": 47410
+      },
+      "source": {
+        "sha256": "4dd1c3c193a7d65127b249bf347d03f7eeb7085191ab9315f468d746f70dd351",
+        "archive_path": "/home/cody/zesislar-archive/sha256/4d/4dd1c3c193a7d65127b249bf347d03f7eeb7085191ab9315f468d746f70dd351",
+        "bytes": 5393
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "f1b0814ddc563ffc48527b59b3bbf501e6a9906a5dc77cbe7511ba6fd15d1807",
+            "archive_path": "/home/cody/zesislar-archive/sha256/f1/f1b0814ddc563ffc48527b59b3bbf501e6a9906a5dc77cbe7511ba6fd15d1807",
+            "bytes": 780
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "f1b0814ddc563ffc48527b59b3bbf501e6a9906a5dc77cbe7511ba6fd15d1807",
+            "archive_path": "/home/cody/zesislar-archive/sha256/f1/f1b0814ddc563ffc48527b59b3bbf501e6a9906a5dc77cbe7511ba6fd15d1807",
+            "bytes": 780
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "205c35a0968dfdbda30fcc75be24b2130d11aadad3093049d84a10e9e36a9c2c",
+            "archive_path": "/home/cody/zesislar-archive/sha256/20/205c35a0968dfdbda30fcc75be24b2130d11aadad3093049d84a10e9e36a9c2c",
+            "bytes": 5402
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6a6c",
+      "source_pc": "0x800d6a6c",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "storage-cons-witness",
+      "first_residual": "\u2203 (hd : bv 8) (tl : list (bv 8)), decodeItemBeforeStorage args = hd :: tl \u2227 length tl = 39%nat",
+      "native_groups_counts": {
+        "goals": 2,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "883b06446155826d4d3cc3c578b2baa45fa2baac5a1a4301598c64b43915c076",
+        "archive_path": "/home/cody/zesislar-archive/sha256/88/883b06446155826d4d3cc3c578b2baa45fa2baac5a1a4301598c64b43915c076",
+        "bytes": 35427
+      },
+      "source": {
+        "sha256": "63e1f45b1339d3a7f659d0b98d7e9f94cd22ebb09ff29d731983eaae36e87b37",
+        "archive_path": "/home/cody/zesislar-archive/sha256/63/63e1f45b1339d3a7f659d0b98d7e9f94cd22ebb09ff29d731983eaae36e87b37",
+        "bytes": 4979
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "9e422418b45299264d8f5d804941bc811f6fc13384202d6b0515c19581643f44",
+            "archive_path": "/home/cody/zesislar-archive/sha256/9e/9e422418b45299264d8f5d804941bc811f6fc13384202d6b0515c19581643f44",
+            "bytes": 693
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "9e422418b45299264d8f5d804941bc811f6fc13384202d6b0515c19581643f44",
+            "archive_path": "/home/cody/zesislar-archive/sha256/9e/9e422418b45299264d8f5d804941bc811f6fc13384202d6b0515c19581643f44",
+            "bytes": 693
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "cf139c80ec0084b796d5afa6f91a072b4a8608f485fba9238c5ab2a031ef2245",
+            "archive_path": "/home/cody/zesislar-archive/sha256/cf/cf139c80ec0084b796d5afa6f91a072b4a8608f485fba9238c5ab2a031ef2245",
+            "bytes": 3469
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6aa8",
+      "source_pc": "0x800d6aa8",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "storage-cons-witness",
+      "first_residual": "\u2203 (hd : bv 8) (tl : list (bv 8)), decodeItemBeforeStorage args = hd :: tl \u2227 length tl = 39%nat",
+      "native_groups_counts": {
+        "goals": 2,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "059ab9f70da3a01bae2dcc5336fec8881137d845e83a06bd11ad929195349a85",
+        "archive_path": "/home/cody/zesislar-archive/sha256/05/059ab9f70da3a01bae2dcc5336fec8881137d845e83a06bd11ad929195349a85",
+        "bytes": 43088
+      },
+      "source": {
+        "sha256": "01ab1df07f67a7357dc24436ed3df670d3387fa797c636e33f37508585489827",
+        "archive_path": "/home/cody/zesislar-archive/sha256/01/01ab1df07f67a7357dc24436ed3df670d3387fa797c636e33f37508585489827",
+        "bytes": 5438
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "0c37872dab5ff130dd4843a70cee4e2aef584f023dd06d9c7168cc1810a7689c",
+            "archive_path": "/home/cody/zesislar-archive/sha256/0c/0c37872dab5ff130dd4843a70cee4e2aef584f023dd06d9c7168cc1810a7689c",
+            "bytes": 939
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "0c37872dab5ff130dd4843a70cee4e2aef584f023dd06d9c7168cc1810a7689c",
+            "archive_path": "/home/cody/zesislar-archive/sha256/0c/0c37872dab5ff130dd4843a70cee4e2aef584f023dd06d9c7168cc1810a7689c",
+            "bytes": 939
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "5955f75ffa267037fdd8147af4501ebdc6be1759e51b5fb5b3aad2150e118943",
+            "archive_path": "/home/cody/zesislar-archive/sha256/59/5955f75ffa267037fdd8147af4501ebdc6be1759e51b5fb5b3aad2150e118943",
+            "bytes": 5504
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6ad8",
+      "source_pc": "0x800d6ad8",
+      "join_pc": "0x800d6ae0",
+      "automatic_closed": false,
+      "native_outcome": "native-residual",
+      "first_residual_class": "source-domain-gap",
+      "first_residual": "decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args",
+      "native_groups_counts": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_evidence": {
+        "sha256": "0f9f3302609496199eab9722854daa505cdac296ba21ef87470102c98c58156d",
+        "archive_path": "/home/cody/zesislar-archive/sha256/0f/0f9f3302609496199eab9722854daa505cdac296ba21ef87470102c98c58156d",
+        "bytes": 47448
+      },
+      "source": {
+        "sha256": "06ec231e31e184c63ed17e1f331a72edc2905c57189586f2810a4fba816a4105",
+        "archive_path": "/home/cody/zesislar-archive/sha256/06/06ec231e31e184c63ed17e1f331a72edc2905c57189586f2810a4fba816a4105",
+        "bytes": 5393
+      },
+      "full_exports": [
+        {
+          "checkpoint": "entry",
+          "archive": {
+            "sha256": "4ff9e524f6c625840b377b13c783b160623d204e61f6da312613de8497770b2b",
+            "archive_path": "/home/cody/zesislar-archive/sha256/4f/4ff9e524f6c625840b377b13c783b160623d204e61f6da312613de8497770b2b",
+            "bytes": 780
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "archive": {
+            "sha256": "4ff9e524f6c625840b377b13c783b160623d204e61f6da312613de8497770b2b",
+            "archive_path": "/home/cody/zesislar-archive/sha256/4f/4ff9e524f6c625840b377b13c783b160623d204e61f6da312613de8497770b2b",
+            "bytes": 780
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "archive": {
+            "sha256": "5ba7fd460eca33957014280d12602e3be9567b2eed211b2f7e2a02097e0631fd",
+            "archive_path": "/home/cody/zesislar-archive/sha256/5b/5ba7fd460eca33957014280d12602e3be9567b2eed211b2f7e2a02097e0631fd",
+            "bytes": 5416
+          }
+        }
+      ],
+      "scope": "Stronger whole-block obligation with every actual CFG successor; no oracle premise."
+    }
+  ],
+  "automatic_closed": 0,
+  "native_residual": 8,
+  "native_setup_unavailable": 5,
+  "contract_closures": 0,
+  "source_domain_gap": [
+    "0x800d6a14",
+    "0x800d6ab4",
+    "0x800d6a38",
+    "0x800d6ad8"
+  ],
+  "limitations": [
+    "Captured BLK_STOP ownership remains rejected.",
+    "Two capture-only fold adapters encountered Option.IsNone during definition elaboration.",
+    "Private early attempts used stale import artifacts and are invalid for rule classification.",
+    "All 23 native import modules were refreshed after the static compiler diagnostic.",
+    "No hand-proof oracle was imported into an automatic proof.",
+    "No contract, ISA semantic, or rule changed.",
+    "Native residuals prevent final Qed, compilation, and assumption verification.",
+    "Primary-unavailable entries provide no proof outcome.",
+    "The marginal arms did not run; I6 effects remain unmeasured."
+  ],
+  "gate": {
+    "status": "passed",
+    "exit_code": 0,
+    "jobs": 6,
+    "wall_seconds": 261.1418156790314,
+    "timing": {
+      "make_pid": 3910564,
+      "start_ticks": 91328901,
+      "clock_ticks_per_second": 100,
+      "started_monotonic": 913289.01,
+      "exit_observed_monotonic": 913550.151815679,
+      "wall_seconds": 261.1418156790314,
+      "exit_poll_seconds": 0.05,
+      "method": "Kernel process start ticks to observed process exit. Endpoint polling can add up to 0.05 seconds."
+    },
+    "log": {
+      "sha256": "2853d71b64d7de9eba35802fb9fdbeb988b7e4aec3db74779142580ad47f98cf",
+      "archive_path": "/home/cody/zesislar-archive/sha256/28/2853d71b64d7de9eba35802fb9fdbeb988b7e4aec3db74779142580ad47f98cf",
+      "bytes": 53254
+    }
+  },
+  "start": "2026-10-05T14:43:22.952Z",
+  "local_peak_scope_bytes": 1611218944,
+  "local_peak_scope_limit_bytes": 6442450944,
+  "workers_max": 6,
+  "native_frozen_measurements": {
+    "elapsed_seconds": 227.9396031909855,
+    "peak_worker_mib_upper_bound": 1497.06640625,
+    "failed_start_pet_memory": "Can be unknown; this is not a complete peak-memory bound.",
+    "workers": 6
+  },
+  "rule_references": {
+    "storage_cons": "Finish.v:174 normalizes known lengths but does not construct cons witnesses. PureFacts.v:35 can expose folded conjunctions.",
+    "fold_witness": "Hooks.v:482 constructs tuples only when it finds a record constructor. The missing current domain remains independent.",
+    "domain_gap": "The four source entries do not own the current domain. The Level1 continuation contains it only in its future postcondition."
+  },
+  "supporting_I2_review": {
+    "recovery_sha256": "b7fb8eff981085dbfbc4848f522bae2682c4df7228c69b422241b2db1cdafa65",
+    "preflight_sha256": "26fc1f530df1300f094081748b56089d2e6f128145f27fbb8b44dfff3df9f29a",
+    "native_hashes_verified": 1011,
+    "unchanged_sources": 16,
+    "selected_unavailable_blocks": 12,
+    "driver_exception": "Committed I1 integration remains disabled for abstract retries."
+  },
+  "end": "2026-10-05T15:31:59.161843+00:00",
+  "child_min": 48.603497383333334,
+  "tokens_child": 17972347,
+  "token_samples": [
+    {
+      "timestamp": "2026-10-05T14:32:47.893000+00:00",
+      "total_tokens": 208610792
+    },
+    {
+      "timestamp": "2026-10-05T15:30:34.352000+00:00",
+      "total_tokens": 226583139
+    }
+  ],
+  "local_attempt_bundle_complete": {
+    "sha256": "c0ead2a6356c19c0196528d6a1e1297a48b58d5fa6f76b28575c1aaab81c2f34",
+    "archive_path": "/home/cody/zesislar-archive/sha256/c0/c0ead2a6356c19c0196528d6a1e1297a48b58d5fa6f76b28575c1aaab81c2f34",
+    "bytes": 1832960
+  }
+}
