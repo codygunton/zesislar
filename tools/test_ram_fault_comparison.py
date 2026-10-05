@@ -32,6 +32,24 @@ class RamFaultComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'beyond the RamFault import'):
             verify_pair(on, on, on)
 
+    def test_approved_arm_preserves_the_historical_ram_fault_import(self):
+        _, baseline = self.fixture()
+        module = 'ZesuSsz.Automation.Switches.IntegerArrayAddress'
+        on = 'Require Import ' + module + '.\n' + baseline
+        self.assertEqual(len(verify_pair(baseline, on, baseline, [module, SWITCH])), 64)
+        with self.assertRaisesRegex(ValueError, 'unauthorized'):
+            verify_pair(baseline, on, baseline, [SWITCH])
+        with self.assertRaisesRegex(ValueError, 'beyond approved'):
+            verify_pair(baseline, on.replace(': True.', ': False.'), baseline, [module, SWITCH])
+
+    def test_scope_query_records_each_approved_class(self):
+        modules = [SWITCH, 'ZesuSsz.Automation.Switches.RecordWitness']
+        source = activation_source(modules, True, modules)
+        self.assertIn('SCOPE ZesuSsz.Automation.Hooks.ZesuStepRecordWitness ACTIVE', source)
+        self.assertIn('SCOPE ZesuSsz.Automation.Hooks.ZesuStepRecordWitness INACTIVE', source)
+        self.assertIn('Check ZesuSsz.Automation.Hooks.ZesuStepRecordWitness.', source)
+        self.assertTrue(source.endswith('exact I.\nQed.\n'))
+
     def test_activation_queries_require_the_expected_switch_state(self):
         self.assertTrue(activation_source([SWITCH], True).startswith(
             'Require Import ZesuSsz.Automation.All.\n'))

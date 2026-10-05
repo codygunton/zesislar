@@ -156,6 +156,9 @@ async def probe_block(row, block, state, options):
     if options.get('feedback_dir'):
         env.update(ZESU_ROCQ_MCP_BINARY=str(HERE/'feedback_mcp.sh'),
                    ZESU_MCP_PYTHON=sys.executable, ZESU_FEEDBACK_DIR=options['feedback_dir'])
+    if options.get('complete_dir'):
+        env.update(ZESU_ROCQ_MCP_BINARY=str(HERE/'complete_goals_mcp.sh'),
+                   ZESU_MCP_PYTHON=sys.executable, ZESU_COMPLETE_GOAL_DIR=options['complete_dir'])
     parameters = StdioServerParameters(command=command, env=env)
     async with stdio_client(parameters) as (reader, writer):
         async with ClientSession(reader, writer) as session:
@@ -189,6 +192,32 @@ async def probe_block(row, block, state, options):
                 thread.start()
                 calls = []
                 steps = []
+                complete_exports = []
+                async def export_state(current, label):
+                    if not options.get('complete_dir'):
+                        return
+                    scope = 'post-Abort tooling state; no native discharge claim' if label == 'termination' else 'native checkpoint'
+                    if not current.get('success'):
+                        complete_exports.append({'success': False, 'checkpoint': label,
+                            'coverage': 'unavailable', 'scope': scope,
+                            'native_post_call_debts': 'unavailable without a valid successful returned state',
+                            'source_sha256': digest(path), 'source': str(path.resolve()),
+                            'session_directory': options['complete_dir'],
+                            'failed_response_sha256': hashlib.sha256(json.dumps(current, sort_keys=True).encode()).hexdigest()})
+                        return
+                    try:
+                        exported = await native_diagnostics.measured_call(session, 'rocq_complete_goals',
+                            {'from_state': current['state_id']}, steps, label='capture-' + label)
+                        if exported.get('success') and digest(exported['path']) != exported['sha256']:
+                            raise ValueError('The complete export hash does not match')
+                    except Exception as error:
+                        exported = {'success': False, 'error': str(error), 'state_id': current['state_id']}
+                    complete_exports.append({**exported, 'checkpoint': label,
+                        'coverage': 'complete' if exported.get('success') else 'unavailable', 'scope': scope,
+                        'source_sha256': digest(path), 'source': str(path.resolve()),
+                        'session_directory': options['complete_dir'],
+                        'owned_pet_pid': pet_pids[-1] if pet_pids else None})
+
                 load_result = None
                 proof_phase_entered = False
                 primary_tactic_entered = False
@@ -227,6 +256,7 @@ async def probe_block(row, block, state, options):
                     if pid:
                         pet_pids.append(pid)
                     proof_phase_entered = True
+                    await export_state(opened, 'entry')
                     body = source.split('Proof.\n', 1)[1].split('Abort.', 1)[0]
                     preparation, primary, recorders = native_diagnostics.primary_plan(body)
                     prepared_state = opened
@@ -236,12 +266,14 @@ async def probe_block(row, block, state, options):
                         calls.append(prepared_state)
                         if not prepared_state.get('success'):
                             raise RuntimeError(prepared_state.get('error', 'Rocq MCP rejected preparation'))
+                    await export_state(prepared_state, 'preparation')
                     deadline = time.monotonic() + options['seconds']
                     primary_tactic_entered = True
                     checked = await native_diagnostics.measured_check(session, prepared_state, primary,
                         options['seconds'], steps, 'primary-unchanged-zesu_block')
                     calls.append(checked)
                     primary_timeout = native_diagnostics.is_primary_timeout([checked])
+                    await export_state(checked, 'primary')
                     pet_diagnostics.append(data(await session.call_tool('rocq_diag', {})))
                     if not checked.get('success'):
                         raise RuntimeError(checked.get('error', 'Rocq MCP rejected the probe'))
@@ -251,12 +283,14 @@ async def probe_block(row, block, state, options):
                         calls.append(checked)
                         if not checked.get('success'):
                             raise RuntimeError(checked.get('error', 'Rocq MCP rejected the recorders'))
+                    await export_state(checked, 'recorders')
                     tail = await native_diagnostics.measured_check(session, checked,
                         'Abort.' + source.split('Abort.', 1)[1], remaining(), steps,
                         'primary-recorder-termination')
                     calls.append(tail)
                     if not tail.get('success'):
                         raise RuntimeError(tail.get('error', 'Rocq MCP rejected the recorder terminator'))
+                    await export_state(tail, 'termination')
                     output = '\n'.join(feedback(value, options.get('feedback_dir')) for value in calls)
                     if checked.get('proof_finished'):
                         output += '\nNo more goals.\n'
@@ -291,6 +325,9 @@ async def probe_block(row, block, state, options):
                     record['setup_path'] = ('coqc-scratch-LOAD/fresh-owned-Pet' if options.get('load_before_start')
                                             else 'coqc-scratch-LOAD') if load_result else 'MCP'
                     record['load_result'] = load_result
+                    record['complete_exports'] = [{**value, 'primary_capture_sha256': digest(path.with_suffix('.mcp.json'))} for value in complete_exports]
+                    record['complete_native_coverage'] = {'entry', 'preparation', 'primary', 'recorders'} <= {value['checkpoint'] for value in complete_exports} and all(value.get('success') for value in complete_exports if value['checkpoint'] != 'termination')
+                    record['complete_group_policy'] = 'Active, stack, shelf, and given-up groups remain separate from primary outcome classification'
                     record['primary_steps'] = steps
                     record['primary_tactic_entered'] = primary_tactic_entered
                     record['primary_invocation_policy'] = 'Preparation receives 60 seconds. The isolated primary receives the configured budget.'

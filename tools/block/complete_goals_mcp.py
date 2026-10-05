@@ -7,6 +7,9 @@ from pathlib import Path
 
 
 def write_export(complete, directory, state_id):
+    if complete is None:
+        return {'success': False, 'state_id': state_id, 'reason': 'no-proof-scope',
+                'error': 'Pet returned no proof scope. Goal groups are unavailable.'}
     value = complete.to_json()
     # Keep all active goals, stack entries, shelves and given-up goals.
     payload = (json.dumps(value, sort_keys=True, separators=(',', ':')) + '\n').encode()
@@ -18,7 +21,9 @@ def write_export(complete, directory, state_id):
     return {'success': True, 'state_id': state_id, 'path': str(path.resolve()),
             'sha256': hashlib.sha256(payload).hexdigest(), 'bytes': len(payload),
             'active_goals': len(value['goals']), 'stack_entries': len(value['stack']),
-            'shelved_goals': len(value['shelf']), 'given_up_goals': len(value['given_up'])}
+            'shelved_goals': len(value['shelf']), 'given_up_goals': len(value['given_up']),
+            'stack_frame_goal_counts': [{'left': len(frame[0]), 'right': len(frame[1])}
+                                        for frame in value['stack']]}
 
 
 def main():
@@ -26,6 +31,9 @@ def main():
     from rocq_mcp import server
     from rocq_mcp import interactive
     directory = Path(os.environ['ZESU_COMPLETE_GOAL_DIR']).resolve()
+    if os.environ.get('ZESU_FEEDBACK_DIR'):
+        from feedback_mcp import install_exporter
+        install_exporter(interactive, os.environ['ZESU_FEEDBACK_DIR'])
 
     @server.mcp.tool
     async def rocq_complete_goals(from_state: int, ctx: Context = None) -> dict:
