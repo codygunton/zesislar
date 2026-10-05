@@ -2,6 +2,8 @@
 from copy import deepcopy
 from pathlib import Path
 import sys
+import json
+import tempfile
 import unittest
 sys.path.insert(0, str(Path(__file__).parent / 'block'))
 import promote_table
@@ -38,13 +40,54 @@ class PromotionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'omits or repeats'):
             promote_table.coverage(cfg, design, native, design_sha256='bound')
 
+    def test_pending_render_contains_no_proof_terms(self):
+        report = promote_table.coverage(*self.fixture(), design_sha256='bound')
+        source = promote_table.render_slots(report)
+        self.assertNotIn('Definition decodeItemPromotedBody', source)
+        self.assertNotIn('Admitted', source)
+
+    def test_promoted_reference_has_the_exact_table_type(self):
+        source = promote_table.render_slots(dict(proof_slots=[dict(
+            pc='0x1000', status='proved', proof_lemma='Proofs.ExactBody')]))
+        self.assertIn(promote_table.table_statement(0x1000), source)
+        self.assertIn('  Proofs.ExactBody.', source)
+        self.assertNotIn('Lemma', source)
+
     def evidence(self):
         proof = dict(compiled=True, verified=True, assumptions=[], inherited_debts=[],
                      goal_groups=dict(goals=[], stack=[], shelf=[], given_up=[]))
         native = dict(proof, entry_pc=0x1000, successors=[0x1008, 0x1004],
                       scope='native designed boundary', block_closed=True, design_sha256='bound')
-        adapter = dict(proof, statement=promote_table.table_statement(0x1000), lemma='ExactBody')
+        adapter = dict(proof, statement=promote_table.table_statement(0x1000), lemma='Proofs.ExactBody')
         return native, adapter
+
+    def test_certificate_shape_accepts_all_edges(self):
+        _, design, _ = self.fixture()
+        native, adapter = self.evidence()
+        self.assertEqual(promote_table.validate_promotion(design['blocks'][0], native,
+            adapter, design_sha256='bound'), 'Proofs.ExactBody')
+
+    def test_certificate_hash_mismatch_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / 'evidence.json'
+            evidence.write_text('{}')
+            manifest = root / 'manifest.json'
+            manifest.write_text(json.dumps({'0x1000': {'native': {
+                'path': 'evidence.json', 'sha256': 'stale'}}}))
+            with self.assertRaisesRegex(ValueError, 'evidence hash'):
+                promote_table.load_promotions(manifest)
+
+    def test_missing_proof_source_binding_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / 'evidence.json'
+            evidence.write_text('{}')
+            manifest = root / 'manifest.json'
+            manifest.write_text(json.dumps({'0x1000': {'native': {
+                'path': 'evidence.json', 'sha256': promote_table.digest(evidence)}}}))
+            with self.assertRaisesRegex(ValueError, 'proof-source binding'):
+                promote_table.load_promotions(manifest)
 
     def test_partial_join_edge_is_rejected(self):
         _, design, _ = self.fixture()
