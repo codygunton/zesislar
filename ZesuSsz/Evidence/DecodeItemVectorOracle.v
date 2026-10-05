@@ -30,3 +30,35 @@ Definition decodeItemCandidateSummary (values : list Z) : list Z :=
   | candidateSuccess isList headerLen payloadLen =>
       [0; if isList then 1 else 0; headerLen; payloadLen]
   end.
+
+(* These fixtures check the approved readable ranges and byte-addressed output. *)
+Example decodeItemLayout_input_region :
+  decodeItemEntryLayout 0x40001000 1 0xa0002000 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_ram_input :
+  decodeItemEntryLayout 0xa0003000 1 0xa0002000 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_byte_output :
+  decodeItemEntryLayout 0x40001000 1 0xa0002001 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_output_below_ram :
+  ~ decodeItemEntryLayout 0x40001000 1 0x9fffffff 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_output_crosses_end :
+  ~ decodeItemEntryLayout 0x40001000 1 0xbfffffd9 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_unreadable_input :
+  ~ decodeItemEntryLayout 0x80001000 1 0xa0002000 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_input_crosses_end :
+  ~ decodeItemEntryLayout 0x7fffffff 2 0xa0002000 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_ram_input_crosses_end :
+  ~ decodeItemEntryLayout 0xbfffffff 2 0xa0002000 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_input_end :
+  decodeItemEntryLayout 0x7fffffff 1 0xa0002000 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.
+Example decodeItemLayout_output_end :
+  decodeItemEntryLayout 0x40001000 1 0xbfffffd8 0xa0001000 0x4000.
+Proof. vm_compute. intuition discriminate. Qed.

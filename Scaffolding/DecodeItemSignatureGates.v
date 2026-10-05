@@ -18,7 +18,14 @@ Definition ReviewedDecodeItemEntryLayout (inputPointer inputLength resultPointer
     (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
   separateRanges resultPointer 40
     (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
-  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0.
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0 /\
+  ((mapInputBufferAddress defaultMap <= inputPointer /\
+    inputPointer + inputLength <=
+      mapInputBufferAddress defaultMap + mapInputCapacity defaultMap) \/
+   (mapRamBase defaultMap <= inputPointer /\
+    inputPointer + inputLength <= machineRamEnd defaultMap)) /\
+  mapRamBase defaultMap <= resultPointer /\
+  resultPointer + 40 <= machineRamEnd defaultMap.
 
 Check (eq_refl : decodeItemEntryLayout = ReviewedDecodeItemEntryLayout).
 
