@@ -4,12 +4,88 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = ROOT / "build/stock-zisk/inventory.json"
 OUTPUT = ROOT / "ZesuSsz/Evidence/decode_item_block_design.json"
+
+CONTRACTS = "ZesuSsz/Contracts/"
+ENTRY_MODULES = {
+    "entry_prologue": "RlpDecodeItemContract",
+    "long_string_fold_header": "RlpDecodeItemFoldEntries",
+    "long_list_fold_header": "RlpDecodeItemFoldEntries",
+}
+RETURN_PCS = {0x800D698C, 0x800D69B0, 0x800D6A40,
+              0x800D6A78, 0x800D6AE0, 0x800D6B08}
+FOLD_PCS = {0x800D6A24, 0x800D6AC4}
+BRANCH_WITH_PREFIX = {0x800D697C, 0x800D69A4, 0x800D69D8,
+                      0x800D69E0, 0x800D69E8, 0x800D6A00,
+                      0x800D6A08, 0x800D6A64, 0x800D6A6C,
+                      0x800D6AA8}
+FOLD_INITIALIZERS = {0x800D6A14, 0x800D6AB4}
+FOLD_LENGTH_CHECKS = {0x800D6A38, 0x800D6AD8}
+
+
+def block_entry_binding(start: int) -> dict:
+    if start == 0x800D6960:
+        module = ENTRY_MODULES["entry_prologue"]
+        name = "decodeItemEntryResources"
+        binders = [("domain", "DecodeItemArgs -> Prop"),
+                   ("args", "DecodeItemArgs")]
+        arguments = ["decodeItemC1BDomain", "args"]
+    elif start in FOLD_PCS:
+        module = ENTRY_MODULES["long_string_fold_header"]
+        name = f"decodeItemEntryAt{start:08x}"
+        binders = [("args", "DecodeItemArgs")]
+        arguments = ["args"]
+    elif start in RETURN_PCS:
+        module = "RlpDecodeItemBlockEntries"
+        name = f"decodeItemEntryAt{start:08x}"
+        binders = [("args", "DecodeItemArgs"),
+                   ("locals", "DecodeItemReturnLocals")]
+        if start == 0x800D698C:
+            binders += [("pointerBytes", "list byte"),
+                        ("lengthBytes", "list byte")]
+        arguments = [name for name, _ in binders]
+    else:
+        module = "DecodeItemBranchEntries"
+        name = f"decodeItemEntryAt{start:08x}"
+        binders = [("args", "DecodeItemArgs")]
+        if start in FOLD_INITIALIZERS | FOLD_LENGTH_CHECKS:
+            binders += [("n", "Z"), ("payloadStart", "Z"),
+                        ("lengthBytes", "list byte"),
+                        ("frameBytes", "list byte")]
+            if start in FOLD_INITIALIZERS:
+                binders += [("oldAcc", "bv 64"), ("oldCursor", "bv 64")]
+            binders += [("loaded", "bv 64")]
+        else:
+            binders += [("frameBytes", "list byte")]
+            if start in BRANCH_WITH_PREFIX:
+                binders += [("x13", "bv 64")]
+        arguments = [name for name, _ in binders]
+    source = CONTRACTS + module + ".v"
+    if not re.search(r"^Definition " + re.escape(name) + r"\b",
+                     (ROOT / source).read_text(), re.MULTILINE):
+        raise RuntimeError(f"missing Rocq entry {name} in {source}")
+    qualified = "ZesuSsz.Contracts." + module + "." + name
+    sources = ["build/stock-zisk/inventory.json",
+               "build/stock-zisk/decodeItem.raw.dump", source]
+    if start in RETURN_PCS:
+        sources += [CONTRACTS + "RlpDecodeItemReturnImageDef.v",
+                    CONTRACTS + "RlpDecodeItemReturnImages.v"]
+    if start in FOLD_PCS | FOLD_INITIALIZERS | FOLD_LENGTH_CHECKS:
+        sources += [CONTRACTS + "RlpDecodeItemByteFold.v",
+                    CONTRACTS + "RlpDecodeItemByteFoldBlocks.v"]
+    return {
+        "entry_definition": qualified,
+        "binders": [{"name": name, "type": typ} for name, typ in binders],
+        "arguments": arguments,
+        "resource_predicate": qualified,
+        "source_hashes": {path: sha256(ROOT / path) for path in sources},
+    }
 
 
 def address(value: int) -> str:
@@ -330,11 +406,11 @@ def build() -> dict:
                 "return_continuation": "decodeItemReturnAddress args and saved x8",
             },
         }
+        row.update(block_entry_binding(start))
+        row["needed_resources"]["rocq_entry"] = row["entry_definition"]
         if start == function["entry"]:
             row["incoming_edges"] = [{"from_block": "caller", "from_instruction": None,
                                       "kind": "entry", "path_condition": {"op": "true"}}]
-            row["needed_resources"]["rocq_entry"] = (
-                "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources")
         if start in LOOP_HINTS:
             row["invariant_hint"] = LOOP_HINTS[start]
         branch_pc = block["end"] - 4

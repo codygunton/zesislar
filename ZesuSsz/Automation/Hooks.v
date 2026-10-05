@@ -21,6 +21,10 @@ Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
+Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
+Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
+Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
+Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 
@@ -95,6 +99,86 @@ Global Instance : LithiumUnfold (@decodeItemFoldCheckedResources) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldEntryObligation) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldPreservationObligation) := I.
 Global Instance : LithiumUnfold (@decodeItemFoldExitObligation) := I.
+Global Typeclasses Opaque decodeItemEntryAt800d6a24
+  decodeItemEntryAt800d6ac4 decodeItemBodyAt800d6a24
+  decodeItemBodyAt800d6ac4.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a24) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ac4) := I.
+Global Instance : LithiumUnfold (@decodeItemBodyAt800d6a24) := I.
+Global Instance : LithiumUnfold (@decodeItemBodyAt800d6ac4) := I.
+Global Typeclasses Opaque decodeItemBranchContinuation decodeItemBranchBase
+  decodeItemEntryAt800d6974 decodeItemEntryAt800d697c
+  decodeItemEntryAt800d69a4 decodeItemEntryAt800d69d8
+  decodeItemEntryAt800d69e0 decodeItemEntryAt800d69e8
+  decodeItemEntryAt800d6a00 decodeItemEntryAt800d6a08
+  decodeItemEntryAt800d6a14 decodeItemEntryAt800d6a38
+  decodeItemEntryAt800d6a64 decodeItemEntryAt800d6a6c
+  decodeItemEntryAt800d6aa8 decodeItemEntryAt800d6ab4
+  decodeItemEntryAt800d6ad8.
+Global Instance : LithiumUnfold (@decodeItemBranchContinuation) := I.
+Global Instance : LithiumUnfold (@decodeItemBranchBase) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6974) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d697c) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d69a4) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d69d8) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d69e0) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d69e8) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a00) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a08) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a14) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a38) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a64) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a6c) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6aa8) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ab4) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ad8) := I.
+Global Typeclasses Opaque decodeItemReturnEntryCore
+  decodeItemEntryAt800d698c decodeItemEntryAt800d69b0
+  decodeItemEntryAt800d6a40 decodeItemEntryAt800d6a78
+  decodeItemEntryAt800d6ae0 decodeItemEntryAt800d6b08
+  decodeItemReturnOkExit decodeItemReturnErrorExit
+  decodeItemReturnBlockObligation
+  decodeItemReturnAt800d698c decodeItemReturnAt800d69b0
+  decodeItemReturnAt800d6a40 decodeItemReturnAt800d6a78
+  decodeItemReturnAt800d6ae0 decodeItemReturnAt800d6b08.
+Global Instance : LithiumUnfold (@decodeItemReturnEntryCore) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d698c) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d69b0) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a40) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a78) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ae0) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6b08) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnOkExit) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnErrorExit) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnBlockObligation) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnAt800d698c) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnAt800d69b0) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnAt800d6a40) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnAt800d6a78) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnAt800d6ae0) := I.
+Global Instance : LithiumUnfold (@decodeItemReturnAt800d6b08) := I.
+Global Typeclasses Opaque decodeItemJoinTransferObligation
+  decodeItemJoin698cFrom697c decodeItemJoin698cFrom69e8
+  decodeItemJoin6a24From6a14 decodeItemJoin6a24Backedge
+  decodeItemJoin6ac4From6ab4 decodeItemJoin6ac4Backedge
+  decodeItemJoin6ae0From6970 decodeItemJoin6ae0From69e0
+  decodeItemJoin6ae0From6a08 decodeItemJoin6ae0From6a38
+  decodeItemJoin6ae0From6a6c decodeItemJoin6ae0From6aa8
+  decodeItemJoin6ae0From6ad8.
+Global Instance : LithiumUnfold (@decodeItemJoinTransferObligation) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin698cFrom697c) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin698cFrom69e8) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6a24From6a14) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6a24Backedge) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ac4From6ab4) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ac4Backedge) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6970) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From69e0) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6a08) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6a38) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6a6c) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6aa8) := I.
+Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6ad8) := I.
 
 (** Give Lithium its separating-conjunction goal form. *)
 Ltac zesu_prepare_uninit_goal :=
