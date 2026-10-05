@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "item": "Q56-low-mask",
+  "root": "89ae7237",
+  "working_base": "b76e744a00199607e0609926b42088b1e1b57146",
+  "files": {
+    "ZesuSsz/Automation/BitvectorFacts.v": "159ba921ce893922b561139c7d4b9397893fe76e99773f183b9bb385f37b09dd",
+    "ZesuSsz/Automation/Hooks.v": "eb7b6b092ef139d625b21c5e182c43708b9c900b2c6e10262fa2ab1fe83e9892",
+    "ZesuSsz/Automation/Switches/LowMask.v": "ac192c99a6f5bad4a3797818eb7b3160b9f81285f6742b2e3adf40742a269bc5",
+    "ZesuSsz/Proofs/Tests/LowMaskHook.v": "d6f11fcd2eac278421682ce55e6edc14fbedfc0bb1a70e2e82daf96fbe42c186",
+    "Scaffolding/probes/q56-low-mask/ComparisonOff.v": "ae1c5b4aab28bfd9c1c04f35e8f436924037dac2a44544a0119b25db0b26549c",
+    "Scaffolding/probes/q56-low-mask/ComparisonOn.v": "52f134faad349d997f59d25a7546ed82558071b009e5bac191a3b68a3b129db1"
+  },
+  "archives": [
+    {
+      "sha256": "462630e2f28ed60b4d0be794cd91f158fd55ccc9a11b8261e43538b59799112d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/46/462630e2f28ed60b4d0be794cd91f158fd55ccc9a11b8261e43538b59799112d",
+      "bytes": 9573,
+      "label": "_build/q56-low-mask/Off/RESULT.json"
+    },
+    {
+      "sha256": "08fe85d77d963021f76931133c67d9cd7e82d35a18e58da00ebb4e87d0e29b01",
+      "archive_path": "/home/cody/zesislar-archive/sha256/08/08fe85d77d963021f76931133c67d9cd7e82d35a18e58da00ebb4e87d0e29b01",
+      "bytes": 7899,
+      "label": "_build/q56-low-mask/On/RESULT.json"
+    },
+    {
+      "sha256": "cba21e2d172c93086820579150da111bd177ddf1aa8d35cb9fca1a4d357b2d9e",
+      "archive_path": "/home/cody/zesislar-archive/sha256/cb/cba21e2d172c93086820579150da111bd177ddf1aa8d35cb9fca1a4d357b2d9e",
+      "bytes": 13308,
+      "label": "_build/q56-low-mask/Tests/RESULT.json"
+    },
+    {
+      "sha256": "86450a27a2166f7629cf7f130ba8b72961899b63f82ae95388788bbd2db6cf5d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/86/86450a27a2166f7629cf7f130ba8b72961899b63f82ae95388788bbd2db6cf5d",
+      "bytes": 4642,
+      "label": "_build/q56-low-mask/NEGATIVE_COMBINED.json"
+    },
+    {
+      "sha256": "5f37b76d5d18433d0452d927af2d1a86201ef701be899b40c8eb143a86f5aee0",
+      "archive_path": "/home/cody/zesislar-archive/sha256/5f/5f37b76d5d18433d0452d927af2d1a86201ef701be899b40c8eb143a86f5aee0",
+      "bytes": 4433,
+      "label": "_build/q56-low-mask/NEGATIVE_DEBUG.json"
+    },
+    {
+      "sha256": "74693627e7e61b0f321fcbeaf4890c028b17b726d8c0f5007e06f34a1a32174c",
+      "archive_path": "/home/cody/zesislar-archive/sha256/74/74693627e7e61b0f321fcbeaf4890c028b17b726d8c0f5007e06f34a1a32174c",
+      "bytes": 1156,
+      "label": "_build/q56-low-mask/DEBUG.json"
+    },
+    {
+      "sha256": "6ca55d66a01719c8148aa4a75fc2623cae8fa4ce94a94355fa7f1cbf2eea9109",
+      "archive_path": "/home/cody/zesislar-archive/sha256/6c/6ca55d66a01719c8148aa4a75fc2623cae8fa4ce94a94355fa7f1cbf2eea9109",
+      "bytes": 50820,
+      "label": "check-fast.log"
+    }
+  ],
+  "mcp": {
+    "Off": {
+      "elapsed_s": 7.030478565022349,
+      "peak_scope_bytes": 725204992,
+      "calls": [
+        {
+          "tool": "rocq_health",
+          "elapsed_s": 1.4441471999743953,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_start",
+          "elapsed_s": 1.0559705959167331,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_step_multi",
+          "elapsed_s": 0.010966530069708824,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.012482597958296537,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_compile_file",
+          "elapsed_s": 2.0618074579397216,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_verify",
+          "elapsed_s": 1.6343494879547507,
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "tool": "rocq_diag",
+          "elapsed_s": 0.002687459927983582,
+          "success": true,
+          "assumptions": null
+        }
+      ]
+    },
+    "On": {
+      "elapsed_s": 6.845979400910437,
+      "peak_scope_bytes": 725295104,
+      "calls": [
+        {
+          "tool": "rocq_health",
+          "elapsed_s": 1.4335752949118614,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_start",
+          "elapsed_s": 1.0524039410520345,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_step_multi",
+          "elapsed_s": 0.005848782951943576,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.0040624410612508655,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_compile_file",
+          "elapsed_s": 2.0414196589263156,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_verify",
+          "elapsed_s": 1.600207241019234,
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "tool": "rocq_diag",
+          "elapsed_s": 0.0025799860013648868,
+          "success": true,
+          "assumptions": null
+        }
+      ]
+    },
+    "Tests": {
+      "elapsed_s": 12.871163122006692,
+      "peak_scope_bytes": 1277427712,
+      "calls": [
+        {
+          "tool": "rocq_health",
+          "elapsed_s": 1.4528484150068834,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_start",
+          "elapsed_s": 1.0754960619378835,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_step_multi",
+          "elapsed_s": 0.012747913948260248,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_check",
+          "elapsed_s": 0.005639055976644158,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_compile_file",
+          "elapsed_s": 1.0776069919811562,
+          "success": true,
+          "assumptions": null
+        },
+        {
+          "tool": "rocq_verify",
+          "elapsed_s": 8.557509482023306,
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "tool": "rocq_diag",
+          "elapsed_s": 0.002374046016484499,
+          "success": true,
+          "assumptions": null
+        }
+      ]
+    }
+  },
+  "regressions": 9,
+  "instruction_closure": 0,
+  "block_closure": 0,
+  "source_pointer_limit": "Join6ae0/Mask.v proves mask127 without addition. The announced six-line mask255/add64 instance was not present in that source. Parent was notified.",
+  "rework": "The ssreflect rewrite rejected a reflexive offset equation. The rule now applies the integer lemma before rewriting the offset. The solver notation normalized the goal before the primitive hook. The machine-bounds entry now tests the switched hook first.",
+  "gate": {
+    "start": "2026-10-05T06:10:36.274436+00:00",
+    "end": "2026-10-05T06:13:07.835903+00:00",
+    "elapsed_s": 151.56147617602255,
+    "exit": 0,
+    "jobs": 6,
+    "peak_child_rss_kib": 2209904
+  },
+  "item_window": {
+    "start": "2026-10-05T05:49:34.261000+00:00",
+    "end": "2026-10-05T06:13:50.122173+00:00",
+    "child_minutes": 24.264352883333334,
+    "tokens_child": 8761482,
+    "token_before": {
+      "timestamp": "2026-10-05T05:07:17.335Z",
+      "total": 158130267
+    },
+    "token_end": {
+      "timestamp": "2026-10-05T06:13:12.879Z",
+      "total": 166891749
+    }
+  }
+}
