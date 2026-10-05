@@ -28,9 +28,8 @@ Record DecodeItemReturnLocals : Type := {
 }.
 
 Definition decodeItemReturnEntryCore `{!islaG Sigma} `{!threadG}
-    (pc : Z) (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
   (reg_col zesu_sys_regs ∗
-   "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 pc) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (returnA1 locals) ∗
    "x12" ↦ᵣ RVal_Bits (returnA2 locals) ∗
@@ -56,7 +55,7 @@ Definition decodeItemReturnEntryCore `{!islaG Sigma} `{!threadG}
 Definition decodeItemEntryAt800d698c `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)
     (pointerBytes lengthBytes : list byte) : iProp Sigma :=
-  (decodeItemReturnEntryCore 0x800d698c args locals ∗
+  (decodeItemReturnEntryCore args locals ∗
    ⌜fieldImage (returnStorage locals) 0 pointerBytes /\
      fieldImage (returnStorage locals) 8 lengthBytes /\
      fieldImage (returnStorage locals) 32 [Z_to_bv 8 0; Z_to_bv 8 0] /\
@@ -67,31 +66,31 @@ Definition decodeItemEntryAt800d698c `{!islaG Sigma} `{!threadG}
 
 Definition decodeItemEntryAt800d69b0 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
-  (decodeItemReturnEntryCore 0x800d69b0 args locals ∗
+  (decodeItemReturnEntryCore args locals ∗
    ⌜returnStorage locals = decodeItemBeforeStorage args /\
      returnA1 locals = Z_to_bv 64 (decodeItemInputPointer args) /\
      returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)⌝)%I.
 
 Definition decodeItemEntryAt800d6a40 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
-  (decodeItemReturnEntryCore 0x800d6a40 args locals ∗
+  (decodeItemReturnEntryCore args locals ∗
    ⌜returnStorage locals = decodeItemBeforeStorage args /\
      returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)⌝)%I.
 
 Definition decodeItemEntryAt800d6a78 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
-  (decodeItemReturnEntryCore 0x800d6a78 args locals ∗
+  (decodeItemReturnEntryCore args locals ∗
    ⌜returnStorage locals = decodeItemBeforeStorage args /\
      returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)⌝)%I.
 
 Definition decodeItemEntryAt800d6ae0 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
-  (decodeItemReturnEntryCore 0x800d6ae0 args locals ∗
+  (decodeItemReturnEntryCore args locals ∗
    ⌜returnStorage locals = decodeItemBeforeStorage args⌝)%I.
 
 Definition decodeItemEntryAt800d6b08 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
-  (decodeItemReturnEntryCore 0x800d6b08 args locals ∗
+  (decodeItemReturnEntryCore args locals ∗
    ⌜returnStorage locals = decodeItemBeforeStorage args /\
      returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)⌝)%I.
 

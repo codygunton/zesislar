@@ -12,28 +12,30 @@ Open Scope Z_scope.
 Lemma decodeItemStringHeaderIntro `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n i payloadStart : Z)
     (lengthBytes frameBytes : list byte) (loaded : bv 64) :
+  i < n ->
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
   decodeItemSavedFrameFacts args frameBytes ->
   ⊢ (decodeItemByteFoldStringHeader args n i payloadStart lengthBytes frameBytes loaded ∗
    decodeItemBranchContinuation args -∗ decodeItemEntryAt800d6a24 args)%I.
 Proof.
-  intros Hdomain Hframe. iIntros "[Hfold Hcont]".
+  intros Hguard Hdomain Hframe. iIntros "[Hfold Hcont]".
   iExists n, i, payloadStart, lengthBytes, frameBytes, loaded.
-  iSplit; first (iPureIntro; split; assumption).
+  iSplit; first (iPureIntro; split; [exact Hguard | split; assumption]).
   iFrame.
 Qed.
 
 Lemma decodeItemListHeaderIntro `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n i payloadStart : Z)
     (lengthBytes frameBytes : list byte) (loaded : bv 64) :
+  i < n ->
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
   decodeItemSavedFrameFacts args frameBytes ->
   ⊢ (decodeItemByteFoldListHeader args n i payloadStart lengthBytes frameBytes loaded ∗
    decodeItemBranchContinuation args -∗ decodeItemEntryAt800d6ac4 args)%I.
 Proof.
-  intros Hdomain Hframe. iIntros "[Hfold Hcont]".
+  intros Hguard Hdomain Hframe. iIntros "[Hfold Hcont]".
   iExists n, i, payloadStart, lengthBytes, frameBytes, loaded.
-  iSplit; first (iPureIntro; split; assumption).
+  iSplit; first (iPureIntro; split; [exact Hguard | split; assumption]).
   iFrame.
 Qed.
 

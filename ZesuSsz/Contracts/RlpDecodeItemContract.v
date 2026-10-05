@@ -98,10 +98,15 @@ Qed.
 
 Definition decodeItemEntryResources `{!islaG Sigma} `{!threadG}
     (domain : DecodeItemArgs -> Prop) (args : DecodeItemArgs) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (∃ (a3 a4 a5 a6 : bv 64),
+   reg_col zesu_sys_regs ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
+   "x13" ↦ᵣ RVal_Bits a3 ∗
+   "x14" ↦ᵣ RVal_Bits a4 ∗
+   "x15" ↦ᵣ RVal_Bits a5 ∗
+   "x16" ↦ᵣ RVal_Bits a6 ∗
    "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
    "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
    "x8" ↦ᵣ RVal_Bits (decodeItemSavedFramePointer args) ∗

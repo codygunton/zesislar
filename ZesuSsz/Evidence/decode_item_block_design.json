@@ -12,6 +12,7 @@
   "loop_count": 2,
   "table_convention": {
     "entry_type": "(Z * iProp Sigma)",
+    "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
     "universal_binders": "Each row's binders, in their listed order",
     "resource_application": "Apply resource_predicate to arguments in order",
     "internal_existentials": {
@@ -28,7 +29,63 @@
         "loaded"
       ]
     },
-    "other_entries": "No block locals are existential inside the entry predicate",
+    "register_existentials": {
+      "0x800d6960": [
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "0x800d6974": [
+        "x13",
+        "x14",
+        "x15",
+        "x16"
+      ],
+      "0x800d697c": [
+        "x14",
+        "x15",
+        "x16"
+      ],
+      "0x800d69a4": [
+        "x14",
+        "x15",
+        "x16"
+      ],
+      "0x800d69d8": [
+        "x15",
+        "x16"
+      ],
+      "0x800d69e0": [
+        "x15",
+        "x16"
+      ],
+      "0x800d69e8": [
+        "x15",
+        "x16"
+      ],
+      "0x800d6a00": [
+        "x15",
+        "x16"
+      ],
+      "0x800d6a08": [
+        "x15",
+        "x16"
+      ],
+      "0x800d6a64": [
+        "x15",
+        "x16"
+      ],
+      "0x800d6a6c": [
+        "x15",
+        "x16"
+      ],
+      "0x800d6aa8": [
+        "x15",
+        "x16"
+      ]
+    },
+    "other_entries": "Listed table binders are universal; unlisted write-register values can be existential inside entry predicates",
     "continuations": "Outcome existentials inside shared continuations are not table locals"
   },
   "edge_condition_scope": "register values before the source block's final instruction",
@@ -45,13 +102,13 @@
     "inventory_sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
     "raw_dump_sha256": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-    "level1_contract_sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
-    "byte_fold_schema_sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+    "level1_contract_sha256": "fecb4272bbe1e7a96e650f2e113843bc886ea137c1a3e6d5ab1dfe53de5e7fc1",
+    "byte_fold_schema_sha256": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
     "byte_fold_sites_sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
     "byte_fold_blocks_sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
     "byte_fold_pure_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
     "byte_fold_machine_obligations_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
-    "generator_sha256": "958498d4d82a2b50d124fb29429a64c6d2b413489e49109e8d22d78da58bec16"
+    "generator_sha256": "3cd6034ab4a0496015ae5890dce2c704d1d59a2c8cf9999e13c2a8ca2389aae0"
   },
   "blocks": [
     {
@@ -91,8 +148,8 @@
       "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
       "binders": [
         {
-          "name": "domain",
-          "type": "DecodeItemArgs -> Prop"
+          "name": "returnAddress",
+          "type": "Z"
         },
         {
           "name": "args",
@@ -100,14 +157,14 @@
         }
       ],
       "arguments": [
-        "decodeItemC1BDomain",
+        "(decodeItemDomainAt returnAddress decodeItemC1BDomain)",
         "args"
       ],
       "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemContract.v": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v": "fecb4272bbe1e7a96e650f2e113843bc886ea137c1a3e6d5ab1dfe53de5e7fc1"
       }
     },
     {
@@ -164,7 +221,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -224,7 +281,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -294,7 +351,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
@@ -375,7 +432,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       },
       "branch_constant_facts": {
         "x14": 128
@@ -430,7 +487,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
@@ -505,7 +562,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       },
       "branch_constant_facts": {
         "x14": 183
@@ -571,7 +628,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -632,7 +689,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -695,7 +752,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       },
       "branch_constant_facts": {
         "x14": 192
@@ -761,7 +818,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -848,8 +905,8 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734",
-        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
@@ -914,8 +971,8 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
-        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "a7415475adb13eed8a3d23c9f3aac9c6eca94bb635a4b53685934307692bb803",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       },
       "invariant_hint": {
@@ -1050,8 +1107,8 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734",
-        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
@@ -1107,7 +1164,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
@@ -1183,7 +1240,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       },
       "branch_constant_facts": {
         "x14": 248
@@ -1249,7 +1306,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -1303,7 +1360,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
@@ -1378,7 +1435,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734"
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf"
       }
     },
     {
@@ -1465,8 +1522,8 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734",
-        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
@@ -1531,8 +1588,8 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
-        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "a7415475adb13eed8a3d23c9f3aac9c6eca94bb635a4b53685934307692bb803",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       },
       "invariant_hint": {
@@ -1667,8 +1724,8 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "7d9455b9158b34aab6724a6cc93982371fa4fd4f9cecfaa936fbbfb8b3022734",
-        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
@@ -1787,7 +1844,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
@@ -1854,7 +1911,7 @@
       "source_hashes": {
         "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
         "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
         "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
