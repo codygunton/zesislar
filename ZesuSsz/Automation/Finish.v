@@ -223,7 +223,8 @@ Ltac zesu_finish_v1 :=
   try iAssumption;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
-      first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+      first [solve [zesu_array_bounds_if_enabled] |
+        solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
         prepare_sidecond]
   | _ => unLET
   end;
@@ -266,7 +267,8 @@ Ltac zesu_finish_normalize :=
   try (timeout 2 zesu_normalize_memory_addresses).
 
 Ltac zesu_finish_shelved :=
-  first [solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
+  first [solve [zesu_array_bounds_if_enabled] |
+        solve [unshelve_sidecond; unLET; timeout 15 zesu_array_eight_value] |
     prepare_sidecond].
 
 (* An Iris entailment. The entries the dispatch leaves out here are the
