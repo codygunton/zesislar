@@ -66,7 +66,7 @@ Qed.
 Definition decodeItemByteFoldResources `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (isList : bool) (n i payloadStart : Z)
     (lengthBytes frameBytes : list byte) (loaded : bv 64) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗

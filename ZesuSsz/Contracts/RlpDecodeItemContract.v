@@ -20,10 +20,26 @@ Record DecodeItemArgs : Type := {
   decodeItemBeforeStorage : list byte;
   decodeItemStackPointer : Z;
   decodeItemReturnAddress : Z;
-  decodeItemSavedFramePointer : bv 64
+  decodeItemSavedFramePointer : bv 64;
+  decodeItemInputEnd : Z
 }.
 
 Definition DecodeItemOutcome : Type := list byte.
+
+(* Only the input boundary has a decoder-specific exact value. *)
+Definition decodeItemSysRegs (args : DecodeItemArgs) :
+    list (reg_kind * valu_shape) :=
+  map (fun '(r, shape) =>
+    (r, if decide (r = KindReg "zisk_input_end")
+        then ExactShape (RVal_Bits (Z_to_bv 64 (decodeItemInputEnd args)))
+        else shape)) zesu_sys_regs.
+
+Lemma decodeItemSysRegs_exact (args : DecodeItemArgs) :
+  decodeItemSysRegs args = (machine_static_sys_regs defaultMap ++
+    [(KindReg "zisk_input_end",
+      ExactShape (RVal_Bits (Z_to_bv 64 (decodeItemInputEnd args))));
+     (KindReg "zisk_free_input", BitsShape 64)])%list.
+Proof. reflexivity. Qed.
 
 Definition decodeItemArgsWellFormed (args : DecodeItemArgs) : Prop :=
   decodeItemInputLength args = Z.of_nat (List.length (decodeItemInputBytes args)) /\
@@ -31,7 +47,7 @@ Definition decodeItemArgsWellFormed (args : DecodeItemArgs) : Prop :=
   decodeItemEntryLayout
     (decodeItemInputPointer args) (decodeItemInputLength args)
     (decodeItemOutputPointer args) (decodeItemStackPointer args)
-    (decodeItemReturnAddress args).
+    (decodeItemReturnAddress args) (decodeItemInputEnd args).
 
 Definition decodeItemC1BDomain (args : DecodeItemArgs) : Prop :=
   decodeItemArgsWellFormed args.
@@ -99,7 +115,7 @@ Qed.
 Definition decodeItemEntryResources `{!islaG Sigma} `{!threadG}
     (domain : DecodeItemArgs -> Prop) (args : DecodeItemArgs) : iProp Sigma :=
   (∃ (a3 a4 a5 a6 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
@@ -117,7 +133,7 @@ Definition decodeItemEntryResources `{!islaG Sigma} `{!threadG}
 
 Definition decodeItemExitResources `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (after : DecodeItemOutcome) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (reg_col (decodeItemSysRegs args) ∗
    "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
    "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
    "x8" ↦ᵣ RVal_Bits (decodeItemSavedFramePointer args) ∗

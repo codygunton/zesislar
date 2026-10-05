@@ -7,6 +7,7 @@
   "compiler_revision": "25cc260d9940d65d2e5da427fe4b5d402809a50c",
   "fixture": {
     "input_pointer": 1073745920,
+    "input_end": 2147483648,
     "output_pointer": 2684362752,
     "stack_pointer": 2684358656,
     "return_address": 16384,
@@ -55,10 +56,10 @@
   },
   "hashes": {
     "vector_inputs_sha256": "0562fa6f034d4272889fb4ba5da6ab9537c67bbd31e19b62b958f292cf4b755c",
-    "generator_sha256": "5bd806a0129a450f71833c3e8ac516f7b513d3c29dcbdc7d52f9dd7365e338e9",
-    "oracle_sha256": "38b3783a610f15333f429a503beef957d89b2612980142a4c299a2ad3482e659",
+    "generator_sha256": "23097075b5c049b263b8d593f35cc189301ec2960332b62b0d78ee12e58bd694",
+    "oracle_sha256": "6985321a35a917bc0cb9fa5983bc405b51bb2b12ef23e5a5f86d18329ba335c5",
     "sail_run_sha256": "2830aab2ca40000a340967780b03800f97ecdb0539c28e41b882549ce8f67e98",
-    "contract_sha256": "b7d11e66c383348b56f54bc62eaf72feccbe9a04fb45f6a8c6f126dbed28a4f0",
+    "contract_sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
     "generated_rlp_action_sha256": "5d5b80a77f0c58cfe2d838364cd49a05457a29ab99d845db9717aa248ad2238c",
     "generated_rlp_types_sha256": "53eeb02464f73b6d65c1d29e5cfe134473d1e4c2a0aab484433b1bc595485852",
     "generated_source_manifest_sha256": "d76ad3f88b3033bfa718ec1b64c5e690189f89dbc96b35f92939d6c8442ae498",

@@ -6,7 +6,7 @@ Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import Scaffolding.DecodeItemComplianceStatement.
 
 Definition ReviewedDecodeItemEntryLayout (inputPointer inputLength resultPointer
-    stackPointer returnAddress : Z) : Prop :=
+    stackPointer returnAddress inputEnd : Z) : Prop :=
   0 <= inputPointer /\ 0 <= inputLength /\
   inputPointer + inputLength < word64Modulus /\
   0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
@@ -25,7 +25,9 @@ Definition ReviewedDecodeItemEntryLayout (inputPointer inputLength resultPointer
    (mapRamBase defaultMap <= inputPointer /\
     inputPointer + inputLength <= machineRamEnd defaultMap)) /\
   mapRamBase defaultMap <= resultPointer /\
-  resultPointer + 40 <= machineRamEnd defaultMap.
+  resultPointer + 40 <= machineRamEnd defaultMap /\
+  0 <= inputEnd < word64Modulus /\
+  inputPointer + inputLength <= inputEnd.
 
 Check (eq_refl : decodeItemEntryLayout = ReviewedDecodeItemEntryLayout).
 

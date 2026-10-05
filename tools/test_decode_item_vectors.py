@@ -34,6 +34,9 @@ class DecodeItemVectorsTest(unittest.TestCase):
         wraps = []
         for vector in vectors:
             size = len(vector["input_bytes"])
+            self.assertLessEqual(0, fixture["input_end"])
+            self.assertLess(fixture["input_end"], 2**64)
+            self.assertLessEqual(source + size, fixture["input_end"])
             self.assertTrue(0x40000000 <= source <= source + size <= 0x80000000
                             or 0xA0000000 <= source <= source + size <= 0xC0000000)
             image = bytes.fromhex(vector["c1_b"]["expected_40_byte_image_hex"])

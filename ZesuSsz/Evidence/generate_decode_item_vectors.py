@@ -17,6 +17,7 @@ OUTPUT = ROOT / "ZesuSsz/Evidence/DECODE_ITEM_VECTORS.json"
 ORACLE = ROOT / "ZesuSsz/Evidence/DecodeItemVectorOracle.v"
 MODULUS = 1 << 64
 INPUT_POINTER = 0x40001000
+INPUT_END = 0x80000000
 OUTPUT_POINTER = 0xA0002000
 STACK_POINTER = 0xA0001000
 RETURN_ADDRESS = 0x4000
@@ -183,6 +184,8 @@ def generate(build_dir: Path) -> dict:
                  <= STACK_POINTER - 16 or STACK_POINTER <= INPUT_POINTER)
             and 0x40000000 <= INPUT_POINTER
             and INPUT_POINTER + max(len(case.data) for case in cases) <= 0x80000000
+            and 0 <= INPUT_END < MODULUS
+            and INPUT_POINTER + max(len(case.data) for case in cases) <= INPUT_END
             and 0xA0000000 <= OUTPUT_POINTER
             and OUTPUT_POINTER + 40 <= 0xC0000000
             and 0xA0000000 + 16 <= STACK_POINTER <= 0xC0000000
@@ -253,7 +256,7 @@ def generate(build_dir: Path) -> dict:
         "scope": "All byte tags have an RLP form. Invalid-tag-shape cases have incomplete long headers. Integer canonicality belongs to an integer decoder, so item Success does not establish integer acceptance.",
         "source_revision": manifest["evmSailRevision"],
         "compiler_revision": manifest["sailCompilerRevision"],
-        "fixture": {"input_pointer": INPUT_POINTER, "output_pointer": OUTPUT_POINTER,
+        "fixture": {"input_pointer": INPUT_POINTER, "input_end": INPUT_END, "output_pointer": OUTPUT_POINTER,
                     "stack_pointer": STACK_POINTER, "return_address": RETURN_ADDRESS,
                     "before_output_bytes": list(BEFORE)},
         "hashes": hashes,

@@ -31,7 +31,7 @@ Definition decodeItemFoldInitResources `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)
     (lengthBytes frameBytes : list byte)
     (oldAcc oldCursor loaded : bv 64) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
@@ -54,7 +54,7 @@ Definition decodeItemFoldInitResources `{!islaG Sigma} `{!threadG}
 Definition decodeItemFoldCheckedResources `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)
     (lengthBytes frameBytes : list byte) (loaded : bv 64) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗

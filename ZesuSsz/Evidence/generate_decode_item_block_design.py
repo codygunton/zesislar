@@ -399,7 +399,7 @@ def build() -> dict:
             "successor_pcs": [address(target) for target in block["successors"]],
             "needed_resources": {
                 "register_live_in_hint": [f"x{reg}" for reg in sorted(live_in[start])],
-                "system_register_collection": "reg_col zesu_sys_regs",
+                "system_register_collection": "reg_col (decodeItemSysRegs args)",
                 "input": "decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args",
                 "output": "owned 40-byte result array at decodeItemOutputPointer args",
                 "stack": "(stackPointer - 16) ↦ₘ? 16" if start == function["entry"]
