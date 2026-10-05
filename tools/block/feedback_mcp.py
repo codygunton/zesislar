@@ -23,16 +23,20 @@ def save_feedback(state, displayed, directory, include_warnings=True):
     path.write_text(text)
 
 
-def main():
-    from rocq_mcp import server
-    from rocq_mcp import interactive
+def install_exporter(interactive, directory):
+    """Keep SDK responses unchanged and store the complete feedback separately."""
     original = interactive._extract_feedback
-    directory = os.environ['ZESU_FEEDBACK_DIR']
     def export(state, *, include_warnings=True):
         displayed = original(state, include_warnings=include_warnings)
         save_feedback(state, displayed, directory, include_warnings)
         return displayed
     interactive._extract_feedback = export
+
+
+def main():
+    from rocq_mcp import server
+    from rocq_mcp import interactive
+    install_exporter(interactive, os.environ['ZESU_FEEDBACK_DIR'])
     server.main()
 
 
