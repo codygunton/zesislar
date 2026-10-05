@@ -379,6 +379,26 @@ Ltac zesu_normalize_find_mem_address :=
 
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
+(* Check only the candidate term. Local aliases do not require context reduction. *)
+Ltac zesu_stack_closed_term term :=
+  tryif has_evar term then fail 0 else
+  let expanded := eval cbv beta zeta in term in
+  tryif is_var expanded then
+    let body := eval unfold expanded in expanded in
+    zesu_stack_closed_term body
+  else lazymatch expanded with
+  | (fun _ => _) => fail 0
+  | (forall _, _) => fail 0
+  | ?function ?argument =>
+      zesu_stack_closed_term function; zesu_stack_closed_term argument
+  | _ => idtac
+  end.
+
+Ltac zesu_stack_reduce_closed term :=
+  zesu_stack_closed_term term;
+  let reduced := eval vm_compute in term in
+  change_no_check term with reduced in *.
+
 Ltac zesu_stack_arithmetic :=
   repeat first [progress zesu_split_folded_pure |
     match goal with H : _ /\ _ |- _ => destruct H end];
@@ -394,9 +414,9 @@ Ltac zesu_stack_arithmetic :=
   end;
   repeat match goal with
   | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress reduce_closed term end
+      lazymatch type of term with Z => progress zesu_stack_reduce_closed term end
   | |- context[?term] =>
-      lazymatch type of term with Z => progress reduce_closed term end
+      lazymatch type of term with Z => progress zesu_stack_reduce_closed term end
   end;
   bv_solve.
 
