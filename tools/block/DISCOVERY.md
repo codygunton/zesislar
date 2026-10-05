@@ -113,3 +113,30 @@ LOAD compiles the exact source prefix through `Proof.`, followed by `Abort.`.
 LOAD executes no block tactic and supplies no interactive Pet state.
 A successful LOAD therefore records `primary-unavailable`, unless a separate ruling permits a fresh start.
 The report distinguishes abstract successor captures from contract closure.
+
+`replay_secondary.py` selects only hash-bound primary timeout captures.
+Its secondary command uses `1: zesu_liAStep.` because the default selector requires one focused goal.
+This command changes no primary source or primary outcome class.
+The public MCP response truncates long goal text and returns only shelved counts.
+The secondary fixed-point check compares active text and can miss changed shelves.
+
+`--complete-goals` starts an owned MCP server with the reviewed read-only exporter.
+The exporter saves active goals, stack entries, shelved goals, and given-up goals for each successful state.
+Each session uses a separate output directory because state identifiers restart.
+Export records bind the state identifier, full bytes, and hash.
+The server executes no proof command during export.
+
+`retry_loaded_entries.py` selects the three hash-bound unavailable entries.
+It permits one fresh owned Pet start after each successful shell LOAD.
+It verifies the unchanged source hash before that start.
+A failed fresh start leaves the primary unavailable.
+The runner executes no secondary pass and claims no contract closure.
+
+`tools/block/replay_secondary.py` reads the immutable primary report and archive index.
+It selects only the recorded primary Coq timeouts.
+It verifies each frozen source and primary capture before the diagnostic replay.
+The secondary command is `1: zesu_liAStep.`.
+The selector focuses the first active goal and retains every returned goal.
+The replay adds no primary execution, outcome classification, or contract closure.
+Its fixed-point check still compares returned active goal text only.
+All returned shelved goals remain in the raw captures.
