@@ -861,12 +861,11 @@ Ltac zesu_integer_array_address_if_enabled :=
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
       let expanded := eval cbv beta zeta in pointer in
-      zesu_integer_pointer_root expanded ltac:(fun base =>
+      zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
-            constr_eq lower base;
             lazymatch type of values with list (bv ?width) =>
               let Heq := fresh "HarrayAddress" in
               assert (Heq : bv_unsigned pointer = integer) by
