@@ -457,6 +457,50 @@ Ltac zesu_tuple_witness T :=
   | unit => constr:(tt)
   end.
 
+Class ZesuStepRecordWitness : Prop :=
+  zesu_step_record_witness : True.
+
+Ltac zesu_record_constructor_witness T :=
+  let guard := constr:(ltac:(
+    assert_fails (has_evar T);
+    let probe := fresh "recordConstructorProbe" in
+    assert_fails (assert (probe : T) by (econstructor 2; shelve));
+    exact I) : True) in
+  open_constr:(ltac:(econstructor 1;
+    lazymatch goal with
+    | |- ?fieldType =>
+        let sort := type of fieldType in
+        lazymatch sort with Prop => fail 0 "The record has a proof field."
+        | _ => shelve end
+    end) : T).
+
+Ltac zesu_record_tuple_witness T continuation :=
+  lazymatch T with
+  | li_prod ?A ?B =>
+      first
+        [ let head := zesu_record_constructor_witness A in
+          zesu_record_tuple_witness B ltac:(fun tail found =>
+            continuation constr:(li_pair head tail) constr:(true))
+        | let head := open_constr:(_ : A) in
+          zesu_record_tuple_witness B ltac:(fun tail found =>
+            continuation constr:(li_pair head tail) found) ]
+  | unit => continuation constr:(tt) constr:(false)
+  | _ =>
+      let witness := zesu_record_constructor_witness T in
+      continuation witness constr:(true)
+  end.
+
+Ltac zesu_record_witness_if_enabled :=
+  let _ := constr:(_ : ZesuStepRecordWitness) in
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ ?T ?body) =>
+      zesu_record_tuple_witness T ltac:(fun witness found =>
+        lazymatch found with true =>
+          notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+        end)
+  end.
+
 Ltac zesu_liInstrPreMatch :=
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ ?T ?body) =>
@@ -858,6 +902,7 @@ Ltac zesu_liAStep :=
   | liAExp
   | liAOther
   | liUnfoldEarly
+  | zesu_record_witness_if_enabled
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
   | liStep
