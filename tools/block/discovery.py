@@ -135,7 +135,7 @@ async def probe_block(row, block, state, options):
             health = data(await session.call_tool('rocq_health', {}))
             if not health.get('ok') or not health.get('toolchain', {}).get('pet', {}).get('path'):
                 raise RuntimeError('Rocq MCP has no interactive toolchain')
-            for target in block['successors'] or [options['terminal']]:
+            for target in options.get('probe_targets', block['successors'] or [options['terminal']]):
                 successor = chain_root.terminal_target(target)
                 source = chain_root.render_probe(state, block, successor)
                 path = Path(options['out']) / 'probes' / (
@@ -165,11 +165,22 @@ async def probe_block(row, block, state, options):
                 proof_phase_entered = False
                 error_text = None
                 try:
+                    if options.get('load_before_start'):
+                        load_out = path.parent/'loads'/path.stem
+                        load_out.mkdir(parents=True, exist_ok=True)
+                        wrapper = load_out/'compiler-wrapper'
+                        wrapper.write_text('#!/bin/sh\nexec ' + sys.executable + ' ' +
+                                           str(Path(setup_fallback.__file__).resolve()) + ' --compiler "$@"\n')
+                        wrapper.chmod(0o755)
+                        load_result = await asyncio.to_thread(setup_fallback.run_one, path, load_out,
+                            Path(options['build_dir']), wrapper, HERE.parent/'coqc_scratch.sh')
+                        if load_result['outcome'] != 'entry-elaborated':
+                            raise RuntimeError('The shell LOAD failed before the authorized fresh start')
                     opened = await native_diagnostics.measured_call(session, 'rocq_start', {
                         'workspace': options['workspace'], 'file': str(path.resolve()),
                         'theorem': 'infer_boundary', 'timeout': 60}, steps)
                     calls.append(opened)
-                    if not opened.get('success') and opened.get('reason') == 'timeout':
+                    if not opened.get('success') and opened.get('reason') == 'timeout' and not options.get('load_before_start'):
                         load_out = path.parent/'loads'/path.stem
                         load_out.mkdir(parents=True, exist_ok=True)
                         wrapper = load_out/'compiler-wrapper'
@@ -219,7 +230,7 @@ async def probe_block(row, block, state, options):
                 peak = max(peak, round(pet_peak * 1024))
                 output += f'\nexit={rc} ms={round(elapsed * 1000)} rss_kb={peak}\n'
                 path.with_suffix('.steps.json').write_text(json.dumps(steps, indent=2) + '\n')
-                if native_diagnostics.is_primary_timeout(calls):
+                if native_diagnostics.is_primary_timeout(calls) and options.get('secondary_enabled', True):
                     diagnostic_jobs.append(path)
                 path.with_suffix('.mcp.json').write_text(json.dumps(calls, indent=2) + '\n')
                 path.with_suffix('.out').write_text(output)
@@ -233,7 +244,8 @@ async def probe_block(row, block, state, options):
                             record['outcome'] = 'automation-search-timeout'
                         elif load_result and load_result['outcome'] == 'entry-elaborated':
                             record['outcome'] = 'primary-unavailable'
-                    record['setup_path'] = 'coqc-scratch-LOAD' if load_result else 'MCP'
+                    record['setup_path'] = ('coqc-scratch-LOAD/fresh-owned-Pet' if options.get('load_before_start')
+                                            else 'coqc-scratch-LOAD') if load_result else 'MCP'
                     record['load_result'] = load_result
                     record['primary_steps'] = steps
                     record['failed_primary_transaction'] = next((value for value in reversed(calls) if value.get('success') is False), None)

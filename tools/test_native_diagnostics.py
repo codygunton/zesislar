@@ -35,5 +35,31 @@ class NativeDiagnosticTests(unittest.TestCase):
         self.assertGreaterEqual(row['elapsed_seconds'], 0)
 
 
+class FocusSelectorTests(unittest.TestCase):
+    def test_native_step_focuses_one_goal_and_retains_all_returned_goals(self):
+        import asyncio
+        from types import SimpleNamespace
+        from native_diagnostics import native_step
+        goals = 'Goal 1: |- first\nGoal 2: |- second'
+        result = {'success': True, 'state_id': 12, 'from_state_id': 11,
+                  'goals': 'Goal 1: |- first_next\nGoal 2: |- second',
+                  'shelved_goals': ['inherited debt']}
+        class Session:
+            async def call_tool(self, name, arguments):
+                if arguments['body'] != '1: zesu_liAStep.':
+                    raise RuntimeError('Expected a single focused goal but 2 goals are focused')
+                self.arguments = arguments
+                return SimpleNamespace(structuredContent=result)
+        session = Session()
+        measurements = []
+        returned = asyncio.run(native_step(session, {'state_id': 11, 'goals': goals}, 300, measurements))
+        self.assertEqual(returned, result)
+        self.assertIn('Goal 2: |- second', returned['goals'])
+        self.assertEqual(returned['shelved_goals'], ['inherited debt'])
+        self.assertEqual(session.arguments['from_state'], 11)
+        self.assertEqual(measurements[0]['goals_before'], goal_size(goals))
+        self.assertEqual(measurements[0]['goals_after'], goal_size(result['goals']))
+
+
 if __name__ == '__main__':
     unittest.main()
