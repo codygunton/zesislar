@@ -23,6 +23,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
+Require Import ZesuSsz.Contracts.DecodeItemErrorBranch.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.
 Require Import InstrSpecs.Lookup.
@@ -184,6 +185,8 @@ Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6a38) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6a6c) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6aa8) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6ad8) := I.
+Global Typeclasses Opaque decodeItemErrorBranchEntry.
+Global Instance : LithiumUnfold (@decodeItemErrorBranchEntry) := I.
 
 (** Give Lithium its separating-conjunction goal form. *)
 Ltac zesu_prepare_uninit_goal :=
