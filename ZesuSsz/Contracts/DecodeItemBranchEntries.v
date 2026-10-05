@@ -13,14 +13,17 @@ Import ListNotations.
 Open Scope Z_scope.
 
 (* The continuation is the one supplied by the selected Level 1 contract. *)
-Definition decodeItemBranchContinuation `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) : iProp Sigma :=
-  (instr_pre (decodeItemReturnAddress args)
+Definition decodeItemBranchContinuationAt `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) (returnAddress : Z) : iProp Sigma :=
+  (instr_pre returnAddress
     (∃ outcome : DecodeItemOutcome,
-      ⌜decodeItemDomainAt (decodeItemReturnAddress args)
-          decodeItemC1BDomain args /\
+      ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
         DecodeMeaningModuloKnownBugs args outcome⌝ ∗
       decodeItemExitResources args outcome))%I.
+
+Definition decodeItemBranchContinuation `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) : iProp Sigma :=
+  decodeItemBranchContinuationAt args (decodeItemReturnAddress args).
 
 Definition decodeItemSavedFrameFacts (args : DecodeItemArgs)
     (frameBytes : list byte) : Prop :=
@@ -200,11 +203,13 @@ Definition decodeItemEntryAt800d6ad8 `{!islaG Sigma} `{!threadG}
    before the nonempty branch can supply its first successor entry. *)
 Definition decodeItemPrologueTo6974Bridge : Prop :=
   forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG)
-    (args : DecodeItemArgs),
+    (returnAddress : Z) (args : DecodeItemArgs),
     bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0 ->
     ⊢ (decodeItemSelectedCode -∗
        instr_body decodeItemEntry
-         (decodeItemEntryResources decodeItemC1BDomain args ∗
+         (decodeItemEntryResources
+            (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
+          decodeItemBranchContinuationAt args returnAddress ∗
           instr_pre 0x800d6974
             (∃ frameBytes : list byte,
               decodeItemEntryAt800d6974 args frameBytes ∗ True) ∗ True))%I.
