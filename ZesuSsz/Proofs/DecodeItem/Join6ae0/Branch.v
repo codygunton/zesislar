@@ -12,6 +12,9 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.
 From iris.proofmode Require Import environments.
 Open Scope Z_scope.
 Require Import ZesuSsz.Contracts.DecodeItemErrorBranch.
+Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
+Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction.
+Require Import ZesuSsz.Compliance.DecodeItemSailIntroduction.
 
 Ltac decode_item_error_at_return_witness _ :=
   first [match goal with
@@ -33,9 +36,10 @@ Ltac decode_item_error_at_trace_start _ :=
   end.
 
 Lemma decodeItemErrorBranchBridge_correct `{!islaG Sigma} `{!threadG}
-    args (frameBytes : list byte) (masked : bv 64) :
+    args (frameBytes : list byte) (masked : bv 64)
+    (inputPrefix : byte) (rest : list byte) :
   ⊢ decodeItemJoinTransferObligation 0x800d69e4 0x800d6ae0
-    (decodeItemErrorBranchEntry args frameBytes masked)
+    (decodeItemErrorBranchEntry args frameBytes masked inputPrefix rest)
     (decodeItemJoin6ae0Target args).
 Proof.
   unfold decodeItemJoinTransferObligation, decodeItemErrorBranchEntry,
@@ -45,6 +49,19 @@ Proof.
   iDestruct "Hcode" as "#Hcode".
   zesu_run_until decode_item_error_at_trace_start.
   zesu_expose_environment_alias.
+  match goal with Hdomain : decodeItemDomainAt _ _ args |- _ =>
+    pose proof Hdomain as Hfacts end.
+  pose proof (decodeItemDomainInputLengthBounds args (proj2 Hfacts)) as HlengthBounds.
+  assert (Hlen : 0 <= decodeItemInputLength args < word64Modulus) by
+    (unfold word64Modulus; lia).
+  assert (Hrejected : decodeItemRejectedFacts args) by
+    (eapply (decodeItemShortStringRejected args inputPrefix rest); [exact (proj2 Hfacts) | assumption | split; assumption |];
+     unfold decodeItemDomainAt, decodeItemC1BDomain, decodeItemArgsWellFormed in Hfacts;
+     assert (HinputLength : decodeItemInputLength args = Z.of_nat (length (decodeItemInputBytes args))) by tauto;
+     rewrite -HinputLength Z.add_1_l; apply (proj2 (Z.lt_succ_r _ _)); apply Z.ge_le;
+     match goal with Hguard : bv_unsigned masked >= _ |- _ => rewrite (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hguard;
+       match goal with Hmasked : bv_unsigned masked = _ |- _ => rewrite Hmasked in Hguard end;
+       exact Hguard end).
   assert (Hstorage : length (decodeItemBeforeStorage args) = 40%nat) by
     (match goal with Hdomain : decodeItemDomainAt _ _ args |- _ =>
        unfold decodeItemDomainAt, decodeItemC1BDomain,

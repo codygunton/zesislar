@@ -13,20 +13,25 @@ Open Scope Z_scope.
 Require Import ZesuSsz.Contracts.DecodeItemErrorBranch.
 
 Lemma decodeItemErrorMaskBridge_correct `{!islaG Sigma} `{!threadG}
-    args (frameBytes : list byte) (lengthRegister : bv 64) :
+    args (frameBytes : list byte) (lengthRegister : bv 64)
+    (inputPrefix : byte) (rest : list byte) :
   ⊢ decodeItemJoinTransferObligation 0x800d69e0 0x800d69e4
     (⌜Z.land (bv_unsigned lengthRegister) 127 >=
        decodeItemInputLength args⌝ ∗
-     decodeItemEntryAt800d69e0 args frameBytes lengthRegister)%I
+     decodeItemEntryAt800d69e0 args frameBytes lengthRegister inputPrefix rest)%I
     (decodeItemErrorBranchEntry args frameBytes
-      (bv_and lengthRegister 127)).
+      (bv_and lengthRegister 127) inputPrefix rest).
 Proof.
   unfold decodeItemJoinTransferObligation, decodeItemErrorBranchEntry.
   iIntros "Hcode".
   iEval (unfold decodeItemSelectedCode) in "Hcode".
   iDestruct "Hcode" as "#Hcode".
   zesu_block.
-  apply decodeItemErrorMaskedLengthGuard; assumption.
+  all: try (apply decodeItemErrorMaskedLengthGuard; assumption).
+  all: rewrite bv_and_unsigned.
+  all: match goal with Hprefix : bv_unsigned ?x = bv_unsigned ?y |- _ => rewrite Hprefix end.
+  all: change (Z.land (bv_unsigned inputPrefix) (Z.ones 7) = bv_unsigned inputPrefix - 128).
+  all: rewrite (Z.land_ones _ 7 ltac:(lia)); cbn; symmetry; apply Z.mod_unique with (q := 1); lia.
 Qed.
 
 Print Assumptions decodeItemErrorMaskBridge_correct.
