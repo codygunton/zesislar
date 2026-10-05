@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "ZesuSsz/Evidence/DECODE_ITEM_VECTORS.json"
 ORACLE = ROOT / "ZesuSsz/Evidence/DecodeItemVectorOracle.v"
 MODULUS = 1 << 64
-INPUT_POINTER = 0x1000
-OUTPUT_POINTER = 0x2000
+INPUT_POINTER = 0x40001000
+OUTPUT_POINTER = 0xA0002000
 STACK_POINTER = 0xA0001000
 RETURN_ADDRESS = 0x4000
 BEFORE = bytes(range(0xA0, 0xA0 + 40))
@@ -175,8 +175,16 @@ def generate(build_dir: Path) -> dict:
     if required - covered:
         raise RuntimeError(f"missing vector classes: {sorted(required - covered)}")
     if not (INPUT_POINTER + max(len(case.data) for case in cases)
-            < OUTPUT_POINTER < OUTPUT_POINTER + 40
-            < STACK_POINTER - 16 < STACK_POINTER < MODULUS
+            < OUTPUT_POINTER < OUTPUT_POINTER + 40 < MODULUS
+            and 16 <= STACK_POINTER < MODULUS
+            and (OUTPUT_POINTER + 40 <= STACK_POINTER - 16
+                 or STACK_POINTER <= OUTPUT_POINTER)
+            and (INPUT_POINTER + max(len(case.data) for case in cases)
+                 <= STACK_POINTER - 16 or STACK_POINTER <= INPUT_POINTER)
+            and 0x40000000 <= INPUT_POINTER
+            and INPUT_POINTER + max(len(case.data) for case in cases) <= 0x80000000
+            and 0xA0000000 <= OUTPUT_POINTER
+            and OUTPUT_POINTER + 40 <= 0xC0000000
             and 0xA0000000 + 16 <= STACK_POINTER <= 0xC0000000
             and 0 <= RETURN_ADDRESS < MODULUS
             and RETURN_ADDRESS % 4 == 0):
