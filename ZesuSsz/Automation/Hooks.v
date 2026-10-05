@@ -574,15 +574,48 @@ Ltac zesu_signed_address_if_enabled :=
 
 Class ZesuStepRamFault : Prop := zesu_step_ram_fault : True.
 
+(* Refute the fault assertion before its trace reads exception registers. *)
+Ltac zesu_ram_fault_assert :=
+  lazymatch goal with
+  | |- envs_entails _ (WPasm
+      (Smt (Assert (Unop Not (Val (Val_Bool ?condition) _) _)) _ :t: _)) =>
+      let decision := lazymatch condition with
+        | bool_decide _ => constr:(condition)
+        | _ => let expanded := eval unfold condition in condition in
+            constr:(expanded)
+        end in
+      lazymatch decision with
+      | bool_decide ?bound =>
+          lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
+          lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
+          let Hpositive := fresh "HramBound" in
+          assert (Hpositive : bound) by (timeout 2 zesu_stack_arithmetic);
+          let Htrue := fresh "HramDecision" in
+          assert (Htrue : condition = true) by
+            (apply bool_decide_true; exact Hpositive);
+          rewrite Htrue;
+          zesu_expose_environment_alias;
+          iApply wp_assert; rewrite wp_exp_unfold;
+          iExists (Val_Bool false); iSplit; first done;
+          iExists false; iSplit; first done;
+          iIntros (Hfalse); discriminate
+      end
+  end.
+
 (* Entry layout bounds refute a negated widened RAM bound. *)
 Ltac zesu_ram_fault_if_enabled :=
   let _ := constr:(_ : ZesuStepRamFault) in
-  match goal with
+  first [solve [zesu_ram_fault_assert]
+    | solve [lazymatch goal with
+      | |- envs_entails _ ((WPasm _) ∧ True)%I =>
+          iSplit; [zesu_ram_fault_assert | done]
+      end]
+    | match goal with
   | Hfault : ~ ?bound |- _ =>
       lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
       lazymatch bound with context [bv_zero_extend 128 _] => idtac end;
       solve [exfalso; apply Hfault; timeout 2 zesu_stack_arithmetic]
-  end.
+  end].
 
 Ltac zesu_liAStep :=
  liEnsureInvariant;

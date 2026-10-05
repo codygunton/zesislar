@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "item": "Q55-assert-fault-pruning",
+  "base_root": "db3e0d3681e4e8eede2d46ce43cfe4e5c79250f2",
+  "start": "2026-10-05T04:43:47.486Z",
+  "end": "2026-10-05T05:05:19.727605Z",
+  "inputs": {
+    "ZesuSsz/Automation/Hooks.v": "250ab6ca8fe5384f84e076ea59477a9cb255bdc06711be87ffaa1c635c5dd6f7",
+    "ZesuSsz/Proofs/Tests/RamFaultHook.v": "eb3067639efc6924dbe731af9c885fd8bf054d545dc0c46e4bd2377dc78c7b4d",
+    "Scaffolding/probes/q55-ram-assert/ComparisonOff.v": "6c5c9a99edf5acf4a9e4b428005397be41189574108f1b614e791dc5c3993a66",
+    "Scaffolding/probes/q55-ram-assert/ComparisonOn.v": "15abe5f6d7f1b87b657e00d216536ff3e5626113ee365e0596a8293e7d7ed70d"
+  },
+  "complete_capture": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/root-complete-goal-replay/complete/block_0x800d6960_800d6ae0/state_692.json",
+    "sha256": "67e04fcba84f66c1e8b9110d9c4653f6ee534039b1c4fa3d6dbaa6c2f4e3d7d1",
+    "active_indexes": [
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "change": "Existing RamFault switch now refutes WPasm Assert(NotLET) from positive widened Z.le/Z.ge bounds. The rule uses existing wp_assert and arithmetic. It preserves the old pure-negation path.",
+  "scope": "No PC, offset, or contract name occurs in the rule. No contract or ISA semantics changed. The rule does not assume pending input/output domain clauses.",
+  "frozen_comparison": [
+    {
+      "mode": "Off",
+      "trial_successes": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "trial_wall_s": [
+        0.0056595029309391975,
+        0.004628259921446443,
+        0.004775311914272606,
+        0.004899759078398347
+      ],
+      "setup_wall_s": [
+        2.097189628984779,
+        0.03584625304210931,
+        0.038196753012016416,
+        0.028626476996578276
+      ],
+      "compile_success": true,
+      "compile_wall_s": 3.748951720073819,
+      "verify": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      },
+      "verify_wall_s": 44.56098395399749,
+      "scope_peak_bytes": 1394909184,
+      "scope_measurement_note": "External cgroup high-water samples. Monitor initially omitted .scope suffix.",
+      "completed_call_wall_s": 119.70793073100504,
+      "followup_verify_failure": "Client65-second transport timeout during second optional assumption verification. Both full files compiled. Separate full assumption audit passed for all four lemmas."
+    },
+    {
+      "mode": "On",
+      "trial_successes": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "trial_wall_s": [
+        0.20745313295628875,
+        0.18957791104912758,
+        0.18167021998669952,
+        0.17908135196194053
+      ],
+      "setup_wall_s": [
+        2.077454983955249,
+        0.03541702392976731,
+        0.03011996706482023,
+        0.02982525189872831
+      ],
+      "compile_success": true,
+      "compile_wall_s": 2.459637800930068,
+      "verify": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      },
+      "verify_wall_s": 43.03229726606514,
+      "scope_peak_bytes": 1391788032,
+      "scope_measurement_note": "External cgroup high-water samples. Monitor initially omitted .scope suffix.",
+      "completed_call_wall_s": 116.80799940798897,
+      "followup_verify_failure": "Client65-second transport timeout during second optional assumption verification. Both full files compiled. Separate full assumption audit passed for all four lemmas."
+    }
+  ],
+  "frozen_scope": "The four original stack conditions remain exact. Tail and spatial resources are universally quantified. Both arms use the same original domain. These are rule diagnostics, not block proofs.",
+  "regressions": {
+    "existing": 5,
+    "new": 6,
+    "focused_dune": "passed",
+    "spec_shapes": "passed"
+  },
+  "mcp": {
+    "health": "passed",
+    "start": "passed in fresh owned processes",
+    "check": "all four cases in both arms passed; disabled arm supplied a proof-local switch only after the failure observation",
+    "step_multi": "off4fail,on4close",
+    "compile_file": "both full files passed",
+    "verify": "both stack_low_upper original statements passed, assumptions[], direct mode",
+    "final_assumption_audit": {
+      "source_sha256": "b3c933338d71d1574ef70c2bac85e3b41c8d605d27706d65bb18a5282f3ac6db",
+      "success": true,
+      "output": [
+        "Closed under the global context",
+        "Closed under the global context",
+        "Closed under the global context",
+        "Closed under the global context"
+      ],
+      "seconds": 4.1
+    },
+    "failures": [
+      "Initial preamble returned No node at point. Fresh file worked.",
+      "Shared MCP retained old imported Hooks; fresh owned processes resolved it.",
+      "Initial owned process lacked opam PATH. Correct opam launch resolved it.",
+      "Followup optional verification hit65-second client timeout; all four final assumption audits passed."
+    ]
+  },
+  "Q54_preserved_gap": {
+    "needed_bounds": [
+      "0xa0000000<=outputPointer+32",
+      "outputPointer+34<=0xc0000000"
+    ],
+    "current_bounds": [
+      "0<=outputPointer",
+      "outputPointer+40<2^64"
+    ],
+    "decision": "Spec owns the announced domain repair. No new clauses assumed."
+  },
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=worker2-child-platform",
+      "AGENT_JOBS=6",
+      "FAST_JOBS=6",
+      "TRACE_JOBS=6"
+    ],
+    "pid": 501589,
+    "start": "2026-10-05T04:59:02.886702+00:00",
+    "end": "2026-10-05T05:02:29.311415+00:00",
+    "elapsed_s": 206.42472361691762,
+    "exit_code": 0,
+    "peak_child_rss_kib": 2288948,
+    "jobs": 6
+  },
+  "workers_limit": 6,
+  "instruction_closures": 0,
+  "block_closures": 0,
+  "production_manual_proof_growth": 0,
+  "no_check_iris": "Root owns that gate.",
+  "parent_metrics_reason": "Parent supplies parent metrics after checkpoint.",
+  "token_samples": {
+    "start": [
+      "2026-10-05T04:24:48.010Z",
+      145340469
+    ],
+    "end": [
+      "2026-10-05T05:04:07.528Z",
+      156875020
+    ]
+  },
+  "archive": {
+    "_build/q55-ram-assert/focused-build.log": {
+      "sha256": "142e22dd834486f37d3fb6fa232835299d56e5c88e32cae1f5fe9f3bad234ede",
+      "archive_path": "/home/cody/zesislar-archive/sha256/14/142e22dd834486f37d3fb6fa232835299d56e5c88e32cae1f5fe9f3bad234ede",
+      "bytes": 2910
+    },
+    "_build/q55-ram-assert/focused-build-fixed.log": {
+      "sha256": "27cf7bc91a72e9fa4e14ed0ab8ff0e881d707661320a34f302baec8743650eb7",
+      "archive_path": "/home/cody/zesislar-archive/sha256/27/27cf7bc91a72e9fa4e14ed0ab8ff0e881d707661320a34f302baec8743650eb7",
+      "bytes": 826
+    },
+    "_build/q55-ram-assert/focused-final.log": {
+      "sha256": "d8fc2e0f576666086e43672619c3200ff3ca8fb66a9e1cce0df145d8472363c3",
+      "archive_path": "/home/cody/zesislar-archive/sha256/d8/d8fc2e0f576666086e43672619c3200ff3ca8fb66a9e1cce0df145d8472363c3",
+      "bytes": 2858
+    },
+    "_build/q55-ram-assert/focused-alias.log": {
+      "sha256": "f74460033a0ed14511d495de6ea4c503e642e25d2afcfa6c1cf7f64ff88c1488",
+      "archive_path": "/home/cody/zesislar-archive/sha256/f7/f74460033a0ed14511d495de6ea4c503e642e25d2afcfa6c1cf7f64ff88c1488",
+      "bytes": 2282
+    },
+    "_build/q55-ram-assert/verify-On-path-failure.log": {
+      "sha256": "da04460e58e24fb9d45fb9f0ef6ad376e820a075230354656e84801edd7160f4",
+      "archive_path": "/home/cody/zesislar-archive/sha256/da/da04460e58e24fb9d45fb9f0ef6ad376e820a075230354656e84801edd7160f4",
+      "bytes": 6546
+    },
+    "_build/q55-ram-assert/verify-Off-path-failure.log": {
+      "sha256": "da04460e58e24fb9d45fb9f0ef6ad376e820a075230354656e84801edd7160f4",
+      "archive_path": "/home/cody/zesislar-archive/sha256/da/da04460e58e24fb9d45fb9f0ef6ad376e820a075230354656e84801edd7160f4",
+      "bytes": 6546
+    },
+    "_build/q55-ram-assert/verify-Off.log": {
+      "sha256": "7f77e04ea12884db639aafdfbc05c3777b792f9348b7e626b88172a717f88763",
+      "archive_path": "/home/cody/zesislar-archive/sha256/7f/7f77e04ea12884db639aafdfbc05c3777b792f9348b7e626b88172a717f88763",
+      "bytes": 8613
+    },
+    "_build/q55-ram-assert/verify-On.log": {
+      "sha256": "7f77e04ea12884db639aafdfbc05c3777b792f9348b7e626b88172a717f88763",
+      "archive_path": "/home/cody/zesislar-archive/sha256/7f/7f77e04ea12884db639aafdfbc05c3777b792f9348b7e626b88172a717f88763",
+      "bytes": 8613
+    },
+    "_build/q55-ram-assert/check-fast.log": {
+      "sha256": "160c8cfca480f8e2f97be669b57512ebc8f17f0c0ce5232bf45317a404ee35b0",
+      "archive_path": "/home/cody/zesislar-archive/sha256/16/160c8cfca480f8e2f97be669b57512ebc8f17f0c0ce5232bf45317a404ee35b0",
+      "bytes": 54239
+    },
+    "_build/q55-ram-assert/verify_owned.py": {
+      "sha256": "5e717f936a0f24893a4a7fdee5eec5a6c0e2ac30f3d063cdad0ba935642b4efd",
+      "archive_path": "/home/cody/zesislar-archive/sha256/5e/5e717f936a0f24893a4a7fdee5eec5a6c0e2ac30f3d063cdad0ba935642b4efd",
+      "bytes": 4176
+    },
+    "_build/q55-ram-assert/AssumptionAudit.v": {
+      "sha256": "b3c933338d71d1574ef70c2bac85e3b41c8d605d27706d65bb18a5282f3ac6db",
+      "archive_path": "/home/cody/zesislar-archive/sha256/b3/b3c933338d71d1574ef70c2bac85e3b41c8d605d27706d65bb18a5282f3ac6db",
+      "bytes": 3030
+    },
+    "_build/q55-ram-assert/Off/RESULT.json": {
+      "sha256": "6a83515243478b62f7e9bb62c533f6c78d740b692eb5c7dff6d314ceea40dfe6",
+      "archive_path": "/home/cody/zesislar-archive/sha256/6a/6a83515243478b62f7e9bb62c533f6c78d740b692eb5c7dff6d314ceea40dfe6",
+      "bytes": 30645
+    },
+    "_build/q55-ram-assert/On/RESULT.json": {
+      "sha256": "0f870ae8191a5fca7bca35154044afddcb34034d4b370089aafd7b2b1367ca3f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/0f/0f870ae8191a5fca7bca35154044afddcb34034d4b370089aafd7b2b1367ca3f",
+      "bytes": 24490
+    },
+    "_build/q55-ram-assert/Off/SCOPE_PEAK.json": {
+      "sha256": "79beeea2be0ce7dd1e09591bec3483f329599bffca835fa16c3892405b65a1c9",
+      "archive_path": "/home/cody/zesislar-archive/sha256/79/79beeea2be0ce7dd1e09591bec3483f329599bffca835fa16c3892405b65a1c9",
+      "bytes": 215
+    },
+    "_build/q55-ram-assert/On/SCOPE_PEAK.json": {
+      "sha256": "4f97d051a611e94f0cd888f890d4b22137f1db9d759e365c0814b993ff5d0fa5",
+      "archive_path": "/home/cody/zesislar-archive/sha256/4f/4f97d051a611e94f0cd888f890d4b22137f1db9d759e365c0814b993ff5d0fa5",
+      "bytes": 215
+    },
+    "_build/q55-ram-assert/Off/PATH_FAILURE.json": {
+      "sha256": "25aea9da8c4489b082b62696c4d4d98ac550ba8c3030d8fa760a38d0334ebffa",
+      "archive_path": "/home/cody/zesislar-archive/sha256/25/25aea9da8c4489b082b62696c4d4d98ac550ba8c3030d8fa760a38d0334ebffa",
+      "bytes": 1776
+    },
+    "_build/q55-ram-assert/On/PATH_FAILURE.json": {
+      "sha256": "d5923a7caf66740f1142fccebb97fe906680a2272d83a450febc726c5fbf1a92",
+      "archive_path": "/home/cody/zesislar-archive/sha256/d5/d5923a7caf66740f1142fccebb97fe906680a2272d83a450febc726c5fbf1a92",
+      "bytes": 1773
+    },
+    "tmpk4towyrn.v": {
+      "sha256": "a4ede052dc7ff7a85955ce1aeb74e30787e3f43ee9d354c63e2d3e634fe3e292",
+      "archive_path": "/home/cody/zesislar-archive/sha256/a4/a4ede052dc7ff7a85955ce1aeb74e30787e3f43ee9d354c63e2d3e634fe3e292",
+      "bytes": 3140
+    },
+    "tmpssrxon3r.v": {
+      "sha256": "4b33addb92bcede26b592f7c8735a8566068ff33f5f7e964edba0c608e23c68c",
+      "archive_path": "/home/cody/zesislar-archive/sha256/4b/4b33addb92bcede26b592f7c8735a8566068ff33f5f7e964edba0c608e23c68c",
+      "bytes": 3559
+    },
+    "_build/q55-ram-assert/GATE.json": {
+      "sha256": "e64fd2f0adc8c02d0a69d034486c7473be0da63614f63e35b3e92e629dc35c5d",
+      "archive_path": "/home/cody/zesislar-archive/sha256/e6/e64fd2f0adc8c02d0a69d034486c7473be0da63614f63e35b3e92e629dc35c5d",
+      "bytes": 361
+    }
+  },
+  "metrics": "METRICS: item=Q55-assert-fault-pruning kind=rule commit=db3e0d3681e4e8eede2d46ce43cfe4e5c79250f2 child_min=21.537 parent_min=unavailable tokens_child=11534551 tokens_parent=unavailable gate_wall_s=206.425 gate_jobs=6 instr_closed=0 blocks_closed=0 rules_added=zesu_ram_fault_assert rules_reused=wp_assert,zesu_stack_arithmetic residual_classes=none hand_lines=0 rework=repair"
+}
