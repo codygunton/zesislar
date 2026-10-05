@@ -67,6 +67,14 @@ def block_entry_binding(start: int) -> dict:
             if start in BRANCH_WITH_PREFIX:
                 binders += [("x13", "bv 64")]
         arguments = [name for name, _ in binders]
+    # Semantic witnesses stay local to the selected design entries.
+    if start != 0x800D6960 and start != 0x800D6AE0:
+        binders += [("inputPrefix", "byte"), ("rest", "list byte")]
+        if start == 0x800D698C:
+            binders += [("isLiteral", "bool")]
+        elif start in {0x800D6A40, 0x800D6B08}:
+            binders += [("headerLength", "Z"), ("payloadLength", "Z")]
+        arguments = [name for name, _ in binders]
     source = CONTRACTS + module + ".v"
     if not re.search(r"^Definition " + re.escape(name) + r"\b",
                      (ROOT / source).read_text(), re.MULTILINE):
@@ -74,6 +82,8 @@ def block_entry_binding(start: int) -> dict:
     qualified = "ZesuSsz.Contracts." + module + "." + name
     sources = ["build/stock-zisk/inventory.json",
                "build/stock-zisk/decodeItem.raw.dump", source]
+    if start != 0x800D6960:
+        sources += [CONTRACTS + "DecodeItemReturnFacts.v"]
     if start in RETURN_PCS:
         sources += [CONTRACTS + "RlpDecodeItemReturnImageDef.v",
                     CONTRACTS + "RlpDecodeItemReturnImages.v"]

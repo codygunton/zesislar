@@ -135,3 +135,5 @@ Definition fixtureHiddenEvaluator
     IslarisContractCorrect decodeItemEntry returnAddress
       (fixtureEvaluatorModel evaluator returnAddress).
 Fail Check (@fixtureHiddenEvaluator : ReviewedDecodeItemComplianceType).
+
+Require Import Scaffolding.DecodeItemSemanticEntryFixtures.
