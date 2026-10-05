@@ -85,7 +85,9 @@ The last valid goal after a tactic timeout does not show execution progress.
 A reached abstract successor remains a diagnostic result.
 
 Design-schema discovery requires `--binding-report` from `tools/block/check_entry_bindings.py`.
-The checker validates each source hash and each declared binder name, type, and order.
+The checker validates each source hash and each declared parameter type and argument arity.
+JSON binders declare application-local variables.
+The kernel checks the ordered arguments against the Definition parameter types.
 It checks argument arity and compiles the unchanged ordered applications through Rocq MCP.
 The JSON expression order remains authoritative.
 Same-type swaps require specification review.
@@ -98,3 +100,16 @@ It emits design and CFG fragments without changing either source file.
 `regs_assumed` contains names referenced through Assume without an explicit event in that block.
 The native frontend removes internal nextPC events from the raw Isla traces.
 The exporter does not infer register liveness from disassembly fields.
+
+The primary pass runs the unchanged `zesu_block` proof body.
+Each primary transaction records elapsed time and the reported goal size.
+A secondary pass runs only after a primary Coq tactic timeout.
+That pass uses existing initialization tactics and individual `zesu_liAStep` commands.
+Each diagnostic step records elapsed time, goal size, and the last successful state.
+The secondary pass never determines the primary outcome class.
+
+A failed 60-second `rocq_start` triggers the approved `coqc_scratch.sh` LOAD fallback.
+LOAD compiles the exact source prefix through `Proof.`, followed by `Abort.`.
+LOAD executes no block tactic and supplies no interactive Pet state.
+A successful LOAD therefore records `primary-unavailable`, unless a separate ruling permits a fresh start.
+The report distinguishes abstract successor captures from contract closure.

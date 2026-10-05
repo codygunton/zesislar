@@ -1,4 +1,4 @@
-"""Check explicit source binders without replacing ordered JSON expressions."""
+"""Bind source signatures and retain application-local JSON variables."""
 from pathlib import Path
 import re
 
@@ -78,9 +78,8 @@ def check_binders(block, root):
         if name != source_module(owner) + '.' + name.rsplit('.', 1)[-1]:
             raise ValueError('The Definition uses an unsupported nested module namespace')
         binders = declared_binders((Path(root)/owner).read_text(), name.rsplit('.', 1)[-1])
-        expected = [{'name': row['name'], 'type': normalize_type(row['type'])} for row in fields['binders']]
-        if binders != expected:
-            raise ValueError('The JSON binders do not match the source Definition: ' + name)
+        # JSON binders are table universals, not Definition parameters.
+        # The kernel checks each ordered argument against the declared type.
         if len(fields['arguments']) != len(binders):
             raise ValueError('The ordered argument count does not match the source Definition: ' + name)
         declared = binders
@@ -103,7 +102,8 @@ def validate_design(design, root):
 
 def application_source(design):
     """Render type queries for the unchanged, ordered JSON applications."""
-    modules = ['ZesuSsz.Automation.All', 'isla.riscv64.riscv64', 'SailStdpp.MachineWord']
+    modules = ['ZesuSsz.Automation.All', 'isla.riscv64.riscv64', 'SailStdpp.MachineWord',
+               'ZesuSsz.Contracts.RlpDecodeItemContract']
     for row in design['blocks']:
         fields = contract_fields(row)
         modules.extend(source_module(path) for path in fields['source_hashes'] if path.endswith('.v'))

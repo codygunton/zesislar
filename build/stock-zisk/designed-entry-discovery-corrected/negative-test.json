@@ -1,0 +1,27 @@
+{
+  "label": "Deliberately swapped application; kernel rejection is the expected result",
+  "passed": true,
+  "expected_validator_exit": 1,
+  "observed_validator_exit": 1,
+  "error_position": {
+    "line": 15,
+    "character": 73,
+    "end_character": 77,
+    "message": "Error:\nIn environment\nSigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nThe term \"args\" has type \"DecodeItemArgs\" while it is expected to have type\n \"DecodeItemArgs \u2192 Prop\"."
+  },
+  "raw_report": {
+    "sha256": "74cbede92c03bbfee49431184304fdd177e9b3995db519e1563c8b320d7a57b4",
+    "archive_path": "/home/cody/zesislar-archive/sha256/74/74cbede92c03bbfee49431184304fdd177e9b3995db519e1563c8b320d7a57b4",
+    "bytes": 6364
+  },
+  "source": {
+    "sha256": "df8a377840bf3eb708b636978fa8872bc6ff213ce71deb9b39bd4f9abf055e62",
+    "archive_path": "/home/cody/zesislar-archive/sha256/df/df8a377840bf3eb708b636978fa8872bc6ff213ce71deb9b39bd4f9abf055e62",
+    "bytes": 8191
+  },
+  "input_design": {
+    "sha256": "3f14c3fa0d5429ee4a5b99565a2dd0d843d70b499fdc15ddebe73bf83ba1a623",
+    "archive_path": "/home/cody/zesislar-archive/sha256/3f/3f14c3fa0d5429ee4a5b99565a2dd0d843d70b499fdc15ddebe73bf83ba1a623",
+    "bytes": 67259
+  }
+}
