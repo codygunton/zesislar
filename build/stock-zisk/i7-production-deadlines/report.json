@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "item": "I7-production-deadlines",
+  "base_root": "ff61521249a0999333774898036143fec4e3513d",
+  "result": "repaired",
+  "changes": [
+    "Remove 41 active deadlines and ten Legacy deadlines.",
+    "Keep module time, memory, and CPU limits unchanged.",
+    "Reject open bitvector terms before constant vm_compute in active and Legacy finishers.",
+    "Select the existing eight-byte assembly lemma by syntax."
+  ],
+  "semantics": "Contracts, ISA semantics, binary inputs, and production proof bodies are unchanged.",
+  "deadlines": {
+    "total": 51,
+    "active": 41,
+    "legacy": 10,
+    "announced_legacy_count": 12,
+    "actual_count_note": "The ff615212 source contains ten Legacy deadline sites.",
+    "table_sha256": "31eee1d39352a562cec4c5df85a8c19ca99342dac735aeb69e080f8ca2131b4f"
+  },
+  "failure_classes": {
+    "before": "deadline-sensitive fault pruning; Qed incomplete with medeleg lookup and a negated stack lower bound.",
+    "deadline_removal_only": "Six memory guard exits after 141\u2013144 seconds.",
+    "stale_dependency_attempt": "Six setup failures from inconsistent WordArrayHandoff assumptions; dependencies were refreshed.",
+    "constant_guards": "Six Qed passes after 117.979\u2013122.526 seconds.",
+    "assembly_search": "ArrayEightLowFirst reaches the unchanged 300-second CPU cap when a failing rewrite has no deadline.",
+    "legacy_constant_search": "NonRaisingLegacy exceeds 6 GiB after deadline removal; the same closed-term guards restore its focused build.",
+    "final": "Six Qed passes after 112.109\u2013113.881 seconds."
+  },
+  "before_second_run": {
+    "active_goal": "FindInstrKind 2148362608 true",
+    "active_count": 1,
+    "shelves": 12,
+    "facts": "Both stack stores retain positive lower and upper RAM bounds.",
+    "capture": {
+      "sha256": "b33a680bc7f417edb444e3b60a5799f2ee527aacc858d503489c1524c9c8d2c5",
+      "archive": "/home/cody/zesislar-archive/sha256/b3/b33a680bc7f417edb444e3b60a5799f2ee527aacc858d503489c1524c9c8d2c5",
+      "bytes": 32478
+    },
+    "stack": "unavailable: Show/Show Existentials do not expose the Pet stack field.",
+    "given_up": "unavailable: Show/Show Existentials do not expose the Pet given_up field."
+  },
+  "legacy_reachability": {
+    "prologue": false,
+    "local_modules": 85,
+    "import_graph": {
+      "sha256": "292f0f1b5fa521296a0c0d05cfa53dece49e4a3679a2e3488fcb2d4d5b347515",
+      "archive": "/home/cody/zesislar-archive/sha256/29/292f0f1b5fa521296a0c0d05cfa53dece49e4a3679a2e3488fcb2d4d5b347515",
+      "bytes": 22896
+    },
+    "checked_reachable_tests": [
+      "ArrayEightLowFirst",
+      "ArrayEightCursor",
+      "NonRaisingLegacy"
+    ],
+    "comparison_limit": "No isolated Legacy-only native benefit is claimed."
+  },
+  "mcp": {
+    "health": "pass; pinned Coq 8.19.2+lsp4.14.4 and Pet 0.2.4-dev",
+    "initial_prologue_start": "unavailable after 60.070 seconds; parent approved bounded coqc_scratch fallback.",
+    "check": "pass",
+    "step_multi": "pass",
+    "compile_file": "BoundedArithmetic and ArrayEightLowFirst pass.",
+    "verify": "Arithmetic, open-term rejection, and ArrayEightLowFirst pass with assumptions [].",
+    "low_first_tactic_s": 0.106,
+    "results": {
+      "sha256": "cadc66e3bfe77abf4bb4635fd01c88b53d9f54f1da13fabc5a7d8d50580b7269",
+      "archive": "/home/cody/zesislar-archive/sha256/ca/cadc66e3bfe77abf4bb4635fd01c88b53d9f54f1da13fabc5a7d8d50580b7269",
+      "bytes": 12309
+    },
+    "legacy_fresh_owned": {
+      "sha256": "5c625477392de10d433ddf6d57a0479a8fc31de406f05abcd8e5b24616b51392",
+      "archive": "/home/cody/zesislar-archive/sha256/5c/5c625477392de10d433ddf6d57a0479a8fc31de406f05abcd8e5b24616b51392",
+      "bytes": 24679
+    },
+    "legacy_result": "Health/start/check/compile_file/verify pass. Native active, stack, shelf, and given_up groups are empty. Assumptions are [].",
+    "legacy_pet_pid": 765751,
+    "legacy_pet_observed_peak_rss_kib": 1933280,
+    "shared_failure": "NonRaisingLegacy rocq_start reports memory_exhausted and automatic restart at 16 GiB; no forced restart was requested."
+  },
+  "first_gate": {
+    "start": "2026-10-05T17:37:19.641320+00:00",
+    "end": "2026-10-05T17:44:33.978198+00:00",
+    "exit_code": 2,
+    "wall_seconds": 434.33689596201293,
+    "jobs": 6,
+    "wrapper_children_peak_rss_kib": 2304540
+  },
+  "legacy_unbounded_gate": {
+    "start": "2026-10-05T17:48:56.051640+00:00",
+    "end": "2026-10-05T17:52:08.696428+00:00",
+    "exit_code": 2,
+    "wall_seconds": 192.64481660106685,
+    "jobs": 6,
+    "wrapper_children_peak_rss_kib": 6338796
+  },
+  "final_gate": {
+    "start": "2026-10-05T18:01:04.931718+00:00",
+    "end": "2026-10-05T18:04:17.368413+00:00",
+    "exit_code": 0,
+    "wall_seconds": 192.4367144809803,
+    "jobs": 6,
+    "wrapper_children_peak_rss_kib": 2306408
+  },
+  "verification_limits": {
+    "compiler_workers": 6,
+    "proof_wall_cap_s": 300,
+    "proof_memory_cap_gib": 6,
+    "cpu_limit_s": 300,
+    "check_iris": "not run; root owns the gate.",
+    "unchanged_native_proof_sha256": "133cbb89b13ec9e09f0e92441fd0b12ba4a41c0f0f945bc892029766bd296eeb",
+    "new_machine_facts": 0,
+    "manual_native_proof_growth": 0
+  },
+  "comparisons_sha256": "9a9aa5145752844c9b0e7b88f832f8b8939d493076b5c262c7b53b085a2270fe",
+  "sources_sha256": "f9de81019390edbc205e95d9c44b76a367b27619a8483c2efbe39dd2ded72d0f",
+  "archive_inventory": {
+    "sha256": "5f99a4e7bdd0d616f80bff250b82e98f926f149f0ba290075602a92375eca389",
+    "archive": "/home/cody/zesislar-archive/sha256/5f/5f99a4e7bdd0d616f80bff250b82e98f926f149f0ba290075602a92375eca389",
+    "bytes": 51834
+  },
+  "machine_measurements": {
+    "host_busy_percent": 10.459580054674323,
+    "load_end": [
+      "5.66",
+      "3.53",
+      "3.64"
+    ],
+    "available_memory": "131088504 kB",
+    "swap_total": "8388604 kB",
+    "swap_free": "2516 kB",
+    "compiler_cpu_seconds": [
+      109.57,
+      111.08,
+      109.77,
+      109.11,
+      110.6,
+      109.71
+    ]
+  },
+  "hand_lines": {
+    "added_regression_lines": 14,
+    "net_regression_growth": 11,
+    "native_handoff_growth": 0
+  },
+  "measurement_scope_note": "The final six-worker measurement precedes a comment-only active Finish edit and Legacy constant guards. Legacy is absent from the Prologue import graph. The final gate recompiles the unchanged production Prologue successfully."
+}

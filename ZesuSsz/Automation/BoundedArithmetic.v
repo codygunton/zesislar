@@ -3,16 +3,11 @@ Require Import isla.riscv64.riscv64.
 
 Class ZesuStepBoundedArithmetic : Prop := zesu_step_bounded_arithmetic : True.
 
-(* Configure the default in Hooks.v; explicit callers can supply a bound. *)
-Ltac zesu_arithmetic_seconds := 5.
+(* Module guards bound resources. Arithmetic steps have no deadline.
+   Keep the former budget argument for callers of the public helper. *)
+Ltac zesu_bounded_arithmetic_with retired_budget action := action.
 
-Ltac zesu_bounded_arithmetic_with seconds action := timeout seconds action.
-
-Ltac zesu_bounded_arithmetic action :=
-  tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
-  then let seconds := zesu_arithmetic_seconds in
-       zesu_bounded_arithmetic_with seconds action
-  else action.
+Ltac zesu_bounded_arithmetic action := action.
 
 Ltac zesu_index_fact_relevant statement bytes index pointer base :=
   first
@@ -63,6 +58,4 @@ Ltac zesu_finish_lia :=
         |zesu_bounded_arithmetic ltac:(lia)].
 
 Ltac zesu_finish_witness_arithmetic :=
-  tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
-  then zesu_bounded_arithmetic ltac:(solve [zesu_witness_arith_if_enabled])
-  else (timeout 5 (solve [zesu_witness_arith_if_enabled])).
+  solve [zesu_witness_arith_if_enabled].

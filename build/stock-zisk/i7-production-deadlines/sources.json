@@ -1,0 +1,52 @@
+[
+  {
+    "path": "ZesuSsz/Automation/ArrayByteValues.v",
+    "old_sha256": "8fa4c2eb3ae13a42c11f28e1d7fc2aa0fa2e6fd7c9db6da85f55b1f01dd8fb49",
+    "new_sha256": "f645a5a4afd7cafd7ad2fd76bebb461de508551a2afde5ca4f6808589b329398"
+  },
+  {
+    "path": "ZesuSsz/Automation/BoundedArithmetic.v",
+    "old_sha256": "4b6833e0daf4437ad640dc57d5ae2188201735e2f4177c7bb0aef67a8de3cd0f",
+    "new_sha256": "f2c8236be52fcc3621159a5db49fc02ca0f16ad5df49b22568e234d4099d64c5"
+  },
+  {
+    "path": "ZesuSsz/Automation/Finish.v",
+    "old_sha256": "55bf574ea674bb163413ed65a21f5ff2610e511491ddfac2b8ecf167e42624d1",
+    "new_sha256": "14e8bdc7147f026892b2c94aba03204898032ea1d1d658a1d301fde15151dcb9"
+  },
+  {
+    "path": "ZesuSsz/Automation/GuardedTracePrefix.v",
+    "old_sha256": "9e0f703c61d16b35e39bfdfd486f1b842e972ad03bf45832528eb8effaf13749",
+    "new_sha256": "5d1d093b4a26d9cce24cdcc50710735c75dff3b2ae68248789d85e0c441c0b17"
+  },
+  {
+    "path": "ZesuSsz/Automation/Hooks.v",
+    "old_sha256": "c552a4b7b8336da66031ef8f4db8a6ef718a908509cfb0ad1c31b819a47a1bb4",
+    "new_sha256": "a6154ca4327c131862bb1ac73ff49b956e621d368eba3168146d8303600b0e85"
+  },
+  {
+    "path": "ZesuSsz/Automation/Legacy/Finish.v",
+    "old_sha256": "72274de73e9319344e15ad0e8a47b89e610dd17a30fcacdb8e408ae3c8118a1b",
+    "new_sha256": "0a7e042e2b45137fbc3aa5dc247627e90d61887743e4a1cae952575b860df0b9"
+  },
+  {
+    "path": "ZesuSsz/Automation/SpecPrefix.v",
+    "old_sha256": "ae57a014e1a2ad24a707232adc814338d08803810e76f806d35ec5267f970ccd",
+    "new_sha256": "a69173559162c6d45988ccb7c176a31ddbd20813d98b8feb403d53c1e6d473ca"
+  },
+  {
+    "path": "ZesuSsz/Automation/UninitRegions.v",
+    "old_sha256": "999e5d993f0937ed60abbbb846cf10150b46a81351add167d41b10468359c072",
+    "new_sha256": "d18d99e08b678596bdef3dd92b3271531db3eca70092bece8c5410d7b220e514"
+  },
+  {
+    "path": "ZesuSsz/Proofs/Tests/BoundedArithmetic.v",
+    "old_sha256": "32e0e4018501d4739e40e1d315dc27583c612dffe8576598d80e28fcbc7e9ca8",
+    "new_sha256": "d574555f12afa2568b4cc092f1989e5893f601446652d6443145d24e75d28d2e"
+  },
+  {
+    "path": "tools/test_production_tactic_limits.py",
+    "old_sha256": null,
+    "new_sha256": "18fc3abd1d5b0bb1b6e9018f99697a3580b0a80488080dc26cf5ebd7d805f17d"
+  }
+]

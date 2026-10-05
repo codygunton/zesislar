@@ -95,3 +95,29 @@ class NativeClosureTests(unittest.TestCase):
         with patch('successor_entailment.native_boundary_source', return_value={'source': 'different'}):
             with self.assertRaisesRegex(ValueError, 'obligation changed'):
                 discovery.reuse_native_capture({'entry_pc': '0x10'}, self.block, {}, previous, options)
+
+
+class CoqcFallbackTests(unittest.IsolatedAsyncioTestCase):
+    async def test_failed_pet_entry_uses_same_native_source_and_explicit_debts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            rendered = {'source': 'frozen native statement'}
+            debts = {'pending_goals': [], 'shelved_goals': ['inherited debt']}
+            evidence = {'outcome': 'native-residual', 'primary_tactic_entered': True,
+                'active_goals': [{'conclusion': 'actual successor predicate'}],
+                'inherited_debts': debts, 'compiler': {'peak_rss_kib': 1024},
+                'block_closed': False, 'contract_closed': False, 'source_sha256': 'bound source'}
+            setup = {'residual_class': 'entry_unavailable', 'calls': ['failed start']}
+            options = {'build_dir': str(root), 'seconds': 300}
+            row = {'entry_pc': '0x10', 'entry_class': 'root'}
+            with patch('coqc_primary.run_primary', return_value=evidence) as run, \
+                    patch('chain_root.inherited_debts', return_value=debts):
+                result = await discovery.fallback_designed_block(row, {}, rendered,
+                    options, root, setup, discovery.time.monotonic())
+            run.assert_called_once_with(rendered, root/'coqc-fallback', str(root),
+                inherited_debts=debts, seconds=300)
+            self.assertEqual(result['outcomes'], ['native-residual'])
+            self.assertFalse(result['block_closed'])
+            retained = json.loads((root/'fallback-evidence.json').read_text())
+            self.assertEqual(retained['failed_mcp_setup'], setup)
+            self.assertEqual(retained['inherited_debts'], debts)

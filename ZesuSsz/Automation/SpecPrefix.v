@@ -60,7 +60,7 @@ Ltac zesu_close_spec_tail :=
   | |- envs_entails _ (@bi_exist _ (li_prod spec _) _) =>
       iExists (_, _)ₗ
   end;
-  iSplit; [iPureIntro; timeout 5 zesu_spec_tail_reflexivity |].
+  iSplit; [iPureIntro; zesu_spec_tail_reflexivity |].
 
 (* The switch for this one rule. `Automation/Switch.v` provides it
    with every other v2 step; `Automation/Switches/…` provides it

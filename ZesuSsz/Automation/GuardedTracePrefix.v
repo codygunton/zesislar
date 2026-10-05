@@ -66,7 +66,7 @@ Ltac zesu_registered_trace_tail :=
               | _ : ZesuTracePrefixUsed declared |- _ =>
                   fail "The registered trace prefix was already expanded"
               | _ =>
-                  timeout 2 zesu_registered_trace_tail_core;
+                  zesu_registered_trace_tail_core;
                   let Hused := fresh "HtracePrefixUsed" in
                   pose proof (I : ZesuTracePrefixUsed declared) as Hused
               end

@@ -15,13 +15,24 @@ Proof.
   zesu_finish_lia.
 Qed.
 
-Lemma test_arithmetic_timeout_retains_goal : True.
+Lemma test_arithmetic_failure_retains_goal : True.
 Proof.
   zesu_bounded_arithmetic ltac:(idtac).
   Fail zesu_bounded_arithmetic_with 1
-    ltac:(let rec spin dummy := spin dummy in spin tt).
+    ltac:(fail 0 "The action failed.").
   exact I.
 Qed.
 
 Print Assumptions test_byte_index_fact_selection.
-Print Assumptions test_arithmetic_timeout_retains_goal.
+Print Assumptions test_arithmetic_failure_retains_goal.
+
+Lemma test_constant_solver_rejects_open_terms (value : bv 64) :
+  value = value.
+Proof. Fail zesu_finish_constant. reflexivity. Qed.
+
+Lemma test_constant_solver_closed_terms :
+  (BV 64 1 + BV 64 2)%bv = BV 64 3.
+Proof. zesu_finish_constant. Qed.
+
+Print Assumptions test_constant_solver_rejects_open_terms.
+Print Assumptions test_constant_solver_closed_terms.

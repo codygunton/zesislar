@@ -1,0 +1,1227 @@
+{
+  "schema_version": 1,
+  "item": "I7-legacy-reachability",
+  "baseline_root": "ff61521249a0999333774898036143fec4e3513d",
+  "repair_commit": "d0c051391dc9c6d59d04a792f58a7c96ff30723e",
+  "scope": "Tracked production proofs and tracked regression proofs. Require Import/Export paths establish reachability, not dynamic call counts.",
+  "production_count": 9,
+  "production_legacy_count": 0,
+  "regression_count": 111,
+  "regression_legacy_count": 53,
+  "production_sources_unchanged": true,
+  "frozen_prologue": {
+    "expected_sha256": "133cbb89b13ec9e09f0e92441fd0b12ba4a41c0f0f945bc892029766bd296eeb",
+    "baseline_sha256": "133cbb89b13ec9e09f0e92441fd0b12ba4a41c0f0f945bc892029766bd296eeb",
+    "repair_sha256": "133cbb89b13ec9e09f0e92441fd0b12ba4a41c0f0f945bc892029766bd296eeb",
+    "all_six_measured_sources_unchanged": true
+  },
+  "unchanged_regression_sources": [
+    "ZesuSsz/Proofs/Tests/Alignment.v",
+    "ZesuSsz/Proofs/Tests/ArrayByteDefault.v",
+    "ZesuSsz/Proofs/Tests/ArrayByteValues.v",
+    "ZesuSsz/Proofs/Tests/ArrayByteViews.v",
+    "ZesuSsz/Proofs/Tests/ArrayCopyComplete.v",
+    "ZesuSsz/Proofs/Tests/ArrayCopyFinish.v",
+    "ZesuSsz/Proofs/Tests/ArrayCopyStep.v",
+    "ZesuSsz/Proofs/Tests/ArrayCounterBounds.v",
+    "ZesuSsz/Proofs/Tests/ArrayCounterCompare.v",
+    "ZesuSsz/Proofs/Tests/ArrayCounterStep.v",
+    "ZesuSsz/Proofs/Tests/ArrayCursors.v",
+    "ZesuSsz/Proofs/Tests/ArrayDynamicBounds.v",
+    "ZesuSsz/Proofs/Tests/ArrayDynamicCursors.v",
+    "ZesuSsz/Proofs/Tests/ArrayDynamicDestination.v",
+    "ZesuSsz/Proofs/Tests/ArrayEightCursor.v",
+    "ZesuSsz/Proofs/Tests/ArrayEightLowFirst.v",
+    "ZesuSsz/Proofs/Tests/ArrayEightNormalized.v",
+    "ZesuSsz/Proofs/Tests/ArrayForget.v",
+    "ZesuSsz/Proofs/Tests/ArrayPairViews.v",
+    "ZesuSsz/Proofs/Tests/ArrayWordValues.v",
+    "ZesuSsz/Proofs/Tests/ArrayWordViews.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayKnownBranch.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayUninit.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayUninitExplicit.v",
+    "ZesuSsz/Proofs/Tests/ByteArrayWordRegion.v",
+    "ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+    "ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+    "ZesuSsz/Proofs/Tests/ByteAssembly.v",
+    "ZesuSsz/Proofs/Tests/ByteListResources.v",
+    "ZesuSsz/Proofs/Tests/CallRegCols.v",
+    "ZesuSsz/Proofs/Tests/CallScratch.v",
+    "ZesuSsz/Proofs/Tests/CallScratchBoolean.v",
+    "ZesuSsz/Proofs/Tests/CallScratchBytes.v",
+    "ZesuSsz/Proofs/Tests/CallScratchSized.v",
+    "ZesuSsz/Proofs/Tests/CallerUnits.v",
+    "ZesuSsz/Proofs/Tests/Calls.v",
+    "ZesuSsz/Proofs/Tests/CarrierHandoff.v",
+    "ZesuSsz/Proofs/Tests/Continuations.v",
+    "ZesuSsz/Proofs/Tests/CounterShapes.v",
+    "ZesuSsz/Proofs/Tests/CounterZero.v",
+    "ZesuSsz/Proofs/Tests/CounterZeroZ.v",
+    "ZesuSsz/Proofs/Tests/FalseBody.v",
+    "ZesuSsz/Proofs/Tests/NatPowerBounds.v",
+    "ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+    "ZesuSsz/Proofs/Tests/PointerAlignment.v",
+    "ZesuSsz/Proofs/Tests/RegCollections.v",
+    "ZesuSsz/Proofs/Tests/RegMixedPacking.v",
+    "ZesuSsz/Proofs/Tests/RegPacking.v",
+    "ZesuSsz/Proofs/Tests/SnapshotSlices.v",
+    "ZesuSsz/Proofs/Tests/StackAlignment.v",
+    "ZesuSsz/Proofs/Tests/StackArrayIndices.v",
+    "ZesuSsz/Proofs/Tests/TraceResume.v",
+    "ZesuSsz/Proofs/Tests/WordPayloads.v"
+  ],
+  "changed_regression_sources": [
+    "ZesuSsz/Proofs/Tests/BoundedArithmetic.v"
+  ],
+  "rows": [
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
+      "after_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
+      "after_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Join6ae0/Branch.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "cc7d4f022fd32e570598f674408e5f55051664391fe211f01cf4778b83429d44",
+      "after_sha256": "cc7d4f022fd32e570598f674408e5f55051664391fe211f01cf4778b83429d44",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Join6ae0/From69e0.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "4159541d4e9f2d7337f0e90e8a01370cae328a2ed7d3e0016af2f24aaac80c79",
+      "after_sha256": "4159541d4e9f2d7337f0e90e8a01370cae328a2ed7d3e0016af2f24aaac80c79",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Join6ae0/From6a08.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "86bbb5c49b00d11c8393afacb67c17a579c9db4d69abee104fc3db622368c093",
+      "after_sha256": "86bbb5c49b00d11c8393afacb67c17a579c9db4d69abee104fc3db622368c093",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Join6ae0/From6a6c.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "b516ae805d984741c9fb408693cdf03930f4f9db2ca6304f4cd7cb392d3fc814",
+      "after_sha256": "b516ae805d984741c9fb408693cdf03930f4f9db2ca6304f4cd7cb392d3fc814",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Join6ae0/From6aa8.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "b3734e5625e5ce990152069e10b7d96d7846bc0d8ebd108d233cba897ef96ed2",
+      "after_sha256": "b3734e5625e5ce990152069e10b7d96d7846bc0d8ebd108d233cba897ef96ed2",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Join6ae0/Mask.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "5721c40f87fb678b56a24f101de933151ab428beb70776f85124e015082601a1",
+      "after_sha256": "5721c40f87fb678b56a24f101de933151ab428beb70776f85124e015082601a1",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/DecodeItem/Prologue.v",
+      "category": "production",
+      "legacy_path": null,
+      "before_sha256": "133cbb89b13ec9e09f0e92441fd0b12ba4a41c0f0f945bc892029766bd296eeb",
+      "after_sha256": "133cbb89b13ec9e09f0e92441fd0b12ba4a41c0f0f945bc892029766bd296eeb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/Alignment.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.Alignment",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "cffb0f6a2758d45b7c6efa30a479e1c255935713ac897e142d63aca19e6c335a",
+      "after_sha256": "cffb0f6a2758d45b7c6efa30a479e1c255935713ac897e142d63aca19e6c335a",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayBounds.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "3a2ef3337cbf07297ce10288e8b0b1e2a31f2426fa5c419a698e964935f14abd",
+      "after_sha256": "3a2ef3337cbf07297ce10288e8b0b1e2a31f2426fa5c419a698e964935f14abd",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayByteDefault.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayByteDefault",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "41027cf16d3b2ff77368fddab01b458dc2f19d002bd054cf78c790629e9a83e5",
+      "after_sha256": "41027cf16d3b2ff77368fddab01b458dc2f19d002bd054cf78c790629e9a83e5",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayByteValues.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayByteValues",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "5826d20b2bcf9d2fd71ff19e9f8507ea68ff5851cb41496d45b24a847115ead7",
+      "after_sha256": "5826d20b2bcf9d2fd71ff19e9f8507ea68ff5851cb41496d45b24a847115ead7",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayByteViews.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayByteViews",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "5751f8fce26270f0d9971cadafd000575a9cf41b70f46815e54c81d1cb69f76b",
+      "after_sha256": "5751f8fce26270f0d9971cadafd000575a9cf41b70f46815e54c81d1cb69f76b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCopyComplete.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCopyComplete",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "3338aeab1a4983b0294f9515490ef55d4658de2348a1f018a622884a9cbd31c4",
+      "after_sha256": "3338aeab1a4983b0294f9515490ef55d4658de2348a1f018a622884a9cbd31c4",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCopyFinish.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCopyFinish",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "3593671ae7fe991f2c0f4cb2c3296b7fbafcfa6ce59f064485c3be1473fbda1c",
+      "after_sha256": "3593671ae7fe991f2c0f4cb2c3296b7fbafcfa6ce59f064485c3be1473fbda1c",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCopyStep.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCopyStep",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "52949d5f608280a15a1ce443f366c21ef06bd3fc28b32ce15ce0e7f134b596e4",
+      "after_sha256": "52949d5f608280a15a1ce443f366c21ef06bd3fc28b32ce15ce0e7f134b596e4",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCounterBounds.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCounterBounds",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "63e73b8761e07ebf7d715fe47716add6b26f970242db18b1980ecf7c25dbb4c2",
+      "after_sha256": "63e73b8761e07ebf7d715fe47716add6b26f970242db18b1980ecf7c25dbb4c2",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCounterCompare.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCounterCompare",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "3f83c53020eeef25ca035ba9666579b02b2fdfb5d796ab1285c26331cd6e6cda",
+      "after_sha256": "3f83c53020eeef25ca035ba9666579b02b2fdfb5d796ab1285c26331cd6e6cda",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCounterStep.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCounterStep",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "fc4e4c8b16dcfec1ca5c258400f19a09e3e4b5a4fc081dabea0ca06b89d7b1cb",
+      "after_sha256": "fc4e4c8b16dcfec1ca5c258400f19a09e3e4b5a4fc081dabea0ca06b89d7b1cb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayCursors.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayCursors",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "8be946b2512e54129079c40671f35f857f432ede8dddaeef47fb5608ecef8642",
+      "after_sha256": "8be946b2512e54129079c40671f35f857f432ede8dddaeef47fb5608ecef8642",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayDynamicBounds.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayDynamicBounds",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "4dbcf580b53bdbc57249fd567bc651495a5ac5dbf2d507938b33ca854bae0e97",
+      "after_sha256": "4dbcf580b53bdbc57249fd567bc651495a5ac5dbf2d507938b33ca854bae0e97",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayDynamicCursors.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayDynamicCursors",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "293c394f67fc91a37cb3ee91849e4a886395aaca89f1903d992a058db951e51b",
+      "after_sha256": "293c394f67fc91a37cb3ee91849e4a886395aaca89f1903d992a058db951e51b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayDynamicDestination.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayDynamicDestination",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "0a79cee885147b65990c5c8942db447bab7c9c0026011d158bbf14f088e9fdcb",
+      "after_sha256": "0a79cee885147b65990c5c8942db447bab7c9c0026011d158bbf14f088e9fdcb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayEightCursor.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayEightCursor",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "42d0451b3ef0dfac18b7635be445682c263b245d68974051e3b80e29aa3f002f",
+      "after_sha256": "42d0451b3ef0dfac18b7635be445682c263b245d68974051e3b80e29aa3f002f",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayEightLowFirst.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayEightLowFirst",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "3ab82a0f1b13bdce98dd71deec95c6230a16705435efaac32db8a1419e4c6bac",
+      "after_sha256": "3ab82a0f1b13bdce98dd71deec95c6230a16705435efaac32db8a1419e4c6bac",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayEightNormalized.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayEightNormalized",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "10c5567a199a7f9ffba4632da1006a13606d53c346cdcdc47ef8f24e0e18fa00",
+      "after_sha256": "10c5567a199a7f9ffba4632da1006a13606d53c346cdcdc47ef8f24e0e18fa00",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayForget.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayForget",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "99195f56d1d28dc01eef75c62dfc089b209b3e77115548ac964f80ed0546531c",
+      "after_sha256": "99195f56d1d28dc01eef75c62dfc089b209b3e77115548ac964f80ed0546531c",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayLoadPreselectHandoff.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "817ae0d79e190cc1093e11670a91b0caf95509dea71c6617db7a2783ea52cc85",
+      "after_sha256": "817ae0d79e190cc1093e11670a91b0caf95509dea71c6617db7a2783ea52cc85",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayPairViews.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayPairViews",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "0f33e479df731dc9bb57ac2e9f61227c1a174a48fda638a5ec26a38d4ea166df",
+      "after_sha256": "0f33e479df731dc9bb57ac2e9f61227c1a174a48fda638a5ec26a38d4ea166df",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayRegionMetadata.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "8a2544f88df37f4ba586970a58723ccf8b75c2ddef92f9f3dd0946b394e8186e",
+      "after_sha256": "8a2544f88df37f4ba586970a58723ccf8b75c2ddef92f9f3dd0946b394e8186e",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArraySlices.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "e7f8b075e71113749ab16c61226b83be11373357a1b71e0248c529ffabccc8bb",
+      "after_sha256": "e7f8b075e71113749ab16c61226b83be11373357a1b71e0248c529ffabccc8bb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayWordValues.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayWordValues",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "84ef583466147fd41946e8c941d08637b968742029405dbcf6f681f80a30708a",
+      "after_sha256": "84ef583466147fd41946e8c941d08637b968742029405dbcf6f681f80a30708a",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ArrayWordViews.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ArrayWordViews",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "dfa4afe3fd2870b0da9e728964be0f6ef98c9cfb71c90a266d7533d7dc56f07f",
+      "after_sha256": "dfa4afe3fd2870b0da9e728964be0f6ef98c9cfb71c90a266d7533d7dc56f07f",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/BlockTable.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "fba31981b65c8abd55084143bc9bac2c17fc80c4303ccafae93620dbdce1e5fd",
+      "after_sha256": "fba31981b65c8abd55084143bc9bac2c17fc80c4303ccafae93620dbdce1e5fd",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/BoundaryHandoff.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "0ca79b0ffc6c56ce5c0f81011831f10c4eb091e9affdae59fe8cf486bf0c54fb",
+      "after_sha256": "0ca79b0ffc6c56ce5c0f81011831f10c4eb091e9affdae59fe8cf486bf0c54fb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/BoundedArithmetic.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "32e0e4018501d4739e40e1d315dc27583c612dffe8576598d80e28fcbc7e9ca8",
+      "after_sha256": "d574555f12afa2568b4cc092f1989e5893f601446652d6443145d24e75d28d2e",
+      "unchanged": false
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArrayHookExport.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "29009f54a63f28a18016e93febe7cdb2703321756cead5abd0cfe7fd0f47c2a1",
+      "after_sha256": "29009f54a63f28a18016e93febe7cdb2703321756cead5abd0cfe7fd0f47c2a1",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArrayKnownBranch.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteArrayKnownBranch",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "da666c7aa2f441491b933d11ad7c36d2f4a65552b2bca262f0516b394bc6d90a",
+      "after_sha256": "da666c7aa2f441491b933d11ad7c36d2f4a65552b2bca262f0516b394bc6d90a",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArrayUninit.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteArrayUninit",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "b22a8a2a10cde68e6024ef656a612eb2a0be382612170d03881dace4882a8482",
+      "after_sha256": "b22a8a2a10cde68e6024ef656a612eb2a0be382612170d03881dace4882a8482",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArrayUninitExplicit.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteArrayUninitExplicit",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "1f84ef7715e414e55319dbe7e4f933be6136a99d62dc4a2271f5eb3cf1e80b37",
+      "after_sha256": "1f84ef7715e414e55319dbe7e4f933be6136a99d62dc4a2271f5eb3cf1e80b37",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArrayWordRegion.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteArrayWordRegion",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "b6897182338e58eb9c2e134a60da13c3c394262bc98da16f44bcbbc42f6ab550",
+      "after_sha256": "b6897182338e58eb9c2e134a60da13c3c394262bc98da16f44bcbbc42f6ab550",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArraysRead.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteArraysRead",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "89e5767e15fac290305e81108b92c48e14f1f068c04ab8b200f80cae73d07af7",
+      "after_sha256": "89e5767e15fac290305e81108b92c48e14f1f068c04ab8b200f80cae73d07af7",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteArraysWrite",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "226990987f10898759b18e0e6a28bcabf5a248adfcf7da7a8e0dfc1cca1e084a",
+      "after_sha256": "226990987f10898759b18e0e6a28bcabf5a248adfcf7da7a8e0dfc1cca1e084a",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteAssembly.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteAssembly",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "fcd16e972bad1d88a10fe2a594be66ebe6ee71eb2ad49d7825970014657620e7",
+      "after_sha256": "fcd16e972bad1d88a10fe2a594be66ebe6ee71eb2ad49d7825970014657620e7",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteFoldSwitch.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "11e015b5a015ded41fbb5f22dabc9f689037f0da0584d2d4e90c1b1f054a4104",
+      "after_sha256": "11e015b5a015ded41fbb5f22dabc9f689037f0da0584d2d4e90c1b1f054a4104",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ByteListResources.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.ByteListResources",
+        "ZesuSsz.Automation.ByteLists",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "ff3ee05f6bf63d8b159dd2fe4854d820ef88f048e9256c3e26cb628cc2795ad3",
+      "after_sha256": "ff3ee05f6bf63d8b159dd2fe4854d820ef88f048e9256c3e26cb628cc2795ad3",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallBoundary.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "01f777a760d6f27a2f49adc47e2b1134b8370d397111711e990e316f48647986",
+      "after_sha256": "01f777a760d6f27a2f49adc47e2b1134b8370d397111711e990e316f48647986",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallConstants.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "0f941b7e5026d1dd32c480efa2581f39d1454c3461a9c843c1017c5a4f1ec145",
+      "after_sha256": "0f941b7e5026d1dd32c480efa2581f39d1454c3461a9c843c1017c5a4f1ec145",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallRegCols.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CallRegCols",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "73fa8cf114b4e8f950f2ebf116a57ef109a17737f1a1482103574c05eb4cbe38",
+      "after_sha256": "73fa8cf114b4e8f950f2ebf116a57ef109a17737f1a1482103574c05eb4cbe38",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallScratch.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CallScratch",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "ea5effc9adba2a8f29096e60145e85c398b0bf8e66dd8709c06fed07a7134a3f",
+      "after_sha256": "ea5effc9adba2a8f29096e60145e85c398b0bf8e66dd8709c06fed07a7134a3f",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallScratchBoolean.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CallScratchBoolean",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "d725fde461ecefe05acc4a39a2de94d7d77d020a43e35639e035ddff298e2aa1",
+      "after_sha256": "d725fde461ecefe05acc4a39a2de94d7d77d020a43e35639e035ddff298e2aa1",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallScratchBytes.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CallScratchBytes",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "57dee76d0cfb72afee6d7cd0d220cba25b280e7ce2c1024051c3a6843b976944",
+      "after_sha256": "57dee76d0cfb72afee6d7cd0d220cba25b280e7ce2c1024051c3a6843b976944",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallScratchSized.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CallScratchSized",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "e261a1006c2b3915029e1147628ed1b8d7e1bfe21d1886219ac23ea9c2e5c4ab",
+      "after_sha256": "e261a1006c2b3915029e1147628ed1b8d7e1bfe21d1886219ac23ea9c2e5c4ab",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CallerUnits.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CallerUnits",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "f4e7032fd2857663b26eea246539afd8900633fa348ed920f1122557f382bdf0",
+      "after_sha256": "f4e7032fd2857663b26eea246539afd8900633fa348ed920f1122557f382bdf0",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/Calls.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.Calls",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "61904c8f80f490bce50505997e5e2201751abe5030d69d95669284d11ccf2338",
+      "after_sha256": "61904c8f80f490bce50505997e5e2201751abe5030d69d95669284d11ccf2338",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CarrierHandoff.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CarrierHandoff",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "cb6c87fb92065c9428556d8a9e550135084481f1e4a28ff781061a30ba8fd984",
+      "after_sha256": "cb6c87fb92065c9428556d8a9e550135084481f1e4a28ff781061a30ba8fd984",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ConjunctMatch.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "36d4f4ece060e7bd63df044ab5c8e2754b025d468d7ac159dcfbcfba00e6ee79",
+      "after_sha256": "36d4f4ece060e7bd63df044ab5c8e2754b025d468d7ac159dcfbcfba00e6ee79",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ConjunctMatchInactive.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "162294a367ed655fd875eb2cf12e8e8b220a7aa4eb16655bd9a811eda7873144",
+      "after_sha256": "162294a367ed655fd875eb2cf12e8e8b220a7aa4eb16655bd9a811eda7873144",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/Continuations.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.Continuations",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "4f05a9270bf677e054056c354035ebfb788f15fe48c76eebad9ff5438480fa92",
+      "after_sha256": "4f05a9270bf677e054056c354035ebfb788f15fe48c76eebad9ff5438480fa92",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CounterShapes.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CounterShapes",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "630599c9f21cae37f5bba204e76c846ed46d191f159310b33ac85b74bcff0e72",
+      "after_sha256": "630599c9f21cae37f5bba204e76c846ed46d191f159310b33ac85b74bcff0e72",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CounterZero.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CounterZero",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "cff2106493daf051fe0c1f3f08c993a8ac37bf2c11dbc00b0fc9d99e59498366",
+      "after_sha256": "cff2106493daf051fe0c1f3f08c993a8ac37bf2c11dbc00b0fc9d99e59498366",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CounterZeroZ.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.CounterZeroZ",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "c254c61c3d6d914d296e605671ee12c352b2e049f64eb0987645c3ab40e2ddc4",
+      "after_sha256": "c254c61c3d6d914d296e605671ee12c352b2e049f64eb0987645c3ab40e2ddc4",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/CurrentUnsignedWitness.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "7a3b97b71f538974e8d5f3f887f58d89ad300797016373bc459c78c83d965cc2",
+      "after_sha256": "7a3b97b71f538974e8d5f3f887f58d89ad300797016373bc459c78c83d965cc2",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/DecodeItemInputEndColumn.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "0b408d5ff1f1972e71dc70a48e62893b425e8bec5c7d0961a26477f683e750ea",
+      "after_sha256": "0b408d5ff1f1972e71dc70a48e62893b425e8bec5c7d0961a26477f683e750ea",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/FalseBody.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.FalseBody",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "81352a67fb2b89a9d55cc2a56dbfbe789c243e3ac4dc0d26b4c022ebc0c9c927",
+      "after_sha256": "81352a67fb2b89a9d55cc2a56dbfbe789c243e3ac4dc0d26b4c022ebc0c9c927",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/Finish.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "d6c9c8b3edc005aa7563d2d8dfc84f5a83aa4cefa86105843203c14922443d3b",
+      "after_sha256": "d6c9c8b3edc005aa7563d2d8dfc84f5a83aa4cefa86105843203c14922443d3b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/FramedContinuation.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "2fa47a5b7080390c00b4f43696531f47666e0230b14dd4a9b7576c97ebc68e27",
+      "after_sha256": "2fa47a5b7080390c00b4f43696531f47666e0230b14dd4a9b7576c97ebc68e27",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/InitializedArraySearch.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "4299f5c882f34aa337dfa93e3c5ec7cad11e06093dd6fbde2c537cd5f5380dff",
+      "after_sha256": "4299f5c882f34aa337dfa93e3c5ec7cad11e06093dd6fbde2c537cd5f5380dff",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/InstrPreFlex.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "fe9a66f7d6f7bf5b590e464aa7cbf727afafb2c783bb41f94f7aa357a1b277c4",
+      "after_sha256": "fe9a66f7d6f7bf5b590e464aa7cbf727afafb2c783bb41f94f7aa357a1b277c4",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/InstructionLookupHook.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "0f9cd8bf95e83557075577a3bfca0a09154aa91208c59e5ac9f6d4d9ef3d5f39",
+      "after_sha256": "0f9cd8bf95e83557075577a3bfca0a09154aa91208c59e5ac9f6d4d9ef3d5f39",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/IntegerArrayAddress.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "6332a5c37e392f10892250aea19e44b193f5e0dd05977192dae568d2f8ca2008",
+      "after_sha256": "6332a5c37e392f10892250aea19e44b193f5e0dd05977192dae568d2f8ca2008",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/IntegerArrayAddressIsolation.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "eee96c2f8b335478409f64ffbfecff3e85afd8ef06dce82f0e03ae051d271bc6",
+      "after_sha256": "eee96c2f8b335478409f64ffbfecff3e85afd8ef06dce82f0e03ae051d271bc6",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/IntegerArrayWords.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "77fc3204dec6271ce3a379e02fb16a70fd6ef6f6d5f4c366b6953e5a2b1d5032",
+      "after_sha256": "77fc3204dec6271ce3a379e02fb16a70fd6ef6f6d5f4c366b6953e5a2b1d5032",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/InteriorByteSlice.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "843393a3162c777e4d7a30386f2377033e948a031de15654b71d221a27cbfd43",
+      "after_sha256": "843393a3162c777e4d7a30386f2377033e948a031de15654b71d221a27cbfd43",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/LegacyGuardedCalls.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "992951745af62a27e5a9ca1e60288b5e3816ca43c0ecc5838296e111f4212fe1",
+      "after_sha256": "992951745af62a27e5a9ca1e60288b5e3816ca43c0ecc5838296e111f4212fe1",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/LoadedTrace.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "81cba5306aecf61edbbcab98fff7c533250c54b5cb553df8ce6baab142c597a1",
+      "after_sha256": "81cba5306aecf61edbbcab98fff7c533250c54b5cb553df8ce6baab142c597a1",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/LowMaskHook.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "52c1f44e64101e2c44c8b0d5c2b734337404e534777d6b7024753d57755ec9e8",
+      "after_sha256": "52c1f44e64101e2c44c8b0d5c2b734337404e534777d6b7024753d57755ec9e8",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/MachineBounds.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "77f59cc73fc7a5f542e491f8b836fe131190458039f1ce8bbb679caa6baedc04",
+      "after_sha256": "77f59cc73fc7a5f542e491f8b836fe131190458039f1ce8bbb679caa6baedc04",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/MemoryWords.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "ceca76ac281da39c918483ed2791731cc2d6ac296d5a3a9099c5d7dd69409ebd",
+      "after_sha256": "ceca76ac281da39c918483ed2791731cc2d6ac296d5a3a9099c5d7dd69409ebd",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/NatPowerBounds.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.NatPowerBounds",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "9bf215e3dd4bf5767f324a44b683d3ad35f70dbc54a8da3b3585c25466d806a3",
+      "after_sha256": "9bf215e3dd4bf5767f324a44b683d3ad35f70dbc54a8da3b3585c25466d806a3",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/NatPowerGoals.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "82ba88df7332aaff2d6f79be583f2de70c643af776599908c3b33b4d94d0728a",
+      "after_sha256": "82ba88df7332aaff2d6f79be583f2de70c643af776599908c3b33b4d94d0728a",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/NonRaising.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "15d2f7214f8767d10f83884e1e9b03b874a996e8d4238c0c0d29fe0f7e6ed99b",
+      "after_sha256": "15d2f7214f8767d10f83884e1e9b03b874a996e8d4238c0c0d29fe0f7e6ed99b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/NonRaisingLegacy.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.NonRaisingLegacy",
+        "ZesuSsz.Automation.Legacy.Finish"
+      ],
+      "before_sha256": "39f967cd71f8c6778573247e0b0671296240333589ef4a424edcba85f1a13156",
+      "after_sha256": "39f967cd71f8c6778573247e0b0671296240333589ef4a424edcba85f1a13156",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/OptionalObjectView.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "d071163b089adc2440e46020dcee29ef4e9ea6a28af5c323815c72ce78d33350",
+      "after_sha256": "d071163b089adc2440e46020dcee29ef4e9ea6a28af5c323815c72ce78d33350",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/OptionalScratchCleanup.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "e43519868d1ce8408d6bec7ab9d005fa0403c630824939201e263949e4888817",
+      "after_sha256": "e43519868d1ce8408d6bec7ab9d005fa0403c630824939201e263949e4888817",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/OutcomeHandoff.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "25cc7a5e60d0f9413fe82ab6f6ed4775b8ef273ff745ca3e7d83ea8b1a1572d7",
+      "after_sha256": "25cc7a5e60d0f9413fe82ab6f6ed4775b8ef273ff745ca3e7d83ea8b1a1572d7",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/PointerAlignment.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.PointerAlignment",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "38b53710b6a6a45225fd93d3dd11e4430646753398457a6b2682316de8941881",
+      "after_sha256": "38b53710b6a6a45225fd93d3dd11e4430646753398457a6b2682316de8941881",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RamFaultHook.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "eb3067639efc6924dbe731af9c885fd8bf054d545dc0c46e4bd2377dc78c7b4d",
+      "after_sha256": "eb3067639efc6924dbe731af9c885fd8bf054d545dc0c46e4bd2377dc78c7b4d",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RecordWitness.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "e14366b5cb082cbfe09f943523415745bc26a836fc34efe65d7de5d4addd7590",
+      "after_sha256": "e14366b5cb082cbfe09f943523415745bc26a836fc34efe65d7de5d4addd7590",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RegCollections.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.RegCollections",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "bc78c95225576c82437f97a094b3aa26f748cee2ad0f6133036d5ed45a4e25ba",
+      "after_sha256": "bc78c95225576c82437f97a094b3aa26f748cee2ad0f6133036d5ed45a4e25ba",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RegMixedPacking.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.RegMixedPacking",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "a1a22a2f65972186ff04351d19cd6ee0770825408487faa986a49cbd4561e82a",
+      "after_sha256": "a1a22a2f65972186ff04351d19cd6ee0770825408487faa986a49cbd4561e82a",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RegPacking.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.RegPacking",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "c79f9ae090b055c045ce16d0c64d4685c22d9385ea97d1924e35fbf15f0474af",
+      "after_sha256": "c79f9ae090b055c045ce16d0c64d4685c22d9385ea97d1924e35fbf15f0474af",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ResourceGroups.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "f485de0a90be0ea5f60d8f0c610c11d53aee3a976ca5b7f90f6be15ffc61e41b",
+      "after_sha256": "f485de0a90be0ea5f60d8f0c610c11d53aee3a976ca5b7f90f6be15ffc61e41b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ReturnBundleV1.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "f132553df94ab0adb660f32c05a7fb1d11dc6e77bc5d390db68caba8683320f5",
+      "after_sha256": "f132553df94ab0adb660f32c05a7fb1d11dc6e77bc5d390db68caba8683320f5",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/ReturnWandV1.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "b1d371ce8e2b2dff3bc380567a87df449cd3bc8e7f299989f9217085801905f0",
+      "after_sha256": "b1d371ce8e2b2dff3bc380567a87df449cd3bc8e7f299989f9217085801905f0",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/Rewrites.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "adb19a3611ced69160704ae15a586822a04de71576dcac5d00ecff94bca1e308",
+      "after_sha256": "adb19a3611ced69160704ae15a586822a04de71576dcac5d00ecff94bca1e308",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RuleSetV1.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "0f35dec9cb4bb62fdc956d4348d1881325721915fec873265532e476f7574d96",
+      "after_sha256": "0f35dec9cb4bb62fdc956d4348d1881325721915fec873265532e476f7574d96",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/RuleSetV2.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "8b127d4f430cfc0f19f10747c20701901323a697d89d78b0ae7c484e970d9aa6",
+      "after_sha256": "8b127d4f430cfc0f19f10747c20701901323a697d89d78b0ae7c484e970d9aa6",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/SealedLoadHandoff.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "304e9e9ec62a66de5db6f79d735a01c06a79ed8ac6c44b6102d3e158e183aaca",
+      "after_sha256": "304e9e9ec62a66de5db6f79d735a01c06a79ed8ac6c44b6102d3e158e183aaca",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/SelectedLookupSeal.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "1540469bda63ba408b1d448fae831d1eca7722bdf2e0e65e26eb0350716072ec",
+      "after_sha256": "1540469bda63ba408b1d448fae831d1eca7722bdf2e0e65e26eb0350716072ec",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/SnapshotSlices.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.SnapshotSlices",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "d6b28310ee7cf937de99aa4af32cf24ef7e8dd5d82b24db024ab6073dc83612c",
+      "after_sha256": "d6b28310ee7cf937de99aa4af32cf24ef7e8dd5d82b24db024ab6073dc83612c",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StackAlignment.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.StackAlignment",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "9a307bc08d99ec77586fb152bdd094246f8b22b809208318eafd0db630d8798d",
+      "after_sha256": "9a307bc08d99ec77586fb152bdd094246f8b22b809208318eafd0db630d8798d",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StackAlignmentFinish.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "06294f021fa45d4469b0cf2a113d84205585e5b54628a3102433297ea3921bfb",
+      "after_sha256": "06294f021fa45d4469b0cf2a113d84205585e5b54628a3102433297ea3921bfb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StackArrayIndices.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.StackArrayIndices",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "23fc344c317c363ad149357da1497241422861c6c904874c081d7428255f2b5c",
+      "after_sha256": "23fc344c317c363ad149357da1497241422861c6c904874c081d7428255f2b5c",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StackWriteHook.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "2537d02cf503c230a41d4eeb13806a37b91a95b1447f0b7aba3d1308211278df",
+      "after_sha256": "2537d02cf503c230a41d4eeb13806a37b91a95b1447f0b7aba3d1308211278df",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StockExecutor.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "9f431f03f5189d8239d13e2074c134270a96769dd7e60d9181346992ed672015",
+      "after_sha256": "9f431f03f5189d8239d13e2074c134270a96769dd7e60d9181346992ed672015",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StrictSigned.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "87bc71906ed3bc655bf2cd9f1f3dc71c02b7193deb27127b244b66d692b4d45b",
+      "after_sha256": "87bc71906ed3bc655bf2cd9f1f3dc71c02b7193deb27127b244b66d692b4d45b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/StrictSignedIsolation.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "deaaaabcacc23b7077b391da4ccd69f8f936cf720ee3a14c64c9e56de11c66a7",
+      "after_sha256": "deaaaabcacc23b7077b391da4ccd69f8f936cf720ee3a14c64c9e56de11c66a7",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/SwitchScope.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "65db626a4b07df1803138a3739c04a5fd8bd2f46d82f2f639b9d52b8a8896506",
+      "after_sha256": "65db626a4b07df1803138a3739c04a5fd8bd2f46d82f2f639b9d52b8a8896506",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/SwitchScopeCarrier.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "182ff4f526a5818592e66c8c10f00e40c9e29a04fca9d1d99cb0f5a673c2e9ec",
+      "after_sha256": "182ff4f526a5818592e66c8c10f00e40c9e29a04fca9d1d99cb0f5a673c2e9ec",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/SwitchScopeImporters.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "6f365cb5464a0a92fd0dc29fbcb584f65fcb55667edb2a6928e94dc353dbbe1b",
+      "after_sha256": "6f365cb5464a0a92fd0dc29fbcb584f65fcb55667edb2a6928e94dc353dbbe1b",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/TracePrefixTail.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "5f8b354352d43438f31033af373e51de94798e62eac16f43c3502786ecaaf8d5",
+      "after_sha256": "5f8b354352d43438f31033af373e51de94798e62eac16f43c3502786ecaaf8d5",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/TraceResume.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.TraceResume",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "7f46a8e87bd43af6488ba1d45783e89d317082cc056a16f4da5345fe79edc6fb",
+      "after_sha256": "7f46a8e87bd43af6488ba1d45783e89d317082cc056a16f4da5345fe79edc6fb",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/UninitWords.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "02c3128572087f0326bb17e8f5cac4aa3e201fb18058f11ca490b887c69676fd",
+      "after_sha256": "02c3128572087f0326bb17e8f5cac4aa3e201fb18058f11ca490b887c69676fd",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/WordArrayBytes.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "189f8555bc5067866a32540ed7a666de58ab8798ba7c2527f492a8a99bd886f8",
+      "after_sha256": "189f8555bc5067866a32540ed7a666de58ab8798ba7c2527f492a8a99bd886f8",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/WordArrayHandoff.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "fd144bdfc721b98cd26f4b5367a06911de29b4c049e37dc0d5749f3a39e923f8",
+      "after_sha256": "fd144bdfc721b98cd26f4b5367a06911de29b4c049e37dc0d5749f3a39e923f8",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/WordArrayLookup.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "85e4322d6cb0435a8c93966f72ece5a08457f3feab796e0353ccb7bde663a8a9",
+      "after_sha256": "85e4322d6cb0435a8c93966f72ece5a08457f3feab796e0353ccb7bde663a8a9",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/WordArrays.v",
+      "category": "regression",
+      "legacy_path": null,
+      "before_sha256": "cd8beb66abc315005d9c2b1c2599b56f0d85589e7e0a2ac32592fc28f5bf6e49",
+      "after_sha256": "cd8beb66abc315005d9c2b1c2599b56f0d85589e7e0a2ac32592fc28f5bf6e49",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Proofs/Tests/WordPayloads.v",
+      "category": "regression",
+      "legacy_path": [
+        "ZesuSsz.Proofs.Tests.WordPayloads",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "59bd9dc5eb1a5b9852d0c3e9e7492fdacc6629e1102a6e5b2f706bc86ced6adf",
+      "after_sha256": "59bd9dc5eb1a5b9852d0c3e9e7492fdacc6629e1102a6e5b2f706bc86ced6adf",
+      "unchanged": true
+    }
+  ],
+  "limits": [
+    "No compiled-object identity is claimed. The repair changes automation objects.",
+    "No native proof, profile, or project gate ran for this read-only audit.",
+    "Native profiles remain held until the combined-root announcement."
+  ],
+  "support_proof_modules_reaching_legacy": [
+    {
+      "source": "ZesuSsz/Automation/ByteListResources.v",
+      "legacy_path": [
+        "ZesuSsz.Automation.ByteListResources",
+        "ZesuSsz.Automation.ByteLists",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "b51da14a53b0215ce796e090c335b271f534521b59237bd1b3ac21c86a3d6e13",
+      "after_sha256": "b51da14a53b0215ce796e090c335b271f534521b59237bd1b3ac21c86a3d6e13",
+      "unchanged": true
+    },
+    {
+      "source": "ZesuSsz/Automation/ByteLists.v",
+      "legacy_path": [
+        "ZesuSsz.Automation.ByteLists",
+        "ZesuSsz.Automation.AllLegacy"
+      ],
+      "before_sha256": "7e5821f44d5eb31ec55e6bb104d649689f1df175e0882c069f64c4f38d49253d",
+      "after_sha256": "7e5821f44d5eb31ec55e6bb104d649689f1df175e0882c069f64c4f38d49253d",
+      "unchanged": true
+    }
+  ],
+  "support_scope": "Automation, Contracts, Export, Compliance, and InstrSpecs modules that contain Proof.; tests and the Legacy implementation directory are excluded."
+}
