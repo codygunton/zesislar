@@ -272,6 +272,7 @@ def main():
     parser.add_argument('--entries', type=Path, help='Use the frozen legacy entry records instead of the design schema')
     parser.add_argument('--trace-import', help='Use this trace module for design-schema entries')
     parser.add_argument('--code-premises', type=Path, help='Read explicit code premises for design-schema entries')
+    parser.add_argument('--probe-import', action='append', default=[], help='Import an explicit module in each design-schema probe')
     parser.add_argument('--cfg', type=Path, required=True)
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
@@ -285,7 +286,7 @@ def main():
         parser.error('The driver permits one to six workers and at most 300 seconds per MCP call')
     if not args.entries and (not args.trace_import or not args.code_premises):
         parser.error('Design-schema entries require --trace-import and --code-premises')
-    if args.entries and (args.trace_import or args.code_premises):
+    if args.entries and (args.trace_import or args.code_premises or args.probe_import):
         parser.error('Legacy entries already contain their probe options')
     design = json.loads(args.design.read_text())
     manifest = json.loads(args.manifest.read_text())
@@ -300,6 +301,11 @@ def main():
     else:
         states, entry_errors = entry_schema.design_states(
             design, Path.cwd(), args.trace_import, args.code_premises.read_text().splitlines())
+    for module in args.probe_import:
+        if not entry_schema.ROCQ_NAME.fullmatch(module):
+            parser.error('The probe import is not a fully qualified Rocq name')
+    for state in states.values():
+        state['imports'] = list(dict.fromkeys([*state.get('imports', []), *args.probe_import]))
     ready, records = prepare(design, cfg, states,
                              gen_block.address(design['entry_pc']), entry_errors)
     def source_name(path):
@@ -307,6 +313,9 @@ def main():
         return str(resolved.relative_to(Path.cwd())) if resolved.is_relative_to(Path.cwd()) else str(resolved)
     input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__)]
     input_paths.append(args.entries if args.entries else args.code_premises)
+    input_paths.extend(Path(module.replace('.', '/') + '.v') for module in args.probe_import
+                       if Path(module.replace('.', '/') + '.v').is_file())
+    input_paths.extend(path for path in (Path('_CoqProject'), Path(args.mcp_command)) if path.is_file())
     sources = {source_name(path): digest(path) for path in input_paths}
     for row in design['blocks']:
         hashes = row.get('source_hashes', {})
@@ -370,7 +379,7 @@ def main():
                 key: row[key] for key in sorted(entry_schema.FIELDS) if key in row}
     measurements = [capture['performance'] for row in records for capture in row['captures'] if 'performance' in capture]
     report = {'schema': 1, 'label': 'Phase 1 WP5 designed-entry discovery; no proof completion claim',
-              'capture_only': True, 'artifact_identity': manifest['artifact_identity'],
+              'capture_only': True, 'probe_imports': args.probe_import, 'artifact_identity': manifest['artifact_identity'],
               'selected_elf_sha256': manifest['elf_sha256'], 'inputs': sources, 'block_count': len(design['blocks']),
               'workers': args.jobs, 'new_block_runs': len(ready), 'reused_block_runs': len(reused),
               'elapsed_seconds': elapsed,

@@ -72,3 +72,14 @@ The driver does not execute that entry.
 A description without these fields remains a specification gap.
 The legacy entry mode preserves the accepted seven-probe report.
 The adapter does not rerun that report.
+
+`--probe-import` adds an explicit module import to every design-schema probe.
+Use repeated options for the approved automation switches and required type imports.
+The report binds each local module source and records the import list.
+These options add no contract resources.
+
+`tools/block/archive_discovery.py` preserves complete capture bytes in a content-hash archive.
+Its report utility keeps exact first conclusions and hashes the complete goals.
+The timeout utility separates a failed entry query from a failed tactic transaction.
+The last valid goal after a tactic timeout does not show execution progress.
+A reached abstract successor remains a diagnostic result.
