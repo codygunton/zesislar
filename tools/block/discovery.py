@@ -145,7 +145,158 @@ def parse_capture(output, state, block, successor):
                  'capture_complete': False, 'contract_closed': False}]
 
 
+def native_boundary_closed(evidence, rendered, block):
+    """Count only compiled, debt-free proofs of every designed boundary."""
+    import successor_entailment
+    if (evidence.get('outcome') != 'verified' or not evidence.get('block_closed') or
+            rendered.get('scope') != 'unproved native designed boundary'):
+        return False
+    if set(rendered.get('successors', [])) != {hex(gen_block.address(pc)) for pc in block['successors']}:
+        return False
+    if not block['successors'] and rendered.get('terminal_scope') != 'existing owned Level1 continuation; no added image continuation':
+        return False
+    if not isinstance(evidence.get('inherited_debts'), dict) or any(evidence['inherited_debts'].values()):
+        return False
+    try:
+        groups = successor_entailment.debt_groups(evidence['debt_groups']['groups'])
+        if not groups['empty'] or digest(evidence['source']) != evidence['source_sha256']:
+            return False
+    except (KeyError, OSError, TypeError, ValueError):
+        return False
+    calls = evidence.get('calls', [])
+    compiled = [c for c in calls if c['tool'] == 'rocq_compile_file']
+    verified = [c for c in calls if c['tool'] == 'rocq_verify']
+    primaries = [c for c in calls if c['tool'] == 'rocq_check' and
+                 c['arguments'].get('body', '').strip() == 'try zesu_block.']
+    return (len(compiled) == len(verified) == len(primaries) == 1 and
+            compiled[0]['result'].get('success') and verified[0]['result'].get('success') and
+            verified[0]['result'].get('assumptions') == [] and
+            primaries[0]['arguments'].get('timeout') == 300 and
+            primaries[0]['result'].get('success'))
+
+
+def designed_terminal(block, options):
+    if block['successors']:
+        return None
+    owner = 'ZesuSsz/Contracts/DecodeItemBranchEntries.v'
+    return {'kind': 'owned_continuation', 'address': options['terminal'],
+            'definition': 'ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation',
+            'source_hashes': {owner: digest(Path(options['workspace'])/owner)}}
+
+
+def reuse_native_capture(row, block, state, previous, options):
+    """Reuse a native attempt only when its exact obligation remains unchanged."""
+    import copy
+    import successor_entailment
+    candidates = previous.get('blocks', [previous])
+    old = next((item for item in candidates if item['entry'] == row['entry_pc']), None)
+    if old is None or len(old.get('captures', [])) != 1:
+        return None
+    bound = old['captures'][0].get('native_evidence')
+    if not bound or digest(bound['path']) != bound['sha256']:
+        raise ValueError('The reused native evidence changed')
+    evidence = json.loads(Path(bound['path']).read_text())
+    design = json.loads(Path(options['design']).read_text())
+    rendered = successor_entailment.native_boundary_source(state, block, design,
+        Path(options['workspace']), terminal=designed_terminal(block, options))
+    expected = hashlib.sha256(rendered['source'].encode()).hexdigest()
+    if expected != evidence['source_sha256'] or digest(evidence['source']) != expected:
+        raise ValueError('The reused native obligation changed')
+    for exported in evidence.get('exports', []):
+        if not exported.get('success') or digest(exported['path']) != exported['sha256']:
+            raise ValueError('A reused native goal export changed or is unavailable')
+    primary = [call for call in evidence['calls'] if call['tool'] == 'rocq_check' and
+               call['arguments'].get('body', '').strip() == 'try zesu_block.']
+    if len(primary) != 1 or primary[0]['arguments'].get('timeout') != 300:
+        raise ValueError('The reused native attempt has different primary arguments')
+    result = copy.deepcopy(old)
+    result['reused_native_attempt'] = True
+    result['reuse_scope'] = 'Identical native source and immutable primary/goal records; no proof replay'
+    return result
+
+
+async def probe_designed_block(row, block, state, options):
+    """Run one native boundary proof through an owned guarded MCP session."""
+    import successor_entailment
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+    design = json.loads(Path(options['design']).read_text())
+    terminal = options.get('terminal_descriptor') or designed_terminal(block, options)
+    rendered = successor_entailment.native_boundary_source(
+        state, block, design, Path(options['workspace']), enabled=True,
+        terminal=terminal)
+    base = Path(options['out'])/'native'/('block_' + row['entry_pc'])
+    base.mkdir(parents=True, exist_ok=True)
+    path = base/'Boundary.v'
+    env = {**os.environ, 'ROCQ_WORKSPACE': options['workspace'],
+           'ROCQ_PET_TIMEOUT': str(options['seconds']),
+           'ZESU_ROCQ_MCP_BINARY': str(HERE/'complete_goals_mcp.sh'),
+           'ZESU_MCP_PYTHON': sys.executable,
+           'ZESU_COMPLETE_GOAL_DIR': str(base/'complete'),
+           'ZESU_FEEDBACK_DIR': str(base/'feedback')}
+    parameters = StdioServerParameters(command=options['mcp_command'], env=env)
+    pet_pids, diagnostics, samples = [], [], []
+    stop = threading.Event()
+    def monitor():
+        while not stop.wait(0.1):
+            samples.append(process_tree([os.getpid(), *pet_pids]))
+    thread = threading.Thread(target=monitor, daemon=True)
+    started = time.monotonic()
+    thread.start()
+    try:
+        async with stdio_client(parameters) as streams:
+            async with ClientSession(*streams) as session:
+                await session.initialize()
+                class ObservedSession:
+                    async def call_tool(self, tool, arguments):
+                        result = await session.call_tool(tool, arguments)
+                        if tool == 'rocq_start' and data(result).get('success'):
+                            try:
+                                diagnostic = data(await session.call_tool('rocq_diag', {}))
+                                diagnostics.append(diagnostic)
+                                pid = diagnostic.get('pet', {}).get('pid')
+                                if pid:
+                                    pet_pids.append(pid)
+                            except Exception as error:
+                                diagnostics.append({'error': str(error), 'scope': 'read-only diagnostics'})
+                        return result
+                evidence = await successor_entailment.check_boundary(
+                    ObservedSession(), rendered, path, options['workspace'],
+                    inherited_debts=chain_root.inherited_debts(state), seconds=options['seconds'])
+    finally:
+        stop.set()
+        thread.join()
+    elapsed = time.monotonic()-started
+    closed = native_boundary_closed(evidence, rendered, block)
+    outcome_class = ('native-boundary-closed' if closed else 'conditional-boundary'
+                     if evidence['outcome'] == 'conditional' else 'native-residual'
+                     if evidence['outcome'] == 'residual' else 'primary-unavailable'
+                     if evidence.get('residual_class') == 'entry_unavailable' else 'native-evidence-unavailable')
+    native_goals = evidence.get('debt_groups', {}).get('groups', {})
+    residuals = [*native_goals.get('goals', []), *native_goals.get('shelf', []),
+                 *native_goals.get('given_up', [])]
+    for frame in native_goals.get('stack', []):
+        residuals.extend([*frame[0], *frame[1]])
+    performance = {'wall_seconds': elapsed, 'peak_mib': max((v[0] for v in samples), default=0)/1024,
+                   'scope': 'Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown'}
+    evidence.update(block_closed=bool(closed), contract_closed=False, performance=performance,
+                    pet_diagnostics=diagnostics, owned_pet_pids=pet_pids,
+                    source_sha256=digest(path), session_directory=str(base/'complete'))
+    chain_root.atomic_json(base/'evidence.json', evidence)
+    capture = {'outcome': outcome_class, 'proof_phase_entered': any(
+        c['tool'] == 'rocq_check' and c['arguments'].get('body', '').strip() == 'try zesu_block.'
+        for c in evidence.get('calls', [])), 'pending_goals': residuals, 'shelved_goals': [],
+        'inherited_debts': chain_root.inherited_debts(state), 'performance': performance,
+        'native_evidence': {'path': str(base/'evidence.json'), 'sha256': digest(base/'evidence.json')},
+        'block_closed': bool(closed), 'contract_closed': False, 'source_sha256': digest(path)}
+    return {**summarize(row, [capture]), 'block_closed': bool(closed),
+            'successor_policy': 'Actual designed entries; root parameters remain fixed',
+            'secondary_diagnostics': []}
+
+
 async def probe_block(row, block, state, options):
+    if options.get('designed_successors'):
+        return await probe_designed_block(row, block, state, options)
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     captures = []
@@ -413,6 +564,8 @@ def machine():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--design', type=Path, required=True)
+    parser.add_argument('--designed-successors', action='store_true',
+                        help='Attempt compiled native proofs with actual successor entries')
     parser.add_argument('--entries', type=Path, help='Use the frozen legacy entry records instead of the design schema')
     parser.add_argument('--trace-import', help='Use this trace module for design-schema entries')
     parser.add_argument('--code-premises', type=Path, help='Read explicit code premises for design-schema entries')
@@ -422,6 +575,8 @@ def main():
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--resume-report', type=Path)
+    parser.add_argument('--native-resume-report', type=Path)
+    parser.add_argument('--native-baseline-report', type=Path)
     parser.add_argument('--terminal', required=True)
     parser.add_argument('--mcp-command', default=str(HERE.parent / 'rocq_mcp_guarded.sh'))
     parser.add_argument('--build-dir', type=Path, default=Path('_build/default').resolve().parent)
@@ -430,6 +585,14 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.jobs <= 6 or not 1 <= args.seconds <= 300:
         parser.error('The driver permits one to six workers and at most 300 seconds per MCP call')
+    if (args.native_resume_report or args.native_baseline_report) and not args.designed_successors:
+        parser.error('Native comparison and reuse require --designed-successors')
+    if args.designed_successors and not args.native_baseline_report:
+        parser.error('Designed successor proofs require a frozen --native-baseline-report')
+    if args.designed_successors and args.entries:
+        parser.error('Designed successor proofs require the validated design schema')
+    if args.designed_successors and args.resume_report:
+        parser.error('Native proof obligations cannot reuse abstract-stop captures')
     if not args.entries and (not args.trace_import or not args.code_premises or not args.binding_report):
         parser.error('Design-schema entries require --trace-import, --code-premises, and --binding-report')
     if args.entries and (args.trace_import or args.code_premises or args.probe_import or args.binding_report):
@@ -459,6 +622,12 @@ def main():
         resolved = Path(path).resolve()
         return str(resolved.relative_to(Path.cwd())) if resolved.is_relative_to(Path.cwd()) else str(resolved)
     input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__), Path(native_diagnostics.__file__), Path(setup_fallback.__file__)]
+    if args.designed_successors:
+        input_paths.append(HERE/'successor_entailment.py')
+    if args.native_baseline_report:
+        input_paths.append(args.native_baseline_report)
+    if args.native_resume_report:
+        input_paths.append(args.native_resume_report)
     input_paths.append(args.entries if args.entries else args.code_premises)
     if args.binding_report:
         input_paths.append(args.binding_report)
@@ -483,11 +652,40 @@ def main():
         if state['entry_source']['declaration'] not in source.read_text():
             raise ValueError('The executable entry source does not contain its declaration')
         sources[str(source)] = digest(source)
+    if args.native_baseline_report:
+        import successor_entailment
+        baseline = json.loads(args.native_baseline_report.read_text())
+        for path, expected in baseline['inputs'].items():
+            actual = digest(path)
+            if actual != expected and Path(path).resolve() not in {
+                    Path(__file__).resolve(), (HERE/'complete_goals_mcp.py').resolve()}:
+                raise ValueError('A frozen native comparison input changed: ' + path)
+            sources[path] = actual
+        for row, block, state in ready:
+            for target in block['successors'] or [args.terminal]:
+                disabled = successor_entailment.native_boundary_source(state, block, design,
+                    Path.cwd(), enabled=False, historical_target=chain_root.terminal_target(target),
+                    terminal=designed_terminal(block, {'terminal': args.terminal, 'workspace': str(Path.cwd())}))
+                expected = next(pair for pair in baseline['pairs'] if pair['entry'] == row['entry_pc']
+                                and pair['target'] == target)['sources']['switch-on']
+                if hashlib.sha256(disabled['source'].encode()).hexdigest() != expected:
+                    raise ValueError('A disabled native source differs from the frozen full-ON baseline')
     args.out.mkdir(parents=True, exist_ok=True)
     options = {'workspace': str(Path.cwd()), 'out': str(args.out.resolve()),
                'mcp_command': args.mcp_command, 'terminal': args.terminal, 'seconds': args.seconds,
-               'build_dir': str(args.build_dir.resolve())}
+               'build_dir': str(args.build_dir.resolve()), 'design': str(args.design.resolve()),
+               'designed_successors': args.designed_successors}
     reused = []
+    if args.native_resume_report:
+        previous_native = json.loads(args.native_resume_report.read_text())
+        pending = []
+        for row, block, state in ready:
+            cached = reuse_native_capture(row, block, state, previous_native, options)
+            if cached:
+                reused.append(cached)
+            else:
+                pending.append((row, block, state))
+        ready = pending
     if args.resume_report:
         previous = json.loads(args.resume_report.read_text())
         for path, expected in previous['inputs'].items():
@@ -529,8 +727,14 @@ def main():
             record['entry_provenance']['design_contract'] = {
                 key: row[key] for key in sorted(entry_schema.FIELDS) if key in row}
     measurements = [capture['performance'] for row in records for capture in row['captures'] if 'performance' in capture]
-    report = {'schema': 1, 'label': 'Phase 1 WP5 designed-entry discovery; no proof completion claim',
-              'capture_only': True, 'probe_imports': args.probe_import, 'artifact_identity': manifest['artifact_identity'],
+    report = {'schema': 1, 'label': ('Phase 1 I1 native designed-boundary discovery' if args.designed_successors else
+                                   'Phase 1 WP5 designed-entry discovery; no proof completion claim'),
+              'measurement_root': baseline['root_commit'] if args.native_baseline_report else None,
+              'capture_only': not args.designed_successors,
+              'designed_successors': args.designed_successors,
+              'frozen_baseline_report': str(args.native_baseline_report) if args.native_baseline_report else None,
+              'blocks_closed': sum(bool(record.get('block_closed')) for record in records),
+              'contract_closures': 0, 'probe_imports': args.probe_import, 'artifact_identity': manifest['artifact_identity'],
               'selected_elf_sha256': manifest['elf_sha256'], 'inputs': sources, 'block_count': len(design['blocks']),
               'workers': args.jobs, 'new_block_runs': len(ready), 'reused_block_runs': len(reused),
               'elapsed_seconds': elapsed,
