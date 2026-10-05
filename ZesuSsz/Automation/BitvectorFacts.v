@@ -35,6 +35,14 @@ Lemma zesu_signed_zero_extend_64_128 (value : bv 64) :
   bv_signed (bv_zero_extend 128 value) = bv_unsigned value.
 Proof. rewrite bv_zero_extend_signed bv_swrap_small; bv_solve. Qed.
 
+Class ZesuStepStrictSigned : Prop := zesu_step_strict_signed : True.
+
+Lemma zesu_unsigned_lt_signed_zero_extend_64_128 (left right : bv 64) :
+  bv_unsigned left < bv_unsigned right ->
+  bv_signed (bv_zero_extend 128 left) <
+    bv_signed (bv_zero_extend 128 right).
+Proof. rewrite !zesu_signed_zero_extend_64_128. exact (fun Hlt => Hlt). Qed.
+
 Lemma zesu_signed_zero_extend_add_64_128
     (value : bv 64) (offset : bv 128) :
   bv_unsigned offset < 2 ^ 64 ->
