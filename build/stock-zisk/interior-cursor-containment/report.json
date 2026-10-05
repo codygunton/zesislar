@@ -1,0 +1,191 @@
+{
+  "root_commit": "b6c8185218aabbdf596afd52de16df6e50000d6b",
+  "start": "2026-10-05T11:54:17.694Z",
+  "end": "2026-10-05T12:07:55.001923Z",
+  "token_start": [
+    "2026-10-05T11:07:22.868Z",
+    186296381
+  ],
+  "token_end": [
+    "2026-10-05T12:06:39.415Z",
+    191859658
+  ],
+  "source_hashes": {
+    "ZesuSsz/Automation/Hooks.v": "f88cb9f7f9489775f5b05bd5a96b3eed9f9c2c62fcb27f5485fb2549f9bc0b88",
+    "ZesuSsz/Automation/Switches/IntegerArrayAddress.v": "16a7a06138645304ba55aa5b90ed93f1141ff29e42868d39335dd0abae1d4ebc",
+    "ZesuSsz/Proofs/Tests/IntegerArrayAddress.v": "6332a5c37e392f10892250aea19e44b193f5e0dd05977192dae568d2f8ca2008",
+    "ZesuSsz/Proofs/Tests/IntegerArrayAddressIsolation.v": "eee96c2f8b335478409f64ffbfecff3e85afd8ef06dce82f0e03ae051d271bc6",
+    "Scaffolding/probes/interior-cursor/Off.v": "4e0c63a26034b36aad817ea6aba782962b7fbb37c989cc0b395ef2bbca020fbc",
+    "Scaffolding/probes/interior-cursor/On.v": "9829dd5ad3c69e48fe8c228be1525f9b1a3db8b1426e99191f61d397eaa30b73"
+  },
+  "scope": "Existing guarded integer-array-address hook generalization. No contract, ISA, architecture, or native execution change.",
+  "change": "Require proved containment instead of identical array and cursor roots. Retain shape checks, closed BV offsets, no-wrap proof, and strict range proof.",
+  "switch": "ZesuStepIntegerArrayAddress; direct opt-in import uses #[export] Instance",
+  "frozen_comparison": "Identical generic fold-cursor statement and LET0 alias. Off hook fails at class lookup and existing normalization closes the selector. On hook succeeds and existing selector closes it.",
+  "tests": {
+    "compiled_test_lemmas": 9,
+    "new_tests": 4,
+    "verified_named_statements": 6,
+    "assumptions": [],
+    "negative_tests": "Exclusive-end cursor rejection; absent switch; transitive-import isolation. Existing open BV offset and structural-goal checks remain."
+  },
+  "mcp": {
+    "Off": {
+      "elapsed_s": 11.829651048057713,
+      "peak_scope_bytes": 1345351680,
+      "tools": [
+        "rocq_health",
+        "rocq_start",
+        "rocq_check",
+        "rocq_step_multi",
+        "rocq_check",
+        "rocq_compile_file",
+        "rocq_verify",
+        "rocq_diag"
+      ],
+      "verification": [
+        {
+          "name": "fold_cursor",
+          "success": true,
+          "assumptions": []
+        }
+      ]
+    },
+    "On": {
+      "elapsed_s": 11.784764832933433,
+      "peak_scope_bytes": 1356931072,
+      "tools": [
+        "rocq_health",
+        "rocq_start",
+        "rocq_check",
+        "rocq_step_multi",
+        "rocq_check",
+        "rocq_compile_file",
+        "rocq_verify",
+        "rocq_diag"
+      ],
+      "verification": [
+        {
+          "name": "fold_cursor",
+          "success": true,
+          "assumptions": []
+        }
+      ]
+    },
+    "Tests": {
+      "elapsed_s": 36.82728768396191,
+      "peak_scope_bytes": 1283194880,
+      "tools": [
+        "rocq_health",
+        "rocq_compile_file",
+        "rocq_verify",
+        "rocq_verify",
+        "rocq_verify",
+        "rocq_diag"
+      ],
+      "verification": [
+        {
+          "name": "integer_array_address_interior",
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "name": "integer_array_address_fold_cursor",
+          "success": true,
+          "assumptions": []
+        },
+        {
+          "name": "integer_array_address_exclusive_end",
+          "success": true,
+          "assumptions": []
+        }
+      ]
+    },
+    "Isolation": {
+      "elapsed_s": 5.812724321964197,
+      "peak_scope_bytes": 93798400,
+      "tools": [
+        "rocq_health",
+        "rocq_compile_file",
+        "rocq_verify",
+        "rocq_diag"
+      ],
+      "verification": [
+        {
+          "name": "integer_array_address_import_isolation",
+          "success": true,
+          "assumptions": []
+        }
+      ]
+    }
+  },
+  "gates": [
+    {
+      "exit_code": 0,
+      "wall_s": 170.56619701092131,
+      "peak_child_rss_kib": 2224548,
+      "workers": 6
+    },
+    {
+      "exit_code": 0,
+      "wall_s": 63.52553379291203,
+      "peak_child_rss_kib": 978592,
+      "workers": 6
+    }
+  ],
+  "gate_wall_s_total": 234.09173080383334,
+  "workers": 6,
+  "host_sample": {
+    "scope": "One-second host sample during check-fast; no proof CPU-bound inference",
+    "first": {
+      "cpu": [
+        100953564,
+        381020705,
+        40336357,
+        5230754192,
+        2627734,
+        4950301,
+        2356535,
+        0,
+        0,
+        0
+      ],
+      "load": "1.31 0.95 0.69 4/3614 2954154",
+      "memory": {
+        "MemAvailable": "141467920 kB",
+        "MemTotal": "263380900 kB",
+        "SwapTotal": "8388604 kB",
+        "SwapFree": "34436 kB"
+      }
+    },
+    "last": {
+      "cpu": [
+        100953627,
+        381020862,
+        40336435,
+        5230760284,
+        2627735,
+        4950308,
+        2356540,
+        0,
+        0,
+        0
+      ],
+      "load": "1.31 0.95 0.69 3/3604 2954705",
+      "memory": {
+        "MemAvailable": "142190392 kB",
+        "MemTotal": "263380900 kB",
+        "SwapTotal": "8388604 kB",
+        "SwapFree": "34436 kB"
+      }
+    },
+    "cpu_busy_percent": 4.84148055598938
+  },
+  "limits": "All focused proof checks remain below 300 seconds and 6 GiB. No full native block rerun. No check-iris.",
+  "debt_policy": "The production hook retains the original lookup continuation and spatial resources. Native fault, MPRV, witness, and other residual debts remain unproved.",
+  "instruction_closures": 0,
+  "block_closures": 0,
+  "manual_production_proof_growth": 0,
+  "new_handwritten_test_and_frozen_lines": 90,
+  "parent_metrics": "Pending parent values"
+}

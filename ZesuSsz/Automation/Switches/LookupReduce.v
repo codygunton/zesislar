@@ -14,5 +14,5 @@ Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.LookupReduce.
 
 
-Global Instance zesu_switch_lookup_reduce_set : ZesuRuleSetV2 := I.
-Global Instance zesu_switch_lookup_reduce : ZesuStepLookupReduce := I.
+#[export] Instance zesu_switch_lookup_reduce_set : ZesuRuleSetV2 := I.
+#[export] Instance zesu_switch_lookup_reduce : ZesuStepLookupReduce := I.
