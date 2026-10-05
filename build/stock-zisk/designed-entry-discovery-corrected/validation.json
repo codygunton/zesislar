@@ -1,0 +1,21 @@
+{
+  "focused_tests": 90,
+  "gate": "check-fast",
+  "exit": 0,
+  "watcher_wall_seconds": 156,
+  "dune": {
+    "error_class": null,
+    "exit": 0,
+    "ms": 90222,
+    "rss_kb": 2202444,
+    "target": "check-fast"
+  },
+  "workers": 6,
+  "guard_wait_seconds": null,
+  "guard_wait_note": "Not separately measured; do not infer from wall-time differences.",
+  "admission_failure": "The first gate confirmation failed because worker-build-1 held the check-iris lock.",
+  "mcp_health": true,
+  "full_application_compilation": true,
+  "negative_application_rejection": "passed at Check; expected exit1",
+  "native_contract_closures": 0
+}

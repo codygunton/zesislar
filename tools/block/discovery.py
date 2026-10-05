@@ -26,6 +26,8 @@ import chain_root
 import gen_block
 import entry_schema
 import check_entry_bindings
+import native_diagnostics
+import setup_fallback
 
 
 def digest(path):
@@ -122,6 +124,7 @@ async def probe_block(row, block, state, options):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     captures = []
+    diagnostic_jobs = []
     command = options['mcp_command']
     env = {**os.environ, 'ROCQ_WORKSPACE': options['workspace'],
            'ROCQ_PET_TIMEOUT': str(options['seconds'])}
@@ -140,7 +143,7 @@ async def probe_block(row, block, state, options):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(source)
                 started = time.monotonic()
-                deadline = started + options['seconds']
+                deadline = started + options['seconds'] + 60
                 def remaining():
                     value = int(deadline - time.monotonic())
                     if value < 1:
@@ -157,13 +160,24 @@ async def probe_block(row, block, state, options):
                 thread = threading.Thread(target=monitor, daemon=True)
                 thread.start()
                 calls = []
+                steps = []
+                load_result = None
                 proof_phase_entered = False
                 error_text = None
                 try:
-                    opened = data(await session.call_tool('rocq_start', {
+                    opened = await native_diagnostics.measured_call(session, 'rocq_start', {
                         'workspace': options['workspace'], 'file': str(path.resolve()),
-                        'theorem': 'infer_boundary', 'timeout': remaining()}))
+                        'theorem': 'infer_boundary', 'timeout': 60}, steps)
                     calls.append(opened)
+                    if not opened.get('success') and opened.get('reason') == 'timeout':
+                        load_out = path.parent/'loads'/path.stem
+                        load_out.mkdir(parents=True, exist_ok=True)
+                        wrapper = load_out/'compiler-wrapper'
+                        wrapper.write_text('#!/bin/sh\nexec ' + sys.executable + ' ' +
+                                           str(Path(setup_fallback.__file__).resolve()) + ' --compiler \"$@\"\n')
+                        wrapper.chmod(0o755)
+                        load_result = await asyncio.to_thread(setup_fallback.run_one, path, load_out,
+                            Path(options['build_dir']), wrapper, HERE.parent/'coqc_scratch.sh')
                     if not opened.get('success'):
                         raise RuntimeError(opened.get('error', 'Rocq MCP rejected the entry'))
                     diagnostic = data(await session.call_tool('rocq_diag', {}))
@@ -172,18 +186,19 @@ async def probe_block(row, block, state, options):
                     if pid:
                         pet_pids.append(pid)
                     proof_phase_entered = True
+                    deadline = time.monotonic() + options['seconds']
                     body = source.split('Proof.\n', 1)[1].split('Abort.', 1)[0]
-                    checked = data(await session.call_tool('rocq_check', {
+                    checked = await native_diagnostics.measured_call(session, 'rocq_check', {
                         'from_state': opened['state_id'], 'body': body,
-                        'timeout': remaining()}))
+                        'timeout': remaining()}, steps, opened.get('goals'), 'primary-unchanged-zesu_block')
                     calls.append(checked)
                     pet_diagnostics.append(data(await session.call_tool('rocq_diag', {})))
                     if not checked.get('success'):
                         raise RuntimeError(checked.get('error', 'Rocq MCP rejected the probe'))
-                    tail = data(await session.call_tool('rocq_check', {
+                    tail = await native_diagnostics.measured_call(session, 'rocq_check', {
                         'from_state': checked['state_id'],
                         'body': 'Abort.' + source.split('Abort.', 1)[1],
-                        'timeout': remaining()}))
+                        'timeout': remaining()}, steps, checked.get('goals'), 'primary-recorder-termination')
                     calls.append(tail)
                     if not tail.get('success'):
                         raise RuntimeError(tail.get('error', 'Rocq MCP rejected the recorder terminator'))
@@ -203,6 +218,9 @@ async def probe_block(row, block, state, options):
                 pet_peak = max((value.get('memory', {}).get('peak_pet_rss_mb') or 0 for value in pet_diagnostics), default=0)
                 peak = max(peak, round(pet_peak * 1024))
                 output += f'\nexit={rc} ms={round(elapsed * 1000)} rss_kb={peak}\n'
+                path.with_suffix('.steps.json').write_text(json.dumps(steps, indent=2) + '\n')
+                if native_diagnostics.is_primary_timeout(calls):
+                    diagnostic_jobs.append(path)
                 path.with_suffix('.mcp.json').write_text(json.dumps(calls, indent=2) + '\n')
                 path.with_suffix('.out').write_text(output)
                 records = chain_root.parse_probe(output, state, block, successor)
@@ -211,6 +229,17 @@ async def probe_block(row, block, state, options):
                     if error_text:
                         record['outcome'] = 'mcp-error' if proof_phase_entered else 'setup-error'
                         record['error'] = error_text
+                        if native_diagnostics.is_primary_timeout(calls):
+                            record['outcome'] = 'automation-search-timeout'
+                        elif load_result and load_result['outcome'] == 'entry-elaborated':
+                            record['outcome'] = 'primary-unavailable'
+                    record['setup_path'] = 'coqc-scratch-LOAD' if load_result else 'MCP'
+                    record['load_result'] = load_result
+                    record['primary_steps'] = steps
+                    record['failed_primary_transaction'] = next((value for value in reversed(calls) if value.get('success') is False), None)
+                    record['last_successful_primary_state'] = next((value for value in reversed(calls) if value.get('success')), None)
+                    record['contract_closed'] = False
+                    record['closure_scope'] = 'abstract successors only'
                     record['pet_diagnostics'] = pet_diagnostics
                     record['pet_peak_mib'] = pet_peak
                     record['rss_uses_unique_processes'] = True
@@ -222,7 +251,25 @@ async def probe_block(row, block, state, options):
                     record['module_limit_seconds'] = options['seconds']
                     record['module_limit_gib'] = 6
                 captures.extend(records)
-    return summarize(row, captures)
+    diagnostics = []
+    for path in diagnostic_jobs:
+        try:
+            diagnostic = await native_diagnostics.diagnose(path, options)
+        except Exception as error:
+            diagnostic = {'label': 'Secondary diagnostic only', 'error': str(error)}
+        diagnostic_path = path.with_suffix('.native-steps.json')
+        diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + '\n')
+        diagnostics.append({'source': str(path), 'report': str(diagnostic_path), 'sha256': digest(diagnostic_path),
+                            'result': diagnostic})
+    result = summarize(row, captures)
+    if result['first_residual'] is None or isinstance(result['first_residual'], str):
+        failure = next((capture.get('failed_primary_transaction') for capture in captures
+                        if (capture.get('failed_primary_transaction') or {}).get('goals_at_failure')), None)
+        if failure:
+            result['first_residual'] = {'reported_goals': failure['goals_at_failure'],
+                'scope': 'MCP last-valid state from failed primary transaction',
+                'failed_command': failure.get('failed_command')}
+    return {**result, 'secondary_diagnostics': diagnostics}
 
 
 def worker(job):
@@ -281,6 +328,7 @@ def main():
     parser.add_argument('--resume-report', type=Path)
     parser.add_argument('--terminal', required=True)
     parser.add_argument('--mcp-command', default=str(HERE.parent / 'rocq_mcp_guarded.sh'))
+    parser.add_argument('--build-dir', type=Path, default=Path('_build/default').resolve().parent)
     parser.add_argument('--jobs', type=int, default=6)
     parser.add_argument('--seconds', type=int, default=300)
     args = parser.parse_args()
@@ -314,7 +362,7 @@ def main():
     def source_name(path):
         resolved = Path(path).resolve()
         return str(resolved.relative_to(Path.cwd())) if resolved.is_relative_to(Path.cwd()) else str(resolved)
-    input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__)]
+    input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__), Path(native_diagnostics.__file__), Path(setup_fallback.__file__)]
     input_paths.append(args.entries if args.entries else args.code_premises)
     if args.binding_report:
         input_paths.append(args.binding_report)
@@ -341,7 +389,8 @@ def main():
         sources[str(source)] = digest(source)
     args.out.mkdir(parents=True, exist_ok=True)
     options = {'workspace': str(Path.cwd()), 'out': str(args.out.resolve()),
-               'mcp_command': args.mcp_command, 'terminal': args.terminal, 'seconds': args.seconds}
+               'mcp_command': args.mcp_command, 'terminal': args.terminal, 'seconds': args.seconds,
+               'build_dir': str(args.build_dir.resolve())}
     reused = []
     if args.resume_report:
         previous = json.loads(args.resume_report.read_text())
@@ -398,7 +447,7 @@ def main():
     chain_root.atomic_json(args.out / 'report.json', report)
     print(json.dumps({'report': str(args.out / 'report.json'), 'sha256': digest(args.out / 'report.json'),
                       'classes': report['classes'], 'elapsed_seconds': elapsed}))
-    return 1 if any(report['classes'].get(key) for key in ('error', 'setup-error', 'mcp-error')) else 0
+    return 1 if any(report['classes'].get(key) for key in ('error', 'setup-error', 'mcp-error', 'primary-unavailable', 'automation-search-timeout')) else 0
 
 
 if __name__ == '__main__':

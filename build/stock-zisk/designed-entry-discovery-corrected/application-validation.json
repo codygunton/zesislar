@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "label": "Entry declaration and application validation; no proof completion claim",
+  "fields": [
+    "arguments",
+    "binders",
+    "entry_definition",
+    "resource_predicate",
+    "source_hashes"
+  ],
+  "inputs": {
+    "ZesuSsz/Evidence/decode_item_block_design.json": "d216e76eff7a6a4be4ad8bcd02d6f0d567a90b287b4361543171eafbca3dba64",
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": "fecb4272bbe1e7a96e650f2e113843bc886ea137c1a3e6d5ab1dfe53de5e7fc1",
+    "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+    "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+    "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "fdb4745bb3bf98fb29423f33c7394e6c7eb69834f2eb4ee511d96e5277be37bf",
+    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "8798c664659147643f4b6f5749c26962630d6899db5a258ec8f49517f76be830",
+    "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+    "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5a910afa091a42cfb2a8847592918baf0b67cbd62a830c384817834c1943328b",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+    "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "a7415475adb13eed8a3d23c9f3aac9c6eca94bb635a4b53685934307692bb803",
+    "tools/block/check_entry_bindings.py": "08eb3d3c61949b70c92b3f45cf98bf677e8dc599393aa7877acb44c9773523af",
+    "tools/block/entry_bindings.py": "f50a914b93f66bb8f678e62744f615548b25c017883a8babcabb741d53eab381",
+    "tools/block/entry_schema.py": "d6c780195e6da2a4c5da70792a17be5067690405b6d5857d9b9bbb98e29e1b48",
+    "tools/block/trace_registers.py": "ac5ec1c0a8019424613268b86d9ef146fc8cc5f09f2cbbdf49b9266df5cbacb3",
+    "tools/rocq_mcp_guarded.sh": "3dba1644640fda0441f39b41ee03c260c1dc9d26e7c49988f32024ce35d677d8",
+    "tools/block/entry_check_coqc.sh": "b9af748acccb33c48d83eed758dbce8f77885289bed47c5706597f45c9233ebd",
+    "_CoqProject": "110ce833f885b99f30e231a8898dbe59a102e72d5bf927b8afdbbf31c9a3b023"
+  },
+  "row_count": 24,
+  "source": {
+    "path": "_build/corrected-all24-entry-typing-local-universals/ApplicationChecks.v",
+    "sha256": "882317258bd81d89fed4a22565340bacbf434e4474cd9e08548f67383bc947c5"
+  },
+  "elapsed_seconds": 3.5708165370160714,
+  "health": {
+    "success": true,
+    "ok": true,
+    "server_version": "0.3.1",
+    "switch": "islaris",
+    "switch_prefix": "/home/cody/islaris/_opam",
+    "switch_is_local": true,
+    "switch_source": "opam_env",
+    "toolchain": {
+      "coqc": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/tools/block/entry_check_coqc.sh",
+        "version": "8.19.2+lsp 4.14.4"
+      },
+      "pet": {
+        "path": "/home/cody/islaris/_opam/bin/pet",
+        "version": "0.2.4-dev",
+        "pytanque_importable": true
+      }
+    },
+    "pet": {
+      "running": false,
+      "pid": null
+    },
+    "warnings": []
+  },
+  "result": {
+    "success": true,
+    "output": "decodeItemEntryResources\n  (decodeItemDomainAt returnAddress decodeItemC1BDomain) args\n:\niProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6974 args frameBytes : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d697c args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d698c args locals pointerBytes lengthBytes : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d69a4 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d69b0 args locals : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d69d8 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d69e0 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d69e8 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a00 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a08 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a14 args n payloadStart lengthBytes frameBytes oldAcc\n  oldCursor loaded\n:\niProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a24 args : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded\n:\niProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a40 args locals : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a64 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a6c args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6a78 args locals : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6aa8 args frameBytes x13 : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc\n  oldCursor loaded\n:\niProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6ac4 args : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded\n:\niProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6ae0 args locals : iProp Sigma\n     : iProp Sigma\ndecodeItemEntryAt800d6b08 args lo",
+    "timing": {
+      "total_sentences": 185,
+      "top_slowest": [
+        {
+          "line": 1,
+          "characters": [
+            0,
+            38
+          ],
+          "name": "Require~Import~ZesuSsz.Automat...",
+          "duration_seconds": 0.688
+        },
+        {
+          "line": 50,
+          "characters": [
+            2275,
+            2383
+          ],
+          "name": "Check~~~ZesuSsz.Contracts.RlpD...",
+          "duration_seconds": 0.061
+        },
+        {
+          "line": 2,
+          "characters": [
+            39,
+            75
+          ],
+          "name": "Require~Import~isla.riscv64.ri...",
+          "duration_seconds": 0.043
+        },
+        {
+          "line": 8,
+          "characters": [
+            350,
+            409
+          ],
+          "name": "Require~Import~ZesuSsz.Contrac...",
+          "duration_seconds": 0.001
+        },
+        {
+          "line": 3,
+          "characters": [
+            76,
+            113
+          ],
+          "name": "Require~Import~SailStdpp.Machi...",
+          "duration_seconds": 0.0
+        }
+      ],
+      "last_completed": {
+        "line": 185,
+        "characters": [
+          8165,
+          8190
+        ],
+        "name": "End~entry_application_23.",
+        "duration_seconds": 0.0
+      }
+    }
+  },
+  "module_limit_seconds": 60,
+  "module_limit_gib": 2,
+  "workers": 1,
+  "argument_policy": "JSON expression order is authoritative; same-type swaps require specification review"
+}

@@ -1,6 +1,7 @@
 """Source declarations constrain binder order and argument arity."""
 from pathlib import Path
 import sys
+import json
 import hashlib
 import tempfile
 import unittest
@@ -26,7 +27,7 @@ class EntryBindingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'implicit binder'):
             declared_binders('Definition entry {args : Args} : Prop := True.', 'entry')
 
-    def test_bound_source_and_ordered_json_binders_must_match(self):
+    def test_application_locals_do_not_replace_source_signature(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             source = root/'Fixture.v'
@@ -37,10 +38,11 @@ class EntryBindingTests(unittest.TestCase):
                      'source_hashes': {'Fixture.v': hashlib.sha256(source.read_bytes()).hexdigest()}}
             check_binders(block, root)
             self.assertEqual(block['arguments'], ['constantDomain', 'args'])
-            block['binders'].reverse()
-            with self.assertRaisesRegex(ValueError, 'binders do not match'):
-                check_binders(block, root)
-            block['binders'].reverse()
+            block['binders'] = [{'name': 'returnAddress', 'type': 'Z'},
+                                {'name': 'args', 'type': 'Args'}]
+            declared = check_binders(block, root)
+            self.assertEqual(declared[0], {'name': 'domain', 'type': normalize_type('Args -> Prop')})
+            self.assertEqual(block['binders'][0]['name'], 'returnAddress')
             block['arguments'].pop()
             with self.assertRaisesRegex(ValueError, 'argument count'):
                 check_binders(block, root)
@@ -67,6 +69,18 @@ class EntryBindingTests(unittest.TestCase):
     def test_duplicate_names_in_different_modules_need_a_namespace_check(self):
         with self.assertRaisesRegex(ValueError, 'unambiguous'):
             declared_binders('Module A. Definition entry := True. End A. Module B. Definition entry := True. End B.', 'entry')
+
+
+class SharedTypeImportTests(unittest.TestCase):
+    def test_other23_rows_import_shared_argument_type_directly(self):
+        root = Path(__file__).resolve().parents[1]
+        design = json.loads((root/'ZesuSsz/Evidence/decode_item_block_design.json').read_text())
+        design['blocks'] = [row for row in design['blocks'] if row['entry_pc'] != '0x800d6960']
+        self.assertEqual(len(design['blocks']), 23)
+        source = application_source(design)
+        shared = 'Require Import ZesuSsz.Contracts.RlpDecodeItemContract.'
+        self.assertEqual(source.count(shared), 1)
+        self.assertLess(source.index(shared), source.index('Context (args : DecodeItemArgs).'))
 
 
 if __name__ == '__main__':

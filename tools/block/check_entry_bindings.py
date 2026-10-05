@@ -57,7 +57,9 @@ def main():
     source.write_text(application_source(design))
     started = time.monotonic()
     health, result = asyncio.run(compile_queries(workspace, source, args.seconds))
-    inputs = {str(args.design): digest(args.design)}
+    inputs = {str(args.design): digest(args.design),
+              'ZesuSsz/Contracts/RlpDecodeItemContract.v':
+              digest(workspace/'ZesuSsz/Contracts/RlpDecodeItemContract.v')}
     for row in design['blocks']:
         for path, expected in row['source_hashes'].items():
             inputs[path] = digest(path)
