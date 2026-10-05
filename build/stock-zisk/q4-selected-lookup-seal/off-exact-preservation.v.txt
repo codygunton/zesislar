@@ -1,0 +1,18 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
+Require Import SailStdpp.MachineWord.
+Section probe.
+Context `{!islaG Sigma} `{!threadG}.
+Lemma exact_string_preservation (args : DecodeItemArgs) (n i payloadStart : Z)
+  (lengthBytes frameBytes : list byte) (loaded : bv 64) (next : byte) :
+  ⊢ decodeItemFoldPreservationObligation (Sigma:=Sigma) false args n i payloadStart lengthBytes frameBytes loaded next.
+Proof.
+timeout 5 zesu_block.
+iIntros "? ? ?".
+Show.
+timeout 3 (do 3 zesu_liAStep).
+Show.
+Abort.
+End probe.

@@ -21,16 +21,16 @@
     "true": "unconditional"
   },
   "hashes": {
-    "inventory_sha256": "e97443d69c8b43471ff410a4ba3a21fb60f12195b004d6ac16a695f3f8c48256",
+    "inventory_sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
-    "raw_dump_sha256": "48c0c2570b0475e9de0b2206f144b9fa316557e719b19f494e06eb901f27ad1e",
+    "raw_dump_sha256": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
     "level1_contract_sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
     "byte_fold_schema_sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
     "byte_fold_sites_sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
     "byte_fold_blocks_sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
     "byte_fold_pure_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
     "byte_fold_machine_obligations_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
-    "generator_sha256": "ac67bbaab6b54b44b448a3e5252c2ac46b6005362e8a3d81ca413c77335aedbb"
+    "generator_sha256": "b5d41b8b8f8c686ece536613797c01a97358ccc9d7936486d7fc89f54ffbed71"
   },
   "blocks": [
     {
@@ -66,6 +66,27 @@
         "stack": "(stackPointer - 16) \u21a6\u2098? 16",
         "return_continuation": "decodeItemReturnAddress args and saved x8",
         "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
+      "binders": [
+        {
+          "name": "domain",
+          "type": "DecodeItemArgs -> Prop"
+        },
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        }
+      ],
+      "arguments": [
+        "decodeItemC1BDomain",
+        "args"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
       }
     },
     {
@@ -100,7 +121,29 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -133,7 +176,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -171,7 +241,41 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "locals",
+          "type": "DecodeItemReturnLocals"
+        },
+        {
+          "name": "pointerBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list byte"
+        }
+      ],
+      "arguments": [
+        "args",
+        "locals",
+        "pointerBytes",
+        "lengthBytes"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
       "return_clause": {
         "return_instruction_pc": "0x800d69a0",
@@ -223,7 +327,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       },
       "branch_constant_facts": {
         "x14": 128
@@ -256,7 +387,31 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "locals",
+          "type": "DecodeItemReturnLocals"
+        }
+      ],
+      "arguments": [
+        "args",
+        "locals"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
       "return_clause": {
         "return_instruction_pc": "0x800d69d4",
@@ -302,7 +457,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       },
       "branch_constant_facts": {
         "x14": 183
@@ -341,7 +523,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -375,7 +584,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -411,7 +647,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       },
       "branch_constant_facts": {
         "x14": 192
@@ -450,7 +713,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -485,7 +775,61 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "n",
+          "type": "Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "oldAcc",
+          "type": "bv 64"
+        },
+        {
+          "name": "oldCursor",
+          "type": "bv 64"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "n",
+        "payloadStart",
+        "lengthBytes",
+        "frameBytes",
+        "oldAcc",
+        "oldCursor",
+        "loaded"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
     {
@@ -532,7 +876,26 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        }
+      ],
+      "arguments": [
+        "args"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       },
       "invariant_hint": {
         "header_pc": "0x800d6a24",
@@ -624,7 +987,51 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "n",
+          "type": "Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "n",
+        "payloadStart",
+        "lengthBytes",
+        "frameBytes",
+        "loaded"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
     {
@@ -657,7 +1064,31 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "locals",
+          "type": "DecodeItemReturnLocals"
+        }
+      ],
+      "arguments": [
+        "args",
+        "locals"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
       "return_clause": {
         "return_instruction_pc": "0x800d6a60",
@@ -704,7 +1135,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       },
       "branch_constant_facts": {
         "x14": 248
@@ -743,7 +1201,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -775,7 +1260,31 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "locals",
+          "type": "DecodeItemReturnLocals"
+        }
+      ],
+      "arguments": [
+        "args",
+        "locals"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
       "return_clause": {
         "return_instruction_pc": "0x800d6aa4",
@@ -821,7 +1330,34 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "x13",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "frameBytes",
+        "x13"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38"
       }
     },
     {
@@ -856,7 +1392,61 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "n",
+          "type": "Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "oldAcc",
+          "type": "bv 64"
+        },
+        {
+          "name": "oldCursor",
+          "type": "bv 64"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "n",
+        "payloadStart",
+        "lengthBytes",
+        "frameBytes",
+        "oldAcc",
+        "oldCursor",
+        "loaded"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
     {
@@ -903,7 +1493,26 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        }
+      ],
+      "arguments": [
+        "args"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "fc35d2e73bc97ccc70633d0ba05ba53a5d30f5ee52d1352ba31f092edcd4410a",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       },
       "invariant_hint": {
         "header_pc": "0x800d6ac4",
@@ -995,7 +1604,51 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8"
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "n",
+          "type": "Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "frameBytes",
+          "type": "list byte"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64"
+        }
+      ],
+      "arguments": [
+        "args",
+        "n",
+        "payloadStart",
+        "lengthBytes",
+        "frameBytes",
+        "loaded"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "6735af8ebcb089e38b7451420393a99f3da5b5c8d5aa9db32e681d21d174fb38",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
       }
     },
     {
@@ -1091,7 +1744,31 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "locals",
+          "type": "DecodeItemReturnLocals"
+        }
+      ],
+      "arguments": [
+        "args",
+        "locals"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
       "return_clause": {
         "return_instruction_pc": "0x800d6b04",
@@ -1134,7 +1811,31 @@
         "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
         "output": "owned 40-byte result array at decodeItemOutputPointer args",
         "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
-        "return_continuation": "decodeItemReturnAddress args and saved x8"
+        "return_continuation": "decodeItemReturnAddress args and saved x8",
+        "rocq_entry": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08"
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "locals",
+          "type": "DecodeItemReturnLocals"
+        }
+      ],
+      "arguments": [
+        "args",
+        "locals"
+      ],
+      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
+      "source_hashes": {
+        "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "d01a767b32a0fca2f829889bc74bedbc8d7f3137f25e2f3ec34493564c6a11e1",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
+        "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d"
       },
       "return_clause": {
         "return_instruction_pc": "0x800d6b2c",

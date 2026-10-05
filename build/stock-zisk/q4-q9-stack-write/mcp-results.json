@@ -1,0 +1,840 @@
+{
+  "health": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/islaris/_opam/bin/coqc\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":true,\"pid\":122212},\"warnings\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "ok": true,
+      "server_version": "0.3.1",
+      "switch": "islaris",
+      "switch_prefix": "/home/cody/islaris/_opam",
+      "switch_is_local": true,
+      "switch_source": "opam_env",
+      "toolchain": {
+        "coqc": {
+          "path": "/home/cody/islaris/_opam/bin/coqc",
+          "version": "8.19.2+lsp 4.14.4"
+        },
+        "pet": {
+          "path": "/home/cody/islaris/_opam/bin/pet",
+          "version": "0.2.4-dev",
+          "pytanque_importable": true
+        }
+      },
+      "pet": {
+        "running": true,
+        "pid": 122212
+      },
+      "warnings": []
+    },
+    "isError": false
+  },
+  "development": {
+    "start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":769,\"goals\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nsp : Z\\nHsp : 32 \u2264 sp < 2 ^ 64\\n|-(sp - 32) \u21a6\u2098? 32 -\u2217\\nfind_in_context\\n  (FindMemMapsTo (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-32) + 4)))\\n  (\u03bb _ : fic_A\\n           (FindMemMapsTo\\n              (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-32) + 4))), True)\",\"file\":\"ZesuSsz/Proofs/Tests/StackWriteHook.v\",\"theorem\":\"stack_write_other_frame\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 769,
+        "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nsp : Z\nHsp : 32 \u2264 sp < 2 ^ 64\n|-(sp - 32) \u21a6\u2098? 32 -\u2217\nfind_in_context\n  (FindMemMapsTo (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-32) + 4)))\n  (\u03bb _ : fic_A\n           (FindMemMapsTo\n              (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-32) + 4))), True)",
+        "file": "ZesuSsz/Proofs/Tests/StackWriteHook.v",
+        "theorem": "stack_write_other_frame",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "step_multi": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"iStartProof. iIntros \\\"Hframe\\\". zesu_stack_write_if_enabled. done.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"focus_depth\":0},{\"tactic\":\"iStartProof. iIntros \\\"Hframe\\\". repeat zesu_liAStep.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"focus_depth\":0}],\"from_state_id\":769}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "iStartProof. iIntros \"Hframe\". zesu_stack_write_if_enabled. done.",
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "focus_depth": 0
+          },
+          {
+            "tactic": "iStartProof. iIntros \"Hframe\". repeat zesu_liAStep.",
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "focus_depth": 0
+          }
+        ],
+        "from_state_id": 769
+      },
+      "isError": false
+    },
+    "check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":5,\"check_time_ms\":41,\"state_id\":774,\"from_state_id\":769,\"feedback\":[[\"Qed.\",\"stack_write_other_frame is defined\"]],\"proof_tactics\":[\"iStartProof.\",\"iIntros \\\"Hframe\\\".\",\"zesu_stack_write_if_enabled.\",\"done.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 5,
+        "check_time_ms": 41,
+        "state_id": 774,
+        "from_state_id": 769,
+        "feedback": [
+          [
+            "Qed.",
+            "stack_write_other_frame is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "iStartProof.",
+          "iIntros \"Hframe\".",
+          "zesu_stack_write_if_enabled.",
+          "done.",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    }
+  },
+  "native_frame_selection": {
+    "start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":763,\"goals\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nreturnAddress : Z\\nargs : DecodeItemArgs\\nHdomain : decodeItemDomainAt returnAddress decodeItemC1BDomain args\\n|-(decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)\\n\u21a6\u2098? RlpDecodeItem.decodeItemStackBytes -\u2217\\nfind_in_context\\n  (FindMemMapsTo\\n     (bv_unsigned\\n        (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\\n  (\u03bb _ : fic_A\\n           (FindMemMapsTo\\n              (bv_unsigned\\n                 (Z_to_bv 64 (decodeItemStackPointer args) +\\n                  18446744073709551600 + 8))), True)\",\"file\":\"_build/q4-stack-write-run/NativeStoreClosed.v\",\"theorem\":\"native_stack_selection\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 763,
+        "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nreturnAddress : Z\nargs : DecodeItemArgs\nHdomain : decodeItemDomainAt returnAddress decodeItemC1BDomain args\n|-(decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)\n\u21a6\u2098? RlpDecodeItem.decodeItemStackBytes -\u2217\nfind_in_context\n  (FindMemMapsTo\n     (bv_unsigned\n        (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\n  (\u03bb _ : fic_A\n           (FindMemMapsTo\n              (bv_unsigned\n                 (Z_to_bv 64 (decodeItemStackPointer args) +\n                  18446744073709551600 + 8))), True)",
+        "file": "_build/q4-stack-write-run/NativeStoreClosed.v",
+        "theorem": "native_stack_selection",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":5,\"check_time_ms\":182,\"state_id\":768,\"from_state_id\":763,\"feedback\":[[\"Qed.\",\"native_stack_selection is defined\"]],\"proof_tactics\":[\"iStartProof.\",\"iIntros \\\"Hframe\\\".\",\"zesu_stack_write_if_enabled.\",\"done.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 5,
+        "check_time_ms": 182,
+        "state_id": 768,
+        "from_state_id": 763,
+        "feedback": [
+          [
+            "Qed.",
+            "native_stack_selection is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "iStartProof.",
+          "iIntros \"Hframe\".",
+          "zesu_stack_write_if_enabled.",
+          "done.",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    },
+    "final_compile": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"output\":\"\",\"timing\":{\"total_sentences\":11,\"top_slowest\":[{\"line\":1,\"characters\":[0,92],\"name\":\"Require~Import~ZesuSsz.Automat...\",\"duration_seconds\":0.473},{\"line\":16,\"characters\":[741,769],\"name\":\"zesu_stack_write_if_enabled.\",\"duration_seconds\":0.328},{\"line\":15,\"characters\":[708,720],\"name\":\"iStartProof.\",\"duration_seconds\":0.047},{\"line\":2,\"characters\":[93,129],\"name\":\"Require~Import~isla.riscv64.ri...\",\"duration_seconds\":0.041},{\"line\":18,\"characters\":[776,780],\"name\":\"Qed.\",\"duration_seconds\":0.023}],\"last_completed\":{\"line\":18,\"characters\":[776,780],\"name\":\"Qed.\",\"duration_seconds\":0.023}},\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 6 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "output": "",
+        "timing": {
+          "total_sentences": 11,
+          "top_slowest": [
+            {
+              "line": 1,
+              "characters": [
+                0,
+                92
+              ],
+              "name": "Require~Import~ZesuSsz.Automat...",
+              "duration_seconds": 0.473
+            },
+            {
+              "line": 16,
+              "characters": [
+                741,
+                769
+              ],
+              "name": "zesu_stack_write_if_enabled.",
+              "duration_seconds": 0.328
+            },
+            {
+              "line": 15,
+              "characters": [
+                708,
+                720
+              ],
+              "name": "iStartProof.",
+              "duration_seconds": 0.047
+            },
+            {
+              "line": 2,
+              "characters": [
+                93,
+                129
+              ],
+              "name": "Require~Import~isla.riscv64.ri...",
+              "duration_seconds": 0.041
+            },
+            {
+              "line": 18,
+              "characters": [
+                776,
+                780
+              ],
+              "name": "Qed.",
+              "duration_seconds": 0.023
+            }
+          ],
+          "last_completed": {
+            "line": 18,
+            "characters": [
+              776,
+              780
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.023
+          }
+        },
+        "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 6 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+      },
+      "isError": false
+    },
+    "final_verify": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "isError": false
+    }
+  },
+  "final_regression_compile": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"output\":\"Chars 624 - 685 [#[local]Instance~stack_write_e...] 0. secs (0.u,0.s)\",\"timing\":{\"total_sentences\":44,\"top_slowest\":[{\"line\":1,\"characters\":[0,38],\"name\":\"Require~Import~ZesuSsz.Automat...\",\"duration_seconds\":0.494},{\"line\":67,\"characters\":[2153,2186],\"name\":\"Fail~zesu_stack_write_if_enabled.\",\"duration_seconds\":0.138},{\"line\":18,\"characters\":[495,528],\"name\":\"Fail~zesu_stack_write_if_enabled.\",\"duration_seconds\":0.046},{\"line\":2,\"characters\":[39,75],\"name\":\"Require~Import~isla.riscv64.ri...\",\"duration_seconds\":0.042},{\"line\":47,\"characters\":[1502,1530],\"name\":\"zesu_stack_write_if_enabled.\",\"duration_seconds\":0.042}],\"last_completed\":{\"line\":71,\"characters\":[2279,2289],\"name\":\"End~tests.\",\"duration_seconds\":0.0}},\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 764 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "output": "Chars 624 - 685 [#[local]Instance~stack_write_e...] 0. secs (0.u,0.s)",
+      "timing": {
+        "total_sentences": 44,
+        "top_slowest": [
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.494
+          },
+          {
+            "line": 67,
+            "characters": [
+              2153,
+              2186
+            ],
+            "name": "Fail~zesu_stack_write_if_enabled.",
+            "duration_seconds": 0.138
+          },
+          {
+            "line": 18,
+            "characters": [
+              495,
+              528
+            ],
+            "name": "Fail~zesu_stack_write_if_enabled.",
+            "duration_seconds": 0.046
+          },
+          {
+            "line": 2,
+            "characters": [
+              39,
+              75
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.042
+          },
+          {
+            "line": 47,
+            "characters": [
+              1502,
+              1530
+            ],
+            "name": "zesu_stack_write_if_enabled.",
+            "duration_seconds": 0.042
+          }
+        ],
+        "last_completed": {
+          "line": 71,
+          "characters": [
+            2279,
+            2289
+          ],
+          "name": "End~tests.",
+          "duration_seconds": 0
+        }
+      },
+      "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform'. 764 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+    },
+    "isError": false
+  },
+  "verification": {
+    "select": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    "folded_bounds": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    "disabled": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "direct",
+          "assumptions": [],
+          "note": "Verified via direct compilation (no Module M sandbox)."
+        },
+        "isError": false
+      }
+    },
+    "other_frame": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      },
+      "isError": false
+    },
+    "outside": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      },
+      "isError": false
+    }
+  },
+  "diagnostics": {
+    "initial_start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"error\":\"Theorem_not_found: [find_thm] Theorem found but failed with Coq error:\\n \\n Could not find an instance for \\\"BvWf 64 (-16)\\\" in\\n environment:\\n Sigma : gFunctors\\n islaG0 : islaG Sigma\\n H : threadG\\n sp : Z\\n Hsp : 16 \u2264 sp < 2 ^ 64\\n !\",\"reason\":\"not_found\",\"available_in_file\":[\"stack_write_disabled\",\"stack_write_enabled\",\"stack_write_other_frame\",\"stack_write_reject_outside\",\"stack_write_select\"]}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "error": "Theorem_not_found: [find_thm] Theorem found but failed with Coq error:\n \n Could not find an instance for \"BvWf 64 (-16)\" in\n environment:\n Sigma : gFunctors\n islaG0 : islaG Sigma\n H : threadG\n sp : Z\n Hsp : 16 \u2264 sp < 2 ^ 64\n !",
+        "reason": "not_found",
+        "available_in_file": [
+          "stack_write_disabled",
+          "stack_write_enabled",
+          "stack_write_other_frame",
+          "stack_write_reject_outside",
+          "stack_write_select"
+        ]
+      },
+      "isError": false
+    },
+    "initial_multi": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"zesu_stack_write_if_enabled.\",\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Expression does not evaluate to a tactic (got a constr).\"},{\"tactic\":\"repeat zesu_liAStep.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":false,\"shelved_goals\":1,\"focus_depth\":0}],\"from_state_id\":733}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "zesu_stack_write_if_enabled.",
+            "success": false,
+            "reason": "tactic_failed",
+            "error": "Coq: Expression does not evaluate to a tactic (got a constr)."
+          },
+          {
+            "tactic": "repeat zesu_liAStep.",
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": false,
+            "shelved_goals": 1,
+            "focus_depth": 0
+          }
+        ],
+        "from_state_id": 733
+      },
+      "isError": false
+    },
+    "folded_condition_failure": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"assert (Haddr : bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + BV 64 18446744073709551600 + BV 64 8) = decodeItemStackPointer args - 16 + 8) by (zesu_split_folded_pure; bv_solve).\",\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: No applicable tactic.\"},{\"tactic\":\"assert (Haddr : bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + BV 64 18446744073709551600 + BV 64 8) = decodeItemStackPointer args - 16 + 8) by (zesu_split_folded_pure; cbn in *; bv_solve).\",\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: No applicable tactic.\"},{\"tactic\":\"zesu_split_folded_pure.\",\"success\":true,\"goals\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nreturnAddress : Z\\nargs : DecodeItemArgs\\nH : decodeItemReturnAddress args = returnAddress\\nH0 : decodeItemInputLength args = length (decodeItemInputBytes args)\\nH1 : length (decodeItemBeforeStorage args) = 40%nat\\n\u2227 RlpDecodeItem.decodeItemEntryLayout (decodeItemInputPointer args)\\n    (decodeItemInputLength args) (decodeItemOutputPointer args)\\n    (decodeItemStackPointer args) (decodeItemReturnAddress args)\\n|-\\\"Hframe\\\" : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)\\n           \u21a6\u2098? RlpDecodeItem.decodeItemStackBytes\\n--------------------------------------\u2217\\nfind_in_context\\n  (FindMemMapsTo\\n     (bv_unsigned\\n        (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\\n  (\u03bb _ : fic_A\\n           (FindMemMapsTo\\n              (bv_unsigned\\n                 (Z_to_bv 64 (decodeItemStackPointer args) +\\n                  18446744073709551600 + 8))), True)\",\"proof_finished\":false,\"focus_depth\":0}],\"from_state_id\":757}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "assert (Haddr : bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + BV 64 18446744073709551600 + BV 64 8) = decodeItemStackPointer args - 16 + 8) by (zesu_split_folded_pure; bv_solve).",
+            "success": false,
+            "reason": "tactic_failed",
+            "error": "Coq: No applicable tactic."
+          },
+          {
+            "tactic": "assert (Haddr : bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + BV 64 18446744073709551600 + BV 64 8) = decodeItemStackPointer args - 16 + 8) by (zesu_split_folded_pure; cbn in *; bv_solve).",
+            "success": false,
+            "reason": "tactic_failed",
+            "error": "Coq: No applicable tactic."
+          },
+          {
+            "tactic": "zesu_split_folded_pure.",
+            "success": true,
+            "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nreturnAddress : Z\nargs : DecodeItemArgs\nH : decodeItemReturnAddress args = returnAddress\nH0 : decodeItemInputLength args = length (decodeItemInputBytes args)\nH1 : length (decodeItemBeforeStorage args) = 40%nat\n\u2227 RlpDecodeItem.decodeItemEntryLayout (decodeItemInputPointer args)\n    (decodeItemInputLength args) (decodeItemOutputPointer args)\n    (decodeItemStackPointer args) (decodeItemReturnAddress args)\n|-\"Hframe\" : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)\n           \u21a6\u2098? RlpDecodeItem.decodeItemStackBytes\n--------------------------------------\u2217\nfind_in_context\n  (FindMemMapsTo\n     (bv_unsigned\n        (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\n  (\u03bb _ : fic_A\n           (FindMemMapsTo\n              (bv_unsigned\n                 (Z_to_bv 64 (decodeItemStackPointer args) +\n                  18446744073709551600 + 8))), True)",
+            "proof_finished": false,
+            "focus_depth": 0
+          }
+        ],
+        "from_state_id": 757
+      },
+      "isError": false
+    },
+    "tool_memory_failure": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":false,\"error\":\"rocq_verify aborted: pet RSS exceeded 16384 MB. The proof state was lost; pet has been restarted. Retry with a smaller term, avoid vm_compute on large inputs, or split the work.\",\"reason\":\"memory_exhausted\",\"pet_restarted\":true}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "rocq_verify aborted: pet RSS exceeded 16384 MB. The proof state was lost; pet has been restarted. Retry with a smaller term, avoid vm_compute on large inputs, or split the work.",
+          "reason": "memory_exhausted",
+          "pet_restarted": true
+        },
+        "isError": false
+      }
+    },
+    "stale_import_failure": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Expression does not evaluate to a tactic (got a constr).\",\"failed_command\":\"zesu_stack_write_if_enabled.\",\"command_index\":2,\"commands_run\":2,\"last_valid_state_id\":742,\"goals_at_failure\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nH : threadG\\nsp : Z\\nHsp : 16 \u2264 sp < 2 ^ 64\\n|-\\\"Hframe\\\" : (sp - 16) \u21a6\u2098? 16\\n--------------------------------------\u2217\\nfind_in_context\\n  (FindMemMapsTo (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-16) + 8)))\\n  (\u03bb mk : fic_A\\n            (FindMemMapsTo\\n               (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-16) + 8))),\\n     match mk with\\n     | MKUninit start count =>\\n         \u231cstart \u2264 sp - 8 \u2227 sp - 8 + 8 \u2264 start + count\u231d \u2217\\n         (start \u21a6\u2098? count -\u2217 True)\\n     | _ => False\\n     end)\",\"hint\":\"Use rocq_check(body='...', from_state=742) or rocq_step_multi(tactics=[...], from_state=742).\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "reason": "tactic_failed",
+        "error": "Coq: Expression does not evaluate to a tactic (got a constr).",
+        "failed_command": "zesu_stack_write_if_enabled.",
+        "command_index": 2,
+        "commands_run": 2,
+        "last_valid_state_id": 742,
+        "goals_at_failure": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nsp : Z\nHsp : 16 \u2264 sp < 2 ^ 64\n|-\"Hframe\" : (sp - 16) \u21a6\u2098? 16\n--------------------------------------\u2217\nfind_in_context\n  (FindMemMapsTo (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-16) + 8)))\n  (\u03bb mk : fic_A\n            (FindMemMapsTo\n               (bv_unsigned (Z_to_bv 64 sp + Z_to_bv 64 (-16) + 8))),\n     match mk with\n     | MKUninit start count =>\n         \u231cstart \u2264 sp - 8 \u2227 sp - 8 + 8 \u2264 start + count\u231d \u2217\n         (start \u21a6\u2098? count -\u2217 True)\n     | _ => False\n     end)",
+        "hint": "Use rocq_check(body='...', from_state=742) or rocq_step_multi(tactics=[...], from_state=742)."
+      },
+      "isError": false
+    },
+    "fresh_import_success": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":6,\"check_time_ms\":33,\"state_id\":750,\"from_state_id\":744,\"feedback\":[[\"Print Ltac zesu_stack_integer_address.\",\"Ltac zesu_stack_integer_address pointer :=\\n  lazymatch pointer with\\n  | (Z_to_bv 64 ?base + ?first + ?second)%bv =>\\n      let left := eval vm_compute in (bv_signed first) in\\n      let right := eval vm_compute in (bv_signed second) in\\n      constr:((base + left + right))\\n  | (Z_to_bv 64 ?base + ?offset)%bv =>\\n      let displacement := eval vm_compute in (bv_signed offset) in\\n      constr:((base + displacement))\\n  | (Z_to_bv 64 ?base - ?offset)%bv =>\\n      let displacement := eval vm_compute in (bv_unsigned offset) in\\n      constr:((base - displacement))\\n  | Z_to_bv 64 ?base => constr:(base)\\n  end\"],[\"Qed.\",\"stack_write_select is defined\"]],\"proof_tactics\":[\"Print Ltac zesu_stack_integer_address.\",\"iStartProof.\",\"iIntros \\\"Hframe\\\".\",\"zesu_stack_write_if_enabled.\",\"iSplit; [iPureIntro; lia | iIntros \\\"Hframe\\\"; done].\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 6,
+        "check_time_ms": 33,
+        "state_id": 750,
+        "from_state_id": 744,
+        "feedback": [
+          [
+            "Print Ltac zesu_stack_integer_address.",
+            "Ltac zesu_stack_integer_address pointer :=\n  lazymatch pointer with\n  | (Z_to_bv 64 ?base + ?first + ?second)%bv =>\n      let left := eval vm_compute in (bv_signed first) in\n      let right := eval vm_compute in (bv_signed second) in\n      constr:((base + left + right))\n  | (Z_to_bv 64 ?base + ?offset)%bv =>\n      let displacement := eval vm_compute in (bv_signed offset) in\n      constr:((base + displacement))\n  | (Z_to_bv 64 ?base - ?offset)%bv =>\n      let displacement := eval vm_compute in (bv_unsigned offset) in\n      constr:((base - displacement))\n  | Z_to_bv 64 ?base => constr:(base)\n  end"
+          ],
+          [
+            "Qed.",
+            "stack_write_select is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "Print Ltac zesu_stack_integer_address.",
+          "iStartProof.",
+          "iIntros \"Hframe\".",
+          "zesu_stack_write_if_enabled.",
+          "iSplit; [iPureIntro; lia | iIntros \"Hframe\"; done].",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    }
+  },
+  "native_contract_theorem_proved": false,
+  "final": {
+    "anonymous_development": {
+      "multi": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"results\":[{\"tactic\":\"iStartProof. iIntros \\\"?\\\". zesu_stack_write_if_enabled. done.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"focus_depth\":0},{\"tactic\":\"iStartProof. iIntros \\\"?\\\". repeat zesu_liAStep.\",\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"focus_depth\":0}],\"from_state_id\":783}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "iStartProof. iIntros \"?\". zesu_stack_write_if_enabled. done.",
+              "success": true,
+              "goals": "No goals remaining.",
+              "proof_finished": true,
+              "focus_depth": 0
+            },
+            {
+              "tactic": "iStartProof. iIntros \"?\". repeat zesu_liAStep.",
+              "success": true,
+              "goals": "No goals remaining.",
+              "proof_finished": true,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 783
+        },
+        "isError": false
+      },
+      "check": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":5,\"check_time_ms\":58,\"state_id\":788,\"from_state_id\":783,\"feedback\":[[\"Qed.\",\"stack_write_anonymous_frame is defined\"]],\"proof_tactics\":[\"iStartProof.\",\"iIntros \\\"?\\\".\",\"zesu_stack_write_if_enabled.\",\"done.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 5,
+          "check_time_ms": 58,
+          "state_id": 788,
+          "from_state_id": 783,
+          "feedback": [
+            [
+              "Qed.",
+              "stack_write_anonymous_frame is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "iStartProof.",
+            "iIntros \"?\".",
+            "zesu_stack_write_if_enabled.",
+            "done.",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "isError": false
+      }
+    },
+    "regression_verification": [
+      {
+        "name": "stack_write_disabled",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "stack_write_select",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "stack_write_other_frame",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "stack_write_folded_bounds",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "stack_write_environment_alias",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "stack_write_anonymous_frame",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "stack_write_reject_outside",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      }
+    ],
+    "native_frame_verification": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "isError": false
+    },
+    "exact_native_diagnostic": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"zesu_stack_write_if_enabled.\",\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Expected a single focused goal but 3 goals are focused.\"},{\"tactic\":\"zesu_expose_environment_alias; zesu_stack_write_if_enabled.\",\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: Expected a single focused goal but 3 goals are focused.\"}],\"from_state_id\":777}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "zesu_stack_write_if_enabled.",
+            "success": false,
+            "reason": "tactic_failed",
+            "error": "Coq: Expected a single focused goal but 3 goals are focused."
+          },
+          {
+            "tactic": "zesu_expose_environment_alias; zesu_stack_write_if_enabled.",
+            "success": false,
+            "reason": "tactic_failed",
+            "error": "Coq: Expected a single focused goal but 3 goals are focused."
+          }
+        ],
+        "from_state_id": 777
+      },
+      "isError": false
+    },
+    "anonymous_resource_diagnostic": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"Goal 1:\\nSigma : gFunctors\\nislaG0 : islaG Sigma\\nH : threadG\\nreturnAddress : Z\\nargs : DecodeItemArgs\\nBLK_STOP_800d6974, BLK_STOP_800d6ae0 : iProp Sigma\\nH0 : decodeItemDomainAt returnAddress decodeItemC1BDomain args\\nb : bv 64\\nH1 : Z.land (bv_unsigned b) 131072 = 0\\nn, b0 : bv 64\\nH2 : Z.land (bv_unsigned b0) 131072 = 0\\nH3 : Z.land (bvn_unsigned n) 131072 = 0\\nH4 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)) >= bv_signed 2684354560\\nH5 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8) \u2264 bv_signed 3221225472\\nb1 : bool\\nH6 : -1 < bv_unsigned b0 < bv_modulus 64\\nH7 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b0 < bv_half_modulus 64\\nH8 : -1 < bv_unsigned n < bv_modulus 64\\nH9 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64\\nH10 : -1 < bv_unsigned b < bv_modulus 64\\nH11 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64\\n|-_ : instr_lookup_resources\\n      (\u03bb address : Z,\\n         if address =? 2148362592\\n         then Some a800d6960\\n         else\\n          if address =? 2148362596\\n          then Some a800d6964\\n          else\\n           if address =? 2148362600\\n           then Some a800d6968\\n           else\\n            if address =? 2148362604\\n            then Some a800d696c\\n            else\\n             if address =? 2148362608\\n             then Some a800d6970\\n             else\\n              if address =? 2148362612\\n              then Some a800d6974\\n              else\\n               if address =? 2148362616\\n               then Some a800d6978\\n               else\\n                if address =? 2148362620\\n                then Some a800d697c\\n                else\\n                 if address =? 2148362624\\n                 then Some a800d6980\\n                 else\\n                  if address =? 2148362628\\n                  then Some a800d6984\\n                  else\\n                   if address =? 2148362632\\n                   then Some a800d6988\\n                   else\\n                    if address =? 2148362636\\n                    then Some a800d698c\\n                    else\\n                     if address =? 2148362640\\n                     then Some a800d6990\\n                     else\\n                      if address =? 2148362644\\n                      then Some a800d6994\\n                      else\\n                       if address =? 2148362648\\n                       then Some a800d6998\\n                       else\\n                        if address =? 2148362652\\n                        then Some a800d699c\\n                        else\\n                         if address =? 2148362656\\n                         then Some a800d69a0\\n                         else\\n                          if address =? 2148362660\\n                          then Some a800d69a4\\n                          else\\n                           if address =? 2148362664\\n                           then Some a800d69a8\\n                           else\\n                            if address =? 2148362668\\n                            then Some a800d69ac\\n                            else\\n                             if address =? 2148362672\\n                             then Some a800d69b0\\n                             else\\n                              if address =? 2148362676\\n                              then Some a800d69b4\\n                              else\\n                               if address =? 2148362680\\n                               then Some a800d69b8\\n                               else\\n                                if address =? 2148362684\\n                                then Some a800d69bc\\n                                else\\n                                 if address =? 2148362688\\n                                 then Some a800d69c0\\n                                 else\\n                                  if address =? 2148362692\\n                                  then Some a800d69c4\\n                                  else\\n                                   if address =? 2148362696\\n                                   then Some a800d69c8\\n                                   else\\n                                    if address =? 2148362700\\n                                    then Some a800d69cc\\n                                    else\\n                                     if address =? 2148362704\\n                                     then Some a800d69d0\\n                                     else\\n                                      if address =? 2148362708\\n                                      then Some a800d69d4\\n                                      else\\n                                       if address =? 2148362712\\n                                       then Some a800d69d8\\n                                       else\\n                                        if address =? 2148362716\\n                                        then Some a800d69dc\\n                                        else\\n                                         if address =? 2148362720\\n                                         then Some a800d69e0\\n                                         else\\n                                          if address =? 2148362724\\n                                          then Some a800d69e4\\n                                          else\\n                                           if address =? 2148362728\\n                                           then Some a800d69e8\\n                                           else\\n                                            if address =? 2148362732\\n                                            then Some a800d69ec\\n                                            else\\n                                             if address =? 2148362736\\n                                             then Some a800d69f0\\n                                             else\\n                                              if address =? 2148362740\\n                                              then Some a800d69f4\\n                                              else\\n                                               if address =? 2148362744\\n                                               then Some a800d69f8\\n                                               else\\n                                                if address =? 2148362748\\n                                                then Some a800d69fc\\n                                                else\\n                                                 if address =? 2148362752\\n                                                 then Some a800d6a00\\n                                                 else\\n                                                  if address =? 2148362756\\n                                                  then Some a800d6a04\\n                                                  else\\n                                                   if address =? 2148362760\\n                                                   then Some a800d6a08\\n                                                   else\\n                                                    if address =? 2148362764\\n                                                    then Some a800d6a0c\\n                                                    else\\n                                                     if address =? 2148362768\\n                                                     then Some a800d6a10\\n                                                     else\\n                                                      if address =? 2148362772\\n                                                      then Some a800d6a14\\n                                                      else\\n                                                       if address =? 2148362776\\n                                                       then Some a800d6a18\\n                                                       else\\n                                                        if address =? 2148362780\\n                               ... (truncated, 96861 chars total)\",\"proof_finished\":false,\"commands_run\":2,\"check_time_ms\":22,\"state_id\":779,\"from_state_id\":777,\"feedback\":[[\"1: match goal with |- envs_entails _ ?G => idtac G end.\",\"(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\\n   (\u03bb mk : mem_mapsto_kind,\\n      match mk with\\n      | MKMapsTo n' _ => (\u231cn' = 64%N\u231d \u2217 (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217 WPasm HIDDEN))%I\\n      | MKArray n' a' values =>\\n          if (n' =? 64)%N\\n          then\\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `mod` 8 = 0\u231d \u2217\\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\\n              \u2203 Heq : 64%N = n', a' \u21a6\u2098\u2217 <[i:=eq_rect 64%N bv (Z_to_bv 64 (decodeItemReturnAddress args)) n' Heq]> values -\u2217 WPasm HIDDEN)%I\\n          else\\n           (\u231cn' = 8%N\u231d \u2217\\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\\n              (a'\\n               \u21a6\u2098\u2217 (take i values ++\\n                    Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))) (Z.ones (Z.of_N n')))\\n                    :: Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') (Z.ones (Z.of_N n')))\\n                       :: Z_to_bv n' (Z.land ((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\\n                          :: Z_to_bv n' (Z.land (((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\\n                             :: Z_to_bv n' (Z.land ((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\\n                                :: Z_to_bv n'\\n                                     (Z.land (((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\\n                                   :: Z_to_bv n'\\n                                        (Z.land ((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\\n                                           (Z.ones (Z.of_N n')))\\n                                      :: Z_to_bv n'\\n                                           (Z.land\\n                                              (((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\\n                                              (Z.ones (Z.of_N n'))) :: drop (i + N.to_nat 8) values) -\u2217 WPasm HIDDEN))%I\\n      | MKUninit a' length =>\\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\\n           (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217\\n            a' \u21a6\u2098? (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') -\u2217\\n            (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)\\n            \u21a6\u2098? (a' + length - (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)) -\u2217 WPasm HIDDEN))%I\\n      | MKMMIO a' length =>\\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SWriteMem (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) (Z_to_bv 64 (decodeItemReturnAddress args))) Pks' \u2286 Pks\u231d \u2217\\n             (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\\n      end))\"],[\"1: iMatchHyp ltac:(fun H body => lazymatch body with (?lower \u21a6\u2098? ?count)%I => idtac H lower count end).\",\"(IAnon 13) (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) RlpDecodeItem.decodeItemStackBytes\"]],\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "Goal 1:\nSigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nBLK_STOP_800d6974, BLK_STOP_800d6ae0 : iProp Sigma\nH0 : decodeItemDomainAt returnAddress decodeItemC1BDomain args\nb : bv 64\nH1 : Z.land (bv_unsigned b) 131072 = 0\nn, b0 : bv 64\nH2 : Z.land (bv_unsigned b0) 131072 = 0\nH3 : Z.land (bvn_unsigned n) 131072 = 0\nH4 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)) >= bv_signed 2684354560\nH5 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8) \u2264 bv_signed 3221225472\nb1 : bool\nH6 : -1 < bv_unsigned b0 < bv_modulus 64\nH7 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b0 < bv_half_modulus 64\nH8 : -1 < bv_unsigned n < bv_modulus 64\nH9 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64\nH10 : -1 < bv_unsigned b < bv_modulus 64\nH11 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64\n|-_ : instr_lookup_resources\n      (\u03bb address : Z,\n         if address =? 2148362592\n         then Some a800d6960\n         else\n          if address =? 2148362596\n          then Some a800d6964\n          else\n           if address =? 2148362600\n           then Some a800d6968\n           else\n            if address =? 2148362604\n            then Some a800d696c\n            else\n             if address =? 2148362608\n             then Some a800d6970\n             else\n              if address =? 2148362612\n              then Some a800d6974\n              else\n               if address =? 2148362616\n               then Some a800d6978\n               else\n                if address =? 2148362620\n                then Some a800d697c\n                else\n                 if address =? 2148362624\n                 then Some a800d6980\n                 else\n                  if address =? 2148362628\n                  then Some a800d6984\n                  else\n                   if address =? 2148362632\n                   then Some a800d6988\n                   else\n                    if address =? 2148362636\n                    then Some a800d698c\n                    else\n                     if address =? 2148362640\n                     then Some a800d6990\n                     else\n                      if address =? 2148362644\n                      then Some a800d6994\n                      else\n                       if address =? 2148362648\n                       then Some a800d6998\n                       else\n                        if address =? 2148362652\n                        then Some a800d699c\n                        else\n                         if address =? 2148362656\n                         then Some a800d69a0\n                         else\n                          if address =? 2148362660\n                          then Some a800d69a4\n                          else\n                           if address =? 2148362664\n                           then Some a800d69a8\n                           else\n                            if address =? 2148362668\n                            then Some a800d69ac\n                            else\n                             if address =? 2148362672\n                             then Some a800d69b0\n                             else\n                              if address =? 2148362676\n                              then Some a800d69b4\n                              else\n                               if address =? 2148362680\n                               then Some a800d69b8\n                               else\n                                if address =? 2148362684\n                                then Some a800d69bc\n                                else\n                                 if address =? 2148362688\n                                 then Some a800d69c0\n                                 else\n                                  if address =? 2148362692\n                                  then Some a800d69c4\n                                  else\n                                   if address =? 2148362696\n                                   then Some a800d69c8\n                                   else\n                                    if address =? 2148362700\n                                    then Some a800d69cc\n                                    else\n                                     if address =? 2148362704\n                                     then Some a800d69d0\n                                     else\n                                      if address =? 2148362708\n                                      then Some a800d69d4\n                                      else\n                                       if address =? 2148362712\n                                       then Some a800d69d8\n                                       else\n                                        if address =? 2148362716\n                                        then Some a800d69dc\n                                        else\n                                         if address =? 2148362720\n                                         then Some a800d69e0\n                                         else\n                                          if address =? 2148362724\n                                          then Some a800d69e4\n                                          else\n                                           if address =? 2148362728\n                                           then Some a800d69e8\n                                           else\n                                            if address =? 2148362732\n                                            then Some a800d69ec\n                                            else\n                                             if address =? 2148362736\n                                             then Some a800d69f0\n                                             else\n                                              if address =? 2148362740\n                                              then Some a800d69f4\n                                              else\n                                               if address =? 2148362744\n                                               then Some a800d69f8\n                                               else\n                                                if address =? 2148362748\n                                                then Some a800d69fc\n                                                else\n                                                 if address =? 2148362752\n                                                 then Some a800d6a00\n                                                 else\n                                                  if address =? 2148362756\n                                                  then Some a800d6a04\n                                                  else\n                                                   if address =? 2148362760\n                                                   then Some a800d6a08\n                                                   else\n                                                    if address =? 2148362764\n                                                    then Some a800d6a0c\n                                                    else\n                                                     if address =? 2148362768\n                                                     then Some a800d6a10\n                                                     else\n                                                      if address =? 2148362772\n                                                      then Some a800d6a14\n                                                      else\n                                                       if address =? 2148362776\n                                                       then Some a800d6a18\n                                                       else\n                                                        if address =? 2148362780\n                               ... (truncated, 96861 chars total)",
+        "proof_finished": false,
+        "commands_run": 2,
+        "check_time_ms": 22,
+        "state_id": 779,
+        "from_state_id": 777,
+        "feedback": [
+          [
+            "1: match goal with |- envs_entails _ ?G => idtac G end.",
+            "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 64%N\u231d \u2217 (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217 WPasm HIDDEN))%I\n      | MKArray n' a' values =>\n          if (n' =? 64)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `mod` 8 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 64%N = n', a' \u21a6\u2098\u2217 <[i:=eq_rect 64%N bv (Z_to_bv 64 (decodeItemReturnAddress args)) n' Heq]> values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n              (a'\n               \u21a6\u2098\u2217 (take i values ++\n                    Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))) (Z.ones (Z.of_N n')))\n                    :: Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                       :: Z_to_bv n' (Z.land ((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                          :: Z_to_bv n' (Z.land (((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                             :: Z_to_bv n' (Z.land ((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                :: Z_to_bv n'\n                                     (Z.land (((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                   :: Z_to_bv n'\n                                        (Z.land ((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                           (Z.ones (Z.of_N n')))\n                                      :: Z_to_bv n'\n                                           (Z.land\n                                              (((((((bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                              (Z.ones (Z.of_N n'))) :: drop (i + N.to_nat 8) values) -\u2217 WPasm HIDDEN))%I\n      | MKUninit a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\n           (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) \u21a6\u2098 Z_to_bv 64 (decodeItemReturnAddress args) -\u2217\n            a' \u21a6\u2098? (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) - a') -\u2217\n            (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)\n            \u21a6\u2098? (a' + length - (bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8)) -\u2217 WPasm HIDDEN))%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)\u231d \u2217\n           \u231cbv_unsigned (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) + 8 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SWriteMem (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8) (Z_to_bv 64 (decodeItemReturnAddress args))) Pks' \u2286 Pks\u231d \u2217\n             (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))"
+          ],
+          [
+            "1: iMatchHyp ltac:(fun H body => lazymatch body with (?lower \u21a6\u2098? ?count)%I => idtac H lower count end).",
+            "(IAnon 13) (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) RlpDecodeItem.decodeItemStackBytes"
+          ]
+        ],
+        "focus_depth": 0
+      },
+      "isError": false
+    }
+  }
+}

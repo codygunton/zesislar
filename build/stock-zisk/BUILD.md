@@ -29,6 +29,29 @@ Run the gates from the checkout root.
 The artifact identity does not depend on the checkout location.
 A clone uses its own tools, build artifacts, wrappers, and generated traces.
 
+The evidence tests also read the pinned EVM-Sail source checkout.
+The default path is `/home/cody/evm-sail`.
+Set `EVM_SAIL_SOURCE` to use another checkout.
+The required revision is `d0e4aabdde52f9158d191dbc8add444abffd9a6a`.
+`generated/evm-sail-coq/rlp/SOURCE.json` records this revision.
+For an absent checkout, retrieve it with these commands:
+
+```sh
+git clone https://github.com/frisitano/evm-sail.git /home/cody/evm-sail
+git -C /home/cody/evm-sail checkout --detach d0e4aabdde52f9158d191dbc8add444abffd9a6a
+```
+
+For an existing checkout, verify its revision before the gates:
+
+```sh
+git -C /home/cody/evm-sail rev-parse HEAD
+```
+
+The evidence tests check this revision and read two source files.
+`sail/lib/rlp/decoding.sail` has SHA-256 `6d60a794d2053b772b916275a240a4dc055195cd48fb038eb3316a164860c5eb`.
+`sail/lib/ssz/stateless_input.sail` has SHA-256 `688e892f6c7adb4d88cbd0a944861eeb4cac58448b80cd23f6715ffea771757a`.
+`fetch_inputs.py` does not retrieve this reference checkout.
+
 The following steps reproduce the gates on this host:
 
 ```sh

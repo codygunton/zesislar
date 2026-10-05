@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "checkpoint": "Selected lookup table sealing",
+  "base_commit": "169a8a79db4c4da02abfab2c79672a2e495e92b1",
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "inputs": {
+    "ZesuSsz/Automation/Hooks.v": {
+      "sha256": "5b596ed5384d1b1d2a86c6028eab7367c7403eb597adf4e44038b96adee9d5aa"
+    },
+    "ZesuSsz/Proofs/Tests/SelectedLookupSeal.v": {
+      "sha256": "1540469bda63ba408b1d448fae831d1eca7722bdf2e0e65e26eb0350716072ec"
+    },
+    "ZesuSsz/Contracts/SelectedCodeLookup.v": {
+      "sha256": "e8d1e66aeed684f8385a3df4aba6406ab89137e4922577fdd61148e9819dc1c8"
+    },
+    "ZesuSsz/Contracts/DecodeItemSelected.v": {
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": {
+      "sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": {
+      "sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355"
+    },
+    "generated/isla-traces/stock-zisk/closure/index_decodeItem.v": {
+      "sha256": "36e90f90acc82aefef2ceccab7d26ffd7086ad2b94c58b1f459239c722bc68c6"
+    },
+    "generated/isla-traces/stock-zisk/closure/a800d6a24.v": {
+      "sha256": "32d617b95f8b110d73d917ec3258773b66a910a70861399e019ad6a6d1037295"
+    },
+    "build/stock-zisk/build-recipe.json": {
+      "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99"
+    }
+  },
+  "measurements": {
+    "wp": {
+      "off_characters": 30123,
+      "on_characters": 4557,
+      "reduction_percent": 84.87202469873519,
+      "same_goal_except_table_presentation": true,
+      "off_check_ms": 95,
+      "on_check_ms": 1366,
+      "timing_note": "Off and on commands use different batch grouping. The check times are not a speed comparison."
+    },
+    "three": {
+      "off_characters": 30383,
+      "on_characters": 4817,
+      "reduction_percent": 84.14573939373993,
+      "same_goal_except_table_presentation": true,
+      "off_check_ms": 181,
+      "on_check_ms": 125
+    }
+  },
+  "historical_reference": {
+    "spec_commit": "76bc1dde97ec600e56759ec75349db242fe79636",
+    "path": "Scaffolding/probes/q27_decode_item_block_probe.md",
+    "reported_characters": 31859,
+    "contracts_origin": "506fe57b",
+    "current_contract_sources_match_origin": true,
+    "full_resource_header_commit": "8e50d0ee2889060547aa681ca0bfbe95b3b99dc8",
+    "reference_is_not_current_measured_value": true
+  },
+  "change": {
+    "settings": [
+      "Global Typeclasses Opaque selectedCodeLookup.",
+      "Arguments selectedCodeLookup : simpl never."
+    ],
+    "location": "ZesuSsz/Automation/Hooks.v",
+    "contract_changed": false,
+    "table_definition_changed": false,
+    "instruction_semantics_changed": false,
+    "explicit_lookup_computation_retained": true,
+    "switch_added": false,
+    "source_lines_added": 6
+  },
+  "comparison": {
+    "entry_resources_changed": false,
+    "exit_resources_changed": false,
+    "instruction_trace_changed": false,
+    "current_pc": "0x800d6a24",
+    "next_lookup": "rv_enable_pmp",
+    "goal_equal_except_table_representation": true,
+    "unsafe_second_zesu_block_run": false,
+    "native_steps_after_WPasm": 3,
+    "initial_block_timeout_seconds": 5,
+    "native_step_timeout_seconds": 3
+  },
+  "previous_report": {
+    "path": "build/stock-zisk/q4-q9-ram-fault/REPORT.json",
+    "sha256": "bbbacbdce1aa5acfe4396545d95d7799e384165c6c7d76a648d16b215cac28b4",
+    "modified": false
+  },
+  "verification": {
+    "MCP": "mcp-results.json",
+    "compile": "passed",
+    "lemmas": 5,
+    "assumptions": [],
+    "check_fast": "passed",
+    "check_fast_elapsed_seconds": 143.073,
+    "check_fast_workers": 6,
+    "new_sources_staged_before_gate": true,
+    "check_iris": "not run, parent instruction"
+  },
+  "performance": {
+    "worker_cap": 6,
+    "MCP_pet_HWM_before_final_verification_kib": 3131324,
+    "MCP_pet_HWM_after_final_verification_kib": 4767168,
+    "HWM_includes_retained_sessions": true,
+    "HWM_is_not_per_proof_memory": true,
+    "gate_utilization": {
+      "cpu_percent_range": [
+        0.355,
+        10.341
+      ],
+      "load_ranges": [
+        [
+          "1",
+          "3"
+        ],
+        [
+          ".",
+          "."
+        ],
+        [
+          "0",
+          "9"
+        ]
+      ],
+      "available_memory_kib_min": 133611744,
+      "swap_used_kib_max": 8370320,
+      "observed_compiler_workers": 0
+    }
+  },
+  "archived_outputs": {
+    "_build/q4-lookup-seal/gate-final/chain.log": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/selected-lookup-seal-evidence/a6de49950ff8d0190861d9ebb9542ddcebb1aca4c6fd8f5b092224d106e2d08c.log",
+      "sha256": "a6de49950ff8d0190861d9ebb9542ddcebb1aca4c6fd8f5b092224d106e2d08c",
+      "bytes": 45084
+    },
+    "_build/q4-lookup-seal/gate-final/machine-measurements.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/selected-lookup-seal-evidence/7a95b903d75a3e37c165895f9bd6b6fb2c793bfa31a8b5363ab41307c331049b.json",
+      "sha256": "7a95b903d75a3e37c165895f9bd6b6fb2c793bfa31a8b5363ab41307c331049b",
+      "bytes": 399501
+    },
+    "_build/q4-lookup-seal/gate/chain.log": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/selected-lookup-seal-evidence/567f273ac92d2f8a137ac713380230ad78e1aeacd4b6350f16c409bc017b42dd.log",
+      "sha256": "567f273ac92d2f8a137ac713380230ad78e1aeacd4b6350f16c409bc017b42dd",
+      "bytes": 44842
+    },
+    "_build/q4-lookup-seal/gate/machine-measurements.json": {
+      "path": "/home/cody/zesislar-archive/2026-10-03/worker2-child-platform/selected-lookup-seal-evidence/aadac50cdb6e5400dddfb5276528ae6e6c3e282565e1268ebc34f5c1524f28b2.json",
+      "sha256": "aadac50cdb6e5400dddfb5276528ae6e6c3e282565e1268ebc34f5c1524f28b2",
+      "bytes": 393802
+    }
+  },
+  "limitations": [
+    "The probe is diagnostic evidence, not a native contract theorem.",
+    "The next register lookup is unchanged. No block edge closes in this measurement.",
+    "The historical 31859-character value differs from current printer output. Both current modes use the same printer.",
+    "Typeclass opacity alone did not prevent liSimpl from expanding the table.",
+    "A fresh equivalent import sequence prevents cached MCP imports from hiding the new simplification setting.",
+    "No full native discovery rerun occurs in this checkpoint. The parent orders that task after sealing."
+  ],
+  "manifest": {
+    "changed": false,
+    "handwritten_v_inputs_added": false
+  },
+  "outputs": {
+    "build/stock-zisk/q4-selected-lookup-seal/off-wp-goal.txt": {
+      "sha256": "d486c74c4d95d87dbf182228bcd44434e62c831e27cb70fc861e4fee93bdb4d4"
+    },
+    "build/stock-zisk/q4-selected-lookup-seal/on-wp-goal.txt": {
+      "sha256": "e952ae3fccc1fa25752f1d9e625b33bb3b0eba27440889901d8a4ab38576b9f2"
+    },
+    "build/stock-zisk/q4-selected-lookup-seal/off-three-goal.txt": {
+      "sha256": "2c0078189b4eb451a09416df476da0a677d51c4c1319d29ba4776a7992faaabc"
+    },
+    "build/stock-zisk/q4-selected-lookup-seal/on-three-goal.txt": {
+      "sha256": "b44776dc36af111a5b5cb77eab131e28f8319f81c5738e3447b84fc29761772f"
+    },
+    "build/stock-zisk/q4-selected-lookup-seal/off-exact-preservation.v.txt": {
+      "sha256": "4bfe9adf8a42ea6d2c9fc1d0b5da8bafba5ab8fba6068ff5410e2ca20e581187"
+    },
+    "build/stock-zisk/q4-selected-lookup-seal/on-exact-preservation.v.txt": {
+      "sha256": "5d080bd36644b625dc7fbee6429567e7fd6c46ab71e9def7e9849338ad927eb2"
+    },
+    "build/stock-zisk/q4-selected-lookup-seal/mcp-results.json": {
+      "sha256": "79c661cefb96f159b0a20c56730635192ddc4e5496e3df497bc0eb2e5fa665c9"
+    }
+  }
+}
