@@ -1,0 +1,92 @@
+{
+  "schema": "i7-strict-signed-v1",
+  "root": "4ab24b8a37ac2ad19fe5b6ae3171d3a09be79264",
+  "rule": "zesu_strict_signed_if_enabled",
+  "switch": "ZesuSsz.Automation.Switches.StrictSigned",
+  "source_hashes": {
+    "ZesuSsz/Automation/BitvectorFacts.v": "139285a35438dc26afbf33a8c2a550a0aeb58ffcf1c5eb280b274ff74e4023da",
+    "ZesuSsz/Automation/Hooks.v": "c552a4b7b8336da66031ef8f4db8a6ef718a908509cfb0ad1c31b819a47a1bb4",
+    "ZesuSsz/Automation/Switches/StrictSigned.v": "87261fc54b89444d8c09f7ae2acda9d82adc21676438c26f1d888038cd5102d6",
+    "ZesuSsz/Proofs/Tests/StrictSigned.v": "87bc71906ed3bc655bf2cd9f1f3dc71c02b7193deb27127b244b66d692b4d45b",
+    "ZesuSsz/Proofs/Tests/StrictSignedIsolation.v": "deaaaabcacc23b7077b391da4ccd69f8f936cf720ee3a14c64c9e56de11c66a7"
+  },
+  "native_residual": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q54/build/stock-zisk/q54-6a38-first-residual.txt",
+    "sha256": "001e01b32649ad1060e9e9c4432292593b2645213f78b49498fb82f36f62e7c9",
+    "archive_path": "/home/cody/zesislar-archive/sha256/00/001e01b32649ad1060e9e9c4432292593b2645213f78b49498fb82f36f62e7c9",
+    "bytes": 1368
+  },
+  "mcp": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i7-strict-signed/mcp.json",
+    "sha256": "33af1b4cfec0ae9fe81904587627ca9829f7e5ecc1b7e8ae8f6c47bc215ada18",
+    "archive_path": "/home/cody/zesislar-archive/sha256/33/33af1b4cfec0ae9fe81904587627ca9829f7e5ecc1b7e8ae8f6c47bc215ada18",
+    "bytes": 5962
+  },
+  "result": "The generic hook closes strict widened comparisons from the corresponding unsigned hypothesis.",
+  "comparison": {
+    "statement": "forall x y:bv64, unsigned(x)<unsigned(y) -> signed(zero_extend128 x)<signed(zero_extend128 y)",
+    "off_hook": "Fails at missing ZesuStepStrictSigned instance.",
+    "on_hook": "Closes through Qed; reported check_time_ms=2.",
+    "off_builtin_bv_solve": "Also closes the small isolated statement. No general solver failure or native speedup is claimed.",
+    "on_builtin_bv_solve": "Closes through Qed and verifies with assumptions [].",
+    "native_sites": "The supplied residual identifies sites6a38 and6ad8. No native block rerun occurred."
+  },
+  "tests": [
+    "Switch absent",
+    "Switch explicit import",
+    "Local LET0 alias",
+    "Missing unsigned order",
+    "Different input width",
+    "Importer isolation"
+  ],
+  "final_verification": {
+    "health": "Pass",
+    "start": "Pass after explicit RISC-V imports",
+    "check": "Pass",
+    "step_multi": "Pass",
+    "compile_file": "Pass for bridge and both regression modules",
+    "verify": "Pass; assumptions [] for bridge and switch proof"
+  },
+  "attempt_failures": [
+    "Preamble start returned No node at point. No restart occurred.",
+    "First scratch omitted the RISC-V import; bv was unavailable.",
+    "First focused build lacked BitvectorFacts import in the isolation test. The corrected build passed.",
+    "/usr/bin/time was unavailable. The replacement gate wrapper uses monotonic time and getrusage."
+  ],
+  "contract_changed": false,
+  "isa_changed": false,
+  "native_manual_handoff_lines": 0,
+  "workers": 6,
+  "gate": {
+    "pid": 273464,
+    "start_utc": "2026-10-05T16:44:26.066203+00:00",
+    "elapsed_seconds": 268.24153870902956,
+    "exit_code": 0,
+    "max_child_rss_kib": 2330868,
+    "user_seconds": 554.039874,
+    "system_seconds": 75.273691,
+    "jobs": 6,
+    "log": {
+      "sha256": "5db6a8025a34101664d66238d56d5854f6df122bd807ac3645a55025362fd406",
+      "archive_path": "/home/cody/zesislar-archive/sha256/5d/5db6a8025a34101664d66238d56d5854f6df122bd807ac3645a55025362fd406",
+      "bytes": 55823
+    }
+  },
+  "peak_memory_scope": "getrusage(RUSAGE_CHILDREN) reports the maximum RSS of one gate descendant. It does not report aggregate memory.",
+  "window": {
+    "start": "2026-10-05T16:39:03.578000+00:00",
+    "end": "2026-10-05T16:49:45.469791+00:00",
+    "child_min": 10.698196516666666,
+    "tokens_child": 5994129,
+    "samples": [
+      [
+        "2026-10-05T16:32:41.235000+00:00",
+        230885061
+      ],
+      [
+        "2026-10-05T16:49:01.821000+00:00",
+        236879190
+      ]
+    ]
+  }
+}
