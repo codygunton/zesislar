@@ -24,12 +24,19 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def budget_policy(seconds=300, cpu_seconds=None):
+def budget_policy(seconds=300, cpu_seconds=None, *, memory_gib=6, entry_pc=None):
+    if memory_gib not in (6, 12):
+        raise ValueError('The memory budget must be six or twelve GiB')
+    if memory_gib == 12 and (entry_pc != '0x800d698c' or cpu_seconds is None):
+        raise ValueError('The twelve-GiB exception applies only to completion entry0x800d698c')
     if cpu_seconds is not None:
-        if not isinstance(cpu_seconds, int) or not 0 < cpu_seconds <= 1200:
-            raise ValueError('The CPU budget must be between one and 1200 seconds')
+        maximum = 2400 if entry_pc in ('0x800d6a24', '0x800d6ac4') else 1200
+        if not isinstance(cpu_seconds, int) or not 0 < cpu_seconds <= maximum:
+            raise ValueError('The CPU budget exceeds the authorized completion entry budget')
         return {'kind': 'cpu', 'cpu_seconds': cpu_seconds, 'wall_seconds': None,
-                'memory_kib': 6*1024*1024}
+                'memory_kib': memory_gib*1024*1024,
+                **({'completion_entry': entry_pc, 'optimization_debt': 'issue#10'}
+                   if cpu_seconds > 1200 or memory_gib > 6 else {})}
     if not 0 < seconds <= 300:
         raise ValueError('The primary budget must be between one and 300 seconds')
     return {'kind': 'wall', 'cpu_seconds': None, 'wall_seconds': seconds,
@@ -38,14 +45,17 @@ def budget_policy(seconds=300, cpu_seconds=None):
 
 def completion_environment(policy):
     return {'ZESU_PRIMARY_CPU_LIMIT': str(policy['cpu_seconds'] or 0),
+            'ZESU_PRIMARY_MEMORY_GIB': str(policy['memory_kib']//(1024*1024)),
+            'ZESU_SCRATCH_MEMORY_GIB': str(policy['memory_kib']//(1024*1024)),
+            'ZESU_COMPLETION_ENTRY': policy.get('completion_entry', ''),
             'ZESU_PRIMARY_WALL_LIMIT': str(policy['wall_seconds'] or 'none'),
             'ZESU_SCRATCH_WALL_SECONDS': str(policy['wall_seconds'] or 'none'),
             **({'ZESU_PROOF_CPU_LIMIT': str(policy['cpu_seconds'])}
                if policy['cpu_seconds'] else {})}
 
 
-def instrument(rendered, seconds=300, *, cpu_seconds=None):
-    policy = budget_policy(seconds, cpu_seconds)
+def instrument(rendered, seconds=300, *, cpu_seconds=None, memory_gib=6):
+    policy = budget_policy(seconds, cpu_seconds, memory_gib=memory_gib, entry_pc=rendered['entry_pc'])
     source = rendered['source']
     marker = 'Lemma ' + rendered['lemma']
     start = source.index(marker)
@@ -114,6 +124,7 @@ def compiler_run(arguments):
     cpu_limit = int(os.environ.get('ZESU_PRIMARY_CPU_LIMIT', '0')) or None
     wall_text = os.environ.get('ZESU_PRIMARY_WALL_LIMIT', '300')
     wall_limit = None if wall_text == 'none' else float(wall_text)
+    memory_limit = int(os.environ.get('ZESU_PRIMARY_MEMORY_GIB', '6'))*1024*1024
     before_cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
     def set_cpu_limit():
         if cpu_limit:
@@ -127,7 +138,7 @@ def compiler_run(arguments):
             'exit_code': code, 'limit': limit, 'compiled_object': compiled,
             'measurement_complete': code is not None,
             'cpu_seconds': cpu_used,
-            'limits': {'module_seconds': wall_limit, 'cpu_seconds': cpu_limit, 'rss_kib': 6*1024*1024}}
+            'limits': {'module_seconds': wall_limit, 'cpu_seconds': cpu_limit, 'rss_kib': memory_limit}}
         temporary = record.with_suffix('.tmp')
         temporary.write_text(json.dumps(value, indent=2)+'\n')
         temporary.replace(record)
@@ -144,7 +155,7 @@ def compiler_run(arguments):
             save()
             saved = time.monotonic()
         wall_exceeded = wall_limit is not None and time.monotonic()-started > wall_limit
-        if wall_exceeded or peak > 6*1024*1024:
+        if wall_exceeded or peak > memory_limit:
             limit = 'time' if wall_exceeded else 'memory'
             process.terminate()
             try:
@@ -193,7 +204,7 @@ def compile_source(path, out, build, *, policy):
     return done, output, log, compiler, time.monotonic()-started
 
 
-def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_seconds=None):
+def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_seconds=None, memory_gib=6):
     if not isinstance(inherited_debts, dict):
         raise ValueError('Inherited debts must be explicit')
     out, build = Path(out).resolve(), Path(build).resolve()
@@ -201,8 +212,8 @@ def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_secon
     if (out/'evidence.json').exists():
         raise ValueError('An existing native attempt must be reused, not repeated')
     path = out/'Boundary.v'
-    policy = budget_policy(seconds, cpu_seconds)
-    source = instrument(rendered, seconds, cpu_seconds=cpu_seconds)
+    policy = budget_policy(seconds, cpu_seconds, memory_gib=memory_gib, entry_pc=rendered['entry_pc'])
+    source = instrument(rendered, seconds, cpu_seconds=cpu_seconds, memory_gib=memory_gib)
     path.write_text(source)
     done, output, log, compiler, total_wall = compile_source(path, out, build, policy=policy)
     capture_error = None
@@ -229,7 +240,7 @@ def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_secon
         'statement_sha256': rendered['statement_sha256'], 'entry_pc': rendered['entry_pc'],
         'entry_definition': rendered['entry_definition'], 'successors': rendered['successors'],
         'terminal_scope': rendered.get('terminal_scope'), 'scope': rendered['scope'],
-        'setup_path': 'approved coqc primary fallback; no Pet start', 'scratch_command': command,
+        'setup_path': 'approved coqc primary fallback; no Pet start', 'scratch_command': done.args,
         'primary_tactic': 'try zesu_block.', 'primary_timeout': policy['wall_seconds'],
         'proof_budget': policy,
         'budget_policy': ('The compiler CPU limit applies to the whole module; no wall cutoff applies.'
@@ -264,8 +275,10 @@ if __name__ == '__main__':
     parser.add_argument('--build-dir', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--cpu-seconds', type=int, required=True)
+    parser.add_argument('--memory-gib', type=int, default=6)
+    parser.add_argument('--entry-pc', help='Required for an authorized module exception')
     args = parser.parse_args()
-    policy = budget_policy(cpu_seconds=args.cpu_seconds)
+    policy = budget_policy(cpu_seconds=args.cpu_seconds, memory_gib=args.memory_gib, entry_pc=args.entry_pc)
     args.out.mkdir(parents=True, exist_ok=True)
     retained = args.out / args.compile.name
     original_hash = digest(args.compile)

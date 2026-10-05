@@ -46,7 +46,18 @@ def checked_reuse(path, rendered):
 def worker(job):
     rendered, out, build, debts, *policy = job
     return coqc_primary.run_primary(rendered, out, build, inherited_debts=debts,
-                                    cpu_seconds=policy[0] if policy else None)
+                                    cpu_seconds=policy[0] if policy else None,
+                                    memory_gib=policy[1] if len(policy)>1 else 6)
+
+
+def module_limits(values):
+    result = {}
+    for value in values:
+        pc, cpu, memory = value.split(':')
+        if pc in result:
+            raise ValueError('A completion entry has duplicate limits')
+        result[pc] = coqc_primary.budget_policy(cpu_seconds=int(cpu), memory_gib=int(memory), entry_pc=pc)
+    return result
 
 
 def selection(baseline, fresh):
@@ -84,8 +95,12 @@ def main():
     parser.add_argument('--profiles', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--cpu-seconds', type=int, help='Explicit CPU completion mode; no wall cutoff')
+    parser.add_argument('--module-limit', action='append', default=[], metavar='PC:CPU:GiB')
     args = parser.parse_args()
-    coqc_primary.budget_policy(cpu_seconds=args.cpu_seconds)
+    default_policy = coqc_primary.budget_policy(cpu_seconds=args.cpu_seconds)
+    overrides = module_limits(args.module_limit)
+    def policy_for(pc):
+        return overrides.get(pc, default_policy)
     if not 1 <= args.jobs <= 6:
         raise ValueError('The driver permits one to six workers')
     root = Path.cwd()
@@ -161,7 +176,7 @@ def main():
             inputs[str(metadata)]=coqc_primary.digest(metadata)
     import_targets=native_import_targets([rendered['source'] for rendered,_,_,_ in jobs],root)
     planned={'measurement_root':args.measurement_root,'inputs':inputs,'additional_imports':args.additional_import,
-        'native_import_targets':import_targets,'proof_budget':coqc_primary.budget_policy(cpu_seconds=args.cpu_seconds),
+        'native_import_targets':import_targets,'proof_budget':default_policy,'module_limits':overrides,
         'native_jobs':native_job_count,'profile_jobs':len(jobs)-native_job_count,'sources':[]}
     for rendered,directory,_,debts in jobs:
         directory.mkdir(parents=True,exist_ok=True)
@@ -172,7 +187,10 @@ def main():
             native.write_text(rendered['source'])
         planned['sources'].append({'entry':rendered['entry_pc'],'source':str(native),
             'sha256':coqc_primary.digest(native),'statement_sha256':rendered['statement_sha256'],
-            'instrumented_sha256':hashlib.sha256(coqc_primary.instrument(rendered,cpu_seconds=args.cpu_seconds).encode()).hexdigest(),
+            'instrumented_sha256':hashlib.sha256(coqc_primary.instrument(rendered,
+                cpu_seconds=policy_for(rendered['entry_pc'])['cpu_seconds'],
+                memory_gib=policy_for(rendered['entry_pc'])['memory_kib']//(1024*1024)).encode()).hexdigest(),
+            'proof_budget':policy_for(rendered['entry_pc']),
             'inherited_debts':debts})
     input_path=out/'run-inputs.json'
     if input_path.exists() and json.loads(input_path.read_text())!=planned:
@@ -183,7 +201,8 @@ def main():
         print(json.dumps({'preflight':str(input_path),'sha256':coqc_primary.digest(input_path),'native_jobs':native_job_count,'profile_jobs':len(jobs)-native_job_count}))
         return
     started=time.monotonic();before=discovery.machine()
-    jobs = [(*job, args.cpu_seconds) for job in jobs]
+    jobs = [(*job, policy_for(job[0]['entry_pc'])['cpu_seconds'],
+                    policy_for(job[0]['entry_pc'])['memory_kib']//(1024*1024)) for job in jobs]
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         executed=list(pool.map(worker,jobs))
     for path,expected in inputs.items():
