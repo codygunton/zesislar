@@ -11,6 +11,7 @@ from collections import Counter
 import hashlib
 import json
 from pathlib import Path
+import entry_schema
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -21,6 +22,44 @@ def address(value):
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def path_label(path):
+    try:
+        return str(Path(path).resolve().relative_to(ROOT))
+    except ValueError:
+        return Path(path).name
+
+
+def entry_source_hashes(design, root=ROOT):
+    """Check supplied declaration sources without inventing source locations."""
+    hashes = {}
+    for block in design["blocks"]:
+        if not block.get("entry_definition"):
+            continue
+        fields = entry_schema.contract_fields(block)
+        entry_schema.verify_sources(fields, root)
+        sources = fields["source_hashes"]
+        for name, expected in sources.items():
+            if name in hashes and hashes[name] != expected:
+                raise ValueError("The declarations bind different versions of one source.")
+            hashes[name] = expected
+    return hashes
+
+
+def table_convention(design):
+    """Accept the published PC-free, universal-inside-iProp convention."""
+    convention = design.get("table_convention")
+    expected = {
+        "entry_type": "(Z * iProp Sigma)",
+        "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
+        "universal_binders": "Each row's binders, in their listed order",
+        "resource_application": "Apply resource_predicate to arguments in order",
+    }
+    if not isinstance(convention, dict) or any(convention.get(key) != value
+                                               for key, value in expected.items()):
+        raise ValueError("The table convention is absent or differs from the approved convention.")
+    return convention
 
 
 def signed(value, width):
@@ -196,10 +235,66 @@ def bound_inputs(recipe_path, cfg_path, design_path):
     if digest(inventory) != recipe["artifacts"]["inventory.json"] or digest(inventory) != design["hashes"]["inventory_sha256"]:
         raise ValueError("The design inventory hash differs from the bound inventory.")
     report = structure(cfg, design)
+    hashes = {path_label(path): digest(path) for path in (recipe_path, cfg_path, design_path, inventory)}
+    hashes.update(entry_source_hashes(design))
+    hashes[path_label(Path(__file__))] = digest(__file__)
     return {"schema_version": 1, "artifact_identity": identity,
             "label": "Structural wiring coverage; no machine contract proof",
-            "source_hashes": {str(path): digest(path) for path in (recipe_path, cfg_path, design_path)},
+            "source_hashes": hashes,
             **report}
+
+
+def render_table(design, report):
+    """Render resource wiring; the completion interface still requires bodies.
+
+    The caller must validate the approved table convention before rendering.
+    This function introduces no body proof and no execution premise.
+    """
+    table_convention(design)
+    blocks = sorted(design["blocks"], key=lambda block: address(block["entry_pc"]))
+    imports, states = set(), []
+    for block in blocks:
+        fields = entry_schema.contract_fields(block)
+        if fields is None:
+            raise ValueError("The block has no executable entry declaration.")
+        predicate, entry = fields["resource_predicate"], fields["entry_definition"]
+        imports.update((predicate.rsplit(".", 1)[0], entry.rsplit(".", 1)[0]))
+        binders = block["binders"]
+        typed = " ".join(f"({binder['name']} : {binder['type']})" for binder in binders)
+        arguments = " ".join(f"({argument})" for argument in block["arguments"])
+        application = f"{predicate} {arguments}".rstrip()
+        body = f"∀ {typed}, {application}" if typed else application
+        name = f"decodeItemState{address(block['entry_pc']):x}"
+        states.append((block, name, body))
+    lines = ["Require Import ZesuSsz.Automation.All.",
+             "Require Import isla.riscv64.riscv64.",
+             "From Coq Require Import List ZArith.",
+             "Require Import ZesuSsz.Automation.BlockTable."]
+    lines.extend(f"Require Import {module}." for module in sorted(imports))
+    lines += ["Import ListNotations.", "Open Scope Z_scope.", "",
+              "(* Generated resource wiring. No block-body proof is supplied. *)"]
+    for path, sha in sorted(report.get("source_hashes", {}).items()):
+        # The recipe binds generated output. Do not create a recipe/output hash cycle.
+        if Path(path).name != "build-recipe.json":
+            lines.append(f"(* Source: {path}; SHA-256: {sha}. *)")
+    lines += ["", "Section decode_item_block_table.",
+              "Context `{!islaG Sigma} `{!threadG}.", ""]
+    for block, name, body in states:
+        lines += [f"(* Entry: {block['entry_definition']}. Body proof: pending. *)",
+                  f"Definition {name} : iProp Sigma :=", f"  ({body})%I.", ""]
+    entries = ";\n   ".join(f"(0x{address(block['entry_pc']):x}, {name})"
+                              for block, name, _ in states)
+    lines += ["Definition decodeItemBlockTable : blockTable Sigma :=",
+              f"  [{entries}].", "", "(* This is the existing guarded interface, specialized to the table. *)",
+              "Definition decodeItemBlockTable_complete :=",
+              "  block_table_complete decodeItemBlockTable.", "",
+              "End decode_item_block_table.", ""]
+    edges = ";\n   ".join(f"({edge['source']}, {edge['target']})" for edge in report["edges"])
+    returns = ";\n   ".join(f"({row['block']}, {row['instruction']})" for row in report["returns"])
+    lines += ["Definition decodeItemBlockEdges : list (Z * Z) :=", f"  [{edges}].", "",
+              "Definition decodeItemBlockReturns : list (Z * Z) :=", f"  [{returns}].", "",
+              "Print Assumptions decodeItemBlockTable_complete.", ""]
+    return "\n".join(lines)
 
 
 def main():
@@ -208,8 +303,20 @@ def main():
     parser.add_argument("--cfg", type=Path, default=ROOT / "build/stock-zisk/cfg.json")
     parser.add_argument("--design", type=Path, default=ROOT / "ZesuSsz/Evidence/decode_item_block_design.json")
     parser.add_argument("--coverage", type=Path, required=True)
+    parser.add_argument("--output", type=Path,
+                        help="Write the Rocq table under the approved published convention.")
     args = parser.parse_args()
     report = bound_inputs(args.recipe, args.cfg, args.design)
+    if args.output:
+        design = json.loads(args.design.read_text())
+        source = render_table(design, report)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(source)
+        report["table_convention"] = table_convention(design)
+        report["generated_hashes"] = {path_label(args.output): digest(args.output)}
+        report["proof_slots"] = [{"pc": block["entry_pc"], "entry_definition": block["entry_definition"],
+                                  "resource_predicate": block["resource_predicate"], "proof_lemma": None}
+                                 for block in design["blocks"]]
     args.coverage.parent.mkdir(parents=True, exist_ok=True)
     args.coverage.write_text(json.dumps(report, indent=2) + "\n")
 
