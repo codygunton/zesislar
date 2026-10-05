@@ -272,9 +272,24 @@ Ltac zesu_low_mask_if_enabled :=
       end
   end.
 
+(* A widened strict comparison retains the source unsigned order. *)
+Ltac zesu_strict_signed_if_enabled :=
+  let _ := constr:(_ : ZesuStepStrictSigned) in
+  lazymatch goal with
+  | |- bv_signed (bv_zero_extend 128 ?left) <
+       bv_signed (bv_zero_extend 128 ?right) =>
+      lazymatch type of left with bv 64 => idtac end;
+      lazymatch type of right with bv 64 => idtac end;
+      match goal with
+      | Hlt : bv_unsigned left < bv_unsigned right |- _ =>
+          exact (zesu_unsigned_lt_signed_zero_extend_64_128 left right Hlt)
+      end
+  end.
+
 (* Library solvers also call these primitives without the project finisher. *)
 Ltac lia ::= zesu_bounded_arithmetic ltac:(Zify.zify; xlia zchecker).
-Ltac bv_solve ::= first [solve [zesu_low_mask_if_enabled] |
+Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
+  solve [zesu_low_mask_if_enabled] |
   zesu_bounded_arithmetic ltac:(
   bv_simplify_arith;
   bv_saturate_unsigned;
