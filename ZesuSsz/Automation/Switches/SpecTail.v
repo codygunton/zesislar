@@ -14,5 +14,5 @@ Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SpecPrefix.
 
 
-Global Instance zesu_switch_spec_tail_set : ZesuRuleSetV2 := I.
-Global Instance zesu_switch_spec_tail : ZesuStepSpecTail := I.
+#[export] Instance zesu_switch_spec_tail_set : ZesuRuleSetV2 := I.
+#[export] Instance zesu_switch_spec_tail : ZesuStepSpecTail := I.

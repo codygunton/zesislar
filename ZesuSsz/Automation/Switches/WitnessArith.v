@@ -13,5 +13,5 @@
 Require Import ZesuSsz.Automation.PureFacts.
 
 
-Global Instance zesu_switch_witness_arith_set : ZesuRuleSetV2 := I.
-Global Instance zesu_switch_witness_arith : ZesuStepWitnessArith := I.
+#[export] Instance zesu_switch_witness_arith_set : ZesuRuleSetV2 := I.
+#[export] Instance zesu_switch_witness_arith : ZesuStepWitnessArith := I.

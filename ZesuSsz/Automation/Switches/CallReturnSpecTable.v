@@ -3,6 +3,6 @@
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.CallReturnSpecTable.
 
-Global Instance zesu_switch_call_return_spec_table_set : ZesuRuleSetV2 := I.
-Global Instance zesu_switch_call_return_spec_table :
+#[export] Instance zesu_switch_call_return_spec_table_set : ZesuRuleSetV2 := I.
+#[export] Instance zesu_switch_call_return_spec_table :
   ZesuStepCallReturnSpecTable := I.

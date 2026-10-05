@@ -14,5 +14,5 @@ Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.SealedCoverage.
 
 
-Global Instance zesu_switch_sealed_open_set : ZesuRuleSetV2 := I.
-Global Instance zesu_switch_sealed_open : ZesuStepSealedOpen := I.
+#[export] Instance zesu_switch_sealed_open_set : ZesuRuleSetV2 := I.
+#[export] Instance zesu_switch_sealed_open : ZesuStepSealedOpen := I.
