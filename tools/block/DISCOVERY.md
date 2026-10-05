@@ -47,3 +47,28 @@ The current monitor counts each process once.
 The supplied entry data references seven existing resource sites.
 The other seventeen designed entries require executable declarations from the specification owner.
 The diagnostic sources use the existing predicates without adding register values or memory resources.
+
+The driver also reads executable entries directly from the design JSON.
+Omit `--entries` for this mode.
+Supply `--trace-import` and `--code-premises` as explicit probe inputs.
+The code-premise file contains the existing Rocq premise lines.
+These options do not change the design schema.
+
+The adapter consumes exactly these five contract fields:
+
+- `entry_definition` contains a fully qualified Rocq Definition name.
+- `binders` contains an ordered list of objects with `name` and `type`.
+- `arguments` contains an ordered list of Rocq expression strings.
+- `resource_predicate` contains a fully qualified Rocq Definition name.
+- `source_hashes` maps repository-relative paths to SHA-256 hex strings.
+
+The adapter retains the supplied argument order and expressions.
+The existing renderer receives the resource predicate with those arguments.
+The adapter adds the existing Iris context binders without assigning local values.
+The report binds the five fields and every supplied source file.
+Both Definition names must identify hashed source files.
+A missing field, invalid shape, missing Definition, or changed source hash produces a specification gap.
+The driver does not execute that entry.
+A description without these fields remains a specification gap.
+The legacy entry mode preserves the accepted seven-probe report.
+The adapter does not rerun that report.

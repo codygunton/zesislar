@@ -31,6 +31,16 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(gaps[0]['first_residual']['class'], 'spec')
         self.assertFalse(gaps[0]['executed'])
 
+    def test_invalid_schema_retains_its_specification_residual(self):
+        ready, gaps = discovery.prepare(self.design, self.cfg, {}, 16,
+                                        {16: "The executable entry source hash changed"})
+        self.assertFalse(ready)
+        self.assertEqual(len(gaps), 2)
+        self.assertEqual(gaps[0]['first_residual'],
+                         {'class': 'spec', 'reason': 'The executable entry source hash changed'})
+        self.assertFalse(gaps[0]['executed'])
+        self.assertEqual(gaps[0]['captures'], [])
+
     def test_wrong_executable_entry_is_a_contract_gap(self):
         self.state['entry'] = '0x30'
         ready, gaps = discovery.prepare(self.design, self.cfg, {16: self.state}, 16)

@@ -24,6 +24,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import chain_root
 import gen_block
+import entry_schema
 
 
 def digest(path):
@@ -36,7 +37,7 @@ def contract_gap(block, reason):
             "first_residual": {"class": "spec", "reason": reason}, "captures": []}
 
 
-def prepare(design, cfg, states, root):
+def prepare(design, cfg, states, root, entry_errors=None):
     blocks = chain_root.graph(cfg, root)
     declared = {gen_block.address(row["entry_pc"]): row for row in design["blocks"]}
     if len(declared) != len(design["blocks"]) or set(declared) != set(blocks):
@@ -50,7 +51,7 @@ def prepare(design, cfg, states, root):
             raise ValueError("The design names different block successors")
         state = states.get(pc)
         if state is None:
-            gaps.append(contract_gap(row, "The design has no executable entry declaration"))
+            gaps.append(contract_gap(row, (entry_errors or {}).get(pc, "The design has no executable entry declaration")))
         elif gen_block.address(state.get("entry", -1)) != pc:
             gaps.append(contract_gap(row, "The declaration names a different entry PC"))
         elif not state.get("entry_source") or not state.get("spatial"):
@@ -268,7 +269,9 @@ def machine():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--design', type=Path, required=True)
-    parser.add_argument('--entries', type=Path, required=True)
+    parser.add_argument('--entries', type=Path, help='Use the frozen legacy entry records instead of the design schema')
+    parser.add_argument('--trace-import', help='Use this trace module for design-schema entries')
+    parser.add_argument('--code-premises', type=Path, help='Read explicit code premises for design-schema entries')
     parser.add_argument('--cfg', type=Path, required=True)
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
@@ -280,6 +283,10 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.jobs <= 6 or not 1 <= args.seconds <= 300:
         parser.error('The driver permits one to six workers and at most 300 seconds per MCP call')
+    if not args.entries and (not args.trace_import or not args.code_premises):
+        parser.error('Design-schema entries require --trace-import and --code-premises')
+    if args.entries and (args.trace_import or args.code_premises):
+        parser.error('Legacy entries already contain their probe options')
     design = json.loads(args.design.read_text())
     manifest = json.loads(args.manifest.read_text())
     cfg = json.loads(args.cfg.read_text())
@@ -287,13 +294,29 @@ def main():
         raise ValueError('The CFG names a different artifact identity')
     if design['hashes']['selected_elf_sha256'] != manifest['elf_sha256']:
         raise ValueError('The design names a different selected ELF')
-    states = gen_block.read_states(args.entries)
+    entry_errors = {}
+    if args.entries:
+        states = gen_block.read_states(args.entries)
+    else:
+        states, entry_errors = entry_schema.design_states(
+            design, Path.cwd(), args.trace_import, args.code_premises.read_text().splitlines())
     ready, records = prepare(design, cfg, states,
-                             gen_block.address(design['entry_pc']))
+                             gen_block.address(design['entry_pc']), entry_errors)
     def source_name(path):
         resolved = Path(path).resolve()
         return str(resolved.relative_to(Path.cwd())) if resolved.is_relative_to(Path.cwd()) else str(resolved)
-    sources = {source_name(path): digest(path) for path in [args.design, args.entries, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__)]}
+    input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__)]
+    input_paths.append(args.entries if args.entries else args.code_premises)
+    sources = {source_name(path): digest(path) for path in input_paths}
+    for row in design['blocks']:
+        hashes = row.get('source_hashes', {})
+        for path in hashes if isinstance(hashes, dict) else []:
+            # Bind actual files even when the supplied hash causes a specification gap.
+            if not isinstance(path, str) or "\0" in path:
+                continue
+            candidate = Path(path)
+            if candidate.is_file() and candidate.resolve().is_relative_to(Path.cwd()):
+                sources[source_name(candidate)] = digest(candidate)
     for _, _, state in ready:
         source = Path(state['entry_source']['path'])
         if digest(source) != state['entry_source']['sha256']:
@@ -342,6 +365,9 @@ def main():
             'design_entry_sha256': hashlib.sha256(json.dumps(row, sort_keys=True).encode()).hexdigest(),
             'executable_source': state.get('entry_source') if state else None,
             'resource_predicates': state.get('spatial') if state else None}
+        if not args.entries:
+            record['entry_provenance']['design_contract'] = {
+                key: row[key] for key in sorted(entry_schema.FIELDS) if key in row}
     measurements = [capture['performance'] for row in records for capture in row['captures'] if 'performance' in capture]
     report = {'schema': 1, 'label': 'Phase 1 WP5 designed-entry discovery; no proof completion claim',
               'capture_only': True, 'artifact_identity': manifest['artifact_identity'],
