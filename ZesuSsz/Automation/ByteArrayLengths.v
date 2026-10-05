@@ -1,0 +1,24 @@
+Require Import isla.riscv64.riscv64.
+
+Class ZesuStepArrayRegionBounds : Prop :=
+  zesu_step_array_region_bounds : True.
+
+(* Preserve ownership while reducing the extent of an updated byte array. *)
+Ltac zesu_byte_array_bound_goal_if_enabled :=
+  let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
+  lazymatch goal with
+  | |- context [length ?values] =>
+      let valuesType := type of values in
+      constr_eq valuesType (list (bv 8))
+  end.
+
+Ltac zesu_byte_array_lengths_if_enabled :=
+  zesu_byte_array_bound_goal_if_enabled;
+  repeat match goal with
+  | |- context [?base + ?offset - ?base] =>
+      replace (base + offset - base) with offset by lia
+  | |- context [?base - ?base] =>
+      replace (base - base) with 0 by lia
+  end;
+  repeat progress (rewrite ?length_app ?length_take ?length_drop; cbn [length]).
+
