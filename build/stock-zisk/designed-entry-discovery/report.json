@@ -1,0 +1,1412 @@
+{
+  "schema": 1,
+  "label": "Phase 1 WP5 designed-entry discovery; no proof completion claim",
+  "capture_only": true,
+  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "inputs": {
+    "ZesuSsz/Evidence/decode_item_block_design.json": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+    "build/stock-zisk/designed-entry-discovery/entries.json": "043a0972645873fe2a81522aa624cf406934c4bc4636a7c189f6d6def55a6631",
+    "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+    "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+    "tools/block/discovery.py": "4403bc9306d731b06a935ad80bff5ee0eb0efd63ff39bdfa70461b436d88038e",
+    "tools/block/chain_root.py": "554ff4a1527c872a8e1288eb323afa873a4f420139c40fffe7d619deba9a5771",
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355",
+    "build/stock-zisk/designed-entry-discovery/attempts/measured-report.json": "bb92a0fbb9b37598c000b54c12c45b6b39c7ece418df0f0a95647a4de3e45f2d"
+  },
+  "block_count": 24,
+  "workers": 6,
+  "new_block_runs": 0,
+  "reused_block_runs": 7,
+  "elapsed_seconds": 0.0006170989945530891,
+  "resumed_capture_run_seconds": 9.393115974962711,
+  "peak_worker_mib_upper_bound": 1446.8984375,
+  "peak_pet_mib": 1276.0,
+  "machine_before": {
+    "cpu_count": 64,
+    "load": [
+      1.94482421875,
+      2.3466796875,
+      3.3720703125
+    ],
+    "memory": {
+      "MemAvailable": "131058248 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "18184 kB"
+    },
+    "cpu_ticks": "cpu  97537065 377445036 38255269 4875401924 2518937 4734184 2231517 0 0 0"
+  },
+  "machine_after": {
+    "cpu_count": 64,
+    "load": [
+      1.94482421875,
+      2.3466796875,
+      3.3720703125
+    ],
+    "memory": {
+      "MemAvailable": "131058248 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "18184 kB"
+    },
+    "cpu_ticks": "cpu  97537065 377445036 38255269 4875401934 2518937 4734184 2231517 0 0 0"
+  },
+  "classes": {
+    "contract-gap": 17,
+    "instruction-lookup-stall": 7
+  },
+  "helper_binding": {
+    "commit": "1d8125fa5309eb5280cd84ac6a534fba849eec3e",
+    "previous_sha256": "13bbf280b4a32f0787cf816e8b01bffd0f7a8a0ff7e198b34de0659a605c7674",
+    "source_comparison": "All seven complete generated source hashes match the recorded captures; no proof rerun"
+  },
+  "verification": {
+    "check_fast": {
+      "status": "passed",
+      "elapsed_seconds": 1667,
+      "workers": 6,
+      "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261004-161333-child-c-discovery-check-fast-tests.log",
+      "helper_sha256": "13bbf280b4a32f0787cf816e8b01bffd0f7a8a0ff7e198b34de0659a605c7674"
+    },
+    "focused_discovery_tests": 10,
+    "focused_dependency_tests": 31,
+    "closed_blocks": 0,
+    "reached_blocks": 0,
+    "dependency_check_fast": {
+      "status": "passed",
+      "workers": 6,
+      "helper_sha256": "554ff4a1527c872a8e1288eb323afa873a4f420139c40fffe7d619deba9a5771",
+      "commit": "1d8125fa5309eb5280cd84ac6a534fba849eec3e",
+      "reported_by": "Child B"
+    }
+  },
+  "archive_label": "The complete original report and captures remain in the content-hash archive",
+  "original_report": {
+    "sha256": "33be700f31fa97145a7e52d1ccc2be518805e4f7f9124126b52b721cf6ca9d91",
+    "archive_path": "/home/cody/zesislar-archive/sha256/33/33be700f31fa97145a7e52d1ccc2be518805e4f7f9124126b52b721cf6ca9d91",
+    "bytes": 364559
+  },
+  "blocks": [
+    {
+      "entry": "0x800d6960",
+      "entry_class": "entry_prologue",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "returnAddress",
+            "Z"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "BLK_STOP_800d6ae0",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6974",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362612 BLK_STOP_800d6974)",
+          "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6974": "Type",
+          "BLK_STOP_800d6ae0": "Type",
+          "args": "Type",
+          "returnAddress": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6960 returnAddress args -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362592 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6960 returnAddress args -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362592) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6960 returnAddress args -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362592)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6960 returnAddress args -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nreturnAddress : Z\nargs : DecodeItemArgs\nBLK_STOP_800d6ae0 : (iProp Sigma)\nBLK_STOP_800d6974 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362612 BLK_STOP_800d6974)\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "root"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "c34cae05c0f6f4c5d8a4575c2d1b54899e3647b8c8e1a5f00f5f50cc3c385778",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "declaration": "decodeItemEntryResources",
+          "sha256": "b4367948f893fee8d17c8426ab5d7ea0ad62693f285ca8fb5c65b6bf5d713e48"
+        },
+        "resource_predicates": [
+          "decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6960",
+          "exit": "0x800d6ae0",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 2.236,
+            "peak_mib": 902.32421875
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "source_sha256": "c126c2be89fdbe7268956c8eb9c6b70dd9a08675c4249a786f0d0669cdd145f9",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "rss_peak_is_upper_bound": true,
+          "measurement_note": "The initial monitor can count Pet twice; its recorded RSS is a conservative bound",
+          "pet_peak_mib": 670.0,
+          "full_capture_in_original_report": true
+        },
+        {
+          "entry": "0x800d6960",
+          "exit": "0x800d6974",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 2.061,
+            "peak_mib": 1443.83984375
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "source_sha256": "c9d5481c1b1b8083775cdc70702a99e20edf5a9831c8aa1c506deb9447dbd374",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "rss_peak_is_upper_bound": true,
+          "measurement_note": "The initial monitor can count Pet twice; its recorded RSS is a conservative bound",
+          "pet_peak_mib": 1256.0,
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6974",
+      "entry_class": "prefix_load",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "b896609d10dd3245a57c0ec815eca02280825b907bdf895a62d766973f1ef16a",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d697c",
+      "entry_class": "literal_byte_write",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "74ecbc21e36e01e344ed71cabcf53ffd5e87e2de3330026e1c1ff4d7673d684a",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d698c",
+      "entry_class": "literal_or_short_string_return",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "join",
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "0e15549a75a073fec5b96fa8636307d8e0fc89f385d27b142aa79da7b6e18244",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d69a4",
+      "entry_class": "high_prefix_dispatch",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "e470135a71bdc6c46aa9e4c80ef9ddf1a9dc3cdad6332c2e6f26bbbfdd38eec1",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d69b0",
+      "entry_class": "empty_string_return",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "4fed0f82b86d2a43ea1c2fea998d8bfca1be5e3518604cdd9a7d2aa8a9e8d1a7",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d69d8",
+      "entry_class": "short_string_class_test",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "dfa7967ea1396b03fb77a1ec97ecc35ea1db2fcb373f5a0cd977bd304036643c",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d69e0",
+      "entry_class": "short_string_length_test",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "e5e59997f571dc1eb26861284c2550f714b89e47fd7e76185df1f979c08cc487",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d69e8",
+      "entry_class": "short_string_write",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "16ea956ef85b52521a08055a115875f7849656aaf1c897cb23c5963111906942",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6a00",
+      "entry_class": "list_or_long_string_dispatch",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "5742d4d3972f6de447366b194abc6224459a07b3bb6145e437415d230b45217b",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6a08",
+      "entry_class": "long_string_width_test",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "622e393814d38dce8877c91ef860738af984cae69850dd2ce05e6f55f316e084",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6a14",
+      "entry_class": "long_string_fold_initialization",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "n",
+            "Z"
+          ],
+          [
+            "payloadStart",
+            "Z"
+          ],
+          [
+            "lengthBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "frameBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "oldAcc",
+            "(bv 64)"
+          ],
+          [
+            "oldCursor",
+            "(bv 64)"
+          ],
+          [
+            "loaded",
+            "(bv 64)"
+          ],
+          [
+            "BLK_STOP_800d6a24",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362788 BLK_STOP_800d6a24)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6a24": "Type",
+          "loaded": "Type",
+          "oldCursor": "Type",
+          "oldAcc": "Type",
+          "frameBytes": "Type",
+          "lengthBytes": "Type",
+          "payloadStart": "Type",
+          "n": "Type",
+          "args": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362772 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362772) -\u2217 WPasm t)%I\n      | IKInstr None =>\n          (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362772)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6a24 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6a24 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL oldCursor : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT oldCursor : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL oldAcc : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT oldAcc : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362788 BLK_STOP_800d6a24) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362772 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362772) -\u2217 WPasm t)%I\n      | IKInstr None =>\n          (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362772)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nargs : DecodeItemArgs\nn : Z\npayloadStart : Z\nlengthBytes : (list (bv 8))\nframeBytes : (list (bv 8))\noldAcc : (bv 64)\noldCursor : (bv 64)\nloaded : (bv 64)\nBLK_STOP_800d6a24 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362788 BLK_STOP_800d6a24)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "bb09085fd71370f0a330e81e1e2c1188ba3a524c619a33afe6db2c2f9ddec7cd",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
+          "declaration": "decodeItemFoldInitResources",
+          "sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+        },
+        "resource_predicates": [
+          "decodeItemFoldInitResources args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6a14",
+          "exit": "0x800d6a24",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.775,
+            "peak_mib": 896.01953125
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "pet_peak_mib": 729.0,
+          "rss_uses_unique_processes": true,
+          "source_sha256": "d4fdc3ee21dfc96fb0dbd9f1e9dffd2e2750a583f682228723d86c8143733299",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a24",
+      "entry_class": "long_string_fold_header",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "n",
+            "Z"
+          ],
+          [
+            "i",
+            "Z"
+          ],
+          [
+            "payloadStart",
+            "Z"
+          ],
+          [
+            "lengthBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "frameBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "loaded",
+            "(bv 64)"
+          ],
+          [
+            "BLK_STOP_800d6a24",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6a38",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362808 BLK_STOP_800d6a38)",
+          "(instr_pre 2148362788 BLK_STOP_800d6a24)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6a38": "Type",
+          "BLK_STOP_800d6a24": "Type",
+          "loaded": "Type",
+          "frameBytes": "Type",
+          "lengthBytes": "Type",
+          "payloadStart": "Type",
+          "i": "Type",
+          "n": "Type",
+          "args": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362788 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6a24 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362788) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6a24 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362788)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6a24 args n i payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6a38 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6a38 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6a24 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6a24 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL i : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT i : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362808 BLK_STOP_800d6a38) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362788 BLK_STOP_800d6a24) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362788 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6a24 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362788) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6a24 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362788)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6a24 args n i payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nargs : DecodeItemArgs\nn : Z\ni : Z\npayloadStart : Z\nlengthBytes : (list (bv 8))\nframeBytes : (list (bv 8))\nloaded : (bv 64)\nBLK_STOP_800d6a24 : (iProp Sigma)\nBLK_STOP_800d6a38 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362808 BLK_STOP_800d6a38)\n_ : (instr_pre 2148362788 BLK_STOP_800d6a24)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "loop-header",
+        "join"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "968a31fa8380f69b87bfca831f51f9c2d6fbd6485279f3698b136b76c827f3b2",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
+          "declaration": "decodeItemStringFoldAt",
+          "sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3"
+        },
+        "resource_predicates": [
+          "decodeItemStringFoldAt 0x800d6a24 args n i payloadStart lengthBytes frameBytes loaded"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6a24",
+          "exit": "0x800d6a24",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.793,
+            "peak_mib": 899.97265625
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "pet_peak_mib": 733.0,
+          "rss_uses_unique_processes": true,
+          "source_sha256": "9766d6a82815dd76c5c36168a120b430b827b1d1429c6b6bb328fd7c1f1079d7",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "full_capture_in_original_report": true
+        },
+        {
+          "entry": "0x800d6a24",
+          "exit": "0x800d6a38",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.665,
+            "peak_mib": 1445.34375
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "pet_peak_mib": 1201.0,
+          "rss_uses_unique_processes": true,
+          "source_sha256": "b5eee11099480cabfe094eeb583dbf7e72363d47de0c72a735da09fa921c66e5",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a38",
+      "entry_class": "long_string_length_check",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "n",
+            "Z"
+          ],
+          [
+            "payloadStart",
+            "Z"
+          ],
+          [
+            "lengthBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "frameBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "loaded",
+            "(bv 64)"
+          ],
+          [
+            "BLK_STOP_800d6ae0",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6a40",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362816 BLK_STOP_800d6a40)",
+          "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6a40": "Type",
+          "BLK_STOP_800d6ae0": "Type",
+          "loaded": "Type",
+          "frameBytes": "Type",
+          "lengthBytes": "Type",
+          "payloadStart": "Type",
+          "n": "Type",
+          "args": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362808 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6a38 args n payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362808) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6a38 args n payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362808)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6a38 args n payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6a40 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6a40 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362816 BLK_STOP_800d6a40) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362808 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6a38 args n payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362808) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6a38 args n payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362808)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6a38 args n payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nargs : DecodeItemArgs\nn : Z\npayloadStart : Z\nlengthBytes : (list (bv 8))\nframeBytes : (list (bv 8))\nloaded : (bv 64)\nBLK_STOP_800d6ae0 : (iProp Sigma)\nBLK_STOP_800d6a40 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362816 BLK_STOP_800d6a40)\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "488dfa7583465c12c7138713aff603d881288c3f07408c1523ab704c01aa059a",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+          "declaration": "decodeItemByteFoldResources",
+          "sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355"
+        },
+        "resource_predicates": [
+          "decodeItemByteFoldResources args false n n payloadStart lengthBytes frameBytes loaded"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6a38",
+          "exit": "0x800d6ae0",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 2.261,
+            "peak_mib": 901.6171875
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "source_sha256": "afacdf214049d9f67053d2ab8651cadf0569ed5e476317330e38bd10c723828c",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "rss_peak_is_upper_bound": true,
+          "measurement_note": "The initial monitor can count Pet twice; its recorded RSS is a conservative bound",
+          "pet_peak_mib": 738.0,
+          "full_capture_in_original_report": true
+        },
+        {
+          "entry": "0x800d6a38",
+          "exit": "0x800d6a40",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 2.066,
+            "peak_mib": 1444.09765625
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "source_sha256": "f4959caf1dfef673cd734d819c2bff807520a0d371cf4b2f6c6fce87bcea22d0",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "rss_peak_is_upper_bound": true,
+          "measurement_note": "The initial monitor can count Pet twice; its recorded RSS is a conservative bound",
+          "pet_peak_mib": 1257.0,
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6a40",
+      "entry_class": "long_string_return",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "0ff7c929d395a95af3a3f602ebf891f70c3e5e7e38b605eb5026382ff3fdad49",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6a64",
+      "entry_class": "short_or_long_list_dispatch",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "f6b2a5bab0863fc42cda1eea30df11de249abc243a55cd412ee8b4aec05e991e",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6a6c",
+      "entry_class": "short_list_length_test",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "eb461b92b81afcbbca2267fb3b713201ce1d92bac4cf327bf9c2e55d6884a1c4",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6a78",
+      "entry_class": "short_list_return",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "9329730f8782498e4f567aa7203d8b649c29f140a19c04dfd4b78d167b5dcdad",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6aa8",
+      "entry_class": "long_list_width_test",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "b89e5ea95643d7f7fc4077fb11ae310b1e5661e9ba429e6510738461af52bc4a",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6ab4",
+      "entry_class": "long_list_fold_initialization",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "n",
+            "Z"
+          ],
+          [
+            "payloadStart",
+            "Z"
+          ],
+          [
+            "lengthBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "frameBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "oldAcc",
+            "(bv 64)"
+          ],
+          [
+            "oldCursor",
+            "(bv 64)"
+          ],
+          [
+            "loaded",
+            "(bv 64)"
+          ],
+          [
+            "BLK_STOP_800d6ac4",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362948 BLK_STOP_800d6ac4)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6ac4": "Type",
+          "loaded": "Type",
+          "oldCursor": "Type",
+          "oldAcc": "Type",
+          "frameBytes": "Type",
+          "lengthBytes": "Type",
+          "payloadStart": "Type",
+          "n": "Type",
+          "args": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362932 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362932) -\u2217 WPasm t)%I\n      | IKInstr None =>\n          (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362932)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ac4 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ac4 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL oldCursor : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT oldCursor : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL oldAcc : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT oldAcc : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362948 BLK_STOP_800d6ac4) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362932 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362932) -\u2217 WPasm t)%I\n      | IKInstr None =>\n          (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362932)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nargs : DecodeItemArgs\nn : Z\npayloadStart : Z\nlengthBytes : (list (bv 8))\nframeBytes : (list (bv 8))\noldAcc : (bv 64)\noldCursor : (bv 64)\nloaded : (bv 64)\nBLK_STOP_800d6ac4 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362948 BLK_STOP_800d6ac4)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "f49dd0dc560ca6e8efafa840bf35f084151f8c72d84b004a21388fd32486a7ee",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
+          "declaration": "decodeItemFoldInitResources",
+          "sha256": "3e86d45004fafe935b02cfa02c9ea1fd0e80c313df7b38775b252bc67c44b6ec"
+        },
+        "resource_predicates": [
+          "decodeItemFoldInitResources args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6ab4",
+          "exit": "0x800d6ac4",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.733,
+            "peak_mib": 898.296875
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "pet_peak_mib": 731.0,
+          "rss_uses_unique_processes": true,
+          "source_sha256": "852c284fe1ab52ec3844cf47bc1fe9143fca5b3c718f6776226a4e9c3937bac8",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ac4",
+      "entry_class": "long_list_fold_header",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "n",
+            "Z"
+          ],
+          [
+            "i",
+            "Z"
+          ],
+          [
+            "payloadStart",
+            "Z"
+          ],
+          [
+            "lengthBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "frameBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "loaded",
+            "(bv 64)"
+          ],
+          [
+            "BLK_STOP_800d6ac4",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6ad8",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362968 BLK_STOP_800d6ad8)",
+          "(instr_pre 2148362948 BLK_STOP_800d6ac4)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6ad8": "Type",
+          "BLK_STOP_800d6ac4": "Type",
+          "loaded": "Type",
+          "frameBytes": "Type",
+          "lengthBytes": "Type",
+          "payloadStart": "Type",
+          "i": "Type",
+          "n": "Type",
+          "args": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362948 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6ac4 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362948) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6ac4 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362948)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6ac4 args n i payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ad8 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ad8 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ac4 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ac4 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL i : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT i : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362968 BLK_STOP_800d6ad8) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362948 BLK_STOP_800d6ac4) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362948 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6ac4 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362948) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6ac4 args n i payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362948)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6ac4 args n i payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nargs : DecodeItemArgs\nn : Z\ni : Z\npayloadStart : Z\nlengthBytes : (list (bv 8))\nframeBytes : (list (bv 8))\nloaded : (bv 64)\nBLK_STOP_800d6ac4 : (iProp Sigma)\nBLK_STOP_800d6ad8 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362968 BLK_STOP_800d6ad8)\n_ : (instr_pre 2148362948 BLK_STOP_800d6ac4)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "loop-header",
+        "join"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "ecdd723f39f5e7a69d2f8b302342cda00a88ce0428c8966453e03a80a9d4c599",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
+          "declaration": "decodeItemListFoldAt",
+          "sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3"
+        },
+        "resource_predicates": [
+          "decodeItemListFoldAt 0x800d6ac4 args n i payloadStart lengthBytes frameBytes loaded"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6ac4",
+          "exit": "0x800d6ac4",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.812,
+            "peak_mib": 907.40625
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "pet_peak_mib": 729.0,
+          "rss_uses_unique_processes": true,
+          "source_sha256": "a8b3e9d39fc6ad2ec676c5a203d9c8c98d443e6306817b7140b3dbcfadddac9f",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "full_capture_in_original_report": true
+        },
+        {
+          "entry": "0x800d6ac4",
+          "exit": "0x800d6ad8",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.661,
+            "peak_mib": 1446.8984375
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "pet_peak_mib": 1207.0,
+          "rss_uses_unique_processes": true,
+          "source_sha256": "f87169f7da6ed84f5cb29198ed1c7ee21f80841fde40d663b70dda357cf89c70",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ad8",
+      "entry_class": "long_list_length_check",
+      "outcomes": [
+        "instruction-lookup-stall"
+      ],
+      "executed": true,
+      "first_residual": {
+        "phase": "active",
+        "coq": [
+          [
+            "Sigma",
+            "gFunctors"
+          ],
+          [
+            "islaG0",
+            "(islaG Sigma)"
+          ],
+          [
+            "H",
+            "threadG"
+          ],
+          [
+            "args",
+            "DecodeItemArgs"
+          ],
+          [
+            "n",
+            "Z"
+          ],
+          [
+            "payloadStart",
+            "Z"
+          ],
+          [
+            "lengthBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "frameBytes",
+            "(list (bv 8))"
+          ],
+          [
+            "loaded",
+            "(bv 64)"
+          ],
+          [
+            "BLK_STOP_800d6b08",
+            "(iProp Sigma)"
+          ],
+          [
+            "BLK_STOP_800d6ae0",
+            "(iProp Sigma)"
+          ]
+        ],
+        "persistent": [],
+        "spatial": [
+          "(instr_pre 2148362976 BLK_STOP_800d6ae0)",
+          "(instr_pre 2148363016 BLK_STOP_800d6b08)",
+          "decodeItemSelectedCode"
+        ],
+        "local_sorts": {
+          "BLK_STOP_800d6ae0": "Type",
+          "BLK_STOP_800d6b08": "Type",
+          "loaded": "Type",
+          "frameBytes": "Type",
+          "lengthBytes": "Type",
+          "payloadStart": "Type",
+          "n": "Type",
+          "args": "Type",
+          "H": "Type",
+          "islaG0": "Type",
+          "Sigma": "Type"
+        },
+        "local_values": {},
+        "conclusion": "(find_in_context (FindInstrKind 2148362968 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6ad8 args n payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362968) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6ad8 args n payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362968)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6ad8 args n payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end))",
+        "environment": "iris",
+        "memory_word_widths": {},
+        "trace_value_widths": {},
+        "address_widths": {},
+        "raw_goal": "\"\nCHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL BLK_STOP_800d6b08 : (iProp Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT BLK_STOP_800d6b08 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL loaded : (bv 64) CHAIN-FIELD-END\nCHAIN-GOAL-SORT loaded : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL frameBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT frameBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL lengthBytes : (list (bv 8)) CHAIN-FIELD-END\nCHAIN-GOAL-SORT lengthBytes : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL payloadStart : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT payloadStart : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL n : Z CHAIN-FIELD-END\nCHAIN-GOAL-SORT n : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END\nCHAIN-GOAL-SORT args : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END\nCHAIN-GOAL-SORT H : Set CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END\nCHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END\nCHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END\nCHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END\nCHAIN-GOAL-ENV iris CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" (instr_pre 2148363016 BLK_STOP_800d6b08) CHAIN-FIELD-END\n\"CHAIN-GOAL-SPATIAL\" decodeItemSelectedCode CHAIN-FIELD-END\nCHAIN-GOAL-CONCLUSION\n(find_in_context (FindInstrKind 2148362968 false)\n   (\u03bb ik : instr_kind,\n      match ik with\n      | IKInstr (Some t) => (DesignedEntry_800d6ad8 args n payloadStart lengthBytes frameBytes loaded -\u2217 \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362968) -\u2217 WPasm t)%I\n      | IKInstr None => (DesignedEntry_800d6ad8 args n payloadStart lengthBytes frameBytes loaded -\u2217 \u2203 P\u03bas : spec, spec_trace P\u03bas \u2217 \u231cscons (SInstrTrap (Z_to_bv 64 2148362968)) snil \u2286 P\u03bas\u231d \u2217 True)%I\n      | IKPre l' Q => (\u231cimplb l' false\u231d \u2217 (DesignedEntry_800d6ad8 args n payloadStart lengthBytes frameBytes loaded -\u2217 Q))%I\n      end)) CHAIN-FIELD-END\n",
+        "context": "Sigma : gFunctors\nislaG0 : (islaG Sigma)\nH : threadG\nargs : DecodeItemArgs\nn : Z\npayloadStart : Z\nlengthBytes : (list (bv 8))\nframeBytes : (list (bv 8))\nloaded : (bv 64)\nBLK_STOP_800d6b08 : (iProp Sigma)\nBLK_STOP_800d6ae0 : (iProp Sigma)\n============================\n--------------------------------------\u25a1\n_ : (instr_pre 2148362976 BLK_STOP_800d6ae0)\n_ : (instr_pre 2148363016 BLK_STOP_800d6b08)\n_ : decodeItemSelectedCode"
+      },
+      "setup_error": null,
+      "reused_capture": true,
+      "entry_roles": [
+        "block"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "8f78fb4b6242dc3eb6302dbf2bd3ba2f4203df4a3afed55115d50bc19de5cd0d",
+        "executable_source": {
+          "path": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+          "declaration": "decodeItemByteFoldResources",
+          "sha256": "40b36a837312b0379c64c5d53e7058f9312ecc56bd4d983fb703d05b91e35355"
+        },
+        "resource_predicates": [
+          "decodeItemByteFoldResources args true n n payloadStart lengthBytes frameBytes loaded"
+        ]
+      },
+      "captures": [
+        {
+          "entry": "0x800d6ad8",
+          "exit": "0x800d6b08",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.847,
+            "peak_mib": 904.77734375
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "source_sha256": "9c243dc88b51a3c46e89b4dd03677028197af045545c88898c071ed90b27c89b",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "rss_peak_is_upper_bound": true,
+          "measurement_note": "The initial monitor can count Pet twice; its recorded RSS is a conservative bound",
+          "pet_peak_mib": 725.0,
+          "full_capture_in_original_report": true
+        },
+        {
+          "entry": "0x800d6ad8",
+          "exit": "0x800d6ae0",
+          "residual_pcs": [],
+          "residual_location": "unknown",
+          "performance": {
+            "rc": 0,
+            "wall_seconds": 1.859,
+            "peak_mib": 1444.62109375
+          },
+          "outcome": "stalled",
+          "proof_phase_entered": true,
+          "source_sha256": "be53edfec66313f47acd34dc912aecce36aaf2cf19d814be77506d1a530f7193",
+          "measurement_scope": "worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements",
+          "rss_peak_is_upper_bound": true,
+          "measurement_note": "The initial monitor can count Pet twice; its recorded RSS is a conservative bound",
+          "pet_peak_mib": 1276.0,
+          "full_capture_in_original_report": true
+        }
+      ]
+    },
+    {
+      "entry": "0x800d6ae0",
+      "entry_class": "error_return",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "join",
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "1c9da4a75020a343926582b37a2ef56b7595fe875c72c1f87b0cc0d7c2759af0",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    },
+    {
+      "entry": "0x800d6b08",
+      "entry_class": "long_list_return",
+      "outcomes": [
+        "contract-gap"
+      ],
+      "executed": false,
+      "first_residual": {
+        "class": "spec",
+        "reason": "The design has no executable entry declaration"
+      },
+      "entry_roles": [
+        "return"
+      ],
+      "entry_provenance": {
+        "design_sha256": "dcdd9c8f7b448b95af231cee38acc8d179a3335ccb44d2e8cf59e6f5f4294ddd",
+        "design_entry_sha256": "da60caed5b691442bc274f99c9ec3dd5af47bd75ab8208e7fa6513f19e2410fa",
+        "executable_source": null,
+        "resource_predicates": null
+      },
+      "captures": []
+    }
+  ]
+}
