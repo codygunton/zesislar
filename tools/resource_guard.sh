@@ -825,7 +825,7 @@ aggregate_slice() {
 }
 
 run_scope() {
-  local name=$1 cpu=300; shift
+  local name=$1 cpu=${ZESU_PROOF_CPU_LIMIT:-1200}; shift
   if [ "${1:-}" = "--cpu" ]; then
     cpu=${2:-}; shift 2
     [[ "$cpu" =~ ^[1-9][0-9]*$ ]] || { echo "resource guard: invalid CPU limit" >&2; return 2; }
@@ -995,7 +995,7 @@ case "${1:-report}" in
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
-    ulimit -t "${ZESU_SCOPE_CPU:-300}"
+    ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}"
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;
