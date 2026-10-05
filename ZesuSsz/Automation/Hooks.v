@@ -478,6 +478,61 @@ Ltac zesu_tuple_witness T :=
 Class ZesuStepRecordWitness : Prop :=
   zesu_step_record_witness : True.
 
+Class ZesuStepListWitness : Prop :=
+  zesu_step_list_witness : True.
+Class ZesuStepTupleWitness : Prop :=
+  zesu_step_tuple_witness : True.
+
+(* Only the requested list shape permits extraction of owned pure facts. *)
+Ltac zesu_list_cons_witness_if_enabled :=
+  let _ := constr:(_ : ZesuStepListWitness) in
+  lazymatch goal with
+  | |- exists (head : ?A) (tail : list ?A),
+      ?values = head :: tail /\ length tail = ?count =>
+      eapply zesu_list_cons_witness;
+      first [assumption |
+        repeat first [progress zesu_split_folded_pure |
+          match goal with H : _ /\ _ |- _ => destruct H end];
+        assumption]
+  end.
+
+Ltac zesu_primitive_tuple_witness T :=
+  let guard := constr:(ltac:(assert_fails (has_evar T); exact I) : True) in
+  lazymatch T with
+  | li_prod ?A ?B =>
+      let allowed := lazymatch A with
+        | Z => constr:(true) | nat => constr:(true) | N => constr:(true)
+        | bool => constr:(true) | list _ => constr:(true) | bv _ => constr:(true)
+      end in
+      let head := open_constr:(_ : A) in
+      let tail := zesu_primitive_tuple_witness B in
+      constr:(li_pair head tail)
+  | unit => constr:(tt)
+  end.
+
+(* Resource matching must determine these data evars before Qed can close. *)
+Ltac zesu_primitive_tuple_if_enabled :=
+  let _ := constr:(_ : ZesuStepTupleWitness) in
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
+      let T := constr:(li_prod A B) in
+      assert_fails (has_evar T);
+      let witness := zesu_primitive_tuple_witness T in
+      notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+  end.
+
+(* Tuple guards use the owned widened comparison without adding a premise. *)
+Ltac zesu_primitive_tuple_guard_if_enabled :=
+  let _ := constr:(_ : ZesuStepTupleWitness) in
+  lazymatch goal with
+  | |- Z.lt _ _ => idtac | |- Z.le _ _ => idtac | |- Z.ge _ _ => idtac
+  end;
+  solve [progress (repeat match goal with
+    | H : context [bv_signed (bv_zero_extend 128 ?value)] |- _ =>
+        rewrite (zesu_signed_zero_extend_64_128 value) in H
+    end); first [assumption | bv_solve]].
+
 Ltac zesu_record_constructor_witness T :=
   let guard := constr:(ltac:(
     assert_fails (has_evar T);
@@ -944,6 +999,7 @@ Ltac zesu_liAStep :=
   | liAOther
   | liUnfoldEarly
   | zesu_record_witness_if_enabled
+  | zesu_primitive_tuple_if_enabled
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
   | liStep

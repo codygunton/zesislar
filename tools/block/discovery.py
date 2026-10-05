@@ -215,6 +215,31 @@ def reuse_native_capture(row, block, state, previous, options):
     return result
 
 
+async def fallback_designed_block(row, state, rendered, options, base, mcp_attempt, started):
+    """Use coqc only after a failed Pet entry, with the same native statement."""
+    import coqc_primary
+    evidence = await asyncio.to_thread(coqc_primary.run_primary, rendered,
+        base/'coqc-fallback', options['build_dir'],
+        inherited_debts=chain_root.inherited_debts(state), seconds=options['seconds'])
+    evidence['failed_mcp_setup'] = mcp_attempt
+    evidence['performance'] = {'wall_seconds': time.monotonic()-started,
+        'peak_mib': (evidence.get('compiler') or {}).get('peak_rss_kib', 0)/1024,
+        'scope': 'Owned coqc compiler; failed-start Pet memory remains unknown'}
+    chain_root.atomic_json(base/'fallback-evidence.json', evidence)
+    capture = {'outcome': evidence['outcome'],
+        'proof_phase_entered': evidence['primary_tactic_entered'],
+        'pending_goals': evidence.get('active_goals') or [], 'shelved_goals': [],
+        'inherited_debts': evidence['inherited_debts'],
+        'performance': evidence['performance'],
+        'native_evidence': {'path': str(base/'fallback-evidence.json'),
+            'sha256': digest(base/'fallback-evidence.json')},
+        'block_closed': evidence['block_closed'], 'contract_closed': False,
+        'source_sha256': evidence['source_sha256']}
+    return {**summarize(row, [capture]), 'block_closed': evidence['block_closed'],
+        'successor_policy': 'Actual designed entries; root parameters remain fixed',
+        'secondary_diagnostics': []}
+
+
 async def probe_designed_block(row, block, state, options):
     """Run one native boundary proof through an owned guarded MCP session."""
     import successor_entailment
@@ -266,6 +291,8 @@ async def probe_designed_block(row, block, state, options):
     finally:
         stop.set()
         thread.join()
+    if evidence.get('residual_class') == 'entry_unavailable':
+        return await fallback_designed_block(row, state, rendered, options, base, evidence, started)
     elapsed = time.monotonic()-started
     closed = native_boundary_closed(evidence, rendered, block)
     outcome_class = ('native-boundary-closed' if closed else 'conditional-boundary'
