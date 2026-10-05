@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "item": "I14-term-local-closure",
+  "result": "The unchanged completed proof compiles faster after term-local closure checks.",
+  "source_target": {
+    "verified": true,
+    "report": "/home/cody/zesislar/.worktrees/p0d-sail-spec/build/stock-zisk/worker1-prologue-infra-inputs.json",
+    "sha256": "0a46161fe4210d8478eec99686f47ea579cee07e1c263b2be03dc709ca5a6f67",
+    "contents": {
+      "root": "ea1578b6",
+      "files": {
+        "ZesuSsz/Proofs/DecodeItem/Prologue.v": "bb6c361e4f6a3fcf2f1e646c1233fd7cc877f3a7478ad44e22c397c198fb5f3f",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "2fe61af2ef82bd20327596d72a00169e334d2e34308f9205f11b5ee88279ca3d"
+      },
+      "gate_log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261005-160620-worker1-s1-integration-gate.log"
+    }
+  },
+  "completed_baseline": {
+    "log_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261005-165416-worker1-s1-raised-cap-fixed-test.log",
+    "log_sha256": "bdd6f7c80625336b8552ef9dae80fb50dbe8a8aed22c2bcf151e8befa972c8f1",
+    "archive_path": "/home/cody/zesislar-archive/sha256/bd/bdd6f7c80625336b8552ef9dae80fb50dbe8a8aed22c2bcf151e8befa972c8f1",
+    "root": "eea7ba56",
+    "module": {
+      "wall_seconds": 415.444,
+      "cpu_seconds": 414.293878,
+      "peak_bytes": 3129180160
+    },
+    "scope": "zesudet-dune-coqc-1897115-28101.scope",
+    "costs_available": "zesu_run outer timings only; internal Ltac cost data missing",
+    "largest_recorded_tactic_seconds": 253.336,
+    "second_recorded_tactic_seconds": 47.545,
+    "source_target_unchanged": true
+  },
+  "profile_comparison": {
+    "baseline": {
+      "elapsed_seconds": 435.26030323503073,
+      "cpu_seconds": 433.96518899999995,
+      "peak_rss_kib": 3128604
+    },
+    "optimized": {
+      "elapsed_seconds": 271.2825838639401,
+      "cpu_seconds": 270.14848199999994,
+      "peak_rss_kib": 2974228
+    },
+    "wall_reduction_percent": 37.67348369523751,
+    "cpu_reduction_percent": 37.748812843142595,
+    "optimized_wrapper_seconds": 1098.331077220966,
+    "wrapper_limit": "Noncompiler time includes admission and recording. Exact admission duration is unavailable.",
+    "tactic_profile_seconds": [
+      416.913,
+      251.233
+    ],
+    "stack_arithmetic_inclusive_percent": [
+      60.1,
+      23.3
+    ]
+  },
+  "frozen_invariants": {
+    "theorem_proof_byte_identical": true,
+    "theorem_proof_sha256": "38313852e13b020254c53ba6ab072b846b0552c633e08c255fc7bc68e8015890",
+    "native_objects_unchanged": 4999,
+    "limits": {
+      "cpu_seconds": 1200,
+      "memory_kib": 6291456,
+      "wall_seconds": null
+    }
+  },
+  "kernel": {
+    "qed": true,
+    "assumptions": [],
+    "log_output": "Closed under the global context"
+  },
+  "failed_comparison": {
+    "classification": "diagnostic namespace failure before theorem execution",
+    "error": "Unqualified zesu_split_folded_pure was not available.",
+    "repair": "Qualify the existing PureFacts helper in the diagnostic override."
+  },
+  "focused_mcp": {
+    "health": true,
+    "start": true,
+    "check": true,
+    "step_multi": true,
+    "compile_file": true,
+    "verify": true,
+    "assumptions": [],
+    "cases": [
+      "closed constants",
+      "symbolic variables",
+      "nested lets",
+      "closed local definitions",
+      "symbolic local definitions",
+      "evars"
+    ],
+    "production_test_compile_file": true,
+    "production_test_verify": {
+      "zesu_stack_closed_term_regression": [],
+      "zesu_stack_reduce_closed_regression": []
+    }
+  },
+  "capture_limits": {
+    "pet_groups": "unavailable; completed coqc compilation",
+    "native_boundary_closure_claim": false
+  },
+  "rules_changed": [
+    "zesu_stack_arithmetic"
+  ],
+  "proof_edits": 0,
+  "contract_edits": 0,
+  "artifacts": {
+    "measured": {
+      "ProfiledPrologue.v": {
+        "sha256": "9007718f0ba89e3cde4f1633fce2a246ab42ffd935619b459ecbb8516405e7d4",
+        "archive_path": "/home/cody/zesislar-archive/sha256/90/9007718f0ba89e3cde4f1633fce2a246ab42ffd935619b459ecbb8516405e7d4",
+        "bytes": 3100
+      },
+      "ProfiledPrologue.vo": {
+        "sha256": "44f3769255a0b53a5bcca1c5c4895c9bdd35ecd6ef57666f97d93c7dac6b4daf",
+        "archive_path": "/home/cody/zesislar-archive/sha256/44/44f3769255a0b53a5bcca1c5c4895c9bdd35ecd6ef57666f97d93c7dac6b4daf",
+        "bytes": 1575139
+      },
+      "compile-evidence.json": {
+        "sha256": "b9c5d1ddc894bdce2b97c37dd5f7291a120102159d2ddd7286995d74eb06e4aa",
+        "archive_path": "/home/cody/zesislar-archive/sha256/b9/b9c5d1ddc894bdce2b97c37dd5f7291a120102159d2ddd7286995d74eb06e4aa",
+        "bytes": 6712
+      },
+      "compiler-wrapper": {
+        "sha256": "644f7fcfb8723152a73e1e466a733bced5c809a5dc70301577a6e72fa4439d95",
+        "archive_path": "/home/cody/zesislar-archive/sha256/64/644f7fcfb8723152a73e1e466a733bced5c809a5dc70301577a6e72fa4439d95",
+        "bytes": 131
+      },
+      "compiler.json": {
+        "sha256": "9e688e3d3ef7e8d11a245fa92fe9978d5406a43ff35c2ab4d11484baf0c835e8",
+        "archive_path": "/home/cody/zesislar-archive/sha256/9e/9e688e3d3ef7e8d11a245fa92fe9978d5406a43ff35c2ab4d11484baf0c835e8",
+        "bytes": 5608
+      },
+      "compiler.log": {
+        "sha256": "55287c921361eda35f180dc19b2e1ff28923bae9db866e239090cd746cb062aa",
+        "archive_path": "/home/cody/zesislar-archive/sha256/55/55287c921361eda35f180dc19b2e1ff28923bae9db866e239090cd746cb062aa",
+        "bytes": 25222
+      }
+    },
+    "optimized": {
+      "OptimizedPrologue.v": {
+        "sha256": "03b3b4fe183233af0bc0d649e02d231bffac1ab8fa980e86f671bb5176ec70e4",
+        "archive_path": "/home/cody/zesislar-archive/sha256/03/03b3b4fe183233af0bc0d649e02d231bffac1ab8fa980e86f671bb5176ec70e4",
+        "bytes": 4357
+      },
+      "compile-evidence.json": {
+        "sha256": "4f8c6bd2b9263521baad20ee19989ecc57ca5a1304be2e1a2aa9184e2a5998e1",
+        "archive_path": "/home/cody/zesislar-archive/sha256/4f/4f8c6bd2b9263521baad20ee19989ecc57ca5a1304be2e1a2aa9184e2a5998e1",
+        "bytes": 6505
+      },
+      "compiler-wrapper": {
+        "sha256": "644f7fcfb8723152a73e1e466a733bced5c809a5dc70301577a6e72fa4439d95",
+        "archive_path": "/home/cody/zesislar-archive/sha256/64/644f7fcfb8723152a73e1e466a733bced5c809a5dc70301577a6e72fa4439d95",
+        "bytes": 131
+      },
+      "compiler.json": {
+        "sha256": "afcc0758a97cbe2c2be404c0577bc5e5e97d5ecea40ef01fa6a537108b9545c1",
+        "archive_path": "/home/cody/zesislar-archive/sha256/af/afcc0758a97cbe2c2be404c0577bc5e5e97d5ecea40ef01fa6a537108b9545c1",
+        "bytes": 5402
+      },
+      "compiler.log": {
+        "sha256": "749ab5142bc9eaba5baed4eba4414f869be17c7cd94ac8fd7aa9cd6204b932f2",
+        "archive_path": "/home/cody/zesislar-archive/sha256/74/749ab5142bc9eaba5baed4eba4414f869be17c7cd94ac8fd7aa9cd6204b932f2",
+        "bytes": 2025
+      }
+    },
+    "optimized-qualified": {
+      "OptimizedPrologueQualified.v": {
+        "sha256": "efd720795a22b187e689f745893e6459b24835d8366c92c7e7cd6eb6d306ef86",
+        "archive_path": "/home/cody/zesislar-archive/sha256/ef/efd720795a22b187e689f745893e6459b24835d8366c92c7e7cd6eb6d306ef86",
+        "bytes": 4386
+      },
+      "OptimizedPrologueQualified.vo": {
+        "sha256": "6a66654458cb5dbb0e76e9a018288e587cf35ab5af5f5477774ed721407aecb5",
+        "archive_path": "/home/cody/zesislar-archive/sha256/6a/6a66654458cb5dbb0e76e9a018288e587cf35ab5af5f5477774ed721407aecb5",
+        "bytes": 1579157
+      },
+      "compile-evidence.json": {
+        "sha256": "c51d9860d49fe56e8f4e42c1e9f390e5d6f9842339e54e47857153a2a63e7cc8",
+        "archive_path": "/home/cody/zesislar-archive/sha256/c5/c51d9860d49fe56e8f4e42c1e9f390e5d6f9842339e54e47857153a2a63e7cc8",
+        "bytes": 6796
+      },
+      "compiler-wrapper": {
+        "sha256": "644f7fcfb8723152a73e1e466a733bced5c809a5dc70301577a6e72fa4439d95",
+        "archive_path": "/home/cody/zesislar-archive/sha256/64/644f7fcfb8723152a73e1e466a733bced5c809a5dc70301577a6e72fa4439d95",
+        "bytes": 131
+      },
+      "compiler.json": {
+        "sha256": "b1993d86f49af7d14322f814796e18aa31847d4cbad39561631f8eafdeb8525d",
+        "archive_path": "/home/cody/zesislar-archive/sha256/b1/b1993d86f49af7d14322f814796e18aa31847d4cbad39561631f8eafdeb8525d",
+        "bytes": 5659
+      },
+      "compiler.log": {
+        "sha256": "110836d5d5c44cfaf9638dcad6071fc02d1f9dec4dd2116c78154dba12f2c566",
+        "archive_path": "/home/cody/zesislar-archive/sha256/11/110836d5d5c44cfaf9638dcad6071fc02d1f9dec4dd2116c78154dba12f2c566",
+        "bytes": 30443
+      }
+    }
+  },
+  "gate": {
+    "check_fast": "passed",
+    "whole_gate_wall_seconds": 67,
+    "jobs": 6,
+    "wall_measurement": "Exit watcher measurement supplied by the parent.",
+    "logs": [
+      {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261005-174801-child-a-i14-check-fast.log",
+        "archive_path": "/home/cody/zesislar-archive/sha256/05/053537566002a0a3a0e7fe215f546d0fb70d6e0cdfbf7b922092459c187ae516",
+        "sha256": "053537566002a0a3a0e7fe215f546d0fb70d6e0cdfbf7b922092459c187ae516"
+      },
+      {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261005-175414-child-a-i14-check-fast-import-fixed.log",
+        "archive_path": "/home/cody/zesislar-archive/sha256/36/3695ee21e616925674990eecaf62b6dc89236f94fe8c3e0ed3719a052e07a2bb",
+        "sha256": "3695ee21e616925674990eecaf62b6dc89236f94fe8c3e0ed3719a052e07a2bb"
+      }
+    ],
+    "check_iris": "not run; coordinator owns the full gate",
+    "failed_gate": "The regression lacked its Z import. Focused compilation then exposed an absent Z notation scope. Only test imports and scopes changed."
+  },
+  "completed_at": "2026-10-05T21:56:06.604098+00:00",
+  "optimization_start": "2026-10-05T21:21:09.704929Z"
+}
