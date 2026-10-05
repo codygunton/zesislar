@@ -21,19 +21,29 @@ Definition decodeItemJoinTransferObligation `{!islaG Sigma} `{!threadG}
    instr_body sourcePc
      (sourceEntry ∗ instr_pre joinPc (joinEntry ∗ True) ∗ True))%I.
 
+Definition decodeItemJoin698cTarget `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) : iProp Sigma :=
+  (∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
+    decodeItemEntryAt800d698c args locals pointerBytes lengthBytes)%I.
+
+Definition decodeItemJoin6ae0Target `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) : iProp Sigma :=
+  (∃ locals : DecodeItemReturnLocals,
+    decodeItemEntryAt800d6ae0 args locals)%I.
+
 Definition decodeItemJoin698cFrom697c `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes pointerBytes lengthBytes : list byte)
-    (prefix : bv 64) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (args : DecodeItemArgs) (frameBytes : list byte)
+    (prefix : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d697c 0x800d698c
     (decodeItemEntryAt800d697c args frameBytes prefix)
-    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes).
+    (decodeItemJoin698cTarget args).
 
 Definition decodeItemJoin698cFrom69e8 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes pointerBytes lengthBytes : list byte)
-    (payloadLength : bv 64) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (args : DecodeItemArgs) (frameBytes : list byte)
+    (payloadLength : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d69e8 0x800d698c
     (decodeItemEntryAt800d69e8 args frameBytes payloadLength)
-    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes).
+    (decodeItemJoin698cTarget args).
 
 Definition decodeItemJoin6a24From6a14 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)
@@ -78,64 +88,62 @@ Definition decodeItemJoin6ac4Backedge `{!islaG Sigma} `{!threadG}
 (* The zero-length path includes the prologue at 0x800d6960. Its branch
    at 0x800d6970 reaches the error join. *)
 Definition decodeItemJoin6ae0From6970 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (args : DecodeItemArgs) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6960 0x800d6ae0
     (⌜decodeItemInputLength args = 0⌝ ∗
      decodeItemEntryResources decodeItemC1BDomain args)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
 
 Definition decodeItemJoin6ae0From69e0 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
-    (lengthRegister : bv 64) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (lengthRegister : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d69e0 0x800d6ae0
     (⌜Z.land (bv_unsigned lengthRegister) 127 >=
        decodeItemInputLength args⌝ ∗
      decodeItemEntryAt800d69e0 args frameBytes lengthRegister)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
 
 Definition decodeItemJoin6ae0From6a08 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
-    (prefix : bv 64) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (prefix : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6a08 0x800d6ae0
     (⌜bv_unsigned (Z_to_bv 8 (bv_unsigned prefix + 73)) >=
        decodeItemInputLength args⌝ ∗
      decodeItemEntryAt800d6a08 args frameBytes prefix)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
 
 Definition decodeItemJoin6ae0From6a38 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)
-    (lengthBytes frameBytes : list byte) (loaded : bv 64)
-    (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (lengthBytes frameBytes : list byte) (loaded : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6a38 0x800d6ae0
     (⌜decodeItemFoldLengthFits args n lengthBytes = false⌝ ∗
      decodeItemEntryAt800d6a38 args n payloadStart
        lengthBytes frameBytes loaded)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
 
 Definition decodeItemJoin6ae0From6a6c `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
-    (prefix : bv 64) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (prefix : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6a6c 0x800d6ae0
     (⌜bv_unsigned (Z_to_bv 8 (bv_unsigned prefix + 64)) >=
        decodeItemInputLength args⌝ ∗
      decodeItemEntryAt800d6a6c args frameBytes prefix)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
 
 Definition decodeItemJoin6ae0From6aa8 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
-    (prefix : bv 64) (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (prefix : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6aa8 0x800d6ae0
     (⌜bv_unsigned (Z_to_bv 8 (bv_unsigned prefix + 9)) >=
        decodeItemInputLength args⌝ ∗
      decodeItemEntryAt800d6aa8 args frameBytes prefix)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
 
 Definition decodeItemJoin6ae0From6ad8 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)
-    (lengthBytes frameBytes : list byte) (loaded : bv 64)
-    (locals : DecodeItemReturnLocals) : iProp Sigma :=
+    (lengthBytes frameBytes : list byte) (loaded : bv 64) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6ad8 0x800d6ae0
     (⌜decodeItemFoldLengthFits args n lengthBytes = false⌝ ∗
      decodeItemEntryAt800d6ad8 args n payloadStart
        lengthBytes frameBytes loaded)%I
-    (decodeItemEntryAt800d6ae0 args locals).
+    (decodeItemJoin6ae0Target args).
