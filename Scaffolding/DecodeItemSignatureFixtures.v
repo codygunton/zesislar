@@ -12,7 +12,7 @@ Definition fixtureExtraPremise : Prop :=
 Fail Check (eq_refl : fixtureExtraPremise = ReviewedDecodeItemComplianceType).
 
 Definition fixtureMissingRamStackBound (inputPointer inputLength resultPointer
-    stackPointer returnAddress : Z) : Prop :=
+    stackPointer returnAddress inputEnd : Z) : Prop :=
   0 <= inputPointer /\ 0 <= inputLength /\
   inputPointer + inputLength < word64Modulus /\
   0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
@@ -29,12 +29,14 @@ Definition fixtureMissingRamStackBound (inputPointer inputLength resultPointer
    (mapRamBase defaultMap <= inputPointer /\
     inputPointer + inputLength <= machineRamEnd defaultMap)) /\
   mapRamBase defaultMap <= resultPointer /\
-  resultPointer + 40 <= machineRamEnd defaultMap.
+  resultPointer + 40 <= machineRamEnd defaultMap /\
+  0 <= inputEnd < word64Modulus /\
+  inputPointer + inputLength <= inputEnd.
 Fail Check (eq_refl : fixtureMissingRamStackBound =
                  ReviewedDecodeItemEntryLayout).
 
 Definition fixtureMissingReadableInputBound (inputPointer inputLength resultPointer
-    stackPointer returnAddress : Z) : Prop :=
+    stackPointer returnAddress inputEnd : Z) : Prop :=
   0 <= inputPointer /\ 0 <= inputLength /\
   inputPointer + inputLength < word64Modulus /\
   0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
@@ -48,11 +50,13 @@ Definition fixtureMissingReadableInputBound (inputPointer inputLength resultPoin
     (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
   0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0 /\
   mapRamBase defaultMap <= resultPointer /\
-  resultPointer + 40 <= machineRamEnd defaultMap.
+  resultPointer + 40 <= machineRamEnd defaultMap /\
+  0 <= inputEnd < word64Modulus /\
+  inputPointer + inputLength <= inputEnd.
 Fail Check (eq_refl : fixtureMissingReadableInputBound = ReviewedDecodeItemEntryLayout).
 
 Definition fixtureMissingRamOutputBound (inputPointer inputLength resultPointer
-    stackPointer returnAddress : Z) : Prop :=
+    stackPointer returnAddress inputEnd : Z) : Prop :=
   0 <= inputPointer /\ 0 <= inputLength /\
   inputPointer + inputLength < word64Modulus /\
   0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
@@ -69,8 +73,37 @@ Definition fixtureMissingRamOutputBound (inputPointer inputLength resultPointer
     inputPointer + inputLength <=
       mapInputBufferAddress defaultMap + mapInputCapacity defaultMap) \/
    (mapRamBase defaultMap <= inputPointer /\
-    inputPointer + inputLength <= machineRamEnd defaultMap)).
+    inputPointer + inputLength <= machineRamEnd defaultMap)) /\
+  0 <= inputEnd < word64Modulus /\
+  inputPointer + inputLength <= inputEnd.
 Fail Check (eq_refl : fixtureMissingRamOutputBound = ReviewedDecodeItemEntryLayout).
+
+Definition fixtureMissingInputEndBound (inputPointer inputLength resultPointer
+    stackPointer returnAddress inputEnd : Z) : Prop :=
+  0 <= inputPointer /\ 0 <= inputLength /\
+  inputPointer + inputLength < word64Modulus /\
+  0 <= resultPointer /\ resultPointer + 40 < word64Modulus /\
+  decodeItemStackBytes <= stackPointer < word64Modulus /\
+  mapRamBase defaultMap + decodeItemStackBytes <= stackPointer /\
+  stackPointer <= machineRamEnd defaultMap /\
+  separateRanges inputPointer inputLength resultPointer 40 /\
+  separateRanges inputPointer inputLength
+    (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
+  separateRanges resultPointer 40
+    (stackPointer - decodeItemStackBytes) decodeItemStackBytes /\
+  0 <= returnAddress < word64Modulus /\ returnAddress mod 4 = 0 /\
+  ((mapInputBufferAddress defaultMap <= inputPointer /\
+    inputPointer + inputLength <=
+      mapInputBufferAddress defaultMap + mapInputCapacity defaultMap) \/
+   (mapRamBase defaultMap <= inputPointer /\
+    inputPointer + inputLength <= machineRamEnd defaultMap)) /\
+  mapRamBase defaultMap <= resultPointer /\
+  resultPointer + 40 <= machineRamEnd defaultMap.
+Fail Check (eq_refl : fixtureMissingInputEndBound = ReviewedDecodeItemEntryLayout).
+
+Definition fixtureUnboundedInputSysRegs (_ : DecodeItemArgs) :=
+  InstrSpecs.Machine.zesu_sys_regs.
+Fail Check (eq_refl : fixtureUnboundedInputSysRegs = decodeItemSysRegs).
 
 Definition fixtureChangedDomainModel (returnAddress : Z) :
     IslarisContractModel DecodeItemArgs DecodeItemOutcome :=

@@ -29,6 +29,9 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 
+(* Expose the exact input boundary before the column lookup computes. *)
+Global Hint Unfold decodeItemSysRegs : regcol_compute_unfold.
+
 (* Keep the selected table named during search and simplification.
    Explicit computation still resolves one selected instruction. *)
 Global Typeclasses Opaque selectedCodeLookup.

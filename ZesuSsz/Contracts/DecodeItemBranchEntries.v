@@ -36,7 +36,7 @@ Definition decodeItemSavedFrameFacts (args : DecodeItemArgs)
 Definition decodeItemBranchBase `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x11 : bv 64) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
+  (reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits x11 ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
