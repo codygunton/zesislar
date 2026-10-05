@@ -445,6 +445,18 @@ def build() -> dict:
         "block_count": function["block_count"],
         "conditional_branch_count": function["branch_count"],
         "loop_count": function["loop_count"],
+        "table_convention": {
+            "entry_type": "(Z * iProp Sigma)",
+            "universal_binders": "Each row's binders, in their listed order",
+            "resource_application": "Apply resource_predicate to arguments in order",
+            "internal_existentials": {
+                "entry_pcs": [address(pc) for pc in sorted(FOLD_PCS)],
+                "binders": ["n", "i", "payloadStart", "lengthBytes",
+                            "frameBytes", "loaded"],
+            },
+            "other_entries": "No block locals are existential inside the entry predicate",
+            "continuations": "Outcome existentials inside shared continuations are not table locals",
+        },
         "edge_condition_scope": "register values before the source block's final instruction",
         "condition_ops": {"eq": "equal bits", "ne": "unequal bits",
                           "s_lt": "signed less than", "s_ge": "signed greater or equal",
