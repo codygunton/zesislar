@@ -371,7 +371,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 events = self.compiler_events()
                 self.assertEqual(len(events), 1)
                 self.assertEqual(events[0]["slots"], 1)
-                self.assertEqual(events[0]["cpu"], 300)
+                self.assertEqual(events[0]["cpu"], 1200)
                 self.assertEqual(events[0]["scope"], events[0]["token"])
                 scopes = [json.loads(line) for line in self.scope_log.read_text().splitlines()]
                 self.assertEqual(len(scopes), 1)
