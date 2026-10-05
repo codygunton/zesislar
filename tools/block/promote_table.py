@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 import generate_table
 
@@ -45,7 +46,7 @@ def validate_promotion(block, evidence, adapter, *, design_sha256):
             raise ValueError('The proof has unavailable or nonempty inherited debts.')
     if adapter.get('statement') != table_statement(pc):
         raise ValueError('The proof has a different table-body signature.')
-    if not isinstance(adapter.get('lemma'), str) or not adapter['lemma']:
+    if not isinstance(adapter.get('lemma'), str) or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+', adapter['lemma']):
         raise ValueError('The table adapter has no proof name.')
     return adapter['lemma']
 
@@ -87,6 +88,52 @@ def coverage(cfg, design, native_report, promotions=None, *, design_sha256):
                 pending_instructions=sum(row['status'] == 'pending' for row in instructions))
 
 
+
+
+def load_promotions(path):
+    """Load hash-bound native and adapter certificates from trusted MCP output."""
+    manifest = json.loads(path.read_text())
+    proposals = {}
+    hashes = {str(path): digest(path)}
+    for pc, binding in manifest.items():
+        proposal = {}
+        for kind in ('native', 'adapter'):
+            record = binding[kind]
+            evidence_path = (path.parent / record['path']).resolve()
+            if digest(evidence_path) != record['sha256']:
+                raise ValueError('The promotion evidence hash differs.')
+            evidence = json.loads(evidence_path.read_text())
+            source = evidence.get('source_binding')
+            if not isinstance(source, dict):
+                raise ValueError('The promotion lacks a proof-source binding.')
+            source_path = (evidence_path.parent / source['path']).resolve()
+            if digest(source_path) != source['sha256']:
+                raise ValueError('The promotion proof-source hash differs.')
+            hashes[str(evidence_path)] = record['sha256']
+            hashes[str(source_path)] = source['sha256']
+            proposal[kind] = evidence
+        proposals[pc] = proposal
+    return proposals, hashes
+
+def render_slots(report):
+    """Generate typed references only. Pending slots introduce no proposition."""
+    slots = [slot for slot in report['proof_slots'] if slot['status'] == 'proved']
+    modules = sorted({slot['proof_lemma'].rsplit('.', 1)[0] for slot in slots})
+    lines = ['Require Import ZesuSsz.Automation.All.',
+             'Require Import isla.riscv64.riscv64.',
+             'Require Import ZesuSsz.Generated.DecodeItem.BlockTable.']
+    lines.extend(f'Require Import {module}.' for module in modules)
+    lines += ['', '(* Pending slots have no proof term. No composition theorem is generated. *)',
+              'Section promoted_block_bodies.', 'Context `{!islaG Sigma} `{!threadG}.', '']
+    for slot in slots:
+        pc = generate_table.address(slot['pc'])
+        lines += [f'Definition decodeItemPromotedBody{pc:x} :',
+                  f'  {table_statement(pc)} :=', f"  {slot['proof_lemma']}.", '']
+    lines += ['End promoted_block_bodies.', '']
+    lines.extend(f"Print Assumptions decodeItemPromotedBody{generate_table.address(slot['pc']):x}."
+                 for slot in slots)
+    return '\n'.join(lines) + '\n'
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--recipe', type=Path, default=generate_table.ROOT / 'build/stock-zisk/build-recipe.json')
@@ -94,12 +141,20 @@ def main():
     parser.add_argument('--design', type=Path, required=True)
     parser.add_argument('--native-report', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--rocq-output', type=Path)
+    parser.add_argument('--promotions', type=Path, help='Hash-bound kernel certificates; diagnostic captures are not certificates.')
     args = parser.parse_args()
+    promotions, promotion_hashes = load_promotions(args.promotions) if args.promotions else ({}, {})
     report = coverage(*(json.loads(path.read_text()) for path in
-                        (args.cfg, args.design, args.native_report)), design_sha256=digest(args.design))
+                        (args.cfg, args.design, args.native_report)), promotions=promotions, design_sha256=digest(args.design))
     report['manifest_binding'] = generate_table.bound_inputs(args.recipe, args.cfg, args.design)
     report['input_hashes'] = {str(path): digest(path) for path in
                               (args.recipe, args.cfg, args.design, args.native_report, Path(__file__))}
+    report['input_hashes'].update(promotion_hashes)
+    if args.rocq_output:
+        args.rocq_output.parent.mkdir(parents=True, exist_ok=True)
+        args.rocq_output.write_text(render_slots(report))
+        report['generated_hashes'] = {str(args.rocq_output): digest(args.rocq_output)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + '\n')
 
