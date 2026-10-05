@@ -19,7 +19,10 @@ class EntrySchemaTests(unittest.TestCase):
         self.root = Path(self.directory.name)
         source = self.root / "Fixture/Contracts.v"
         source.parent.mkdir()
-        source.write_text("Definition entry := True.\nDefinition resources := True.\n")
+        source.write_text("From Coq Require Import ZArith.\n"
+                          "Definition DecodeItemArgs := unit.\n"
+                          "Definition entry (args : DecodeItemArgs) (n : Z) := True.\n"
+                          "Definition resources (args : DecodeItemArgs) (n : Z) := True.\n")
         self.row = {"entry_pc": "0x10", "entry_class": "return",
                     "entry_definition": "Fixture.Contracts.entry",
                     "binders": [{"name": "args", "type": "DecodeItemArgs"},
