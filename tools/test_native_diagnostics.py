@@ -34,6 +34,19 @@ class NativeDiagnosticTests(unittest.TestCase):
         self.assertFalse(row['goals_after']['available'])
         self.assertGreaterEqual(row['elapsed_seconds'], 0)
 
+    def test_transport_failure_preserves_exact_call_arguments(self):
+        import asyncio
+        from native_diagnostics import measured_call
+        class Session:
+            async def call_tool(self, name, arguments):
+                raise RuntimeError('transport failure')
+        records = []
+        arguments = {'from_state': 4, 'body': 'try zesu_block.', 'timeout': 300}
+        with self.assertRaisesRegex(RuntimeError, 'transport failure'):
+            asyncio.run(measured_call(Session(), 'rocq_check', arguments, records))
+        self.assertEqual(records[0]['arguments'], arguments)
+        self.assertEqual(records[0]['tool'], 'rocq_check')
+
 
 class FocusSelectorTests(unittest.TestCase):
     def test_native_step_focuses_one_goal_and_retains_all_returned_goals(self):

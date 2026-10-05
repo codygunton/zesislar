@@ -116,8 +116,33 @@ def data(result):
     return value
 
 
-def feedback(value):
-    return '\n'.join(row[1] for row in value.get('feedback', []))
+def feedback(value, directory=None):
+    rows = []
+    for _, displayed in value.get('feedback', []):
+        raw = displayed
+        if directory:
+            key = hashlib.sha256(displayed.encode()).hexdigest()
+            path = Path(directory)/(key + '.json')
+            if path.exists():
+                exported = json.loads(path.read_text())
+                if exported['display_sha256'] != key or hashlib.sha256(exported['raw'].encode()).hexdigest() != exported['raw_sha256']:
+                    raise ValueError('The feedback export hash does not match')
+                raw = exported['raw']
+        rows.append(raw)
+    return '\n'.join(rows)
+
+
+def parse_capture(output, state, block, successor):
+    """Keep malformed recorder output separate from primary proof outcomes."""
+    try:
+        return chain_root.parse_probe(output, state, block, successor)
+    except ValueError as error:
+        return [{'entry': hex(gen_block.address(block['start'])),
+                 'exit': chain_root.boundary_address(successor),
+                 'outcome': 'capture-error', 'error': str(error),
+                 'raw_goals': output, 'pending_goals': [], 'shelved_goals': [],
+                 'inherited_debts': chain_root.inherited_debts(state),
+                 'capture_complete': False, 'contract_closed': False}]
 
 
 async def probe_block(row, block, state, options):
@@ -128,6 +153,9 @@ async def probe_block(row, block, state, options):
     command = options['mcp_command']
     env = {**os.environ, 'ROCQ_WORKSPACE': options['workspace'],
            'ROCQ_PET_TIMEOUT': str(options['seconds'])}
+    if options.get('feedback_dir'):
+        env.update(ZESU_ROCQ_MCP_BINARY=str(HERE/'feedback_mcp.sh'),
+                   ZESU_MCP_PYTHON=sys.executable, ZESU_FEEDBACK_DIR=options['feedback_dir'])
     parameters = StdioServerParameters(command=command, env=env)
     async with stdio_client(parameters) as (reader, writer):
         async with ClientSession(reader, writer) as session:
@@ -163,6 +191,8 @@ async def probe_block(row, block, state, options):
                 steps = []
                 load_result = None
                 proof_phase_entered = False
+                primary_tactic_entered = False
+                primary_timeout = False
                 error_text = None
                 try:
                     if options.get('load_before_start'):
@@ -197,29 +227,43 @@ async def probe_block(row, block, state, options):
                     if pid:
                         pet_pids.append(pid)
                     proof_phase_entered = True
-                    deadline = time.monotonic() + options['seconds']
                     body = source.split('Proof.\n', 1)[1].split('Abort.', 1)[0]
-                    checked = await native_diagnostics.measured_call(session, 'rocq_check', {
-                        'from_state': opened['state_id'], 'body': body,
-                        'timeout': remaining()}, steps, opened.get('goals'), 'primary-unchanged-zesu_block')
+                    preparation, primary, recorders = native_diagnostics.primary_plan(body)
+                    prepared_state = opened
+                    if preparation:
+                        prepared_state = await native_diagnostics.measured_check(session, prepared_state, preparation,
+                            60, steps, 'primary-preparation')
+                        calls.append(prepared_state)
+                        if not prepared_state.get('success'):
+                            raise RuntimeError(prepared_state.get('error', 'Rocq MCP rejected preparation'))
+                    deadline = time.monotonic() + options['seconds']
+                    primary_tactic_entered = True
+                    checked = await native_diagnostics.measured_check(session, prepared_state, primary,
+                        options['seconds'], steps, 'primary-unchanged-zesu_block')
                     calls.append(checked)
+                    primary_timeout = native_diagnostics.is_primary_timeout([checked])
                     pet_diagnostics.append(data(await session.call_tool('rocq_diag', {})))
                     if not checked.get('success'):
                         raise RuntimeError(checked.get('error', 'Rocq MCP rejected the probe'))
-                    tail = await native_diagnostics.measured_call(session, 'rocq_check', {
-                        'from_state': checked['state_id'],
-                        'body': 'Abort.' + source.split('Abort.', 1)[1],
-                        'timeout': remaining()}, steps, checked.get('goals'), 'primary-recorder-termination')
+                    if recorders:
+                        checked = await native_diagnostics.measured_check(session, checked, recorders,
+                            remaining(), steps, 'primary-recorders')
+                        calls.append(checked)
+                        if not checked.get('success'):
+                            raise RuntimeError(checked.get('error', 'Rocq MCP rejected the recorders'))
+                    tail = await native_diagnostics.measured_check(session, checked,
+                        'Abort.' + source.split('Abort.', 1)[1], remaining(), steps,
+                        'primary-recorder-termination')
                     calls.append(tail)
                     if not tail.get('success'):
                         raise RuntimeError(tail.get('error', 'Rocq MCP rejected the recorder terminator'))
-                    output = '\n'.join(feedback(value) for value in calls)
+                    output = '\n'.join(feedback(value, options.get('feedback_dir')) for value in calls)
                     if checked.get('proof_finished'):
                         output += '\nNo more goals.\n'
                     rc = 0
                 except Exception as error:
                     error_text = str(error)
-                    output = '\n'.join(feedback(value) for value in calls) + '\n' + str(error)
+                    output = '\n'.join(feedback(value, options.get('feedback_dir')) for value in calls) + '\n' + str(error)
                     rc = 1
                 finally:
                     stop.set()
@@ -230,17 +274,17 @@ async def probe_block(row, block, state, options):
                 peak = max(peak, round(pet_peak * 1024))
                 output += f'\nexit={rc} ms={round(elapsed * 1000)} rss_kb={peak}\n'
                 path.with_suffix('.steps.json').write_text(json.dumps(steps, indent=2) + '\n')
-                if native_diagnostics.is_primary_timeout(calls) and options.get('secondary_enabled', True):
+                if primary_timeout and options.get('secondary_enabled', True):
                     diagnostic_jobs.append(path)
                 path.with_suffix('.mcp.json').write_text(json.dumps(calls, indent=2) + '\n')
                 path.with_suffix('.out').write_text(output)
-                records = chain_root.parse_probe(output, state, block, successor)
+                records = parse_capture(output, state, block, successor)
                 for record in records:
                     record['proof_phase_entered'] = proof_phase_entered
                     if error_text:
                         record['outcome'] = 'mcp-error' if proof_phase_entered else 'setup-error'
                         record['error'] = error_text
-                        if native_diagnostics.is_primary_timeout(calls):
+                        if primary_timeout:
                             record['outcome'] = 'automation-search-timeout'
                         elif load_result and load_result['outcome'] == 'entry-elaborated':
                             record['outcome'] = 'primary-unavailable'
@@ -248,6 +292,8 @@ async def probe_block(row, block, state, options):
                                             else 'coqc-scratch-LOAD') if load_result else 'MCP'
                     record['load_result'] = load_result
                     record['primary_steps'] = steps
+                    record['primary_tactic_entered'] = primary_tactic_entered
+                    record['primary_invocation_policy'] = 'Preparation receives 60 seconds. The isolated primary receives the configured budget.'
                     record['failed_primary_transaction'] = next((value for value in reversed(calls) if value.get('success') is False), None)
                     record['last_successful_primary_state'] = next((value for value in reversed(calls) if value.get('success')), None)
                     record['contract_closed'] = False
@@ -262,6 +308,7 @@ async def probe_block(row, block, state, options):
                     record['cpu_seconds'] = max(0, max(sample[1] for sample in samples) - initial_cpu)
                     record['module_limit_seconds'] = options['seconds']
                     record['module_limit_gib'] = 6
+                path.with_suffix('.records.json').write_text(json.dumps(records, indent=2) + '\n')
                 captures.extend(records)
     diagnostics = []
     for path in diagnostic_jobs:

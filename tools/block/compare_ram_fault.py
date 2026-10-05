@@ -6,6 +6,7 @@ import copy
 from concurrent.futures import ProcessPoolExecutor
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import shutil
@@ -50,6 +51,66 @@ def worker(job):
     return {'arm': arm, **asyncio.run(discovery.probe_block(row, block, state, options))}
 
 
+APPROVED_CAPTURE_FILES = {'tools/block/compare_ram_fault.py', 'tools/block/discovery.py',
+                          'tools/block/feedback_mcp.py', 'tools/block/feedback_mcp.sh'}
+
+
+def verify_resume_inputs(previous, current, workspace):
+    changes = {}
+    for path, expected in previous.items():
+        actual = current.get(path)
+        if actual == expected:
+            continue
+        try:
+            relative = str(Path(path).relative_to(workspace))
+        except ValueError:
+            relative = path
+        if relative not in APPROVED_CAPTURE_FILES:
+            raise ValueError('An immutable resume input changed: ' + path)
+        changes[path] = {'previous': expected, 'current': actual}
+    return changes
+
+
+def reuse_completed(job):
+    """Reuse completed calls even when their recorder output is incomplete."""
+    arm, row, block, state, options = job
+    target = chain_root.terminal_target(options['probe_targets'][0])
+    path = Path(options['out'])/'probes'/('block_' + row['entry_pc'] + '_' + chain_root.boundary_label(target) + '.v')
+    output_path = path.with_suffix('.out')
+    if not output_path.exists():
+        return None
+    if path.read_text() != chain_root.render_probe(state, block, target):
+        raise ValueError('A completed probe source changed')
+    calls = json.loads(path.with_suffix('.mcp.json').read_text())
+    steps = json.loads(path.with_suffix('.steps.json').read_text())
+    output = output_path.read_text()
+    measurements = re.findall(r'exit=(-?\d+) ms=(\d+) rss_kb=(\d+)', output)
+    if not measurements:
+        raise ValueError('A recorded probe has no completion measurement')
+    rc, ms, rss = map(int, measurements[-1])
+    primary = [step for step in steps if step.get('label') == 'primary-unchanged-zesu_block']
+    for step in primary:
+        if step['arguments']['body'].strip() != 'try zesu_block.' or step['arguments']['timeout'] != 300:
+            raise ValueError('A completed primary used different call arguments')
+    record_path = path.with_suffix('.records.json')
+    records = (json.loads(record_path.read_text()) if record_path.exists()
+               else discovery.parse_capture(output, state, block, target))
+    for record in records:
+        if rc:
+            record['outcome'] = ('automation-search-timeout' if discovery.native_diagnostics.is_primary_timeout(calls)
+                                 else 'mcp-error' if primary else 'primary-unavailable')
+        record.update(source_sha256=digest(path), primary_steps=steps,
+                      primary_tactic_entered=bool(primary), proof_phase_entered=bool(primary),
+                      contract_closed=False, closure_scope='abstract successors only',
+                      performance={'rc': rc, 'wall_seconds': ms/1000, 'peak_mib': rss/1024},
+                      replay_policy='Completed primary calls remain immutable; no proof replay',
+                      reused_capture_inputs={str(p): digest(p) for p in
+                          (path, output_path, path.with_suffix('.mcp.json'), path.with_suffix('.steps.json'))})
+        if not record_path.exists():
+            record['metadata_limit'] = 'Worker RSS is recorded; separate Pet diagnostics and admission timing were not saved'
+    return {'arm': arm, **discovery.summarize(row, records), 'secondary_diagnostics': [], 'reused': True}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('root-commit', 'design', 'cfg', 'manifest', 'binding-report',
@@ -80,7 +141,7 @@ def main():
         args.design, args.cfg, args.manifest, args.binding_report, args.primary, args.archive_index,
         __file__, discovery.__file__, chain_root.__file__, entry_schema.__file__,
         'tools/block/native_diagnostics.py', 'tools/block/setup_fallback.py',
-        'tools/rocq_mcp_guarded.sh', 'tools/block/entry_check_coqc.sh', '_CoqProject')}
+        'tools/block/feedback_mcp.py', 'tools/block/feedback_mcp.sh', 'tools/rocq_mcp_guarded.sh', 'tools/block/entry_check_coqc.sh', '_CoqProject')}
     from rocq_mcp import server
     from rocq_mcp import interactive
     import pytanque.client
@@ -127,6 +188,7 @@ def main():
                     'terminal': 'decodeItemReturnAddress args', 'seconds': 300,
                     'build_dir': str(Path(args.build_dir).resolve()), 'secondary_enabled': False,
                     'probe_targets': [target],
+                    'feedback_dir': str(out/arm/'feedback'/Path(name).stem),
                     'load_before_start': old_block['outcomes'] == ['primary-unavailable']}
                 jobs.append((arm, row, block, targets[arm], options))
     if len(pairs) != 38:
@@ -140,10 +202,28 @@ def main():
         (out/'activation.json').write_text(json.dumps(activation, indent=2)+'\n')
         if not result.get('success'):
             raise ValueError('The switch activation check failed: ' + arm)
+    input_record = out/'run-inputs.json'
+    resume_changes = {}
+    if input_record.exists():
+        prior_text = input_record.read_text()
+        resume_changes = verify_resume_inputs(json.loads(prior_text), inputs, workspace)
+        (out/('run-inputs-' + digest(input_record) + '.json')).write_text(prior_text)
+    elif any(out.glob('*/probes/*.out')):
+        # The first failed attempt predated persistent input records.
+        # Its immutable source/call/output files remain bound individually.
+        resume_changes['history_limit'] = 'The failed first attempt saved no complete run-input record'
+    input_record.write_text(json.dumps(inputs, sort_keys=True) + '\n')
+    reused, pending = [], []
+    for job in jobs:
+        result = reuse_completed(job)
+        if result is None:
+            pending.append(job)
+        else:
+            reused.append(result)
     started = time.monotonic()
     before = discovery.machine()
     with ProcessPoolExecutor(max_workers=6) as pool:
-        results = list(pool.map(worker, jobs))
+        results = reused + list(pool.map(worker, pending))
     after = discovery.machine()
     for path, expected_hash in inputs.items():
         if digest(path) != expected_hash:
@@ -151,8 +231,13 @@ def main():
     report = {'label': 'Full RamFault switch comparison; no sole-Assert causal claim',
         'root_commit': root, 'inputs': inputs, 'pairs': pairs, 'activation': activation,
         'historical_primary': previous['raw_report'], 'historical_comparison': 'Different root/domain; descriptive only',
+        'resume_input_changes': resume_changes, 'reused_boundaries': len(reused), 'new_boundaries': len(pending),
         'workers': 6, 'primary_budget_seconds': 300, 'setup_budget_seconds': 60, 'proof_memory_limit_gib': 6,
-        'timeout_policy': 'Reset primary deadline after setup; floor remaining seconds; exact call arguments recorded',
+        'timeout_policy': 'Preparation receives 60 seconds. One unchanged primary sentence receives 300 seconds. Recorders receive the remaining time.',
+        'historical_timeout_interpretation': {
+            'original_class': 'automation-search-timeout',
+            'status': 'tooling-artifact-pending-rerun',
+            'leading_explanation': 'SDK division is the leading explanation for historical 21-second timeouts. The SDK divided 299 seconds across 14 sentences.'},
         'secondary_policy': 'Disabled in both primary arms; historical secondary evidence remains separate',
         'setup_policy': 'Default MCP with LOAD fallback; one LOAD-first owned start for the three historical unavailable entries',
         'elapsed_seconds': time.monotonic()-started, 'machine_before': before, 'machine_after': after,

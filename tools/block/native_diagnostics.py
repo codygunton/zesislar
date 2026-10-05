@@ -3,6 +3,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 import time
+from pathlib import Path
 
 
 def goal_size(goals):
@@ -30,8 +31,9 @@ async def measured_call(session, name, arguments, records, before=None, label=No
     try:
         result = data(await session.call_tool(name, arguments))
     except Exception as error:
-        records.append(timed_result(label or name, started, stamp, before,
-                                    {'success': False, 'error': str(error)}))
+        records.append({**timed_result(label or name, started, stamp, before,
+                                      {'success': False, 'error': str(error)}),
+                        'tool': name, 'arguments': arguments})
         raise
     records.append({**timed_result(label or name, started, stamp, before, result),
                     'tool': name, 'arguments': arguments})
@@ -42,6 +44,41 @@ async def native_step(session, state, timeout, records):
     return await measured_call(session, 'rocq_check', {
         'from_state': state['state_id'], 'body': '1: zesu_liAStep.', 'timeout': timeout},
         records, state.get('goals'), 'zesu_liAStep')
+
+
+def sdk_commands(body):
+    # Load server first because the pinned SDK has a circular import otherwise.
+    from rocq_mcp import server
+    from rocq_mcp import interactive
+    return interactive, interactive._split_rocq_sentences(body)
+
+
+def primary_plan(body):
+    _, commands = sdk_commands(body)
+    matches = [i for i, command in enumerate(commands) if command.strip() == 'try zesu_block.']
+    if len(matches) != 1:
+        raise ValueError('The frozen body must contain exactly one primary zesu_block sentence')
+    index = matches[0]
+    return ('\n'.join(commands[:index]), commands[index], '\n'.join(commands[index + 1:]))
+
+
+async def measured_check(session, state, body, timeout, records, label):
+    sdk, commands = sdk_commands(body)
+    sdk_path = Path(sdk.__file__).resolve()
+    metadata = {'sdk': {'path': str(sdk_path),
+                        'sha256': hashlib.sha256(sdk_path.read_bytes()).hexdigest()},
+                'sentence_budgets': [
+        {'sentence_sha256': hashlib.sha256(command.encode()).hexdigest(),
+         'timeout_seconds': (int(timeout) if len(commands) == 1 else
+                             max(1, int(timeout / len(commands))))
+                            if sdk._is_timeout_eligible(command) and timeout >= 1 else None}
+        for command in commands]}
+    try:
+        return await measured_call(session, 'rocq_check', {
+            'from_state': state['state_id'], 'body': body, 'timeout': timeout},
+            records, state.get('goals'), label)
+    finally:
+        records[-1].update(metadata)
 
 
 def is_primary_timeout(calls):
