@@ -27,7 +27,9 @@ Do not write an operational lemma per instruction. Do not write a template
 generator. Do not transliterate an Iris invariant into an operational one.
 Do not write a `//@spec:` for a load or store from an array. Do not split an
 array in a proof script. Do not redefine a Lithium hook outside
-`ZesuSsz/Automation/Hooks.v`. Do not use these names: `IslaInstructionSegment`,
+`ZesuSsz/Automation/Hooks.v`. Do not use a wall-clock deadline (`timeout`, a timed `first` or `try`, a
+time-limited solver call) in any tactic a production proof can reach; bound search by steps
+or leave it unbounded, and reject symbolic terms before `vm_compute`. Do not use these names: `IslaInstructionSegment`,
 `writeSuccessTraceAssumptions`, `zesu_ld_byte_array_at_spec`,
 `zesu_lbu_byte_array_at_spec`, `zesu_ld_array_at_spec`,
 `solve_zesu_ld_array_at`, `mem_mapsto_array_recombine_u64_read` outside
@@ -77,6 +79,10 @@ State that a proof is single-thread bound when one process uses one core and the
 
 Treat a proof module as too large when it takes more than 300 seconds or uses more than 6 GiB.
 These limits follow section 6 of the active plan and override the retired 90-second limit.
+Limits are exploratory, not sacred: when a proof needs more, raise the cap (the guard's
+`ZESU_PROOF_CPU_LIMIT`, currently 1200 seconds) and open a tracked issue to bring it back
+down; run the proof to completion and optimize the measured cost. Never split a basic block,
+cut a proof, or weaken a contract to fit a cap.
 Treat other modules as too large when they take more than 60 seconds or use more than 2 GiB.
 Stop repeated work on that module.
 Split it at sound proof-state boundaries before further full compilation.
