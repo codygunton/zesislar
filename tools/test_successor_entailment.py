@@ -164,7 +164,7 @@ class SuccessorValidationTests(unittest.TestCase):
         self.assertIn('Qed.', result['source'])
 
     def test_checker_requires_all_kernel_and_debt_evidence(self):
-        for defect in (None, 'shelf', 'missing_group', 'compile', 'assumptions', 'inherit', 'export'):
+        for defect in (None, 'clamp', 'shelf', 'missing_group', 'compile', 'assumptions', 'inherit', 'export'):
             with self.subTest(defect=defect):
                 empty = {'goals': [], 'stack': [], 'shelf': [], 'given_up': []}
                 if defect == 'shelf':
@@ -187,6 +187,8 @@ class SuccessorValidationTests(unittest.TestCase):
                             return {'success': defect != 'compile'}
                         if name == 'rocq_verify':
                             return {'success': True, 'assumptions': ['axiom'] if defect == 'assumptions' else []}
+                        if name == 'rocq_check' and defect == 'clamp':
+                            return {'success': True, 'state_id': 3, 'clamped_timeout': 300}
                         return {'success': True, 'state_id': 3}
                 statement = 'Lemma boundary : instr_body 0x10 Entry.'
                 rendered = {'source': statement + '\nProof.\n  try zesu_block.\nQed.\n',
@@ -195,11 +197,22 @@ class SuccessorValidationTests(unittest.TestCase):
                             'statement_sha256': hashlib.sha256(statement.encode()).hexdigest()}
                 result = asyncio.run(check_boundary(Session(), rendered, self.root / 'Checker.v',
                                      self.root, inherited_debts={'shelf': ['inherited']} if defect == 'inherit' else {}))
-                self.assertEqual(result['block_closed'], defect is None)
+                self.assertEqual(result['block_closed'], defect in (None, 'clamp'))
                 self.assertFalse(result['contract_closed'])
                 primary = [a for n, a in calls if n == 'rocq_check']
                 self.assertEqual(primary, [] if defect in {'missing_group', 'export'} else
-                                 [{'from_state': 3, 'body': 'try zesu_block.', 'timeout': 300}])
+                                 [{'from_state': 3, 'body': 'try zesu_block.', 'timeout': 1200}])
+                if primary:
+                    recorded = next(call for call in result['calls'] if call['tool'] == 'rocq_check')
+                    self.assertEqual(recorded['sentence_budgets'][0]['effective_timeout_seconds'],
+                                     300 if defect == 'clamp' else 1200)
+
+    def test_checker_rejects_budgets_outside_the_current_policy(self):
+        for seconds in (0, 1201):
+            with self.subTest(seconds=seconds):
+                with self.assertRaisesRegex(ValueError, '1 and 1200 seconds'):
+                    asyncio.run(check_boundary(None, {}, self.root / 'Budget.v',
+                                self.root, inherited_debts={}, seconds=seconds))
 
     def test_capture_entailment_cannot_close_a_native_block(self):
         # The same kernel evidence has a different scope for resource entailment.

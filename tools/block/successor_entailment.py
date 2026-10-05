@@ -301,14 +301,14 @@ def _result(value):
 
 
 async def check_boundary(session, rendered, path, workspace, *, inherited_debts,
-                         seconds=300, session_identity=None):
+                         seconds=1200, session_identity=None):
     """Require kernel evidence and complete empty groups before native closure.
 
     The caller owns the guarded MCP session and its compiler worker budget.
     Capture entailments use this checker but can never claim native closure.
     """
-    if not 0 < seconds <= 300:
-        raise ValueError('The proof budget must be between 1 and 300 seconds')
+    if not 0 < seconds <= 1200:
+        raise ValueError('The proof budget must be between 1 and 1200 seconds')
     if not isinstance(inherited_debts, dict):
         raise ValueError('Inherited debts must be explicit')
     path = Path(path).resolve()
@@ -336,7 +336,9 @@ async def check_boundary(session, rendered, path, workspace, *, inherited_debts,
         if tool == 'rocq_check':
             # Both accepted proof stages contain exactly one SDK sentence.
             row['sentence_budgets'] = [{'sentence_sha256': hashlib.sha256(arguments['body'].encode()).hexdigest(),
-                                       'timeout_seconds': arguments['timeout']}]
+                                       'timeout_seconds': arguments['timeout'],
+                                       'effective_timeout_seconds': result.get('clamped_timeout', arguments['timeout'])
+                                           if 'success' in result else None}]
         record['calls'].append(row)
         return result
 
