@@ -7,6 +7,22 @@ def matches(path, expected):
     return Path(path).is_file() and hashlib.sha256(Path(path).read_bytes()).hexdigest() == expected
 
 
+def valid_budget(evidence, compiler):
+    policy = evidence.get('proof_budget')
+    if policy is None or policy.get('kind') == 'wall':
+        return evidence.get('primary_timeout') == 300
+    limits = compiler.get('limits', {})
+    return (policy.get('kind') == 'cpu' and
+            isinstance(policy.get('cpu_seconds'), int) and
+            0 < policy['cpu_seconds'] <= 1200 and
+            policy.get('wall_seconds') is None and
+            policy.get('memory_kib') == 6*1024*1024 and
+            evidence.get('primary_timeout') is None and
+            limits.get('cpu_seconds') == policy['cpu_seconds'] and
+            limits.get('module_seconds') is None and
+            limits.get('rss_kib') == policy['memory_kib'])
+
+
 def native_closed(evidence, rendered):
     """Missing diagnostic groups do not certify closure; native Qed does."""
     compiler = evidence.get('compiler') or {}
@@ -24,7 +40,7 @@ def native_closed(evidence, rendered):
             not evidence.get('native_qed_compiled') or compiler.get('exit_code') != 0 or
             compiler.get('limit') or not evidence.get('primary_tactic_entered') or
             evidence.get('primary_tactic') != 'try zesu_block.' or
-            evidence.get('primary_timeout') != 300 or
+            not valid_budget(evidence, compiler) or
             evidence.get('assumption_verification', {}).get('verified') is not True or
             evidence['assumption_verification'].get('assumptions') != []):
         return False

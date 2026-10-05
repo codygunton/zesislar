@@ -1,0 +1,776 @@
+{
+  "schema": 1,
+  "item": "I11",
+  "root": "ea1578b6bde2cd6d10a26072c2346b6c5fcd55f0",
+  "witness_table": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-join-witnesses/WITNESS_TABLE.json",
+    "sha256": "1bb3f84d65f01e78d2fab21c904fc9d6d647553efe4d1e81a9c5f5a74adb7dcc"
+  },
+  "counts": {
+    "edges": 13,
+    "automatic_closures": 0,
+    "native_residuals": 6,
+    "startup_unavailable": 7,
+    "contract_closures": 0,
+    "block_closures": 0
+  },
+  "switches": [
+    "InstructionLookup",
+    "StackWrite",
+    "RamFault",
+    "LowMask",
+    "IntegerArrayAddress",
+    "RecordWitness",
+    "ArrayBounds",
+    "WordArrayHandoff",
+    "ReturnBundle",
+    "ReturnWand",
+    "StrictSigned",
+    "ListWitness",
+    "TupleWitness"
+  ],
+  "switch_activation": {
+    "classes": [
+      "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+      "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+      "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+      "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+      "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+      "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+      "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+      "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff",
+      "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+      "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+      "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+      "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+      "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness"
+    ],
+    "all_explicitly_active": true,
+    "kernel_assumptions": [],
+    "evidence": {
+      "path": "/home/cody/zesislar-archive/sha256/14/140c644a4b87d0613eabb9279251c184b0c30d4732a7ba9943fb9b04d79c982f",
+      "sha256": "140c644a4b87d0613eabb9279251c184b0c30d4732a7ba9943fb9b04d79c982f",
+      "bytes": 14227
+    }
+  },
+  "rows": [
+    {
+      "edge": "decodeItemJoin698cFrom697c",
+      "source_pc": "0x800d697c",
+      "target_pc": "0x800d698c",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "residual",
+      "adapter_closed": false,
+      "residual_class": "unresolved_data_witness",
+      "first_goal": "nat",
+      "first_residual": {
+        "path": "/home/cody/zesislar-archive/sha256/bd/bd516353ad2d9ce47e6d291912b1659c01ab5c7a7aea85e0f40dc7f7a29df09f",
+        "sha256": "bd516353ad2d9ce47e6d291912b1659c01ab5c7a7aea85e0f40dc7f7a29df09f",
+        "bytes": 7423
+      },
+      "primary_groups_available": true,
+      "primary_group_counts": {
+        "goals": 6,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_exports": [
+        {
+          "checkpoint": "entry",
+          "sha256": "c3612c61cbf1851a388e7d04da29bb5fe91e85acc4d132cc3e2e6c9cca0d423e",
+          "path": "/home/cody/zesislar-archive/sha256/c3/c3612c61cbf1851a388e7d04da29bb5fe91e85acc4d132cc3e2e6c9cca0d423e",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "sha256": "c3612c61cbf1851a388e7d04da29bb5fe91e85acc4d132cc3e2e6c9cca0d423e",
+          "path": "/home/cody/zesislar-archive/sha256/c3/c3612c61cbf1851a388e7d04da29bb5fe91e85acc4d132cc3e2e6c9cca0d423e",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "sha256": "47d3a5e601db2a7f905c9d68673e7d93036ff484dc446053404d5adbe21fdeea",
+          "path": "/home/cody/zesislar-archive/sha256/47/47d3a5e601db2a7f905c9d68673e7d93036ff484dc446053404d5adbe21fdeea",
+          "counts": {
+            "goals": 6,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        }
+      ],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/90/908544be77bec01c70ef8d69f92a2777ab652e665648a117cde5f9599e3bab37",
+        "sha256": "908544be77bec01c70ef8d69f92a2777ab652e665648a117cde5f9599e3bab37",
+        "bytes": 1366
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/ce/cea7150a43c1cc34a542c9feda8bea17942a032698e6d47188bfd6ffc7220926",
+        "sha256": "cea7150a43c1cc34a542c9feda8bea17942a032698e6d47188bfd6ffc7220926",
+        "bytes": 167970
+      },
+      "setup_seconds": 22.10411757300608,
+      "primary_seconds": 20.77365288801957,
+      "peak_scope_bytes": 1474727936,
+      "elapsed_seconds": 45.34695023403037,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin698cFrom69e8",
+      "source_pc": "0x800d69e8",
+      "target_pc": "0x800d698c",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "residual",
+      "adapter_closed": false,
+      "residual_class": "unresolved_data_witness",
+      "first_goal": "nat",
+      "first_residual": {
+        "path": "/home/cody/zesislar-archive/sha256/fc/fccf111c002946c31fa12f39242f5cf27b32a94b0c2a9d370060c7f1e5d7b376",
+        "sha256": "fccf111c002946c31fa12f39242f5cf27b32a94b0c2a9d370060c7f1e5d7b376",
+        "bytes": 7924
+      },
+      "primary_groups_available": true,
+      "primary_group_counts": {
+        "goals": 6,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_exports": [
+        {
+          "checkpoint": "entry",
+          "sha256": "0f193b5873b5712ba67df8f20ec3fb3666f29ef3db64bcfddb43b551a3d5e95b",
+          "path": "/home/cody/zesislar-archive/sha256/0f/0f193b5873b5712ba67df8f20ec3fb3666f29ef3db64bcfddb43b551a3d5e95b",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "sha256": "0f193b5873b5712ba67df8f20ec3fb3666f29ef3db64bcfddb43b551a3d5e95b",
+          "path": "/home/cody/zesislar-archive/sha256/0f/0f193b5873b5712ba67df8f20ec3fb3666f29ef3db64bcfddb43b551a3d5e95b",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "sha256": "f47b144f251fe574268ded1e2bdb6b9c9b04565baac948d95971b63434c2523a",
+          "path": "/home/cody/zesislar-archive/sha256/f4/f47b144f251fe574268ded1e2bdb6b9c9b04565baac948d95971b63434c2523a",
+          "counts": {
+            "goals": 6,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        }
+      ],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/ba/ba5f84cbd1a5890af6cc5708a026589ba3a5a665d6a0f9816ff9b62c9d48fb52",
+        "sha256": "ba5f84cbd1a5890af6cc5708a026589ba3a5a665d6a0f9816ff9b62c9d48fb52",
+        "bytes": 1380
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/e3/e31923a5681452487dd21210ed99b8d9293c9554a853a511fae640a5c0e92056",
+        "sha256": "e31923a5681452487dd21210ed99b8d9293c9554a853a511fae640a5c0e92056",
+        "bytes": 177631
+      },
+      "setup_seconds": 27.726203850004822,
+      "primary_seconds": 26.71549980796408,
+      "peak_scope_bytes": 1497673728,
+      "elapsed_seconds": 57.23584448394831,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6a24From6a14",
+      "source_pc": "0x800d6a14",
+      "target_pc": "0x800d6a24",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "residual",
+      "adapter_closed": false,
+      "residual_class": "header_witness_mismatch",
+      "first_goal": "payloadStart < payloadStart",
+      "first_residual": {
+        "path": "/home/cody/zesislar-archive/sha256/da/da6923a9552ef194719a232e88e8a8f3895b9b034c37fba85bd400410ad056eb",
+        "sha256": "da6923a9552ef194719a232e88e8a8f3895b9b034c37fba85bd400410ad056eb",
+        "bytes": 2850
+      },
+      "primary_groups_available": true,
+      "primary_group_counts": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_exports": [
+        {
+          "checkpoint": "entry",
+          "sha256": "ccb4b1ba71c539406dcfba6c7c24fb697cdd0f513713ccc1f07b5feb4933b994",
+          "path": "/home/cody/zesislar-archive/sha256/cc/ccb4b1ba71c539406dcfba6c7c24fb697cdd0f513713ccc1f07b5feb4933b994",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "sha256": "ccb4b1ba71c539406dcfba6c7c24fb697cdd0f513713ccc1f07b5feb4933b994",
+          "path": "/home/cody/zesislar-archive/sha256/cc/ccb4b1ba71c539406dcfba6c7c24fb697cdd0f513713ccc1f07b5feb4933b994",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "sha256": "5695e63d6fc773eb22981939c7997099e46531abd6e9f32ca5df560ff8f1d9ee",
+          "path": "/home/cody/zesislar-archive/sha256/56/5695e63d6fc773eb22981939c7997099e46531abd6e9f32ca5df560ff8f1d9ee",
+          "counts": {
+            "goals": 8,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        }
+      ],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/b0/b0e13f9a13532b36146427f0896daa7add49d3b2ec0603e41ecc7a4b7c33c75b",
+        "sha256": "b0e13f9a13532b36146427f0896daa7add49d3b2ec0603e41ecc7a4b7c33c75b",
+        "bytes": 1460
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/12/121fc15af540f8235d63c7a774c21d95e0b55dde64cb0de2916954e2b3f125f4",
+        "sha256": "121fc15af540f8235d63c7a774c21d95e0b55dde64cb0de2916954e2b3f125f4",
+        "bytes": 104202
+      },
+      "setup_seconds": 6.932525701005943,
+      "primary_seconds": 5.629646246088669,
+      "peak_scope_bytes": 1252528128,
+      "elapsed_seconds": 15.318667959887534,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6a24Backedge",
+      "source_pc": "0x800d6a24",
+      "target_pc": "0x800d6a24",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/b2/b28a268e7c3ad944a64e631c2c6852f2b82c89d4abe5695f9c26b6f57ea69273",
+        "sha256": "b28a268e7c3ad944a64e631c2c6852f2b82c89d4abe5695f9c26b6f57ea69273",
+        "bytes": 1430
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/f6/f66c1b26a6e325b791a51c9f31c51f9d7a54ab34c7abf181ec203e918ccd1143",
+        "sha256": "f66c1b26a6e325b791a51c9f31c51f9d7a54ab34c7abf181ec203e918ccd1143",
+        "bytes": 2924
+      },
+      "setup_seconds": 60.019812276004814,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1470652416,
+      "elapsed_seconds": 62.75432248506695,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ac4From6ab4",
+      "source_pc": "0x800d6ab4",
+      "target_pc": "0x800d6ac4",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "residual",
+      "adapter_closed": false,
+      "residual_class": "header_witness_mismatch",
+      "first_goal": "payloadStart < payloadStart",
+      "first_residual": {
+        "path": "/home/cody/zesislar-archive/sha256/da/da6923a9552ef194719a232e88e8a8f3895b9b034c37fba85bd400410ad056eb",
+        "sha256": "da6923a9552ef194719a232e88e8a8f3895b9b034c37fba85bd400410ad056eb",
+        "bytes": 2850
+      },
+      "primary_groups_available": true,
+      "primary_group_counts": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_exports": [
+        {
+          "checkpoint": "entry",
+          "sha256": "7462f22c5982461ddbc4c0a52a820dbbb20861bb4f0bcd9cbfe1fd145a482bcc",
+          "path": "/home/cody/zesislar-archive/sha256/74/7462f22c5982461ddbc4c0a52a820dbbb20861bb4f0bcd9cbfe1fd145a482bcc",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "sha256": "7462f22c5982461ddbc4c0a52a820dbbb20861bb4f0bcd9cbfe1fd145a482bcc",
+          "path": "/home/cody/zesislar-archive/sha256/74/7462f22c5982461ddbc4c0a52a820dbbb20861bb4f0bcd9cbfe1fd145a482bcc",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "sha256": "5695e63d6fc773eb22981939c7997099e46531abd6e9f32ca5df560ff8f1d9ee",
+          "path": "/home/cody/zesislar-archive/sha256/56/5695e63d6fc773eb22981939c7997099e46531abd6e9f32ca5df560ff8f1d9ee",
+          "counts": {
+            "goals": 8,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        }
+      ],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/5b/5be1ba102c188ac776fca662690b460194c3922bac67e633e260b729c14f5bae",
+        "sha256": "5be1ba102c188ac776fca662690b460194c3922bac67e633e260b729c14f5bae",
+        "bytes": 1460
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/6e/6e1e06cb878642c0c49c29069efaed65e077b7a438bfe668902f60310ca408c0",
+        "sha256": "6e1e06cb878642c0c49c29069efaed65e077b7a438bfe668902f60310ca408c0",
+        "bytes": 104197
+      },
+      "setup_seconds": 6.919072546996176,
+      "primary_seconds": 5.709536732989363,
+      "peak_scope_bytes": 1253498880,
+      "elapsed_seconds": 15.569396893959492,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ac4Backedge",
+      "source_pc": "0x800d6ac4",
+      "target_pc": "0x800d6ac4",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/ed/ed3d574f1995d6f0a6325177ea38655435f8e819ea0a822eac2f6f0d8384b17d",
+        "sha256": "ed3d574f1995d6f0a6325177ea38655435f8e819ea0a822eac2f6f0d8384b17d",
+        "bytes": 1430
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/9e/9e7e885285155067a3dfd6c25f5699e5dda047d73677db40bae5ac8be8fc2e9b",
+        "sha256": "9e7e885285155067a3dfd6c25f5699e5dda047d73677db40bae5ac8be8fc2e9b",
+        "bytes": 2924
+      },
+      "setup_seconds": 60.020794985000975,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1462591488,
+      "elapsed_seconds": 62.75595831708051,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6970",
+      "source_pc": "0x800d6960",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/13/13a9a781ef5e6bb97082f97dede5874742d374bb198e829576b0de4fc7737934",
+        "sha256": "13a9a781ef5e6bb97082f97dede5874742d374bb198e829576b0de4fc7737934",
+        "bytes": 1306
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/9c/9c9667cbc49fbd1ab5a5a5ef008c4a6286e5c365f17e7d77a8e2abed04d0298c",
+        "sha256": "9c9667cbc49fbd1ab5a5a5ef008c4a6286e5c365f17e7d77a8e2abed04d0298c",
+        "bytes": 2922
+      },
+      "setup_seconds": 60.021964426967315,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1693409280,
+      "elapsed_seconds": 63.0064752131002,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From69e0",
+      "source_pc": "0x800d69e0",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/44/44778803fb6469d23709dfbb78fec8a030ddce4a4e670aa0533f77ce29aa9d89",
+        "sha256": "44778803fb6469d23709dfbb78fec8a030ddce4a4e670aa0533f77ce29aa9d89",
+        "bytes": 1382
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/3b/3be1b56c6dd177c17edc16d4f6aa5ac53e4a85408515d534e31a631b5552c30f",
+        "sha256": "3be1b56c6dd177c17edc16d4f6aa5ac53e4a85408515d534e31a631b5552c30f",
+        "bytes": 2922
+      },
+      "setup_seconds": 60.02016926498618,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1274515456,
+      "elapsed_seconds": 62.24411179602612,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6a08",
+      "source_pc": "0x800d6a08",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/69/6940eeb3337b2c64eaf4e3ba225dfcc05793116920d72956dffe8dc15e53c21f",
+        "sha256": "6940eeb3337b2c64eaf4e3ba225dfcc05793116920d72956dffe8dc15e53c21f",
+        "bytes": 1366
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/d1/d1f653e0b7bbb6d5a52a27e0447cc885cf49c62f452fde93a656447493ac0d02",
+        "sha256": "d1f653e0b7bbb6d5a52a27e0447cc885cf49c62f452fde93a656447493ac0d02",
+        "bytes": 2923
+      },
+      "setup_seconds": 60.02188939496409,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1296920576,
+      "elapsed_seconds": 62.24458456900902,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6a38",
+      "source_pc": "0x800d6a38",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "residual",
+      "adapter_closed": false,
+      "residual_class": "source_domain_gap",
+      "first_goal": "decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args",
+      "first_residual": {
+        "path": "/home/cody/zesislar-archive/sha256/2b/2b1bea114e00f7135c8c401470f7219ff7ad77ce9e299c3af3db3a40b5a76012",
+        "sha256": "2b1bea114e00f7135c8c401470f7219ff7ad77ce9e299c3af3db3a40b5a76012",
+        "bytes": 2320
+      },
+      "primary_groups_available": true,
+      "primary_group_counts": {
+        "goals": 5,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_exports": [
+        {
+          "checkpoint": "entry",
+          "sha256": "535474467d3f37ad4d1bdd33225cdc9b3af98d4a1de5355e95f28c09684f6aed",
+          "path": "/home/cody/zesislar-archive/sha256/53/535474467d3f37ad4d1bdd33225cdc9b3af98d4a1de5355e95f28c09684f6aed",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "sha256": "535474467d3f37ad4d1bdd33225cdc9b3af98d4a1de5355e95f28c09684f6aed",
+          "path": "/home/cody/zesislar-archive/sha256/53/535474467d3f37ad4d1bdd33225cdc9b3af98d4a1de5355e95f28c09684f6aed",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "sha256": "e53984e357c7ee5a8c10af97cdbc3bdd07c5cf474e081808b6a809bd76605294",
+          "path": "/home/cody/zesislar-archive/sha256/e5/e53984e357c7ee5a8c10af97cdbc3bdd07c5cf474e081808b6a809bd76605294",
+          "counts": {
+            "goals": 5,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        }
+      ],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/3a/3a2d8ec6dbd0b655ed54016f3091a3a74b49250c75fe0d1d498716cf37dc06ec",
+        "sha256": "3a2d8ec6dbd0b655ed54016f3091a3a74b49250c75fe0d1d498716cf37dc06ec",
+        "bytes": 1426
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/d1/d1a17032b2d4f9d54e4027e4697dbe1e19cea7750ee276fbfb2cab7d468be27b",
+        "sha256": "d1a17032b2d4f9d54e4027e4697dbe1e19cea7750ee276fbfb2cab7d468be27b",
+        "bytes": 91351
+      },
+      "setup_seconds": 30.193807360017672,
+      "primary_seconds": 27.073467355920002,
+      "peak_scope_bytes": 1571790848,
+      "elapsed_seconds": 59.71554013504647,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6a6c",
+      "source_pc": "0x800d6a6c",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/5d/5d75108e9647f7ac764eefab83e8644ae83cd6d33461f96a4256805647afae53",
+        "sha256": "5d75108e9647f7ac764eefab83e8644ae83cd6d33461f96a4256805647afae53",
+        "bytes": 1366
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/4d/4d25ea2622dd7fea76ccec64d128910b4dc78b9de4e93068214c78cf869c8973",
+        "sha256": "4d25ea2622dd7fea76ccec64d128910b4dc78b9de4e93068214c78cf869c8973",
+        "bytes": 2925
+      },
+      "setup_seconds": 60.020847200998105,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1296556032,
+      "elapsed_seconds": 62.469823291990906,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6aa8",
+      "source_pc": "0x800d6aa8",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "unavailable",
+      "adapter_closed": false,
+      "residual_class": "entry_unavailable",
+      "first_goal": null,
+      "first_residual": null,
+      "primary_groups_available": false,
+      "primary_group_counts": null,
+      "native_exports": [],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/a1/a1614a4db310e2995b37438712de39129858e140c054820b82dca9bbc85799c8",
+        "sha256": "a1614a4db310e2995b37438712de39129858e140c054820b82dca9bbc85799c8",
+        "bytes": 1366
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/46/4672c597f2ca0436b9027d6906984eae6b31b1f79e8e8a7c522f6cb1e23a0c50",
+        "sha256": "4672c597f2ca0436b9027d6906984eae6b31b1f79e8e8a7c522f6cb1e23a0c50",
+        "bytes": 2923
+      },
+      "setup_seconds": 60.02046058897395,
+      "primary_seconds": null,
+      "peak_scope_bytes": 1300525056,
+      "elapsed_seconds": 62.46860135195311,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6ad8",
+      "source_pc": "0x800d6ad8",
+      "target_pc": "0x800d6ae0",
+      "application": "Exact declared JoinTransfers obligation; unchanged universal binders",
+      "outcome": "residual",
+      "adapter_closed": false,
+      "residual_class": "source_domain_gap",
+      "first_goal": "decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args",
+      "first_residual": {
+        "path": "/home/cody/zesislar-archive/sha256/3a/3a2cf80891ee6a494eab5f2972abaf956217de02e64f3e3397e33804d571592f",
+        "sha256": "3a2cf80891ee6a494eab5f2972abaf956217de02e64f3e3397e33804d571592f",
+        "bytes": 2327
+      },
+      "primary_groups_available": true,
+      "primary_group_counts": {
+        "goals": 5,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "native_exports": [
+        {
+          "checkpoint": "entry",
+          "sha256": "7a4f729aecf4e422ed0959c95c074e5f0da722cfe57bbdff3402e3a8cbc9427f",
+          "path": "/home/cody/zesislar-archive/sha256/7a/7a4f729aecf4e422ed0959c95c074e5f0da722cfe57bbdff3402e3a8cbc9427f",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "preparation",
+          "sha256": "7a4f729aecf4e422ed0959c95c074e5f0da722cfe57bbdff3402e3a8cbc9427f",
+          "path": "/home/cody/zesislar-archive/sha256/7a/7a4f729aecf4e422ed0959c95c074e5f0da722cfe57bbdff3402e3a8cbc9427f",
+          "counts": {
+            "goals": 1,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        },
+        {
+          "checkpoint": "primary",
+          "sha256": "115b159eb5887a979396364766881acdd06268d9fb111cf3f22939d3eaf26ba1",
+          "path": "/home/cody/zesislar-archive/sha256/11/115b159eb5887a979396364766881acdd06268d9fb111cf3f22939d3eaf26ba1",
+          "counts": {
+            "goals": 5,
+            "stack": 0,
+            "shelf": 0,
+            "given_up": 0
+          }
+        }
+      ],
+      "source": {
+        "path": "/home/cody/zesislar-archive/sha256/84/8496a0d69c28548e430d039e1cf824760fea0df6ea90041b6dc54ab8cd55c5dc",
+        "sha256": "8496a0d69c28548e430d039e1cf824760fea0df6ea90041b6dc54ab8cd55c5dc",
+        "bytes": 1426
+      },
+      "result": {
+        "path": "/home/cody/zesislar-archive/sha256/e7/e72d47e0729c26defe7d926377eb3553229cf9e0c49a110ba8c4cf7ba8612500",
+        "sha256": "e72d47e0729c26defe7d926377eb3553229cf9e0c49a110ba8c4cf7ba8612500",
+        "bytes": 91351
+      },
+      "setup_seconds": 35.94855578010902,
+      "primary_seconds": 32.5962048729416,
+      "peak_scope_bytes": 1579438080,
+      "elapsed_seconds": 70.73467185802292,
+      "kernel_compile_verify": "not_attempted_with_pending_or_unavailable_groups"
+    }
+  ],
+  "archive_inventory": {
+    "path": "/home/cody/zesislar-archive/sha256/60/602dd7fced8aab087c63a4696eabccdf5895f8096be693dab29a8aeea3b319bf",
+    "sha256": "602dd7fced8aab087c63a4696eabccdf5895f8096be693dab29a8aeea3b319bf",
+    "bytes": 18981
+  },
+  "source_native_binding": {
+    "path": "/home/cody/zesislar-archive/sha256/0e/0e278084dea7f259220899ce5dc93a38c4f041b874da526c616d7e8cdfa9d056",
+    "sha256": "0e278084dea7f259220899ce5dc93a38c4f041b874da526c616d7e8cdfa9d056",
+    "bytes": 202933
+  },
+  "post_run_native_check": {
+    "path": "/home/cody/zesislar-archive/sha256/d9/d988d6f9a9ef7ba0787c7a8f37ec3996308b7b39a495a52560271adc7031b0fc",
+    "sha256": "d988d6f9a9ef7ba0787c7a8f37ec3996308b7b39a495a52560271adc7031b0fc",
+    "bytes": 43
+  },
+  "workers_max": 6,
+  "proof_seconds_limit": 300,
+  "setup_seconds_limit": 60,
+  "memory_limit_gib": 6,
+  "peak_scope_bytes": 1693409280,
+  "manual_native_handoff_growth": 0,
+  "notes": [
+    "Every statement names the exact JoinTransfers obligation. No abstract stop, executed capture, or hand-proof oracle becomes a premise.",
+    "The witness table is read-only oracle metadata. Its historical signatures differ from this root. Current declared binders govern each statement. No unavailable witness is invented.",
+    "Six primary calls returned complete active, stack, shelf, and given-up groups. Seven starts timed out at 60 seconds. Their primary groups remain unavailable. No unchanged retry or shell proof fallback ran.",
+    "The two header transfers infer n=i=payloadStart and lengthBytes=frameBytes in their target. Their first residual is payloadStart < payloadStart. The complete groups preserve all eight obligations.",
+    "The four source entries 6a14,6ab4,6a38,6ad8 still omit decodeItemDomainAt at this root. The two checked length exits retain that domain obligation. No contract clause changes.",
+    "The two 698c transfers retain nat and register-list data evars, array-index obligations, and a native continuation goal. They do not close.",
+    "Kernel compilation and assumption verification run only for debt-free adapters. None qualified. The switch preflight compiled and verified with assumptions [].",
+    "All 990 prebound native objects retained their hashes through the measured attempts. Gate rebuilds occur after this check.",
+    "No production tactic, instruction semantics, contract, domain, or proof architecture changed."
+  ],
+  "gate": {
+    "status": "passed",
+    "exit": 0,
+    "jobs": 6,
+    "whole_make_wall_seconds": 204.9329653069144,
+    "wall_measurement_resolution_seconds": 0.1,
+    "dune_wall_seconds": 142.916,
+    "dune_peak_rss_kib": 2308828,
+    "check_iris": "not_run_worker_scope",
+    "log": {
+      "path": "/home/cody/zesislar-archive/sha256/37/37bfa684ee170d8bd9083b41931f403b70a99cea544dcd5729c56ad3fe20c74c",
+      "sha256": "37bfa684ee170d8bd9083b41931f403b70a99cea544dcd5729c56ad3fe20c74c",
+      "bytes": 60734
+    },
+    "timing": {
+      "path": "/home/cody/zesislar-archive/sha256/f6/f68b3fd8e86fc66b99e4385fdf95e76cad109e030cbfa5f81d11d0acc369e3a3",
+      "sha256": "f68b3fd8e86fc66b99e4385fdf95e76cad109e030cbfa5f81d11d0acc369e3a3",
+      "bytes": 320
+    },
+    "build_record": {
+      "path": "/home/cody/zesislar-archive/sha256/c5/c5545440832072d68260f16560f116c1bb841252379576a3638417cb402873ab",
+      "sha256": "c5545440832072d68260f16560f116c1bb841252379576a3638417cb402873ab",
+      "bytes": 102
+    }
+  },
+  "report_check": {
+    "path": "/home/cody/zesislar-archive/sha256/5d/5d90049ab56c9f7eb42812cf58a69c5b1045070b02ab8ef3d4427dc7d2211a69",
+    "sha256": "5d90049ab56c9f7eb42812cf58a69c5b1045070b02ab8ef3d4427dc7d2211a69",
+    "bytes": 90
+  },
+  "metrics": {
+    "start": "2026-10-05T20:06:44.964Z",
+    "end": "2026-10-05T20:22:46.476713+00:00",
+    "start_basis": "Codex task_started event",
+    "child_min": 16.025211883333334,
+    "tokens_child": 6953686,
+    "token_start_event": [
+      "2026-10-05T19:44:04.426Z",
+      263143325
+    ],
+    "token_end_event": [
+      "2026-10-05T20:22:07.338Z",
+      270097011
+    ],
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable",
+    "parent_reason": "Parent supplies its item-window measurements after checkpoint",
+    "hand_lines": 0,
+    "native_handoff_growth": 0,
+    "rework": "none"
+  }
+}
