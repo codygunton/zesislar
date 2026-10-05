@@ -22,6 +22,24 @@ from check_spec_shapes import (
 
 
 class SpecShapeTests(unittest.TestCase):
+    def test_untyped_existential_binders_are_counted(self):
+        spec = ('Definition exact : iProp Sigma := '
+                '(∃ ret bytes, "x1" ↦ᵣ RVal_Bits ret ∗ '
+                '⌜length bytes = 8⌝ ∗ True)%I.')
+        self.assertEqual(existential_binders(definitions(spec)[0][2]),
+                         ["ret", "bytes"])
+        self.assertEqual(shape_counts(spec, {"exact"})[
+            "uninferable_existentials"], 1)
+
+    def test_mixed_existential_binders_keep_order(self):
+        body = '(∃ first (second third : Z) fourth, True)%I.'
+        self.assertEqual(existential_binders(body),
+                         ["first", "second", "third", "fourth"])
+
+    def test_unparenthesized_typed_binder_excludes_its_type(self):
+        body = '(∃ outcome : DecodeItemOutcome, hidden_resource outcome)%I.'
+        self.assertEqual(existential_binders(body), ["outcome"])
+
     def test_register_binder_is_inferable_before_pure_use(self):
         spec = ('Definition exact `{!islaG Sigma} : iProp Sigma := '
                 '(∃ (ret : bv 64), "x1" ↦ᵣ RVal_Bits ret ∗ '

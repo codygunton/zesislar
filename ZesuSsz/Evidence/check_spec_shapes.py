@@ -134,8 +134,18 @@ def existential_binders(body: str) -> list[str]:
     comma = body.find(",", existence)
     if comma < 0:
         return []
-    return [binder for group in BINDER_GROUP.finditer(body[existence:comma])
-            for binder in group.group(1).split()]
+    declaration = body[existence + 1:comma]
+    def bare_binders(segment: str) -> list[str]:
+        return re.findall(r"\b[A-Za-z_]\w*\b", segment.split(":", 1)[0])
+
+    binders = []
+    offset = 0
+    for group in BINDER_GROUP.finditer(declaration):
+        binders.extend(bare_binders(declaration[offset:group.start()]))
+        binders.extend(group.group(1).split())
+        offset = group.end()
+    binders.extend(bare_binders(declaration[offset:]))
+    return binders
 
 
 def binder_shape(binder: str, parts: list[str], unfolded: set[str]) -> str:

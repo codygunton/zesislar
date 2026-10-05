@@ -8,6 +8,22 @@
   "ZesuSsz/Automation/Calls.v": {
     "unfold_without_typeclasses_opaque": 2
   },
+  "ZesuSsz/Contracts/DecodeItemBranchEntries.v": {
+    "uninferable_existentials": 1,
+    "reason": "The decodeItem branch continuation introduces its result outcome when it returns; this witness is not inferred from an entry register."
+  },
+  "ZesuSsz/Contracts/Level1.v": {
+    "uninferable_existentials": 1,
+    "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources."
+  },
+  "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": {
+    "uninferable_existentials": 1,
+    "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources."
+  },
+  "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": {
+    "uninferable_existentials": 24,
+    "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed."
+  },
   "ZesuSsz/Proofs/Tests/InstrPreFlex.v": {
     "unfold_without_typeclasses_opaque": 1
   },
