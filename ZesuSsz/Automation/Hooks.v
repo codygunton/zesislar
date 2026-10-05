@@ -231,6 +231,17 @@ Ltac zesu_name_machine_bound expected name :=
 (* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
 Ltac zesu_low_mask_if_enabled :=
   let _ := constr:(_ : ZesuStepLowMask) in
+  repeat first [
+    lazymatch goal with |- bv_unsigned ?masked = _ =>
+      match goal with Hlocal := _ |- _ =>
+        constr_eq masked Hlocal; unfold Hlocal
+      end
+    end
+    | lazymatch goal with |- bv_unsigned (bv_and ?sum _) = _ =>
+        match goal with Hlocal := _ |- _ =>
+          constr_eq sum Hlocal; unfold Hlocal
+        end
+      end];
   lazymatch goal with
   | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) =
        bv_unsigned (Z_to_bv ?low ?result) =>
