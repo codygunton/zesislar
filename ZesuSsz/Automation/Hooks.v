@@ -769,6 +769,73 @@ Ltac zesu_handoff_integer_equality_if_enabled :=
           change (leftNorm = rightNorm); solve [lia | ring]))
   end.
 
+Class ZesuStepIntegerArrayAddress : Prop :=
+  zesu_step_integer_array_address : True.
+
+Ltac zesu_integer_pointer_root pointer continuation :=
+  lazymatch pointer with
+  | bv_add ?base ?offset =>
+      zesu_handoff_closed_term offset; zesu_integer_pointer_root base continuation
+  | bv_sub ?base ?offset =>
+      zesu_handoff_closed_term offset; zesu_integer_pointer_root base continuation
+  | Z_to_bv 64 ?base => continuation base
+  end.
+
+Ltac zesu_integer_array_emit_facts proof :=
+  let statement := type of proof in
+  let expanded := eval hnf in statement in
+  lazymatch expanded with
+  | ?left /\ ?right =>
+      let leftProof := constr:(@proj1 left right proof) in
+      let rightProof := constr:(@proj2 left right proof) in
+      zesu_integer_array_emit_facts leftProof;
+      zesu_integer_array_emit_facts rightProof
+  | _ =>
+      lazymatch goal with
+      | _ : statement |- _ => idtac
+      | _ => let name := fresh "HarrayFact" in pose proof proof as name
+      end
+  end.
+
+Ltac zesu_integer_array_facts :=
+  repeat match goal with
+  | H : ?statement |- _ =>
+      lazymatch type of statement with Prop => idtac end;
+      progress zesu_integer_array_emit_facts H
+  end.
+
+Ltac zesu_integer_array_address_if_enabled :=
+  let _ := constr:(_ : ZesuStepIntegerArrayAddress) in
+  zesu_expose_environment_alias;
+  repeat match goal with
+  | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
+  end;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
+      let expanded := eval cbv beta zeta in pointer in
+      zesu_integer_pointer_root expanded ltac:(fun base =>
+      let integer := zesu_stack_integer_address expanded in
+      iMatchHyp ltac:(fun H body =>
+        lazymatch body with
+        | (?lower ↦ₘ{?q}∗ ?values)%I =>
+            constr_eq lower base;
+            lazymatch type of values with list (bv ?width) =>
+              let Heq := fresh "HarrayAddress" in
+              assert (Heq : bv_unsigned pointer = integer) by
+                (timeout 2 zesu_stack_arithmetic);
+              let Hrange := fresh "HarrayAddressRange" in
+              assert (Hrange : (lower <= integer < lower +
+                Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
+                (timeout 2 (repeat first [progress zesu_split_folded_pure |
+                  match goal with Hpure : _ /\ _ |- _ => destruct Hpure end];
+                  zesu_normalize_binary_nat_hypotheses; bv_solve));
+              timeout 2 zesu_integer_array_facts;
+              rewrite Heq; clear Heq
+            end
+        end))
+  end.
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
@@ -783,6 +850,7 @@ Ltac zesu_liAStep :=
   | zesu_handoff_adjacent_words_if_enabled
   | zesu_handoff_facts_if_enabled
   | zesu_handoff_integer_equality_if_enabled
+  | zesu_integer_array_address_if_enabled
   | zesu_normalize_find_mem_address
   | zesu_liAWriteMem
   | zesu_liAReadMem
