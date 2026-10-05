@@ -1,0 +1,103 @@
+CHAIN-GOAL-BEGIN "shelved"
+CHAIN-GOAL-LOCAL H20 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed a3 < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H20 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H19 : (-1 < bv_unsigned a3 < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H19 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H18 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed a4 < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H18 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H17 : (-1 < bv_unsigned a4 < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H17 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H16 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed a5 < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H16 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H15 : (-1 < bv_unsigned a5 < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H15 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H14 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed a6 < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H14 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H13 : (-1 < bv_unsigned a6 < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H13 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H12 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H12 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H11 : (-1 < bv_unsigned b < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H11 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H10 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H10 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H9 : (-1 < bv_unsigned n < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H9 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H8 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed b0 < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H8 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H7 : (-1 < bv_unsigned b0 < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H7 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H6 : (64%N ≠ 0%N → - bv_half_modulus 64 ≤ bv_signed n1 < bv_half_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H6 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H5 : (-1 < bv_unsigned n1 < bv_modulus 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H5 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL n1 : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT n1 : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H4 : (¬ bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600 + 8)) >= bv_signed 2684354560) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H4 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H3 : (Z.land (bvn_unsigned n) 131072 = 0) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H3 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H2 : (Z.land (bv_unsigned b0) 131072 = 0) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H2 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL b0 : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT b0 : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL n : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT n : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H1 : (Z.land (bv_unsigned b) 131072 = 0) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H1 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL b : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT b : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H0 : (decodeItemDomainAt returnAddress decodeItemC1BDomain args) CHAIN-FIELD-END
+CHAIN-GOAL-SORT H0 : Prop CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL a6 : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT a6 : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL a5 : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT a5 : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL a4 : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT a4 : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL a3 : (bv 64) CHAIN-FIELD-END
+CHAIN-GOAL-SORT a3 : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL BLK_STOP_800d6ae0 : (iProp Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT BLK_STOP_800d6ae0 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL BLK_STOP_800d6974 : (iProp Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT BLK_STOP_800d6974 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL args : DecodeItemArgs CHAIN-FIELD-END
+CHAIN-GOAL-SORT args : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL returnAddress : Z CHAIN-FIELD-END
+CHAIN-GOAL-SORT returnAddress : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL H : threadG CHAIN-FIELD-END
+CHAIN-GOAL-SORT H : Set CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL islaG0 : (islaG Sigma) CHAIN-FIELD-END
+CHAIN-GOAL-SORT islaG0 : Type CHAIN-FIELD-END
+CHAIN-GOAL-LOCAL Sigma : gFunctors CHAIN-FIELD-END
+CHAIN-GOAL-SORT Sigma : Type CHAIN-FIELD-END
+CHAIN-GOAL-ENV iris CHAIN-FIELD-END
+"CHAIN-GOAL-PERSISTENT" (instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)) CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (instr_pre 2148362976 BLK_STOP_800d6ae0) CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (instr_pre 2148362612 BLK_STOP_800d6974) CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)))%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)))%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)))%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x13" ↦ᵣ RVal_Bits a3)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x14" ↦ᵣ RVal_Bits a4)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x15" ↦ᵣ RVal_Bits a5)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x16" ↦ᵣ RVal_Bits a6)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x8" ↦ᵣ RVal_Bits (decodeItemSavedFramePointer args))%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? RlpDecodeItem.decodeItemStackBytes)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("PC" ↦ᵣ RVal_Bits (Z_to_bv 64 2148362596))%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv)%I CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" (reg_col zesu_ram_sys_regs) CHAIN-FIELD-END
+"CHAIN-GOAL-SPATIAL" ("x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)))%I CHAIN-FIELD-END
+CHAIN-GOAL-CONCLUSION
+(find_in_context (FindRegMapsTo "medeleg")
+   (λ rk : reg_mapsto_kind,
+      match rk with
+      | RKMapsTo v' => (⌜RegVal_Struct [("bits", RVal_Bits n1)] = v'⌝ -∗ "medeleg" ↦ᵣ v' -∗ WPasm HIDDEN)%I
+      | RKCol regs =>
+          li_tactic (regcol_compute_hint (regcol_lookup (KindReg "medeleg")) regs) (λ '(_, s), (reg_col regs -∗ ⌜valu_has_shape (RegVal_Struct [("bits", RVal_Bits n1)]) s⌝ -∗ WPasm HIDDEN)%I)
+      end)) CHAIN-
+... (truncated, 50135 total chars)
+PROBE-END
+exit=0 ms=92675 rss_kb=2069988
