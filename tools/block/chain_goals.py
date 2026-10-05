@@ -62,7 +62,8 @@ def recording(phase: str) -> str:
             f'idtac "CHAIN-GOAL-END" end.\nall: chain_record_{phase}.')
 
 
-def parse_goals(output: str, *, phase: str | None = None) -> list[dict]:
+def parse_goals(output: str, *, phase: str | None = None,
+                allow_local_definitions: bool = False) -> list[dict]:
     """Reject incomplete records instead of recovering an empty context."""
     result = []
     starts = list(re.finditer(r'CHAIN-GOAL-BEGIN\s+"?(active|shelved)"?\b', output))
@@ -105,7 +106,7 @@ def parse_goals(output: str, *, phase: str | None = None) -> list[dict]:
             raise ValueError("missing native goal context or conclusion")
         if any(name not in record["local_sorts"] for name, _ in record["coq"]):
             raise ValueError("missing native local sort")
-        if record["local_values"]:
+        if record["local_values"] and not allow_local_definitions:
             raise ValueError("unresolved native local definitions")
         record["coq"].reverse()
         record.update(conclusion=conclusion[0], environment=environment[0],
@@ -113,7 +114,9 @@ def parse_goals(output: str, *, phase: str | None = None) -> list[dict]:
                       trace_value_widths=captured_widths(body, TRACE_WIDTH_MARKER),
                       address_widths=captured_widths(body, ADDRESS_WIDTH_MARKER),
                       raw_goal=body)
-        context = [f"{name} : {term}" for name, term in record["coq"]]
+        context = [f"{name} := {record['local_values'][name]} : {term}"
+                   if name in record['local_values'] else f"{name} : {term}"
+                   for name, term in record["coq"]]
         context.append("============================")
         context.extend(f"_ : {term}" for term in record["persistent"])
         context.append("--------------------------------------□")

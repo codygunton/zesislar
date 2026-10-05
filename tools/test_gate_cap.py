@@ -44,6 +44,7 @@ class GateCapTest(unittest.TestCase):
         binary.mkdir()
         for name, body in {
             "systemctl": "#!/bin/sh\nexit 0\n",
+            "free": "#!/bin/sh\necho \"Mem: 200000000000 0 0 0 0 ${GATE_TEST_AVAILABLE_BYTES:-180000000000}\"\n",
             "pgrep": "#!/bin/sh\necho \"${GATE_TEST_COQC:-0}\"\n",
             "python3": (
                 "#!/bin/sh\n"
@@ -79,6 +80,12 @@ class GateCapTest(unittest.TestCase):
                                "check-iris", "gate.log"], cwd=self.root,
                               env=dict(self.environment, **changes),
                               capture_output=True, text=True, timeout=8)
+
+    def test_memory_drain_refuses_batch_with_controlled_high_memory(self):
+        result = self.gate(GATE_TEST_AVAILABLE_BYTES="0", ZESU_GATE_DRAIN_SECONDS="0")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("used 186 GiB", result.stdout)
+        self.assertFalse(self.batch_log.exists())
 
     def test_explicit_updated_guard_admits_live_writers_in_gate_preflight(self):
         local = self.root / "tools/resource_guard.sh"

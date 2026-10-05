@@ -779,6 +779,111 @@ Ltac zesu_ram_fault_if_enabled :=
       solve [exfalso; apply Hfault; zesu_stack_arithmetic]
   end].
 
+Class ZesuStepRegionFault : Prop := zesu_step_region_fault : True.
+
+(* Keep branch bounds while selecting the readable-region alternative. *)
+Ltac zesu_region_arithmetic_statement statement :=
+  lazymatch statement with
+  | Z.le _ _ => idtac
+  | Z.lt _ _ => idtac
+  | Z.ge _ _ => idtac
+  | Z.gt _ _ => idtac
+  | @eq Z _ _ => idtac
+  | ~ ?bound => zesu_region_arithmetic_statement bound
+  | ?left /\ ?right =>
+      zesu_region_arithmetic_statement left;
+      zesu_region_arithmetic_statement right
+  | ?left \/ ?right =>
+      zesu_region_arithmetic_statement left;
+      zesu_region_arithmetic_statement right
+  end.
+
+Ltac zesu_region_fault_arithmetic :=
+  lazymatch goal with |- ~ _ => intro | _ => idtac end;
+  repeat first [progress zesu_split_folded_pure |
+    match goal with H : _ /\ _ |- _ => destruct H end];
+  repeat match goal with
+  | H : ?statement |- _ =>
+      lazymatch type of statement with Prop => idtac end;
+      assert_fails (zesu_region_arithmetic_statement statement);
+      clear H
+  end;
+  repeat match goal with
+  | H : ?left \/ ?right |- _ =>
+      zesu_region_arithmetic_statement left;
+      zesu_region_arithmetic_statement right;
+      destruct H;
+      repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
+  end;
+  repeat match goal with
+  | H : context[?term] |- _ =>
+      lazymatch type of term with Z => progress reduce_closed term end
+  | |- context[?term] =>
+      lazymatch type of term with Z => progress reduce_closed term end
+  end;
+  try (rewrite zesu_signed_zero_extend_add_64_128; last bv_solve);
+  repeat match goal with
+  | H : context[bv_signed (bv_zero_extend 128 ?value)] |- _ =>
+      rewrite (zesu_signed_zero_extend_64_128 value) in H
+  end;
+  rewrite ?zesu_signed_zero_extend_64_128;
+  first [bv_solve |
+    match goal with Hnegative : ~ ?bound |- _ =>
+      zesu_region_arithmetic_statement bound;
+      exfalso; apply Hnegative; bv_solve
+    end].
+
+Ltac zesu_region_fault_bound_if_enabled :=
+  let _ := constr:(_ : ZesuStepRegionFault) in
+  lazymatch goal with |- ?bound => zesu_region_arithmetic_statement bound end;
+  solve [zesu_region_fault_arithmetic].
+
+(* Refute an arithmetic assertion before the trace reads fault registers. *)
+Ltac zesu_region_fault_assert :=
+  lazymatch goal with
+  | |- envs_entails _ (WPasm (Smt (Assert ?expression) _ :t: _)) =>
+      let condition := lazymatch expression with
+        | Unop Not (Val (Val_Bool ?condition) _) _ => constr:(condition)
+        | Val (Val_Bool ?condition) _ => constr:(condition)
+        end in
+      let decision := lazymatch condition with
+        | bool_decide _ => constr:(condition)
+        | _ => let expanded := eval unfold condition in condition in
+            constr:(expanded)
+        end in
+      lazymatch decision with bool_decide ?bound =>
+        zesu_region_arithmetic_statement bound;
+        lazymatch bound with context[bv_zero_extend 128 _] => idtac end;
+        let Hdecision := fresh "HregionDecision" in
+        lazymatch expression with
+        | Unop Not _ _ =>
+            let Hpositive := fresh "HregionBound" in
+            assert (Hpositive : bound) by zesu_region_fault_arithmetic;
+            assert (Hdecision : condition = true) by
+              (apply bool_decide_true; exact Hpositive)
+        | Val _ _ =>
+            let Hnegative := fresh "HregionBound" in
+            assert (Hnegative : ~ bound) by zesu_region_fault_arithmetic;
+            assert (Hdecision : condition = false) by
+              (apply bool_decide_false; exact Hnegative)
+        end;
+        rewrite Hdecision;
+        zesu_expose_environment_alias;
+        iApply wp_assert; rewrite wp_exp_unfold;
+        iExists (Val_Bool false); iSplit; first done;
+        iExists false; iSplit; first done;
+        iIntros (Hfalse); discriminate
+      end
+  end.
+
+Ltac zesu_region_fault_if_enabled :=
+  let _ := constr:(_ : ZesuStepRegionFault) in
+  first [solve [zesu_region_fault_assert] |
+    solve [lazymatch goal with
+      | |- envs_entails _ ((WPasm _) ∧ True)%I =>
+          iSplit; [zesu_region_fault_assert | done]
+      end]].
+
 (* Inspect applications without unfolding the proof context. *)
 Ltac zesu_handoff_closed_term term :=
   tryif is_var term then fail 0 else
@@ -924,6 +1029,16 @@ Ltac zesu_integer_array_facts :=
 Class ZesuStepArrayBounds : Prop :=
   zesu_step_array_bounds : True.
 
+(* Convert an integer address only from its owned no-wrap facts. *)
+Ltac zesu_array_bound_integer_casts :=
+  repeat match goal with
+  | |- context[bv_unsigned (Z_to_bv 64 ?pointer)] =>
+      let Hcast := fresh "HarrayBoundCast" in
+      assert (Hcast : bv_unsigned (Z_to_bv 64 pointer) = pointer)
+        by zesu_stack_arithmetic;
+      rewrite Hcast; clear Hcast
+  end.
+
 Ltac zesu_array_bounds_if_enabled :=
   let enabled := constr:(_ : ZesuStepArrayBounds) in
   lazymatch goal with
@@ -937,9 +1052,12 @@ Ltac zesu_array_bounds_if_enabled :=
   | |- (?index + ?width <= length ?storage)%nat =>
       solve [
         zesu_integer_array_facts;
+        zesu_array_bound_integer_casts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
             replace (base + offset - base) with offset by lia
+        | |- context [?base - ?base] =>
+            replace (base - base) with 0 by lia
         end;
         rewrite ?length_app ?length_take ?length_drop;
         cbn [length]; lia]
@@ -982,6 +1100,7 @@ Ltac zesu_liAStep :=
  try liAIntroduceLetInGoal;
  first [
     zesu_expose_instruction_lookup
+  | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
   | zesu_stack_write_if_enabled
