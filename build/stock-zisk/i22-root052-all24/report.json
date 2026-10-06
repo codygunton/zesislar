@@ -1,0 +1,1625 @@
+{
+  "item": "I22-root052-all24",
+  "measurement_root": "052e4f3f1392482e4dc12470f239752364d01d7e",
+  "result": "Three native boundaries close. Twenty blocks retain residuals. One block reaches its approved memory limit. No Level 1 contract closes.",
+  "raw_report": {
+    "sha256": "d3257639e98272d4873069cee22cdb7c197fe70c0c8639d22352b5d1dbd8475f",
+    "bytes": 3626125,
+    "archive": "/home/cody/zesislar-archive/sha256/d3/d3257639e98272d4873069cee22cdb7c197fe70c0c8639d22352b5d1dbd8475f"
+  },
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/98/98345d8677acae966a2ca5cf17634c21ba5c09929cd52dff8f733e24833b80f9",
+    "sha256": "98345d8677acae966a2ca5cf17634c21ba5c09929cd52dff8f733e24833b80f9",
+    "bytes": 403088,
+    "records": 1038
+  },
+  "source_and_certificate_audit": {
+    "regenerated_statements_match": 24,
+    "closure_count": 3,
+    "certificates": [
+      {
+        "entry_pc": "0x800d69d8",
+        "lemma": "DesignedBoundary_800d69d8",
+        "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+        "successors": [
+          "0x800d6a00",
+          "0x800d69e0"
+        ],
+        "source_sha256": "b8f6cd155ebf9b48dae10bd66372c00227833546d949ed38564c7390df79aab8",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i22-root052/_build/all-hints/results/native/block_0x800d69d8/Boundary.vo",
+          "sha256": "e40511de51d1bfc9e68684d012c546f3837ef10c29e7076735b247b77c54f217"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations."
+      },
+      {
+        "entry_pc": "0x800d6a00",
+        "lemma": "DesignedBoundary_800d6a00",
+        "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+        "successors": [
+          "0x800d6a64",
+          "0x800d6a08"
+        ],
+        "source_sha256": "10e08994b3cc80110c7010cc920483bb509647499e6a545a5ce1b218e9d83c3c",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i22-root052/_build/all-hints/results/native/block_0x800d6a00/Boundary.vo",
+          "sha256": "066f423c7e0998cb11ab1ec9eab14876fe87ced6a722cd78e0197506d63701d8"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations."
+      },
+      {
+        "entry_pc": "0x800d6a64",
+        "lemma": "DesignedBoundary_800d6a64",
+        "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+        "successors": [
+          "0x800d6aa8",
+          "0x800d6a6c"
+        ],
+        "source_sha256": "4fa6b5e3a131fd3006e119ed54514c46298dd0dc76bbdd1b6c1b243912bb0364",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i22-root052/_build/all-hints/results/native/block_0x800d6a64/Boundary.vo",
+          "sha256": "b8be581d34d3a8915d4d4132d5538b1b6fc70f56b46eb63942be7adad2e7cfc7"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations."
+      }
+    ],
+    "closure_scope": "Each Qed proves a block with actual successor entry callbacks. It does not prove the entire Level 1 contract."
+  },
+  "inventory": {
+    "root": "052e4f3f1392482e4dc12470f239752364d01d7e",
+    "switches": [
+      "InstructionLookup",
+      "StackWrite",
+      "RamFault",
+      "RegionFault",
+      "LowMask",
+      "IntegerArrayAddress",
+      "RecordWitness",
+      "ArrayBounds",
+      "WordArrayHandoff",
+      "ReturnBundle",
+      "ReturnWand",
+      "StrictSigned",
+      "ListWitness",
+      "TupleWitness",
+      "ArrayRegionBounds",
+      "PureFactHints",
+      "KnownPairWitness",
+      "PureWitnessConstraints",
+      "RegisterCollectionSelection"
+    ],
+    "hint_imports": [
+      "DecodeItemBranchGuardFacts",
+      "DecodeItemDataWitnessFacts",
+      "DecodeItemOutcomeWitnessFacts",
+      "DecodeItemFoldRejectionFacts",
+      "DecodeItemFoldInitializationWitnesses"
+    ],
+    "imports": [
+      "ZesuSsz.Automation.Switches.InstructionLookup",
+      "ZesuSsz.Automation.Switches.StackWrite",
+      "ZesuSsz.Automation.Switches.RamFault",
+      "ZesuSsz.Automation.Switches.RegionFault",
+      "ZesuSsz.Automation.Switches.LowMask",
+      "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+      "ZesuSsz.Automation.Switches.RecordWitness",
+      "ZesuSsz.Automation.Switches.ArrayBounds",
+      "ZesuSsz.Automation.Switches.WordArrayHandoff",
+      "ZesuSsz.Automation.Switches.ReturnBundle",
+      "ZesuSsz.Automation.Switches.ReturnWand",
+      "ZesuSsz.Automation.Switches.StrictSigned",
+      "ZesuSsz.Automation.Switches.ListWitness",
+      "ZesuSsz.Automation.Switches.TupleWitness",
+      "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+      "ZesuSsz.Automation.Switches.PureFactHints",
+      "ZesuSsz.Automation.Switches.KnownPairWitness",
+      "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+      "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+      "ZesuSsz.Compliance.DecodeItemBranchGuardFacts",
+      "ZesuSsz.Compliance.DecodeItemDataWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses"
+    ]
+  },
+  "activation": {
+    "sha256": "10c122f60a15f0a418530d90a546f00c5f7320cba9fcb580be5d780283072897",
+    "bytes": 4207,
+    "archive": "/home/cody/zesislar-archive/sha256/10/10c122f60a15f0a418530d90a546f00c5f7320cba9fcb580be5d780283072897"
+  },
+  "entry_binding": {
+    "sha256": "d95671ff6580ab10d88f445f3fcee36b90cee94909b8e420ba340a5012861f8c",
+    "bytes": 6869,
+    "archive": "/home/cody/zesislar-archive/sha256/d9/d95671ff6580ab10d88f445f3fcee36b90cee94909b8e420ba340a5012861f8c"
+  },
+  "prepared_inputs": {
+    "sha256": "469ef371ee055736698295334fabbe8a90136cdf269637939e6e3631b559199f",
+    "bytes": 219762,
+    "archive": "/home/cody/zesislar-archive/sha256/46/469ef371ee055736698295334fabbe8a90136cdf269637939e6e3631b559199f"
+  },
+  "setup_failure_report": {
+    "sha256": "9dcfdcc077d822b800fcf5d703cb72bd05ec4fd66a5cbd8303c4332f5ca45bf2",
+    "bytes": 435359,
+    "archive": "/home/cody/zesislar-archive/sha256/9d/9dcfdcc077d822b800fcf5d703cb72bd05ec4fd66a5cbd8303c4332f5ca45bf2"
+  },
+  "setup_failures": [
+    "The report binds the historical root55 import-failure pass. Root052 completed setup before all native primaries."
+  ],
+  "classes": {
+    "native-residual": 20,
+    "automation-search-failure": 1,
+    "native-boundary-closed": 3
+  },
+  "blocks_closed": 3,
+  "instructions_in_closed_blocks": 6,
+  "contract_closures": 0,
+  "workers": 5,
+  "measurement_elapsed_s": 3226.492879463942,
+  "machine_before": {
+    "cpu_count": 64,
+    "load": [
+      2.62646484375,
+      3.83203125,
+      2.638671875
+    ],
+    "memory": {
+      "MemAvailable": "132887868 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "1237808 kB"
+    },
+    "cpu_ticks": "cpu  110024781 394773990 43222354 5682234235 2784888 5292487 2552270 0 0 0"
+  },
+  "machine_after": {
+    "cpu_count": 64,
+    "load": [
+      1.88037109375,
+      3.5703125,
+      5.3984375
+    ],
+    "memory": {
+      "MemAvailable": "141846068 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "1237812 kB"
+    },
+    "cpu_ticks": "cpu  110115196 396779152 43290442 5700678113 2790292 5310987 2561784 0 0 0"
+  },
+  "admission": {
+    "timestamp": "2026-10-06T08:45:43.898430+00:00",
+    "available_kib": 132990360,
+    "block_workers": 5,
+    "adapter_workers": 5,
+    "reserved_other_workers": 2,
+    "worst_memory_gib": 78,
+    "fraction": 0.7,
+    "frozen_block_sources_match": 24
+  },
+  "limits": "CPU1200/6GiB; loops 6a24 and 6ac4 CPU2400/6GiB; 698c CPU1200/12GiB. No wall cutoff.",
+  "diagnostic_limits": "Only active goals, their locals, and printed Iris contexts are captured. Pet stack, shelf, and given_up remain unavailable. The memory-limited block has no final groups.",
+  "timing_limits": "Compiler CPU/wall and wrapper wall are separate measurements. Guard wait is unavailable. Wrapper minus compiler wall is not an exact guard-wait measurement.",
+  "rows": [
+    {
+      "entry_pc": "0x800d6960",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff,witness",
+      "active_goal_count": 10,
+      "first_conclusion": "(bv 8)",
+      "compiler_cpu_s": 84.29566600000001,
+      "compiler_wall_s": 84.69101593596861,
+      "compiler_peak_kib": 2038244,
+      "wrapper_wall_s": 587.7730898859445,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "9ee08f8276e01cd45a77b622bcbcdf1ce4ea331dc67feb36d734b743ea446ec8",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6974"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "f65337c8bc580327c13db9cb9078ea7bdbd2c891cf76067aad57f4ddf8de7774",
+        "bytes": 172177,
+        "archive": "/home/cody/zesislar-archive/sha256/f6/f65337c8bc580327c13db9cb9078ea7bdbd2c891cf76067aad57f4ddf8de7774"
+      }
+    },
+    {
+      "entry_pc": "0x800d6974",
+      "outcome": "native-residual",
+      "residual_class": "memory-selection,register-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 8,
+      "first_conclusion": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "compiler_cpu_s": 680.164039,
+      "compiler_wall_s": 683.4589953259565,
+      "compiler_peak_kib": 2334300,
+      "wrapper_wall_s": 1186.4045384039637,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "f88c189764bf9d61a367feeaeab07b186972f71ec23fc15823808d5ea592b148",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "successors": [
+        "0x800d69a4",
+        "0x800d697c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "ccd235e98e134a89a3fb9cf8d577d45411bb9c7dc1e4380020a1cb6dca8f559c",
+        "bytes": 183478,
+        "archive": "/home/cody/zesislar-archive/sha256/cc/ccd235e98e134a89a3fb9cf8d577d45411bb9c7dc1e4380020a1cb6dca8f559c"
+      }
+    },
+    {
+      "entry_pc": "0x800d697c",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 6,
+      "first_conclusion": "nat",
+      "compiler_cpu_s": 357.92453299999994,
+      "compiler_wall_s": 359.61621909495443,
+      "compiler_peak_kib": 2287228,
+      "wrapper_wall_s": 862.5750413290225,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "9f96da57e195edde841b142a149a88d829279348e61e39554f17eadf0eb64a90",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "successors": [
+        "0x800d698c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "98c2cd20259e25e6e23ae54175753e6b048362b47b6d127c2007a720b108bd56",
+        "bytes": 237729,
+        "archive": "/home/cody/zesislar-archive/sha256/98/98c2cd20259e25e6e23ae54175753e6b048362b47b6d127c2007a720b108bd56"
+      }
+    },
+    {
+      "entry_pc": "0x800d698c",
+      "outcome": "automation-search-failure",
+      "residual_class": "memory-limit",
+      "active_goal_count": null,
+      "first_conclusion": null,
+      "compiler_cpu_s": 574.755796,
+      "compiler_wall_s": 577.4148083120817,
+      "compiler_peak_kib": 12583192,
+      "wrapper_wall_s": 1080.3336807820015,
+      "guard_wait_s": null,
+      "limit": "memory",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 12582912,
+        "completion_entry": "0x800d698c",
+        "optimization_debt": "issue#10"
+      },
+      "primary_entered": true,
+      "source_sha256": "578d7218c68d0ca484b071262f47993821b609db78ca1104eb98279f3495fd38",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "successors": [],
+      "groups": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "e816088049ce54caf7cb6c740922b2ecc058bceadceecd7873bb6acf215d3bce",
+        "bytes": 8664,
+        "archive": "/home/cody/zesislar-archive/sha256/e8/e816088049ce54caf7cb6c740922b2ecc058bceadceecd7873bb6acf215d3bce"
+      }
+    },
+    {
+      "entry_pc": "0x800d69a4",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 4,
+      "first_conclusion": "(129 \u2264 bv_unsigned inputPrefix)",
+      "compiler_cpu_s": 10.687634000000001,
+      "compiler_wall_s": 10.749114552978426,
+      "compiler_peak_kib": 1094828,
+      "wrapper_wall_s": 513.7167403239291,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "070a3193b6972376bd56e29e65366fa0911887ee2f319c719543899966fea0d4",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "successors": [
+        "0x800d69d8",
+        "0x800d69b0"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "2b4833c39356eb00b8809e0afebb6f723968f31d8e6bbf6e2fa58fa9df8e46ef",
+        "bytes": 44417,
+        "archive": "/home/cody/zesislar-archive/sha256/2b/2b4833c39356eb00b8809e0afebb6f723968f31d8e6bbf6e2fa58fa9df8e46ef"
+      }
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 6,
+      "first_conclusion": "nat",
+      "compiler_cpu_s": 325.5348659999999,
+      "compiler_wall_s": 327.00230294908397,
+      "compiler_peak_kib": 2283284,
+      "wrapper_wall_s": 328.9963871659711,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "9a652ac485ef1521856b31f365a7bc956b1a6adf519c7664671b48d549378931",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "4b54fec04a6220ca73835e135ab57eaa24607f004726b4b550a11fe61fdf633d",
+        "bytes": 224700,
+        "archive": "/home/cody/zesislar-archive/sha256/4b/4b54fec04a6220ca73835e135ab57eaa24607f004726b4b550a11fe61fdf633d"
+      }
+    },
+    {
+      "entry_pc": "0x800d69d8",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 27.342936,
+      "compiler_wall_s": 27.499500888981856,
+      "compiler_peak_kib": 1248532,
+      "wrapper_wall_s": 29.463851017993875,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "b8f6cd155ebf9b48dae10bd66372c00227833546d949ed38564c7390df79aab8",
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "successors": [
+        "0x800d6a00",
+        "0x800d69e0"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d69d8"
+      },
+      "evidence": {
+        "sha256": "99718dfe914bb3aed742e240663dbbd04f76d676598e825ce69766e39996c331",
+        "bytes": 8835,
+        "archive": "/home/cody/zesislar-archive/sha256/99/99718dfe914bb3aed742e240663dbbd04f76d676598e825ce69766e39996c331"
+      }
+    },
+    {
+      "entry_pc": "0x800d69e0",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 4,
+      "first_conclusion": "(bv_unsigned (bv_and x13 127) = bv_unsigned inputPrefix - 128)",
+      "compiler_cpu_s": 44.206968999999994,
+      "compiler_wall_s": 44.447542610927485,
+      "compiler_peak_kib": 1406300,
+      "wrapper_wall_s": 45.97716422600206,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "31e15d42f0f271ff624187319f192e8bd9dd9505b72064a3993f8d83e670ef7c",
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d69e8"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "f01d55600f7ad9fa2cfbf26f1d224c8823077607bd95f8d07eac67acb00d61d4",
+        "bytes": 44470,
+        "archive": "/home/cody/zesislar-archive/sha256/f0/f01d55600f7ad9fa2cfbf26f1d224c8823077607bd95f8d07eac67acb00d61d4"
+      }
+    },
+    {
+      "entry_pc": "0x800d69e8",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 6,
+      "first_conclusion": "nat",
+      "compiler_cpu_s": 610.340867,
+      "compiler_wall_s": 613.3851054609986,
+      "compiler_peak_kib": 2305780,
+      "wrapper_wall_s": 614.4140300449217,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "2420d1fa536726b928076927006cd6f983cbe147746ef906129332fc7012141c",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "successors": [
+        "0x800d698c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "33e889d8cd8e240c247de7d6433b82ccbb44367efc1678cd1da3fe641ee1f56a",
+        "bytes": 257218,
+        "archive": "/home/cody/zesislar-archive/sha256/33/33e889d8cd8e240c247de7d6433b82ccbb44367efc1678cd1da3fe641ee1f56a"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a00",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 45.690411999999995,
+      "compiler_wall_s": 45.91430825996213,
+      "compiler_peak_kib": 1482272,
+      "wrapper_wall_s": 47.76791538798716,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "10e08994b3cc80110c7010cc920483bb509647499e6a545a5ce1b218e9d83c3c",
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "successors": [
+        "0x800d6a64",
+        "0x800d6a08"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a00"
+      },
+      "evidence": {
+        "sha256": "5c6c58a2a8a2bee6768dcaedc9258f53cc892d2e76709b359a2e2d1d99dc243b",
+        "bytes": 8855,
+        "archive": "/home/cody/zesislar-archive/sha256/5c/5c6c58a2a8a2bee6768dcaedc9258f53cc892d2e76709b359a2e2d1d99dc243b"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a08",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 7,
+      "first_conclusion": "Z",
+      "compiler_cpu_s": 46.286107,
+      "compiler_wall_s": 46.504876304999925,
+      "compiler_peak_kib": 1385156,
+      "wrapper_wall_s": 48.26440972101409,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "99453bd9a27b007e8c87e79f01333d8ead726cc0176371969ef6c6b6501dfdfe",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a14"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "e85c25f3796f8249392367190ade5be6b033c2f356d3d80f776c6b7a4aabc747",
+        "bytes": 91644,
+        "archive": "/home/cody/zesislar-archive/sha256/e8/e85c25f3796f8249392367190ade5be6b033c2f356d3d80f776c6b7a4aabc747"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a14",
+      "outcome": "native-residual",
+      "residual_class": "pure-side-condition",
+      "active_goal_count": 1,
+      "first_conclusion": "(0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat 0) lengthBytes)))",
+      "compiler_cpu_s": 5.216773999999999,
+      "compiler_wall_s": 5.253618298913352,
+      "compiler_peak_kib": 1025304,
+      "wrapper_wall_s": 6.989873368060216,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "32bb338a4a5a3322f49009ac3758dffeb4bed8abb3f8b600d0ec93eb50e2970e",
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "successors": [
+        "0x800d6a24"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "dc65af2aad223b8276e0e4800f03018c0aaf12b9180f6121603e2f4b273af3c2",
+        "bytes": 19307,
+        "archive": "/home/cody/zesislar-archive/sha256/dc/dc65af2aad223b8276e0e4800f03018c0aaf12b9180f6121603e2f4b273af3c2"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a24",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 15,
+      "first_conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "compiler_cpu_s": 2131.4766660000005,
+      "compiler_wall_s": 2141.882454385981,
+      "compiler_peak_kib": 3267912,
+      "wrapper_wall_s": 2143.724471572088,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6a24",
+        "optimization_debt": "issue#10"
+      },
+      "primary_entered": true,
+      "source_sha256": "770878c7d6425c63d0311594ce29b43cea4643eb85efae036b5446ccbc7f73c2",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "successors": [
+        "0x800d6a24",
+        "0x800d6a38"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "dfa52dd6e9d181693102ab58ee63c350d02544836f9759f44dfd8c5daa04840b",
+        "bytes": 520946,
+        "archive": "/home/cody/zesislar-archive/sha256/df/dfa52dd6e9d181693102ab58ee63c350d02544836f9759f44dfd8c5daa04840b"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a38",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 2,
+      "first_conclusion": "\u231cdecodeItemRejectedFacts args \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args\u231d%I",
+      "compiler_cpu_s": 50.6854,
+      "compiler_wall_s": 50.901627038023435,
+      "compiler_peak_kib": 1426224,
+      "wrapper_wall_s": 52.54137102595996,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "add7a32e3a876e2314a20cbbe0baa1c112fe044509836b440ac637c71db0e452",
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a40"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "29c62f373e17a11ee96dcca7f59918f047fc46eccc9eaca81e6043af016aaa53",
+        "bytes": 28758,
+        "archive": "/home/cody/zesislar-archive/sha256/29/29c62f373e17a11ee96dcca7f59918f047fc46eccc9eaca81e6043af016aaa53"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a40",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "(list (reg_kind * valu_shape))",
+      "compiler_cpu_s": 69.448756,
+      "compiler_wall_s": 69.7343208490638,
+      "compiler_peak_kib": 1696552,
+      "wrapper_wall_s": 76.6072192969732,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "2695deafe2686c0de004d188e6e71b36360aa7d71c866e4166e9ae61f3050fbd",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "61232bebcd1dc6dbc29233a4092c44e8167a929199e8b08a531701884d0ddc8f",
+        "bytes": 106101,
+        "archive": "/home/cody/zesislar-archive/sha256/61/61232bebcd1dc6dbc29233a4092c44e8167a929199e8b08a531701884d0ddc8f"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a64",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 48.189038000000004,
+      "compiler_wall_s": 48.42196916101966,
+      "compiler_peak_kib": 1474184,
+      "wrapper_wall_s": 90.75290884904098,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "4fa6b5e3a131fd3006e119ed54514c46298dd0dc76bbdd1b6c1b243912bb0364",
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "successors": [
+        "0x800d6aa8",
+        "0x800d6a6c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a64"
+      },
+      "evidence": {
+        "sha256": "87a3653baf49e2f8cb677ae2c787c49286f17cf183ef3d311a1f1d8028a16378",
+        "bytes": 8843,
+        "archive": "/home/cody/zesislar-archive/sha256/87/87a3653baf49e2f8cb677ae2c787c49286f17cf183ef3d311a1f1d8028a16378"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a6c",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 1,
+      "first_conclusion": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 192 \u2264 bv_unsigned inputPrefix \u2264 247\n   \u2227 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args\n     \u2227 bv_unsigned (bv_and (x13 + 64) 255) = bv_unsigned inputPrefix - 192\n       \u2227 decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192)\n         \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "compiler_cpu_s": 32.70936,
+      "compiler_wall_s": 32.8233250209596,
+      "compiler_peak_kib": 1424256,
+      "wrapper_wall_s": 34.48499744106084,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "968db6956e197c94c42dcfee38f6568c34fa3924e48f2ec9b39b30dfaae10262",
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a78"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "8d3680fcda21533a6a4f0806edb0a9b59021324669db952dd5db18167186f8a4",
+        "bytes": 20061,
+        "archive": "/home/cody/zesislar-archive/sha256/8d/8d3680fcda21533a6a4f0806edb0a9b59021324669db952dd5db18167186f8a4"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a78",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 6,
+      "first_conclusion": "nat",
+      "compiler_cpu_s": 636.213182,
+      "compiler_wall_s": 639.5596074830974,
+      "compiler_peak_kib": 2360064,
+      "wrapper_wall_s": 641.2968373940093,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "76e4000d41e6f931ecf9815a1cf2432c76e356a980d5c3875c92c48faa5076df",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "047142b7fbf60f52917f02d234961f7dc4c4124ebb2a5904bde6676ee1ec01f3",
+        "bytes": 248762,
+        "archive": "/home/cody/zesislar-archive/sha256/04/047142b7fbf60f52917f02d234961f7dc4c4124ebb2a5904bde6676ee1ec01f3"
+      }
+    },
+    {
+      "entry_pc": "0x800d6aa8",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 7,
+      "first_conclusion": "Z",
+      "compiler_cpu_s": 56.131101,
+      "compiler_wall_s": 56.45841980504338,
+      "compiler_peak_kib": 1389748,
+      "wrapper_wall_s": 58.281533266068436,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "470d30d79ea5cb55c8bb1ad6c6309b5b26be97ed6714762db792c76835f1b835",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6ab4"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "f13ac42cdbe7c4593bf8b1cc89794a9c9e535d1ad2a7bdf6d17976825175ad22",
+        "bytes": 91626,
+        "archive": "/home/cody/zesislar-archive/sha256/f1/f13ac42cdbe7c4593bf8b1cc89794a9c9e535d1ad2a7bdf6d17976825175ad22"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ab4",
+      "outcome": "native-residual",
+      "residual_class": "pure-side-condition",
+      "active_goal_count": 1,
+      "first_conclusion": "(0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat 0) lengthBytes)))",
+      "compiler_cpu_s": 7.100054,
+      "compiler_wall_s": 7.159788031014614,
+      "compiler_peak_kib": 1028952,
+      "wrapper_wall_s": 9.004391770926304,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "3baf8e348a08abad18286315bc4c6dd932ead9947dbb26f44b3eb42b94679a84",
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "successors": [
+        "0x800d6ac4"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "adf87451b8632cc2fcd95171a514d7326d7a03a45bd5c8c0ddf22b82ad5c6725",
+        "bytes": 19295,
+        "archive": "/home/cody/zesislar-archive/sha256/ad/adf87451b8632cc2fcd95171a514d7326d7a03a45bd5c8c0ddf22b82ad5c6725"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ac4",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 15,
+      "first_conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "compiler_cpu_s": 2027.0328769999999,
+      "compiler_wall_s": 2036.7027737720637,
+      "compiler_peak_kib": 3272332,
+      "wrapper_wall_s": 2037.334914120962,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6ac4",
+        "optimization_debt": "issue#10"
+      },
+      "primary_entered": true,
+      "source_sha256": "d534cd5920eeab07bf41da923f8285b3c00329a95b05752ae609355b5604e9ec",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "successors": [
+        "0x800d6ac4",
+        "0x800d6ad8"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "6ec1943aeced665eb2976f1c63d4ba2ae4245d96618fea8f81bd9446c8d4551b",
+        "bytes": 520902,
+        "archive": "/home/cody/zesislar-archive/sha256/6e/6ec1943aeced665eb2976f1c63d4ba2ae4245d96618fea8f81bd9446c8d4551b"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ad8",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 2,
+      "first_conclusion": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "compiler_cpu_s": 102.612731,
+      "compiler_wall_s": 103.0729799659457,
+      "compiler_peak_kib": 1659956,
+      "wrapper_wall_s": 104.83548516605515,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "f0130c0ae557a7ce8d9af95e8ce15246bf1c153d00a8543eb13f37adda680264",
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "successors": [
+        "0x800d6b08",
+        "0x800d6ae0"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "4554f8b4b00aaa2e45577bebfe9de95aba0c1d184c881052055a8b27cac3a69b",
+        "bytes": 28745,
+        "archive": "/home/cody/zesislar-archive/sha256/45/4554f8b4b00aaa2e45577bebfe9de95aba0c1d184c881052055a8b27cac3a69b"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "(list (reg_kind * valu_shape))",
+      "compiler_cpu_s": 76.994425,
+      "compiler_wall_s": 77.39682444697246,
+      "compiler_peak_kib": 1535504,
+      "wrapper_wall_s": 79.02766149805393,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "5ae97b883d23d9052a372e35cbbe148512731fea418d5c9c761903c651929b1d",
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "38955f815757b2a799b4db924888fe75f1965d66d3a943d9133c3f7726834efc",
+        "bytes": 90762,
+        "archive": "/home/cody/zesislar-archive/sha256/38/38955f815757b2a799b4db924888fe75f1965d66d3a943d9133c3f7726834efc"
+      }
+    },
+    {
+      "entry_pc": "0x800d6b08",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 6,
+      "first_conclusion": "nat",
+      "compiler_cpu_s": 746.810828,
+      "compiler_wall_s": 751.368716906989,
+      "compiler_peak_kib": 2327976,
+      "wrapper_wall_s": 753.2094841350336,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "103b78f0af9b124939ba08f305c4998dfe06a8bc9e5180dbe2f0555156140df0",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "6929c6e4e5aadb2ef60c80e306f6f898adf926564ea5061caaa58b61aa8209a0",
+        "bytes": 254867,
+        "archive": "/home/cody/zesislar-archive/sha256/69/6929c6e4e5aadb2ef60c80e306f6f898adf926564ea5061caaa58b61aa8209a0"
+      }
+    }
+  ],
+  "gate": {
+    "status": "passed",
+    "wall_s": 116,
+    "workers": 6,
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-054555-child-a-i22-root052-all24-report-check-fast.log",
+    "sha256": "6dd12147e1fb82ff1910504c706a92e140e292c2f999516e99521cb9f189925b",
+    "archive": "/home/cody/zesislar-archive/sha256/6d/6dd12147e1fb82ff1910504c706a92e140e292c2f999516e99521cb9f189925b"
+  },
+  "no_native_repeats": true,
+  "root55_progression": [
+    {
+      "entry_pc": "0x800d6960",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 10,
+      "root052_active": 10,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(bv 8)",
+      "root052_first": "(bv 8)",
+      "root55_cpu_s": 111.51857799999999,
+      "root052_cpu_s": 84.29566600000001
+    },
+    {
+      "entry_pc": "0x800d6974",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 8,
+      "root052_active": 8,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "root052_first": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "root55_cpu_s": 735.949923,
+      "root052_cpu_s": 680.164039
+    },
+    {
+      "entry_pc": "0x800d697c",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 6,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "root55_first": "mem_mapsto_kind",
+      "root052_first": "nat",
+      "root55_cpu_s": 365.93075799999997,
+      "root052_cpu_s": 357.92453299999994
+    },
+    {
+      "entry_pc": "0x800d698c",
+      "root55_outcome": "automation-search-failure",
+      "root052_outcome": "automation-search-failure",
+      "root55_active": null,
+      "root052_active": null,
+      "conclusions_identical": null,
+      "contexts_identical": null,
+      "root55_first": null,
+      "root052_first": null,
+      "root55_cpu_s": 546.628984,
+      "root052_cpu_s": 574.755796
+    },
+    {
+      "entry_pc": "0x800d69a4",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 4,
+      "root052_active": 4,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(129 \u2264 bv_unsigned inputPrefix)",
+      "root052_first": "(129 \u2264 bv_unsigned inputPrefix)",
+      "root55_cpu_s": 12.033862999999998,
+      "root052_cpu_s": 10.687634000000001
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 6,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "root55_first": "mem_mapsto_kind",
+      "root052_first": "nat",
+      "root55_cpu_s": 340.373989,
+      "root052_cpu_s": 325.5348659999999
+    },
+    {
+      "entry_pc": "0x800d69d8",
+      "root55_outcome": "native-boundary-closed",
+      "root052_outcome": "native-boundary-closed",
+      "root55_active": 0,
+      "root052_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": null,
+      "root052_first": null,
+      "root55_cpu_s": 33.969089999999994,
+      "root052_cpu_s": 27.342936
+    },
+    {
+      "entry_pc": "0x800d69e0",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 4,
+      "root052_active": 4,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(bv_unsigned (bv_and x13 127) = bv_unsigned inputPrefix - 128)",
+      "root052_first": "(bv_unsigned (bv_and x13 127) = bv_unsigned inputPrefix - 128)",
+      "root55_cpu_s": 54.071191000000006,
+      "root052_cpu_s": 44.206968999999994
+    },
+    {
+      "entry_pc": "0x800d69e8",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 6,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "root55_first": "mem_mapsto_kind",
+      "root052_first": "nat",
+      "root55_cpu_s": 546.891347,
+      "root052_cpu_s": 610.340867
+    },
+    {
+      "entry_pc": "0x800d6a00",
+      "root55_outcome": "native-boundary-closed",
+      "root052_outcome": "native-boundary-closed",
+      "root55_active": 0,
+      "root052_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": null,
+      "root052_first": null,
+      "root55_cpu_s": 54.751126,
+      "root052_cpu_s": 45.690411999999995
+    },
+    {
+      "entry_pc": "0x800d6a08",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 7,
+      "root052_active": 7,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "Z",
+      "root052_first": "Z",
+      "root55_cpu_s": 50.26507599999999,
+      "root052_cpu_s": 46.286107
+    },
+    {
+      "entry_pc": "0x800d6a14",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 1,
+      "root052_active": 1,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat 0) lengthBytes)))",
+      "root052_first": "(0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat 0) lengthBytes)))",
+      "root55_cpu_s": 10.480322000000001,
+      "root052_cpu_s": 5.216773999999999
+    },
+    {
+      "entry_pc": "0x800d6a24",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 15,
+      "root052_active": 15,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "root052_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "root55_cpu_s": 1870.470353,
+      "root052_cpu_s": 2131.4766660000005
+    },
+    {
+      "entry_pc": "0x800d6a38",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 2,
+      "root052_active": 2,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "\u231cdecodeItemRejectedFacts args \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args\u231d%I",
+      "root052_first": "\u231cdecodeItemRejectedFacts args \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args\u231d%I",
+      "root55_cpu_s": 64.304315,
+      "root052_cpu_s": 50.6854
+    },
+    {
+      "entry_pc": "0x800d6a40",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 3,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(list (reg_kind * valu_shape))",
+      "root052_first": "(list (reg_kind * valu_shape))",
+      "root55_cpu_s": 95.57291899999998,
+      "root052_cpu_s": 69.448756
+    },
+    {
+      "entry_pc": "0x800d6a64",
+      "root55_outcome": "native-boundary-closed",
+      "root052_outcome": "native-boundary-closed",
+      "root55_active": 0,
+      "root052_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": null,
+      "root052_first": null,
+      "root55_cpu_s": 51.830997,
+      "root052_cpu_s": 48.189038000000004
+    },
+    {
+      "entry_pc": "0x800d6a6c",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 1,
+      "root052_active": 1,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 192 \u2264 bv_unsigned inputPrefix \u2264 247\n   \u2227 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args\n     \u2227 bv_unsigned (bv_and (x13 + 64) 255) = bv_unsigned inputPrefix - 192\n       \u2227 decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192)\n         \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "root052_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 192 \u2264 bv_unsigned inputPrefix \u2264 247\n   \u2227 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args\n     \u2227 bv_unsigned (bv_and (x13 + 64) 255) = bv_unsigned inputPrefix - 192\n       \u2227 decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192)\n         \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "root55_cpu_s": 51.58872399999999,
+      "root052_cpu_s": 32.70936
+    },
+    {
+      "entry_pc": "0x800d6a78",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 6,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "root55_first": "mem_mapsto_kind",
+      "root052_first": "nat",
+      "root55_cpu_s": 585.4336139999999,
+      "root052_cpu_s": 636.213182
+    },
+    {
+      "entry_pc": "0x800d6aa8",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 7,
+      "root052_active": 7,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "Z",
+      "root052_first": "Z",
+      "root55_cpu_s": 50.415886,
+      "root052_cpu_s": 56.131101
+    },
+    {
+      "entry_pc": "0x800d6ab4",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 1,
+      "root052_active": 1,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat 0) lengthBytes)))",
+      "root052_first": "(0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat 0) lengthBytes)))",
+      "root55_cpu_s": 8.23517,
+      "root052_cpu_s": 7.100054
+    },
+    {
+      "entry_pc": "0x800d6ac4",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 15,
+      "root052_active": 15,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "root052_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "root55_cpu_s": 1812.7406179999998,
+      "root052_cpu_s": 2027.0328769999999
+    },
+    {
+      "entry_pc": "0x800d6ad8",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 2,
+      "root052_active": 2,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "root052_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "root55_cpu_s": 111.04598800000001,
+      "root052_cpu_s": 102.612731
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 3,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "root55_first": "(list (reg_kind * valu_shape))",
+      "root052_first": "(list (reg_kind * valu_shape))",
+      "root55_cpu_s": 74.197889,
+      "root052_cpu_s": 76.994425
+    },
+    {
+      "entry_pc": "0x800d6b08",
+      "root55_outcome": "native-residual",
+      "root052_outcome": "native-residual",
+      "root55_active": 3,
+      "root052_active": 6,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "root55_first": "mem_mapsto_kind",
+      "root052_first": "nat",
+      "root55_cpu_s": 584.8657169999999,
+      "root052_cpu_s": 746.810828
+    }
+  ],
+  "comparison_limit": "The roots differ in approved automation and proof sources. This comparison does not establish a sole-rule effect.",
+  "accounting": {
+    "start": "2026-10-06T08:39:26.284Z",
+    "end": "2026-10-06T09:48:21.461751Z",
+    "child_min": 68.91962918333334,
+    "tokens_child": 5044263,
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable",
+    "basis": "Both passes share initial preparation. Their accounting windows overlap."
+  }
+}
