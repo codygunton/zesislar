@@ -353,13 +353,14 @@ Ltac zesu_finish_v2 :=
   zesu_finish_dispatch.
 
 Ltac zesu_finish :=
+  tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
     zesu_primitive_tuple_guard_if_enabled];
   tryif zesu_rule_set_v2_on
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_bounded_arithmetic ltac:(zesu_finish_v2))
        else zesu_finish_v2
-  else zesu_finish_v1.
+  else zesu_finish_v1).
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with

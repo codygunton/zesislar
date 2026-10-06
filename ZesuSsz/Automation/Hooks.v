@@ -763,6 +763,30 @@ Ltac zesu_known_pair_witness_if_enabled :=
       end
   end.
 
+Class ZesuStepEvarSideconditionGuard : Prop :=
+  zesu_step_evar_sidecondition_guard : True.
+
+(* Refuse unresolved pure side conditions before arithmetic search. *)
+Ltac zesu_condition_has_unresolved_evar condition :=
+  first [ has_evar condition
+        | multimatch goal with
+          | local := ?body : _ |- _ =>
+              lazymatch condition with
+              | context[local] => zesu_condition_has_unresolved_evar body
+              end
+          end ].
+
+Ltac zesu_defer_unresolved_sidecondition_if_enabled :=
+  let enabled := constr:(_ : ZesuStepEvarSideconditionGuard) in
+  lazymatch goal with
+  | |- envs_entails _ _ => fail 0
+  | |- @bi_entails _ _ _ => fail 0
+  | |- ?condition =>
+      let sort := type of condition in
+      constr_eq sort Prop;
+      zesu_condition_has_unresolved_evar condition
+  end.
+
 Class ZesuStepPureWitnessConstraints : Prop :=
   zesu_step_pure_witness_constraints : True.
 
