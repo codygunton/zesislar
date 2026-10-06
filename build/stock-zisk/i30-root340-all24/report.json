@@ -1,0 +1,1924 @@
+{
+  "item": "root340-all24",
+  "measurement_root": "34086606bd7f9b72321bfb25ef36f976dc90f391",
+  "result": "Six native boundaries close. Eighteen blocks retain residuals. No compiler reaches its resource limit. No Level 1 contract closes.",
+  "raw_report": {
+    "sha256": "0d78e6817b931dc3c4a34c4bffff32242d1081e70ca2fc2729bc1387ac04bc70",
+    "bytes": 3348101,
+    "archive": "/home/cody/zesislar-archive/sha256/0d/0d78e6817b931dc3c4a34c4bffff32242d1081e70ca2fc2729bc1387ac04bc70"
+  },
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/0d/0d9e960e65f3a63b1297967edcf568efcf30e4173daba4ad001128dd166e944f",
+    "sha256": "0d9e960e65f3a63b1297967edcf568efcf30e4173daba4ad001128dd166e944f",
+    "bytes": 420629,
+    "records": 1082
+  },
+  "source_and_certificate_audit": {
+    "regenerated_statements_match": 24,
+    "closure_count": 6,
+    "certificates": [
+      {
+        "entry_pc": "0x800d69d8",
+        "lemma": "DesignedBoundary_800d69d8",
+        "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+        "successors": [
+          "0x800d6a00",
+          "0x800d69e0"
+        ],
+        "source_sha256": "da52ca5ff1e387089883cdde62e2b4299290666dd3ebc4d566988edcd7c906f5",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results-coherent/native/block_0x800d69d8/Boundary.vo",
+          "sha256": "c289cc5855c8903ffe81e52b22aa9fec3fe9b6f199ac7353ad0b14d6cd91492e"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations.",
+        "instruction_count": 2
+      },
+      {
+        "entry_pc": "0x800d6a00",
+        "lemma": "DesignedBoundary_800d6a00",
+        "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+        "successors": [
+          "0x800d6a64",
+          "0x800d6a08"
+        ],
+        "source_sha256": "5f0d3e9bb2fb6e43ecfbc8d6ba4d3f44da7ab244707745a351e9320d557c9081",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results-coherent/native/block_0x800d6a00/Boundary.vo",
+          "sha256": "29a1041edc0d8af36899184142244941011ec1f5f8fc0ee24cfced59b36dc520"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations.",
+        "instruction_count": 2
+      },
+      {
+        "entry_pc": "0x800d6a14",
+        "lemma": "DesignedBoundary_800d6a14",
+        "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+        "successors": [
+          "0x800d6a24"
+        ],
+        "source_sha256": "aff406676c40c5ab28a8fbee5ff699c333b97ff100d44a74aa16b96969934f5a",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results-coherent/native/block_0x800d6a14/Boundary.vo",
+          "sha256": "f53fdb223e8c3be6ef4a5dc15889fcbdd0da86af03aa68fd541bdd91fe8102da"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations.",
+        "instruction_count": 4
+      },
+      {
+        "entry_pc": "0x800d6a64",
+        "lemma": "DesignedBoundary_800d6a64",
+        "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+        "successors": [
+          "0x800d6aa8",
+          "0x800d6a6c"
+        ],
+        "source_sha256": "8080ef1ff6ae43476d29082f47b06832826a931badd2bf1f3d042400c5cd452f",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results-coherent/native/block_0x800d6a64/Boundary.vo",
+          "sha256": "bdd1d03c72f6c4f00d9aeddcc8ff735e646283f71d30881286a92a3b48a59af7"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations.",
+        "instruction_count": 2
+      },
+      {
+        "entry_pc": "0x800d6a6c",
+        "lemma": "DesignedBoundary_800d6a6c",
+        "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+        "successors": [
+          "0x800d6ae0",
+          "0x800d6a78"
+        ],
+        "source_sha256": "e64f2d0e71ba9d0e75ab0e67b39041b637eef11655197297b03cc17dbd4a8d72",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results-coherent/native/block_0x800d6a6c/Boundary.vo",
+          "sha256": "8e7406c82cc564e7179676348ec105a08267f437636edbfd447e5598484539bb"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations.",
+        "instruction_count": 3
+      },
+      {
+        "entry_pc": "0x800d6ab4",
+        "lemma": "DesignedBoundary_800d6ab4",
+        "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+        "successors": [
+          "0x800d6ac4"
+        ],
+        "source_sha256": "bdb09a0d26b8b6c1ef04582c5974887a66c20dde28ee38ca7677e7fe049f7a33",
+        "object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results-coherent/native/block_0x800d6ab4/Boundary.vo",
+          "sha256": "d0fa4aa6fde8da3b09f534e7da1a5a7ad321062faa4c4155237ea6bb58f02299"
+        },
+        "assumptions": [],
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "native_closed_checker": true,
+        "contract_closed": false,
+        "diagnostic_groups": "Pet stack, shelf, and given_up unavailable. Kernel Qed rejects unresolved proof obligations.",
+        "instruction_count": 4
+      }
+    ],
+    "closure_scope": "Each Qed proves a block with actual successor entry callbacks. It does not prove the entire Level 1 contract."
+  },
+  "inventory": {
+    "root": "34086606bd7f9b72321bfb25ef36f976dc90f391",
+    "switches": [
+      "InstructionLookup",
+      "StackWrite",
+      "RamFault",
+      "RegionFault",
+      "LowMask",
+      "IntegerArrayAddress",
+      "RecordWitness",
+      "ArrayBounds",
+      "WordArrayHandoff",
+      "ReturnBundle",
+      "ReturnWand",
+      "StrictSigned",
+      "ListWitness",
+      "TupleWitness",
+      "ArrayRegionBounds",
+      "PureFactHints",
+      "KnownPairWitness",
+      "PureWitnessConstraints",
+      "RegisterCollectionSelection",
+      "EvarSideconditionGuard"
+    ],
+    "hint_imports": [
+      "DecodeItemBranchGuardFacts",
+      "DecodeItemDataWitnessFacts",
+      "DecodeItemOutcomeWitnessFacts",
+      "DecodeItemFoldRejectionFacts",
+      "DecodeItemFoldInitializationWitnesses",
+      "DecodeItemFoldZeroFacts",
+      "DecodeItemHeaderWitnessFacts",
+      "DecodeItemOutputBaseWitnessFacts",
+      "DecodeItemShortListHandoffFacts"
+    ],
+    "imports": [
+      "ZesuSsz.Automation.Switches.InstructionLookup",
+      "ZesuSsz.Automation.Switches.StackWrite",
+      "ZesuSsz.Automation.Switches.RamFault",
+      "ZesuSsz.Automation.Switches.RegionFault",
+      "ZesuSsz.Automation.Switches.LowMask",
+      "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+      "ZesuSsz.Automation.Switches.RecordWitness",
+      "ZesuSsz.Automation.Switches.ArrayBounds",
+      "ZesuSsz.Automation.Switches.WordArrayHandoff",
+      "ZesuSsz.Automation.Switches.ReturnBundle",
+      "ZesuSsz.Automation.Switches.ReturnWand",
+      "ZesuSsz.Automation.Switches.StrictSigned",
+      "ZesuSsz.Automation.Switches.ListWitness",
+      "ZesuSsz.Automation.Switches.TupleWitness",
+      "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+      "ZesuSsz.Automation.Switches.PureFactHints",
+      "ZesuSsz.Automation.Switches.KnownPairWitness",
+      "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+      "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+      "ZesuSsz.Compliance.DecodeItemBranchGuardFacts",
+      "ZesuSsz.Compliance.DecodeItemDataWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses",
+      "ZesuSsz.Compliance.DecodeItemFoldZeroFacts",
+      "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemShortListHandoffFacts",
+      "ZesuSsz.Automation.Switches.EvarSideconditionGuard"
+    ]
+  },
+  "activation": {
+    "sha256": "c20f9aacea6776f6dea4e9e982106efe3f6f423f7f757873bbd9a5f0b8ea0de2",
+    "bytes": 10847,
+    "archive": "/home/cody/zesislar-archive/sha256/c2/c20f9aacea6776f6dea4e9e982106efe3f6f423f7f757873bbd9a5f0b8ea0de2"
+  },
+  "entry_binding": {
+    "sha256": "bf8719f96d7e7938594ed7b4948e09bbb4cdc4977429a402275589900c33b3b8",
+    "bytes": 6864,
+    "archive": "/home/cody/zesislar-archive/sha256/bf/bf8719f96d7e7938594ed7b4948e09bbb4cdc4977429a402275589900c33b3b8"
+  },
+  "prepared_inputs": {
+    "sha256": "0fae2e5244a74f65bed2409a76fe57eb3bcfdc3a2d737f2aad86a31f905929aa",
+    "bytes": 221930,
+    "archive": "/home/cody/zesislar-archive/sha256/0f/0fae2e5244a74f65bed2409a76fe57eb3bcfdc3a2d737f2aad86a31f905929aa"
+  },
+  "setup_failure_report": {
+    "sha256": "9dcfdcc077d822b800fcf5d703cb72bd05ec4fd66a5cbd8303c4332f5ca45bf2",
+    "bytes": 435359,
+    "archive": "/home/cody/zesislar-archive/sha256/9d/9dcfdcc077d822b800fcf5d703cb72bd05ec4fd66a5cbd8303c4332f5ca45bf2"
+  },
+  "setup_failures": [
+    "The entry check lacked RlpDecodeItemReturnImages.vo. The owned dependency build supplied it.",
+    "The first activation output truncated two statuses. Two compact queries verify all twenty statuses.",
+    "Two adapter typing outputs had mismatched basenames. A separate directory retains ApplicationChecks.vo.",
+    "The old preparation referenced an earlier coqc_recipe hash. A fresh output directory binds the completed Sets.call import. No earlier primary executed."
+  ],
+  "classes": {
+    "native-residual": 18,
+    "native-boundary-closed": 6
+  },
+  "blocks_closed": 6,
+  "instructions_in_closed_blocks": 17,
+  "contract_closures": 0,
+  "workers": 3,
+  "measurement_elapsed_s": 4377.186218854971,
+  "machine_before": {
+    "cpu_count": 64,
+    "load": [
+      1.11376953125,
+      2.37548828125,
+      1.94775390625
+    ],
+    "memory": {
+      "MemAvailable": "151187076 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "1237820 kB"
+    },
+    "cpu_ticks": "cpu  110724467 402572609 43837450 5809162339 2822859 5405894 2612043 0 0 0"
+  },
+  "machine_after": {
+    "cpu_count": 64,
+    "load": [
+      2.76953125,
+      2.95458984375,
+      3.9931640625
+    ],
+    "memory": {
+      "MemAvailable": "144867540 kB",
+      "SwapTotal": "8388604 kB",
+      "SwapFree": "1237820 kB"
+    },
+    "cpu_ticks": "cpu  110952856 404686479 44007238 5834594396 2830859 5434552 2628474 0 0 0"
+  },
+  "admission": {
+    "root": "34086606bd7f9b72321bfb25ef36f976dc90f391",
+    "timestamp": "2026-10-06T14:40:43.949594+00:00",
+    "available_gib": 144.29993438720703,
+    "budget_70percent_gib": 101.00995407104492,
+    "block_workers": 3,
+    "adapter_workers": 3,
+    "blocks_reserved_gib": 24,
+    "adapters_reserved_gib": 18,
+    "other_workers_reserved": 8,
+    "other_reserved_gib": 48,
+    "maximum_reserved_gib": 90,
+    "loadavg": "1.11 2.38 1.95 1/4174 1545101\n",
+    "memory": {
+      "MemTotal": 263380900,
+      "MemFree": 46559308,
+      "MemAvailable": 151309448,
+      "Buffers": 620792,
+      "Cached": 128960844,
+      "SwapCached": 405276,
+      "Active": 69444540,
+      "Inactive": 121425200,
+      "Active(anon)": 57416124,
+      "Inactive(anon)": 37597948,
+      "Active(file)": 12028416,
+      "Inactive(file)": 83827252,
+      "Unevictable": 3072,
+      "Mlocked": 0,
+      "SwapTotal": 8388604,
+      "SwapFree": 1237820,
+      "Zswap": 3084880,
+      "Zswapped": 6447984,
+      "Dirty": 5336,
+      "Writeback": 0,
+      "AnonPages": 60108836,
+      "Mapped": 1711504,
+      "Shmem": 33726128,
+      "KReclaimable": 11188600,
+      "Slab": 17304876,
+      "SReclaimable": 11073944,
+      "SUnreclaim": 6230932,
+      "KernelStack": 67824,
+      "PageTables": 326100,
+      "SecPageTables": 67396,
+      "NFS_Unstable": 0,
+      "Bounce": 0,
+      "WritebackTmp": 0,
+      "CommitLimit": 140079052,
+      "Committed_AS": 139947152,
+      "VmallocTotal": 13743895347199,
+      "VmallocUsed": 330644,
+      "VmallocChunk": 0,
+      "Percpu": 1581824,
+      "HardwareCorrupted": 0,
+      "AnonHugePages": 49631232,
+      "ShmemHugePages": 0,
+      "ShmemPmdMapped": 0,
+      "FileHugePages": 12689408,
+      "FilePmdMapped": 692224,
+      "CmaTotal": 0,
+      "CmaFree": 0,
+      "Unaccepted": 0,
+      "Balloon": 0,
+      "HugePages_Total": 0,
+      "HugePages_Free": 0,
+      "HugePages_Rsvd": 0,
+      "HugePages_Surp": 0,
+      "Hugepagesize": 2048,
+      "Hugetlb": 0,
+      "DirectMap4k": 36349152,
+      "DirectMap2M": 228413440,
+      "DirectMap1G": 3145728
+    },
+    "compiler_process_snapshot": "    PID COMMAND         %CPU   RSS\n      1 systemd          0.0 15308\n      2 kthreadd         0.0     0\n      3 pool_workqueue_  0.0     0\n      4 kworker/R-rcu_g  0.0     0\n      5 kworker/R-sync_  0.0     0\n      6 kworker/R-kvfre  0.0     0\n      7 kworker/R-slub_  0.0     0\n      8 kworker/R-netns  0.0     0\n     11 kworker/0:0H-ev  0.0     0\n     14 kworker/R-mm_pe  0.0     0\n     15 ksoftirqd/0      0.0     0\n     16 rcu_preempt      0.0     0\n     17 rcub/1           0.0     0\n     18 rcu_exp_par_gp_  0.0     0\n     19 rcu_exp_gp_kthr  0.0     0\n     20 migration/0      0.0     0\n     21 idle_inject/0    0.0     0\n     22 cpuhp/0          0.0     0\n     23 cpuhp/1          0.0     0\n     24 idle_inject/1    0.0     0\n     25 migration/1      0.0     0\n     26 ksoftirqd/1      0.0     0\n     28 kworker/1:0H-ev  0.0     0\n     29 cpuhp/2          0.0     0\n     30 idle_inject/2    0.0     0\n     31 migration/2      0.0     0\n     32 ksoftirqd/2      0.0     0\n     34 kworker/2:0H-ev  0.0     0\n     35 cpuhp/3          0.0     0\n     36 idle_inject/3    0.0     0\n     37 migration/3      0.0     0\n     38 ksoftirqd/3      0.0     0\n     40 kworker/3:0H-ev  0.0     0\n     41 cpuhp/4          0.0     0\n     42 idle_inject/4    0.0     0\n     43 migration/4      0.0     0\n     44 ksoftirqd/4      0.0     0\n     46 kworker/4:0H-ev  0.0     0\n     47 cpuhp/5          0.0     0\n     48 idle_inject/5    0.0     0\n     49 migration/5      0.0     0\n     50 ksoftirqd/5      0.0     0\n     52 kworker/5:0H-ev  0.0     0\n     53 cpuhp/6          0.0     0\n     54 idle_inject/6    0.0     0\n     55 migration/6      0.0     0\n     56 ksoftirqd/6      0.0     0\n     58 kworker/6:0H-ev  0.0     0\n     59 cpuhp/7          0.0     0\n     60 idle_inject/7    0.0     0\n     61 migration/7      0.0     0\n     62 ksoftirqd/7      0.0     0\n     64 kworker/7:0H-ev  0.0     0\n     65 cpuhp/8          0.0     0\n     66 idle_inject/8    0.0     0\n     67 migration/8      0.0     0\n     68 ksoftirqd/8      0.0     0\n     70 kworker/8:0H-ev  0.0     0\n     71 cpuhp/9          0.0     0\n     72 idle_inject/9    0.0     0\n     73 migration/9      0.0     0\n     74 ksoftirqd/9      0.0     0\n     76 kworker/9:0H-ev  0.0     0\n     77 cpuhp/10         0.0     0\n     78 idle_inject/10   0.0     0\n     79 migration/10     0.0     0\n     80 ksoftirqd/10     0.0     0\n     82 kworker/10:0H-e  0.0     0\n     83 cpuhp/11         0.0     0\n     84 idle_inject/11   0.0     0\n     85 migration/11     0.0     0\n     86 ksoftirqd/11     0.0     0\n     88 kworker/11:0H-e  0.0     0\n     89 cpuhp/12         0.0     0\n     90 idle_inject/12   0.0     0\n     91 migration/12     0.0     0\n     92 ksoftirqd/12     0.0     0\n     94 kworker/12:0H-e  0.0     0\n     95 cpuhp/13         0.0     0\n     96 idle_inject/13   0.0     0\n     97 migration/13     0.0     0\n     98 ksoftirqd/13     0.0     0\n    100 kworker/13:0H-e  0.0     0\n    101 cpuhp/14         0.0     0\n    102 idle_inject/14   0.0     0\n    103 migration/14     0.0     0\n    104 ksoftirqd/14     0.0     0\n    106 kworker/14:0H-e  0.0     0\n    107 cpuhp/15         0.0     0\n    108 idle_inject/15   0.0     0\n    109 migration/15     0.0     0\n    110 ksoftirqd/15     0.0     0\n    112 kworker/15:0H-e  0.0     0\n    113 cpuhp/16         0.0     0\n    114 idle_inject/16   0.0     0\n    115 migration/16     0.0     0\n    116 ksoftirqd/16     0.0     0\n    118 kworker/16:0H-e  0.0     0\n    119 rcub/2           0.0     0\n    120 rcu_exp_par_gp_  0.0     0\n    121 cpuhp/17         0.0     0\n    122 idle_inject/17   0.0     0\n    123 migration/17     0.0     0\n    124 ksoftirqd/17     0.0     0\n    126 kworker/17:0H-e  0.0     0\n    127 cpuhp/18         0.0     0\n    128 idle_inject/18   0.0     0\n    129 migration/18     0.0     0\n    130 ksoftirqd/18     0.0     0\n    132 kworker/18:0H-e  0.0     0\n    133 cpuhp/19         0.0     0\n    134 idle_inject/19   0.0     0\n    135 migration/19     0.0     0\n    136 ksoftirqd/19     0.0     0\n    138 kworker/19:0H-e  0.0     0\n    139 cpuhp/20         0.0     0\n    140 idle_inject/20   0.0     0\n    141 migration/20     0.0     0\n    142 ksoftirqd/20     0.0     0\n    144 kworker/20:0H-k  0.0     0\n    145 cpuhp/21         0.0     0\n    146 idle_inject/21   0.0     0\n    147 migration/21     0.0     0\n    148 ksoftirqd/21     0.0     0\n    150 kworker/21:0H-e  0.0     0\n    151 cpuhp/22         0.0     0\n    152 idle_inject/22   0.0     0\n    153 migration/22     0.0     0\n    154 ksoftirqd/22     0.0     0\n    156 kworker/22:0H-e  0.0     0\n    157 cpuhp/23         0.0     0\n    158 idle_inject/23   0.0     0\n    159 migration/23     0.0     0\n    160 ksoftirqd/23     0.0     0\n    162 kworker/23:0H-e  0.0     0\n    163 cpuhp/24         0.0     0\n    164 idle_inject/24   0.0     0\n    165 migration/24     0.0     0\n    166 ksoftirqd/24     0.0     0\n    168 kworker/24:0H-e  0.0     0\n    169 cpuhp/25         0.0     0\n    170 idle_inject/25   0.0     0\n    171 migration/25     0.0     0\n    172 ksoftirqd/25     0.0     0\n    174 kworker/25:0H-e  0.0     0\n    175 cpuhp/26         0.0     0\n    176 idle_inject/26   0.0     0\n    177 migration/26     0.0     0\n    178 ksoftirqd/26     0.0     0\n    180 kworker/26:0H-e  0.0     0\n    181 cpuhp/27         0.0     0\n    182 idle_inject/27   0.0     0\n    183 migration/27     0.0     0\n    184 ksoftirqd/27     0.0     0\n    186 kworker/27:0H-e  0.0     0\n    187 cpuhp/28         0.0     0\n    188 idle_inject/28   0.0     0\n    189 migration/28     0.0     0\n    190 ksoftirqd/28     0.0     0\n    192 kworker/28:0H-e  0.0     0\n    193 cpuhp/29         0.0     0\n    194 idle_inject/29   0.0     0\n    195 migration/29     0.0     0\n    196 ksoftirqd/29     0.0     0\n    198 kworker/29:0H-e  0.0     0\n    199 cpuhp/30         0.0     0\n    200 idle_inject/30   0.0     0\n    201 migration/30     0.0     0\n    202 ksoftirqd/30     0.0     0\n    204 kworker/30:0H-e  0.0     0\n    205 cpuhp/31         0.0     0\n    206 idle_inject/31   0.0     0\n    207 migration/31     0.0     0\n    208 ksoftirqd/31     0.0     0\n    210 kworker/31:0H-e  0.0     0\n    211 cpuhp/32         0.0     0\n    212 idle_inject/32   0.0     0\n    213 migration/32     0.0     0\n    214 ksoftirqd/32     0.0     0\n    216 kworker/32:0H-e  0.0     0\n    217 rcub/3           0.0     0\n    218 rcu_exp_par_gp_  0.0     0\n    219 cpuhp/33         0.0     0\n    220 idle_inject/33   0.0     0\n    221 migration/33     0.0     0\n    222 ksoftirqd/33     0.0     0\n    224 kworker/33:0H-e  0.0     0\n    225 cpuhp/34         0.0     0\n    226 idle_inject/34   0.0     0\n    227 migration/34     0.0     0\n    228 ksoftirqd/34     0.0     0\n    230 kworker/34:0H-e  0.0     0\n    231 cpuhp/35         0.0     0\n    232 idle_inject/35   0.0     0\n    233 migration/35     0.0     0\n    234 ksoftirqd/35     0.0     0\n    236 kworker/35:0H-e  0.0     0\n    237 cpuhp/36         0.0     0\n    238 idle_inject/36   0.0     0\n    239 migration/36     0.0     0\n    240 ksoftirqd/36     0.0     0\n    242 kworker/36:0H-e  0.0     0\n    243 cpuhp/37         0.0     0\n    244 idle_inject/37   0.0     0\n    245 migration/37     0.0     0\n    246 ksoftirqd/37     0.0     0\n    249 cpuhp/38         0.0     0\n    250 idle_inject/38   0.0     0\n    251 migration/38     0.0     0\n    252 ksoftirqd/38     0.0     0\n    254 kworker/38:0H-e  0.0     0\n    255 cpuhp/39         0.0     0\n    256 idle_inject/39   0.0     0\n    257 migration/39     0.0     0\n    258 ksoftirqd/39     0.0     0\n    260 kworker/39:0H-x  0.0     0\n    261 cpuhp/40         0.0     0\n    262 idle_inject/40   0.0     0\n    263 migration/40     0.0     0\n    264 ksoftirqd/40     0.0     0\n    266 kworker/40:0H-e  0.0     0\n    267 cpuhp/41         0.0     0\n    268 idle_inject/41   0.0     0\n    269 migration/41     0.0     0\n    270 ksoftirqd/41     0.0     0\n    273 cpuhp/42         0.0     0\n    274 idle_inject/42   0.0     0\n    275 migration/42     0.0     0\n    276 ksoftirqd/42     0.0     0\n    278 kworker/42:0H-e  0.0     0\n    279 cpuhp/43         0.0     0\n    280 idle_inject/43   0.0     0\n    281 migration/43     0.0     0\n    282 ksoftirqd/43     0.0     0\n    285 cpuhp/44         0.0     0\n    286 idle_inject/44   0.0     0\n    287 migration/44     0.0     0\n    288 ksoftirqd/44     0.0     0\n    290 kworker/44:0H-e  0.0     0\n    291 cpuhp/45         0.0     0\n    292 idle_inject/45   0.0     0\n    293 migration/45     0.0     0\n    294 ksoftirqd/45     0.0     0\n    297 cpuhp/46         0.0     0\n    298 idle_inject/46   0.0     0\n    299 migration/46     0.0     0\n    300 ksoftirqd/46     0.0     0\n    302 kworker/46:0H-e  0.0     0\n    303 cpuhp/47         0.0     0\n    304 idle_inject/47   0.0     0\n    305 migration/47     0.0     0\n    306 ksoftirqd/47     0.0     0\n    309 cpuhp/48         0.0     0\n    310 idle_inject/48   0.0     0\n    311 migration/48     0.0     0\n    312 ksoftirqd/48     0.0     0\n    314 kworker/48:0H-e  0.0     0\n    315 rcub/4           0.0     0\n    316 rcu_exp_par_gp_  0.0     0\n    317 cpuhp/49         0.0     0\n    318 idle_inject/49   0.0     0\n    319 migration/49     0.0     0\n    320 ksoftirqd/49     0.0     0\n    323 cpuhp/50         0.0     0\n    324 idle_inject/50   0.0     0\n    325 migration/50     0.0     0\n    326 ksoftirqd/50     0.0     0\n    328 kworker/50:0H-e  0.0     0\n    329 cpuhp/51         0.0     0\n    330 idle_inject/51   0.0     0\n    331 migration/51     0.0     0\n    332 ksoftirqd/51     0.0     0\n    335 cpuhp/52         0.0     0\n    336 idle_inject/52   0.0     0\n    337 migration/52     0.0     0\n    338 ksoftirqd/52     0.0     0\n    340 kworker/52:0H-e  0.0     0\n    341 cpuhp/53         0.0     0\n    342 idle_inject/53   0.0     0\n    343 migration/53     0.0     0\n    344 ksoftirqd/53     0.0     0\n    347 cpuhp/54         0.0     0\n    348 idle_inject/54   0.0     0\n    349 migration/54     0.0     0\n    350 ksoftirqd/54     0.0     0\n    352 kworker/54:0H-e  0.0     0\n    353 cpuhp/55         0.0     0\n    354 idle_inject/55   0.0     0\n    355 migration/55     0.0     0\n    356 ksoftirqd/55     0.0     0\n    359 cpuhp/56         0.0     0\n    360 idle_inject/56   0.0     0\n    361 migration/56     0.0     0\n    362 ksoftirqd/56     0.0     0\n    364 kworker/56:0H-e  0.0     0\n    365 cpuhp/57         0.0     0\n    366 idle_inject/57   0.0     0\n    367 migration/57     0.0     0\n    368 ksoftirqd/57     0.0     0\n    371 cpuhp/58         0.0     0\n    372 idle_inject/58   0.0     0\n    373 migration/58     0.0     0\n    374 ksoftirqd/58     0.0     0\n    376 kworker/58:0H-e  0.0     0\n    377 cpuhp/59         0.0     0\n    378 idle_inject/59   0.0     0\n    379 migration/59     0.0     0\n    380 ksoftirqd/59     0.0     0\n    383 cpuhp/60         0.0     0\n    384 idle_inject/60   0.0     0\n    385 migration/60     0.0     0\n    386 ksoftirqd/60     0.0     0\n    388 kworker/60:0H-e  0.0     0\n    389 cpuhp/61         0.0     0\n    390 idle_inject/61   0.0     0\n    391 migration/61     0.0     0\n    392 ksoftirqd/61     0.0     0\n    395 cpuhp/62         0.0     0\n    396 idle_inject/62   0.0     0\n    397 migration/62     0.0     0\n    398 ksoftirqd/62     0.0     0\n    400 kworker/62:0H-e  0.0     0\n    401 cpuhp/63         0.0     0\n    402 idle_inject/63   0.0     0\n    403 migration/63     0.0     0\n    404 ksoftirqd/63     0.0     0\n    411 kdevtmpfs        0.0     0\n    412 kworker/R-inet_  0.0     0\n    413 rcu_tasks_kthre  0.0     0\n    414 rcu_tasks_rude_  0.0     0\n    415 rcu_tasks_trace  0.0     0\n    416 kauditd          0.0     0\n    417 khungtaskd       0.0     0\n    419 oom_reaper       0.0     0\n    421 kworker/R-write  0.0     0\n    422 kcompactd0       0.1     0\n    423 ksmd             0.0     0\n    424 khugepaged       0.0     0\n    425 kworker/R-kbloc  0.0     0\n    426 kworker/R-blkcg  0.0     0\n    427 kworker/R-kinte  0.0     0\n    429 irq/9-acpi       0.0     0\n    431 kworker/R-tpm_d  0.0     0\n    432 kworker/R-ata_s  0.0     0\n    433 kworker/R-edac-  0.0     0\n    434 kworker/R-devfr  0.0     0\n    435 watchdogd        0.0     0\n    437 kworker/R-quota  0.0     0\n    438 kworker/16:1H-k  0.0     0\n    441 irq/30-AMD-Vi0-  0.0     0\n    442 irq/31-AMD-Vi0-  0.0     0\n    443 irq/32-AMD-Vi0-  0.0     0\n    444 irq/33-AMD-Vi1-  0.0     0\n    445 irq/34-AMD-Vi1-  0.0     0\n    446 irq/35-AMD-Vi1-  0.0     0\n    447 irq/36-AMD-Vi2-  0.0     0\n    448 irq/37-AMD-Vi2-  0.0     0\n    449 irq/38-AMD-Vi2-  0.0     0\n    450 irq/39-AMD-Vi3-  0.0     0\n    451 irq/40-AMD-Vi3-  0.0     0\n    452 irq/41-AMD-Vi3-  0.0     0\n    453 kswapd0          0.0     0\n    454 kworker/R-kthro  0.0     0\n    455 kworker/u261:0   0.0     0\n    456 irq/43-aerdrv    0.0     0\n    457 irq/44-aerdrv    0.0     0\n    458 irq/44-pcie-dpc  0.0     0\n    459 irq/45-aerdrv    0.0     0\n    460 irq/45-pcie-dpc  0.0     0\n    461 irq/48-aerdrv    0.0     0\n    462 irq/52-aerdrv    0.0     0\n    463 irq/53-aerdrv    0.0     0\n    464 irq/53-pcie-dpc  0.0     0\n    465 irq/56-aerdrv    0.0     0\n    466 irq/57-aerdrv    0.0     0\n    467 irq/57-pcie-dpc  0.0     0\n    468 irq/58-aerdrv    0.0     0\n    469 irq/58-pcie-dpc  0.0     0\n    470 irq/59-aerdrv    0.0     0\n    471 irq/59-pcie-dpc  0.0     0\n    472 irq/60-aerdrv    0.0     0\n    473 irq/60-pcie-dpc  0.0     0\n    474 irq/63-pciehp    0.0     0\n    475 irq/64-pciehp    0.0     0\n    476 kworker/R-acpi_  0.0     0\n    477 scsi_eh_0        0.0     0\n    478 kworker/R-scsi_  0.0     0\n    479 scsi_eh_1        0.0     0\n    480 kworker/R-scsi_  0.0     0\n    481 scsi_eh_2        0.0     0\n    482 kworker/R-scsi_  0.0     0\n    483 scsi_eh_3        0.0     0\n    484 kworker/R-scsi_  0.0     0\n    485 scsi_eh_4        0.0     0\n    486 kworker/R-scsi_  0.0     0\n    487 scsi_eh_5        0.0     0\n    488 kworker/R-scsi_  0.0     0\n    496 kworker/R-mld    0.0     0\n    497 kworker/R-ipv6_  0.0     0\n    498 kworker/R-kstrp  0.0     0\n    499 kworker/20:1H    0.0     0\n    527 kworker/R-zswap  0.0     0\n    528 kworker/u262:0   0.0     0\n    529 kworker/u263:0   0.0     0\n    530 kworker/u264:0   0.0     0\n    531 kworker/u265:0   0.0     0\n    535 kworker/0:1H-kb  0.0     0\n    577 kworker/44:1H-k  0.0     0\n    608 nv_queue         0.0     0\n    609 nv_mem_pool_scr  0.0     0\n    610 nv_mem_pool_scr  0.0     0\n    611 nv_mem_pool_scr  0.0     0\n    612 nv_queue         0.0     0\n    614 nv_open_q        0.0     0\n    615 kworker/60:1H-k  0.0     0\n    616 irq/102-nvidia   0.0     0\n    617 irq/103-nvidia   0.0     0\n    618 irq/104-nvidia   0.0     0\n    619 irq/105-nvidia   0.0     0\n    620 irq/106-nvidia   0.0     0\n    621 irq/107-nvidia   0.0     0\n    622 irq/108-nvidia   0.0     0\n    623 irq/109-nvidia   0.0     0\n    624 nvidia           0.0     0\n    625 nv_queue         0.0     0\n    629 kworker/8:1H-kb  0.0     0\n    630 kworker/12:1H-k  0.0     0\n    634 kworker/14:1H-k  0.0     0\n    635 kworker/13:1H-k  0.0     0\n    636 kworker/15:1H-k  0.0     0\n    637 kworker/9:1H-kb  0.0     0\n    638 kworker/46:1H-k  0.0     0\n    643 kworker/50:1H-k  0.0     0\n    644 kworker/53:1H-k  0.0     0\n    645 kworker/54:1H-k  0.0     0\n    649 kworker/42:1H-k  0.0     0\n    650 kworker/40:1H-k  0.0     0\n    663 kworker/11:1H-k  0.0     0\n    664 nvidia-modeset/  0.0     0\n    665 nvidia-modeset/  0.0     0\n    666 UVM global queu  0.0     0\n    667 UVM deferred re  0.0     0\n    668 UVM Tools Event  0.0     0\n    669 kworker/10:1H-k  0.0     0\n    808 kworker/32:1H-k  0.0     0\n    809 kworker/6:1H-kb  0.0     0\n    810 kworker/34:1H-k  0.0     0\n    811 kworker/3:1H-kb  0.0     0\n    812 kworker/7:1H-kb  0.0     0\n    813 kworker/18:1H-k  0.0     0\n    814 kworker/38:1H-k  0.0     0\n    816 kworker/24:1H-k  0.0     0\n    817 kworker/25:1H-k  0.0     0\n    819 kworker/62:1H-k  0.0     0\n    820 kworker/27:1H-k  0.0     0\n    821 kworker/26:1H-k  0.0     0\n    822 kworker/28:1H-k  0.0     0\n    823 kworker/30:1H-k  0.0     0\n    824 kworker/29:1H-k  0.0     0\n    826 kworker/56:1H-k  0.0     0\n    827 kworker/58:1H-k  0.0     0\n    828 kworker/31:1H-k  0.0     0\n    829 kworker/R-nvme-  0.0     0\n    830 kworker/R-nvme-  0.0     0\n    831 kworker/R-nvme-  0.0     0\n    832 kworker/R-nvme-  0.0     0\n    836 scsi_eh_6        0.0     0\n    837 kworker/R-scsi_  0.0     0\n    838 usb-storage      0.0     0\n    839 scsi_eh_7        0.0     0\n    840 kworker/R-scsi_  0.0     0\n    841 usb-storage      0.0     0\n    842 kworker/R-uas    0.0     0\n    864 kworker/1:1H-kb  0.0     0\n    876 kworker/19:1H-k  0.0     0\n   1104 kworker/R-kdmfl  0.0     0\n   1105 kworker/R-kcryp  0.0     0\n   1106 kworker/R-kcryp  0.0     0\n   1107 dmcrypt_write/2  0.0     0\n   1113 kworker/2:1H-kb  0.0     0\n   1115 kworker/R-kdmfl  0.0     0\n   1116 kworker/R-kdmfl  0.0     0\n   1117 kworker/R-kdmfl  0.0     0\n   1160 kworker/17:1H-k  0.0     0\n   1161 jbd2/dm-2-8      0.0     0\n   1162 kworker/R-ext4-  0.0     0\n   1211 kworker/21:1H-k  0.0     0\n   1219 systemd-journal  0.0 182860\n   1247 systemd-userdbd  0.0  4932\n   1254 psimon           0.0     0\n   1260 systemd-timesyn  0.0  7132\n   1266 systemd-udevd    0.0 14188\n   1267 psimon           0.0     0\n   1339 kworker/22:1H-k  0.0     0\n   1343 kworker/4:1H-kb  0.0     0\n   1345 kworker/52:1H-k  0.0     0\n   1416 kworker/5:1H-kb  0.0     0\n   1417 kworker/23:1H-k  0.0     0\n   1422 kworker/37:1H-x  0.0     0\n   1423 kworker/48:1H-k  0.0     0\n   1430 kworker/55:1H-k  0.0     0\n   1431 kworker/R-ipmi-  0.0     0\n   1440 kworker/R-led_w  0.0     0\n   1451 kworker/R-ib-co  0.0     0\n   1452 kworker/R-ib-co  0.0     0\n   1453 kworker/R-ib_mc  0.0     0\n   1454 kworker/R-ib_nl  0.0     0\n   1455 kipmi0           0.0     0\n   1567 kworker/R-xfsal  0.0     0\n   1568 kworker/R-xfs_m  0.0     0\n   1569 kworker/R-xfs-b  0.0     0\n   1570 kworker/R-xfs-c  0.0     0\n   1571 kworker/R-xfs-r  0.0     0\n   1572 kworker/R-xfs-b  0.0     0\n   1573 kworker/R-xfs-i  0.0     0\n   1574 kworker/R-xfs-l  0.0     0\n   1575 kworker/R-xfs-c  0.0     0\n   1576 xfsaild/dm-3     0.0     0\n   1686 dbus-broker-lau  0.0  3228\n   1696 dbus-broker      0.0  3040\n   1714 NetworkManager   0.0 23968\n   1719 systemd-logind   0.0  7280\n   1821 sshd             0.0  6388\n   1835 containerd       0.0 67736\n   1860 agetty           0.0  2144\n   1879 agetty           0.0  2280\n   1901 systemd          0.2 33892\n   1902 systemd          0.0 14476\n   1906 (sd-pam)         0.0  4332\n   1907 (sd-pam)         0.0  4268\n   1916 kworker/R-kdmfl  0.0     0\n   1917 kworker/R-kcryp  0.0     0\n   1918 kworker/R-kcryp  0.0     0\n   1919 dmcrypt_write/2  0.0     0\n   1924 python           0.0 890136\n   1925 roster-agent     0.1 17464\n   1942 jbd2/dm-4-8      0.0     0\n   1943 kworker/R-ext4-  0.0     0\n   2028 vidmem lazy fre  0.0     0\n   2029 UVM GPU1 BH      0.0     0\n   2030 UVM GPU1 KC      0.0     0\n   2160 kworker/36:1H-k  0.0     0\n   2165 dockerd          0.2 1150476\n   2166 ollama           0.0 29380\n   2671 containerd-shim  0.0 11108\n   2672 containerd-shim  0.0 13136\n   2673 containerd-shim  0.0 13692\n   2705 containerd-shim  0.0 13060\n   2729 containerd-shim  0.0 13088\n   2798 containerd-shim  0.0 13556\n   2822 sleep            0.0   916\n   2824 cadvisor         2.7 180764\n   2831 node_exporter    0.3 27412\n   2969 docker-proxy     0.0  4480\n   3002 docker-proxy     0.0  4480\n   3088 dcgm-exporter    0.0 120756\n   3090 nvitop-exporter  1.1 50948\n   3102 tini             0.0  3680\n   3143 docker-proxy     0.0  2444\n   3150 docker-proxy     0.0  2472\n   3326 docker-proxy     0.0  4520\n   3334 docker-proxy     0.0  4460\n   3381 docker-proxy     0.0  4480\n   3388 docker-proxy     0.0  4460\n   3418 python           0.0 50884\n   3502 python           0.0 53888\n  12273 ssh-agent        0.0  4376\n  12899 mosh-server      0.0 11592\n  12900 zsh              0.0  8100\n  13004 zellij           1.3 435664\n  13683 zsh              0.0  8176\n  14229 polkitd          0.0  9708\n  16938 dbus-broker-lau  0.0  2336\n  16939 dbus-broker      0.0  2240\n  43229 containerd-shim  0.0 13288\n  43255 bash             0.0  1596\n  43974 rust-analyzer    0.0 4784844\n  46606 nix-daemon       0.0 11204\n  47124 rust-analyzer-p  0.0 37384\n  47125 rust-analyzer-p  0.0  9724\n  49382 psimon           0.0     0\n  49434 zsh              0.0 10064\n  49668 mosh-server      0.0  4644\n  49669 zsh              0.0  4176\n  49781 zellij           0.2 240768\n  50546 python3          0.1 24452\n  50552 zsh              0.0 11024\n  51904 zsh              0.0 10548\n  74173 zsh              0.0  8280\n  79308 kworker/49:1H    0.0     0\n 115328 pet              0.1 5719432\n 151206 node-MainThread  0.0 25076\n 151290 codex            0.8 1478016\n 151680 rocq-mcp         0.0 75972\n 151682 uv               0.0 396820\n 152251 python           0.0 66720\n 156412 codex-code-mode  0.0 23960\n 156698 pet              0.0 1959116\n 167693 rocq-mcp         0.0 81264\n 172020 rocq-mcp         0.0 80320\n 232342 rocq-mcp         0.0 79168\n 246957 nvtop            1.0 27712\n 250250 kworker/u258:0-  0.0     0\n 330711 kworker/31:1-mm  0.0     0\n 365173 kworker/57:1H    0.0     0\n 385346 kworker/42:1-mm  0.0     0\n 403370 codex-code-mode  0.0 20408\n 423600 kworker/8:2-mm_  0.0     0\n 430461 nvim             0.0  8124\n 430462 nvim             0.4 47832\n 489241 kworker/21:3-ev  0.0     0\n 494694 kworker/u258:13  0.0     0\n 500239 kworker/29:0-cg  0.0     0\n 567247 pet              0.0 659120\n 641071 codex-code-mode  0.0 20748\n 652949 kworker/26:1-mm  0.0     0\n 654397 mosh-server      0.0  9668\n 654398 sh               0.0  5752\n 654403 zellij           0.0 10688\n 654434 zellij           0.0 106548\n 654461 nvim             0.0  7820\n 654465 nvim             0.5 53824\n 654774 zlnd             0.0  6624\n 658298 zsh              0.0 10108\n 674782 kworker/u258:10  0.0     0\n 682374 kworker/0:3-mm_  0.0     0\n 694264 kworker/45:13-m  0.0     0\n 695309 kworker/29:2-mm  0.0     0\n 715634 kworker/4:2-eve  0.0     0\n 741479 kworker/47:0H    0.0     0\n 749926 kworker/54:0-mm  0.0     0\n 771381 kworker/21:0-mm  0.0     0\n 832833 kworker/41:2H-k  0.0     0\n 859649 kworker/7:2-mm_  0.0     0\n 861141 kworker/59:2H-k  0.0     0\n 863318 codex            0.2 985832\n 871092 zellij           0.0 105616\n 871126 zsh              0.0  6360\n 871286 claude           0.8 421840\n 871385 uv               0.0 91444\n 871386 rocq-mcp         0.0 67848\n 871394 npm exec @playw  0.0 78632\n 871475 python           0.0 57980\n 871487 node-MainThread  0.0 76904\n 892146 codex            0.1 961196\n 911907 uv               0.0 92256\n 911948 python           0.0 59964\n 931730 kworker/49:20-m  0.0     0\n 937421 kworker/23:2-mm  0.0     0\n 945302 kworker/u258:4-  0.0     0\n 954433 zsh              0.0 11248\n 968376 uv               0.0 90296\n 968564 python           0.0 60028\n 972063 kworker/u258:7-  0.0     0\n 975787 kworker/41:0H-x  0.0     0\n 977448 kworker/13:0-mm  0.0     0\n 982107 kworker/51:2H    0.0     0\n 984513 nvim             0.0  8296\n 984514 nvim             0.5 307712\n 984562 kworker/53:0H-x  0.0     0\n 990433 chromium <defun  0.0     0\n 999726 kworker/46:0-mm  0.0     0\n1003752 kworker/24:2-mm  0.0     0\n1010384 kworker/43:1H-k  0.0     0\n1017196 kworker/55:0-ev  0.0     0\n1018151 kworker/u258:2-  0.0     0\n1028496 kworker/28:2-ev  0.0     0\n1028497 kworker/50:2-mm  0.0     0\n1031316 kworker/34:1-ev  0.0     0\n1037060 kworker/40:1-mm  0.0     0\n1041657 kworker/32:1-cg  0.0     0\n1042649 kworker/u258:11  0.0     0\n1049839 kworker/u259:9-  0.0     0\n1054294 kworker/48:0-mm  0.0     0\n1055116 kworker/63:0-rc  0.0     0\n1057566 kworker/6:0-mm_  0.0     0\n1086662 claude.exe       0.0 129096\n1086751 claude.exe       0.0 70092\n1086752 claude.exe       0.0 74088\n1086798 claude.exe       0.0 88376\n1086799 claude.exe       0.9 360892\n1087368 uv               0.0 84092\n1087369 rocq-mcp         0.0 68928\n1087429 npm exec @playw  0.0 80804\n1087571 python           0.0 60300\n1087974 node-MainThread  0.0 78888\n1091216 kworker/14:2-i4  0.0     0\n1092043 kworker/7:1-cgr  0.0     0\n1092762 kworker/u258:3-  0.0     0\n1097686 kworker/17:0-mm  0.0     0\n1098237 kworker/u258:14  0.0     0\n1106017 kworker/1:0-mm_  0.0     0\n1109001 kworker/40:2-ev  0.0     0\n1109450 kworker/38:2-mm  0.0     0\n1115211 dirmngr          0.0 26704\n1115338 kworker/u258:16  0.0     0\n1115953 node-MainThread  0.0 51420\n1115960 codex            0.1 613976\n1116230 uv               0.0 95436\n1116235 rocq-mcp         0.0 82052\n1116265 python           0.0 77712\n1118654 kworker/22:1-cg  0.0     0\n1120295 claude           0.6 369200\n1120347 uv               0.0 92672\n1120348 rocq-mcp         0.0 67672\n1120358 npm exec @playw  0.0 78132\n1120446 python           0.0 58264\n1120451 node-MainThread  0.0 77192\n1122047 kworker/43:1-xf  0.0     0\n1122048 kworker/45:2-xf  0.0     0\n1135718 kworker/61:2H-k  0.0     0\n1141316 kworker/44:0-mm  0.0     0\n1142524 kworker/25:0-mm  0.0     0\n1142944 kworker/20:1-mm  0.0     0\n1145698 kworker/59:1-ev  0.0     0\n1147002 kworker/u258:9-  0.0     0\n1156261 kworker/16:1-ev  0.0     0\n1159140 kworker/43:2-xf  0.0     0\n1159513 kworker/46:2-ev  0.0     0\n1167059 kworker/u258:18  0.0     0\n1167062 kworker/u257:9-  0.0     0\n1167065 kworker/u257:12  0.0     0\n1167815 kworker/u260:1-  0.0     0\n1168378 kworker/u260:11  0.0     0\n1168557 kworker/11:0-mm  0.0     0\n1171192 kworker/10:1-ev  0.0     0\n1179816 python3.13       0.0 75876\n1181260 kworker/63:0H-x  0.0     0\n1182068 kworker/19:1-mm  0.0     0\n1184919 kworker/u259:0-  0.0     0\n1190871 kworker/30:1-ev  0.0     0\n1193344 kworker/59:3-ev  0.0     0\n1197296 kworker/u259:2-  0.0     0\n1197722 kworker/36:2-mm  0.0     0\n1200324 kworker/u257:2-  0.0     0\n1200525 kworker/14:1-ev  0.0     0\n1200808 kworker/3:1-eve  0.0     0\n1204425 kworker/61:0-ev  0.0     0\n1204517 kworker/60:2-mm  0.0     0\n1206854 kworker/47:1-xf  0.0     0\n1206987 kworker/u257:4-  0.0     0\n1208091 kworker/52:0-mm  0.0     0\n1208133 kworker/u259:12  0.0     0\n1208292 kworker/62:2-ev  0.0     0\n1208360 kworker/u256:2-  0.0     0\n1208398 kworker/44:2-ev  0.0     0\n1208771 kworker/57:3-xf  0.0     0\n1208772 kworker/57:4-mm  0.0     0\n1209043 kworker/45:2H-k  0.0     0\n1210423 kworker/38:0-mm  0.0     0\n1210453 kworker/34:0-cg  0.0     0\n1210550 kworker/51:0-mm  0.0     0\n1210768 kworker/23:0-cg  0.0     0\n1214199 kworker/12:1-ev  0.0     0\n1217044 kworker/16:2-cg  0.0     0\n1219340 kworker/28:0-mm  0.0     0\n1222497 kworker/27:0-mm  0.0     0\n1225276 zsh              0.1 11996\n1228869 kworker/u259:4-  0.0     0\n1228871 kworker/u259:8-  0.0     0\n1234337 kworker/15:0-mm  0.0     0\n1234338 kworker/1:2-eve  0.0     0\n1234620 kworker/u257:0-  0.0     0\n1235110 kworker/u258:1-  0.0     0\n1237811 uv               0.0 92200\n1237921 python           0.0 59964\n1240396 kworker/u257:1-  0.0     0\n1240397 kworker/u257:3-  0.0     0\n1240430 kworker/2:2-eve  0.0     0\n1242512 kworker/u260:0-  0.0     0\n1243582 git              0.0 19820\n1243583 delta            0.0 18344\n1243587 less             0.0  5264\n1244544 kworker/u260:2-  0.0     0\n1246077 kworker/u258:5-  0.0     0\n1250989 kworker/u260:3-  0.0     0\n1251533 kworker/u259:1-  0.0     0\n1251534 kworker/u259:3-  0.0     0\n1256433 kworker/5:1-mm_  0.0     0\n1257487 kworker/u260:5-  0.0     0\n1265283 kworker/52:2-ev  0.0     0\n1265316 kworker/u257:5-  0.0     0\n1265317 kworker/u257:6-  0.0     0\n1265536 kworker/u257:7-  0.0     0\n1265643 kworker/u258:6-  0.0     0\n1267715 kworker/10:2-mm  0.0     0\n1269611 kworker/u259:5-  0.0     0\n1269612 kworker/u259:6-  0.0     0\n1269613 kworker/u259:7-  0.0     0\n1269614 kworker/u259:10  0.0     0\n1273608 kworker/u257:8-  0.0     0\n1273609 kworker/u257:10  0.0     0\n1273610 kworker/u257:11  0.0     0\n1273611 kworker/u257:13  0.0     0\n1273612 kworker/u257:14  0.0     0\n1273613 kworker/u257:15  0.0     0\n1275295 kworker/17:2-ev  0.0     0\n1283391 kworker/49:2H-k  0.0     0\n1285026 kworker/37:1-cg  0.0     0\n1285030 kworker/22:0-mm  0.0     0\n1285031 kworker/25:3-cg  0.0     0\n1286130 kworker/5:0-rcu  0.0     0\n1287609 kworker/2:1-ino  0.0     0\n1288090 kworker/9:1-cgr  0.0     0\n1288994 kworker/38:3-ev  0.0     0\n1291741 kworker/43:0-xf  0.0     0\n1299416 kworker/43:3-xf  0.0     0\n1299417 kworker/43:4-xf  0.0     0\n1299418 kworker/43:5-xf  0.0     0\n1299419 kworker/43:6-xf  0.0     0\n1300591 kworker/3:0-mm_  0.0     0\n1302274 zellij           0.0 73124\n1302377 claude           0.4 296132\n1302435 uv               0.0 121936\n1302436 rocq-mcp         0.0 65032\n1302450 npm exec @playw  0.0 54976\n1302544 python           0.0 54216\n1302556 node-MainThread  0.0 67568\n1308015 zsh              0.0  8808\n1308272 kworker/55:1-ev  0.0     0\n1310406 zellij           0.0 74796\n1310431 zsh              0.0  7140\n1310544 claude           0.5 334980\n1310618 uv               0.0 89972\n1310619 rocq-mcp         0.0 63940\n1310640 python           0.0 54412\n1310651 npm exec @playw  0.0 51088\n1310772 node-MainThread  0.0 73416\n1313607 kworker/6:2-eve  0.0     0\n1317652 kworker/48:1-ev  0.0     0\n1320249 keyboxd          0.0  6296\n1320253 ssh-agent        0.0  4468\n1325614 kworker/31:0-mm  0.0     0\n1327651 zsh              0.0  7948\n1330458 kworker/u260:6-  0.0     0\n1330520 kworker/54:1-ev  0.0     0\n1330824 kworker/49:3-cg  0.0     0\n1330867 kworker/33:1-mm  0.0     0\n1331077 zsh              0.0  7252\n1332091 kworker/12:2-cg  0.0     0\n1332304 kworker/20:3-ev  0.0     0\n1332587 kworker/19:2-cg  0.0     0\n1336062 zellij           0.0 83984\n1336087 nvim             0.0  7196\n1336089 zsh              0.0  9652\n1336091 nvim             0.5 52268\n1337335 kworker/30:0-mm  0.0     0\n1341755 kworker/u258:12  0.0     0\n1341756 kworker/u258:15  0.0     0\n1342721 kworker/8:1-eve  0.0     0\n1345888 kworker/32:2-mm  0.0     0\n1348004 kworker/41:1-xf  0.0     0\n1352882 kworker/60:1-ev  0.0     0\n1357447 bash             0.0  4228\n1357518 python           0.0 28308\n1357842 kworker/61:2-mm  0.0     0\n1358664 kworker/24:1-rc  0.0     0\n1360241 kworker/51:1-ev  0.0     0\n1360873 kworker/4:0-rcu  0.0     0\n1364883 pet              0.2 7512424\n1373177 kworker/53:2-mm  0.0     0\n1373179 kworker/53:4-ev  0.0     0\n1378476 kworker/36:0-mm  0.0     0\n1385548 kworker/14:0-ev  0.0     0\n1387442 kworker/63:1-mm  0.0     0\n1388620 kworker/0:1-rcu  0.0     0\n1390075 kworker/21:1-rc  0.0     0\n1392328 zellij           0.0 117740\n1392355 zsh              0.0  7788\n1392718 kworker/39:0-cg  0.0     0\n1393940 kworker/u259:11  0.0     0\n1393943 kworker/u259:15  0.0     0\n1393944 kworker/u259:16  0.0     0\n1393945 kworker/u259:17  0.0     0\n1393946 kworker/u259:18  0.0     0\n1393947 kworker/u259:19  0.0     0\n1393948 kworker/u259:20  0.0     0\n1393952 kworker/39:6-mm  0.0     0\n1409120 kworker/u260:12  0.0     0\n1419914 kworker/43:7-xf  0.0     0\n1419915 kworker/43:8-xf  0.0     0\n1419916 kworker/43:9-xf  0.0     0\n1426598 kworker/62:0-cg  0.0     0\n1428588 kworker/56:0-ev  0.0     0\n1429320 kworker/42:0-mm  0.0     0\n1431108 kworker/18:3-ev  0.0     0\n1431729 kworker/50:1-ev  0.0     0\n1432683 kworker/47:5-xf  0.0     0\n1432777 kworker/47:8-xf  0.0     0\n1435010 kworker/35:2-ev  0.0     0\n1435011 kworker/35:3-rc  0.0     0\n1435013 kworker/37:5-mm  0.0     0\n1435015 kworker/35:6-cg  0.0     0\n1435018 kworker/43:10-x  0.0     0\n1435020 kworker/43:11-x  0.0     0\n1435021 kworker/37:7-xf  0.0     0\n1435045 kworker/41:6-mm  0.0     0\n1435046 kworker/41:7-xf  0.0     0\n1435049 kworker/41:9-xf  0.0     0\n1436046 sleep            0.0  4196\n1437127 kworker/2:0-mm_  0.0     0\n1437208 kworker/26:0-cg  0.0     0\n1437467 kworker/58:2-mm  0.0     0\n1438235 kworker/27:2-rc  0.0     0\n1441646 kworker/13:1     0.0     0\n1447554 kworker/33:3-ev  0.0     0\n1454381 kworker/22:2     0.0     0\n1460103 kworker/11:1-cg  0.0     0\n1467253 kworker/45:3-xf  0.0     0\n1471491 kworker/43:12-x  0.0     0\n1471492 kworker/43:13-x  0.0     0\n1471493 kworker/43:14-x  0.0     0\n1471494 kworker/43:15-x  0.0     0\n1471495 kworker/43:16-x  0.0     0\n1471496 kworker/43:17-x  0.0     0\n1471498 kworker/43:18-x  0.0     0\n1471500 kworker/43:19-x  0.0     0\n1471501 kworker/43:20-m  0.0     0\n1471502 kworker/43:21-x  0.0     0\n1471503 kworker/43:22-x  0.0     0\n1472896 kworker/16:0-mm  0.0     0\n1473610 kworker/15:2     0.0     0\n1473646 kworker/9:0-mm_  0.0     0\n1482193 kworker/23:1     0.0     0\n1487980 kworker/48:2-ev  0.0     0\n1492412 kworker/55:2-ev  0.0     0\n1494232 kworker/16:3-cg  0.0     0\n1499371 kworker/30:2-ev  0.0     0\n1504045 kworker/7:0      0.0     0\n1504930 kworker/31:2     0.0     0\n1507562 kworker/1:1-rcu  0.0     0\n1508947 kworker/22:3-cg  0.0     0\n1511358 kworker/49:0     0.0     0\n1513161 kworker/32:0-mm  0.0     0\n1515612 kworker/21:2     0.0     0\n1516347 kworker/24:0-rc  0.0     0\n1516535 kworker/52:1     0.0     0\n1517102 zellij           0.2 90624\n1517138 zsh              0.0  8484\n1518993 kworker/46:1     0.0     0\n1523444 kworker/60:0     0.0     0\n1526811 kworker/36:1-cg  0.0     0\n1527538 zsh              0.0  8344\n1528434 kworker/43:23    0.0     0\n1528446 sleep            0.0  1568\n1534000 kworker/39:1     0.0     0\n1535416 kworker/u257:16  0.0     0\n1535417 kworker/u257:17  0.0     0\n1537482 kworker/8:0-eve  0.0     0\n1537955 kworker/10:0     0.0     0\n1538090 kworker/54:2     0.0     0\n1538864 kworker/59:0-ev  0.0     0\n1539006 systemd-userwor  0.0  6508\n1539608 mosh-server      0.0 13924\n1539609 zsh              0.1 11436\n1541774 kworker/0:0-rcu  0.0     0\n1542084 zellij           0.0 20204\n1542619 systemd-userwor  0.0  6188\n1542643 mosh-server      0.6 14552\n1542644 zsh              0.1  9412\n1542811 kworker/2:3      0.0     0\n1542871 zellij           0.2 20264\n1543007 kworker/18:1     0.0     0\n1544451 zellij           0.0 66068\n1544478 zsh              0.0  5012\n1544666 claude           0.4 308640\n1544754 kworker/12:0-ev  0.0     0\n1544768 uv               0.0 54608\n1544769 rocq-mcp         0.0 57920\n1544781 kworker/40:0     0.0     0\n1544782 npm exec @playw  0.0 44324\n1544869 python           0.0 49432\n1544874 node-MainThread  0.0 43800\n1545066 systemd-userwor  0.0  5860\n1545089 python          15.7 19364\n1545102 ps               0.0  6056\n1579198 claude           0.4 377124\n1579783 uv               0.0 95920\n1579784 rocq-mcp         0.0 69884\n1579795 npm exec @playw  0.0 80540\n1580085 python           0.0 59964\n1580288 node-MainThread  0.0 78928\n1607235 node-MainThread  0.0 25040\n1607242 codex            0.3 720048\n1607312 dbus-broker-lau  0.0  3592\n1607332 dbus-broker      0.0  2796\n1607458 at-spi-bus-laun  0.0  6748\n1607961 codex            0.0 522544\n1613815 zsh              0.0  8836\n1680534 zsh              0.0  9620\n1685524 kworker/58:1-mm  0.0     0\n1746377 rocq-mcp         0.0 83280\n1746380 uv               0.0 131768\n1746415 python           0.0 59976\n1746920 rocq-mcp         0.0 82436\n1812925 pet              0.0 4337648\n1813684 zellij           0.0 71116\n1813709 zsh              0.0  8320\n1814129 claude           0.4 336716\n1814207 uv               0.0 114764\n1814209 rocq-mcp         0.0 67100\n1814233 python           0.0 57876\n1814242 npm exec @playw  0.0 77964\n1814381 node-MainThread  0.0 77552\n1815460 claude           0.5 353112\n1816672 uv               0.0 75800\n1816673 rocq-mcp         0.0 68912\n1816701 npm exec @playw  0.0 80464\n1816757 python           0.0 60160\n1817313 node-MainThread  0.0 79732\n1912856 claude           0.9 389296\n1925948 bash             0.0  5732\n1932776 zsh              0.0  9692\n1975083 zsh              0.0  8264\n1975253 claude           0.5 357408\n1975337 uv               0.0 89756\n1975338 rocq-mcp         0.0 67828\n1975346 npm exec @playw  0.0 64208\n1975427 python           0.0 57856\n1975433 node-MainThread  0.0 77256\n2027760 kworker/63:2H    0.0     0\n2124191 zsh              0.0 10128\n2126177 zsh              0.0  9996\n2130828 claude           0.7 398636\n2130945 uv               0.0 76120\n2130946 rocq-mcp         0.0 67128\n2130961 npm exec @playw  0.0 77964\n2130962 python           0.0 57932\n2130987 node-MainThread  0.0 77012\n2146813 uv               0.0 108480\n2146843 python           0.0 59852\n2155927 kworker/R-iw_cm  0.0     0\n2155932 kworker/R-rdma_  0.0     0\n2187540 at-spi-bus-laun  0.0  5684\n2271456 zellij           0.0 123256\n2271486 zsh              0.0  7952\n2271580 zsh              0.0  8128\n2271788 claude           0.7 392056\n2271893 uv               0.0 108692\n2271894 rocq-mcp         0.0 69508\n2271909 npm exec @playw  0.0 75928\n2272006 python           0.0 57404\n2272009 node-MainThread  0.0 74352\n2275993 zellij           0.0 77020\n2276065 zsh              0.0  7216\n2386472 rocq-mcp         0.0 76704\n2511955 zsh              0.0  9712\n2518669 kworker/47:2H-k  0.0     0\n2518786 kworker/39:2H-x  0.0     0\n2526180 uv               0.0 93924\n2526503 python           0.0 59852\n2664892 kworker/u256:1-  0.0     0\n2688171 kworker/45:0H    0.0     0\n2731115 btop             1.3 87740\n2816405 kworker/57:2H-x  0.0     0\n2858345 zellij           0.0 86884\n2858424 zsh              0.0  7196\n2859743 claude           0.5 324396\n2859855 uv               0.0 87200\n2859856 rocq-mcp         0.0 62564\n2859875 python           0.0 51220\n2859889 npm exec @playw  0.0 62392\n2860002 node-MainThread  0.0 50152\n2909765 zsh              0.0 10016\n2910311 nvim             0.0  7860\n2910313 nvim             0.5 71148\n2942405 zsh              0.0  7292\n2943798 nvim             0.0  6572\n2943799 nvim             0.5 63248\n3037306 kworker/18:0-ev  0.0     0\n3048333 kworker/55:2H    0.0     0\n3074451 containerd-shim  0.0 13304\n3074485 sleep            0.0   124\n3173468 nvim             0.0  7792\n3173469 nvim             0.5 70264\n3340636 kworker/59:1H-x  0.0     0\n3380013 zsh              0.0 10764\n3389094 kworker/43:2H-x  0.0     0\n3618515 zsh              0.0  4500\n3619203 kworker/35:1H-x  0.0     0\n3650159 pet              0.0 3474876\n3661963 codex            0.0 524324\n3683017 run              0.0  5756\n3683018 python3          0.0 18852\n3686964 kworker/56:1-mm  0.0     0\n3785338 kworker/33:2H-k  0.0     0\n3786908 zsh              0.0 10044\n3787748 claude           0.6 373084\n3788032 uv               0.0 94548\n3788033 rocq-mcp         0.0 72052\n3788048 npm exec @playw  0.0 80628\n3788243 python           0.0 60032\n3788292 node-MainThread  0.0 79024\n3808791 python           0.0 187584\n3882820 claude           1.0 355752\n3882958 uv               0.0 97284\n3882959 rocq-mcp         0.0 69480\n3882978 npm exec @playw  0.0 80340\n3882983 python           0.0 60000\n3883036 node-MainThread  0.0 79688\n3951118 pet              0.0 3814268\n3981409 kworker/61:1H    0.0     0\n4017080 kworker/51:0H-k  0.0     0\n4018912 kworker/37:2H    0.0     0\n4092916 zsh              0.0 10112\n4093347 node-MainThread  0.0 24904\n4093354 codex            1.4 1634216\n4093676 uv               0.0 88600\n4093679 rocq-mcp         0.0 71928\n4093708 python           0.0 60048\n4177439 codex-code-mode  0.0 23948\n4191439 nvim             0.0  7836\n4191440 nvim             0.5 144904\n4191780 rust-analyzer    0.0 4661432\n4193281 rust-analyzer-p  0.0 36264\n",
+    "entry_binding_sha256": "bf8719f96d7e7938594ed7b4948e09bbb4cdc4977429a402275589900c33b3b8",
+    "activation_sha256": "c20f9aacea6776f6dea4e9e982106efe3f6f423f7f757873bbd9a5f0b8ea0de2",
+    "typing_sha256": "d85c2e4f8a4a0e82f89fb8a2328b6b244839e2721586a691feb12696e5b91f72",
+    "typing_object": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/adapters/bindings/ApplicationChecks.vo",
+      "sha256": "7b66a7b5590c4a66ed51c2bc4df2eac45c6d18b20ece07f2bbb3f9d1dbb3c368"
+    },
+    "inventory_sha256": "9b42a4e3b686839755f7e3a08a05a16fcaf2841d4c133788997a48cbc9e2176c"
+  },
+  "limits": "CPU1200/6GiB; loops 6a24 and 6ac4 CPU2400/6GiB; 698c CPU1200/12GiB. No wall cutoff.",
+  "diagnostic_limits": "All24 active-goal lists are available. The 18 residual lists retain printed Coq locals and Iris contexts. Pet stack, shelf, and given_up remain unavailable. Kernel Qed and empty assumptions certify six boundaries; missing recorder groups do not certify closure.",
+  "timing_limits": "Compiler CPU/wall and wrapper wall are separate measurements. Guard wait is unavailable. Wrapper minus compiler wall is not an exact guard-wait measurement.",
+  "rows": [
+    {
+      "entry_pc": "0x800d6960",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff,witness",
+      "active_goal_count": 9,
+      "first_conclusion": "(bv 8)",
+      "compiler_cpu_s": 86.413836,
+      "compiler_wall_s": 86.8755264870124,
+      "compiler_peak_kib": 2022980,
+      "wrapper_wall_s": 88.95979464403354,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "6bb26f00bed01f11e6dcebd1856b71d2848fb38e070f279bb9c52c04fcb94fc6",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6974"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "fad39e79d63419d624d609ba38607a27d571430b702d9a521c625a86e71358d5",
+        "bytes": 159484,
+        "archive": "/home/cody/zesislar-archive/sha256/fa/fad39e79d63419d624d609ba38607a27d571430b702d9a521c625a86e71358d5"
+      }
+    },
+    {
+      "entry_pc": "0x800d6974",
+      "outcome": "native-residual",
+      "residual_class": "memory-selection,register-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 8,
+      "first_conclusion": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "compiler_cpu_s": 621.0864750000001,
+      "compiler_wall_s": 624.3568661269965,
+      "compiler_peak_kib": 2375288,
+      "wrapper_wall_s": 626.506793661043,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "c94c2b7aba37be95610e4d7a6a5e0405d624bb8668a5ddccc63ec4603aeadf6c",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "successors": [
+        "0x800d69a4",
+        "0x800d697c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "5a17c2b66ace962397df3b1a9191a3b26ce74d6032eda1ff8c62f49273af292b",
+        "bytes": 183519,
+        "archive": "/home/cody/zesislar-archive/sha256/5a/5a17c2b66ace962397df3b1a9191a3b26ce74d6032eda1ff8c62f49273af292b"
+      }
+    },
+    {
+      "entry_pc": "0x800d697c",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 285.513702,
+      "compiler_wall_s": 286.9726987800095,
+      "compiler_peak_kib": 2295472,
+      "wrapper_wall_s": 288.9911741700489,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "4f3b917d42a096847390903befd63920af546531494a5cbf376538da4604b399",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "successors": [
+        "0x800d698c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "e1a09a2ab8e9f2e12cadf870d1bd51f303225d1b093d68978e9de463b331962a",
+        "bytes": 142011,
+        "archive": "/home/cody/zesislar-archive/sha256/e1/e1a09a2ab8e9f2e12cadf870d1bd51f303225d1b093d68978e9de463b331962a"
+      }
+    },
+    {
+      "entry_pc": "0x800d698c",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 6,
+      "first_conclusion": "nat",
+      "compiler_cpu_s": 519.3117329999999,
+      "compiler_wall_s": 522.0287418459775,
+      "compiler_peak_kib": 2346200,
+      "wrapper_wall_s": 523.7063684460009,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 12582912,
+        "completion_entry": "0x800d698c",
+        "optimization_debt": "issue#10"
+      },
+      "primary_entered": true,
+      "source_sha256": "831ebdafae05470ed18e033ff4918e01181b2c185a0be711457dc1bbcbece1ff",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "1809264ea69e4c7b3489990f9d849e165742cab38fd389ac5bc73f31624c3d57",
+        "bytes": 214706,
+        "archive": "/home/cody/zesislar-archive/sha256/18/1809264ea69e4c7b3489990f9d849e165742cab38fd389ac5bc73f31624c3d57"
+      }
+    },
+    {
+      "entry_pc": "0x800d69a4",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 4,
+      "first_conclusion": "(129 \u2264 bv_unsigned inputPrefix)",
+      "compiler_cpu_s": 13.9254,
+      "compiler_wall_s": 14.017506727948785,
+      "compiler_peak_kib": 1101208,
+      "wrapper_wall_s": 15.87268941802904,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "e22b683bedf68a35a4725410abead4d237767b77e18ef9dc4ba8b0fc057bd52f",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "successors": [
+        "0x800d69d8",
+        "0x800d69b0"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "9f19587e32d627573bac433b1dbe894258ce285cdb1ac39114f63259cc47f6a2",
+        "bytes": 44430,
+        "archive": "/home/cody/zesislar-archive/sha256/9f/9f19587e32d627573bac433b1dbe894258ce285cdb1ac39114f63259cc47f6a2"
+      }
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 309.601525,
+      "compiler_wall_s": 311.27621887100395,
+      "compiler_peak_kib": 2291184,
+      "wrapper_wall_s": 311.9346661529271,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "a7b3343e200cfd555b6e1c14e0f3d45d989abd1c79a333cccedb593722f62a78",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "72269f3579c9808b60b469dc8170b51511104d7cb905566a6528547e1c5e1022",
+        "bytes": 139392,
+        "archive": "/home/cody/zesislar-archive/sha256/72/72269f3579c9808b60b469dc8170b51511104d7cb905566a6528547e1c5e1022"
+      }
+    },
+    {
+      "entry_pc": "0x800d69d8",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 28.074862999999997,
+      "compiler_wall_s": 28.289510819944553,
+      "compiler_peak_kib": 1252856,
+      "wrapper_wall_s": 997.4291654350236,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "da52ca5ff1e387089883cdde62e2b4299290666dd3ebc4d566988edcd7c906f5",
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "successors": [
+        "0x800d6a00",
+        "0x800d69e0"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d69d8"
+      },
+      "evidence": {
+        "sha256": "74d4211c756969d56cdca2fa9c5294b1d8437d65de9a7fdd8955f70be74967ac",
+        "bytes": 8901,
+        "archive": "/home/cody/zesislar-archive/sha256/74/74d4211c756969d56cdca2fa9c5294b1d8437d65de9a7fdd8955f70be74967ac"
+      }
+    },
+    {
+      "entry_pc": "0x800d69e0",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 3,
+      "first_conclusion": "(decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128))",
+      "compiler_cpu_s": 43.94324,
+      "compiler_wall_s": 44.23212651000358,
+      "compiler_peak_kib": 1407944,
+      "wrapper_wall_s": 1008.8896118929842,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "2c466b3e509bdcc896a2957f55a4bb82f66b01813fad52f9ee39405d2e69618f",
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d69e8"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "7d8f73a3da233581c3221883a7edfe694fff9fd322d78de3f99ce8f579e28975",
+        "bytes": 35848,
+        "archive": "/home/cody/zesislar-archive/sha256/7d/7d8f73a3da233581c3221883a7edfe694fff9fd322d78de3f99ce8f579e28975"
+      }
+    },
+    {
+      "entry_pc": "0x800d69e8",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 376.061553,
+      "compiler_wall_s": 377.874507318018,
+      "compiler_peak_kib": 2358972,
+      "wrapper_wall_s": 1332.5261610629968,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "5166ac919dda02dd100fb7b09ad820beaaa72da472e97e1505fb15aa2b28f7b8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "successors": [
+        "0x800d698c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "f4f39792cbe33eeec1c1de63309e7e5ddc721e458533492bae8339e4bb6e4f23",
+        "bytes": 164115,
+        "archive": "/home/cody/zesislar-archive/sha256/f4/f4f39792cbe33eeec1c1de63309e7e5ddc721e458533492bae8339e4bb6e4f23"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a00",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 42.590481,
+      "compiler_wall_s": 42.84794907493051,
+      "compiler_peak_kib": 1492716,
+      "wrapper_wall_s": 47.47488415497355,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "5f0d3e9bb2fb6e43ecfbc8d6ba4d3f44da7ab244707745a351e9320d557c9081",
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "successors": [
+        "0x800d6a64",
+        "0x800d6a08"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a00"
+      },
+      "evidence": {
+        "sha256": "d0521d3c981040e2f01137b5fe77ed0bc82ceb976e7af4ddf6bae54af2a21798",
+        "bytes": 8879,
+        "archive": "/home/cody/zesislar-archive/sha256/d0/d0521d3c981040e2f01137b5fe77ed0bc82ceb976e7af4ddf6bae54af2a21798"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a08",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 5,
+      "first_conclusion": "Z",
+      "compiler_cpu_s": 34.186793,
+      "compiler_wall_s": 34.391687758034095,
+      "compiler_peak_kib": 1359108,
+      "wrapper_wall_s": 40.01992536301259,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "abbca0ff85627b85fdc406eeace0554707bd22943f41014debc6d389c0e30f71",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a14"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "9502d1fa20db3088ecb14d77a8e8ce453408fbbeb1798d565d16bb46cace7662",
+        "bytes": 73372,
+        "archive": "/home/cody/zesislar-archive/sha256/95/9502d1fa20db3088ecb14d77a8e8ce453408fbbeb1798d565d16bb46cace7662"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a14",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 7.2983139999999995,
+      "compiler_wall_s": 7.344079292030074,
+      "compiler_peak_kib": 1113708,
+      "wrapper_wall_s": 16.37098850007169,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "aff406676c40c5ab28a8fbee5ff699c333b97ff100d44a74aa16b96969934f5a",
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "successors": [
+        "0x800d6a24"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a14"
+      },
+      "evidence": {
+        "sha256": "6f35bbeffb512a65b0d25234d213b7b70e84407344fc0f13bfb94f60fd9c7430",
+        "bytes": 8881,
+        "archive": "/home/cody/zesislar-archive/sha256/6f/6f35bbeffb512a65b0d25234d213b7b70e84407344fc0f13bfb94f60fd9c7430"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a24",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 15,
+      "first_conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "compiler_cpu_s": 1949.430996,
+      "compiler_wall_s": 1958.6465574569302,
+      "compiler_peak_kib": 3280616,
+      "wrapper_wall_s": 1966.9799363580532,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6a24",
+        "optimization_debt": "issue#10"
+      },
+      "primary_entered": true,
+      "source_sha256": "d103bcb476e9fd3baa3652fa24dd3c6b27717fc150e50f4838de50f3809f20ab",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "successors": [
+        "0x800d6a24",
+        "0x800d6a38"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "ef5da19376f2b574f56743acf2b8e2bbe87b17a569dd0a12119e3ee8752b23a8",
+        "bytes": 520963,
+        "archive": "/home/cody/zesislar-archive/sha256/ef/ef5da19376f2b574f56743acf2b8e2bbe87b17a569dd0a12119e3ee8752b23a8"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a38",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 1,
+      "first_conclusion": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 184 \u2264 bv_unsigned inputPrefix \u2264 191\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 183))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args false payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "compiler_cpu_s": 44.546110000000006,
+      "compiler_wall_s": 44.730530481087044,
+      "compiler_peak_kib": 1399888,
+      "wrapper_wall_s": 58.64965306397062,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "3b89e47012e95f1be48f2557812e4bab92f4e6bc6667732e5819ba37a10635e8",
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a40"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "4b92a3e7c9c02cf76c8733f90a6888249188d55d4cf62b5278f7dd22f692b3d5",
+        "bytes": 19304,
+        "archive": "/home/cody/zesislar-archive/sha256/4b/4b92a3e7c9c02cf76c8733f90a6888249188d55d4cf62b5278f7dd22f692b3d5"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a40",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 404.372921,
+      "compiler_wall_s": 406.31473503098823,
+      "compiler_peak_kib": 2301480,
+      "wrapper_wall_s": 415.64624070795253,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "09c01f049e89643a42b91fff40e2c728d5d6cc1591201ac57401f2e2f84627ca",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "e79302e1b2fe66619220eac22284707fe81940ad25075d232209544867aa8f42",
+        "bytes": 151491,
+        "archive": "/home/cody/zesislar-archive/sha256/e7/e79302e1b2fe66619220eac22284707fe81940ad25075d232209544867aa8f42"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a64",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 45.22760199999999,
+      "compiler_wall_s": 45.466798095963895,
+      "compiler_peak_kib": 1486372,
+      "wrapper_wall_s": 48.13665634894278,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "8080ef1ff6ae43476d29082f47b06832826a931badd2bf1f3d042400c5cd452f",
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "successors": [
+        "0x800d6aa8",
+        "0x800d6a6c"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a64"
+      },
+      "evidence": {
+        "sha256": "0ea3e606798535ab87af56137cdc261c98a88321244875980d25eb726d40d592",
+        "bytes": 8888,
+        "archive": "/home/cody/zesislar-archive/sha256/0e/0ea3e606798535ab87af56137cdc261c98a88321244875980d25eb726d40d592"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a6c",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 48.100695,
+      "compiler_wall_s": 48.36199032200966,
+      "compiler_peak_kib": 1506840,
+      "wrapper_wall_s": 52.76873305498157,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "e64f2d0e71ba9d0e75ab0e67b39041b637eef11655197297b03cc17dbd4a8d72",
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a78"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a6c"
+      },
+      "evidence": {
+        "sha256": "01b2a9f2d486202d69d061ec49f86aa05e2538acc6ebedca333dc0cc1511e462",
+        "bytes": 8892,
+        "archive": "/home/cody/zesislar-archive/sha256/01/01b2a9f2d486202d69d061ec49f86aa05e2538acc6ebedca333dc0cc1511e462"
+      }
+    },
+    {
+      "entry_pc": "0x800d6a78",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 546.2978219999999,
+      "compiler_wall_s": 549.6433962059673,
+      "compiler_peak_kib": 2381488,
+      "wrapper_wall_s": 556.9052876589121,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "4d5ee5282df3c100244918b3038bbaf83597d3bf3fb534e28dd20ee530591893",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "d6903eed526bcec87d6808b06d0cbb287c2f1593311621c8a857463bcf16e2ac",
+        "bytes": 158170,
+        "archive": "/home/cody/zesislar-archive/sha256/d6/d6903eed526bcec87d6808b06d0cbb287c2f1593311621c8a857463bcf16e2ac"
+      }
+    },
+    {
+      "entry_pc": "0x800d6aa8",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 5,
+      "first_conclusion": "Z",
+      "compiler_cpu_s": 38.962607,
+      "compiler_wall_s": 39.17589652200695,
+      "compiler_peak_kib": 1346904,
+      "wrapper_wall_s": 39.9449768520426,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "6be3500691031c0e4370d998cfd92dd46b4d224c1c35025ee0ced68e4591c553",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6ab4"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "57ccdfbb411be7b0fd475d28ef5a0f6026895232b35db83d26ae90e3d5c09db7",
+        "bytes": 73334,
+        "archive": "/home/cody/zesislar-archive/sha256/57/57ccdfbb411be7b0fd475d28ef5a0f6026895232b35db83d26ae90e3d5c09db7"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ab4",
+      "outcome": "native-boundary-closed",
+      "residual_class": "kernel-Qed-boundary",
+      "active_goal_count": 0,
+      "first_conclusion": null,
+      "compiler_cpu_s": 9.023062,
+      "compiler_wall_s": 9.089748041005805,
+      "compiler_peak_kib": 1107856,
+      "wrapper_wall_s": 10.652281787944958,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "bdb09a0d26b8b6c1ef04582c5974887a66c20dde28ee38ca7677e7fe049f7a33",
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "successors": [
+        "0x800d6ac4"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6ab4"
+      },
+      "evidence": {
+        "sha256": "87ec7e84b80010d8cbb835fc5f3bd4cc2d54c502a94ff19553348f5751bb9780",
+        "bytes": 8873,
+        "archive": "/home/cody/zesislar-archive/sha256/87/87ec7e84b80010d8cbb835fc5f3bd4cc2d54c502a94ff19553348f5751bb9780"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ac4",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 15,
+      "first_conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "compiler_cpu_s": 1813.8172749999999,
+      "compiler_wall_s": 1821.6724452330964,
+      "compiler_peak_kib": 3341928,
+      "wrapper_wall_s": 1823.3096985849552,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6ac4",
+        "optimization_debt": "issue#10"
+      },
+      "primary_entered": true,
+      "source_sha256": "c97b490a28c04b062b1ba58935b1b582e555ee61cc5cfb0bcab7d2969e94edef",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "successors": [
+        "0x800d6ac4",
+        "0x800d6ad8"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "c1dbac65f31e93fbe5e82a6f9128299303c5c861eab43dfec17e2dd1076735fc",
+        "bytes": 520926,
+        "archive": "/home/cody/zesislar-archive/sha256/c1/c1dbac65f31e93fbe5e82a6f9128299303c5c861eab43dfec17e2dd1076735fc"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ad8",
+      "outcome": "native-residual",
+      "residual_class": "entry-or-handoff",
+      "active_goal_count": 2,
+      "first_conclusion": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "compiler_cpu_s": 74.01094699999999,
+      "compiler_wall_s": 74.30070414498914,
+      "compiler_peak_kib": 1676668,
+      "wrapper_wall_s": 1515.4768898860784,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "b3899d9e957a883599df52c1f1063fcd32432b74cecb03d77147cab391205216",
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "successors": [
+        "0x800d6b08",
+        "0x800d6ae0"
+      ],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "a6d0da69016669e7c8528e4c8ebe01c7ac7a0a8d7179102dd973ee72782cf987",
+        "bytes": 28789,
+        "archive": "/home/cody/zesislar-archive/sha256/a6/a6d0da69016669e7c8528e4c8ebe01c7ac7a0a8d7179102dd973ee72782cf987"
+      }
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 180.085249,
+      "compiler_wall_s": 180.84429326094687,
+      "compiler_peak_kib": 2246364,
+      "wrapper_wall_s": 607.0790006289026,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "ae21e6f51cb0013a354ada82789985731668db3630395990c8f6fae2c0cca36d",
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "d57376c7925b94306fe01bcedbd69a55d0b7d60776462ff140a5b2d7f9e4cacf",
+        "bytes": 147694,
+        "archive": "/home/cody/zesislar-archive/sha256/d5/d57376c7925b94306fe01bcedbd69a55d0b7d60776462ff140a5b2d7f9e4cacf"
+      }
+    },
+    {
+      "entry_pc": "0x800d6b08",
+      "outcome": "native-residual",
+      "residual_class": "resource-selection,execution,entry-or-handoff,witness",
+      "active_goal_count": 3,
+      "first_conclusion": "mem_mapsto_kind",
+      "compiler_cpu_s": 317.778164,
+      "compiler_wall_s": 318.8081071790075,
+      "compiler_peak_kib": 2362728,
+      "wrapper_wall_s": 354.88873500504997,
+      "guard_wait_s": null,
+      "limit": null,
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "primary_entered": true,
+      "source_sha256": "dccc1d5062983a2c5b9b61ff76e1d7eb00db40e6cb8995dd70e33c49f1c7f888",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "successors": [],
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "evidence": {
+        "sha256": "5e92e44579cdcdfff498b03cf225e71f11a3df03c0755265d39599410b1d7c29",
+        "bytes": 154861,
+        "archive": "/home/cody/zesislar-archive/sha256/5e/5e92e44579cdcdfff498b03cf225e71f11a3df03c0755265d39599410b1d7c29"
+      }
+    }
+  ],
+  "gate": {
+    "status": "passed",
+    "wall_s": 66,
+    "jobs": 6,
+    "label": "child-a-root340-all24-report-check-fast",
+    "final_dune_batch": {
+      "error_class": null,
+      "exit": 0,
+      "ms": 463,
+      "rss_kb": 154168,
+      "target": "check-fast"
+    },
+    "admission_wait_s": null,
+    "log": {
+      "archive": "/home/cody/zesislar-archive/sha256/b4/b424f42b6fa126c079f0188ee8d796352350ee785b0f7569971ae2f29dd4ac9b",
+      "sha256": "b424f42b6fa126c079f0188ee8d796352350ee785b0f7569971ae2f29dd4ac9b"
+    }
+  },
+  "no_native_repeats": true,
+  "rootfc_progression": [
+    {
+      "entry_pc": "0x800d6960",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 10,
+      "root340_active": 9,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "(bv 8)",
+      "root340_first": "(bv 8)",
+      "rootfc_cpu_s": 120.28688500000001,
+      "root340_cpu_s": 86.413836
+    },
+    {
+      "entry_pc": "0x800d6974",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 8,
+      "root340_active": 8,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "root340_first": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "rootfc_cpu_s": 632.5496850000001,
+      "root340_cpu_s": 621.0864750000001
+    },
+    {
+      "entry_pc": "0x800d697c",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 6,
+      "root340_active": 3,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "nat",
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 1171.1651379999998,
+      "root340_cpu_s": 285.513702
+    },
+    {
+      "entry_pc": "0x800d698c",
+      "rootfc_outcome": "automation-search-failure",
+      "root340_outcome": "native-residual",
+      "rootfc_active": null,
+      "root340_active": 6,
+      "conclusions_identical": null,
+      "contexts_identical": null,
+      "rootfc_first": null,
+      "root340_first": "nat",
+      "rootfc_cpu_s": 984.809146,
+      "root340_cpu_s": 519.3117329999999
+    },
+    {
+      "entry_pc": "0x800d69a4",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 4,
+      "root340_active": 4,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": "(129 \u2264 bv_unsigned inputPrefix)",
+      "root340_first": "(129 \u2264 bv_unsigned inputPrefix)",
+      "rootfc_cpu_s": 14.691901,
+      "root340_cpu_s": 13.9254
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 6,
+      "root340_active": 3,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "nat",
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 1193.8000530000002,
+      "root340_cpu_s": 309.601525
+    },
+    {
+      "entry_pc": "0x800d69d8",
+      "rootfc_outcome": "native-boundary-closed",
+      "root340_outcome": "native-boundary-closed",
+      "rootfc_active": 0,
+      "root340_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": null,
+      "root340_first": null,
+      "rootfc_cpu_s": 30.988329,
+      "root340_cpu_s": 28.074862999999997
+    },
+    {
+      "entry_pc": "0x800d69e0",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 3,
+      "root340_active": 3,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": "(decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128))",
+      "root340_first": "(decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128))",
+      "rootfc_cpu_s": 47.829097000000004,
+      "root340_cpu_s": 43.94324
+    },
+    {
+      "entry_pc": "0x800d69e8",
+      "rootfc_outcome": "automation-search-failure",
+      "root340_outcome": "native-residual",
+      "rootfc_active": null,
+      "root340_active": 3,
+      "conclusions_identical": null,
+      "contexts_identical": null,
+      "rootfc_first": null,
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 1199.9313660000003,
+      "root340_cpu_s": 376.061553
+    },
+    {
+      "entry_pc": "0x800d6a00",
+      "rootfc_outcome": "native-boundary-closed",
+      "root340_outcome": "native-boundary-closed",
+      "rootfc_active": 0,
+      "root340_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": null,
+      "root340_first": null,
+      "rootfc_cpu_s": 45.262727000000005,
+      "root340_cpu_s": 42.590481
+    },
+    {
+      "entry_pc": "0x800d6a08",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 7,
+      "root340_active": 5,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "Z",
+      "root340_first": "Z",
+      "rootfc_cpu_s": 42.947254,
+      "root340_cpu_s": 34.186793
+    },
+    {
+      "entry_pc": "0x800d6a14",
+      "rootfc_outcome": "native-boundary-closed",
+      "root340_outcome": "native-boundary-closed",
+      "rootfc_active": 0,
+      "root340_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": null,
+      "root340_first": null,
+      "rootfc_cpu_s": 8.464639000000002,
+      "root340_cpu_s": 7.2983139999999995
+    },
+    {
+      "entry_pc": "0x800d6a24",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 15,
+      "root340_active": 15,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "root340_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "rootfc_cpu_s": 1480.5332729999998,
+      "root340_cpu_s": 1949.430996
+    },
+    {
+      "entry_pc": "0x800d6a38",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 2,
+      "root340_active": 1,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "\u231cdecodeItemRejectedFacts args \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args\u231d%I",
+      "root340_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 184 \u2264 bv_unsigned inputPrefix \u2264 191\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 183))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args false payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "rootfc_cpu_s": 53.21720800000001,
+      "root340_cpu_s": 44.546110000000006
+    },
+    {
+      "entry_pc": "0x800d6a40",
+      "rootfc_outcome": "automation-search-failure",
+      "root340_outcome": "native-residual",
+      "rootfc_active": null,
+      "root340_active": 3,
+      "conclusions_identical": null,
+      "contexts_identical": null,
+      "rootfc_first": null,
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 1199.874861,
+      "root340_cpu_s": 404.372921
+    },
+    {
+      "entry_pc": "0x800d6a64",
+      "rootfc_outcome": "native-boundary-closed",
+      "root340_outcome": "native-boundary-closed",
+      "rootfc_active": 0,
+      "root340_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": null,
+      "root340_first": null,
+      "rootfc_cpu_s": 42.74600999999999,
+      "root340_cpu_s": 45.22760199999999
+    },
+    {
+      "entry_pc": "0x800d6a6c",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-boundary-closed",
+      "rootfc_active": 1,
+      "root340_active": 0,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 192 \u2264 bv_unsigned inputPrefix \u2264 247\n   \u2227 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args\n     \u2227 bv_unsigned (bv_and (x13 + 64) 255) = bv_unsigned inputPrefix - 192\n       \u2227 decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192)\n         \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "root340_first": null,
+      "rootfc_cpu_s": 38.800645,
+      "root340_cpu_s": 48.100695
+    },
+    {
+      "entry_pc": "0x800d6a78",
+      "rootfc_outcome": "automation-search-failure",
+      "root340_outcome": "native-residual",
+      "rootfc_active": null,
+      "root340_active": 3,
+      "conclusions_identical": null,
+      "contexts_identical": null,
+      "rootfc_first": null,
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 1199.8350570000002,
+      "root340_cpu_s": 546.2978219999999
+    },
+    {
+      "entry_pc": "0x800d6aa8",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 7,
+      "root340_active": 5,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "Z",
+      "root340_first": "Z",
+      "rootfc_cpu_s": 35.483912000000004,
+      "root340_cpu_s": 38.962607
+    },
+    {
+      "entry_pc": "0x800d6ab4",
+      "rootfc_outcome": "native-boundary-closed",
+      "root340_outcome": "native-boundary-closed",
+      "rootfc_active": 0,
+      "root340_active": 0,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": null,
+      "root340_first": null,
+      "rootfc_cpu_s": 7.737348,
+      "root340_cpu_s": 9.023062
+    },
+    {
+      "entry_pc": "0x800d6ac4",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 15,
+      "root340_active": 15,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "root340_first": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "rootfc_cpu_s": 1922.5990590000001,
+      "root340_cpu_s": 1813.8172749999999
+    },
+    {
+      "entry_pc": "0x800d6ad8",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 2,
+      "root340_active": 2,
+      "conclusions_identical": true,
+      "contexts_identical": true,
+      "rootfc_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "root340_first": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "rootfc_cpu_s": 77.04156599999999,
+      "root340_cpu_s": 74.01094699999999
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 6,
+      "root340_active": 3,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "nat",
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 838.999223,
+      "root340_cpu_s": 180.085249
+    },
+    {
+      "entry_pc": "0x800d6b08",
+      "rootfc_outcome": "native-residual",
+      "root340_outcome": "native-residual",
+      "rootfc_active": 6,
+      "root340_active": 3,
+      "conclusions_identical": false,
+      "contexts_identical": false,
+      "rootfc_first": "nat",
+      "root340_first": "mem_mapsto_kind",
+      "rootfc_cpu_s": 1038.0213669999998,
+      "root340_cpu_s": 317.778164
+    }
+  ],
+  "comparison_limit": "The roots differ in approved automation and proof sources. This comparison does not establish a sole-rule effect.",
+  "new_verified_boundaries_vs_rootfc": [
+    "0x800d6a6c"
+  ],
+  "previously_verified_boundaries": [
+    "0x800d69d8",
+    "0x800d6a00",
+    "0x800d6a14",
+    "0x800d6a64",
+    "0x800d6ab4"
+  ],
+  "limits_reached": 0,
+  "frozen_statement_comparison": {
+    "rootfc_statements_identical": 24,
+    "primary_tactic": "try zesu_block.",
+    "sole_rule_claim": false
+  },
+  "setup_records": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/pre-primary-input-refresh.json",
+      "archive": "/home/cody/zesislar-archive/sha256/cc/cc030bab1764b19b94830a589820393801f8f72229fa261d35b8fa7b509a2823",
+      "sha256": "cc030bab1764b19b94830a589820393801f8f72229fa261d35b8fa7b509a2823",
+      "bytes": 573
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/dependency-bindings.json",
+      "archive": "/home/cody/zesislar-archive/sha256/24/2488445cc992ef2aae27a2a8264b4c54ea77501c46e404785d3142e241f413d7",
+      "sha256": "2488445cc992ef2aae27a2a8264b4c54ea77501c46e404785d3142e241f413d7",
+      "bytes": 176466
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/activation-output-truncated.json",
+      "archive": "/home/cody/zesislar-archive/sha256/cf/cf10cd8bc229c370ddbb4abec0435da294d36e05e2a2973691f53b8a6c497169",
+      "sha256": "cf10cd8bc229c370ddbb4abec0435da294d36e05e2a2973691f53b8a6c497169",
+      "bytes": 4244
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/activation-part0.json",
+      "archive": "/home/cody/zesislar-archive/sha256/11/1144d159c12cfcd3a08ec0fe195718abca633a5d8d4116a972361c1fe1cdfcd1",
+      "sha256": "1144d159c12cfcd3a08ec0fe195718abca633a5d8d4116a972361c1fe1cdfcd1",
+      "bytes": 3665
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/activation-part1.json",
+      "archive": "/home/cody/zesislar-archive/sha256/d7/d722436a2b391dd73f9f66abfd8b56eb6044523b254457f31ae1161ac0ef19ba",
+      "sha256": "d722436a2b391dd73f9f66abfd8b56eb6044523b254457f31ae1161ac0ef19ba",
+      "bytes": 3794
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/entry-bindings-missing-return-images/report.json",
+      "archive": "/home/cody/zesislar-archive/sha256/e2/e29e9e8399b4c91fc2254f323c51a758b34263395188c916aae7a9d8eaf0faab",
+      "sha256": "e29e9e8399b4c91fc2254f323c51a758b34263395188c916aae7a9d8eaf0faab",
+      "bytes": 5991
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/results/run-inputs.json",
+      "archive": "/home/cody/zesislar-archive/sha256/92/92a61e77d02df2e35e8979cf6cb2a5d276a6708009d652ff273c98501053e295",
+      "sha256": "92a61e77d02df2e35e8979cf6cb2a5d276a6708009d652ff273c98501053e295",
+      "bytes": 217263
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/adapters/bindings-invalid-output-name/report.json",
+      "archive": "/home/cody/zesislar-archive/sha256/a7/a715523058e2ca81f1d811a6444387351bcd6c55a49d1ea44e4f584068721a3b",
+      "sha256": "a715523058e2ca81f1d811a6444387351bcd6c55a49d1ea44e4f584068721a3b",
+      "bytes": 11530
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/adapters/bindings-basename-mismatch/report.json",
+      "archive": "/home/cody/zesislar-archive/sha256/6f/6f91f55588122efd9a6f051e17d09e8f2908b2537f1bbc8341657911d9a2791a",
+      "sha256": "6f91f55588122efd9a6f051e17d09e8f2908b2537f1bbc8341657911d9a2791a",
+      "bytes": 11536
+    }
+  ],
+  "activation_check": {
+    "active_switches": 20,
+    "hint_modules": 9,
+    "switches": [
+      "InstructionLookup",
+      "StackWrite",
+      "RamFault",
+      "RegionFault",
+      "LowMask",
+      "IntegerArrayAddress",
+      "RecordWitness",
+      "ArrayBounds",
+      "WordArrayHandoff",
+      "ReturnBundle",
+      "ReturnWand",
+      "StrictSigned",
+      "ListWitness",
+      "TupleWitness",
+      "ArrayRegionBounds",
+      "PureFactHints",
+      "KnownPairWitness",
+      "PureWitnessConstraints",
+      "RegisterCollectionSelection",
+      "EvarSideconditionGuard"
+    ],
+    "hints": [
+      "DecodeItemBranchGuardFacts",
+      "DecodeItemDataWitnessFacts",
+      "DecodeItemOutcomeWitnessFacts",
+      "DecodeItemFoldRejectionFacts",
+      "DecodeItemFoldInitializationWitnesses",
+      "DecodeItemFoldZeroFacts",
+      "DecodeItemHeaderWitnessFacts",
+      "DecodeItemOutputBaseWitnessFacts",
+      "DecodeItemShortListHandoffFacts"
+    ],
+    "query_parts": [
+      {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/activation-part0.json",
+        "archive": "/home/cody/zesislar-archive/sha256/11/1144d159c12cfcd3a08ec0fe195718abca633a5d8d4116a972361c1fe1cdfcd1",
+        "sha256": "1144d159c12cfcd3a08ec0fe195718abca633a5d8d4116a972361c1fe1cdfcd1",
+        "bytes": 3665
+      },
+      {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i30-root340/_build/all-hints/activation-part1.json",
+        "archive": "/home/cody/zesislar-archive/sha256/d7/d722436a2b391dd73f9f66abfd8b56eb6044523b254457f31ae1161ac0ef19ba",
+        "sha256": "d722436a2b391dd73f9f66abfd8b56eb6044523b254457f31ae1161ac0ef19ba",
+        "bytes": 3794
+      }
+    ]
+  },
+  "historical_scope": "The 6a6c boundary closes in this pass versus rootfc. M1 verified that boundary historically. This is not a globally new machine fact.",
+  "accounting": {
+    "start": "2026-10-06T13:02:44.270000+00:00",
+    "end": "2026-10-06T15:57:54.319692+00:00",
+    "child_min": 175.1674948666667,
+    "tokens_child": 7447606,
+    "start_token_event": "2026-10-06T13:02:34.475000+00:00",
+    "start_tokens": 390548164,
+    "end_token_event": "2026-10-06T15:57:29.649000+00:00",
+    "end_tokens": 397995770,
+    "parent_min": null,
+    "tokens_parent": null,
+    "window_limit": "The window overlaps adapters, earlier evidence, and required-pass setup."
+  }
+}
