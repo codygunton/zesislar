@@ -1,0 +1,427 @@
+{
+  "item": "S32-witness-classification",
+  "diagnostic_root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "capture_root": "55fb97da951341d3c1684a36e635c36dfdf03ff6",
+  "native_steps": 0,
+  "production_rule_changes": false,
+  "rows": [
+    {
+      "pc": "0x800d6960",
+      "capture_sha256": "2efd0bafd1854bafa5bb1bfac82cfab55c8284688d75560bbd977c27bd43b0a0",
+      "source_sha256": "9ee08f8276e01cd45a77b622bcbcdf1ce4ea331dc67feb36d734b743ea446ec8",
+      "goals": [
+        {
+          "index": 0,
+          "head": "(bv 8)"
+        },
+        {
+          "index": 1,
+          "head": "(list (bv 8))"
+        },
+        {
+          "index": 2,
+          "head": "(list (bv 8))"
+        },
+        {
+          "index": 3,
+          "head": "(list (bv 8))"
+        },
+        {
+          "index": 5,
+          "head": "(decodeItemInputHead args\n   ?Goal@{H14:=bv_unsigned_in_range_alt 64 b5; H15:=bv_signed_in_range 64 b5; H16:=bv_unsigned_in_range_alt 64 b4; H17:=bv_signed_in_range 64 b4; H18:=bv_unsigned_in_range_alt 64 b2;\n          H19:=bv_signed_in_ran"
+        },
+        {
+          "index": 8,
+          "head": "((decodeItemStackPointer args + -16 + 0)\n ↦ₘ∗ ?Goal1@{H14:=bv_unsigned_in_range_alt 64 b5; H15:=bv_signed_in_range 64 b5; H16:=bv_unsigned_in_range_alt 64 b4; H17:=bv_signed_in_range 64 b4; H18:=bv_unsigned_in_range_alt 64 b2;\n             "
+        },
+        {
+          "index": 9,
+          "head": "((decodeItemStackPointer args + -16 + 0)\n ↦ₘ∗ ?Goal2@{H14:=bv_unsigned_in_range_alt 64 b5; H15:=bv_signed_in_range 64 b5; H16:=bv_unsigned_in_range_alt 64 b4; H17:=bv_signed_in_range 64 b4; H18:=bv_unsigned_in_range_alt 64 b2;\n             "
+        }
+      ],
+      "categories": [
+        "correlated input-head witnesses",
+        "dependent input-head obligation",
+        "frame-list witnesses"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6a08",
+      "capture_sha256": "4c520f9559f4b6be0d4e72ba6289bd8002e8c5a02451a24da170f8134756ab46",
+      "source_sha256": "99453bd9a27b007e8c87e79f01333d8ead726cc0176371969ef6c6b6501dfdfe",
+      "goals": [
+        {
+          "index": 0,
+          "head": "Z"
+        },
+        {
+          "index": 1,
+          "head": "Z"
+        },
+        {
+          "index": 3,
+          "head": "(decodeItemFoldProvenance args false inputPrefix rest\n   ?Goal@{H11:=bv_unsigned_in_range_alt 64 b1; H12:=bv_signed_in_range 64 b1; H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 b;\n    "
+        },
+        {
+          "index": 4,
+          "head": "(bv_unsigned\n   (Z_to_bv 64\n      ?Goal@{H11:=bv_unsigned_in_range_alt 64 b1; H12:=bv_signed_in_range 64 b1; H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 b;\n             H16:=bv_signed"
+        },
+        {
+          "index": 6,
+          "head": "(\"x14\"\n ↦ᵣ RVal_Bits\n      (Z_to_bv 64\n         ?Goal@{H11:=bv_unsigned_in_range_alt 64 b1; H12:=bv_signed_in_range 64 b1; H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 b;\n             "
+        }
+      ],
+      "categories": [
+        "fold initialization locals"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6a24",
+      "capture_sha256": "28d420b1100c68cbf434f06a2ce37742705fef76cb2b97ac76c929dab3e41b4e",
+      "source_sha256": "770878c7d6425c63d0311594ce29b43cea4643eb85efae036b5446ccbc7f73c2",
+      "goals": [
+        {
+          "index": 1,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) "
+        },
+        {
+          "index": 2,
+          "head": "((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + i))"
+        },
+        {
+          "index": 3,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (bv"
+        },
+        {
+          "index": 4,
+          "head": "(decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n   (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))"
+        },
+        {
+          "index": 6,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) "
+        },
+        {
+          "index": 7,
+          "head": "((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + i))"
+        },
+        {
+          "index": 8,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (bv"
+        },
+        {
+          "index": 9,
+          "head": "(decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n   (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))"
+        },
+        {
+          "index": 11,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) "
+        },
+        {
+          "index": 12,
+          "head": "((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + i))"
+        },
+        {
+          "index": 13,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (bv"
+        },
+        {
+          "index": 14,
+          "head": "(decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n   (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))"
+        }
+      ],
+      "categories": [
+        "loop successor locals"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6a38",
+      "capture_sha256": "07d82067b1763a43bed65b71b668a39501af2dfd43e3740e0a723c7551cb5eb2",
+      "source_sha256": "add7a32e3a876e2314a20cbbe0baa1c112fe044509836b440ac637c71db0e452",
+      "goals": [
+        {
+          "index": 1,
+          "head": "⌜decodeItemInputHead args inputPrefix rest\n ∧ 184 ≤ bv_unsigned inputPrefix ≤ 191\n   ∧ payloadStart = (1 + (bv_unsigned inputPrefix - 183))%Z\n     ∧ payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 183)) res"
+        }
+      ],
+      "categories": [
+        "long return locals"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6a40",
+      "capture_sha256": "76eb0edd8214b0b91bff250d6696e2af6fe0cb6c90aa981eb6dfdf018ef3af92",
+      "source_sha256": "2695deafe2686c0de004d188e6e71b36360aa7d71c866e4166e9ae61f3050fbd",
+      "goals": [
+        {
+          "index": 0,
+          "head": "(list (reg_kind * valu_shape))"
+        },
+        {
+          "index": 1,
+          "head": "(FindHypEqual (FICRegMapstoSemantic \"rv_enable_pmp\")\n   (decodeItemOutputPointer args\n    ↦ₘ∗ (take 32 (returnStorage locals) ++\n         Z_to_bv 8 (Z.land (bv_unsigned 0) (Z.ones 8))\n         :: Z_to_bv 8 (Z.land (bv_unsigned 0 ≫ 8) (Z.one"
+        },
+        {
+          "index": 2,
+          "head": "(li_tactic\n   (regcol_compute_hint (regcol_lookup (KindReg \"rv_enable_pmp\"))\n      ?Goal@{H17:=bv_unsigned_in_range_alt 64 b; H18:=bv_signed_in_range 64 b; H19:=bv_unsigned_in_range_alt 64 n; H20:=bv_signed_in_range 64 n; H21:=bv_unsigned_i"
+        }
+      ],
+      "categories": [
+        "register collection list witness"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6aa8",
+      "capture_sha256": "2edc8f47508561e580115f7141ccc03f6cac5657b750101d05a2d0aec1bb6d8b",
+      "source_sha256": "470d30d79ea5cb55c8bb1ad6c6309b5b26be97ed6714762db792c76835f1b835",
+      "goals": [
+        {
+          "index": 0,
+          "head": "Z"
+        },
+        {
+          "index": 1,
+          "head": "Z"
+        },
+        {
+          "index": 3,
+          "head": "(decodeItemFoldProvenance args true inputPrefix rest\n   ?Goal@{H11:=bv_unsigned_in_range_alt 64 b1; H12:=bv_signed_in_range 64 b1; H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 b;\n     "
+        },
+        {
+          "index": 4,
+          "head": "(bv_unsigned\n   (Z_to_bv 64\n      ?Goal@{H11:=bv_unsigned_in_range_alt 64 b1; H12:=bv_signed_in_range 64 b1; H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 b;\n             H16:=bv_signed"
+        },
+        {
+          "index": 6,
+          "head": "(\"x14\"\n ↦ᵣ RVal_Bits\n      (Z_to_bv 64\n         ?Goal@{H11:=bv_unsigned_in_range_alt 64 b1; H12:=bv_signed_in_range 64 b1; H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 b;\n             "
+        }
+      ],
+      "categories": [
+        "fold initialization locals"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6ac4",
+      "capture_sha256": "0e8ece3ae48e76570c139e9a1724ee3f7d42a9e4519cd986052ed353f753e7ec",
+      "source_sha256": "d534cd5920eeab07bf41da923f8285b3c00329a95b05752ae609355b5604e9ec",
+      "goals": [
+        {
+          "index": 1,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) "
+        },
+        {
+          "index": 2,
+          "head": "((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + i))"
+        },
+        {
+          "index": 3,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (bv"
+        },
+        {
+          "index": 4,
+          "head": "(decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n   (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))"
+        },
+        {
+          "index": 6,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) "
+        },
+        {
+          "index": 7,
+          "head": "((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + i))"
+        },
+        {
+          "index": 8,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (bv"
+        },
+        {
+          "index": 9,
+          "head": "(decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n   (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))"
+        },
+        {
+          "index": 11,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) "
+        },
+        {
+          "index": 12,
+          "head": "((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + i))"
+        },
+        {
+          "index": 13,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) ≪ 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (bv"
+        },
+        {
+          "index": 14,
+          "head": "(decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n   (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))"
+        }
+      ],
+      "categories": [
+        "loop successor locals"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6ad8",
+      "capture_sha256": "a28b548522bd1b2cc5d707107ada1b50dc6db8ecd0d7b1d58ec7fcc6debaf373",
+      "source_sha256": "f0130c0ae557a7ce8d9af95e8ce15246bf1c153d00a8543eb13f37adda680264",
+      "goals": [
+        {
+          "index": 0,
+          "head": "⌜decodeItemInputHead args inputPrefix rest\n ∧ 248 ≤ bv_unsigned inputPrefix ≤ 255\n   ∧ payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     ∧ payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) res"
+        }
+      ],
+      "categories": [
+        "long return locals"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    },
+    {
+      "pc": "0x800d6ae0",
+      "capture_sha256": "1de9265266c319847c22d5a4bead2f82db026d998ddd98d0d7423541f9e38192",
+      "source_sha256": "5ae97b883d23d9052a372e35cbbe148512731fea418d5c9c761903c651929b1d",
+      "goals": [
+        {
+          "index": 0,
+          "head": "(list (reg_kind * valu_shape))"
+        },
+        {
+          "index": 1,
+          "head": "(FindHypEqual (FICRegMapstoSemantic \"rv_enable_pmp\")\n   (decodeItemOutputPointer args\n    ↦ₘ∗ (take 32 (returnStorage locals) ++\n         Z_to_bv 8 (Z.land (bv_unsigned 4) (Z.ones 8))\n         :: Z_to_bv 8 (Z.land (bv_unsigned 4 ≫ 8) (Z.one"
+        },
+        {
+          "index": 2,
+          "head": "(li_tactic\n   (regcol_compute_hint (regcol_lookup (KindReg \"rv_enable_pmp\"))\n      ?Goal@{H10:=bv_unsigned_in_range_alt 64 b0; H11:=bv_signed_in_range 64 b0; H12:=bv_unsigned_in_range_alt 64 n; H13:=bv_signed_in_range 64 n; H14:=bv_unsigned"
+        }
+      ],
+      "categories": [
+        "register collection list witness"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "classification": "ListWitness requires the cons existential; TupleWitness opens typed leaves but does not select correlated local values. Bare leaves and dependent predicates are outside those matcher heads."
+    }
+  ],
+  "list_gap": "One evidenced input-head site:6960. Bare head/tail leaves require correlated introduction before tuple expansion. No two-site reuse established.",
+  "second_list_candidate": "S36 6a6c has the existing cons-and-tail-length matcher shape, not the bare-leaf gap. ListWitness activation and complete first-goal pure context are not bound.",
+  "tuple_gap": "Nine sites. Primitive tuple construction intentionally leaves data evars for later resource matching. It cannot reconstruct frame bytes or select distinct cursor, width, header, and payload roles from bare goals. Registered whole-target introductions are separate.",
+  "existing_rules": [
+    "ListWitness",
+    "TupleWitness",
+    "PureFactHints",
+    "WordArrayHandoff"
+  ],
+  "driver_review": "debt_groups rejects absent and null groups. Native closure requires exact Qed/object/assumptions/debts, not active emptiness or proof_finished. No production defect identified.",
+  "new_regression": "Each null group is rejected even when all other groups are empty; complete four empty lists remain verified empty.",
+  "focused_tests": {
+    "passed": 41,
+    "wall_s": 0.017
+  },
+  "mcp": {
+    "health": true,
+    "final_compilation": true,
+    "verification_assumptions": [],
+    "interactive_limit": "Both tuple diagnostics reported no active goals then rejected Qed. The first retained a shelved evar. Interactive completion is not claimed. Final file compilation and verification pass.",
+    "scope": "standalone matcher/constructor checks; no native benefit or contract proof"
+  },
+  "artifacts": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q53/build/stock-zisk/q53-s32-structural-obligations.json",
+      "sha256": "5efd4efac7620fab533b762d934c2787127acf7b5271c43668fab854c86dc16b",
+      "archive": "/home/cody/zesislar-archive/sha256/5e/5efd4efac7620fab533b762d934c2787127acf7b5271c43668fab854c86dc16b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-s36/COMBINED_REPORT.json",
+      "sha256": "54245c4b9c4c6be40ba7d5ed3042a79ea1f713818333fbadff216be2a1886fe1",
+      "archive": "/home/cody/zesislar-archive/sha256/54/54245c4b9c4c6be40ba7d5ed3042a79ea1f713818333fbadff216be2a1886fe1"
+    },
+    {
+      "path": "_build/s32-witness-classification/ShapeProbe.v",
+      "sha256": "054468dfa731d894d390b44c7a9d02faab0540c7a9310e9079d224a644333bee",
+      "archive": "/home/cody/zesislar-archive/sha256/05/054468dfa731d894d390b44c7a9d02faab0540c7a9310e9079d224a644333bee"
+    },
+    {
+      "path": "_build/s32-witness-classification/ShapeProbeResolved.v",
+      "sha256": "90f2b709c724cb06f0e7802d8ccf9d2a4245708a4394de9eac37124ed1f8137e",
+      "archive": "/home/cody/zesislar-archive/sha256/90/90f2b709c724cb06f0e7802d8ccf9d2a4245708a4394de9eac37124ed1f8137e"
+    },
+    {
+      "path": "_build/s32-witness-classification/mcp.json",
+      "sha256": "53f072f371baac9fc18f0032a3ec49aab54d81bd064a26ef04fd025ce5247b13",
+      "archive": "/home/cody/zesislar-archive/sha256/53/53f072f371baac9fc18f0032a3ec49aab54d81bd064a26ef04fd025ce5247b13"
+    },
+    {
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "sha256": "22b5404ad84d6672fd97ed4c787de1a4af9d97736425ebd1d44a3e3e8783beed",
+      "archive": "/home/cody/zesislar-archive/sha256/22/22b5404ad84d6672fd97ed4c787de1a4af9d97736425ebd1d44a3e3e8783beed"
+    },
+    {
+      "path": "ZesuSsz/Automation/Finish.v",
+      "sha256": "e800eda0e3f239dd6dac8cca83b0f8153d1f2c5b32a597615503780b832e8d73",
+      "archive": "/home/cody/zesislar-archive/sha256/e8/e800eda0e3f239dd6dac8cca83b0f8153d1f2c5b32a597615503780b832e8d73"
+    }
+  ],
+  "gate": {
+    "exit": 0,
+    "watcher_wall_s": 66,
+    "actual_jobs": 6,
+    "log_sha256": "7099012cebf0857e5bb59c051f178b3ce509dfba30cce71ba0366ac2ccf0c2eb",
+    "archive": "/home/cody/zesislar-archive/sha256/70/7099012cebf0857e5bb59c051f178b3ce509dfba30cce71ba0366ac2ccf0c2eb"
+  },
+  "end": "2026-10-06T23:08:44.120771+00:00"
+}

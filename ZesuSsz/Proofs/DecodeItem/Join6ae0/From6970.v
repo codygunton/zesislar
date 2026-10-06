@@ -1,4 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Switches.PureFactHints.
+Require Import ZesuSsz.Compliance.DecodeItemS40GuardFacts.
+Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.InstructionLookup.
 Require Import ZesuSsz.Automation.Switches.RamFault.
@@ -30,8 +33,7 @@ Proof.
     pose proof Hdomain as Hfacts end.
   assert (HdomainAt : decodeItemDomainAt (decodeItemReturnAddress args)
     decodeItemC1BDomain args) by (split; [reflexivity | assumption]).
-  assert (Hstorage : length (decodeItemBeforeStorage args) = 40%nat) by
-    (unfold decodeItemC1BDomain, decodeItemArgsWellFormed in Hfacts; tauto).
+  assert (Hstorage : length (decodeItemBeforeStorage args) = 40%nat) by exact (proj1 (proj2 (decodeItemDomainFoldDerivedFacts args Hfacts))).
   assert (Hempty : decodeItemInputBytes args = []) by
     (unfold decodeItemC1BDomain, decodeItemArgsWellFormed in Hfacts;
      destruct Hfacts as [Hbytes _]; apply length_zero_iff_nil; lia).

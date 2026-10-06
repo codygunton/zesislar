@@ -1,0 +1,55 @@
+{
+  "finding": "Explicit raw resource entailment reconstructs StringHeader at index0 by four local register normalizations and iFrame",
+  "assumptions": [],
+  "limits": "no native instruction replay; standalone resource entailment only",
+  "capture_relation": "manual source correspondence; exact original Envs reconstruction not certified",
+  "registration_phase": "canonical lookup alone still requires reconstruction; shared interface remains pending",
+  "artifacts": {
+    "ResourceProbe.v": {
+      "sha256": "ff902f5b058beb97da95a511b327d224fce0a1fa1768ee6de2d85f054957ca18",
+      "archive": "/home/cody/zesislar-archive/sha256/ff/ff902f5b058beb97da95a511b327d224fce0a1fa1768ee6de2d85f054957ca18"
+    },
+    "resource-mcp.json": {
+      "sha256": "e28b3e9692c417245ea210ad11a3ea0ec3fa20ef8fdd2b4398e6654bb77b7b3c",
+      "archive": "/home/cody/zesislar-archive/sha256/e2/e28b3e9692c417245ea210ad11a3ea0ec3fa20ef8fdd2b4398e6654bb77b7b3c"
+    },
+    "tools/block/testdata/unfolded_header_target.json": {
+      "sha256": "23529a9438ec3979928064731cf7883eadab0ee6611879b930e74c622ec44e02",
+      "archive": "/home/cody/zesislar-archive/sha256/23/23529a9438ec3979928064731cf7883eadab0ee6611879b930e74c622ec44e02"
+    },
+    "tools/test_successor_entailment.py": {
+      "sha256": "2c9548f911f413cabd08216dd835f475a611d6d928295751a2ac905133ba4453",
+      "archive": "/home/cody/zesislar-archive/sha256/2c/2c9548f911f413cabd08216dd835f475a611d6d928295751a2ac905133ba4453"
+    }
+  },
+  "item": "I25-resource-reconstruction",
+  "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "production_changes": false,
+  "exact_original_envs": "Unavailable: S45 records rendered contexts and anonymous spatial labels, not the Envs term or local-definition bodies",
+  "native_repetition": false,
+  "driver_regression": "plan_successor preserves the unfolded six-binder target and all debt groups; result remains unproved",
+  "focused_driver_tests": {
+    "passed": 24,
+    "wall_s": 0.017
+  },
+  "setup_failures": [
+    "missing explicit RlpDecodeItem import",
+    "untyped bitvector zero literal",
+    "ssreflect rewrite comma syntax",
+    "iPureIntro left an unmatched x13 resource",
+    "zero accumulator requires take_0 and bigEndian reduction"
+  ],
+  "failure_snapshot_limit": "Intermediate source versions are not independently archived; MCP error responses are preserved",
+  "gate": {
+    "exit": 0,
+    "watcher_wall_s": 63,
+    "actual_jobs": 6,
+    "command_line": [
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6"
+    ],
+    "log_sha256": "2e5d24213b6ab6ddd17783fe536c02dead9a5bb74b41d381b226a1fda1797a47",
+    "archive": "/home/cody/zesislar-archive/sha256/2e/2e5d24213b6ab6ddd17783fe536c02dead9a5bb74b41d381b226a1fda1797a47"
+  },
+  "checkpoint_end": "2026-10-06T23:02:31.070504+00:00"
+}
