@@ -1,0 +1,182 @@
+{
+  "item": "I25",
+  "result": "incomplete; candidate unlanded",
+  "measurement_root": "052e4f3f1392482e4dc12470f239752364d01d7e",
+  "rows": [
+    {
+      "pc": "0x800d6a08",
+      "baseline_cpu_s": 46.286107,
+      "v2_cpu_s": 29.081103000000002,
+      "v3_cpu_s": 77.15734300000001,
+      "v3_compiler_wall_s": 77.45756869402248,
+      "v3_peak_rss_kib": 1707384,
+      "active_goals": 8,
+      "limit": null,
+      "compiler_exit": 1,
+      "native_qed": false,
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "primary_source_sha256": "bda4ceefbf88096a01dc6be3e29c65a57cc3d33ac318e81692724685ff863957",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "assumption_verification": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "selection": "cursor=inputPointer+1; frame=frameBytes; width incorrectly=length rest"
+    },
+    {
+      "pc": "0x800d6aa8",
+      "baseline_cpu_s": 56.131101,
+      "v2_cpu_s": 29.220486999999995,
+      "v3_cpu_s": 78.494091,
+      "v3_compiler_wall_s": 78.7972862609895,
+      "v3_peak_rss_kib": 1708788,
+      "active_goals": 8,
+      "limit": null,
+      "compiler_exit": 1,
+      "native_qed": false,
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "primary_source_sha256": "b3e3d7eaf98dc018d0addb341be952499119d6c84b2eb26f396c785cbd23181e",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "assumption_verification": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "selection": "cursor=inputPointer+1; frame=frameBytes; width incorrectly=length rest"
+    },
+    {
+      "pc": "0x800d6a38",
+      "baseline_cpu_s": 50.6854,
+      "v2_cpu_s": 42.206953999999996,
+      "v3_cpu_s": 34.18486099999999,
+      "v3_compiler_wall_s": 34.3358692759648,
+      "v3_peak_rss_kib": 1375472,
+      "active_goals": 2,
+      "limit": null,
+      "compiler_exit": 1,
+      "native_qed": false,
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "primary_source_sha256": "a8d68cca3fd985e98d8da292597f4b4b9c0d24f6c6a7c31f5e2785360fffcf09",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "assumption_verification": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "selection": "payload=unsigned loaded accumulator; header incorrectly=payloadStart; RejectedFacts remains"
+    },
+    {
+      "pc": "0x800d6ad8",
+      "baseline_cpu_s": 102.612731,
+      "v2_cpu_s": 70.55409600000002,
+      "v3_cpu_s": 54.398323999999995,
+      "v3_compiler_wall_s": 54.62208976398688,
+      "v3_peak_rss_kib": 1621288,
+      "active_goals": 2,
+      "limit": null,
+      "compiler_exit": 1,
+      "native_qed": false,
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "primary_source_sha256": "09e9a26f3230756eb69df4fea63685ae9d85cbc068c30049678fd7ab36f6d578",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "groups": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "assumption_verification": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "selection": "payload=unsigned loaded accumulator; header incorrectly=payloadStart; RejectedFacts remains"
+    }
+  ],
+  "block_closures": 0,
+  "contract_closures": 0,
+  "changed_candidate_only": [
+    "ZesuSsz/Automation/Hooks.v"
+  ],
+  "fixed_sources": "Exact statements, primary tactics, and root052 Compliance sources remain unchanged.",
+  "candidate_patch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25/unlanded-candidate.patch",
+    "sha256": "57e60fe3636038810ad7dde8789d6c5a6e9433407cdd4f9dc3680bda95987eb2",
+    "archive": "/home/cody/zesislar-archive/sha256/57/57e60fe3636038810ad7dde8789d6c5a6e9433407cdd4f9dc3680bda95987eb2"
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25/complete-archive-index.json",
+    "sha256": "dcd3ac22b125f302288e9d36973cb5f34d3830b51d4fa6fa6f685a69c8a343ae",
+    "archive": "/home/cody/zesislar-archive/sha256/dc/dcd3ac22b125f302288e9d36973cb5f34d3830b51d4fa6fa6f685a69c8a343ae"
+  },
+  "attempts": {
+    "coherent-comparison": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25/coherent-comparison/report.json",
+      "sha256": "8cadf8c2abcc82f70d87eb4db8194cfe2891bbcce802d7d3f2ee54d44caff48d",
+      "archive": "/home/cody/zesislar-archive/sha256/8c/8cadf8c2abcc82f70d87eb4db8194cfe2891bbcce802d7d3f2ee54d44caff48d"
+    },
+    "coherent-comparison-v2": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25/coherent-comparison-v2/report.json",
+      "sha256": "690d71ed2bb330ac7e28a5c6aa2ed9334857c10dbfdd61dc3c326a4a2dcd3eab",
+      "archive": "/home/cody/zesislar-archive/sha256/69/690d71ed2bb330ac7e28a5c6aa2ed9334857c10dbfdd61dc3c326a4a2dcd3eab"
+    },
+    "coherent-comparison-v3": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25/coherent-comparison-v3/report.json",
+      "sha256": "afd4aa3ece90f83c6ff9ae541586fb0779b210b49125ab4ed544667b12f0853c",
+      "archive": "/home/cody/zesislar-archive/sha256/af/afd4aa3ece90f83c6ff9ae541586fb0779b210b49125ab4ed544667b12f0853c"
+    }
+  },
+  "limits": "CPU1200 seconds; memory6GiB; no wall cutoff; four workers",
+  "focused": "Fresh MCP health/start/step_multi/check passed; exact post-existential test reached Qed with assumptions closed. Final verify passed assumptions[]. compile_file timed out during a held gate lock. Changed focused Dune compilation passed after192seconds including admission; exact compiler CPU/wall unavailable.",
+  "limitations": [
+    "All four native attempts retain residual goals.",
+    "Stack, shelf, and given-up groups are unavailable.",
+    "No native assumption certificate exists without Qed.",
+    "Earlier MCP interactive imports were stale; fresh owned MCP confirmed the current hook.",
+    "The equality-only extension regresses initialization CPU and chooses the wrong width.",
+    "The scalar repair is not complete."
+  ],
+  "gate": {
+    "status": "passed",
+    "wall_s": 75,
+    "jobs": 6,
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-064422-child-a-i25-evidence-check-fast.log"
+  },
+  "accounting": {
+    "start": "2026-10-06T09:48:53.048Z",
+    "end": "2026-10-06T10:46:09.546446+00:00",
+    "child_min": 57.2749741,
+    "tokens_child": 18896282,
+    "tokens_start": 360925780,
+    "tokens_end": 379822062,
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable"
+  }
+}
