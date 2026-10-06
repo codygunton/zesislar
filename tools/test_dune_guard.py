@@ -406,7 +406,8 @@ class DuneCompilerGuardTest(unittest.TestCase):
         coqdep.chmod(0o755)
         self.fixture.lock.write_text(f"state=wanted holder=fixture pid={os.getpid()} start=x\n")
         process = subprocess.Popen(
-            [dune, "build", "--root", str(self.root), "--cache=disabled", "-j1", "@Fixture/all"],
+            [dune, "build", "--root", str(self.root), "--cache=disabled", "-j1",
+             "--trace-file", str(self.root / "_build/trace.csexp"), "@Fixture/all"],
             env={**self.environment, "ZESU_IN_GATE": "1", "FAKE_BLOCK_AFTER_FIRST": "1"},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=self.root)
         try:
