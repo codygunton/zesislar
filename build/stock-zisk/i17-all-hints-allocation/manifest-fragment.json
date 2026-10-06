@@ -1,0 +1,11 @@
+{
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/3c9302d3ad1b5aba259f48a4fb37b42186d732fa89f1c6a6a144a13cc8bfc6ff",
+    "bytes": 2347601,
+    "sha256": "3c9302d3ad1b5aba259f48a4fb37b42186d732fa89f1c6a6a144a13cc8bfc6ff"
+  },
+  "generated_artifacts": {
+    "build/stock-zisk/i17-all-hints-allocation/REPORT.json": "3e9dd6923a1a3df53379b95c7466df69f077e659f9416b9b2e11ffdce2249789",
+    "build/stock-zisk/i17-all-hints-allocation/REPORT.md": "2cd2b268a8ab7ba61145021e0d943f452d3923c6e6d3ad3cb0d15f18b1393cf5"
+  }
+}
