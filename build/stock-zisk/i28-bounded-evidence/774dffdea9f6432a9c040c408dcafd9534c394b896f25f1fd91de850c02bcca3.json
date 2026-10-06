@@ -1,0 +1,18 @@
+{
+  "distinct_bindings_checked": 417,
+  "errors": [],
+  "new_bindings_per_index": {
+    "dependency-bindings.json": 417,
+    "k128/run-inputs.json": 0,
+    "k16/run-inputs.json": 0,
+    "k256/run-inputs.json": 0,
+    "k261-raw-002/run-inputs.json": 0,
+    "k261/run-inputs.json": 0,
+    "k262-raw-002/run-inputs.json": 0,
+    "k262/run-inputs.json": 0,
+    "k384/run-inputs.json": 0,
+    "raw-adjacent-final/index.json": 0
+  },
+  "result": "pass",
+  "scope": "Nested dependency, input, and raw capture archive bindings."
+}
