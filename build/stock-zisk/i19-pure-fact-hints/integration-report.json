@@ -1,0 +1,444 @@
+{
+  "I19_complete": false,
+  "arithmetic_limit": "The registered accepted semantic leaf closes. Pointer conversion and low-mask integer subtraction remain unchanged under zesu_finish and zesu_solve_machine_bounds.",
+  "artifact_count": 6330,
+  "base_root": "c4d7d45cda0281889f6c5e253e268f6a140871b1",
+  "bridge_interface_commit": "122370bf224bf56f42383d1abee0fec6b346d474",
+  "closure_count": 0,
+  "comparison_limit": "Changed ON attempts retain prior OFF evidence. The dispatcher differs, so these are not same-automation causal pairs.",
+  "evidence_inventory": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/59/594c3ed73939bb5570784dc8c388d84ad61e983709351b65d6378af712990741",
+    "bytes": 2365044,
+    "sha256": "594c3ed73939bb5570784dc8c388d84ad61e983709351b65d6378af712990741"
+  },
+  "focused_final_groups": "Every final focused export has zero active, stack, shelf, and given-up groups. Show Existentials reports no unresolved obligations.",
+  "history": [
+    "Two failed abstract repairs remain retained.",
+    "A display spelling check rejected current pretty-printed notation.",
+    "The initial verify statement included unused section binders.",
+    "One changed native setup used a stale InstructionLookup object.",
+    "The initial adapter recorder lacked envs_entails.",
+    "The saved-goal source omitted decodeItemInputHead defining imports.",
+    "open_constr left a shelved class obligation and was rejected.",
+    "The first cache scan used the wrong Coq magic. The header-aware scan recovered all twelve objects by exact hash."
+  ],
+  "kernel_verified_focused": [
+    "pure_hint_iris_conjunction",
+    "exact_string_target",
+    "exact_list_target",
+    "intro_hint_owned_source"
+  ],
+  "kind": "I19 generic bridge integration; measured limitations",
+  "missing_original_payloads": {},
+  "native_group_limit": "Coqc retains active text. Pet stack, shelf and given-up groups are unavailable diagnostics. Kernel Qed is required for closure.",
+  "pending_interface": "Proposed ZesuPureFactAnchor indexes target, owned anchor, and complete source. Parent awaits orch ruling. No registration changed.",
+  "rows": [
+    {
+      "active_count": 9,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 354389,
+        "cpu_seconds": 443.107423,
+        "elapsed_seconds": 444.5234982300317,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 2279008
+      },
+      "contract_closed": false,
+      "entry_or_obligation": null,
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/6d/6d0e893505f47f0f96f1f21b2793322fb144ac10cdaf81e0588dbf6ced367fd5",
+        "bytes": 197817,
+        "sha256": "6d0e893505f47f0f96f1f21b2793322fb144ac10cdaf81e0588dbf6ced367fd5"
+      },
+      "first_residual": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "measurement": "i19-native-comparisons",
+      "outcome": "native-residual"
+    },
+    {
+      "active_count": 2,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 354406,
+        "cpu_seconds": 45.805053,
+        "elapsed_seconds": 46.082127480069175,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1431076
+      },
+      "contract_closed": false,
+      "entry_or_obligation": null,
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/0a/0a15f8aec7d37f75bd7b7ea5cdaeb24d8211797b2c1ed5c6496c3ace47890990",
+        "bytes": 30864,
+        "sha256": "0a15f8aec7d37f75bd7b7ea5cdaeb24d8211797b2c1ed5c6496c3ace47890990"
+      },
+      "first_residual": "\u231cdecodeItemRejectedFacts args \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args\u231d%I",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "measurement": "i19-native-comparisons",
+      "outcome": "native-residual"
+    },
+    {
+      "active_count": 12,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 354383,
+        "cpu_seconds": 442.66157499999997,
+        "elapsed_seconds": 444.1259606180247,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 2277068
+      },
+      "contract_closed": false,
+      "entry_or_obligation": null,
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/82/82508d7614c335a7386b4bfd9daae7f82d30b77e12346e753cb542440e02a595",
+        "bytes": 229675,
+        "sha256": "82508d7614c335a7386b4bfd9daae7f82d30b77e12346e753cb542440e02a595"
+      },
+      "first_residual": "(bv_unsigned inputPrefix \u2264 127)",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "measurement": "i19-native-comparisons",
+      "outcome": "native-residual"
+    },
+    {
+      "active_count": 2,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 354393,
+        "cpu_seconds": 45.51547,
+        "elapsed_seconds": 45.789492482086644,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1441188
+      },
+      "contract_closed": false,
+      "entry_or_obligation": null,
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/1f/1f4a4c92424121e82f36411bee384013ed1137317bd276d0fd5c8a0d9eec1118",
+        "bytes": 30880,
+        "sha256": "1f4a4c92424121e82f36411bee384013ed1137317bd276d0fd5c8a0d9eec1118"
+      },
+      "first_residual": "\u231cdecodeItemRejectedFacts args \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args\u231d%I",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "measurement": "i19-native-comparisons",
+      "outcome": "native-residual"
+    },
+    {
+      "active_count": 1,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 391565,
+        "cpu_seconds": 28.749013,
+        "elapsed_seconds": 28.857296884059906,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1433064
+      },
+      "contract_closed": false,
+      "entry_or_obligation": null,
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/bc/bc3988ec3b8eee303aa5e030f4c066c910fa89f3e0f5d5b61103d52d22f78a71",
+        "bytes": 19932,
+        "sha256": "bc3988ec3b8eee303aa5e030f4c066c910fa89f3e0f5d5b61103d52d22f78a71"
+      },
+      "first_residual": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 192 \u2264 bv_unsigned inputPrefix \u2264 247\n   \u2227 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args\n     \u2227 bv_unsigned (bv_and (x13 + 64) 255) = bv_unsigned inputPrefix - 192\n       \u2227 decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192)\n         \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "measurement": "i19-iris-pure-6a6c-on-refreshed",
+      "outcome": "native-residual"
+    },
+    {
+      "active_count": 11,
+      "arm": "off",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 396842,
+        "cpu_seconds": 8.016088000000002,
+        "elapsed_seconds": 8.057073254953139,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1033156
+      },
+      "contract_closed": false,
+      "entry_or_obligation": "decodeItemJoin6a24From6a14",
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/12/12824836c5b7c5b70cc04df95024fdeb2c1d5b25efe00728fd24b219a49ddaba",
+        "bytes": 107761,
+        "sha256": "12824836c5b7c5b70cc04df95024fdeb2c1d5b25efe00728fd24b219a49ddaba"
+      },
+      "first_residual": "(payloadStart < payloadStart)%Z",
+      "inherited_debts": {},
+      "measurement": "i19-initialization-pairs-recorder-imports",
+      "outcome": "residual"
+    },
+    {
+      "active_count": 11,
+      "arm": "off",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 396889,
+        "cpu_seconds": 8.084805000000001,
+        "elapsed_seconds": 8.14077774004545,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1029432
+      },
+      "contract_closed": false,
+      "entry_or_obligation": "decodeItemJoin6ac4From6ab4",
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/d0/d07ee7fe4a643c37e989e3bf4e99ca691810f0eaa8e49e721415d0cca2de54a1",
+        "bytes": 107725,
+        "sha256": "d07ee7fe4a643c37e989e3bf4e99ca691810f0eaa8e49e721415d0cca2de54a1"
+      },
+      "first_residual": "(payloadStart < payloadStart)%Z",
+      "inherited_debts": {},
+      "measurement": "i19-initialization-pairs-recorder-imports",
+      "outcome": "residual"
+    },
+    {
+      "active_count": 11,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 396837,
+        "cpu_seconds": 8.13611,
+        "elapsed_seconds": 8.179847374092788,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1035592
+      },
+      "contract_closed": false,
+      "entry_or_obligation": "decodeItemJoin6ac4From6ab4",
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/8f/8f77ad3949340aa8d1bd55a6d5be4dfc228f2198e3d7ac47149284141276c1d4",
+        "bytes": 107713,
+        "sha256": "8f77ad3949340aa8d1bd55a6d5be4dfc228f2198e3d7ac47149284141276c1d4"
+      },
+      "first_residual": "(payloadStart < payloadStart)%Z",
+      "inherited_debts": {},
+      "measurement": "i19-initialization-pairs-recorder-imports",
+      "outcome": "residual"
+    },
+    {
+      "active_count": 11,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 396828,
+        "cpu_seconds": 8.343786000000001,
+        "elapsed_seconds": 8.39402876701206,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1035624
+      },
+      "contract_closed": false,
+      "entry_or_obligation": "decodeItemJoin6a24From6a14",
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/46/46006719b4c97244ee289040765c285b7f87985372725e03bef727081dac2d20",
+        "bytes": 107757,
+        "sha256": "46006719b4c97244ee289040765c285b7f87985372725e03bef727081dac2d20"
+      },
+      "first_residual": "(payloadStart < payloadStart)%Z",
+      "inherited_debts": {},
+      "measurement": "i19-initialization-pairs-recorder-imports",
+      "outcome": "residual"
+    },
+    {
+      "active_count": 11,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 518196,
+        "cpu_seconds": 6.914518999999999,
+        "elapsed_seconds": 6.947384249069728,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1037364
+      },
+      "contract_closed": false,
+      "entry_or_obligation": "decodeItemJoin6ac4From6ab4",
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/50/503bd340f6f9f6b53aeeb7d5b237acace65fc6b87961a63c7bdf257d50f11999",
+        "bytes": 107709,
+        "sha256": "503bd340f6f9f6b53aeeb7d5b237acace65fc6b87961a63c7bdf257d50f11999"
+      },
+      "first_residual": "(payloadStart < payloadStart)%Z",
+      "inherited_debts": {},
+      "measurement": "i19-initialization-owned-source-on",
+      "outcome": "residual"
+    },
+    {
+      "active_count": 11,
+      "arm": "on",
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "closed": false,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 518285,
+        "cpu_seconds": 7.00814,
+        "elapsed_seconds": 7.047189604025334,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1035496
+      },
+      "contract_closed": false,
+      "entry_or_obligation": "decodeItemJoin6a24From6a14",
+      "evidence": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/81/81333e97f8d5c7a2d173ba557beec8b96929a3df1f5fdea7038bf92094b4760d",
+        "bytes": 107734,
+        "sha256": "81333e97f8d5c7a2d173ba557beec8b96929a3df1f5fdea7038bf92094b4760d"
+      },
+      "first_residual": "(payloadStart < payloadStart)%Z",
+      "inherited_debts": {},
+      "measurement": "i19-initialization-owned-source-on",
+      "outcome": "residual"
+    }
+  ],
+  "source_inference": "Target-only class lookup cannot infer source-only n. Matching the complete owned source resolves n without existential guesses.",
+  "spec_commits": [
+    "954369ecebcd95fb5b926c646b29778f26564756",
+    "212dccb"
+  ],
+  "split_target_diagnosis": "After destructing the complete source, the bridge rejects with four pure hypotheses, Hheader and Hcont retained. liUnfoldEarly rejects. liUnfoldLate expands the target to its existential tuple before witness construction.",
+  "verification_limit": "The exact-target verifier reports direct compilation without the Module M sandbox. Assumptions are empty."
+}

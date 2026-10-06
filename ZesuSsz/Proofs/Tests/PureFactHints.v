@@ -31,6 +31,17 @@ Proof using Hintro Sigma source target.
 Qed.
 Lemma unrelated_hint_on (Q : Prop) : Q -> Q.
 Proof. intros Howned. Fail zesu_pure_fact_hints_if_enabled. exact Howned. Qed.
+Lemma pure_hint_iris_conjunction (Q : Prop) (Howned : Q) (n : nat) :
+  ⊢ (⌜P /\ Q /\ n = n⌝ : iProp Sigma).
+Proof using HP P Sigma.
+  iStartProof. zesu_pure_fact_hints_if_enabled.
+Qed.
+Lemma pure_hint_iris_unregistered (Q : Prop) (Howned : Q) :
+  ⊢ (⌜Q⌝ : iProp Sigma).
+Proof using Sigma.
+  iStartProof. Fail zesu_pure_fact_hints_if_enabled.
+  iPureIntro. exact Howned.
+Qed.
 End enabled.
 
 Section indexed.
@@ -48,3 +59,15 @@ End indexed.
 Print Assumptions pure_hint_on.
 Print Assumptions intro_hint_on.
 Print Assumptions intro_hint_indexed.
+
+Section owned_source.
+Context {Sigma} (A : Type) (target : iProp Sigma) (R : A -> iProp Sigma).
+Context (Intro : forall value, @ZesuPureFactIntro Sigma target (R value)).
+#[local] Existing Instance Intro.
+Lemma intro_hint_owned_source (value : A) : R value -∗ target.
+Proof using Intro Sigma A target R.
+  iStartProof. iIntros "Hsource".
+  zesu_pure_fact_hints_if_enabled. iExact "Hsource".
+Qed.
+End owned_source.
+Print Assumptions intro_hint_owned_source.
