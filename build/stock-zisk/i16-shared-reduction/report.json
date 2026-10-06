@@ -1,0 +1,149 @@
+{
+  "item": "I16-shared-final",
+  "baseline_root": "5d4da22f35c470ec3bef3561aac53a28af2e7e8b",
+  "6974": {
+    "cpu_s": 655.289753,
+    "wall_s": 657.0307056150632,
+    "peak_kib": 2315676,
+    "baseline_cpu_s": 1177.45862,
+    "cpu_change_percent": -44.347109794822344,
+    "objects_checked": 4996,
+    "active_goals": 12,
+    "residuals_and_contexts_identical": true,
+    "limit": null,
+    "closure": false,
+    "other_groups": "unavailable",
+    "assumptions": "unavailable without Qed",
+    "comparison_sha256": "26c0ae8acb0c971c897f2e689f66d4359c79602cfc4d917a94e34294acf91452"
+  },
+  "Prologue": {
+    "result": "Kernel Qed, assumptions [], exact theorem and proof unchanged",
+    "objects_checked": 4999,
+    "proof_sha256": "60fb26fcac3b0d7072f76f3dd1653e2c526f36e57a1dfd9e01d782e521065436",
+    "baseline_cpu_s": 270.148482,
+    "candidate_cpu_s": 218.49081099999998,
+    "cpu_change_percent": -19.121954940320574,
+    "compiler_wall_s": 219.03427787101828,
+    "peak_rss_kib": 2982020,
+    "evidence_sha256": "2539e80ad9ed1f4a01bea9e975cd963c79db39527fb44dc6895e8684559e4836"
+  },
+  "failed_variants_preserved": true,
+  "proof_growth": 0,
+  "archive_records": [
+    {
+      "path": "_build/i16/SharedPrologue.v",
+      "sha256": "5ae50eb5dd4d60d40cca657a97aaf9c7fa11a3bb1587575b2afa1a6f317ba086",
+      "archive": "/home/cody/zesislar-archive/sha256/5a/5ae50eb5dd4d60d40cca657a97aaf9c7fa11a3bb1587575b2afa1a6f317ba086"
+    },
+    {
+      "path": "_build/i16/Shared6974.v",
+      "sha256": "116d7c88a02852fb2d373dc65126002f5dfc0f31627b65c498879d87702f1d20",
+      "archive": "/home/cody/zesislar-archive/sha256/11/116d7c88a02852fb2d373dc65126002f5dfc0f31627b65c498879d87702f1d20"
+    },
+    {
+      "path": "_build/i16/SharedReductionFixed.v",
+      "sha256": "063dbf5e27e3283b653d848f1059da86735d288d61290e01de9fbb804a90ca35",
+      "archive": "/home/cody/zesislar-archive/sha256/06/063dbf5e27e3283b653d848f1059da86735d288d61290e01de9fbb804a90ca35"
+    },
+    {
+      "path": "_build/i16/prologue-shared/comparison.json",
+      "sha256": "2539e80ad9ed1f4a01bea9e975cd963c79db39527fb44dc6895e8684559e4836",
+      "archive": "/home/cody/zesislar-archive/sha256/25/2539e80ad9ed1f4a01bea9e975cd963c79db39527fb44dc6895e8684559e4836"
+    },
+    {
+      "path": "_build/i16/prologue-shared/compiler.log",
+      "sha256": "b9701454ddc45ae32ebbdfb3497574141fd5575f660e54a1276d9161bb74cab2",
+      "archive": "/home/cody/zesislar-archive/sha256/b9/b9701454ddc45ae32ebbdfb3497574141fd5575f660e54a1276d9161bb74cab2"
+    },
+    {
+      "path": "_build/i16/6974-shared/comparison.json",
+      "sha256": "26c0ae8acb0c971c897f2e689f66d4359c79602cfc4d917a94e34294acf91452",
+      "archive": "/home/cody/zesislar-archive/sha256/26/26c0ae8acb0c971c897f2e689f66d4359c79602cfc4d917a94e34294acf91452"
+    },
+    {
+      "path": "_build/i16/6974-shared/compiler.log",
+      "sha256": "abb4e1d392d2d75865902cb0b800e8a82af2a6a46a122bab51decb539ed0c7c5",
+      "archive": "/home/cody/zesislar-archive/sha256/ab/abb4e1d392d2d75865902cb0b800e8a82af2a6a46a122bab51decb539ed0c7c5"
+    },
+    {
+      "path": "_build/i16/shared-final-result.json",
+      "sha256": "4315224068cd53fb0542e2579657ceea83cf7f68c16df944148adc2535b3247e",
+      "archive": "/home/cody/zesislar-archive/sha256/43/4315224068cd53fb0542e2579657ceea83cf7f68c16df944148adc2535b3247e"
+    },
+    {
+      "path": "_build/i16/shared-reduction-focused-result.json",
+      "sha256": "0f7ede6764bfae5450cf3ece9848b6e79d3498192f448d7bba9c0dc2d1693b1c",
+      "archive": "/home/cody/zesislar-archive/sha256/0f/0f7ede6764bfae5450cf3ece9848b6e79d3498192f448d7bba9c0dc2d1693b1c"
+    }
+  ],
+  "focused_checks": {
+    "MCP_compile": true,
+    "MCP_interactive": true,
+    "MCP_statement_verification": true,
+    "assumptions": [],
+    "final_source_compile": true,
+    "final_verified_statements": [
+      "stack_selected_shared",
+      "stack_selected_pending",
+      "stack_selected_rollback"
+    ],
+    "compile_warning": "MCP used direct coqc after Dune reported that the test had no stanza."
+  },
+  "accounting": {
+    "start": "2026-10-06T03:02:56.402Z",
+    "end": "2026-10-06T03:34:12.460255Z",
+    "basis": "first recorded shared-reduction preparation through final checkpoint",
+    "child_min": 31.267637583333332,
+    "tokens_child": 2324127,
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable"
+  },
+  "gate": {
+    "check_fast": "passed",
+    "wall_s": 353,
+    "jobs": 6,
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261005-232656-child-a-i16-shared-check-fast.log"
+  },
+  "failed_variant_records": [
+    {
+      "path": "_build/i16/prologue/comparison.json",
+      "sha256": "63dfc70430def6c4a2d5653d84ead5348b248c38fbc8bef0cdfc1ab897635d20",
+      "archive": "/home/cody/zesislar-archive/sha256/63/63dfc70430def6c4a2d5653d84ead5348b248c38fbc8bef0cdfc1ab897635d20"
+    },
+    {
+      "path": "_build/i16/6974/comparison.json",
+      "sha256": "375ee0167a3b3c83ff600d98c7ac85a30af9344a4ead819a7534329e4f0c1ded",
+      "archive": "/home/cody/zesislar-archive/sha256/37/375ee0167a3b3c83ff600d98c7ac85a30af9344a4ead819a7534329e4f0c1ded"
+    },
+    {
+      "path": "_build/i16/prologue-candidates/comparison.json",
+      "sha256": "3f0557dc2235d22b2fc8878576a90f8a32d6a7e3d15606d9f9ea8e0d9dda746e",
+      "archive": "/home/cody/zesislar-archive/sha256/3f/3f0557dc2235d22b2fc8878576a90f8a32d6a7e3d15606d9f9ea8e0d9dda746e"
+    },
+    {
+      "path": "_build/i16/6974-candidates/comparison.json",
+      "sha256": "f777c67f54a9cf629f6fa54c8386ca0e2053c7e74fa3336c1dd8c9d37d938acc",
+      "archive": "/home/cody/zesislar-archive/sha256/f7/f777c67f54a9cf629f6fa54c8386ca0e2053c7e74fa3336c1dd8c9d37d938acc"
+    },
+    {
+      "path": "_build/i16/prologue-no-flags/comparison.json",
+      "sha256": "25b2c408947d1bc64687aa8a3d4b8783ed4f39ffcb2b689cb2bbbedb3fc1131d",
+      "archive": "/home/cody/zesislar-archive/sha256/25/25b2c408947d1bc64687aa8a3d4b8783ed4f39ffcb2b689cb2bbbedb3fc1131d"
+    },
+    {
+      "path": "_build/i16/6974-no-flags/comparison.json",
+      "sha256": "288342a144d6046547839f5400a9e0c300530ba56bf01cc4cd415cc890a7a162",
+      "archive": "/home/cody/zesislar-archive/sha256/28/288342a144d6046547839f5400a9e0c300530ba56bf01cc4cd415cc890a7a162"
+    },
+    {
+      "path": "_build/i16/proof-dependent-flag-diagnosis.json",
+      "sha256": "2f4d810dcdbd67b18149b9305f461c1ade337a791814d123bc9d6d1e9fc57879",
+      "archive": "/home/cody/zesislar-archive/sha256/2f/2f4d810dcdbd67b18149b9305f461c1ade337a791814d123bc9d6d1e9fc57879"
+    },
+    {
+      "path": "_build/i16/flag-memory-diagnosis.json",
+      "sha256": "727eced9f2e94d77182d1ad8af526647b9510fa0301ee069fa8c99bc331a36fd",
+      "archive": "/home/cody/zesislar-archive/sha256/72/727eced9f2e94d77182d1ad8af526647b9510fa0301ee069fa8c99bc331a36fd"
+    }
+  ]
+}

@@ -400,6 +400,18 @@ Ltac zesu_stack_reduce_closed term :=
   let reduced := eval vm_compute in term in
   change_no_check term with reduced in *.
 
+(* Normalize the selected hypothesis without searching other hypotheses. *)
+Ltac zesu_stack_normalize_hypothesis hypothesis := once (
+  repeat (
+    let statement := type of hypothesis in
+    match statement with
+    | context[?term] =>
+        lazymatch type of term with Z => progress (
+          zesu_stack_closed_term term;
+          let reduced := eval vm_compute in term in
+          change_no_check term with reduced in * ) end
+    end)).
+
 Ltac zesu_stack_arithmetic :=
   repeat first [progress zesu_split_folded_pure |
     match goal with H : _ /\ _ |- _ => destruct H end];
@@ -413,12 +425,22 @@ Ltac zesu_stack_arithmetic :=
       | _ => clear H
       end
   end;
-  repeat match goal with
-  | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress zesu_stack_reduce_closed term end
+  once (repeat match goal with
+  | H : ?statement |- _ =>
+      lazymatch statement with
+      | Z.le _ _ => idtac
+      | Z.lt _ _ => idtac
+      | @eq Z _ _ => idtac
+      end;
+      progress (zesu_stack_normalize_hypothesis H)
+  end);
+  once (repeat match goal with
   | |- context[?term] =>
-      lazymatch type of term with Z => progress zesu_stack_reduce_closed term end
-  end;
+      lazymatch type of term with Z => progress (
+        zesu_stack_closed_term term;
+        let reduced := eval vm_compute in term in
+        change_no_check term with reduced) end
+  end);
   bv_solve.
 
 Ltac zesu_stack_integer_address pointer :=
