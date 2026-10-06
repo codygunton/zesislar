@@ -1,0 +1,11 @@
+{
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/f8fb0fc863bb2a4cf03d5b4546fff0072254e6122ea7ce6ef945981d5a34e3f5",
+    "bytes": 2279593,
+    "sha256": "f8fb0fc863bb2a4cf03d5b4546fff0072254e6122ea7ce6ef945981d5a34e3f5"
+  },
+  "generated_artifacts": {
+    "build/stock-zisk/i19-all-hints-adapters/REPORT.json": "775002227bab360673abb196880a52e25f3b5a76bf97b36c0a8fb5db26d1248d",
+    "build/stock-zisk/i19-all-hints-adapters/REPORT.md": "bc88dfc48e6ce824cff6d5b367cfb53b3699c7483f36b0ad38a7d61be13a02d6"
+  }
+}
