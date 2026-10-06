@@ -588,6 +588,27 @@
   "preflight_failure": "SameFileError after all13 named Lemma/Abort applications compiled. The completed typing object is bound separately. Final compiler measurements remain unavailable.",
   "no_native_repeats": true,
   "gate": {
-    "status": "pending"
+    "status": "passed",
+    "wall_s": 63,
+    "jobs": 6,
+    "earlier_partial_report_gate_s": 63,
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-082616-child-a-rootfc-adapter-recovery-report-check-fast.log"
+  },
+  "accounting": {
+    "start": "2026-10-06T10:41:45.510Z",
+    "end": "2026-10-06T12:29:33.274990+00:00",
+    "child_min": 107.79608316666666,
+    "tokens_child": 7337748,
+    "start_token_sample": [
+      "2026-10-06T10:41:35.818Z",
+      377557668
+    ],
+    "end_token_sample": [
+      "2026-10-06T12:28:44.548Z",
+      384895416
+    ],
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable",
+    "overlap": "This window overlaps I25 and the concurrent all24 measurement."
   }
 }
