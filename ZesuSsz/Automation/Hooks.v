@@ -590,6 +590,7 @@ Ltac zesu_list_cons_witness_if_enabled :=
       ?values = head :: tail /\ length tail = ?count =>
       eapply zesu_list_cons_witness;
       first [assumption |
+        zesu_saturate_derived_facts;
         repeat first [progress zesu_split_folded_pure |
           match goal with H : _ /\ _ |- _ => destruct H end];
         assumption]
