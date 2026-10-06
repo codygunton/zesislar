@@ -1,0 +1,11 @@
+{
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/7ef520bada7e57ffd534966f3a2dbf77e68eadd915a1f493e9228e06ba255b31",
+    "bytes": 2371313,
+    "sha256": "7ef520bada7e57ffd534966f3a2dbf77e68eadd915a1f493e9228e06ba255b31"
+  },
+  "generated_artifacts": {
+    "build/stock-zisk/i17-bounded-root052/REPORT.json": "87e3d891b9bd65bba837572d8543414dd0107bac7921c0413482ce9ee6b93cdd",
+    "build/stock-zisk/i17-bounded-root052/REPORT.md": "ecad4e44c9b0a33b47fa188300c4bf49848be6b2de82954d30ec50fc86aa894f"
+  }
+}
