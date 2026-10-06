@@ -1,0 +1,1286 @@
+{
+  "schema_version": 1,
+  "item": "I11-root5d-pass",
+  "root": "5d4da22f35c470ec3bef3561aac53a28af2e7e8b",
+  "completed_at": "2026-10-05T23:27:29.148291+00:00",
+  "counts": {
+    "edges": 13,
+    "automatic_adapter_closures": 0,
+    "residuals": 10,
+    "cpu_limits": 3,
+    "available_active_goals": 108,
+    "block_closures": 0,
+    "contract_closures": 0
+  },
+  "witness_table": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-join-witnesses/WITNESS_TABLE.json",
+    "sha256": "1bb3f84d65f01e78d2fab21c904fc9d6d647553efe4d1e81a9c5f5a74adb7dcc",
+    "historical_root": "4ab24b8a37ac2ad19fe5b6ae3171d3a09be79264",
+    "declarations_match": true
+  },
+  "switches": [
+    "InstructionLookup",
+    "StackWrite",
+    "RamFault",
+    "RegionFault",
+    "LowMask",
+    "IntegerArrayAddress",
+    "RecordWitness",
+    "ArrayBounds",
+    "WordArrayHandoff",
+    "ReturnBundle",
+    "ReturnWand",
+    "StrictSigned",
+    "ListWitness",
+    "TupleWitness"
+  ],
+  "rows": [
+    {
+      "edge": "decodeItemJoin698cFrom697c",
+      "source_pc": "0x800d697c",
+      "target_pc": "0x800d698c",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "source": {
+        "sha256": "e43c823493ce31d80cb1a332fb83eb7d51cb6d76bb0afaaad4bd8bb656fd1ca4",
+        "archive_path": "/home/cody/zesislar-archive/sha256/e4/e43c823493ce31d80cb1a332fb83eb7d51cb6d76bb0afaaad4bd8bb656fd1ca4",
+        "bytes": 1487
+      },
+      "result": {
+        "sha256": "6ede7c1dbac86928556617fca58a9e0fbed3f130e9d6d785072505cacb477214",
+        "archive_path": "/home/cody/zesislar-archive/sha256/6e/6ede7c1dbac86928556617fca58a9e0fbed3f130e9d6d785072505cacb477214",
+        "bytes": 183372
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "primitive-witness",
+      "first_goal": "nat",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "nat",
+          "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523"
+        },
+        {
+          "index": 1,
+          "head": "list (reg_kind * valu_shape)",
+          "conclusion_sha256": "d06354c154c5d34e023ce65c3436467d40b95983370cbd526a4364147d69df51"
+        },
+        {
+          "index": 2,
+          "head": "?Goal@{H10:=bv_unsigned_in_range_alt 64 b; H11:=bv_signed_in_range 64 b; H12:=bv_unsigned_in_range_alt 64 n; H13:=bv_signed_in_range 64 n; H14:=bv_unsigned_in_range_alt 8 inputPref",
+          "conclusion_sha256": "479303df2724849011c697ff91075c42cb5d466a844aaf9c39993cf280792b47"
+        },
+        {
+          "index": 3,
+          "head": "(?Goal@{H10:=bv_unsigned_in_range_alt 64 b; H11:=bv_signed_in_range 64 b; H12:=bv_unsigned_in_range_alt 64 n; H13:=bv_signed_in_range 64 n; H14:=bv_unsigned_in_range_alt 8 inputPre",
+          "conclusion_sha256": "78a72a82bca76ac97fb18e35be9bf3a3a570d90e745581e22d00c69b84963128"
+        },
+        {
+          "index": 4,
+          "head": "FindHypEqual (FICStructRegMapstoSemantic \"mstatus\" \"bits\")\n  (decodeItemOutputPointer args\n   \u21a6\u2098\u2217 (take\n          ?Goal@{H10:=bv_unsigned_in_range_alt 64 b; H11:=bv_signed_in_range",
+          "conclusion_sha256": "f340145db91ac9e383b329e36f36b23a5ab3247bfc676ca8660e08d955b7bdde"
+        },
+        {
+          "index": 5,
+          "head": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup index_decodeItem.instr_map)\n--------------------------------------\u25a1\n_ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (bv_signed ",
+          "conclusion_sha256": "02ccff166f655356c6fdcaccaf23db3275bcad03d990f541e21e7f3d67364c58"
+        }
+      ],
+      "groups": {
+        "given_up": 0,
+        "goals": 6,
+        "shelf": 0,
+        "stack": 0
+      },
+      "compiler": null,
+      "fallback_wrapper_seconds": null,
+      "total_transaction_seconds": 101.7397787469672,
+      "mcp_scope_peak_bytes": 1519304704,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": "not run with pending native goals",
+      "method": "MCP",
+      "budget": null,
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin698cFrom69e8",
+      "source_pc": "0x800d69e8",
+      "target_pc": "0x800d698c",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "source": {
+        "sha256": "793fe6b39535d9bc8bba12747dad8bbfc093fda90a08a3909def0f52841a89b0",
+        "archive_path": "/home/cody/zesislar-archive/sha256/79/793fe6b39535d9bc8bba12747dad8bbfc093fda90a08a3909def0f52841a89b0",
+        "bytes": 1501
+      },
+      "result": {
+        "sha256": "fb6c47d5351f44d9d269846c5ef9d2b3fa997d6dc9a1f5cbc1185a09562d363f",
+        "archive_path": "/home/cody/zesislar-archive/sha256/fb/fb6c47d5351f44d9d269846c5ef9d2b3fa997d6dc9a1f5cbc1185a09562d363f",
+        "bytes": 205747
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "primitive-witness",
+      "first_goal": "nat",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "nat",
+          "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523"
+        },
+        {
+          "index": 1,
+          "head": "list (reg_kind * valu_shape)",
+          "conclusion_sha256": "d06354c154c5d34e023ce65c3436467d40b95983370cbd526a4364147d69df51"
+        },
+        {
+          "index": 2,
+          "head": "?Goal@{H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 n; H16:=bv_signed_in_range 64 n; H17:=bv_unsigned_in_range_alt 64 b;\n   ",
+          "conclusion_sha256": "7eb7d505fe712926c37ecf71f42b38d635385120b69ed6fc44c0cc19d4bab14f"
+        },
+        {
+          "index": 3,
+          "head": "(?Goal@{H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_range 64 b0; H15:=bv_unsigned_in_range_alt 64 n; H16:=bv_signed_in_range 64 n; H17:=bv_unsigned_in_range_alt 64 b;\n  ",
+          "conclusion_sha256": "99b4151827398efe40b3ebd329cf7b44c3a69adc8287b1678af11b1089bd8051"
+        },
+        {
+          "index": 4,
+          "head": "FindHypEqual (FICStructRegMapstoSemantic \"mstatus\" \"bits\")\n  (decodeItemOutputPointer args\n   \u21a6\u2098\u2217 (take\n          ?Goal@{H13:=bv_unsigned_in_range_alt 64 b0; H14:=bv_signed_in_rang",
+          "conclusion_sha256": "8391c8ea2f70fa71136a4a122a280f2fc595010b9e6096a1b038cf4544f2fced"
+        },
+        {
+          "index": 5,
+          "head": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup index_decodeItem.instr_map)\n--------------------------------------\u25a1\n_ : \"x14\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 183)\n_ : \"x",
+          "conclusion_sha256": "82501fca94e54ac911427e2ecd4cbc58777da019130cd3dc6c2e471b183e3b25"
+        }
+      ],
+      "groups": {
+        "given_up": 0,
+        "goals": 6,
+        "shelf": 0,
+        "stack": 0
+      },
+      "compiler": null,
+      "fallback_wrapper_seconds": null,
+      "total_transaction_seconds": 116.97932095394935,
+      "mcp_scope_peak_bytes": 1564925952,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": "not run with pending native goals",
+      "method": "MCP",
+      "budget": null,
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6a24From6a14",
+      "source_pc": "0x800d6a14",
+      "target_pc": "0x800d6a24",
+      "statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "source": {
+        "sha256": "46a55f254efe407f0d5e9b2fd611a4a1aa62cfa4644a5bd77c648a8ba3524404",
+        "archive_path": "/home/cody/zesislar-archive/sha256/46/46a55f254efe407f0d5e9b2fd611a4a1aa62cfa4644a5bd77c648a8ba3524404",
+        "bytes": 1585
+      },
+      "result": {
+        "sha256": "9150f3b60641f32fdbe38937a66c67e5cfb0cf8336a103d4191b69c6a15c5934",
+        "archive_path": "/home/cody/zesislar-archive/sha256/91/9150f3b60641f32fdbe38937a66c67e5cfb0cf8336a103d4191b69c6a15c5934",
+        "bytes": 158512
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "successor-witness-bound",
+      "first_goal": "payloadStart < payloadStart",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "payloadStart < payloadStart",
+          "conclusion_sha256": "4032bf27ddb89dc0eb949a9602e476cae7e9a29b59cc85120d5b88e2383f4ec3"
+        },
+        {
+          "index": 1,
+          "head": "DecodeItemBranchEntries.decodeItemSavedFrameFacts args rest",
+          "conclusion_sha256": "de1c0dd0cd5b8cd3ebc217693278070341f6357e1028dfd687175b5d153e031d"
+        },
+        {
+          "index": 2,
+          "head": "DecodeItemReturnFacts.decodeItemFoldProvenance args false inputPrefix rest payloadStart payloadStart rest",
+          "conclusion_sha256": "57748d2a093f039e27ed5153e7be230f45f69c9162978db3945f6f953ddc154a"
+        },
+        {
+          "index": 3,
+          "head": "(Z_to_bv 64 (decodeItemInputPointer args) + (Z_to_bv 64 n + 1))%bv = Z_to_bv 64 (payloadStart + payloadStart)",
+          "conclusion_sha256": "7cdabb63b434c963795f7a57ae2bf649d09a9a6c8c1ca0e9e7daa20d9f9c378a"
+        },
+        {
+          "index": 4,
+          "head": "0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat payloadStart) rest))",
+          "conclusion_sha256": "80d42e7726eec268030e025d381baa5b5c9c6caf2fa6cbe40d7381da9234065b"
+        },
+        {
+          "index": 5,
+          "head": "(Z_to_bv 64 n + 1)%bv = Z_to_bv 64 (payloadStart + 1)",
+          "conclusion_sha256": "355a7f0d226b5b5fd008509b53563eaed275dc4cb45eb36e94ed20e1e441d0fb"
+        },
+        {
+          "index": 6,
+          "head": "(Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv = Z_to_bv 64 (payloadStart + payloadStart)",
+          "conclusion_sha256": "dc8f0d0dfae5b95b20a67b25ae97f70a1d2912482c83c9e28c8091b39cfc77dd"
+        },
+        {
+          "index": 7,
+          "head": "loaded = b2",
+          "conclusion_sha256": "3a865c5788dd34ab929dc245d0a42ea6eec8ca2cfba754cd1643f167d871f3a0"
+        },
+        {
+          "index": 8,
+          "head": "frameBytes = rest",
+          "conclusion_sha256": "33f48b370d19899376fa9effa3a30dac9ec55f99c93effc9344a8cf19e3ac157"
+        },
+        {
+          "index": 9,
+          "head": "\u2203 (hd : bv 8) (tl : list (bv 8)), rest = hd :: tl \u2227 length tl = 15%nat",
+          "conclusion_sha256": "ad553b3136a6bbb52ec46ccedf2cced9b802df8b8a0f77eaebb6a004bb969e24"
+        },
+        {
+          "index": 10,
+          "head": "RlpDecodeItemByteFold.decodeItemByteFoldFacts args payloadStart payloadStart payloadStart rest",
+          "conclusion_sha256": "7f3c82fe706233585965766ecdc5edd627775d042501568934ba04e689fb977d"
+        }
+      ],
+      "groups": {
+        "given_up": 0,
+        "goals": 11,
+        "shelf": 0,
+        "stack": 0
+      },
+      "compiler": null,
+      "fallback_wrapper_seconds": null,
+      "total_transaction_seconds": 22.344138682004996,
+      "mcp_scope_peak_bytes": 1262485504,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": "not run with pending native goals",
+      "method": "MCP",
+      "budget": null,
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6a24Backedge",
+      "source_pc": "0x800d6a24",
+      "target_pc": "0x800d6a24",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "source": {
+        "sha256": "0bb70cb740ea36f4d89a9a2e1cc963006b306c87adf12a365ae239d1177b9647",
+        "archive_path": "/home/cody/zesislar-archive/sha256/0b/0bb70cb740ea36f4d89a9a2e1cc963006b306c87adf12a365ae239d1177b9647",
+        "bytes": 1551
+      },
+      "result": {
+        "sha256": "47d1b5fa36c4ddbcbe9f72fa0f2fc05db2556e60695eb2d7c1f5089eb9bdaec4",
+        "archive_path": "/home/cody/zesislar-archive/sha256/47/47d1b5fa36c4ddbcbe9f72fa0f2fc05db2556e60695eb2d7c1f5089eb9bdaec4",
+        "bytes": 536018
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "loop-handoff-bound",
+      "first_goal": "(payloadStart < n)",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "(payloadStart < n)",
+          "conclusion_sha256": "ae7d32ae4932331de4f2096abb25e0185d0ea1537574dec2493dcc9f57dedb29"
+        },
+        {
+          "index": 1,
+          "head": "(decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)",
+          "conclusion_sha256": "e83394c0e3885f528ee6644818fd88a77cd05d28754263877389a6930f2933a7"
+        },
+        {
+          "index": 2,
+          "head": "(DecodeItemBranchEntries.decodeItemSavedFrameFacts args rest)",
+          "conclusion_sha256": "f69768f050e7c5e8706c43d2f7b152a07eb67dfc153efae4198de2fcc75b77ec"
+        },
+        {
+          "index": 3,
+          "head": "(DecodeItemReturnFacts.decodeItemFoldProvenance args false inputPrefix rest n payloadStart rest)",
+          "conclusion_sha256": "5353cc9f85909288a091d185c502213109de7446dea70759bad44b2cb4417f32"
+        },
+        {
+          "index": 4,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 5,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 6,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 7,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 8,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 9,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)) \u226a 8) 0 = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat payloadStart) rest)))",
+          "conclusion_sha256": "94785fb8feeedc78406e7d9223a789d3a4b51f8911e1e1106e5533aa069f0e7b"
+        },
+        {
+          "index": 10,
+          "head": "((Z_to_bv 64 (payloadStart + i) + 1)%bv = Z_to_bv 64 (payloadStart + payloadStart))",
+          "conclusion_sha256": "2619cb86f33f8f95628257038f88aca641f5f96c77ba05f72d59cc9f19c38065"
+        },
+        {
+          "index": 11,
+          "head": "(0%bv = b3)",
+          "conclusion_sha256": "91c1ce3dc821ea96918fbf3e8ba6ccce0e399b1f28c2363e21b297307b95681f"
+        },
+        {
+          "index": 12,
+          "head": "(frameBytes = rest)",
+          "conclusion_sha256": "2d25db604ed9e4ebda7d95e73ecca4cf1908305f035dadc4cefa0e4045c5274d"
+        },
+        {
+          "index": 13,
+          "head": "(\u2203 (hd : bv 8) (tl : list (bv 8)), rest = hd :: tl \u2227 length tl = 15%nat)",
+          "conclusion_sha256": "553b7dc648fa185384f053f95f58b90be9fee64e7af6eba8bd429a7ab56c2a96"
+        },
+        {
+          "index": 14,
+          "head": "(RlpDecodeItemByteFold.decodeItemByteFoldFacts args n payloadStart payloadStart rest)",
+          "conclusion_sha256": "41ad7dee5fcf2e908e6073423e974d5d299d161c1fe5b58e65b150dfcce86a7c"
+        },
+        {
+          "index": 15,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemOutputPointer args) + 32)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 64%N",
+          "conclusion_sha256": "954299de58eeed0cd38f8e723341fdb348d619c6723b47eea1cfb04eadeb34d8"
+        },
+        {
+          "index": 16,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 17,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 18,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemOutputPointer args) + 32)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 16%N",
+          "conclusion_sha256": "7c95298a5108ccad74f13cc9545a6bcc3bf07d78b8e543c7685d570a3295dcfa"
+        },
+        {
+          "index": 19,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 20,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 21,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 22,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 23,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 24,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 25,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        }
+      ],
+      "groups": {
+        "goals": 26,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3211011,
+        "elapsed_seconds": 1332.1402248999802,
+        "cpu_seconds": 1325.3868870000001,
+        "peak_rss_kib": 2952668,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 2400,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 1333.0911336999852,
+      "total_transaction_seconds": 1395.8717907289974,
+      "mcp_scope_peak_bytes": 1482498048,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6a24",
+        "optimization_debt": "issue#10"
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ac4From6ab4",
+      "source_pc": "0x800d6ab4",
+      "target_pc": "0x800d6ac4",
+      "statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "source": {
+        "sha256": "d34de06075c9598271c34ed89709edabf7274ca370b467340d43259eb431bd10",
+        "archive_path": "/home/cody/zesislar-archive/sha256/d3/d34de06075c9598271c34ed89709edabf7274ca370b467340d43259eb431bd10",
+        "bytes": 1585
+      },
+      "result": {
+        "sha256": "6890040cce55022077c2c0d89cea6529fd4c95b97da9fe0d14df8555040ca7b8",
+        "archive_path": "/home/cody/zesislar-archive/sha256/68/6890040cce55022077c2c0d89cea6529fd4c95b97da9fe0d14df8555040ca7b8",
+        "bytes": 158487
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "successor-witness-bound",
+      "first_goal": "payloadStart < payloadStart",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "payloadStart < payloadStart",
+          "conclusion_sha256": "4032bf27ddb89dc0eb949a9602e476cae7e9a29b59cc85120d5b88e2383f4ec3"
+        },
+        {
+          "index": 1,
+          "head": "DecodeItemBranchEntries.decodeItemSavedFrameFacts args rest",
+          "conclusion_sha256": "de1c0dd0cd5b8cd3ebc217693278070341f6357e1028dfd687175b5d153e031d"
+        },
+        {
+          "index": 2,
+          "head": "DecodeItemReturnFacts.decodeItemFoldProvenance args true inputPrefix rest payloadStart payloadStart rest",
+          "conclusion_sha256": "610f584cf07f52f6fe3421878072ab89ab6f7fbc9d430310f96d899febec0944"
+        },
+        {
+          "index": 3,
+          "head": "(Z_to_bv 64 (decodeItemInputPointer args) + (Z_to_bv 64 n + 1))%bv = Z_to_bv 64 (payloadStart + payloadStart)",
+          "conclusion_sha256": "7cdabb63b434c963795f7a57ae2bf649d09a9a6c8c1ca0e9e7daa20d9f9c378a"
+        },
+        {
+          "index": 4,
+          "head": "0%bv = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat payloadStart) rest))",
+          "conclusion_sha256": "80d42e7726eec268030e025d381baa5b5c9c6caf2fa6cbe40d7381da9234065b"
+        },
+        {
+          "index": 5,
+          "head": "(Z_to_bv 64 n + 1)%bv = Z_to_bv 64 (payloadStart + 1)",
+          "conclusion_sha256": "355a7f0d226b5b5fd008509b53563eaed275dc4cb45eb36e94ed20e1e441d0fb"
+        },
+        {
+          "index": 6,
+          "head": "(Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv = Z_to_bv 64 (payloadStart + payloadStart)",
+          "conclusion_sha256": "dc8f0d0dfae5b95b20a67b25ae97f70a1d2912482c83c9e28c8091b39cfc77dd"
+        },
+        {
+          "index": 7,
+          "head": "loaded = b2",
+          "conclusion_sha256": "3a865c5788dd34ab929dc245d0a42ea6eec8ca2cfba754cd1643f167d871f3a0"
+        },
+        {
+          "index": 8,
+          "head": "frameBytes = rest",
+          "conclusion_sha256": "33f48b370d19899376fa9effa3a30dac9ec55f99c93effc9344a8cf19e3ac157"
+        },
+        {
+          "index": 9,
+          "head": "\u2203 (hd : bv 8) (tl : list (bv 8)), rest = hd :: tl \u2227 length tl = 15%nat",
+          "conclusion_sha256": "ad553b3136a6bbb52ec46ccedf2cced9b802df8b8a0f77eaebb6a004bb969e24"
+        },
+        {
+          "index": 10,
+          "head": "RlpDecodeItemByteFold.decodeItemByteFoldFacts args payloadStart payloadStart payloadStart rest",
+          "conclusion_sha256": "7f3c82fe706233585965766ecdc5edd627775d042501568934ba04e689fb977d"
+        }
+      ],
+      "groups": {
+        "given_up": 0,
+        "goals": 11,
+        "shelf": 0,
+        "stack": 0
+      },
+      "compiler": null,
+      "fallback_wrapper_seconds": null,
+      "total_transaction_seconds": 20.336557346046902,
+      "mcp_scope_peak_bytes": 1262628864,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": "not run with pending native goals",
+      "method": "MCP",
+      "budget": null,
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ac4Backedge",
+      "source_pc": "0x800d6ac4",
+      "target_pc": "0x800d6ac4",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "source": {
+        "sha256": "01e67d986902f6a166e9a9b76b02693df7ac3a28fcd4e00f2d0989dbbb209b76",
+        "archive_path": "/home/cody/zesislar-archive/sha256/01/01e67d986902f6a166e9a9b76b02693df7ac3a28fcd4e00f2d0989dbbb209b76",
+        "bytes": 1551
+      },
+      "result": {
+        "sha256": "51de4d094d830fd32df6998e21adcc63892e9d223a97a226b960c5916b8ab7a4",
+        "archive_path": "/home/cody/zesislar-archive/sha256/51/51de4d094d830fd32df6998e21adcc63892e9d223a97a226b960c5916b8ab7a4",
+        "bytes": 535949
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "loop-handoff-bound",
+      "first_goal": "(payloadStart < n)",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "(payloadStart < n)",
+          "conclusion_sha256": "ae7d32ae4932331de4f2096abb25e0185d0ea1537574dec2493dcc9f57dedb29"
+        },
+        {
+          "index": 1,
+          "head": "(decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)",
+          "conclusion_sha256": "e83394c0e3885f528ee6644818fd88a77cd05d28754263877389a6930f2933a7"
+        },
+        {
+          "index": 2,
+          "head": "(DecodeItemBranchEntries.decodeItemSavedFrameFacts args rest)",
+          "conclusion_sha256": "f69768f050e7c5e8706c43d2f7b152a07eb67dfc153efae4198de2fcc75b77ec"
+        },
+        {
+          "index": 3,
+          "head": "(DecodeItemReturnFacts.decodeItemFoldProvenance args true inputPrefix rest n payloadStart rest)",
+          "conclusion_sha256": "8e26da1c8b82aa0f0f1140c5afb5cbf2c9400ac5b0abfa8313ff1ba5f499db97"
+        },
+        {
+          "index": 4,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 5,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 6,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 7,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 8,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 9,
+          "head": "(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)) \u226a 8) 0 = Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat payloadStart) rest)))",
+          "conclusion_sha256": "94785fb8feeedc78406e7d9223a789d3a4b51f8911e1e1106e5533aa069f0e7b"
+        },
+        {
+          "index": 10,
+          "head": "((Z_to_bv 64 (payloadStart + i) + 1)%bv = Z_to_bv 64 (payloadStart + payloadStart))",
+          "conclusion_sha256": "2619cb86f33f8f95628257038f88aca641f5f96c77ba05f72d59cc9f19c38065"
+        },
+        {
+          "index": 11,
+          "head": "(0%bv = b3)",
+          "conclusion_sha256": "91c1ce3dc821ea96918fbf3e8ba6ccce0e399b1f28c2363e21b297307b95681f"
+        },
+        {
+          "index": 12,
+          "head": "(frameBytes = rest)",
+          "conclusion_sha256": "2d25db604ed9e4ebda7d95e73ecca4cf1908305f035dadc4cefa0e4045c5274d"
+        },
+        {
+          "index": 13,
+          "head": "(\u2203 (hd : bv 8) (tl : list (bv 8)), rest = hd :: tl \u2227 length tl = 15%nat)",
+          "conclusion_sha256": "553b7dc648fa185384f053f95f58b90be9fee64e7af6eba8bd429a7ab56c2a96"
+        },
+        {
+          "index": 14,
+          "head": "(RlpDecodeItemByteFold.decodeItemByteFoldFacts args n payloadStart payloadStart rest)",
+          "conclusion_sha256": "41ad7dee5fcf2e908e6073423e974d5d299d161c1fe5b58e65b150dfcce86a7c"
+        },
+        {
+          "index": 15,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemOutputPointer args) + 32)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 16%N",
+          "conclusion_sha256": "7c95298a5108ccad74f13cc9545a6bcc3bf07d78b8e543c7685d570a3295dcfa"
+        },
+        {
+          "index": 16,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 17,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 18,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemOutputPointer args) + 32)))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' _ => (\u231cn' = 64%N",
+          "conclusion_sha256": "954299de58eeed0cd38f8e723341fdb348d619c6723b47eea1cfb04eadeb34d8"
+        },
+        {
+          "index": 19,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 20,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n6)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "d6eae46c85f9805e30ffa804077edfbfc984ce42a2aa61ae21eba9b99a5650bd"
+        },
+        {
+          "index": 21,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 22,
+          "head": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (payloadStart + i))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_re",
+          "conclusion_sha256": "a04713c4b9bf645b1d79d5d8a8ad81c037fab5de0922f62e43031971ef426e49"
+        },
+        {
+          "index": 23,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 24,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        },
+        {
+          "index": 25,
+          "head": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n2)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' ",
+          "conclusion_sha256": "0dc5c4dac1be5588ed0cfc7f863072566ec269d9d8f514afdd5eead8d0a78e5e"
+        }
+      ],
+      "groups": {
+        "goals": 26,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3210936,
+        "elapsed_seconds": 1495.7186308590462,
+        "cpu_seconds": 1487.745819,
+        "peak_rss_kib": 2938284,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 2400,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 1496.6996205110336,
+      "total_transaction_seconds": 1559.4810663170647,
+      "mcp_scope_peak_bytes": 1488322560,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6ac4",
+        "optimization_debt": "issue#10"
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6970",
+      "source_pc": "0x800d6960",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "b9e41c14b74359819751ffb1f792326381a08e7c60bd136105ee0b5271d60e8d",
+      "source": {
+        "sha256": "08cdab5abd4a47cd57ac4506af38dd9ff9ccf6cf04f14672a6adbbe52893bb07",
+        "archive_path": "/home/cody/zesislar-archive/sha256/08/08cdab5abd4a47cd57ac4506af38dd9ff9ccf6cf04f14672a6adbbe52893bb07",
+        "bytes": 1362
+      },
+      "result": {
+        "sha256": "15ed3608c1848a997271b279eef087e1d7075cedc9fa21f8204e104381ffc0c6",
+        "archive_path": "/home/cody/zesislar-archive/sha256/15/15ed3608c1848a997271b279eef087e1d7075cedc9fa21f8204e104381ffc0c6",
+        "bytes": 7572
+      },
+      "scope": "named join obligation",
+      "outcome": "cpu-limit",
+      "residual_class": "cpu-limit",
+      "first_goal": null,
+      "debt_summaries": [],
+      "groups": {
+        "goals": null,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3210945,
+        "elapsed_seconds": 1205.9334211270325,
+        "cpu_seconds": 1199.7305020000001,
+        "peak_rss_kib": 2506288,
+        "exit_code": -9,
+        "limit": "cpu",
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 1200,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 1206.7959365639836,
+      "total_transaction_seconds": 1269.5689079290023,
+      "mcp_scope_peak_bytes": 1697603584,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From69e0",
+      "source_pc": "0x800d69e0",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "source": {
+        "sha256": "ed76da9ee5b73a2378527670ebf5527be99e2b93dbfae7c98185faa0b3063a7d",
+        "archive_path": "/home/cody/zesislar-archive/sha256/ed/ed76da9ee5b73a2378527670ebf5527be99e2b93dbfae7c98185faa0b3063a7d",
+        "bytes": 1503
+      },
+      "result": {
+        "sha256": "4811421416fa61b93ff582156a916d84f16105ad0d13102ce300984a222ec4a1",
+        "archive_path": "/home/cody/zesislar-archive/sha256/48/4811421416fa61b93ff582156a916d84f16105ad0d13102ce300984a222ec4a1",
+        "bytes": 26589
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "return-facts",
+      "first_goal": "DecodeItemReturnFacts.decodeItemRejectedFacts args",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "DecodeItemReturnFacts.decodeItemRejectedFacts args",
+          "conclusion_sha256": "d3f708128ad50eb0ea024a2ce1a9df26ab33c0d618e2caccf671a4a85d1915af"
+        }
+      ],
+      "groups": {
+        "given_up": 0,
+        "goals": 1,
+        "shelf": 0,
+        "stack": 0
+      },
+      "compiler": null,
+      "fallback_wrapper_seconds": null,
+      "total_transaction_seconds": 33.89564909203909,
+      "mcp_scope_peak_bytes": 1367371776,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": "not run with pending native goals",
+      "method": "MCP",
+      "budget": null,
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6a08",
+      "source_pc": "0x800d6a08",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "5ffa808d7f5a94ace32b4e0c9d8f74597089784733e3e18aa286c372f991d10b",
+      "source": {
+        "sha256": "c918d7c91f4de437ac4aaae3c97658bdb357f083db0306ed8981cb022cafbf35",
+        "archive_path": "/home/cody/zesislar-archive/sha256/c9/c918d7c91f4de437ac4aaae3c97658bdb357f083db0306ed8981cb022cafbf35",
+        "bytes": 1487
+      },
+      "result": {
+        "sha256": "a1327f75a17cda110d246b92df5509606d4b49950d66ec65c4ba3a38b5e8b469",
+        "archive_path": "/home/cody/zesislar-archive/sha256/a1/a1327f75a17cda110d246b92df5509606d4b49950d66ec65c4ba3a38b5e8b469",
+        "bytes": 7567
+      },
+      "scope": "named join obligation",
+      "outcome": "cpu-limit",
+      "residual_class": "cpu-limit",
+      "first_goal": null,
+      "debt_summaries": [],
+      "groups": {
+        "goals": null,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3219410,
+        "elapsed_seconds": 1205.865587934968,
+        "cpu_seconds": 1199.7460620000002,
+        "peak_rss_kib": 2321720,
+        "exit_code": -9,
+        "limit": "cpu",
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 1200,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 1206.7585120670265,
+      "total_transaction_seconds": 1268.568406626,
+      "mcp_scope_peak_bytes": 1297747968,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6a38",
+      "source_pc": "0x800d6a38",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "source": {
+        "sha256": "6a643a0e00b83596fc258320e3d07d6abd96f271a4ebe88279cf119192f363f5",
+        "archive_path": "/home/cody/zesislar-archive/sha256/6a/6a643a0e00b83596fc258320e3d07d6abd96f271a4ebe88279cf119192f363f5",
+        "bytes": 1547
+      },
+      "result": {
+        "sha256": "2420a42aae7d03bc5713af779d63fdd149449d3966b67251561a2a3e6d2e08be",
+        "archive_path": "/home/cody/zesislar-archive/sha256/24/2420a42aae7d03bc5713af779d63fdd149449d3966b67251561a2a3e6d2e08be",
+        "bytes": 214335
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "primitive-witness",
+      "first_goal": "nat",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "nat",
+          "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523"
+        },
+        {
+          "index": 1,
+          "head": "(list (reg_kind * valu_shape))",
+          "conclusion_sha256": "47b7ee4af9a81032d5a92fb439faf7b336071872eff0b174cc4a0623fe561935"
+        },
+        {
+          "index": 2,
+          "head": "(DecodeItemReturnFacts.decodeItemRejectedFacts args)",
+          "conclusion_sha256": "d2880a22e542bb39297c6745e6349db2a6acde61f0797615f2fb3e4683100d68"
+        },
+        {
+          "index": 3,
+          "head": "(?Goal@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 64 b1; H15:=bv_unsigned_in_range_alt 64 n1; H16:=bv_signed_in_range 64 n1; H17:=bv_unsigned_in_range_alt 64 b0;",
+          "conclusion_sha256": "64917a0f1bf16f73054308a1d7fc0bd4fa1d2358948c2b45ace20359edee0aa3"
+        },
+        {
+          "index": 4,
+          "head": "(?Goal@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 64 b1; H15:=bv_unsigned_in_range_alt 64 n1; H16:=bv_signed_in_range 64 n1; H17:=bv_unsigned_in_range_alt 64 b0;",
+          "conclusion_sha256": "f9255a922d91402b7e0bacfb31aead4d6b779a8bba890856d54379b5e4793527"
+        },
+        {
+          "index": 5,
+          "head": "(FindHypEqual (FICRegMapstoSemantic \"rv_enable_pmp\")\n   (decodeItemOutputPointer args\n    \u21a6\u2098\u2217 (take\n           ?Goal@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 6",
+          "conclusion_sha256": "151e3918b2f1934e996d8c7d09511dbf363120a854c0614cf93db0c92208704b"
+        },
+        {
+          "index": 6,
+          "head": "(li_tactic\n   (regcol_compute_hint (regcol_lookup (KindReg \"rv_enable_pmp\"))\n      ?Goal0@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 64 b1; H15:=bv_unsigned_in_r",
+          "conclusion_sha256": "53b9bfd2b088efec8954d49bda18d9a111c85c82bcc698d2dcf6ee91488fc2a6"
+        }
+      ],
+      "groups": {
+        "goals": 7,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3230029,
+        "elapsed_seconds": 120.99664249399211,
+        "cpu_seconds": 120.234369,
+        "peak_rss_kib": 1987480,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 1200,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 122.37270584900398,
+      "total_transaction_seconds": 185.37018284806982,
+      "mcp_scope_peak_bytes": 1345703936,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6a6c",
+      "source_pc": "0x800d6a6c",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "38cd7dbcf951f6e7431a555afb219d92884e399b5cfba5cbdb5220fba0064ca8",
+      "source": {
+        "sha256": "af9e9c785ac0e0caea1105137becc8c6f240236e42f54c994a24fbd4aaaca77b",
+        "archive_path": "/home/cody/zesislar-archive/sha256/af/af9e9c785ac0e0caea1105137becc8c6f240236e42f54c994a24fbd4aaaca77b",
+        "bytes": 1487
+      },
+      "result": {
+        "sha256": "6fbc6d6cb8f9e19824960fe942d4be0b76bb8df76e06acc37132dc9446e63d89",
+        "archive_path": "/home/cody/zesislar-archive/sha256/6f/6fbc6d6cb8f9e19824960fe942d4be0b76bb8df76e06acc37132dc9446e63d89",
+        "bytes": 221021
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "primitive-witness",
+      "first_goal": "nat",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "nat",
+          "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523"
+        },
+        {
+          "index": 1,
+          "head": "(list (reg_kind * valu_shape))",
+          "conclusion_sha256": "47b7ee4af9a81032d5a92fb439faf7b336071872eff0b174cc4a0623fe561935"
+        },
+        {
+          "index": 2,
+          "head": "(DecodeItemReturnFacts.decodeItemRejectedFacts args)",
+          "conclusion_sha256": "d2880a22e542bb39297c6745e6349db2a6acde61f0797615f2fb3e4683100d68"
+        },
+        {
+          "index": 3,
+          "head": "(?Goal@{H17:=bv_unsigned_in_range_alt 64 b3; H18:=bv_signed_in_range 64 b3; H19:=bv_unsigned_in_range_alt 64 n0; H20:=bv_signed_in_range 64 n0; H21:=bv_unsigned_in_range_alt 64 b2;",
+          "conclusion_sha256": "77322d9e21858541f5fb9a8f4a973491754d66f58eee0796a79cd3e7142ccb29"
+        },
+        {
+          "index": 4,
+          "head": "(?Goal@{H17:=bv_unsigned_in_range_alt 64 b3; H18:=bv_signed_in_range 64 b3; H19:=bv_unsigned_in_range_alt 64 n0; H20:=bv_signed_in_range 64 n0; H21:=bv_unsigned_in_range_alt 64 b2;",
+          "conclusion_sha256": "3dfbb4441fa32a0c4e25217c6c34fbd36b93912dd1d8779e3618693cb16b9d68"
+        },
+        {
+          "index": 5,
+          "head": "(FindHypEqual (FICStructRegMapstoSemantic \"mstatus\" \"bits\")\n   (decodeItemOutputPointer args\n    \u21a6\u2098\u2217 (take\n           ?Goal@{H17:=bv_unsigned_in_range_alt 64 b3; H18:=bv_signed_in_",
+          "conclusion_sha256": "5f979faddefb9e2ad56753d0c31834c700ccb1d184e7d0e0f2a51ecdbe695b66"
+        },
+        {
+          "index": 6,
+          "head": "(li_tactic\n   (regcol_compute_hint (regcol_lookup_field \"mstatus\" \"bits\")\n      ?Goal0@{H17:=bv_unsigned_in_range_alt 64 b3; H18:=bv_signed_in_range 64 b3; H19:=bv_unsigned_in_rang",
+          "conclusion_sha256": "5170a516dd8b0f4a5f5010335503db1cd7356f9149f1a246afbe336fc7685aca"
+        }
+      ],
+      "groups": {
+        "goals": 7,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3234841,
+        "elapsed_seconds": 288.424458618043,
+        "cpu_seconds": 286.817703,
+        "peak_rss_kib": 1996172,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 1200,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 290.2168515830999,
+      "total_transaction_seconds": 352.39501531003043,
+      "mcp_scope_peak_bytes": 1293348864,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6aa8",
+      "source_pc": "0x800d6aa8",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "d8ba332f2867563f9c395c24597238d38841cf83ed88feab6990efeab80cb7af",
+      "source": {
+        "sha256": "c2c182ce43129f7c1b4ae2c596e0ff8b7b9ff67725990433a1b859d2dd73d5bd",
+        "archive_path": "/home/cody/zesislar-archive/sha256/c2/c2c182ce43129f7c1b4ae2c596e0ff8b7b9ff67725990433a1b859d2dd73d5bd",
+        "bytes": 1487
+      },
+      "result": {
+        "sha256": "96bcf2e3cd8f604f548e156947a41e665e230d207778991a36608d69ca254846",
+        "archive_path": "/home/cody/zesislar-archive/sha256/96/96bcf2e3cd8f604f548e156947a41e665e230d207778991a36608d69ca254846",
+        "bytes": 7572
+      },
+      "scope": "named join obligation",
+      "outcome": "cpu-limit",
+      "residual_class": "cpu-limit",
+      "first_goal": null,
+      "debt_summaries": [],
+      "groups": {
+        "goals": null,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3237472,
+        "elapsed_seconds": 1205.8901909429114,
+        "cpu_seconds": 1199.7275730000001,
+        "peak_rss_kib": 2323888,
+        "exit_code": -9,
+        "limit": "cpu",
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 1200,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 1207.6347098599654,
+      "total_transaction_seconds": 1270.7727661100216,
+      "mcp_scope_peak_bytes": 1289969664,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "capture_error": null
+    },
+    {
+      "edge": "decodeItemJoin6ae0From6ad8",
+      "source_pc": "0x800d6ad8",
+      "target_pc": "0x800d6ae0",
+      "statement_sha256": "14e43a64fcd03e0afba600442d0583dc5d94b877bde8f1b5f56df77f92b87f38",
+      "source": {
+        "sha256": "45a557a15fd28c4fdfd782162aeaa46fdc42e9564e5b1e3ce730362f64334362",
+        "archive_path": "/home/cody/zesislar-archive/sha256/45/45a557a15fd28c4fdfd782162aeaa46fdc42e9564e5b1e3ce730362f64334362",
+        "bytes": 1547
+      },
+      "result": {
+        "sha256": "7bedce9cff2243cff897fe7f65cef6a14550aeeb77b9743c701d6757c8b431f6",
+        "archive_path": "/home/cody/zesislar-archive/sha256/7b/7bedce9cff2243cff897fe7f65cef6a14550aeeb77b9743c701d6757c8b431f6",
+        "bytes": 218100
+      },
+      "scope": "named join obligation",
+      "outcome": "residual",
+      "residual_class": "primitive-witness",
+      "first_goal": "nat",
+      "debt_summaries": [
+        {
+          "index": 0,
+          "head": "nat",
+          "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523"
+        },
+        {
+          "index": 1,
+          "head": "(list (reg_kind * valu_shape))",
+          "conclusion_sha256": "47b7ee4af9a81032d5a92fb439faf7b336071872eff0b174cc4a0623fe561935"
+        },
+        {
+          "index": 2,
+          "head": "(?Goal@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 64 b1; H15:=bv_unsigned_in_range_alt 64 n1; H16:=bv_signed_in_range 64 n1; H17:=bv_unsigned_in_range_alt 64 b0;",
+          "conclusion_sha256": "64917a0f1bf16f73054308a1d7fc0bd4fa1d2358948c2b45ace20359edee0aa3"
+        },
+        {
+          "index": 3,
+          "head": "(?Goal@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 64 b1; H15:=bv_unsigned_in_range_alt 64 n1; H16:=bv_signed_in_range 64 n1; H17:=bv_unsigned_in_range_alt 64 b0;",
+          "conclusion_sha256": "f9255a922d91402b7e0bacfb31aead4d6b779a8bba890856d54379b5e4793527"
+        },
+        {
+          "index": 4,
+          "head": "(FindHypEqual (FICStructRegMapstoSemantic \"mstatus\" \"bits\")\n   (decodeItemOutputPointer args\n    \u21a6\u2098\u2217 (take\n           ?Goal@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_",
+          "conclusion_sha256": "3243583eedf4ae005075ce40ed68cebd57d31235370a60abf509d6c0be15986a"
+        },
+        {
+          "index": 5,
+          "head": "(DecodeItemReturnFacts.decodeItemRejectedFacts args)",
+          "conclusion_sha256": "d2880a22e542bb39297c6745e6349db2a6acde61f0797615f2fb3e4683100d68"
+        },
+        {
+          "index": 6,
+          "head": "(li_tactic\n   (regcol_compute_hint (regcol_lookup_field \"mstatus\" \"bits\")\n      ?Goal0@{H13:=bv_unsigned_in_range_alt 64 b1; H14:=bv_signed_in_range 64 b1; H15:=bv_unsigned_in_rang",
+          "conclusion_sha256": "b1cc4c3e98c298fa59d8f986b0b94dc12011b8a00aa53aa82c5805638bf1d013"
+        }
+      ],
+      "groups": {
+        "goals": 7,
+        "stack": null,
+        "shelf": null,
+        "given_up": null
+      },
+      "compiler": {
+        "compiler_pid": 3244539,
+        "elapsed_seconds": 148.38474635302555,
+        "cpu_seconds": 147.6091,
+        "peak_rss_kib": 1987160,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "module_seconds": null,
+          "cpu_seconds": 1200,
+          "rss_kib": 6291456
+        },
+        "compiled_object": null
+      },
+      "fallback_wrapper_seconds": 150.1363681589719,
+      "total_transaction_seconds": 213.29774132196326,
+      "mcp_scope_peak_bytes": 1367691264,
+      "adapter_closed": false,
+      "inherited_debts": {},
+      "assumptions_audit": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "method": "approved generic coqc fallback",
+      "budget": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "capture_error": null
+    }
+  ],
+  "native_bindings": {
+    "sha256": "bfc5d29ae9902f935342c264e41c025369815e9c1092ff71e32e84424eca4c29",
+    "archive_path": "/home/cody/zesislar-archive/sha256/bf/bfc5d29ae9902f935342c264e41c025369815e9c1092ff71e32e84424eca4c29",
+    "bytes": 227236
+  },
+  "post_run_check": {
+    "sha256": "a99afdffecfb4b416695883b427b86995b01b2bb2150d432bf294de9ed10bd96",
+    "archive_path": "/home/cody/zesislar-archive/sha256/a9/a99afdffecfb4b416695883b427b86995b01b2bb2150d432bf294de9ed10bd96",
+    "bytes": 59
+  },
+  "activation_evidence": {
+    "sha256": "d6070546008df97c19a4c8bed66efdd3a5941dfe6dec77ffe7a6b7341495a8e0",
+    "archive_path": "/home/cody/zesislar-archive/sha256/d6/d6070546008df97c19a4c8bed66efdd3a5941dfe6dec77ffe7a6b7341495a8e0",
+    "bytes": 15071
+  },
+  "completion_tooling": {
+    "sha256": "54439b8d40960f3ac14182e45d008adceb94156dae2b902a2ff3f8273d5b0070",
+    "archive_path": "/home/cody/zesislar-archive/sha256/54/54439b8d40960f3ac14182e45d008adceb94156dae2b902a2ff3f8273d5b0070",
+    "bytes": 687
+  },
+  "archive_inventory_sha256": "e0604a69af529bb7d888e60e42d96da30204245f5849758e2ad938d813cc78af",
+  "workers_max": 6,
+  "limits": [
+    "Five MCP primaries retain complete active, stack, shelf, and given_up groups.",
+    "Five completed coqc primaries retain printed active goals; other groups are unavailable.",
+    "Three coqc primaries reach CPU1200 with no final goal groups.",
+    "Compiler CPU and wall measurements are separate from total transactions and wrappers.",
+    "Exact admission duration remains unavailable.",
+    "Only source-entry loop backedges6a24/6ac4 use CPU2400. No adapter starts at698c; no memory exception is used.",
+    "This exact root includes I14. The prior019 pass is a separate measurement with different inputs and limits. This report claims no sole-rule effect.",
+    "No hand-proof oracle, diagnostic stop, execution evidence, or added premise enters an adapter."
+  ],
+  "manual_native_handoff_growth": 0,
+  "gate": {
+    "status": "passed",
+    "wall_seconds": 65,
+    "wall_measurement": "Parent exit-watcher report",
+    "jobs": 6,
+    "source_root": "5d4da22f35c470ec3bef3561aac53a28af2e7e8b",
+    "log_sha256": "27931ebb1b16155a4ab7f049c7e69a0f1d5c133c9df00a60fd44796e0b679b2d",
+    "log_archive": "/home/cody/zesislar-archive/sha256/27/27931ebb1b16155a4ab7f049c7e69a0f1d5c133c9df00a60fd44796e0b679b2d",
+    "check_iris": "not run; coordinator owns the gate"
+  },
+  "item_start": "2026-10-05T22:52:34.877735Z"
+}
