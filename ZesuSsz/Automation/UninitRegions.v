@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
+Require Import ZesuSsz.Automation.ByteArrayLengths.
 
 (* Reject unrelated regions without expanding the caller's validity predicates.
    The upstream rules and their resource continuations remain unchanged. *)
@@ -11,7 +12,7 @@ Ltac zesu_nat_literal number :=
   | S ?rest => zesu_nat_literal rest
   end.
 
-Ltac zesu_region_bounds :=
+Ltac zesu_region_bounds_legacy :=
   cbv [mapRamBase mapRamSize machineRamEnd defaultMap] in *;
   repeat lazymatch goal with
   | |- context [length (take ?count ?values)] =>
@@ -38,6 +39,13 @@ Ltac zesu_region_bounds :=
       end
     end;
     bv_solve].
+
+Ltac zesu_region_bounds :=
+  first [
+    zesu_byte_array_bound_goal_if_enabled;
+    first [solve [lia] |
+      zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
+  | zesu_region_bounds_legacy].
 
 Global Hint Extern 0 (ZesuRegionBounds ?P) =>
   (change P; zesu_region_bounds) : typeclass_instances.
