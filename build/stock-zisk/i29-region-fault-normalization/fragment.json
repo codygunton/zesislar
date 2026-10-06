@@ -1,0 +1,17 @@
+{
+  "item": "I29-region-fault-normalization",
+  "generated_artifacts": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/build/stock-zisk/i29-region-fault-normalization/REPORT.json",
+      "sha256": "06e3546e86a2cb8b9ca88171f2fd4d4600614838049837c6305ecd2383fd95d8",
+      "archive": "/home/cody/zesislar-archive/sha256/06/06e3546e86a2cb8b9ca88171f2fd4d4600614838049837c6305ecd2383fd95d8",
+      "bytes": 19821
+    }
+  ],
+  "evidence_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/archive-index.json",
+    "sha256": "db0afef2a6ee5514c31b80767dab9f8864c5a0a737afb9cbff4aff506c3e2526",
+    "archive": "/home/cody/zesislar-archive/sha256/db/db0afef2a6ee5514c31b80767dab9f8864c5a0a737afb9cbff4aff506c3e2526",
+    "bytes": 36849
+  }
+}
