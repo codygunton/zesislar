@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "root": "cb0b9a95224090758affe51c0263dbec8a63a649",
+  "item": "I25-bridge-first-ordering",
+  "scope": "evidence only; candidate remains unlanded",
+  "results": [
+    {
+      "site": "0x800d6a08",
+      "arm": "OFF",
+      "outcome": "native-residual",
+      "active_count": 5,
+      "cpu_s": 20.538512,
+      "compiler_wall_s": 20.627845810027793,
+      "peak_rss_kib": 1240208,
+      "wrapper_wall_s": 22.51534954609815,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "original_source_sha256": "301b618260e8520f209ca82badbdfe2edc25661e707b88de7c0463e2e350f5c1",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6a08/Boundary.v",
+        "sha256": "ef36da6e76b07d26a948ee300fb825dfc627731f4805c027eac856e082bf262c",
+        "archive": "/home/cody/zesislar-archive/sha256/ef/ef36da6e76b07d26a948ee300fb825dfc627731f4805c027eac856e082bf262c"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6a08/compiler.log",
+        "sha256": "36a59bacafb430c78bbd6319092e7a290590d38d48c42c1c9e5236a7e3f3b26e",
+        "archive": "/home/cody/zesislar-archive/sha256/36/36a59bacafb430c78bbd6319092e7a290590d38d48c42c1c9e5236a7e3f3b26e"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6a08-report.json",
+        "sha256": "9d26b9f7b9d8b90504570f0f775b2ed39dace5592ece8cba32a74ade5589c2a8",
+        "archive": "/home/cody/zesislar-archive/sha256/9d/9d26b9f7b9d8b90504570f0f775b2ed39dace5592ece8cba32a74ade5589c2a8"
+      },
+      "residual_class": "unresolved-slice-witness-and-ownership",
+      "selected_values": "width/cursor unresolved; lengthBytes=rest",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6a08",
+      "arm": "ON",
+      "outcome": "native-residual",
+      "active_count": 5,
+      "cpu_s": 417.50765499999994,
+      "compiler_wall_s": 418.6776736379834,
+      "peak_rss_kib": 1291228,
+      "wrapper_wall_s": 420.1523267260054,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "original_source_sha256": "301b618260e8520f209ca82badbdfe2edc25661e707b88de7c0463e2e350f5c1",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6a08/Boundary.v",
+        "sha256": "ef36da6e76b07d26a948ee300fb825dfc627731f4805c027eac856e082bf262c",
+        "archive": "/home/cody/zesislar-archive/sha256/ef/ef36da6e76b07d26a948ee300fb825dfc627731f4805c027eac856e082bf262c"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6a08/compiler.log",
+        "sha256": "8539b1d0ab02ea5fd26b1ffad30a529bbf5c547f34a0b7213af97c9e239df0c2",
+        "archive": "/home/cody/zesislar-archive/sha256/85/8539b1d0ab02ea5fd26b1ffad30a529bbf5c547f34a0b7213af97c9e239df0c2"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6a08-report.json",
+        "sha256": "9d26b9f7b9d8b90504570f0f775b2ed39dace5592ece8cba32a74ade5589c2a8",
+        "archive": "/home/cody/zesislar-archive/sha256/9d/9d26b9f7b9d8b90504570f0f775b2ed39dace5592ece8cba32a74ade5589c2a8"
+      },
+      "residual_class": "unresolved-slice-witness-and-ownership",
+      "selected_values": "width/cursor unresolved; lengthBytes=rest",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6aa8",
+      "arm": "OFF",
+      "outcome": "native-residual",
+      "active_count": 5,
+      "cpu_s": 20.113747,
+      "compiler_wall_s": 20.2074504729826,
+      "peak_rss_kib": 1240180,
+      "wrapper_wall_s": 22.092108926037326,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "original_source_sha256": "150ca2b8e116a8b752c5cac4aabc24a7d24626bd1467e2f87e090cbc5e69474d",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6aa8/Boundary.v",
+        "sha256": "eb240cd8b34d1d5a47b1ae8e6a20b54eff77149f22814bcf98afdef928af6c47",
+        "archive": "/home/cody/zesislar-archive/sha256/eb/eb240cd8b34d1d5a47b1ae8e6a20b54eff77149f22814bcf98afdef928af6c47"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6aa8/compiler.log",
+        "sha256": "2151896d561bd58f066b07523d0de159a6a6e538b47999246223d428176dbfd7",
+        "archive": "/home/cody/zesislar-archive/sha256/21/2151896d561bd58f066b07523d0de159a6a6e538b47999246223d428176dbfd7"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6aa8-report.json",
+        "sha256": "5740a61d6651bbacba93efda80078cad3f2318d1717a0d0fe09310e91c80409e",
+        "archive": "/home/cody/zesislar-archive/sha256/57/5740a61d6651bbacba93efda80078cad3f2318d1717a0d0fe09310e91c80409e"
+      },
+      "residual_class": "unresolved-slice-witness-and-ownership",
+      "selected_values": "width/cursor unresolved; lengthBytes=rest",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6aa8",
+      "arm": "ON",
+      "outcome": "native-residual",
+      "active_count": 5,
+      "cpu_s": 420.383153,
+      "compiler_wall_s": 421.6078856419772,
+      "peak_rss_kib": 1285092,
+      "wrapper_wall_s": 423.34111877705436,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "original_source_sha256": "150ca2b8e116a8b752c5cac4aabc24a7d24626bd1467e2f87e090cbc5e69474d",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6aa8/Boundary.v",
+        "sha256": "eb240cd8b34d1d5a47b1ae8e6a20b54eff77149f22814bcf98afdef928af6c47",
+        "archive": "/home/cody/zesislar-archive/sha256/eb/eb240cd8b34d1d5a47b1ae8e6a20b54eff77149f22814bcf98afdef928af6c47"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6aa8/compiler.log",
+        "sha256": "22af2557af278943bfd4f79078c1de10b6e1e3a1b5fa0d2098bbf9120032e566",
+        "archive": "/home/cody/zesislar-archive/sha256/22/22af2557af278943bfd4f79078c1de10b6e1e3a1b5fa0d2098bbf9120032e566"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6aa8-report.json",
+        "sha256": "5740a61d6651bbacba93efda80078cad3f2318d1717a0d0fe09310e91c80409e",
+        "archive": "/home/cody/zesislar-archive/sha256/57/5740a61d6651bbacba93efda80078cad3f2318d1717a0d0fe09310e91c80409e"
+      },
+      "residual_class": "unresolved-slice-witness-and-ownership",
+      "selected_values": "width/cursor unresolved; lengthBytes=rest",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6a38",
+      "arm": "OFF",
+      "outcome": "native-residual",
+      "active_count": 1,
+      "cpu_s": 31.350605,
+      "compiler_wall_s": 31.48030623793602,
+      "peak_rss_kib": 1213308,
+      "wrapper_wall_s": 33.4329719520174,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "original_source_sha256": "cc8ec62741450ac71a5a453a33477a3da7822d440a6f1495082f7afbfa3df251",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6a38/Boundary.v",
+        "sha256": "d7ee98103262079cfe2e7e92aeebff0af1f60f274aea5cd415738e35c3585dca",
+        "archive": "/home/cody/zesislar-archive/sha256/d7/d7ee98103262079cfe2e7e92aeebff0af1f60f274aea5cd415738e35c3585dca"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6a38/compiler.log",
+        "sha256": "300007321a7124e162897170b65552a405bd2c456bbf80d2f86f647cb4784e0c",
+        "archive": "/home/cody/zesislar-archive/sha256/30/300007321a7124e162897170b65552a405bd2c456bbf80d2f86f647cb4784e0c"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6a38-report.json",
+        "sha256": "c88045c127a330a3f1036b517b4bcbd87c96663083e7645eef919bd3a6f45c09",
+        "archive": "/home/cody/zesislar-archive/sha256/c8/c88045c127a330a3f1036b517b4bcbd87c96663083e7645eef919bd3a6f45c09"
+      },
+      "residual_class": "wrong-header-and-payload-witness",
+      "selected_values": "headerLength=payloadStart; payloadLength=payloadStart",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6a38",
+      "arm": "ON",
+      "outcome": "native-residual",
+      "active_count": 1,
+      "cpu_s": 34.494129,
+      "compiler_wall_s": 34.65442982700188,
+      "peak_rss_kib": 1225624,
+      "wrapper_wall_s": 36.48214444005862,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "original_source_sha256": "cc8ec62741450ac71a5a453a33477a3da7822d440a6f1495082f7afbfa3df251",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6a38/Boundary.v",
+        "sha256": "d7ee98103262079cfe2e7e92aeebff0af1f60f274aea5cd415738e35c3585dca",
+        "archive": "/home/cody/zesislar-archive/sha256/d7/d7ee98103262079cfe2e7e92aeebff0af1f60f274aea5cd415738e35c3585dca"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6a38/compiler.log",
+        "sha256": "846b066acf46b1bdab3f332008f64919ada9f7850f3ef81600f4e8c807fd9527",
+        "archive": "/home/cody/zesislar-archive/sha256/84/846b066acf46b1bdab3f332008f64919ada9f7850f3ef81600f4e8c807fd9527"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6a38-report.json",
+        "sha256": "c88045c127a330a3f1036b517b4bcbd87c96663083e7645eef919bd3a6f45c09",
+        "archive": "/home/cody/zesislar-archive/sha256/c8/c88045c127a330a3f1036b517b4bcbd87c96663083e7645eef919bd3a6f45c09"
+      },
+      "residual_class": "wrong-header-and-payload-witness",
+      "selected_values": "headerLength=payloadStart; payloadLength=payloadStart",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6ad8",
+      "arm": "OFF",
+      "outcome": "native-residual",
+      "active_count": 1,
+      "cpu_s": 63.387144,
+      "compiler_wall_s": 63.664719440974295,
+      "peak_rss_kib": 1470524,
+      "wrapper_wall_s": 65.5312794779893,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "original_source_sha256": "7c8dc2b78fd177232d091cb9942d56721ecd030d583ffce9fec79fbaf1eb0310",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6ad8/Boundary.v",
+        "sha256": "03cb142e312c8c94bec959aa9a0476fe86bcd50f9cfc5437d21e25582b804837",
+        "archive": "/home/cody/zesislar-archive/sha256/03/03cb142e312c8c94bec959aa9a0476fe86bcd50f9cfc5437d21e25582b804837"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/OFF/block_0x800d6ad8/compiler.log",
+        "sha256": "cb8e3ebd7ddcbe181a94ade70ce7a7150de7b3f72d812b6dbe61ecc185a3017e",
+        "archive": "/home/cody/zesislar-archive/sha256/cb/cb8e3ebd7ddcbe181a94ade70ce7a7150de7b3f72d812b6dbe61ecc185a3017e"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6ad8-report.json",
+        "sha256": "1047cf29035d818f5d0ee554bfd0fbfc5efc0be0f48f73ee5a4b2a0000a0ddac",
+        "archive": "/home/cody/zesislar-archive/sha256/10/1047cf29035d818f5d0ee554bfd0fbfc5efc0be0f48f73ee5a4b2a0000a0ddac"
+      },
+      "residual_class": "wrong-header-and-payload-witness",
+      "selected_values": "headerLength=payloadStart; payloadLength=payloadStart",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    },
+    {
+      "site": "0x800d6ad8",
+      "arm": "ON",
+      "outcome": "native-residual",
+      "active_count": 1,
+      "cpu_s": 62.375235999999994,
+      "compiler_wall_s": 62.59508067497518,
+      "peak_rss_kib": 1469540,
+      "wrapper_wall_s": 64.22958833002485,
+      "guard_wait_s": null,
+      "compiler_exit": 1,
+      "limit": null,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "original_source_sha256": "7c8dc2b78fd177232d091cb9942d56721ecd030d583ffce9fec79fbaf1eb0310",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6ad8/Boundary.v",
+        "sha256": "03cb142e312c8c94bec959aa9a0476fe86bcd50f9cfc5437d21e25582b804837",
+        "archive": "/home/cody/zesislar-archive/sha256/03/03cb142e312c8c94bec959aa9a0476fe86bcd50f9cfc5437d21e25582b804837"
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/ON/block_0x800d6ad8/compiler.log",
+        "sha256": "860c93d173030ed563e199c1b65ccdb44e390bb8d4964cbd7e88409c859e5d16",
+        "archive": "/home/cody/zesislar-archive/sha256/86/860c93d173030ed563e199c1b65ccdb44e390bb8d4964cbd7e88409c859e5d16"
+      },
+      "full_result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/0x800d6ad8-report.json",
+        "sha256": "1047cf29035d818f5d0ee554bfd0fbfc5efc0be0f48f73ee5a4b2a0000a0ddac",
+        "archive": "/home/cody/zesislar-archive/sha256/10/1047cf29035d818f5d0ee554bfd0fbfc5efc0be0f48f73ee5a4b2a0000a0ddac"
+      },
+      "residual_class": "wrong-header-and-payload-witness",
+      "selected_values": "headerLength=payloadStart; payloadLength=payloadStart",
+      "active_goals_identical_between_arms": true,
+      "closure": false
+    }
+  ],
+  "native_count": 8,
+  "native_residual_count": 8,
+  "closures": 0,
+  "limits": 0,
+  "candidate_patch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/candidate.patch",
+    "sha256": "852ea97a52084ced9e4466ad18dd3a1c74dc7e7b9410322f6996ef499717931b",
+    "archive": "/home/cody/zesislar-archive/sha256/85/852ea97a52084ced9e4466ad18dd3a1c74dc7e7b9410322f6996ef499717931b"
+  },
+  "focused_fixture": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-ordering-rootcb0/ZesuSsz/Proofs/Tests/WitnessIntroductionPriority.v",
+    "sha256": "66c959a6548378505ac7f02a281544067f3a2019900a383409a70c152a871d3a",
+    "archive": "/home/cody/zesislar-archive/sha256/66/66c959a6548378505ac7f02a281544067f3a2019900a383409a70c152a871d3a"
+  },
+  "focused_verification": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/focused-mcp.json",
+    "sha256": "9e569a933811722853fe228d6ca55278d61b66c5d1a530f977d5f7d3eb87e5c0",
+    "archive": "/home/cody/zesislar-archive/sha256/9e/9e569a933811722853fe228d6ca55278d61b66c5d1a530f977d5f7d3eb87e5c0"
+  },
+  "preflight": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/preflight.json",
+    "sha256": "16374721b867d762f0b96c8dd8e9be61aef588988dfd688982b37f82585275d7",
+    "archive": "/home/cody/zesislar-archive/sha256/16/16374721b867d762f0b96c8dd8e9be61aef588988dfd688982b37f82585275d7"
+  },
+  "comparison_inputs": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/comparison-inputs.json",
+    "sha256": "6d97e7a61080fe916761e1d42881e5c8055fdd6a444cd411afea4c79c2ae44c6",
+    "archive": "/home/cody/zesislar-archive/sha256/6d/6d97e7a61080fe916761e1d42881e5c8055fdd6a444cd411afea4c79c2ae44c6"
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i25-cb0-comparison/archive-index.json",
+    "sha256": "fa08d7127768369125b4822e6d5005bbbb5b943e6e077e4ab818582aaae7275f",
+    "archive": "/home/cody/zesislar-archive/sha256/fa/fa08d7127768369125b4822e6d5005bbbb5b943e6e077e4ab818582aaae7275f"
+  },
+  "failures": [
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-180218-child-a-i25-cb0-bridge-first-focused.log",
+      "sha256": "ff479d3bd6881631be30b746c587c6feacf5b943959d0d9b4559163b8781b205",
+      "archive": "/home/cody/zesislar-archive/sha256/ff/ff479d3bd6881631be30b746c587c6feacf5b943959d0d9b4559163b8781b205"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-181401-child-a-i25-cb0-activation-typing.log",
+      "sha256": "99def8eef0982fa2d088f573b23cb0b0b7ff6dadaaf9b337fd9cb8ea27a3181f",
+      "archive": "/home/cody/zesislar-archive/sha256/99/99def8eef0982fa2d088f573b23cb0b0b7ff6dadaaf9b337fd9cb8ea27a3181f"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-181446-child-a-i25-cb0-single-recorder-preflight.log",
+      "sha256": "d695631ed196c661640f21452279ba86ad3ac85543fd82b4a249ad02a3ad0139",
+      "archive": "/home/cody/zesislar-archive/sha256/d6/d695631ed196c661640f21452279ba86ad3ac85543fd82b4a249ad02a3ad0139"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-181521-child-a-i25-cb0-immutable-preflight.log",
+      "sha256": "5b778e8e7fbd4300bb4c3a6a222aedcd0ce2bfc67d66082c8845e72d8464dbc1",
+      "archive": "/home/cody/zesislar-archive/sha256/5b/5b778e8e7fbd4300bb4c3a6a222aedcd0ce2bfc67d66082c8845e72d8464dbc1"
+    }
+  ],
+  "summary": "The added bridge call before generic existential opening changes no captured active goal. Both slice comparisons are materially slower. The candidate must not land.",
+  "residual_cause_evidence": "Final slice goals retain unresolved width/cursor, lengthBytes=rest, and ownership obligations. Final return goals require both scalar roles to equal payloadStart. The final recorder does not identify the failed registration attempt or internal search phase.",
+  "missing_groups": "Pet stack/shelf/given_up propositions remain unavailable. Printed SHELVED_SIDECOND obligations are active goals, not a complete Pet shelf export.",
+  "assumptions_limit": "No native Qed object exists. Native assumptions are unverified. The focused fixture verifies assumptions [].",
+  "manual_native_proof_lines_added": 0,
+  "rule_added": false,
+  "rules_changed_in_committed_sources": false,
+  "job_queue": "empty; all four pair watchers completed",
+  "packaged_utc": "2026-10-06T22:25:35.222435+00:00"
+}
