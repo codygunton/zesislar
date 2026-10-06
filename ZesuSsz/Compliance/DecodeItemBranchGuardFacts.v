@@ -275,3 +275,51 @@ Qed.
   end : typeclass_instances.
 
 Print Assumptions decodeItemLongListHeaderGuardRejected.
+
+Lemma decodeItemNonemptyStringPrefixGuard (inputPrefix : byte) :
+  128 <= bv_unsigned inputPrefix <= 255 ->
+  bv_and (Z_to_bv 64 (bv_signed inputPrefix)) 255 <> Z_to_bv 64 128 ->
+  129 <= bv_unsigned inputPrefix.
+Proof.
+  intros Hclass Hguard.
+  assert (Hneq : bv_unsigned inputPrefix <> 128).
+  { intros Hvalue.
+    assert (Hprefix : inputPrefix = Z_to_bv 8 128) by bv_solve.
+    apply Hguard. rewrite Hprefix. apply bv_eq. vm_compute. reflexivity. }
+  lia.
+Qed.
+
+Lemma decodeItemShortStringMaskGuard (register : bv 64) (inputPrefix : byte) :
+  129 <= bv_unsigned inputPrefix <= 183 ->
+  bv_unsigned register = bv_unsigned inputPrefix ->
+  bv_unsigned (bv_and register 127) = bv_unsigned inputPrefix - 128.
+Proof.
+  intros Hclass Hvalue. rewrite bv_and_unsigned.
+  change (Z.land (bv_unsigned register) (Z.ones (Z.of_N 7%N)) =
+    bv_unsigned inputPrefix - 128).
+  rewrite <- (bv_wrap_land 7 (bv_unsigned register)), Hvalue.
+  change (bv_unsigned inputPrefix mod 128 = bv_unsigned inputPrefix - 128).
+  replace (bv_unsigned inputPrefix) with
+    ((bv_unsigned inputPrefix - 128) + 1 * 128) at 1 by ring.
+  rewrite Z.mod_add; [apply Z.mod_small; lia | lia].
+Qed.
+
+#[export] Hint Extern 1 (SimplAnd (129 <= bv_unsigned ?prefix) True) =>
+  match goal with
+  | Hguard : bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128 |- _ =>
+    unfold SimplAnd; split; [intros _;
+      apply (decodeItemNonemptyStringPrefixGuard prefix);
+        [split; assumption | exact Hguard] | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1
+  (SimplAnd (bv_unsigned (bv_and ?register 127) = bv_unsigned ?prefix - 128) True) =>
+  match goal with
+  | Hvalue : bv_unsigned register = bv_unsigned prefix |- _ =>
+    unfold SimplAnd; split; [intros _;
+      apply (decodeItemShortStringMaskGuard register prefix);
+        [split; assumption | exact Hvalue] | intros _; exact I]
+  end : typeclass_instances.
+
+Print Assumptions decodeItemNonemptyStringPrefixGuard.
+Print Assumptions decodeItemShortStringMaskGuard.
