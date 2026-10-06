@@ -15,6 +15,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses.
 Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
+Require Import ZesuSsz.Compliance.DecodeItemInitializationPureFacts.
 Open Scope Z_scope.
 
 Lemma decodeItemInitialization6a14Native_correct `{!islaG Sigma} `{!threadG}
@@ -41,13 +42,12 @@ match goal with Hfold : decodeItemByteFoldFacts args n 0 payloadStart lengthByte
 unfold decodeItemEntryAt800d6a24.
 iExists n, 0, payloadStart, lengthBytes, frameBytes, loaded.
 cbn.
-iSplit; first (iPureIntro; split; [exact (decodeItemByteFoldFirstGuard args n payloadStart lengthBytes HfoldFacts)|split; [unfold decodeItemDomainAt; split; [reflexivity|exact HdomainFacts]|split; assumption]]).
+iSplit; first (iPureIntro; split; [zesu_pure_fact_hints_if_enabled|split; [unfold decodeItemDomainAt; split; [reflexivity|exact HdomainFacts]|split; assumption]]).
 unfold decodeItemByteFoldStringHeader, decodeItemByteFoldResources, decodeItemBranchContinuation.
 iFrame.
-assert (Hstart : payloadStart = decodeItemInputPointer args + 1) by (unfold decodeItemFoldProvenance in HprovenanceFacts; tauto).
-assert (Hcursor : (Z_to_bv 64 (decodeItemInputPointer args) + (Z_to_bv 64 n + 1))%bv = Z_to_bv 64 (payloadStart + n)) by (rewrite Hstart; bv_solve).
+assert (Hcursor : (Z_to_bv 64 (decodeItemInputPointer args) + (Z_to_bv 64 n + 1))%bv = Z_to_bv 64 (payloadStart + n)) by zesu_pure_fact_hints_if_enabled.
 assert (Hindex : (Z_to_bv 64 n + 1)%bv = Z_to_bv 64 (n + 1)) by bv_solve.
-assert (Hstartbv : (Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv = Z_to_bv 64 (payloadStart + 0)) by (rewrite Hstart; bv_solve).
+assert (Hstartbv : (Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv = Z_to_bv 64 (payloadStart + 0)) by zesu_pure_fact_hints_if_enabled.
 iEval (rewrite -Hcursor -Hindex -Hstartbv).
 unfold decodeItemBranchContinuationAt.
 cbn [Z.to_nat take bigEndian].
