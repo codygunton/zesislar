@@ -533,6 +533,10 @@ Class ZesuPureFactIntro {Sigma} (target source : iProp Sigma) : Prop :=
   zesu_pure_fact_intro : source ⊢ target.
 #[global] Hint Mode ZesuPureFactIntro + + - : typeclass_instances.
 
+Class ZesuPureFactAnchor {Sigma} (target anchor source : iProp Sigma) : Prop :=
+  zesu_pure_fact_anchor_intro : ZesuPureFactIntro target source.
+#[global] Hint Mode ZesuPureFactAnchor + + + - : typeclass_instances.
+
 (* Structural leaves retain owned facts. At least one leaf needs a hint. *)
 Ltac zesu_pure_fact_evidence P :=
   constr:(ltac:(first [
@@ -577,7 +581,14 @@ Ltac zesu_pure_fact_hints_if_enabled :=
         end
       | iMatchHyp ltac:(fun name source =>
           let evidence := constr:(_ : ZesuPureFactIntro target source) in
-          iApply (@zesu_pure_fact_intro _ target source evidence)) ]
+          iApply (@zesu_pure_fact_intro _ target source evidence))
+      | iMatchHyp ltac:(fun name anchor =>
+          let evidence := constr:(_ : ZesuPureFactAnchor target anchor _) in
+          lazymatch type of evidence with
+          | ZesuPureFactAnchor _ _ ?source =>
+              let intro := constr:(@zesu_pure_fact_anchor_intro _ target anchor source evidence) in
+              iApply (@zesu_pure_fact_intro _ target source intro)
+          end) ]
   | |- ?P =>
       let evidence := zesu_registered_pure_fact P in exact evidence
   end.
