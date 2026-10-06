@@ -1,0 +1,406 @@
+{
+  "item": "I29-region-fault-normalization",
+  "status": "partial-cost-repair; 6970 remains unresolved",
+  "root": "3b6815ceed338de895c58da3b5b271508a6a969d",
+  "raw_matrix_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/report.json",
+    "sha256": "64df1c0c431aa63a1f3909dd49004397e0a4df627dcfbe0cb26ee0c5fd35e654",
+    "archive": "/home/cody/zesislar-archive/sha256/64/64df1c0c431aa63a1f3909dd49004397e0a4df627dcfbe0cb26ee0c5fd35e654",
+    "bytes": 36535
+  },
+  "matrix_inputs": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/inputs.json",
+    "sha256": "01205d19b8402cfe5f08bc7e4008e1d4a905ed24736bf89c913494c9d392feef",
+    "archive": "/home/cody/zesislar-archive/sha256/01/01205d19b8402cfe5f08bc7e4008e1d4a905ed24736bf89c913494c9d392feef",
+    "bytes": 10420
+  },
+  "historical_comparison": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-root3b-comparison/report.json",
+    "sha256": "fbc7455d50433d65cc53f132b0612c9c323fd1143db3b096bd5cbab3b002569a",
+    "archive": "/home/cody/zesislar-archive/sha256/fb/fbc7455d50433d65cc53f132b0612c9c323fd1143db3b096bd5cbab3b002569a",
+    "bytes": 25130
+  },
+  "focused_mcp": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-focused-isolated-mcp/calls.json",
+    "sha256": "a1d846e9f70970a787a170b95eeb04c9059db0b9579409f6328802ebd68ca50f",
+    "archive": "/home/cody/zesislar-archive/sha256/a1/a1d846e9f70970a787a170b95eeb04c9059db0b9579409f6328802ebd68ca50f",
+    "bytes": 26026
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/archive-index.json",
+    "sha256": "db0afef2a6ee5514c31b80767dab9f8864c5a0a737afb9cbff4aff506c3e2526",
+    "archive": "/home/cody/zesislar-archive/sha256/db/db0afef2a6ee5514c31b80767dab9f8864c5a0a737afb9cbff4aff506c3e2526",
+    "bytes": 36849
+  },
+  "rows": [
+    {
+      "mode": "production",
+      "arm": "off",
+      "statement": "decodeItemPrologueTo6974Bridge_correct : decodeItemPrologueTo6974Bridge",
+      "script_body_sha256": "9f323de1872b079d8e04e4a7abef93f63eb01f7af39b255f17e10b8a3d5f181d",
+      "hint_policy": "original production imports",
+      "diagnostic_only": false,
+      "named_obligation_certificate": true,
+      "assumption_audit": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions decodeItemPrologueTo6974Bridge_correct",
+        "verified": true
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/production/off/Prologue.v",
+        "sha256": "bb6c361e4f6a3fcf2f1e646c1233fd7cc877f3a7478ad44e22c397c198fb5f3f",
+        "archive": "/home/cody/zesislar-archive/sha256/bb/bb6c361e4f6a3fcf2f1e646c1233fd7cc877f3a7478ad44e22c397c198fb5f3f",
+        "bytes": 3061
+      },
+      "compiler": {
+        "compiler_pid": 2411088,
+        "cpu_seconds": 257.71290700000003,
+        "elapsed_seconds": 258.9722556800116,
+        "peak_rss_kib": 3021076,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        }
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/production/off/compiler/compiler.log",
+        "sha256": "65ae256943c41fdac3b960431e0bade33bdb831b9f10928afd9365655f9b8614",
+        "archive": "/home/cody/zesislar-archive/sha256/65/65ae256943c41fdac3b960431e0bade33bdb831b9f10928afd9365655f9b8614",
+        "bytes": 4252
+      },
+      "Pet_stack_shelf_given_up": "unavailable",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/production/off/compiler/Prologue.vo",
+        "sha256": "5b8f2828714ca07190d9505b8262d005ce92bd9e1cb95411fba19bb3b54bff26",
+        "archive": "/home/cody/zesislar-archive/sha256/5b/5b8f2828714ca07190d9505b8262d005ce92bd9e1cb95411fba19bb3b54bff26",
+        "bytes": 1575243
+      },
+      "active_goals": "kernel-accepted Qed",
+      "inherited_debts": "absent: original closed theorem source"
+    },
+    {
+      "mode": "production",
+      "arm": "on",
+      "statement": "decodeItemPrologueTo6974Bridge_correct : decodeItemPrologueTo6974Bridge",
+      "script_body_sha256": "9f323de1872b079d8e04e4a7abef93f63eb01f7af39b255f17e10b8a3d5f181d",
+      "hint_policy": "original production imports",
+      "diagnostic_only": false,
+      "named_obligation_certificate": true,
+      "assumption_audit": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions decodeItemPrologueTo6974Bridge_correct",
+        "verified": true
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/production/on/Prologue.v",
+        "sha256": "6de6d6cea4f5ff584a24348eacfb6021b4cf8fdc8eecbed3f7d632ff0db1dcd6",
+        "archive": "/home/cody/zesislar-archive/sha256/6d/6de6d6cea4f5ff584a24348eacfb6021b4cf8fdc8eecbed3f7d632ff0db1dcd6",
+        "bytes": 3130
+      },
+      "compiler": {
+        "compiler_pid": 2411082,
+        "cpu_seconds": 254.34572599999996,
+        "elapsed_seconds": 255.58266944705974,
+        "peak_rss_kib": 3032256,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        }
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/production/on/compiler/compiler.log",
+        "sha256": "8583e78511f8bc25cbf9b6288beae8e5160a72745be9a28e04cb930c5e704f11",
+        "archive": "/home/cody/zesislar-archive/sha256/85/8583e78511f8bc25cbf9b6288beae8e5160a72745be9a28e04cb930c5e704f11",
+        "bytes": 4321
+      },
+      "Pet_stack_shelf_given_up": "unavailable",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/production/on/compiler/Prologue.vo",
+        "sha256": "c270ea4004f2a7009dcf6d84dd0971769d5964bc8333adee37e0830669d08966",
+        "archive": "/home/cody/zesislar-archive/sha256/c2/c270ea4004f2a7009dcf6d84dd0971769d5964bc8333adee37e0830669d08966",
+        "bytes": 1575396
+      },
+      "active_goals": "kernel-accepted Qed",
+      "inherited_debts": "absent: original closed theorem source"
+    },
+    {
+      "mode": "all_hints",
+      "arm": "off",
+      "statement": "decodeItemPrologueTo6974Bridge_correct : decodeItemPrologueTo6974Bridge",
+      "script_body_sha256": "9f323de1872b079d8e04e4a7abef93f63eb01f7af39b255f17e10b8a3d5f181d",
+      "hint_policy": "ten direct hint imports",
+      "diagnostic_only": true,
+      "named_obligation_certificate": false,
+      "assumption_audit": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/all_hints/off/Prologue.v",
+        "sha256": "135f0f1276d3c20b3810c318633fe5e772b169aa3fb8d4206070065018fdddbd",
+        "archive": "/home/cody/zesislar-archive/sha256/13/135f0f1276d3c20b3810c318633fe5e772b169aa3fb8d4206070065018fdddbd",
+        "bytes": 6117
+      },
+      "compiler": {
+        "compiler_pid": 2411116,
+        "cpu_seconds": 900.883235,
+        "elapsed_seconds": 903.9344495659461,
+        "peak_rss_kib": 3286528,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        }
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/all_hints/off/compiler/compiler.log",
+        "sha256": "cfa9fbcab352719a475d387e4d1f2c4a0bd210c61e56d61720a0ed0a245922cf",
+        "archive": "/home/cody/zesislar-archive/sha256/cf/cfa9fbcab352719a475d387e4d1f2c4a0bd210c61e56d61720a0ed0a245922cf",
+        "bytes": 91108
+      },
+      "Pet_stack_shelf_given_up": "unavailable",
+      "active_goals": 5,
+      "full_printed_records": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/all_hints/off/parsed-goals.json",
+        "sha256": "ac797ddcce04da58ef5ec10767444ccf8628adc311fe1f5efe17c33bc8a45765",
+        "archive": "/home/cody/zesislar-archive/sha256/ac/ac797ddcce04da58ef5ec10767444ccf8628adc311fe1f5efe17c33bc8a45765",
+        "bytes": 94375
+      },
+      "first_conclusions": [
+        "(decodeItemInputHead args",
+        "(bi_sep",
+        "(bv 8)",
+        "(list (bv 8))",
+        "(list (bv 8))"
+      ],
+      "error": "Qed: Attempt to save an incomplete proof",
+      "profile_rows": [
+        "\u2500zesu_region_fault_assert --------------  93.2%  93.2%      43  179.310s",
+        "\u2500zesu_region_fault_arithmetic ----------  92.2%  92.9%      16  179.309s",
+        "\u2500bv_solve ------------------------------   2.6%   2.7%      94    1.421s"
+      ]
+    },
+    {
+      "mode": "all_hints",
+      "arm": "on",
+      "statement": "decodeItemPrologueTo6974Bridge_correct : decodeItemPrologueTo6974Bridge",
+      "script_body_sha256": "9f323de1872b079d8e04e4a7abef93f63eb01f7af39b255f17e10b8a3d5f181d",
+      "hint_policy": "ten direct hint imports",
+      "diagnostic_only": true,
+      "named_obligation_certificate": false,
+      "assumption_audit": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/all_hints/on/Prologue.v",
+        "sha256": "f4df90fd1f4a970d52daa1c8c1174f6c42092f64f1ab50a824cd7eed20497f5f",
+        "archive": "/home/cody/zesislar-archive/sha256/f4/f4df90fd1f4a970d52daa1c8c1174f6c42092f64f1ab50a824cd7eed20497f5f",
+        "bytes": 6186
+      },
+      "compiler": {
+        "compiler_pid": 2411090,
+        "cpu_seconds": 247.037587,
+        "elapsed_seconds": 248.2602623529965,
+        "peak_rss_kib": 2549320,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        }
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/all_hints/on/compiler/compiler.log",
+        "sha256": "5f6857fb1af518e8ae70a320277e035ca50fae664e2490282ef6ad81853ee34c",
+        "archive": "/home/cody/zesislar-archive/sha256/5f/5f6857fb1af518e8ae70a320277e035ca50fae664e2490282ef6ad81853ee34c",
+        "bytes": 94300
+      },
+      "Pet_stack_shelf_given_up": "unavailable",
+      "active_goals": 5,
+      "full_printed_records": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/all_hints/on/parsed-goals.json",
+        "sha256": "ac797ddcce04da58ef5ec10767444ccf8628adc311fe1f5efe17c33bc8a45765",
+        "archive": "/home/cody/zesislar-archive/sha256/ac/ac797ddcce04da58ef5ec10767444ccf8628adc311fe1f5efe17c33bc8a45765",
+        "bytes": 94375
+      },
+      "first_conclusions": [
+        "(decodeItemInputHead args",
+        "(bi_sep",
+        "(bv 8)",
+        "(list (bv 8))",
+        "(list (bv 8))"
+      ],
+      "error": "Qed: Attempt to save an incomplete proof",
+      "profile_rows": [
+        "\u2500zesu_region_fault_assert --------------  69.7%  69.7%      43   29.362s",
+        "\u2500zesu_region_fault_arithmetic ----------  65.1%  68.7%      16   29.361s",
+        "\u2500bv_solve ------------------------------  13.1%  13.5%      94    2.066s",
+        "\u2500zesu_stack_closed_term ----------------   2.2%   2.3%  129240    0.016s"
+      ]
+    },
+    {
+      "mode": "hints_off",
+      "arm": "off",
+      "statement": "decodeItemPrologueTo6974Bridge_correct : decodeItemPrologueTo6974Bridge",
+      "script_body_sha256": "9f323de1872b079d8e04e4a7abef93f63eb01f7af39b255f17e10b8a3d5f181d",
+      "hint_policy": "ten direct hint imports removed; transitive hint registrations not inferred absent",
+      "diagnostic_only": true,
+      "named_obligation_certificate": false,
+      "assumption_audit": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/hints_off/off/Prologue.v",
+        "sha256": "ccc7701712e5a9ddf24fff233fece257ea0ff0a098ea883fb35a8758c7730db3",
+        "archive": "/home/cody/zesislar-archive/sha256/cc/ccc7701712e5a9ddf24fff233fece257ea0ff0a098ea883fb35a8758c7730db3",
+        "bytes": 5466
+      },
+      "compiler": {
+        "compiler_pid": 2411089,
+        "cpu_seconds": 897.144994,
+        "elapsed_seconds": 900.1556829919573,
+        "peak_rss_kib": 3388580,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        }
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/hints_off/off/compiler/compiler.log",
+        "sha256": "f931a0fd15679fe8ad730f790a15e52830666e1bc579e4506302ed19fdc06249",
+        "archive": "/home/cody/zesislar-archive/sha256/f9/f931a0fd15679fe8ad730f790a15e52830666e1bc579e4506302ed19fdc06249",
+        "bytes": 90091
+      },
+      "Pet_stack_shelf_given_up": "unavailable",
+      "active_goals": 5,
+      "full_printed_records": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/hints_off/off/parsed-goals.json",
+        "sha256": "735b3a373cccfd37b0b60a44c41216f9d78e3135cb6948ce8ba541cadc14953f",
+        "archive": "/home/cody/zesislar-archive/sha256/73/735b3a373cccfd37b0b60a44c41216f9d78e3135cb6948ce8ba541cadc14953f",
+        "bytes": 93666
+      },
+      "first_conclusions": [
+        "(decodeItemInputHead args",
+        "(bi_sep",
+        "(bv 8)",
+        "(list (bv 8))",
+        "(list (bv 8))"
+      ],
+      "error": "Qed: Attempt to save an incomplete proof",
+      "profile_rows": [
+        "\u2500zesu_region_fault_assert --------------  93.2%  93.2%      43  181.875s",
+        "\u2500zesu_region_fault_arithmetic ----------  92.2%  93.0%      16  181.874s",
+        "\u2500bv_solve ------------------------------   2.6%   2.7%      94    1.415s"
+      ]
+    },
+    {
+      "mode": "hints_off",
+      "arm": "on",
+      "statement": "decodeItemPrologueTo6974Bridge_correct : decodeItemPrologueTo6974Bridge",
+      "script_body_sha256": "9f323de1872b079d8e04e4a7abef93f63eb01f7af39b255f17e10b8a3d5f181d",
+      "hint_policy": "ten direct hint imports removed; transitive hint registrations not inferred absent",
+      "diagnostic_only": true,
+      "named_obligation_certificate": false,
+      "assumption_audit": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/hints_off/on/Prologue.v",
+        "sha256": "355f8747d325e661383bba4774756d3beac25f948636253a7fb777999ebc16a1",
+        "archive": "/home/cody/zesislar-archive/sha256/35/355f8747d325e661383bba4774756d3beac25f948636253a7fb777999ebc16a1",
+        "bytes": 5535
+      },
+      "compiler": {
+        "compiler_pid": 2411091,
+        "cpu_seconds": 246.29009000000002,
+        "elapsed_seconds": 247.51735504099634,
+        "peak_rss_kib": 2540936,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        }
+      },
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/hints_off/on/compiler/compiler.log",
+        "sha256": "ae99e9004b83e8a47e495ce9d5d8427c17a8803e3b44bf2ad867e5ae7b2423a8",
+        "archive": "/home/cody/zesislar-archive/sha256/ae/ae99e9004b83e8a47e495ce9d5d8427c17a8803e3b44bf2ad867e5ae7b2423a8",
+        "bytes": 93189
+      },
+      "Pet_stack_shelf_given_up": "unavailable",
+      "active_goals": 5,
+      "full_printed_records": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i29-prologue-script-hint-matrix/hints_off/on/parsed-goals.json",
+        "sha256": "735b3a373cccfd37b0b60a44c41216f9d78e3135cb6948ce8ba541cadc14953f",
+        "archive": "/home/cody/zesislar-archive/sha256/73/735b3a373cccfd37b0b60a44c41216f9d78e3135cb6948ce8ba541cadc14953f",
+        "bytes": 93666
+      },
+      "first_conclusions": [
+        "(decodeItemInputHead args",
+        "(bi_sep",
+        "(bv 8)",
+        "(list (bv 8))",
+        "(list (bv 8))"
+      ],
+      "error": "Qed: Attempt to save an incomplete proof",
+      "profile_rows": [
+        "\u2500zesu_region_fault_assert --------------  69.7%  69.7%      43   29.695s",
+        "\u2500zesu_region_fault_arithmetic ----------  65.2%  68.7%      16   29.695s",
+        "\u2500bv_solve ------------------------------  13.1%  13.5%      94    1.991s",
+        "\u2500zesu_stack_closed_term ----------------   2.2%   2.3%  129240    0.014s"
+      ]
+    }
+  ],
+  "certificate_scope": "Two exact production Prologue bridge certificates. No new Level1 or native-block closure claim.",
+  "production_identity": "OFF source is byte-identical to root3b production. ON adds only switch import.",
+  "correction": "Earlier867\u2192201 attempts used the production script with expanded imports, not a zesu_block-only script.",
+  "hint_cost_percent": {
+    "normalizer_OFF": 0.4166819215400963,
+    "normalizer_ON": 0.30350267036729495
+  },
+  "normalizer_cpu_reduction_percent": {
+    "all_hints": 72.57829012657784,
+    "hints_off": 72.54734834980309,
+    "production": 1.306562810220424
+  },
+  "residual_equivalence": "The five complete printed records match within each diagnostic hint configuration. Pet groups unavailable. Cross-hint contexts differ.",
+  "remaining_6970": "Both exact primaries hit vernacular Timeout1200. CPU1196.833/1196.936s. No guard limit, object, profile, or final state. No unchanged retry.",
+  "rule_scope": "Only two selected-term closed checks change. Solver, assertion branch order, statements, and limits remain unchanged.",
+  "workers": 6,
+  "gate": {
+    "name": "check-fast",
+    "exit": 0,
+    "watcher_wall_seconds": 351,
+    "jobs": 6,
+    "module_time_and_guard_wait": "unavailable: watcher duration does not separate these measurements",
+    "log": {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-130543-child-c-i29-region-normalization-evidence-check-fast.log",
+      "sha256": "e800ddda8e848faf2ed363e7e28967b6cf160bd9f66f11024ef460e7460c3717",
+      "archive": "/home/cody/zesislar-archive/sha256/e8/e800ddda8e848faf2ed363e7e28967b6cf160bd9f66f11024ef460e7460c3717",
+      "bytes": 64469
+    }
+  },
+  "failures": "Archived MCP verify timeout, scheduler naming/directory setup failures, export schema audit failure, all failed Qed attempts, and historical profile limitations.",
+  "supporting_classification": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-s40/REPORT.json",
+    "sha256": "df9b37672fc5f7222ca3113ee4db07979a3af39f976c0d7f628999819769bf65",
+    "scope": "Read-only historical340 classification.6974 input-memory-selection/fault-pruning. No arithmetic-cost or later-root proof inference."
+  }
+}

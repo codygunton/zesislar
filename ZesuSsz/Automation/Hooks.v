@@ -1171,6 +1171,15 @@ Ltac zesu_region_arithmetic_statement statement :=
       zesu_region_arithmetic_statement right
   end.
 
+Class ZesuStepRegionFaultNormalization : Prop :=
+  zesu_step_region_fault_normalization : True.
+
+(* Check the selected term without traversing other local declarations. *)
+Ltac zesu_region_reduce_closed term :=
+  tryif let _ := constr:(_ : ZesuStepRegionFaultNormalization) in idtac
+  then zesu_stack_reduce_closed term
+  else reduce_closed term.
+
 Ltac zesu_region_fault_arithmetic :=
   lazymatch goal with |- ~ _ => intro | _ => idtac end;
   repeat first [progress zesu_split_folded_pure |
@@ -1190,9 +1199,9 @@ Ltac zesu_region_fault_arithmetic :=
   end;
   repeat match goal with
   | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress reduce_closed term end
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   | |- context[?term] =>
-      lazymatch type of term with Z => progress reduce_closed term end
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   end;
   try (rewrite zesu_signed_zero_extend_add_64_128; last bv_solve);
   repeat match goal with
