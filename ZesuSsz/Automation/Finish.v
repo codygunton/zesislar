@@ -195,11 +195,11 @@ Ltac zesu_finish_known_list_shape :=
     solve [bv_solve]].
 
 Ltac zesu_finish_selectors :=
-  lazymatch goal with
+  first [zesu_array_region_selection_if_enabled | lazymatch goal with
   | |- @eq _ _ _ =>
       (autounfold with zesu_selectors;
         zesu_normalize_stack_array_indices; reflexivity)
-  end.
+  end].
 
 (* The finisher, dispatched on the head of the goal.
 

@@ -5,6 +5,7 @@ Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Export ZesuSsz.Automation.ByteArrayLengths.
+Require Import ZesuSsz.Automation.UninitRegions.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.TraceTailLemmas.
 Require Import ZesuSsz.Automation.InstrPre.
@@ -1343,6 +1344,16 @@ Ltac zesu_array_bound_integer_casts :=
       assert (Hcast : bv_unsigned (Z_to_bv 64 pointer) = pointer)
         by zesu_stack_arithmetic;
       rewrite Hcast; clear Hcast
+  end.
+
+(* Resolve only an already-selected array resource. The existing region rule
+   proves containment or base equality and determines the memory kind. *)
+Ltac zesu_array_region_selection_if_enabled :=
+  let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
+  lazymatch goal with
+  | |- FindHypEqual (ZesuMemRegionSearch _) (_ ↦ₘ∗ _)
+      (mem_mapsto_kind_prop _ _) _ =>
+      solve [apply find_mem_region_array; zesu_region_bounds]
   end.
 
 Ltac zesu_array_bounds_if_enabled :=
