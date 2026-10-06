@@ -16,6 +16,9 @@ Definition witnessConstraintResources `{!islaG Sigma} `{!threadG}
     (R : Z -> Z -> iProp Sigma) (n i : Z) : iProp Sigma :=
   (⌜P anchor n i⌝ ∗ R n i)%I.
 
+Global Instance : LithiumUnfold (@witnessConstraintResources) := I.
+Global Typeclasses Opaque witnessConstraintResources.
+
 Lemma pure_constraints_ordered `{!islaG Sigma} `{!threadG}
     (anchor : WitnessAnchor) (P : WitnessAnchor -> Z -> Z -> Prop)
     (R : Z -> Z -> iProp Sigma) (n i unrelated : Z)
@@ -36,6 +39,9 @@ Definition witnessRoleResources `{!islaG Sigma} `{!threadG}
     (n i cursor : Z) (bytes frame : list byte) (loaded : bv 64) : iProp Sigma :=
   (⌜P anchor n i cursor bytes /\ F anchor frame⌝ ∗
    R n i cursor bytes frame loaded)%I.
+
+Global Instance : LithiumUnfold (@witnessRoleResources) := I.
+Global Typeclasses Opaque witnessRoleResources.
 
 Lemma pure_constraints_distinct_roles `{!islaG Sigma} `{!threadG}
     (anchor : WitnessAnchor)
