@@ -1,0 +1,223 @@
+{
+  "item": "canonical-anchor-rule",
+  "development_root": "494738cd4ee57b6a03ae3a4bdaa9f0559d9925e8",
+  "frozen_comparison_root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "sources": {
+    "ZesuSsz/Automation/Hooks.v": "cf180f09a708dea94ab236c42fbd723b4015da6fcef7acee51845cfac40dbf7e",
+    "ZesuSsz/Automation/Switches/CanonicalAnchor.v": "7e11959825bc023c5f4c8b3edf4062f8a272c7ce37b297a8e405ce777d6950e0",
+    "ZesuSsz/Proofs/Tests/CanonicalAnchor.v": "e1180ad40c4a26870b749c33f59df8fba12b550ddfded87d3ab053ac06467b68"
+  },
+  "interface": {
+    "class": "ZesuCanonicalAnchor {Sigma} (anchor canonical source : iProp Sigma)",
+    "field": "zesu_canonical_anchor_intro : ZesuPureFactAnchor canonical anchor source",
+    "mode": "+ + - -",
+    "switch": "ZesuStepCanonicalAnchor",
+    "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+    "activation": "Explicit CanonicalAnchor and PureFactHints imports."
+  },
+  "change": "Retrieve a canonical target and source from an owned spatial anchor. Require kernel conversion to the requested target before application. Run before direct target-indexed lookup.",
+  "comparison": {
+    "identical_statement": "forall (Sigma : gFunctors) (R : iProp Sigma), R \u22a2 R \u2217 True",
+    "only_import_difference": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+    "OFF": "The hook leaves R \u2217 True. Qed fails with an incomplete proof.",
+    "ON": "The hook selects source R. Qed succeeds. Exact kernel type verification reports assumptions [].",
+    "native_instructions": 0,
+    "native_contract_closures": 0
+  },
+  "isolation": {
+    "absent_switch": "The tracked OFF fixture rejects hook application.",
+    "nonconvertible_target": "The tracked fixture rejects casting R \u2217 True introduction to R \u2217 R.",
+    "scope": "The switch instance uses export scope. No shared proof imports the switch."
+  },
+  "verification": {
+    "health": true,
+    "interactive_start_check": "Both frozen arms completed. No primary was repeated.",
+    "compile_file": true,
+    "exact_type_verify": [
+      "canonical_frozen_comparison",
+      "canonical_anchor_off",
+      "canonical_anchor_expanded_on",
+      "canonical_anchor_folded_on",
+      "canonical_anchor_wrong_target"
+    ],
+    "assumptions": [],
+    "inherited_debts": [],
+    "opacity_fixture": "Fresh MCP compilation and all four exact-type verifications pass with assumptions []."
+  },
+  "failures": [
+    "Initial rejection fixture had a tactic syntax error.",
+    "The assert_fails version did not catch elaboration of a nonconvertible cast. Fail now covers the entire command.",
+    "The first MCP problem retained unused islaG/threadG binders. Exact kernel types omit these binders. The proof statement did not change.",
+    "The first check-fast gate rejected a LithiumUnfold constant without Typeclasses Opaque. The fixture now declares Global Typeclasses Opaque canonical_anchor_target."
+  ],
+  "spec_preparation": {
+    "report_sha256": "754dd036068e7319be0cc9f6f0a324259b38a951573c530613e0789b9902d932",
+    "companions": 6,
+    "status": "Prepared only. Spec must compile and verify actual registrations after this interface lands.",
+    "conversion_limit": "FoldInit requires exact computed firstn and width syntax. Propositional provenance cannot establish kernel conversion.",
+    "reconstruction_limit": "The original S45 Envs export is absent. These fixtures do not prove its resource reconstruction."
+  },
+  "artifacts": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/OFF.v",
+      "sha256": "2ea8be00de96cb9bba6cb5282eeb890a6bee5efeaa12fb4b386eff68c3c4b2b4",
+      "archive": "/home/cody/zesislar-archive/sha256/2e/2ea8be00de96cb9bba6cb5282eeb890a6bee5efeaa12fb4b386eff68c3c4b2b4",
+      "bytes": 859
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/ON.v",
+      "sha256": "090ee0a8264aeeb425e0fac4c8f6b122d9ac1ea4a5661de7ad6e1d7f391e54cf",
+      "archive": "/home/cody/zesislar-archive/sha256/09/090ee0a8264aeeb425e0fac4c8f6b122d9ac1ea4a5661de7ad6e1d7f391e54cf",
+      "bytes": 919
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/verify.py",
+      "sha256": "6c8de5ba05cda26209478cf9f098ec4ec9b1218c17bf8efde9ec0097c48cba41",
+      "archive": "/home/cody/zesislar-archive/sha256/6c/6c8de5ba05cda26209478cf9f098ec4ec9b1218c17bf8efde9ec0097c48cba41",
+      "bytes": 2811
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/after-focused.py",
+      "sha256": "483676016510732f6a1af4aab8c11e51c448c9243b907014713801b47875e2f1",
+      "archive": "/home/cody/zesislar-archive/sha256/48/483676016510732f6a1af4aab8c11e51c448c9243b907014713801b47875e2f1",
+      "bytes": 316
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/server.pid",
+      "sha256": "9b04fa6e04ee89941173546e619482cf5279ca1216d07da6e0f256dea0c546e8",
+      "archive": "/home/cody/zesislar-archive/sha256/9b/9b04fa6e04ee89941173546e619482cf5279ca1216d07da6e0f256dea0c546e8",
+      "bytes": 8
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/mcp.json",
+      "sha256": "da8f7651487a4d69e72759389947eae51ada79beddc07800d39648a8f2cb23f6",
+      "archive": "/home/cody/zesislar-archive/sha256/da/da8f7651487a4d69e72759389947eae51ada79beddc07800d39648a8f2cb23f6",
+      "bytes": 11157
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/mcp-first-attempt.json",
+      "sha256": "da8f7651487a4d69e72759389947eae51ada79beddc07800d39648a8f2cb23f6",
+      "archive": "/home/cody/zesislar-archive/sha256/da/da8f7651487a4d69e72759389947eae51ada79beddc07800d39648a8f2cb23f6",
+      "bytes": 11157
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/verify-exact-type.py",
+      "sha256": "51f0ed0c2ab1707ca02aa8d756202ac50f8be764e23d847b3d85040dedc95c15",
+      "archive": "/home/cody/zesislar-archive/sha256/51/51f0ed0c2ab1707ca02aa8d756202ac50f8be764e23d847b3d85040dedc95c15",
+      "bytes": 2361
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/final-server.pid",
+      "sha256": "a4dca6546f7a16b18ba89120208bf31f30be17e087ad7b166a4a2ddff3dbb385",
+      "archive": "/home/cody/zesislar-archive/sha256/a4/a4dca6546f7a16b18ba89120208bf31f30be17e087ad7b166a4a2ddff3dbb385",
+      "bytes": 8
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/mcp-exact-type.json",
+      "sha256": "a2e58494012f673aeed7de678ed54e98aa28616feaf5e4517f45c4b922bc6c88",
+      "archive": "/home/cody/zesislar-archive/sha256/a2/a2e58494012f673aeed7de678ed54e98aa28616feaf5e4517f45c4b922bc6c88",
+      "bytes": 16784
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-191548-child-a-canonical-anchor-focused.log",
+      "sha256": "54ab8c5e945ce283c9ccc085eb2172970c57268d321c9840fe18d0b176be1df2",
+      "archive": "/home/cody/zesislar-archive/sha256/54/54ab8c5e945ce283c9ccc085eb2172970c57268d321c9840fe18d0b176be1df2",
+      "bytes": 3789
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-191623-child-a-canonical-anchor-syntax-fixed-focused.log",
+      "sha256": "37411630568010b45b952ef7c2684c64577e3d96154b7abfbc539c6c99ef9b87",
+      "archive": "/home/cody/zesislar-archive/sha256/37/37411630568010b45b952ef7c2684c64577e3d96154b7abfbc539c6c99ef9b87",
+      "bytes": 1165
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-191827-child-a-canonical-anchor-frozen-mcp.log",
+      "sha256": "2f80bb6b5b1efc6f24c217bb89298b6760e9a53e62303335a0ea2933f2d2544d",
+      "archive": "/home/cody/zesislar-archive/sha256/2f/2f80bb6b5b1efc6f24c217bb89298b6760e9a53e62303335a0ea2933f2d2544d",
+      "bytes": 6517
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-194039-child-a-canonical-anchor-rejection-fixed-focused.log",
+      "sha256": "36121751c0004b62ec04a2536f5db739420ef1f99a935e4793911209d07cec27",
+      "archive": "/home/cody/zesislar-archive/sha256/36/36121751c0004b62ec04a2536f5db739420ef1f99a935e4793911209d07cec27",
+      "bytes": 445
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-194121-child-a-canonical-anchor-exact-type-mcp.log",
+      "sha256": "863d3f7e63dbb28170e401167ea780ecd696b1c7e81c548ebd3f8c234dd53ea3",
+      "archive": "/home/cody/zesislar-archive/sha256/86/863d3f7e63dbb28170e401167ea780ecd696b1c7e81c548ebd3f8c234dd53ea3",
+      "bytes": 2574
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/final-server.pid",
+      "sha256": "6a369917d7602b93b89b1651a23e55e1380266e7e0dd3000eaefdfcf4e9746d1",
+      "archive": "/home/cody/zesislar-archive/sha256/6a/6a369917d7602b93b89b1651a23e55e1380266e7e0dd3000eaefdfcf4e9746d1",
+      "bytes": 8
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/verify-opaque.py",
+      "sha256": "b076ae09d5cedceffa1de7c7176822598a66595316255e5a08ade475a1bf1437",
+      "archive": "/home/cody/zesislar-archive/sha256/b0/b076ae09d5cedceffa1de7c7176822598a66595316255e5a08ade475a1bf1437",
+      "bytes": 1928
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/canonical-anchor-rule/mcp-opaque-fixture.json",
+      "sha256": "5765feabce723635307964ebb38d97664e7073b264cc455a6ff553ccfdd46a7f",
+      "archive": "/home/cody/zesislar-archive/sha256/57/5765feabce723635307964ebb38d97664e7073b264cc455a6ff553ccfdd46a7f",
+      "bytes": 15393
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-194359-child-a-canonical-anchor-rule-check-fast.log",
+      "sha256": "4f8c0f0a1d84f812768191ae89fe02e2a4725c240ef0d9c41d1363959a2549eb",
+      "archive": "/home/cody/zesislar-archive/sha256/4f/4f8c0f0a1d84f812768191ae89fe02e2a4725c240ef0d9c41d1363959a2549eb",
+      "bytes": 3625
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-194533-child-a-canonical-anchor-opaque-focused.log",
+      "sha256": "a1704c3197bdb50e012f62b143f6a4cd392f59fc23cf05c292415c2a4090bc48",
+      "archive": "/home/cody/zesislar-archive/sha256/a1/a1704c3197bdb50e012f62b143f6a4cd392f59fc23cf05c292415c2a4090bc48",
+      "bytes": 346
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-194546-child-a-canonical-anchor-opaque-mcp.log",
+      "sha256": "368087b85596ac00562ae0ec72d5540b4ba0d40081a021f686b69e06dedb226c",
+      "archive": "/home/cody/zesislar-archive/sha256/36/368087b85596ac00562ae0ec72d5540b4ba0d40081a021f686b69e06dedb226c",
+      "bytes": 2574
+    }
+  ],
+  "gate": {
+    "status": "passed",
+    "required_make_arguments": [
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6"
+    ],
+    "failed_attempt": {
+      "wall_s": 60,
+      "jobs": 6,
+      "failure": "unfold_without_typeclasses_opaque: 1 > 0"
+    },
+    "wall_s": 476,
+    "jobs": 6,
+    "log_sha256": "6273506dc3345a80c1a1aa43279b19679d7748338a4761475f28c956ee89b2df",
+    "archive": "/home/cody/zesislar-archive/sha256/62/6273506dc3345a80c1a1aa43279b19679d7748338a4761475f28c956ee89b2df"
+  },
+  "accounting": {
+    "start": "2026-10-06T23:08:44.120771Z",
+    "end": "2026-10-06T23:54:57.453672Z",
+    "child_min": 46.222215,
+    "tokens_child": 11019378,
+    "token_samples": {
+      "start": [
+        "2026-10-06T23:07:21.001Z",
+        431820029
+      ],
+      "end": [
+        "2026-10-06T23:54:44.712Z",
+        442839407
+      ]
+    },
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable",
+    "reason": "Parent accounting was not supplied."
+  }
+}
