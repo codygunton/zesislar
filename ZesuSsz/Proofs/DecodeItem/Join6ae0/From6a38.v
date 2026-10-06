@@ -1,4 +1,6 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
 Require Import isla.riscv64.riscv64.
 Require Import SailStdpp.MachineWord.
 Require Import ZesuSsz.Automation.Switches.InstructionLookup.
@@ -14,6 +16,8 @@ From iris.proofmode Require Import environments.
 Open Scope Z_scope.
 Require Import ZesuSsz.Contracts.DecodeItemErrorBranch.
 Require Import ZesuSsz.Automation.Switches.RecordWitness.
+Require Import ZesuSsz.Automation.Switches.ListWitness.
+Require Import ZesuSsz.Automation.Switches.PureFactHints.
 
 Require Import ZesuSsz.Proofs.DecodeItem.ByteFoldPure.
 Require Import ZesuSsz.Automation.Switches.StrictSigned.
@@ -36,30 +40,15 @@ Proof.
  assert (Hsum : LET0 = Z_to_bv 64 (bigEndian lengthBytes + n + 1)) by
    (unLET; rewrite Hacc; bv_solve).
  match goal with Hfits : RlpDecodeItemByteFoldBlocks.decodeItemFoldLengthFits _ _ _ = false |- _ =>
+   pose proof Hfits as HfoldReject;
    unfold RlpDecodeItemByteFoldBlocks.decodeItemFoldLengthFits in Hfits;
    apply Z.leb_gt in Hfits; rewrite -Hsum in Hfits end.
  assert (Hsigned : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) < bv_signed (bv_zero_extend 128 LET0)) by bv_solve.
- match goal with Hdomain : decodeItemC1BDomain args |- _ => pose proof Hdomain as Hfacts end.
- assert (HdomainAt : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args) by (split; [reflexivity | assumption]).
- pose proof (decodeItemDomainInputLengthBounds args Hfacts) as Hbounds.
- assert (Hlen : 0 <= decodeItemInputLength args < word64Modulus) by (unfold word64Modulus; lia).
- unfold decodeItemC1BDomain, decodeItemArgsWellFormed in Hfacts.
- assert (Hstorage : length (decodeItemBeforeStorage args) = 40%nat) by tauto.
- assert (HinputLength : decodeItemInputLength args = Z.of_nat (length (decodeItemInputBytes args))) by tauto.
- assert (Hrejected : decodeItemRejectedFacts args) by
-   (eapply (decodeItemLongStringPayloadRejected args inputPrefix rest n payloadStart lengthBytes);
-    [assumption | assumption | unfold RlpDecodeItemByteFold.decodeItemByteFoldFacts in HfoldBounds; rewrite -HinputLength; lia |];
-    rewrite -HinputLength;
-    match goal with Hreject : bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) < bv_unsigned LET0 |- _ =>
-      rewrite (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) Hsum Z_to_bv_unsigned in Hreject;
-      replace (bigEndian lengthBytes + n + 1) with (1 + n + bigEndian lengthBytes) in Hreject by ring;
-      exact Hreject end).
  zesu_run_until ltac:(fun _ => match goal with
    Hno : ~ ?P, Hyes : ?P |- _ => exfalso; exact (Hno Hyes) end).
 Unshelve.
 all: try solve [exfalso; unLET;
   match goal with Hbad : bv_extract _ _ _ = _ |- _ => vm_compute in Hbad; discriminate end].
 all: prepare_sidecond.
-all: try solve [reflexivity | bv_solve].
+all: try solve [zesu_finish | zesu_pure_fact_hints_if_enabled | reflexivity | bv_solve].
 Qed.
-Print Assumptions decodeItemJoin6ae0From6a38_correct.
