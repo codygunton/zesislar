@@ -504,6 +504,28 @@ Class ZesuStepListWitness : Prop :=
 Class ZesuStepTupleWitness : Prop :=
   zesu_step_tuple_witness : True.
 
+Class ZesuStepPureFactHints : Prop :=
+  zesu_step_pure_fact_hints : True.
+
+Class ZesuPureFactIntro {Sigma} (target source : iProp Sigma) : Prop :=
+  zesu_pure_fact_intro : source ⊢ target.
+#[global] Hint Mode ZesuPureFactIntro + + - : typeclass_instances.
+
+(* Registered introductions retain their resource and pure obligations. *)
+Ltac zesu_pure_fact_hints_if_enabled :=
+  let _ := constr:(_ : ZesuStepPureFactHints) in
+  lazymatch goal with
+  | |- envs_entails _ ?target =>
+      let evidence := constr:(_ : ZesuPureFactIntro target _) in
+      lazymatch type of evidence with
+      | ZesuPureFactIntro _ ?source =>
+          iApply (@zesu_pure_fact_intro _ target source evidence)
+      end
+  | |- ?P =>
+      let evidence := constr:(_ : SimplAnd P True) in
+      exact ((proj1 evidence) I)
+  end.
+
 (* Only the requested list shape permits extraction of owned pure facts. *)
 Ltac zesu_list_cons_witness_if_enabled :=
   let _ := constr:(_ : ZesuStepListWitness) in
@@ -1169,6 +1191,7 @@ Ltac zesu_liAStep :=
   | liAAsm
   | liAExp
   | liAOther
+  | zesu_pure_fact_hints_if_enabled
   | liUnfoldEarly
   | zesu_known_pair_witness_if_enabled
   | zesu_record_witness_if_enabled
