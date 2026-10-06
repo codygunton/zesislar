@@ -1,0 +1,199 @@
+{
+  "item": "I26-root408",
+  "generated_artifacts": [
+    {
+      "path": "build/stock-zisk/i26-root408/REPORT.json",
+      "sha256": "f3a3e101ed9d81c2d24c5436b2dc0035676a5310bfe0036d3d4e06f89724cf05"
+    }
+  ],
+  "archives": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/activation.json",
+      "sha256": "be5bc7bed5c2d2f255ce5a2d783552a3a6e34a6a4c1027461d18a0cc945c7848",
+      "archive": "/home/cody/zesislar-archive/sha256/be/be5bc7bed5c2d2f255ce5a2d783552a3a6e34a6a4c1027461d18a0cc945c7848",
+      "bytes": 10471
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/dependencies.sh",
+      "sha256": "7b6fb6b17d50e5e9a69e77d2ed4d2205fb306dd4af8b8cce439429c95a6c4bef",
+      "archive": "/home/cody/zesislar-archive/sha256/7b/7b6fb6b17d50e5e9a69e77d2ed4d2205fb306dd4af8b8cce439429c95a6c4bef",
+      "bytes": 2019
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/inputs.json",
+      "sha256": "60c134139069944af413d4660eaebae517be09a7f39c65441d96970313bbc848",
+      "archive": "/home/cody/zesislar-archive/sha256/60/60c134139069944af413d4660eaebae517be09a7f39c65441d96970313bbc848",
+      "bytes": 2910347
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off/Boundary.v",
+      "sha256": "cdc0f48e19f6447a8d118b8a4f1f90789c3934b637aad45fb1f4127c1450cc13",
+      "archive": "/home/cody/zesislar-archive/sha256/cd/cdc0f48e19f6447a8d118b8a4f1f90789c3934b637aad45fb1f4127c1450cc13",
+      "bytes": 6373
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off/Native.v",
+      "sha256": "ee2336f71790ed692b6ccbb8cb8e171cfbd07f706738932523af9b8b35c6f2e7",
+      "archive": "/home/cody/zesislar-archive/sha256/ee/ee2336f71790ed692b6ccbb8cb8e171cfbd07f706738932523af9b8b35c6f2e7",
+      "bytes": 6270
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off/compiler-wrapper",
+      "sha256": "ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "archive": "/home/cody/zesislar-archive/sha256/ea/ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "bytes": 167
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off/compiler.json",
+      "sha256": "daf0fd30d2c73d58f2c3bdf09d0e4669148ebf9a3b4f7fb6ff01bf0e914d101f",
+      "archive": "/home/cody/zesislar-archive/sha256/da/daf0fd30d2c73d58f2c3bdf09d0e4669148ebf9a3b4f7fb6ff01bf0e914d101f",
+      "bytes": 5385
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off/compiler.log",
+      "sha256": "1773934e9d63fc701f2a5e25934db72366a59bee7660b2f5f3c641dafbeeb9ae",
+      "archive": "/home/cody/zesislar-archive/sha256/17/1773934e9d63fc701f2a5e25934db72366a59bee7660b2f5f3c641dafbeeb9ae",
+      "bytes": 5994
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off/evidence.json",
+      "sha256": "db33bcfda73dfd30a583d77adba56592584b27998a1257a824debc2c90b7b4be",
+      "archive": "/home/cody/zesislar-archive/sha256/db/db33bcfda73dfd30a583d77adba56592584b27998a1257a824debc2c90b7b4be",
+      "bytes": 8460
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off_activation/compiler-wrapper",
+      "sha256": "ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "archive": "/home/cody/zesislar-archive/sha256/ea/ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "bytes": 167
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off_activation/compiler.json",
+      "sha256": "2b7244c86c71b5b25ea0eead0889c3cee916e2edd363206e0875a9b515820260",
+      "archive": "/home/cody/zesislar-archive/sha256/2b/2b7244c86c71b5b25ea0eead0889c3cee916e2edd363206e0875a9b515820260",
+      "bytes": 5581
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off_activation/compiler.log",
+      "sha256": "abac69a6a3948b288dc0fabd4dbad6cd2db695d37d4f4a257178eddf068ccd92",
+      "archive": "/home/cody/zesislar-archive/sha256/ab/abac69a6a3948b288dc0fabd4dbad6cd2db695d37d4f4a257178eddf068ccd92",
+      "bytes": 6301
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off_activation/off_scope.vo",
+      "sha256": "26389bf4592532e82729ad46163011f46c25c863987c0150dbe2b21efb285b76",
+      "archive": "/home/cody/zesislar-archive/sha256/26/26389bf4592532e82729ad46163011f46c25c863987c0150dbe2b21efb285b76",
+      "bytes": 139154
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/off_scope.v",
+      "sha256": "cdaec78dff1165d161a4f14023757d4ffea86abe06be28413a51e170692cc5a2",
+      "archive": "/home/cody/zesislar-archive/sha256/cd/cdaec78dff1165d161a4f14023757d4ffea86abe06be28413a51e170692cc5a2",
+      "bytes": 6025
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on/Boundary.v",
+      "sha256": "a3a3dd46f0e68c3f3b9c7ca42ad53331e304fff176378bf69bae17dac7426cd1",
+      "archive": "/home/cody/zesislar-archive/sha256/a3/a3a3dd46f0e68c3f3b9c7ca42ad53331e304fff176378bf69bae17dac7426cd1",
+      "bytes": 6440
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on/Native.v",
+      "sha256": "d23bb5de3f80187b3b5956ca73ac1936ba552c8701e0c313612f6285f789161b",
+      "archive": "/home/cody/zesislar-archive/sha256/d2/d23bb5de3f80187b3b5956ca73ac1936ba552c8701e0c313612f6285f789161b",
+      "bytes": 6337
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on/compiler-wrapper",
+      "sha256": "ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "archive": "/home/cody/zesislar-archive/sha256/ea/ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "bytes": 167
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on/compiler.json",
+      "sha256": "d2612ff68ed907f4f77633358db73ca165317bf76aed486633da7c1a3f960382",
+      "archive": "/home/cody/zesislar-archive/sha256/d2/d2612ff68ed907f4f77633358db73ca165317bf76aed486633da7c1a3f960382",
+      "bytes": 5384
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on/compiler.log",
+      "sha256": "d3344b4a5b79d64c3162cfcd4736739558b75097b8059bd31dfceead1d42ab5d",
+      "archive": "/home/cody/zesislar-archive/sha256/d3/d3344b4a5b79d64c3162cfcd4736739558b75097b8059bd31dfceead1d42ab5d",
+      "bytes": 144400
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on/evidence.json",
+      "sha256": "b848688f6190f4355cd9b75c38dd97b3352e98cd216aed89bd7819feecca4001",
+      "archive": "/home/cody/zesislar-archive/sha256/b8/b848688f6190f4355cd9b75c38dd97b3352e98cd216aed89bd7819feecca4001",
+      "bytes": 214463
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on_activation/compiler-wrapper",
+      "sha256": "ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "archive": "/home/cody/zesislar-archive/sha256/ea/ea174e8081160bcf1c7facfe890a4784fbda3c71891ba1a714c235f15efcef05",
+      "bytes": 167
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on_activation/compiler.json",
+      "sha256": "d7ed4a9ea3b490aaf1f74cc6a3c330d2a73dc581047e2b472f4caab17ccb3e1a",
+      "archive": "/home/cody/zesislar-archive/sha256/d7/d7ed4a9ea3b490aaf1f74cc6a3c330d2a73dc581047e2b472f4caab17ccb3e1a",
+      "bytes": 5577
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on_activation/compiler.log",
+      "sha256": "1190986ce9da869a1fd5e30e345278085367c5d27b6dc7d87e1b376fff2ad539",
+      "archive": "/home/cody/zesislar-archive/sha256/11/1190986ce9da869a1fd5e30e345278085367c5d27b6dc7d87e1b376fff2ad539",
+      "bytes": 6335
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on_activation/on_scope.vo",
+      "sha256": "ef785d738d0ccd3ddf4ed871db1ae9bf18412347b1e7b042e4a0cef9908040db",
+      "archive": "/home/cody/zesislar-archive/sha256/ef/ef785d738d0ccd3ddf4ed871db1ae9bf18412347b1e7b042e4a0cef9908040db",
+      "bytes": 139299
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/on_scope.v",
+      "sha256": "8266c003a671e5e7ac3903470557335d2d6021c2d5461943a300b8a14c72ee97",
+      "archive": "/home/cody/zesislar-archive/sha256/82/8266c003a671e5e7ac3903470557335d2d6021c2d5461943a300b8a14c72ee97",
+      "bytes": 6078
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/prepared.json",
+      "sha256": "90523e46155059a62473061a883b76363b2ff03ea202b73c6d3d197e1644e452",
+      "archive": "/home/cody/zesislar-archive/sha256/90/90523e46155059a62473061a883b76363b2ff03ea202b73c6d3d197e1644e452",
+      "bytes": 15715
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/report.json",
+      "sha256": "516958a5b4f4b0a9bdaa3ea8f1115574f0ab9f9a0a850c08534e34f3e4b01e1a",
+      "archive": "/home/cody/zesislar-archive/sha256/51/516958a5b4f4b0a9bdaa3ea8f1115574f0ab9f9a0a850c08534e34f3e4b01e1a",
+      "bytes": 1074
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/targets-corrected.json",
+      "sha256": "cf186a164800c8a0304e1bbe19cb09405cf9a9bf3bfd801a5597f0f9c16b504b",
+      "archive": "/home/cody/zesislar-archive/sha256/cf/cf186a164800c8a0304e1bbe19cb09405cf9a9bf3bfd801a5597f0f9c16b504b",
+      "bytes": 1801
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i26-root408-comparison/targets.json",
+      "sha256": "46d32faac78c5973b8ba43560554cb5716bc4bad903993d367cd254e3c5a1828",
+      "archive": "/home/cody/zesislar-archive/sha256/46/46d32faac78c5973b8ba43560554cb5716bc4bad903993d367cd254e3c5a1828",
+      "bytes": 1782
+    }
+  ],
+  "gate_records": [
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-082408-child-c-i26-root408-evidence-check-fast.log",
+      "sha256": "a541c07ac6574ce5eb683fbf02e645b3ec078ca5d99d13cdfc15c214985593a9",
+      "archive": "/home/cody/zesislar-archive/sha256/a5/a541c07ac6574ce5eb683fbf02e645b3ec078ca5d99d13cdfc15c214985593a9",
+      "bytes": 10056
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/agents/worker2-child-i26/log.jsonl",
+      "sha256": "bf8299fcbbfcb0dc1e4bb136f0ffcae82e95787101c6c04bf5cafa592abfbe50",
+      "archive": "/home/cody/zesislar-archive/sha256/bf/bf8299fcbbfcb0dc1e4bb136f0ffcae82e95787101c6c04bf5cafa592abfbe50",
+      "bytes": 177
+    }
+  ]
+}
