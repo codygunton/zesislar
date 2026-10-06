@@ -1,0 +1,148 @@
+{
+  "item": "I25-registration-interface-diagnostic",
+  "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "production_changes": false,
+  "sites": [
+    "0x800d6a24",
+    "0x800d6ac4"
+  ],
+  "baseline": "target-indexed lookup fails on both expanded targets",
+  "diagnostic": "anchor-indexed canonical retrieval succeeds; kernel conversion checks requested target; no evidence evars remain",
+  "lookup_ms_each": 2,
+  "assumptions": [],
+  "required_context": "FoldProvenance binds prefix/rest; anchor alone does not determine them",
+  "resource_reconstruction": "unproved; folded header ownership not established",
+  "native_steps": 0,
+  "native_closures": 0,
+  "shared_interface": "awaiting coordinator ruling; diagnostic class and registrations remain isolated",
+  "limitations": [
+    "True fixtures check dictionary retrieval and conversion only",
+    "no native contract or resource reconstruction proof",
+    "initial source errors lack complete independent archived snapshots"
+  ],
+  "failures_preserved": [
+    "missing explicit imports",
+    "duplicate typed binders",
+    "Ltac grammar",
+    "anchor-only prefix/rest inference",
+    "misleading MCP start after earlier declaration error"
+  ],
+  "artifacts": {
+    "TargetShape.v": {
+      "sha256": "d8a6340eed530270c59279578645553aeb5140cf8f5b9596acfe63d9f500c8b0",
+      "archive": "/home/cody/zesislar-archive/sha256/d8/d8a6340eed530270c59279578645553aeb5140cf8f5b9596acfe63d9f500c8b0"
+    },
+    "InterfaceProbe.v": {
+      "sha256": "cae822e86c3b8a2c081d73d10d08f6c9da07b934d707ec9b223b28a4f675f4b4",
+      "archive": "/home/cody/zesislar-archive/sha256/ca/cae822e86c3b8a2c081d73d10d08f6c9da07b934d707ec9b223b28a4f675f4b4"
+    },
+    "mcp.json": {
+      "sha256": "d2dd7fb28f5c0d494ae488bd97355de271535b123d2a39a16df7833058836f90",
+      "archive": "/home/cody/zesislar-archive/sha256/d2/d2dd7fb28f5c0d494ae488bd97355de271535b123d2a39a16df7833058836f90"
+    },
+    "interface-mcp.json": {
+      "sha256": "f9e1f66b36aabb72763252dc67a6a97e1ff2bb916490acc5be38c623d511ffef",
+      "archive": "/home/cody/zesislar-archive/sha256/f9/f9e1f66b36aabb72763252dc67a6a97e1ff2bb916490acc5be38c623d511ffef"
+    },
+    "list-unfolded-baseline.json": {
+      "sha256": "311a1302eccb82e2613981cb5ab83e491da85dc598019fe7ae02cce9f119d2ef",
+      "archive": "/home/cody/zesislar-archive/sha256/31/311a1302eccb82e2613981cb5ab83e491da85dc598019fe7ae02cce9f119d2ef"
+    },
+    "/home/cody/zesislar/.worktrees/worker1-fresh-q53/build/stock-zisk/q53-s45/MCP-RESIDUAL.json": {
+      "sha256": "30e84b8aed8676a4eb02ead59d42e898d600c201db1c7a52f4a0872762401397",
+      "archive": "/home/cody/zesislar-archive/sha256/30/30e84b8aed8676a4eb02ead59d42e898d600c201db1c7a52f4a0872762401397"
+    },
+    "/home/cody/zesislar/.worktrees/worker1-fresh-q53/build/stock-zisk/q53-s45/REPORT.json": {
+      "sha256": "9fc8e6f309f7617bd58363f455a65b92e2df3cf5ec29ce4514e3d2690e9dc632",
+      "archive": "/home/cody/zesislar-archive/sha256/9f/9fc8e6f309f7617bd58363f455a65b92e2df3cf5ec29ce4514e3d2690e9dc632"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": {
+      "sha256": "e713916e6672e661ec77ee46aeb31e4fc7dda7a21ec8f6c7c0adbf0e3e22439b",
+      "archive": "/home/cody/zesislar-archive/sha256/e7/e713916e6672e661ec77ee46aeb31e4fc7dda7a21ec8f6c7c0adbf0e3e22439b"
+    },
+    "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "archive": "/home/cody/zesislar-archive/sha256/59/595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+    },
+    "ZesuSsz/Contracts/DecodeItemReturnFacts.v": {
+      "sha256": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
+      "archive": "/home/cody/zesislar-archive/sha256/9d/9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5"
+    },
+    "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v": {
+      "sha256": "f1cc75393d97f51dbbc1cf95c07a9fe0fde25e9d9f283aa2d02d6c1ba4c213c3",
+      "archive": "/home/cody/zesislar-archive/sha256/f1/f1cc75393d97f51dbbc1cf95c07a9fe0fde25e9d9f283aa2d02d6c1ba4c213c3"
+    },
+    "corrected_gate": {
+      "sha256": "9375a736152e716ef908b05a356a5932b3d575142d52e441807e6f192a00ca62",
+      "archive": "/home/cody/zesislar-archive/sha256/93/9375a736152e716ef908b05a356a5932b3d575142d52e441807e6f192a00ca62"
+    },
+    "launcher": {
+      "sha256": "d5e0c8ba506c59b8f934722558479f604b0c04a9ff1f021b10886156e30de41a",
+      "archive": "/home/cody/zesislar-archive/sha256/d5/d5e0c8ba506c59b8f934722558479f604b0c04a9ff1f021b10886156e30de41a"
+    }
+  },
+  "gate": "check-fast passed with six actual workers; earlier twelve-worker pass preserved as rework",
+  "start": "2026-10-06T22:32:00.474647Z",
+  "end": "2026-10-06T22:58:57.826860+00:00",
+  "tokens_child": 8834233,
+  "resource_classification": {
+    "mode": "read-only source comparison; no reconstructed entailment compiled",
+    "capture_root": "cb0b9a95224090758affe51c0263dbec8a63a649",
+    "witnesses": {
+      "n": "n",
+      "i": "0",
+      "payloadStart": "payloadStart",
+      "lengthBytes": "lengthBytes",
+      "frameBytes": "frameBytes",
+      "loaded": "loaded"
+    },
+    "exact_owned": [
+      "x10",
+      "x12",
+      "x16",
+      "x2",
+      "x1",
+      "x8",
+      "system register collection",
+      "full input array",
+      "full output array",
+      "full frame array",
+      "Level1 branch continuation"
+    ],
+    "normalization_required": {
+      "x13": "firstn 0 lengthBytes = []; bigEndian [] = 0",
+      "x14": "Z_to_bv n + 1 = Z_to_bv (n+1)",
+      "x15": "inputPointer+1 = payloadStart; i=0",
+      "x11": "inputPointer+(n+1) = payloadStart+n"
+    },
+    "pure_required": [
+      "0<n from ByteFoldFacts via existing FirstGuard",
+      "DomainAt(returnAddress,C1BDomain,args) from reflexivity and owned C1BDomain",
+      "SavedFrameFacts and FoldProvenance already owned",
+      "frame length16 and FoldFacts0 already owned"
+    ],
+    "finding": "All declared header components have visible owned counterparts. Header folding and register normalization remain unproved. No missing entry resource follows from this comparison.",
+    "anchor_phase": "Owned context contains component resources, not the folded header used to index the registration. Canonical lookup does not reconstruct this header."
+  },
+  "gate_attempts": [
+    {
+      "label": "child-a-i25-registration-evidence-check-fast",
+      "exit": 0,
+      "watcher_wall_s": 148,
+      "actual_jobs": 12,
+      "cause": "Makefile immediate FAST_JOBS assignment overrides environment value",
+      "log_sha256": "05404366128955fdbc1b2867afdafdaac2569200c386f63f864bbedabd7112f4",
+      "archive": "/home/cody/zesislar-archive/sha256/05/05404366128955fdbc1b2867afdafdaac2569200c386f63f864bbedabd7112f4"
+    },
+    {
+      "label": "child-a-i25-registration-explicit-six-check-fast",
+      "exit": 0,
+      "watcher_wall_s": 63,
+      "actual_jobs": 6,
+      "command_line": [
+        "FAST_JOBS=6",
+        "AGENT_JOBS=6"
+      ]
+    }
+  ]
+}

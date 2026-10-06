@@ -71,6 +71,22 @@ class SuccessorValidationTests(unittest.TestCase):
         self.assertEqual(result['evidence']['pending_goals'], ['pure debt'])
         self.assertEqual(result['evidence']['shelved_goals'], ['array bound'])
 
+    def test_unfolded_target_remains_unproved_and_preserves_native_debts(self):
+        fixture = json.loads((Path(__file__).parent / 'block' / 'testdata' /
+                              'unfolded_header_target.json').read_text())
+        self.groups['goals'] = [{'ty': fixture['target'], 'hyps': []}]
+        export_path = Path(self.export['path'])
+        export_path.write_text(json.dumps(self.groups))
+        self.export['sha256'] = digest(export_path)
+        result = self.plan()
+        self.assertEqual(result['evidence']['native_debts']['groups'], self.groups)
+        self.assertEqual(result['proof_status'], 'unproved')
+        self.assertFalse(result['contract_closed'])
+        self.assertEqual(result['evidence']['inherited_debts'],
+                         self.capture['inherited_debts'])
+        self.assertIn('decodeItemByteFoldStringHeader', fixture['target'])
+        self.assertNotIn('decodeItemEntryAt800d6a24', fixture['target'])
+
     def test_source_hash_change_rejects_design(self):
         (self.root / 'Contracts/Entry.v').write_text('Definition changed := True.')
         self.assertRaises(ValueError, self.plan)
@@ -122,6 +138,16 @@ class SuccessorValidationTests(unittest.TestCase):
             incomplete = deepcopy(self.groups)
             del incomplete[key]
             self.assertRaises(ValueError, debt_groups, incomplete)
+
+    def test_unavailable_null_groups_do_not_equal_verified_empty_groups(self):
+        empty = {key: [] for key in self.groups}
+        self.assertTrue(debt_groups(empty)['empty'])
+        for key in empty:
+            with self.subTest(group=key):
+                unavailable = deepcopy(empty)
+                unavailable[key] = None
+                self.assertRaisesRegex(ValueError, 'Unavailable goal group',
+                                       debt_groups, unavailable)
 
     def test_id_only_shelf_is_retained_without_inventing_a_proposition(self):
         groups = deepcopy(self.groups)
