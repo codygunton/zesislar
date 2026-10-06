@@ -580,6 +580,123 @@ Ltac zesu_known_pair_witness_if_enabled :=
       end
   end.
 
+Class ZesuStepPureWitnessConstraints : Prop :=
+  zesu_step_pure_witness_constraints : True.
+
+Ltac zesu_witness_application_head term :=
+  lazymatch term with
+  | ?function ?argument => zesu_witness_application_head function
+  | _ => term
+  end.
+
+(* A fixed non-scalar parameter anchors the owned fact to this state. *)
+Ltac zesu_witness_fact_anchor term :=
+  lazymatch term with
+  | ?function ?argument =>
+      first [
+        assert_fails (has_evar argument);
+        is_var argument;
+        let T := type of argument in
+        let sort := type of T in
+        lazymatch sort with Prop => fail | _ => idtac end;
+        lazymatch T with
+        | Z => fail | nat => fail | N => fail | bool => fail
+        | unit => fail | list _ => fail | bv _ => fail
+        | _ => idtac
+        end
+      | zesu_witness_fact_anchor function ]
+  end.
+
+Ltac zesu_witness_owned_fact requested :=
+  has_evar requested;
+  zesu_witness_fact_anchor requested;
+  let head := zesu_witness_application_head requested in
+  match goal with
+  | H : ?owned |- _ =>
+      assert_fails (has_evar owned);
+      let available := zesu_witness_application_head owned in
+      constr_eq head available;
+      unify requested owned
+  end.
+
+Ltac zesu_witness_pure_constraints requested :=
+  lazymatch requested with
+  | ?left /\ ?right =>
+      try zesu_witness_pure_constraints left;
+      try zesu_witness_pure_constraints right
+  | _ => try zesu_witness_owned_fact requested
+  end.
+
+(* Inspect only the requested proposition; never unfold the Coq context. *)
+Ltac zesu_witness_resource_constraints fuel requested :=
+  lazymatch requested with
+  | @bi_pure _ ?fact => zesu_witness_pure_constraints fact
+  | @bi_sep _ ?left ?right =>
+      zesu_witness_resource_constraints fuel left;
+      zesu_witness_resource_constraints fuel right
+  | _ =>
+      lazymatch fuel with
+      | S ?remaining =>
+          try (
+            let head := zesu_witness_application_head requested in
+            assert_fails (is_var head);
+            assert_fails (has_evar head);
+            let expanded := eval cbv beta iota delta [head] in requested in
+            first [constr_eq requested expanded; idtac |
+              zesu_witness_resource_constraints remaining expanded])
+      | O => idtac
+      end
+  end.
+
+Ltac zesu_constraint_witness T :=
+  lazymatch T with
+  | li_prod _ _ => zesu_primitive_tuple_witness T
+  | Z => open_constr:(_ : Z)
+  | nat => open_constr:(_ : nat)
+  | N => open_constr:(_ : N)
+  | bool => open_constr:(_ : bool)
+  | list ?A => open_constr:(_ : list A)
+  | bv ?width => open_constr:(_ : bv width)
+  end.
+
+Ltac zesu_witness_open_existentials fuel :=
+  lazymatch fuel with
+  | S ?remaining =>
+      lazymatch goal with
+      | |- envs_entails ?environment (@bi_exist _ ?T ?body) =>
+          assert_fails (has_evar T);
+          let witness := zesu_constraint_witness T in
+          notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod;
+          zesu_witness_open_existentials remaining
+      | |- envs_entails ?environment ?requested =>
+          lazymatch requested with
+          | @bi_sep _ _ _ => idtac
+          | @bi_pure _ _ => idtac
+          | _ =>
+              let head := zesu_witness_application_head requested in
+              let expanded := eval cbv beta iota delta [head] in requested in
+              assert_fails (constr_eq requested expanded);
+              change (envs_entails environment expanded);
+              zesu_witness_open_existentials remaining
+          end
+      end
+  | O => fail 0 "The witness shape exceeds the structural step limit."
+  end.
+
+Ltac zesu_pure_witness_constraints_if_enabled :=
+  let _ := constr:(_ : ZesuStepPureWitnessConstraints) in
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) =>
+      let introFuel := constr:(12%nat) in
+      zesu_witness_open_existentials introFuel;
+      lazymatch goal with
+      | |- envs_entails _ ?requested =>
+          let unfoldFuel := constr:(4%nat) in
+          progress (zesu_witness_resource_constraints unfoldFuel requested)
+      end
+  end.
+
 Ltac zesu_record_constructor_witness T :=
   let guard := constr:(ltac:(
     assert_fails (has_evar T);
@@ -1171,6 +1288,7 @@ Ltac zesu_liAStep :=
   | liAOther
   | liUnfoldEarly
   | zesu_known_pair_witness_if_enabled
+  | zesu_pure_witness_constraints_if_enabled
   | zesu_record_witness_if_enabled
   | zesu_primitive_tuple_if_enabled
   | zesu_liInstrPreMatch
