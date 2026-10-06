@@ -1,0 +1,101 @@
+{
+  "adapter_attempts": 0,
+  "artifacts": [
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/51/51bad806890af5b3ac8eaf103313f18de695216e4147dcda5e7c3f854bce4853",
+      "bytes": 53404,
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "sha256": "51bad806890af5b3ac8eaf103313f18de695216e4147dcda5e7c3f854bce4853"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/d1/d1d926ff7a27a9b2f3dfad2d8668c5724c40d2d848570d39fba95fca937601ac",
+      "bytes": 119,
+      "path": "ZesuSsz/Automation/Switches/PureFactHints.v",
+      "sha256": "d1d926ff7a27a9b2f3dfad2d8668c5724c40d2d848570d39fba95fca937601ac"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/d7/d7bd351c644ba9bcc07f2e771bbde81a443ca41355444addb5b34b65078acade",
+      "bytes": 4024,
+      "path": "ZesuSsz/Proofs/Tests/PureFactHints.v",
+      "sha256": "d7bd351c644ba9bcc07f2e771bbde81a443ca41355444addb5b34b65078acade"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/6c/6c6cd5fdcae23153fce8fc7f41b60ee882c8f54c63bdec9d1e353e005939e720",
+      "bytes": 256,
+      "path": "ZesuSsz/Proofs/Tests/PureFactHintsIsolation.v",
+      "sha256": "6c6cd5fdcae23153fce8fc7f41b60ee882c8f54c63bdec9d1e353e005939e720"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/8e/8e09e15f9e81e70833e3e2fd2ee1cd8089a20dc67a86942914c53ef64f9c8c82",
+      "bytes": 317734,
+      "path": "_build/agents/worker2-child-optimized-gate/default/ZesuSsz/Automation/Hooks.vo",
+      "sha256": "8e09e15f9e81e70833e3e2fd2ee1cd8089a20dc67a86942914c53ef64f9c8c82"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/1c/1c6343158909c17fe313a25bdab2e57a721e4541f3f07084a659fe6627d529c5",
+      "bytes": 118179,
+      "path": "_build/agents/worker2-child-optimized-gate/default/ZesuSsz/Automation/Switches/PureFactHints.vo",
+      "sha256": "1c6343158909c17fe313a25bdab2e57a721e4541f3f07084a659fe6627d529c5"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/d2/d233cc3f964cdae166aaba534cd97cdf9aede91200d3e4bc7120f3ece99e478e",
+      "bytes": 12810,
+      "path": "_build/i19-anchor-mcp/calls.json",
+      "sha256": "d233cc3f964cdae166aaba534cd97cdf9aede91200d3e4bc7120f3ece99e478e"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/1e/1ea7d747002526a24516124a1ef604a85e53642c3fe4ab9f024ebd27bcc4a83e",
+      "bytes": 2553,
+      "path": "_build/i19-anchor-mcp/failed-introductions.json",
+      "sha256": "1ea7d747002526a24516124a1ef604a85e53642c3fe4ab9f024ebd27bcc4a83e"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c3/c3fc04a5b1dfedd31f7c88ed5ea6d47e0113593a6081830f8b40c8cbb0e188bd",
+      "bytes": 499,
+      "path": "_build/i19-anchor-mcp/exports/state_1.json",
+      "sha256": "c3fc04a5b1dfedd31f7c88ed5ea6d47e0113593a6081830f8b40c8cbb0e188bd"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49,
+      "path": "_build/i19-anchor-mcp/exports/state_5.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    }
+  ],
+  "blocks_closed": 0,
+  "contract_closed": false,
+  "evidence": "zesu_pure_fact_anchor_intro : ZesuPureFactIntro target source",
+  "focused_conditions": [
+    "A source-only index comes from the owned anchor.",
+    "The target remains fixed.",
+    "The source retains its pure premise and resource.",
+    "An unregistered target rejects.",
+    "The switch rejects before ON imports.",
+    "An importing module does not activate the switch transitively."
+  ],
+  "focused_theorem": "anchor_hint_indexed",
+  "hint_mode": "+ + + -",
+  "history": "The first interactive fixture introduced only one wand. The retained pure wand caused immediate target mismatch. The corrected fixture introduces both source premises. The bridge interface did not change for this fixture repair.",
+  "interface": "@ZesuPureFactAnchor Sigma target anchor source",
+  "item": "I19 source-anchor interface",
+  "lookup": "The dispatcher matches an owned anchor. The registration fixes the target and complete source. The bridge does not consume the anchor separately. The complete source remains a proof obligation.",
+  "mcp": {
+    "assumptions": [],
+    "compile_file": true,
+    "final_groups": {
+      "given_up": 0,
+      "goals": 0,
+      "shelf": 0,
+      "stack": 0
+    },
+    "health": true,
+    "interactive_check": true,
+    "start": true,
+    "unresolved_existentials": false,
+    "verification_method": "direct compilation without Module M sandbox",
+    "verify": true
+  },
+  "native_attempts": 0,
+  "parent_checkpoint": "acfb28c124738e57a070bec8b7cd4b655c297d88",
+  "pending": "Spec anchor registrations and the announced integration root precede all24/13adapter ON reruns. I17 allocation sampling follows I19."
+}
