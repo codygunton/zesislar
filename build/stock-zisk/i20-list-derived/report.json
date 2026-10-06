@@ -1,0 +1,57 @@
+{
+  "item": "I20",
+  "root": "14392442",
+  "rule_change": "The existing opt-in ListWitness hook consumes registered ZesuDerivedFacts before splitting owned conjunctions.",
+  "generic_scope": "No machine address or contract predicate occurs in the rule. The existing ListWitness export-scoped switch controls activation.",
+  "native_residual_source": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261005-235143-q54-s20-6ad8-reduced.log",
+  "native_residual_sha256": "dfcc958e11d83b17f3abed5f5c04304ed7d29e77c81063c95e1c390346997a5c",
+  "residual": "exists head tail, storage = head :: tail and length tail = 39",
+  "S20_boundary": "Spec owns all domain registrations and the RejectedFacts lemma.",
+  "frozen_comparison": {
+    "statement": "forall A values count source, source -> ZesuDerivedFacts source (length values = S count) -> exists head tail, values = head :: tail /\\ length tail = count",
+    "OFF": "The same hook fails without ListWitness activation.",
+    "ON": "The hook closes the same statement from registered owned evidence.",
+    "additional": "Registered conjunction evidence also closes. Missing length remains rejected."
+  },
+  "MCP": {
+    "health": true,
+    "start": 1052,
+    "compile": true,
+    "verify_assumptions": [],
+    "warning": "MCP used direct coqc after its Dune stanza lookup failed.",
+    "interactive_final_state": 1054,
+    "exact_three_part_conjunction_state": 1057,
+    "exact_three_part_assumptions": []
+  },
+  "focused_build": {
+    "passed": true,
+    "wall_s": 54,
+    "jobs": 6
+  },
+  "setup_failure": "Dune rejected the first relative build path before compilation. The corrected absolute path passed.",
+  "native_proofs_run": 0,
+  "blocks_closed": 0,
+  "rules_added": 0,
+  "rules_extended": [
+    "zesu_list_cons_witness_if_enabled"
+  ],
+  "manual_native_growth": 0,
+  "accounting": {
+    "start": "2026-10-06T03:45:59.291Z",
+    "end": "2026-10-06T04:04:58.234896Z",
+    "basis": "first recorded I20 source read through checkpoint",
+    "child_min": 18.982398266666667,
+    "tokens_child": 4665054,
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable"
+  },
+  "gate": {
+    "check_fast": "passed",
+    "wall_s": 356,
+    "jobs": 6
+  },
+  "source_hashes": {
+    "ZesuSsz/Automation/Hooks.v": "d0edc5b12d1f2b3251194e68b2aa058000b462cbca16103589a1687edee620d1",
+    "ZesuSsz/Proofs/Tests/ListWitness.v": "776550d279c3e33a369c2f43bad82a86778156d32c89ce5d7e2fae3f4370294e"
+  }
+}

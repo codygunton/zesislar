@@ -601,6 +601,7 @@ Ltac zesu_list_cons_witness_if_enabled :=
       ?values = head :: tail /\ length tail = ?count =>
       eapply zesu_list_cons_witness;
       first [assumption |
+        zesu_saturate_derived_facts;
         repeat first [progress zesu_split_folded_pure |
           match goal with H : _ /\ _ |- _ => destruct H end];
         assumption]
@@ -642,6 +643,56 @@ Ltac zesu_primitive_tuple_guard_if_enabled :=
     | H : context [bv_signed (bv_zero_extend 128 ?value)] |- _ =>
         rewrite (zesu_signed_zero_extend_64_128 value) in H
     end); first [assumption | bv_solve]].
+
+Class ZesuStepRegisterCollectionSelection : Prop := {}.
+
+Ltac zesu_register_collection_index r f regs :=
+  let cells := eval hnf in regs in
+  lazymatch cells with
+  | (?key, _) :: ?rest =>
+      let member := eval cbv in
+        (reg_kind_eqb key (KindField r f) || reg_kind_eqb key (KindReg r)) in
+      lazymatch member with
+      | true => constr:(O)
+      | false =>
+          let index := zesu_register_collection_index r f rest in
+          constr:(S index)
+      end
+  end.
+
+Ltac zesu_select_register_collection r f hypotheses :=
+  lazymatch hypotheses with
+  | Esnoc ?rest ?id (reg_col ?regs) =>
+      first [
+        assert_fails (has_evar regs);
+        let index := zesu_register_collection_index r f regs in
+        let Hmember := fresh "HregisterMember" in
+        assert (Hmember : is_Some
+          (list_find_idx_bool
+            (fun x => reg_kind_eqb x.1 (KindField r f) ||
+                      reg_kind_eqb x.1 (KindReg r)) regs)) by
+          (exists index; reflexivity);
+        clear Hmember;
+        iApply find_in_context_struct_reg_mapsto_col;
+        iExists regs;
+        notypeclasses refine (tac_find_hyp _ id _ _ _ _ _);
+          [li_pm_reflexivity | li_pm_reduce]
+      | zesu_select_register_collection r f rest ]
+  | Esnoc ?rest _ _ => zesu_select_register_collection r f rest
+  end.
+
+Ltac zesu_register_collection_selection_if_enabled :=
+  let _ := constr:(_ : ZesuStepRegisterCollectionSelection) in
+  lazymatch goal with
+  | |- envs_entails (Envs ?persistent ?spatial _)
+      (find_in_context (FindStructRegMapsTo ?r ?f) _) =>
+      first [zesu_select_register_collection r f spatial |
+             zesu_select_register_collection r f persistent]
+  | Hlocal := (Envs _ _ _) |-
+      envs_entails ?environment (find_in_context (FindStructRegMapsTo _ _) _) =>
+      constr_eq environment Hlocal;
+      unfold Hlocal; zesu_register_collection_selection_if_enabled
+  end.
 
 Class ZesuStepKnownPairWitness : Prop :=
   zesu_step_known_pair_witness : True.
@@ -913,6 +964,7 @@ Ltac zesu_liAStepNoWrite :=
   | liAExp
   | liAOther
   | liUnfoldEarly
+  | zesu_register_collection_selection_if_enabled
   | liStep
   | liLetBindHint
   | liUnfoldLate
@@ -928,6 +980,7 @@ Ltac zesu_liAStepBeforeObservable :=
   | liAExp
   | liAOther
   | liUnfoldEarly
+  | zesu_register_collection_selection_if_enabled
   | liStep
   | liLetBindHint
   | liUnfoldLate
@@ -1383,6 +1436,7 @@ Ltac zesu_liAStep :=
   | zesu_primitive_tuple_if_enabled
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
+  | zesu_register_collection_selection_if_enabled
   | liStep
   | liLetBindHint
   | liUnfoldLate

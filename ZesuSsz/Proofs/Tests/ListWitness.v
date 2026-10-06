@@ -10,6 +10,16 @@ Proof.
   exact (zesu_list_cons_witness values count Hlength).
 Qed.
 
+Lemma list_witness_registered_disabled {A : Type} (values : list A)
+    (count : nat) (source : Prop) (Hsource : source)
+    `{derived : ZesuDerivedFacts source (length values = S count)} :
+  exists head tail, values = head :: tail /\ length tail = count.
+Proof.
+  Fail zesu_list_cons_witness_if_enabled.
+  exact (zesu_list_cons_witness values count
+    (zesu_derived_facts (ZesuDerivedFacts := derived) Hsource)).
+Qed.
+
 Require Import ZesuSsz.Automation.Switches.ListWitness.
 
 Lemma list_witness_owned_length {A : Type} (values : list A) (count : nat)
@@ -37,3 +47,19 @@ Proof. Fail zesu_list_cons_witness_if_enabled. exact I. Qed.
 
 Print Assumptions list_witness_owned_length.
 Print Assumptions list_witness_folded_length.
+
+Lemma list_witness_registered_length {A : Type} (values : list A)
+    (count : nat) (source : Prop) (Hsource : source)
+    `{derived : ZesuDerivedFacts source (length values = S count)} :
+  exists head tail, values = head :: tail /\ length tail = count.
+Proof. zesu_list_cons_witness_if_enabled. Qed.
+
+Lemma list_witness_registered_conjunction {A : Type} (values : list A)
+    (count : nat) (source : Prop) (Hsource : source)
+    `{derived : ZesuDerivedFacts source (length values = S count /\ True)} :
+  exists head tail, values = head :: tail /\ length tail = count.
+Proof. zesu_finish. Qed.
+
+Print Assumptions list_witness_registered_disabled.
+Print Assumptions list_witness_registered_length.
+Print Assumptions list_witness_registered_conjunction.
