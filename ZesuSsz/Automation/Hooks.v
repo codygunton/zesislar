@@ -554,6 +554,32 @@ Ltac zesu_primitive_tuple_guard_if_enabled :=
         rewrite (zesu_signed_zero_extend_64_128 value) in H
     end); first [assumption | bv_solve]].
 
+Class ZesuStepKnownPairWitness : Prop :=
+  zesu_step_known_pair_witness : True.
+
+(* An owned pure fact selects the value before resource matching starts. *)
+Ltac zesu_known_pair_witness_if_enabled :=
+  let _ := constr:(_ : ZesuStepKnownPairWitness) in
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A unit) ?body) =>
+      assert_fails (has_evar A);
+      match goal with
+      | H : ?predicate ?value |- _ =>
+          let T := type of value in constr_eq T A;
+          assert_fails (has_evar value);
+          let witness := constr:(li_pair value tt) in
+          let instantiated := eval cbv beta iota delta [li_fst li_snd] in
+            (body witness) in
+          let owned := type of H in
+          lazymatch instantiated with
+          | context [@bi_pure _ ?fact] =>
+              constr_eq fact owned;
+              notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+          end
+      end
+  end.
+
 Ltac zesu_record_constructor_witness T :=
   let guard := constr:(ltac:(
     assert_fails (has_evar T);
@@ -1144,6 +1170,7 @@ Ltac zesu_liAStep :=
   | liAExp
   | liAOther
   | liUnfoldEarly
+  | zesu_known_pair_witness_if_enabled
   | zesu_record_witness_if_enabled
   | zesu_primitive_tuple_if_enabled
   | zesu_liInstrPreMatch
