@@ -71,6 +71,22 @@ class SuccessorValidationTests(unittest.TestCase):
         self.assertEqual(result['evidence']['pending_goals'], ['pure debt'])
         self.assertEqual(result['evidence']['shelved_goals'], ['array bound'])
 
+    def test_unfolded_target_remains_unproved_and_preserves_native_debts(self):
+        fixture = json.loads((Path(__file__).parent / 'block' / 'testdata' /
+                              'unfolded_header_target.json').read_text())
+        self.groups['goals'] = [{'ty': fixture['target'], 'hyps': []}]
+        export_path = Path(self.export['path'])
+        export_path.write_text(json.dumps(self.groups))
+        self.export['sha256'] = digest(export_path)
+        result = self.plan()
+        self.assertEqual(result['evidence']['native_debts']['groups'], self.groups)
+        self.assertEqual(result['proof_status'], 'unproved')
+        self.assertFalse(result['contract_closed'])
+        self.assertEqual(result['evidence']['inherited_debts'],
+                         self.capture['inherited_debts'])
+        self.assertIn('decodeItemByteFoldStringHeader', fixture['target'])
+        self.assertNotIn('decodeItemEntryAt800d6a24', fixture['target'])
+
     def test_source_hash_change_rejects_design(self):
         (self.root / 'Contracts/Entry.v').write_text('Definition changed := True.')
         self.assertRaises(ValueError, self.plan)
