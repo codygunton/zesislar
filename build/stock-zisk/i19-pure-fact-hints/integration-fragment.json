@@ -1,0 +1,9 @@
+{
+  "generated_artifacts": [
+    {
+      "path": "build/stock-zisk/i19-pure-fact-hints/integration-report.json",
+      "sha256": "8d65e95c98c45b29666a11edfe6295fb8ea187809992dabba0faffb1f36f76cc",
+      "kind": "I19 generic bridge integration evidence"
+    }
+  ]
+}

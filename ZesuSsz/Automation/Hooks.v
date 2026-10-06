@@ -400,6 +400,18 @@ Ltac zesu_stack_reduce_closed term :=
   let reduced := eval vm_compute in term in
   change_no_check term with reduced in *.
 
+(* Normalize the selected hypothesis without searching other hypotheses. *)
+Ltac zesu_stack_normalize_hypothesis hypothesis := once (
+  repeat (
+    let statement := type of hypothesis in
+    match statement with
+    | context[?term] =>
+        lazymatch type of term with Z => progress (
+          zesu_stack_closed_term term;
+          let reduced := eval vm_compute in term in
+          change_no_check term with reduced in * ) end
+    end)).
+
 Ltac zesu_stack_arithmetic :=
   repeat first [progress zesu_split_folded_pure |
     match goal with H : _ /\ _ |- _ => destruct H end];
@@ -413,12 +425,22 @@ Ltac zesu_stack_arithmetic :=
       | _ => clear H
       end
   end;
-  repeat match goal with
-  | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress zesu_stack_reduce_closed term end
+  once (repeat match goal with
+  | H : ?statement |- _ =>
+      lazymatch statement with
+      | Z.le _ _ => idtac
+      | Z.lt _ _ => idtac
+      | @eq Z _ _ => idtac
+      end;
+      progress (zesu_stack_normalize_hypothesis H)
+  end);
+  once (repeat match goal with
   | |- context[?term] =>
-      lazymatch type of term with Z => progress zesu_stack_reduce_closed term end
-  end;
+      lazymatch type of term with Z => progress (
+        zesu_stack_closed_term term;
+        let reduced := eval vm_compute in term in
+        change_no_check term with reduced) end
+  end);
   bv_solve.
 
 Ltac zesu_stack_integer_address pointer :=
@@ -511,19 +533,64 @@ Class ZesuPureFactIntro {Sigma} (target source : iProp Sigma) : Prop :=
   zesu_pure_fact_intro : source ⊢ target.
 #[global] Hint Mode ZesuPureFactIntro + + - : typeclass_instances.
 
+Class ZesuPureFactAnchor {Sigma} (target anchor source : iProp Sigma) : Prop :=
+  zesu_pure_fact_anchor_intro : ZesuPureFactIntro target source.
+#[global] Hint Mode ZesuPureFactAnchor + + + - : typeclass_instances.
+
+(* Structural leaves retain owned facts. At least one leaf needs a hint. *)
+Ltac zesu_pure_fact_evidence P :=
+  constr:(ltac:(first [
+    let evidence := constr:(_ : SimplAnd P True) in
+    exact ((proj1 evidence I, true))
+  | lazymatch P with
+    | ?left /\ ?right =>
+        let left_evidence := zesu_pure_fact_evidence left in
+        let right_evidence := zesu_pure_fact_evidence right in
+        lazymatch left_evidence with (?lp, ?lh) =>
+          lazymatch right_evidence with (?rp, ?rh) =>
+            exact (conj lp rp, orb lh rh)
+          end
+        end
+    end
+  | match goal with Howned : P |- _ => exact (Howned, false) end
+  | let evidence := constr:(eq_refl : P) in exact (evidence, false) ])
+    : (P * bool)%type).
+
+Ltac zesu_registered_pure_fact P :=
+  let evidence := zesu_pure_fact_evidence P in
+  lazymatch evidence with (?proof, ?used) =>
+    let used := eval cbv in used in
+    lazymatch used with true => constr:(proof) end
+  end.
+
 (* Registered introductions retain their resource and pure obligations. *)
 Ltac zesu_pure_fact_hints_if_enabled :=
   let _ := constr:(_ : ZesuStepPureFactHints) in
   lazymatch goal with
   | |- envs_entails _ ?target =>
-      let evidence := constr:(_ : ZesuPureFactIntro target _) in
-      lazymatch type of evidence with
-      | ZesuPureFactIntro _ ?source =>
-          iApply (@zesu_pure_fact_intro _ target source evidence)
-      end
+      first [
+        lazymatch target with
+        | bi_pure ?P =>
+            let evidence := zesu_registered_pure_fact P in
+            iPureIntro; exact evidence
+        end
+      | let evidence := constr:(_ : ZesuPureFactIntro target _) in
+        lazymatch type of evidence with
+        | ZesuPureFactIntro _ ?source =>
+            iApply (@zesu_pure_fact_intro _ target source evidence)
+        end
+      | iMatchHyp ltac:(fun name source =>
+          let evidence := constr:(_ : ZesuPureFactIntro target source) in
+          iApply (@zesu_pure_fact_intro _ target source evidence))
+      | iMatchHyp ltac:(fun name anchor =>
+          let evidence := constr:(_ : ZesuPureFactAnchor target anchor _) in
+          lazymatch type of evidence with
+          | ZesuPureFactAnchor _ _ ?source =>
+              let intro := constr:(@zesu_pure_fact_anchor_intro _ target anchor source evidence) in
+              iApply (@zesu_pure_fact_intro _ target source intro)
+          end) ]
   | |- ?P =>
-      let evidence := constr:(_ : SimplAnd P True) in
-      exact ((proj1 evidence) I)
+      let evidence := zesu_registered_pure_fact P in exact evidence
   end.
 
 (* Only the requested list shape permits extraction of owned pure facts. *)
