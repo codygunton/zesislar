@@ -1,0 +1,736 @@
+{
+  "item": "rootb926-adapters",
+  "measurement_root": "b9263d3b8cb806fc9ba2e4e7eef1dfcab0b3a97c",
+  "result": "Ten named obligations retain residuals. Three reach CPU1200. No adapter, block, or Level1 contract closes.",
+  "counts": {
+    "native-residual": 10,
+    "cpu-limit": 3
+  },
+  "adapter_closures": 0,
+  "block_closures": 0,
+  "contract_closures": 0,
+  "rows": [
+    {
+      "obligation": "decodeItemJoin698cFrom697c",
+      "source_pc": "0x800d697c",
+      "target_pc": "0x800d698c",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 53.628243000000005,
+      "compiler_wall_s": 53.86315301700961,
+      "wrapper_wall_s": 55.46852397406474,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 1584176,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "mem_mapsto_kind",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "certificate": null,
+      "evidence": {
+        "sha256": "c247f85590e38bb0266619eade4cb911788213c8748cdc6e5d2f9959b9f47056",
+        "bytes": 142262,
+        "archive": "/home/cody/zesislar-archive/sha256/c2/c247f85590e38bb0266619eade4cb911788213c8748cdc6e5d2f9959b9f47056"
+      },
+      "first_residual_class": "memory-kind-witness",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 290.44127100000003,
+        "active_count": 3,
+        "first_goal": "mem_mapsto_kind"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin698cFrom69e8",
+      "source_pc": "0x800d69e8",
+      "target_pc": "0x800d698c",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 52.25405800000001,
+      "compiler_wall_s": 52.433872574009,
+      "wrapper_wall_s": 1076.0402030500118,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 1639128,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "mem_mapsto_kind",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "certificate": null,
+      "evidence": {
+        "sha256": "9ee72472e6ecddaaf1032c4ecf0b0297ecaf3a124babfa66a86d4298629113f1",
+        "bytes": 166043,
+        "archive": "/home/cody/zesislar-archive/sha256/9e/9ee72472e6ecddaaf1032c4ecf0b0297ecaf3a124babfa66a86d4298629113f1"
+      },
+      "first_residual_class": "memory-kind-witness",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 366.372776,
+        "active_count": 3,
+        "first_goal": "mem_mapsto_kind"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6a24From6a14",
+      "source_pc": "0x800d6a14",
+      "target_pc": "0x800d6a24",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 4.0001809999999995,
+      "compiler_wall_s": 4.016845196019858,
+      "wrapper_wall_s": 1154.4227137350244,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 1004568,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "(0 < n)%Z",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "certificate": null,
+      "evidence": {
+        "sha256": "ac7f15d713750bc840dd12ea6ab25466d2221d0f4a66f2db86233fd0150b05a3",
+        "bytes": 40347,
+        "archive": "/home/cody/zesislar-archive/sha256/ac/ac7f15d713750bc840dd12ea6ab25466d2221d0f4a66f2db86233fd0150b05a3"
+      },
+      "first_residual_class": "positive-width-guard",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 4.831363,
+        "active_count": 3,
+        "first_goal": "(0 < n)%Z"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6a24Backedge",
+      "source_pc": "0x800d6a24",
+      "target_pc": "0x800d6a24",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 743.3553019999999,
+      "compiler_wall_s": 745.7814944330603,
+      "wrapper_wall_s": 894.2054957849905,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 3038668,
+      "limit": null,
+      "policy": {
+        "completion_entry": "0x800d6a24",
+        "cpu_seconds": 2400,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "optimization_debt": "issue#10",
+        "wall_seconds": null
+      },
+      "active_goal_count": 20,
+      "first_goal": "(decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "certificate": null,
+      "evidence": {
+        "sha256": "359602e6bc0dc41b6e5d947a847e6b7b2671bb6018876ce2c7390e6e01447e91",
+        "bytes": 450056,
+        "archive": "/home/cody/zesislar-archive/sha256/35/359602e6bc0dc41b6e5d947a847e6b7b2671bb6018876ce2c7390e6e01447e91"
+      },
+      "first_residual_class": "source-domain",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 984.8360859999999,
+        "active_count": 20,
+        "first_goal": "(decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ac4From6ab4",
+      "source_pc": "0x800d6ab4",
+      "target_pc": "0x800d6ac4",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 4.410804,
+      "compiler_wall_s": 4.449207582976669,
+      "wrapper_wall_s": 11.177211000933312,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 1004516,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "(0 < n)%Z",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "certificate": null,
+      "evidence": {
+        "sha256": "a255477d779690ef57d35c35469ab8262f4cc78308e2b77c7facadab1d4a78f5",
+        "bytes": 40328,
+        "archive": "/home/cody/zesislar-archive/sha256/a2/a255477d779690ef57d35c35469ab8262f4cc78308e2b77c7facadab1d4a78f5"
+      },
+      "first_residual_class": "positive-width-guard",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 6.945914,
+        "active_count": 3,
+        "first_goal": "(0 < n)%Z"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ac4Backedge",
+      "source_pc": "0x800d6ac4",
+      "target_pc": "0x800d6ac4",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 773.768262,
+      "compiler_wall_s": 776.2052224490326,
+      "wrapper_wall_s": 777.9406417430146,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 2944680,
+      "limit": null,
+      "policy": {
+        "completion_entry": "0x800d6ac4",
+        "cpu_seconds": 2400,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "optimization_debt": "issue#10",
+        "wall_seconds": null
+      },
+      "active_goal_count": 20,
+      "first_goal": "(decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "certificate": null,
+      "evidence": {
+        "sha256": "117e7213577b036637194753da36763e599987c205a8400a00162ae0f866b8f9",
+        "bytes": 450007,
+        "archive": "/home/cody/zesislar-archive/sha256/11/117e7213577b036637194753da36763e599987c205a8400a00162ae0f866b8f9"
+      },
+      "first_residual_class": "source-domain",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 958.6798610000001,
+        "active_count": 20,
+        "first_goal": "(decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6970",
+      "source_pc": "0x800d6960",
+      "target_pc": "0x800d6ae0",
+      "class": "cpu-limit",
+      "primary_entered": true,
+      "compiler_cpu_s": 1199.5069780000001,
+      "compiler_wall_s": 1204.438442582963,
+      "wrapper_wall_s": 4304.287241188926,
+      "compiler_exit": -9,
+      "wrapper_exit": 1,
+      "peak_kib": 2907432,
+      "limit": "cpu",
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": null,
+      "first_goal": null,
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "unavailable",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "b9e41c14b74359819751ffb1f792326381a08e7c60bd136105ee0b5271d60e8d",
+      "certificate": null,
+      "evidence": {
+        "sha256": "88accae6559be0067d4fede17fd681bed7ccb21d51fe51a83ad2c241a90092a1",
+        "bytes": 7950,
+        "archive": "/home/cody/zesislar-archive/sha256/88/88accae6559be0067d4fede17fd681bed7ccb21d51fe51a83ad2c241a90092a1"
+      },
+      "first_residual_class": "cpu-limit",
+      "root340_comparison": {
+        "outcome": "primary-unavailable",
+        "cpu_s": 1199.879248,
+        "active_count": null,
+        "first_goal": null
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From69e0",
+      "source_pc": "0x800d69e0",
+      "target_pc": "0x800d6ae0",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 8.300028999999999,
+      "compiler_wall_s": 8.348369264043868,
+      "wrapper_wall_s": 10.757766589988023,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 1045404,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 1,
+      "first_goal": "(DecodeItemReturnFacts.decodeItemRejectedFacts args)",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "certificate": null,
+      "evidence": {
+        "sha256": "7f8be1acb6d73d254726585668e25f2db2d302117f35baecd5ca86bdf05dea81",
+        "bytes": 17393,
+        "archive": "/home/cody/zesislar-archive/sha256/7f/7f8be1acb6d73d254726585668e25f2db2d302117f35baecd5ca86bdf05dea81"
+      },
+      "first_residual_class": "rejection-facts",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 14.213837,
+        "active_count": 1,
+        "first_goal": "(DecodeItemReturnFacts.decodeItemRejectedFacts args)"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6a08",
+      "source_pc": "0x800d6a08",
+      "target_pc": "0x800d6ae0",
+      "class": "cpu-limit",
+      "primary_entered": true,
+      "compiler_cpu_s": 1199.758172,
+      "compiler_wall_s": 1204.9060849589296,
+      "wrapper_wall_s": 1205.6816993940156,
+      "compiler_exit": -9,
+      "wrapper_exit": 1,
+      "peak_kib": 2545000,
+      "limit": "cpu",
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": null,
+      "first_goal": null,
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "unavailable",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "5ffa808d7f5a94ace32b4e0c9d8f74597089784733e3e18aa286c372f991d10b",
+      "certificate": null,
+      "evidence": {
+        "sha256": "1d919909067ebd5d7ef2586f5be3e6f644905f9ea3b4aca22c7b033229a3368d",
+        "bytes": 7945,
+        "archive": "/home/cody/zesislar-archive/sha256/1d/1d919909067ebd5d7ef2586f5be3e6f644905f9ea3b4aca22c7b033229a3368d"
+      },
+      "first_residual_class": "cpu-limit",
+      "root340_comparison": {
+        "outcome": "primary-unavailable",
+        "cpu_s": 1199.786754,
+        "active_count": null,
+        "first_goal": null
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6a38",
+      "source_pc": "0x800d6a38",
+      "target_pc": "0x800d6ae0",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 79.654234,
+      "compiler_wall_s": 79.87353504507337,
+      "wrapper_wall_s": 91.52068383398,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 1852608,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "mem_mapsto_kind",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "certificate": null,
+      "evidence": {
+        "sha256": "703281e11cf270cbb62d31964b629195a504392356a106786933b18c70d047ba",
+        "bytes": 185565,
+        "archive": "/home/cody/zesislar-archive/sha256/70/703281e11cf270cbb62d31964b629195a504392356a106786933b18c70d047ba"
+      },
+      "first_residual_class": "memory-kind-witness",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 621.008524,
+        "active_count": 3,
+        "first_goal": "mem_mapsto_kind"
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6a6c",
+      "source_pc": "0x800d6a6c",
+      "target_pc": "0x800d6ae0",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 463.108747,
+      "compiler_wall_s": 464.3767581860302,
+      "wrapper_wall_s": 466.0249683239963,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 2289128,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "mem_mapsto_kind",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "38cd7dbcf951f6e7431a555afb219d92884e399b5cfba5cbdb5220fba0064ca8",
+      "certificate": null,
+      "evidence": {
+        "sha256": "9944f123dac5367321c3f1d76060ff93f75143aea2e8052a15a3351f02e4ffb4",
+        "bytes": 175290,
+        "archive": "/home/cody/zesislar-archive/sha256/99/9944f123dac5367321c3f1d76060ff93f75143aea2e8052a15a3351f02e4ffb4"
+      },
+      "first_residual_class": "memory-kind-witness",
+      "root340_comparison": {
+        "outcome": "primary-unavailable",
+        "cpu_s": 1199.808689,
+        "active_count": null,
+        "first_goal": null
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6aa8",
+      "source_pc": "0x800d6aa8",
+      "target_pc": "0x800d6ae0",
+      "class": "cpu-limit",
+      "primary_entered": true,
+      "compiler_cpu_s": 1199.857952,
+      "compiler_wall_s": 1202.9529560880037,
+      "wrapper_wall_s": 1234.9914607610554,
+      "compiler_exit": -9,
+      "wrapper_exit": 1,
+      "peak_kib": 2597708,
+      "limit": "cpu",
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": null,
+      "first_goal": null,
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "unavailable",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "d8ba332f2867563f9c395c24597238d38841cf83ed88feab6990efeab80cb7af",
+      "certificate": null,
+      "evidence": {
+        "sha256": "c68fbd5106e2420e05ff5140ecddb76adfa5ca27059102bfdf2365d81231bc06",
+        "bytes": 7945,
+        "archive": "/home/cody/zesislar-archive/sha256/c6/c68fbd5106e2420e05ff5140ecddb76adfa5ca27059102bfdf2365d81231bc06"
+      },
+      "first_residual_class": "cpu-limit",
+      "root340_comparison": {
+        "outcome": "primary-unavailable",
+        "cpu_s": 1199.8648210000001,
+        "active_count": null,
+        "first_goal": null
+      }
+    },
+    {
+      "obligation": "decodeItemJoin6ae0From6ad8",
+      "source_pc": "0x800d6ad8",
+      "target_pc": "0x800d6ae0",
+      "class": "native-residual",
+      "primary_entered": true,
+      "compiler_cpu_s": 96.004868,
+      "compiler_wall_s": 96.273338073981,
+      "wrapper_wall_s": 102.96272740792483,
+      "compiler_exit": 1,
+      "wrapper_exit": 1,
+      "peak_kib": 2106848,
+      "limit": null,
+      "policy": {
+        "cpu_seconds": 1200,
+        "kind": "cpu",
+        "memory_kib": 6291456,
+        "wall_seconds": null
+      },
+      "active_goal_count": 3,
+      "first_goal": "mem_mapsto_kind",
+      "groups": {
+        "given_up": "unavailable",
+        "goals": "Coq text",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "inherited_debts": {},
+      "statement_sha256": "14e43a64fcd03e0afba600442d0583dc5d94b877bde8f1b5f56df77f92b87f38",
+      "certificate": null,
+      "evidence": {
+        "sha256": "61bc2e71a36aa2ddcff915e1103223959e106065d684753b5a61bb8809dd5507",
+        "bytes": 189222,
+        "archive": "/home/cody/zesislar-archive/sha256/61/61bc2e71a36aa2ddcff915e1103223959e106065d684753b5a61bb8809dd5507"
+      },
+      "first_residual_class": "memory-kind-witness",
+      "root340_comparison": {
+        "outcome": "residual",
+        "cpu_s": 506.704845,
+        "active_count": 3,
+        "first_goal": "mem_mapsto_kind"
+      }
+    }
+  ],
+  "raw_report": {
+    "sha256": "b7e58ce7d60596b29bd1d4d1f75d7dd09e8cdcbd01df9756ff241eb537e5e9ba",
+    "bytes": 1688667,
+    "archive": "/home/cody/zesislar-archive/sha256/b7/b7e58ce7d60596b29bd1d4d1f75d7dd09e8cdcbd01df9756ff241eb537e5e9ba"
+  },
+  "archive_index": {
+    "sha256": "cf081b893268ad390e3d3bb24e2d6742145aa23f9d8533cd8df3d2e30f202e07",
+    "bytes": 2515580,
+    "archive": "/home/cody/zesislar-archive/sha256/cf/cf081b893268ad390e3d3bb24e2d6742145aa23f9d8533cd8df3d2e30f202e07",
+    "records": 6232
+  },
+  "input_binding": {
+    "sha256": "29998a8fcfaf8399fb219a52abcc384e6216405a89692e72fbe666d61847773f",
+    "bytes": 1544805,
+    "archive": "/home/cody/zesislar-archive/sha256/29/29998a8fcfaf8399fb219a52abcc384e6216405a89692e72fbe666d61847773f"
+  },
+  "activation": {
+    "sha256": "e680d9873fb297d566ec6dabd5660e11816156d2079de475cbfd51d773a9215c",
+    "bytes": 13796,
+    "archive": "/home/cody/zesislar-archive/sha256/e6/e680d9873fb297d566ec6dabd5660e11816156d2079de475cbfd51d773a9215c"
+  },
+  "admission": {
+    "sha256": "20921327627d1cb7436f85e02d1a52805423456eec2b6428d61ec4cd1d22c645",
+    "bytes": 42723,
+    "archive": "/home/cody/zesislar-archive/sha256/20/20921327627d1cb7436f85e02d1a52805423456eec2b6428d61ec4cd1d22c645"
+  },
+  "typing": {
+    "sha256": "263bc3fed8088d2814221e73292a2eb23d3ddee4da5e32a5daada772fcc1aac2",
+    "bytes": 11790,
+    "archive": "/home/cody/zesislar-archive/sha256/26/263bc3fed8088d2814221e73292a2eb23d3ddee4da5e32a5daada772fcc1aac2"
+  },
+  "audit": {
+    "exact_statements": 13,
+    "unchanged_primaries": 13,
+    "primary_entered": 13,
+    "certificates": 0,
+    "inherited_debts_empty": true,
+    "candidate_excluded": true
+  },
+  "switches": 21,
+  "hint_modules": 10,
+  "workers": 1,
+  "elapsed_s": 11388.03296071,
+  "limits": "CPU1200/6GiB; two backedges CPU2400/6GiB; no wall cutoff.",
+  "diagnostic_limits": "Active Coq goals are available for ten residuals. Pet stack/shelf/given_up remain unavailable. Three CPU failures have no final active groups.",
+  "preflight_failure": "The first memory reservation exceeded the 70-percent available-memory budget. No primary ran. The changed reservation admitted two block workers and one adapter worker. Coherent application typing passed before all13 primaries.",
+  "no_native_repeats": true,
+  "gate": {
+    "status": "passed",
+    "wall_s": 61,
+    "jobs": 6,
+    "label": "child-a-rootb926-adapters-report-check-fast",
+    "final_dune_batch": {
+      "error_class": null,
+      "exit": 0,
+      "ms": 423,
+      "rss_kb": 152868,
+      "target": "check-fast"
+    },
+    "admission_wait_s": null,
+    "log": {
+      "sha256": "a698d24570d5f0015f80c13edc7dd8cb6937a4331228750ffd139688d216fa33",
+      "archive": "/home/cody/zesislar-archive/sha256/a6/a698d24570d5f0015f80c13edc7dd8cb6937a4331228750ffd139688d216fa33"
+    }
+  },
+  "comparison_limit": "Exact statements and primary bodies match root340. Approved source changes, FoldBackEdgeWitnesses, activation, workers, and admission differ. No sole-rule effect follows.",
+  "typing_application_audit": {
+    "scope": "Thirteen exact named Lemma/Abort applications. Typing is not machine closure.",
+    "record_sha256": "263bc3fed8088d2814221e73292a2eb23d3ddee4da5e32a5daada772fcc1aac2",
+    "object": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i34-rootb926/_build/adapters/bindings/ApplicationChecks.vo",
+      "sha256": "9b9b24d76ebc52bcab0013329e7e573c2566cc00037097db4c4a5f0dda8d1ca5"
+    },
+    "source_sha256": "ddf8baa0a8aa6494fb51812276ee2b90c0e6764690785ea7413392f70949b07c",
+    "declaration_hashes": {
+      "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": "3988f6422be3d9ccd16600d4824a89c62efac350a333792b849718dcd0bf2d01",
+      "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "2fe61af2ef82bd20327596d72a00169e334d2e34308f9205f11b5ee88279ca3d",
+      "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe"
+    }
+  },
+  "source_comparison": {
+    "root340_statement_hashes_identical": 13,
+    "root340_primary_proof_bodies_identical": 13,
+    "candidate_excluded": true
+  },
+  "rule29_activation": "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization ACTIVE",
+  "measurement_exclusions": [
+    "b0056308",
+    "S40GuardFacts",
+    "S41",
+    "S43",
+    "I25 candidate",
+    "I28 candidate"
+  ],
+  "accounting": {
+    "start": "2026-10-06T18:35:58.582000+00:00",
+    "end": "2026-10-06T21:58:46.082690+00:00",
+    "child_min": 202.79167816666669,
+    "tokens_child": 5535345,
+    "start_token_event": "2026-10-06T18:27:01.230000+00:00",
+    "start_tokens": 400152296,
+    "end_token_event": "2026-10-06T21:58:09.650000+00:00",
+    "end_tokens": 405687641,
+    "parent_min": null,
+    "tokens_parent": null,
+    "overlap": "This window overlaps all24 execution, S43 review, and earlier evidence packaging."
+  }
+}
