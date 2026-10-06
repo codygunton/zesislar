@@ -139,6 +139,16 @@ class SuccessorValidationTests(unittest.TestCase):
             del incomplete[key]
             self.assertRaises(ValueError, debt_groups, incomplete)
 
+    def test_unavailable_null_groups_do_not_equal_verified_empty_groups(self):
+        empty = {key: [] for key in self.groups}
+        self.assertTrue(debt_groups(empty)['empty'])
+        for key in empty:
+            with self.subTest(group=key):
+                unavailable = deepcopy(empty)
+                unavailable[key] = None
+                self.assertRaisesRegex(ValueError, 'Unavailable goal group',
+                                       debt_groups, unavailable)
+
     def test_id_only_shelf_is_retained_without_inventing_a_proposition(self):
         groups = deepcopy(self.groups)
         groups['shelf'] = [42]
