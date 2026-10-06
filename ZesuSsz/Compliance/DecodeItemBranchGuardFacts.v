@@ -211,3 +211,67 @@ Qed.
 
 Print Assumptions decodeItemNonemptyInputReadableBounds.
 Print Assumptions decodeItemNonemptyInputPhysicalByteBounds.
+
+Lemma decodeItemLongStringHeaderGuardRejected args (register : bv 64)
+    (inputPrefix : byte) (rest : list byte) :
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
+  decodeItemInputHead args inputPrefix rest ->
+  184 <= bv_unsigned inputPrefix <= 191 ->
+  bv_unsigned register = bv_unsigned inputPrefix ->
+  bv_unsigned (Z_to_bv 8 (bv_unsigned register + 73)) >=
+    decodeItemInputLength args ->
+  decodeItemRejectedFacts args.
+Proof.
+  intros Hdomain Hhead Hclass Hvalue Hguard.
+  assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + 73)) =
+    bv_unsigned inputPrefix - 183) by bv_solve.
+  rewrite Hheader in Hguard.
+  eapply (decodeItemLongStringHeaderRejected args inputPrefix rest);
+    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
+  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
+  rewrite -Hinput Z.add_1_l.
+  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
+Qed.
+
+#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
+  match goal with
+  | Hhead : decodeItemInputHead args ?prefix ?rest,
+    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix |- _ =>
+    unfold SimplAnd; split; [intros _;
+      eapply (decodeItemLongStringHeaderGuardRejected args register prefix rest);
+        solve [eassumption | split; assumption] | intros _; exact I]
+  end : typeclass_instances.
+
+Print Assumptions decodeItemLongStringHeaderGuardRejected.
+
+Lemma decodeItemLongListHeaderGuardRejected args (register : bv 64)
+    (inputPrefix : byte) (rest : list byte) :
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
+  decodeItemInputHead args inputPrefix rest ->
+  248 <= bv_unsigned inputPrefix <= 255 ->
+  bv_unsigned register = bv_unsigned inputPrefix ->
+  bv_unsigned (Z_to_bv 8 (bv_unsigned register + 9)) >=
+    decodeItemInputLength args ->
+  decodeItemRejectedFacts args.
+Proof.
+  intros Hdomain Hhead Hclass Hvalue Hguard.
+  assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + 9)) =
+    bv_unsigned inputPrefix - 247) by bv_solve.
+  rewrite Hheader in Hguard.
+  eapply (decodeItemLongListHeaderRejected args inputPrefix rest);
+    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
+  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
+  rewrite -Hinput Z.add_1_l.
+  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
+Qed.
+
+#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
+  match goal with
+  | Hhead : decodeItemInputHead args ?prefix ?rest,
+    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix |- _ =>
+    unfold SimplAnd; split; [intros _;
+      eapply (decodeItemLongListHeaderGuardRejected args register prefix rest);
+        solve [eassumption | split; assumption] | intros _; exact I]
+  end : typeclass_instances.
+
+Print Assumptions decodeItemLongListHeaderGuardRejected.
