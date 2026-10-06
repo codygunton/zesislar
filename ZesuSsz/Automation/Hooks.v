@@ -682,6 +682,40 @@ Ltac zesu_select_register_collection r f hypotheses :=
   | Esnoc ?rest _ _ => zesu_select_register_collection r f rest
   end.
 
+(* Plain register lookup requires the complete register key. A field key alone
+   does not establish membership for a complete register lookup. *)
+Ltac zesu_plain_register_collection_index r regs :=
+  let cells := eval hnf in regs in
+  lazymatch cells with
+  | (?key, _) :: ?rest =>
+      let member := eval cbv in (reg_kind_eqb key (KindReg r)) in
+      lazymatch member with
+      | true => constr:(O)
+      | false =>
+          let index := zesu_plain_register_collection_index r rest in
+          constr:(S index)
+      end
+  end.
+
+Ltac zesu_select_plain_register_collection r hypotheses :=
+  lazymatch hypotheses with
+  | Esnoc ?rest ?id (reg_col ?regs) =>
+      first [
+        assert_fails (has_evar regs);
+        let index := zesu_plain_register_collection_index r regs in
+        let Hmember := fresh "HregisterMember" in
+        assert (Hmember : is_Some
+          (list_find_idx_bool (fun x => reg_kind_eqb x.1 (KindReg r)) regs)) by
+          (exists index; reflexivity);
+        clear Hmember;
+        iApply find_in_context_reg_mapsto_col;
+        iExists regs;
+        notypeclasses refine (tac_find_hyp _ id _ _ _ _ _);
+          [li_pm_reflexivity | li_pm_reduce]
+      | zesu_select_plain_register_collection r rest ]
+  | Esnoc ?rest _ _ => zesu_select_plain_register_collection r rest
+  end.
+
 Ltac zesu_register_collection_selection_if_enabled :=
   let _ := constr:(_ : ZesuStepRegisterCollectionSelection) in
   lazymatch goal with
@@ -689,8 +723,16 @@ Ltac zesu_register_collection_selection_if_enabled :=
       (find_in_context (FindStructRegMapsTo ?r ?f) _) =>
       first [zesu_select_register_collection r f spatial |
              zesu_select_register_collection r f persistent]
+  | |- envs_entails (Envs ?persistent ?spatial _)
+      (find_in_context (FindRegMapsTo ?r) _) =>
+      first [zesu_select_plain_register_collection r spatial |
+             zesu_select_plain_register_collection r persistent]
   | Hlocal := (Envs _ _ _) |-
       envs_entails ?environment (find_in_context (FindStructRegMapsTo _ _) _) =>
+      constr_eq environment Hlocal;
+      unfold Hlocal; zesu_register_collection_selection_if_enabled
+  | Hlocal := (Envs _ _ _) |-
+      envs_entails ?environment (find_in_context (FindRegMapsTo _) _) =>
       constr_eq environment Hlocal;
       unfold Hlocal; zesu_register_collection_selection_if_enabled
   end.
@@ -719,6 +761,30 @@ Ltac zesu_known_pair_witness_if_enabled :=
               notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
           end
       end
+  end.
+
+Class ZesuStepEvarSideconditionGuard : Prop :=
+  zesu_step_evar_sidecondition_guard : True.
+
+(* Refuse unresolved pure side conditions before arithmetic search. *)
+Ltac zesu_condition_has_unresolved_evar condition :=
+  first [ has_evar condition
+        | multimatch goal with
+          | local := ?body : _ |- _ =>
+              lazymatch condition with
+              | context[local] => zesu_condition_has_unresolved_evar body
+              end
+          end ].
+
+Ltac zesu_defer_unresolved_sidecondition_if_enabled :=
+  let enabled := constr:(_ : ZesuStepEvarSideconditionGuard) in
+  lazymatch goal with
+  | |- envs_entails _ _ => fail 0
+  | |- @bi_entails _ _ _ => fail 0
+  | |- ?condition =>
+      let sort := type of condition in
+      constr_eq sort Prop;
+      zesu_condition_has_unresolved_evar condition
   end.
 
 Class ZesuStepPureWitnessConstraints : Prop :=
@@ -1105,6 +1171,15 @@ Ltac zesu_region_arithmetic_statement statement :=
       zesu_region_arithmetic_statement right
   end.
 
+Class ZesuStepRegionFaultNormalization : Prop :=
+  zesu_step_region_fault_normalization : True.
+
+(* Check the selected term without traversing other local declarations. *)
+Ltac zesu_region_reduce_closed term :=
+  tryif let _ := constr:(_ : ZesuStepRegionFaultNormalization) in idtac
+  then zesu_stack_reduce_closed term
+  else reduce_closed term.
+
 Ltac zesu_region_fault_arithmetic :=
   lazymatch goal with |- ~ _ => intro | _ => idtac end;
   repeat first [progress zesu_split_folded_pure |
@@ -1124,9 +1199,9 @@ Ltac zesu_region_fault_arithmetic :=
   end;
   repeat match goal with
   | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress reduce_closed term end
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   | |- context[?term] =>
-      lazymatch type of term with Z => progress reduce_closed term end
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   end;
   try (rewrite zesu_signed_zero_extend_add_64_128; last bv_solve);
   repeat match goal with

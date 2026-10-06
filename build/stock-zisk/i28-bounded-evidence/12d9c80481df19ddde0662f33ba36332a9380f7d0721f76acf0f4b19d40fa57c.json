@@ -1,0 +1,608 @@
+{
+  "accounting": {
+    "child_minutes": 80.75090191666666,
+    "end_utc": "2026-10-06T16:30:23.633711+00:00",
+    "parent_metrics": "pending",
+    "session_log": "/home/cody/.codex/sessions/2026/10/03/rollout-2026-10-03T20-37-34-01a10458-3f9e-7041-a778-68d71375de29.jsonl",
+    "start_utc": "2026-10-06T15:09:38.579596+00:00",
+    "token_before_end": {
+      "timestamp": "2026-10-06T16:28:47.226Z",
+      "total_tokens": 371825492
+    },
+    "token_before_start": {
+      "timestamp": "2026-10-06T15:09:26.136Z",
+      "total_tokens": 362103999
+    },
+    "tokens_child": 9721493,
+    "window_basis": "Actual initial3b preparation artifact to completed raw capture audit; dispatch time not used."
+  },
+  "adjacent_conclusions": {
+    "active_goals_each": 6,
+    "address": "LET2=(Z_to_bv64(outputPointer args)+32)%bv",
+    "after262": [
+      "Positive compute_wp_exp(Val_Bool LET3).",
+      "Negative lower-RAM assertion remains."
+    ],
+    "before261": [
+      "Positive lower-RAM Assert(LET3).",
+      "Negative lower-RAM Assert(Not LET3)."
+    ],
+    "condition": "LET3=bool_decide(bv_signed(bv_zero_extend128 LET2)>=bv_signed(BV128 2684354560))",
+    "correction": "The earlier tick-only observer captured one selected branch. It did not establish removal of the negative branch.",
+    "cpu_delta_limit": "Separate module totals include observation, final recorders, and process variation. They do not isolate tactic CPU.",
+    "cpu_delta_raw_adjacent_seconds": 2.642827000000004,
+    "hidden_markers_after_output_correction": 0,
+    "internal_arithmetic_rule_or_hint": "unavailable; no internal instrumentation/profile exists",
+    "matched_outer_handler": "zesu_run_pass_steps",
+    "observation_poll_resolution_seconds": 0.2,
+    "observed_outer_interval_k262_seconds_approximate": 2.8,
+    "rss_delta_raw_adjacent_kib": 35568,
+    "source_candidate_only": "Hooks.zesu_liAStep tries RegionFault before RamFault before ordinary Islaris rules. RegionFault invokes zesu_region_fault_arithmetic, but this call is not independently measured.",
+    "wp_goals_each": 2,
+    "wrapped_sideconditions_each": 4
+  },
+  "blocks_closed": 0,
+  "check_fast": "Not run for this diagnostic-only report; no commit requested or created.",
+  "compiled_objects": "Only diagnostic modules; compiler/object success is not a target certificate.",
+  "compiler_limits": {
+    "cpu_seconds": 1200,
+    "memory_gib": 6,
+    "wall_seconds": null
+  },
+  "control_checks": {
+    "activation": {
+      "archive": "/home/cody/zesislar-archive/sha256/f8/f89fa85d0d32c22b38acd5b4fae232fc65cdf74180f0ac44f726be2d4e65d16e",
+      "bytes": 6139,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/sealed-002/activation.json",
+      "sha256": "f89fa85d0d32c22b38acd5b4fae232fc65cdf74180f0ac44f726be2d4e65d16e"
+    },
+    "activation_log": {
+      "archive": "/home/cody/zesislar-archive/sha256/a4/a46318728bfd9f37c0583eeb095b8ad8ad4bf4793cd629dfd52c116afd5064a1",
+      "bytes": 7140,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/sealed-002/activation-result/compiler.log",
+      "sha256": "a46318728bfd9f37c0583eeb095b8ad8ad4bf4793cd629dfd52c116afd5064a1"
+    },
+    "limitations": "No uninstrumented native state-equivalence proof ran. Observation work consumes CPU and memory. The verified test covers failure neutrality and preserved ordered alternatives.",
+    "mechanical_order_check": {
+      "v1": [
+        "zesu_open_requested_instr_bundle",
+        "zesu_open_requested_struct_sys_package",
+        "zesu_open_requested_saved_x9_package",
+        "zesu_open_matching_resource_package",
+        "zesu_finish_pure_resources",
+        "zesu_pack_owned_register_goal",
+        "zesu_pack_shaped_register_goal",
+        "zesu_pack_owned_word_goal",
+        "zesu_normalize_packed_word_subsume",
+        "zesu_prepare_initialized_array_read",
+        "zesu_finish_initialized_array_read",
+        "zesu_liAStep",
+        "zesu_open_matching_two_level_frame",
+        "zesu_extract_matching_descriptor_pure"
+      ],
+      "v2": [
+        "zesu_array_load_preselect",
+        "zesu_array_load_priority",
+        "zesu_conjunct_match_if_enabled",
+        "zesu_run_pass_steps",
+        "zesu_close_matching_trace_tail",
+        "zesu_open_trace_exist",
+        "zesu_rule_set_v2_steps"
+      ]
+    },
+    "observer": "A forced observer failure returned an explicit unavailable marker and preserved ordered rejection/acceptance and exact bound.",
+    "v1_test": {
+      "archive": "/home/cody/zesislar-archive/sha256/b3/b33faf48d9f49ca48dfb6da9f7b049de12b8646e0e0c393d9cd781f603d9a4b2",
+      "bytes": 13180,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/independent-counter-001/results.json",
+      "sha256": "b33faf48d9f49ca48dfb6da9f7b049de12b8646e0e0c393d9cd781f603d9a4b2"
+    },
+    "v2_repaired_test": {
+      "archive": "/home/cody/zesislar-archive/sha256/d8/d8d2f34eda0694713ee207d928b27cfe56daa179c70898b8c2e9e82e138220ab",
+      "bytes": 6709,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/independent-counter-002/results.json",
+      "sha256": "d8d2f34eda0694713ee207d928b27cfe56daa179c70898b8c2e9e82e138220ab"
+    }
+  },
+  "dependencies": {
+    "archive": "/home/cody/zesislar-archive/sha256/b5/b5e5e646b1fd11fe63c2d42afce8b4fdb95e460b2707dff7b2731fd422d8b8e6",
+    "bytes": 146029,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/dependency-bindings.json",
+    "sha256": "b5e5e646b1fd11fe63c2d42afce8b4fdb95e460b2707dff7b2731fd422d8b8e6"
+  },
+  "full_I28_comparisons": "Held until I29 lands. No new native arm or full repeat ran.",
+  "gate_jobs": 0,
+  "gate_wall_seconds": 0,
+  "hint_count": 10,
+  "historical408_status": "Separate preserved evidence. Its memory failure is not reproduced or explained by these new-root prefix observations.",
+  "instructions_closed": 0,
+  "item": "I28-bounded-attribution",
+  "native_goal_groups": {
+    "active": "Six complete printed goals and local contexts at each corrected returned prefix.",
+    "given_up": "unavailable",
+    "native_shelf": "unavailable; four SHELVED_SIDECOND wrappers are observed as active goals, not native shelf membership.",
+    "stack": "unavailable"
+  },
+  "native_scheduler": "v2",
+  "new_rules": [],
+  "preserved_failures": [
+    {
+      "compiler": {
+        "archive": "/home/cody/zesislar-archive/sha256/eb/eb1559a11dce2461abe3c7b40b4b3270ec038c3e634cdcaa46ec76f131ca8f0e",
+        "bytes": 5426,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/sealed-001/activation-result/compiler.json",
+        "sha256": "eb1559a11dce2461abe3c7b40b4b3270ec038c3e634cdcaa46ec76f131ca8f0e"
+      },
+      "directory": "sealed-001/activation-result",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/4e/4e79eec93d77b716ef0593de7fe3a8ce50a5ba95171848a1342062ec78c5ebe8",
+        "bytes": 5402,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/sealed-001/activation-result/compiler.log",
+        "sha256": "4e79eec93d77b716ef0593de7fe3a8ce50a5ba95171848a1342062ec78c5ebe8"
+      }
+    },
+    {
+      "compiler": {
+        "archive": "/home/cody/zesislar-archive/sha256/5c/5c6956d7d86a75658af79b643ba4ed5b2b575292ce0d895d642a1a29fb131ce6",
+        "bytes": 5422,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/independent-counter-001/result-v2/compiler.json",
+        "sha256": "5c6956d7d86a75658af79b643ba4ed5b2b575292ce0d895d642a1a29fb131ce6"
+      },
+      "directory": "independent-counter-001/result-v2",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/38/3867b9573b6014a94964f338167f378f3d8689bebf7aece3b3c5e0bcbc7f0fe9",
+        "bytes": 1232,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/independent-counter-001/result-v2/compiler.log",
+        "sha256": "3867b9573b6014a94964f338167f378f3d8689bebf7aece3b3c5e0bcbc7f0fe9"
+      }
+    }
+  ],
+  "production_scope": "Frozen root plus the unlanded generic I28 equality-first cast candidate. No production commit.",
+  "raw_adjacent_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/78/783d7d175c59a4842d7b19251d49818017864921e78eeb94e839e94e4dddc872",
+    "bytes": 77921,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/raw-adjacent-final/index.json",
+    "sha256": "783d7d175c59a4842d7b19251d49818017864921e78eeb94e839e94e4dddc872"
+  },
+  "remaining_attribution_gap": "The exact arithmetic sub-tactic and causal source of historical OOM remain unidentified.",
+  "result": "Bounded RAM-assertion transition captured; arithmetic sub-tactic remains unmeasured.",
+  "root": "3b6815ceed338de895c58da3b5b271508a6a969d",
+  "samples": [
+    {
+      "bound": 16,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 1.441899,
+      "compiler_wall_seconds": 1.4688927540555596,
+      "counted_states": 16,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/97/97d6e9c9e99bf4103b01c19b937d00c1fe7fd7a7d7aa8b8b6c27994f6ddaf5a0",
+        "bytes": 5856,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/Finish.v",
+        "sha256": "97d6e9c9e99bf4103b01c19b937d00c1fe7fd7a7d7aa8b8b6c27994f6ddaf5a0"
+      },
+      "directory": "k16",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/86/861765d1cbbd2760b1499b243d4781ad6387030c6430db8f44222c41a55705da",
+        "bytes": 64102,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/events.json",
+        "sha256": "861765d1cbbd2760b1499b243d4781ad6387030c6430db8f44222c41a55705da"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/0c/0c3ee038333ea560342f8ad1fdf69265a4268c94c6f8b8e909047dafe0839c26",
+        "bytes": 1487724,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/run-inputs.json",
+        "sha256": "0c3ee038333ea560342f8ad1fdf69265a4268c94c6f8b8e909047dafe0839c26"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/97/974ce089b070ce9f6d353ac7534bda8b8f0a0be55c3d3556df03d9c9f86def99",
+        "bytes": 50542,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/live-compiler.log",
+        "sha256": "974ce089b070ce9f6d353ac7534bda8b8f0a0be55c3d3556df03d9c9f86def99"
+      },
+      "peak_rss_kib": 975748,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/af/afef4be7bb2d3d2aa4cd65125658135fc3b8b2da9d0ebf49fdf661cfb150d1a9",
+        "bytes": 6556,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/result.json",
+        "sha256": "afef4be7bb2d3d2aa4cd65125658135fc3b8b2da9d0ebf49fdf661cfb150d1a9"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/94/947ae4ceafeb20738a33cc09811d5a943ae8d352783ac3f028d01fa4290889f5",
+        "bytes": 792,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/memory-samples.json",
+        "sha256": "947ae4ceafeb20738a33cc09811d5a943ae8d352783ac3f028d01fa4290889f5"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/33/33f64adc83f1a4616d06ec4f8ac45468c47c5b2a5f0472d4873a7dfe956058d3",
+        "bytes": 6976,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k16/Diagnostic.v",
+        "sha256": "33f64adc83f1a4616d06ec4f8ac45468c47c5b2a5f0472d4873a7dfe956058d3"
+      }
+    },
+    {
+      "bound": 128,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 4.2413170000000004,
+      "compiler_wall_seconds": 4.271462882985361,
+      "counted_states": 128,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/a0/a05ff80cda5624869b77f373cbdf4e7b5574739280ab5d3656fdcc024a434ac2",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/Finish.v",
+        "sha256": "a05ff80cda5624869b77f373cbdf4e7b5574739280ab5d3656fdcc024a434ac2"
+      },
+      "directory": "k128",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/08/087f47cb9fda7dd2e4db67b4f28b12ca4160fe02cb6d75c65a90064e4ae38858",
+        "bytes": 782205,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/events.json",
+        "sha256": "087f47cb9fda7dd2e4db67b4f28b12ca4160fe02cb6d75c65a90064e4ae38858"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/e3/e3cda3f5543e92d899576e05e45accf225086bed1dffb62158ac79eca23f3dea",
+        "bytes": 1487740,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/run-inputs.json",
+        "sha256": "e3cda3f5543e92d899576e05e45accf225086bed1dffb62158ac79eca23f3dea"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/6a/6a8318cbbd3ad60398785e52824d87b592cccc99a76a0ce76a5564d316a54fc8",
+        "bytes": 431620,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/live-compiler.log",
+        "sha256": "6a8318cbbd3ad60398785e52824d87b592cccc99a76a0ce76a5564d316a54fc8"
+      },
+      "peak_rss_kib": 981792,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/f4/f4ad3f7b31276524bf27ffa1dd57a97e6f3b2e205e9de0008d30575e840e87e4",
+        "bytes": 6576,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/result.json",
+        "sha256": "f4ad3f7b31276524bf27ffa1dd57a97e6f3b2e205e9de0008d30575e840e87e4"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/f2/f2320b1ec6969f37f2f355383316cac16dc49450c14132ab6d25096fc236776c",
+        "bytes": 3269,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/memory-samples.json",
+        "sha256": "f2320b1ec6969f37f2f355383316cac16dc49450c14132ab6d25096fc236776c"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/b4/b4b239160aebf983ad28d33657e09fab69feea5a7589b26dc059d1ced119b3e2",
+        "bytes": 6977,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k128/Diagnostic.v",
+        "sha256": "b4b239160aebf983ad28d33657e09fab69feea5a7589b26dc059d1ced119b3e2"
+      }
+    },
+    {
+      "bound": 256,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 19.936065000000003,
+      "compiler_wall_seconds": 19.993015769054182,
+      "counted_states": 256,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/b5/b52489ca3758e2920ff3acc6b291f884d8bc728da68a5867facd24f2fdc1e034",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/Finish.v",
+        "sha256": "b52489ca3758e2920ff3acc6b291f884d8bc728da68a5867facd24f2fdc1e034"
+      },
+      "directory": "k256",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/60/604639f6491a9aa6673d4b6ae400689885182ad7a8c26689f0c54eadf7ff6d98",
+        "bytes": 1813949,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/events.json",
+        "sha256": "604639f6491a9aa6673d4b6ae400689885182ad7a8c26689f0c54eadf7ff6d98"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/fd/fdeb9a1ecf994f0fd3822affed1557144f4c605dffe1079d61f8b811fb69b0c3",
+        "bytes": 1487740,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/run-inputs.json",
+        "sha256": "fdeb9a1ecf994f0fd3822affed1557144f4c605dffe1079d61f8b811fb69b0c3"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/33/337467f44ef5e73d7f2fcf4a43c86da86455e837dde4d3ddd28d69c4ad23ddb5",
+        "bytes": 1685163,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/live-compiler.log",
+        "sha256": "337467f44ef5e73d7f2fcf4a43c86da86455e837dde4d3ddd28d69c4ad23ddb5"
+      },
+      "peak_rss_kib": 1213296,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/a8/a8e16a2ba844f08048ab0e533ca9373c996a6f54da3984beb146395e2f0de213",
+        "bytes": 6580,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/result.json",
+        "sha256": "a8e16a2ba844f08048ab0e533ca9373c996a6f54da3984beb146395e2f0de213"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/71/71bc56d5f92ff0b43789e24c5ae52575ac7ef81063f6363b2fe34dc5c8d0e47e",
+        "bytes": 15791,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/memory-samples.json",
+        "sha256": "71bc56d5f92ff0b43789e24c5ae52575ac7ef81063f6363b2fe34dc5c8d0e47e"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/cb/cbc8a920f589d6abc56c195f8f3fd4610544a8f618656f2d234918a77c8b5c31",
+        "bytes": 6977,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k256/Diagnostic.v",
+        "sha256": "cbc8a920f589d6abc56c195f8f3fd4610544a8f618656f2d234918a77c8b5c31"
+      }
+    },
+    {
+      "bound": 384,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 36.159665,
+      "compiler_wall_seconds": 36.282615851960145,
+      "counted_states": 384,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/d7/d7fc894afa5f2cff4b7f173f3edf95664a7702b0f537be6b41a94424975bd104",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/Finish.v",
+        "sha256": "d7fc894afa5f2cff4b7f173f3edf95664a7702b0f537be6b41a94424975bd104"
+      },
+      "directory": "k384",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/58/58ebc8263d3091711ed088cf797f9f1a1b83c73feaac3afbc5cbc252cb45ea0a",
+        "bytes": 4044668,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/events.json",
+        "sha256": "58ebc8263d3091711ed088cf797f9f1a1b83c73feaac3afbc5cbc252cb45ea0a"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/9b/9b959a764b558e1289136dc4247639737c0b8f58d9a3601e97688745fa6f716d",
+        "bytes": 1487740,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/run-inputs.json",
+        "sha256": "9b959a764b558e1289136dc4247639737c0b8f58d9a3601e97688745fa6f716d"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/4d/4d928a6a76a1a9e86a55751378d1720173c7205539bbafc7d49691bc840c3f5c",
+        "bytes": 3376833,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/live-compiler.log",
+        "sha256": "4d928a6a76a1a9e86a55751378d1720173c7205539bbafc7d49691bc840c3f5c"
+      },
+      "peak_rss_kib": 1400056,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/83/83408f0b5d06427d0b44f9855af55eaacdb534269093bd31f863710e2e28c9f3",
+        "bytes": 6571,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/result.json",
+        "sha256": "83408f0b5d06427d0b44f9855af55eaacdb534269093bd31f863710e2e28c9f3"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/36/36610c48b093427f7356a7864200b4ed71cd4df4415116b8c47a7af822976996",
+        "bytes": 29171,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/memory-samples.json",
+        "sha256": "36610c48b093427f7356a7864200b4ed71cd4df4415116b8c47a7af822976996"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/36/36e6a9dba4f2527cc433ee0adadeca02db227383ee5e6cdca8ed7647d44bee3e",
+        "bytes": 6977,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k384/Diagnostic.v",
+        "sha256": "36e6a9dba4f2527cc433ee0adadeca02db227383ee5e6cdca8ed7647d44bee3e"
+      }
+    },
+    {
+      "bound": 261,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 26.85051,
+      "compiler_wall_seconds": 26.978722681989893,
+      "counted_states": 261,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/e1/e14978b60e36bf248997187a3892360f27840777c8a50b4dc0a2d214bee29c5d",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/Finish.v",
+        "sha256": "e14978b60e36bf248997187a3892360f27840777c8a50b4dc0a2d214bee29c5d"
+      },
+      "directory": "k261",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/f5/f5e38c88632decfbf03b21add31897e65e61e1eb0fff25b436ba0de82c84a58a",
+        "bytes": 1861686,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/events.json",
+        "sha256": "f5e38c88632decfbf03b21add31897e65e61e1eb0fff25b436ba0de82c84a58a"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/e8/e8b5457ea37a4af13a3c4dd9de5cfcb9eab5d0a1a9299baad75befbf907409d9",
+        "bytes": 1487740,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/run-inputs.json",
+        "sha256": "e8b5457ea37a4af13a3c4dd9de5cfcb9eab5d0a1a9299baad75befbf907409d9"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/07/07e121eff810a66eea9f0d88ac7c570cc81839e9aed9d7f11e8c543d2ce79062",
+        "bytes": 1831161,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/live-compiler.log",
+        "sha256": "07e121eff810a66eea9f0d88ac7c570cc81839e9aed9d7f11e8c543d2ce79062"
+      },
+      "peak_rss_kib": 1236172,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/8c/8c6e77f5660642bdd5764e4fe95d9b941516fed7223de9b47a8eb3e7897f0dfd",
+        "bytes": 6571,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/result.json",
+        "sha256": "8c6e77f5660642bdd5764e4fe95d9b941516fed7223de9b47a8eb3e7897f0dfd"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/2b/2b30922c9f26e51e4c3c0f5cc49f99b2ea5d934f60ea1fd4aa8def3dc12e0ac7",
+        "bytes": 21557,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/memory-samples.json",
+        "sha256": "2b30922c9f26e51e4c3c0f5cc49f99b2ea5d934f60ea1fd4aa8def3dc12e0ac7"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/db/db048dc3b52be4b55928310a88ad6b4a4c3080b1477e65d8b15c4238c33106ae",
+        "bytes": 6977,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/Diagnostic.v",
+        "sha256": "db048dc3b52be4b55928310a88ad6b4a4c3080b1477e65d8b15c4238c33106ae"
+      }
+    },
+    {
+      "bound": 262,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 26.636149,
+      "compiler_wall_seconds": 26.75736892502755,
+      "counted_states": 262,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/c7/c76808a5345e7a2cbe64db3adb855f74617c7f887632261727f11e3638bce224",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/Finish.v",
+        "sha256": "c76808a5345e7a2cbe64db3adb855f74617c7f887632261727f11e3638bce224"
+      },
+      "directory": "k262",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/7e/7eeaeaf1974a8179ea89007a8bbd8a96d54d39db235da9dbd62469acaa26d3de",
+        "bytes": 1871325,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/events.json",
+        "sha256": "7eeaeaf1974a8179ea89007a8bbd8a96d54d39db235da9dbd62469acaa26d3de"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/45/45d86dcfef195e61cb5369fffaa25900f59c4116100658e22158fcc82df63a19",
+        "bytes": 1487740,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/run-inputs.json",
+        "sha256": "45d86dcfef195e61cb5369fffaa25900f59c4116100658e22158fcc82df63a19"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/0b/0baf21631b0b7b41729db81e439992f000d27c101d1328a883992a8ef5a848de",
+        "bytes": 1806170,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/live-compiler.log",
+        "sha256": "0baf21631b0b7b41729db81e439992f000d27c101d1328a883992a8ef5a848de"
+      },
+      "peak_rss_kib": 1268568,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/20/2023e423484987d936ce000076440d6c796c81ff3c23bf2effd89dd9b4697562",
+        "bytes": 6571,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/result.json",
+        "sha256": "2023e423484987d936ce000076440d6c796c81ff3c23bf2effd89dd9b4697562"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/4b/4bf1de1d5fc9794dfcffa8f456f3692cdde4e4e44f1bca479f3a877e52f9772b",
+        "bytes": 21239,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/memory-samples.json",
+        "sha256": "4bf1de1d5fc9794dfcffa8f456f3692cdde4e4e44f1bca479f3a877e52f9772b"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/2c/2c178835566f5cece5e6cd142e3f8edd0c74dcfd6bee9e8c5e377c2a2205cab0",
+        "bytes": 6977,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/Diagnostic.v",
+        "sha256": "2c178835566f5cece5e6cd142e3f8edd0c74dcfd6bee9e8c5e377c2a2205cab0"
+      }
+    },
+    {
+      "bound": 261,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 22.662741999999998,
+      "compiler_wall_seconds": 22.736245103063993,
+      "counted_states": 261,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/e1/e14978b60e36bf248997187a3892360f27840777c8a50b4dc0a2d214bee29c5d",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261/Finish.v",
+        "sha256": "e14978b60e36bf248997187a3892360f27840777c8a50b4dc0a2d214bee29c5d"
+      },
+      "directory": "k261-raw-002",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/42/429b0bb0f3dcdb52a157ad8af2ab5f5d66db03d836d777721992ca7a337c62f8",
+        "bytes": 1907223,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261-raw-002/events.json",
+        "sha256": "429b0bb0f3dcdb52a157ad8af2ab5f5d66db03d836d777721992ca7a337c62f8"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/99/99316490d5a2461a31fcad1b1f200f8a9ec2d8b59f52aa835c517ff43ff5a307",
+        "bytes": 1487756,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261-raw-002/run-inputs.json",
+        "sha256": "99316490d5a2461a31fcad1b1f200f8a9ec2d8b59f52aa835c517ff43ff5a307"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/08/08d68404d0534e6d3b2088cbcb4170a431b949161f5a6a5696cb316fd6240a82",
+        "bytes": 2731982,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261-raw-002/live-compiler.log",
+        "sha256": "08d68404d0534e6d3b2088cbcb4170a431b949161f5a6a5696cb316fd6240a82"
+      },
+      "peak_rss_kib": 1266556,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/5b/5b66951471beea24ba8d3637d8e9a52a8f95f5f1fa123f4c8be142c6c274b95b",
+        "bytes": 6644,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261-raw-002/result.json",
+        "sha256": "5b66951471beea24ba8d3637d8e9a52a8f95f5f1fa123f4c8be142c6c274b95b"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/04/041b3b5f4ad0d33d55492b48536ce1fa310187e84f06d45820a92aff054f4bf1",
+        "bytes": 18058,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261-raw-002/memory-samples.json",
+        "sha256": "041b3b5f4ad0d33d55492b48536ce1fa310187e84f06d45820a92aff054f4bf1"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/b8/b8d0358a53fd176a0a2418fef04119db90a34e952bba3f212f9a2577db980fef",
+        "bytes": 7021,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k261-raw-002/Diagnostic.v",
+        "sha256": "b8d0358a53fd176a0a2418fef04119db90a34e952bba3f212f9a2577db980fef"
+      }
+    },
+    {
+      "bound": 262,
+      "closure_claim": false,
+      "compiler_cpu_seconds": 25.305569000000002,
+      "compiler_wall_seconds": 25.381270532030612,
+      "counted_states": 262,
+      "counter": {
+        "archive": "/home/cody/zesislar-archive/sha256/c7/c76808a5345e7a2cbe64db3adb855f74617c7f887632261727f11e3638bce224",
+        "bytes": 5857,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262/Finish.v",
+        "sha256": "c76808a5345e7a2cbe64db3adb855f74617c7f887632261727f11e3638bce224"
+      },
+      "directory": "k262-raw-002",
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/b1/b147b80dadad23f3975619b716683e207743982d435658d72e01682983072b38",
+        "bytes": 1916989,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262-raw-002/events.json",
+        "sha256": "b147b80dadad23f3975619b716683e207743982d435658d72e01682983072b38"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/89/896ae35d56c1684ad5a52140529b25c40b2dbcbba8c609f8b26001ba3bcf2963",
+        "bytes": 1487756,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262-raw-002/run-inputs.json",
+        "sha256": "896ae35d56c1684ad5a52140529b25c40b2dbcbba8c609f8b26001ba3bcf2963"
+      },
+      "limit": null,
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/26/2687238a84d41afe9ed8033e2630461e0a61bea19a929092a336c318e5be1da8",
+        "bytes": 2992504,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262-raw-002/live-compiler.log",
+        "sha256": "2687238a84d41afe9ed8033e2630461e0a61bea19a929092a336c318e5be1da8"
+      },
+      "peak_rss_kib": 1302124,
+      "result": {
+        "archive": "/home/cody/zesislar-archive/sha256/24/24a5877b1585368368300934d03c5ddc388a0d18f94b0d92fd7758bcaa46775e",
+        "bytes": 6645,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262-raw-002/result.json",
+        "sha256": "24a5877b1585368368300934d03c5ddc388a0d18f94b0d92fd7758bcaa46775e"
+      },
+      "samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/2c/2c86119a17a9bbf49d370b1df61d7157d425a094c78da1407669ca1e39f9493b",
+        "bytes": 20132,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262-raw-002/memory-samples.json",
+        "sha256": "2c86119a17a9bbf49d370b1df61d7157d425a094c78da1407669ca1e39f9493b"
+      },
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/d6/d68ca624be559c6046a39193338b848378bb93191a3140cc7a26098cfdf288e1",
+        "bytes": 7021,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/k262-raw-002/Diagnostic.v",
+        "sha256": "d68ca624be559c6046a39193338b848378bb93191a3140cc7a26098cfdf288e1"
+      }
+    }
+  ],
+  "sealed_inputs": {
+    "archive": "/home/cody/zesislar-archive/sha256/df/df3728094599ebc6784a2801e27eb048f3f8ca5ad34d828b31e56819a3c588d3",
+    "bytes": 4426,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i28-bounded-attribution3b/sealed-002/inputs.json",
+    "sha256": "df3728094599ebc6784a2801e27eb048f3f8ca5ad34d828b31e56819a3c588d3"
+  },
+  "setup_failure_history": [
+    "Historical408 dependency parent absent; repaired before compilation.",
+    "Historical408 native-set directory absent.",
+    "Historical408 unqualified scheduler reference absent.",
+    "Historical408 copied metadata referred to changed k0 source; fresh immutable binding repaired it.",
+    "Initial3b activation class ReturnWand lacked qualification.",
+    "Initial3b v2 marker proof applied exact I after constructor closed all goals.",
+    "Output-only launcher absent after a preparation assertion; no compiler ran."
+  ],
+  "source_ending": "Abort",
+  "statement_sha256": "ff9cd6f1809fbf2343fc35838e9af1b7545116637d2b8112b502615062e1132d",
+  "switch_count": 20,
+  "target_assumptions": "unavailable; no target theorem exists after Abort",
+  "target_qed": false
+}

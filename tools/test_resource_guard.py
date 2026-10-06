@@ -12,6 +12,54 @@ LIBRARY = GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[0]
 
 
 class ResourceGuard(unittest.TestCase):
+    def test_gate_acquires_lock_after_empty_scope_cleanup(self):
+        result = self.run_guard('''
+fixture_unit="${SCOPE_PREFIX}-dune-coqc-2147483647-92.scope"
+printf '%s\\n' "$fixture_unit" > "$REGISTRY"
+printf 'state=wanted holder=fixture pid=%s start=x\\n' "$$" > "$GATE_LOCK"
+systemctl() {
+  case "$2" in
+    list-units) [ -f "$STATE_DIR/stopped" ] || printf '%s active running fixture\\n' "$fixture_unit" ;;
+    show) printf '0\\n' ;;
+    stop) touch "$STATE_DIR/stopped" ;;
+  esac
+}
+live_launches() { :; }
+gate_reservations() { :; }
+lock_hold $$
+prune_scope_registry
+cat "$GATE_LOCK"
+[ ! -s "$REGISTRY" ]
+''')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("state=held", result.stdout)
+
+    def test_empty_scope_requires_dead_launcher_and_successful_stop(self):
+        for registered, launcher, tasks, stop, released in (
+                (True, "2147483647", "0", 0, True),
+                (True, "2147483647", "1", 0, False),
+                (True, "2147483647", "[not set]", 0, False),
+                (True, "$$", "0", 0, False),
+                (False, "2147483647", "0", 0, False),
+                (True, "2147483647", "0", 1, False)):
+            with self.subTest(registered=registered, launcher=launcher,
+                              tasks=tasks, stop=stop):
+                script = f'''
+fixture_unit="${{SCOPE_PREFIX}}-dune-coqc-{launcher}-92.scope"
+{'printf "%s\\n" "$fixture_unit" > "$REGISTRY"' if registered else ':'}
+systemctl() {{
+  case "$2" in
+    list-units) printf '%s active running fixture\\n' "$fixture_unit" ;;
+    show) printf '%s\\n' '{tasks}' ;;
+    stop) echo stopped >> "$STATE_DIR/stops"; return {stop} ;;
+  esac
+}}
+live_scopes
+'''
+                result = self.run_guard(script)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(not result.stdout.strip(), released)
+
     def run_guard(self, script, **variables):
         with tempfile.TemporaryDirectory() as directory:
             environment = {key: value for key, value in os.environ.items()
