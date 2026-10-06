@@ -1,0 +1,164 @@
+{
+  "allocating_tactic": null,
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/3c9302d3ad1b5aba259f48a4fb37b42186d732fa89f1c6a6a144a13cc8bfc6ff",
+    "bytes": 2347601,
+    "sha256": "3c9302d3ad1b5aba259f48a4fb37b42186d732fa89f1c6a6a144a13cc8bfc6ff"
+  },
+  "archive_records": 6351,
+  "call_markers": [
+    {
+      "elapsed_seconds": 2.202809277921915,
+      "text": "I17-CALL-BEGIN"
+    },
+    {
+      "elapsed_seconds": 123.84059642197099,
+      "text": "I17-CALL-END"
+    }
+  ],
+  "closure_claim": false,
+  "compiler": {
+    "compiled_object": null,
+    "compiler_pid": 2865129,
+    "cpu_seconds": 384.122025,
+    "cwd": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/agents/worker2-child-all-hints-adapters/default",
+    "elapsed_seconds": 385.57146577502135,
+    "exit_code": -15,
+    "limit": "memory",
+    "limits": {
+      "cpu_seconds": 1200,
+      "module_seconds": null,
+      "rss_kib": 12582912
+    },
+    "measurement_complete": true,
+    "peak_rss_kib": 12584224
+  },
+  "context_characters_first": 114,
+  "context_characters_last": 4977,
+  "dominant_retained_body": {
+    "maximum_node_occurrences": 18385,
+    "name": "TRACE",
+    "printed_body": "HIDDEN"
+  },
+  "end_utc": "2026-10-06T07:44:52.984217+00:00",
+  "exact_command_archive": {
+    "archive": "/home/cody/zesislar-archive/sha256/2e2435ea408f115a16ccc31c186d0f59728fcf10ba0ebffdc724122b5c4c95e5",
+    "bytes": 5404,
+    "sha256": "2e2435ea408f115a16ccc31c186d0f59728fcf10ba0ebffdc724122b5c4c95e5"
+  },
+  "final_groups": {
+    "given_up": "unavailable",
+    "goals": "unavailable",
+    "shelf": "unavailable",
+    "stack": "unavailable"
+  },
+  "findings": [
+    "The v2 call ended with RSS1990312KiB. Most memory growth occurred afterward.",
+    "The final RSS sample reached12577604KiB outside the measured v2 call. The compiler monitor recorded peak12584224KiB.",
+    "The in-flight Ltac profiler reported zero completed costs. Its output does not identify the allocating tactic.",
+    "TRACE is the largest measured local-definition body. The printer hides its text. These counts do not establish the cause of allocation.",
+    "The diagnostic preserves seven ordered v2 alternatives. Read-only context measurements, timing labels, and profiling add diagnostic overhead.",
+    "No final native state or kernel certificate exists. The diagnostic is not a frozen comparison.",
+    "Failed smoke attempts retain missing direct imports and incorrect internal profiler-name syntax. The corrected smoke compiled."
+  ],
+  "goal_nodes_first": 133,
+  "goal_nodes_last": 1753,
+  "inputs": {
+    "archive": "/home/cody/zesislar-archive/sha256/1a48c52205c5c45720a74b954c15f6d3ec600f4676774eebb6fa386e86fbacda",
+    "bytes": 1445024,
+    "sha256": "1a48c52205c5c45720a74b954c15f6d3ec600f4676774eebb6fa386e86fbacda"
+  },
+  "iterations": 258,
+  "limits": {
+    "completion_entry": "0x800d698c",
+    "cpu_seconds": 1200,
+    "kind": "cpu",
+    "memory_kib": 12582912,
+    "optimization_debt": "issue#10",
+    "wall_seconds": null
+  },
+  "memory_curve": [
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 2.202964040916413,
+      "last_event": "Tactic call I17-zesu_conjunct_match_if_enabled ran for 0. secs (0.u,0.s) (failure)",
+      "rss_kib": 983404
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 30.066754263010807,
+      "last_event": "I17-GOAL-NODES 8704",
+      "rss_kib": 1304536
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 59.92772933898959,
+      "last_event": "Tactic call I17-zesu_conjunct_match_if_enabled ran for 0. secs (0.u,0.s) (failure)",
+      "rss_kib": 1689108
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 89.97987187793478,
+      "last_event": "Tactic call I17-zesu_conjunct_match_if_enabled ran for 0. secs (0.u,0.s) (failure)",
+      "rss_kib": 1990312
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 108.01339013001416,
+      "last_event": "Tactic call I17-zesu_conjunct_match_if_enabled ran for 0. secs (0.u,0.s) (failure)",
+      "rss_kib": 1990312
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 123.84077205695212,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 1990312
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 150.09314262890257,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 2883556
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 179.9524088659091,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 4859980
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 239.9011401309399,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 6853084
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 300.0083223449765,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 9444268
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 359.9481516209198,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 11446724
+    },
+    {
+      "compiler_pid": 2865129,
+      "elapsed_seconds": 386.0136497739004,
+      "last_event": "I17-CALL-END",
+      "rss_kib": 12576712
+    }
+  ],
+  "production_sources_unchanged": true,
+  "raw_result": {
+    "archive": "/home/cody/zesislar-archive/sha256/2e51af0fda88bf7a7cf03c446a570914f4415e6fc5addb7a5d86c2a55cc52bc2",
+    "bytes": 6371,
+    "sha256": "2e51af0fda88bf7a7cf03c446a570914f4415e6fc5addb7a5d86c2a55cc52bc2"
+  },
+  "root": "83dc585a9ebf2deb11d16d96ea4a40d5efb76259",
+  "samples": 1922,
+  "start_utc": "2026-10-06T07:38:25.982360+00:00",
+  "wrapper_exit_code": 1
+}
