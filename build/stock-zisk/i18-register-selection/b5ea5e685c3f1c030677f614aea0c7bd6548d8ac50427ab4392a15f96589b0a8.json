@@ -1,0 +1,757 @@
+{
+  "item": "I18-register-selection",
+  "base_root": "6551bd2421521e25d64df95918c1c85061b738c9",
+  "result": "The switched rule passed focused verification. The native mstatus selector residual disappeared. Six native residuals remain.",
+  "changed_files": [
+    "ZesuSsz/Automation/Hooks.v",
+    "ZesuSsz/Automation/Switches/RegisterCollectionSelection.v",
+    "ZesuSsz/Proofs/Tests/RegisterCollectionSelection.v",
+    "ZesuSsz/Proofs/Tests/RegisterCollectionSelectionIsolation.v"
+  ],
+  "implementation": {
+    "membership": "Inspect register keys and list cells only. Prove the selected index by reflexivity. Do not compute the symbolic native context.",
+    "guard": "Require a FindStructRegMapsTo goal before unfolding its environment alias.",
+    "activation": "An export instance activates the rule only through a direct switch import.",
+    "call_sites": [
+      "zesu_liAStepNoWrite",
+      "zesu_liAStepBeforeObservable",
+      "zesu_liAStep"
+    ],
+    "premises_added": false,
+    "contract_changes": false
+  },
+  "focused": {
+    "health": true,
+    "start": true,
+    "step_multi": true,
+    "check": true,
+    "compilations": 4,
+    "verified": [
+      {
+        "theorem": "register_selection_opt_in",
+        "success": true,
+        "assumptions": []
+      },
+      {
+        "theorem": "register_selection_array_first",
+        "success": true,
+        "assumptions": []
+      },
+      {
+        "theorem": "register_selection_structural_goal",
+        "success": true,
+        "assumptions": []
+      },
+      {
+        "theorem": "register_selection_skips_wrong_collection",
+        "success": true,
+        "assumptions": []
+      },
+      {
+        "theorem": "register_selection_nonselection_alias",
+        "success": true,
+        "assumptions": []
+      },
+      {
+        "theorem": "register_selection_no_transitive_activation",
+        "success": true,
+        "assumptions": []
+      }
+    ],
+    "off": "The opt-in and transitive-isolation lemmas prove absent-switch behavior. Historical auxiliary OFF/ON probes both selected the register collection; they establish no native effect.",
+    "alias_regression": "The switched rule fails on True while the Envs alias remains local."
+  },
+  "native_off": {
+    "item": "69e8-to698c-root6551",
+    "source": "_build/q54_69e8_root6551.v",
+    "source_sha256": "fbf39ff153319c29f05c0ec3eeb3322f5bd7c0de2d2f3dcf67ab0fbeac7bc319",
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261005-225640-q54-69e8-root6551-native.log",
+    "log_sha256": "f253cb75c637b6993ac0dca6fb5ca38f92d4f06e05b70f7d9c6225cf37f70b83",
+    "result": "Abort diagnostic with6 remaining goals; no closure",
+    "compiler_elapsed_ms": 25521,
+    "peak_rss_kib": 1224872,
+    "watcher_wall": "parent reports about5 minutes including scheduling; distinct from compiler scope",
+    "first_residual": "nat offset witness",
+    "other_residuals": [
+      "list(reg_kind*valu_shape) selector witness",
+      "Z.of_nat offset=outputPointer+32-outputPointer",
+      "offset+N.to_nat2<=length BeforeStorage",
+      "FindHypEqual mstatus bits chose updated output array for reg_col",
+      "li_tactic regcol_compute_hint mstatus bits unresolved register collection"
+    ],
+    "context_facts": [
+      "length BeforeStorage=40",
+      "full output region RAM and no wrap",
+      "reg_col(decodeItemSysRegs args) owned",
+      "accepted short-string source facts present"
+    ],
+    "hint_candidacy": {
+      "offset": "structural array witness; pure Z2Nat conversion and two-byte bound are candidates, not S14 semantic registrations",
+      "selector": "I18 infrastructure selector defect; a pure hint does not choose the correct spatial resource"
+    },
+    "first_context_contradiction": "none identified; do not infer unreachable path",
+    "instructions": 6,
+    "conditional_branches": 0,
+    "loops": 0,
+    "production_edits": false,
+    "followup": "independent697c diagnostic running; no unchanged69e8 retry",
+    "metrics": {
+      "start_exclusive": "2026-10-06T02:55:30.818Z",
+      "end_inclusive": "2026-10-06T03:03:21.168Z",
+      "events": 8,
+      "last_token_usage_total_tokens": 1550890,
+      "scope": "observed events after6ad8 proof-report boundary, including69e8 residual inspection and697c preparation; current unflushed events excluded"
+    }
+  },
+  "native_on": {
+    "name": "On",
+    "source_sha256": "f6174023ebf8885ccfd5248b53cfa3f888188c37b39cc7f3a500ed36a85cfc5e",
+    "exit": 1,
+    "compiler": {
+      "compiler_pid": 1595985,
+      "command": [
+        "/home/cody/islaris/_opam/bin/coqc",
+        "-time",
+        "-q",
+        "-w",
+        "-notation-overridden",
+        "-w",
+        "-redundant-canonical-projection",
+        "-w",
+        "-deprecated-native-compiler-option",
+        "-w",
+        "-native-compiler-disabled",
+        "-native-compiler",
+        "ondemand",
+        "-boot",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/boot",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/clib",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/config",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/engine",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/gramlib",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/interp",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/kernel",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/lib",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/library",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/parsing",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/perf",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/plugins/ltac",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/plugins/ltac2",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/pretyping",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/printing",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/proofs",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/tactics",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/vernac",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq-core/vm",
+        "-I",
+        "/home/cody/islaris/_opam/lib/findlib",
+        "-I",
+        "/home/cody/islaris/_opam/lib/memprof-limits",
+        "-I",
+        "/home/cody/islaris/_opam/lib/ocaml",
+        "-I",
+        "/home/cody/islaris/_opam/lib/ocaml/threads",
+        "-I",
+        "/home/cody/islaris/_opam/lib/zarith",
+        "-I",
+        "ZesuSsz/Evidence/GatesPlugin",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/btauto",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/cc",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/derive",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/extraction",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/firstorder",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/funind",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ltac",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ltac2",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/micromega",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/nsatz",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/number_string_notation",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ring",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/rtauto",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ssreflect",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ssrmatching",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tauto",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p0",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p1",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p2",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p3",
+        "-I",
+        "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/zify",
+        "-R",
+        "/home/cody/islaris/_opam/lib/coq/theories",
+        "Coq",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/isla",
+        "isla",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64",
+        "isla.riscv64",
+        "-Q",
+        "MachineMap",
+        "ZesuMachineMap",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/lithium",
+        "lithium",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/iris",
+        "iris",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp",
+        "stdpp",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/RecordUpdate",
+        "RecordUpdate",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/Ltac2",
+        "Ltac2",
+        "-Q",
+        "InstrSpecs",
+        "InstrSpecs",
+        "-Q",
+        "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector",
+        "stdpp.bitvector",
+        "-Q",
+        "generated/sail-stdpp",
+        "SailStdpp",
+        "-Q",
+        "generated/evm-sail-coq",
+        "EvmSail",
+        "-Q",
+        "generated/evm-sail-coq/rlp",
+        "EvmSailRlp",
+        "-Q",
+        "ZesuStock",
+        "ZesuStock",
+        "-Q",
+        "generated/isla-traces/stock-zisk/decodeItem",
+        "ZesuSsz.Stock.DecodeItem",
+        "-Q",
+        "generated/isla-traces/stock-zisk/closure",
+        "ZesuSsz.Stock.Closure",
+        "-R",
+        "ZesuSsz",
+        "ZesuSsz",
+        "-o",
+        "/tmp/zesu-coqc-jda_22gy/On.vo",
+        "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/On.v"
+      ],
+      "cwd": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default",
+      "elapsed_seconds": 37.44951550196856,
+      "peak_rss_kib": 1414440,
+      "exit_code": 1,
+      "limit": null,
+      "compiled_object": null,
+      "measurement_complete": true,
+      "cpu_seconds": 37.34059,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 6291456
+      }
+    },
+    "wall_seconds": 39.340103105059825,
+    "log": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/on/compiler.log",
+    "log_sha256": "4d8191b2ef6e8176cd62783f52f02ff2dc29fd2eb6f46ba0f49947822aa638a9",
+    "pet_groups": "unavailable",
+    "closure_claim": false
+  },
+  "remaining_goals": [
+    "mem_mapsto_kind",
+    "nat",
+    "?offset = decodeItemOutputPointer args + 32 - decodeItemOutputPointer args",
+    "(?offset + N.to_nat 2 <= length (decodeItemBeforeStorage args))%nat",
+    "FindHypEqual (ZesuMemRegionSearch (decodeItemOutputPointer args + 0)) against the updated byte array",
+    "An Iris memory-store continuation at outputPointer+0 with an unresolved memory kind."
+  ],
+  "debt_coverage": {
+    "active": "Six printed conclusions; the compiler prints the first context and the Iris environment of the continuation.",
+    "stack": "unavailable",
+    "shelf": "unavailable",
+    "given_up": "unavailable",
+    "assumptions": "No native Qed certificate. The Print Assumptions command did not run.",
+    "inherited": "The proof starts from its declared entry; pending_goals and shelved_goals are explicit empty input lists."
+  },
+  "scope": {
+    "observed_benefit": "The mstatus register selector and register-collection witness no longer occur. The native proof reaches outputPointer+0 memory selection.",
+    "native_resource_selection": "The completed state establishes progress beyond the register lookup; no separate selector trace was recorded.",
+    "original_sites": "69b0,6a78,6ae0 prior ON attempts hit memory limits. No benefit at those three sites is claimed.",
+    "instructions_closed": 0,
+    "blocks_closed": 0,
+    "level1_closed": 0,
+    "contract_boundaries_unchanged": true,
+    "certification_scope": "Only the focused generic lemmas are certified. The native boundary remains incomplete."
+  },
+  "comparison": {
+    "original_primary": "zesu_block.",
+    "statement_and_entry": "Exact frozen root6551 statement and entry; unchanged.",
+    "on_source": "An opt-in switch import and Qed/Print Assumptions replace the final diagnostic Abort.",
+    "engine": "coqc in both completed OFF and ON diagnostics.",
+    "profiling": false,
+    "cpu_memory_timing_limit": "CPU1200 and6GiB; no wall cutoff; no limit fired in the changed-guard ON attempt.",
+    "timing_causality": "ON makes additional native progress. Elapsed differences do not isolate a rule-only performance effect."
+  },
+  "failures_preserved": [
+    "Original reconstructed scheduler diagnostics never reached a native selector boundary.",
+    "Original-primary MCP attempts at69b0,6a78,6ae0 hit6GiB with profiling enabled.",
+    "Original69e8 MCP attempt and the first matched coqc attempt hit6GiB.",
+    "The first matched coqc setup and import-only preflight failed on inconsistent InstructionLookup assumptions.",
+    "Absolute existing artifact paths performed no dependency build; relative logical targets repaired the imports.",
+    "The focused guard first failed on a Ltac pattern reference, then on a missing explicit test import.",
+    "The earlier MCP focused compilation timed out without sentence timing. Its approved timed coqc fallback passed."
+  ],
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Hooks.v",
+      "sha256": "f0e686887d18b604ee203d65f4bf775530609612135566c070e67247462b7104",
+      "archive": "/home/cody/zesislar-archive/sha256/f0/f0e686887d18b604ee203d65f4bf775530609612135566c070e67247462b7104"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/RegisterCollectionSelection.v",
+      "sha256": "56c8408870cb1c3d2f85f08ee7b0e5f645c1ec91a649a5542725a130de632368",
+      "archive": "/home/cody/zesislar-archive/sha256/56/56c8408870cb1c3d2f85f08ee7b0e5f645c1ec91a649a5542725a130de632368"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Proofs/Tests/RegisterCollectionSelection.v",
+      "sha256": "1d1c608ababa211e24742c6a74ac7418eb5fc3066cd3f2e20ac2116ab2d3d872",
+      "archive": "/home/cody/zesislar-archive/sha256/1d/1d1c608ababa211e24742c6a74ac7418eb5fc3066cd3f2e20ac2116ab2d3d872"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Proofs/Tests/RegisterCollectionSelectionIsolation.v",
+      "sha256": "8354536ebb928306b44721476cd8e57d7e86d2853cb02b770fbd2ba55f375fee",
+      "archive": "/home/cody/zesislar-archive/sha256/83/8354536ebb928306b44721476cd8e57d7e86d2853cb02b770fbd2ba55f375fee"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/tools/block/coqc_primary.py",
+      "sha256": "b186ee94ecdcfa32f560086b548dc4489a3ea7d2d94369f5c49c57900c5b84e9",
+      "archive": "/home/cody/zesislar-archive/sha256/b1/b186ee94ecdcfa32f560086b548dc4489a3ea7d2d94369f5c49c57900c5b84e9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/tools/coqc_scratch.sh",
+      "sha256": "0659b313723c7da93cab8f70e7551291a932f40127052dda2e8b70aa8b2f3992",
+      "archive": "/home/cody/zesislar-archive/sha256/06/0659b313723c7da93cab8f70e7551291a932f40127052dda2e8b70aa8b2f3992"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-final-001/calls.json",
+      "sha256": "4593012de805e3378a3c58bbe37f1377a030d21f06c0259ccaa43864be0ce392",
+      "archive": "/home/cody/zesislar-archive/sha256/45/4593012de805e3378a3c58bbe37f1377a030d21f06c0259ccaa43864be0ce392"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-final-001/client.py",
+      "sha256": "c5d450e1b6dbfdc6c6771f159d64883a07d149d1b47d424d3301e19c32c0d59e",
+      "archive": "/home/cody/zesislar-archive/sha256/c5/c5d450e1b6dbfdc6c6771f159d64883a07d149d1b47d424d3301e19c32c0d59e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-001/dependencies.log",
+      "sha256": "19b47f157eef648a9cabfbea13df53feb493e3afec0f4cb4648c3c4f463f9bcd",
+      "archive": "/home/cody/zesislar-archive/sha256/19/19b47f157eef648a9cabfbea13df53feb493e3afec0f4cb4648c3c4f463f9bcd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-001/dependencies.json",
+      "sha256": "d8376aedc271d2dd0955fa59e8593ba41ed2a56e0bdcbdc8919c7a91511fba33",
+      "archive": "/home/cody/zesislar-archive/sha256/d8/d8376aedc271d2dd0955fa59e8593ba41ed2a56e0bdcbdc8919c7a91511fba33"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-002/dependencies.log",
+      "sha256": "92b57a8ac867df274a5a7a63665902ab42de753f874abc8b99f618d819d0e232",
+      "archive": "/home/cody/zesislar-archive/sha256/92/92b57a8ac867df274a5a7a63665902ab42de753f874abc8b99f618d819d0e232"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-002/dependencies.json",
+      "sha256": "a2ade37733a5ffcf3ae1d788ec9a294dc6dc91e4976a7fbff83319d3a78ab0fb",
+      "archive": "/home/cody/zesislar-archive/sha256/a2/a2ade37733a5ffcf3ae1d788ec9a294dc6dc91e4976a7fbff83319d3a78ab0fb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-003/dependencies.log",
+      "sha256": "ddb4a8a381acd743ebea745cf00010a758ecab0c5249bb752611c500d78905e7",
+      "archive": "/home/cody/zesislar-archive/sha256/dd/ddb4a8a381acd743ebea745cf00010a758ecab0c5249bb752611c500d78905e7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/guard-003/dependencies.json",
+      "sha256": "efc71c702f0306561ef6047e5e30b4c84aa42aa90ebc84c1c205aa405fcbcadf",
+      "archive": "/home/cody/zesislar-archive/sha256/ef/efc71c702f0306561ef6047e5e30b4c84aa42aa90ebc84c1c205aa405fcbcadf"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/inputs.json",
+      "sha256": "ee7df0809acbb29e62a45ae82cafa2d7a90532d555abf7e3c47dc059f8d67f07",
+      "archive": "/home/cody/zesislar-archive/sha256/ee/ee7df0809acbb29e62a45ae82cafa2d7a90532d555abf7e3c47dc059f8d67f07"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/On.v",
+      "sha256": "f6174023ebf8885ccfd5248b53cfa3f888188c37b39cc7f3a500ed36a85cfc5e",
+      "archive": "/home/cody/zesislar-archive/sha256/f6/f6174023ebf8885ccfd5248b53cfa3f888188c37b39cc7f3a500ed36a85cfc5e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/Imports.v",
+      "sha256": "fb976dd57387079e392bc1e089cc14b38a0e729eac735d8544b1c1da9277fa97",
+      "archive": "/home/cody/zesislar-archive/sha256/fb/fb976dd57387079e392bc1e089cc14b38a0e729eac735d8544b1c1da9277fa97"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/run.py",
+      "sha256": "9cd0b23dc3f2bdd47a8185ea370c95943fbfca17bc157db7fac37c7e0032f992",
+      "archive": "/home/cody/zesislar-archive/sha256/9c/9cd0b23dc3f2bdd47a8185ea370c95943fbfca17bc157db7fac37c7e0032f992"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/result.json",
+      "sha256": "da62f64b7fdbfc1d8d9d4bd91d82b828b2d13ee6ec5ecf787a100168a7bfc0c9",
+      "archive": "/home/cody/zesislar-archive/sha256/da/da62f64b7fdbfc1d8d9d4bd91d82b828b2d13ee6ec5ecf787a100168a7bfc0c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/on/compiler.json",
+      "sha256": "f75f0d314e6c99de66f9752d1959d2501591850716b9f6597a551c4ddb08011e",
+      "archive": "/home/cody/zesislar-archive/sha256/f7/f75f0d314e6c99de66f9752d1959d2501591850716b9f6597a551c4ddb08011e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/on/compiler.log",
+      "sha256": "4d8191b2ef6e8176cd62783f52f02ff2dc29fd2eb6f46ba0f49947822aa638a9",
+      "archive": "/home/cody/zesislar-archive/sha256/4d/4d8191b2ef6e8176cd62783f52f02ff2dc29fd2eb6f46ba0f49947822aa638a9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/imports/compiler.json",
+      "sha256": "6812a2c957166edb1d2ae44705e32a84b9f73d46a0c13f43e8a52ccb0658fe4b",
+      "archive": "/home/cody/zesislar-archive/sha256/68/6812a2c957166edb1d2ae44705e32a84b9f73d46a0c13f43e8a52ccb0658fe4b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/imports/compiler.log",
+      "sha256": "55c31278e85b9d7f329fd78287e6ee3eb527ea2fe13c11714db05e7bbafb87fe",
+      "archive": "/home/cody/zesislar-archive/sha256/55/55c31278e85b9d7f329fd78287e6ee3eb527ea2fe13c11714db05e7bbafb87fe"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/imports/Imports.vo",
+      "sha256": "81a0019b1f69dbd5aeec08292de289112d6ed31725f0bac3d5e223c1984862ec",
+      "archive": "/home/cody/zesislar-archive/sha256/81/81a0019b1f69dbd5aeec08292de289112d6ed31725f0bac3d5e223c1984862ec"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-guard-coqc-001/27b84a1a052187b657a18bbc2f529e9757e7dfdca6c3207cff9621ac7c963ce6.json",
+      "sha256": "27b84a1a052187b657a18bbc2f529e9757e7dfdca6c3207cff9621ac7c963ce6",
+      "archive": "/home/cody/zesislar-archive/sha256/27/27b84a1a052187b657a18bbc2f529e9757e7dfdca6c3207cff9621ac7c963ce6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-coqc-003/baae7a25fa1ca3546b07b1d50f09fbffcd87c66d989bc67bdd16e8e03fa93a32.json",
+      "sha256": "baae7a25fa1ca3546b07b1d50f09fbffcd87c66d989bc67bdd16e8e03fa93a32",
+      "archive": "/home/cody/zesislar-archive/sha256/ba/baae7a25fa1ca3546b07b1d50f09fbffcd87c66d989bc67bdd16e8e03fa93a32"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/native-69e8-001/807e0035db24e43765f5bb76c794000389ee63a6f1989850dfe9b5f4e4c736c2.json",
+      "sha256": "807e0035db24e43765f5bb76c794000389ee63a6f1989850dfe9b5f4e4c736c2",
+      "archive": "/home/cody/zesislar-archive/sha256/80/807e0035db24e43765f5bb76c794000389ee63a6f1989850dfe9b5f4e4c736c2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/406f7f0c6ca9467466deccfa75411c27d5d82ff7ab1babe3d7d413c768500c74.json",
+      "sha256": "406f7f0c6ca9467466deccfa75411c27d5d82ff7ab1babe3d7d413c768500c74",
+      "archive": "/home/cody/zesislar-archive/sha256/40/406f7f0c6ca9467466deccfa75411c27d5d82ff7ab1babe3d7d413c768500c74"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q54/build/stock-zisk/q54-69e8-root6551-residual-report.json",
+      "sha256": "247e488152395a2d584d83bcf49b4bc419134311a3a6c39c67266b5c25575349",
+      "archive": "/home/cody/zesislar-archive/sha256/24/247e488152395a2d584d83bcf49b4bc419134311a3a6c39c67266b5c25575349"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261005-225640-q54-69e8-root6551-native.log",
+      "sha256": "f253cb75c637b6993ac0dca6fb5ca38f92d4f06e05b70f7d9c6225cf37f70b83",
+      "archive": "/home/cody/zesislar-archive/sha256/f2/f253cb75c637b6993ac0dca6fb5ca38f92d4f06e05b70f7d9c6225cf37f70b83"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q54/_build/q54_69e8_root6551.v",
+      "sha256": "fbf39ff153319c29f05c0ec3eeb3322f5bd7c0de2d2f3dcf67ab0fbeac7bc319",
+      "archive": "/home/cody/zesislar-archive/sha256/fb/fbf39ff153319c29f05c0ec3eeb3322f5bd7c0de2d2f3dcf67ab0fbeac7bc319"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/All.v",
+      "sha256": "eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f",
+      "archive": "/home/cody/zesislar-archive/sha256/ee/eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/All.vo",
+      "sha256": "076117d2193813fdfd0460d3c22ab440708b16101ebb2c5fcd7ec91cbfb20548",
+      "archive": "/home/cody/zesislar-archive/sha256/07/076117d2193813fdfd0460d3c22ab440708b16101ebb2c5fcd7ec91cbfb20548"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/RegisterCollectionSelection.vo",
+      "sha256": "326cfee0817ad314c8e5749b0320f2641e9352e5554587f05015deab835cacae",
+      "archive": "/home/cody/zesislar-archive/sha256/32/326cfee0817ad314c8e5749b0320f2641e9352e5554587f05015deab835cacae"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/InstructionLookup.v",
+      "sha256": "9fdd65b96e2147572eb07d7e79f8b7b518a0677994e27bfb589ccedc630c5b23",
+      "archive": "/home/cody/zesislar-archive/sha256/9f/9fdd65b96e2147572eb07d7e79f8b7b518a0677994e27bfb589ccedc630c5b23"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/InstructionLookup.vo",
+      "sha256": "811c71fc9315980dba33682b247d5740949789af78e2ee6beb1b80431ac307e7",
+      "archive": "/home/cody/zesislar-archive/sha256/81/811c71fc9315980dba33682b247d5740949789af78e2ee6beb1b80431ac307e7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/RamFault.v",
+      "sha256": "3715bc1577f76ab347a0d1559a7cba86c5e2210f77d66a33b8b436d0b8227ccb",
+      "archive": "/home/cody/zesislar-archive/sha256/37/3715bc1577f76ab347a0d1559a7cba86c5e2210f77d66a33b8b436d0b8227ccb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/RamFault.vo",
+      "sha256": "0919e1810105eafcf10fb98b279957f224f8da8f2aa1db3f481854f5210c9615",
+      "archive": "/home/cody/zesislar-archive/sha256/09/0919e1810105eafcf10fb98b279957f224f8da8f2aa1db3f481854f5210c9615"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/LowMask.v",
+      "sha256": "539edc301a163c8b7102e9ce44f4ee9eb68e86535e95abcd99f7ff7af82899d7",
+      "archive": "/home/cody/zesislar-archive/sha256/53/539edc301a163c8b7102e9ce44f4ee9eb68e86535e95abcd99f7ff7af82899d7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/LowMask.vo",
+      "sha256": "e705c7ccd3af6eb6ce3d449919011352e476f093328fd7fb39231fe7337dfce9",
+      "archive": "/home/cody/zesislar-archive/sha256/e7/e705c7ccd3af6eb6ce3d449919011352e476f093328fd7fb39231fe7337dfce9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/RlpDecodeItem.v",
+      "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+      "archive": "/home/cody/zesislar-archive/sha256/00/00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/RlpDecodeItem.vo",
+      "sha256": "00ae3075254d8b565f0c984569211d84fcff57a3fc7e3ab931ad6e9c6b0cbe78",
+      "archive": "/home/cody/zesislar-archive/sha256/00/00ae3075254d8b565f0c984569211d84fcff57a3fc7e3ab931ad6e9c6b0cbe78"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "archive": "/home/cody/zesislar-archive/sha256/59/595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/RlpDecodeItemContract.vo",
+      "sha256": "58c012ff9432b9af111f263d01d6a968f343a585d21f4241516691cb15ecdca4",
+      "archive": "/home/cody/zesislar-archive/sha256/58/58c012ff9432b9af111f263d01d6a968f343a585d21f4241516691cb15ecdca4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/DecodeItemSelected.v",
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
+      "archive": "/home/cody/zesislar-archive/sha256/a8/a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/DecodeItemSelected.vo",
+      "sha256": "248ff5f6600b2e916681534333bb503cb743f58df29d6e14ba76b49442e70fcb",
+      "archive": "/home/cody/zesislar-archive/sha256/24/248ff5f6600b2e916681534333bb503cb743f58df29d6e14ba76b49442e70fcb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+      "sha256": "2fe61af2ef82bd20327596d72a00169e334d2e34308f9205f11b5ee88279ca3d",
+      "archive": "/home/cody/zesislar-archive/sha256/2f/2fe61af2ef82bd20327596d72a00169e334d2e34308f9205f11b5ee88279ca3d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/DecodeItemBranchEntries.vo",
+      "sha256": "038538c00138c253976b1753ce4f63e02ca1196f5982d0acb0958d81182e27b5",
+      "archive": "/home/cody/zesislar-archive/sha256/03/038538c00138c253976b1753ce4f63e02ca1196f5982d0acb0958d81182e27b5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+      "sha256": "9958b62a6eb8a5161ea3b526e4d02aaecd48fd7734dde2ea1ab1dd995cee1eb8",
+      "archive": "/home/cody/zesislar-archive/sha256/99/9958b62a6eb8a5161ea3b526e4d02aaecd48fd7734dde2ea1ab1dd995cee1eb8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/RlpDecodeItemBlockEntries.vo",
+      "sha256": "2abff0cbe28cfbf7a6c12bf7c1346aa130e1a3ed0c4d37c9af0e95e6901da48d",
+      "archive": "/home/cody/zesislar-archive/sha256/2a/2abff0cbe28cfbf7a6c12bf7c1346aa130e1a3ed0c4d37c9af0e95e6901da48d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
+      "sha256": "3988f6422be3d9ccd16600d4824a89c62efac350a333792b849718dcd0bf2d01",
+      "archive": "/home/cody/zesislar-archive/sha256/39/3988f6422be3d9ccd16600d4824a89c62efac350a333792b849718dcd0bf2d01"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.vo",
+      "sha256": "c8885da00466bd05780ef88b70b5097a86daa005c38aeb0166a947421fa7c761",
+      "archive": "/home/cody/zesislar-archive/sha256/c8/c8885da00466bd05780ef88b70b5097a86daa005c38aeb0166a947421fa7c761"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Contracts/DecodeItemErrorBranch.v",
+      "sha256": "fcf77778467c726ccec31561fd5123fd692b7bfa0be08a31a3ff95a173fd5635",
+      "archive": "/home/cody/zesislar-archive/sha256/fc/fcf77778467c726ccec31561fd5123fd692b7bfa0be08a31a3ff95a173fd5635"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Contracts/DecodeItemErrorBranch.vo",
+      "sha256": "b7acdeb9f76b0c65568e48c66bda94d8af516154146b1abd9da8a58a46acd77a",
+      "archive": "/home/cody/zesislar-archive/sha256/b7/b7acdeb9f76b0c65568e48c66bda94d8af516154146b1abd9da8a58a46acd77a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/RecordWitness.v",
+      "sha256": "16031e2cba45a7aa9522613ae6d5d635a67d63ada765a5b9201cdf5f4d829193",
+      "archive": "/home/cody/zesislar-archive/sha256/16/16031e2cba45a7aa9522613ae6d5d635a67d63ada765a5b9201cdf5f4d829193"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/RecordWitness.vo",
+      "sha256": "a1aefbd2419f2a9809176c13a17b3be33b27155382927c5b0e499639521a28bd",
+      "archive": "/home/cody/zesislar-archive/sha256/a1/a1aefbd2419f2a9809176c13a17b3be33b27155382927c5b0e499639521a28bd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/IntegerArrayAddress.v",
+      "sha256": "16a7a06138645304ba55aa5b90ed93f1141ff29e42868d39335dd0abae1d4ebc",
+      "archive": "/home/cody/zesislar-archive/sha256/16/16a7a06138645304ba55aa5b90ed93f1141ff29e42868d39335dd0abae1d4ebc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/IntegerArrayAddress.vo",
+      "sha256": "37fe9a091a74fb750377e5315c65ff1c21ef52947726efc3742aeabdce24b8c1",
+      "archive": "/home/cody/zesislar-archive/sha256/37/37fe9a091a74fb750377e5315c65ff1c21ef52947726efc3742aeabdce24b8c1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/ArrayBounds.v",
+      "sha256": "9c959f84ce536976bae84c1c0bbe9d254536b5669a85eb5b1269ab64b8ff8605",
+      "archive": "/home/cody/zesislar-archive/sha256/9c/9c959f84ce536976bae84c1c0bbe9d254536b5669a85eb5b1269ab64b8ff8605"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/ArrayBounds.vo",
+      "sha256": "3030faff0031ba0925f54349325fffeffe074757f4e7fde7b11e04a6236729ba",
+      "archive": "/home/cody/zesislar-archive/sha256/30/3030faff0031ba0925f54349325fffeffe074757f4e7fde7b11e04a6236729ba"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/ListWitness.v",
+      "sha256": "b1e5937695fc540e0533447f7ad66fbb2c4a04cee0248a5ba34a9ca830efcb59",
+      "archive": "/home/cody/zesislar-archive/sha256/b1/b1e5937695fc540e0533447f7ad66fbb2c4a04cee0248a5ba34a9ca830efcb59"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/ListWitness.vo",
+      "sha256": "3b8c42e98d724e4d9a01a33331ebc42cadbb98ddcb0fd57ddd188601832bfb7b",
+      "archive": "/home/cody/zesislar-archive/sha256/3b/3b8c42e98d724e4d9a01a33331ebc42cadbb98ddcb0fd57ddd188601832bfb7b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/TupleWitness.v",
+      "sha256": "9b95391a98b6a6ae3e18d98a40ad77e7f77e20a6fd483b42479a40eefa652b57",
+      "archive": "/home/cody/zesislar-archive/sha256/9b/9b95391a98b6a6ae3e18d98a40ad77e7f77e20a6fd483b42479a40eefa652b57"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/TupleWitness.vo",
+      "sha256": "7a801108c7455dd9166abef8f7aad48dcb9c823e97b3aebd9f991343eba5f397",
+      "archive": "/home/cody/zesislar-archive/sha256/7a/7a801108c7455dd9166abef8f7aad48dcb9c823e97b3aebd9f991343eba5f397"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/PureWitnessConstraints.v",
+      "sha256": "91096935b447191640f6dca99e4d1a9e3d2e319a13efedbd50618fabb36eeb2b",
+      "archive": "/home/cody/zesislar-archive/sha256/91/91096935b447191640f6dca99e4d1a9e3d2e319a13efedbd50618fabb36eeb2b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/PureWitnessConstraints.vo",
+      "sha256": "6fc24aa64f237d9e3f067b6e9b8d451bf44081663ebebc202450c03d123a7b34",
+      "archive": "/home/cody/zesislar-archive/sha256/6f/6fc24aa64f237d9e3f067b6e9b8d451bf44081663ebebc202450c03d123a7b34"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/PureFactHints.v",
+      "sha256": "d1d926ff7a27a9b2f3dfad2d8668c5724c40d2d848570d39fba95fca937601ac",
+      "archive": "/home/cody/zesislar-archive/sha256/d1/d1d926ff7a27a9b2f3dfad2d8668c5724c40d2d848570d39fba95fca937601ac"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/PureFactHints.vo",
+      "sha256": "aa77d75a926a4066071adacc8c5fdd0e7608e59c21706a6745740f8e0f9e4fc4",
+      "archive": "/home/cody/zesislar-archive/sha256/aa/aa77d75a926a4066071adacc8c5fdd0e7608e59c21706a6745740f8e0f9e4fc4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Automation/Switches/ArrayRegionBounds.v",
+      "sha256": "99a08b4d942e076699ad7afb0d24015caa96d5ac19dcb4657d8e47e9d237162d",
+      "archive": "/home/cody/zesislar-archive/sha256/99/99a08b4d942e076699ad7afb0d24015caa96d5ac19dcb4657d8e47e9d237162d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Automation/Switches/ArrayRegionBounds.vo",
+      "sha256": "84481a81b4a4364b6681209cb75dbe549a63e2148920ec96faeb09b78d04aba3",
+      "archive": "/home/cody/zesislar-archive/sha256/84/84481a81b4a4364b6681209cb75dbe549a63e2148920ec96faeb09b78d04aba3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
+      "sha256": "6df4f8224a6a62d1f974347c6a6d97fa6f4152f617604908735454086719a485",
+      "archive": "/home/cody/zesislar-archive/sha256/6d/6df4f8224a6a62d1f974347c6a6d97fa6f4152f617604908735454086719a485"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7/default/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+      "sha256": "42f1368bd4733dfcc5c21cabf8e5865f0838a78fba2ecc588556a6e6a2772293",
+      "archive": "/home/cody/zesislar-archive/sha256/42/42f1368bd4733dfcc5c21cabf8e5865f0838a78fba2ecc588556a6e6a2772293"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/gate-final-001/measurement.json",
+      "sha256": "6b82bbab3009c4429788a6d3673265b3ef3591fcace78627a24028b8cc637656",
+      "archive": "/home/cody/zesislar-archive/sha256/6b/6b82bbab3009c4429788a6d3673265b3ef3591fcace78627a24028b8cc637656"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/gate-final-001/check-fast.log",
+      "sha256": "83480db52285c8871d35c8d7b2537b7899cf94db1f1c2697c3519fafed70fe43",
+      "archive": "/home/cody/zesislar-archive/sha256/83/83480db52285c8871d35c8d7b2537b7899cf94db1f1c2697c3519fafed70fe43"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-register-selection/gate-final-001/run.py",
+      "sha256": "b1d92c675ca6bbd4538fae2864e871f896dcecdff24daca83739bd1e19ab8825",
+      "archive": "/home/cody/zesislar-archive/sha256/b1/b1d92c675ca6bbd4538fae2864e871f896dcecdff24daca83739bd1e19ab8825"
+    }
+  ],
+  "queue": "empty after the gated rule checkpoint",
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=worker2-child-map-wp7",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7",
+      "AGENT_JOBS=6",
+      "FAST_JOBS=6",
+      "GATE_JOBS=6",
+      "CHECK_LOCAL_JOBS=6"
+    ],
+    "start_utc": "2026-10-06T04:35:32.483380+00:00",
+    "end_utc": "2026-10-06T04:42:48.390014+00:00",
+    "wall_s": 435.90665099490434,
+    "exit": 0,
+    "jobs": 6,
+    "sampled_peak_process_rss_kib": 2992276,
+    "rusage_maxrss_kib": 3017116
+  },
+  "accounting": {
+    "start": "2026-10-06T01:33:56.196Z",
+    "end": "2026-10-06T04:43:39.012158Z",
+    "child_min": 189.71360263333332,
+    "tokens_child": 29923000,
+    "before": {
+      "timestamp": "2026-10-06T01:33:19.210Z",
+      "total_tokens": 276774431
+    },
+    "last": {
+      "timestamp": "2026-10-06T04:42:55.814Z",
+      "total_tokens": 306697431
+    },
+    "gate_wall_s": 435.90665099490434,
+    "gate_jobs": 6,
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable",
+    "scope": "The window starts at the first selector source edit. It includes waiting, the separately reported test-policy correction, and previous selector diagnostic windows. Do not sum these overlapping checkpoint token counts."
+  }
+}
