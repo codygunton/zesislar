@@ -511,19 +511,53 @@ Class ZesuPureFactIntro {Sigma} (target source : iProp Sigma) : Prop :=
   zesu_pure_fact_intro : source ⊢ target.
 #[global] Hint Mode ZesuPureFactIntro + + - : typeclass_instances.
 
+(* Structural leaves retain owned facts. At least one leaf needs a hint. *)
+Ltac zesu_pure_fact_evidence P :=
+  constr:(ltac:(first [
+    let evidence := constr:(_ : SimplAnd P True) in
+    exact ((proj1 evidence I, true))
+  | lazymatch P with
+    | ?left /\ ?right =>
+        let left_evidence := zesu_pure_fact_evidence left in
+        let right_evidence := zesu_pure_fact_evidence right in
+        lazymatch left_evidence with (?lp, ?lh) =>
+          lazymatch right_evidence with (?rp, ?rh) =>
+            exact (conj lp rp, orb lh rh)
+          end
+        end
+    end
+  | match goal with Howned : P |- _ => exact (Howned, false) end
+  | let evidence := constr:(eq_refl : P) in exact (evidence, false) ])
+    : (P * bool)%type).
+
+Ltac zesu_registered_pure_fact P :=
+  let evidence := zesu_pure_fact_evidence P in
+  lazymatch evidence with (?proof, ?used) =>
+    let used := eval cbv in used in
+    lazymatch used with true => constr:(proof) end
+  end.
+
 (* Registered introductions retain their resource and pure obligations. *)
 Ltac zesu_pure_fact_hints_if_enabled :=
   let _ := constr:(_ : ZesuStepPureFactHints) in
   lazymatch goal with
   | |- envs_entails _ ?target =>
-      let evidence := constr:(_ : ZesuPureFactIntro target _) in
-      lazymatch type of evidence with
-      | ZesuPureFactIntro _ ?source =>
-          iApply (@zesu_pure_fact_intro _ target source evidence)
-      end
+      first [
+        lazymatch target with
+        | bi_pure ?P =>
+            let evidence := zesu_registered_pure_fact P in
+            iPureIntro; exact evidence
+        end
+      | let evidence := constr:(_ : ZesuPureFactIntro target _) in
+        lazymatch type of evidence with
+        | ZesuPureFactIntro _ ?source =>
+            iApply (@zesu_pure_fact_intro _ target source evidence)
+        end
+      | iMatchHyp ltac:(fun name source =>
+          let evidence := constr:(_ : ZesuPureFactIntro target source) in
+          iApply (@zesu_pure_fact_intro _ target source evidence)) ]
   | |- ?P =>
-      let evidence := constr:(_ : SimplAnd P True) in
-      exact ((proj1 evidence) I)
+      let evidence := zesu_registered_pure_fact P in exact evidence
   end.
 
 (* Only the requested list shape permits extraction of owned pure facts. *)
