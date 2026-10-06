@@ -27,13 +27,21 @@ from pathlib import Path
 
 wall_text = os.environ.get("ZESU_SCRATCH_WALL_SECONDS", "300")
 if wall_text == "none":
-    if not 0 < int(os.environ.get("ZESU_PRIMARY_CPU_LIMIT", "0")) <= 1200:
+    if not 0 < int(os.environ.get("ZESU_PRIMARY_CPU_LIMIT", "0")) <= 2400:
         raise SystemExit("an unlimited wall budget requires an explicit CPU budget")
+    cpu = int(os.environ["ZESU_PRIMARY_CPU_LIMIT"])
+    if cpu > 1200 and os.environ.get("ZESU_COMPLETION_ENTRY") not in ("0x800d6a24", "0x800d6ac4"):
+        raise SystemExit("the CPU exception requires an authorized completion entry")
     wall_limit = None
 else:
     wall_limit = float(wall_text)
     if not 0 < wall_limit <= 300:
         raise SystemExit("the scratch wall budget must be between zero and 300 seconds")
+
+memory_gib = int(os.environ.get("ZESU_SCRATCH_MEMORY_GIB", "6"))
+if memory_gib not in (6, 12) or (memory_gib == 12 and
+        (wall_limit is not None or os.environ.get("ZESU_COMPLETION_ENTRY") != "0x800d698c")):
+    raise SystemExit("the memory exception requires completion entry0x800d698c")
 
 source = Path(sys.argv[1])
 build_dir = Path(sys.argv[2])
@@ -81,7 +89,7 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
             [guard, "scope", "scratch-coqc", "--", compiler, *flags, "-o", str(output), str(source)],
             cwd=working_dir,
             env={**os.environ, "ZESU_COQC_RESERVATION": reservation,
-                 "ZESU_MODULE_LIMIT_GIB": "6"},
+                 "ZESU_MODULE_LIMIT_GIB": str(memory_gib)},
         )
         limit = None
         while process.poll() is None:
@@ -92,7 +100,7 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
                               if line.startswith("VmRSS:"))
             except (FileNotFoundError, ProcessLookupError, StopIteration):
                 rss_kb = 0
-            if (wall_limit is not None and elapsed > wall_limit) or rss_kb > 6 * 1024 * 1024:
+            if (wall_limit is not None and elapsed > wall_limit) or rss_kb > memory_gib * 1024 * 1024:
                 limit = "time" if wall_limit is not None and elapsed > wall_limit else "memory"
                 process.terminate()
                 try:

@@ -64,3 +64,12 @@ class CoqcDiscoveryTests(unittest.TestCase):
             log.write_text('changed result')
             with self.assertRaisesRegex(ValueError, 'capture changed'):
                 coqc_discovery.checked_reuse(capture, rendered)
+
+    def test_module_completion_limits_are_explicit_and_entry_bound(self):
+        values = coqc_discovery.module_limits(['0x800d6a24:2400:6', '0x800d698c:1200:12'])
+        self.assertEqual(values['0x800d6a24']['cpu_seconds'], 2400)
+        self.assertEqual(values['0x800d698c']['memory_kib'], 12582912)
+        for invalid in (['0x800d6974:2400:6'], ['0x800d6a24:1200:12'],
+                        ['0x800d6a24:2400:6', '0x800d6a24:1200:6']):
+            with self.assertRaises(ValueError):
+                coqc_discovery.module_limits(invalid)

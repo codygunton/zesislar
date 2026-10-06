@@ -97,13 +97,13 @@ class CoqcPrimaryTests(unittest.TestCase):
                 'primary_tactic': 'try zesu_block.', 'primary_timeout': 300,
                 'original_source_sha256': hashlib.sha256(rendered['source'].encode()).hexdigest(),
                 'statement_sha256': rendered['statement_sha256'],
-                'entry_definition': rendered['entry_definition'], 'successors': rendered['successors'],
+                'entry_pc': rendered['entry_pc'], 'entry_definition': rendered['entry_definition'], 'successors': rendered['successors'],
                 'source': str(source), 'source_sha256': coqc_primary.digest(source),
                 'log': str(log), 'log_sha256': coqc_primary.digest(log),
                 'assumption_verification': {'verified': True, 'assumptions': []}}
             self.assertTrue(coqc_certificate.native_closed(evidence, rendered))
             for update in ({'inherited_debts': {'shelf': ['debt']}}, {'primary_timeout': 299},
-                           {'native_qed_compiled': False}, {'successors': ['0x30']},
+                           {'native_qed_compiled': False}, {'entry_pc': '0x800d698c'}, {'successors': ['0x30']},
                            {'assumption_verification': {'verified': True, 'assumptions': ['axiom']}}):
                 self.assertFalse(coqc_certificate.native_closed({**evidence, **update}, rendered))
             artifact.write_bytes(b'changed object')
@@ -149,3 +149,51 @@ class CompletionBudgetTests(unittest.TestCase):
         self.assertEqual(coqc_primary.budget_policy(), {'kind': 'wall', 'cpu_seconds': None,
             'wall_seconds': 300, 'memory_kib': 6291456})
         self.assertEqual(coqc_primary.completion_environment(coqc_primary.budget_policy())['ZESU_SCRATCH_WALL_SECONDS'], '300')
+
+    def test_postcompiler_report_records_the_actual_scratch_command(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            rendered = {**self.rendered(), 'successors': ['0x20']}
+            command = ['scratch.sh', str(root/'out/Boundary.v'), str(root/'build')]
+            output = 'COQC-PRIMARY-BEGIN\nAttempt to save an incomplete proof\n'
+            log = root/'compiler.log'
+            log.write_text(output)
+            done = subprocess.CompletedProcess(command, 1, output, '')
+            compiler = {'exit_code': 1, 'limit': None, 'compiled_object': None}
+            with patch.object(coqc_primary, 'compile_source', return_value=(done, output, log, compiler, 0.25)):
+                result = coqc_primary.run_primary(rendered, root/'out', root/'build',
+                    inherited_debts={'pending_goals': [], 'shelved_goals': []}, cpu_seconds=1200)
+            self.assertEqual(result['scratch_command'], command)
+            retained = json.loads((root/'out/evidence.json').read_text())
+            self.assertEqual(retained['scratch_command'], command)
+            self.assertEqual(retained['proof_budget']['cpu_seconds'], 1200)
+            self.assertEqual(retained['outcome'], 'native-residual')
+            self.assertFalse(retained['block_closed'])
+
+    def test_completion_exceptions_require_the_authorized_entry(self):
+        for pc in ('0x800d6a24', '0x800d6ac4'):
+            policy = coqc_primary.budget_policy(cpu_seconds=2400, entry_pc=pc)
+            self.assertEqual(policy['cpu_seconds'], 2400)
+            self.assertEqual(policy['completion_entry'], pc)
+            self.assertEqual(policy['optimization_debt'], 'issue#10')
+        memory = coqc_primary.budget_policy(cpu_seconds=1200, memory_gib=12, entry_pc='0x800d698c')
+        environment = coqc_primary.completion_environment(memory)
+        self.assertEqual(environment['ZESU_PRIMARY_MEMORY_GIB'], '12')
+        self.assertEqual(environment['ZESU_SCRATCH_MEMORY_GIB'], '12')
+        for values in ({'cpu_seconds': 2400}, {'cpu_seconds': 2400, 'entry_pc': '0x800d6974'},
+                       {'cpu_seconds': 2401, 'entry_pc': '0x800d6a24'},
+                       {'cpu_seconds': 1200, 'memory_gib': 12},
+                       {'cpu_seconds': 2400, 'memory_gib': 12, 'entry_pc': '0x800d6a24'}):
+            with self.assertRaises(ValueError):
+                coqc_primary.budget_policy(**values)
+
+    def test_certificate_rejects_exception_transferred_to_another_entry(self):
+        policy = coqc_primary.budget_policy(cpu_seconds=2400, entry_pc='0x800d6a24')
+        evidence = {'entry_pc': '0x800d6a24', 'proof_budget': policy, 'primary_timeout': None}
+        compiler = {'limits': {'cpu_seconds': 2400, 'module_seconds': None, 'rss_kib': 6291456}}
+        self.assertTrue(coqc_certificate.valid_budget(evidence, compiler))
+        self.assertFalse(coqc_certificate.valid_budget({**evidence, 'entry_pc': '0x800d6974'}, compiler))
+        memory = coqc_primary.budget_policy(cpu_seconds=1200, memory_gib=12, entry_pc='0x800d698c')
+        compiler['limits'].update(cpu_seconds=1200, rss_kib=12582912)
+        self.assertTrue(coqc_certificate.valid_budget({'entry_pc': '0x800d698c', 'proof_budget': memory, 'primary_timeout': None}, compiler))
+        self.assertFalse(coqc_certificate.valid_budget({'entry_pc': '0x800d6a24', 'proof_budget': memory, 'primary_timeout': None}, compiler))

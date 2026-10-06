@@ -12,11 +12,17 @@ def valid_budget(evidence, compiler):
     if policy is None or policy.get('kind') == 'wall':
         return evidence.get('primary_timeout') == 300
     limits = compiler.get('limits', {})
+    entry = evidence.get('entry_pc')
+    maximum = 2400 if entry in ('0x800d6a24', '0x800d6ac4') else 1200
+    memory = policy.get('memory_kib')
+    exception = policy.get('cpu_seconds', 0) > 1200 or memory == 12*1024*1024
     return (policy.get('kind') == 'cpu' and
+            (not exception or (policy.get('completion_entry') == entry and
+                               policy.get('optimization_debt') == 'issue#10')) and
             isinstance(policy.get('cpu_seconds'), int) and
-            0 < policy['cpu_seconds'] <= 1200 and
+            0 < policy['cpu_seconds'] <= maximum and
             policy.get('wall_seconds') is None and
-            policy.get('memory_kib') == 6*1024*1024 and
+            (memory == 6*1024*1024 or (memory == 12*1024*1024 and entry == '0x800d698c')) and
             evidence.get('primary_timeout') is None and
             limits.get('cpu_seconds') == policy['cpu_seconds'] and
             limits.get('module_seconds') is None and
@@ -33,6 +39,7 @@ def native_closed(evidence, rendered):
             rendered.get('scope') != 'unproved native designed boundary' or
             evidence.get('original_source_sha256') != hashlib.sha256(rendered['source'].encode()).hexdigest() or
             evidence.get('statement_sha256') != rendered.get('statement_sha256') or
+            evidence.get('entry_pc') != rendered.get('entry_pc') or
             evidence.get('entry_definition') != rendered.get('entry_definition') or
             evidence.get('successors') != rendered.get('successors')):
         return False

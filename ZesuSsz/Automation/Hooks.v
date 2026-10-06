@@ -4,6 +4,7 @@ From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Automation.NatBounds.
+Require Export ZesuSsz.Automation.ByteArrayLengths.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 Require Import ZesuSsz.Automation.TraceTailLemmas.
 Require Import ZesuSsz.Automation.InstrPre.
@@ -1107,7 +1108,13 @@ Ltac zesu_integer_array_address_if_enabled :=
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
                 ((repeat first [progress zesu_split_folded_pure |
                   match goal with Hpure : _ /\ _ |- _ => destruct Hpure end];
-                  zesu_normalize_binary_nat_hypotheses; bv_solve));
+                  zesu_normalize_binary_nat_hypotheses;
+                  first [
+                    let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
+                    zesu_array_bound_integer_casts;
+                    zesu_byte_array_lengths_if_enabled;
+                    solve [lia | bv_solve]
+                  | bv_solve]));
               zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
