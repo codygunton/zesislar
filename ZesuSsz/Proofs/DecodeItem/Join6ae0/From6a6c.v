@@ -1,4 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Switches.PureFactHints.
+Require Import ZesuSsz.Compliance.DecodeItemS40GuardFacts.
+Require Import ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.InstructionLookup.
 Require Import ZesuSsz.Automation.Switches.RamFault.
@@ -42,14 +45,9 @@ Proof.
   assert (Hunsigned : bv_unsigned LET2 >= bv_unsigned
     (Z_to_bv 64 (decodeItemInputLength args))) by
     (rewrite Hbyte (Z_to_bv_small 64 (decodeItemInputLength args) Hlen); lia).
-  assert (Hrejected : decodeItemRejectedFacts args) by
-    (eapply (decodeItemShortListRejected args inputPrefix rest); [unfold decodeItemC1BDomain, decodeItemArgsWellFormed; tauto |
-      assumption | split; assumption |]; match goal with Hguard : bv_unsigned (Z_to_bv 8 _) >= _ |- _ => pose proof Hguard as HrejectionBound; rewrite Hheader in HrejectionBound end;
-      assert (HinputLength : decodeItemInputLength args = Z.of_nat (length (decodeItemInputBytes args))) by tauto;
-      rewrite -HinputLength Z.add_1_l; apply (proj2 (Z.lt_succ_r _ _));
-      apply Z.ge_le; exact HrejectionBound).
   pose proof (decodeItemErrorUnsignedComparison LET2
     (Z_to_bv 64 (decodeItemInputLength args)) Hunsigned) as Hsigned.
+  assert (Hrejected : decodeItemRejectedFacts args) by (let evidence := constr:(_ : SimplAnd (decodeItemRejectedFacts args) True) in exact (proj1 (@simpl_and _ _ evidence) I)).
   zesu_run_until ltac:(fun _ => match goal with
     Hno : ~ ?P, Hyes : ?P |- _ => exfalso; exact (Hno Hyes) end).
 Unshelve.
