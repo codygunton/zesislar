@@ -660,17 +660,40 @@ gate_jobs() {
   echo "$allowed"
 }
 
+release_empty_registered_scope() {
+  local unit=$1 launcher tasks
+  grep -Fxq -- "$unit" "$REGISTRY" || return 1
+  if [[ "$unit" =~ -([0-9]+)-[0-9]+\.scope$ ]]; then
+    launcher=${BASH_REMATCH[1]}
+  elif [[ "$unit" =~ -batch-.*-([0-9]+)\.scope$ ]]; then
+    launcher=${BASH_REMATCH[1]}
+  else return 1; fi
+  kill -0 "$launcher" 2>/dev/null && return 1
+  tasks=$(systemctl --user show "$unit" -p TasksCurrent --value 2>/dev/null) || return 1
+  [ "$tasks" = 0 ] || return 1
+  systemctl --user stop "$unit" 2>/dev/null || return 1
+  note "STALE empty scope released: $unit launcher $launcher"
+}
+
 live_scopes() {
+  local unit
   systemctl --user list-units --type=scope --state=active --plain --no-legend \
-    "${SCOPE_PREFIX}-*" 2>/dev/null | awk '$1 !~ /-writer-/ {print $1}'
+    "${SCOPE_PREFIX}-*" 2>/dev/null | awk '$1 !~ /-writer-/ {print $1}' |
+    while IFS= read -r unit; do
+      release_empty_registered_scope "$unit" || printf '%s\n' "$unit"
+    done
 }
 
 prune_scope_registry() (
-  local active replacement
+  local active replacement unit rest
   exec 8>>"$REGISTRY.lock"
   flock 8
   active=$(systemctl --user list-units --type=scope --state=active --plain \
     --no-legend "${SCOPE_PREFIX}-*" 2>/dev/null) || return 0
+  active=$(while read -r unit rest; do
+    [ -n "$unit" ] || continue
+    release_empty_registered_scope "$unit" || printf '%s\n' "$unit"
+  done <<< "$active")
   replacement=$(mktemp "$STATE_DIR/scopes.XXXXXXXX") || return 2
   awk 'NR == FNR { live[$1] = 1; next } live[$0] && !seen[$0]++' \
     <(printf '%s\n' "$active") "$REGISTRY" > "$replacement"
