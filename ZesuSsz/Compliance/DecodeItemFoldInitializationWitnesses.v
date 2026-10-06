@@ -88,3 +88,40 @@ Qed.
 
 Print Assumptions decodeItemListInitializationWitness.
 
+
+#[export] Instance decodeItemStringInitializationAnchor
+    `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) (prefix : byte) (rest : list byte)
+    (n payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64) :
+  @ZesuPureFactAnchor Sigma (decodeItemEntryAt800d6a24 args prefix rest)
+    (decodeItemByteFoldStringHeader args n 0 payloadStart lengthBytes frameBytes loaded)
+    (⌜decodeItemByteFoldFacts args n 0 payloadStart lengthBytes⌝ ∗
+     ⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args⌝ ∗
+     ⌜decodeItemSavedFrameFacts args frameBytes⌝ ∗
+     ⌜decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes⌝ ∗
+     decodeItemByteFoldStringHeader args n 0 payloadStart lengthBytes frameBytes loaded ∗
+     decodeItemBranchContinuation args)%I.
+Proof.
+  exact (decodeItemStringInitializationWitness args prefix rest n payloadStart lengthBytes frameBytes loaded).
+Qed.
+
+Print Assumptions decodeItemStringInitializationAnchor.
+
+#[export] Instance decodeItemListInitializationAnchor
+    `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) (prefix : byte) (rest : list byte)
+    (n payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64) :
+  @ZesuPureFactAnchor Sigma (decodeItemEntryAt800d6ac4 args prefix rest)
+    (decodeItemByteFoldListHeader args n 0 payloadStart lengthBytes frameBytes loaded)
+    (⌜decodeItemByteFoldFacts args n 0 payloadStart lengthBytes⌝ ∗
+     ⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args⌝ ∗
+     ⌜decodeItemSavedFrameFacts args frameBytes⌝ ∗
+     ⌜decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes⌝ ∗
+     decodeItemByteFoldListHeader args n 0 payloadStart lengthBytes frameBytes loaded ∗
+     decodeItemBranchContinuation args)%I.
+Proof.
+  exact (decodeItemListInitializationWitness args prefix rest n payloadStart lengthBytes frameBytes loaded).
+Qed.
+
+Print Assumptions decodeItemListInitializationAnchor.
+
