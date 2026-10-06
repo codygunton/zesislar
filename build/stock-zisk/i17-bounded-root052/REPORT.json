@@ -1,0 +1,264 @@
+{
+  "adjacent_states": [
+    {
+      "applied_tactic": "ZesuSsz.Automation.Finish.zesu_finish",
+      "before_state_context_archive": {
+        "archive": "/home/cody/zesislar-archive/sha256/4d45b53bdda4f0dd59778166e69d52b62f6aa1e5bfa5aee9765db62a3f17ea3d",
+        "bytes": 1255803,
+        "sha256": "4d45b53bdda4f0dd59778166e69d52b62f6aa1e5bfa5aee9765db62a3f17ea3d"
+      },
+      "goal": "(SHELVED_SIDECOND\n                 ((((((let H19 : (-1 < bv_unsigned b < bv_modulus 64)%Z := bv_unsigned_in_range_alt 64 b in\n                       let H20 : 64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64)%Z := bv_signed_in_range 64 b in\n                       let H21 : (-1 < bv_unsigned n < bv_modulus 64)%Z := bv_unsigned_in_range_alt 64 n in\n                       let H22 : 64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64)%Z := bv_signed_in_range 64 n in\n                       let H23 : (-1 < bv_unsigned inputPrefix < bv_modulus 8)%Z := bv_unsigned_in_range_alt 8 inputPrefix in\n                       let H24 : 8%N \u2260 0%N \u2192 (- bv_half_modulus 8 \u2264 bv_signed inputPrefix < bv_half_modulus 8)%Z := bv_signed_in_range 8 inputPrefix in ?Goal2)\n                      :\n                      nat)\n                     :\n                     nat)\n                    :\n                    nat)\n                   :\n                   nat) = ((decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1)%Z))",
+      "phase": "outer-finish",
+      "step": 265
+    },
+    {
+      "applied_tactic": "ZesuSsz.Automation.Finish.zesu_finish",
+      "before_state_context_archive": {
+        "archive": "/home/cody/zesislar-archive/sha256/4d45b53bdda4f0dd59778166e69d52b62f6aa1e5bfa5aee9765db62a3f17ea3d",
+        "bytes": 1255803,
+        "sha256": "4d45b53bdda4f0dd59778166e69d52b62f6aa1e5bfa5aee9765db62a3f17ea3d"
+      },
+      "goal": "(SHELVED_SIDECOND\n                 ((((((let H19 : (-1 < bv_unsigned b < bv_modulus 64)%Z := bv_unsigned_in_range_alt 64 b in\n                       let H20 : 64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed b < bv_half_modulus 64)%Z := bv_signed_in_range 64 b in\n                       let H21 : (-1 < bv_unsigned n < bv_modulus 64)%Z := bv_unsigned_in_range_alt 64 n in\n                       let H22 : 64%N \u2260 0%N \u2192 (- bv_half_modulus 64 \u2264 bv_signed n < bv_half_modulus 64)%Z := bv_signed_in_range 64 n in\n                       let H23 : (-1 < bv_unsigned inputPrefix < bv_modulus 8)%Z := bv_unsigned_in_range_alt 8 inputPrefix in\n                       let H24 : 8%N \u2260 0%N \u2192 (- bv_half_modulus 8 \u2264 bv_signed inputPrefix < bv_half_modulus 8)%Z := bv_signed_in_range 8 inputPrefix in ?Goal1)\n                      :\n                      nat)\n                     :\n                     nat)\n                    :\n                    nat)\n                   :\n                   nat) < length (returnStorage locals)))",
+      "phase": "outer-finish",
+      "step": 266
+    }
+  ],
+  "allocating_phase": "outer-finish",
+  "allocating_step": 266,
+  "allocating_tactic": "ZesuSsz.Automation.Finish.zesu_finish",
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/7ef520bada7e57ffd534966f3a2dbf77e68eadd915a1f493e9228e06ba255b31",
+    "bytes": 2371313,
+    "sha256": "7ef520bada7e57ffd534966f3a2dbf77e68eadd915a1f493e9228e06ba255b31"
+  },
+  "archive_records": 6425,
+  "closure_claim": false,
+  "internal_allocating_subtactic": null,
+  "limitations": [
+    "The step266 call is recorded within bound280. It is not repeated at bound266.",
+    "The adjacent bound265 completes with peak1994192KiB. The step266 call reaches12591308KiB.",
+    "The allocating native handler is zesu_finish. This evidence does not identify its internal allocating sub-tactic.",
+    "The allocated index is an unresolved nat evar in a shelved array-bound goal. The previous phase processes its index equality.",
+    "The exact compiler command, contexts, active goals, and evars remain archived. Stack, shelf, and given-up diagnostic groups are unavailable.",
+    "Successful objects contain Abort and are diagnostic artifacts, not native proof certificates.",
+    "The bound257 compiler fails only at the retained Print Assumptions after Abort. Later bounds omit that invalid reporting command.",
+    "All failed counter smokes remain archived. Minimal and integrated exact-bound tests pass.",
+    "Production Hooks.v and Finish.v remain unchanged. Search alternatives and finishing phases retain their order.",
+    "Transaction wall includes admission and wrapper work. No guard-wait value is inferred."
+  ],
+  "policy": {
+    "cpu_seconds": 1200,
+    "memory_kib": 12582912,
+    "wall_seconds": null
+  },
+  "production_source_hashes": {
+    "ZesuSsz/Automation/Finish.v": "2c01273007a145918ccc955f21dac836718b777c95221c97e5f0422b35fde96b",
+    "ZesuSsz/Automation/Hooks.v": "10426b00fbb3c91a18e532afe556d1840840fb2f323f0fc2bcdb50541766d4de"
+  },
+  "root": "052e4f3f1392482e4dc12470f239752364d01d7e",
+  "rows": [
+    {
+      "actual_last_step": 257,
+      "compiled_diagnostic_object": null,
+      "compiler_cpu_seconds": 96.95285,
+      "compiler_exit_code": 1,
+      "compiler_pid": 3622335,
+      "compiler_wall_seconds": 97.22544064500835,
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/be7e19815913ee21c631b93d45e4d4d97f1124adc442151bee2acd0fc8b6e041",
+        "bytes": 1484766,
+        "sha256": "be7e19815913ee21c631b93d45e4d4d97f1124adc442151bee2acd0fc8b6e041"
+      },
+      "goals_archive": {
+        "archive": "/home/cody/zesislar-archive/sha256/c43a112bbc6174a82aab9b3df1d3a246fb8b5afbdd338bd476494644637e1652",
+        "bytes": 1446733,
+        "sha256": "c43a112bbc6174a82aab9b3df1d3a246fb8b5afbdd338bd476494644637e1652"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/99d7b87f3900e09840f251872d2c16f7fa01568d38df457d46e2202e17f7a1cf",
+        "bytes": 1445620,
+        "sha256": "99d7b87f3900e09840f251872d2c16f7fa01568d38df457d46e2202e17f7a1cf"
+      },
+      "isolated_finish": {
+        "archive": "/home/cody/zesislar-archive/sha256/1b0fc6901b29f0f5c7cfeff5d451cd077ca13a6b99e1bb02a6ae22ad9ffeddef",
+        "bytes": 3668,
+        "sha256": "1b0fc6901b29f0f5c7cfeff5d451cd077ca13a6b99e1bb02a6ae22ad9ffeddef"
+      },
+      "limit": null,
+      "memory_samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/6efd21ba970ff50cb4dd4ce944afd8a1b9dd646dfd1e2332d0e6a08d111ac23f",
+        "bytes": 66581,
+        "sha256": "6efd21ba970ff50cb4dd4ce944afd8a1b9dd646dfd1e2332d0e6a08d111ac23f"
+      },
+      "peak_rss_kib": 1994164,
+      "proof_certificate": false,
+      "raw_result": {
+        "archive": "/home/cody/zesislar-archive/sha256/2c82fe3bb102ba846f6350141e3b1f5337693a718d295abdf2332006b7faa25c",
+        "bytes": 6379,
+        "sha256": "2c82fe3bb102ba846f6350141e3b1f5337693a718d295abdf2332006b7faa25c"
+      },
+      "requested_bound": 257,
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/ed2cc36d12ffd19a916c36074a6e424dfa043a07e0d95b0425e404c81524bd9f",
+        "bytes": 7278,
+        "sha256": "ed2cc36d12ffd19a916c36074a6e424dfa043a07e0d95b0425e404c81524bd9f"
+      },
+      "transaction_wall_seconds": 251.27394644799642,
+      "wrapper_exit_code": 1
+    },
+    {
+      "actual_last_step": 263,
+      "compiled_diagnostic_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i17-bounded-root052/k263/Diagnostic.vo",
+        "sha256": "fca8ec8a8d7acef7f27824e274494999dd1cab3da16b5a49cae982351b7d9365"
+      },
+      "compiler_cpu_seconds": 112.407935,
+      "compiler_exit_code": 0,
+      "compiler_pid": 3645738,
+      "compiler_wall_seconds": 112.73510237596929,
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/3cf0a37147fae741b09066971ac7520a879086ca5ff3b934882e636da8dbf822",
+        "bytes": 1561138,
+        "sha256": "3cf0a37147fae741b09066971ac7520a879086ca5ff3b934882e636da8dbf822"
+      },
+      "goals_archive": {
+        "archive": "/home/cody/zesislar-archive/sha256/824a7b7b3e13fb403a4a76cceebe6e82eab7e3f64e26720a616dee0251c2a37d",
+        "bytes": 1397427,
+        "sha256": "824a7b7b3e13fb403a4a76cceebe6e82eab7e3f64e26720a616dee0251c2a37d"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/7b534168e4efd4a66baef3e8eacaf7a9cd4752906bcb46140fe718f511a46934",
+        "bytes": 1445620,
+        "sha256": "7b534168e4efd4a66baef3e8eacaf7a9cd4752906bcb46140fe718f511a46934"
+      },
+      "isolated_finish": {
+        "archive": "/home/cody/zesislar-archive/sha256/3954aa39b74580217b8dc1a68d6508914a04cde199e59d8b2f7fc7132c789cc8",
+        "bytes": 3668,
+        "sha256": "3954aa39b74580217b8dc1a68d6508914a04cde199e59d8b2f7fc7132c789cc8"
+      },
+      "limit": null,
+      "memory_samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/188ecfb8a777024a3108add61717d0c73822bbf99f2bf674b7650c76701c85e7",
+        "bytes": 76891,
+        "sha256": "188ecfb8a777024a3108add61717d0c73822bbf99f2bf674b7650c76701c85e7"
+      },
+      "peak_rss_kib": 1996236,
+      "proof_certificate": false,
+      "raw_result": {
+        "archive": "/home/cody/zesislar-archive/sha256/763fc9ebaba0ed12f39d1402251dd119ffee54883d53379d97a4913e4f2c0de9",
+        "bytes": 6568,
+        "sha256": "763fc9ebaba0ed12f39d1402251dd119ffee54883d53379d97a4913e4f2c0de9"
+      },
+      "requested_bound": 263,
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/27982d3d3c3c1e0648da645b2f235d1ce95ffa0c36e7f7125bfbe366073586f0",
+        "bytes": 7233,
+        "sha256": "27982d3d3c3c1e0648da645b2f235d1ce95ffa0c36e7f7125bfbe366073586f0"
+      },
+      "transaction_wall_seconds": 114.60907630098518,
+      "wrapper_exit_code": 0
+    },
+    {
+      "actual_last_step": 265,
+      "compiled_diagnostic_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-discovery/_build/i17-bounded-root052/k265/Diagnostic.vo",
+        "sha256": "9c8e2c7f751f35e510be20cafbf9c73906b3cd1e2c3c826daaa6c0efdb964748"
+      },
+      "compiler_cpu_seconds": 125.528507,
+      "compiler_exit_code": 0,
+      "compiler_pid": 3681701,
+      "compiler_wall_seconds": 125.88475906697568,
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/046bd2e72b375ba3a2558c79efea5ce640b67bed3d84199829c169db4c9896ab",
+        "bytes": 1600322,
+        "sha256": "046bd2e72b375ba3a2558c79efea5ce640b67bed3d84199829c169db4c9896ab"
+      },
+      "goals_archive": {
+        "archive": "/home/cody/zesislar-archive/sha256/f918a6d89bd0cd439e5f6938153f86cdc606ffae397f7d3696c3e073285a17a7",
+        "bytes": 1383321,
+        "sha256": "f918a6d89bd0cd439e5f6938153f86cdc606ffae397f7d3696c3e073285a17a7"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/fd57c6b46ecb2d45aac8fe8bf00174228e3be035c6449281778518058341f0f7",
+        "bytes": 1445620,
+        "sha256": "fd57c6b46ecb2d45aac8fe8bf00174228e3be035c6449281778518058341f0f7"
+      },
+      "isolated_finish": {
+        "archive": "/home/cody/zesislar-archive/sha256/b5be963215212006e244af1d1b13fb7172266e4c9c86b0d658cc4b6eb636e957",
+        "bytes": 3668,
+        "sha256": "b5be963215212006e244af1d1b13fb7172266e4c9c86b0d658cc4b6eb636e957"
+      },
+      "limit": null,
+      "memory_samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/8f0f6759ba6804c13bd12d6f2d4dd7ff1da4635306b6dad26763ab57bd092c6c",
+        "bytes": 85614,
+        "sha256": "8f0f6759ba6804c13bd12d6f2d4dd7ff1da4635306b6dad26763ab57bd092c6c"
+      },
+      "peak_rss_kib": 1994192,
+      "proof_certificate": false,
+      "raw_result": {
+        "archive": "/home/cody/zesislar-archive/sha256/218849f67a6ecb3de83a26921db2384f6e3e3af8d90b8d14e437ac645814190a",
+        "bytes": 6568,
+        "sha256": "218849f67a6ecb3de83a26921db2384f6e3e3af8d90b8d14e437ac645814190a"
+      },
+      "requested_bound": 265,
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/48b6b70c912c3a59f9cace110feee8452b6e78216e0ac41165b15069facddb98",
+        "bytes": 7233,
+        "sha256": "48b6b70c912c3a59f9cace110feee8452b6e78216e0ac41165b15069facddb98"
+      },
+      "transaction_wall_seconds": 127.84022232994903,
+      "wrapper_exit_code": 0
+    },
+    {
+      "actual_last_step": 266,
+      "compiled_diagnostic_object": null,
+      "compiler_cpu_seconds": 312.175682,
+      "compiler_exit_code": -15,
+      "compiler_pid": 3650022,
+      "compiler_wall_seconds": 313.00503699993715,
+      "events": {
+        "archive": "/home/cody/zesislar-archive/sha256/f12b0a1c9617ed06d0d203b9578f60dfe0f9b26426f4ed511af434eea9ab7fed",
+        "bytes": 1611153,
+        "sha256": "f12b0a1c9617ed06d0d203b9578f60dfe0f9b26426f4ed511af434eea9ab7fed"
+      },
+      "goals_archive": {
+        "archive": "/home/cody/zesislar-archive/sha256/4d45b53bdda4f0dd59778166e69d52b62f6aa1e5bfa5aee9765db62a3f17ea3d",
+        "bytes": 1255803,
+        "sha256": "4d45b53bdda4f0dd59778166e69d52b62f6aa1e5bfa5aee9765db62a3f17ea3d"
+      },
+      "inputs": {
+        "archive": "/home/cody/zesislar-archive/sha256/775d8b36b2ceec6c519b2dbc2841cfa289d0e1ab2ebf51f0786dd7bdfd771be4",
+        "bytes": 1445620,
+        "sha256": "775d8b36b2ceec6c519b2dbc2841cfa289d0e1ab2ebf51f0786dd7bdfd771be4"
+      },
+      "isolated_finish": {
+        "archive": "/home/cody/zesislar-archive/sha256/587bfab640e6fc082bc457415c33837c2411496d29d55486289117113ca37e7b",
+        "bytes": 3668,
+        "sha256": "587bfab640e6fc082bc457415c33837c2411496d29d55486289117113ca37e7b"
+      },
+      "limit": "memory",
+      "memory_samples": {
+        "archive": "/home/cody/zesislar-archive/sha256/8b27355d954432a98d4094bf09a7dfc0fcbdcb0e7921bc5dc3990a783e49f5d0",
+        "bytes": 193340,
+        "sha256": "8b27355d954432a98d4094bf09a7dfc0fcbdcb0e7921bc5dc3990a783e49f5d0"
+      },
+      "peak_rss_kib": 12591308,
+      "proof_certificate": false,
+      "raw_result": {
+        "archive": "/home/cody/zesislar-archive/sha256/31db81a17256d5ed03ff180defe4039d4bfd150f0230466c24e6aea647a03a49",
+        "bytes": 6389,
+        "sha256": "31db81a17256d5ed03ff180defe4039d4bfd150f0230466c24e6aea647a03a49"
+      },
+      "requested_bound": 280,
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/f4ad0058e423e47ffdcdf1158be8746be4412b204a1a32a67bd217e4606ed10f",
+        "bytes": 7233,
+        "sha256": "f4ad0058e423e47ffdcdf1158be8746be4412b204a1a32a67bd217e4606ed10f"
+      },
+      "transaction_wall_seconds": 314.9952417300083,
+      "wrapper_exit_code": 1
+    }
+  ],
+  "steps": "One successful v2 alternative is one step. Ordered finishing phase invocations are counted. Exhausting the bound skips subsequent search."
+}
