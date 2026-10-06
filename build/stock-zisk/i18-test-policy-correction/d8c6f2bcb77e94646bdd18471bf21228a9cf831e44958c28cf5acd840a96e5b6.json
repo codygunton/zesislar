@@ -1,0 +1,308 @@
+{
+  "artifacts": [
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/eb/eb33a044a5fea8820cbc0c323fee2f0e426f037d770903ebfb7b44c49228987f",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/client.py",
+      "sha256": "eb33a044a5fea8820cbc0c323fee2f0e426f037d770903ebfb7b44c49228987f"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/dd/ddb4a8a381acd743ebea745cf00010a758ecab0c5249bb752611c500d78905e7",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/dependencies.log",
+      "sha256": "ddb4a8a381acd743ebea745cf00010a758ecab0c5249bb752611c500d78905e7"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c0/c07ca510d5ec82aebd26fa621388022270977851ba27f9ad5505ecade16111c4",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/client-002.py",
+      "sha256": "c07ca510d5ec82aebd26fa621388022270977851ba27f9ad5505ecade16111c4"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/6a/6ad15bf7fff531f7cc5b49487f787e9e62b7e59419e83ff74c998e57182c01da",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/client-003.py",
+      "sha256": "6ad15bf7fff531f7cc5b49487f787e9e62b7e59419e83ff74c998e57182c01da"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/dd/ddb4a8a381acd743ebea745cf00010a758ecab0c5249bb752611c500d78905e7",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/dependencies-002.log",
+      "sha256": "ddb4a8a381acd743ebea745cf00010a758ecab0c5249bb752611c500d78905e7"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/6a/6a5ae0c248cacd4aab9360a74ad0a40374103cb8b9a1e828b300ee24432a1c4f",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/final-001/calls.json",
+      "sha256": "6a5ae0c248cacd4aab9360a74ad0a40374103cb8b9a1e828b300ee24432a1c4f"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/5d/5d1eae1a9215a2ae4bed4066f8824253d54e759a95e7391059102f9e136c602e",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/final-002/calls.json",
+      "sha256": "5d1eae1a9215a2ae4bed4066f8824253d54e759a95e7391059102f9e136c602e"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/25/259ccb296a2833297b3f885643b697730c2b8481e9a92d14567a7f58ceb53ed7",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/gate-001/run.py",
+      "sha256": "259ccb296a2833297b3f885643b697730c2b8481e9a92d14567a7f58ceb53ed7"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ef/ef12af7cf1496e1a4ac1e44623db60bec6f0d94b617e83df16396dc068156254",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/gate-001/check-fast.log",
+      "sha256": "ef12af7cf1496e1a4ac1e44623db60bec6f0d94b617e83df16396dc068156254"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/eb/eb2a1b16ebbac750dfae369cc77d153bb7c13a2cf8c90fe3a612ed77b0cd9ce4",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/gate-001/measurement.json",
+      "sha256": "eb2a1b16ebbac750dfae369cc77d153bb7c13a2cf8c90fe3a612ed77b0cd9ce4"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/f3/f3ff57955eaa3f3d056a7e291fdc7b90e38e4a23d5a5ba50cc4e22b4013ee215",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/final-003/calls.json",
+      "sha256": "f3ff57955eaa3f3d056a7e291fdc7b90e38e4a23d5a5ba50cc4e22b4013ee215"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/f1/f180d2c088ef39c25c68c5ddddb4b96b69fbfc4cd37de6b2d47f5f16059124ab",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/gate-002/run.py",
+      "sha256": "f180d2c088ef39c25c68c5ddddb4b96b69fbfc4cd37de6b2d47f5f16059124ab"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/8c/8c75b895c2c666f6f751e22d155a551c09c410562dea1aea4751112dbfd8d647",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/gate-002/check-fast.log",
+      "sha256": "8c75b895c2c666f6f751e22d155a551c09c410562dea1aea4751112dbfd8d647"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c7/c78016ff023bf6269d9d27161324b9415531d247878dd0d9356874d3f20799c4",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/i18-constraints-unfold-fix/gate-002/measurement.json",
+      "sha256": "c78016ff023bf6269d9d27161324b9415531d247878dd0d9356874d3f20799c4"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/f0/f0a3ce94464803a1ec138c68f451d4dab70acad4cbadcd8544e1a1e051d92b5f",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-wp7/ZesuSsz/Proofs/Tests/PureWitnessConstraints.v",
+      "sha256": "f0a3ce94464803a1ec138c68f451d4dab70acad4cbadcd8544e1a1e051d92b5f"
+    }
+  ],
+  "base_commit": "8e3635efcdf682908b236d0551c5fbd4c695aaf1",
+  "change": "Add LithiumUnfold instances and matching Typeclasses Opaque declarations for both generic test predicates.",
+  "changed_file": "ZesuSsz/Proofs/Tests/PureWitnessConstraints.v",
+  "created_utc": "2026-10-06T01:42:46.853094+00:00",
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=worker2-child-map-wp7",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-wp7/_build/agents/worker2-child-map-wp7",
+      "AGENT_JOBS=6",
+      "FAST_JOBS=6",
+      "GATE_JOBS=6",
+      "CHECK_LOCAL_JOBS=6"
+    ],
+    "end_utc": "2026-10-06T01:42:20.073352+00:00",
+    "exit": 0,
+    "jobs": 6,
+    "rusage_maxrss_kib": 175112,
+    "sampled_peak_process_rss_kib": 72308,
+    "samples": [
+      {
+        "elapsed_s": 0.026860255980864167,
+        "processes": 2,
+        "rss_max_kib": 6016,
+        "rss_sum_kib": 11848
+      },
+      {
+        "elapsed_s": 2.054053068975918,
+        "processes": 3,
+        "rss_max_kib": 50096,
+        "rss_sum_kib": 95948
+      },
+      {
+        "elapsed_s": 4.080197213916108,
+        "processes": 2,
+        "rss_max_kib": 29728,
+        "rss_sum_kib": 35840
+      },
+      {
+        "elapsed_s": 6.107010465930216,
+        "processes": 3,
+        "rss_max_kib": 36484,
+        "rss_sum_kib": 57424
+      },
+      {
+        "elapsed_s": 8.132307885913178,
+        "processes": 5,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 68604
+      },
+      {
+        "elapsed_s": 10.160345754935406,
+        "processes": 7,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 78344
+      },
+      {
+        "elapsed_s": 12.189220913918689,
+        "processes": 4,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 64984
+      },
+      {
+        "elapsed_s": 14.216242171940394,
+        "processes": 5,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 81728
+      },
+      {
+        "elapsed_s": 16.24256571091246,
+        "processes": 5,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 75216
+      },
+      {
+        "elapsed_s": 18.2696229260182,
+        "processes": 8,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 82540
+      },
+      {
+        "elapsed_s": 20.296900031971745,
+        "processes": 8,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 82508
+      },
+      {
+        "elapsed_s": 22.323903006967157,
+        "processes": 8,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 82440
+      },
+      {
+        "elapsed_s": 24.351512735011056,
+        "processes": 6,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 72288
+      },
+      {
+        "elapsed_s": 26.3791856499156,
+        "processes": 6,
+        "rss_max_kib": 45980,
+        "rss_sum_kib": 82236
+      },
+      {
+        "elapsed_s": 28.40589252091013,
+        "processes": 4,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 58436
+      },
+      {
+        "elapsed_s": 30.432710159919225,
+        "processes": 2,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 52096
+      },
+      {
+        "elapsed_s": 32.46011608594563,
+        "processes": 6,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 77840
+      },
+      {
+        "elapsed_s": 34.488823940977454,
+        "processes": 2,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 52096
+      },
+      {
+        "elapsed_s": 36.516703472007066,
+        "processes": 2,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 52096
+      },
+      {
+        "elapsed_s": 38.544936063932255,
+        "processes": 2,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 52096
+      },
+      {
+        "elapsed_s": 40.57404171198141,
+        "processes": 2,
+        "rss_max_kib": 45984,
+        "rss_sum_kib": 52096
+      },
+      {
+        "elapsed_s": 42.601481710909866,
+        "processes": 2,
+        "rss_max_kib": 45988,
+        "rss_sum_kib": 52100
+      },
+      {
+        "elapsed_s": 44.62962488201447,
+        "processes": 4,
+        "rss_max_kib": 45988,
+        "rss_sum_kib": 60868
+      },
+      {
+        "elapsed_s": 46.657289060996845,
+        "processes": 3,
+        "rss_max_kib": 45988,
+        "rss_sum_kib": 58396
+      },
+      {
+        "elapsed_s": 48.68457273696549,
+        "processes": 3,
+        "rss_max_kib": 45988,
+        "rss_sum_kib": 52100
+      },
+      {
+        "elapsed_s": 50.71243183198385,
+        "processes": 3,
+        "rss_max_kib": 72308,
+        "rss_sum_kib": 124672
+      },
+      {
+        "elapsed_s": 52.73972899094224,
+        "processes": 3,
+        "rss_max_kib": 50884,
+        "rss_sum_kib": 103248
+      },
+      {
+        "elapsed_s": 54.76752574299462,
+        "processes": 2,
+        "rss_max_kib": 33252,
+        "rss_sum_kib": 39364
+      },
+      {
+        "elapsed_s": 56.79269500798546,
+        "processes": 3,
+        "rss_max_kib": 65420,
+        "rss_sum_kib": 111720
+      },
+      {
+        "elapsed_s": 58.820092501002364,
+        "processes": 3,
+        "rss_max_kib": 65420,
+        "rss_sum_kib": 118836
+      },
+      {
+        "elapsed_s": 60.84664978901856,
+        "processes": 2,
+        "rss_max_kib": 18744,
+        "rss_sum_kib": 24856
+      },
+      {
+        "elapsed_s": 62.87486560398247,
+        "processes": 3,
+        "rss_max_kib": 9516,
+        "rss_sum_kib": 22612
+      }
+    ],
+    "start_utc": "2026-10-06T01:41:15.198353+00:00",
+    "wall_s": 64.8750117039308
+  },
+  "item": "I18-test-policy-correction",
+  "kernel_verification": {
+    "assumptions": [],
+    "compile_file_modules": 4,
+    "verified_theorems": 5
+  },
+  "native_boundary_closures": 0,
+  "retained_failures": [
+    "The first final MCP compilation lacked focused switch and test artifacts.",
+    "The first gate rejected two unfolding instances without matching opacity declarations."
+  ],
+  "scope": "Test policy correction only. Production hooks, predicate definitions, and proof statements remain unchanged."
+}
