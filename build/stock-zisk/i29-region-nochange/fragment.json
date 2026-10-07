@@ -1,0 +1,17 @@
+{
+  "item": "I29-698c-region-nochange",
+  "generated_artifacts": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/build/stock-zisk/i29-region-nochange/REPORT.json",
+      "sha256": "6d11fa8c60d24138f17d25bd99ceaad5581d3bb35b4ab3888fe3aa534e17216f",
+      "archive": "/home/cody/zesislar-archive/sha256/6d/6d11fa8c60d24138f17d25bd99ceaad5581d3bb35b4ab3888fe3aa534e17216f",
+      "bytes": 6830
+    }
+  ],
+  "evidence_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/build/stock-zisk/i29-region-nochange/archive-index.json",
+    "sha256": "a91a878d2c674ebe41f7b8825140ae2514167b059581dbecde3de889205006e1",
+    "archive": "/home/cody/zesislar-archive/sha256/a9/a91a878d2c674ebe41f7b8825140ae2514167b059581dbecde3de889205006e1",
+    "bytes": 12285524
+  }
+}

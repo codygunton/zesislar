@@ -29,6 +29,29 @@ Proof.
   exact I.
 Qed.
 
+Lemma region_normalization_unchanged : True.
+Proof.
+  Fail zesu_region_reduce_closed constr:(0%Z).
+  Fail zesu_region_reduce_closed constr:(1%Z).
+  Fail zesu_region_reduce_closed constr:((-1)%Z).
+  exact I.
+Qed.
+
+Lemma region_normalization_changed : (3 + 4 = 7)%Z.
+Proof.
+  zesu_region_reduce_closed constr:((3 + 4)%Z).
+  reflexivity.
+Qed.
+
+Lemma region_normalization_rollback : (3 + 4 = 7)%Z.
+Proof.
+  first [zesu_region_reduce_closed constr:((3 + 4)%Z); fail 0 | idtac].
+  match goal with |- ?statement =>
+    constr_eq statement constr:((3 + 4 = 7)%Z)
+  end.
+  reflexivity.
+Qed.
+
 Section assertion_tests.
   Context `{!islaG Sigma} `{!threadG}.
   Lemma region_normalization_lower es ann (address : bv 64) (minimum : Z)

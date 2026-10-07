@@ -1,0 +1,142 @@
+{
+  "item": "I29-698c-region-nochange",
+  "status": "partial repair; measured regression remains",
+  "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "comparison": {
+    "assessment": "The narrowing reduces the measured regression. It does not remove it.",
+    "closures": 0,
+    "formatted_coverage_unavailable": "missing intermediate CHAIN-GOAL-END markers",
+    "limits": "CPU1200/12GiB/no wall",
+    "native_groups_unavailable": [
+      "stack",
+      "shelf",
+      "given_up"
+    ],
+    "raw_states_identical": true,
+    "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+    "rows": [
+      {
+        "actual_steps": 256,
+        "arm": "off",
+        "compiler": {
+          "cpu_seconds": 97.46705,
+          "elapsed_seconds": 97.7410164430039,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2082164
+        },
+        "handler202_seconds": 5.212046219967306,
+        "handler217_seconds": 5.41197681799531,
+        "qed_error": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "ef1fecb0e7e1b654d5cf7bd76e47a68bc3a8a41cd442a1111ed76490e7a5aab7"
+      },
+      {
+        "actual_steps": 256,
+        "arm": "original-on",
+        "compiler": {
+          "cpu_seconds": 752.096677,
+          "elapsed_seconds": 754.2583277249942,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2099280
+        },
+        "handler202_seconds": 344.3537485380657,
+        "handler217_seconds": 320.5015142488992,
+        "qed_error": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "13bba38d119362847a812bd240a5ceede9a4eca64cbdc8dc40c8c69d3b055f4d"
+      },
+      {
+        "actual_steps": 256,
+        "arm": "repaired-on",
+        "compiler": {
+          "cpu_seconds": 219.37940899999998,
+          "elapsed_seconds": 220.2196561389137,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2124228
+        },
+        "handler202_seconds": 60.92206499807071,
+        "handler217_seconds": 57.11430641298648,
+        "qed_error": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "19f954343756e4b0f2efaa45b3901aadcb3b84c20c0c6e05fce1b340c4554223"
+      }
+    ]
+  },
+  "selected_term_at_handler202": "signed(zero_extend128(bv_add(Z_to_bv64(decodeItemOutputPointer args),16))) >= signed(BV128 2684354560)",
+  "internal_attribution": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/observer-complete-call-audit.json",
+    "sha256": "98d612fa3c4486b654486cfe35562678254a4b1d1d548962c07f61224a96216f",
+    "archive": "/home/cody/zesislar-archive/sha256/98/98d612fa3c4486b654486cfe35562678254a4b1d1d548962c07f61224a96216f",
+    "bytes": 2690778
+  },
+  "guard_scope": "Only the switched reducer rejects an identical vm_compute result before full-context change. OFF helper, solver, scheduler, and branch order remain unchanged.",
+  "source_identity": "Repaired ON256 Diagnostic.v is byte-identical to original ON256. Original source bytes and original objects remain archived.",
+  "cpu_reduction_percent": 70.83095621761403,
+  "remaining_cpu_above_off_percent": 125.08058774734643,
+  "focused_assumptions": [],
+  "focused_verified_theorems": [
+    "alias",
+    "symbolic",
+    "evar",
+    "lower",
+    "upper",
+    "unchanged",
+    "changed",
+    "rollback"
+  ],
+  "focused_final_groups": "All four groups empty in each completed focused pipeline.",
+  "focused_original": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/actual-switched-mcp-001/calls.json",
+    "sha256": "371f9bb4a9ce7306056873e0e1988b48cfd8773b45f39c780550f609632414a1",
+    "archive": "/home/cody/zesislar-archive/sha256/37/371f9bb4a9ce7306056873e0e1988b48cfd8773b45f39c780550f609632414a1",
+    "bytes": 27222
+  },
+  "focused_remaining": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/actual-switched-remaining-audit.json",
+    "sha256": "acab0ba5d7eb91d7c05177e80071b3a27fc755dd42f9cc0bcacb0413e67df6fd",
+    "archive": "/home/cody/zesislar-archive/sha256/ac/acab0ba5d7eb91d7c05177e80071b3a27fc755dd42f9cc0bcacb0413e67df6fd",
+    "bytes": 469
+  },
+  "activation": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/repaired-activation.json",
+    "sha256": "878259f40d8cc69ab89a9a6404e097d29f9590037965a7de50d5746653528d4c",
+    "archive": "/home/cody/zesislar-archive/sha256/87/878259f40d8cc69ab89a9a6404e097d29f9590037965a7de50d5746653528d4c",
+    "bytes": 10204
+  },
+  "counter_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/child-b-binding-audit.json",
+    "sha256": "971aa50a473e17f0667a86d38d5bb4f0ad63e4419c77b40c20ffc330b2aa7f20",
+    "archive": "/home/cody/zesislar-archive/sha256/97/971aa50a473e17f0667a86d38d5bb4f0ad63e4419c77b40c20ffc330b2aa7f20",
+    "bytes": 1318
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/build/stock-zisk/i29-region-nochange/archive-index.json",
+    "sha256": "a91a878d2c674ebe41f7b8825140ae2514167b059581dbecde3de889205006e1",
+    "archive": "/home/cody/zesislar-archive/sha256/a9/a91a878d2c674ebe41f7b8825140ae2514167b059581dbecde3de889205006e1",
+    "bytes": 12285524
+  },
+  "historical_limit": "340 and b926 differ in root and hint inventory. They do not isolate rule29.",
+  "hints": 12,
+  "baseline_switches": 20,
+  "closures": 0,
+  "failure_records": "Unqualified dependency objects; missing generated theory; reducer syntax failure; malformed formatted goal records; focused server OOM; isolated path error; missing pet PATH; absent OPAM_SWITCH_PREFIX. All retained.",
+  "remaining_evidence": "The bounded repair reduces CPU by70.8percent but remains slower than OFF. No full 698c completion or closure follows.",
+  "gate": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/final-gate.json",
+    "sha256": "223acf2949c8abdd8da2bcb818ef0d7d842d994373c29d38efe549f24a26c06f",
+    "archive": "/home/cody/zesislar-archive/sha256/22/223acf2949c8abdd8da2bcb818ef0d7d842d994373c29d38efe549f24a26c06f",
+    "bytes": 297
+  },
+  "independent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/audit-4d8280f5cfb51a0cb5a30777c17214879c7ead19a4d3e3bcbaa7d57906454f3e.json",
+    "sha256": "4d8280f5cfb51a0cb5a30777c17214879c7ead19a4d3e3bcbaa7d57906454f3e",
+    "archive": "/home/cody/zesislar-archive/sha256/4d/4d8280f5cfb51a0cb5a30777c17214879c7ead19a4d3e3bcbaa7d57906454f3e",
+    "bytes": 820
+  }
+}

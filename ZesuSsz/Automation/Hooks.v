@@ -1202,7 +1202,11 @@ Class ZesuStepRegionFaultNormalization : Prop :=
 (* Check the selected term without traversing other local declarations. *)
 Ltac zesu_region_reduce_closed term :=
   tryif let _ := constr:(_ : ZesuStepRegionFaultNormalization) in idtac
-  then zesu_stack_reduce_closed term
+  then (
+    zesu_stack_closed_term term;
+    let reduced := eval vm_compute in term in
+    tryif constr_eq term reduced then fail 0
+    else change_no_check term with reduced in * )
   else reduce_closed term.
 
 Ltac zesu_region_fault_arithmetic :=
