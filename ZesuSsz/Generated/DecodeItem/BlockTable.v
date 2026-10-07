@@ -3,14 +3,19 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import List ZArith.
 Require Import ZesuSsz.Automation.BlockTable.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
+Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
+Require Import ZesuSsz.Contracts.RlpDecodeItemReturnImageDef.
+Require Import ZesuSsz.Contracts.RlpDecodeItemReturnImages.
 Import ListNotations.
 Open Scope Z_scope.
 
 (* Generated resource wiring. No block-body proof is supplied. *)
-(* Source: ZesuSsz/Contracts/DecodeItemBranchEntries.v; SHA-256: 2fe61af2ef82bd20327596d72a00169e334d2e34308f9205f11b5ee88279ca3d. *)
+(* Source: ZesuSsz/Contracts/DecodeItemBranchEntries.v; SHA-256: 45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825. *)
 (* Source: ZesuSsz/Contracts/DecodeItemReturnFacts.v; SHA-256: 9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v; SHA-256: 9958b62a6eb8a5161ea3b526e4d02aaecd48fd7734dde2ea1ab1dd995cee1eb8. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemByteFold.v; SHA-256: e713916e6672e661ec77ee46aeb31e4fc7dda7a21ec8f6c7c0adbf0e3e22439b. *)
@@ -19,18 +24,18 @@ Open Scope Z_scope.
 (* Source: ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v; SHA-256: 7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v; SHA-256: 9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemReturnImages.v; SHA-256: 16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d. *)
-(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: b6371840fa6f8b59af02059714c996ed43864dda61e25fa906b8b38cab1b3b43. *)
+(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: fe4ceb80dc7944edc0a0169f04ec483822ec0ad90334f4bb1b93918a260affc5. *)
 (* Source: build/stock-zisk/cfg.json; SHA-256: 98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2. *)
 (* Source: build/stock-zisk/decodeItem.raw.dump; SHA-256: 411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a. *)
 (* Source: build/stock-zisk/inventory.json; SHA-256: 7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d. *)
-(* Source: tools/block/generate_table.py; SHA-256: 277970112715cdf780dc4552598e83b1bf92591866b88625e62d7c6d06b9afcd. *)
+(* Source: tools/block/generate_table.py; SHA-256: 24e36197ac36d4b368a6e78b530c691eb8dba335845c67675723f24624fb5977. *)
 
 Section decode_item_block_table.
 Context `{!islaG Sigma} `{!threadG}.
 
-(* Entry: ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources. Body proof: pending. *)
+(* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960. Body proof: pending. *)
 Definition decodeItemState800d6960 : iProp Sigma :=
-  (∀ (returnAddress : Z) (args : DecodeItemArgs), ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources ((decodeItemDomainAt returnAddress decodeItemC1BDomain)) (args))%I.
+  (∀ (returnAddress : Z) (args : DecodeItemArgs), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960 (returnAddress) (args))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974. Body proof: pending. *)
 Definition decodeItemState800d6974 : iProp Sigma :=
