@@ -563,6 +563,36 @@ Ltac zesu_canonical_anchor_if_enabled :=
         end)
   end.
 
+Class ZesuStepPureFactExistential : Prop :=
+  zesu_step_pure_fact_existential : True.
+
+(* Factor the dependent continuation before registered introduction matching. *)
+Ltac zesu_pure_fact_existential_if_enabled :=
+  let _ := constr:(_ : ZesuStepPureFactExistential) in
+  lazymatch goal with
+  | |- envs_entails ?environment ?target =>
+      let concrete := eval hnf in environment in
+      change (envs_entails concrete target)
+  end;
+  lazymatch goal with
+  | |- envs_entails ?environment (@bi_exist ?Sigma ?T ?body) =>
+      assert_fails (has_evar T);
+      lazymatch body with
+      | (fun witness => @bi_sep _ (@bi_pure _ ?condition) ?rest) =>
+          let remainder := constr:(fun witness : T => rest) in
+          let continuation := fresh "pureIntroContinuation" in
+          pose (continuation := remainder);
+          let target := constr:((∃ witness : T, ⌜condition⌝ ∗ continuation witness)%I) in
+          change (envs_entails environment target);
+          let evidence := constr:(_ : ZesuPureFactIntro target _) in
+          lazymatch type of evidence with
+          | ZesuPureFactIntro _ ?source =>
+              iApply (@zesu_pure_fact_intro _ target source evidence)
+          end;
+          unfold continuation; clear continuation
+      end
+  end.
+
 (* Structural leaves retain owned facts. At least one leaf needs a hint. *)
 Ltac zesu_pure_fact_evidence P :=
   constr:(ltac:(first [
@@ -601,6 +631,7 @@ Ltac zesu_pure_fact_hints_if_enabled :=
             iPureIntro; exact evidence
         end
       | zesu_canonical_anchor_if_enabled
+      | zesu_pure_fact_existential_if_enabled
       | let evidence := constr:(_ : ZesuPureFactIntro target _) in
         lazymatch type of evidence with
         | ZesuPureFactIntro _ ?source =>
