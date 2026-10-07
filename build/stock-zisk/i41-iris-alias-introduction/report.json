@@ -1,0 +1,579 @@
+{
+  "actual_shelf_stack_given_up": "unavailable",
+  "archive_audit": {
+    "checked_records": 10605,
+    "content_addressed_index_checked": true,
+    "mismatches": []
+  },
+  "archive_index": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6c/6c6bf3d4cd1ce834f151d95538d71dd16ab15805f8b6232151966912fe794579",
+    "bytes": 3929646,
+    "sha256": "6c6bf3d4cd1ce834f151d95538d71dd16ab15805f8b6232151966912fe794579"
+  },
+  "archive_records": 10605,
+  "arms": {
+    "off": {
+      "active_capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/active-capture.txt",
+      "active_capture_sha256": "2fb6b6c421222c175d785b55d78ab796ce97ff7c311f0ddccea9bd888392e0c8",
+      "active_printed_goals": 12,
+      "actual_groups": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "boundary_closed": false,
+      "checked_seals": 10514,
+      "compiled_object": null,
+      "compiler_exit": 1,
+      "compiler_log_sha256": "9957ad0c10ed044fce0b5cb248b110b1b2538de90bc2032677d6a5954ca32b49",
+      "compiler_wall_seconds": 137.759025918087,
+      "cpu_seconds": 137.325218,
+      "effective_switches": 23,
+      "evidence_sha256": "ea9c62372397b8ea97c5d49c3dff25f67558c5a22f4d69a41fd829e1d30e47de",
+      "goal_records": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-01.json",
+          "sha256": "4ddc90d281feb6bc84f073774a224889b555a7852803106b1cfc4e6689baf8d0"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-02.json",
+          "sha256": "26987dc4cba569926ef4f0dda3b3b4c06f9e98b29ce3db7994ceab26374b2f94"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-03.json",
+          "sha256": "590a941299f5c83cb00bf5be295f927af06dfca639a37ff1820e38a31d79aa64"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-04.json",
+          "sha256": "b73af5275fb34ac2d70f1fcc428345d6433cdfdde6c816f475d2bc3bc53fcd2e"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-05.json",
+          "sha256": "1bd37c38448ad7308c79fffefd36e871d12811ebb2fcd7ba7db93df29ce38070"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-06.json",
+          "sha256": "ff54c3d72ada1165e05ccde5e1542dfeb196575e24b2d6a7b26a0175f94213ee"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-07.json",
+          "sha256": "08ff5b2d2885b362d8149ccedeb05e5fe20100c95bd938c4e3e86f0f450dcc83"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-08.json",
+          "sha256": "de477ebe2ccb2ce4d179a49dbda4ea6c108d882f14b9dba66aa95d9f9ca3de5a"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-09.json",
+          "sha256": "9346df2ea7f777273c278bd74dac4138e1c0e06f3a51350434d69836af37946d"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-10.json",
+          "sha256": "4fde1f2686607543ae54c04fc974e7409c9f3c0ffd7e225ccfab77155f340120"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-11.json",
+          "sha256": "34586fdaad489c5ba8fa8fa6c7291ead32da9accca309c8bff52ee29988ed062"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/goals/goal-12.json",
+          "sha256": "d565501229f4365cd0f5a93e5d1e61372c089d0eacea34f607bc3d5441984a17"
+        }
+      ],
+      "historical_classes_active": [],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "input_sha256": "ebe5ec013102953276d0366ba8b6fbd57b3269e4952937dcb529bdbc77633e8c",
+      "level1_closed": false,
+      "limit": null,
+      "machine_after": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  124946851 418244133 49430461 6206604262 2952009 5871286 2861938 0 0 0",
+        "load": [
+          2.69482421875,
+          2.81201171875,
+          4.49658203125
+        ],
+        "memory": {
+          "MemAvailable": "103404748 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "machine_before": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  124929487 418216002 49426430 6205086353 2951603 5870483 2861305 0 0 0",
+        "load": [
+          1.38525390625,
+          3.6787109375,
+          5.26708984375
+        ],
+        "memory": {
+          "MemAvailable": "103250228 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "machine_busy_percent": 3.2474827579834535,
+      "named_qed_attempted": true,
+      "named_qed_failed": true,
+      "native_assumptions_certificate": null,
+      "outcome": "native-residual",
+      "peak_rss_kib": 2291664,
+      "process_cpu_percent": 99.68509655523775,
+      "root_hints": 15,
+      "seal_mismatches": [],
+      "source_sha256": "567488abe6af2aa912b786b93938a64a496a422c0892e9b50726962aea55ad6f",
+      "structured_capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/off-001/active-goals.json",
+      "structured_capture_sha256": "e6681de8dad1155729f91d02c205f5b14091e68fb1ce013ebcb151259098d8b3",
+      "termination_proved": false,
+      "transaction_wall_seconds": 245.31701048021205
+    },
+    "on": {
+      "active_capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/active-capture.txt",
+      "active_capture_sha256": "1f47241c48460f24106e7ce1f6807538b29f88eec99ddfa8cc6654001d65528d",
+      "active_printed_goals": 12,
+      "actual_groups": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "boundary_closed": false,
+      "checked_seals": 10514,
+      "compiled_object": null,
+      "compiler_exit": 1,
+      "compiler_log_sha256": "e3602b3e27077954227a806d0a239b0bd9faf8aa92d4f63f9104c70282470e13",
+      "compiler_wall_seconds": 1335.3599000591785,
+      "cpu_seconds": 1331.6513940000002,
+      "effective_switches": 24,
+      "evidence_sha256": "08e26fcd182abee240ed3e99027621fc8305155899414d9ffd5f1ab5685290b9",
+      "goal_records": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-01.json",
+          "sha256": "b7b7f98a86254372dbca505cd9fe23222bcdae4117596095f5bf7db8a7bc7680"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-02.json",
+          "sha256": "eecd617595859980080ea9671b3538d4a9bfbfa8f7ac86d11ddb5da94de012f1"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-03.json",
+          "sha256": "f3576cb90101977b6bf7bce7dcbd3681027c91c9f9e9dee23df95118646618ee"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-04.json",
+          "sha256": "9295d85420cb344048556fac0aa93cfd0ce195f010b479fb1da60313b75d5fe3"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-05.json",
+          "sha256": "da40eda14a7c1d542f46f6d63354c11a53921c8307b9f105bf4011ba847e2333"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-06.json",
+          "sha256": "899a2341ff2ffa5ac004659166f09551d1e99a932a08edf5a43374db0b00f56f"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-07.json",
+          "sha256": "868f5d02fea34acf265911961db758bb7012d3c00df489fbfa68027b19e66c84"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-08.json",
+          "sha256": "c526b8ef8b41afde5c80b6e4353b11e669ee8dff0a60f3da67b36c1302a5e7bb"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-09.json",
+          "sha256": "fd61444c36d2b6e33d074a51ba93c0b09e4440974624ac586e5fe1df74724788"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-10.json",
+          "sha256": "8791ce4120b59de6d2cac82e71df7a567c1f8fddf956310ba36717bac4884fcb"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-11.json",
+          "sha256": "ea1a7070dadba36c13b36bce76d6155707b315440054ff18dd675ed02e96b5b0"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/goals/goal-12.json",
+          "sha256": "fc87b3317eb97e806b147c1689b3b1cafb77037663bae16e29c6cd0df617e581"
+        }
+      ],
+      "historical_classes_active": [],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "input_sha256": "6c05cf90a94db09978f62d671dee3260941ce956de1c805704169abdbfcd18ae",
+      "level1_closed": false,
+      "limit": null,
+      "machine_after": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  125070335 418370735 49537110 6213901319 2954215 5875583 2865180 0 0 0",
+        "load": [
+          2.8857421875,
+          3.7001953125,
+          3.60107421875
+        ],
+        "memory": {
+          "MemAvailable": "72877888 kB",
+          "SwapFree": "40 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "machine_before": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  124929504 418216002 49426445 6205087221 2951604 5870484 2861306 0 0 0",
+        "load": [
+          1.38525390625,
+          3.6787109375,
+          5.26708984375
+        ],
+        "memory": {
+          "MemAvailable": "103232568 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "machine_busy_percent": 4.497465367679562,
+      "named_qed_attempted": true,
+      "named_qed_failed": true,
+      "native_assumptions_certificate": null,
+      "outcome": "native-residual",
+      "peak_rss_kib": 3145780,
+      "process_cpu_percent": 99.72228415283296,
+      "root_hints": 15,
+      "seal_mismatches": [],
+      "source_sha256": "deec3c0dc3906d2276fa4b02ea960593291ed8d726e0938c88e7405abc0a33f6",
+      "structured_capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/on-001/active-goals.json",
+      "structured_capture_sha256": "39e3d6f6ce26e9c51091a47a9d09e8bd17e97bbd960b1ad9cfd0f10742c22578",
+      "termination_proved": false,
+      "transaction_wall_seconds": 1443.1642087080982
+    }
+  },
+  "boundary_closed": false,
+  "bounded_attribution": {
+    "handoff": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a5ec6c567e889581554d11853734769de18ba5a19cbfeb470e31f21d59441ed",
+      "bytes": 2888,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/map-handoff.json",
+      "sha256": "4a5ec6c567e889581554d11853734769de18ba5a19cbfeb470e31f21d59441ed"
+    },
+    "new_native_pass_released": false,
+    "owner": "parent child B"
+  },
+  "candidate_patch_sha256": "6461f346b680a7b4d89f2511f0c1490fe395b574e5fcb0008616903b0cc60f79",
+  "candidate_tree": "a1a861399ead593f1b4ba246b35ebcc458e76cb3",
+  "child_gate": {
+    "candidate_patch_sha256": "6461f346b680a7b4d89f2511f0c1490fe395b574e5fcb0008616903b0cc60f79",
+    "candidate_tree": "a1a861399ead593f1b4ba246b35ebcc458e76cb3",
+    "command": [
+      "make",
+      "check-fast",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/agents/worker2-child-platform-iris-alias-evidence"
+    ],
+    "elapsed_seconds": 4336.9190557519905,
+    "exit_code": 0,
+    "launcher": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/65/65fad540963aee7a72cb05a55256308ba2e3597101075fb10c8d16685624822a",
+      "bytes": 1469,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-evidence-gate-001/launcher.py",
+      "sha256": "65fad540963aee7a72cb05a55256308ba2e3597101075fb10c8d16685624822a"
+    },
+    "post_gate_native_seals": {
+      "off": {
+        "checked": 10514,
+        "mismatches": []
+      },
+      "on": {
+        "checked": 10514,
+        "mismatches": []
+      }
+    },
+    "private_build_directory": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/agents/worker2-child-platform-iris-alias-evidence",
+    "result_record": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/b6/b696c451f3e90c9c440e54ad6aadd24b23d76035eae9a4474b54edb978d7926b",
+      "bytes": 686,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-evidence-gate-001/result.json",
+      "sha256": "b696c451f3e90c9c440e54ad6aadd24b23d76035eae9a4474b54edb978d7926b"
+    },
+    "source_head": "9d4ecda138584fac3744e44234ccf2a3f0df9aeb",
+    "status": "passed",
+    "watcher_log": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/6d/6dd8d23d1df7a45a27c2c7600944b7a136ec8d9f82fcdf82193ae21bc93e319c",
+      "bytes": 153872,
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-060105-child-a-iris-alias-evidence-check-fast-001.log",
+      "sha256": "6dd8d23d1df7a45a27c2c7600944b7a136ec8d9f82fcdf82193ae21bc93e319c"
+    },
+    "workers": 6
+  },
+  "dependency": {
+    "result": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/cb/cbb183b43f323f9c225a0720cba4e801ee0609fee5a37ca79d8e64c61795ee76",
+      "bytes": 3727,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-dependencies-001/dependency-result.json",
+      "sha256": "cbb183b43f323f9c225a0720cba4e801ee0609fee5a37ca79d8e64c61795ee76"
+    },
+    "source_links": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/60/60865d8732512fe14cf4a2505972755b3e1fe352d9229dedfc195d106d2253ba",
+      "bytes": 886,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-dependencies-001/source-links.json",
+      "sha256": "60865d8732512fe14cf4a2505972755b3e1fe352d9229dedfc195d106d2253ba"
+    }
+  },
+  "helper_inner_firing_observed": false,
+  "idle_session_cleanup": {
+    "health_limit": "The server health result retains the stale PID. OS process state verifies exit and zero RSS.",
+    "live_pet_sessions": 0,
+    "method": "SIGTERM to the verified idle owned Pet. The exited child remains a zombie until its server reaps it.",
+    "old_live_states": 137,
+    "other_agents_terminated": false,
+    "pet_pid": 3830389,
+    "rss_after_kib": 0,
+    "rss_before_kib": 14885492,
+    "rss_released_kib": 14885492,
+    "transport": "rocq-mcp stdio under Codex process 3992466",
+    "transport_server_pid": 3999354
+  },
+  "integration_released": false,
+  "level1_closed": false,
+  "mcp": {
+    "assumptions_each": [],
+    "automatic_restart": true,
+    "exact_context": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/01/01c58830ee9a826155d02f038cff485354f90fd418da89ba287031fdfe42a05b",
+      "bytes": 17961,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-fixtures-001/ExactAliasContext.v",
+      "sha256": "01c58830ee9a826155d02f038cff485354f90fd418da89ba287031fdfe42a05b"
+    },
+    "final_compilation": "passed",
+    "forced_restart": false,
+    "health": "passed",
+    "interactive": "passed after recorded recovery",
+    "preflight": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/89/8981ed3fd58a3cfd3ea56f6825eaf29d2d9088db6ad03978bc0a464ebd4050c7",
+      "bytes": 6454,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/preflight-audit.json",
+      "sha256": "8981ed3fd58a3cfd3ea56f6825eaf29d2d9088db6ad03978bc0a464ebd4050c7"
+    },
+    "preserved_failures": [
+      "ProductionTests001 nonmatching baseline",
+      "parallel MCP memory restart",
+      "two expired states",
+      "instrumented-source comparison"
+    ],
+    "records": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/16/168a9a0a2e26090493c4e1a167c7f38b35f3461fb0ebb7ff8014105d5b481bad",
+      "bytes": 229174,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-fixtures-001/mcp-results.json",
+      "sha256": "168a9a0a2e26090493c4e1a167c7f38b35f3461fb0ebb7ff8014105d5b481bad"
+    },
+    "scope_verification_assumptions_each": [],
+    "shell_proof_fallback": false,
+    "statement_verification": "passed",
+    "verified_count": 9,
+    "verified_fixtures": [
+      "pure_fact_existential_off",
+      "pure_fact_existential_dependent_load",
+      "pure_fact_existential_unregistered",
+      "pure_fact_existential_shelved_continuation",
+      "pure_fact_existential_shared_evar_rollback",
+      "pure_fact_existential_shared_evar_success",
+      "pure_fact_existential_nonmatching",
+      "pure_fact_existential_cleanup_detects_let",
+      "ExactAliasContext"
+    ]
+  },
+  "metrics": {
+    "child_gate_seconds": 4336.9190557519905,
+    "child_gate_workers": 6,
+    "cpu_increase_seconds": 1194.3261760000003,
+    "cpu_ratio_on_over_off": 9.697063754160581,
+    "interpretation": "ON performs more proof search. The measured semantic progress does not establish a speed improvement.",
+    "machine_measurements": "Each arm records total CPU ticks, load, available memory, and swap.",
+    "off_cpu_seconds": 137.325218,
+    "off_peak_rss_kib": 2291664,
+    "on_cpu_seconds": 1331.6513940000002,
+    "on_peak_rss_kib": 3145780,
+    "rss_increase_kib": 854116,
+    "token_accounting": "Unavailable. No estimate was substituted.",
+    "token_total": null
+  },
+  "native_assumptions_certificates": null,
+  "observer_limit": "The primary capture records final states. It does not record each inner handler invocation.",
+  "off_goal_classes": {
+    "array_bound": 3,
+    "lookup_implication": 3,
+    "nat_witness": 3,
+    "offset_equality": 3
+  },
+  "on_context_substitutions": {
+    "lengthBytes": "take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))",
+    "n": "bv_unsigned inputPrefix - 247",
+    "payloadStart": "decodeItemInputPointer args + 1"
+  },
+  "on_goal_classes": {
+    "completed_fold_facts": 3,
+    "incremented_cursor_equals_current_cursor": 3,
+    "loaded_fold_equals_complete_fold": 3,
+    "loaded_fold_equals_current_fold": 3
+  },
+  "orch_verdict": "Orch accepted the measured effect. The cost increase is not an integration blocker.",
+  "pair_audit": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b8/b8d6f093c2529434971edf91b5dce2e2ebc30c8a3a69695046ac917137818035",
+    "bytes": 14148,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/pair-audit.json",
+    "sha256": "b8d6f093c2529434971edf91b5dce2e2ebc30c8a3a69695046ac917137818035"
+  },
+  "parent_iris_preview": {
+    "integration_released": false,
+    "status": "pending"
+  },
+  "policy": {
+    "completion_entry": "0x800d6ac4",
+    "cpu_seconds": 2400,
+    "kind": "cpu",
+    "memory_kib": 6291456,
+    "optimization_debt": "issue#10",
+    "wall_seconds": null
+  },
+  "primary_body": "try zesu_block.",
+  "prior_candidate": {
+    "disposition": "The prior candidate had no native effect. Its source and failures remain frozen.",
+    "evidence_commit": "c0af5738c9ff30b11b4c2a25996a3adefbd66713",
+    "report_sha256": "7d49bc6f77c63d644f55ec2ed684bab114fcfb2e1bf3c4e2fc6a1e031e942de7"
+  },
+  "production_files": {
+    "ZesuSsz/Automation/Hooks.v": "4f338f69f07167dcf727058deee5c9ea3d676c0c244b174bd196a2b93bd73a8c",
+    "ZesuSsz/Automation/Switches/PureFactExistential.v": "6dbec9718eb9d0ff7d45ef1c482b8a6c4567b59e54b3d22f3d24c524c855eb44",
+    "ZesuSsz/Proofs/Tests/PureFactExistential.v": "6bb648a2e5bfb74303e9fd21201644957fd06d7db9a229b02adca0358bff5de8"
+  },
+  "recipe": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+    "bytes": 4308,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-iris-alias/_build/iris-alias-comparison-001/sealed-coqc-recipe.json",
+    "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+  },
+  "rule_number": 34,
+  "scope": {
+    "off": {
+      "historical_inactive": [
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+      ],
+      "new_switch_active": false,
+      "shared_active": [
+        "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+        "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+        "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+        "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+        "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+        "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff",
+        "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+        "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+        "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+        "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+        "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+        "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard"
+      ]
+    },
+    "on": {
+      "historical_inactive": [
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+      ],
+      "new_switch_active": true,
+      "shared_active": [
+        "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+        "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+        "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+        "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+        "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+        "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff",
+        "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+        "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+        "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+        "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+        "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+        "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard"
+      ]
+    }
+  },
+  "semantic_effect": "ON selects the canonical input index and passes the byte-load continuation. Twelve later pure obligations remain.",
+  "source_root": "9d4ecda138584fac3744e44234ccf2a3f0df9aeb",
+  "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+  "subsequent_spec_classification": {
+    "commit": "2a8bf1687a677d33f61c823b69a1d2dfe1c04784",
+    "native_matching": "unmeasured",
+    "notes": "Spec preserves witness gaps in records 1, 2, 9, and 10. Completed-fold facts remain unchanged.",
+    "primary_input": false,
+    "report": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/77/772908794bf2d0acbcb7f460fdbf690400e20278941fe2e356f2ca3b48c1514e",
+      "bytes": 5189,
+      "sha256": "772908794bf2d0acbcb7f460fdbf690400e20278941fe2e356f2ca3b48c1514e"
+    }
+  },
+  "supporting_facts_retained_each": [
+    "DomainAt",
+    "SavedFrameFacts",
+    "FoldProvenance",
+    "ByteFoldFacts"
+  ],
+  "termination_proved": false
+}
