@@ -31,8 +31,9 @@ Ltac chain_print_goal phase :=
       idtac "CHAIN-GOAL-LOCAL" Hlocal ":" T "CHAIN-FIELD-END";
       let S := type of T in
       idtac "CHAIN-GOAL-SORT" Hlocal ":" S "CHAIN-FIELD-END";
-      try (lazymatch goal with
-        | Hlocal := ?value : _ |- _ =>
+      try (multimatch goal with
+        | Hdefinition := ?value : _ |- _ =>
+          constr_eq Hdefinition Hlocal;
           idtac "CHAIN-GOAL-VALUE" Hlocal ":" value "CHAIN-FIELD-END"
         end);
       fail
