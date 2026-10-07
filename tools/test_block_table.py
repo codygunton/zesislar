@@ -185,6 +185,14 @@ class BlockTableTests(unittest.TestCase):
         self.assertNotIn("Axiom ", source)
         self.assertNotIn("Admitted", source)
 
+    def test_rendering_imports_bound_argument_types(self):
+        design, report = self.executable_fixture()
+        design["blocks"][0]["source_hashes"]["Contracts/ArgumentTypes.v"] = "0" * 64
+        source = generate_table.render_table(design, report)
+        shared = "Require Import Contracts.ArgumentTypes."
+        self.assertEqual(source.count(shared), 1)
+        self.assertLess(source.index(shared), source.index("(args : FixtureArgs)"))
+
     def test_rendering_rejects_missing_entries_and_duplicate_binders(self):
         design, report = self.executable_fixture()
         del design["blocks"][0]["entry_definition"]

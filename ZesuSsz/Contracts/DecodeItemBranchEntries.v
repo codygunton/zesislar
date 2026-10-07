@@ -26,6 +26,15 @@ Definition decodeItemBranchContinuation `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
   decodeItemBranchContinuationAt args (decodeItemReturnAddress args).
 
+Definition decodeItemEntryAt800d6960 `{!islaG Sigma} `{!threadG}
+    (returnAddress : Z) (args : DecodeItemArgs) : iProp Sigma :=
+  (decodeItemEntryResources
+     (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
+   decodeItemBranchContinuationAt args returnAddress)%I.
+
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d6960) := I.
+Global Typeclasses Opaque decodeItemEntryAt800d6960.
+
 Definition decodeItemSavedFrameFacts (args : DecodeItemArgs)
     (frameBytes : list byte) : Prop :=
   length frameBytes = 16%nat /\
