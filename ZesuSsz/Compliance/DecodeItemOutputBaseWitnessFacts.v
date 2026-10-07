@@ -46,3 +46,16 @@ Proof. unfold SimplAnd; split; [intros _; apply decodeItemOutputOffset8 | intros
 
 Print Assumptions decodeItemOutputOffset8.
 Print Assumptions decodeItemOutputOffset8Hint.
+
+Lemma decodeItemOutputOffset16 (args : DecodeItemArgs) :
+  Z.of_nat 16 =
+    (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1.
+Proof. rewrite Z.div_1_r. lia. Qed.
+
+#[export] Instance decodeItemOutputOffset16Hint (args : DecodeItemArgs) :
+  SimplAnd (Z.of_nat 16 =
+    (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1) True.
+Proof. unfold SimplAnd; split; [intros _; apply decodeItemOutputOffset16 | intros _; exact I]. Qed.
+
+Print Assumptions decodeItemOutputOffset16.
+Print Assumptions decodeItemOutputOffset16Hint.
