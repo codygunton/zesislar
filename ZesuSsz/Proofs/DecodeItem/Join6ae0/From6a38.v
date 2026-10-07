@@ -35,7 +35,6 @@ Proof.
  zesu_run_until ltac:(fun _ => lazymatch goal with
  |- envs_entails _ (WPasm a800d6a3c.a800d6a3c) => idtac end).
  match goal with Hfold : RlpDecodeItemByteFold.decodeItemByteFoldFacts _ _ _ _ _ |- _ =>
-   pose proof Hfold as HfoldBounds;
    pose proof (decodeItem_fold_exit args n payloadStart lengthBytes Hfold) as [Hacc Hstart] end.
  assert (Hsum : LET0 = Z_to_bv 64 (bigEndian lengthBytes + n + 1)) by
    (unLET; rewrite Hacc; bv_solve).
