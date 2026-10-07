@@ -15,6 +15,37 @@ Require Import ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses.
 Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Automation.Switches.StackWrite.
+Require Import ZesuSsz.Automation.Switches.RegionFault.
+Require Import ZesuSsz.Automation.Switches.LowMask.
+Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress.
+Require Import ZesuSsz.Automation.Switches.RecordWitness.
+Require Import ZesuSsz.Automation.Switches.ArrayBounds.
+Require Import ZesuSsz.Automation.Switches.WordArrayHandoff.
+Require Import ZesuSsz.Automation.Switches.ReturnBundle.
+Require Import ZesuSsz.Automation.Switches.ReturnWand.
+Require Import ZesuSsz.Automation.Switches.StrictSigned.
+Require Import ZesuSsz.Automation.Switches.ListWitness.
+Require Import ZesuSsz.Automation.Switches.TupleWitness.
+Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.
+Require Import ZesuSsz.Automation.Switches.KnownPairWitness.
+Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints.
+Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection.
+Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization.
+Require Import ZesuSsz.Automation.Switches.CanonicalAnchor.
+Require Import ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
+Require Import ZesuSsz.Compliance.DecodeItemDataWitnessFacts.
+Require Import ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts.
+Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
+Require Import ZesuSsz.Compliance.DecodeItemFoldZeroFacts.
+Require Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.
+Require Import ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
+Require Import ZesuSsz.Compliance.DecodeItemShortListHandoffFacts.
+Require Import ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses.
+Require Import ZesuSsz.Compliance.DecodeItemS40GuardFacts.
+Require Import ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
+Require Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
+Require Import ZesuSsz.Compliance.DecodeItemInitializationPureFacts.
 Open Scope Z_scope.
 
 Lemma decodeItemJoin6ac4From6ab4_correct `{!islaG Sigma} `{!threadG}
@@ -24,40 +55,7 @@ Lemma decodeItemJoin6ac4From6ab4_correct `{!islaG Sigma} `{!threadG}
   ⊢ decodeItemJoin6ac4From6ab4 args n payloadStart lengthBytes frameBytes
       oldAcc oldCursor loaded inputPrefix rest.
 Proof.
-unfold decodeItemJoin6ac4From6ab4, decodeItemJoinTransferObligation.
-iIntros "Hcode".
-iEval (unfold decodeItemSelectedCode) in "Hcode".
-iDestruct "Hcode" as "#Hcode".
-zesu_block.
-match goal with Hdomain : decodeItemC1BDomain args |- _ => rename Hdomain into HdomainFacts end.
-match goal with Hprovenance : decodeItemFoldProvenance args true inputPrefix rest n payloadStart lengthBytes |- _ => rename Hprovenance into HprovenanceFacts end.
-match goal with Hfold : decodeItemByteFoldFacts args n 0 payloadStart lengthBytes |- _ => rename Hfold into HfoldFacts end.
-iExists (loaded, frameBytes, lengthBytes, payloadStart, 0, n, tt)ₗ.
-cbn.
-iSplit; first (iPureIntro; exact (decodeItemByteFoldFirstGuard args n payloadStart lengthBytes HfoldFacts)).
-iSplit; first (iPureIntro; split; [unfold decodeItemDomainAt; split; [reflexivity|exact HdomainFacts]|split; assumption]).
-unfold decodeItemByteFoldListHeader, decodeItemByteFoldResources, decodeItemBranchContinuation.
-iFrame.
-assert (Hstart : payloadStart = decodeItemInputPointer args + 1) by (unfold decodeItemFoldProvenance in HprovenanceFacts; tauto).
-assert (Hcursor : (Z_to_bv 64 (decodeItemInputPointer args) + (Z_to_bv 64 n + 1))%bv = Z_to_bv 64 (payloadStart + n)) by (rewrite Hstart; bv_solve).
-assert (Hindex : (Z_to_bv 64 n + 1)%bv = Z_to_bv 64 (n + 1)) by bv_solve.
-assert (Hstartbv : (Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv = Z_to_bv 64 (payloadStart + 0)) by (rewrite Hstart; bv_solve).
-iEval (rewrite -Hcursor -Hindex -Hstartbv).
-unfold decodeItemBranchContinuationAt.
-cbn [Z.to_nat take bigEndian].
-iFrame.
-iEval (simpl; unfold reg_col).
-iFrame.
-iEval (rewrite /decodeItemSysRegs /zesu_sys_regs /machine_static_sys_regs /defaultMap /bigEndian /=).
-iFrame.
-assert (Hzero : Z_to_bv 64 0 = 0%bv) by bv_solve.
-iEval (rewrite Hzero).
-iFrame.
-iSplit; first (iPureIntro; split; assumption).
-done.
-Unshelve.
-all: prepare_sidecond.
-all: try solve [reflexivity | bv_solve].
+  zesu_block.
 Qed.
 
 Print Assumptions decodeItemJoin6ac4From6ab4_correct.
