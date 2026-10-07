@@ -1,0 +1,44 @@
+{
+  "bound_wrappers": [
+    4,
+    6,
+    8
+  ],
+  "complete_active_goal_records_equal": true,
+  "current_capture": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-001/evidence.json",
+    "sha256": "43529e6af855afd087ffc7f76d4fcc8044eb30df73a6e454f91a6147342ae207"
+  },
+  "current_root": "f4fa0c4055618b3562326e8b618e59274f2a47a2",
+  "goal_count": 12,
+  "limits": [
+    "The roots differ. This evidence does not isolate one variable.",
+    "The captures do not establish an earlier existential or registration attempt."
+  ],
+  "lookup_implications": [
+    9,
+    10,
+    11
+  ],
+  "lookup_indices_unresolved": [
+    "?Goal",
+    "?Goal0",
+    "?Goal1"
+  ],
+  "nat_indices": [
+    0,
+    1,
+    2
+  ],
+  "offset_wrappers": [
+    3,
+    5,
+    7
+  ],
+  "old_capture": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/evidence.json",
+    "sha256": "bc20a833976a9808b4069b770ef27e54e5848376b76b40fe06df86acaf7f48fe"
+  },
+  "old_root": "7f5d5f6151c761f5bb2c7e0284e8dc3bd2e31c51",
+  "statement_core_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed"
+}
