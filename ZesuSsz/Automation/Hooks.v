@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.SwitchDispatch.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -44,7 +45,7 @@ Class ZesuStepInstructionLookup : Prop :=
 
 (* Expose only a code wrapper whose head reduces to a lookup resource. *)
 Ltac zesu_expose_instruction_lookup :=
-  let _ := constr:(_ : ZesuStepInstructionLookup) in
+  zesu_switch_enabled constr:(ZesuStepInstructionLookup);
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>
       zesu_expose_environment_alias;
@@ -235,7 +236,7 @@ Ltac zesu_name_machine_bound expected name :=
 
 (* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
 Ltac zesu_low_mask_if_enabled :=
-  let _ := constr:(_ : ZesuStepLowMask) in
+  zesu_switch_enabled constr:(ZesuStepLowMask);
   repeat first [
     lazymatch goal with |- bv_unsigned ?masked = _ =>
       match goal with Hlocal := _ |- _ =>
@@ -276,7 +277,7 @@ Ltac zesu_low_mask_if_enabled :=
 
 (* A widened strict comparison retains the source unsigned order. *)
 Ltac zesu_strict_signed_if_enabled :=
-  let _ := constr:(_ : ZesuStepStrictSigned) in
+  zesu_switch_enabled constr:(ZesuStepStrictSigned);
   lazymatch goal with
   | |- bv_signed (bv_zero_extend 128 ?left) <
        bv_signed (bv_zero_extend 128 ?right) =>
@@ -461,7 +462,7 @@ Ltac zesu_stack_integer_address pointer :=
 
 (* Select only an owned uninitialized region. Bounds justify address conversion. *)
 Ltac zesu_stack_write_if_enabled :=
-  let _ := constr:(_ : ZesuStepStackWrite) in
+  zesu_switch_enabled constr:(ZesuStepStackWrite);
   zesu_expose_environment_alias;
   repeat match goal with
   | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
@@ -547,7 +548,7 @@ Class ZesuCanonicalAnchor {Sigma}
 
 (* The owned anchor determines the registered target before conversion. *)
 Ltac zesu_canonical_anchor_if_enabled :=
-  let _ := constr:(_ : ZesuStepCanonicalAnchor) in
+  zesu_switch_enabled constr:(ZesuStepCanonicalAnchor);
   lazymatch goal with
   | |- envs_entails _ ?target =>
       iMatchHyp ltac:(fun name anchor =>
@@ -590,7 +591,7 @@ Ltac zesu_registered_pure_fact P :=
 
 (* Registered introductions retain their resource and pure obligations. *)
 Ltac zesu_pure_fact_hints_if_enabled :=
-  let _ := constr:(_ : ZesuStepPureFactHints) in
+  zesu_switch_enabled constr:(ZesuStepPureFactHints);
   lazymatch goal with
   | |- envs_entails _ ?target =>
       first [
@@ -621,7 +622,7 @@ Ltac zesu_pure_fact_hints_if_enabled :=
 
 (* Only the requested list shape permits extraction of owned pure facts. *)
 Ltac zesu_list_cons_witness_if_enabled :=
-  let _ := constr:(_ : ZesuStepListWitness) in
+  zesu_switch_enabled constr:(ZesuStepListWitness);
   lazymatch goal with
   | |- exists (head : ?A) (tail : list ?A),
       ?values = head :: tail /\ length tail = ?count =>
@@ -649,7 +650,7 @@ Ltac zesu_primitive_tuple_witness T :=
 
 (* Resource matching must determine these data evars before Qed can close. *)
 Ltac zesu_primitive_tuple_if_enabled :=
-  let _ := constr:(_ : ZesuStepTupleWitness) in
+  zesu_switch_enabled constr:(ZesuStepTupleWitness);
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
@@ -661,7 +662,7 @@ Ltac zesu_primitive_tuple_if_enabled :=
 
 (* Tuple guards use the owned widened comparison without adding a premise. *)
 Ltac zesu_primitive_tuple_guard_if_enabled :=
-  let _ := constr:(_ : ZesuStepTupleWitness) in
+  zesu_switch_enabled constr:(ZesuStepTupleWitness);
   lazymatch goal with
   | |- Z.lt _ _ => idtac | |- Z.le _ _ => idtac | |- Z.ge _ _ => idtac
   end;
@@ -742,7 +743,7 @@ Ltac zesu_select_plain_register_collection r hypotheses :=
   end.
 
 Ltac zesu_register_collection_selection_if_enabled :=
-  let _ := constr:(_ : ZesuStepRegisterCollectionSelection) in
+  zesu_switch_enabled constr:(ZesuStepRegisterCollectionSelection);
   lazymatch goal with
   | |- envs_entails (Envs ?persistent ?spatial _)
       (find_in_context (FindStructRegMapsTo ?r ?f) _) =>
@@ -767,7 +768,7 @@ Class ZesuStepKnownPairWitness : Prop :=
 
 (* An owned pure fact selects the value before resource matching starts. *)
 Ltac zesu_known_pair_witness_if_enabled :=
-  let _ := constr:(_ : ZesuStepKnownPairWitness) in
+  zesu_switch_enabled constr:(ZesuStepKnownPairWitness);
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ (li_prod ?A unit) ?body) =>
@@ -802,7 +803,7 @@ Ltac zesu_condition_has_unresolved_evar condition :=
           end ].
 
 Ltac zesu_defer_unresolved_sidecondition_if_enabled :=
-  let enabled := constr:(_ : ZesuStepEvarSideconditionGuard) in
+  zesu_switch_enabled constr:(ZesuStepEvarSideconditionGuard);
   lazymatch goal with
   | |- envs_entails _ _ => fail 0
   | |- @bi_entails _ _ _ => fail 0
@@ -817,7 +818,7 @@ Class ZesuStepEvarImplicationGuard : Prop :=
 
 (* Keep unresolved implication premises out of typeclass simplification. *)
 Ltac zesu_defer_unresolved_implication_if_enabled :=
-  let _ := constr:(_ : ZesuStepEvarImplicationGuard) in
+  zesu_switch_enabled constr:(ZesuStepEvarImplicationGuard);
   lazymatch goal with
   | |- ?premise -> _ =>
       let sort := type of premise in
@@ -934,7 +935,7 @@ Ltac zesu_witness_open_existentials fuel :=
   end.
 
 Ltac zesu_pure_witness_constraints_if_enabled :=
-  let _ := constr:(_ : ZesuStepPureWitnessConstraints) in
+  zesu_switch_enabled constr:(ZesuStepPureWitnessConstraints);
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ _ _) =>
@@ -978,7 +979,7 @@ Ltac zesu_record_tuple_witness T continuation :=
   end.
 
 Ltac zesu_record_witness_if_enabled :=
-  let _ := constr:(_ : ZesuStepRecordWitness) in
+  zesu_switch_enabled constr:(ZesuStepRecordWitness);
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ ?T ?body) =>
@@ -1124,7 +1125,7 @@ Ltac zesu_preserve_current_unsigned :=
 (* Signed widened addresses retain the unsigned source value.
    Close an impossible branch before Lithium searches exception registers. *)
 Ltac zesu_signed_address_if_enabled :=
-  let _ := constr:(_ : ZesuStepSignedAddress) in
+  zesu_switch_enabled constr:(ZesuStepSignedAddress);
   match goal with
   | H : ~ ?bound |- _ =>
       lazymatch bound with Z.le _ _ => idtac | Z.ge _ _ => idtac end;
@@ -1182,7 +1183,7 @@ Ltac zesu_ram_fault_assert :=
 
 (* Entry layout bounds refute a negated widened RAM bound. *)
 Ltac zesu_ram_fault_if_enabled :=
-  let _ := constr:(_ : ZesuStepRamFault) in
+  zesu_switch_enabled constr:(ZesuStepRamFault);
   first [solve [zesu_ram_fault_assert]
     | solve [lazymatch goal with
       | |- envs_entails _ ((WPasm _) ∧ True)%I =>
@@ -1237,7 +1238,7 @@ Ltac zesu_region_integer_literal value :=
 
 (* Check the selected term without traversing other local declarations. *)
 Ltac zesu_region_reduce_closed term :=
-  tryif let _ := constr:(_ : ZesuStepRegionFaultNormalization) in idtac
+  tryif zesu_switch_enabled constr:(ZesuStepRegionFaultNormalization)
   then (
     tryif zesu_region_integer_literal term then fail 0 else (
       zesu_stack_closed_term term;
@@ -1282,7 +1283,7 @@ Ltac zesu_region_fault_arithmetic :=
     end].
 
 Ltac zesu_region_fault_bound_if_enabled :=
-  let _ := constr:(_ : ZesuStepRegionFault) in
+  zesu_switch_enabled constr:(ZesuStepRegionFault);
   lazymatch goal with |- ?bound => zesu_region_arithmetic_statement bound end;
   solve [zesu_region_fault_arithmetic].
 
@@ -1325,7 +1326,7 @@ Ltac zesu_region_fault_assert :=
   end.
 
 Ltac zesu_region_fault_if_enabled :=
-  let _ := constr:(_ : ZesuStepRegionFault) in
+  zesu_switch_enabled constr:(ZesuStepRegionFault);
   first [solve [zesu_region_fault_assert] |
     solve [lazymatch goal with
       | |- envs_entails _ ((WPasm _) ∧ True)%I =>
@@ -1369,7 +1370,7 @@ Ltac zesu_handoff_closed_Z term continuation :=
   end.
 
 Ltac zesu_handoff_goal_address_if_enabled :=
-  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  zesu_switch_enabled constr:(ZesuStepWordArrayHandoff);
   lazymatch goal with
   | |- envs_entails _ ?target =>
       lazymatch target with
@@ -1390,7 +1391,7 @@ Ltac zesu_handoff_goal_address_if_enabled :=
   end.
 
 Ltac zesu_handoff_memory_if_enabled :=
-  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  zesu_switch_enabled constr:(ZesuStepWordArrayHandoff);
   lazymatch goal with |- envs_entails _ _ => idtac end;
   zesu_expose_environment_alias;
   iMatchHyp ltac:(fun name body =>
@@ -1404,7 +1405,7 @@ Ltac zesu_handoff_memory_if_enabled :=
     end).
 
 Ltac zesu_handoff_adjacent_words_if_enabled :=
-  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  zesu_switch_enabled constr:(ZesuStepWordArrayHandoff);
   lazymatch goal with
   | |- envs_entails _ (subsume (?address ↦ₘ ?low) ?requested ?G) =>
       let width := type of low in constr_eq width (bv 64);
@@ -1424,14 +1425,14 @@ Ltac zesu_handoff_adjacent_words_if_enabled :=
   end.
 
 Ltac zesu_handoff_facts_if_enabled :=
-  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  zesu_switch_enabled constr:(ZesuStepWordArrayHandoff);
   lazymatch goal with
   | |- envs_entails _ (subsume _ _ _) =>
       progress zesu_saturate_derived_facts
   end.
 
 Ltac zesu_handoff_integer_equality_if_enabled :=
-  let _ := constr:(_ : ZesuStepWordArrayHandoff) in
+  zesu_switch_enabled constr:(ZesuStepWordArrayHandoff);
   lazymatch goal with
   | |- @eq Z ?left ?right =>
       zesu_handoff_closed_Z left ltac:(fun leftNorm =>
@@ -1490,7 +1491,7 @@ Ltac zesu_array_bound_integer_casts :=
 (* Resolve only an already-selected array resource. The existing region rule
    proves containment or base equality and determines the memory kind. *)
 Ltac zesu_array_region_selection_if_enabled :=
-  let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
+  zesu_switch_enabled constr:(ZesuStepArrayRegionBounds);
   lazymatch goal with
   | |- FindHypEqual (ZesuMemRegionSearch _) (_ ↦ₘ∗ _)
       (mem_mapsto_kind_prop _ ?kind) _ =>
@@ -1504,7 +1505,7 @@ Ltac zesu_array_region_selection_if_enabled :=
   end.
 
 Ltac zesu_array_bounds_if_enabled :=
-  let enabled := constr:(_ : ZesuStepArrayBounds) in
+  zesu_switch_enabled constr:(ZesuStepArrayBounds);
   lazymatch goal with
   | |- SHELVED_SIDECOND _ => unshelve_sidecond
   | _ => idtac
@@ -1528,7 +1529,7 @@ Ltac zesu_array_bounds_if_enabled :=
   end.
 
 Ltac zesu_integer_array_address_if_enabled :=
-  let _ := constr:(_ : ZesuStepIntegerArrayAddress) in
+  zesu_switch_enabled constr:(ZesuStepIntegerArrayAddress);
   zesu_expose_environment_alias;
   repeat match goal with
   | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
@@ -1553,7 +1554,7 @@ Ltac zesu_integer_array_address_if_enabled :=
                   match goal with Hpure : _ /\ _ |- _ => destruct Hpure end];
                   zesu_normalize_binary_nat_hypotheses;
                   first [
-                    let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
+                    zesu_switch_enabled constr:(ZesuStepArrayRegionBounds);
                     zesu_array_bound_integer_casts;
                     zesu_byte_array_lengths_if_enabled;
                     solve [lia | bv_solve]

@@ -1,0 +1,42 @@
+{
+  "status": "Exact equality",
+  "root": "f4fa0c40",
+  "comparison_attempt": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002",
+  "seal_sha256": "e2e8cef2a2d66c005a84cb32bd6ad16ef9b07e4b5d118c498fb5eb1ab9759c06",
+  "off_result_sha256": "ab9294276e0f72dfcb72468d1ef6b61ae7d2fd868df947200691600686120843",
+  "on_result_sha256": "b19da3f06c650e219aff27c4b8175ded9c1cea5312e3644d3b769ccdbbce27bc",
+  "active_record_count": 6,
+  "all_raw_records_equal": true,
+  "per_record_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "record_sha256": [
+    "619b122c5a8381c1d4dca1c99c483f9a9205a89e41b5da4db4feda4dd8bd27e4",
+    "da1966256f88452f880cedaf114f5e5770a8261368af8c5f23fef95b71675d07",
+    "cd93c743decd55f80fb379d5cb6a08601676c39a91112eefc67ace3fae4128b8",
+    "b8fdd5f0cadd4d4a8f3590ee432b15a5349b88b7f75dfa50ba78db2df846713c",
+    "6ed634a4bec433ea3c272a7875ab06420d6bf1573ff3668c471863910ad3a63c",
+    "af3f80ede70a998f746a011e99c946da341f5764fda38e72d8950f4766b5b7d7"
+  ],
+  "previously_tagged_record_positions": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "previously_tagged_records_now_equal": true,
+  "cache_marker_in_records": false,
+  "active_tag_in_records": false,
+  "exact_statements_equal": true,
+  "qed_compiled": [
+    false,
+    false
+  ],
+  "auxiliary_groups": "Unavailable in native shell captures. Focused MCP fixtures verify shelf order separately.",
+  "scope": "Exact returned active states at the frozen f4 boundary. No native closure or handler cost attribution."
+}

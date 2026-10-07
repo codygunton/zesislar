@@ -1,0 +1,1306 @@
+{
+  "base": "f4fa0c40",
+  "health": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/islaris/_opam/bin/coqc\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":true,\"pid\":4132255},\"warnings\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "ok": true,
+      "server_version": "0.3.1",
+      "switch": "islaris",
+      "switch_prefix": "/home/cody/islaris/_opam",
+      "switch_is_local": true,
+      "switch_source": "opam_env",
+      "toolchain": {
+        "coqc": {
+          "path": "/home/cody/islaris/_opam/bin/coqc",
+          "version": "8.19.2+lsp 4.14.4"
+        },
+        "pet": {
+          "path": "/home/cody/islaris/_opam/bin/pet",
+          "version": "0.2.4-dev",
+          "pytanque_importable": true
+        }
+      },
+      "pet": {
+        "running": true,
+        "pid": 4132255
+      },
+      "warnings": []
+    },
+    "isError": false
+  },
+  "fixture_compile": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"output\":\"Closed under the global context\\nClosed under the global context\\nClosed under the global context\\nClosed under the global context\\nClosed under the global context\\nClosed under the global context\\nChars 3789 - 3813 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\\nOFF-ACTIVE (2 = 2)\\nOFF-SHELF (0 = 0)\\nOFF-SHELF (1 = 1)\\nClosed under the global context\\nChars 4240 - 4264 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\\nON-ACTIVE (2 = 2)\\nON-SHELF (0 = 0)\\nON-SHELF (1 = 1)\\nClosed under the global context\\nClosed under the global context\\nClosed under the global context\\nClosed under the global context\\nChars 5729 - 5753 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\\nClosed under the global context\\nChars 6496 - 6520 [(split;~[~shelve~|~~]).] 0. secs (0.u,0.s)\\nClosed under the global context\\nClosed under the global context\\nClosed under the global context\\nChars 8304 - 8328 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\\nClosed under the global context\\nChars 9017 - 9041 [(split;~[~shelve~|~~]).] 0. secs (0.u,0.s)\\nClosed under the global context\\nChars 9797 - 9821 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\\nClosed under the global context\\nChars 10541 - 10565 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\\nClosed under the global context\\nTactic call zesu_run ran for 0. secs (0.u,0.s) (success)\\nClosed under the global context\\nTactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)\\nClosed under the global context\",\"timing\":{\"total_sentences\":240,\"top_slowest\":[{\"line\":1,\"characters\":[0,38],\"name\":\"Require~Import~ZesuSsz.Automat...\",\"duration_seconds\":0.505},{\"line\":293,\"characters\":[11238,11247],\"name\":\"zesu_run.\",\"duration_seconds\":0.044},{\"line\":306,\"characters\":[11620,11629],\"name\":\"zesu_run.\",\"duration_seconds\":0.003},{\"line\":32,\"characters\":[1163,1621],\"name\":\"(let~switches~:=~constr:([Fixt...\",\"duration_seconds\":0.001},{\"line\":276,\"characters\":[10568,10693],\"name\":\"1:~~(zesu_run_until~~~~ltac:(f...\",\"duration_seconds\":0.001}],\"last_completed\":{\"line\":313,\"characters\":[11794,11834],\"name\":\"Print~Assumptions~wrapper_run_...\",\"duration_seconds\":0.0}},\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 27 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "output": "Closed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nChars 3789 - 3813 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\nOFF-ACTIVE (2 = 2)\nOFF-SHELF (0 = 0)\nOFF-SHELF (1 = 1)\nClosed under the global context\nChars 4240 - 4264 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\nON-ACTIVE (2 = 2)\nON-SHELF (0 = 0)\nON-SHELF (1 = 1)\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nChars 5729 - 5753 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\nClosed under the global context\nChars 6496 - 6520 [(split;~[~shelve~|~~]).] 0. secs (0.u,0.s)\nClosed under the global context\nClosed under the global context\nClosed under the global context\nChars 8304 - 8328 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\nClosed under the global context\nChars 9017 - 9041 [(split;~[~shelve~|~~]).] 0. secs (0.u,0.s)\nClosed under the global context\nChars 9797 - 9821 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\nClosed under the global context\nChars 10541 - 10565 [(split;~[~shelve~|~split~]).] 0. secs (0.u,0.s)\nClosed under the global context\nTactic call zesu_run ran for 0. secs (0.u,0.s) (success)\nClosed under the global context\nTactic call zesu_run ran for 0.001 secs (0.001u,0.s) (success)\nClosed under the global context",
+      "timing": {
+        "total_sentences": 240,
+        "top_slowest": [
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.505
+          },
+          {
+            "line": 293,
+            "characters": [
+              11238,
+              11247
+            ],
+            "name": "zesu_run.",
+            "duration_seconds": 0.044
+          },
+          {
+            "line": 306,
+            "characters": [
+              11620,
+              11629
+            ],
+            "name": "zesu_run.",
+            "duration_seconds": 0.003
+          },
+          {
+            "line": 32,
+            "characters": [
+              1163,
+              1621
+            ],
+            "name": "(let~switches~:=~constr:([Fixt...",
+            "duration_seconds": 0.001
+          },
+          {
+            "line": 276,
+            "characters": [
+              10568,
+              10693
+            ],
+            "name": "1:~~(zesu_run_until~~~~ltac:(f...",
+            "duration_seconds": 0.001
+          }
+        ],
+        "last_completed": {
+          "line": 313,
+          "characters": [
+            11794,
+            11834
+          ],
+          "name": "Print~Assumptions~wrapper_run_...",
+          "duration_seconds": 0
+        }
+      },
+      "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 27 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+    },
+    "isError": false
+  },
+  "first17_verifications": [
+    {
+      "name": "count_switch_search_isolation",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_nested_isolation",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_search_rollback",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_off_lookup",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_branch_cleanup",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_shelf_cleanup",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_groups_off",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_switch_groups_on",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_shared_off",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_shared_on",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_all_shelved",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_existing_new_shared",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_mixed_groups",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_nested_shared",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_rollback_shared",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_existing_new_shared_off",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "count_mixed_groups_off",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    }
+  ],
+  "wrapper_verifications": [
+    {
+      "name": "wrapper_until_shared_off",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "wrapper_until_shared_on",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "wrapper_run_shared_off",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    },
+    {
+      "name": "wrapper_run_shared_on",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      }
+    }
+  ],
+  "interactive": {
+    "start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":99,\"goals\":\"\\n|-0 = 0 /\\\\ (exists n : nat, n = n) /\\\\ 3 = 3\",\"file\":\"ZesuSsz/Evidence/SwitchDispatchFixtures.v\",\"theorem\":\"count_existing_new_shared\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 99,
+        "goals": "\n|-0 = 0 /\\ (exists n : nat, n = n) /\\ 3 = 3",
+        "file": "ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+        "theorem": "count_existing_new_shared",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "multi": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"results\":[{\"tactic\":\"assert (Hdispatch : ZesuStepSwitchDispatch) by constructor. split; [shelve | split]. 1: zesu_dispatch_search constr:(@nil Prop) ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).\",\"success\":true,\"goals\":\"Goal 1:\\nHdispatch : ZesuStepSwitchDispatch\\n|-?Goal1 = ?Goal1\\n\\nGoal 2:\\nHdispatch : ZesuStepSwitchDispatch\\n|-3 = 3\",\"proof_finished\":false,\"shelved_goals\":2,\"focus_depth\":0},{\"tactic\":\"split; [shelve | split]. 1: zesu_run_until ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).\",\"success\":true,\"goals\":\"Goal 1:\\n\\n|-?n = ?n\\n\\nGoal 2:\\n\\n|-3 = 3\",\"proof_finished\":false,\"shelved_goals\":2,\"focus_depth\":0}],\"from_state_id\":99}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "results": [
+          {
+            "tactic": "assert (Hdispatch : ZesuStepSwitchDispatch) by constructor. split; [shelve | split]. 1: zesu_dispatch_search constr:(@nil Prop) ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).",
+            "success": true,
+            "goals": "Goal 1:\nHdispatch : ZesuStepSwitchDispatch\n|-?Goal1 = ?Goal1\n\nGoal 2:\nHdispatch : ZesuStepSwitchDispatch\n|-3 = 3",
+            "proof_finished": false,
+            "shelved_goals": 2,
+            "focus_depth": 0
+          },
+          {
+            "tactic": "split; [shelve | split]. 1: zesu_run_until ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).",
+            "success": true,
+            "goals": "Goal 1:\n\n|-?n = ?n\n\nGoal 2:\n\n|-3 = 3",
+            "proof_finished": false,
+            "shelved_goals": 2,
+            "focus_depth": 0
+          }
+        ],
+        "from_state_id": 99
+      },
+      "isError": false
+    },
+    "check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":13,\"check_time_ms\":3,\"state_id\":112,\"from_state_id\":99,\"feedback\":[[\"Qed.\",\"count_existing_new_shared is defined\"]],\"proof_tactics\":[\"assert (Hdispatch : ZesuStepSwitchDispatch) by constructor.\",\"split; [shelve | split].\",\"1: zesu_dispatch_search constr:(@nil Prop) ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).\",\"1: ltac2:(fixture_exact_shared ()).\",\"2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(3 = 3))).\",\"all: fixture_no_marker; reflexivity.\",\"Unshelve.\",\"1: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(0 = 0))).\",\"2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(nat))).\",\"all: fixture_no_marker.\",\"1: reflexivity.\",\"1: exact O.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 13,
+        "check_time_ms": 3,
+        "state_id": 112,
+        "from_state_id": 99,
+        "feedback": [
+          [
+            "Qed.",
+            "count_existing_new_shared is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "assert (Hdispatch : ZesuStepSwitchDispatch) by constructor.",
+          "split; [shelve | split].",
+          "1: zesu_dispatch_search constr:(@nil Prop) ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).",
+          "1: ltac2:(fixture_exact_shared ()).",
+          "2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(3 = 3))).",
+          "all: fixture_no_marker; reflexivity.",
+          "Unshelve.",
+          "1: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(0 = 0))).",
+          "2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(nat))).",
+          "all: fixture_no_marker.",
+          "1: reflexivity.",
+          "1: exact O.",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    },
+    "wrapper_start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":123,\"goals\":\"\\n|-0 = 0 /\\\\ (exists n : nat, n = n) /\\\\ 3 = 3\",\"file\":\"_build/switch-dispatch-repair-review/WrapperProbe002.v\",\"theorem\":\"wrapper_until_shared_on\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 123,
+        "goals": "\n|-0 = 0 /\\ (exists n : nat, n = n) /\\ 3 = 3",
+        "file": "_build/switch-dispatch-repair-review/WrapperProbe002.v",
+        "theorem": "wrapper_until_shared_on",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "wrapper_check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":13,\"check_time_ms\":7,\"state_id\":136,\"from_state_id\":123,\"feedback\":[[\"Qed.\",\"wrapper_until_shared_on is defined\"]],\"proof_tactics\":[\"assert (Hdispatch : ZesuStepSwitchDispatch) by constructor.\",\"split; [shelve | split].\",\"1: zesu_run_until ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).\",\"1: ltac2:(fixture_exact_shared ()).\",\"2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(3 = 3))).\",\"all: fixture_no_marker; reflexivity.\",\"Unshelve.\",\"1: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(0 = 0))).\",\"2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(nat))).\",\"all: fixture_no_marker.\",\"1: reflexivity.\",\"1: exact O.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 13,
+        "check_time_ms": 7,
+        "state_id": 136,
+        "from_state_id": 123,
+        "feedback": [
+          [
+            "Qed.",
+            "wrapper_until_shared_on is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "assert (Hdispatch : ZesuStepSwitchDispatch) by constructor.",
+          "split; [shelve | split].",
+          "1: zesu_run_until ltac:(fun _ => unshelve eexists; tryif lazymatch goal with |- nat => idtac end then shelve else idtac).",
+          "1: ltac2:(fixture_exact_shared ()).",
+          "2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(3 = 3))).",
+          "all: fixture_no_marker; reflexivity.",
+          "Unshelve.",
+          "1: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(0 = 0))).",
+          "2: ltac2:(Control.assert_true (Constr.equal (Control.goal ()) constr:(nat))).",
+          "all: fixture_no_marker.",
+          "1: reflexivity.",
+          "1: exact O.",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    },
+    "guard32_fresh_on_start": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"state_id\":137,\"goals\":\"\\n|-\u2203 P : Prop, P \u2192 True\",\"file\":\"_build/switch-dispatch-repair-comparison-001/on/698c/Preflight.v\",\"theorem\":\"dispatch_rule32_binding\",\"proof_finished\":false,\"focus_depth\":0}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "state_id": 137,
+        "goals": "\n|-\u2203 P : Prop, P \u2192 True",
+        "file": "_build/switch-dispatch-repair-comparison-001/on/698c/Preflight.v",
+        "theorem": "dispatch_rule32_binding",
+        "proof_finished": false,
+        "focus_depth": 0
+      },
+      "isError": false
+    },
+    "guard32_fresh_on_check": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":8,\"check_time_ms\":4,\"state_id\":145,\"from_state_id\":137,\"feedback\":[[\"Print Ltac liImpl.\",\"Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\"],[\"zesu_run_until ltac:(fun _ => tryif liImpl then fail 0 \\\"The liImpl guard did not reject the unresolved premise\\\" else idtac \\\"DISPATCH-RULE32-BINDING\\\").\",\"DISPATCH-RULE32-BINDING\"],[\"Qed.\",\"dispatch_rule32_binding is defined\"]],\"proof_tactics\":[\"Print Ltac liImpl.\",\"eexists.\",\"zesu_run_until ltac:(fun _ => tryif liImpl then fail 0 \\\"The liImpl guard did not reject the unresolved premise\\\" else idtac \\\"DISPATCH-RULE32-BINDING\\\").\",\"intros.\",\"exact I.\",\"Unshelve.\",\"exact False.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 8,
+        "check_time_ms": 4,
+        "state_id": 145,
+        "from_state_id": 137,
+        "feedback": [
+          [
+            "Print Ltac liImpl.",
+            "Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks"
+          ],
+          [
+            "zesu_run_until ltac:(fun _ => tryif liImpl then fail 0 \"The liImpl guard did not reject the unresolved premise\" else idtac \"DISPATCH-RULE32-BINDING\").",
+            "DISPATCH-RULE32-BINDING"
+          ],
+          [
+            "Qed.",
+            "dispatch_rule32_binding is defined"
+          ]
+        ],
+        "proof_tactics": [
+          "Print Ltac liImpl.",
+          "eexists.",
+          "zesu_run_until ltac:(fun _ => tryif liImpl then fail 0 \"The liImpl guard did not reject the unresolved premise\" else idtac \"DISPATCH-RULE32-BINDING\").",
+          "intros.",
+          "exact I.",
+          "Unshelve.",
+          "exact False.",
+          "Qed."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "isError": false
+    }
+  },
+  "guard32_verifications": {
+    "off": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "isError": false
+    },
+    "on": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "isError": false
+    }
+  },
+  "six_preflight_mcp_compiles": [
+    {
+      "arm": "off",
+      "site": "Prologue",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"output\":\"Ltac liImpl :=\\n  tryif zesu_defer_unresolved_implication_if_enabled then\\n   fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard\\nDISPATCH-APPROVED RegionFaul\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-comparison-001/off/Prologue/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "output": "Ltac liImpl :=\n  tryif zesu_defer_unresolved_implication_if_enabled then\n   fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard\nDISPATCH-APPROVED RegionFaul",
+          "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-comparison-001/off/Prologue/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+          "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+        },
+        "isError": false
+      }
+    },
+    {
+      "arm": "off",
+      "site": "698c",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"output\":\"Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-comparison-001/off/698c/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "output": "Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut",
+          "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-comparison-001/off/698c/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+          "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+        },
+        "isError": false
+      }
+    },
+    {
+      "arm": "off",
+      "site": "6970",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"output\":\"Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-comparison-001/off/6970/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "output": "Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut",
+          "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-comparison-001/off/6970/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+          "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+        },
+        "isError": false
+      }
+    },
+    {
+      "arm": "on",
+      "site": "Prologue",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"output\":\"Ltac liImpl :=\\n  tryif zesu_defer_unresolved_implication_if_enabled then\\n   fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard\\nDISPATCH-APPROVED RegionFaul\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-comparison-001/on/Prologue/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "output": "Ltac liImpl :=\n  tryif zesu_defer_unresolved_implication_if_enabled then\n   fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard\nDISPATCH-APPROVED RegionFaul",
+          "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-comparison-001/on/Prologue/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+          "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+        },
+        "isError": false
+      }
+    },
+    {
+      "arm": "on",
+      "site": "698c",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"output\":\"Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-comparison-001/on/698c/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "output": "Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut",
+          "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-comparison-001/on/698c/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+          "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+        },
+        "isError": false
+      }
+    },
+    {
+      "arm": "on",
+      "site": "6970",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"output\":\"Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-comparison-001/on/6970/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"vo_rebuild_warning\":\"rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh.\"}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "output": "Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nDISPATCH-APPROVED EvarImplicationGuard ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard\nDISPATCH-APPROVED InstructionLookup ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup\nDISPATCH-APPROVED StackWrite ZesuSsz.Automation.Hooks.ZesuStepStackWrite\nDISPATCH-APPROVED RamFault ZesuSsz.Automation.Hooks.ZesuStepRamFault\nDISPATCH-APPROVED RegionFault ZesuSsz.Automation.Hooks.ZesuStepRegionFault\nDISPATCH-APPROVED LowMask ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask\nDISPATCH-APPROVED IntegerArrayAddress ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress\nDISPATCH-APPROVED RecordWitness ZesuSsz.Automation.Hooks.ZesuStepRecordWitness\nDISPATCH-APPROVED ArrayBounds ZesuSsz.Automation.Hooks.ZesuStepArrayBounds\nDISPATCH-APPROVED WordArrayHandoff ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff\nDISPATCH-APPROVED ReturnBundle ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle\nDISPATCH-APPROVED ReturnWand ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand\nDISPATCH-APPROVED StrictSigned ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned\nDISPATCH-APPROVED ListWitness ZesuSsz.Automation.Hooks.ZesuStepListWitness\nDISPATCH-APPROVED TupleWitness ZesuSsz.Automation.Hooks.ZesuStepTupleWitness\nDISPATCH-APPROVED ArrayRegionBounds ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds\nDISPATCH-APPROVED PureFactHints ZesuSsz.Automation.Hooks.ZesuStepPureFactHints\nDISPATCH-APPROVED KnownPairWitness ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness\nDISPATCH-APPROVED PureWitnessConstraints ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints\nDISPATCH-APPROVED RegisterCollectionSelection ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection\nDISPATCH-APPROVED EvarSideconditionGuard ZesuSsz.Aut",
+          "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-comparison-001/on/6970/Preflight.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+          "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair'. 14 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+        },
+        "isError": false
+      }
+    }
+  ],
+  "preserved_failures": {
+    "initial_verifications": [
+      {
+        "name": "count_switch_search_isolation",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_nested_isolation",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":false,\"error\":\"rocq_verify aborted: pet RSS exceeded 16384 MB. The proof state was lost; pet has been restarted. Retry with a smaller term, avoid vm_compute on large inputs, or split the work.\",\"reason\":\"memory_exhausted\",\"pet_restarted\":true}"
+            }
+          ],
+          "structuredContent": {
+            "success": false,
+            "error": "rocq_verify aborted: pet RSS exceeded 16384 MB. The proof state was lost; pet has been restarted. Retry with a smaller term, avoid vm_compute on large inputs, or split the work.",
+            "reason": "memory_exhausted",
+            "pet_restarted": true
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_search_rollback",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_off_lookup",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_branch_cleanup",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_shelf_cleanup",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_groups_off",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_switch_groups_on",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_shared_off",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_shared_on",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_all_shelved",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_existing_new_shared",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_mixed_groups",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_nested_shared",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_rollback_shared",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_existing_new_shared_off",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"direct\",\"assumptions\":[],\"note\":\"Verified via direct compilation (no Module M sandbox).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "direct",
+            "assumptions": [],
+            "note": "Verified via direct compilation (no Module M sandbox)."
+          },
+          "isError": false
+        }
+      },
+      {
+        "name": "count_mixed_groups_off",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"verification_method\":\"shared_defs\",\"assumptions\":[],\"note\":\"Verified using shared-definitions template (definitions placed outside Module M for type compatibility).\"}"
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "verification_method": "shared_defs",
+            "assumptions": [],
+            "note": "Verified using shared-definitions template (definitions placed outside Module M for type compatibility)."
+          },
+          "isError": false
+        }
+      }
+    ],
+    "guard_helper_scope": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"reason\":\"tactic_failed\",\"error\":\"Coq: The reference zesu_dispatch_search was not found in the current environment.\",\"failed_command\":\"let switches := zesu_search_switches in zesu_dispatch_search switches ltac:(fun _ => tryif liImpl then fail 0 \\\"The liImpl guard did not reject the unresolved premise\\\" else idtac \\\"DISPATCH-RULE32-BINDING\\\").\",\"command_index\":2,\"commands_run\":2,\"last_valid_state_id\":115,\"goals_at_failure\":\"\\n|-?P \u2192 True\",\"feedback\":[[\"Print Ltac liImpl.\",\"Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \\\"unresolved implication premise\\\" else normalize_and_simpl_impl false \\nRedefined by:\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\\nHooks\"]],\"hint\":\"Use rocq_check(body='...', from_state=115) or rocq_step_multi(tactics=[...], from_state=115).\"}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "reason": "tactic_failed",
+        "error": "Coq: The reference zesu_dispatch_search was not found in the current environment.",
+        "failed_command": "let switches := zesu_search_switches in zesu_dispatch_search switches ltac:(fun _ => tryif liImpl then fail 0 \"The liImpl guard did not reject the unresolved premise\" else idtac \"DISPATCH-RULE32-BINDING\").",
+        "command_index": 2,
+        "commands_run": 2,
+        "last_valid_state_id": 115,
+        "goals_at_failure": "\n|-?P \u2192 True",
+        "feedback": [
+          [
+            "Print Ltac liImpl.",
+            "Ltac liImpl := tryif zesu_defer_unresolved_implication_if_enabled then fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks"
+          ]
+        ],
+        "hint": "Use rocq_check(body='...', from_state=115) or rocq_step_multi(tactics=[...], from_state=115)."
+      },
+      "isError": false
+    },
+    "wrapper_missing_core_import": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"reason\":\"compile_error\",\"error\":\"_build/switch-dispatch-repair-review/WrapperProbe.v, line 25, characters 10-19:\\n    25 |   assert (Hdispatch : ZesuStepSwitchDispatch) by constructor.\\n                   ^^^^^^^^^\\nError: The variable ZesuStepSwitchDispatch was not found in the current\\nenvironment.\",\"error_positions\":[{\"line\":24,\"character\":10,\"end_character\":19,\"message\":\"Error: The variable ZesuStepSwitchDispatch was not found in the current\\nenvironment.\"}],\"hint\":\"Interactive proof state captured at the error position. Use rocq_check(from_state=116) or rocq_step_multi(from_state=116) to explore fixes.\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-review/WrapperProbe.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"state_capture_status\":\"ok\",\"state_id\":116,\"goals\":\"\\n|-0 = 0 /\\\\ (exists n : nat, n = n) /\\\\ 3 = 3\",\"file\":\"_build/switch-dispatch-repair-review/WrapperProbe.v\",\"theorem\":\"@pos(24,10)\",\"proof_finished\":false,\"errors\":[{\"proof_name\":\"wrapper_until_shared_on\",\"kind\":\"Lemma\",\"start_line\":22,\"end_line\":37,\"code\":-32003,\"message\":\"Coq: The variable ZesuStepSwitchDispatch was not found in the current environment.\"}]}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "reason": "compile_error",
+        "error": "_build/switch-dispatch-repair-review/WrapperProbe.v, line 25, characters 10-19:\n    25 |   assert (Hdispatch : ZesuStepSwitchDispatch) by constructor.\n                   ^^^^^^^^^\nError: The variable ZesuStepSwitchDispatch was not found in the current\nenvironment.",
+        "error_positions": [
+          {
+            "line": 24,
+            "character": 10,
+            "end_character": 19,
+            "message": "Error: The variable ZesuStepSwitchDispatch was not found in the current\nenvironment."
+          }
+        ],
+        "hint": "Interactive proof state captured at the error position. Use rocq_check(from_state=116) or rocq_step_multi(from_state=116) to explore fixes.",
+        "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-review/WrapperProbe.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+        "state_capture_status": "ok",
+        "state_id": 116,
+        "goals": "\n|-0 = 0 /\\ (exists n : nat, n = n) /\\ 3 = 3",
+        "file": "_build/switch-dispatch-repair-review/WrapperProbe.v",
+        "theorem": "@pos(24,10)",
+        "proof_finished": false,
+        "errors": [
+          {
+            "proof_name": "wrapper_until_shared_on",
+            "kind": "Lemma",
+            "start_line": 22,
+            "end_line": 37,
+            "code": -32003,
+            "message": "Coq: The variable ZesuStepSwitchDispatch was not found in the current environment."
+          }
+        ]
+      },
+      "isError": false
+    },
+    "run_probe": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"reason\":\"compile_error\",\"error\":\"_build/switch-dispatch-repair-review/RunProbe.v, line 13, characters 2-20:\\n    13 |   fixture_no_marker.\\n           ^^^^^^^^^^^^^^^^^^\\nError: Expected a single focused goal but 0 goals are focused.\",\"error_positions\":[{\"line\":12,\"character\":2,\"end_character\":20,\"message\":\"Error: Expected a single focused goal but 0 goals are focused.\"}],\"hint\":\"Use rocq_start(file=..., line=..., character=...) to start an interactive session at the error position, then rocq_check or rocq_step_multi to explore fixes.\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-review/RunProbe.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"state_capture_status\":\"outside_proof\",\"errors\":[{\"proof_name\":\"wrapper_run_shared_off\",\"kind\":\"Lemma\",\"start_line\":4,\"end_line\":17,\"code\":-32003,\"message\":\"Coq: Expected a single focused goal but 0 goals are focused.\"},{\"proof_name\":\"wrapper_run_shared_on\",\"kind\":\"Lemma\",\"start_line\":20,\"end_line\":34,\"code\":-32003,\"message\":\"Coq: Expected a single focused goal but 0 goals are focused.\"}]}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "reason": "compile_error",
+        "error": "_build/switch-dispatch-repair-review/RunProbe.v, line 13, characters 2-20:\n    13 |   fixture_no_marker.\n           ^^^^^^^^^^^^^^^^^^\nError: Expected a single focused goal but 0 goals are focused.",
+        "error_positions": [
+          {
+            "line": 12,
+            "character": 2,
+            "end_character": 20,
+            "message": "Error: Expected a single focused goal but 0 goals are focused."
+          }
+        ],
+        "hint": "Use rocq_start(file=..., line=..., character=...) to start an interactive session at the error position, then rocq_check or rocq_step_multi to explore fixes.",
+        "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-review/RunProbe.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+        "state_capture_status": "outside_proof",
+        "errors": [
+          {
+            "proof_name": "wrapper_run_shared_off",
+            "kind": "Lemma",
+            "start_line": 4,
+            "end_line": 17,
+            "code": -32003,
+            "message": "Coq: Expected a single focused goal but 0 goals are focused."
+          },
+          {
+            "proof_name": "wrapper_run_shared_on",
+            "kind": "Lemma",
+            "start_line": 20,
+            "end_line": 34,
+            "code": -32003,
+            "message": "Coq: Expected a single focused goal but 0 goals are focused."
+          }
+        ]
+      },
+      "isError": false
+    },
+    "run_probe002": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":false,\"reason\":\"compile_error\",\"error\":\"_build/switch-dispatch-repair-review/RunProbe002.v, line 16, characters 2-20:\\n    16 |   fixture_no_marker.\\n           ^^^^^^^^^^^^^^^^^^\\nError: Expected a single focused goal but 0 goals are focused.\",\"error_positions\":[{\"line\":15,\"character\":2,\"end_character\":20,\"message\":\"Error: Expected a single focused goal but 0 goals are focused.\"}],\"hint\":\"Use rocq_start(file=..., line=..., character=...) to start an interactive session at the error position, then rocq_check or rocq_step_multi to explore fixes.\",\"dune_build_warning\":\"dune could not build '_build/switch-dispatch-repair-review/RunProbe002.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.\",\"state_capture_status\":\"outside_proof\",\"errors\":[{\"proof_name\":\"wrapper_run_shared_off\",\"kind\":\"Lemma\",\"start_line\":7,\"end_line\":20,\"code\":-32003,\"message\":\"Coq: Expected a single focused goal but 0 goals are focused.\"},{\"proof_name\":\"wrapper_run_shared_on\",\"kind\":\"Lemma\",\"start_line\":23,\"end_line\":37,\"code\":-32003,\"message\":\"Coq: Expected a single focused goal but 0 goals are focused.\"}]}"
+        }
+      ],
+      "structuredContent": {
+        "success": false,
+        "reason": "compile_error",
+        "error": "_build/switch-dispatch-repair-review/RunProbe002.v, line 16, characters 2-20:\n    16 |   fixture_no_marker.\n           ^^^^^^^^^^^^^^^^^^\nError: Expected a single focused goal but 0 goals are focused.",
+        "error_positions": [
+          {
+            "line": 15,
+            "character": 2,
+            "end_character": 20,
+            "message": "Error: Expected a single focused goal but 0 goals are focused."
+          }
+        ],
+        "hint": "Use rocq_start(file=..., line=..., character=...) to start an interactive session at the error position, then rocq_check or rocq_step_multi to explore fixes.",
+        "dune_build_warning": "dune could not build '_build/switch-dispatch-repair-review/RunProbe002.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+        "state_capture_status": "outside_proof",
+        "errors": [
+          {
+            "proof_name": "wrapper_run_shared_off",
+            "kind": "Lemma",
+            "start_line": 7,
+            "end_line": 20,
+            "code": -32003,
+            "message": "Coq: Expected a single focused goal but 0 goals are focused."
+          },
+          {
+            "proof_name": "wrapper_run_shared_on",
+            "kind": "Lemma",
+            "start_line": 23,
+            "end_line": 37,
+            "code": -32003,
+            "message": "Coq: Expected a single focused goal but 0 goals are focused."
+          }
+        ]
+      },
+      "isError": false
+    }
+  },
+  "scope": "Exact term structure and active/shelf order in focused fixtures. Constr.equal checks terms up to alpha conversion and evar expansion. The fixtures reject a LetIn witness. Native byte equality remains a separate frozen comparison.",
+  "cleanup": "No cache marker remains in active or shelf contexts. The repair introduces no active tag.",
+  "fixture_count": 21,
+  "approved_classes": 23,
+  "root_hints": 15,
+  "historical_extras_off": 17,
+  "preflight_mcp_output_limit": "MCP stdout truncates at 3000 characters. The watched preflight will retain the full compiler logs.",
+  "automatic_restart": "MCP restarted Pet after its own 16 GiB cap. No manual kill or force restart occurred.",
+  "final_fixture_source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+    "sha256": "beecede127d78043f58834713ff87aabe26ff2a296f51f1899f1797f27f7d07d"
+  },
+  "first17_source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/SwitchDispatchFixtures17.v",
+    "sha256": "a24e0ada32dac3f46b47eb1aa0b9b56cce61e72d546f752575afec51eece571d"
+  },
+  "first17_source_bytes_preserved_in_final_source": true
+}
