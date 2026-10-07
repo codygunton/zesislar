@@ -1,0 +1,97 @@
+{
+  "current": {
+    "active_goals": 12,
+    "bound_wrappers": [
+      4,
+      6,
+      8
+    ],
+    "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/evidence.json",
+    "capture_sha256": "bc20a833976a9808b4069b770ef27e54e5848376b76b40fe06df86acaf7f48fe",
+    "lookup_implications": [
+      9,
+      10,
+      11
+    ],
+    "lookup_indices_unresolved": [
+      "?Goal",
+      "?Goal0",
+      "?Goal1"
+    ],
+    "nat_indices": [
+      0,
+      1,
+      2
+    ],
+    "offset_wrappers": [
+      3,
+      5,
+      7
+    ],
+    "root": "7f5d5f6151c761f5bb2c7e0284e8dc3bd2e31c51"
+  },
+  "finding": "The current arm and guard-only ON retain three unresolved indices. The q56 capture commits three indices to zero.",
+  "guard_only_on": {
+    "active_goals": 12,
+    "bound_wrappers": [
+      4,
+      6,
+      8
+    ],
+    "capture": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/de/deff3775f53da8bd8afd21c4b6774f5a7ea24bc718a3a306f4f55f6c950032d8",
+      "bytes": 162543,
+      "sha256": "deff3775f53da8bd8afd21c4b6774f5a7ea24bc718a3a306f4f55f6c950032d8"
+    },
+    "lookup_implications": [
+      9,
+      10,
+      11
+    ],
+    "lookup_indices_unresolved": [
+      "?Goal",
+      "?Goal0",
+      "?Goal1"
+    ],
+    "nat_indices": [
+      0,
+      1,
+      2
+    ],
+    "offset_wrappers": [
+      3,
+      5,
+      7
+    ],
+    "pair_audit": "/home/cody/zesislar-archive/sha256/01/01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c",
+    "pair_audit_sha256": "01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c",
+    "root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5"
+  },
+  "guard_only_statement_with_newline_sha256": "4925682a79f9358cba68fd8abfe3e87d451108799f2c1168f0c641c51591a503",
+  "limits": [
+    "These captures change roots and import scope. They do not establish a single-variable comparison.",
+    "The goal shapes do not prove boundary closure.",
+    "Wrapped SHELVED_SIDECOND goals do not establish actual shelf membership."
+  ],
+  "q56": {
+    "active_goals": 15,
+    "log": {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261006-191505-q56-list-conditional-root712-corrected.log",
+      "sha256": "64721e58326da747eb2f11ab5855d8d1e460c30c06399146477e02060f12eeab"
+    },
+    "report_path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/FINAL_REPORT.json",
+    "report_sha256": "223c0809d1ad50dba1c4770be93fae94e3e737fd95a3e4c153ce3db0a00e55c8",
+    "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+    "source": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/ConditionalCompletionRoot712Corrected.v",
+      "sha256": "45aa58f9d3d07e57f94c20d855745dead14da71f7f8a3b112899c057a157ea4a"
+    },
+    "zero_index_goal_indices": [
+      0,
+      5,
+      10
+    ]
+  },
+  "statement_core_bytes_equal": true,
+  "statement_core_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed"
+}

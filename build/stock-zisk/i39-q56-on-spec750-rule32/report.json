@@ -1,0 +1,412 @@
+{
+  "accepted_iris_preview": {
+    "archive": "/home/cody/zesislar-archive/sha256/2f/2f450583f53079c4e47a428b127eebd8daefc618dd42b0053bae1c0947870ca3",
+    "bytes": 1044,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/accepted-iris-preview.json",
+    "sha256": "2f450583f53079c4e47a428b127eebd8daefc618dd42b0053bae1c0947870ca3"
+  },
+  "accounting": {
+    "child_min": null,
+    "parent_min": null,
+    "tokens_child": null,
+    "tokens_parent": null
+  },
+  "active_goal_conclusions": [
+    "nat",
+    "nat",
+    "nat",
+    "(SHELVED_SIDECOND\n   (?Goal@{H10:=bv_unsigned_in_range_alt 64 b; H11:=bv_signed_in_range 64 b; H12:=bv_unsigned_in_range_alt 64 n0; H13:=bv_signed_in_range 64 n0; H14:=bv_unsigned_in_range_alt 8 inputPrefix;\n           H15:=bv_signed_in_range 8 inputPrefix} = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1))",
+    "(SHELVED_SIDECOND\n   (?Goal@{H10:=bv_unsigned_in_range_alt 64 b; H11:=bv_signed_in_range 64 b; H12:=bv_unsigned_in_range_alt 64 n0; H13:=bv_signed_in_range 64 n0; H14:=bv_unsigned_in_range_alt 8 inputPrefix;\n           H15:=bv_signed_in_range 8 inputPrefix} < length (decodeItemInputBytes args))%nat)",
+    "(SHELVED_SIDECOND\n   (?Goal0@{H11:=bv_unsigned_in_range_alt 64 b; H12:=bv_signed_in_range 64 b; H13:=bv_unsigned_in_range_alt 64 n0; H14:=bv_signed_in_range 64 n0; H15:=bv_unsigned_in_range_alt 8 inputPrefix;\n            H16:=bv_signed_in_range 8 inputPrefix} = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1))",
+    "(SHELVED_SIDECOND\n   (?Goal0@{H11:=bv_unsigned_in_range_alt 64 b; H12:=bv_signed_in_range 64 b; H13:=bv_unsigned_in_range_alt 64 n0; H14:=bv_signed_in_range 64 n0; H15:=bv_unsigned_in_range_alt 8 inputPrefix;\n            H16:=bv_signed_in_range 8 inputPrefix} < length (decodeItemInputBytes args))%nat)",
+    "(SHELVED_SIDECOND\n   (?Goal1@{H13:=bv_unsigned_in_range_alt 64 b; H14:=bv_signed_in_range 64 b; H15:=bv_unsigned_in_range_alt 64 n0; H16:=bv_signed_in_range 64 n0; H17:=bv_unsigned_in_range_alt 8 inputPrefix;\n            H18:=bv_signed_in_range 8 inputPrefix} = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1))",
+    "(SHELVED_SIDECOND\n   (?Goal1@{H13:=bv_unsigned_in_range_alt 64 b; H14:=bv_signed_in_range 64 b; H15:=bv_unsigned_in_range_alt 64 n0; H16:=bv_signed_in_range 64 n0; H17:=bv_unsigned_in_range_alt 8 inputPrefix;\n            H18:=bv_signed_in_range 8 inputPrefix} < length (decodeItemInputBytes args))%nat)",
+    "(decodeItemInputBytes args\n !! ?Goal@{H10:=bv_unsigned_in_range_alt 64 b; H11:=bv_signed_in_range 64 b; H12:=bv_unsigned_in_range_alt 64 n0; H13:=bv_signed_in_range 64 n0; H14:=bv_unsigned_in_range_alt 8 inputPrefix;\n           H15:=bv_signed_in_range 8 inputPrefix} = Some vmem\n \u2192 _ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n   --------------------------------------\u25a1\n   _ : instr_pre 2148362968\n         (\u2203 (successor_n successor_payloadStart : Z) (successor_lengthBytes successor_frameBytes : list (bv 8)) (successor_loaded : bv 64) (successor_inputPrefix : bv 8) (successor_rest : \n                                                                                                                                                                          list (bv 8)),\n            decodeItemEntryAt800d6ad8 args successor_n successor_payloadStart successor_lengthBytes successor_frameBytes successor_loaded successor_inputPrefix successor_rest)\n   _ : instr_pre 2148362948 (\u2203 (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)), decodeItemEntryAt800d6ac4 args successor_inputPrefix successor_rest)\n   _ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))\n   _ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (payloadStart + n))\n   _ : \"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))\n   _ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)))\n   _ : \"x14\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (n + 1))\n   _ : \"x16\" \u21a6\u1d63 RVal_Bits loaded\n   _ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))\n   _ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))\n   _ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))\n   _ : decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args\n   _ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) \u21a6\u2098\u2217 frameBytes\n   _ : instr_pre (decodeItemReturnAddress args)\n         (\u2203 outcome : DecodeItemOutcome, \u231cdecodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args \u2227 DecodeMeaningModuloKnownBugs args outcome\u231d \u2217\n            decodeItemExitResources args outcome)\n   _ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362948)\n   _ : \"x15\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (payloadStart + i))\n   _ : reg_col (decodeItemSysRegs args)\n   --------------------------------------\u2217\n   \u231cn2 = vmem\u231d -\u2217 decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args -\u2217 WPasm TRACE)",
+    "(decodeItemInputBytes args\n !! ?Goal0@{H11:=bv_unsigned_in_range_alt 64 b; H12:=bv_signed_in_range 64 b; H13:=bv_unsigned_in_range_alt 64 n0; H14:=bv_signed_in_range 64 n0; H15:=bv_unsigned_in_range_alt 8 inputPrefix;\n            H16:=bv_signed_in_range 8 inputPrefix} = Some vmem\n \u2192 _ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n   --------------------------------------\u25a1\n   _ : instr_pre 2148362968\n         (\u2203 (successor_n successor_payloadStart : Z) (successor_lengthBytes successor_frameBytes : list (bv 8)) (successor_loaded : bv 64) (successor_inputPrefix : bv 8) (successor_rest : \n                                                                                                                                                                          list (bv 8)),\n            decodeItemEntryAt800d6ad8 args successor_n successor_payloadStart successor_lengthBytes successor_frameBytes successor_loaded successor_inputPrefix successor_rest)\n   _ : instr_pre 2148362948 (\u2203 (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)), decodeItemEntryAt800d6ac4 args successor_inputPrefix successor_rest)\n   _ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))\n   _ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (payloadStart + n))\n   _ : \"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))\n   _ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)))\n   _ : \"x14\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (n + 1))\n   _ : \"x16\" \u21a6\u1d63 RVal_Bits loaded\n   _ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))\n   _ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))\n   _ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))\n   _ : decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args\n   _ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) \u21a6\u2098\u2217 frameBytes\n   _ : instr_pre (decodeItemReturnAddress args)\n         (\u2203 outcome : DecodeItemOutcome, \u231cdecodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args \u2227 DecodeMeaningModuloKnownBugs args outcome\u231d \u2217\n            decodeItemExitResources args outcome)\n   _ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362948)\n   _ : \"x15\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (payloadStart + i))\n   _ : reg_col (decodeItemSysRegs args)\n   --------------------------------------\u2217\n   \u231cn2 = vmem\u231d -\u2217 decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args -\u2217 WPasm TRACE)",
+    "(decodeItemInputBytes args\n !! ?Goal1@{H13:=bv_unsigned_in_range_alt 64 b; H14:=bv_signed_in_range 64 b; H15:=bv_unsigned_in_range_alt 64 n0; H16:=bv_signed_in_range 64 n0; H17:=bv_unsigned_in_range_alt 8 inputPrefix;\n            H18:=bv_signed_in_range 8 inputPrefix} = Some vmem\n \u2192 _ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n   --------------------------------------\u25a1\n   _ : instr_pre 2148362968\n         (\u2203 (successor_n successor_payloadStart : Z) (successor_lengthBytes successor_frameBytes : list (bv 8)) (successor_loaded : bv 64) (successor_inputPrefix : bv 8) (successor_rest : \n                                                                                                                                                                          list (bv 8)),\n            decodeItemEntryAt800d6ad8 args successor_n successor_payloadStart successor_lengthBytes successor_frameBytes successor_loaded successor_inputPrefix successor_rest)\n   _ : instr_pre 2148362948 (\u2203 (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)), decodeItemEntryAt800d6ac4 args successor_inputPrefix successor_rest)\n   _ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))\n   _ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (payloadStart + n))\n   _ : \"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))\n   _ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) lengthBytes)))\n   _ : \"x14\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (n + 1))\n   _ : \"x16\" \u21a6\u1d63 RVal_Bits loaded\n   _ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))\n   _ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))\n   _ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))\n   _ : decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args\n   _ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) \u21a6\u2098\u2217 frameBytes\n   _ : instr_pre (decodeItemReturnAddress args)\n         (\u2203 outcome : DecodeItemOutcome, \u231cdecodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args \u2227 DecodeMeaningModuloKnownBugs args outcome\u231d \u2217\n            decodeItemExitResources args outcome)\n   _ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148362948)\n   _ : \"x15\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (payloadStart + i))\n   _ : reg_col (decodeItemSysRegs args)\n   --------------------------------------\u2217\n   \u231cn2 = vmem\u231d -\u2217 decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args -\u2217 WPasm TRACE)"
+  ],
+  "active_goal_count": 12,
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/8b/8be71bc2b26a0a22a3bd886a5c63568c51ae415fd57fa017c36a2a20a3b02072",
+    "bytes": 4862456,
+    "sha256": "8be71bc2b26a0a22a3bd886a5c63568c51ae415fd57fa017c36a2a20a3b02072"
+  },
+  "archive_records": 10521,
+  "assumptions": {
+    "reason": "The compiler returned no assumption certificate",
+    "verified": false
+  },
+  "authorized_commits": [
+    {
+      "applied": "0f8382880868e4fbfa9bcfc19344c6879c3d400f",
+      "original": "750c2e808718758fd1a6451b517f7d5970ac3892"
+    },
+    {
+      "applied": "7f5d5f6151c761f5bb2c7e0284e8dc3bd2e31c51",
+      "original": "a46d9877e1bbcd01a5bcc33949386653e68f9e56"
+    }
+  ],
+  "base_root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5",
+  "boundary_closed": false,
+  "branches": 1,
+  "capture": {
+    "archive": "/home/cody/zesislar-archive/sha256/bc/bc20a833976a9808b4069b770ef27e54e5848376b76b40fe06df86acaf7f48fe",
+    "bytes": 391476,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/evidence.json",
+    "sha256": "bc20a833976a9808b4069b770ef27e54e5848376b76b40fe06df86acaf7f48fe"
+  },
+  "capture_error": null,
+  "compiler": {
+    "command": [
+      "/home/cody/islaris/_opam/bin/coqc",
+      "-time",
+      "-q",
+      "-w",
+      "-notation-overridden",
+      "-w",
+      "-redundant-canonical-projection",
+      "-w",
+      "-deprecated-native-compiler-option",
+      "-w",
+      "-native-compiler-disabled",
+      "-native-compiler",
+      "ondemand",
+      "-boot",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/boot",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/clib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/config",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/engine",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/gramlib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/interp",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/kernel",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/lib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/library",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/parsing",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/perf",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/plugins/ltac",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/plugins/ltac2",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/pretyping",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/printing",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/proofs",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/tactics",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/vernac",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/vm",
+      "-I",
+      "/home/cody/islaris/_opam/lib/findlib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/memprof-limits",
+      "-I",
+      "/home/cody/islaris/_opam/lib/ocaml",
+      "-I",
+      "/home/cody/islaris/_opam/lib/ocaml/threads",
+      "-I",
+      "/home/cody/islaris/_opam/lib/zarith",
+      "-I",
+      "ZesuSsz/Evidence/GatesPlugin",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/btauto",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/cc",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/derive",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/extraction",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/firstorder",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/funind",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ltac",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ltac2",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/micromega",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/nsatz",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/number_string_notation",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ring",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/rtauto",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ssreflect",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ssrmatching",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tauto",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p0",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p1",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p2",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p3",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/zify",
+      "-R",
+      "/home/cody/islaris/_opam/lib/coq/theories",
+      "Coq",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/isla",
+      "isla",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64",
+      "isla.riscv64",
+      "-Q",
+      "MachineMap",
+      "ZesuMachineMap",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/lithium",
+      "lithium",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/iris",
+      "iris",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp",
+      "stdpp",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/RecordUpdate",
+      "RecordUpdate",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/Ltac2",
+      "Ltac2",
+      "-Q",
+      "InstrSpecs",
+      "InstrSpecs",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector",
+      "stdpp.bitvector",
+      "-Q",
+      "generated/sail-stdpp",
+      "SailStdpp",
+      "-Q",
+      "generated/evm-sail-coq",
+      "EvmSail",
+      "-Q",
+      "generated/evm-sail-coq/rlp",
+      "EvmSailRlp",
+      "-Q",
+      "ZesuStock",
+      "ZesuStock",
+      "-Q",
+      "generated/isla-traces/stock-zisk/decodeItem",
+      "ZesuSsz.Stock.DecodeItem",
+      "-Q",
+      "generated/isla-traces/stock-zisk/closure",
+      "ZesuSsz.Stock.Closure",
+      "-R",
+      "ZesuSsz",
+      "ZesuSsz",
+      "-o",
+      "/tmp/zesu-coqc-wauiwsx3/Boundary.vo",
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/Boundary.v"
+    ],
+    "compiled_object": null,
+    "compiler_pid": 2848002,
+    "cpu_seconds": 144.791565,
+    "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/agents/worker2-child-platform-q56-on/default",
+    "elapsed_seconds": 145.1796020460315,
+    "exit_code": 1,
+    "limit": null,
+    "limits": {
+      "cpu_seconds": 2400,
+      "module_seconds": null,
+      "rss_kib": 6291456
+    },
+    "measurement_complete": true,
+    "peak_rss_kib": 2313572
+  },
+  "compiler_log": {
+    "archive": "/home/cody/zesislar-archive/sha256/dc/dcc5724c98cc6a5f7ccb5994088f414f4604909ccc09a20121f493fb25dbfd15",
+    "bytes": 266915,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/compiler.log",
+    "sha256": "dcc5724c98cc6a5f7ccb5994088f414f4604909ccc09a20121f493fb25dbfd15"
+  },
+  "dependency_attempt": {
+    "archive": "/home/cody/zesislar-archive/sha256/bc/bc55f768f378aefacc7a0a560fdb4dd1c2ec882e4edd6c6559685e51551b0a74",
+    "bytes": 3592,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/dependency-result.json",
+    "sha256": "bc55f768f378aefacc7a0a560fdb4dd1c2ec882e4edd6c6559685e51551b0a74"
+  },
+  "full_goals_in_capture": true,
+  "gate": {
+    "elapsed_seconds": 846.8184649399482,
+    "exit_code": 0,
+    "failed_prior_gate": {
+      "archive": "/home/cody/zesislar-archive/sha256/d2/d27c2ab797360654c9a61715c184a94024ffeedca312ca2a7fc88eade3728dee",
+      "bytes": 138,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-evidence-gate/result.json",
+      "sha256": "d27c2ab797360654c9a61715c184a94024ffeedca312ca2a7fc88eade3728dee"
+    },
+    "failed_prior_gate_log": {
+      "archive": "/home/cody/zesislar-archive/sha256/3d/3da9611e4253d2a5840bb7b3e3dc8602848ab0e92110f7e2a6104166d1e892ff",
+      "bytes": 4234,
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-011050-child-a-q56-on-evidence-check-fast.log",
+      "sha256": "3da9611e4253d2a5840bb7b3e3dc8602848ab0e92110f7e2a6104166d1e892ff"
+    },
+    "log": {
+      "archive": "/home/cody/zesislar-archive/sha256/7b/7b786aebb9426fd37ab984b88566be01957690efd1bf64902e978ebe948b1139",
+      "bytes": 148076,
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-011307-child-a-q56-on-evidence-check-fast-002.log",
+      "sha256": "7b786aebb9426fd37ab984b88566be01957690efd1bf64902e978ebe948b1139"
+    },
+    "post_gate_native_seal_mismatches": [],
+    "post_gate_native_seals_checked": 10490,
+    "record": {
+      "archive": "/home/cody/zesislar-archive/sha256/3f/3fd55480a51e666f34967a676f889985307668106052d0814fbc4661ef5142be",
+      "bytes": 138,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-evidence-gate-002/result.json",
+      "sha256": "3fd55480a51e666f34967a676f889985307668106052d0814fbc4661ef5142be"
+    },
+    "source_head": "7f5d5f6151c761f5bb2c7e0284e8dc3bd2e31c51",
+    "source_link_audit": {
+      "archive": "/home/cody/zesislar-archive/sha256/06/06456d126c444420fb84d8bf62a49714b1b47b4c49bbd83f7a351d441141b00a",
+      "bytes": 1163,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-evidence-gate/source-link-audit.json",
+      "sha256": "06456d126c444420fb84d8bf62a49714b1b47b4c49bbd83f7a351d441141b00a"
+    },
+    "status": "passed",
+    "workers": 6
+  },
+  "group_coverage": {
+    "given_up": "unavailable",
+    "goals": "Coq pretty-printed active goals",
+    "shelf": "unavailable",
+    "stack": "unavailable"
+  },
+  "index_comparison": {
+    "archive": "/home/cody/zesislar-archive/sha256/11/113d49740faf7adb4e539f9e5c8c5459ea08cc0b03731170e8329d5856da80cd",
+    "bytes": 3023,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/build/stock-zisk/i39-q56-on-spec750-rule32/index-comparison.json",
+    "sha256": "113d49740faf7adb4e539f9e5c8c5459ea08cc0b03731170e8329d5856da80cd"
+  },
+  "inherited_debts": {
+    "pending_goals": [],
+    "shelved_goals": []
+  },
+  "input_mismatches": [],
+  "input_record": {
+    "archive": "/home/cody/zesislar-archive/sha256/cc/ccfa58200bab5102ef5e4c1a72b7602c2cb3bf78b701bd898acb5aba4f7daaf8",
+    "bytes": 2028508,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/run-inputs.json",
+    "sha256": "ccfa58200bab5102ef5e4c1a72b7602c2cb3bf78b701bd898acb5aba4f7daaf8"
+  },
+  "inputs_checked": 10490,
+  "instructions": 5,
+  "item": "Exact q56 native ON arm with spec750 and rule32",
+  "level1_closed": false,
+  "limitations": [
+    "This arm changes the root facts and switch scope. It does not isolate one rule.",
+    "Stack, shelf, and given_up remain unavailable.",
+    "The native compiler uses the approved CPU-budgeted fallback. MCP verifies the fixtures and exact statement."
+  ],
+  "loops": 1,
+  "machine_after": {
+    "cpu_count": 64,
+    "cpu_ticks": "cpu  121939873 414909313 48284846 6111877310 2921680 5749500 2794684 0 0 0",
+    "load": [
+      7.5263671875,
+      7.044921875,
+      6.61865234375
+    ],
+    "memory": {
+      "MemAvailable": "129807528 kB",
+      "SwapFree": "5804 kB",
+      "SwapTotal": "8388604 kB"
+    }
+  },
+  "machine_before": {
+    "cpu_count": 64,
+    "cpu_ticks": "cpu  121778889 414764908 48240884 6108918001 2920627 5744722 2792002 0 0 0",
+    "load": [
+      5.9248046875,
+      7.81787109375,
+      6.5849609375
+    ],
+    "memory": {
+      "MemAvailable": "123921348 kB",
+      "SwapFree": "5804 kB",
+      "SwapTotal": "8388604 kB"
+    }
+  },
+  "mcp_results": {
+    "archive": "/home/cody/zesislar-archive/sha256/f9/f98153c34b511e184a12bd3a4d4db8451028b67679b2a15197348ddda728f234",
+    "bytes": 169868,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/mcp-results.json",
+    "sha256": "f98153c34b511e184a12bd3a4d4db8451028b67679b2a15197348ddda728f234"
+  },
+  "measurement_root": "7f5d5f6151c761f5bb2c7e0284e8dc3bd2e31c51",
+  "named_qed_failure": "Attempt to save an incomplete proof",
+  "native_primary_attempts": 1,
+  "new_manual_machine_proof_lines": 0,
+  "new_production_rules": 0,
+  "outcome": "native-residual",
+  "primary_body": "try zesu_block.",
+  "prior_failed_dependency_attempt": {
+    "archive": "/home/cody/zesislar-archive/sha256/52/52c40a8df791210850b10947753dbeb9bf8c8f201f257a082a3b6574aa01379b",
+    "bytes": 3410,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-001/dependency-result.json",
+    "sha256": "52c40a8df791210850b10947753dbeb9bf8c8f201f257a082a3b6574aa01379b"
+  },
+  "raw_result": {
+    "archive": "/home/cody/zesislar-archive/sha256/41/41e691f626cc2923bebdcc3f5c462b0c02051ceb8620a5bc34d29f2df8468900",
+    "bytes": 2145,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/result.json",
+    "sha256": "41e691f626cc2923bebdcc3f5c462b0c02051ceb8620a5bc34d29f2df8468900"
+  },
+  "scope": {
+    "approved_switches": 23,
+    "audit": {
+      "archive": "/home/cody/zesislar-archive/sha256/8a/8a78a56fece1a1f57350dc7081fbbdae3def1e4f87ef83a1ed650d2cfce5ac18",
+      "bytes": 3220,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/preflight-audit.json",
+      "sha256": "8a78a56fece1a1f57350dc7081fbbdae3def1e4f87ef83a1ed650d2cfce5ac18"
+    },
+    "historical_classes_active": [],
+    "v2_selector_active": true
+  },
+  "source": {
+    "archive": "/home/cody/zesislar-archive/sha256/56/567488abe6af2aa912b786b93938a64a496a422c0892e9b50726962aea55ad6f",
+    "bytes": 6915,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-on/_build/q56-on-002/Boundary.v",
+    "sha256": "567488abe6af2aa912b786b93938a64a496a422c0892e9b50726962aea55ad6f"
+  },
+  "spec_classification": {
+    "earlier_existential": "The terminal capture does not establish an earlier existential.",
+    "existing_registration": "The expanded bound/lookup continuation does not match.",
+    "explicit_helper_lambda": "The helper proves the expanded continuation.",
+    "production_defect": "Not established by this capture."
+  },
+  "spec_shape_audit": {
+    "archive": "/home/cody/zesislar-archive/sha256/d1/d1a99450b11f313c8dc65ff9b8e42828f47aaabd9814780235c8c4442db7001e",
+    "bytes": 93098,
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b/build/stock-zisk/spec-b-registration/q56-on-shape-audit/REPORT.json",
+    "sha256": "d1a99450b11f313c8dc65ff9b8e42828f47aaabd9814780235c8c4442db7001e"
+  },
+  "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+  "termination_proved": false,
+  "watcher_duration_seconds_rounded": 519,
+  "wrapper_exit": 0,
+  "wrapper_exit_is_closure": false
+}
