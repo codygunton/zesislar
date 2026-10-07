@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
+Require Import ZesuSsz.Compliance.DecodeItemRawOutputFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
