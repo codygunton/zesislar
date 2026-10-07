@@ -1,0 +1,20 @@
+{
+  "operation": "Normalize CRLF to LF in committed CSV copies before the gate.",
+  "frozen_outputs_unchanged": true,
+  "tables": {
+    "NATIVE.csv": {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/NATIVE.csv",
+      "original_sha256": "6b962250b75117bcdea91bdbac028373112d5f0515f65e061e6a103d80ea5763",
+      "committed_sha256": "156ae234b060ce8d965e0d19df4e02ef82f2790a04b2e4c0a20498761508eaf3",
+      "rows": 24,
+      "exact_parsed_row_equality": true
+    },
+    "ADAPTER.csv": {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/ADAPTER.csv",
+      "original_sha256": "5d37093ab8620aa19b0426848c307fc8e697bad491c9c90d1836e497262f4450",
+      "committed_sha256": "8cb873f7d0d977dfa4c0b5706c7424e1a19809c808f9bbccdbda52a87c1a2510",
+      "rows": 13,
+      "exact_parsed_row_equality": true
+    }
+  }
+}

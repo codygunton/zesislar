@@ -1,0 +1,2184 @@
+{
+  "root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "result_sha256": "a6d24a18e615b462fac6b86a6040cd07468803f6a76b907ffcec02d6d2acc15f",
+  "seal_sha256": "6b79b7fd57159d284d99ea6b68ece2485d4a3e8943fc02ed22b69b14b1c33c49",
+  "recipe_sha256": "dd71bf3921d7ce6d9c88ff0c82949ae46cbb3250cb47fb672fc61f5c6e8037ec",
+  "sealed_files": 9554,
+  "sealed_inputs_unchanged": true,
+  "native_count": 24,
+  "adapter_count": 13,
+  "native_closed": 7,
+  "adapters_closed": 3,
+  "residual_results": 19,
+  "cpu_stops": 8,
+  "memory_stops": 0,
+  "active_records": 130,
+  "level1_closed": false,
+  "elapsed_seconds": 10282.775218216935,
+  "total_compiler_cpu_seconds": 18769.699591,
+  "peak_arm_rss_kib": 6098884,
+  "scope": "Retained active states and exact native boundary or named adapter certificates. No Level 1 closure.",
+  "auxiliary_groups": "Stack, shelf, and given_up groups remain unavailable.",
+  "policy6": "Native primaries use tools/coqc_scratch.sh with CPU limits and no wall limit.",
+  "configuration": "23 approved switches plus SwitchDispatch and PureFactExistential; 15 root hint modules; 17 historical switches OFF; rule34 ON.",
+  "rows": [
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "theorem": "DesignedBoundary_800d6960",
+      "qed_attempt": "DesignedBoundary_800d6960",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "f84ef942d2300ed6a54a96cdd91f1e4b869343ca4eeecc49d16244ddb2a27324",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "primary_source_sha256": "89ce30dad91d30091887698578bbd9a276a78b7b00a045d5f0abb4dc8f9e8583",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 9,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6960/active-009.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 27.875791,
+      "peak_rss_kib": 1494644,
+      "wall_seconds": 30.437069409061223,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6960): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "f809913c86d75a8bca46f2d2e50240f39c46a089f9ce142efe91eef564f83fc9",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:23:31.967691+00:00",
+        "used_estimate_gib": 85.81998062133789,
+        "admission_limit": 2,
+        "other_live_primaries": 0
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6960/primary/evidence.json",
+      "evidence_sha256": "a05e81e820c0c395818a13a41ce6febcab5c94a87a8c5e6837abf5b7960f885d"
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "theorem": "DesignedBoundary_800d6974",
+      "qed_attempt": "DesignedBoundary_800d6974",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "ec0122d83ae8cd3a8828f9eb76f37654be79e9ab523f54c537c2373a869a3f01",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "primary_source_sha256": "e2ffa185faeafac7a76e525b50a073bd3901da1de3b11ad5767afcd9349fd943",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 8,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6974/active-008.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 392.361778,
+      "peak_rss_kib": 2350932,
+      "wall_seconds": 396.40042997105047,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6974): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "03771953f53fa1d9016e6e0848c11f1e37a0984118484727ffd90b646b054f62",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:23:31.968077+00:00",
+        "used_estimate_gib": 85.81998062133789,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6974/primary/evidence.json",
+      "evidence_sha256": "57401f039574c516a718a32b4b542ae517ba548629bebcc449391b05ff975f46"
+    },
+    {
+      "id": "block_0x800d697c",
+      "kind": "native",
+      "entry_pc": "0x800d697c",
+      "theorem": "DesignedBoundary_800d697c",
+      "qed_attempt": "DesignedBoundary_800d697c",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "7ddc9e538513c527d84e1fb599c08afbf074674e57d67583daa6dcceeb369577",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "primary_source_sha256": "733d84afcadb477073de6ba570984c0f169ae6c474cfac977a92068b5f619268",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.85314,
+      "peak_rss_kib": 3438072,
+      "wall_seconds": 1205.0601012089755,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d697c/primary/compiler.log",
+      "log_sha256": "ae22ceefd0ae884525ff2cf728f51806b18cd121f83d2fd5e183605c22271768",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:24:03.532030+00:00",
+        "used_estimate_gib": 87.18882751464844,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d697c/primary/evidence.json",
+      "evidence_sha256": "c7482462941fae405f8d6eaad312a44e13cdc3104bb1e8d8386832692803b7f7"
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "entry_pc": "0x800d698c",
+      "theorem": "DesignedBoundary_800d698c",
+      "qed_attempt": "DesignedBoundary_800d698c",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "697291bd3000b83cbf5894645d2082cf8471d9e6ba51e08d2a2645fb8cf98d59",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "primary_source_sha256": "1400a9a9bf23cdd1bd56552efc0bd9fc0b6905670ec948446f5d8ff2f3378731",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 3,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d698c/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d698c/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d698c/active-003.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 198.688592,
+      "peak_rss_kib": 2624080,
+      "wall_seconds": 201.02080650487915,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d698c): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d698c/primary/compiler.log",
+      "log_sha256": "f91590699eb1c44914e166d8a8ed4b9cf00d8167186c165e2ab49274410ed2f8",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 12582912,
+        "completion_entry": "0x800d698c",
+        "optimization_debt": "issue#10"
+      },
+      "admission": {
+        "utc": "2026-10-07T18:30:09.529767+00:00",
+        "used_estimate_gib": 90.97788619995117,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d698c/primary/evidence.json",
+      "evidence_sha256": "dba2dcab66567b64fc725020cbd1414abb84e4d6e53b81d870d6c2abfa2d4642"
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "entry_pc": "0x800d69a4",
+      "theorem": "DesignedBoundary_800d69a4",
+      "qed_attempt": "DesignedBoundary_800d69a4",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "8e51d7752f6bd51e85b383a657c0506478cb0d8bfb10ff0dcdc2af01617cb916",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "primary_source_sha256": "28ed604403088b7afc4210064f047ae1818ffc4c21c5f7c0ffc1bdc9f8c3c120",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 1,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d69a4/active-001.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 6.814547,
+      "peak_rss_kib": 1082864,
+      "wall_seconds": 8.326365751912817,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d69a4): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69a4/primary/compiler.log",
+      "log_sha256": "27bc698cd503ca4162f5cd7c657121e4f0480950d047abdb27e463a9ffde72fc",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:33:31.594334+00:00",
+        "used_estimate_gib": 91.26924514770508,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69a4/primary/evidence.json",
+      "evidence_sha256": "2fc6fcb0f68d78f6d4be8243e2a4a5652c97c77657252ae16d4a5871455152c5"
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "entry_pc": "0x800d69b0",
+      "theorem": "DesignedBoundary_800d69b0",
+      "qed_attempt": "DesignedBoundary_800d69b0",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "a78935a9276026abf8e85188e84a1348500129b02b2a0b58edcbc1fe40cd61c9",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "primary_source_sha256": "1bba461c456060d476ece4aebebcb697df3004195ca8f387633e61e991c4b848",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 3,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d69b0/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d69b0/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d69b0/active-003.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 399.791953,
+      "peak_rss_kib": 4253464,
+      "wall_seconds": 1071.3187209360767,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d69b0): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69b0/primary/compiler.log",
+      "log_sha256": "a26c361ff26adbb6f6aaf50142e67850d19848e70849ee2b69053e4ff9f554ad",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:33:40.931555+00:00",
+        "used_estimate_gib": 89.4311637878418,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69b0/primary/evidence.json",
+      "evidence_sha256": "eb1359d7b077c2b90f42ccfb29d8dd175ceaa4f911163874596d755c7e419500"
+    },
+    {
+      "id": "block_0x800d69d8",
+      "kind": "native",
+      "entry_pc": "0x800d69d8",
+      "theorem": "DesignedBoundary_800d69d8",
+      "qed_attempt": "DesignedBoundary_800d69d8",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "fa96108863e27692872ec1a6e54d02a39a81667315e02a73a6a31db807519541",
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "primary_source_sha256": "54760911f46536745ff0582dbbfabc56a0a7417e4a32597234d0442262cb19a1",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d69d8"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69d8/primary/Boundary.vo",
+        "sha256": "63588572e235ea4d73f872f6321179446214a83082aa26ca1585f71db121eb36"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 13.752562000000001,
+      "peak_rss_kib": 1167112,
+      "wall_seconds": 55.630822997074574,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69d8/primary/compiler.log",
+      "log_sha256": "3845161472aeaf0ebdfbda16f61f482aa90716e5dcc800af50fa53c4cb7b6599",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:44:09.560611+00:00",
+        "used_estimate_gib": 96.0616340637207,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69d8/primary/evidence.json",
+      "evidence_sha256": "f8a07faf44babfd4ea29c0c3bf0935a67dfce13125df954c5a443d895294beb1"
+    },
+    {
+      "id": "block_0x800d69e0",
+      "kind": "native",
+      "entry_pc": "0x800d69e0",
+      "theorem": "DesignedBoundary_800d69e0",
+      "qed_attempt": "DesignedBoundary_800d69e0",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "5f03efa3028d87d5abc1df598b001ddccffb8dde92ffb07cd3e28ab117bd41a6",
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "primary_source_sha256": "b873d34a38d1a42d60409ecef560538a7bc1780274360699335bd12bc3d0d575",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d69e0"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69e0/primary/Boundary.vo",
+        "sha256": "abf4ae0058ce1956b2e2575721146266d606f1964493af9cd67770c020ef22aa"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 16.406175,
+      "peak_rss_kib": 1275772,
+      "wall_seconds": 17.26708883815445,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69e0/primary/compiler.log",
+      "log_sha256": "54e8f6568db8930320fe8ea75db7706f454ec52e31448fb183e1abf573011b92",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:45:06.173485+00:00",
+        "used_estimate_gib": 97.92368698120117,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69e0/primary/evidence.json",
+      "evidence_sha256": "0743f91e1dbc393489e6f69566726c6644924de3dd6d43ecb2f7c3392511f775"
+    },
+    {
+      "id": "block_0x800d69e8",
+      "kind": "native",
+      "entry_pc": "0x800d69e8",
+      "theorem": "DesignedBoundary_800d69e8",
+      "qed_attempt": "DesignedBoundary_800d69e8",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "2946210d5d1d7a4b98312b991cb4a3bd98ce15f0c94fdd864efba94d80126cf7",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "primary_source_sha256": "f8dd074c65d7c570ca2eb122a64336dea141bd3cb8f9b083a721e2df01419af2",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.8934089999998,
+      "peak_rss_kib": 3688324,
+      "wall_seconds": 1205.1833950770088,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69e8/primary/compiler.log",
+      "log_sha256": "fff166a9ff32d8b72840a44c6290f071982c3561f49ba4947f36472094adcf9d",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:45:24.412040+00:00",
+        "used_estimate_gib": 95.68188858032227,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69e8/primary/evidence.json",
+      "evidence_sha256": "49a83d60891201369420ae45c32fd4d933ff97329c7679087c9a4e2b4564ea0a"
+    },
+    {
+      "id": "block_0x800d6a00",
+      "kind": "native",
+      "entry_pc": "0x800d6a00",
+      "theorem": "DesignedBoundary_800d6a00",
+      "qed_attempt": "DesignedBoundary_800d6a00",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "3e2aafaf4b38713c13e2e42299d883192b75423c7aaf9f8f64774c077d9ab130",
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "primary_source_sha256": "18d46de88c1e6698cf190886e73fda16d13fba1a21464d5b8961998ba3e69d66",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a00"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a00/primary/Boundary.vo",
+        "sha256": "2bdc5e816175dba5cf60125dcdbb931ce4d2923c0cf37ad339a3e12e0a353e27"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 16.025665000000004,
+      "peak_rss_kib": 1280128,
+      "wall_seconds": 17.583954292116687,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a00/primary/compiler.log",
+      "log_sha256": "77e7c9d43db0df93bb61d85241c8364b23215ac7228622159fbbd1cf286fad65",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:51:33.256733+00:00",
+        "used_estimate_gib": 93.06581115722656,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a00/primary/evidence.json",
+      "evidence_sha256": "22a58ac914d554293820534ddca4a65c5e43bfb190997f9882722d879591e4a9"
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "entry_pc": "0x800d6a08",
+      "theorem": "DesignedBoundary_800d6a08",
+      "qed_attempt": "DesignedBoundary_800d6a08",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "ccaeb2de502df3bdf4c1e8ee705067eada2be549b8b3364d13ea11ab62edf31e",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "primary_source_sha256": "1c2e24c311a9abbb5077882c5f71b064ac99a06981ea5ad4e77a4956d3f788d6",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 5,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a08/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a08/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a08/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a08/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a08/active-005.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 17.461704999999995,
+      "peak_rss_kib": 1224188,
+      "wall_seconds": 19.10378317395225,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6a08): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a08/primary/compiler.log",
+      "log_sha256": "67e221cbfda15960e4fe7606724b5cc185970b4b013c466bfcd4ae4aced60c09",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:51:51.853043+00:00",
+        "used_estimate_gib": 96.29430389404297,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a08/primary/evidence.json",
+      "evidence_sha256": "6e7e6492cbf595c8c73626e67772312896474431a9a10f1bdfbf425cdf10e5ba"
+    },
+    {
+      "id": "block_0x800d6a14",
+      "kind": "native",
+      "entry_pc": "0x800d6a14",
+      "theorem": "DesignedBoundary_800d6a14",
+      "qed_attempt": "DesignedBoundary_800d6a14",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "3e869d290c2b711e595ec5cda32576f058d7ff9b007e58007872cf0608de74fd",
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "primary_source_sha256": "1879b116e47df7ecafd41a3c853fa40d78273f20512215d1460295da4b6a1cbc",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a14"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a14/primary/Boundary.vo",
+        "sha256": "5a7a03713282c98b59c0cd515f4887195a864876789bfb98d1440f0223e8f544"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 5.454383,
+      "peak_rss_kib": 1118556,
+      "wall_seconds": 7.070449121063575,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a14/primary/compiler.log",
+      "log_sha256": "6399928bccaa06fb75323097cff1ea774dff9a8b15ed480621e4f6b6d1c1a7ed",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T18:52:11.946439+00:00",
+        "used_estimate_gib": 97.24274444580078,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a14/primary/evidence.json",
+      "evidence_sha256": "ecf3dd09c61a10439d89e74073fe32dc2cb715dad3b5bb4011fe69ecf7f20012"
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "theorem": "DesignedBoundary_800d6a24",
+      "qed_attempt": "DesignedBoundary_800d6a24",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "9ff72ec9a68817c3f4d7259519cda86d6d0fc9ee1b60b1c3720d74b1104539d9",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "primary_source_sha256": "8eff75607e55754b0e9f4f1bce5b10d82346284f565423ebe345f77f9ef8eeba",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 12,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-009.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-010.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-011.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a24/active-012.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1421.685252,
+      "peak_rss_kib": 3129248,
+      "wall_seconds": 1427.9699889670592,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6a24): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "e7e7e4446c8ddf453e6858be07a4b6ebb8804adbbf0f23ec65facc14e499d5ce",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6a24",
+        "optimization_debt": "issue#10"
+      },
+      "admission": {
+        "utc": "2026-10-07T18:52:20.000508+00:00",
+        "used_estimate_gib": 97.14885330200195,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a24/primary/evidence.json",
+      "evidence_sha256": "975dd6d116e2783ae5dd9d1d104cef8c734a2e32c839e1a65dff73b10a3d5990"
+    },
+    {
+      "id": "block_0x800d6a38",
+      "kind": "native",
+      "entry_pc": "0x800d6a38",
+      "theorem": "DesignedBoundary_800d6a38",
+      "qed_attempt": "DesignedBoundary_800d6a38",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "bf331a6cfc83e14190fe4374abbaf750a959428f4a1a508528f8e31d085d9fc4",
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "primary_source_sha256": "7f103fa80970c314c11bef6c33908f5febec3003c033ac7ca01a05b3077718a9",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 1,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a38/active-001.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 27.970161,
+      "peak_rss_kib": 1211848,
+      "wall_seconds": 29.633782726014033,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6a38): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a38/primary/compiler.log",
+      "log_sha256": "b140725a1bd117c9682f3644a53fe1611f16608eb8da37d3ccff5cb3b65ff5eb",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:05:30.611697+00:00",
+        "used_estimate_gib": 97.06359100341797,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a38/primary/evidence.json",
+      "evidence_sha256": "ab4284bb93d6810f268432753414b33d023cdbb6299ccf66d201a39ad3d1d04d"
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "entry_pc": "0x800d6a40",
+      "theorem": "DesignedBoundary_800d6a40",
+      "qed_attempt": "DesignedBoundary_800d6a40",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "109252af7ef5bc1d6d721455a94a7ea403dc1db9179ad803c236004f687948aa",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "primary_source_sha256": "8980c729a46a3a525044b445959b31452a1c46f04e4f2a0d527cb9ee2d087c8e",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 3,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a40/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a40/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a40/active-003.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 459.656956,
+      "peak_rss_kib": 4261632,
+      "wall_seconds": 462.83270902885124,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6a40): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a40/primary/compiler.log",
+      "log_sha256": "753f552e0af0b073dc0d3ac414b39af0ae2fbd5f214b7b1a382b1a3dfd4815e9",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:06:01.259547+00:00",
+        "used_estimate_gib": 96.19329452514648,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a40/primary/evidence.json",
+      "evidence_sha256": "92b928f0eacd7624b452766942eb16d9388cacb93c9aca6c1f84aaef6178a88b"
+    },
+    {
+      "id": "block_0x800d6a64",
+      "kind": "native",
+      "entry_pc": "0x800d6a64",
+      "theorem": "DesignedBoundary_800d6a64",
+      "qed_attempt": "DesignedBoundary_800d6a64",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "74df79716cc3de8490ba52fb4703c523fdd5ced9162bc4e6b1749b6cbe2e46fd",
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "primary_source_sha256": "dd6de59b9c6979f3a17532153ee597f01e34a9f5740e3273181cab2f0ee8ecb1",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a64"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a64/primary/Boundary.vo",
+        "sha256": "4d0677750c1e88e1cba48f4ae35d93e44d5c521f0ff88fea1dbd7b7de7806736"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 18.052450999999998,
+      "peak_rss_kib": 1277824,
+      "wall_seconds": 202.39357113908045,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a64/primary/compiler.log",
+      "log_sha256": "4554ec01a5f38fcb4b76bd045853f0dab9dd01879a53c6b2050078328f20961f",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:13:45.080602+00:00",
+        "used_estimate_gib": 102.9826889038086,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a64/primary/evidence.json",
+      "evidence_sha256": "2f4b1a7d60e1ac60bb84dd4d3e6ff3d4f471848eeb5f94c372271f984eb55ea5"
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "kind": "native",
+      "entry_pc": "0x800d6a6c",
+      "theorem": "DesignedBoundary_800d6a6c",
+      "qed_attempt": "DesignedBoundary_800d6a6c",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "de58a15f6f6ac7522ac4b1cad386d7dcd2bec7e7346ae966bea1a86e31795d50",
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "primary_source_sha256": "198e76e2fdb089be8ea65f55a5d468407bf0cb4a046da2506ba20c545dec4a8e",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a6c"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a6c/primary/Boundary.vo",
+        "sha256": "3f485be85aff9f7c314c7fc52b6898c3e3c03ef1dc9b39b550fc3dfdb71b3a23"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 30.163479,
+      "peak_rss_kib": 1384552,
+      "wall_seconds": 73.29952858993784,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a6c/primary/compiler.log",
+      "log_sha256": "d871e4d6b2c939568bfdd7c78e2a47ef5955324ef58e388d96aeb1fd6e1d0d5b",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:16:08.991409+00:00",
+        "used_estimate_gib": 106.8713493347168,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a6c/primary/evidence.json",
+      "evidence_sha256": "67321e7ddeb473f487aad651d5b1cc213bd7bbbf6f5b41e8ebc7b8531b308bf9"
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "entry_pc": "0x800d6a78",
+      "theorem": "DesignedBoundary_800d6a78",
+      "qed_attempt": "DesignedBoundary_800d6a78",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "3e8cad20accde079e0fabd02578ba967d49a61216e69334e4f681f7793c574ad",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "primary_source_sha256": "37049f068380864578ba0fa13bdf27bc20eb374a227cfd9358de376b78742bbf",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 3,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a78/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a78/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6a78/active-003.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 598.740828,
+      "peak_rss_kib": 4802360,
+      "wall_seconds": 603.0073331738822,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6a78): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a78/primary/compiler.log",
+      "log_sha256": "c0b63027dd440425c948a2fd3504fda1761dd37288b0762396777dce8fe09219",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:17:08.543910+00:00",
+        "used_estimate_gib": 99.44316101074219,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a78/primary/evidence.json",
+      "evidence_sha256": "13e5abf8fa3741b107e61e2627847c3b2511a6f38530b0e2730ea922b16cbb14"
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "entry_pc": "0x800d6aa8",
+      "theorem": "DesignedBoundary_800d6aa8",
+      "qed_attempt": "DesignedBoundary_800d6aa8",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "1479c9c37c0d7c6db88126517f05eba864cf30f225c82386a6d9e991c9c655a4",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "primary_source_sha256": "62529978d93a8118eca7150b76649ea7fdb88c9b2f70e9cb8dea9187c7170fd8",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 5,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6aa8/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6aa8/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6aa8/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6aa8/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6aa8/active-005.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 21.173943,
+      "peak_rss_kib": 1226396,
+      "wall_seconds": 22.846764071844518,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6aa8): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6aa8/primary/compiler.log",
+      "log_sha256": "805ba20500b8a976044ff31df1884708dfc056508704e01a275eaa4f1d2f35d5",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:17:23.326937+00:00",
+        "used_estimate_gib": 103.7109375,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6aa8/primary/evidence.json",
+      "evidence_sha256": "d70b58a47ad07ad17f1f4eff68a03033e5fe5bf5a6dd2cb7d93a829ee9c8b286"
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "kind": "native",
+      "entry_pc": "0x800d6ab4",
+      "theorem": "DesignedBoundary_800d6ab4",
+      "qed_attempt": "DesignedBoundary_800d6ab4",
+      "scope": "unproved native designed boundary",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "2849931e4b56495afabd463086aa4e730b70245b3a4dc7f548f86b9ca48efe54",
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "primary_source_sha256": "fa85a5e08d9c28d1185c35a6b0c2189d7a415872b759c781a6b407d171791990",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6ab4"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ab4/primary/Boundary.vo",
+        "sha256": "9a72b896612f2c7420344f20dd6239faab53e50eff9e55b1b4cbd68d91c866f7"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 6.129029999999999,
+      "peak_rss_kib": 1120436,
+      "wall_seconds": 7.841642897110432,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ab4/primary/compiler.log",
+      "log_sha256": "218717bc4062055128d4953cb09b0f386c2e0abbf56af11c726c4eee17e1d377",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:17:47.233496+00:00",
+        "used_estimate_gib": 113.8637809753418,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ab4/primary/evidence.json",
+      "evidence_sha256": "7498de224ec04d5df334f32c6e00cf83bc051a1e17846efd35a768a5471dcadc"
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "theorem": "DesignedBoundary_800d6ac4",
+      "qed_attempt": "DesignedBoundary_800d6ac4",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "a6fd5d0ae644233b0bbdceadfbe89e782dba400c2c4a42b8a28647042dc76784",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "primary_source_sha256": "85630b1b98649b0436f6d3464f0465dee8cc379f0e18381e2e8906d120565dcd",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 12,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-009.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-010.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-011.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ac4/active-012.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1448.783327,
+      "peak_rss_kib": 3149592,
+      "wall_seconds": 1455.8293671619613,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "544e3f2cbf3ed18e488dfdacdc9d2e7b668eecf8a6789d8703a11a6a923e1a68",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6ac4",
+        "optimization_debt": "issue#10"
+      },
+      "admission": {
+        "utc": "2026-10-07T19:17:56.165456+00:00",
+        "used_estimate_gib": 105.18627166748047,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ac4/primary/evidence.json",
+      "evidence_sha256": "43c3f92a5f1e93af68c036e8e3c7aafea489716d788cd3310181aa826a7e1d05"
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "kind": "native",
+      "entry_pc": "0x800d6ad8",
+      "theorem": "DesignedBoundary_800d6ad8",
+      "qed_attempt": "DesignedBoundary_800d6ad8",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "22f917b4a8cfa69773d672ae326c7c20011c55bacfe1956c34a1dcd0350c4ee8",
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "primary_source_sha256": "ba8d3b9738ab6f5d373f1305d005d173ebbedb67369cb0e35eaf89826ffd4f75",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 1,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ad8/active-001.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 60.15753600000001,
+      "peak_rss_kib": 1471976,
+      "wall_seconds": 61.92381571000442,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6ad8): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ad8/primary/compiler.log",
+      "log_sha256": "14b5ac138a9aa6d90e8e3c0939574fadf6fa966db01fa08d87ea53f2f5c6fffb",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:27:12.668270+00:00",
+        "used_estimate_gib": 88.07732772827148,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ad8/primary/evidence.json",
+      "evidence_sha256": "aa734a84da13a4d1ae90769a3d283f9566c9860c95034bad25a4ba1e68ac3838"
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "kind": "native",
+      "entry_pc": "0x800d6ae0",
+      "theorem": "DesignedBoundary_800d6ae0",
+      "qed_attempt": "DesignedBoundary_800d6ae0",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "f1ea4830af8e26bae492fb8eb8e52f376b26633e5fd601c40532f0ecc57669f4",
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "primary_source_sha256": "bbad591e2033fbba9272b9d52c60ee4ee1bcafc57d2fbfcffefb8ded3914fc8f",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 1,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6ae0/active-001.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 605.2377240000001,
+      "peak_rss_kib": 6098884,
+      "wall_seconds": 608.974571398925,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6ae0): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ae0/primary/compiler.log",
+      "log_sha256": "4b583281528879208d7f20a870d3eb1247237b200f8dd2842aaa31a5012664c5",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:28:15.600559+00:00",
+        "used_estimate_gib": 88.64572525024414,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ae0/primary/evidence.json",
+      "evidence_sha256": "44035c0295b197514325ac7e5ad0b82276f109ca6daa64d466f85fcb9916d1c6"
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "entry_pc": "0x800d6b08",
+      "theorem": "DesignedBoundary_800d6b08",
+      "qed_attempt": "DesignedBoundary_800d6b08",
+      "scope": "unproved native designed boundary",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "d9a342414acda202b50999aef92de10f5d0bbd5da1f79a78995d29ed5982e7c0",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "primary_source_sha256": "ff8d9a681d566b402572d941e03b1f4a8d1d85121259f03ecd846086638e340c",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "active_count": 3,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6b08/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6b08/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d6b08/active-003.json"
+      ],
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 547.237311,
+      "peak_rss_kib": 4628376,
+      "wall_seconds": 553.495826538885,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof DesignedBoundary_800d6b08): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6b08/primary/compiler.log",
+      "log_sha256": "88e64ac99dca860843e68f9bb1797f5c0066a537050ae8a43aa8472de8c7a6e3",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:38:25.586609+00:00",
+        "used_estimate_gib": 89.44221496582031,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6b08/primary/evidence.json",
+      "evidence_sha256": "b6d49496ace1fc075c8a4839eba5172a1543397db80e4c7fe004a7b4b5a8342a"
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "theorem": "decodeItemJoin698cFrom697c_automatic",
+      "qed_attempt": "decodeItemJoin698cFrom697c_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "a0035987f9de63207abbb446e07d8147b06efe255f846b2e6c84b4b48599724b",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "primary_source_sha256": "878c6e03a827bdcc6f721abe808300f156ed081a4ba85e6fb25024ee46177294",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": 10,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-009.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom697c/active-010.json"
+      ],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 595.37359,
+      "peak_rss_kib": 3313692,
+      "wall_seconds": 599.541416920023,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof decodeItemJoin698cFrom697c_automatic): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "9872abb18cad09d2e624094bafb4de0d54baf2cc277ecc226841aca8935090ec",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:42:13.034589+00:00",
+        "used_estimate_gib": 89.56217575073242,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin698cFrom697c/primary/evidence.json",
+      "evidence_sha256": "34626fc3a65e24a2e068e6dc3427c760d7edff54842f6fcfb93a853bf27044fd"
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "theorem": "decodeItemJoin698cFrom69e8_automatic",
+      "qed_attempt": "decodeItemJoin698cFrom69e8_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "d1700416d74111f14d1a097dde1121f650ae310464194a751219ded233390530",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "primary_source_sha256": "5257f5da90c267d8968acd4777891bf815afee9c40fbc5b8b0d9a823d020ef70",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": 10,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-009.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin698cFrom69e8/active-010.json"
+      ],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 642.499409,
+      "peak_rss_kib": 3596240,
+      "wall_seconds": 652.049282483058,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof decodeItemJoin698cFrom69e8_automatic): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "612041472459b9a79a80aad6fca9e71e9d96423679a713d6f670280a0b74a8fc",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:47:40.174208+00:00",
+        "used_estimate_gib": 104.22346878051758,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin698cFrom69e8/primary/evidence.json",
+      "evidence_sha256": "3ee8684f100865ab8ea89461624c9605cd5d3623a4456cd6f153cc0208dc38ff"
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a14",
+      "theorem": "decodeItemJoin6a24From6a14_automatic",
+      "qed_attempt": "decodeItemJoin6a24From6a14_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "7a66b7272d952c603ce43b22ec630bb1359fb6923fa510a745f0771ba0d5c99f",
+      "statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "primary_source_sha256": "a7935850cb75e6567b0578a96863e4562d7e70c7f86e39373c55a017570df13b",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions decodeItemJoin6a24From6a14_automatic"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6a24From6a14/primary/Boundary.vo",
+        "sha256": "5b15cf6d8067617e3c68aaf1d726ab24100614ec739ae83c5ba09200a9d9f259"
+      },
+      "inherited_debts": {},
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 6.519471,
+      "peak_rss_kib": 1100328,
+      "wall_seconds": 8.111747426912189,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6a24From6a14/primary/compiler.log",
+      "log_sha256": "6bdb14cecc8a7bb874d18458b78e4e81166e7d054831862432a5f8b27c4c3a19",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:52:13.624997+00:00",
+        "used_estimate_gib": 94.94050979614258,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6a24From6a14/primary/evidence.json",
+      "evidence_sha256": "4bce23c2bed7fd00384a594282faaeaf4e383078b30474aebbc6e4d5a480672b"
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "theorem": "decodeItemJoin6a24Backedge_automatic",
+      "qed_attempt": "decodeItemJoin6a24Backedge_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "9eb5d82ad7464dc5eb8bca284ee023dd95c4b9d36dcd9ca349034829c82ee1a7",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "primary_source_sha256": "16632e67c11a5d5705ca3efca4271ceb21acc2ed5109d29c16d75af74a69dc66",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": 20,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-009.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-010.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-011.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-012.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-013.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-014.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-015.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-016.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-017.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-018.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-019.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6a24Backedge/active-020.json"
+      ],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 769.4868140000001,
+      "peak_rss_kib": 3080016,
+      "wall_seconds": 774.3787105130032,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof decodeItemJoin6a24Backedge_automatic): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "d00a88c7e30f61d57fad109437091a968113b3c951f08ad843f145998632e83b",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6a24",
+        "optimization_debt": "issue#10"
+      },
+      "admission": {
+        "utc": "2026-10-07T19:52:22.784386+00:00",
+        "used_estimate_gib": 94.94353866577148,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6a24Backedge/primary/evidence.json",
+      "evidence_sha256": "d75b77be3f5983856d68e95fc87e0e617c9bfffe8d3d468c19069d1dbe8afe19"
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ab4",
+      "theorem": "decodeItemJoin6ac4From6ab4_automatic",
+      "qed_attempt": "decodeItemJoin6ac4From6ab4_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "c682854e4e14008180e851766e7d66943c7cbb49dfa8b934f227b983a4ae1da9",
+      "statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "primary_source_sha256": "049f4c61e71f9944ddf3ddf8605e76e2f1a26647ccb5617023539b15fb1f1ff4",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions decodeItemJoin6ac4From6ab4_automatic"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ac4From6ab4/primary/Boundary.vo",
+        "sha256": "1d9547795e8fb691ab77fa49c443aad775ed4d5aa54afbf1210d5138423ffc82"
+      },
+      "inherited_debts": {},
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 5.457735999999999,
+      "peak_rss_kib": 1104220,
+      "wall_seconds": 7.074788911035284,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ac4From6ab4/primary/compiler.log",
+      "log_sha256": "9a94c21120c4febe6727780b4437023913653db66267b5c7024c1aabc304c7b6",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T19:58:33.277446+00:00",
+        "used_estimate_gib": 91.91447448730469,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ac4From6ab4/primary/evidence.json",
+      "evidence_sha256": "758956485d6b4ea956d164c78b1af2720e7f7766cf143765b7223e9ad724057a"
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "theorem": "decodeItemJoin6ac4Backedge_automatic",
+      "qed_attempt": "decodeItemJoin6ac4Backedge_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "residual",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "0837c4f2cf37ea1bf3734db0c9110052600eb9667849fc8c112a5e7f5b67ef20",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "primary_source_sha256": "b021d50624d4083fedd5ffae926b56c52859ea3995011505d544e773d8ed515c",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": 20,
+      "captures": [
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-001.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-002.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-003.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-004.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-005.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-006.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-007.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-008.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-009.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-010.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-011.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-012.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-013.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-014.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-015.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-016.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-017.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-018.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-019.json",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/decodeItemJoin6ac4Backedge/active-020.json"
+      ],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 804.1656029999999,
+      "peak_rss_kib": 2967528,
+      "wall_seconds": 808.8615510100499,
+      "exit_code": 1,
+      "limit": null,
+      "first_error": " (in proof decodeItemJoin6ac4Backedge_automatic): Attempt to save an incomplete proof",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "a8ee88fd67a125879f0e9fb5dbd2a5920e7c473a371a71d1770aec8c3458c7ed",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 2400,
+        "wall_seconds": null,
+        "memory_kib": 6291456,
+        "completion_entry": "0x800d6ac4",
+        "optimization_debt": "issue#10"
+      },
+      "admission": {
+        "utc": "2026-10-07T19:58:41.365450+00:00",
+        "used_estimate_gib": 90.88909530639648,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ac4Backedge/primary/evidence.json",
+      "evidence_sha256": "94701478b08ff479de136e19e4ee0422154cc48af51c3eb2085cc5a0e605167c"
+    },
+    {
+      "id": "decodeItemJoin6ae0From6970",
+      "kind": "adapter",
+      "entry_pc": "0x800d6960",
+      "theorem": "decodeItemJoin6ae0From6970_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6970_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "f6602adff115e470857155134ad545de0bf11689c993d74ca58352aba7a979b6",
+      "statement_sha256": "b9e41c14b74359819751ffb1f792326381a08e7c60bd136105ee0b5271d60e8d",
+      "primary_source_sha256": "b50dbd0c9ad8c5fafb0bf45d2f02ff718e726c1a608e3ef2935306698a1fe0ce",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.890911,
+      "peak_rss_kib": 3053456,
+      "wall_seconds": 1205.591787408106,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6970/primary/compiler.log",
+      "log_sha256": "0d76665c3821ac7a4bd2815330f0cd70e45af9d1b24440b1788f6e94f509fd1d",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:05:18.207239+00:00",
+        "used_estimate_gib": 90.64922714233398,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6970/primary/evidence.json",
+      "evidence_sha256": "95820fa0af1c892fe327acf7e542380ec3f8c630b5886f7c9fe179c1ad5efbf8"
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e0",
+      "theorem": "decodeItemJoin6ae0From69e0_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From69e0_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": true,
+      "outcome": "closed",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "d3a7fbddf73c37d1034674dd66a4cc9971554a9dfac8ab1cc491369edaad835a",
+      "statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "primary_source_sha256": "650859025398ffad05856e6e8010ee0db4d01049719c0a7e7beccda56f8b7d5a",
+      "assumptions": {
+        "verified": true,
+        "assumptions": [],
+        "method": "In-module Print Assumptions decodeItemJoin6ae0From69e0_automatic"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From69e0/primary/Boundary.vo",
+        "sha256": "d6d86f3811ac7cac74ad3bfa801854c33959c8f87ea8a8ccbb332d998ee4e0ab"
+      },
+      "inherited_debts": {},
+      "active_count": 0,
+      "captures": [],
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 7.658136,
+      "peak_rss_kib": 1140476,
+      "wall_seconds": 9.33361402200535,
+      "exit_code": 0,
+      "limit": null,
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From69e0/primary/compiler.log",
+      "log_sha256": "f8014dccf69070242a4d14a2395c8b59adb38d075bf46b179e9ee1bd16f62851",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:12:11.255616+00:00",
+        "used_estimate_gib": 98.45111083984375,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From69e0/primary/evidence.json",
+      "evidence_sha256": "ab0bdfdb16031156b48c6293de54019bcdfd1ba3d4969fb46831d9c09b75a6c2"
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a08",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a08",
+      "theorem": "decodeItemJoin6ae0From6a08_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6a08_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "67278c9be4a6afb7726516d44ab810c2ac68c93409acaf075493470c66af7e28",
+      "statement_sha256": "5ffa808d7f5a94ace32b4e0c9d8f74597089784733e3e18aa286c372f991d10b",
+      "primary_source_sha256": "a4e79d98dcfba76baa3bceebb8c3c198089ef1dfb9426b14afcb46777daf1438",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.8871589999999,
+      "peak_rss_kib": 2578376,
+      "wall_seconds": 1205.3271261309274,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6a08/primary/compiler.log",
+      "log_sha256": "b41b2049bdecfed4675160192deee9dec9dfea714bbb50cb899409df8086a530",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:12:21.603594+00:00",
+        "used_estimate_gib": 102.65858840942383,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6a08/primary/evidence.json",
+      "evidence_sha256": "be1ca235a52e36617a8bbbc7f2bdc5567cc6ffb9edab62d77b76c6e2d4d04215"
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a38",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a38",
+      "theorem": "decodeItemJoin6ae0From6a38_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6a38_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "53b62a8b3e9cb2a0c108e1a7eabe62ef5786e6e830463979335729bf63f45c66",
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "primary_source_sha256": "230c6233552143da972dc503ea3b66e378c078d8d280ea04847faf57108fbdad",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.8226240000001,
+      "peak_rss_kib": 5818360,
+      "wall_seconds": 1205.8042726488784,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6a38/primary/compiler.log",
+      "log_sha256": "615a7c62af18ae1c5ed5b20868acfaa0a0e49ba1f182db7c72a8b1fbc887292a",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:25:24.756095+00:00",
+        "used_estimate_gib": 93.7930908203125,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6a38/primary/evidence.json",
+      "evidence_sha256": "09ae0a8ba03f7ea4fda581aa52d5db8a05771cb358cb6c3fd1775c0e3ec9aa06"
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a6c",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a6c",
+      "theorem": "decodeItemJoin6ae0From6a6c_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6a6c_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "af1659f1f5d3394c783afbb66dcb75a4e20f171eca148b021327ed7296e198fb",
+      "statement_sha256": "38cd7dbcf951f6e7431a555afb219d92884e399b5cfba5cbdb5220fba0064ca8",
+      "primary_source_sha256": "985cec006fd6f302b8850e767770d20e5bfe3491822f3d53a239febee1b3c781",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.834714,
+      "peak_rss_kib": 3194800,
+      "wall_seconds": 1204.9091205070727,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6a6c/primary/compiler.log",
+      "log_sha256": "2131d270f36047b19543aabdbb8de43ba7711ddc335d8e8d6a217ee72d289d03",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:32:28.005232+00:00",
+        "used_estimate_gib": 98.60017395019531,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6a6c/primary/evidence.json",
+      "evidence_sha256": "83654bf6ad04b0f0d78ed75d1f637ff665132106bc68128195f1aaff1342367c"
+    },
+    {
+      "id": "decodeItemJoin6ae0From6aa8",
+      "kind": "adapter",
+      "entry_pc": "0x800d6aa8",
+      "theorem": "decodeItemJoin6ae0From6aa8_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6aa8_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "71dad63ffa54074426f8a0ca7d2bab1d9534924d199d8c75875dd7a98834022f",
+      "statement_sha256": "d8ba332f2867563f9c395c24597238d38841cf83ed88feab6990efeab80cb7af",
+      "primary_source_sha256": "3249efeb33813fd0d1ad679bfebf42eee39f3837e0335f32e58ebede64e7c9f4",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.876465,
+      "peak_rss_kib": 2557864,
+      "wall_seconds": 1668.377952001989,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6aa8/primary/compiler.log",
+      "log_sha256": "2e4e6db2a66b26cf6043160ec5e64e90e1d83ec3f7ada20cb91e8cafd0dd8fee",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:45:31.540269+00:00",
+        "used_estimate_gib": 87.74542999267578,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6aa8/primary/evidence.json",
+      "evidence_sha256": "fb0cffea37fbca981f23c819551477ad85c42b6d48a7f519d7bc75969f346b85"
+    },
+    {
+      "id": "decodeItemJoin6ae0From6ad8",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ad8",
+      "theorem": "decodeItemJoin6ae0From6ad8_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6ad8_automatic",
+      "scope": "named join transfer obligation; no block or Level1 closure inference",
+      "closed": false,
+      "outcome": "cpu-limit",
+      "statement_equal": true,
+      "body_equal": true,
+      "source_sha256": "0e5ad788ddaf6333f393eff955a6f8033dbdad61463a3cca003e896c272d462b",
+      "statement_sha256": "14e43a64fcd03e0afba600442d0583dc5d94b877bde8f1b5f56df77f92b87f38",
+      "primary_source_sha256": "92c5f61b6873e8565e9b511459324dcaf4be4a37065a0021c38ea1a1e74f999e",
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "object": null,
+      "inherited_debts": {},
+      "active_count": null,
+      "captures": [],
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "cpu_seconds": 1199.859261,
+      "peak_rss_kib": 5821888,
+      "wall_seconds": 1246.312136535067,
+      "exit_code": -9,
+      "limit": "cpu",
+      "first_error": null,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6ad8/primary/compiler.log",
+      "log_sha256": "d26e39de0075c2d54ec2571cbf9f64fcfdaaee468ce1b0e09b66e1aeeadc5758",
+      "policy": {
+        "kind": "cpu",
+        "cpu_seconds": 1200,
+        "wall_seconds": null,
+        "memory_kib": 6291456
+      },
+      "admission": {
+        "utc": "2026-10-07T20:52:33.968050+00:00",
+        "used_estimate_gib": 101.88590240478516,
+        "admission_limit": 2,
+        "other_live_primaries": 1
+      },
+      "evidence": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From6ad8/primary/evidence.json",
+      "evidence_sha256": "093719e90b0dcb31166d9ca6ab7861c87445b2915e12d1ddd1b48c67e2443c5a"
+    }
+  ]
+}

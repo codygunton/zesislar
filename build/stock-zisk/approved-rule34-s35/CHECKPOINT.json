@@ -1,0 +1,200 @@
+{
+  "measurement_root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "scope": "Approved-only frozen native boundaries and named adapters. No Level 1 closure.",
+  "native_boundaries": 24,
+  "named_adapters": 13,
+  "native_closed": 7,
+  "adapters_closed": 3,
+  "residual_results": 19,
+  "cpu_stops": 8,
+  "memory_stops": 0,
+  "active_records": 130,
+  "source_and_statement_identity": "All37 original statements, proof bodies, Qed names, and inherited debts remain exact.",
+  "input_seal": {
+    "sha256": "6b79b7fd57159d284d99ea6b68ece2485d4a3e8943fc02ed22b69b14b1c33c49",
+    "files": 9554,
+    "unchanged": true
+  },
+  "recipe_sha256": "dd71bf3921d7ce6d9c88ff0c82949ae46cbb3250cb47fb672fc61f5c6e8037ec",
+  "configuration": {
+    "baseline_approved_classes": 23,
+    "dispatch": "ON",
+    "rule34": "ON",
+    "root_hint_modules": 15,
+    "historical_classes_off": 17,
+    "dynamic_preflights_passed": 37
+  },
+  "gate": {
+    "root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+    "exit": 0,
+    "elapsed_seconds": 2225.1792550268583,
+    "changed_inputs": [],
+    "seal_sha256": "08b16d37d88636118b9b7459245f0881a691579b5462874bf9818031e99bb8cc",
+    "FAST_JOBS": 6,
+    "AGENT_JOBS": 6,
+    "gate_class": "child",
+    "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/agents/worker2-approved-rule34-s35-gate",
+    "result_sha256": "17ab84ad66aee1bfcfd12bd383ce5d03cd65b876adffb41d6820f19777e5efe7",
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-172030-child-c-approved-rule34-s35-check-fast001.log",
+    "log_sha256": "89bc6c899bb70cbf803031f2f91e4232df1c04c5a8d308ccde092f165e55f6da",
+    "sealed_file_count": 18094,
+    "all_input_hashes_verified": true,
+    "test_summaries": [
+      "Ran 558 tests in 85.030s",
+      "OK (skipped=11)",
+      "Ran 17 tests in 0.135s",
+      "OK",
+      "Ran 4 tests in 0.000s",
+      "OK",
+      "Ran 2 tests in 0.001s",
+      "OK",
+      "Ran 71 tests in 0.038s",
+      "OK"
+    ]
+  },
+  "mcp": {
+    "health_ok": true,
+    "exact_compilation_successes": 10,
+    "module_m_verifications": 10,
+    "assumptions": [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "object_hashes_unchanged": true,
+    "owned_transports_closed": true,
+    "owned_live_processes": [],
+    "native_replays": 0,
+    "shell_fallback": false,
+    "guard_fixture_audit": {
+      "result_sha256": "bc1b38e7be25b6de406198cf92311ef1a9d97feb92d3cb9a5efc3380ef0d3756",
+      "log_sha256": "c915cf65141b1653b670727b1891a59e326906e89fb204b3f45d0d1abdc3cf46",
+      "source_sha256": "ed86318104adbce8d84de820d3cc48461da3aee6a81c963335a06f9f7f7b7e03",
+      "statement": "exists P : Prop, P -> True",
+      "statement_body_equal_to_preserved_guard": true,
+      "assumptions": [],
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_goal_rendering": "No goals remaining.",
+      "proof_finished": true,
+      "auxiliary_groups": "Not exposed separately by this response.",
+      "transport_closed_normally": true,
+      "applications_sources_exact": true,
+      "entry_rows": 24,
+      "scope_preflights_completed": 0,
+      "primary_count": 0
+    },
+    "interactive_limitation": "Not repeated. The prior afa Pet mapping limitation remains preserved separately."
+  },
+  "historical_failures": "The archive preserves dependency001 and MCP001. Its references bind the prior afa archive and Pet mapping failures.",
+  "report_bindings": {
+    "ADAPTER.csv": "8cb873f7d0d977dfa4c0b5706c7424e1a19809c808f9bbccdbda52a87c1a2510",
+    "AFA-COMPARISON.json": "cfeeab2d6bc411811ac27e901ddef282fdf7c71ab72989d315560706cf42c0bb",
+    "ARCHIVE-MANIFEST.json": "142882fd6f4bb4482bf8dc3a4a9078f3b8eead224b5d05ebc8c0d1a4bc2a706c",
+    "ARCHIVE.json": "0bfb33d3e3f795193a0214b25f11762f83d1d5196242ca9add7890b85fcf15f0",
+    "CAPTURES.json": "b37617f5cf0e62dd50f5a4ec4e7ec7609fd53c18ec3a1736c11e6945cad4cccd",
+    "GATE.json": "3a202c0fba63348e019555741e5f6b378aa5219aba34483e710b0d64d3617021",
+    "MCP.json": "cf13cfd740f9f234d94ccffd9fab589cb018aad1b53122308e8629117d3c892f",
+    "METRICS.json": "34501b70bf65bb5e5851b32c798b10d9bb99d02ce0c6b497a1f9fb7c6248d480",
+    "NATIVE.csv": "156ae234b060ce8d965e0d19df4e02ef82f2790a04b2e4c0a20498761508eaf3",
+    "README.md": "24c9421868a0074d317329438591c65c3718743ce339fff2132d5eeef686295e",
+    "REPORT.json": "70b431ac5a6d716828dcf8e54b719dab0a9ed2f92faa2432ff4d2e0a5a0208e6",
+    "S69-CLASSIFICATION.json": "92659054253fbbfb1d4e8bba143e931c52370508dec63c09ad63d8f4ae67ee15",
+    "TABLE-NORMALIZATION.json": "1927aad405e937e9b7c0dee06044bcdfb2227d3f0c8438eef7368a3ddbafe98a",
+    "RULE34-CLASSIFICATION.json": "ac2a455491ae8f0b1ebc3757842738a2a78de3d22b6c4cd4675815bd868fd32a"
+  },
+  "archive": {
+    "root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+    "path": "/home/cody/zesislar-archive/stock-zisk/approved-rule34-s35/c78979c0ed89dc46e4950457a7d02d72b72c0424a23744fe38a68c0dc23e5466.tar.gz",
+    "sha256": "c78979c0ed89dc46e4950457a7d02d72b72c0424a23744fe38a68c0dc23e5466",
+    "size_bytes": 159603682,
+    "manifest_sha256": "142882fd6f4bb4482bf8dc3a4a9078f3b8eead224b5d05ebc8c0d1a4bc2a706c",
+    "members": 8584,
+    "source_records": 8583,
+    "all_member_hashes_verified": true
+  },
+  "level1_closed": false,
+  "auxiliary_groups": "Native outputs expose active groups only. Stack, shelf, and given_up remain unavailable.",
+  "classification_limit": "S69 does not prove impossibility or classify every residual. The hand bridge requires a separate caller continuation and nonzero input.",
+  "cost_comparison_limit": "The afa and S35 roots differ. These measurements do not isolate rule34 cost. Rule34 ON added no closure at the current registrations.",
+  "next_pass": "No new pass starts without its announced root and explicit release.",
+  "table_normalization": {
+    "operation": "Normalize CRLF to LF in committed CSV copies before the gate.",
+    "frozen_outputs_unchanged": true,
+    "tables": {
+      "NATIVE.csv": {
+        "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/NATIVE.csv",
+        "original_sha256": "6b962250b75117bcdea91bdbac028373112d5f0515f65e061e6a103d80ea5763",
+        "committed_sha256": "156ae234b060ce8d965e0d19df4e02ef82f2790a04b2e4c0a20498761508eaf3",
+        "rows": 24,
+        "exact_parsed_row_equality": true
+      },
+      "ADAPTER.csv": {
+        "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/ADAPTER.csv",
+        "original_sha256": "5d37093ab8620aa19b0426848c307fc8e697bad491c9c90d1836e497262f4450",
+        "committed_sha256": "8cb873f7d0d977dfa4c0b5706c7424e1a19809c808f9bbccdbda52a87c1a2510",
+        "rows": 13,
+        "exact_parsed_row_equality": true
+      }
+    }
+  },
+  "external_classification": {
+    "external_report": "/home/cody/zesislar/.worktrees/worker1-spec-b/build/stock-zisk/spec-b-rule34-a4-classification/CLASSIFICATION.json",
+    "external_report_sha256": "de2d851c758dcba01957f8dd53b6ae5dece092244f21d6c31052603d924912b9",
+    "measurement_root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+    "classification_spec_root": "246a0fde8c84ed338a8b4f79e2947930823fe58e",
+    "native_records": 70,
+    "counts": {
+      "rule gap": 27,
+      "spatial witness gap": 2,
+      "existing pure fact": 21,
+      "source and spatial gap": 2,
+      "witness gap": 18
+    },
+    "capture_hashes_verified": true,
+    "69a4": {
+      "entry_pc": "0x800d69a4",
+      "index": 1,
+      "classification": "existing pure fact",
+      "reason": "H1/H2 and H9 imply the nonempty prefix bound. The existing BranchGuard registration requires the unreduced Z_to_bv constant form. S64 supplies its bridge as a separate pure fact. The bound hint does not request that bridge through SimplAnd. Direct matching of its guard premise differs from the literal captured guard.",
+      "helpers": [
+        "decodeItemNativeMaskNonempty",
+        "decodeItemNonemptyStringPrefixGuard"
+      ],
+      "required_premises": [
+        "H1",
+        "H2",
+        "H9"
+      ],
+      "exact_conclusion": "(129 \u2264 bv_unsigned inputPrefix)",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d69a4/active-001.json",
+        "sha256": "0b47023bf28b9d7e93d362a0437fb2daa5e9f00b2d9b543147bb9bf698646838"
+      },
+      "raw_goal_sha256": "ce756572ec401b483fd77db2d0eab4d00f46f5798c3b4346ce781f5815faa451",
+      "registration_consumption": "unobserved",
+      "current_matching": "not measured"
+    },
+    "classification": "The literal128%bv guard needs the S64 bridge to the Z_to_bv64 128 registration. The bound hint does not request that bridge through SimplAnd. This is a registration/scheduling gap.",
+    "limits": [
+      "Exact captured terms and contexts remain separate from native registration matching.",
+      "Earlier introductions cannot prove incompatible committed witnesses.",
+      "The evidence gate was pending at dispatch. This audit does not release it.",
+      "The hand root bridge requires nonzero input. Seven native closures do not prove full Level 1 closure.",
+      "The specification root differs from the measurement root. This classification does not prove native consumption or isolated rule34 cost."
+    ],
+    "archive_timing": "This reference arrived after the immutable S35 archive completed. The archive remains unchanged.",
+    "native_replays": 0,
+    "production_edits": 0
+  }
+}

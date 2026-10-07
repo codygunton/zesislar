@@ -1,0 +1,91 @@
+{
+  "root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "result_sha256": "a6d24a18e615b462fac6b86a6040cd07468803f6a76b907ffcec02d6d2acc15f",
+  "seal_sha256": "6b79b7fd57159d284d99ea6b68ece2485d4a3e8943fc02ed22b69b14b1c33c49",
+  "recipe_sha256": "dd71bf3921d7ce6d9c88ff0c82949ae46cbb3250cb47fb672fc61f5c6e8037ec",
+  "sealed_files": 9554,
+  "sealed_inputs_unchanged": true,
+  "native_count": 24,
+  "adapter_count": 13,
+  "native_closed": 7,
+  "adapters_closed": 3,
+  "residual_results": 19,
+  "cpu_stops": 8,
+  "memory_stops": 0,
+  "active_records": 130,
+  "level1_closed": false,
+  "elapsed_seconds": 10282.775218216935,
+  "total_compiler_cpu_seconds": 18769.699591,
+  "peak_arm_rss_kib": 6098884,
+  "scope": "Retained active states and exact native boundary or named adapter certificates. No Level 1 closure.",
+  "auxiliary_groups": "Stack, shelf, and given_up groups remain unavailable.",
+  "policy6": "Native primaries use tools/coqc_scratch.sh with CPU limits and no wall limit.",
+  "configuration": "23 approved switches plus SwitchDispatch and PureFactExistential; 15 root hint modules; 17 historical switches OFF; rule34 ON.",
+  "admission_counts": {
+    "1": 0,
+    "2": 37
+  },
+  "max_admission_used_estimate_gib": 113.8637809753418,
+  "large_native_costs": [
+    {
+      "id": "block_0x800d6974",
+      "cpu_seconds": 392.361778,
+      "peak_rss_kib": 2350932,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d697c",
+      "cpu_seconds": 1199.85314,
+      "peak_rss_kib": 3438072,
+      "outcome": "cpu-limit"
+    },
+    {
+      "id": "block_0x800d69b0",
+      "cpu_seconds": 399.791953,
+      "peak_rss_kib": 4253464,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d69e8",
+      "cpu_seconds": 1199.8934089999998,
+      "peak_rss_kib": 3688324,
+      "outcome": "cpu-limit"
+    },
+    {
+      "id": "block_0x800d6a24",
+      "cpu_seconds": 1421.685252,
+      "peak_rss_kib": 3129248,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d6a40",
+      "cpu_seconds": 459.656956,
+      "peak_rss_kib": 4261632,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d6a78",
+      "cpu_seconds": 598.740828,
+      "peak_rss_kib": 4802360,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "cpu_seconds": 1448.783327,
+      "peak_rss_kib": 3149592,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "cpu_seconds": 605.2377240000001,
+      "peak_rss_kib": 6098884,
+      "outcome": "residual"
+    },
+    {
+      "id": "block_0x800d6b08",
+      "cpu_seconds": 547.237311,
+      "peak_rss_kib": 4628376,
+      "outcome": "residual"
+    }
+  ]
+}
