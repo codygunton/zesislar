@@ -46,7 +46,7 @@ Proof.
   iIntros "(Hraw & Hcont)".
   iDestruct "Hraw" as "(Hregs & Ha0 & Ha1 & Ha2 & Ha3 & Ha4 & Ha5 & Ha6 & Hsp & Hra & Hs0 & Hin & Hout & Hstack & %Hfacts & _)".
   destruct Hfacts as [Hlength Hfold].
-  
+
   let anchor := constr:(("x13" ↦ᵣ RVal_Bits (bv_or
     (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
     (bv_zero_extend 64 next)))%I) in
@@ -144,7 +144,7 @@ Proof.
   iIntros "(Hraw & Hcont)".
   iDestruct "Hraw" as "(Hregs & Ha0 & Ha1 & Ha2 & Ha3 & Ha4 & Ha5 & Ha6 & Hsp & Hra & Hs0 & Hin & Hout & Hstack & %Hfacts & _)".
   destruct Hfacts as [Hlength Hfold].
-  
+
   zesu_canonical_anchor_if_enabled.
   iExists frameBytes, loaded.
   iSplit; first (iPureIntro; repeat first [assumption | split]).
