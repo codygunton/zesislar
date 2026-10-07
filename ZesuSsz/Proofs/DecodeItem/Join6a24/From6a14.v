@@ -51,7 +51,6 @@ assert (Hstartbv : (Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv = Z_to_bv 6
 iEval (rewrite -Hcursor -Hindex -Hstartbv).
 unfold decodeItemBranchContinuationAt.
 cbn [Z.to_nat take bigEndian].
-iFrame.
 iEval (simpl; unfold reg_col).
 iFrame.
 iEval (rewrite /decodeItemSysRegs /zesu_sys_regs /machine_static_sys_regs /defaultMap /bigEndian /=).
