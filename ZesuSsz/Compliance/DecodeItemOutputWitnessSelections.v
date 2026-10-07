@@ -225,7 +225,7 @@ Qed.
       (decodeItemBeforeStorage ?args) (Z_to_bv 64 (decodeItemInputPointer ?args)) 1)%I _ _) =>
   match goal with
   | Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hclass : bv_unsigned prefix <= 127 |- _ =>
+    Hclass : bv_unsigned ?prefix <= 127 |- _ =>
     exact (@decodeItemLiteralOutputWitnessCanonical Sigma _ _ args prefix rest)
   end : typeclass_instances.
 
@@ -235,8 +235,8 @@ Qed.
       (decodeItemBeforeStorage ?args) (bv_add (Z_to_bv 64 (decodeItemInputPointer ?args)) 1) ?payloadLength)%I _ _) =>
   match goal with
   | Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hclass : 129 <= bv_unsigned prefix <= 183,
-    Hlength : bv_unsigned payloadLength = bv_unsigned prefix - 128 |- _ =>
+    Hclass : 129 <= bv_unsigned ?prefix <= 183,
+    Hlength : bv_unsigned payloadLength = bv_unsigned ?prefix - 128 |- _ =>
     exact (@decodeItemShortStringOutputWitnessCanonical Sigma _ _ args prefix rest payloadLength)
   end : typeclass_instances.
 
