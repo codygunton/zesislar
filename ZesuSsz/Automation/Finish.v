@@ -353,6 +353,7 @@ Ltac zesu_finish_v2 :=
   zesu_finish_dispatch.
 
 Ltac zesu_finish :=
+  try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
     zesu_primitive_tuple_guard_if_enabled];

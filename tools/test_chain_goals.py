@@ -68,6 +68,21 @@ class ChainGoalsTests(unittest.TestCase):
         self.assertEqual([name for name, _ in dependent["coq"]], ["n", "values"])
         self.assertIn("n", dict(dependent["coq"])["values"])
 
+    def test_selected_local_definitions_keep_distinct_bodies(self):
+        fixture = ROOT / "fixtures/chain_goals_distinct_definitions.v"
+        self.assertIn(chain_goals.RECORDER, fixture.read_text())
+        output = fixture.with_suffix(".log").read_text()
+        goal, = chain_goals.parse_goals(output, allow_local_definitions=True)
+        self.assertEqual(goal["local_values"], {
+            "firstValue": "(x + 3)", "secondValue": "(x + 5)"})
+        self.assertNotIn("x", goal["local_values"])
+        self.assertEqual([name for name, _ in goal["coq"]],
+                         ["x", "firstValue", "secondValue"])
+        self.assertIn("firstValue := (x + 3) : nat", goal["context"])
+        self.assertIn("secondValue := (x + 5) : nat", goal["context"])
+        with self.assertRaisesRegex(ValueError, "unresolved native local definitions"):
+            chain_goals.parse_goals(output)
+
     def test_native_local_alias_is_rejected(self):
         output = (ROOT / "fixtures/chain_goals_alias.log").read_text()
         with self.assertRaisesRegex(ValueError, "unresolved native local definitions"):

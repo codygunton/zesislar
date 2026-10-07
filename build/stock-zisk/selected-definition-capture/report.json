@@ -1,0 +1,114 @@
+{
+  "item": "selected-definition-capture",
+  "root": "fc56babab2e6266198b5fb8059366546f6d07eec",
+  "defect": "The inner Hlocal pattern binds a fresh definition. It emits the last local body while traversing other definitions and ordinary hypotheses.",
+  "baseline": {
+    "local_values": {
+      "secondValue": "(x + 5)"
+    },
+    "lost_body": "firstValue := x + 3",
+    "duplicate_body_records": 3
+  },
+  "repair": "The inner multimatch binds Hdefinition and requires constr_eq Hdefinition Hlocal before recording its body.",
+  "ON": {
+    "local_values": {
+      "firstValue": "(x + 3)",
+      "secondValue": "(x + 5)"
+    },
+    "ordinary_hypothesis": "x has no local value.",
+    "context_order": [
+      "x",
+      "firstValue",
+      "secondValue"
+    ]
+  },
+  "limits": {
+    "default_parser": "Local definitions remain rejected for successor proof capture.",
+    "diagnostic_parser": "Explicit allow_local_definitions retains bodies.",
+    "missing_body": "Absence of a VALUE field cannot certify that a local is an assumption. No new completeness marker is introduced.",
+    "native_goal_groups": "This pure fixture does not establish active/stack/shelf/given_up coverage for any historical machine capture.",
+    "historical_captures": "Existing bytes remain unchanged. Their local body fields can be unreliable.",
+    "counter": "No counter semantics changed."
+  },
+  "verification": {
+    "MCP_health": true,
+    "MCP_compile_file": "Baseline and selected-definition fixtures compile.",
+    "MCP_exact_type_verify": true,
+    "assumptions": [],
+    "driver_tests": 9,
+    "native_instructions": 0,
+    "native_closures": 0
+  },
+  "failures": [
+    "The first fixture omitted String scope.",
+    "The next fixture omitted the environments import. Both errors preceded recorder execution."
+  ],
+  "sources": {
+    "tools/block/chain_goals.py": "6bf620cae28b8203f1c0355beb79217a578fcb518eb898d762368485a052a11c",
+    "tools/test_chain_goals.py": "2d5811e1416d75561a5fd2b8cdf89eceef58d9795af36d6e0cd1078438fa5deb",
+    "tools/fixtures/chain_goals_distinct_definitions.v": "8b40cd5113577d7d67a23924685119a9e3badff46e71dac138d5fc66a72ff997",
+    "tools/fixtures/chain_goals_distinct_definitions.log": "87cd967051b9ea72b71c3d46f870766c5034f8aaba4544a299757511338ac9c1"
+  },
+  "artifacts": [
+    {
+      "path": "_build/local-definition-capture/RecorderProbeMissingString.v",
+      "sha256": "ee19ef610229dde7fcfba666e279669d6a02b52ca9b067bbb3a13c66e1b61cb7",
+      "archive": "/home/cody/zesislar-archive/sha256/ee/ee19ef610229dde7fcfba666e279669d6a02b52ca9b067bbb3a13c66e1b61cb7"
+    },
+    {
+      "path": "_build/local-definition-capture/RecorderProbeMissingEnvironment.v",
+      "sha256": "7669bd15d199821a90969fdc3af98f91fba6425284c5e01394c8250bb1c5fcb2",
+      "archive": "/home/cody/zesislar-archive/sha256/76/7669bd15d199821a90969fdc3af98f91fba6425284c5e01394c8250bb1c5fcb2"
+    },
+    {
+      "path": "_build/local-definition-capture/RecorderProbe.v",
+      "sha256": "ab60b72359a6e402f42b93a922f893d114adcd69a8b6845d39d4d7a1a97ebc7c",
+      "archive": "/home/cody/zesislar-archive/sha256/ab/ab60b72359a6e402f42b93a922f893d114adcd69a8b6845d39d4d7a1a97ebc7c"
+    },
+    {
+      "path": "_build/local-definition-capture/mcp.json",
+      "sha256": "afe3af267ee7a7787d7ace8456dbca0ec4398b2d5b69c385d18c2837d2b18ed7",
+      "archive": "/home/cody/zesislar-archive/sha256/af/afe3af267ee7a7787d7ace8456dbca0ec4398b2d5b69c385d18c2837d2b18ed7"
+    },
+    {
+      "path": "_build/local-definition-capture/RecorderSelectedDefinition.v",
+      "sha256": "8b40cd5113577d7d67a23924685119a9e3badff46e71dac138d5fc66a72ff997",
+      "archive": "/home/cody/zesislar-archive/sha256/8b/8b40cd5113577d7d67a23924685119a9e3badff46e71dac138d5fc66a72ff997"
+    },
+    {
+      "path": "_build/local-definition-capture/candidate-mcp.json",
+      "sha256": "1fbc03fe4f06e9a60b1da089308031703c6efa53fc78f09e7d4488a46dac3737",
+      "archive": "/home/cody/zesislar-archive/sha256/1f/1fbc03fe4f06e9a60b1da089308031703c6efa53fc78f09e7d4488a46dac3737"
+    },
+    {
+      "path": "_build/local-definition-capture/assumptions.json",
+      "sha256": "3b808d3001639e2499154eabe84cceb865e99f0b9f23a3e9e9b7a9877607cdb4",
+      "archive": "/home/cody/zesislar-archive/sha256/3b/3b808d3001639e2499154eabe84cceb865e99f0b9f23a3e9e9b7a9877607cdb4"
+    }
+  ],
+  "gate": {
+    "status": "passed",
+    "jobs": 6,
+    "wall_s": 64,
+    "log_sha256": "f3633d0d49d2189ccc9dafbd8102336cbd0163063617e2aa87c85a6733a21ff5",
+    "archive": "/home/cody/zesislar-archive/sha256/f3/f3633d0d49d2189ccc9dafbd8102336cbd0163063617e2aa87c85a6733a21ff5"
+  },
+  "accounting": {
+    "start": "2026-10-07T00:31:58.621Z",
+    "end": "2026-10-07T00:36:27.215717Z",
+    "child_min": 4.476579,
+    "tokens_child": 3354145,
+    "token_samples": [
+      [
+        "2026-10-07T00:31:42.879Z",
+        446072691
+      ],
+      [
+        "2026-10-07T00:36:16.929Z",
+        449426836
+      ]
+    ],
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable"
+  }
+}
