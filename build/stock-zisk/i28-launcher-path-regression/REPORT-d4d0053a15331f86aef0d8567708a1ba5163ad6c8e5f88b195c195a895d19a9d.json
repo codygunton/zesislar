@@ -1,0 +1,53 @@
+{
+  "accounting": {
+    "child_min": 1.3716323166666666,
+    "end_utc": "2026-10-07T00:48:07.726656+00:00",
+    "parent_min": "unavailable",
+    "parent_reason": "The parent did not supply this window.",
+    "start_utc": "2026-10-07T00:46:45.428717+00:00",
+    "token_after": [
+      "2026-10-07T00:47:37.813Z",
+      433086574
+    ],
+    "token_before": [
+      "2026-10-07T00:46:40.976Z",
+      432201976
+    ],
+    "tokens_child": 884598,
+    "tokens_parent": "unavailable"
+  },
+  "bindings": {
+    "tools/block/frozen_attempt.py": "e187dd0df28fc2bbbe7010ff89c92a52136552eac0c7d04044d06afabef5ffaf",
+    "tools/test_frozen_attempt.py": "bd223821aebe4a92d1dc1cea5fa9b23a84a5fa9154137be87a33033550d3f92a"
+  },
+  "focused_tests": {
+    "command": "python3 -m unittest discover -s tools -p test_frozen_attempt.py",
+    "failures": 0,
+    "tests": 4
+  },
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "FAST_JOBS=6",
+      "CHECK_AGENT=worker2-child-map-i28-current",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-i28-current/_build/agents/worker2-child-map-i28-current"
+    ],
+    "end_utc": "2026-10-07T00:47:47.696125+00:00",
+    "exit_code": 0,
+    "jobs": 6,
+    "start_utc": "2026-10-07T00:46:45.428717+00:00",
+    "wall_seconds": 62.26740709110163
+  },
+  "gate_result_sha256": "971a2913d0906209781a67a88c726da5ada76cb644bff9b2d6e256a2ae045e5c",
+  "integration_scope": "Reusable load_inputs interface and regression tests only. Existing immutable launchers are not changed. New launchers must call the interface before writing outputs.",
+  "item": "I28-launcher-path-regression",
+  "native_execution": false,
+  "protections": [
+    "Reject an input index outside the resolved launcher directory.",
+    "Reject an output directory outside the resolved launcher directory.",
+    "Reject an index whose attempt_directory belongs to another attempt.",
+    "Keep the earlier index and summary bytes unchanged on rejection."
+  ],
+  "result": "Four focused tests and check-fast pass."
+}

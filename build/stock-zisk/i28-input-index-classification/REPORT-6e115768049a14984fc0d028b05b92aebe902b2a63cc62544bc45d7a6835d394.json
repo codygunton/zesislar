@@ -1,0 +1,122 @@
+{
+  "accounting": {
+    "child_min": 1.24820155,
+    "end_utc": "2026-10-07T00:48:40.013805+00:00",
+    "parent_min": "unavailable",
+    "parent_reason": "The parent did not supply this window.",
+    "start_utc": "2026-10-07T00:47:25.121712+00:00",
+    "token_after": [
+      "2026-10-07T00:48:20.449Z",
+      433477226
+    ],
+    "token_before": [
+      "2026-10-07T00:47:11.815Z",
+      432700889
+    ],
+    "tokens_child": 776337,
+    "tokens_parent": "unavailable",
+    "window_scope": "Classification report creation through immutable packaging; prior input analysis excluded."
+  },
+  "artifacts": {
+    "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/FINAL_REPORT.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/22/223c0809d1ad50dba1c4770be93fae94e3e737fd95a3e4c153ce3db0a00e55c8",
+      "bytes": 18410,
+      "sha256": "223c0809d1ad50dba1c4770be93fae94e3e737fd95a3e4c153ce3db0a00e55c8"
+    },
+    "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/active-goal-00.txt": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/fe/fe52929c04542104403d020a2bc63e0e575b832ccb1f07ca5d7c9161a9dd6f89",
+      "bytes": 11017,
+      "sha256": "fe52929c04542104403d020a2bc63e0e575b832ccb1f07ca5d7c9161a9dd6f89"
+    },
+    "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/active-goal-05.txt": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/22/226c7522a7de846e08509aa555caee17b08b0ff9a5d8e90385621adbdfd929de",
+      "bytes": 11224,
+      "sha256": "226c7522a7de846e08509aa555caee17b08b0ff9a5d8e90385621adbdfd929de"
+    },
+    "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/active-goal-10.txt": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/50/50e4a931841f4735c98e335cc651a549e90a2c4d7703ba03e31da25579e20cc7",
+      "bytes": 11581,
+      "sha256": "50e4a931841f4735c98e335cc651a549e90a2c4d7703ba03e31da25579e20cc7"
+    }
+  },
+  "exact_phase_unresolved": "The capture does not record which tactic instantiated the index to0.",
+  "finding": "The selected input index is already0. Visible facts imply the requested offset is1+i, which is at least1. The equality target is false.",
+  "item": "I28-input-index-classification",
+  "missing_groups": [
+    "stack",
+    "shelf",
+    "given_up"
+  ],
+  "native_closures": 0,
+  "prior_classification_sha256": "1c6abf50d6c9750d7f9c6bc0d19ad84343f0bc9b85852293e362d89759cfae62",
+  "recorder_limit": "Hypothesis types are retained. Historical CHAIN local-definition body fields are unreliable.",
+  "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "rows": [
+    {
+      "capture_path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/active-goal-00.txt",
+      "capture_sha256": "fe52929c04542104403d020a2bc63e0e575b832ccb1f07ca5d7c9161a9dd6f89",
+      "conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "goal_index": 0,
+      "route": 0,
+      "visible_facts": [
+        "0 <= i",
+        "payloadStart = decodeItemInputPointer args + 1"
+      ]
+    },
+    {
+      "capture_path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/active-goal-05.txt",
+      "capture_sha256": "226c7522a7de846e08509aa555caee17b08b0ff9a5d8e90385621adbdfd929de",
+      "conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "goal_index": 5,
+      "route": 1,
+      "visible_facts": [
+        "0 <= i",
+        "payloadStart = decodeItemInputPointer args + 1"
+      ]
+    },
+    {
+      "capture_path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/active-goal-10.txt",
+      "capture_sha256": "50e4a931841f4735c98e335cc651a549e90a2c4d7703ba03e31da25579e20cc7",
+      "conclusion": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "goal_index": 10,
+      "route": 2,
+      "visible_facts": [
+        "0 <= i",
+        "payloadStart = decodeItemInputPointer args + 1"
+      ]
+    }
+  ],
+  "rule_added": null,
+  "scope": "Read-only bounded classification of three retained routes. No native replay or new rule.",
+  "selection_boundary": "After array-index witness instantiation and before proving index equality.",
+  "separate_debts": [
+    "Backedge cursor keeps i instead of i+1.",
+    "Backedge accumulator uses inputBytes!!0 instead of inputBytes!!Z.to_nat(1+i).",
+    "Output+8 store extent is a separate output obligation."
+  ],
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-fresh-q56/build/stock-zisk/q56-list-preservation/ConditionalCompletionRoot712Corrected.v",
+    "sha256": "45aa58f9d3d07e57f94c20d855745dead14da71f7f8a3b112899c057a157ea4a"
+  },
+  "source_report_sha256": "223c0809d1ad50dba1c4770be93fae94e3e737fd95a3e4c153ce3db0a00e55c8",
+  "source_statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+  "verification": {
+    "current_source_gate": {
+      "command": [
+        "make",
+        "check-fast",
+        "FAST_JOBS=6",
+        "CHECK_AGENT=worker2-child-map-i28-current",
+        "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-i28-current/_build/agents/worker2-child-map-i28-current"
+      ],
+      "end_utc": "2026-10-07T00:47:47.696125+00:00",
+      "exit_code": 0,
+      "jobs": 6,
+      "start_utc": "2026-10-07T00:46:45.428717+00:00",
+      "wall_seconds": 62.26740709110163
+    },
+    "gate_scope": "The source gate preceded this evidence-only packaging. No executable source changed.",
+    "kind": "Read-only hash and visible hypothesis-type audit.",
+    "native_replay": false
+  }
+}
