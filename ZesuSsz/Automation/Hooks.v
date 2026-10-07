@@ -1456,8 +1456,14 @@ Ltac zesu_array_region_selection_if_enabled :=
   let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
   lazymatch goal with
   | |- FindHypEqual (ZesuMemRegionSearch _) (_ ↦ₘ∗ _)
-      (mem_mapsto_kind_prop _ _) _ =>
-      solve [apply find_mem_region_array; zesu_region_bounds]
+      (mem_mapsto_kind_prop _ ?kind) _ =>
+      try (is_var kind;
+        lazymatch goal with
+        | kind := _ : mem_mapsto_kind |- _ => unfold kind
+        end);
+      solve [apply find_mem_region_array;
+        first [right; zesu_array_bound_integer_casts; lia |
+               zesu_region_bounds]]
   end.
 
 Ltac zesu_array_bounds_if_enabled :=
