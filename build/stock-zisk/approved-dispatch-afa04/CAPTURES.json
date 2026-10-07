@@ -1,0 +1,2381 @@
+{
+  "root": "afa04ce1795ae24348f444a0d35f4901caacb015",
+  "records": [
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-001.json",
+      "sha256": "4784a378fb3ca8e50a5b6c6ae66f481fd9f2e2cb2dfee2654c34c5b2df72def9",
+      "raw_goal_sha256": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-002.json",
+      "sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+      "raw_goal_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-003.json",
+      "sha256": "f95aa1dbc47363e3fdc11f193a7af4356f234b28061f59b7f0e1ef2c49ae6e08",
+      "raw_goal_sha256": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-004.json",
+      "sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+      "raw_goal_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-005.json",
+      "sha256": "a05fd1b5e60824047ca24732216edaded504a99c5cc16be8e30a5a2c50f5ac96",
+      "raw_goal_sha256": "689ff42353bb6d8bd43ca05b9508dc00b3805c83d7272745d65c47ed120fa901",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-006.json",
+      "sha256": "6674507a9f11af1a20c23d49bc3ef7bcc5723ff5902a1c4a945dd4f849c27f85",
+      "raw_goal_sha256": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-007.json",
+      "sha256": "3cbf3844a59068f32adffcbc35d0458cc744bcb96b448f16541a10c030fdea4e",
+      "raw_goal_sha256": "7bbb5f61a3a1b9de7bc627425d2d37601e887cd221e91946b34d221f5c5ca7b9",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-008.json",
+      "sha256": "827c995d31a555493cc9d13d6fbd43c2f7febd4f38c7120c7d0b205794a293ec",
+      "raw_goal_sha256": "10eb49664aaebdf21776ec7cb971e3fa9eaf187d22c54915bc4c98b04304e5c0",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "entry_pc": "0x800d6960",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6960/active-009.json",
+      "sha256": "25a86fefca21ab0c5b5143cedcba28aa29d61d04c2c9bd92259be46780aa964e",
+      "raw_goal_sha256": "104ceae589016f42b20e6bdfaa3de285be7d37afc22e5c2ad6dc77241d2a5c2c",
+      "source_sha256": "6fdb577d26c7f76bcbd57658a24fd572bfcae894ac81cab7f91a304cb5e4b809",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6960/primary/compiler.log",
+      "log_sha256": "9f122b2368db37058a3d11f95b2e463927ce0b19643956898c77cbaf18c7c725",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-001.json",
+      "sha256": "1c88fe426049a3dad78a59d4fc95e16fdd0b5c147ecb62b297485272e45eb76f",
+      "raw_goal_sha256": "33e30906431adb90e050284980c15804c9db25418d3e4d2200ee83b408614c12",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-002.json",
+      "sha256": "930dc178d099b3ebc5f0ab2b1c7d44d739e0bfbdd45b2e2e89822728537b6be6",
+      "raw_goal_sha256": "61b0fea07873fbc09932396680c68dcb084243995f4ac943324f9927174b4643",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-003.json",
+      "sha256": "6da2a99e5bfaba739c1dfe6c8d26f399cf1cf3f687067ddfb33c5d9d46fdbff9",
+      "raw_goal_sha256": "ee22df872f2d9275be29af35de098ed1281cd358ea00203bb1d82f92d65a58d1",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-004.json",
+      "sha256": "37b4eb3de9ed10eb24ee97f2d303caaacd57362fb155ae3027038c5ccc753845",
+      "raw_goal_sha256": "e01a946aed515c073b91e7c741639650e08705fa58c1c5c0062c6874942716bd",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-005.json",
+      "sha256": "eae62325a532baab2a20631a1a1ba9055336662994ca074fd66ab328fa692705",
+      "raw_goal_sha256": "6165e2bc3a19c92a7dc17e2d1d535ff969eaf7c5adf58fb022865521edaad399",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-006.json",
+      "sha256": "f0e77d76190a8c3c34b4ad55c4ab52d1b3eab110d971eb29eb20956f09e6bd76",
+      "raw_goal_sha256": "2f9943924894438f360cf09b60eefb64df57e02b814a2ca0d1f662cd700f1d03",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-007.json",
+      "sha256": "4d8f505050bca682b1d1734d1841381b9ab05c54f3e5526adf99f02075d77470",
+      "raw_goal_sha256": "2c5a6d00b52c5ea1b7dffd156aba54361a67bf46059cb3afbc3b1ad060106df7",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "entry_pc": "0x800d6974",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6974/active-008.json",
+      "sha256": "4637031603ce8fe81e01579c0d75628d1d8053470f1f6ad997a76f7985677224",
+      "raw_goal_sha256": "61cc9bd3e6f225d0ce5e1ccf2fe852aead7bc5071a363830d37b6dfe36e2bec1",
+      "source_sha256": "3b4c015c5bc8ccc4e3090f0c10e300c8a8a94d403998108c0a57545a31252b16",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6974/primary/compiler.log",
+      "log_sha256": "be8fb7473b54c5f314f41a4ced614d7ba5aa7ee85a0138daf6df7991e5c16d14",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "entry_pc": "0x800d698c",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d698c/active-001.json",
+      "sha256": "2af0ef2bb299227b74bedd53d9444eba04750a5b9b17150981f1f84c2140b8ab",
+      "raw_goal_sha256": "e91e32a2d34fd641fc71b1ff7cb2fb777073c148bedd3f40668b626daeacd05f",
+      "source_sha256": "c726f8a243a58f9683d827ed8202a939eec8ab9e33cc7471f9386562437fa919",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d698c/primary/compiler.log",
+      "log_sha256": "13c77161d553b6dc0f391aa4512fd2b2bdcf849e62d48a49e9940ff2eb435382",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "entry_pc": "0x800d698c",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d698c/active-002.json",
+      "sha256": "7465b3fe2aa91774824e7b23c6c165594f38aa37ec37459270e856607f219e82",
+      "raw_goal_sha256": "4dac772c0e0426187e630cbd47e273efedcaf11d981640111343bcac1c1be035",
+      "source_sha256": "c726f8a243a58f9683d827ed8202a939eec8ab9e33cc7471f9386562437fa919",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d698c/primary/compiler.log",
+      "log_sha256": "13c77161d553b6dc0f391aa4512fd2b2bdcf849e62d48a49e9940ff2eb435382",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "entry_pc": "0x800d698c",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d698c/active-003.json",
+      "sha256": "448e1d66bb44f70e953ba3ec3d1d567385c16b9fca6b7ae2f64059bf74a41e33",
+      "raw_goal_sha256": "dcca8d762bb820a58218ad666a29a60c8306d24146a95c4ab62563afdbbac35e",
+      "source_sha256": "c726f8a243a58f9683d827ed8202a939eec8ab9e33cc7471f9386562437fa919",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d698c/primary/compiler.log",
+      "log_sha256": "13c77161d553b6dc0f391aa4512fd2b2bdcf849e62d48a49e9940ff2eb435382",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "entry_pc": "0x800d69a4",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d69a4/active-001.json",
+      "sha256": "0b47023bf28b9d7e93d362a0437fb2daa5e9f00b2d9b543147bb9bf698646838",
+      "raw_goal_sha256": "ce756572ec401b483fd77db2d0eab4d00f46f5798c3b4346ce781f5815faa451",
+      "source_sha256": "01ff94adbc3be96578128a0ae025843d92084c885df0b39c4811d3e49ad120b7",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d69a4/primary/compiler.log",
+      "log_sha256": "67d62c6847b07dae993b4718b3d64c0e29ce6609d150b794f420c804a9c2b386",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "entry_pc": "0x800d69a4",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d69a4/active-002.json",
+      "sha256": "a2d1ad5ce9ea69abe8c4e9b4677f2c65eba8698b72c1ca59d8ddb73ecb569b60",
+      "raw_goal_sha256": "9174d98e1c99a2f90d811853517dde9f2aa1cf458993e479587f6e3639f05cbb",
+      "source_sha256": "01ff94adbc3be96578128a0ae025843d92084c885df0b39c4811d3e49ad120b7",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d69a4/primary/compiler.log",
+      "log_sha256": "67d62c6847b07dae993b4718b3d64c0e29ce6609d150b794f420c804a9c2b386",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "entry_pc": "0x800d69a4",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d69a4/active-003.json",
+      "sha256": "2ca48596c88e27705fdafb73ed7c56c602da0535515bd47e3e238932f2145e2a",
+      "raw_goal_sha256": "02b08cc6682dccf6d3991d440e4a5bfad1d65df7fd5e1d94127cc4ab592206ed",
+      "source_sha256": "01ff94adbc3be96578128a0ae025843d92084c885df0b39c4811d3e49ad120b7",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d69a4/primary/compiler.log",
+      "log_sha256": "67d62c6847b07dae993b4718b3d64c0e29ce6609d150b794f420c804a9c2b386",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "entry_pc": "0x800d69b0",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d69b0/active-001.json",
+      "sha256": "e7b923bc0afd6e870ee9746f46ef9a8b6b008ce271592d83ea44227c70b6511e",
+      "raw_goal_sha256": "eab588178d13ff653f560e5ddd111433e208733820123274fb145d3b3f242bd7",
+      "source_sha256": "6d4e381ac44cfa6c0c00a7a0a4299c796a9530fb7283d7a9c77db25f31ef8888",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d69b0/primary/compiler.log",
+      "log_sha256": "7ae793d6402e09faea0755eb69d4797a95474e9b356f7e0d251707abdf6490cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "entry_pc": "0x800d69b0",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d69b0/active-002.json",
+      "sha256": "5a8ee5464efef8919349a1b0c5cc821574eb61059d151e9665bdb8b290e03499",
+      "raw_goal_sha256": "5e15b587e5077a9806b0dca24b0d321775736f5d4b5c91ae98ba130ffd19694f",
+      "source_sha256": "6d4e381ac44cfa6c0c00a7a0a4299c796a9530fb7283d7a9c77db25f31ef8888",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d69b0/primary/compiler.log",
+      "log_sha256": "7ae793d6402e09faea0755eb69d4797a95474e9b356f7e0d251707abdf6490cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "entry_pc": "0x800d69b0",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d69b0/active-003.json",
+      "sha256": "2e9e568e011904de6972e850169bafaf6f10d45a05d991f330079015bc6e286b",
+      "raw_goal_sha256": "cb01a0e41b6460b4c586b915a88d1bab5578207ba085b855cb8bfbc6d3d56a71",
+      "source_sha256": "6d4e381ac44cfa6c0c00a7a0a4299c796a9530fb7283d7a9c77db25f31ef8888",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d69b0/primary/compiler.log",
+      "log_sha256": "7ae793d6402e09faea0755eb69d4797a95474e9b356f7e0d251707abdf6490cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "entry_pc": "0x800d6a08",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a08/active-001.json",
+      "sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+      "raw_goal_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+      "source_sha256": "afc17820fd5c813f6a803494f7308fe6f57dbdf05f226f14987511940ac5afd2",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a08/primary/compiler.log",
+      "log_sha256": "a651aaa345f5128ce7955cafea6663a9c3d825d6f3142a3cbef52c4e44d9325a",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "entry_pc": "0x800d6a08",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a08/active-002.json",
+      "sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+      "raw_goal_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+      "source_sha256": "afc17820fd5c813f6a803494f7308fe6f57dbdf05f226f14987511940ac5afd2",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a08/primary/compiler.log",
+      "log_sha256": "a651aaa345f5128ce7955cafea6663a9c3d825d6f3142a3cbef52c4e44d9325a",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "entry_pc": "0x800d6a08",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a08/active-003.json",
+      "sha256": "f215782a52aaa9bb729eb5abd2dc0b99528738064be05e0ccfbdfedab03714b3",
+      "raw_goal_sha256": "e7e20080e6d47636d7d21548c965add4550dea3dfa31ce1c31eb3d1955ea4d9a",
+      "source_sha256": "afc17820fd5c813f6a803494f7308fe6f57dbdf05f226f14987511940ac5afd2",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a08/primary/compiler.log",
+      "log_sha256": "a651aaa345f5128ce7955cafea6663a9c3d825d6f3142a3cbef52c4e44d9325a",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "entry_pc": "0x800d6a08",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a08/active-004.json",
+      "sha256": "29173104f0f940fff4bc60474ac9e586e4d754e91aa8ffa9b05f8580204b3712",
+      "raw_goal_sha256": "5a9b12831d38f9edeb9f79ede0bae77db9001fe821879eb7c5eb253e63ab1bbc",
+      "source_sha256": "afc17820fd5c813f6a803494f7308fe6f57dbdf05f226f14987511940ac5afd2",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a08/primary/compiler.log",
+      "log_sha256": "a651aaa345f5128ce7955cafea6663a9c3d825d6f3142a3cbef52c4e44d9325a",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "entry_pc": "0x800d6a08",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a08/active-005.json",
+      "sha256": "d8e7af8c84c31156931a38fc97683ef9601f226addc9e6e72ac85ef09d3c300c",
+      "raw_goal_sha256": "cc704ba1299b9cd62c19f939b982ff21f72bd74e3bed436006615e06d2596a9e",
+      "source_sha256": "afc17820fd5c813f6a803494f7308fe6f57dbdf05f226f14987511940ac5afd2",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a08/primary/compiler.log",
+      "log_sha256": "a651aaa345f5128ce7955cafea6663a9c3d825d6f3142a3cbef52c4e44d9325a",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-001.json",
+      "sha256": "be67b77f9c1e3a67309d593a278a1fd9dbeca0556cd27221e7f59cbb3c54bdfd",
+      "raw_goal_sha256": "e256be0170c6dcd49de9b644894cf30bebb6eff5a34971e5e2b4aaa8eddeed60",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-002.json",
+      "sha256": "dca0dc0150b56e5e62aa8e3633f4ff8ef1c3b9ee456cc4b56420772113a7e1ec",
+      "raw_goal_sha256": "5342dfbb8c1a72b1cb3af91772846e908e4ec6bf9c14f2b606b8ff8233a4593b",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-003.json",
+      "sha256": "ade0ad59987a2c05aa1dfd3a0c3b97609b2f32a33768397f4800b775102f8d6b",
+      "raw_goal_sha256": "21663d3334bba1c16e67eb0418e505c550c0a81e616ac5f81b6a2c29132fd618",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-004.json",
+      "sha256": "50ac9845dff1d6f64efdb7ff294cd41d2c0b93d10c2f20ee54a9fb728cbbc618",
+      "raw_goal_sha256": "ce72bca6dfac8f72bdd98a9f7def92b7ae69c905c4f66f0eb928a1b0b913eabd",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-005.json",
+      "sha256": "0351fa6a524fd4cf0b1d9705d2e5c40f2e38fae4e7ea730f33b1031aef176619",
+      "raw_goal_sha256": "079e9f9d7605129f19346ff22f088e3d47d6edb99c5f9c8959f60a12f6ffe449",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-006.json",
+      "sha256": "69c3b5c6b7b9a90943746f09c590a36f04f193ce4b376dab4f2a450404bb287c",
+      "raw_goal_sha256": "5b10ae1f29b415beb390df585e5ad441b82b139a9daba0ba968997bf537364a5",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-007.json",
+      "sha256": "dccd0d9f39097df405ca1ca9a1048272f08f7919db8759ba0f60f5e7d23dc932",
+      "raw_goal_sha256": "5cf26321f02f15bc9351f13e2af320b0b6510d924e0341676ba92c61a793e4a6",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-008.json",
+      "sha256": "d1b286f69295f581c680783dd3c334b54fb8aec75c5170aee9097d7cef2feb63",
+      "raw_goal_sha256": "8973be66a611915db7ec95570476330cb1acc32c6b3ed1949242f151798da5b6",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-009.json",
+      "sha256": "9afc8b0c5bd7870f3f1fa32de9fbb86575124c120956a3597772f5e5dc43c609",
+      "raw_goal_sha256": "480421a45e3a2ee1c77a6377b721cc7a20c0cd478ca4129e334595363e347d6e",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-010.json",
+      "sha256": "621bf098511b8f9f01c6f67d9303830d856c732b95d9d549a9bf12b53aac158f",
+      "raw_goal_sha256": "deca3a5783703ef0cb4b849d20eb6e81fff67e0cae1d3a58c54c130475231d74",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 11,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-011.json",
+      "sha256": "e1365c1d55a2022a01a2e4e594f61857b3d45ddcc305930b792af02be8b37602",
+      "raw_goal_sha256": "bbefc39803ee1d9b70dfa6d070c5f528f252959a88c7c2d6e124ea0859de4dfe",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "entry_pc": "0x800d6a24",
+      "index": 12,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a24/active-012.json",
+      "sha256": "a23d234d24d5971d21ef0e02872568e5e34a6c64ffc36f37487694382d955a01",
+      "raw_goal_sha256": "3057bfe5978a8f3d7765c951999bfef0a1979114f0424b9b60334e31a7f0b943",
+      "source_sha256": "66809d4ff0bef4fc82eef2225adad6886dd74a64f835c209a347ca0477f9d6bf",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a24/primary/compiler.log",
+      "log_sha256": "58d9d092700af79a4f85279535b37949e5f12e5baa7375ae16296bdc295ab415",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a38",
+      "kind": "native",
+      "entry_pc": "0x800d6a38",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a38/active-001.json",
+      "sha256": "9bfd9c0db4ac299c42ee0b86fe248a66d9a863ea596acb9cbbb47596752184cd",
+      "raw_goal_sha256": "532c125dcf450d3bde2e446edbe1983bd011661f8f2f7ef27ff5502b15b49345",
+      "source_sha256": "76ae7f37ccbb1f0ffd21778d81209bf24b355de4e1fdd3840ffe309434c86ed9",
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a38/primary/compiler.log",
+      "log_sha256": "8cc25fc0273925fb95a889856a08463810d187b61553b8456ee95a5268ab93a4",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "entry_pc": "0x800d6a40",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a40/active-001.json",
+      "sha256": "0cbefeca91c7a71c7f4b00ab1d351fc4476d09274345e050b8efd41761de680b",
+      "raw_goal_sha256": "afa63e23df42147a628a4f357e3f7a613097286bfc4da8b5d283b7fd3ac69fa9",
+      "source_sha256": "be03e8f5ee6578adbd4147f65893aa8e483b9627795d7ea3eb32ee0075efa3b5",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a40/primary/compiler.log",
+      "log_sha256": "5becbe3c783d14c8953e380a02a456131724ee339559bbe0ddcb90a6dc5f6b4c",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "entry_pc": "0x800d6a40",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a40/active-002.json",
+      "sha256": "77b1314ec13c46e25902b9c822f9ebb45aee36dc3793d72a5e3b734c16e47521",
+      "raw_goal_sha256": "d180378e8c8f85104d40e9265a339edce24fcd4b5306f946aa0eb297a3490ae8",
+      "source_sha256": "be03e8f5ee6578adbd4147f65893aa8e483b9627795d7ea3eb32ee0075efa3b5",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a40/primary/compiler.log",
+      "log_sha256": "5becbe3c783d14c8953e380a02a456131724ee339559bbe0ddcb90a6dc5f6b4c",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "entry_pc": "0x800d6a40",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a40/active-003.json",
+      "sha256": "dbc92fa123f971c2a8944423c56d3254eea38db4fac62e213b496559ab709cb5",
+      "raw_goal_sha256": "a190f232d90a5425918cae87ba19d598be166f906598d19d06e0282bec1fddd6",
+      "source_sha256": "be03e8f5ee6578adbd4147f65893aa8e483b9627795d7ea3eb32ee0075efa3b5",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a40/primary/compiler.log",
+      "log_sha256": "5becbe3c783d14c8953e380a02a456131724ee339559bbe0ddcb90a6dc5f6b4c",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "entry_pc": "0x800d6a78",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a78/active-001.json",
+      "sha256": "b83ccf0971de5955c3c6a252fc67d12c03812f02250731f16eb7e15d06976793",
+      "raw_goal_sha256": "acc895d15a6019b2b71f8584149c3dcd0dc25f26ce42dee59e0d16eba53645f1",
+      "source_sha256": "b1b7e17093324d07db3585a2e97dd4533851ffeb35256be9856aaaf788f34cb6",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a78/primary/compiler.log",
+      "log_sha256": "8dee6158e896414767643617b764e77f0b4a38749d289c0ebe84748557630b76",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "entry_pc": "0x800d6a78",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a78/active-002.json",
+      "sha256": "3c6d696d986bd0542c088e4dec201ec9ba6e16ba239636ace5cfd8d90fe4df02",
+      "raw_goal_sha256": "65fe573a7935c27c780d84cec0e60e9d6bae00909bf448b80ed2bad1a09c25e1",
+      "source_sha256": "b1b7e17093324d07db3585a2e97dd4533851ffeb35256be9856aaaf788f34cb6",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a78/primary/compiler.log",
+      "log_sha256": "8dee6158e896414767643617b764e77f0b4a38749d289c0ebe84748557630b76",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "entry_pc": "0x800d6a78",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6a78/active-003.json",
+      "sha256": "12fbf0243170ba2296d0fa91afdfe777701b7dfbb704bdd2f2b8a87e509bab2c",
+      "raw_goal_sha256": "c2d574a03f4149594580e8dbbb6770ef75680ed6f57f6e75f36e681b8ed19153",
+      "source_sha256": "b1b7e17093324d07db3585a2e97dd4533851ffeb35256be9856aaaf788f34cb6",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6a78/primary/compiler.log",
+      "log_sha256": "8dee6158e896414767643617b764e77f0b4a38749d289c0ebe84748557630b76",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "entry_pc": "0x800d6aa8",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6aa8/active-001.json",
+      "sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+      "raw_goal_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+      "source_sha256": "5bcf470798bf04aa9b132743d8592f80586ae7bc25019856b5ff818cf38ba901",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6aa8/primary/compiler.log",
+      "log_sha256": "e91e35d2757adff7a5a13546880cb25ca5148b214f0a2bcc3728b800913c231e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "entry_pc": "0x800d6aa8",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6aa8/active-002.json",
+      "sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+      "raw_goal_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+      "source_sha256": "5bcf470798bf04aa9b132743d8592f80586ae7bc25019856b5ff818cf38ba901",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6aa8/primary/compiler.log",
+      "log_sha256": "e91e35d2757adff7a5a13546880cb25ca5148b214f0a2bcc3728b800913c231e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "entry_pc": "0x800d6aa8",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6aa8/active-003.json",
+      "sha256": "4105f9146d36bd47cff578e03fd204bafdaf46da64d05169c984dc4fccb57244",
+      "raw_goal_sha256": "550f92f8c807a29a6a788f657108f87800d4e609c8302b2180b0fad770c05195",
+      "source_sha256": "5bcf470798bf04aa9b132743d8592f80586ae7bc25019856b5ff818cf38ba901",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6aa8/primary/compiler.log",
+      "log_sha256": "e91e35d2757adff7a5a13546880cb25ca5148b214f0a2bcc3728b800913c231e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "entry_pc": "0x800d6aa8",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6aa8/active-004.json",
+      "sha256": "0dc82012ff229f90ddf4186b2048c561a624d51d2f4b6ba30f6922fdcacb3dca",
+      "raw_goal_sha256": "ace0b5b8289931556fc68c35afea375f867b941d4ea5bed55716f2fca0515757",
+      "source_sha256": "5bcf470798bf04aa9b132743d8592f80586ae7bc25019856b5ff818cf38ba901",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6aa8/primary/compiler.log",
+      "log_sha256": "e91e35d2757adff7a5a13546880cb25ca5148b214f0a2bcc3728b800913c231e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "entry_pc": "0x800d6aa8",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6aa8/active-005.json",
+      "sha256": "03cc6c03e459b32eec3e9f9af132a766a2f2efce4bec7fca4cd1141827acd74b",
+      "raw_goal_sha256": "54cf6b06a5423ff600655a7ea7710be6f5bd937b80a813b1a7617f67f68b1f1e",
+      "source_sha256": "5bcf470798bf04aa9b132743d8592f80586ae7bc25019856b5ff818cf38ba901",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6aa8/primary/compiler.log",
+      "log_sha256": "e91e35d2757adff7a5a13546880cb25ca5148b214f0a2bcc3728b800913c231e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-001.json",
+      "sha256": "e3c35c9240a5993055e8b745ab3f712ad25a05ab2dc5d00aed82f468dcdc0bb1",
+      "raw_goal_sha256": "1d5f66e7243564410d1a1aaa3cdf86ab419ced6754cab2ae5e79a86a805c6472",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-002.json",
+      "sha256": "64e55c5721ecf95ab871e662243a9ea701f60013f2c543b4b06ede1c4ad45589",
+      "raw_goal_sha256": "6360d1bf82497b92376cecd3fdb7c7c8e1f5a388585a7bb0b413a8f2a30e0d9b",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-003.json",
+      "sha256": "fc50e3be2f65a064487fb8c76b91481841f5b35166dc7acd7ba2ee901375aad2",
+      "raw_goal_sha256": "63ac32f14cfbdf12f7354e65ea902581641a7ee3e948117143a6e48e66ad676a",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-004.json",
+      "sha256": "106134488a15d4e81301c53b8efad7b01dcd9235cb2a3ab83eac53eecc8f5427",
+      "raw_goal_sha256": "d9b494b42f46717d043d3b982ba458b3d962e3cd7bcd03d6454489327cc3b83a",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-005.json",
+      "sha256": "a6d006d619a6c9ba76d04bfb8038e2dac664a27647130f0364d90c9f6887aff1",
+      "raw_goal_sha256": "f61e6e03bdfaf1913d0a2bba3ab793235b48f74b7a6a0f6a036da03657b6cf96",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-006.json",
+      "sha256": "0127fa448cf40f3c44bca4d54c349187fc05d83046fc05b990f02dbe47643520",
+      "raw_goal_sha256": "1d489e3761d7ea6bfb37fe9ebe155b6bd8421fefb175e4840c0c52b26a2c390b",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-007.json",
+      "sha256": "e7d4e77a067ded7eda1bd8f11def2747f85f9fd92e1c03f7e4fd538abc76e95d",
+      "raw_goal_sha256": "59faf74e4437f635acf743b51b990c6c56a8c8b973e459fd19df49446024415c",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-008.json",
+      "sha256": "5ff4284a45f2e330d33bb930e6d78509a3f91be50846e4434bd4d5350738f7c3",
+      "raw_goal_sha256": "9a31593751c95e4119aa00bbf55edf20203bcb1ed386704298d82f1192589832",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-009.json",
+      "sha256": "3e4a10f7beba47d02a00979bb5e52d94a38b234e1fe6a92cf4a671cbb23d3b73",
+      "raw_goal_sha256": "5220b75ac6592b28552e6803270ec36b58dc73919d87693df07e12acb0b5db08",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-010.json",
+      "sha256": "dc70051d3afb79674960e5c77475976d3a9f8c036f09b9b02d7a018fa165af24",
+      "raw_goal_sha256": "bb3115c5a2255966cf55d41cef62cf9fc2f91de4e3656d0ee26e4683123973c0",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 11,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-011.json",
+      "sha256": "dfb5cb04d46e7099977139857b0c1d5f2d6652fb3b13e6a2ab62a86907eb9f63",
+      "raw_goal_sha256": "ae10cd251f12f09aab182878c97ff27e9f64916a1fdb5e3f3f638be9ce9d4667",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "entry_pc": "0x800d6ac4",
+      "index": 12,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ac4/active-012.json",
+      "sha256": "16fe6292a3b9dd3312e7ec67746d944b70829ef1916457782f9c497bc7b95648",
+      "raw_goal_sha256": "0d6c93a4a7414dabf9656838d9bd70e8877b5516981d2a35a8cd5814f9d3690c",
+      "source_sha256": "af5be5a856ff82ff9464e282b91e2bf273a9449dd69a12b022a6a95d915ae74c",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ac4/primary/compiler.log",
+      "log_sha256": "f37e9c6fdede174896dde023b0dea6fb9219d01be3589554928e64d4fdf347f3",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "kind": "native",
+      "entry_pc": "0x800d6ad8",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ad8/active-001.json",
+      "sha256": "055e8fd8fb9514b7e3dd2b4482df9c364994146c6ba391894e42a07135ec5cd2",
+      "raw_goal_sha256": "9a02ac241d1268f98e41513ad27db992ae8b668152ec3f68f999754834c0c802",
+      "source_sha256": "470214a6db17fa6483afa66fae3509a0b152fabb175bc9e2f9eb04ce59a7e7b2",
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ad8/primary/compiler.log",
+      "log_sha256": "5e0b15d143555eca7e1905b7edbe21e528cd4e3c85445638c1090c02f3f39f62",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "kind": "native",
+      "entry_pc": "0x800d6ae0",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6ae0/active-001.json",
+      "sha256": "326969d0331ac0b9c76bdd0fd3ead855c0dc0f3214ce4034fe71485690b1bd07",
+      "raw_goal_sha256": "f54daeb5894fbf7b6d4a3179e9126fd5f5a598241bf9fd79cf0355c2335973a7",
+      "source_sha256": "988511bf233fb4036ba709e83d794e2117f0f1c47b3cc1165342f9325265eed0",
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6ae0/primary/compiler.log",
+      "log_sha256": "946a03ed025340aec4d69b4e0a4ed964f063ced7a3510b6373a20f798996e19c",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "entry_pc": "0x800d6b08",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6b08/active-001.json",
+      "sha256": "3db5d55ea3e0da703defa2f9fbb51bd316e00b99ae92422c18091357fa0b972a",
+      "raw_goal_sha256": "779b3a721744e25a7bd17d4a2a1b3389bcdaaa6b3c67216ad9d9fa5b59fdebf8",
+      "source_sha256": "3c43620e089a9c97caf1a8b5af856b9c213ef159c529ede4d222d8f98a3e74ff",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6b08/primary/compiler.log",
+      "log_sha256": "3c314aec3dfe86d2de94153660cec06d8d9b5d5fa2b4285039f958a873a8908e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "entry_pc": "0x800d6b08",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6b08/active-002.json",
+      "sha256": "160bffecabd7406b7557c529430e513b846223e4f939072546ce39de80e5d269",
+      "raw_goal_sha256": "265cc00ca7eb730b44b172a4c203a0734703631cf2b9142b5753b693cf5a8691",
+      "source_sha256": "3c43620e089a9c97caf1a8b5af856b9c213ef159c529ede4d222d8f98a3e74ff",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6b08/primary/compiler.log",
+      "log_sha256": "3c314aec3dfe86d2de94153660cec06d8d9b5d5fa2b4285039f958a873a8908e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "entry_pc": "0x800d6b08",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/block_0x800d6b08/active-003.json",
+      "sha256": "cb7931d43df6f2b119d3014d0fad822c58a1f7c13ad2d16c83196195ac2be704",
+      "raw_goal_sha256": "bcf259e1107cf9fce2559c25db01681a226507300c4667bc02940d5fb7fb7d08",
+      "source_sha256": "3c43620e089a9c97caf1a8b5af856b9c213ef159c529ede4d222d8f98a3e74ff",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/block_0x800d6b08/primary/compiler.log",
+      "log_sha256": "3c314aec3dfe86d2de94153660cec06d8d9b5d5fa2b4285039f958a873a8908e",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-001.json",
+      "sha256": "10ad7f870798e294bf367a97f872d619a7a17adc66c8718316afcc6a3ac01b8e",
+      "raw_goal_sha256": "ca8942d3baea3384afda1c735efebc76062bcd5ea3885a990a5d1b534094c306",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-002.json",
+      "sha256": "36c7825607485ef574ec10be1b46b000e8eed02813d13b13020f1057ed600f22",
+      "raw_goal_sha256": "9de2efe264fcee70f00056fbcedc4aa2d5496a2bf20fbe069428005557cd3510",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-003.json",
+      "sha256": "0c68865746a79e4a653695b858e6c075fa38e4ffd3db198cfd1400b13e1b0295",
+      "raw_goal_sha256": "ba0d02f9d5e45a53902e2ae4a5b612f4dd493271a1a87b6ad71c98631b595eb6",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-004.json",
+      "sha256": "44570b188f5bdb1c7fbaf66391eba15782aa896ffbd09b0f8a6a7c9d3a6a472a",
+      "raw_goal_sha256": "fb22ab6a1b49bf72dcff370cb4ca7b12d666ad7ab25ea4b2ad2246e484d51bf8",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-005.json",
+      "sha256": "8609322560d166102139cc492202cc726e7723418970f17f36917bf717b6e3a8",
+      "raw_goal_sha256": "2cac0c9dade89229562c0c5ace310af61a142fc7f974996f15b6b18f6422b48c",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-006.json",
+      "sha256": "0ce7b92c87a3b7ea459712ba31131e60ff53a5aa68f8f53c057669a9f167ac1f",
+      "raw_goal_sha256": "d6a91567d708c61f3fdf1449e8ac56e1fd2f57e0788ded4321ab28b67e3f5c9d",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-007.json",
+      "sha256": "e8d1ba74c2b980a7b178a6829df7b8f3babe6769e81cd700cb652edddccf06ad",
+      "raw_goal_sha256": "081ba3dffcac343219abb8d70d65c40f3512f2596644609e4a26157ee364ede7",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-008.json",
+      "sha256": "6f65d90c1600de3e2f4d4d5f2233dc4611cd76848fccbd9865a564d8bffaf498",
+      "raw_goal_sha256": "de966f5dc27e203e66d2893becc7e1e2d929db70a4b338b4d11efe56f517bd47",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-009.json",
+      "sha256": "7b13da0e45c2c494c6b77d322ca1dac98211c261d3da244c0e93f68b4c8effb0",
+      "raw_goal_sha256": "7f6d95a3b24e7c2aba2e448d065b4f0f3f9201dbd27b726a778054107f32a267",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "entry_pc": "0x800d697c",
+      "index": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom697c/active-010.json",
+      "sha256": "27c72934510254e22912239f33daa4b1d6456eb85e63700f019dfb73685d718c",
+      "raw_goal_sha256": "5dc52b756b730790e7443ac8ef3cac9894c9a0509e2f6cfb6c92ed75d7898eeb",
+      "source_sha256": "b853b3bef88673e7c02f4dd1cf01110809fe29a214b5d5d5bd41ae01d6343718",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom697c/primary/compiler.log",
+      "log_sha256": "0b6ee938d620432b248d4522ef01190c000a7128ea731b75cf2a22116c6df9f6",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-001.json",
+      "sha256": "08eb0a815af1fc7bc2735f4d6dbcfcbcf93b565ea547c0ca08cc301049275022",
+      "raw_goal_sha256": "a703d46849aeba1ea00f421fddeb41276fa6a7a35716e652653c75fbb21fae0a",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-002.json",
+      "sha256": "7f90c6e2f8477f4166108eabfdb52193052d3d68fbd21650973fc55c4f85def4",
+      "raw_goal_sha256": "82994392f61c8be605c4579387ccaac891d0d19ecd56cdff83471cfe843467ca",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-003.json",
+      "sha256": "e6bc4de2092b6aa262ce2b662725f832c39dbd81279c8af75ce2e8a95b5ae09a",
+      "raw_goal_sha256": "42e1903e0cfdfb139786673b505eb57d118df06298601edd1430da490c7229ae",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-004.json",
+      "sha256": "c09ea44b9f6c982a8e9b71c817adea44bf0ac4a2adea09878d22cdd81a2529e0",
+      "raw_goal_sha256": "594746d71b6c014ae96cb8b47e3aa9fa06d365b2251aafa4ab66138600f9e879",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-005.json",
+      "sha256": "64e48f807c7ddf82fd0601bdf2e4075ffc33b949535f0599c76d7786e4a52b64",
+      "raw_goal_sha256": "826b25c08703e60fe14c60d325a632adff0b553f5d99b6eae130e625201d4189",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-006.json",
+      "sha256": "3f530e27d11dbfabc3dc788db3ce263b5f4dd8e83f471feeea9507a5fe95624a",
+      "raw_goal_sha256": "73fbeedc1b60868222ed0b1b06bb6f17faf833693e7262cea9a3298827029636",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-007.json",
+      "sha256": "dec7c230f1430ef9ea751e1c06a82241911e756be9860a22288882f10ff25ab8",
+      "raw_goal_sha256": "67f0405ea35feeddb03dbbad179dcd45296c4d61cfd33a1542d995e10b4735a6",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-008.json",
+      "sha256": "0819242e3158588e9cfaccbfe5e5a32bfb003939f9f67dc85d4b4a93f082df26",
+      "raw_goal_sha256": "46920f62375b8adf201477782a239176cce02f1cda4a649205ec4caf5ee563ad",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-009.json",
+      "sha256": "342d01a9c730a54b7a9e5b008dd139b83090c7f0c0e24ab999e134b0a4d873ab",
+      "raw_goal_sha256": "fa525b1884002b9c94f8c27d74cddb91c0bcc527f50a7aca3ea039afc4ca0314",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "entry_pc": "0x800d69e8",
+      "index": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin698cFrom69e8/active-010.json",
+      "sha256": "557272626b193e636f3a8fcef604cf0cbf9365954a17276d3232f8683adba91a",
+      "raw_goal_sha256": "9cadcce8bd8b1352bf448c0a166eb3c72c2961c0c7e01c390238fc23038d37f8",
+      "source_sha256": "08042df745c1f46633ae8217c4a8a81427de212ccb686639bc0f2d1f959c6d41",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin698cFrom69e8/primary/compiler.log",
+      "log_sha256": "3c549b328c1b08fbab14cdb41a3610ab01220257a5fc091c4b6220e617de43cd",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-001.json",
+      "sha256": "5cc50549dee8943b34e14685c97bd723c36ec1ce9b58f4aff929362ab8043f8f",
+      "raw_goal_sha256": "bf73e3771c4437a497474293b99d72eb65a9543772e86d1f78ae7d1ed99338e1",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-002.json",
+      "sha256": "d43f5f0526cb74fc9982ccc9a3c715f52fee1f0130c4b40dfd2bef65ebce48c4",
+      "raw_goal_sha256": "ba9d523e94866984e16ca2a40219e2a3fb68c7d850daac5ec0864de843209291",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-003.json",
+      "sha256": "c0a38d90210379f007f8bc382629fc8b0758ea27db2968e6dab7308be47aa186",
+      "raw_goal_sha256": "2ba8ea20ae37912bc06660233c0d1b847e968012db3f18ac16a0deff8711c012",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-004.json",
+      "sha256": "0c807df5c187dd6284a1c1361c48412c4a2894203f1243c300705ee4aa14d742",
+      "raw_goal_sha256": "a96e286530cd1fdb5921f0682f3654b71748a4b9a95237371cb946cfedcf871f",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-005.json",
+      "sha256": "3514e64cd927ff71a344f3ef06aaee63a5c08f0314ace2d94cd192a8c73e1f20",
+      "raw_goal_sha256": "e40550ff4e6d080a080ca136b208ae97df204b2283bf707574270e2087f6bd28",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-006.json",
+      "sha256": "2c9ae329a75a52c859f4c1f55500a492d7bcf21999dedef0fc92c8b1289048d7",
+      "raw_goal_sha256": "cb0cb69b4399194eb46970096cb7b6d2dca46420673eb38ac4c80ce359bacc02",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-007.json",
+      "sha256": "5826ba716fba270dd9d9a62165075dd0f1d7c04b2f87a3075cba415c70165a78",
+      "raw_goal_sha256": "5b3dc57c241475ebb1d6ef2643033cab1e095388d4f568da9473fd69ce009a68",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-008.json",
+      "sha256": "379dd35d3f6636882807f8cd8da35eeecfdbc4b59923e7eedb78bb46fd83c5d3",
+      "raw_goal_sha256": "b4517b2d95de14f782c7bee46f817d17f0ba18ee6332e61b758bfc9b7ff996dc",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-009.json",
+      "sha256": "e76ec0b93a3e8bf30d96c94ff0018359247b37e4feb098dcf4f82d5c98586048",
+      "raw_goal_sha256": "bd6864ce41851cef4ec97afcd4e1f077b5d7e1cd2e59d383a8e9710f6f356c35",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-010.json",
+      "sha256": "78905d9bbde47d95d5f7443565d64b2d13a2a643cf92d3b5f3e2a2b4ae962038",
+      "raw_goal_sha256": "8401fa7e1bd710685c16e1e9f8af548675e8fcf21bf097d5ee27a3c914b5c5f9",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 11,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-011.json",
+      "sha256": "72d11779ac605ba8d233ea49105fd27cb34599cc6b2244ac33958640da9c38fb",
+      "raw_goal_sha256": "ecdcf413ee99f8f9b68a2581ecf3d96e7a02999ffe72374afe53d81225fb0647",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 12,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-012.json",
+      "sha256": "3ae126bf5e6172d824c9db8459dabaa2352bf9da6a054304b5aed96ec00f819b",
+      "raw_goal_sha256": "7daa8af56d119d632bde2d3b7923a41cad745eb5f8ac52ca024b681f5014fffe",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 13,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-013.json",
+      "sha256": "f7207b3236662df69a2867725e8e2d1193d8a05d667062ec155196edc2270641",
+      "raw_goal_sha256": "62c3ac8a18cf4e1ecf42333b5775e273981ea582808e3958b0808bed273beb6a",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 14,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-014.json",
+      "sha256": "554c1f7b29bf880f66b14fe078e966b7fd91cb1efb0f004edd71d58dcdbcf519",
+      "raw_goal_sha256": "556d96c63cdcd1fa4b107f746b8320b605e124396ae42de358230294d2b10f01",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 15,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-015.json",
+      "sha256": "a23cb1105961c40b04fda4e46c8fe6977fbd10b13a74951eb4363a7c55d73357",
+      "raw_goal_sha256": "c2d77014069387149a2b425632f05a3b90bb8bd07c4c928c2e2421c1dd3c4909",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 16,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-016.json",
+      "sha256": "43115462bf6c055b7a21e36a8f83a1577d95018fc45d98af4d4715fb583231c0",
+      "raw_goal_sha256": "021c67924022b61403d85423da2dd0561ab3f76f1e8c5fddcf93376c02cf4b9c",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 17,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-017.json",
+      "sha256": "6c58e696f0014b2652a9fc2c3ea5a5c74224225db3128a42fc1eb5a3715174d8",
+      "raw_goal_sha256": "9c70a6dc6a0686282fde52f335911f54240bf5952c3a7c2a5c770aa148f1f044",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 18,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-018.json",
+      "sha256": "86cd30db0a89d5e38cb0c7c9de2464d5bee33431119e1efc8176a2ec8559365b",
+      "raw_goal_sha256": "11174b9cd9be3c11987f5f6acadc93e7bb824c203900a51392706cdf5ab7c80a",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 19,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-019.json",
+      "sha256": "09d277f54893f81d67551e0201270c7891f5ee1fd9529ae34fe97ff2358bbffb",
+      "raw_goal_sha256": "7158f10555307345c944e6e43575b926907ac54442f18d2ad08b3924a068d9ac",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6a24",
+      "index": 20,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6a24Backedge/active-020.json",
+      "sha256": "6e26158eda28b132214272715fa46406b340e69d500dce4b83f9f00fabb1e3a0",
+      "raw_goal_sha256": "1050f9d6c701dc8b5ccff50a304c93285bd5de34348e0d4841b710b073921b93",
+      "source_sha256": "cbb515dc033d7c7fbbf720eff05f9c9c1cc8565899d32c72a25e893e698861d8",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6a24Backedge/primary/compiler.log",
+      "log_sha256": "078452edb389a521f54818bbe6b60730dfcef87b2ac184ef8621b30101760ffa",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-001.json",
+      "sha256": "c3582a0972d70bdb57936b0c7ccb457080801cfe580c9753dfe6e04bd19a656e",
+      "raw_goal_sha256": "38cde1f88faa59a378cc003064826a0bfa5c756b7989912aaab68a220d1b5192",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-002.json",
+      "sha256": "50f862c7d3dface04803230d7c149095e97b491ff005a8454b9e99f1b772b433",
+      "raw_goal_sha256": "c4346216e6878a14fb7ea493408fa1e21ce86ae73a73cb63cc98147cfeebdd2b",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-003.json",
+      "sha256": "1b86f638569e5aa233bc61cacc1d1826bc53ed8953dfad2caf30a61398a669ad",
+      "raw_goal_sha256": "d144897d08fc2aa9b6116f9fd1ccf6254d33f727703b6dfbc001cde265a2ce4d",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-004.json",
+      "sha256": "f118d0a74fa7ab5fb4e6da2a268c954a6281318a5d487518e43162606c75dd9f",
+      "raw_goal_sha256": "c57f06b8be1a341ed7af93af783e6f52390d44275ffbc15c816d81db778e80db",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-005.json",
+      "sha256": "3dd1b1272eb0480643170ca4af61cda5dd3c60912aaec892a5dbdcd58a025afd",
+      "raw_goal_sha256": "e700a987ad3c1bdeba41d2d1e262cd31bb058a62d7753b722e3ea975c57a3206",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-006.json",
+      "sha256": "0a4609f5c322f95119f2cd89be230b9a91ca6eac9d64d3b40838811cce14611c",
+      "raw_goal_sha256": "97acc91df66a89a6e75b35bb73781854fa6d3faa2edc118f02cb27a36dddf5af",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-007.json",
+      "sha256": "232136382b5c5e223d58e218b979abd4422363e0dc216fd9fa72f46675a2adb2",
+      "raw_goal_sha256": "50d484923aaed396336a6e57488bab5ebae4045f51d1cd5f30e84b95644f60d3",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-008.json",
+      "sha256": "325311c24eede742634f178b14402d4e04f8f745bf6e050cb24b597a85f194f1",
+      "raw_goal_sha256": "2650540b0dbf4de0e5b8143617e8915a9e8afa2ecb3fd4b9db29905ac50f3c80",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-009.json",
+      "sha256": "44e3f728b6bc48f3338ec4f11ad2a451a93d1d8170f554fd1c83382abdcaceb9",
+      "raw_goal_sha256": "25d9ba69f3604227ed2b2116687d7e186fa41c517dd3e2f36d93ee4a55966685",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-010.json",
+      "sha256": "dae06f25e0046249d37068e0646e28d44f35d038d3e415f5caf76ff8d162cd7e",
+      "raw_goal_sha256": "2b7798c951f7ae9d72fa2a5e3d0ee2bbba4a2c029a42192304b8d30c578090b6",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 11,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-011.json",
+      "sha256": "cc1ba3be95341db15a161ab9b7d55039cf961564b1b9faf2298e8f40c1e0b92c",
+      "raw_goal_sha256": "61e594ae799667729f10971297a27eda0530a550ec4f9288741037bec402efd6",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 12,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-012.json",
+      "sha256": "c2a83121ee12f8160601fa889a80bd5ea1b5bf963cfb5925b91e841bda28976a",
+      "raw_goal_sha256": "5d8d597d7c405fc785d5e250234f48d39f6525f0ca81d42441363c6aeb3f792b",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 13,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-013.json",
+      "sha256": "934e75856967f7781f5ace82474e4ce8509e2d4e4176e986e9e8eb27d781a7a9",
+      "raw_goal_sha256": "89634be68431f5c45808cd0f1f939f3c296397befde3bf8e22684ddd7fbf1e56",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 14,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-014.json",
+      "sha256": "d437f21c533a9a562182cbe32c55d3056c2b41614254984c0962dc07976139f7",
+      "raw_goal_sha256": "f5b37cc3ddc861777003350019c06280ef12c8d5fc8e9d0f421a81a4e6cbbe72",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 15,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-015.json",
+      "sha256": "959ed9becd744b0139fbd6ad776daa81ca12c97f8546d4048c1af70401955eb2",
+      "raw_goal_sha256": "a8c2bf31705eb070cf2abc3a8d54d3d1462e769c55b66fd273d8c791e34fc9d0",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 16,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-016.json",
+      "sha256": "680b029b1f72e477d579ba642290df62bd097647a417eb806650158f71c23450",
+      "raw_goal_sha256": "5cd208972ae5dc5f20eb067be8add116418a4673f840d81175ff915a87aae2d8",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 17,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-017.json",
+      "sha256": "6c95a03d82a9892c7e594af0e0baf1566ff3e96c3f8c501479cf2d647f13cd9d",
+      "raw_goal_sha256": "1a10d0a89a805846b0a4e438444097b637f382ad5e602a35e2afc85cd710f8aa",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 18,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-018.json",
+      "sha256": "cf9ef1d7994909445480f6b398118d877413785f1763a4d9c7b9118f1ac85daa",
+      "raw_goal_sha256": "dcc27be071b42d22bf855689eaf1c28c504d48f98ab2f98f78aa56d7b04073d9",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 19,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-019.json",
+      "sha256": "48a5c87148991823e4ea8a2da18593468e08d3cb8a28785a2e5774ebc05f8b4c",
+      "raw_goal_sha256": "e61f2597b2d588f70a505313f32dd947e85838031088aa4b983fea190d7fc6e6",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "entry_pc": "0x800d6ac4",
+      "index": 20,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/captures/decodeItemJoin6ac4Backedge/active-020.json",
+      "sha256": "acae4bfbef13e7737e65b029c9302a37b02a06687aaba4a0484f2627b650962b",
+      "raw_goal_sha256": "a0c3cb0f29038ea4e0c9d3784f56bc06b66684c55b58a110c08eb96218a37fb5",
+      "source_sha256": "4d3f4ceb63259335e4328ca97e3bff09e3c8abadd558b3422a26d021fbdedd8d",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-pass-002/decodeItemJoin6ac4Backedge/primary/compiler.log",
+      "log_sha256": "f948e9339e01cface92da3dffb57dc4a45a29d150018dc7a2b7b2c78eb9ae347",
+      "auxiliary_groups": {
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    }
+  ]
+}

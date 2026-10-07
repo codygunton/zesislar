@@ -1,0 +1,449 @@
+{
+  "fixtures": [
+    {
+      "audit": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/8f/8faf8450e788ccacba3977e6bd313e3e4e7072fda90231577fcd0e727b06c2cd",
+          "bytes": 2142,
+          "sha256": "8faf8450e788ccacba3977e6bd313e3e4e7072fda90231577fcd0e727b06c2cd"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/AUDIT.json"
+      },
+      "calls": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/36/36632f60ecbf89c2dff2ce6d090e5b2074c3ae486ade99f9026f97f33ec7a04a",
+          "bytes": 177169,
+          "sha256": "36632f60ecbf89c2dff2ce6d090e5b2074c3ae486ade99f9026f97f33ec7a04a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/calls.json"
+      },
+      "name": "rule34-cost-mcp-preflight-003",
+      "sources": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/e6/e6033555211db0168dbf4af77d5ad5e31428319e1213348dc58443d14e8bda7e",
+          "bytes": 1176,
+          "sha256": "e6033555211db0168dbf4af77d5ad5e31428319e1213348dc58443d14e8bda7e"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/PREPARED-SOURCES.json"
+      },
+      "statements": [
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/exports/state_29.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 29,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_activation"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/exports/state_32.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 32,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_excluded_classes_absent"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/exports/state_38.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 38,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_counter_three_goal_smoke"
+        }
+      ],
+      "verified": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/63/6337d1eabf51942cd49633dc7fcd2cae14018182eeb087aa4a15865498161bb7",
+          "bytes": 2254,
+          "sha256": "6337d1eabf51942cd49633dc7fcd2cae14018182eeb087aa4a15865498161bb7"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-mcp-preflight-003/verified.json"
+      }
+    },
+    {
+      "audit": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/db/dbb598ace69dffe5b7241fcf5d62a405fd6a7b289654b96ede29a716d806388f",
+          "bytes": 6957,
+          "sha256": "dbb598ace69dffe5b7241fcf5d62a405fd6a7b289654b96ede29a716d806388f"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-observer-mcp-004/AUDIT.json"
+      },
+      "calls": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/88/8856d9d9810ff5da3aac05e99ab5dc27c8c0bc20794265cb49678920f5c1798a",
+          "bytes": 237695,
+          "sha256": "8856d9d9810ff5da3aac05e99ab5dc27c8c0bc20794265cb49678920f5c1798a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-observer-mcp-004/calls.json"
+      },
+      "name": "rule34-cost-light-observer-mcp-004",
+      "sources": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/2f/2f10f2bbddf711bd63eb91529f234cbe730e2dadd4a882ea6edd81d2652ebbed",
+          "bytes": 790,
+          "sha256": "2f10f2bbddf711bd63eb91529f234cbe730e2dadd4a882ea6edd81d2652ebbed"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-observer-mcp-004/PREPARED-SOURCES.json"
+      },
+      "statements": [
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-observer-mcp-004/exports/state_5.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 5,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_counter_three_goal_smoke"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-observer-mcp-004/exports/state_15.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 15,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_light_shared_evar"
+        }
+      ],
+      "verified": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/50/50837d30774f22fcf40c69b3ef7cccb1c885557361380e07fbbd9deb84c7adb3",
+          "bytes": 1505,
+          "sha256": "50837d30774f22fcf40c69b3ef7cccb1c885557361380e07fbbd9deb84c7adb3"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-observer-mcp-004/verified.json"
+      }
+    },
+    {
+      "audit": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/72/725435cdbed285fdfb2d543805108cdce26b92f44bf49aecfb4b02a679bf7cfc",
+          "bytes": 10107,
+          "sha256": "725435cdbed285fdfb2d543805108cdce26b92f44bf49aecfb4b02a679bf7cfc"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-observer-mcp-005/AUDIT.json"
+      },
+      "calls": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/3c/3c8cba145e4af37d4cda811e1ba323882ae7fb39ba6872d8350a2172c40efd28",
+          "bytes": 132493,
+          "sha256": "3c8cba145e4af37d4cda811e1ba323882ae7fb39ba6872d8350a2172c40efd28"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-observer-mcp-005/calls.json"
+      },
+      "name": "rule34-cost-targeted-observer-mcp-005",
+      "sources": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/7b/7b0161e7c3ca80207f9dcb8731e6401fa2f1859f2444bd405ce002655ab318e0",
+          "bytes": 805,
+          "sha256": "7b0161e7c3ca80207f9dcb8731e6401fa2f1859f2444bd405ce002655ab318e0"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-observer-mcp-005/PREPARED-SOURCES.json"
+      },
+      "statements": [
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-observer-mcp-005/exports/state_5.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 5,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_counter_three_goal_smoke"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-observer-mcp-005/exports/state_15.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 15,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_light_shared_evar"
+        }
+      ],
+      "verified": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/9c/9ce6b61329989b8a2f47e9d155febed8ca824f5b232a9baf910eb04356cbb67b",
+          "bytes": 1511,
+          "sha256": "9ce6b61329989b8a2f47e9d155febed8ca824f5b232a9baf910eb04356cbb67b"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-observer-mcp-005/verified.json"
+      }
+    },
+    {
+      "audit": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/25/254e89be32c88142e8da14da10ae2787e577af357904291a859af59283cb3828",
+          "bytes": 10149,
+          "sha256": "254e89be32c88142e8da14da10ae2787e577af357904291a859af59283cb3828"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-006/AUDIT.json"
+      },
+      "calls": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/19/19f85fabf81c06a885113e442b5c3c95a3381dfd2e23d0018c2777d7f70a9546",
+          "bytes": 132671,
+          "sha256": "19f85fabf81c06a885113e442b5c3c95a3381dfd2e23d0018c2777d7f70a9546"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-006/calls.json"
+      },
+      "name": "rule34-cost-bisection-observer-mcp-006",
+      "sources": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/e9/e9813f53d28f40f95adc62359b3d8a6d2e3c8ff12983bae66444a4b462e6148c",
+          "bytes": 810,
+          "sha256": "e9813f53d28f40f95adc62359b3d8a6d2e3c8ff12983bae66444a4b462e6148c"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-006/PREPARED-SOURCES.json"
+      },
+      "statements": [
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-006/exports/state_5.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 5,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_counter_three_goal_smoke"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-006/exports/state_15.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 15,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_light_shared_evar"
+        }
+      ],
+      "verified": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/91/91edbb6621a5ef7af2eabf39116c4f2bf42669b2a50ccf1a96c58ced7567b3b1",
+          "bytes": 1513,
+          "sha256": "91edbb6621a5ef7af2eabf39116c4f2bf42669b2a50ccf1a96c58ced7567b3b1"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-006/verified.json"
+      }
+    },
+    {
+      "audit": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/6e/6e4bd4adae4bdde923b368dee50597ffc83fb1a1f7ef9757ec86b03d354eafef",
+          "bytes": 7377,
+          "sha256": "6e4bd4adae4bdde923b368dee50597ffc83fb1a1f7ef9757ec86b03d354eafef"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-007/AUDIT.json"
+      },
+      "calls": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/52/52c3d8f7b1ac237e1cc6d205ed9a4f37627b17baaf768053784ec517d54ca12a",
+          "bytes": 132674,
+          "sha256": "52c3d8f7b1ac237e1cc6d205ed9a4f37627b17baaf768053784ec517d54ca12a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-007/calls.json"
+      },
+      "name": "rule34-cost-bisection-observer-mcp-007",
+      "sources": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/bf/bf0287dd6aad9288d0535bf3cea8b2d84a38807465f033196918cad0c6ecc5b1",
+          "bytes": 810,
+          "sha256": "bf0287dd6aad9288d0535bf3cea8b2d84a38807465f033196918cad0c6ecc5b1"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-007/PREPARED-SOURCES.json"
+      },
+      "statements": [
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-007/exports/state_5.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 5,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_counter_three_goal_smoke"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-007/exports/state_15.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 15,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_light_shared_evar"
+        }
+      ],
+      "verified": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/eb/ebadecc9bb3ae0d047d69725f1dacb72d1c769107c8808239a5189ce77ac7337",
+          "bytes": 1513,
+          "sha256": "ebadecc9bb3ae0d047d69725f1dacb72d1c769107c8808239a5189ce77ac7337"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-observer-mcp-007/verified.json"
+      }
+    },
+    {
+      "audit": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/c1/c1ef7c08ac1ef9f0121e0520f9cc986e8ccf8ec9dd5eb62b2d54d008d5a6f850",
+          "bytes": 21897,
+          "sha256": "c1ef7c08ac1ef9f0121e0520f9cc986e8ccf8ec9dd5eb62b2d54d008d5a6f850"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-mcp-008/AUDIT.json"
+      },
+      "calls": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/e6/e67953269e2c6fbfa738ae29ccdc7fa2ee0773f021963bd627c49aa9a13cb1de",
+          "bytes": 169417,
+          "sha256": "e67953269e2c6fbfa738ae29ccdc7fa2ee0773f021963bd627c49aa9a13cb1de"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-mcp-008/calls.json"
+      },
+      "name": "rule34-cost-profile-mcp-008",
+      "sources": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/22/222539682f025e9863f36f0260d998d7332bf8b6a105cc7376b63e7b67c106e2",
+          "bytes": 1147,
+          "sha256": "222539682f025e9863f36f0260d998d7332bf8b6a105cc7376b63e7b67c106e2"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-mcp-008/PREPARED-SOURCES.json"
+      },
+      "statements": [
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-mcp-008/exports/state_5.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 5,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_counter_three_goal_smoke"
+        },
+        {
+          "assumptions": [],
+          "final_groups": {
+            "active_goals": 0,
+            "bytes": 49,
+            "given_up_goals": 0,
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-mcp-008/exports/state_14.json",
+            "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+            "shelved_goals": 0,
+            "stack_entries": 0,
+            "stack_frame_goal_counts": [],
+            "state_id": 14,
+            "success": true
+          },
+          "method": "module_m",
+          "name": "rule34_light_shared_evar"
+        }
+      ],
+      "verified": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/26/26b516a3ae2043a45d9e747e3b6e0d05fa960b42d12003c430340c625fd24ebe",
+          "bytes": 1491,
+          "sha256": "26b516a3ae2043a45d9e747e3b6e0d05fa960b42d12003c430340c625fd24ebe"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-mcp-008/verified.json"
+      }
+    }
+  ],
+  "native_certificate": null,
+  "scope": "Auxiliary proofs and exact native prefix/state checks. No complete native contract certificate."
+}

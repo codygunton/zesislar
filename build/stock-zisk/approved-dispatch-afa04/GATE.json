@@ -1,0 +1,16 @@
+{
+  "root": "afa04ce1795ae24348f444a0d35f4901caacb015",
+  "result": {
+    "AGENT_JOBS": 6,
+    "FAST_JOBS": 6,
+    "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/agents/worker2-approved-afa-gate",
+    "changed_inputs": [],
+    "elapsed_seconds": 64.28872626996599,
+    "exit": 0,
+    "seal_sha256": "d718bb670af5317c2a00390fb1aa9b2433508b0c79e58a8b2222194910230fb8"
+  },
+  "result_sha256": "587c983e1a024ae4ad08c3dadc302bfde5d52a6cfa25d5e57b9d02306af3d799",
+  "watcher_log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-112823-child-c-approved-afa-check-fast002.log",
+  "log_sha256": "30ad3581ea0fa3ef8019bd665f5bea519df25e4968f87bb29b0cdf903aa803d3",
+  "sealed_inputs_unchanged": true
+}

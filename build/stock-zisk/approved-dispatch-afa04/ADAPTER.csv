@@ -1,0 +1,14 @@
+id,entry_pc,theorem,outcome,active_count,cpu_seconds,peak_rss_kib,limit
+decodeItemJoin698cFrom697c,0x800d697c,decodeItemJoin698cFrom697c_automatic,residual,10,562.1416449999999,3315688,
+decodeItemJoin698cFrom69e8,0x800d69e8,decodeItemJoin698cFrom69e8_automatic,residual,10,616.7516990000001,3599452,
+decodeItemJoin6a24From6a14,0x800d6a14,decodeItemJoin6a24From6a14_automatic,closed,0,5.6800500000000005,1102020,
+decodeItemJoin6a24Backedge,0x800d6a24,decodeItemJoin6a24Backedge_automatic,residual,20,704.101528,3074092,
+decodeItemJoin6ac4From6ab4,0x800d6ab4,decodeItemJoin6ac4From6ab4_automatic,closed,0,5.202837,1105600,
+decodeItemJoin6ac4Backedge,0x800d6ac4,decodeItemJoin6ac4Backedge_automatic,residual,20,791.392488,2947052,
+decodeItemJoin6ae0From6970,0x800d6960,decodeItemJoin6ae0From6970_automatic,cpu-limit,,1199.861826,3004424,cpu
+decodeItemJoin6ae0From69e0,0x800d69e0,decodeItemJoin6ae0From69e0_automatic,closed,0,7.768746,1142136,
+decodeItemJoin6ae0From6a08,0x800d6a08,decodeItemJoin6ae0From6a08_automatic,cpu-limit,,1199.930304,2565608,cpu
+decodeItemJoin6ae0From6a38,0x800d6a38,decodeItemJoin6ae0From6a38_automatic,cpu-limit,,1200.015532,5810136,cpu
+decodeItemJoin6ae0From6a6c,0x800d6a6c,decodeItemJoin6ae0From6a6c_automatic,cpu-limit,,1199.9353950000002,3181472,cpu
+decodeItemJoin6ae0From6aa8,0x800d6aa8,decodeItemJoin6ae0From6aa8_automatic,cpu-limit,,1199.902925,2555724,cpu
+decodeItemJoin6ae0From6ad8,0x800d6ad8,decodeItemJoin6ae0From6ad8_automatic,cpu-limit,,1199.897881,5888052,cpu

@@ -1,0 +1,21 @@
+{
+  "operation": "Replace CRLF line endings with LF in committed CSV copies only.",
+  "scope": "The frozen pass, gate inputs, and immutable archive retain the original bytes.",
+  "gate": "Gate002 checked the original CRLF tables before this format-only operation.",
+  "tables": {
+    "NATIVE.csv": {
+      "original_sha256": "9a5c7ebc8fc182d972c30777bbc93cc86de5fc57c1a4167660acd617dd4df5c9",
+      "committed_sha256": "d51506a8b966a4d4e036f9055f1eeddd27ea3a278174614e7eeb694aa142e954",
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/NATIVE.csv",
+      "rows": 24,
+      "exact_parsed_row_equality": true
+    },
+    "ADAPTER.csv": {
+      "original_sha256": "30cfeb389c03903844baba6934263edb539ccb976543e7b6c2e39269743309df",
+      "committed_sha256": "07cea0e0df679ed279ff0c4a808e004b1c8c1fe4a3e6f122f4fdd1e09cce11c2",
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-review/ADAPTER.csv",
+      "rows": 13,
+      "exact_parsed_row_equality": true
+    }
+  }
+}
