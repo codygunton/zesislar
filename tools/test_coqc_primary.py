@@ -170,6 +170,34 @@ class CompletionBudgetTests(unittest.TestCase):
             self.assertEqual(retained['outcome'], 'native-residual')
             self.assertFalse(retained['block_closed'])
 
+    def test_cpu_stop_with_interrupted_capture_retains_limit_classification(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            rendered = {**self.rendered(), 'successors': ['0x20']}
+            command = ['scratch.sh', str(root/'out/Boundary.v'), str(root/'build')]
+            output = ('COQC-PRIMARY-BEGIN\nCHAIN-GOAL-BEGIN active\n'
+                      'CHAIN-GOAL-ENV coq CHAIN-FIELD-END\n'
+                      'CHAIN-GOAL-CONCLUSION interrupted')
+            log = root/'compiler.log'
+            log.write_text(output)
+            done = subprocess.CompletedProcess(command, -9, output, '')
+            compiler = {'exit_code': -9, 'limit': 'cpu', 'compiled_object': None,
+                        'cpu_seconds': 1199.857448, 'peak_rss_kib': 3678200}
+            with patch.object(coqc_primary, 'compile_source',
+                              return_value=(done, output, log, compiler, 1204.841451)):
+                result = coqc_primary.run_primary(rendered, root/'out', root/'build',
+                    inherited_debts={'pending_goals': [], 'shelved_goals': []}, cpu_seconds=1200)
+            retained = json.loads((root/'out/evidence.json').read_text())
+            self.assertEqual(result['outcome'], 'limit-stop')
+            self.assertEqual(retained['outcome'], 'limit-stop')
+            self.assertEqual(retained['compiler'], compiler)
+            self.assertEqual(retained['proof_budget']['cpu_seconds'], 1200)
+            self.assertIsNone(retained['primary_timeout'])
+            self.assertIsNone(retained['active_goals'])
+            self.assertTrue(retained['capture_error'])
+            self.assertFalse(retained['block_closed'])
+            self.assertEqual(log.read_text(), output)
+
     def test_completion_exceptions_require_the_authorized_entry(self):
         for pc in ('0x800d6a24', '0x800d6ac4'):
             policy = coqc_primary.budget_policy(cpu_seconds=2400, entry_pc=pc)
