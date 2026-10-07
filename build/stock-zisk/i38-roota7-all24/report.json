@@ -1,0 +1,2433 @@
+{
+  "accounting": {
+    "child_min": null,
+    "parent_min": null,
+    "tokens_child": null,
+    "tokens_parent": null
+  },
+  "adapter_evidence_commit": "4e800cc05917ff128e75b33ca0415bc901941b20",
+  "admission": {
+    "adapter_workers": 2,
+    "adapters_reserved_gib": 12,
+    "available_gib": 119.34863662719727,
+    "block_workers": 2,
+    "blocks_reserved_gib": 18,
+    "budget_70percent_gib": 83.54404563903807,
+    "other_reserved_gib": 48,
+    "root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5",
+    "timestamp": "2026-10-07T01:37:33.519478+00:00"
+  },
+  "admission_record": {
+    "archive": "/home/cody/zesislar-archive/sha256/f7/f7a6ab410ea957b2e0739bc06e4be9049042e912ed8da7f0ccf05dc28601de02",
+    "bytes": 50555,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/admission.json",
+    "sha256": "f7a6ab410ea957b2e0739bc06e4be9049042e912ed8da7f0ccf05dc28601de02"
+  },
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/5a/5aac10bde17e2765cdfb22b516e19b6c5d2e26a289b1e6b1639c500ea8d0a0c1",
+    "bytes": 3709625,
+    "sha256": "5aac10bde17e2765cdfb22b516e19b6c5d2e26a289b1e6b1639c500ea8d0a0c1"
+  },
+  "archive_records": 6694,
+  "blocks_closed": 6,
+  "classes": {
+    "automation-search-failure": 3,
+    "native-boundary-closed": 6,
+    "native-residual": 15
+  },
+  "combined_input_record": {
+    "archive": "/home/cody/zesislar-archive/sha256/f2/f24a7ebab58de39a2a60ff8ee1502470be5286a5fa425548d82ba3c666a9e9a4",
+    "bytes": 1813,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/combined-run-inputs.json",
+    "sha256": "f24a7ebab58de39a2a60ff8ee1502470be5286a5fa425548d82ba3c666a9e9a4"
+  },
+  "comparison_with_rootb926": {
+    "adapter_report": {
+      "bytes": 25698,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/build/stock-zisk/i34-rootb926-adapters/report.json",
+      "sha256": "96f9483805ce8a803ff7e1ac1b590ef18188ee173c9cb0f61f502db90c0292c9"
+    },
+    "current_native_closed_entries": [
+      "0x800d69d8",
+      "0x800d6a00",
+      "0x800d6a14",
+      "0x800d6a64",
+      "0x800d6a6c",
+      "0x800d6ab4"
+    ],
+    "limitation": "The roots and hint modules differ. These results do not isolate one rule.",
+    "lost_native_closed_entries": [],
+    "native_report": {
+      "bytes": 118687,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/build/stock-zisk/i34-rootb926-all24/report.json",
+      "sha256": "1145fc51192e4485ec10468ee282d7d59c404d78e6031f19a45f7de02d047716"
+    },
+    "new_native_closed_entries": [],
+    "previous_adapter_closures": 0,
+    "previous_native_closed_entries": [
+      "0x800d69d8",
+      "0x800d6a00",
+      "0x800d6a14",
+      "0x800d6a64",
+      "0x800d6a6c",
+      "0x800d6ab4"
+    ],
+    "previous_native_closures": 6
+  },
+  "compiler_cpu_total_seconds": 12449.047064,
+  "effective_native_scope": {
+    "approved_additions_active": [
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepStackWrite ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepRamFault ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepRegionFault ACTIVE",
+      "SCOPE ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepRecordWitness ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepArrayBounds ACTIVE",
+      "SCOPE ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff ACTIVE",
+      "SCOPE ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle ACTIVE",
+      "SCOPE ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand ACTIVE",
+      "SCOPE ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepListWitness ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepTupleWitness ACTIVE",
+      "SCOPE ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepPureFactHints ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization ACTIVE",
+      "SCOPE ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor ACTIVE"
+    ],
+    "closure_sets": 1,
+    "effective_active_switches": 35,
+    "final_compilation": true,
+    "fixture": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/scope-audit/native.v",
+      "sha256": "5a91cf7ee9f7a3140402e1f941b01fd8c26b5e740273ab5d1230c0e3b19229cc"
+    },
+    "health": true,
+    "historical_active": [
+      "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+      "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+      "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+      "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+      "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+      "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+      "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+      "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+      "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+      "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+      "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+      "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+      "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith"
+    ],
+    "historical_inactive": [
+      "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+      "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+      "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+      "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+    ],
+    "interactive_check": true,
+    "native_closure_claim": false,
+    "object": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/default/_build/scope-audit/native.vo",
+      "sha256": "91c040bbc655a4346b91f8651135f4d1710ae3f8e87d65d256669a1cc97d1bb6"
+    },
+    "sources_checked": 24,
+    "statement_verification": {
+      "assumptions": [],
+      "success": true,
+      "verification_method": "module_m"
+    }
+  },
+  "elapsed_seconds": 6492.631916436949,
+  "full_final_audit": {
+    "archive": "/home/cody/zesislar-archive/sha256/ea/ea122f2fbc652125f1c7dfbd64638c5c0dc0fd07f280112413c11b8a0bbf077e",
+    "bytes": 216026,
+    "path": "/tmp/child-a-roota7-audit.json",
+    "sha256": "ea122f2fbc652125f1c7dfbd64638c5c0dc0fd07f280112413c11b8a0bbf077e"
+  },
+  "gate": {
+    "build_record_archive": {
+      "archive": "/home/cody/zesislar-archive/sha256/ff/ffdd0e42f526cd2ec0997426e5197cb86975663efe79a45dbc4c5d8ec31e6ea3",
+      "bytes": 176,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform-evidence/log.jsonl",
+      "sha256": "ffdd0e42f526cd2ec0997426e5197cb86975663efe79a45dbc4c5d8ec31e6ea3"
+    },
+    "build_records": [
+      {
+        "error_class": null,
+        "exit": 0,
+        "ms": 454,
+        "rss_kb": 148048,
+        "target": "check-fast"
+      }
+    ],
+    "command": "make check-fast FAST_JOBS=6 AGENT_JOBS=6 CHECK_AGENT=worker2-child-platform-evidence AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-platform/_build/agents/worker2-child-platform-evidence",
+    "elapsed_resolution_seconds": 1,
+    "elapsed_seconds": 64,
+    "elapsed_source": "The parent reported the measured watcher duration as 64 seconds.",
+    "exit_code": 0,
+    "exit_source": "The parent routed the completed watcher result. The retained build record reports exit zero.",
+    "gate_source_head": "4e800cc05917ff128e75b33ca0415bc901941b20",
+    "log": {
+      "archive": "/home/cody/zesislar-archive/sha256/4b/4be5b67e32dc53a7a009e7c978dbfbe6b3f650628fa08d170b7e3ccc46ee9c86",
+      "bytes": 4998,
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-232809-child-a-roota7-native-evidence-check-fast.log",
+      "sha256": "4be5b67e32dc53a7a009e7c978dbfbe6b3f650628fa08d170b7e3ccc46ee9c86"
+    },
+    "post_gate_frozen_inputs": {
+      "adapters": 6182,
+      "mismatches": [],
+      "native": 897
+    },
+    "previous_gate_records": [
+      {
+        "error_class": null,
+        "exit": 0,
+        "ms": 342335,
+        "rss_kb": 3023672,
+        "target": "check-fast"
+      }
+    ],
+    "production_source_diff": [],
+    "status": "passed",
+    "watcher_label": "child-a-roota7-native-evidence-check-fast",
+    "workers": 6
+  },
+  "input_audit": [
+    {
+      "family": "native",
+      "inputs_checked": 897,
+      "mismatches": []
+    },
+    {
+      "family": "adapters",
+      "inputs_checked": 6182,
+      "mismatches": []
+    }
+  ],
+  "instructions_in_closed_blocks": 17,
+  "item": "roota7-all24",
+  "level1_closures": 0,
+  "machine_after": {
+    "cpu_count": 64,
+    "cpu_ticks": "cpu  120688907 413897389 47704553 6076968500 2910448 5702021 2767868 0 0 0",
+    "load": [
+      9.033203125,
+      9.494140625,
+      11.19921875
+    ],
+    "memory": {
+      "MemAvailable": "109980876 kB",
+      "SwapFree": "5800 kB",
+      "SwapTotal": "8388604 kB"
+    }
+  },
+  "machine_before": {
+    "cpu_count": 64,
+    "cpu_ticks": "cpu  119322833 410067381 46936699 6041529502 2897709 5635595 2734311 0 0 0",
+    "load": [
+      9.60791015625,
+      7.3154296875,
+      5.38916015625
+    ],
+    "memory": {
+      "MemAvailable": "128513268 kB",
+      "SwapFree": "4724 kB",
+      "SwapTotal": "8388604 kB"
+    }
+  },
+  "measurement_limits": [
+    "The pass intervals overlap. Their elapsed times are separate measurements.",
+    "The native driver records machine snapshots. The adapter driver records no separate utilization snapshots.",
+    "Transaction wall time includes setup. Guard wait remains unavailable.",
+    "Stack, shelf, and given_up groups remain unavailable. Active diagnostics do not certify closure.",
+    "The resource limit can stop a compiler before Qed. Such attempts provide no closure certificate."
+  ],
+  "measurement_root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5",
+  "native_statements_regenerated": 24,
+  "no_native_repeats": true,
+  "peak_rss_kib": 6294536,
+  "proof_replay": false,
+  "raw_report": {
+    "archive": "/home/cody/zesislar-archive/sha256/87/8770f91b29588f0933130b5ad19f59b36ead14c5669c1057cbbf1de50f729a8d",
+    "bytes": 5061381,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/report.json",
+    "sha256": "8770f91b29588f0933130b5ad19f59b36ead14c5669c1057cbbf1de50f729a8d"
+  },
+  "rows": [
+    {
+      "active_goal_count": 9,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/45/455296508fee5e76bf470343a29ea79ea4c44493c62fe4ac716022d22bef8073",
+        "bytes": 159159,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6960/evidence.json",
+        "sha256": "455296508fee5e76bf470343a29ea79ea4c44493c62fe4ac716022d22bef8073"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3260125,
+        "cpu_seconds": 49.799492,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 50.0254191410495,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1547500
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
+      "entry_pc": "0x800d6960",
+      "first_residual": "(bv 8)",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6960",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 5,
+      "lemma": "DesignedBoundary_800d6960",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/cf/cf9c18507d5e818f1fdd684cd47840760a45d48313e7ab3789aced5f28be5df3",
+        "bytes": 105797,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6960/compiler.log",
+        "sha256": "cf9c18507d5e818f1fdd684cd47840760a45d48313e7ab3789aced5f28be5df3"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/69/69f0cf82bc832db7430e85318a33f8e4b74088c623371326cc1de2cb09aedead",
+        "bytes": 8654,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6960/Boundary.v",
+        "sha256": "69f0cf82bc832db7430e85318a33f8e4b74088c623371326cc1de2cb09aedead"
+      },
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6974"
+      ],
+      "transaction_wall_seconds": 51.94146505498793
+    },
+    {
+      "active_goal_count": 8,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/2c/2ca0d50d0c035e15bc3b2d35d8caa9c2d7c178800c7f12411c935e0a1a6b89d0",
+        "bytes": 183475,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6974/evidence.json",
+        "sha256": "2ca0d50d0c035e15bc3b2d35d8caa9c2d7c178800c7f12411c935e0a1a6b89d0"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3260255,
+        "cpu_seconds": 542.9238089999999,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 545.3524218969978,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 2418152
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
+      "entry_pc": "0x800d6974",
+      "first_residual": "(find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))\n   (\u03bb mk : mem_mapsto_kind,\n      match mk with\n      | MKMapsTo n' vmem => (\u2203 Heq : 8%N = n', \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN)%I\n      | MKArray n' a' values =>\n          if (n' =? 8)%N\n          then\n           (\u231c(bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `mod` 1 = 0\u231d \u2217\n            \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a') `div` 1\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : 8%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 8%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n          else\n           (\u231cn' = 8%N\u231d \u2217\n            \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - a'\u231d \u2217 \u231c(i + N.to_nat 1 <= length values)%nat\u231d \u2217\n              \u2200 vmem : bv 8, \u231cvmem = Z_to_bv 8 (little_endian_to_bv n' (take (N.to_nat 1) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN)%I\n      | MKUninit _ _ => False%I\n      | MKMMIO a' length =>\n          (\u231ca' \u2264 bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) + 1 \u2264 a' + length\u231d \u2217\n           \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (decodeItemInputPointer args)) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN))%I\n      end))",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6974",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d6974",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/dd/dd309b73d36f915f77b9c096ff21e0e12d5b006d8bebecf46cfea0ce358d0d6e",
+        "bytes": 125292,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6974/compiler.log",
+        "sha256": "dd309b73d36f915f77b9c096ff21e0e12d5b006d8bebecf46cfea0ce358d0d6e"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/b5/b5bf8f60da498322a86ba0a13450aeed4113e13ab34b6071a23a2f80d9615e3b",
+        "bytes": 8958,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6974/Boundary.v",
+        "sha256": "b5bf8f60da498322a86ba0a13450aeed4113e13ab34b6071a23a2f80d9615e3b"
+      },
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "successors": [
+        "0x800d69a4",
+        "0x800d697c"
+      ],
+      "transaction_wall_seconds": 547.7439775840612
+    },
+    {
+      "active_goal_count": 5,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/eb/eb5a32e61e0694524bdb0f465ab4f3b0c15e14bb2b27ee509e635d8fb1fe88df",
+        "bytes": 426841,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d697c/evidence.json",
+        "sha256": "eb5a32e61e0694524bdb0f465ab4f3b0c15e14bb2b27ee509e635d8fb1fe88df"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3277055,
+        "cpu_seconds": 1179.981959,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1184.760829857085,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 3351980
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
+      "entry_pc": "0x800d697c",
+      "first_residual": "nat",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d697c",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 4,
+      "lemma": "DesignedBoundary_800d697c",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/a6/a68d9d167c947230f8f92ab9b677c90cad91ac3f2b638d9da6c6195fcc4ec8cb",
+        "bytes": 303094,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d697c/compiler.log",
+        "sha256": "a68d9d167c947230f8f92ab9b677c90cad91ac3f2b638d9da6c6195fcc4ec8cb"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/1e/1e85e0e1678333f583c5be9b5749dfea393375213f9b7b82c1be9ee4db42ce09",
+        "bytes": 8948,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d697c/Boundary.v",
+        "sha256": "1e85e0e1678333f583c5be9b5749dfea393375213f9b7b82c1be9ee4db42ce09"
+      },
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "successors": [
+        "0x800d698c"
+      ],
+      "transaction_wall_seconds": 1186.1095997910015
+    },
+    {
+      "active_goal_count": 6,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/af/af1fc0a01fa9d8a5a4170e8781ef828c5a81e379ddd58ef086698a6bebb04f63",
+        "bytes": 207982,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d698c/evidence.json",
+        "sha256": "af1fc0a01fa9d8a5a4170e8781ef828c5a81e379ddd58ef086698a6bebb04f63"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3410917,
+        "cpu_seconds": 872.8990279999999,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 876.1806455540936,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 12582912
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 3014520
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
+      "entry_pc": "0x800d698c",
+      "first_residual": "nat",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d698c",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 6,
+      "lemma": "DesignedBoundary_800d698c",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/f5/f54e1cc2df1f7398ae6a808cbc97fa53432fc5b757a93a91d48cd8526e7d2b34",
+        "bytes": 138051,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d698c/compiler.log",
+        "sha256": "f54e1cc2df1f7398ae6a808cbc97fa53432fc5b757a93a91d48cd8526e7d2b34"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/6f/6f1a7183fc758a2fdfbf67187ae0ad7b81f431a6884ef268d3047605beb2d3a5",
+        "bytes": 8759,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d698c/Boundary.v",
+        "sha256": "6f1a7183fc758a2fdfbf67187ae0ad7b81f431a6884ef268d3047605beb2d3a5"
+      },
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "successors": [],
+      "transaction_wall_seconds": 877.333602756029
+    },
+    {
+      "active_goal_count": 3,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/05/05c44b2be8a56fa1919929c722c7b61681f67d638422be09c1d2e9caa6ec7ee3",
+        "bytes": 35850,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69a4/evidence.json",
+        "sha256": "05c44b2be8a56fa1919929c722c7b61681f67d638422be09c1d2e9caa6ec7ee3"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3628351,
+        "cpu_seconds": 9.339066,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 9.39459349308163,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1102928
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
+      "entry_pc": "0x800d69a4",
+      "first_residual": "(129 \u2264 bv_unsigned inputPrefix)",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d69a4",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 3,
+      "lemma": "DesignedBoundary_800d69a4",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/e9/e969a75b0b81a1d07fc0ee9792c59d9232a33630a144146bb0c8093263a83975",
+        "bytes": 26260,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69a4/compiler.log",
+        "sha256": "e969a75b0b81a1d07fc0ee9792c59d9232a33630a144146bb0c8093263a83975"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/85/859a9547392ef0683753a69bf1fe0c89531089af70f2c60c4fe8e71fb637136f",
+        "bytes": 9145,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69a4/Boundary.v",
+        "sha256": "859a9547392ef0683753a69bf1fe0c89531089af70f2c60c4fe8e71fb637136f"
+      },
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "successors": [
+        "0x800d69d8",
+        "0x800d69b0"
+      ],
+      "transaction_wall_seconds": 10.764509115950204
+    },
+    {
+      "active_goal_count": 9,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/82/8265686d7f514051e3934e252afec0fbb8a234708559ab928b88941b6cbcda91",
+        "bytes": 738557,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69b0/evidence.json",
+        "sha256": "8265686d7f514051e3934e252afec0fbb8a234708559ab928b88941b6cbcda91"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3635298,
+        "cpu_seconds": 681.058825,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 683.7031952820253,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 4554276
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
+      "entry_pc": "0x800d69b0",
+      "first_residual": "(SHELVED_SIDECOND\n   ((?Goal1@{H0:=bv_signed_in_range 64 b4; H1:=bv_signed_in_range 64 n0; H2:=bv_signed_in_range 64 b2; H11:=bv_signed_in_range 64 n1; H16:=bv_signed_in_range 64 b1; H19:=bv_signed_in_range 64 b;\n             H21:=bv_signed_in_range 64 n; H23:=bv_signed_in_range 8 inputPrefix}\n     :\n     nat) = decodeItemOutputPointer args + 8 - decodeItemOutputPointer args))",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d69b0",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 10,
+      "lemma": "DesignedBoundary_800d69b0",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/fd/fd0e96a748b29506a8e2d6dcecca52f52528e3c959a599d53fb36b8fb42593f6",
+        "bytes": 504997,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69b0/compiler.log",
+        "sha256": "fd0e96a748b29506a8e2d6dcecca52f52528e3c959a599d53fb36b8fb42593f6"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/e8/e83d565302ff47eb39a16de1b51908367e3d3ab7fd8704290b30047f6bb46c94",
+        "bytes": 8539,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69b0/Boundary.v",
+        "sha256": "e83d565302ff47eb39a16de1b51908367e3d3ab7fd8704290b30047f6bb46c94"
+      },
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "successors": [],
+      "transaction_wall_seconds": 686.5529400400119
+    },
+    {
+      "active_goal_count": 0,
+      "assumptions": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d69d8",
+        "verified": true
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/c5/c509228669f23e4b6e0e01b0b0c18565c4b2be00ebcca3f844b184c65bd182bf",
+        "bytes": 8845,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/evidence.json",
+        "sha256": "c509228669f23e4b6e0e01b0b0c18565c4b2be00ebcca3f844b184c65bd182bf"
+      },
+      "closed": true,
+      "compiled_object": {
+        "archive": "/home/cody/zesislar-archive/sha256/a4/a4931a9ea6b4114638cd8b9fe133b3ef0710bd6095e40f07409ac330d18c388c",
+        "bytes": 374995,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/Boundary.vo",
+        "sha256": "a4931a9ea6b4114638cd8b9fe133b3ef0710bd6095e40f07409ac330d18c388c"
+      },
+      "compiler": {
+        "compiled_object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/Boundary.vo",
+          "sha256": "a4931a9ea6b4114638cd8b9fe133b3ef0710bd6095e40f07409ac330d18c388c"
+        },
+        "compiler_pid": 3693506,
+        "cpu_seconds": 16.671163999999997,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 16.75021333398763,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1174888
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+      "entry_pc": "0x800d69d8",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d69d8",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d69d8",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/bc/bcd9ab562f9e7a201284129c8db7243592e51ed0d803bb64bea47fa8e3aadd38",
+        "bytes": 8984,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/compiler.log",
+        "sha256": "bcd9ab562f9e7a201284129c8db7243592e51ed0d803bb64bea47fa8e3aadd38"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-boundary-closed",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "compiled",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/06/0629e8e35201e067a7655257bbbb5f64ab96578877c7e712a7abfe5394f37b45",
+        "bytes": 8996,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/Boundary.v",
+        "sha256": "0629e8e35201e067a7655257bbbb5f64ab96578877c7e712a7abfe5394f37b45"
+      },
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "successors": [
+        "0x800d6a00",
+        "0x800d69e0"
+      ],
+      "transaction_wall_seconds": 18.4092397330096
+    },
+    {
+      "active_goal_count": 1,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/7a/7aedb5ed1f736ae6c98896408c2c50ed8fbcec31547ddd547a519422507b2521",
+        "bytes": 17254,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69e0/evidence.json",
+        "sha256": "7aedb5ed1f736ae6c98896408c2c50ed8fbcec31547ddd547a519422507b2521"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3693971,
+        "cpu_seconds": 27.561881,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 27.69183486897964,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1319992
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
+      "entry_pc": "0x800d69e0",
+      "first_residual": "(bv_unsigned (bv_and x13 127) < bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)))",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d69e0",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d69e0",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/38/387f43aa7ea6a6c44a5510df145651591a320816e1b7d620c291334e7795e69d",
+        "bytes": 14594,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69e0/compiler.log",
+        "sha256": "387f43aa7ea6a6c44a5510df145651591a320816e1b7d620c291334e7795e69d"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/b9/b929a7012d6c7d68473e778f4c21a369cf9d960807c0ad9c6c0809f06fb3cae8",
+        "bytes": 9044,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69e0/Boundary.v",
+        "sha256": "b929a7012d6c7d68473e778f4c21a369cf9d960807c0ad9c6c0809f06fb3cae8"
+      },
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d69e8"
+      ],
+      "transaction_wall_seconds": 29.417607455980033
+    },
+    {
+      "active_goal_count": null,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/ba/ba49668144fba7f37e66b80271dc0e38624ea1f99dffcd0cc4cff7e65a5213b2",
+        "bytes": 8530,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69e8/evidence.json",
+        "sha256": "ba49668144fba7f37e66b80271dc0e38624ea1f99dffcd0cc4cff7e65a5213b2"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3694552,
+        "cpu_seconds": 1199.76461,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1204.851405518013,
+        "exit_code": -9,
+        "limit": "cpu",
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 3620116
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
+      "entry_pc": "0x800d69e8",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "unavailable",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d69e8",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 6,
+      "lemma": "DesignedBoundary_800d69e8",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/dd/ddcd9d881acce47cf370a5b531d88bb04472bd11328c5bdeed5a1015101a87ea",
+        "bytes": 10215,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69e8/compiler.log",
+        "sha256": "ddcd9d881acce47cf370a5b531d88bb04472bd11328c5bdeed5a1015101a87ea"
+      },
+      "named_qed_in_source": true,
+      "outcome": "automation-search-failure",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "unavailable",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/59/590f94e163cb303a290807e5e1e979c0db03804188c44ce1a9de56299c290782",
+        "bytes": 8948,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69e8/Boundary.v",
+        "sha256": "590f94e163cb303a290807e5e1e979c0db03804188c44ce1a9de56299c290782"
+      },
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "successors": [
+        "0x800d698c"
+      ],
+      "transaction_wall_seconds": 1206.7244582379935
+    },
+    {
+      "active_goal_count": 0,
+      "assumptions": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a00",
+        "verified": true
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/40/4072f7bd307a070043f9f2be497a8311770c176fe8375f6b1a4be5e0d97f894c",
+        "bytes": 8833,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/evidence.json",
+        "sha256": "4072f7bd307a070043f9f2be497a8311770c176fe8375f6b1a4be5e0d97f894c"
+      },
+      "closed": true,
+      "compiled_object": {
+        "archive": "/home/cody/zesislar-archive/sha256/84/84e1e1393f39a4cddfbe622898c3ea35ba5f9df68a322d12a2e731aa9bda0647",
+        "bytes": 376340,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/Boundary.vo",
+        "sha256": "84e1e1393f39a4cddfbe622898c3ea35ba5f9df68a322d12a2e731aa9bda0647"
+      },
+      "compiler": {
+        "compiled_object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/Boundary.vo",
+          "sha256": "84e1e1393f39a4cddfbe622898c3ea35ba5f9df68a322d12a2e731aa9bda0647"
+        },
+        "compiler_pid": 3749848,
+        "cpu_seconds": 32.397898999999995,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 32.58079491695389,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1402484
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+      "entry_pc": "0x800d6a00",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a00",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d6a00",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/73/73e036f7c38283d9e82c1e554e4de4d8e4955cf68f1670befe0bff96fbfc471b",
+        "bytes": 9084,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/compiler.log",
+        "sha256": "73e036f7c38283d9e82c1e554e4de4d8e4955cf68f1670befe0bff96fbfc471b"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-boundary-closed",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "compiled",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/33/33e3096f4f34b7de913d056d9ac315cea4d10365b7d234752bcf4cc8135053df",
+        "bytes": 8996,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/Boundary.v",
+        "sha256": "33e3096f4f34b7de913d056d9ac315cea4d10365b7d234752bcf4cc8135053df"
+      },
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "successors": [
+        "0x800d6a64",
+        "0x800d6a08"
+      ],
+      "transaction_wall_seconds": 34.92723442299757
+    },
+    {
+      "active_goal_count": 5,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/5b/5b6ab8bb034122e8e3297372399c98e5b9066fe09e67e033954967feba0316bc",
+        "bytes": 72169,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a08/evidence.json",
+        "sha256": "5b6ab8bb034122e8e3297372399c98e5b9066fe09e67e033954967feba0316bc"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3761569,
+        "cpu_seconds": 24.017971,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 24.147384277079254,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1226080
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
+      "entry_pc": "0x800d6a08",
+      "first_residual": "Z",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a08",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 3,
+      "lemma": "DesignedBoundary_800d6a08",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/f3/f32b42f8f1d04fac31149c224ea56cb4f25524148760ad24c45de99ec614400c",
+        "bytes": 51307,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a08/compiler.log",
+        "sha256": "f32b42f8f1d04fac31149c224ea56cb4f25524148760ad24c45de99ec614400c"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/5d/5d52a845075d01100b75a9060c37f645e71b6a18c733a6035100fc1caad067e3",
+        "bytes": 9412,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a08/Boundary.v",
+        "sha256": "5d52a845075d01100b75a9060c37f645e71b6a18c733a6035100fc1caad067e3"
+      },
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a14"
+      ],
+      "transaction_wall_seconds": 25.008258683956228
+    },
+    {
+      "active_goal_count": 0,
+      "assumptions": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a14",
+        "verified": true
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/85/85d0cfd9c6c9605934b716dd90fe9b7d67a58cc0f102b8fd8cb1c351eadbb260",
+        "bytes": 8804,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/evidence.json",
+        "sha256": "85d0cfd9c6c9605934b716dd90fe9b7d67a58cc0f102b8fd8cb1c351eadbb260"
+      },
+      "closed": true,
+      "compiled_object": {
+        "archive": "/home/cody/zesislar-archive/sha256/a8/a83868da9130ea531037e02343cb57a28b8860c243c501254c93b8641d7b0a85",
+        "bytes": 378309,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/Boundary.vo",
+        "sha256": "a83868da9130ea531037e02343cb57a28b8860c243c501254c93b8641d7b0a85"
+      },
+      "compiler": {
+        "compiled_object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/Boundary.vo",
+          "sha256": "a83868da9130ea531037e02343cb57a28b8860c243c501254c93b8641d7b0a85"
+        },
+        "compiler_pid": 3772393,
+        "cpu_seconds": 7.177139,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 7.224988391972147,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1119428
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+      "entry_pc": "0x800d6a14",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a14",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 4,
+      "lemma": "DesignedBoundary_800d6a14",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/cd/cdb0498df813a5a9e85429859015ebac25c12c00f34339508fbce9d47720e315",
+        "bytes": 9164,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/compiler.log",
+        "sha256": "cdb0498df813a5a9e85429859015ebac25c12c00f34339508fbce9d47720e315"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-boundary-closed",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "compiled",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/32/32cbcc8b8004a36e34aa43579dd56d96b706f28cb77fb8899178f28e60044e92",
+        "bytes": 9232,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/Boundary.v",
+        "sha256": "32cbcc8b8004a36e34aa43579dd56d96b706f28cb77fb8899178f28e60044e92"
+      },
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "successors": [
+        "0x800d6a24"
+      ],
+      "transaction_wall_seconds": 9.288850435987115
+    },
+    {
+      "active_goal_count": 15,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/da/da3d4f5b7e56888b1fae6b2e95b37b2eaebde3e92af06de725ef98fc7d36563b",
+        "bytes": 520919,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a24/evidence.json",
+        "sha256": "da3d4f5b7e56888b1fae6b2e95b37b2eaebde3e92af06de725ef98fc7d36563b"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3775771,
+        "cpu_seconds": 1667.427798,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1674.2487868859898,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 2400,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 3284552
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
+      "entry_pc": "0x800d6a24",
+      "first_residual": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a24",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 5,
+      "lemma": "DesignedBoundary_800d6a24",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/b1/b1256cc5b1896e6b4c2d39c17126d1cb6883a33eeaf58245421399cca1e9a3d5",
+        "bytes": 329823,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a24/compiler.log",
+        "sha256": "b1256cc5b1896e6b4c2d39c17126d1cb6883a33eeaf58245421399cca1e9a3d5"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/f2/f2e88af915421eb2b8d73114172ef386f0bbb3a50446609c569b5e0e4b79c3ad",
+        "bytes": 9355,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a24/Boundary.v",
+        "sha256": "f2e88af915421eb2b8d73114172ef386f0bbb3a50446609c569b5e0e4b79c3ad"
+      },
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "successors": [
+        "0x800d6a24",
+        "0x800d6a38"
+      ],
+      "transaction_wall_seconds": 1676.2139788700733
+    },
+    {
+      "active_goal_count": 1,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/15/15166e6aef5b059095589ae9b598af6226f4d6ba2f63f20362a6c367de7bbf85",
+        "bytes": 19250,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a38/evidence.json",
+        "sha256": "15166e6aef5b059095589ae9b598af6226f4d6ba2f63f20362a6c367de7bbf85"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3945000,
+        "cpu_seconds": 31.627538,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 31.789839284028858,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1213712
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
+      "entry_pc": "0x800d6a38",
+      "first_residual": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 184 \u2264 bv_unsigned inputPrefix \u2264 191\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 183))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args false payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a38",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d6a38",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/ab/ab7e694e74fa497d2d5083ebfc5789600328048d5c2e35e2496bdabd20936973",
+        "bytes": 16852,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a38/compiler.log",
+        "sha256": "ab7e694e74fa497d2d5083ebfc5789600328048d5c2e35e2496bdabd20936973"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/d6/d695e59fe214765995d38e680e24a374882093c4ace6802328d060183e34d4cc",
+        "bytes": 9477,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a38/Boundary.v",
+        "sha256": "d695e59fe214765995d38e680e24a374882093c4ace6802328d060183e34d4cc"
+      },
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a40"
+      ],
+      "transaction_wall_seconds": 32.53109309496358
+    },
+    {
+      "active_goal_count": 9,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/be/be3fd4597b1fa06e49161933547813777f84cf917fa8bd8a4c004e0cf0cb206a",
+        "bytes": 778171,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a40/evidence.json",
+        "sha256": "be3fd4597b1fa06e49161933547813777f84cf917fa8bd8a4c004e0cf0cb206a"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3947481,
+        "cpu_seconds": 916.114087,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 919.581919291988,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 4576700
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
+      "entry_pc": "0x800d6a40",
+      "first_residual": "(SHELVED_SIDECOND\n   ((?Goal1@{H0:=bv_signed_in_range 64 b3; H1:=bv_signed_in_range 64 n0; H2:=bv_signed_in_range 64 b1; H15:=bv_signed_in_range 64 n1; H19:=bv_signed_in_range 64 b; H22:=bv_signed_in_range 64 n;\n             H24:=bv_signed_in_range 8 inputPrefix}\n     :\n     nat) = decodeItemOutputPointer args + 8 - decodeItemOutputPointer args))",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a40",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 9,
+      "lemma": "DesignedBoundary_800d6a40",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/dc/dce388a039d9cfed1d9975ce81ea099a5c37185bf616987225ca19ed88a50293",
+        "bytes": 532707,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a40/compiler.log",
+        "sha256": "dce388a039d9cfed1d9975ce81ea099a5c37185bf616987225ca19ed88a50293"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/88/8834b3a6f6f0eb395cfdcb4b256ef57b3c31d7013661dd35271705236831843d",
+        "bytes": 8675,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a40/Boundary.v",
+        "sha256": "8834b3a6f6f0eb395cfdcb4b256ef57b3c31d7013661dd35271705236831843d"
+      },
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "successors": [],
+      "transaction_wall_seconds": 921.2572112219641
+    },
+    {
+      "active_goal_count": 0,
+      "assumptions": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a64",
+        "verified": true
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/29/293f832dbc0820773163e32ba438f1da196750249e5537be9756e99153f88b0c",
+        "bytes": 8839,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/evidence.json",
+        "sha256": "293f832dbc0820773163e32ba438f1da196750249e5537be9756e99153f88b0c"
+      },
+      "closed": true,
+      "compiled_object": {
+        "archive": "/home/cody/zesislar-archive/sha256/1c/1c3a54f146922acbceb4bb7c47fbc8a1d068988ae0a1028bbc63511d731ae180",
+        "bytes": 376330,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/Boundary.vo",
+        "sha256": "1c3a54f146922acbceb4bb7c47fbc8a1d068988ae0a1028bbc63511d731ae180"
+      },
+      "compiler": {
+        "compiled_object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/Boundary.vo",
+          "sha256": "1c3a54f146922acbceb4bb7c47fbc8a1d068988ae0a1028bbc63511d731ae180"
+        },
+        "compiler_pid": 3990471,
+        "cpu_seconds": 27.944613,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 28.063672040007077,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1400380
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+      "entry_pc": "0x800d6a64",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a64",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d6a64",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/b8/b8836f5cfb65bb6a8e923b6fa821be208e796fa2f32550854837155f17b37161",
+        "bytes": 9008,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/compiler.log",
+        "sha256": "b8836f5cfb65bb6a8e923b6fa821be208e796fa2f32550854837155f17b37161"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-boundary-closed",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "compiled",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/09/0924fd9b1aaa78101c31e194b062bfac6f84ec279e3bc2364233da52dd257f3a",
+        "bytes": 8996,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/Boundary.v",
+        "sha256": "0924fd9b1aaa78101c31e194b062bfac6f84ec279e3bc2364233da52dd257f3a"
+      },
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "successors": [
+        "0x800d6aa8",
+        "0x800d6a6c"
+      ],
+      "transaction_wall_seconds": 29.639431298011914
+    },
+    {
+      "active_goal_count": 0,
+      "assumptions": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6a6c",
+        "verified": true
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/22/221f0e327ce32298b0e2828738a80b8e26c4e49f9b2ace2f54d5fc8a9f91eb00",
+        "bytes": 8848,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/evidence.json",
+        "sha256": "221f0e327ce32298b0e2828738a80b8e26c4e49f9b2ace2f54d5fc8a9f91eb00"
+      },
+      "closed": true,
+      "compiled_object": {
+        "archive": "/home/cody/zesislar-archive/sha256/bc/bcfb9177f4d700f5842fad81047b9e43e46d4c494cda44b44ed1911dfbd9c150",
+        "bytes": 390931,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/Boundary.vo",
+        "sha256": "bcfb9177f4d700f5842fad81047b9e43e46d4c494cda44b44ed1911dfbd9c150"
+      },
+      "compiler": {
+        "compiled_object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/Boundary.vo",
+          "sha256": "bcfb9177f4d700f5842fad81047b9e43e46d4c494cda44b44ed1911dfbd9c150"
+        },
+        "compiler_pid": 3991017,
+        "cpu_seconds": 27.280061999999997,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 27.409228856908157,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1389948
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+      "entry_pc": "0x800d6a6c",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a6c",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 3,
+      "lemma": "DesignedBoundary_800d6a6c",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/31/31e65099d85de8698aa77c432786c8f5bace1587aee918145992d3c1ca7ddf62",
+        "bytes": 9084,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/compiler.log",
+        "sha256": "31e65099d85de8698aa77c432786c8f5bace1587aee918145992d3c1ca7ddf62"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-boundary-closed",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "compiled",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/8f/8ff47c5c5a87af3015fd2629deb2c396a6e31ed9789b166692bace9e5f99fd93",
+        "bytes": 8953,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/Boundary.v",
+        "sha256": "8ff47c5c5a87af3015fd2629deb2c396a6e31ed9789b166692bace9e5f99fd93"
+      },
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6a78"
+      ],
+      "transaction_wall_seconds": 29.146454763016663
+    },
+    {
+      "active_goal_count": null,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/ba/ba8a0fc7798022fe79cc4520c09dd449306aafa44dbe48c6599e440a47d17f07",
+        "bytes": 8575,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a78/evidence.json",
+        "sha256": "ba8a0fc7798022fe79cc4520c09dd449306aafa44dbe48c6599e440a47d17f07"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3991439,
+        "cpu_seconds": 1199.769003,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1204.8301253520185,
+        "exit_code": -9,
+        "limit": "cpu",
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 4638132
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
+      "entry_pc": "0x800d6a78",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "unavailable",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6a78",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 12,
+      "lemma": "DesignedBoundary_800d6a78",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/90/90d83cda823b3e402483a9ff3074bda5a9978036cdfd892a9e18485468b45285",
+        "bytes": 9829,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a78/compiler.log",
+        "sha256": "90d83cda823b3e402483a9ff3074bda5a9978036cdfd892a9e18485468b45285"
+      },
+      "named_qed_in_source": true,
+      "outcome": "automation-search-failure",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "unavailable",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/4c/4cde16c34c71e6a83a0b6e6f45c30e85adf80453ef78f9d8c3283734340da7d1",
+        "bytes": 8539,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a78/Boundary.v",
+        "sha256": "4cde16c34c71e6a83a0b6e6f45c30e85adf80453ef78f9d8c3283734340da7d1"
+      },
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "successors": [],
+      "transaction_wall_seconds": 1206.5078111619223
+    },
+    {
+      "active_goal_count": 5,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/cf/cf267374fb4fd7e9f24c17621b4a65df1176c867a6b34a465f133162a084c7dd",
+        "bytes": 72159,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6aa8/evidence.json",
+        "sha256": "cf267374fb4fd7e9f24c17621b4a65df1176c867a6b34a465f133162a084c7dd"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3992306,
+        "cpu_seconds": 21.008268,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 21.10689194803126,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1234300
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
+      "entry_pc": "0x800d6aa8",
+      "first_residual": "Z",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6aa8",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 3,
+      "lemma": "DesignedBoundary_800d6aa8",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/42/42563afb28f21eb3ff5cf070051bf140d2a542b9894c47787cd96b0c5e93c73c",
+        "bytes": 51253,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6aa8/compiler.log",
+        "sha256": "42563afb28f21eb3ff5cf070051bf140d2a542b9894c47787cd96b0c5e93c73c"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/ba/bac28626761fc9d84bc2861a7c247ee5a1c18076d05c14acf1f6d7db813a475b",
+        "bytes": 9412,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6aa8/Boundary.v",
+        "sha256": "bac28626761fc9d84bc2861a7c247ee5a1c18076d05c14acf1f6d7db813a475b"
+      },
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "successors": [
+        "0x800d6ae0",
+        "0x800d6ab4"
+      ],
+      "transaction_wall_seconds": 22.63386156107299
+    },
+    {
+      "active_goal_count": 0,
+      "assumptions": {
+        "assumptions": [],
+        "method": "In-module Print Assumptions DesignedBoundary_800d6ab4",
+        "verified": true
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/c6/c6e1f2dffd9326294bfb4f53a1632acc88e9398346ffa20cd0b3a77328bbd1c5",
+        "bytes": 8803,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/evidence.json",
+        "sha256": "c6e1f2dffd9326294bfb4f53a1632acc88e9398346ffa20cd0b3a77328bbd1c5"
+      },
+      "closed": true,
+      "compiled_object": {
+        "archive": "/home/cody/zesislar-archive/sha256/58/5848b962b08c4748735ba4a6ba59aaa4cba2abed3acf59c988cd60c0306ef261",
+        "bytes": 378329,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/Boundary.vo",
+        "sha256": "5848b962b08c4748735ba4a6ba59aaa4cba2abed3acf59c988cd60c0306ef261"
+      },
+      "compiler": {
+        "compiled_object": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/Boundary.vo",
+          "sha256": "5848b962b08c4748735ba4a6ba59aaa4cba2abed3acf59c988cd60c0306ef261"
+        },
+        "compiler_pid": 3993117,
+        "cpu_seconds": 6.434897,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 6.467977656982839,
+        "exit_code": 0,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1123500
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+      "entry_pc": "0x800d6ab4",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6ab4",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 4,
+      "lemma": "DesignedBoundary_800d6ab4",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/a2/a206931fe654d163f488d940d1db50bb101732a69fba37b23be3efca6858c435",
+        "bytes": 9203,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/compiler.log",
+        "sha256": "a206931fe654d163f488d940d1db50bb101732a69fba37b23be3efca6858c435"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-boundary-closed",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "compiled",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/fa/facdc8c0f8e94cdbf086a10bcbdd7be1058ab4013e270c78fc28e0e9a6d82764",
+        "bytes": 9232,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/Boundary.v",
+        "sha256": "facdc8c0f8e94cdbf086a10bcbdd7be1058ab4013e270c78fc28e0e9a6d82764"
+      },
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "successors": [
+        "0x800d6ac4"
+      ],
+      "transaction_wall_seconds": 8.131944496999495
+    },
+    {
+      "active_goal_count": 15,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/86/862abdbf042dd3b7554353ade446b8f59efc297bc151f3ab7ed1e535cfd93c66",
+        "bytes": 520874,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ac4/evidence.json",
+        "sha256": "862abdbf042dd3b7554353ade446b8f59efc297bc151f3ab7ed1e535cfd93c66"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 3993406,
+        "cpu_seconds": 1698.836674,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1705.8998301279498,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 2400,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 3282108
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
+      "entry_pc": "0x800d6ac4",
+      "first_residual": "(0%nat = (payloadStart + i + 0 - decodeItemInputPointer args) `div` 1)",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6ac4",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 5,
+      "lemma": "DesignedBoundary_800d6ac4",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/99/990dcd886094fb6cc7fba362a102ada893991147c8d3631da08b552fa3592596",
+        "bytes": 329649,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ac4/compiler.log",
+        "sha256": "990dcd886094fb6cc7fba362a102ada893991147c8d3631da08b552fa3592596"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/03/03555d89376c6851ee1d68e9406ac8aa6c09ca9a99776e50c181c482b6e8da7e",
+        "bytes": 9355,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ac4/Boundary.v",
+        "sha256": "03555d89376c6851ee1d68e9406ac8aa6c09ca9a99776e50c181c482b6e8da7e"
+      },
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "successors": [
+        "0x800d6ac4",
+        "0x800d6ad8"
+      ],
+      "transaction_wall_seconds": 1708.1848101229407
+    },
+    {
+      "active_goal_count": 1,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/c4/c42092e662a9b272b5e7e8a0e69c8ec9c5f79df0c3a295f90be73f01855e5632",
+        "bytes": 19201,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ad8/evidence.json",
+        "sha256": "c42092e662a9b272b5e7e8a0e69c8ec9c5f79df0c3a295f90be73f01855e5632"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 348842,
+        "cpu_seconds": 63.304672,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 63.56265010102652,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 1461444
+      },
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
+      "entry_pc": "0x800d6ad8",
+      "first_residual": "\u231cdecodeItemInputHead args inputPrefix rest\n \u2227 248 \u2264 bv_unsigned inputPrefix \u2264 255\n   \u2227 payloadStart = (1 + (bv_unsigned inputPrefix - 247))%Z\n     \u2227 payloadStart = RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest)\n       \u2227 0 \u2264 payloadStart\n         \u2227 bv_unsigned (Z_to_bv 64 (payloadStart + n)) = (decodeItemInputPointer args + payloadStart)%Z\n           \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes))) = payloadStart\n             \u2227 bv_unsigned (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1)) = (payloadStart + payloadStart) `mod` RlpDecodeItem.word64Modulus\n               \u2227 decodeItemLongAcceptedFacts args true payloadStart payloadStart\n                 \u2227 decodeItemBeforeStorage args = decodeItemBeforeStorage args \u2227 Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)\u231d%I",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6ad8",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 2,
+      "lemma": "DesignedBoundary_800d6ad8",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/a1/a1151d466b09866f8906e35b2aa32a667da732c09ef23da87819f37097678b9d",
+        "bytes": 16926,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ad8/compiler.log",
+        "sha256": "a1151d466b09866f8906e35b2aa32a667da732c09ef23da87819f37097678b9d"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/b9/b9e9a79fa9a1ffb8aa3e378829fe51ca95ca0a1c8c0905b32c727d11c01c0cb4",
+        "bytes": 9477,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ad8/Boundary.v",
+        "sha256": "b9e9a79fa9a1ffb8aa3e378829fe51ca95ca0a1c8c0905b32c727d11c01c0cb4"
+      },
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "successors": [
+        "0x800d6b08",
+        "0x800d6ae0"
+      ],
+      "transaction_wall_seconds": 66.02234787796624
+    },
+    {
+      "active_goal_count": null,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/da/da193127d4c30caeeb5795c180605112c17394999bd942ebed2269d48d693fed",
+        "bytes": 8585,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ae0/evidence.json",
+        "sha256": "da193127d4c30caeeb5795c180605112c17394999bd942ebed2269d48d693fed"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 380033,
+        "cpu_seconds": 1089.4650820000002,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1093.7981097080046,
+        "exit_code": -15,
+        "limit": "memory",
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 6294536
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
+      "entry_pc": "0x800d6ae0",
+      "first_residual": null,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "unavailable",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6ae0",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 10,
+      "lemma": "DesignedBoundary_800d6ae0",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/d4/d481b78809ac61f5752e9398772fccae3b329c0ce768c172e2852897f30eaaa6",
+        "bytes": 10559,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ae0/compiler.log",
+        "sha256": "d481b78809ac61f5752e9398772fccae3b329c0ce768c172e2852897f30eaaa6"
+      },
+      "named_qed_in_source": true,
+      "outcome": "automation-search-failure",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "unavailable",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/91/9153b80e32d9dec220bd6331dbbfb186a637e7e24dba8cfb0f30900f2fab6b9e",
+        "bytes": 8421,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ae0/Boundary.v",
+        "sha256": "9153b80e32d9dec220bd6331dbbfb186a637e7e24dba8cfb0f30900f2fab6b9e"
+      },
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "successors": [],
+      "transaction_wall_seconds": 1096.2286710239714
+    },
+    {
+      "active_goal_count": 9,
+      "assumptions": {
+        "reason": "The compiler returned no assumption certificate",
+        "verified": false
+      },
+      "capture": {
+        "archive": "/home/cody/zesislar-archive/sha256/3e/3e1463f4b9ed4f517324ce85e4a3df7604de0f7194eae367c7cad68592366552",
+        "bytes": 805816,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6b08/evidence.json",
+        "sha256": "3e1463f4b9ed4f517324ce85e4a3df7604de0f7194eae367c7cad68592366552"
+      },
+      "closed": false,
+      "compiled_object": null,
+      "compiler": {
+        "compiled_object": null,
+        "compiler_pid": 607849,
+        "cpu_seconds": 1056.241527,
+        "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+        "elapsed_seconds": 1060.2534790210193,
+        "exit_code": 1,
+        "limit": null,
+        "limits": {
+          "cpu_seconds": 1200,
+          "module_seconds": null,
+          "rss_kib": 6291456
+        },
+        "measurement_complete": true,
+        "peak_rss_kib": 4691032
+      },
+      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
+      "entry_pc": "0x800d6b08",
+      "first_residual": "(SHELVED_SIDECOND\n   ((?Goal1@{H0:=bv_signed_in_range 64 b4; H1:=bv_signed_in_range 64 n0; H2:=bv_signed_in_range 64 b2; H15:=bv_signed_in_range 64 n1; H20:=bv_signed_in_range 64 b1; H23:=bv_signed_in_range 64 b;\n             H25:=bv_signed_in_range 64 n; H27:=bv_signed_in_range 8 inputPrefix}\n     :\n     nat) = decodeItemOutputPointer args + 8 - decodeItemOutputPointer args))",
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "identity": "0x800d6b08",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "instruction_count": 10,
+      "lemma": "DesignedBoundary_800d6b08",
+      "log": {
+        "archive": "/home/cody/zesislar-archive/sha256/dc/dcee586a472fe42af6854c37f2db0875eb543713c1f0ce4d494251e1ded1c443",
+        "bytes": 550690,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6b08/compiler.log",
+        "sha256": "dcee586a472fe42af6854c37f2db0875eb543713c1f0ce4d494251e1ded1c443"
+      },
+      "named_qed_in_source": true,
+      "outcome": "native-residual",
+      "primary_tactic_entered": true,
+      "qed_execution_evidence": "incomplete-proof error",
+      "source": {
+        "archive": "/home/cody/zesislar-archive/sha256/2b/2b324e845ce09fe6f463c54e8a2cc202a0dfd43660a65c4f5b5eba8231cea6f4",
+        "bytes": 8675,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6b08/Boundary.v",
+        "sha256": "2b324e845ce09fe6f463c54e8a2cc202a0dfd43660a65c4f5b5eba8231cea6f4"
+      },
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "successors": [],
+      "transaction_wall_seconds": 1061.2844479320338
+    }
+  ],
+  "scope_audit": {
+    "archive": "/home/cody/zesislar-archive/sha256/da/daea2c65c6e97f5bd78777f255fd23cc3d7773d2b9c5a9d2945e4046e64e6e13",
+    "bytes": 8290,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/scope-audit/report.json",
+    "sha256": "daea2c65c6e97f5bd78777f255fd23cc3d7773d2b9c5a9d2945e4046e64e6e13"
+  },
+  "scope_correction": "The native sources import Sets.call. They enable 22 additions and 13 historical classes. The native pass is not an approved-only pass. The adapter sources enable 22 additions. All 17 historical adapter classes are inactive. The adapter scope fixture adds the missing InstrPreAddress class definition but no instance.",
+  "source_and_certificate_audit": {
+    "certificates": [
+      {
+        "active_goal_count": 0,
+        "assumptions": {
+          "assumptions": [],
+          "method": "In-module Print Assumptions DesignedBoundary_800d69d8",
+          "verified": true
+        },
+        "capture": {
+          "archive": "/home/cody/zesislar-archive/sha256/c5/c509228669f23e4b6e0e01b0b0c18565c4b2be00ebcca3f844b184c65bd182bf",
+          "bytes": 8845,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/evidence.json",
+          "sha256": "c509228669f23e4b6e0e01b0b0c18565c4b2be00ebcca3f844b184c65bd182bf"
+        },
+        "closed": true,
+        "compiled_object": {
+          "archive": "/home/cody/zesislar-archive/sha256/a4/a4931a9ea6b4114638cd8b9fe133b3ef0710bd6095e40f07409ac330d18c388c",
+          "bytes": 374995,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/Boundary.vo",
+          "sha256": "a4931a9ea6b4114638cd8b9fe133b3ef0710bd6095e40f07409ac330d18c388c"
+        },
+        "compiler": {
+          "compiled_object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/Boundary.vo",
+            "sha256": "a4931a9ea6b4114638cd8b9fe133b3ef0710bd6095e40f07409ac330d18c388c"
+          },
+          "compiler_pid": 3693506,
+          "cpu_seconds": 16.671163999999997,
+          "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+          "elapsed_seconds": 16.75021333398763,
+          "exit_code": 0,
+          "limit": null,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "measurement_complete": true,
+          "peak_rss_kib": 1174888
+        },
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+        "entry_pc": "0x800d69d8",
+        "first_residual": null,
+        "group_coverage": {
+          "given_up": "unavailable",
+          "goals": "Coq pretty-printed active goals",
+          "shelf": "unavailable",
+          "stack": "unavailable"
+        },
+        "identity": "0x800d69d8",
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "instruction_count": 2,
+        "lemma": "DesignedBoundary_800d69d8",
+        "log": {
+          "archive": "/home/cody/zesislar-archive/sha256/bc/bcd9ab562f9e7a201284129c8db7243592e51ed0d803bb64bea47fa8e3aadd38",
+          "bytes": 8984,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/compiler.log",
+          "sha256": "bcd9ab562f9e7a201284129c8db7243592e51ed0d803bb64bea47fa8e3aadd38"
+        },
+        "named_qed_in_source": true,
+        "outcome": "native-boundary-closed",
+        "primary_tactic_entered": true,
+        "qed_execution_evidence": "compiled",
+        "source": {
+          "archive": "/home/cody/zesislar-archive/sha256/06/0629e8e35201e067a7655257bbbb5f64ab96578877c7e712a7abfe5394f37b45",
+          "bytes": 8996,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d69d8/Boundary.v",
+          "sha256": "0629e8e35201e067a7655257bbbb5f64ab96578877c7e712a7abfe5394f37b45"
+        },
+        "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+        "successors": [
+          "0x800d6a00",
+          "0x800d69e0"
+        ],
+        "transaction_wall_seconds": 18.4092397330096
+      },
+      {
+        "active_goal_count": 0,
+        "assumptions": {
+          "assumptions": [],
+          "method": "In-module Print Assumptions DesignedBoundary_800d6a00",
+          "verified": true
+        },
+        "capture": {
+          "archive": "/home/cody/zesislar-archive/sha256/40/4072f7bd307a070043f9f2be497a8311770c176fe8375f6b1a4be5e0d97f894c",
+          "bytes": 8833,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/evidence.json",
+          "sha256": "4072f7bd307a070043f9f2be497a8311770c176fe8375f6b1a4be5e0d97f894c"
+        },
+        "closed": true,
+        "compiled_object": {
+          "archive": "/home/cody/zesislar-archive/sha256/84/84e1e1393f39a4cddfbe622898c3ea35ba5f9df68a322d12a2e731aa9bda0647",
+          "bytes": 376340,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/Boundary.vo",
+          "sha256": "84e1e1393f39a4cddfbe622898c3ea35ba5f9df68a322d12a2e731aa9bda0647"
+        },
+        "compiler": {
+          "compiled_object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/Boundary.vo",
+            "sha256": "84e1e1393f39a4cddfbe622898c3ea35ba5f9df68a322d12a2e731aa9bda0647"
+          },
+          "compiler_pid": 3749848,
+          "cpu_seconds": 32.397898999999995,
+          "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+          "elapsed_seconds": 32.58079491695389,
+          "exit_code": 0,
+          "limit": null,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "measurement_complete": true,
+          "peak_rss_kib": 1402484
+        },
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+        "entry_pc": "0x800d6a00",
+        "first_residual": null,
+        "group_coverage": {
+          "given_up": "unavailable",
+          "goals": "Coq pretty-printed active goals",
+          "shelf": "unavailable",
+          "stack": "unavailable"
+        },
+        "identity": "0x800d6a00",
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "instruction_count": 2,
+        "lemma": "DesignedBoundary_800d6a00",
+        "log": {
+          "archive": "/home/cody/zesislar-archive/sha256/73/73e036f7c38283d9e82c1e554e4de4d8e4955cf68f1670befe0bff96fbfc471b",
+          "bytes": 9084,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/compiler.log",
+          "sha256": "73e036f7c38283d9e82c1e554e4de4d8e4955cf68f1670befe0bff96fbfc471b"
+        },
+        "named_qed_in_source": true,
+        "outcome": "native-boundary-closed",
+        "primary_tactic_entered": true,
+        "qed_execution_evidence": "compiled",
+        "source": {
+          "archive": "/home/cody/zesislar-archive/sha256/33/33e3096f4f34b7de913d056d9ac315cea4d10365b7d234752bcf4cc8135053df",
+          "bytes": 8996,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a00/Boundary.v",
+          "sha256": "33e3096f4f34b7de913d056d9ac315cea4d10365b7d234752bcf4cc8135053df"
+        },
+        "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+        "successors": [
+          "0x800d6a64",
+          "0x800d6a08"
+        ],
+        "transaction_wall_seconds": 34.92723442299757
+      },
+      {
+        "active_goal_count": 0,
+        "assumptions": {
+          "assumptions": [],
+          "method": "In-module Print Assumptions DesignedBoundary_800d6a14",
+          "verified": true
+        },
+        "capture": {
+          "archive": "/home/cody/zesislar-archive/sha256/85/85d0cfd9c6c9605934b716dd90fe9b7d67a58cc0f102b8fd8cb1c351eadbb260",
+          "bytes": 8804,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/evidence.json",
+          "sha256": "85d0cfd9c6c9605934b716dd90fe9b7d67a58cc0f102b8fd8cb1c351eadbb260"
+        },
+        "closed": true,
+        "compiled_object": {
+          "archive": "/home/cody/zesislar-archive/sha256/a8/a83868da9130ea531037e02343cb57a28b8860c243c501254c93b8641d7b0a85",
+          "bytes": 378309,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/Boundary.vo",
+          "sha256": "a83868da9130ea531037e02343cb57a28b8860c243c501254c93b8641d7b0a85"
+        },
+        "compiler": {
+          "compiled_object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/Boundary.vo",
+            "sha256": "a83868da9130ea531037e02343cb57a28b8860c243c501254c93b8641d7b0a85"
+          },
+          "compiler_pid": 3772393,
+          "cpu_seconds": 7.177139,
+          "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+          "elapsed_seconds": 7.224988391972147,
+          "exit_code": 0,
+          "limit": null,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "measurement_complete": true,
+          "peak_rss_kib": 1119428
+        },
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+        "entry_pc": "0x800d6a14",
+        "first_residual": null,
+        "group_coverage": {
+          "given_up": "unavailable",
+          "goals": "Coq pretty-printed active goals",
+          "shelf": "unavailable",
+          "stack": "unavailable"
+        },
+        "identity": "0x800d6a14",
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "instruction_count": 4,
+        "lemma": "DesignedBoundary_800d6a14",
+        "log": {
+          "archive": "/home/cody/zesislar-archive/sha256/cd/cdb0498df813a5a9e85429859015ebac25c12c00f34339508fbce9d47720e315",
+          "bytes": 9164,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/compiler.log",
+          "sha256": "cdb0498df813a5a9e85429859015ebac25c12c00f34339508fbce9d47720e315"
+        },
+        "named_qed_in_source": true,
+        "outcome": "native-boundary-closed",
+        "primary_tactic_entered": true,
+        "qed_execution_evidence": "compiled",
+        "source": {
+          "archive": "/home/cody/zesislar-archive/sha256/32/32cbcc8b8004a36e34aa43579dd56d96b706f28cb77fb8899178f28e60044e92",
+          "bytes": 9232,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a14/Boundary.v",
+          "sha256": "32cbcc8b8004a36e34aa43579dd56d96b706f28cb77fb8899178f28e60044e92"
+        },
+        "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+        "successors": [
+          "0x800d6a24"
+        ],
+        "transaction_wall_seconds": 9.288850435987115
+      },
+      {
+        "active_goal_count": 0,
+        "assumptions": {
+          "assumptions": [],
+          "method": "In-module Print Assumptions DesignedBoundary_800d6a64",
+          "verified": true
+        },
+        "capture": {
+          "archive": "/home/cody/zesislar-archive/sha256/29/293f832dbc0820773163e32ba438f1da196750249e5537be9756e99153f88b0c",
+          "bytes": 8839,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/evidence.json",
+          "sha256": "293f832dbc0820773163e32ba438f1da196750249e5537be9756e99153f88b0c"
+        },
+        "closed": true,
+        "compiled_object": {
+          "archive": "/home/cody/zesislar-archive/sha256/1c/1c3a54f146922acbceb4bb7c47fbc8a1d068988ae0a1028bbc63511d731ae180",
+          "bytes": 376330,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/Boundary.vo",
+          "sha256": "1c3a54f146922acbceb4bb7c47fbc8a1d068988ae0a1028bbc63511d731ae180"
+        },
+        "compiler": {
+          "compiled_object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/Boundary.vo",
+            "sha256": "1c3a54f146922acbceb4bb7c47fbc8a1d068988ae0a1028bbc63511d731ae180"
+          },
+          "compiler_pid": 3990471,
+          "cpu_seconds": 27.944613,
+          "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+          "elapsed_seconds": 28.063672040007077,
+          "exit_code": 0,
+          "limit": null,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "measurement_complete": true,
+          "peak_rss_kib": 1400380
+        },
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+        "entry_pc": "0x800d6a64",
+        "first_residual": null,
+        "group_coverage": {
+          "given_up": "unavailable",
+          "goals": "Coq pretty-printed active goals",
+          "shelf": "unavailable",
+          "stack": "unavailable"
+        },
+        "identity": "0x800d6a64",
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "instruction_count": 2,
+        "lemma": "DesignedBoundary_800d6a64",
+        "log": {
+          "archive": "/home/cody/zesislar-archive/sha256/b8/b8836f5cfb65bb6a8e923b6fa821be208e796fa2f32550854837155f17b37161",
+          "bytes": 9008,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/compiler.log",
+          "sha256": "b8836f5cfb65bb6a8e923b6fa821be208e796fa2f32550854837155f17b37161"
+        },
+        "named_qed_in_source": true,
+        "outcome": "native-boundary-closed",
+        "primary_tactic_entered": true,
+        "qed_execution_evidence": "compiled",
+        "source": {
+          "archive": "/home/cody/zesislar-archive/sha256/09/0924fd9b1aaa78101c31e194b062bfac6f84ec279e3bc2364233da52dd257f3a",
+          "bytes": 8996,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a64/Boundary.v",
+          "sha256": "0924fd9b1aaa78101c31e194b062bfac6f84ec279e3bc2364233da52dd257f3a"
+        },
+        "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+        "successors": [
+          "0x800d6aa8",
+          "0x800d6a6c"
+        ],
+        "transaction_wall_seconds": 29.639431298011914
+      },
+      {
+        "active_goal_count": 0,
+        "assumptions": {
+          "assumptions": [],
+          "method": "In-module Print Assumptions DesignedBoundary_800d6a6c",
+          "verified": true
+        },
+        "capture": {
+          "archive": "/home/cody/zesislar-archive/sha256/22/221f0e327ce32298b0e2828738a80b8e26c4e49f9b2ace2f54d5fc8a9f91eb00",
+          "bytes": 8848,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/evidence.json",
+          "sha256": "221f0e327ce32298b0e2828738a80b8e26c4e49f9b2ace2f54d5fc8a9f91eb00"
+        },
+        "closed": true,
+        "compiled_object": {
+          "archive": "/home/cody/zesislar-archive/sha256/bc/bcfb9177f4d700f5842fad81047b9e43e46d4c494cda44b44ed1911dfbd9c150",
+          "bytes": 390931,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/Boundary.vo",
+          "sha256": "bcfb9177f4d700f5842fad81047b9e43e46d4c494cda44b44ed1911dfbd9c150"
+        },
+        "compiler": {
+          "compiled_object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/Boundary.vo",
+            "sha256": "bcfb9177f4d700f5842fad81047b9e43e46d4c494cda44b44ed1911dfbd9c150"
+          },
+          "compiler_pid": 3991017,
+          "cpu_seconds": 27.280061999999997,
+          "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+          "elapsed_seconds": 27.409228856908157,
+          "exit_code": 0,
+          "limit": null,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "measurement_complete": true,
+          "peak_rss_kib": 1389948
+        },
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+        "entry_pc": "0x800d6a6c",
+        "first_residual": null,
+        "group_coverage": {
+          "given_up": "unavailable",
+          "goals": "Coq pretty-printed active goals",
+          "shelf": "unavailable",
+          "stack": "unavailable"
+        },
+        "identity": "0x800d6a6c",
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "instruction_count": 3,
+        "lemma": "DesignedBoundary_800d6a6c",
+        "log": {
+          "archive": "/home/cody/zesislar-archive/sha256/31/31e65099d85de8698aa77c432786c8f5bace1587aee918145992d3c1ca7ddf62",
+          "bytes": 9084,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/compiler.log",
+          "sha256": "31e65099d85de8698aa77c432786c8f5bace1587aee918145992d3c1ca7ddf62"
+        },
+        "named_qed_in_source": true,
+        "outcome": "native-boundary-closed",
+        "primary_tactic_entered": true,
+        "qed_execution_evidence": "compiled",
+        "source": {
+          "archive": "/home/cody/zesislar-archive/sha256/8f/8ff47c5c5a87af3015fd2629deb2c396a6e31ed9789b166692bace9e5f99fd93",
+          "bytes": 8953,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6a6c/Boundary.v",
+          "sha256": "8ff47c5c5a87af3015fd2629deb2c396a6e31ed9789b166692bace9e5f99fd93"
+        },
+        "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+        "successors": [
+          "0x800d6ae0",
+          "0x800d6a78"
+        ],
+        "transaction_wall_seconds": 29.146454763016663
+      },
+      {
+        "active_goal_count": 0,
+        "assumptions": {
+          "assumptions": [],
+          "method": "In-module Print Assumptions DesignedBoundary_800d6ab4",
+          "verified": true
+        },
+        "capture": {
+          "archive": "/home/cody/zesislar-archive/sha256/c6/c6e1f2dffd9326294bfb4f53a1632acc88e9398346ffa20cd0b3a77328bbd1c5",
+          "bytes": 8803,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/evidence.json",
+          "sha256": "c6e1f2dffd9326294bfb4f53a1632acc88e9398346ffa20cd0b3a77328bbd1c5"
+        },
+        "closed": true,
+        "compiled_object": {
+          "archive": "/home/cody/zesislar-archive/sha256/58/5848b962b08c4748735ba4a6ba59aaa4cba2abed3acf59c988cd60c0306ef261",
+          "bytes": 378329,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/Boundary.vo",
+          "sha256": "5848b962b08c4748735ba4a6ba59aaa4cba2abed3acf59c988cd60c0306ef261"
+        },
+        "compiler": {
+          "compiled_object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/Boundary.vo",
+            "sha256": "5848b962b08c4748735ba4a6ba59aaa4cba2abed3acf59c988cd60c0306ef261"
+          },
+          "compiler_pid": 3993117,
+          "cpu_seconds": 6.434897,
+          "cwd": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/agents/worker2-child-i38-roota7/default",
+          "elapsed_seconds": 6.467977656982839,
+          "exit_code": 0,
+          "limit": null,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "measurement_complete": true,
+          "peak_rss_kib": 1123500
+        },
+        "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+        "entry_pc": "0x800d6ab4",
+        "first_residual": null,
+        "group_coverage": {
+          "given_up": "unavailable",
+          "goals": "Coq pretty-printed active goals",
+          "shelf": "unavailable",
+          "stack": "unavailable"
+        },
+        "identity": "0x800d6ab4",
+        "inherited_debts": {
+          "pending_goals": [],
+          "shelved_goals": []
+        },
+        "instruction_count": 4,
+        "lemma": "DesignedBoundary_800d6ab4",
+        "log": {
+          "archive": "/home/cody/zesislar-archive/sha256/a2/a206931fe654d163f488d940d1db50bb101732a69fba37b23be3efca6858c435",
+          "bytes": 9203,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/compiler.log",
+          "sha256": "a206931fe654d163f488d940d1db50bb101732a69fba37b23be3efca6858c435"
+        },
+        "named_qed_in_source": true,
+        "outcome": "native-boundary-closed",
+        "primary_tactic_entered": true,
+        "qed_execution_evidence": "compiled",
+        "source": {
+          "archive": "/home/cody/zesislar-archive/sha256/fa/facdc8c0f8e94cdbf086a10bcbdd7be1058ab4013e270c78fc28e0e9a6d82764",
+          "bytes": 9232,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform/_build/i38-roota7/_build/all-hints/results/native/block_0x800d6ab4/Boundary.v",
+          "sha256": "facdc8c0f8e94cdbf086a10bcbdd7be1058ab4013e270c78fc28e0e9a6d82764"
+        },
+        "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+        "successors": [
+          "0x800d6ac4"
+        ],
+        "transaction_wall_seconds": 8.131944496999495
+      }
+    ],
+    "closure_count": 6
+  },
+  "termination_proved": false,
+  "workers": 2,
+  "wrapper_exit_code": 0,
+  "wrapper_status_is_closure": false
+}
