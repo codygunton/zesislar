@@ -11,6 +11,7 @@ Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction.
 Require Import ZesuSsz.Compliance.DecodeItemDataWitnessFacts.
 Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
+Require Import ZesuSsz.Compliance.DecodeItemEntryGuardFacts.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 
