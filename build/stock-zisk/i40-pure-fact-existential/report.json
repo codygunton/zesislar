@@ -1,0 +1,745 @@
+{
+  "accounting": {
+    "tokens_child": null,
+    "tokens_parent": null
+  },
+  "archive_audit": {
+    "checked_records": 10632,
+    "content_addressed_index_checked": true,
+    "mismatches": []
+  },
+  "archive_index": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/52/52c1fd43fe70bd6af26469530919bc17de6dc8473aa16527f04493b637304cd2",
+    "bytes": 3943152,
+    "sha256": "52c1fd43fe70bd6af26469530919bc17de6dc8473aa16527f04493b637304cd2"
+  },
+  "archive_records": 10632,
+  "arms": {
+    "off": {
+      "assumptions_certificate": null,
+      "boundary_closed": false,
+      "canonical_indices_selected": false,
+      "checked_seals": 10501,
+      "compiled_object": null,
+      "compiler_exit": 1,
+      "compiler_log_sha256": "01a0b327fa23a4149cd53a4163dff9079c18f2eb496a0446c258eb06ef0ce9ff",
+      "compiler_wall_seconds": 138.01958497590385,
+      "cpu_seconds": 137.5725,
+      "evidence_sha256": "d53bd2388d37f859bfb93fe5b17bd186d868247a7c67072dbaaa4fe67d646032",
+      "goal_kinds": [
+        "nat witness",
+        "nat witness",
+        "nat witness",
+        "offset equality",
+        "array bound",
+        "offset equality",
+        "array bound",
+        "offset equality",
+        "array bound",
+        "lookup implication",
+        "lookup implication",
+        "lookup implication"
+      ],
+      "goals": 12,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "inputs_sha256": "aaeca01c849058515a10bad43019963b7e8fb295f67aa58cf741b1eef999d05f",
+      "level1_closed": false,
+      "limit": null,
+      "machine_after": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  123529852 417224195 48891983 6149517290 2935171 5810895 2828251 0 0 0",
+        "load": [
+          4.2587890625,
+          4.43896484375,
+          5.568359375
+        ],
+        "memory": {
+          "MemAvailable": "123719044 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "machine_before": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  123507100 417196416 48889441 6148677996 2934930 5810346 2827804 0 0 0",
+        "load": [
+          2.779296875,
+          4.54248046875,
+          5.78857421875
+        ],
+        "memory": {
+          "MemAvailable": "127174868 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "named_qed_attempted": true,
+      "named_qed_failed": true,
+      "outcome": "native-residual",
+      "peak_rss_kib": 2303472,
+      "raw_capture_sha256": "2fb6b6c421222c175d785b55d78ab796ce97ff7c311f0ddccea9bd888392e0c8",
+      "recipe_sha256": "6533b4672c9745168f3c155661a3910af8402a90481fac8c255fbd0f506815ab",
+      "source_sha256": "567488abe6af2aa912b786b93938a64a496a422c0892e9b50726962aea55ad6f",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "structured_capture_sha256": "e6681de8dad1155729f91d02c205f5b14091e68fb1ce013ebcb151259098d8b3",
+      "termination_proved": false,
+      "transaction_wall_seconds": 139.6911550371442,
+      "unresolved_indices": [
+        "?Goal",
+        "?Goal0",
+        "?Goal1"
+      ],
+      "wrapper_exit": 0
+    },
+    "on": {
+      "assumptions_certificate": null,
+      "boundary_closed": false,
+      "canonical_indices_selected": false,
+      "checked_seals": 10501,
+      "compiled_object": null,
+      "compiler_exit": 1,
+      "compiler_log_sha256": "3b9911460b3e3433ec96cfa4096bf8348bcbef399ee8faa3e557b8f310fbf417",
+      "compiler_wall_seconds": 140.38111376902089,
+      "cpu_seconds": 139.92538900000002,
+      "evidence_sha256": "da8453f6d877710f971b097aec3c60ce9f90d93f248580e5310342456246d837",
+      "goal_kinds": [
+        "nat witness",
+        "nat witness",
+        "nat witness",
+        "offset equality",
+        "array bound",
+        "offset equality",
+        "array bound",
+        "offset equality",
+        "array bound",
+        "lookup implication",
+        "lookup implication",
+        "lookup implication"
+      ],
+      "goals": 12,
+      "group_coverage": {
+        "given_up": "unavailable",
+        "goals": "Coq pretty-printed active goals",
+        "shelf": "unavailable",
+        "stack": "unavailable"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "inputs_sha256": "f64b66806404b04d735ef11797673dc0bc6ef4252814e8eb6d151ad63da17edb",
+      "level1_closed": false,
+      "limit": null,
+      "machine_after": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  123530065 417224414 48892047 6149531785 2935176 5810905 2828258 0 0 0",
+        "load": [
+          4.2587890625,
+          4.43896484375,
+          5.568359375
+        ],
+        "memory": {
+          "MemAvailable": "125955568 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "machine_before": {
+        "cpu_count": 64,
+        "cpu_ticks": "cpu  123507157 417196416 48889456 6148679083 2934930 5810347 2827805 0 0 0",
+        "load": [
+          2.779296875,
+          4.54248046875,
+          5.78857421875
+        ],
+        "memory": {
+          "MemAvailable": "127113968 kB",
+          "SwapFree": "5812 kB",
+          "SwapTotal": "8388604 kB"
+        }
+      },
+      "named_qed_attempted": true,
+      "named_qed_failed": true,
+      "outcome": "native-residual",
+      "peak_rss_kib": 2301816,
+      "raw_capture_sha256": "2fb6b6c421222c175d785b55d78ab796ce97ff7c311f0ddccea9bd888392e0c8",
+      "recipe_sha256": "6533b4672c9745168f3c155661a3910af8402a90481fac8c255fbd0f506815ab",
+      "source_sha256": "deec3c0dc3906d2276fa4b02ea960593291ed8d726e0938c88e7405abc0a33f6",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "structured_capture_sha256": "e6681de8dad1155729f91d02c205f5b14091e68fb1ce013ebcb151259098d8b3",
+      "termination_proved": false,
+      "transaction_wall_seconds": 141.85689045209438,
+      "unresolved_indices": [
+        "?Goal",
+        "?Goal0",
+        "?Goal1"
+      ],
+      "wrapper_exit": 0
+    }
+  },
+  "artifacts": {
+    "BindingOff.v": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/19/199e2512c7337b340d12aa614ff0ffcd54073a2f6213799ee79ee22da8298c2a",
+      "bytes": 6982,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/BindingOff.v",
+      "sha256": "199e2512c7337b340d12aa614ff0ffcd54073a2f6213799ee79ee22da8298c2a"
+    },
+    "BindingOn.v": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/88/88ea0ea7a2d48da413bc4915892bf3a52007d41af5cfd0ffec5bbd5e8bd2d80d",
+      "bytes": 7046,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/BindingOn.v",
+      "sha256": "88ea0ea7a2d48da413bc4915892bf3a52007d41af5cfd0ffec5bbd5e8bd2d80d"
+    },
+    "ScopeOff.v": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/b5/b58e2a526a3d9cd9e3918d2740758cf33e65ceecc0b73568bd1e8f16b037fd64",
+      "bytes": 15349,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/ScopeOff.v",
+      "sha256": "b58e2a526a3d9cd9e3918d2740758cf33e65ceecc0b73568bd1e8f16b037fd64"
+    },
+    "ScopeOn.v": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/4d/4dbdc0ec0be3219325143693c1b12403d3fe0323d73a519fbfd2d48638118285",
+      "bytes": 15360,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/ScopeOn.v",
+      "sha256": "4dbdc0ec0be3219325143693c1b12403d3fe0323d73a519fbfd2d48638118285"
+    },
+    "actual-bindings-mcp.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/20/209bb0e3f5e938ca066fb824793e8a6d217ce56c5f3cb46cce8e9f5d01b30f20",
+      "bytes": 33603,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/actual-bindings-mcp.json",
+      "sha256": "209bb0e3f5e938ca066fb824793e8a6d217ce56c5f3cb46cce8e9f5d01b30f20"
+    },
+    "build-recipe.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ed/ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+      "bytes": 4174612,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/build/stock-zisk/build-recipe.json",
+      "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99"
+    },
+    "candidate.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/f8/f850a51638a4b04ceec4fe522789b877a9c9b1d44513246923dd602eb9853fdf",
+      "bytes": 618,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/candidate.json",
+      "sha256": "f850a51638a4b04ceec4fe522789b877a9c9b1d44513246923dd602eb9853fdf"
+    },
+    "candidate.patch": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c1/c18570995f0cbb2854a87cdf8b1f92388836ac402657a2f043f6f1c02718cb18",
+      "bytes": 13854,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/candidate.patch",
+      "sha256": "c18570995f0cbb2854a87cdf8b1f92388836ac402657a2f043f6f1c02718cb18"
+    },
+    "corrected-observer-result": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae9c91b6b12787e80758a2fac0e5a97c09fb24d5831c26ffd603170f47daca40",
+      "bytes": 8067,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-002/result.json",
+      "sha256": "ae9c91b6b12787e80758a2fac0e5a97c09fb24d5831c26ffd603170f47daca40"
+    },
+    "focused-audit": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/10/10cf1978d95aa7e2d5f53385b28dcecfe9cb2cc1bdf71cfa0c7a645d34772702",
+      "bytes": 7978,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-focused-001/audit.json",
+      "sha256": "10cf1978d95aa7e2d5f53385b28dcecfe9cb2cc1bdf71cfa0c7a645d34772702"
+    },
+    "generic-proposal": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/8f/8f7e94dcf3359c0164ddb43a9cedb0454897401174bb6b1f8607e9a2b1d29cfa",
+      "bytes": 1831,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-focused-001/PROPOSAL.md",
+      "sha256": "8f7e94dcf3359c0164ddb43a9cedb0454897401174bb6b1f8607e9a2b1d29cfa"
+    },
+    "measured-metrics.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/9d/9df40344be579b571232dc29574d33081b7857f651d05b55ff0dd06be2d60466",
+      "bytes": 1177,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/measured-metrics.json",
+      "sha256": "9df40344be579b571232dc29574d33081b7857f651d05b55ff0dd06be2d60466"
+    },
+    "pair-audit.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ad/ada37a0db6da1ca6ffdfd9f0b141dc04fbcb8633bcaf20fc9df8b15cd03fc57f",
+      "bytes": 7169,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/pair-audit.json",
+      "sha256": "ada37a0db6da1ca6ffdfd9f0b141dc04fbcb8633bcaf20fc9df8b15cd03fc57f"
+    },
+    "post-gate-audit.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/86/86ec05bd7cc3c351ec0de80f39dcb21582d653e58adda38fe15045b20ed6c8f8",
+      "bytes": 2918,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-evidence-gate-001/post-gate-audit.json",
+      "sha256": "86ec05bd7cc3c351ec0de80f39dcb21582d653e58adda38fe15045b20ed6c8f8"
+    },
+    "production-mcp.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ac/ac8937bd7408761ae71792a4f4d7b8dca1ae243e5910a1ed50cbebd19f8de912",
+      "bytes": 242979,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/production-mcp.json",
+      "sha256": "ac8937bd7408761ae71792a4f4d7b8dca1ae243e5910a1ed50cbebd19f8de912"
+    },
+    "production-test-audit.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/27/27e3f09d17aa285bd05dcd4d8de3cd9947b0f6e14cc41c9841b37281b962f48c",
+      "bytes": 2523,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/production-test-audit.json",
+      "sha256": "27e3f09d17aa285bd05dcd4d8de3cd9947b0f6e14cc41c9841b37281b962f48c"
+    },
+    "scope-mcp.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/20/20e6c88cf46cc288ff2340ad4e110cbfbef26566d647760a2af0f774fa767dd4",
+      "bytes": 106393,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/scope-mcp.json",
+      "sha256": "20e6c88cf46cc288ff2340ad4e110cbfbef26566d647760a2af0f774fa767dd4"
+    },
+    "source-link-postlaunch-audit.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/60/60865d8732512fe14cf4a2505972755b3e1fe352d9229dedfc195d106d2253ba",
+      "bytes": 886,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-comparison-001/source-link-postlaunch-audit.json",
+      "sha256": "60865d8732512fe14cf4a2505972755b3e1fe352d9229dedfc195d106d2253ba"
+    }
+  },
+  "boundary_closed": false,
+  "candidate_patch_sha256": "c18570995f0cbb2854a87cdf8b1f92388836ac402657a2f043f6f1c02718cb18",
+  "candidate_tree": "c0d140f392624163b26f20f69ce7d5f75d7acecc",
+  "child_gate": {
+    "candidate_patch_sha256": "c18570995f0cbb2854a87cdf8b1f92388836ac402657a2f043f6f1c02718cb18",
+    "candidate_tree": "c0d140f392624163b26f20f69ce7d5f75d7acecc",
+    "command": [
+      "make",
+      "check-fast",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/agents/worker2-child-platform-pure-intro-evidence"
+    ],
+    "coqc_recipe.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/2d/2d537c295aca505eb0eaba62b187c41c55887205b0f128c2c9ab38270122fc2e",
+      "bytes": 4313,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/agents/worker2-child-platform-pure-intro-evidence/coqc_recipe.json",
+      "sha256": "2d537c295aca505eb0eaba62b187c41c55887205b0f128c2c9ab38270122fc2e"
+    },
+    "elapsed_seconds": 5241.954506712966,
+    "exit_code": 0,
+    "launcher": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/22/22eb29f72b711dab945bdfe561103bd2da191b784ef78b91c68e6efea8f3db6c",
+      "bytes": 1469,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-evidence-gate-001/launcher.py",
+      "sha256": "22eb29f72b711dab945bdfe561103bd2da191b784ef78b91c68e6efea8f3db6c"
+    },
+    "log.jsonl": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/36/36907ce6353e03db4b699dd7ef090829770d46cc94d8b14c4aaa8cc9bb70e22e",
+      "bytes": 90,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/agents/worker2-child-platform-pure-intro-evidence/log.jsonl",
+      "sha256": "36907ce6353e03db4b699dd7ef090829770d46cc94d8b14c4aaa8cc9bb70e22e"
+    },
+    "post_gate_native_seals": {
+      "off": {
+        "checked": 10501,
+        "mismatches": []
+      },
+      "on": {
+        "checked": 10501,
+        "mismatches": []
+      }
+    },
+    "private_build_directory": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/agents/worker2-child-platform-pure-intro-evidence",
+    "result_record": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/8d/8daf96b98f01c7d0395777a7b779cbc6939809918470ec7e77e96eba0955a035",
+      "bytes": 685,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-evidence-gate-001/result.json",
+      "sha256": "8daf96b98f01c7d0395777a7b779cbc6939809918470ec7e77e96eba0955a035"
+    },
+    "source_head": "f4fa0c4055618b3562326e8b618e59274f2a47a2",
+    "source_status": "The exact three reviewed production files remain staged. No production bytes changed.",
+    "status": "passed",
+    "watcher_log": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/79/79e492dd1673b0b71e39632c6d255760ec84b2530dab88f759541d485d0a16f4",
+      "bytes": 152970,
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-025829-child-a-pure-intro-evidence-check-fast-001.log",
+      "sha256": "79e492dd1673b0b71e39632c6d255760ec84b2530dab88f759541d485d0a16f4"
+    },
+    "workers": 6
+  },
+  "corrected_observer": {
+    "bindings": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/2f/2f5a20f0a7ab6df0a3749168e1305aedf6cc6babcc950165ecc82a8e9f256e29",
+      "bytes": 4516,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-002/count220-bindings.json",
+      "sha256": "2f5a20f0a7ab6df0a3749168e1305aedf6cc6babcc950165ecc82a8e9f256e29"
+    },
+    "boundary_closed": false,
+    "captures_checked": 271,
+    "captures_equal_observer001": true,
+    "compiler_exit": 1,
+    "complete_context": true,
+    "counter": "38%positive",
+    "cpu_seconds": 99.873856,
+    "inputs": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/1c/1c71d7a6c35b79b79740ae4974f23e451d8806bdb9c6cd75a5d7a5bc2fa46998",
+      "bytes": 2085416,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-002/run-inputs.json",
+      "sha256": "1c71d7a6c35b79b79740ae4974f23e451d8806bdb9c6cd75a5d7a5bc2fa46998"
+    },
+    "level1_closed": false,
+    "limit": null,
+    "log": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/b0/b0dcfe4487af5a0e52ce3065bf0a8ea25c566d0ea7367c35f8e1b0bdcf3eb363",
+      "bytes": 6716009,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-002/compiler.log",
+      "sha256": "b0dcfe4487af5a0e52ce3065bf0a8ea25c566d0ea7367c35f8e1b0bdcf3eb363"
+    },
+    "named_qed_failed": true,
+    "peak_rss_kib": 2044908,
+    "persistent_fields": 1,
+    "result": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae9c91b6b12787e80758a2fac0e5a97c09fb24d5831c26ffd603170f47daca40",
+      "bytes": 8067,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-002/result.json",
+      "sha256": "ae9c91b6b12787e80758a2fac0e5a97c09fb24d5831c26ffd603170f47daca40"
+    },
+    "source": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/62/62938b3387c091a75222c00ca76557c65033bbed5c72492c034c308d3ddc8e5e",
+      "bytes": 17836,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-002/DiagnosticFocused.v",
+      "sha256": "62938b3387c091a75222c00ca76557c65033bbed5c72492c034c308d3ddc8e5e"
+    },
+    "spatial_fields": 17,
+    "termination_proved": false
+  },
+  "dependency_builds": {
+    "pure-intro-base-001": {
+      "command": [
+        "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/tools/resource_guard.sh",
+        "batch",
+        "pure-intro-base-dependencies-001",
+        "--",
+        "opam",
+        "exec",
+        "--switch=/home/cody/islaris",
+        "--",
+        "dune",
+        "build",
+        "--root",
+        ".",
+        "--build-dir",
+        "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/agents/worker2-child-platform-pure-intro-base",
+        "--cache=enabled",
+        "-j32",
+        "ZesuSsz/Automation/All.vo",
+        "ZesuSsz/Automation/InstrPreAddress.vo",
+        "ZesuSsz/Automation/SealedCoverage.vo",
+        "ZesuSsz/Automation/Switches/ArrayBounds.vo",
+        "ZesuSsz/Automation/Switches/ArrayRegionBounds.vo",
+        "ZesuSsz/Automation/Switches/CanonicalAnchor.vo",
+        "ZesuSsz/Automation/Switches/EvarImplicationGuard.vo",
+        "ZesuSsz/Automation/Switches/EvarSideconditionGuard.vo",
+        "ZesuSsz/Automation/Switches/InstructionLookup.vo",
+        "ZesuSsz/Automation/Switches/IntegerArrayAddress.vo",
+        "ZesuSsz/Automation/Switches/KnownPairWitness.vo",
+        "ZesuSsz/Automation/Switches/ListWitness.vo",
+        "ZesuSsz/Automation/Switches/LowMask.vo",
+        "ZesuSsz/Automation/Switches/PureFactHints.vo",
+        "ZesuSsz/Automation/Switches/PureWitnessConstraints.vo",
+        "ZesuSsz/Automation/Switches/RamFault.vo",
+        "ZesuSsz/Automation/Switches/RecordWitness.vo",
+        "ZesuSsz/Automation/Switches/RegionFault.vo",
+        "ZesuSsz/Automation/Switches/RegionFaultNormalization.vo",
+        "ZesuSsz/Automation/Switches/RegisterCollectionSelection.vo",
+        "ZesuSsz/Automation/Switches/ReturnBundle.vo",
+        "ZesuSsz/Automation/Switches/ReturnWand.vo",
+        "ZesuSsz/Automation/Switches/StackWrite.vo",
+        "ZesuSsz/Automation/Switches/StrictSigned.vo",
+        "ZesuSsz/Automation/Switches/TupleWitness.vo",
+        "ZesuSsz/Automation/Switches/WordArrayHandoff.vo",
+        "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.vo",
+        "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.vo",
+        "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemS40GuardFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.vo",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.vo",
+        "ZesuSsz/Contracts/DecodeItemErrorBranch.vo",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.vo",
+        "ZesuSsz/Contracts/DecodeItemSelected.vo",
+        "ZesuSsz/Contracts/RlpDecodeItem.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.vo",
+        "ZesuSsz/Proofs/Tests/DecodeItemArrayIndexShapes.vo",
+        "ZesuSsz/Proofs/Tests/DecodeItemOutputOffset8Shapes.vo",
+        "ZesuSsz/Proofs/Tests/EvarImplicationGuard.vo"
+      ],
+      "elapsed_seconds": 1466.4110111000482,
+      "exit_code": 0,
+      "generated_input_count": 9321,
+      "generated_trace_regeneration": false,
+      "native_primary_executed": false,
+      "peak_children_rss_kib": 1087052,
+      "workers": 32
+    },
+    "pure-intro-refresh-001": {
+      "command": [
+        "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/tools/resource_guard.sh",
+        "batch",
+        "pure-intro-refresh-dependencies-001",
+        "--",
+        "opam",
+        "exec",
+        "--switch=/home/cody/islaris",
+        "--",
+        "dune",
+        "build",
+        "--root",
+        ".",
+        "--build-dir",
+        "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/agents/worker2-child-platform-pure-intro-base",
+        "--cache=enabled",
+        "-j32",
+        "ZesuSsz/Automation/All.vo",
+        "ZesuSsz/Automation/InstrPreAddress.vo",
+        "ZesuSsz/Automation/SealedCoverage.vo",
+        "ZesuSsz/Automation/Switches/ArrayBounds.vo",
+        "ZesuSsz/Automation/Switches/ArrayRegionBounds.vo",
+        "ZesuSsz/Automation/Switches/CanonicalAnchor.vo",
+        "ZesuSsz/Automation/Switches/EvarImplicationGuard.vo",
+        "ZesuSsz/Automation/Switches/EvarSideconditionGuard.vo",
+        "ZesuSsz/Automation/Switches/InstructionLookup.vo",
+        "ZesuSsz/Automation/Switches/IntegerArrayAddress.vo",
+        "ZesuSsz/Automation/Switches/KnownPairWitness.vo",
+        "ZesuSsz/Automation/Switches/ListWitness.vo",
+        "ZesuSsz/Automation/Switches/LowMask.vo",
+        "ZesuSsz/Automation/Switches/PureFactHints.vo",
+        "ZesuSsz/Automation/Switches/PureWitnessConstraints.vo",
+        "ZesuSsz/Automation/Switches/RamFault.vo",
+        "ZesuSsz/Automation/Switches/RecordWitness.vo",
+        "ZesuSsz/Automation/Switches/RegionFault.vo",
+        "ZesuSsz/Automation/Switches/RegionFaultNormalization.vo",
+        "ZesuSsz/Automation/Switches/RegisterCollectionSelection.vo",
+        "ZesuSsz/Automation/Switches/ReturnBundle.vo",
+        "ZesuSsz/Automation/Switches/ReturnWand.vo",
+        "ZesuSsz/Automation/Switches/StackWrite.vo",
+        "ZesuSsz/Automation/Switches/StrictSigned.vo",
+        "ZesuSsz/Automation/Switches/TupleWitness.vo",
+        "ZesuSsz/Automation/Switches/WordArrayHandoff.vo",
+        "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.vo",
+        "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.vo",
+        "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemS40GuardFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.vo",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.vo",
+        "ZesuSsz/Contracts/DecodeItemErrorBranch.vo",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.vo",
+        "ZesuSsz/Contracts/DecodeItemSelected.vo",
+        "ZesuSsz/Contracts/RlpDecodeItem.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.vo",
+        "ZesuSsz/Proofs/Tests/DecodeItemArrayIndexShapes.vo",
+        "ZesuSsz/Proofs/Tests/DecodeItemOutputOffset8Shapes.vo",
+        "ZesuSsz/Proofs/Tests/EvarImplicationGuard.vo",
+        "ZesuSsz/Automation/Switches/PureFactExistential.vo"
+      ],
+      "elapsed_seconds": 84.71016668505035,
+      "exit_code": 0,
+      "generated_input_count": 9321,
+      "generated_trace_regeneration": false,
+      "native_primary_executed": false,
+      "peak_children_rss_kib": 1086760,
+      "workers": 32
+    }
+  },
+  "disposition": "Evidence only. Orch ruled no production change because the frozen pair shows no effect.",
+  "failed_observer": {
+    "audit": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/8b/8bd419462777d59c640b6adb907661b993bb283c37bfa6e6b3aaa244fbec0931",
+      "bytes": 2174,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-observer-repair-001/audit.json",
+      "sha256": "8bd419462777d59c640b6adb907661b993bb283c37bfa6e6b3aaa244fbec0931"
+    },
+    "compiler_log": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/64/64a3125da2075746e4818a46ce00c63179ee61ccca241246f13315aceb0ee8f2",
+      "bytes": 6712940,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-001/compiler.log",
+      "sha256": "64a3125da2075746e4818a46ce00c63179ee61ccca241246f13315aceb0ee8f2"
+    },
+    "corrected_observer_outcome": "The corrected observer recovers TRACE and all Envs fields. All 271 printed captures match.",
+    "exact_context_recovered": false,
+    "first_failed_operation": "The IPM_JANNO body does not match TRACE_LET. Lithium stores it as Envs.",
+    "original_captures_preserved": true,
+    "parser_defect": "The original parser requires a space after the colon. The compiler emits a newline.",
+    "result": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/72/720f89d8a7a48f43e92ecc345f5fc95e01100fe71c1f9a3b558d9148b536646e",
+      "bytes": 7992,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-observer-001/result.json",
+      "sha256": "720f89d8a7a48f43e92ecc345f5fc95e01100fe71c1f9a3b558d9148b536646e"
+    },
+    "trace_recovered": true
+  },
+  "focused_attribution": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/10/10cf1978d95aa7e2d5f53385b28dcecfe9cb2cc1bdf71cfa0c7a645d34772702",
+    "bytes": 7978,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-focused-001/audit.json",
+    "sha256": "10cf1978d95aa7e2d5f53385b28dcecfe9cb2cc1bdf71cfa0c7a645d34772702"
+  },
+  "generic_proposal": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8f/8f7e94dcf3359c0164ddb43a9cedb0454897401174bb6b1f8607e9a2b1d29cfa",
+    "bytes": 1831,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-focused-001/PROPOSAL.md",
+    "sha256": "8f7e94dcf3359c0164ddb43a9cedb0454897401174bb6b1f8607e9a2b1d29cfa"
+  },
+  "helper_firing_limit": "The exact MCP fixture proves generic conversion and cleanup. The complete native captures contain no inner-handler recorder. They do not establish a firing stage. The three retained indices remain unresolved.",
+  "helper_firing_observed": false,
+  "inherited_debts": {
+    "pending_goals": [],
+    "shelved_goals": []
+  },
+  "item": "Generic pure-fact introduction through kernel conversion",
+  "level1_closed": false,
+  "limits": {
+    "cpu_seconds": 2400,
+    "memory_gib": 6,
+    "named_qed": "DesignedBoundary_800d6ac4",
+    "wall_seconds": null
+  },
+  "mcp": {
+    "actual_bindings": "Both actual native prefixes pass interactive checks, compilation, and exact verification. No extra Hooks import exists.",
+    "exact_statements": "All eight final production statements pass verification with assumptions[].",
+    "focused_alias_fixtures": {
+      "assumptions_each": [],
+      "record": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/49/4942e6de90b18714d197927d5085fd378443338ecccaa3c9760a95d6b697a987",
+        "bytes": 60804,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pure-intro/_build/pure-intro-count220-focused-001/proposal-mcp.json",
+        "sha256": "4942e6de90b18714d197927d5085fd378443338ecccaa3c9760a95d6b697a987"
+      },
+      "verified": 9
+    },
+    "health": "Passed on islaris local switch. Coq8.19.2+lsp4.14.4.",
+    "native_statement_only": "Both sessions typecheck the exact boundary and return equal goals. Both sessions end with Abort.",
+    "preserved_failures": "The original complete-file sessions timed out. An earlier verifier reached its memory guard and restarted automatically. The corrected final checks pass.",
+    "production_compile": "Passed. Eight assumptions certificates are closed.",
+    "scope": "OFF/ON scope statements and six implication-guard statements pass with assumptions[]."
+  },
+  "metrics": {
+    "off": {
+      "available_memory_after_kib": 123719044,
+      "available_memory_before_kib": 127174868,
+      "compiler_wall_seconds": 138.01958497590385,
+      "cpu_seconds": 137.5725,
+      "load_after": [
+        4.2587890625,
+        4.43896484375,
+        5.568359375
+      ],
+      "load_before": [
+        2.779296875,
+        4.54248046875,
+        5.78857421875
+      ],
+      "machine_cpu_busy_percent": 6.050666738286758,
+      "peak_rss_kib": 2303472,
+      "process_cpu_percent": 99.6760713517709,
+      "swap_used_kib": 8382792,
+      "transaction_wall_seconds": 139.6911550371442,
+      "workers": 1
+    },
+    "on": {
+      "available_memory_after_kib": 125955568,
+      "available_memory_before_kib": 127113968,
+      "compiler_wall_seconds": 140.38111376902089,
+      "cpu_seconds": 139.92538900000002,
+      "load_after": [
+        4.2587890625,
+        4.43896484375,
+        5.568359375
+      ],
+      "load_before": [
+        2.779296875,
+        4.54248046875,
+        5.78857421875
+      ],
+      "machine_cpu_busy_percent": 6.00668241765992,
+      "peak_rss_kib": 2301816,
+      "process_cpu_percent": 99.67536603978603,
+      "swap_used_kib": 8382792,
+      "transaction_wall_seconds": 141.85689045209438,
+      "workers": 1
+    }
+  },
+  "native_assumptions_certificate": null,
+  "native_repair_claim": false,
+  "native_residual_count_each": 12,
+  "native_residual_difference": [],
+  "parent_iris_preview": {
+    "integration_released": false,
+    "status": "not requested for this evidence-only commit"
+  },
+  "post_final_seals": {
+    "observer001": {
+      "checked": 10521,
+      "mismatches": []
+    },
+    "observer002": {
+      "checked": 10531,
+      "mismatches": []
+    },
+    "off": {
+      "checked": 10501,
+      "mismatches": []
+    },
+    "on": {
+      "checked": 10501,
+      "mismatches": []
+    }
+  },
+  "previous_archive_index": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/56/5619fb3312dfa1926014eae5b5ff37d60f1f9492d53981369b02db929b2abd43",
+    "bytes": 3929936,
+    "sha256": "5619fb3312dfa1926014eae5b5ff37d60f1f9492d53981369b02db929b2abd43"
+  },
+  "primary_body": "try zesu_block.",
+  "production_change_committed": false,
+  "production_files": {
+    "ZesuSsz/Automation/Hooks.v": "0f99adad66bcf77b997b461d7e6bb9832b0239bcfc796145d7127e9cd1fc5e09",
+    "ZesuSsz/Automation/Switches/PureFactExistential.v": "6dbec9718eb9d0ff7d45ef1c482b8a6c4567b59e54b3d22f3d24c524c855eb44",
+    "ZesuSsz/Proofs/Tests/PureFactExistential.v": "febb274f37ead33df9ff6bdb63f134d33c0fbf6d779b899e997224e8f6e8032b"
+  },
+  "raw_capture_equal": true,
+  "scope": "Both arms enable the same23 approved switches and15 root hints. ON additionally enables PureFactExistential. All17 historical classes remain inactive. Sets.call is absent.",
+  "source_root": "f4fa0c4055618b3562326e8b618e59274f2a47a2",
+  "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+  "structured_goals_equal": true,
+  "termination_proved": false,
+  "unavailable_actual_groups": [
+    "stack",
+    "shelf",
+    "given_up"
+  ],
+  "unresolved_indices": [
+    "?Goal",
+    "?Goal0",
+    "?Goal1"
+  ]
+}
