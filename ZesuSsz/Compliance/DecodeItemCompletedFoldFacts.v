@@ -3,7 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
-Require Import ZesuSsz.Compliance.DecodeItemFoldExitFacts.
+Require Export ZesuSsz.Compliance.DecodeItemFoldExitFacts.
 From Coq Require Import Lia.
 Open Scope Z_scope.
 
