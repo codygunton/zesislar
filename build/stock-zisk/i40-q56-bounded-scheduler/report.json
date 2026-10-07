@@ -1,0 +1,186 @@
+{
+  "item": "Bounded q56 scheduler observation",
+  "root": "f4fa0c4055618b3562326e8b618e59274f2a47a2",
+  "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+  "complete_primary": false,
+  "boundary_closed": false,
+  "level1_closed": false,
+  "termination_proved": false,
+  "scope": {
+    "approved_switches": 23,
+    "root_hints": 15,
+    "historical_active": 0,
+    "Sets.call": false
+  },
+  "bounds": [
+    128,
+    256
+  ],
+  "audit128": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-128-003/audit.json",
+    "sha256": "b0cb059d10d80c1543f36627e44b1e745d53cb35b871916394e69e6c06f5e4ae",
+    "archive": "/home/cody/zesislar-archive/sha256/b0/b0cb059d10d80c1543f36627e44b1e745d53cb35b871916394e69e6c06f5e4ae",
+    "bytes": 4004
+  },
+  "audit256": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-256-001/audit.json",
+    "sha256": "488f2e3b9f8e8589e81a223af463bfa08e428aae372053d22223e0b250d43fef",
+    "archive": "/home/cody/zesislar-archive/sha256/48/488f2e3b9f8e8589e81a223af463bfa08e428aae372053d22223e0b250d43fef",
+    "bytes": 10215
+  },
+  "index_introduction_captures": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-256-001/index-introduction-captures.json",
+    "sha256": "e541775db2d0ac497bc0667ee8519282e960ad5616b32991e7e9816ab9bb4e57",
+    "archive": "/home/cody/zesislar-archive/sha256/e5/e541775db2d0ac497bc0667ee8519282e960ad5616b32991e7e9816ab9bb4e57",
+    "bytes": 3672
+  },
+  "retained_states256": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-256-001/retained-states.json",
+    "sha256": "9b0698a701540445724cd73f8f10852aad5846a5d19d1b9d8dbc9703fc3434c0",
+    "archive": "/home/cody/zesislar-archive/sha256/9b/9b0698a701540445724cd73f8f10852aad5846a5d19d1b9d8dbc9703fc3434c0",
+    "bytes": 6581481
+  },
+  "native256_result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-256-001/result.json",
+    "sha256": "b0f7a040b31c959f147adffcb37e6b0983a9c39da66d146a86c4a84603655e05",
+    "archive": "/home/cody/zesislar-archive/sha256/b0/b0f7a040b31c959f147adffcb37e6b0983a9c39da66d146a86c4a84603655e05",
+    "bytes": 6883
+  },
+  "mcp256": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-256-001/mcp-results.json",
+    "sha256": "ef1526ac1ac73c07e3a5d28be7aa7f6e23570c98c6c6f61aab7087c0c3f636e6",
+    "archive": "/home/cody/zesislar-archive/sha256/ef/ef1526ac1ac73c07e3a5d28be7aa7f6e23570c98c6c6f61aab7087c0c3f636e6",
+    "bytes": 7606
+  },
+  "archive_index": {
+    "archive": "/home/cody/zesislar-archive/sha256/88/881d1322b697c9efc3ffb9c2062fbbc319dc6511c275e20212dbe5cb44a3ff39",
+    "sha256": "881d1322b697c9efc3ffb9c2062fbbc319dc6511c275e20212dbe5cb44a3ff39",
+    "bytes": 4922237
+  },
+  "archive_records": 10600,
+  "first_concrete_input_existential_count": 219,
+  "first_direct_input_existential_count": 220,
+  "registration_attempt_observed": false,
+  "production_changes": 0,
+  "failed_attempts_preserved": [
+    "MCP Load rejection",
+    "Unfocused two-goal bridge rejection",
+    "Prelaunch capture parser correction",
+    "Missing entry_pc policy rejection",
+    "Policy assertion preparation failure"
+  ],
+  "unavailable_actual_groups": [
+    "stack",
+    "shelf",
+    "given_up"
+  ],
+  "parent_review": "The parent accepted the bounded audit and authorized the separate evidence commit.",
+  "gate": {
+    "exit_code": 0,
+    "elapsed_seconds": 76.40191539283842,
+    "workers": 6,
+    "source_head": "d91d6d0f535fb82dac4245d1a67cf6bcaeeff9c1",
+    "private_build_directory": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/agents/worker2-child-platform-q56-i39-evidence",
+    "cache_reuse": "Reuse the private directory from the archived successful native evidence gate.",
+    "status": "passed",
+    "watcher_log": {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-015744-child-a-q56-bounded-evidence-check-fast-001.log",
+      "sha256": "9c8c4580bc4b8445609b07c8fad9b8bff5b8421ef735b4611bd66b39a2d6941f",
+      "bytes": 5481,
+      "archive": "/home/cody/zesislar-archive/sha256/9c/9c8c4580bc4b8445609b07c8fad9b8bff5b8421ef735b4611bd66b39a2d6941f"
+    },
+    "result_record": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-bounded-evidence-gate-001/result.json",
+      "sha256": "0ed3afc9e947af0314dac5d1bd05c43809d8fa143e3cba84570053df0b802cb7",
+      "bytes": 385,
+      "archive": "/home/cody/zesislar-archive/sha256/0e/0ed3afc9e947af0314dac5d1bd05c43809d8fa143e3cba84570053df0b802cb7"
+    },
+    "launcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-bounded-evidence-gate-001/launcher.py",
+      "sha256": "e41f87db3f6e95bd6d5039898d47026ff6754c0029b55df831c4601d35766f50",
+      "bytes": 971,
+      "archive": "/home/cody/zesislar-archive/sha256/e4/e41f87db3f6e95bd6d5039898d47026ff6754c0029b55df831c4601d35766f50"
+    },
+    "source_status": "clean",
+    "post_gate_bounded_seals": {
+      "q56-i39-scheduler-128-003": {
+        "checked": 10549,
+        "mismatches": []
+      },
+      "q56-i39-scheduler-256-001": {
+        "checked": 10570,
+        "mismatches": []
+      }
+    },
+    "private_build_log": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/agents/worker2-child-platform-q56-i39-evidence/log.jsonl",
+      "sha256": "461432f025fdb81ebd7b13e346862af563b70eab1ae23e2852b48b672489928a",
+      "bytes": 176,
+      "archive": "/home/cody/zesislar-archive/sha256/46/461432f025fdb81ebd7b13e346862af563b70eab1ae23e2852b48b672489928a"
+    },
+    "private_recipe": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/agents/worker2-child-platform-q56-i39-evidence/coqc_recipe.json",
+      "sha256": "e47c5cbf71878cf137375247abcee5ee2e8d92485afbe9ea0cd214ee293fc70d",
+      "bytes": 4307,
+      "archive": "/home/cody/zesislar-archive/sha256/e4/e47c5cbf71878cf137375247abcee5ee2e8d92485afbe9ea0cd214ee293fc70d"
+    }
+  },
+  "next_query": "The generic handler query will reuse the exact fixture from spec.",
+  "accounting": {
+    "tokens_child": null,
+    "tokens_parent": null
+  },
+  "generic_handler_query_design": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-256-001/generic-handler-query-design.json",
+    "sha256": "4c5ca323b0eeaa6ce29003b8a26e36c63933a7178023b83cdf9527c3af5ff1ee",
+    "bytes": 1260,
+    "archive": "/home/cody/zesislar-archive/sha256/4c/4c5ca323b0eeaa6ce29003b8a26e36c63933a7178023b83cdf9527c3af5ff1ee"
+  },
+  "post_gate_seal_audits": {
+    "q56-i39-scheduler-128-003": {
+      "checked": 10549,
+      "mismatches": []
+    },
+    "q56-i39-scheduler-256-001": {
+      "checked": 10570,
+      "mismatches": []
+    }
+  },
+  "primary_evidence_commit": "d91d6d0f535fb82dac4245d1a67cf6bcaeeff9c1",
+  "mcp128": {
+    "archive": "/home/cody/zesislar-archive/sha256/31/315d3f2e02d28055736a77b89c475e1394af27923ecb1b8532f5dbe4671b8562",
+    "bytes": 22782,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-q56-i39/_build/q56-i39-scheduler-128-001/mcp-results.json",
+    "sha256": "315d3f2e02d28055736a77b89c475e1394af27923ecb1b8532f5dbe4671b8562"
+  },
+  "mcp_summary": {
+    "health": "passed",
+    "two_goal_focused_capture": "compiled",
+    "counter_rollback": "verified with empty assumptions",
+    "counter_two_goal_capture": "verified with empty assumptions",
+    "scope_activation": "compiled and verified with empty assumptions",
+    "exact_diagnostic_statement": "checked and aborted",
+    "bound256_counter": "compiled and verified with empty assumptions",
+    "rejected_attempts": "The original MCP result records preserve every rejected fixture and bridge."
+  },
+  "metrics": {
+    "128": {
+      "cpu_seconds": 25.543919,
+      "compiler_wall_seconds": 25.649702436989173,
+      "transaction_wall_seconds": 306.2846676581539,
+      "peak_rss_kib": 1272824,
+      "compiler_exit": 1,
+      "limit": null,
+      "worker_count": 1
+    },
+    "256": {
+      "cpu_seconds": 102.697217,
+      "compiler_wall_seconds": 103.0409537658561,
+      "transaction_wall_seconds": 105.7626711789053,
+      "peak_rss_kib": 2006780,
+      "compiler_exit": 1,
+      "limit": null,
+      "worker_count": 1
+    }
+  }
+}
