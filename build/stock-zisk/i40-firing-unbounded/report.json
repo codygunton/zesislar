@@ -1,0 +1,347 @@
+{
+  "answer": "No observed S55 introduction or canonical lookup commits natively through the instrumented project routes.",
+  "archive": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/bc/bc9ede4e380f33cdd3185db2fa5a73f2c27f647805b20f0b3f8ca004b43829f7",
+    "bytes": 4088167,
+    "sha256": "bc9ede4e380f33cdd3185db2fa5a73f2c27f647805b20f0b3f8ca004b43829f7"
+  },
+  "archive_records": 10665,
+  "artifacts": {
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-69e8-firing-unbounded-001/evidence.json": "a40b33dbc3b206e67f3aa80acdfb0d55a30be7fa7cf7e139b8f41560f04db7f0",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-69e8-firing-unbounded-001/firing-trace.json": "6e3801551b025e52958f54bc76fd374b369309d4ae825ba93c66777f07f218ee",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-69e8-firing-unbounded-001/result.json": "9e2bf48308898918c2d236845f3dc74d66ba1899a111c074759a6311552231a4",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-unbounded-fixtures-001/mcp-final-bindings.json": "f735ea7ac2002b6eccada1d9c4891fd8f2ed2170f8544482c4fb5d49cf647f4f",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-unbounded-fixtures-001/mcp-results-verified.json": "936d43b278fb618fd215e30b97be57f413805e954bcd97ac202bdfa1954f6250",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-unbounded-offline-audit-001/AUDIT.json": "81c6477f4a03d15a16ad59314ae4934cc1c9d907f777d76019de1c4ad5119ffa",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-unbounded-offline-audit-001/certificate-bindings.json": "6238afe5e529994ee4c5e961e6364877ce3ff6e9423b3e693f203acb45664555",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-unbounded-offline-audit-001/residual-comparison.json": "eb2c664517b9c2e6bb67095ee83084a35966c14b5b576cf777889c74d361cddc",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-unbounded-offline-audit-001/trace-semantics.json": "062d44e3c4ce350146d446f83fb550fe38d713f80b1af3a4917d2965d73ff041"
+  },
+  "bound": null,
+  "boundary": "Supporting decodeItemJoin698cFrom69e8 transfer. Level 1 and termination remain unproved.",
+  "bounded_evidence_commit": "6d1ade5ada8a86838889b6a01e62781f78778195",
+  "budget_policy": {
+    "cpu_seconds": 1200,
+    "kind": "cpu",
+    "memory_kib": 6291456,
+    "wall_seconds": null
+  },
+  "candidate_patch_sha256": "d4d9d43d90d97a3090b43658a823cff662d70728d0d6ecd99c50a3273a201f5a",
+  "candidate_source_integrated": false,
+  "candidate_tree": "3974a331fe07a55886e6a9a59eef805296265bbd",
+  "canonical_routes": [
+    {
+      "application_returns": 0,
+      "attempts": 545,
+      "committed_firing": 0,
+      "label": "\"ExistentialCanonical\""
+    },
+    {
+      "application_returns": 0,
+      "attempts": 545,
+      "committed_firing": 0,
+      "label": "\"CanonicalAnchor\""
+    },
+    {
+      "application_returns": 0,
+      "attempts": 545,
+      "committed_firing": 0,
+      "label": "\"direct-introduction\""
+    },
+    {
+      "application_returns": 0,
+      "attempts": 545,
+      "committed_firing": 0,
+      "label": "\"owned-introduction\""
+    },
+    {
+      "application_returns": 0,
+      "attempts": 545,
+      "committed_firing": 0,
+      "label": "\"anchor-introduction\""
+    }
+  ],
+  "counts": {
+    "application_returned": 2855,
+    "attempted": 41285,
+    "committed_firing": 1834,
+    "rolled_back": 38460,
+    "surviving_application_return": 2825
+  },
+  "evidence_base": "3fd9452d7d3ffea6ad5555cfe6f5e0cb2c242481",
+  "gate": {
+    "candidate_source_integrated": false,
+    "command": [
+      "make",
+      "check-fast",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-platform-i40-unbounded-evidence/_build/agents/worker2-child-platform-i40-unbounded-evidence"
+    ],
+    "diagnostic_replayed": false,
+    "elapsed_seconds": 619.7927795478608,
+    "exit_code": 0,
+    "gate_log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-unbounded-evidence/_build/i40-unbounded-evidence-gate-001/gate.log",
+    "gate_log_sha256": "e7b4c3d482cfd5fbed3da6418648ecc0fb42919860ea032d994bafb12e0ebe06",
+    "peak_children_rss_kib": 3040856,
+    "peak_rss_scope": "Maximum RUSAGE_CHILDREN RSS. This is not aggregate worker memory.",
+    "post_gate_seals": {
+      "bounded_diagnostic": {
+        "checked": 10584,
+        "mismatches": []
+      },
+      "frozen_i39_off": {
+        "checked": 10531,
+        "mismatches": []
+      },
+      "frozen_i39_on": {
+        "checked": 10531,
+        "mismatches": []
+      },
+      "generated": {
+        "checked": 9321,
+        "mismatches": []
+      },
+      "unbounded_diagnostic": {
+        "checked": 10608,
+        "mismatches": []
+      }
+    },
+    "pre_gate_seals": {
+      "bounded_diagnostic": {
+        "checked": 10584,
+        "mismatches": []
+      },
+      "frozen_i39_off": {
+        "checked": 10531,
+        "mismatches": []
+      },
+      "frozen_i39_on": {
+        "checked": 10531,
+        "mismatches": []
+      },
+      "generated": {
+        "checked": 9321,
+        "mismatches": []
+      },
+      "unbounded_diagnostic": {
+        "checked": 10608,
+        "mismatches": []
+      }
+    },
+    "source_head": "3fd9452d7d3ffea6ad5555cfe6f5e0cb2c242481",
+    "source_tree": "6b5a35040b45d861e706625279feea3d5c3874af",
+    "workers": 6
+  },
+  "initial_archive": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/07/07c605387c517fe43243eec55031bc4b061d81948914b00bece81fe07ceeea6b",
+    "bytes": 4086595,
+    "sha256": "07c605387c517fe43243eec55031bc4b061d81948914b00bece81fe07ceeea6b"
+  },
+  "limits": {
+    "committed_firing": "A typed application returned within surviving step ancestry. No observed ancestor rollback removed it. This does not prove closure.",
+    "given_up": "unavailable",
+    "nonstep_surviving_return": "Recorded separately. It does not satisfy the committed-step condition.",
+    "opaque_external_lithium_selection": "unavailable",
+    "shelf": "unavailable",
+    "stack": "unavailable"
+  },
+  "mcp": {
+    "assumptions": [],
+    "cache_defect_preserved": true,
+    "compilation": true,
+    "exact_statement_count": 19,
+    "forced_restart": false,
+    "health": true,
+    "interactive": true,
+    "normal_workspace_selection_repaired_paths": true,
+    "owned_sessions_closed": [
+      {
+        "memory_freed_kib": 4715892,
+        "pid": 3810703
+      },
+      {
+        "memory_freed_kib": 1350556,
+        "pid": 4013560
+      }
+    ],
+    "physical_hooks_finish_dispatch_bindings_verified": true,
+    "statement_verification": true
+  },
+  "measurement_root": "4877f4ed8c2340743389ad0b0f5a617a0371f3bc",
+  "native_outcome": {
+    "boundary_closed": false,
+    "compiler_elapsed_seconds": 603.940234069014,
+    "compiler_exit": 1,
+    "cpu_seconds": 601.9339719999999,
+    "guarded_command_elapsed_seconds": 686.6085898529273,
+    "level1_closed": false,
+    "limit": null,
+    "named_qed_attempted": true,
+    "named_qed_failed": true,
+    "native_assumptions": {
+      "reason": "The compiler returned no assumption certificate",
+      "verified": false
+    },
+    "peak_rss_kib": 3753940,
+    "termination_proved": false
+  },
+  "native_replayed": false,
+  "parser_error": null,
+  "post_gate_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-unbounded-evidence/_build/i40-unbounded-evidence-gate-001/post-gate-audit.json",
+    "sha256": "4ead241126609f03ebce7edff4b3edebb9bf3be397794d9e164c052f2331f48d"
+  },
+  "preserved_failures": [
+    "bounded guard rollback",
+    "bounded offline parser failure",
+    "attempt001 setup failure",
+    "MCP cache failure",
+    "prior bridge fixtures",
+    "archive index formatting failure"
+  ],
+  "primary_body": "  unfold decodeItemJoin698cFrom69e8, decodeItemJoinTransferObligation.\n  iIntros \"Hcode\".\n  iEval (unfold decodeItemSelectedCode) in \"Hcode\".\n  iDestruct \"Hcode\" as \"#Hcode\".\n  zesu_block.\n",
+  "primary_body_sha256": "65131e433bc698eab474ad157800471b3b0aa624cc000f56b1e7482ea4dae65f",
+  "queue": [
+    "Parent evidence review",
+    "Registration attribution pending orch ruling",
+    "Further native execution pending orch ruling"
+  ],
+  "recipe_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/sealed-coqc-recipe.json",
+  "recipe_sha256": "ee726aefee32df5089ae6dbbe844a0dae4f656f4ed28dad4ccbe760509004a99",
+  "residuals": {
+    "baseline_capture_sha256": "3befabd6e8c6f459c43cdbf60f935b15ed63f5da9a310216a15c25a1c63096bd",
+    "byte_equal": false,
+    "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i40-firing/_build/i40-69e8-firing-unbounded-001/active-goals.json",
+    "capture_sha256": "89b8f6f6cfecf454623bedbaba10847ee01c26eeedab01975d6587e1a89b0b5a",
+    "conclusions": [
+      "littleEndian rest = prefix - 128",
+      "fieldImage output 0 rest",
+      "fieldImage output 8 rest",
+      "rest = word64Bytes(input pointer + 1)",
+      "exists head tail, rest = head :: tail and length tail = 7"
+    ],
+    "count": 5,
+    "kernel_term_equality": "Unavailable because the baseline print contains ellipses.",
+    "local_values_equal": true,
+    "persistent_spatial_records_equal": true,
+    "printed_contexts_compatible": true,
+    "remaining_witness": "original rest"
+  },
+  "returned_steps": 910,
+  "seals": {
+    "bounded": 10584,
+    "frozen_i39_off": 10531,
+    "frozen_i39_on": 10531,
+    "mismatches": [],
+    "unbounded": 10608
+  },
+  "selected_pure_certificates": [
+    {
+      "certificate_head": "decodeItemOutputFlagOffsetHint",
+      "event": 24147,
+      "label_sha256": "41ea44a1a94b2bda58305e21918a2d565e8526419a9cfdd003c7735cd89fed20",
+      "registration_sha256": "b68804cc4ae99c43b93dbb0a3dd167b82f7660e3c23c11634869ee74dae4d395",
+      "steps": [
+        {
+          "count": 548,
+          "event": 24127
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemOutputBaseOffsetHint",
+      "event": 32298,
+      "label_sha256": "7e60fec932afac7b0317d3d9598730f01eb769e87ffe82ac78888ae7ead41ed4",
+      "registration_sha256": "3a03223467769c763a0489c5d401ac9972a8795fafab7be398ceab41498ee8b4",
+      "steps": [
+        {
+          "count": 728,
+          "event": 32278
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemOutputOffset8Hint",
+      "event": 40551,
+      "label_sha256": "0763ffbc80afc5bd5b45caec83e0eac5c295855da83ce1abab0cd8b988cedef8",
+      "registration_sha256": "3a03223467769c763a0489c5d401ac9972a8795fafab7be398ceab41498ee8b4",
+      "steps": [
+        {
+          "count": 905,
+          "event": 40531
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemRawOutputExtent",
+      "event": 40704,
+      "label_sha256": "3d710af99efce4646f9db99f6f6312f055f172c8a6a03b706d2ed4dc54d40f71",
+      "registration_sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "steps": [
+        {
+          "count": 906,
+          "event": 40684
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemRawInputSuccessor",
+      "event": 40817,
+      "label_sha256": "c57cd5998b7142b9875436f733dc12dcf6a0da32978fd07d5b4b1f0d300a33e6",
+      "registration_sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "steps": [
+        {
+          "count": 907,
+          "event": 40797
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemRawOutputStatus",
+      "event": 41030,
+      "label_sha256": "68c0f79b43b55de08867b60b52a1b5865af39022052f529f3454be622d121175",
+      "registration_sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "steps": [
+        {
+          "count": 908,
+          "event": 41010
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemRawOutputPad17",
+      "event": 41185,
+      "label_sha256": "937409a3bc398cfafcbf33604e9ba6bfbb10298d71395972ca10e4f2511c96c4",
+      "registration_sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "steps": [
+        {
+          "count": 909,
+          "event": 41165
+        }
+      ]
+    },
+    {
+      "certificate_head": "decodeItemRawOutputPad34",
+      "event": 41224,
+      "label_sha256": "fb16e650a6024c020bd1eb5a28add51f99d95e5af5708fe413406bc57bc79301",
+      "registration_sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "steps": [
+        {
+          "count": 910,
+          "event": 41204
+        }
+      ]
+    }
+  ],
+  "statement_sha256": "5b43b7c6efed32b243b585279e540af1925bc58ea6fa3306b1dfe046acb4b3ba",
+  "surviving_steps": 910,
+  "switch_scope": {
+    "I39": "ON",
+    "approved": 26,
+    "dispatch": "ON",
+    "historical_active": [],
+    "rule34": "ON"
+  },
+  "token_accounting": "unavailable"
+}
