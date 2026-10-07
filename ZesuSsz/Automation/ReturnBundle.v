@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.SwitchDispatch.
 (* Open only the resources introduced by this return wand. *)
 Require Import isla.isla.
 Require Import ZesuSsz.Automation.PureFacts.
@@ -25,7 +26,7 @@ Ltac zesu_open_return_bundle H :=
   end.
 
 Ltac zesu_enter_return_bundle_if_enabled :=
-  let _ := constr:(_ : ZesuStepReturnBundle) in
+  zesu_switch_enabled constr:(ZesuStepReturnBundle);
   lazymatch goal with
   | |- envs_entails _ ((_ -∗ _) ∗ True)%I =>
       iSplit; [let H := iFresh in iIntros H; zesu_open_return_bundle H | done]

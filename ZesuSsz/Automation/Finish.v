@@ -2,6 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Automation.ArraySlices.
@@ -21,6 +22,8 @@ Require Import ZesuSsz.Automation.TracePrefixTail.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
 Require Import ZesuSsz.Automation.ConjunctMatch.
 Require Import ZesuSsz.Automation.ArrayLoadPreselect.
+Require Import ZesuSsz.Automation.ReturnBundle.
+Require Import ZesuSsz.Automation.ReturnWand.
 From iris.proofmode Require Import environments.
 
 Ltac zesu_saturate_alignment :=
@@ -550,10 +553,25 @@ Ltac zesu_run_pass_v2 :=
 Ltac zesu_run_pass :=
   tryif zesu_rule_set_v2_on then zesu_run_pass_v2 else zesu_run_pass_v1.
 
+(* Resolve the approved switch set in the current search context. *)
+Ltac zesu_search_switches := constr:([
+  ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
+  ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
+  ZesuSsz.Automation.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff; ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle;
+  ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand; ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation.Hooks.ZesuStepListWitness;
+  ZesuSsz.Automation.Hooks.ZesuStepTupleWitness; ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds; ZesuSsz.Automation.Hooks.ZesuStepPureFactHints;
+  ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness; ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints;
+  ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection; ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard;
+  ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard;
+  ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor]).
+
 Ltac zesu_run :=
-  unshelve (repeat progress
-    (zesu_run_pass; try zesu_solve_instances; zesu_finish));
-  try zesu_solve_instances.
+  let switches := zesu_search_switches in
+  zesu_dispatch_search switches ltac:(fun _ =>
+    unshelve (repeat progress
+      (zesu_run_pass; try zesu_solve_instances; zesu_finish));
+    try zesu_solve_instances).
 
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with
@@ -618,9 +636,13 @@ Ltac zesu_block_simpl :=
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
   zesu_run.
 
-Ltac zesu_run_until boundary :=
+Ltac zesu_run_until_steps boundary :=
   first [boundary tt |
-    first [liUnfoldLate | zesu_liAStep]; zesu_run_until boundary | idtac].
+    first [liUnfoldLate | zesu_liAStep]; zesu_run_until_steps boundary | idtac].
+
+Ltac zesu_run_until boundary :=
+  let switches := zesu_search_switches in
+  zesu_dispatch_search switches ltac:(fun _ => zesu_run_until_steps boundary).
 
 Ltac zesu_known_array_values :=
   repeat match goal with

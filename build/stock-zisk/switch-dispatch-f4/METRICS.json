@@ -1,0 +1,126 @@
+{
+  "item": "Switch dispatch repair at f4fa0c40",
+  "agent_path": "/root/build",
+  "session": "/home/cody/.codex/sessions/2026/10/06/rollout-2026-10-06T22-40-12-01a1143b-9a5d-7fe2-a170-05ab9ee8c622.jsonl",
+  "scope": "Fresh f4 repair window only. Earlier prototype and old native comparisons are excluded.",
+  "window_start": "2026-10-07T05:21:09.297Z",
+  "window_end": "2026-10-07T06:50:09.081Z",
+  "child_min": 88.9964,
+  "parent_min": "pending",
+  "tokens_child": 13533638,
+  "tokens_parent": "pending",
+  "token_delta": {
+    "input_tokens": 13470783,
+    "cached_input_tokens": 13125248,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 62855,
+    "reasoning_output_tokens": 25708,
+    "total_tokens": 13533638
+  },
+  "token_counting": "Input includes cached input. Output includes reasoning. These fields are not added twice.",
+  "baseline": {
+    "timestamp": "2026-10-07T05:21:03.244Z",
+    "ordinal": 1758,
+    "type": "event_msg",
+    "payload": {
+      "type": "token_count",
+      "info": {
+        "total_token_usage": {
+          "input_tokens": 22757301,
+          "cached_input_tokens": 22250752,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 119946,
+          "reasoning_output_tokens": 49483,
+          "total_tokens": 22877247
+        },
+        "last_token_usage": {
+          "input_tokens": 195862,
+          "cached_input_tokens": 195072,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 623,
+          "reasoning_output_tokens": 413,
+          "total_tokens": 196485
+        },
+        "model_context_window": 258400
+      },
+      "rate_limits": {
+        "limit_id": "codex",
+        "limit_name": null,
+        "primary": {
+          "used_percent": 2.0,
+          "window_minutes": 10080,
+          "resets_at": 1791948534
+        },
+        "secondary": null,
+        "credits": {
+          "has_credits": true,
+          "unlimited": false,
+          "balance": "62500"
+        },
+        "individual_limit": null,
+        "spend_control_reached": null,
+        "plan_type": "pro",
+        "rate_limit_reached_type": null
+      }
+    }
+  },
+  "end": {
+    "timestamp": "2026-10-07T06:50:09.081Z",
+    "ordinal": 2755,
+    "type": "event_msg",
+    "payload": {
+      "type": "token_count",
+      "info": {
+        "total_token_usage": {
+          "input_tokens": 36228084,
+          "cached_input_tokens": 35376000,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 182801,
+          "reasoning_output_tokens": 75191,
+          "total_tokens": 36410885
+        },
+        "last_token_usage": {
+          "input_tokens": 66570,
+          "cached_input_tokens": 62592,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 230,
+          "reasoning_output_tokens": 51,
+          "total_tokens": 66800
+        },
+        "model_context_window": 258400
+      },
+      "rate_limits": {
+        "limit_id": "codex",
+        "limit_name": null,
+        "primary": {
+          "used_percent": 3.0,
+          "window_minutes": 10080,
+          "resets_at": 1791948533
+        },
+        "secondary": null,
+        "credits": {
+          "has_credits": true,
+          "unlimited": false,
+          "balance": "62500"
+        },
+        "individual_limit": null,
+        "spend_control_reached": null,
+        "plan_type": "pro",
+        "rate_limit_reached_type": null
+      }
+    }
+  },
+  "gate_wall_s": 2747.420795076061,
+  "gate_jobs": 6,
+  "comparison_wall_s": 3304.2217226701323,
+  "comparison_workers": 2,
+  "blocks_closed": 0,
+  "instr_closed": 0,
+  "hand_lines": 0,
+  "rules_added": 0,
+  "dispatch_mechanisms_added": 1,
+  "fixture_statements_verified": 21,
+  "native_qed_compiled": 0,
+  "capture_records_equal": 6,
+  "metric_boundary": "This sample ends before archive verification and git commit. Commit overhead is excluded."
+}
