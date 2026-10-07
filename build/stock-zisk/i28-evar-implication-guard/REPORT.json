@@ -1,0 +1,674 @@
+{
+  "archive": {
+    "manifest": "ARCHIVE.json",
+    "manifest_sha256": "fa9ec54207a7132142d43ecaa0314752b2520834e13b1a967cae0ded7ac6bb86",
+    "records": 368
+  },
+  "auxiliary_guard_verification": {
+    "all_required_calls_pass": true,
+    "calls": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/2d/2de38abf63e7d5aa6291d3f8aa589543082b2c8d687ffe9882987150cd7de3da",
+      "bytes": 31327,
+      "sha256": "2de38abf63e7d5aa6291d3f8aa589543082b2c8d687ffe9882987150cd7de3da"
+    },
+    "fixtures": [
+      {
+        "assumptions": [],
+        "final_groups": {
+          "given_up": [],
+          "goals": [],
+          "shelf": [],
+          "stack": []
+        },
+        "final_groups_archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+          "bytes": 49,
+          "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+        },
+        "inherited_debts": [],
+        "name": "unresolved_implication_guard",
+        "proof_sha256": "e66695ec6cd27925d18af4d66135be4bc134bcd8dfc92aa667f371a60fbd2bd9",
+        "statement_sha256": "bba36554620da9aa55d0746a652a89d1c4ed06bdb2d2caa81140a8d57a919101",
+        "verification": {
+          "assumptions": [],
+          "success": true,
+          "verification_method": "module_m"
+        }
+      },
+      {
+        "assumptions": [],
+        "final_groups": {
+          "given_up": [],
+          "goals": [],
+          "shelf": [],
+          "stack": []
+        },
+        "final_groups_archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+          "bytes": 49,
+          "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+        },
+        "inherited_debts": [],
+        "name": "alias_implication_guard",
+        "proof_sha256": "66a67b88d789b94a4c2c17325239463279a203d7fa1264bc5b592bda2a4006cc",
+        "statement_sha256": "ac078e4c4234141855ad686d0faacb74d86ef5434a8e965d2bd4e004974615de",
+        "verification": {
+          "assumptions": [],
+          "success": true,
+          "verification_method": "module_m"
+        }
+      },
+      {
+        "assumptions": [],
+        "final_groups": {
+          "given_up": [],
+          "goals": [],
+          "shelf": [],
+          "stack": []
+        },
+        "final_groups_archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+          "bytes": 49,
+          "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+        },
+        "inherited_debts": [],
+        "name": "fixed_implication_guard",
+        "proof_sha256": "5c8e5c344b95cccc03e56a5f0cddcfcff88c1401ec9a85e218b8b3af22f39266",
+        "statement_sha256": "246fe91c70859d784ba23afd2d025eb07c289dbb0f488cc446f60953ebb27044",
+        "verification": {
+          "assumptions": [],
+          "success": true,
+          "verification_method": "module_m"
+        }
+      },
+      {
+        "assumptions": [],
+        "final_groups": {
+          "given_up": [],
+          "goals": [],
+          "shelf": [],
+          "stack": []
+        },
+        "final_groups_archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+          "bytes": 49,
+          "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+        },
+        "inherited_debts": [],
+        "name": "unresolved_implication_off",
+        "proof_sha256": "dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+        "statement_sha256": "c74e88cd3f45d315feca49b3f44c58b65d223f8b5487d013ccb2d0c89ce50260",
+        "verification": {
+          "assumptions": [],
+          "success": true,
+          "verification_method": "module_m"
+        }
+      }
+    ],
+    "required_tools": [
+      "rocq_health",
+      "rocq_compile_file",
+      "rocq_start",
+      "rocq_step_multi",
+      "rocq_check",
+      "rocq_verify",
+      "rocq_diag"
+    ],
+    "root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5",
+    "scope": "Auxiliary guard fixtures only. No native closure claim.",
+    "sources": {
+      "Guard.v": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+        "bytes": 936,
+        "sha256": "c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd"
+      },
+      "Off.v": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/db/dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+        "bytes": 348,
+        "sha256": "dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907"
+      }
+    }
+  },
+  "closure_claim": false,
+  "datasets": {
+    "complete_pair_audit": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/01/01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c",
+      "bytes": 720396,
+      "sha256": "01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/REPORT-01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c.json"
+    },
+    "guard_fixtures": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/d1/d12d5de7d860ce8bb25aaf3dae0c74a4f6a1f4864609315e6462eb6b1f7c009d",
+      "bytes": 4383,
+      "sha256": "d12d5de7d860ce8bb25aaf3dae0c74a4f6a1f4864609315e6462eb6b1f7c009d",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/audit.json"
+    },
+    "historical_output_bounds": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ce/ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1",
+      "bytes": 9000,
+      "sha256": "ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-output-index/_build/output-index-review/REPORT-ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1.json"
+    },
+    "input_registration_classification": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/34/3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99",
+      "bytes": 22971,
+      "sha256": "3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/REPORT-3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99.json"
+    },
+    "native_fixed_extent": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/7d/7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985",
+      "bytes": 3388,
+      "sha256": "7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/REPORT-7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985.json"
+    },
+    "output_index_classification": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ac/ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa",
+      "bytes": 11927,
+      "sha256": "ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/REPORT-ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa.json"
+    }
+  },
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "CHECK_AGENT=worker2-child-map-guard-gate",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/agents/worker2-child-map-guard-gate"
+    ],
+    "exit_code": 0,
+    "iris_preview": "The parent owns the integration preview. This report does not release integration.",
+    "log": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/2b/2be955e61a07e669898d8de96ba69d4e3bec9bbfdb33cb563c960d0b13fd1723",
+      "bytes": 146362,
+      "sha256": "2be955e61a07e669898d8de96ba69d4e3bec9bbfdb33cb563c960d0b13fd1723",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-check-fast-001/gate.log"
+    },
+    "log_sha256": "2be955e61a07e669898d8de96ba69d4e3bec9bbfdb33cb563c960d0b13fd1723",
+    "result": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/86/860d9e9c392b5c8675566a62b232b6e0d78bcad9f4f4ae2065ced8ea9942cc6b",
+      "bytes": 427,
+      "sha256": "860d9e9c392b5c8675566a62b232b6e0d78bcad9f4f4ae2065ced8ea9942cc6b",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-check-fast-001/result.json"
+    },
+    "source_seals_match": true,
+    "wall_seconds": 1293.149093501037,
+    "workers": 6
+  },
+  "implementation": "The switched liImpl override defers an implication when its Prop premise contains an unresolved evar. The OFF path retains normalize_and_simpl_impl false.",
+  "implementation_sources": [
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/66/66f63d57382c6a64f0158f830ce823bec902e27f48ea19b447d9fcb5c09b4760",
+      "bytes": 66393,
+      "sha256": "66f63d57382c6a64f0158f830ce823bec902e27f48ea19b447d9fcb5c09b4760",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Automation/Hooks.v"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/3c/3c2a70e7e58da0a9cb32dd02756ecec1c67365f37d1bdcfcc1752be617ccb293",
+      "bytes": 133,
+      "sha256": "3c2a70e7e58da0a9cb32dd02756ecec1c67365f37d1bdcfcc1752be617ccb293",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Automation/Switches/EvarImplicationGuard.v"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+      "bytes": 936,
+      "sha256": "c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Proofs/Tests/EvarImplicationGuard.v"
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/db/dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+      "bytes": 348,
+      "sha256": "dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Proofs/Tests/EvarImplicationGuardOff.v"
+    }
+  ],
+  "item": "I28 EvarImplicationGuard",
+  "limitations": [
+    "All six native compilers reached Qed and failed with residual goals. No resource limit fired.",
+    "No native object or assumption certificate exists. Native stack, shelf, and given_up groups remain unavailable.",
+    "The raw printer hides the Z.of_nat coercion in integer offset equalities.",
+    "The guard preserves the input indices but does not select the registered logical witness.",
+    "Focused registration tests prove shape mismatches. They do not observe the earlier native scheduling attempt.",
+    "The generic nonnegative introduction remains scratch-only. No output rule was added.",
+    "The native extent fixture fixes index eight and assumes storage length forty. It does not prove boundary closure.",
+    "The comparison uses a single frozen root. New Compliance repairs do not change these sealed inputs.",
+    "The q56 arms remove Sets.call equally. Both retain the exact statement, setup, primary, 22 approved switches, and 15 hints.",
+    "The six preflights check all 17 historical classes as absent. The original marker-count wrapper failure remains preserved.",
+    "The measured native modules exceed the exploratory 300-second threshold except for 6ac4 ON. No unchanged primary was repeated."
+  ],
+  "metrics": "METRICS: item=I28 kind=guard window_start=2026-10-07T02:40:09.354Z window_end=2026-10-07T03:21:12.955Z child_min=41 tokens_child=15293910 parent_metrics=unavailable instr_closed=0 blocks_closed=0 rules_added=EvarImplicationGuard hand_lines=54 gate_wall_s=1293 gate_jobs=6 residual_classes=input-index,output-index,extent rework=setup-repair",
+  "metrics_evidence": {
+    "last_token_event": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/53/53c5f22cf68f908566bf08886bc1e76bc69c095547a263c1b74c28146a475d66",
+      "bytes": 884,
+      "sha256": "53c5f22cf68f908566bf08886bc1e76bc69c095547a263c1b74c28146a475d66"
+    },
+    "scope": "This resumed child session only. Earlier guard work and parent work are excluded.",
+    "session_path": "/home/cody/.codex/sessions/2026/10/06/rollout-2026-10-06T22-40-09-01a1143b-8c65-7233-89f7-f976c00ab865.jsonl",
+    "token_usage": {
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 14977536,
+      "input_tokens": 15228484,
+      "output_tokens": 65426,
+      "reasoning_output_tokens": 25056,
+      "total_tokens": 15293910
+    },
+    "window_end": "2026-10-07T03:21:12.955Z",
+    "window_start": "2026-10-07T02:40:09.354Z",
+    "window_wall_seconds": 2463.601
+  },
+  "native_comparison": {
+    "activation_audit": {
+      "all_six_compile": true,
+      "approved_switches": 22,
+      "count_correction": "coqc -time prints each idtac command and its output. Anchored marker lines count 17. No proof replay occurred.",
+      "excluded_switches": 17,
+      "hint_modules": 15,
+      "source_sha256": "55aba0148f92d4b9adc11d722e68585dfff6b8a4ac6497b7caa2446f96506b0a"
+    },
+    "all_native_input_seals_match": true,
+    "closure_claim": false,
+    "excluded_inventory": [
+      {
+        "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "switch": "ArrayLoadPriority"
+      },
+      {
+        "class": "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "switch": "BoundedArithmetic"
+      },
+      {
+        "class": "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "switch": "ByteFold"
+      },
+      {
+        "class": "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "switch": "CallReturn"
+      },
+      {
+        "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "switch": "CallReturnSpecTable"
+      },
+      {
+        "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "switch": "ConjunctMatch"
+      },
+      {
+        "class": "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "switch": "ExistentialArrayRestore"
+      },
+      {
+        "class": "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "switch": "InstrPreAddress"
+      },
+      {
+        "class": "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "switch": "InteriorByteSlice"
+      },
+      {
+        "class": "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "switch": "LoadedTrace"
+      },
+      {
+        "class": "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "switch": "LookupReduce"
+      },
+      {
+        "class": "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "switch": "OutcomeHandoff"
+      },
+      {
+        "class": "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "switch": "SealedOpen"
+      },
+      {
+        "class": "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "switch": "SpecTail"
+      },
+      {
+        "class": "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "switch": "TracePrefixTail"
+      },
+      {
+        "class": "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "switch": "WitnessArith"
+      },
+      {
+        "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup",
+        "switch": "WordArrayLookup"
+      }
+    ],
+    "native_input_count": 904,
+    "root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5",
+    "scope": "Three frozen native comparisons. No native boundary or Level 1 closure.",
+    "switch_inventory": {
+      "hints": [
+        "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemDataWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemBranchGuardFacts",
+        "ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses",
+        "ZesuSsz.Compliance.DecodeItemFoldZeroFacts",
+        "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemShortListHandoffFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses",
+        "ZesuSsz.Compliance.DecodeItemS40GuardFacts",
+        "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections",
+        "ZesuSsz.Compliance.DecodeItemInitializationPureFacts",
+        "ZesuSsz.Compliance.DecodeItemCompletedFoldFacts",
+        "ZesuSsz.Compliance.DecodeItemCanonicalAnchors"
+      ],
+      "root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5",
+      "switches": [
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+        "ZesuSsz.Automation.Switches.InstructionLookup",
+        "ZesuSsz.Automation.Switches.RamFault",
+        "ZesuSsz.Automation.Switches.LowMask",
+        "ZesuSsz.Automation.Switches.RecordWitness",
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+        "ZesuSsz.Automation.Switches.ArrayBounds",
+        "ZesuSsz.Automation.Switches.ListWitness",
+        "ZesuSsz.Automation.Switches.TupleWitness",
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+        "ZesuSsz.Automation.Switches.PureFactHints",
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+        "ZesuSsz.Automation.Switches.StackWrite",
+        "ZesuSsz.Automation.Switches.RegionFault",
+        "ZesuSsz.Automation.Switches.WordArrayHandoff",
+        "ZesuSsz.Automation.Switches.ReturnBundle",
+        "ZesuSsz.Automation.Switches.ReturnWand",
+        "ZesuSsz.Automation.Switches.StrictSigned",
+        "ZesuSsz.Automation.Switches.KnownPairWitness",
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+        "ZesuSsz.Automation.Switches.CanonicalAnchor"
+      ],
+      "targets": [
+        "ZesuSsz/Automation/All.vo",
+        "ZesuSsz/Automation/SealedCoverage.vo",
+        "ZesuSsz/Automation/Switches/ArrayBounds.vo",
+        "ZesuSsz/Automation/Switches/ArrayRegionBounds.vo",
+        "ZesuSsz/Automation/Switches/CanonicalAnchor.vo",
+        "ZesuSsz/Automation/Switches/EvarImplicationGuard.vo",
+        "ZesuSsz/Automation/Switches/EvarSideconditionGuard.vo",
+        "ZesuSsz/Automation/Switches/InstructionLookup.vo",
+        "ZesuSsz/Automation/Switches/IntegerArrayAddress.vo",
+        "ZesuSsz/Automation/Switches/KnownPairWitness.vo",
+        "ZesuSsz/Automation/Switches/ListWitness.vo",
+        "ZesuSsz/Automation/Switches/LowMask.vo",
+        "ZesuSsz/Automation/Switches/PureFactHints.vo",
+        "ZesuSsz/Automation/Switches/PureWitnessConstraints.vo",
+        "ZesuSsz/Automation/Switches/RamFault.vo",
+        "ZesuSsz/Automation/Switches/RecordWitness.vo",
+        "ZesuSsz/Automation/Switches/RegionFault.vo",
+        "ZesuSsz/Automation/Switches/RegionFaultNormalization.vo",
+        "ZesuSsz/Automation/Switches/RegisterCollectionSelection.vo",
+        "ZesuSsz/Automation/Switches/ReturnBundle.vo",
+        "ZesuSsz/Automation/Switches/ReturnWand.vo",
+        "ZesuSsz/Automation/Switches/StackWrite.vo",
+        "ZesuSsz/Automation/Switches/StrictSigned.vo",
+        "ZesuSsz/Automation/Switches/TupleWitness.vo",
+        "ZesuSsz/Automation/Switches/WordArrayHandoff.vo",
+        "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.vo",
+        "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.vo",
+        "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemS40GuardFacts.vo",
+        "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.vo",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.vo",
+        "ZesuSsz/Contracts/DecodeItemErrorBranch.vo",
+        "ZesuSsz/Contracts/DecodeItemSelected.vo",
+        "ZesuSsz/Contracts/RlpDecodeItem.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.vo",
+        "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.vo"
+      ]
+    },
+    "wall_seconds": 1866.7218351300107,
+    "workers": 2
+  },
+  "pairs": [
+    {
+      "arms": [
+        {
+          "actual_named_qed_attempt": true,
+          "arm": "off",
+          "assumptions": "unavailable",
+          "certificate": null,
+          "common_import_normalization": "Remove inherited Sets.call from both q56 arms. Preflight imports definition modules to check all 17 excluded class instances.",
+          "compiled_object": null,
+          "compiler_exit": 1,
+          "cpu_seconds": 1636.3417920000002,
+          "inherited_debts": [],
+          "limit_fired": false,
+          "limits": {
+            "cpu_seconds": 2400,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "native_groups": {
+            "active": "Raw capture available. Group membership unavailable.",
+            "given_up": "unavailable",
+            "shelf": "unavailable",
+            "stack": "unavailable"
+          },
+          "peak_rss_kib": 3231252,
+          "raw_capture_sha256": "e4fae802f74523c71a97779431c232488737b70836ceefc3170a254a964ae249",
+          "raw_goal_count": 15,
+          "setup_sha256": "8a86dcdb83eccb2daa0ff303af21498a8e9a921cc3494848bb4db90ba50f323e",
+          "source_sha256": "6d8b1355b45b70ee24d351a44937c4db8a61e18eadb2a0d9dffcfd47bae2051f",
+          "statement": "Lemma DesignedBoundary_800d6ac4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (DesignedEntry_800d6ac4 args inputPrefix rest).\n",
+          "statement_sha256": "4925682a79f9358cba68fd8abfe3e87d451108799f2c1168f0c641c51591a503",
+          "wall_seconds": 1643.2488821119769
+        },
+        {
+          "actual_named_qed_attempt": true,
+          "arm": "on",
+          "assumptions": "unavailable",
+          "certificate": null,
+          "common_import_normalization": "Remove inherited Sets.call from both q56 arms. Preflight imports definition modules to check all 17 excluded class instances.",
+          "compiled_object": null,
+          "compiler_exit": 1,
+          "cpu_seconds": 172.621942,
+          "inherited_debts": [],
+          "limit_fired": false,
+          "limits": {
+            "cpu_seconds": 2400,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "native_groups": {
+            "active": "Raw capture available. Group membership unavailable.",
+            "given_up": "unavailable",
+            "shelf": "unavailable",
+            "stack": "unavailable"
+          },
+          "peak_rss_kib": 2290972,
+          "raw_capture_sha256": "deff3775f53da8bd8afd21c4b6774f5a7ea24bc718a3a306f4f55f6c950032d8",
+          "raw_goal_count": 12,
+          "setup_sha256": "8a86dcdb83eccb2daa0ff303af21498a8e9a921cc3494848bb4db90ba50f323e",
+          "source_sha256": "ed5ec822923a01a7452d7b4e98b65b32d8189d6517b44cfddca2c2a03e84af2b",
+          "statement": "Lemma DesignedBoundary_800d6ac4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (DesignedEntry_800d6ac4 args inputPrefix rest).\n",
+          "statement_sha256": "4925682a79f9358cba68fd8abfe3e87d451108799f2c1168f0c641c51591a503",
+          "wall_seconds": 173.42625431192573
+        }
+      ],
+      "finding": "OFF commits three input indices to zero. ON retains three unresolved indices with offset, bound, and lookup obligations.",
+      "only_guard_import_differs": true,
+      "raw_captures_byte_identical": false,
+      "site": "6ac4",
+      "static_region": {
+        "conditional_branches": 1,
+        "direct_jumps": 0,
+        "instructions": 5,
+        "loops": 1
+      }
+    },
+    {
+      "arms": [
+        {
+          "actual_named_qed_attempt": true,
+          "arm": "off",
+          "assumptions": "unavailable",
+          "certificate": null,
+          "common_import_normalization": "Remove inherited Sets.call from both q56 arms. Preflight imports definition modules to check all 17 excluded class instances.",
+          "compiled_object": null,
+          "compiler_exit": 1,
+          "cpu_seconds": 491.158438,
+          "inherited_debts": [],
+          "limit_fired": false,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "native_groups": {
+            "active": "Raw capture available. Group membership unavailable.",
+            "given_up": "unavailable",
+            "shelf": "unavailable",
+            "stack": "unavailable"
+          },
+          "peak_rss_kib": 3528356,
+          "raw_capture_sha256": "1d8544081f128dbccb0941b2451514d9087471912cf4cc90bd6f5224c0462bbf",
+          "raw_goal_count": 6,
+          "setup_sha256": "2b944f135fce0192d7abf8f4f8bc7fd292dc7c291d05ad4bd2916f9160bc16ac",
+          "source_sha256": "5701cf2ed7c824f7103a3b9af1b0444a8a0282b4429cb8d55bcce64c384e5e22",
+          "statement": "Lemma decodeItemJoin698cFrom69e8_correct `{!islaG Sigma} `{!threadG}\n args (frameBytes : list byte) (payloadLength : bv 64) (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin698cFrom69e8 args frameBytes payloadLength inputPrefix rest.\n",
+          "statement_sha256": "5fd4e1a8f8b99c6a98ec563464fb95429553d35b196160e4057384c4dcf03a8f",
+          "wall_seconds": 493.2286198770162
+        },
+        {
+          "actual_named_qed_attempt": true,
+          "arm": "on",
+          "assumptions": "unavailable",
+          "certificate": null,
+          "common_import_normalization": "Remove inherited Sets.call from both q56 arms. Preflight imports definition modules to check all 17 excluded class instances.",
+          "compiled_object": null,
+          "compiler_exit": 1,
+          "cpu_seconds": 445.80856700000004,
+          "inherited_debts": [],
+          "limit_fired": false,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "native_groups": {
+            "active": "Raw capture available. Group membership unavailable.",
+            "given_up": "unavailable",
+            "shelf": "unavailable",
+            "stack": "unavailable"
+          },
+          "peak_rss_kib": 3540508,
+          "raw_capture_sha256": "1d8544081f128dbccb0941b2451514d9087471912cf4cc90bd6f5224c0462bbf",
+          "raw_goal_count": 6,
+          "setup_sha256": "2b944f135fce0192d7abf8f4f8bc7fd292dc7c291d05ad4bd2916f9160bc16ac",
+          "source_sha256": "f5f0a17c4a18576bdcc91809214c4502d8c0b69149a85d70b917e4e5b4d002f5",
+          "statement": "Lemma decodeItemJoin698cFrom69e8_correct `{!islaG Sigma} `{!threadG}\n args (frameBytes : list byte) (payloadLength : bv 64) (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin698cFrom69e8 args frameBytes payloadLength inputPrefix rest.\n",
+          "statement_sha256": "5fd4e1a8f8b99c6a98ec563464fb95429553d35b196160e4057384c4dcf03a8f",
+          "wall_seconds": 447.59565061097965
+        }
+      ],
+      "finding": "Both arms retain the same unresolved output-eight index and dependent extent. The raw captures match byte for byte.",
+      "only_guard_import_differs": true,
+      "raw_captures_byte_identical": true,
+      "site": "69e8",
+      "static_region": {
+        "conditional_branches": 0,
+        "direct_jumps": 1,
+        "instructions": 6,
+        "loops": 0
+      }
+    },
+    {
+      "arms": [
+        {
+          "actual_named_qed_attempt": true,
+          "arm": "off",
+          "assumptions": "unavailable",
+          "certificate": null,
+          "common_import_normalization": "Remove inherited Sets.call from both q56 arms. Preflight imports definition modules to check all 17 excluded class instances.",
+          "compiled_object": null,
+          "compiler_exit": 1,
+          "cpu_seconds": 358.365883,
+          "inherited_debts": [],
+          "limit_fired": false,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "native_groups": {
+            "active": "Raw capture available. Group membership unavailable.",
+            "given_up": "unavailable",
+            "shelf": "unavailable",
+            "stack": "unavailable"
+          },
+          "peak_rss_kib": 3276448,
+          "raw_capture_sha256": "652fbe24774d72bdaed29051ee1ae4f26bc45b15a793f77f5791d24ad14c66ac",
+          "raw_goal_count": 5,
+          "setup_sha256": "4fd14660986cc33cc40027633385626835d1164068e93697353da6e5da6fd8ea",
+          "source_sha256": "6a6f7aa0b36cc0e5a22fadd71c8be3c14bef5375344ee12a99c137838649e7f1",
+          "statement": "Lemma decodeItemJoin698cFrom697c_correct `{!islaG Sigma} `{!threadG}\n args (frameBytes : list byte) (prefix : bv 64) (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin698cFrom697c args frameBytes prefix inputPrefix rest.\n",
+          "statement_sha256": "323a754eba863d2dc0b901c847b0e97de4ad8975d6dc7978a655aaae69c19838",
+          "wall_seconds": 359.73841273994185
+        },
+        {
+          "actual_named_qed_attempt": true,
+          "arm": "on",
+          "assumptions": "unavailable",
+          "certificate": null,
+          "common_import_normalization": "Remove inherited Sets.call from both q56 arms. Preflight imports definition modules to check all 17 excluded class instances.",
+          "compiled_object": null,
+          "compiler_exit": 1,
+          "cpu_seconds": 371.42513299999996,
+          "inherited_debts": [],
+          "limit_fired": false,
+          "limits": {
+            "cpu_seconds": 1200,
+            "module_seconds": null,
+            "rss_kib": 6291456
+          },
+          "native_groups": {
+            "active": "Raw capture available. Group membership unavailable.",
+            "given_up": "unavailable",
+            "shelf": "unavailable",
+            "stack": "unavailable"
+          },
+          "peak_rss_kib": 3284320,
+          "raw_capture_sha256": "652fbe24774d72bdaed29051ee1ae4f26bc45b15a793f77f5791d24ad14c66ac",
+          "raw_goal_count": 5,
+          "setup_sha256": "4fd14660986cc33cc40027633385626835d1164068e93697353da6e5da6fd8ea",
+          "source_sha256": "1de822371623f654f724973c2fe8821ae7b9a295d0e135699e85acdd5082e3c5",
+          "statement": "Lemma decodeItemJoin698cFrom697c_correct `{!islaG Sigma} `{!threadG}\n args (frameBytes : list byte) (prefix : bv 64) (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin698cFrom697c args frameBytes prefix inputPrefix rest.\n",
+          "statement_sha256": "323a754eba863d2dc0b901c847b0e97de4ad8975d6dc7978a655aaae69c19838",
+          "wall_seconds": 372.96611923596356
+        }
+      ],
+      "finding": "Both arms retain the same unresolved output-eight index and dependent extent. The raw captures match byte for byte.",
+      "only_guard_import_differs": true,
+      "raw_captures_byte_identical": true,
+      "site": "697c",
+      "static_region": {
+        "conditional_branches": 0,
+        "direct_jumps": 0,
+        "instructions": 4,
+        "loops": 0
+      }
+    }
+  ],
+  "root": "a7b5f0606dc697fb7b8816157ac02090ee7bb1c5"
+}
