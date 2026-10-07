@@ -1,0 +1,2210 @@
+{
+  "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Automation/Hooks.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/66/66f63d57382c6a64f0158f830ce823bec902e27f48ea19b447d9fcb5c09b4760",
+    "bytes": 66393,
+    "sha256": "66f63d57382c6a64f0158f830ce823bec902e27f48ea19b447d9fcb5c09b4760",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Automation/Hooks.v"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Automation/Switches/EvarImplicationGuard.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/3c/3c2a70e7e58da0a9cb32dd02756ecec1c67365f37d1bdcfcc1752be617ccb293",
+    "bytes": 133,
+    "sha256": "3c2a70e7e58da0a9cb32dd02756ecec1c67365f37d1bdcfcc1752be617ccb293",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Automation/Switches/EvarImplicationGuard.v"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Proofs/Tests/EvarImplicationGuard.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+    "bytes": 936,
+    "sha256": "c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Proofs/Tests/EvarImplicationGuard.v"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Proofs/Tests/EvarImplicationGuardOff.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/db/dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+    "bytes": 348,
+    "sha256": "dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/ZesuSsz/Proofs/Tests/EvarImplicationGuardOff.v"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-map-output-index/_build/output-index-review/REPORT-ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ce/ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1",
+    "bytes": 9000,
+    "sha256": "ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-output-index/_build/output-index-review/REPORT-ceaac2d82e673463417f2724f562bd86ec6b521d6ae41513e6dfda7da1e5acd1.json"
+  },
+  "/tmp/worker2-final-guard-audit.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/59/59d1289566ad61fedde6eaad15dabed3b85cf4ad92ea163e917e64966b8d3f59",
+    "bytes": 9968,
+    "sha256": "59d1289566ad61fedde6eaad15dabed3b85cf4ad92ea163e917e64966b8d3f59",
+    "source_path": "/tmp/worker2-final-guard-audit.py"
+  },
+  "_build/implication-guard-check-fast-001/gate.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2b/2be955e61a07e669898d8de96ba69d4e3bec9bbfdb33cb563c960d0b13fd1723",
+    "bytes": 146362,
+    "sha256": "2be955e61a07e669898d8de96ba69d4e3bec9bbfdb33cb563c960d0b13fd1723",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-check-fast-001/gate.log"
+  },
+  "_build/implication-guard-check-fast-001/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/86/860d9e9c392b5c8675566a62b232b6e0d78bcad9f4f4ae2065ced8ea9942cc6b",
+    "bytes": 427,
+    "sha256": "860d9e9c392b5c8675566a62b232b6e0d78bcad9f4f4ae2065ced8ea9942cc6b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-check-fast-001/result.json"
+  },
+  "_build/implication-guard-check-fast-001/run.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/1c/1ce4a23a6239798377e9efc4ee1386a4586e82e126dacd7f3b42d97278505674",
+    "bytes": 793,
+    "sha256": "1ce4a23a6239798377e9efc4ee1386a4586e82e126dacd7f3b42d97278505674",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-check-fast-001/run.py"
+  },
+  "_build/implication-guard-comparison-001/Recorder.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "bytes": 3297,
+    "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/Recorder.v"
+  },
+  "_build/implication-guard-comparison-001/dependencies.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6f/6fb5fa7a8b69fd5ea3be85bc531eeb7aa4685f1bceccdb8bc2ecc8ab6a51dbbc",
+    "bytes": 821,
+    "sha256": "6fb5fa7a8b69fd5ea3be85bc531eeb7aa4685f1bceccdb8bc2ecc8ab6a51dbbc",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/dependencies.py"
+  },
+  "_build/implication-guard-comparison-001/dependency-result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/16/1684d7dfdb0cd0a563ec74147ce191c753f22b4c9cb7eb619b33f52dcd591fa3",
+    "bytes": 3018,
+    "sha256": "1684d7dfdb0cd0a563ec74147ce191c753f22b4c9cb7eb619b33f52dcd591fa3",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/dependency-result.json"
+  },
+  "_build/implication-guard-comparison-001/dependency.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/cd/cdbf35ee4ce3b13069f56bfd6acd58be845a9bc6da068cb732f75a4c99f3f815",
+    "bytes": 16284,
+    "sha256": "cdbf35ee4ce3b13069f56bfd6acd58be845a9bc6da068cb732f75a4c99f3f815",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/dependency.log"
+  },
+  "_build/implication-guard-comparison-001/inventory.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f6/f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "bytes": 4737,
+    "sha256": "f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/inventory.json"
+  },
+  "_build/implication-guard-comparison-001/off/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a6/a6d07d810a553286b6c98ddc595bc20d38aab49ca0cbf2939adbf42e0604790d",
+    "bytes": 4997,
+    "sha256": "a6d07d810a553286b6c98ddc595bc20d38aab49ca0cbf2939adbf42e0604790d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-001/off/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b2/b2d35bc4f44e53c9eac017466ec2d091e41883b4c6c4fed09c392d09b125c81b",
+    "bytes": 7418,
+    "sha256": "b2d35bc4f44e53c9eac017466ec2d091e41883b4c6c4fed09c392d09b125c81b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-001/off/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-001/off/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/10/102a907d91b8eb2310bcd818437459668d1c5416b18d01024164f06dd0c3fa59",
+    "bytes": 205914,
+    "sha256": "102a907d91b8eb2310bcd818437459668d1c5416b18d01024164f06dd0c3fa59",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/off/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "bytes": 4312,
+    "sha256": "e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-001/off/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b9/b97f86eb55ed68f6bed31fba1a2d004ace08d38d42b6e6f778a2e70a939ed81c",
+    "bytes": 5011,
+    "sha256": "b97f86eb55ed68f6bed31fba1a2d004ace08d38d42b6e6f778a2e70a939ed81c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-001/off/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/80/804eb2b43a3424cfecb50fb3cd2ca65f13479b37e697d8abb26d4cb19588b648",
+    "bytes": 7432,
+    "sha256": "804eb2b43a3424cfecb50fb3cd2ca65f13479b37e697d8abb26d4cb19588b648",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-001/off/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-001/off/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/68/689fb29ba024f2d4be5c9a2677001afc94522336ac307a0491923debfc8547c2",
+    "bytes": 205914,
+    "sha256": "689fb29ba024f2d4be5c9a2677001afc94522336ac307a0491923debfc8547c2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/off/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "bytes": 4312,
+    "sha256": "e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/55/554066136865af063c00adb69a669e34366949300b2a5a7ffffcadd39a3d7c07",
+    "bytes": 7111,
+    "sha256": "554066136865af063c00adb69a669e34366949300b2a5a7ffffcadd39a3d7c07",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/48/48db7d74b6b1949b43ab324dac19800df87b42ceb1de6fbc76da1d7ebbe2f970",
+    "bytes": 9679,
+    "sha256": "48db7d74b6b1949b43ab324dac19800df87b42ceb1de6fbc76da1d7ebbe2f970",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/3d/3d27b79431587feec60e18ceca574d48443de4df5d006722526b0afcedf7b9c8",
+    "bytes": 5445,
+    "sha256": "3d27b79431587feec60e18ceca574d48443de4df5d006722526b0afcedf7b9c8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a8/a8a3218c26e9d238bb0aedd9f9a689b03f39ac854b629c87e21a8fb5f25665a1",
+    "bytes": 4297,
+    "sha256": "a8a3218c26e9d238bb0aedd9f9a689b03f39ac854b629c87e21a8fb5f25665a1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/42/4219f898367f554ae7d3b34d20968044ac2f52798d7a0c58ae5e22529bcb8f6e",
+    "bytes": 205932,
+    "sha256": "4219f898367f554ae7d3b34d20968044ac2f52798d7a0c58ae5e22529bcb8f6e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/off/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "bytes": 4312,
+    "sha256": "e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/off/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-001/on/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/22/221b5464d055e1f965f9c838a16d19406cb042770c6d65b17175cf5ffa6cdc2f",
+    "bytes": 5062,
+    "sha256": "221b5464d055e1f965f9c838a16d19406cb042770c6d65b17175cf5ffa6cdc2f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-001/on/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/7e/7ebd702898cb4afb4dad90fbb66bbedca703d2e45533cd7e4b89704683067f1a",
+    "bytes": 7460,
+    "sha256": "7ebd702898cb4afb4dad90fbb66bbedca703d2e45533cd7e4b89704683067f1a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-001/on/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-001/on/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e4/e4873372aa187b1a61816dda9a1769b297c9e8c6c1c7554dd06be701deb4f0dd",
+    "bytes": 205909,
+    "sha256": "e4873372aa187b1a61816dda9a1769b297c9e8c6c1c7554dd06be701deb4f0dd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/on/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "bytes": 4312,
+    "sha256": "e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-001/on/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/41/41c2719c52eb515cf7510b3af44aac19cfc59aa324674be429773ef2f909fa4f",
+    "bytes": 5076,
+    "sha256": "41c2719c52eb515cf7510b3af44aac19cfc59aa324674be429773ef2f909fa4f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-001/on/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2d/2d48a28f14f840f1c140e3291228cd3216b83f7d9b879484380a79f0c25c0976",
+    "bytes": 7474,
+    "sha256": "2d48a28f14f840f1c140e3291228cd3216b83f7d9b879484380a79f0c25c0976",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-001/on/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-001/on/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f2/f206a3c8d27d2be98cdbf1a9f0a8a4d69a72949d185d9bbd405349209a7c9c3d",
+    "bytes": 205909,
+    "sha256": "f206a3c8d27d2be98cdbf1a9f0a8a4d69a72949d185d9bbd405349209a7c9c3d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/on/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "bytes": 4312,
+    "sha256": "e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-001/on/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a3/a3301988511a3d22bef4d5f1dec58970663f1e3010a586935924afe6d8764c05",
+    "bytes": 7176,
+    "sha256": "a3301988511a3d22bef4d5f1dec58970663f1e3010a586935924afe6d8764c05",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-001/on/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae52641e83c4fc93f6a80a3d69efb237cec05302cbbdc5f0a03bdbed29259def",
+    "bytes": 9721,
+    "sha256": "ae52641e83c4fc93f6a80a3d69efb237cec05302cbbdc5f0a03bdbed29259def",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-001/on/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-001/on/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6e/6e58f953c9c37c034e777095f8fb724df73184bd7016dae992e5cf53320a338b",
+    "bytes": 205927,
+    "sha256": "6e58f953c9c37c034e777095f8fb724df73184bd7016dae992e5cf53320a338b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/on/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "bytes": 4312,
+    "sha256": "e76a7e89b90437449c621ed26dc731faf733d212b11abf8e70c171fcffc979d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/on/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-001/pair-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/80/8012a95f77b0f68dcccd434f4c7127c11fa156f0d0a9a2e41bd30e8c6e941325",
+    "bytes": 3201,
+    "sha256": "8012a95f77b0f68dcccd434f4c7127c11fa156f0d0a9a2e41bd30e8c6e941325",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/pair-inputs.json"
+  },
+  "_build/implication-guard-comparison-001/preflight.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/18/18ec2a9fd0b5f897405516a9de52b770ccb5a3d62fb92511b3098ef3b12d88cf",
+    "bytes": 6933,
+    "sha256": "18ec2a9fd0b5f897405516a9de52b770ccb5a3d62fb92511b3098ef3b12d88cf",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/preflight.json"
+  },
+  "_build/implication-guard-comparison-001/preflight.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ce/ce2cf70ca36726419fc063e83592057221dcebd6b2b6f977862ab90c6aa6c1ad",
+    "bytes": 1549,
+    "sha256": "ce2cf70ca36726419fc063e83592057221dcebd6b2b6f977862ab90c6aa6c1ad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-001/preflight.py"
+  },
+  "_build/implication-guard-comparison-002/Recorder.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "bytes": 3297,
+    "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/Recorder.v"
+  },
+  "_build/implication-guard-comparison-002/inventory.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f6/f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "bytes": 4737,
+    "sha256": "f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/inventory.json"
+  },
+  "_build/implication-guard-comparison-002/off/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e3/e3fff0a97a1419697aa74b3b5d36de79e4b763cbe1ab95024cc09dd371cbcd36",
+    "bytes": 4997,
+    "sha256": "e3fff0a97a1419697aa74b3b5d36de79e4b763cbe1ab95024cc09dd371cbcd36",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-002/off/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b2/b2d35bc4f44e53c9eac017466ec2d091e41883b4c6c4fed09c392d09b125c81b",
+    "bytes": 7418,
+    "sha256": "b2d35bc4f44e53c9eac017466ec2d091e41883b4c6c4fed09c392d09b125c81b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-002/off/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-002/off/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fb/fb9fcfede122a18aca2011d94caecabde0343cf0c22fd31399bbe04a31eab92d",
+    "bytes": 210915,
+    "sha256": "fb9fcfede122a18aca2011d94caecabde0343cf0c22fd31399bbe04a31eab92d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/off/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-002/off/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/00/00d3e2ee8d7b04ca1ee290a364894e34661378faab43e43ad5282b9e1ab315ff",
+    "bytes": 5011,
+    "sha256": "00d3e2ee8d7b04ca1ee290a364894e34661378faab43e43ad5282b9e1ab315ff",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-002/off/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/80/804eb2b43a3424cfecb50fb3cd2ca65f13479b37e697d8abb26d4cb19588b648",
+    "bytes": 7432,
+    "sha256": "804eb2b43a3424cfecb50fb3cd2ca65f13479b37e697d8abb26d4cb19588b648",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-002/off/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-002/off/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2a/2a77042dfbae1cbee41feb10a0ff278e6379aab1ea1740222251a54bcf109000",
+    "bytes": 210915,
+    "sha256": "2a77042dfbae1cbee41feb10a0ff278e6379aab1ea1740222251a54bcf109000",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/off/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e0/e0c40954e77252ff827b64a0cf5f56fc8923570cea0268ee8b898529adf46365",
+    "bytes": 7111,
+    "sha256": "e0c40954e77252ff827b64a0cf5f56fc8923570cea0268ee8b898529adf46365",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/48/48db7d74b6b1949b43ab324dac19800df87b42ceb1de6fbc76da1d7ebbe2f970",
+    "bytes": 9679,
+    "sha256": "48db7d74b6b1949b43ab324dac19800df87b42ceb1de6fbc76da1d7ebbe2f970",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d5/d5561f083e85c8788db2c9df465c6e0b8c9fe90211a3721730de684efaf698c8",
+    "bytes": 5434,
+    "sha256": "d5561f083e85c8788db2c9df465c6e0b8c9fe90211a3721730de684efaf698c8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fe/fe834799988e69667dc3df770cf0bca9a8dbda95e1338aae27e42d32ecdf8294",
+    "bytes": 9331,
+    "sha256": "fe834799988e69667dc3df770cf0bca9a8dbda95e1338aae27e42d32ecdf8294",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b0/b06c1fc85af15da8310c79ec08cd2c200588b68e513098ac2a329f94600c1c2c",
+    "bytes": 210933,
+    "sha256": "b06c1fc85af15da8310c79ec08cd2c200588b68e513098ac2a329f94600c1c2c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/off/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/off/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-002/on/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/33/332369891fbb790867b84f5f670b332aa2079f4a16b981d2bfce2f17ec77f0d3",
+    "bytes": 5062,
+    "sha256": "332369891fbb790867b84f5f670b332aa2079f4a16b981d2bfce2f17ec77f0d3",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-002/on/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/7e/7ebd702898cb4afb4dad90fbb66bbedca703d2e45533cd7e4b89704683067f1a",
+    "bytes": 7460,
+    "sha256": "7ebd702898cb4afb4dad90fbb66bbedca703d2e45533cd7e4b89704683067f1a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-002/on/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-002/on/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e8/e8a6511b84422ddd85bbb9785b006fb0bc45a81078df5ac1019c11165cdcdc33",
+    "bytes": 210909,
+    "sha256": "e8a6511b84422ddd85bbb9785b006fb0bc45a81078df5ac1019c11165cdcdc33",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/on/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-002/on/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2e/2e5353be952e05f1c878b68ad0698934d6298b87a173f3d842a58c3cef6fb52a",
+    "bytes": 5076,
+    "sha256": "2e5353be952e05f1c878b68ad0698934d6298b87a173f3d842a58c3cef6fb52a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-002/on/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2d/2d48a28f14f840f1c140e3291228cd3216b83f7d9b879484380a79f0c25c0976",
+    "bytes": 7474,
+    "sha256": "2d48a28f14f840f1c140e3291228cd3216b83f7d9b879484380a79f0c25c0976",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-002/on/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-002/on/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/bc/bc2e3d4e618f002db4e9f79ae8220b75d2c64a1c265d6c3ba057d2fc8c9d78ae",
+    "bytes": 210909,
+    "sha256": "bc2e3d4e618f002db4e9f79ae8220b75d2c64a1c265d6c3ba057d2fc8c9d78ae",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/on/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-002/on/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a5/a556c4cd5a7a5ec01f47975d195b2c9b02a4dd5134cff06c3f32975053d64791",
+    "bytes": 7176,
+    "sha256": "a556c4cd5a7a5ec01f47975d195b2c9b02a4dd5134cff06c3f32975053d64791",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-002/on/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae52641e83c4fc93f6a80a3d69efb237cec05302cbbdc5f0a03bdbed29259def",
+    "bytes": 9721,
+    "sha256": "ae52641e83c4fc93f6a80a3d69efb237cec05302cbbdc5f0a03bdbed29259def",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-002/on/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-002/on/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/63/63fb9b197285d66615796e25c23066d71c7d192360c6cfbdb03d8bc25f592597",
+    "bytes": 210927,
+    "sha256": "63fb9b197285d66615796e25c23066d71c7d192360c6cfbdb03d8bc25f592597",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/on/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/on/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-002/pair-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8c/8c6730fb0b95e730a1c59d5356c7f43d41c9857084e8e37957650d612d7ca255",
+    "bytes": 3201,
+    "sha256": "8c6730fb0b95e730a1c59d5356c7f43d41c9857084e8e37957650d612d7ca255",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/pair-inputs.json"
+  },
+  "_build/implication-guard-comparison-002/preflight.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c36af5a5d8fa67a5c306dfa845d41ff555466eb93e08dcbaa166b866adc5e53e",
+    "bytes": 8793,
+    "sha256": "c36af5a5d8fa67a5c306dfa845d41ff555466eb93e08dcbaa166b866adc5e53e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/preflight.json"
+  },
+  "_build/implication-guard-comparison-002/preflight.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0e/0e0ba110966ecfbd7e009551b08e3cabdb16f26feb553fddd2bb0077f8313b5a",
+    "bytes": 1968,
+    "sha256": "0e0ba110966ecfbd7e009551b08e3cabdb16f26feb553fddd2bb0077f8313b5a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/preflight.py"
+  },
+  "_build/implication-guard-comparison-002/preserved-attempt001.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/46/46f8101fa9282475cd6904d19d562d761bf5a5ee6340a9d45ac8a291f9ed0739",
+    "bytes": 8753,
+    "sha256": "46f8101fa9282475cd6904d19d562d761bf5a5ee6340a9d45ac8a291f9ed0739",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-002/preserved-attempt001.json"
+  },
+  "_build/implication-guard-comparison-003/Recorder.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "bytes": 3297,
+    "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/Recorder.v"
+  },
+  "_build/implication-guard-comparison-003/inventory.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f6/f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "bytes": 4737,
+    "sha256": "f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/inventory.json"
+  },
+  "_build/implication-guard-comparison-003/off/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0f/0f0126062bce00bbdfadd7d81ee19f16e5bf2cf0114213b8fd574f468214978b",
+    "bytes": 4997,
+    "sha256": "0f0126062bce00bbdfadd7d81ee19f16e5bf2cf0114213b8fd574f468214978b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-003/off/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/55/556a0f9d0967e30ac8d0cb411496fb4a73faed985ed3abed1ac6eee953d9c0f0",
+    "bytes": 7408,
+    "sha256": "556a0f9d0967e30ac8d0cb411496fb4a73faed985ed3abed1ac6eee953d9c0f0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-003/off/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-003/off/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c9/c9cc9ef3e152387fbeacf624e4352b5225d183117521c3c026ea87ad6ffd14d2",
+    "bytes": 210915,
+    "sha256": "c9cc9ef3e152387fbeacf624e4352b5225d183117521c3c026ea87ad6ffd14d2",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/off/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/3f/3fc62e5ae218e439cb6a813c094dee687cc1d2c7647d56ec8a5aac7627da4828",
+    "bytes": 5011,
+    "sha256": "3fc62e5ae218e439cb6a813c094dee687cc1d2c7647d56ec8a5aac7627da4828",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c7/c70118fc7a62ac3ba2c6b765bcc21d2d789dec57c1511a3997f10a04c801923b",
+    "bytes": 7422,
+    "sha256": "c70118fc7a62ac3ba2c6b765bcc21d2d789dec57c1511a3997f10a04c801923b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/81/81112cf42af7534e77a57818891a475fce3870b67c30e7c0abad499814c5aaed",
+    "bytes": 5445,
+    "sha256": "81112cf42af7534e77a57818891a475fce3870b67c30e7c0abad499814c5aaed",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/46/464537b1cc55a1962f685b76e15951d61f2dd11d339f349e90bc558482a794ff",
+    "bytes": 6273,
+    "sha256": "464537b1cc55a1962f685b76e15951d61f2dd11d339f349e90bc558482a794ff",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/5c/5cf5bbf09568e6baeb1ae5c09866ee53ff872248e47d06b22997676c6ee74723",
+    "bytes": 210915,
+    "sha256": "5cf5bbf09568e6baeb1ae5c09866ee53ff872248e47d06b22997676c6ee74723",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/off/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/24/24fd0ec5e5b5efa092b10fdb6e1f5b09e1f10c60c8fb55d5aa7c18c47b5bb683",
+    "bytes": 7111,
+    "sha256": "24fd0ec5e5b5efa092b10fdb6e1f5b09e1f10c60c8fb55d5aa7c18c47b5bb683",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d5/d5be2e0b7933154abee10d85836f5fee723d2a1598fa56e4442d8c4cec69d9b1",
+    "bytes": 9669,
+    "sha256": "d5be2e0b7933154abee10d85836f5fee723d2a1598fa56e4442d8c4cec69d9b1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/56/569dea6255dcced82aaf9b1b919fcb52f90b4420415382f0d5530604abbd3fea",
+    "bytes": 5681,
+    "sha256": "569dea6255dcced82aaf9b1b919fcb52f90b4420415382f0d5530604abbd3fea",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/04/0483ccaf4e0f51c077c4f6bf93f7dd74bf0d7e24e4edb8443fc87f27d17e3499",
+    "bytes": 9752,
+    "sha256": "0483ccaf4e0f51c077c4f6bf93f7dd74bf0d7e24e4edb8443fc87f27d17e3499",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/39/396e61a22c5a641ec6c4f6a61333634f14bfa7fa2317ab59b976c8b1c3893805",
+    "bytes": 210933,
+    "sha256": "396e61a22c5a641ec6c4f6a61333634f14bfa7fa2317ab59b976c8b1c3893805",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/off/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/off/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-003/on/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f8/f839a5cb053c3c09d95f79d0ce76db9e8d95d96fbeb601d5cdd2478c09ad955f",
+    "bytes": 5062,
+    "sha256": "f839a5cb053c3c09d95f79d0ce76db9e8d95d96fbeb601d5cdd2478c09ad955f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-003/on/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/7e/7ebd702898cb4afb4dad90fbb66bbedca703d2e45533cd7e4b89704683067f1a",
+    "bytes": 7460,
+    "sha256": "7ebd702898cb4afb4dad90fbb66bbedca703d2e45533cd7e4b89704683067f1a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-003/on/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-003/on/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/4b/4b239f540420a5d13bb18e1954134af1275b3fa663e403326d5345abb6e56ddc",
+    "bytes": 210909,
+    "sha256": "4b239f540420a5d13bb18e1954134af1275b3fa663e403326d5345abb6e56ddc",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/on/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-003/on/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fb/fbaed25c749d8df3bd95b2f63fd84656a68ec8725b4b7347f8129f6d3bbb1443",
+    "bytes": 5076,
+    "sha256": "fbaed25c749d8df3bd95b2f63fd84656a68ec8725b4b7347f8129f6d3bbb1443",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-003/on/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2d/2d48a28f14f840f1c140e3291228cd3216b83f7d9b879484380a79f0c25c0976",
+    "bytes": 7474,
+    "sha256": "2d48a28f14f840f1c140e3291228cd3216b83f7d9b879484380a79f0c25c0976",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-003/on/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-003/on/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/66/66c8515de96ddd4d31558ecf04140c2ab103ee8ed56dbb6e1c35d0e89d1c91b1",
+    "bytes": 210909,
+    "sha256": "66c8515de96ddd4d31558ecf04140c2ab103ee8ed56dbb6e1c35d0e89d1c91b1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/on/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/bd/bd79b297f423bee44ba9a746e8d14e10968d0f0cc93a67778ccd93939338e6a4",
+    "bytes": 7176,
+    "sha256": "bd79b297f423bee44ba9a746e8d14e10968d0f0cc93a67778ccd93939338e6a4",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ae/ae52641e83c4fc93f6a80a3d69efb237cec05302cbbdc5f0a03bdbed29259def",
+    "bytes": 9721,
+    "sha256": "ae52641e83c4fc93f6a80a3d69efb237cec05302cbbdc5f0a03bdbed29259def",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/aa/aaf761afe90d634659351f917301f90acd68100b01623c67fc17656ec8e3b64f",
+    "bytes": 5669,
+    "sha256": "aaf761afe90d634659351f917301f90acd68100b01623c67fc17656ec8e3b64f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8d/8d5706f6f052f2ad22b1cb85b7023d0a71e4e52a10cc1d53bf0754f14f21cfdd",
+    "bytes": 9798,
+    "sha256": "8d5706f6f052f2ad22b1cb85b7023d0a71e4e52a10cc1d53bf0754f14f21cfdd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a044234fc810e55dcba0b877184e43c3fc62e358f20fac32fcb291a991db77d5",
+    "bytes": 210927,
+    "sha256": "a044234fc810e55dcba0b877184e43c3fc62e358f20fac32fcb291a991db77d5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/on/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/on/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-003/pair-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/10/10b4d9e5d3cbec2db1a8a38353cea05a9f5a807386b0ff452ac8154f0a42a666",
+    "bytes": 3201,
+    "sha256": "10b4d9e5d3cbec2db1a8a38353cea05a9f5a807386b0ff452ac8154f0a42a666",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/pair-inputs.json"
+  },
+  "_build/implication-guard-comparison-003/preflight.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/65/6592c2bc81da39c4ea0566bd1db9d1e926333302d726e8d89f4ba125d0a567de",
+    "bytes": 26204,
+    "sha256": "6592c2bc81da39c4ea0566bd1db9d1e926333302d726e8d89f4ba125d0a567de",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/preflight.json"
+  },
+  "_build/implication-guard-comparison-003/preflight.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0e/0e0ba110966ecfbd7e009551b08e3cabdb16f26feb553fddd2bb0077f8313b5a",
+    "bytes": 1968,
+    "sha256": "0e0ba110966ecfbd7e009551b08e3cabdb16f26feb553fddd2bb0077f8313b5a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/preflight.py"
+  },
+  "_build/implication-guard-comparison-003/preserved-attempt002.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8c/8cad74986abed3ccebf9660bbbd73b4640bf213fae3c7865446f59e6332817a4",
+    "bytes": 8144,
+    "sha256": "8cad74986abed3ccebf9660bbbd73b4640bf213fae3c7865446f59e6332817a4",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-003/preserved-attempt002.json"
+  },
+  "_build/implication-guard-comparison-004/Recorder.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "bytes": 3297,
+    "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/Recorder.v"
+  },
+  "_build/implication-guard-comparison-004/inventory.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f6/f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "bytes": 4737,
+    "sha256": "f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/inventory.json"
+  },
+  "_build/implication-guard-comparison-004/off/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8e/8e703eaa9a1652b0c97f11b0f31e6ccba29a2fe9d227fbf4f97bf7e2e39629c0",
+    "bytes": 4997,
+    "sha256": "8e703eaa9a1652b0c97f11b0f31e6ccba29a2fe9d227fbf4f97bf7e2e39629c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-004/off/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e2/e2d96092a7654126a168b3ee35abf7daffbf7eb7bd10ad947bbcd7491833be49",
+    "bytes": 8686,
+    "sha256": "e2d96092a7654126a168b3ee35abf7daffbf7eb7bd10ad947bbcd7491833be49",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-004/off/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-004/off/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2d/2d982c085260d2aaf936f96ef83c458229775788aaa4f637928cedb6773c25e8",
+    "bytes": 210915,
+    "sha256": "2d982c085260d2aaf936f96ef83c458229775788aaa4f637928cedb6773c25e8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/off/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2c/2cd4713a90784f18364225b1c23d9ccedc2f1ba5e6b27a67f55754da0a8cd582",
+    "bytes": 5011,
+    "sha256": "2cd4713a90784f18364225b1c23d9ccedc2f1ba5e6b27a67f55754da0a8cd582",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8d/8d4d9c7902048f40dbe02acc0aeabb1ba6e89719b9aba483bd4449fa22661783",
+    "bytes": 8700,
+    "sha256": "8d4d9c7902048f40dbe02acc0aeabb1ba6e89719b9aba483bd4449fa22661783",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/15/15ede3596c80214c73d4533847f6a8f481ff036bdb3eebb1d28285a1117c92de",
+    "bytes": 5435,
+    "sha256": "15ede3596c80214c73d4533847f6a8f481ff036bdb3eebb1d28285a1117c92de",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f2/f256121bf6fa89867a9dbba53a8177ba725dbd4c4f36161868af485fb976b07e",
+    "bytes": 8039,
+    "sha256": "f256121bf6fa89867a9dbba53a8177ba725dbd4c4f36161868af485fb976b07e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d8/d81ad4273800eba9e48281f46bbbe1b51c3e97b8e97e4882457e191f46847035",
+    "bytes": 210915,
+    "sha256": "d81ad4273800eba9e48281f46bbbe1b51c3e97b8e97e4882457e191f46847035",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/off/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/40/400deba765ed772bc04e2f48277858a421348083b647cd4dc80c25e865a45dad",
+    "bytes": 7111,
+    "sha256": "400deba765ed772bc04e2f48277858a421348083b647cd4dc80c25e865a45dad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/24/24e059cb2cb85032af3162657bc253134df7cd4617d4168686673c5545ee2a77",
+    "bytes": 10947,
+    "sha256": "24e059cb2cb85032af3162657bc253134df7cd4617d4168686673c5545ee2a77",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a1/a133bbffdf08cf86d9ade6cae4ddfca42ad05f6be7148f10c3d0748c526646f5",
+    "bytes": 5681,
+    "sha256": "a133bbffdf08cf86d9ade6cae4ddfca42ad05f6be7148f10c3d0748c526646f5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e2/e2fc7ae1c3edaba939a634a9d8cbb2e5f51b2a808fcb9ce168749488f29548e5",
+    "bytes": 10424,
+    "sha256": "e2fc7ae1c3edaba939a634a9d8cbb2e5f51b2a808fcb9ce168749488f29548e5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/70/70423e8148009f6d42419c9f5a40e104ceb5c40bea8fd6e551dac39d07d12737",
+    "bytes": 210933,
+    "sha256": "70423e8148009f6d42419c9f5a40e104ceb5c40bea8fd6e551dac39d07d12737",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/off/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/off/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-004/on/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ef/ef05e6f316685a68f60c39ef49e6bfa67c029b49ddb7cd44156f87f65f1a09c5",
+    "bytes": 5062,
+    "sha256": "ef05e6f316685a68f60c39ef49e6bfa67c029b49ddb7cd44156f87f65f1a09c5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-004/on/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/37/3734a00274cb6dd03318d8f0824e909c6401907ff6736cc23af47ffcec112c82",
+    "bytes": 8738,
+    "sha256": "3734a00274cb6dd03318d8f0824e909c6401907ff6736cc23af47ffcec112c82",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-004/on/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-004/on/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/34/34af23b699510ed0ed2feaf8ca8586524100ab5fb6202496004cecedf2a5ed1f",
+    "bytes": 210909,
+    "sha256": "34af23b699510ed0ed2feaf8ca8586524100ab5fb6202496004cecedf2a5ed1f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/on/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-004/on/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a3/a39aa7a981e1dfc7adf7f1a8fdf881ad8bbb7666117377366e2f5efc89e53a20",
+    "bytes": 5076,
+    "sha256": "a39aa7a981e1dfc7adf7f1a8fdf881ad8bbb7666117377366e2f5efc89e53a20",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-004/on/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6d/6de87b9ab4d5365dbda9099ee85ea0635049c78594eaa94c58aaa49bb6632f16",
+    "bytes": 8752,
+    "sha256": "6de87b9ab4d5365dbda9099ee85ea0635049c78594eaa94c58aaa49bb6632f16",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-004/on/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-004/on/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/5d/5df6502685329954db950413fafbd8b7d7d7a88be81c407db9880ea2190e0f39",
+    "bytes": 210909,
+    "sha256": "5df6502685329954db950413fafbd8b7d7d7a88be81c407db9880ea2190e0f39",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/on/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ef/ef9c6e3e4d7961e9ea8a8e6335b4a4e1b0dfefa92104047d2198820a8d3f19e6",
+    "bytes": 7176,
+    "sha256": "ef9c6e3e4d7961e9ea8a8e6335b4a4e1b0dfefa92104047d2198820a8d3f19e6",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f6/f667b9cd6f8219dd0c411454ed9272d56c64448e19af98669ae0b6028d9637bb",
+    "bytes": 10999,
+    "sha256": "f667b9cd6f8219dd0c411454ed9272d56c64448e19af98669ae0b6028d9637bb",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fa/fa85b4d9be75ce8a0582a127c9baa4992e634d6e62d19e63dd6b0c6df9c0ed7f",
+    "bytes": 5679,
+    "sha256": "fa85b4d9be75ce8a0582a127c9baa4992e634d6e62d19e63dd6b0c6df9c0ed7f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6e/6e5cf9f877b8842cd1c1436574fe66b387c3c85eb79d96c2a398ed97c10c7981",
+    "bytes": 10508,
+    "sha256": "6e5cf9f877b8842cd1c1436574fe66b387c3c85eb79d96c2a398ed97c10c7981",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f0/f0984bec131a762dfdafe7f661b9e8efe12c01ba7546e471f78d63fe6c522b8d",
+    "bytes": 210927,
+    "sha256": "f0984bec131a762dfdafe7f661b9e8efe12c01ba7546e471f78d63fe6c522b8d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/on/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/on/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-004/pair-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0e/0e0db484002c12bc4d9a6862672572d9908b8d68b1d32140e802b0483e3decbf",
+    "bytes": 3201,
+    "sha256": "0e0db484002c12bc4d9a6862672572d9908b8d68b1d32140e802b0483e3decbf",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/pair-inputs.json"
+  },
+  "_build/implication-guard-comparison-004/preflight.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/bf/bfa44fd565b39fc67c0cc135c1e6dc097636059adb5dc1dc30bbf260d1e2e2f1",
+    "bytes": 28852,
+    "sha256": "bfa44fd565b39fc67c0cc135c1e6dc097636059adb5dc1dc30bbf260d1e2e2f1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/preflight.json"
+  },
+  "_build/implication-guard-comparison-004/preflight.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0e/0e0ba110966ecfbd7e009551b08e3cabdb16f26feb553fddd2bb0077f8313b5a",
+    "bytes": 1968,
+    "sha256": "0e0ba110966ecfbd7e009551b08e3cabdb16f26feb553fddd2bb0077f8313b5a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/preflight.py"
+  },
+  "_build/implication-guard-comparison-004/preserved-attempt003.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/31/312de504e4abb48b50c9e9b91dc8ea9812c6cda8eb81df3767f33ec2532a8fac",
+    "bytes": 9846,
+    "sha256": "312de504e4abb48b50c9e9b91dc8ea9812c6cda8eb81df3767f33ec2532a8fac",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-004/preserved-attempt003.json"
+  },
+  "_build/implication-guard-comparison-005/PAIR-69e8-641a06aacef4f09c742ecaa43daa8629ded080e65ef8b24aa19d4994bcc4dc20.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/64/641a06aacef4f09c742ecaa43daa8629ded080e65ef8b24aa19d4994bcc4dc20",
+    "bytes": 4722,
+    "sha256": "641a06aacef4f09c742ecaa43daa8629ded080e65ef8b24aa19d4994bcc4dc20",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/PAIR-69e8-641a06aacef4f09c742ecaa43daa8629ded080e65ef8b24aa19d4994bcc4dc20.json"
+  },
+  "_build/implication-guard-comparison-005/REPORT-01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/01/01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c",
+    "bytes": 720396,
+    "sha256": "01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/REPORT-01414e3cf0b83308d7c1382d9eefab1368ac080e42fe3847689a0b8b409a1a8c.json"
+  },
+  "_build/implication-guard-comparison-005/Recorder.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e7/e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "bytes": 3297,
+    "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/Recorder.v"
+  },
+  "_build/implication-guard-comparison-005/excluded.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9e/9eed943e190e5457ea13538b71e28ee3eef9fa0d264e9e051fd021fe8f92b97f",
+    "bytes": 1923,
+    "sha256": "9eed943e190e5457ea13538b71e28ee3eef9fa0d264e9e051fd021fe8f92b97f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/excluded.json"
+  },
+  "_build/implication-guard-comparison-005/inventory.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f6/f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "bytes": 4737,
+    "sha256": "f68e068901fc84ddfdcddb132ceb6fb27c3dd629f4afa8217a0cbe0f8aef2718",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/inventory.json"
+  },
+  "_build/implication-guard-comparison-005/native-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2d/2db071fc4fdd37d378326674e61ea46484c3a7471ddfad1b35af5df9a4369024",
+    "bytes": 213391,
+    "sha256": "2db071fc4fdd37d378326674e61ea46484c3a7471ddfad1b35af5df9a4369024",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/native-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/native-progress.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c4/c413f1770fce1b00b95e5ec803b32d8821b4267cdd1c48354a7d990039d1b544",
+    "bytes": 48483,
+    "sha256": "c413f1770fce1b00b95e5ec803b32d8821b4267cdd1c48354a7d990039d1b544",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/native-progress.json"
+  },
+  "_build/implication-guard-comparison-005/native-results.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2e/2e790714b5a650b777a88c8fac69b837b8e21d4c7166b5fde44732dd41eb17c4",
+    "bytes": 51302,
+    "sha256": "2e790714b5a650b777a88c8fac69b837b8e21d4c7166b5fde44732dd41eb17c4",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/native-results.json"
+  },
+  "_build/implication-guard-comparison-005/off/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6a/6a6f7aa0b36cc0e5a22fadd71c8be3c14bef5375344ee12a99c137838649e7f1",
+    "bytes": 4997,
+    "sha256": "6a6f7aa0b36cc0e5a22fadd71c8be3c14bef5375344ee12a99c137838649e7f1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-005/off/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a6/a64dc67e777547069012a69c4d2d06c139e51dfbca04a64ed2c830a04d7cef50",
+    "bytes": 14529,
+    "sha256": "a64dc67e777547069012a69c4d2d06c139e51dfbca04a64ed2c830a04d7cef50",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-005/off/697c/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/01/018ce2ae445b420625a2477a31df0babc54934b251b6c77c1ff0138e57364ff1",
+    "bytes": 5435,
+    "sha256": "018ce2ae445b420625a2477a31df0babc54934b251b6c77c1ff0138e57364ff1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/off/697c/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ef/efebce5e0a3c41fac2d69d3ba7e83fb3e9ca4c96ff92fd0c388494e672c353e6",
+    "bytes": 945518,
+    "sha256": "efebce5e0a3c41fac2d69d3ba7e83fb3e9ca4c96ff92fd0c388494e672c353e6",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/off/697c/launcher.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/1a/1aa1a6ebe71681a4009e5f618731701ea02677f2f941ef6d975015c4dac3d75f",
+    "bytes": 5487,
+    "sha256": "1aa1a6ebe71681a4009e5f618731701ea02677f2f941ef6d975015c4dac3d75f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/launcher.log"
+  },
+  "_build/implication-guard-comparison-005/off/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-005/off/697c/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ee/ee1cb6fdf7e31bbf9abe09fb7573fc01698a0028357be588ef900201f178a100",
+    "bytes": 5680,
+    "sha256": "ee1cb6fdf7e31bbf9abe09fb7573fc01698a0028357be588ef900201f178a100",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/off/697c/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ee/eecfb3f1bf63acd4820395a2edabc0f0a8699840a09e4dd8b4bb2ad0569e0f44",
+    "bytes": 18460,
+    "sha256": "eecfb3f1bf63acd4820395a2edabc0f0a8699840a09e4dd8b4bb2ad0569e0f44",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/off/697c/raw-goals.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/65/652fbe24774d72bdaed29051ee1ae4f26bc45b15a793f77f5791d24ad14c66ac",
+    "bytes": 499909,
+    "sha256": "652fbe24774d72bdaed29051ee1ae4f26bc45b15a793f77f5791d24ad14c66ac",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/raw-goals.json"
+  },
+  "_build/implication-guard-comparison-005/off/697c/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/77/77c39dda41e021fe4012799a77db00f23150f943c6c6fb808fcab52d19e77719",
+    "bytes": 6597,
+    "sha256": "77c39dda41e021fe4012799a77db00f23150f943c6c6fb808fcab52d19e77719",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/result.json"
+  },
+  "_build/implication-guard-comparison-005/off/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ea/ea17a293be6421b57965ea8576bc1416bd0923ca6b1bb24a560a22cfcbbfbde5",
+    "bytes": 211273,
+    "sha256": "ea17a293be6421b57965ea8576bc1416bd0923ca6b1bb24a560a22cfcbbfbde5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/off/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/57/5701cf2ed7c824f7103a3b9af1b0444a8a0282b4429cb8d55bcce64c384e5e22",
+    "bytes": 5011,
+    "sha256": "5701cf2ed7c824f7103a3b9af1b0444a8a0282b4429cb8d55bcce64c384e5e22",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/cb/cba5b525598200a1184adb37f379735fd1f7340134d649365fba1a1553d8d506",
+    "bytes": 14543,
+    "sha256": "cba5b525598200a1184adb37f379735fd1f7340134d649365fba1a1553d8d506",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f7/f733e98858044477015d5a9e5c6b2978cd37f21a1ba13910f6c26e7ca370090b",
+    "bytes": 5435,
+    "sha256": "f733e98858044477015d5a9e5c6b2978cd37f21a1ba13910f6c26e7ca370090b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/5d/5ddbaad5449b443ff0483506d8f2502c3731fda07545cb3cea1c81f2349c2f21",
+    "bytes": 1315068,
+    "sha256": "5ddbaad5449b443ff0483506d8f2502c3731fda07545cb3cea1c81f2349c2f21",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/launcher.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a4/a4fd83c6f743a612c9698c7c398cee472961d1941fc1a380eca918425d227f24",
+    "bytes": 5488,
+    "sha256": "a4fd83c6f743a612c9698c7c398cee472961d1941fc1a380eca918425d227f24",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/launcher.log"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/94/94e1b3792bb0f23d22ec071108464f5642b4154d8c792b76f6e5f14546c42c15",
+    "bytes": 5671,
+    "sha256": "94e1b3792bb0f23d22ec071108464f5642b4154d8c792b76f6e5f14546c42c15",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a082cd469d68cc337191f3238e77d4421860229de7e9b9b40ba7084008e20b1d",
+    "bytes": 18444,
+    "sha256": "a082cd469d68cc337191f3238e77d4421860229de7e9b9b40ba7084008e20b1d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/raw-goals.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/1d/1d8544081f128dbccb0941b2451514d9087471912cf4cc90bd6f5224c0462bbf",
+    "bytes": 695383,
+    "sha256": "1d8544081f128dbccb0941b2451514d9087471912cf4cc90bd6f5224c0462bbf",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/raw-goals.json"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/95/95b589ef44dba8ed84e08c4b1e27dc06322e96677c3658dd27b6200a14982a3f",
+    "bytes": 6598,
+    "sha256": "95b589ef44dba8ed84e08c4b1e27dc06322e96677c3658dd27b6200a14982a3f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/result.json"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/dd/dd2ed3f436603204d886ce0c5b7a8268c12b0e114a9534aace27ae8ba7c277b8",
+    "bytes": 211273,
+    "sha256": "dd2ed3f436603204d886ce0c5b7a8268c12b0e114a9534aace27ae8ba7c277b8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/off/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6d/6d8b1355b45b70ee24d351a44937c4db8a61e18eadb2a0d9dffcfd47bae2051f",
+    "bytes": 7021,
+    "sha256": "6d8b1355b45b70ee24d351a44937c4db8a61e18eadb2a0d9dffcfd47bae2051f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/69/6981c81f104a3a95a86ed4748197c8626cd1bc0af1f3c7e3d2d6fa0c2c658621",
+    "bytes": 16700,
+    "sha256": "6981c81f104a3a95a86ed4748197c8626cd1bc0af1f3c7e3d2d6fa0c2c658621",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b5/b563a0f9d2c233775f3e9a1882a3f3982f25ef7257bfbe8a5904dc133ad0a675",
+    "bytes": 5444,
+    "sha256": "b563a0f9d2c233775f3e9a1882a3f3982f25ef7257bfbe8a5904dc133ad0a675",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/61/61231ee7bf538c92871bdcaefec904a34c80950818fb882f1478d3a00d575192",
+    "bytes": 353008,
+    "sha256": "61231ee7bf538c92871bdcaefec904a34c80950818fb882f1478d3a00d575192",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/launcher.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b1/b1007a321e29ec8a1fd49f998d35b7ba115068f383139a1afb0c0b903fa49dc4",
+    "bytes": 5498,
+    "sha256": "b1007a321e29ec8a1fd49f998d35b7ba115068f383139a1afb0c0b903fa49dc4",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/launcher.log"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b2/b202fdf06605f40cff41a849157255ec02eb5ffd12a888cf0c1fe49b1bebf3e9",
+    "bytes": 5671,
+    "sha256": "b202fdf06605f40cff41a849157255ec02eb5ffd12a888cf0c1fe49b1bebf3e9",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/13/137e29cfafd86fd0faab5dc62e97bda120fbbb413eb1579264ab2c903efdc975",
+    "bytes": 20271,
+    "sha256": "137e29cfafd86fd0faab5dc62e97bda120fbbb413eb1579264ab2c903efdc975",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/raw-goals.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e4/e4fae802f74523c71a97779431c232488737b70836ceefc3170a254a964ae249",
+    "bytes": 211936,
+    "sha256": "e4fae802f74523c71a97779431c232488737b70836ceefc3170a254a964ae249",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/raw-goals.json"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/4f/4fe6c5e2b0c1a8660b236192fe84c72454b534aff2068bc0fafd791b930acb22",
+    "bytes": 6608,
+    "sha256": "4fe6c5e2b0c1a8660b236192fe84c72454b534aff2068bc0fafd791b930acb22",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/result.json"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6f/6f33fa068bc086f762ff2bc4cb06aa2519ae1485db90eadbd8529c529afe332a",
+    "bytes": 211291,
+    "sha256": "6f33fa068bc086f762ff2bc4cb06aa2519ae1485db90eadbd8529c529afe332a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/off/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/off/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-005/on/697c/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/1d/1de822371623f654f724973c2fe8821ae7b9a295d0e135699e85acdd5082e3c5",
+    "bytes": 5062,
+    "sha256": "1de822371623f654f724973c2fe8821ae7b9a295d0e135699e85acdd5082e3c5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/Boundary.v"
+  },
+  "_build/implication-guard-comparison-005/on/697c/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f0/f0cbba5f44769ed14ad8b85a6bc427c65954ebc40b33bb6a8d5c80fd476b58ec",
+    "bytes": 14581,
+    "sha256": "f0cbba5f44769ed14ad8b85a6bc427c65954ebc40b33bb6a8d5c80fd476b58ec",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/Preflight.v"
+  },
+  "_build/implication-guard-comparison-005/on/697c/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2c/2c0cd040b3b71111f5961c3c49cdde906e3e2cd920f2bea5987e2c1ce0e8df9e",
+    "bytes": 5442,
+    "sha256": "2c0cd040b3b71111f5961c3c49cdde906e3e2cd920f2bea5987e2c1ce0e8df9e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/on/697c/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/77/77da375a0605d5586b4dda5848662f67e4a14f48abe92b68e6039c5827601d4c",
+    "bytes": 945722,
+    "sha256": "77da375a0605d5586b4dda5848662f67e4a14f48abe92b68e6039c5827601d4c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/on/697c/launcher.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ac/acdff5a137f6434615a86cf9bfbdd75acb8452b5e99e33a9576abdc7c1bcecbc",
+    "bytes": 5493,
+    "sha256": "acdff5a137f6434615a86cf9bfbdd75acb8452b5e99e33a9576abdc7c1bcecbc",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/launcher.log"
+  },
+  "_build/implication-guard-comparison-005/on/697c/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/launcher.py"
+  },
+  "_build/implication-guard-comparison-005/on/697c/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/04/04fea09043ff6692aa9b12348148222ed79ad3ab8d3258321c82003db669aa5e",
+    "bytes": 5679,
+    "sha256": "04fea09043ff6692aa9b12348148222ed79ad3ab8d3258321c82003db669aa5e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/on/697c/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/93/93d685521bc768c93a3ea02b28ce50fa8c7097b9a726f7b48d298c4de2207220",
+    "bytes": 18601,
+    "sha256": "93d685521bc768c93a3ea02b28ce50fa8c7097b9a726f7b48d298c4de2207220",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/on/697c/raw-goals.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/65/652fbe24774d72bdaed29051ee1ae4f26bc45b15a793f77f5791d24ad14c66ac",
+    "bytes": 499909,
+    "sha256": "652fbe24774d72bdaed29051ee1ae4f26bc45b15a793f77f5791d24ad14c66ac",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/raw-goals.json"
+  },
+  "_build/implication-guard-comparison-005/on/697c/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a9/a905d9410594506a325395cc2b08bdfbc9746130e761431c6609d9215b6f6b16",
+    "bytes": 6603,
+    "sha256": "a905d9410594506a325395cc2b08bdfbc9746130e761431c6609d9215b6f6b16",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/result.json"
+  },
+  "_build/implication-guard-comparison-005/on/697c/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/95/95de96772e2640fcc83519f2fc4dff7f052254c4831cd62c9b8c39a92fcfa1ad",
+    "bytes": 211267,
+    "sha256": "95de96772e2640fcc83519f2fc4dff7f052254c4831cd62c9b8c39a92fcfa1ad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/on/697c/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/697c/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f5/f5f0a17c4a18576bdcc91809214c4502d8c0b69149a85d70b917e4e5b4d002f5",
+    "bytes": 5076,
+    "sha256": "f5f0a17c4a18576bdcc91809214c4502d8c0b69149a85d70b917e4e5b4d002f5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/Boundary.v"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/12/1271510120af20ed3ab7e8df7a048b1571961e75802e7c44e38608ba54df205e",
+    "bytes": 14595,
+    "sha256": "1271510120af20ed3ab7e8df7a048b1571961e75802e7c44e38608ba54df205e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/Preflight.v"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d4/d4b107c0d9b87bd9ea7fbc4fb39b6870c02c480547e0e9d87f012ec17cea5d2f",
+    "bytes": 5442,
+    "sha256": "d4b107c0d9b87bd9ea7fbc4fb39b6870c02c480547e0e9d87f012ec17cea5d2f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/96/969d1247efc5428e34212d8c8f92177e7b8bb37de7224520cf445e99c577646d",
+    "bytes": 1315168,
+    "sha256": "969d1247efc5428e34212d8c8f92177e7b8bb37de7224520cf445e99c577646d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/launcher.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8e/8ecd9ea79c89431bdb2c533e8e4849d76835ab2a2afd83ed82bdd71966bd78fe",
+    "bytes": 5493,
+    "sha256": "8ecd9ea79c89431bdb2c533e8e4849d76835ab2a2afd83ed82bdd71966bd78fe",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/launcher.log"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/launcher.py"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/53/533b0cc75d2df90ead0ce63b957e85543fa65afc5f4387b0c9684837f01013e7",
+    "bytes": 5669,
+    "sha256": "533b0cc75d2df90ead0ce63b957e85543fa65afc5f4387b0c9684837f01013e7",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/06/06ad58796a46dc05086cde7917b710f30a802213dacc90747d5cb9ce5a68e0f8",
+    "bytes": 18595,
+    "sha256": "06ad58796a46dc05086cde7917b710f30a802213dacc90747d5cb9ce5a68e0f8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/raw-goals.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/1d/1d8544081f128dbccb0941b2451514d9087471912cf4cc90bd6f5224c0462bbf",
+    "bytes": 695383,
+    "sha256": "1d8544081f128dbccb0941b2451514d9087471912cf4cc90bd6f5224c0462bbf",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/raw-goals.json"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/de/deb939e4394233a3c6f099eff6540586fe99949ed7ea22107a6d0eb798b61ae9",
+    "bytes": 6603,
+    "sha256": "deb939e4394233a3c6f099eff6540586fe99949ed7ea22107a6d0eb798b61ae9",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/result.json"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e1/e186a1a0cb52156735b4ad3f63d18016ba91da4fb93a688b0ba0300279430c57",
+    "bytes": 211267,
+    "sha256": "e186a1a0cb52156735b4ad3f63d18016ba91da4fb93a688b0ba0300279430c57",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/on/69e8/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/69e8/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/Boundary.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ed/ed5ec822923a01a7452d7b4e98b65b32d8189d6517b44cfddca2c2a03e84af2b",
+    "bytes": 7086,
+    "sha256": "ed5ec822923a01a7452d7b4e98b65b32d8189d6517b44cfddca2c2a03e84af2b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/Boundary.v"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/Preflight.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8d/8d1a92e886c745cd73e1a4ec07b3dc368e4716c207fad94e49200fabd2baccb1",
+    "bytes": 16752,
+    "sha256": "8d1a92e886c745cd73e1a4ec07b3dc368e4716c207fad94e49200fabd2baccb1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/Preflight.v"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ee/eecf766c2f6e1ac0957096ec988cda8ea18a8f012275c09e0d4e94d7af92c88f",
+    "bytes": 5435,
+    "sha256": "eecf766c2f6e1ac0957096ec988cda8ea18a8f012275c09e0d4e94d7af92c88f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ac/acbad8ffe16b32a786a28d921adf14c96aee92c5380f7ccb84141548029ac693",
+    "bytes": 274554,
+    "sha256": "acbad8ffe16b32a786a28d921adf14c96aee92c5380f7ccb84141548029ac693",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/launcher.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/46/46d3d8d06f6a4927cf4469e5ad71feb53aed262cd5cab25d7eecf3c5eed54d74",
+    "bytes": 5487,
+    "sha256": "46d3d8d06f6a4927cf4469e5ad71feb53aed262cd5cab25d7eecf3c5eed54d74",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/launcher.log"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/launcher.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a0/a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "bytes": 2289,
+    "sha256": "a0b136eb2a88ff0f7e06ddd6e129ae5e893e8d1ddb2101477dd3b0452b1826c0",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/launcher.py"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/preflight/compiler.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/44/44569c1a2c99af1e9815a49ccfa83f493b0f75470e72e531055b296d36df8bbf",
+    "bytes": 5679,
+    "sha256": "44569c1a2c99af1e9815a49ccfa83f493b0f75470e72e531055b296d36df8bbf",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/preflight/compiler.json"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/preflight/compiler.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/74/747e8e0feff84a34bd1efa4ba48fc85306d312e93bed506d6796c546d07a8f9a",
+    "bytes": 20413,
+    "sha256": "747e8e0feff84a34bd1efa4ba48fc85306d312e93bed506d6796c546d07a8f9a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/preflight/compiler.log"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/raw-goals.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/de/deff3775f53da8bd8afd21c4b6774f5a7ea24bc718a3a306f4f55f6c950032d8",
+    "bytes": 162543,
+    "sha256": "deff3775f53da8bd8afd21c4b6774f5a7ea24bc718a3a306f4f55f6c950032d8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/raw-goals.json"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/4d/4ddd66d82713620ed79a492652d9df0f50eaf7a1519ba7c695106ca6376213a8",
+    "bytes": 6597,
+    "sha256": "4ddd66d82713620ed79a492652d9df0f50eaf7a1519ba7c695106ca6376213a8",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/result.json"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/run-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/54/544ac95f5a137d4ff0244c26466b40e5f079ebea3ce7056e3a49b1f14dfedaef",
+    "bytes": 211285,
+    "sha256": "544ac95f5a137d4ff0244c26466b40e5f079ebea3ce7056e3a49b1f14dfedaef",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/run-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/on/6ac4/sealed-coqc-recipe.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d9/d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "bytes": 4295,
+    "sha256": "d9f7882e9a99d1bacf8f91d1ccde4552c2a46fb245091e79419ef5c34bb240fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/on/6ac4/sealed-coqc-recipe.json"
+  },
+  "_build/implication-guard-comparison-005/pair-inputs.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f3/f36f084cc98a0c2899c6ab97bb0092b7de80872ffc2e0f5eacd436dd5bbdeb8d",
+    "bytes": 3201,
+    "sha256": "f36f084cc98a0c2899c6ab97bb0092b7de80872ffc2e0f5eacd436dd5bbdeb8d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/pair-inputs.json"
+  },
+  "_build/implication-guard-comparison-005/preflight-audit.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fe/febfef1e30bb905fa92624dadaa19cc23699e14a2f6fcdcf855a856d7512150c",
+    "bytes": 329,
+    "sha256": "febfef1e30bb905fa92624dadaa19cc23699e14a2f6fcdcf855a856d7512150c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/preflight-audit.json"
+  },
+  "_build/implication-guard-comparison-005/preflight.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/55/55aba0148f92d4b9adc11d722e68585dfff6b8a4ac6497b7caa2446f96506b0a",
+    "bytes": 58335,
+    "sha256": "55aba0148f92d4b9adc11d722e68585dfff6b8a4ac6497b7caa2446f96506b0a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/preflight.json"
+  },
+  "_build/implication-guard-comparison-005/preflight.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/96/96c3f4ca133528d86cccc969bc5db8178df096c3cc063801fa49ef5376e0e508",
+    "bytes": 2043,
+    "sha256": "96c3f4ca133528d86cccc969bc5db8178df096c3cc063801fa49ef5376e0e508",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/preflight.py"
+  },
+  "_build/implication-guard-comparison-005/preserved-attempt004.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/75/75e368e8e88240c9939181fc6df4daa679bdfbede2b151530b80532cd54e4085",
+    "bytes": 9628,
+    "sha256": "75e368e8e88240c9939181fc6df4daa679bdfbede2b151530b80532cd54e4085",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/preserved-attempt004.json"
+  },
+  "_build/implication-guard-comparison-005/preserved-attempts-archive.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8f/8f4ec429498b1944178c100b4650dd6fef488f1442700d860d677c34ab18ecc3",
+    "bytes": 54119,
+    "sha256": "8f4ec429498b1944178c100b4650dd6fef488f1442700d860d677c34ab18ecc3",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/preserved-attempts-archive.json"
+  },
+  "_build/implication-guard-comparison-005/run-native.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/26/26633efe456a7b6dd87c183cab1fddedd3c786ad0007c97a5ea5dee7167d03fd",
+    "bytes": 1585,
+    "sha256": "26633efe456a7b6dd87c183cab1fddedd3c786ad0007c97a5ea5dee7167d03fd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-005/run-native.py"
+  },
+  "_build/implication-guard-comparison-dependency-002/dependencies.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a9/a9f262c50bab55a2a0678ebb9b5513e31bd59c94fcf2a90d1b572da3d56d7f8e",
+    "bytes": 835,
+    "sha256": "a9f262c50bab55a2a0678ebb9b5513e31bd59c94fcf2a90d1b572da3d56d7f8e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-dependency-002/dependencies.py"
+  },
+  "_build/implication-guard-comparison-dependency-002/dependency-result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/56/5657c71c5210f27228e8aeca27c1eca33d07237bcc3a6fe121139b5e2717467a",
+    "bytes": 623,
+    "sha256": "5657c71c5210f27228e8aeca27c1eca33d07237bcc3a6fe121139b5e2717467a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-dependency-002/dependency-result.json"
+  },
+  "_build/implication-guard-comparison-dependency-002/dependency.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ff/ff0e3f689438df05c35fbb5f82e3849e5ee80518eb5ca08165606e9422ecbb98",
+    "bytes": 5562,
+    "sha256": "ff0e3f689438df05c35fbb5f82e3849e5ee80518eb5ca08165606e9422ecbb98",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-comparison-dependency-002/dependency.log"
+  },
+  "_build/implication-guard-final-mcp-001/Guard.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+    "bytes": 936,
+    "sha256": "c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/Guard.v"
+  },
+  "_build/implication-guard-final-mcp-001/Off.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/db/dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+    "bytes": 348,
+    "sha256": "dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/Off.v"
+  },
+  "_build/implication-guard-final-mcp-001/audit.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d1/d12d5de7d860ce8bb25aaf3dae0c74a4f6a1f4864609315e6462eb6b1f7c009d",
+    "bytes": 4383,
+    "sha256": "d12d5de7d860ce8bb25aaf3dae0c74a4f6a1f4864609315e6462eb6b1f7c009d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/audit.json"
+  },
+  "_build/implication-guard-final-mcp-001/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2d/2de38abf63e7d5aa6291d3f8aa589543082b2c8d687ffe9882987150cd7de3da",
+    "bytes": 31327,
+    "sha256": "2de38abf63e7d5aa6291d3f8aa589543082b2c8d687ffe9882987150cd7de3da",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/calls.json"
+  },
+  "_build/implication-guard-final-mcp-001/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/8d/8d060f1356e006b55b5c0749004668215a26dfcf8489cf2746fd2787f1b77c5d",
+    "bytes": 2870,
+    "sha256": "8d060f1356e006b55b5c0749004668215a26dfcf8489cf2746fd2787f1b77c5d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/client.py"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/50/509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "bytes": 147,
+    "sha256": "509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_1.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_10.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_10.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_12.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/50/509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "bytes": 147,
+    "sha256": "509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_12.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_13.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_13.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_2.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_2.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_4.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a043fe23b6b4fc60b5ef6eb8855ba47985eea5b07337a4313fbc5e699347fc1",
+    "bytes": 147,
+    "sha256": "4a043fe23b6b4fc60b5ef6eb8855ba47985eea5b07337a4313fbc5e699347fc1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_4.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_5.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_5.json"
+  },
+  "_build/implication-guard-final-mcp-001/exports/state_7.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c2/c23fa20341608e8f17700df82405cd5ee571a2e87c236c1f2770105421705d29",
+    "bytes": 171,
+    "sha256": "c23fa20341608e8f17700df82405cd5ee571a2e87c236c1f2770105421705d29",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-final-mcp-001/exports/state_7.json"
+  },
+  "_build/implication-guard-focused-001/Guard.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+    "bytes": 936,
+    "sha256": "c5730381adda71f58a0f0ad049cd4db2bcc6941383844664c875a8d8c4e021dd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/Guard.v"
+  },
+  "_build/implication-guard-focused-001/Off.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/1f/1fdfe75bc0f6a751a0ccc43076c66adc62eb876cb2592326e6b5aea90a37dae4",
+    "bytes": 346,
+    "sha256": "1fdfe75bc0f6a751a0ccc43076c66adc62eb876cb2592326e6b5aea90a37dae4",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/Off.v"
+  },
+  "_build/implication-guard-focused-001/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fb/fb17a2d3981c17ba0e334fd5f038e951756b63ffb934df8c016159f17091839c",
+    "bytes": 24537,
+    "sha256": "fb17a2d3981c17ba0e334fd5f038e951756b63ffb934df8c016159f17091839c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/calls.json"
+  },
+  "_build/implication-guard-focused-001/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/25/2535e4a807668a799ce271134547f9907d415469e0744590bf26dd0511390073",
+    "bytes": 2755,
+    "sha256": "2535e4a807668a799ce271134547f9907d415469e0744590bf26dd0511390073",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/client.py"
+  },
+  "_build/implication-guard-focused-001/dependencies.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5a98020b2f2556e15728af54bad311b1869a4176175f9cda634d3f47e020116",
+    "bytes": 835,
+    "sha256": "c5a98020b2f2556e15728af54bad311b1869a4176175f9cda634d3f47e020116",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/dependencies.py"
+  },
+  "_build/implication-guard-focused-001/dependency-result.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2c/2c31edbf1b90d95c06756c08e539a9ee756aea874db333161fdf31a6f4765c75",
+    "bytes": 622,
+    "sha256": "2c31edbf1b90d95c06756c08e539a9ee756aea874db333161fdf31a6f4765c75",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/dependency-result.json"
+  },
+  "_build/implication-guard-focused-001/dependency.log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ec/ec38e25fb93e316be3662dcacaa06023effa91ab73c8b1ce7786c722c581717a",
+    "bytes": 22806,
+    "sha256": "ec38e25fb93e316be3662dcacaa06023effa91ab73c8b1ce7786c722c581717a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/dependency.log"
+  },
+  "_build/implication-guard-focused-001/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/50/509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "bytes": 147,
+    "sha256": "509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/exports/state_1.json"
+  },
+  "_build/implication-guard-focused-001/exports/state_10.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/exports/state_10.json"
+  },
+  "_build/implication-guard-focused-001/exports/state_2.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/exports/state_2.json"
+  },
+  "_build/implication-guard-focused-001/exports/state_4.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a043fe23b6b4fc60b5ef6eb8855ba47985eea5b07337a4313fbc5e699347fc1",
+    "bytes": 147,
+    "sha256": "4a043fe23b6b4fc60b5ef6eb8855ba47985eea5b07337a4313fbc5e699347fc1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/exports/state_4.json"
+  },
+  "_build/implication-guard-focused-001/exports/state_5.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/exports/state_5.json"
+  },
+  "_build/implication-guard-focused-001/exports/state_7.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c2/c23fa20341608e8f17700df82405cd5ee571a2e87c236c1f2770105421705d29",
+    "bytes": 171,
+    "sha256": "c23fa20341608e8f17700df82405cd5ee571a2e87c236c1f2770105421705d29",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-focused-001/exports/state_7.json"
+  },
+  "_build/implication-guard-off-002/Off.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c5/c5856816c8295bae8413b29fc833632ee2854d3ed3993821c8e8c56a81c2b758",
+    "bytes": 348,
+    "sha256": "c5856816c8295bae8413b29fc833632ee2854d3ed3993821c8e8c56a81c2b758",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-002/Off.v"
+  },
+  "_build/implication-guard-off-002/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c1/c13bf7252fd59957b21665d4f26630ab2aad13f0f77d52603b4643cd48d80b35",
+    "bytes": 5185,
+    "sha256": "c13bf7252fd59957b21665d4f26630ab2aad13f0f77d52603b4643cd48d80b35",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-002/calls.json"
+  },
+  "_build/implication-guard-off-002/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6f/6fddd6ec32e3be7042b5b0d495d3aa6422826f05d0827c59392430c130a8238c",
+    "bytes": 2654,
+    "sha256": "6fddd6ec32e3be7042b5b0d495d3aa6422826f05d0827c59392430c130a8238c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-002/client.py"
+  },
+  "_build/implication-guard-off-003/Off.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/db/dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+    "bytes": 348,
+    "sha256": "dbbfb2d91d7c1f88b34797676d4f273883252f4dc391f0af85138be3fcc73907",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-003/Off.v"
+  },
+  "_build/implication-guard-off-003/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f1/f121c6d8b094299b866bd4fdebcbb645efeb1c0e95ba16eefdc997390d32c7f3",
+    "bytes": 8809,
+    "sha256": "f121c6d8b094299b866bd4fdebcbb645efeb1c0e95ba16eefdc997390d32c7f3",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-003/calls.json"
+  },
+  "_build/implication-guard-off-003/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0f/0fc9ce65b9a4b8f935b4bbac2303fff9d6958a0cdb9cdf5b3508d6965c210e1e",
+    "bytes": 2654,
+    "sha256": "0fc9ce65b9a4b8f935b4bbac2303fff9d6958a0cdb9cdf5b3508d6965c210e1e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-003/client.py"
+  },
+  "_build/implication-guard-off-003/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/50/509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "bytes": 147,
+    "sha256": "509108dac4ee1a790c84205a5be8b79b6a7aed65ff0e30202e7679a7a8327401",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-003/exports/state_1.json"
+  },
+  "_build/implication-guard-off-003/exports/state_2.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-off-003/exports/state_2.json"
+  },
+  "_build/implication-guard-registration-focused-001/Registration.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b3/b369473d514fcbf75bac5b4ee16d836653c0abe74e4a95832a7e219ce4b0a1b7",
+    "bytes": 3740,
+    "sha256": "b369473d514fcbf75bac5b4ee16d836653c0abe74e4a95832a7e219ce4b0a1b7",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-001/Registration.v"
+  },
+  "_build/implication-guard-registration-focused-001/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/24/24dfc4a769de704b3fdf96e9015ce9c3c6d20a62250214b3c29e62f17c4706b3",
+    "bytes": 5055,
+    "sha256": "24dfc4a769de704b3fdf96e9015ce9c3c6d20a62250214b3c29e62f17c4706b3",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-001/calls.json"
+  },
+  "_build/implication-guard-registration-focused-001/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/30/30b04b4734764bfa7ef690d4e3f76fafcb351c9a491610bd40e7e51db1cbff8c",
+    "bytes": 2884,
+    "sha256": "30b04b4734764bfa7ef690d4e3f76fafcb351c9a491610bd40e7e51db1cbff8c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-001/client.py"
+  },
+  "_build/implication-guard-registration-focused-002/Registration.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f2/f2f1e2bcab1235036df2be8126c806d45e050f7f7e034243034616576ae2b200",
+    "bytes": 3900,
+    "sha256": "f2f1e2bcab1235036df2be8126c806d45e050f7f7e034243034616576ae2b200",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-002/Registration.v"
+  },
+  "_build/implication-guard-registration-focused-002/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/7b/7be136397f31c1b43458ae0b526328596bed6355798e141884fc9666773af83d",
+    "bytes": 7888,
+    "sha256": "7be136397f31c1b43458ae0b526328596bed6355798e141884fc9666773af83d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-002/calls.json"
+  },
+  "_build/implication-guard-registration-focused-002/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/86/8682b83808a90d62ab500e0dac3a514f50aead2aa0ebd2d01426431b6c54580f",
+    "bytes": 3259,
+    "sha256": "8682b83808a90d62ab500e0dac3a514f50aead2aa0ebd2d01426431b6c54580f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-002/client.py"
+  },
+  "_build/implication-guard-registration-focused-003/Canonical.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/78/781f40bd5ec845cb2bdcadf153a4cbbe80394897530bb4fa77686fa92c468975",
+    "bytes": 3151,
+    "sha256": "781f40bd5ec845cb2bdcadf153a4cbbe80394897530bb4fa77686fa92c468975",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/Canonical.v"
+  },
+  "_build/implication-guard-registration-focused-003/Conversion.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d7/d7613f4e5b73ee31105ffa636bda1d9aa273b5d845829c674ffd281c0c145122",
+    "bytes": 3274,
+    "sha256": "d7613f4e5b73ee31105ffa636bda1d9aa273b5d845829c674ffd281c0c145122",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/Conversion.v"
+  },
+  "_build/implication-guard-registration-focused-003/Integer.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/74/74fab539acc9e696903cb6a858d6611a073d4839efef7a636974f1628b5af618",
+    "bytes": 3227,
+    "sha256": "74fab539acc9e696903cb6a858d6611a073d4839efef7a636974f1628b5af618",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/Integer.v"
+  },
+  "_build/implication-guard-registration-focused-003/Normalized.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/fb/fb8198e7838717d6d534a3742d38149c1843e94c5349fec090b6ff20818ea65f",
+    "bytes": 3364,
+    "sha256": "fb8198e7838717d6d534a3742d38149c1843e94c5349fec090b6ff20818ea65f",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/Normalized.v"
+  },
+  "_build/implication-guard-registration-focused-003/Word.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e4/e4751bf1ddec9475fd9695a29921713e9ee46101db6ccac4ce7c758c5cba10d6",
+    "bytes": 3258,
+    "sha256": "e4751bf1ddec9475fd9695a29921713e9ee46101db6ccac4ce7c758c5cba10d6",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/Word.v"
+  },
+  "_build/implication-guard-registration-focused-003/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c8/c8c72e6ab036c8a1b7799fcc1fbe718965062ede2eb279bb34e4cb87005236e7",
+    "bytes": 71323,
+    "sha256": "c8c72e6ab036c8a1b7799fcc1fbe718965062ede2eb279bb34e4cb87005236e7",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/calls.json"
+  },
+  "_build/implication-guard-registration-focused-003/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/02/02892ad2d5dbdb54de74bf484be75aad53be05a1249198e8a59f54855eb7acd9",
+    "bytes": 3405,
+    "sha256": "02892ad2d5dbdb54de74bf484be75aad53be05a1249198e8a59f54855eb7acd9",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/client.py"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a1/a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "bytes": 452,
+    "sha256": "a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_1.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_11.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a1/a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "bytes": 452,
+    "sha256": "a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_11.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_12.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_12.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_2.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_2.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_4.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a1/a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "bytes": 452,
+    "sha256": "a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_4.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_5.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_5.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_7.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a1/a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "bytes": 452,
+    "sha256": "a13173ed52f700dd1701bd88ce230268c0a865d60fa5ed952ce2e5a472fce0ed",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_7.json"
+  },
+  "_build/implication-guard-registration-focused-003/exports/state_8.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-003/exports/state_8.json"
+  },
+  "_build/implication-guard-registration-focused-004/Canonical.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/cf/cf0c82e131e214e8b8f6479d960fdcf06788625e580946d68be8e7afe360452e",
+    "bytes": 3073,
+    "sha256": "cf0c82e131e214e8b8f6479d960fdcf06788625e580946d68be8e7afe360452e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/Canonical.v"
+  },
+  "_build/implication-guard-registration-focused-004/Conversion.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/58/58cd84371a12d398014331ac27a11681127d0ff1c8e2ffc73bc22fc269d28e6b",
+    "bytes": 3196,
+    "sha256": "58cd84371a12d398014331ac27a11681127d0ff1c8e2ffc73bc22fc269d28e6b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/Conversion.v"
+  },
+  "_build/implication-guard-registration-focused-004/Integer.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/43/43f83c5b3bd9bbcd44849119744567258dc224622528124fcba08cb1cf08135b",
+    "bytes": 3149,
+    "sha256": "43f83c5b3bd9bbcd44849119744567258dc224622528124fcba08cb1cf08135b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/Integer.v"
+  },
+  "_build/implication-guard-registration-focused-004/Normalized.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/72/729fb4d2b05550e44c044773fae94dbe846989b2bf78bb6c83849b2f4900018c",
+    "bytes": 3286,
+    "sha256": "729fb4d2b05550e44c044773fae94dbe846989b2bf78bb6c83849b2f4900018c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/Normalized.v"
+  },
+  "_build/implication-guard-registration-focused-004/REPORT-3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/34/3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99",
+    "bytes": 22971,
+    "sha256": "3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/REPORT-3419d114c9929e08d2dea6af788f1b22200a13027eb86e740252e78a24db9a99.json"
+  },
+  "_build/implication-guard-registration-focused-004/Word.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2f/2f6e54a4768b1a8b8b5d4943bbd8660eed8e59cdaf413aba20b8525bd25a9114",
+    "bytes": 3180,
+    "sha256": "2f6e54a4768b1a8b8b5d4943bbd8660eed8e59cdaf413aba20b8525bd25a9114",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/Word.v"
+  },
+  "_build/implication-guard-registration-focused-004/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/dd/ddb1352a2b87a6c30c5458d3811d2b13329b95fd61060fd3d69e30cc3ac3b538",
+    "bytes": 76595,
+    "sha256": "ddb1352a2b87a6c30c5458d3811d2b13329b95fd61060fd3d69e30cc3ac3b538",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/calls.json"
+  },
+  "_build/implication-guard-registration-focused-004/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/27/2798a811dcc6d089a8d99ddc0cd3986f560c490360fab00b923195a082824b62",
+    "bytes": 3367,
+    "sha256": "2798a811dcc6d089a8d99ddc0cd3986f560c490360fab00b923195a082824b62",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/client.py"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9f/9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "bytes": 452,
+    "sha256": "9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_1.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_10.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f3/f397bd14aacbc019a93535293f8183354244d33b9811799edc014d0436165b8d",
+    "bytes": 735,
+    "sha256": "f397bd14aacbc019a93535293f8183354244d33b9811799edc014d0436165b8d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_10.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_11.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_11.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_13.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9f/9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "bytes": 452,
+    "sha256": "9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_13.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_14.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_14.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_2.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_2.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_4.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9f/9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "bytes": 452,
+    "sha256": "9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_4.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_5.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_5.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_7.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9f/9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "bytes": 452,
+    "sha256": "9f7b227c83162c899cc455e63d7091163ea5db0fe5eb276584b2e0b4adb780ad",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_7.json"
+  },
+  "_build/implication-guard-registration-focused-004/exports/state_8.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-registration-focused-004/exports/state_8.json"
+  },
+  "_build/implication-guard-reports/FOCUSED-1839f28817a361af2d36734350a2a695b36a748c82e50eff4eb3ee8d9d535645.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/18/1839f28817a361af2d36734350a2a695b36a748c82e50eff4eb3ee8d9d535645",
+    "bytes": 11881,
+    "sha256": "1839f28817a361af2d36734350a2a695b36a748c82e50eff4eb3ee8d9d535645",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/implication-guard-reports/FOCUSED-1839f28817a361af2d36734350a2a695b36a748c82e50eff4eb3ee8d9d535645.json"
+  },
+  "_build/output-plus8-index-focused-001/GenericShape.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/04/045a77fb2105d36af05260e504243a19e7cae598066e2af0df909d6d10013c7a",
+    "bytes": 3025,
+    "sha256": "045a77fb2105d36af05260e504243a19e7cae598066e2af0df909d6d10013c7a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/GenericShape.v"
+  },
+  "_build/output-plus8-index-focused-001/Intro.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2a/2a0e1ea08f84d2f62f87c1a40622744ae908a794fc6cb1cc139bff5618afa44d",
+    "bytes": 3044,
+    "sha256": "2a0e1ea08f84d2f62f87c1a40622744ae908a794fc6cb1cc139bff5618afa44d",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/Intro.v"
+  },
+  "_build/output-plus8-index-focused-001/Offset0.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/4e/4e1946a6f4f7346dcdc78d87013839453c2b6cff7777eaff801189a197ea4c02",
+    "bytes": 2818,
+    "sha256": "4e1946a6f4f7346dcdc78d87013839453c2b6cff7777eaff801189a197ea4c02",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/Offset0.v"
+  },
+  "_build/output-plus8-index-focused-001/Offset32.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/58/58112a4b97ba0709c7e9b6c4f8f5c54692e7e4ee7a6ee42726d38963591e7b40",
+    "bytes": 2821,
+    "sha256": "58112a4b97ba0709c7e9b6c4f8f5c54692e7e4ee7a6ee42726d38963591e7b40",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/Offset32.v"
+  },
+  "_build/output-plus8-index-focused-001/Offset8.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/27/276371837bceec507215a097578d19c1e506787613d53cacad8cd7b938608ba3",
+    "bytes": 2884,
+    "sha256": "276371837bceec507215a097578d19c1e506787613d53cacad8cd7b938608ba3",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/Offset8.v"
+  },
+  "_build/output-plus8-index-focused-001/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6a/6a1bd534ddb6050d6a7208c798b4a827b8c18691ab7c1cad461fac2f06bb248c",
+    "bytes": 59840,
+    "sha256": "6a1bd534ddb6050d6a7208c798b4a827b8c18691ab7c1cad461fac2f06bb248c",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/calls.json"
+  },
+  "_build/output-plus8-index-focused-001/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/e4/e4b3bd1225f5f75794b78ff90fb603b9d91046c7c2150a260b68371d065f2520",
+    "bytes": 3357,
+    "sha256": "e4b3bd1225f5f75794b78ff90fb603b9d91046c7c2150a260b68371d065f2520",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/client.py"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ed/edcb9a7da1ecd4fd630326a3e2983759a65f763b25ce9a1d349771f4c5a14f5b",
+    "bytes": 156,
+    "sha256": "edcb9a7da1ecd4fd630326a3e2983759a65f763b25ce9a1d349771f4c5a14f5b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_1.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_10.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ba/ba9807a77f8aa44f35f45157952b18297685fac8bdbe5e65666e4372961ab4bd",
+    "bytes": 290,
+    "sha256": "ba9807a77f8aa44f35f45157952b18297685fac8bdbe5e65666e4372961ab4bd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_10.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_11.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_11.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_2.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_2.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_4.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ed/edcb9a7da1ecd4fd630326a3e2983759a65f763b25ce9a1d349771f4c5a14f5b",
+    "bytes": 156,
+    "sha256": "edcb9a7da1ecd4fd630326a3e2983759a65f763b25ce9a1d349771f4c5a14f5b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_4.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_5.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_5.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_7.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ed/edcb9a7da1ecd4fd630326a3e2983759a65f763b25ce9a1d349771f4c5a14f5b",
+    "bytes": 156,
+    "sha256": "edcb9a7da1ecd4fd630326a3e2983759a65f763b25ce9a1d349771f4c5a14f5b",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_7.json"
+  },
+  "_build/output-plus8-index-focused-001/exports/state_8.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-001/exports/state_8.json"
+  },
+  "_build/output-plus8-index-focused-002/GenericShape.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/f1/f125484e82835ff012440eb619c6a7f9ef805254d3d4e477c4042547e4346a2e",
+    "bytes": 3048,
+    "sha256": "f125484e82835ff012440eb619c6a7f9ef805254d3d4e477c4042547e4346a2e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-002/GenericShape.v"
+  },
+  "_build/output-plus8-index-focused-002/Original.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/04/045a77fb2105d36af05260e504243a19e7cae598066e2af0df909d6d10013c7a",
+    "bytes": 3025,
+    "sha256": "045a77fb2105d36af05260e504243a19e7cae598066e2af0df909d6d10013c7a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-002/Original.v"
+  },
+  "_build/output-plus8-index-focused-002/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/25/2527e363a3ed70581b48c40fe926d8ad8677fb82c1cd9852f3a553aad438b9eb",
+    "bytes": 4443,
+    "sha256": "2527e363a3ed70581b48c40fe926d8ad8677fb82c1cd9852f3a553aad438b9eb",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-002/calls.json"
+  },
+  "_build/output-plus8-index-focused-002/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/76/7625a6a4827f63b84ed6ef62737e466e99ac70648b4ff9d24bbf5a7c3fc3a9cd",
+    "bytes": 2769,
+    "sha256": "7625a6a4827f63b84ed6ef62737e466e99ac70648b4ff9d24bbf5a7c3fc3a9cd",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-002/client.py"
+  },
+  "_build/output-plus8-index-focused-002/exports/state_6.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/df/dfa206cad86d7e4c36eae0a6bf11306b3309564eed32bce9a8ae402b54e87466",
+    "bytes": 346,
+    "sha256": "dfa206cad86d7e4c36eae0a6bf11306b3309564eed32bce9a8ae402b54e87466",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-002/exports/state_6.json"
+  },
+  "_build/output-plus8-index-focused-003/GenericShape.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/33/33e6aa2bd1e08d0ce82309bdec299f536fcfd5a7c3302cc732d333b162d5d1cf",
+    "bytes": 3032,
+    "sha256": "33e6aa2bd1e08d0ce82309bdec299f536fcfd5a7c3302cc732d333b162d5d1cf",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/GenericShape.v"
+  },
+  "_build/output-plus8-index-focused-003/Original.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/04/045a77fb2105d36af05260e504243a19e7cae598066e2af0df909d6d10013c7a",
+    "bytes": 3025,
+    "sha256": "045a77fb2105d36af05260e504243a19e7cae598066e2af0df909d6d10013c7a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/Original.v"
+  },
+  "_build/output-plus8-index-focused-003/REPORT-ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ac/ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa",
+    "bytes": 11927,
+    "sha256": "ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/REPORT-ac18241ce0da993d997c2b620b0ae3c95608b5cf972240546ad246071bbe1eaa.json"
+  },
+  "_build/output-plus8-index-focused-003/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ed/ed034571f75b27677475c95d6c4d33a0d204bc96d819f3e732d38b3b970481b5",
+    "bytes": 17287,
+    "sha256": "ed034571f75b27677475c95d6c4d33a0d204bc96d819f3e732d38b3b970481b5",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/calls.json"
+  },
+  "_build/output-plus8-index-focused-003/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/ad/adc097494d9f18fa7c793d3deaeb89abef48a92d050da724e90868e15be6bd66",
+    "bytes": 2753,
+    "sha256": "adc097494d9f18fa7c793d3deaeb89abef48a92d050da724e90868e15be6bd66",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/client.py"
+  },
+  "_build/output-plus8-index-focused-003/exports/state_6.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/df/dfa206cad86d7e4c36eae0a6bf11306b3309564eed32bce9a8ae402b54e87466",
+    "bytes": 346,
+    "sha256": "dfa206cad86d7e4c36eae0a6bf11306b3309564eed32bce9a8ae402b54e87466",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/exports/state_6.json"
+  },
+  "_build/output-plus8-index-focused-003/exports/state_7.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-index-focused-003/exports/state_7.json"
+  },
+  "_build/output-plus8-native-extent-focused-001/Extent.v": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/cc/cc872de3682434245d90ef1ce73e4544bfe55330fa08d5a82285a4c890f0cec1",
+    "bytes": 649,
+    "sha256": "cc872de3682434245d90ef1ce73e4544bfe55330fa08d5a82285a4c890f0cec1",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/Extent.v"
+  },
+  "_build/output-plus8-native-extent-focused-001/REPORT-7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/7d/7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985",
+    "bytes": 3388,
+    "sha256": "7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/REPORT-7db65077c1dce1bc167f6673a0dc1fb87d5eb5dd9aec723f705a94cb65836985.json"
+  },
+  "_build/output-plus8-native-extent-focused-001/calls.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/93/9386157ab2f589379e1fadba0ed641aedc6e50708dc7a7c9f1eeee8540cbd905",
+    "bytes": 10677,
+    "sha256": "9386157ab2f589379e1fadba0ed641aedc6e50708dc7a7c9f1eeee8540cbd905",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/calls.json"
+  },
+  "_build/output-plus8-native-extent-focused-001/client.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/51/510790cb50f70f0a97d86ec0ec493ba7d05cc3d1034173246af30b88edfaf4e6",
+    "bytes": 3151,
+    "sha256": "510790cb50f70f0a97d86ec0ec493ba7d05cc3d1034173246af30b88edfaf4e6",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/client.py"
+  },
+  "_build/output-plus8-native-extent-focused-001/exports/state_1.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d7/d73ec58d90c86f34885d5696ce388bc7aded983775478b55945ef422dcb6902a",
+    "bytes": 650,
+    "sha256": "d73ec58d90c86f34885d5696ce388bc7aded983775478b55945ef422dcb6902a",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/exports/state_1.json"
+  },
+  "_build/output-plus8-native-extent-focused-001/exports/state_3.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-implication-guard/_build/output-plus8-native-extent-focused-001/exports/state_3.json"
+  }
+}
