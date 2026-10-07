@@ -205,6 +205,17 @@ Lemma decodeItemNativeMaskNonempty (prefix : byte) :
   bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128.
 Proof. rewrite decodeItemNativeMaskConstant. trivial. Qed.
 
+#[export] Hint Extern 1 (SimplAnd (129 <= bv_unsigned ?prefix) True) =>
+  match goal with
+  | Hlower : 128 <= bv_unsigned prefix,
+    Hupper : bv_unsigned prefix <= 255,
+    Hmask : bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exact (decodeItemNonemptyStringPrefixGuard prefix
+      (conj Hlower Hupper) (decodeItemNativeMaskNonempty prefix Hmask))
+    | intros _; exact I]
+  end : typeclass_instances.
+
 Lemma decodeItemNativeMaskEmptyPrefix (prefix : byte) :
   bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv ->
   bv_unsigned prefix = 128.
