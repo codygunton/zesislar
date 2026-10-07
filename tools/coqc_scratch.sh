@@ -10,7 +10,7 @@ scratch_file=$(realpath "$1")
 build_dir=$(realpath "$2")
 trace_file="$build_dir/trace.csexp"
 
-if [[ ! -f "$scratch_file" || ! -f "$trace_file" ]]; then
+if [[ ! -f "$scratch_file" || ( -z "${ZESU_SCRATCH_RECIPE:-}" && ! -f "$trace_file" ) ]]; then
   echo "the scratch file or Dune trace does not exist" >&2
   exit 2
 fi
@@ -46,9 +46,13 @@ if memory_gib not in (6, 12) or (memory_gib == 12 and
 source = Path(sys.argv[1])
 build_dir = Path(sys.argv[2])
 sys.path.insert(0, sys.argv[4])
-from coqc_recipe import remember_recipe
+from coqc_recipe import remember_recipe, read_snapshot
 
-recipe = remember_recipe(build_dir)
+snapshot = os.environ.get("ZESU_SCRATCH_RECIPE")
+snapshot_hash = os.environ.get("ZESU_SCRATCH_RECIPE_SHA256")
+if bool(snapshot) != bool(snapshot_hash):
+    raise SystemExit("the compiler recipe snapshot requires both path and SHA256")
+recipe = read_snapshot(Path(snapshot), snapshot_hash) if snapshot else remember_recipe(build_dir)
 if recipe is None:
     raise SystemExit("no coqc compiler recipe exists; build a focused proof target first")
 command = recipe["command"]

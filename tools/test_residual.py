@@ -393,10 +393,8 @@ class ScratchCompilerGuard(unittest.TestCase):
             scratch = tools / "coqc_scratch.sh"
             shutil.copy2(Path(__file__).resolve().parent / "coqc_scratch.sh",
                          scratch)
-            (tools / "coqc_recipe.py").write_text(
-                "import json\n"
-                "def remember_recipe(build_dir):\n"
-                "    return json.loads((build_dir / 'recipe.json').read_text())\n")
+            shutil.copy2(Path(__file__).resolve().parent / "coqc_recipe.py",
+                         tools / "coqc_recipe.py")
             guard = tools / "resource_guard.sh"
             guard.write_text(
                 '#!/bin/sh\n'
@@ -420,7 +418,7 @@ class ScratchCompilerGuard(unittest.TestCase):
             build = root / "build"
             build.mkdir()
             (build / "trace.csexp").write_text("trace\n")
-            (build / "recipe.json").write_text(json.dumps({
+            (build / "coqc_recipe.json").write_text(json.dumps({
                 "command": [str(compiler), "Original.v"],
                 "working_dir": str(root),
             }))
