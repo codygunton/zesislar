@@ -1199,14 +1199,33 @@ Ltac zesu_region_arithmetic_statement statement :=
 Class ZesuStepRegionFaultNormalization : Prop :=
   zesu_step_region_fault_normalization : True.
 
+(* Recognize constructor integers without unfolding local declarations. *)
+Ltac zesu_region_positive_literal p :=
+  tryif is_var p then fail 0 else
+  lazymatch p with
+  | xH => idtac
+  | xO ?q => zesu_region_positive_literal q
+  | xI ?q => zesu_region_positive_literal q
+  | _ => fail 0
+  end.
+Ltac zesu_region_integer_literal value :=
+  tryif is_var value then fail 0 else
+  lazymatch value with
+  | Z0 => idtac
+  | Zpos ?p => zesu_region_positive_literal p
+  | Zneg ?p => zesu_region_positive_literal p
+  | _ => fail 0
+  end.
+
 (* Check the selected term without traversing other local declarations. *)
 Ltac zesu_region_reduce_closed term :=
   tryif let _ := constr:(_ : ZesuStepRegionFaultNormalization) in idtac
   then (
-    zesu_stack_closed_term term;
-    let reduced := eval vm_compute in term in
-    tryif constr_eq term reduced then fail 0
-    else change_no_check term with reduced in * )
+    tryif zesu_region_integer_literal term then fail 0 else (
+      zesu_stack_closed_term term;
+      let reduced := eval vm_compute in term in
+      tryif constr_eq term reduced then fail 0
+      else change_no_check term with reduced in * ))
   else reduce_closed term.
 
 Ltac zesu_region_fault_arithmetic :=

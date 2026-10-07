@@ -52,6 +52,29 @@ Proof.
   reflexivity.
 Qed.
 
+Lemma region_normalization_literal_constructors : True.
+Proof.
+ zesu_region_integer_literal constr:(0%Z).
+ zesu_region_integer_literal constr:(1%Z).
+ zesu_region_integer_literal constr:((-1)%Z).
+ zesu_region_integer_literal constr:(2684354560%Z).
+ Fail zesu_region_integer_literal constr:((3 + 4)%Z).
+ pose (alias := 0%Z). Fail zesu_region_integer_literal alias.
+ evar (unknown : Z). Fail zesu_region_integer_literal unknown.
+ let body := eval unfold unknown in unknown in
+ tryif zesu_region_integer_literal body then fail 1 "unexpected evar literal" else is_evar body.
+ instantiate (unknown := 0%Z). exact I.
+Qed.
+Lemma region_normalization_literal_symbolic : forall p : positive, True.
+Proof. intros p. Fail zesu_region_integer_literal constr:(Zpos p). exact I. Qed.
+Lemma region_normalization_literal_nested_alias : True.
+Proof.
+ pose (part := xH).
+ Fail zesu_region_integer_literal constr:(Zpos (xO part)).
+ Fail zesu_region_integer_literal constr:(Zpos (Pos.add xH xH)).
+ exact I.
+Qed.
+
 Section assertion_tests.
   Context `{!islaG Sigma} `{!threadG}.
   Lemma region_normalization_lower es ann (address : bv 64) (minimum : Z)

@@ -1,0 +1,174 @@
+{
+  "item": "I29-698c-region-literal-guard",
+  "status": "partial repair; measured regression remains",
+  "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+  "comparison": {
+    "closures": 0,
+    "formatted_coverage_unavailable": "Intermediate CHAIN-GOAL-END markers absent.",
+    "missing_groups": [
+      "stack",
+      "shelf",
+      "given_up"
+    ],
+    "root": "712922d7fa219db00a3b69a859cc9bc66b171a52",
+    "rows": [
+      {
+        "arm": "off",
+        "compiler": {
+          "cpu_seconds": 97.46705,
+          "elapsed_seconds": 97.7410164430039,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2082164
+        },
+        "handler202_seconds": 5.212046219967306,
+        "handler217_seconds": 5.41197681799531,
+        "qed_failure": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "ef1fecb0e7e1b654d5cf7bd76e47a68bc3a8a41cd442a1111ed76490e7a5aab7",
+        "steps": 256
+      },
+      {
+        "arm": "original-on",
+        "compiler": {
+          "cpu_seconds": 752.096677,
+          "elapsed_seconds": 754.2583277249942,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2099280
+        },
+        "handler202_seconds": 344.3537485380657,
+        "handler217_seconds": 320.5015142488992,
+        "qed_failure": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "13bba38d119362847a812bd240a5ceede9a4eca64cbdc8dc40c8c69d3b055f4d",
+        "steps": 256
+      },
+      {
+        "arm": "nochange-on",
+        "compiler": {
+          "cpu_seconds": 219.37940899999998,
+          "elapsed_seconds": 220.2196561389137,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2124228
+        },
+        "handler202_seconds": 60.92206499807071,
+        "handler217_seconds": 57.11430641298648,
+        "qed_failure": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "19f954343756e4b0f2efaa45b3901aadcb3b84c20c0c6e05fce1b340c4554223",
+        "steps": 256
+      },
+      {
+        "arm": "literal-on",
+        "compiler": {
+          "cpu_seconds": 194.235929,
+          "elapsed_seconds": 194.8459365320159,
+          "exit_code": 1,
+          "limit": null,
+          "peak_rss_kib": 2130428
+        },
+        "handler202_seconds": 55.323796838056296,
+        "handler217_seconds": 52.526608746964484,
+        "qed_failure": true,
+        "raw_count": 10,
+        "raw_sha256": "b31ec7f6eaf7869984b0c78724aba027ae0b6ce992b08323d1dff245c09d1894",
+        "result_sha256": "5f6e2e7bf0d6407b2db468cdd7f6a714bf2435a2eb15716c7de0d4d47d849d52",
+        "steps": 256
+      }
+    ],
+    "same_raw_states": true
+  },
+  "selected_term_at_handler202": "signed(zero_extend128(bv_add(Z_to_bv64(decodeItemOutputPointer args),16))) >= signed(BV128 2684354560)",
+  "internal_attribution": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/observer-complete-call-audit.json",
+    "sha256": "98d612fa3c4486b654486cfe35562678254a4b1d1d548962c07f61224a96216f",
+    "archive": "/home/cody/zesislar-archive/sha256/98/98d612fa3c4486b654486cfe35562678254a4b1d1d548962c07f61224a96216f",
+    "bytes": 2690778
+  },
+  "guard_scope": "The switched reducer rejects syntactic constructor integers before closure checking and VM evaluation. Aliases, symbolic terms, evars, and reducible expressions retain the existing path. OFF helper, solver, scheduler, and branch order remain unchanged.",
+  "source_identity": "Literal ON256 adds only a diagnostic helper Load before final counter restoration. Statement, proof body, scheduler, and limits remain unchanged. Production helpers differ only by generic name renaming.",
+  "cpu_reduction_percent": 11.461185037653198,
+  "remaining_cpu_above_off_percent": 99.28368510178566,
+  "focused_assumptions": [],
+  "focused_verified_theorems": [
+    "alias",
+    "unchanged",
+    "changed",
+    "rollback",
+    "literal_constructors",
+    "literal_symbolic",
+    "literal_nested_alias"
+  ],
+  "focused_final_groups": "All four groups empty in each completed focused pipeline.",
+  "focused_actual": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/actual-literal-source-audit.json",
+    "sha256": "8405880c2defe027643fbeed619101c9f0b0f5e29974016f2b283cd6bc4aa438",
+    "archive": "/home/cody/zesislar-archive/sha256/84/8405880c2defe027643fbeed619101c9f0b0f5e29974016f2b283cd6bc4aa438",
+    "bytes": 3007
+  },
+  "detector": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/remaining-reducer-attribution/detector-mcp-audit.json",
+    "sha256": "46e3acae6ecee898998e76a4593ce1ac2d8cbb916afa1e929ce3014a32820ee5",
+    "archive": "/home/cody/zesislar-archive/sha256/46/46e3acae6ecee898998e76a4593ce1ac2d8cbb916afa1e929ce3014a32820ee5",
+    "bytes": 500
+  },
+  "composition": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/remaining-reducer-attribution/composition-mcp-audit.json",
+    "sha256": "3cd95ff6d19805a8d718da9c176769abe43de454c23b30a2d57b0cbc0e5b33a4",
+    "archive": "/home/cody/zesislar-archive/sha256/3c/3cd95ff6d19805a8d718da9c176769abe43de454c23b30a2d57b0cbc0e5b33a4",
+    "bytes": 919
+  },
+  "activation": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/repaired-activation.json",
+    "sha256": "878259f40d8cc69ab89a9a6404e097d29f9590037965a7de50d5746653528d4c",
+    "archive": "/home/cody/zesislar-archive/sha256/87/878259f40d8cc69ab89a9a6404e097d29f9590037965a7de50d5746653528d4c",
+    "bytes": 10204
+  },
+  "immutable_recipe": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/on/k256-literal/sealed-coqc-recipe.json",
+    "sha256": "5fbefa5c5ea12277bfa4b9ef3d2afc54121022d8042a95d768649cccd3933fb9",
+    "archive": "/home/cody/zesislar-archive/sha256/5f/5fbefa5c5ea12277bfa4b9ef3d2afc54121022d8042a95d768649cccd3933fb9",
+    "bytes": 4278
+  },
+  "stage_recovery": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/on/k202-stages/recovered-result.json",
+    "sha256": "27539a509f1aa7b776895ab88f9949825822368bc1c092bc3f9b09d1d1c96cc5",
+    "archive": "/home/cody/zesislar-archive/sha256/27/27539a509f1aa7b776895ab88f9949825822368bc1c092bc3f9b09d1d1c96cc5",
+    "bytes": 2241
+  },
+  "counter_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/child-b-binding-audit.json",
+    "sha256": "971aa50a473e17f0667a86d38d5bb4f0ad63e4419c77b40c20ffc330b2aa7f20",
+    "archive": "/home/cody/zesislar-archive/sha256/97/971aa50a473e17f0667a86d38d5bb4f0ad63e4419c77b40c20ffc330b2aa7f20",
+    "bytes": 1318
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/build/stock-zisk/i29-region-literal-guard/archive-index.json",
+    "sha256": "cf801e9a2c47d4e3efbad2459998f64201154e79f42cbba6c7d765eb12c2ff37",
+    "archive": "/home/cody/zesislar-archive/sha256/cf/cf801e9a2c47d4e3efbad2459998f64201154e79f42cbba6c7d765eb12c2ff37",
+    "bytes": 12384894
+  },
+  "historical_limit": "340 and b926 differ in root and hint inventory. They do not isolate rule29.",
+  "hints": 12,
+  "baseline_switches": 20,
+  "closures": 0,
+  "failure_records": "Original setup and gate failures remain retained. The stage primary completed before mutable-recipe rejection. Its effective flags match. Focused fixture failures include nested Fail, external Load validation, Z scope, and invalid pose syntax. All client and gate logs remain archived.",
+  "remaining_evidence": "The detector reduces CPU by11.46percent beyond the no-change guard, but remains99.28percent above OFF. No full 698c completion or closure follows.",
+  "gate": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/literal-final-gate.json",
+    "sha256": "f9c54e87cb1e4e24a5c06f613f8affb07244d58c941ad25eb9d72c348b29f158",
+    "archive": "/home/cody/zesislar-archive/sha256/f9/f9c54e87cb1e4e24a5c06f613f8affb07244d58c941ad25eb9d72c348b29f158",
+    "bytes": 6022
+  },
+  "independent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/_build/i29-698c-latest/audit-d412e88d794b2af8cba24f3c87215d0f28e8671d398d5a016487a33848da5d4e.json",
+    "sha256": "d412e88d794b2af8cba24f3c87215d0f28e8671d398d5a016487a33848da5d4e",
+    "archive": "/home/cody/zesislar-archive/sha256/d4/d412e88d794b2af8cba24f3c87215d0f28e8671d398d5a016487a33848da5d4e",
+    "bytes": 6497
+  }
+}
