@@ -14,7 +14,7 @@ OUTPUT = ROOT / "ZesuSsz/Evidence/decode_item_block_design.json"
 
 CONTRACTS = "ZesuSsz/Contracts/"
 ENTRY_MODULES = {
-    "entry_prologue": "RlpDecodeItemContract",
+    "entry_prologue": "DecodeItemBranchEntries",
     "long_string_fold_header": "RlpDecodeItemFoldEntries",
     "long_list_fold_header": "RlpDecodeItemFoldEntries",
 }
@@ -32,11 +32,10 @@ FOLD_LENGTH_CHECKS = {0x800D6A38, 0x800D6AD8}
 def block_entry_binding(start: int) -> dict:
     if start == 0x800D6960:
         module = ENTRY_MODULES["entry_prologue"]
-        name = "decodeItemEntryResources"
+        name = "decodeItemEntryAt800d6960"
         binders = [("returnAddress", "Z"),
                    ("args", "DecodeItemArgs")]
-        arguments = ["(decodeItemDomainAt returnAddress decodeItemC1BDomain)",
-                     "args"]
+        arguments = ["returnAddress", "args"]
     elif start in FOLD_PCS:
         module = ENTRY_MODULES["long_string_fold_header"]
         name = f"decodeItemEntryAt{start:08x}"
@@ -82,7 +81,9 @@ def block_entry_binding(start: int) -> dict:
     qualified = "ZesuSsz.Contracts." + module + "." + name
     sources = ["build/stock-zisk/inventory.json",
                "build/stock-zisk/decodeItem.raw.dump", source]
-    if start != 0x800D6960:
+    if start == 0x800D6960:
+        sources += [CONTRACTS + "RlpDecodeItemContract.v"]
+    else:
         sources += [CONTRACTS + "DecodeItemReturnFacts.v"]
     if start in RETURN_PCS:
         sources += [CONTRACTS + "RlpDecodeItemReturnImageDef.v",
@@ -414,7 +415,9 @@ def build() -> dict:
                 "output": "owned 40-byte result array at decodeItemOutputPointer args",
                 "stack": "(stackPointer - 16) ↦ₘ? 16" if start == function["entry"]
                          else "(stackPointer - 16) ↦ₘ∗ frameBytes; length frameBytes = 16",
-                "return_continuation": "decodeItemReturnAddress args and saved x8",
+                "return_continuation": "decodeItemBranchContinuationAt args returnAddress"
+                                       if start == function["entry"]
+                                       else "decodeItemReturnAddress args and saved x8",
             },
         }
         row.update(block_entry_binding(start))

@@ -259,6 +259,8 @@ def render_table(design, report):
             raise ValueError("The block has no executable entry declaration.")
         predicate, entry = fields["resource_predicate"], fields["entry_definition"]
         imports.update((predicate.rsplit(".", 1)[0], entry.rsplit(".", 1)[0]))
+        imports.update(entry_schema.source_module(path)
+                       for path in fields["source_hashes"] if path.endswith(".v"))
         binders = block["binders"]
         typed = " ".join(f"({binder['name']} : {binder['type']})" for binder in binders)
         arguments = " ".join(f"({argument})" for argument in block["arguments"])
