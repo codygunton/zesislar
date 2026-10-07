@@ -28,7 +28,7 @@ unfold decodeItemJoin6ac4From6ab4, decodeItemJoinTransferObligation.
 iIntros "Hcode".
 iEval (unfold decodeItemSelectedCode) in "Hcode".
 iDestruct "Hcode" as "#Hcode".
-Timeout 300 zesu_block.
+zesu_block.
 match goal with Hdomain : decodeItemC1BDomain args |- _ => rename Hdomain into HdomainFacts end.
 match goal with Hprovenance : decodeItemFoldProvenance args true inputPrefix rest n payloadStart lengthBytes |- _ => rename Hprovenance into HprovenanceFacts end.
 match goal with Hfold : decodeItemByteFoldFacts args n 0 payloadStart lengthBytes |- _ => rename Hfold into HfoldFacts end.
