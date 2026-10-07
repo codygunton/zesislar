@@ -23,6 +23,8 @@
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   lock-want PID HOLDER take the lock for a gate script, state wanted
+#                        ZESU_GATE_CLASS=root|child|preview queues by class
+#                        and arrival order. Unclassified calls try once.
 #   lock-hold PID        wait for running job scopes to finish, then mark
 #                        the lock held
 #   report               one line of guard state and Prometheus figures
@@ -79,6 +81,7 @@ RAMP_MS=${ZESU_RAMP_MS:-500}
 RAMP_FILE=${ZESU_RAMP_FILE:-/tmp/zesu-guard-ramp}
 GATE_LOCK=${ZESU_GATE_LOCK:-/tmp/zesu-gate.lock}
 GATE_MUTEX="${GATE_LOCK}.mutex"
+GATE_WAITERS="${GATE_LOCK}.waiters"
 FAST_MAX_JOBS=${ZESU_FAST_MAX_JOBS:-24}
 # Gates leave 16 machine slots for writers. Each named writer gets two.
 WRITER_RESERVED=16
@@ -169,11 +172,63 @@ blocked_count() { awk '/^procs_blocked/ {print $2}' /proc/stat; }
 
 lock_pid() { sed -n 's/.*pid=\([0-9]*\).*/\1/p' "$GATE_LOCK" 2>/dev/null; }
 
+# A PID alone can refer to another process after its original owner exits.
+# Read the start tick after the final ')' because comm can contain spaces.
+gate_process_start() {
+  local pid=$1 stat fields
+  [[ "$pid" =~ ^[1-9][0-9]*$ ]] || return 1
+  { IFS= read -r stat < "/proc/$pid/stat"; } 2>/dev/null || return 1
+  read -r -a fields <<< "${stat##*) }"
+  [[ "${fields[0]:-Z}" != Z && "${fields[0]:-X}" != X ]] || return 1
+  [[ "${fields[19]:-}" =~ ^[0-9]+$ ]] || return 1
+  printf '%s\n' "${fields[19]}"
+}
+
+# Called only under GATE_MUTEX. The owner, caller, and waiter must live.
+gate_waiters_clean() {
+  local marker class ticket owner owner_start waiter waiter_start caller caller_start extra current
+  for marker in "$GATE_WAITERS"/*.waiter; do
+    [ -e "$marker" ] || continue
+    if read -r class ticket owner owner_start waiter waiter_start caller caller_start extra < "$marker" \
+       && [[ "$class" =~ ^(root|child|preview)$ && "$ticket" =~ ^[1-9][0-9]*$ ]] \
+       && (( ${#ticket} < 19 || (${#ticket} == 19 && ticket > 0) )) \
+       && [ -z "$extra" ] \
+       && current=$(gate_process_start "$owner") && [ "$current" = "$owner_start" ] \
+       && current=$(gate_process_start "$waiter") && [ "$current" = "$waiter_start" ] \
+       && current=$(gate_process_start "$caller") && [ "$current" = "$caller_start" ]; then
+      continue
+    fi
+    rm -f -- "$marker"
+    note "STALE gate waiter removed: ${marker##*/}"
+  done
+}
+
+gate_class_rank() {
+  case "$1" in root) echo 0 ;; child) echo 1 ;; preview) echo 2 ;; esac
+}
+
+gate_waiter_first() {
+  local marker class ticket owner owner_start waiter waiter_start caller caller_start rank
+  local best_rank=3 best_ticket=0 first=""
+  for marker in "$GATE_WAITERS"/*.waiter; do
+    [ -e "$marker" ] || continue
+    read -r class ticket owner owner_start waiter waiter_start caller caller_start < "$marker" || return 2
+    rank=$(gate_class_rank "$class")
+    if (( rank < best_rank || (rank == best_rank && ticket < best_ticket) )); then
+      best_rank=$rank; best_ticket=$ticket; first=$marker
+    fi
+  done
+  printf '%s\n' "$first"
+}
+
 # Prints the live holder, or nothing. Removes a stale lock and says so.
 lock_live_unlocked() {
+  gate_waiters_clean
   [ -e "$GATE_LOCK" ] || return 1
-  local pid; pid=$(lock_pid)
-  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+  local pid start current; pid=$(lock_pid)
+  start=$(sed -n 's/.*pid_start=\([0-9]*\).*/\1/p' "$GATE_LOCK" 2>/dev/null)
+  if [ -n "$pid" ] && current=$(gate_process_start "$pid") \
+     && { [ -z "$start" ] || [ "$current" = "$start" ]; }; then
     cat "$GATE_LOCK"; return 0
   fi
   local text; text=$(cat "$GATE_LOCK" 2>/dev/null)
@@ -193,27 +248,75 @@ lock_live() {
   return "$status"
 }
 
-lock_acquire() {
-  local holder=$1 pid=$2 current
-  while :; do
+# The subshell owns the waiter traps without replacing its caller's traps.
+lock_acquire() (
+  local holder=$1 pid=$2 current status marker="" ticket=0 first queued=0
+  local class=${ZESU_GATE_CLASS:-child} owner_start waiter_start caller_start
+  local waiter=$BASHPID caller=$$
+  case "$class" in root|child|preview) ;; *)
+    echo "resource guard: invalid gate class: $class" >&2; return 2 ;;
+  esac
+  [ -z "${ZESU_GATE_CLASS:-}" ] || queued=1
+  owner_start=$(gate_process_start "$pid") || {
+    echo "resource guard: invalid gate owner: $pid" >&2; return 2;
+  }
+  waiter_start=$(gate_process_start "$waiter") || return 2
+  caller_start=$(gate_process_start "$caller") || return 2
+  cleanup_waiter() {
+    [ -n "$marker" ] || return 0
     exec 7>>"$GATE_MUTEX"
-    flock 7
-    if ( set -C; printf 'state=wanted holder=%s pid=%s start=%s\n' \
-           "$holder" "$pid" "$(date -Is)" > "$GATE_LOCK" ) 2>/dev/null; then
-      flock -u 7
-      exec 7>&-
-      note "LOCK wanted by $holder pid $pid"
-      return 0
-    fi
-    current=$(lock_live_unlocked); local status=$?
+    flock 7 || return 2
+    rm -f -- "$marker"
     flock -u 7
     exec 7>&-
-    if (( status == 0 )); then
-      echo "refusing: a gate holds $GATE_LOCK: $current" >&2
+  }
+  trap cleanup_waiter EXIT
+  trap 'exit 143' TERM
+  trap 'exit 130' INT
+  while :; do
+    exec 7>>"$GATE_MUTEX"
+    flock 7 || return 2
+    gate_waiters_clean
+    if [ -z "$marker" ]; then
+      mkdir -p "$GATE_WAITERS" || return 2
+      if [ -e "$GATE_WAITERS/next-ticket" ]; then
+        read -r ticket < "$GATE_WAITERS/next-ticket" || return 2
+        [[ "$ticket" =~ ^(0|[1-9][0-9]*)$ ]] \
+          && (( ${#ticket} < 19 || (${#ticket} == 19 && ticket > 0) )) \
+          && (( ticket < 9223372036854775807 )) || return 2
+      fi
+      ticket=$((ticket + 1))
+      printf '%s\n' "$ticket" > "$GATE_WAITERS/next-ticket" || return 2
+      marker="$GATE_WAITERS/$pid.$waiter.$RANDOM.waiter"
+      printf '%s %s %s %s %s %s %s %s\n' "$class" "$ticket" "$pid" "$owner_start" \
+        "$waiter" "$waiter_start" "$caller" "$caller_start" > "$marker" || return 2
+      note "QUEUE gate class=$class ticket=$ticket owner=$pid waiter=$waiter caller=$caller"
+    fi
+    current=$(gate_process_start "$pid")
+    if [ "$current" != "$owner_start" ] || [ ! -f "$marker" ]; then
+      flock -u 7; exec 7>&-; return 2
+    fi
+    current=$(lock_live_unlocked); status=$?
+    first=$(gate_waiter_first) || { flock -u 7; exec 7>&-; return 2; }
+    if (( status != 0 )) && [ "$first" = "$marker" ] \
+       && ( set -C; printf 'state=wanted holder=%s pid=%s start=%s class=%s pid_start=%s\n' \
+           "$holder" "$pid" "$(date -Is)" "$class" "$owner_start" > "$GATE_LOCK" ) 2>/dev/null; then
+      rm -f -- "$marker"
+      marker=""
+      flock -u 7
+      exec 7>&-
+      note "LOCK wanted by $holder pid $pid class=$class ticket=$ticket"
+      return 0
+    fi
+    flock -u 7
+    exec 7>&-
+    if (( queued == 0 )); then
+      echo "refusing: a gate holds or waits for $GATE_LOCK: ${current:-higher-priority waiter}" >&2
       return 3
     fi
+    sleep "$POLL_SECONDS"
   done
-}
+)
 
 # wanted -> held, once the running batches have finished. Gives up after
 # ZESU_GATE_SCOPE_WAIT seconds (4 h) and releases the lock.

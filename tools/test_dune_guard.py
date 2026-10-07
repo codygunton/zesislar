@@ -3,7 +3,9 @@
 import json
 import os
 import shutil
+import signal
 import subprocess
+import sys
 import time
 import unittest
 from pathlib import Path
@@ -13,6 +15,318 @@ from coqc_recipe import compiler_recipe
 
 
 TOOLS = Path(__file__).resolve().parent
+
+
+class GateQueueTest(unittest.TestCase):
+    def setUp(self):
+        self.fixture = test_guard.GuardLockTest()
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.tearDown)
+        self.root = Path(self.fixture.directory.name)
+        self.environment = self.fixture.environment.copy()
+        self.environment["ZESU_GUARD_POLL"] = "0.02"
+        self.waiters = Path(str(self.fixture.lock) + ".waiters")
+        self.events = self.root / "gate-events.jsonl"
+        self.job = self.root / "job.py"
+        self.job.write_text(
+            "import json,os,pathlib,sys,time\n"
+            "name,events,release=sys.argv[1:]\n"
+            "active=pathlib.Path(events+'.active')\n"
+            "fd=os.open(active,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600);os.close(fd)\n"
+            "fd=os.open(events,os.O_WRONLY|os.O_CREAT|os.O_APPEND,0o600)\n"
+            "os.write(fd,(json.dumps({'name':name,'pid':os.getpid()})+'\\n').encode());os.close(fd)\n"
+            "while not pathlib.Path(release).exists():time.sleep(0.01)\n"
+            "active.unlink()\n")
+        self.processes = []
+        self.addCleanup(self.stop_processes)
+
+    def stop_processes(self):
+        for process in self.processes:
+            if process.poll() is None:
+                os.killpg(process.pid, signal.SIGTERM)
+            process.communicate(timeout=5)
+
+    def wait_for(self, predicate):
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            if predicate():
+                return
+            time.sleep(0.01)
+        self.fail("The gate fixture did not reach its expected state.")
+
+    def records(self):
+        return [json.loads(line) for line in self.events.read_text().splitlines()] \
+            if self.events.exists() else []
+
+    def waiter_records(self):
+        records = []
+        for path in self.waiters.glob("*.waiter"):
+            try:
+                records.append((path, path.read_text().split()))
+            except FileNotFoundError:
+                continue
+        return records
+
+    def start(self, name, gate_class):
+        environment = {**self.environment, "ZESU_GATE_CLASS": gate_class}
+        process = subprocess.Popen(
+            [str(test_guard.GUARD), "locked", name, "--", sys.executable,
+             str(self.job), name, str(self.events), str(self.root / (name + ".release"))],
+            env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            text=True, start_new_session=True)
+        self.processes.append(process)
+        return process
+
+    def queued(self, process):
+        self.wait_for(lambda: any(row[2] == str(process.pid)
+                                 for _, row in self.waiter_records()))
+
+    def started(self, name):
+        self.wait_for(lambda: any(row["name"] == name for row in self.records()))
+
+    def finish(self, process, name):
+        (self.root / (name + ".release")).touch()
+        _, stderr = process.communicate(timeout=5)
+        self.assertEqual(process.returncode, 0, stderr)
+
+    def assert_clean(self):
+        self.assertFalse(self.fixture.lock.exists())
+        self.assertEqual(self.waiter_records(), [])
+        self.assertFalse(Path(str(self.events) + ".active").exists())
+
+    def test_priority_and_fifo_preserve_the_running_gate(self):
+        holder = self.start("holder", "preview")
+        self.started("holder")
+        original = self.fixture.lock.read_bytes()
+        arrivals = [("preview", "preview"), ("child1", "child"),
+                    ("root1", "root"), ("child2", "child"), ("root2", "root")]
+        processes = {}
+        for name, gate_class in arrivals:
+            processes[name] = self.start(name, gate_class)
+            self.queued(processes[name])
+            self.assertEqual(self.fixture.lock.read_bytes(), original)
+            self.assertIsNone(holder.poll())
+            self.assertEqual([r["name"] for r in self.records()], ["holder"])
+        self.finish(holder, "holder")
+        order = ["root1", "root2", "child1", "child2", "preview"]
+        for name in order:
+            self.started(name)
+            self.finish(processes[name], name)
+        self.assertEqual([r["name"] for r in self.records()], ["holder", *order])
+        self.assert_clean()
+        print("FAIR_LANE_COMPARISON", json.dumps({
+            "arrivals": [name for name, _ in arrivals], "execution": order,
+            "running_holder_unchanged": True, "waiters_removed": True}))
+
+    def test_later_root_does_not_interrupt_a_running_preview(self):
+        preview = self.start("preview", "preview")
+        self.started("preview")
+        original = self.fixture.lock.read_bytes()
+        root = self.start("root", "root")
+        self.queued(root)
+        self.assertEqual(self.fixture.lock.read_bytes(), original)
+        self.assertIsNone(preview.poll())
+        self.assertEqual(len(self.records()), 1)
+        self.finish(preview, "preview")
+        self.started("root")
+        self.finish(root, "root")
+        self.assert_clean()
+
+    def test_legacy_busy_call_refuses_and_removes_its_registration(self):
+        holder = self.start("holder", "child")
+        self.started("holder")
+        result = self.fixture.guard("locked", "legacy", "--", "true")
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertEqual(self.waiter_records(), [])
+        self.assertIsNone(holder.poll())
+        self.finish(holder, "holder")
+        result = self.fixture.guard("locked", "legacy", "--", "true")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assert_clean()
+
+    def test_cancelled_waiter_does_not_block_a_preview(self):
+        holder = self.start("holder", "child")
+        self.started("holder")
+        root = self.start("root", "root")
+        self.queued(root)
+        root.terminate()
+        root.communicate(timeout=5)
+        self.wait_for(lambda: not self.waiter_records())
+        preview = self.start("preview", "preview")
+        self.queued(preview)
+        self.finish(holder, "holder")
+        self.started("preview")
+        self.finish(preview, "preview")
+        self.assertEqual([r["name"] for r in self.records()], ["holder", "preview"])
+        self.assert_clean()
+
+    def test_dead_reused_and_invalid_waiters_are_removed(self):
+        self.waiters.mkdir()
+        start = Path(f"/proc/{os.getpid()}/stat").read_text().rsplit(") ", 1)[1].split()[19]
+        # A live PID with a wrong start tick represents PID reuse.
+        for name, record in {
+            "dead": "root 1 999999999 1 999999998 1 999999997 1\n",
+            "reused-owner": f"root 2 {os.getpid()} 0 {os.getpid()} {start} {os.getpid()} {start}\n",
+            "reused-waiter": f"root 3 {os.getpid()} {start} {os.getpid()} 0 {os.getpid()} {start}\n",
+            "reused-caller": f"root 4 {os.getpid()} {start} {os.getpid()} {start} {os.getpid()} 0\n",
+            "malformed": "preview invalid\n",
+        }.items():
+            (self.waiters / (name + ".waiter")).write_text(record)
+        result = self.fixture.guard("lock-status")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.waiter_records(), [])
+        preview = self.start("preview", "preview")
+        self.started("preview")
+        self.finish(preview, "preview")
+        self.assert_clean()
+
+    def test_external_owner_and_waiter_lifetimes_are_both_required(self):
+        holder = self.start("holder", "child")
+        self.started("holder")
+        owner = subprocess.Popen(["sleep", "30"])
+        self.addCleanup(lambda: owner.poll() is None and owner.terminate())
+        caller = subprocess.Popen(
+            [str(test_guard.GUARD), "lock-want", str(owner.pid), "external"],
+            env={**self.environment, "ZESU_GATE_CLASS": "root"},
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            start_new_session=True)
+        self.processes.append(caller)
+        self.wait_for(lambda: any(row[2] == str(owner.pid)
+                                 for _, row in self.waiter_records()))
+        caller.terminate()
+        caller.communicate(timeout=5)
+        self.wait_for(lambda: not self.waiter_records())
+        self.assertIsNone(owner.poll())
+        owner.terminate()
+        owner.wait(timeout=5)
+        self.finish(holder, "holder")
+        self.assert_clean()
+
+    def test_dead_external_owner_cannot_acquire_through_a_live_caller(self):
+        holder = self.start("holder", "child")
+        self.started("holder")
+        owner = subprocess.Popen(["sleep", "30"])
+        try:
+            caller = subprocess.Popen(
+                [str(test_guard.GUARD), "lock-want", str(owner.pid), "external"],
+                env={**self.environment, "ZESU_GATE_CLASS": "root"},
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                start_new_session=True)
+            self.processes.append(caller)
+            self.wait_for(lambda: any(row[2] == str(owner.pid)
+                                     for _, row in self.waiter_records()))
+            owner.terminate()
+            owner.wait(timeout=5)
+            caller.communicate(timeout=5)
+            self.assertEqual(caller.returncode, 2)
+            self.assertEqual(self.waiter_records(), [])
+            self.assertIsNone(holder.poll())
+        finally:
+            if owner.poll() is None:
+                owner.terminate()
+                owner.wait(timeout=5)
+        self.finish(holder, "holder")
+        self.assert_clean()
+
+    def test_killed_waiter_is_removed_by_the_next_lock_check(self):
+        holder = self.start("holder", "preview")
+        self.started("holder")
+        root = self.start("root", "root")
+        self.queued(root)
+        os.killpg(root.pid, signal.SIGKILL)
+        root.communicate(timeout=5)
+        self.fixture.guard("lock-status")
+        self.assertEqual(self.waiter_records(), [])
+        self.assertIsNone(holder.poll())
+        self.finish(holder, "holder")
+        self.assert_clean()
+
+    def test_killed_acquisition_subshell_is_stale_with_live_owner_and_caller(self):
+        holder = self.start("holder", "child")
+        self.started("holder")
+        caller = subprocess.Popen(
+            [str(test_guard.GUARD), "lock-want", str(os.getpid()), "external"],
+            env={**self.environment, "ZESU_GATE_CLASS": "root"},
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            start_new_session=True)
+        self.processes.append(caller)
+        self.wait_for(lambda: any(row[2] == str(os.getpid())
+                                 for _, row in self.waiter_records()))
+        record = self.waiter_records()[0][1]
+        waiter = int(record[4])
+        self.assertNotEqual(waiter, caller.pid)
+        self.assertEqual(int(record[6]), caller.pid)
+        os.kill(caller.pid, signal.SIGSTOP)
+        try:
+            os.kill(waiter, signal.SIGKILL)
+            self.wait_for(lambda: not Path(f"/proc/{waiter}/stat").exists() or
+                          Path(f"/proc/{waiter}/stat").read_text().rsplit(") ", 1)[1].split()[0] == "Z")
+            self.fixture.guard("lock-status")
+            self.assertEqual(self.waiter_records(), [])
+            self.assertIsNone(caller.poll())
+            self.assertIsNone(holder.poll())
+        finally:
+            os.kill(caller.pid, signal.SIGCONT)
+            caller.communicate(timeout=5)
+        self.finish(holder, "holder")
+        self.assert_clean()
+
+    def test_concurrent_child_arrivals_use_unique_fifo_tickets_and_one_owner(self):
+        holder = self.start("holder", "child")
+        self.started("holder")
+        processes = {f"child{i}": self.start(f"child{i}", "child") for i in range(6)}
+        self.wait_for(lambda: len(self.waiter_records()) == len(processes))
+        names = {process.pid: name for name, process in processes.items()}
+        tickets = [(int(row[1]), names[int(row[2])]) for _, row in self.waiter_records()]
+        self.assertEqual(len({ticket for ticket, _ in tickets}), len(processes))
+        order = [name for _, name in sorted(tickets)]
+        self.assertEqual([r["name"] for r in self.records()], ["holder"])
+        self.finish(holder, "holder")
+        for i, name in enumerate(order):
+            self.started(name)
+            self.assertEqual([r["name"] for r in self.records()], ["holder", *order[:i + 1]])
+            self.finish(processes[name], name)
+        self.assert_clean()
+
+    def test_reused_owner_lock_is_removed_without_signalling_the_pid(self):
+        self.fixture.lock.write_text(f"state=held holder=stale pid={os.getpid()} pid_start=0\n")
+        result = self.fixture.guard("lock-status")
+        self.assertIn("stale gate lock removed", result.stderr)
+        self.assert_clean()
+
+    def test_wanted_lock_is_not_replaced_by_a_higher_class(self):
+        owner = subprocess.Popen(["sleep", "30"])
+        try:
+            result = subprocess.run(
+                [str(test_guard.GUARD), "lock-want", str(owner.pid), "preview"],
+                env={**self.environment, "ZESU_GATE_CLASS": "preview"},
+                capture_output=True, text=True, timeout=5)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            original = self.fixture.lock.read_bytes()
+            self.assertTrue(original.startswith(b"state=wanted "))
+            root = self.start("root", "root")
+            self.queued(root)
+            self.assertEqual(self.fixture.lock.read_bytes(), original)
+            self.assertIsNone(owner.poll())
+            self.assertEqual(self.records(), [])
+            self.fixture.guard("lock-release", str(owner.pid))
+            self.started("root")
+            self.finish(root, "root")
+        finally:
+            owner.terminate()
+            owner.wait(timeout=5)
+        self.assert_clean()
+
+    def test_invalid_class_and_dead_owner_do_not_register(self):
+        for arguments, environment in [
+            (["locked", "invalid", "--", "true"], {"ZESU_GATE_CLASS": "invalid"}),
+            (["lock-want", "999999999", "dead"], {"ZESU_GATE_CLASS": "root"}),
+        ]:
+            result = subprocess.run([str(test_guard.GUARD), *arguments],
+                                    env={**self.environment, **environment},
+                                    capture_output=True, text=True, timeout=5)
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assert_clean()
 
 
 class DuneCompilerGuardTest(unittest.TestCase):
