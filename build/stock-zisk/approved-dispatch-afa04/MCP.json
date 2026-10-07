@@ -1,0 +1,69 @@
+{
+  "root": "afa04ce1795ae24348f444a0d35f4901caacb015",
+  "result_sha256": "fa8f416c55a81c8c393263db66605de0741f23942e52f9d9fdfe7df724df1b62",
+  "watcher_log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-112418-child-c-approved-afa-certificate-standalone001.log",
+  "log_sha256": "e150e5c131e28cb3e301322a7184ffbe5f5c5c6c291c5e60a1ae26800488970b",
+  "exact_statement_verifications": 10,
+  "native_verifications": 7,
+  "adapter_verifications": 3,
+  "method": "module_m",
+  "assumptions": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "objects_unchanged": true,
+  "health": {
+    "success": true,
+    "ok": true,
+    "server_version": "0.3.1",
+    "switch": "islaris",
+    "switch_prefix": "/home/cody/islaris/_opam",
+    "switch_is_local": true,
+    "switch_source": "opam_env",
+    "toolchain": {
+      "coqc": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/tools/block/entry_check_coqc.sh",
+        "version": "8.19.2+lsp 4.14.4"
+      },
+      "pet": {
+        "path": "/home/cody/islaris/_opam/bin/pet",
+        "version": "0.2.4-dev",
+        "pytanque_importable": true
+      }
+    },
+    "pet": {
+      "running": false,
+      "pid": null
+    },
+    "warnings": []
+  },
+  "transport_closed_normally": true,
+  "owned_live_processes": [],
+  "native_replays": 0,
+  "shell_fallback": false,
+  "interactive_application": "Unavailable. Preserve certificate001/002/003/004 and inspection001 responses.",
+  "reuse": {
+    "block_0x800d69d8-compile": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-certificate-mcp-003/block_0x800d69d8-compile-response.json",
+      "sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "source_sha256": "79097f625b2cc6506c4d342b955c38691b2926abe347d5fb26bd1834260851d8",
+      "problem_sha256": "2249394ad8b00db331b99fef5bbe97fb2e89def449614da08a5fc65c11ee92f6",
+      "object_sha256": "dfe412164a5f1848511cc70727a92625fe566c85ba971883876d708f10f957b0"
+    },
+    "block_0x800d69d8-verify": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-dispatch-afa04/_build/approved-dispatch-certificate-inspection-001/verify-response.json",
+      "sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+      "source_sha256": "79097f625b2cc6506c4d342b955c38691b2926abe347d5fb26bd1834260851d8",
+      "problem_sha256": "2249394ad8b00db331b99fef5bbe97fb2e89def449614da08a5fc65c11ee92f6",
+      "object_sha256": "dfe412164a5f1848511cc70727a92625fe566c85ba971883876d708f10f957b0"
+    }
+  }
+}
