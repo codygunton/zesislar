@@ -173,3 +173,26 @@ Print Assumptions decodeItemSignedPrefixMaskHint.
     | intros _; exact I]
   end : typeclass_instances.
 Print Assumptions decodeItemMaskedEmptyStringAccepted.
+
+Lemma decodeItemShortStringNegatedGuardUnsigned args (prefix : bv 64) :
+  ~ bv_signed (bv_zero_extend 128 (bv_and prefix 127)) >=
+      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
+  bv_unsigned (bv_and prefix 127) <
+    bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)).
+Proof.
+  intros Hguard. rewrite !zesu_signed_zero_extend_64_128 in Hguard.
+  apply Znot_ge_lt in Hguard. exact Hguard.
+Qed.
+
+#[export] Hint Extern 1
+  (SimplAnd (bv_unsigned (bv_and ?prefix 127) <
+    bv_unsigned (Z_to_bv 64 (decodeItemInputLength ?args))) True) =>
+  match goal with
+  | Hguard : ~ bv_signed (bv_zero_extend 128 (bv_and prefix 127)) >=
+      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exact (decodeItemShortStringNegatedGuardUnsigned args prefix Hguard)
+    | intros _; exact I]
+  end : typeclass_instances.
+
+Print Assumptions decodeItemShortStringNegatedGuardUnsigned.
