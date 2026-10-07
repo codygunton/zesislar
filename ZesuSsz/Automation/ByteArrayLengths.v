@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import isla.riscv64.riscv64.
 
 Class ZesuStepArrayRegionBounds : Prop :=
@@ -5,7 +6,7 @@ Class ZesuStepArrayRegionBounds : Prop :=
 
 (* Preserve ownership while reducing the extent of an updated byte array. *)
 Ltac zesu_byte_array_bound_goal_if_enabled :=
-  let enabled := constr:(_ : ZesuStepArrayRegionBounds) in
+  zesu_switch_enabled constr:(ZesuStepArrayRegionBounds);
   lazymatch goal with
   | |- context [length ?values] =>
       let valuesType := type of values in

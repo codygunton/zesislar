@@ -1,0 +1,77 @@
+{
+  "base": "f4fa0c40",
+  "source_bindings": [
+    {
+      "path": "ZesuSsz/Automation/ByteArrayLengths.v",
+      "sha256": "3e7b6786a579bae22b792994df9b6d8e56d84da3a76bc6f7f579db5935b78ebf"
+    },
+    {
+      "path": "ZesuSsz/Automation/Finish.v",
+      "sha256": "f73f09a1d15754063cde3d300bab9030cd017a64b8925c0bdea0c4526a6d8e98"
+    },
+    {
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "sha256": "b42eac84066f33d926aaf5a026838a3210776e190fce2dd13c18668da126abdd"
+    },
+    {
+      "path": "ZesuSsz/Automation/ReturnBundle.v",
+      "sha256": "eba6f9486d417e9f176d582cfa3c859f1631d4df98e1667df75b9742cdefa97b"
+    },
+    {
+      "path": "ZesuSsz/Automation/ReturnWand.v",
+      "sha256": "32d684cc8fa6892825f0f81622d8c55f55c598110e2ddad9eb39e8312437176b"
+    },
+    {
+      "path": "ZesuSsz/Automation/SwitchDispatch.v",
+      "sha256": "48c869f1393f9db727b7b681f6902fcf3a9a176e9c826aacf59712c83a97794b"
+    },
+    {
+      "path": "ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "sha256": "54c050ef53f3a2add813ce8247859847f98111da3589dffa97a7a4a7e0468e0b"
+    },
+    {
+      "path": "ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "sha256": "beecede127d78043f58834713ff87aabe26ff2a296f51f1899f1797f27f7d07d"
+    }
+  ],
+  "bindings": {
+    "ARCHIVE_AUDIT.json": "f44703af780ed573181c4ad8de05411f3236d0370fb7a5e05791415515328b4c",
+    "MANIFEST.json": "ec55b77f530deffbf29955c7bceb00c7f7c7feffb0a62bf9dc18ddd1ee63f3ae",
+    "REPORT.md": "9dfddc7305458f2f844423599432217b8b8c87817dcdf9c48b07823d3ec80e27",
+    "COMPARISON_AUDIT002.json": "0de313f27cc73f13dea4f2743183dd5ba9f6e32b34be75758958a1cadb1d29fa",
+    "GATE_AUDIT001.json": "874a4cd7f70a38e67dff0e46fefbe349b0fc20d1f8999c034c1fc4de5af37e4c",
+    "LIMIT_AUDIT002.json": "6c03dd8266eaf9e694fcb4adf65371c2e2e345f7007d2911beb83a3e3ab41f88",
+    "METRICS.json": "06cb7f3ff76a25181227b156931c42578c3280655c5d6b73caf485aa9c3119a7",
+    "FINAL_MCP_REPORT.json": "b636be9c12db7e013d07805ae4fe99a191e5bf2534d9a9e62aace10ed9f177e3",
+    "698C_ACTIVE_AUDIT002.json": "994e7f7d7cddef627cd3a534a5cbc5e58dd19904aee43d87bd2ffc678133479d",
+    "EVIDENCE.tar.zst": "26941621857af728a578dafa3633e84df87e1313ce4c516d41f7108cc82419dd"
+  },
+  "child_gate": "Passed",
+  "mcp_fixtures": 21,
+  "mcp_method": "module_m",
+  "mcp_assumptions": [],
+  "native_capture_records_equal": 6,
+  "formerly_tagged_positions": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "native_qed_compiled": 0,
+  "native_assumptions": "Unavailable",
+  "proof_closure": false,
+  "parent_iris_preview": "Required before integration",
+  "sealed_comparison_inputs": 7105,
+  "sealed_gate_inputs": 6195,
+  "archive_records": 330,
+  "native_workers": 2,
+  "gate_workers": 6,
+  "scope": "Opt-in dispatch repair and exact returned term equality. No production optimization or native cost attribution claim.",
+  "diff_check": {
+    "status": "One whitespace warning",
+    "path": "ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+    "line": 51,
+    "warning": "Trailing whitespace",
+    "decision": "Preserve exact source bytes bound by the MCP results and successful child gate."
+  }
+}

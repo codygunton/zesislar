@@ -1,0 +1,1986 @@
+{
+  "root": "f4fa0c40",
+  "records": [
+    {
+      "archive_path": "repair/review/698C_ACTIVE_AUDIT002.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/698C_ACTIVE_AUDIT002.json",
+      "sha256": "994e7f7d7cddef627cd3a534a5cbc5e58dd19904aee43d87bd2ffc678133479d",
+      "bytes": 1570
+    },
+    {
+      "archive_path": "repair/review/COMPARISON_AUDIT002.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/COMPARISON_AUDIT002.json",
+      "sha256": "0de313f27cc73f13dea4f2743183dd5ba9f6e32b34be75758958a1cadb1d29fa",
+      "bytes": 13940
+    },
+    {
+      "archive_path": "repair/review/DEPENDENCY_HISTORY_AUDIT.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/DEPENDENCY_HISTORY_AUDIT.json",
+      "sha256": "de5f9d5f1e800b1f14d715acd5810b7d1bdcffd8a2d65b42d9e1299768f84aa7",
+      "bytes": 796
+    },
+    {
+      "archive_path": "repair/review/FINAL_MCP_REPORT.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/FINAL_MCP_REPORT.json",
+      "sha256": "b636be9c12db7e013d07805ae4fe99a191e5bf2534d9a9e62aace10ed9f177e3",
+      "bytes": 84980
+    },
+    {
+      "archive_path": "repair/review/GATE_AUDIT001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/GATE_AUDIT001.json",
+      "sha256": "874a4cd7f70a38e67dff0e46fefbe349b0fc20d1f8999c034c1fc4de5af37e4c",
+      "bytes": 1034
+    },
+    {
+      "archive_path": "repair/review/LIMIT_AUDIT002.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/LIMIT_AUDIT002.json",
+      "sha256": "6c03dd8266eaf9e694fcb4adf65371c2e2e345f7007d2911beb83a3e3ab41f88",
+      "bytes": 10949
+    },
+    {
+      "archive_path": "repair/review/LIMIT_INVENTORY_PARTIAL002.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/LIMIT_INVENTORY_PARTIAL002.json",
+      "sha256": "5b5a996ed3a2790909fb648394edb78129f4e5b352458f3d2f24ce5f05a02e0d",
+      "bytes": 3568
+    },
+    {
+      "archive_path": "repair/review/MCP_AUDIT.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/MCP_AUDIT.json",
+      "sha256": "12ea11a47c103592da8ef41779f56d345a52a02c2f653a9fd44a545ea8bdd529",
+      "bytes": 965
+    },
+    {
+      "archive_path": "repair/review/METRICS.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/METRICS.json",
+      "sha256": "06cb7f3ff76a25181227b156931c42578c3280655c5d6b73caf485aa9c3119a7",
+      "bytes": 3838
+    },
+    {
+      "archive_path": "repair/review/NO_WRITE_PREFLIGHT002.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/NO_WRITE_PREFLIGHT002.json",
+      "sha256": "9e517baf7c7ab30055494bf1a36dea17de7d8b8dfa668e5845a39ed5eb5d243c",
+      "bytes": 3596
+    },
+    {
+      "archive_path": "repair/review/POST_PREFLIGHT002.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/POST_PREFLIGHT002.json",
+      "sha256": "20c95184936e1a50ee6f8409baab6f5cc2205f8152c11abd40fb74dde8b16d3c",
+      "bytes": 411
+    },
+    {
+      "archive_path": "repair/review/REPORT.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/REPORT.md",
+      "sha256": "9dfddc7305458f2f844423599432217b8b8c87817dcdf9c48b07823d3ec80e27",
+      "bytes": 4205
+    },
+    {
+      "archive_path": "repair/review/REPORT_TEMPLATE.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/REPORT_TEMPLATE.md",
+      "sha256": "b404e6f70a4f896a89fb82dd6961b7cd49adf971266f0ddea2c2bbe733718f58",
+      "bytes": 2244
+    },
+    {
+      "archive_path": "repair/review/RunProbe.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/RunProbe.v",
+      "sha256": "6b56f0d298bd7153c92cbb54327b3f4436fde42ade9399cbe01cd54ba9c8e743",
+      "bytes": 997
+    },
+    {
+      "archive_path": "repair/review/RunProbe002.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/RunProbe002.v",
+      "sha256": "37dd7654c68986c6f48cad0245ec6f43a1b7fdfeafc1eb5ec41fbb2e2d1c89fe",
+      "bytes": 1148
+    },
+    {
+      "archive_path": "repair/review/RunProbe003.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/RunProbe003.v",
+      "sha256": "ed0ada224ddb43d4c3943341c91888c00c27ad4477529d16a360bb493b252164",
+      "bytes": 914
+    },
+    {
+      "archive_path": "repair/review/SwitchDispatchFixtures17.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/SwitchDispatchFixtures17.v",
+      "sha256": "a24e0ada32dac3f46b47eb1aa0b9b56cce61e72d546f752575afec51eece571d",
+      "bytes": 9707
+    },
+    {
+      "archive_path": "repair/review/WrapperProbe.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/WrapperProbe.v",
+      "sha256": "15efbfe867c4edb1cdc54bb74b25be4b78634103e42f0c913f6c8f15fc99a1a0",
+      "bytes": 1588
+    },
+    {
+      "archive_path": "repair/review/WrapperProbe002.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/WrapperProbe002.v",
+      "sha256": "251894e07974a40a3f9cf4b040c2c51050172f31bc9f92d3a9feb17bc8082e34",
+      "bytes": 1638
+    },
+    {
+      "archive_path": "repair/review/comparison001-failure-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/comparison001-failure-audit.json",
+      "sha256": "f365f476695d00468f86cfb605911a4c375b7c8a8d55ecf267fe64670b5ebdea",
+      "bytes": 801
+    },
+    {
+      "archive_path": "repair/review/final-audit.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/final-audit.py",
+      "sha256": "81d80db27208cc6ae9a7dc89ca23a78798cd1b92f3c68d8111cf9ed02852c6fd",
+      "bytes": 6761
+    },
+    {
+      "archive_path": "repair/review/metrics.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/metrics.py",
+      "sha256": "5c5d9d05279a3ab301312a4ab46baa471c902f2321318ede80ad9844eb6d9dfc",
+      "bytes": 1972
+    },
+    {
+      "archive_path": "repair/review/package.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/package.py",
+      "sha256": "cb4c0c40a38dec8ffe581e1f1d40047ec4ca9a6630700aff2e6e0d29b9d9de34",
+      "bytes": 3579
+    },
+    {
+      "archive_path": "repair/review/pet-ancestry-audit-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-ancestry-audit-001.json",
+      "sha256": "753a4f1e090ce9286cbf10b082cf9cc93526f058cf3296ae9603ad2f71375914",
+      "bytes": 6129
+    },
+    {
+      "archive_path": "repair/review/pet-diag-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-diag-001.json",
+      "sha256": "86f075826c170c96c11ae660a95fcc52aaf95e3f18e82be59299e026d4aa80d6",
+      "bytes": 16225
+    },
+    {
+      "archive_path": "repair/review/pet-lifecycle-report-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-lifecycle-report-001.json",
+      "sha256": "40a2e6dc272aae8ddd59470e2013ed9f79979b71684e663b802505dd40d394ec",
+      "bytes": 939
+    },
+    {
+      "archive_path": "repair/review/pet-process-audit-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-process-audit-001.json",
+      "sha256": "b528da7790d44c6aef0e19ec06eeac160ea1eb2b4a67f4781cb2f9a2d22dcd28",
+      "bytes": 2285
+    },
+    {
+      "archive_path": "repair/review/pet-server-open-files-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-server-open-files-001.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "archive_path": "repair/review/pet-transport-audit-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-transport-audit-001.json",
+      "sha256": "f3b6e3ec3834d3863d2b3987fecead17bee186ff3fccbb19838732f390e0e479",
+      "bytes": 561
+    },
+    {
+      "archive_path": "repair/review/pet-transport-report-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/pet-transport-report-001.json",
+      "sha256": "72c619d1d03d45c76b0225987d932c316ad803456936fe088f04923526775fc4",
+      "bytes": 1048
+    },
+    {
+      "archive_path": "repair/review/preserved-history.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/preserved-history.json",
+      "sha256": "42fc6694be64c8a9be550d3afaf08756c339ab8aad55d2838bb62550072e4bb9",
+      "bytes": 1661
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/ByteArrayLengths.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/ByteArrayLengths.v",
+      "sha256": "3e7b6786a579bae22b792994df9b6d8e56d84da3a76bc6f7f579db5935b78ebf",
+      "bytes": 874
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/Finish.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/Finish.v",
+      "sha256": "f73f09a1d15754063cde3d300bab9030cd017a64b8925c0bdea0c4526a6d8e98",
+      "bytes": 26660
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/Hooks.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/Hooks.v",
+      "sha256": "b42eac84066f33d926aaf5a026838a3210776e190fce2dd13c18668da126abdd",
+      "bytes": 66557
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/ReturnBundle.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/ReturnBundle.v",
+      "sha256": "eba6f9486d417e9f176d582cfa3c859f1631d4df98e1667df75b9742cdefa97b",
+      "bytes": 1222
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/ReturnWand.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/ReturnWand.v",
+      "sha256": "32d684cc8fa6892825f0f81622d8c55f55c598110e2ddad9eb39e8312437176b",
+      "bytes": 523
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/SwitchDispatch.v",
+      "sha256": "48c869f1393f9db727b7b681f6902fcf3a9a176e9c826aacf59712c83a97794b",
+      "bytes": 3037
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "sha256": "54c050ef53f3a2add813ce8247859847f98111da3589dffa97a7a4a7e0468e0b",
+      "bytes": 122
+    },
+    {
+      "archive_path": "repair/review/production-source/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/production-source/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "sha256": "beecede127d78043f58834713ff87aabe26ff2a296f51f1899f1797f27f7d07d",
+      "bytes": 11835
+    },
+    {
+      "archive_path": "repair/review/source-snapshot.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/source-snapshot.json",
+      "sha256": "e022e9be48de00d1f9717958c14f3556024ba1b4913bb286c9c0077107431ac5",
+      "bytes": 1367
+    },
+    {
+      "archive_path": "repair/review/static-design-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/static-design-audit.json",
+      "sha256": "2567818522bf4571361463c50f6cb23e7ebc84440370116a493e47fa36dfa653",
+      "bytes": 11179
+    },
+    {
+      "archive_path": "repair/review/tracked-source.diff",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-review/tracked-source.diff",
+      "sha256": "32a7fbbbce0a6da8e1df5292b494b0f64344b01b0404aa0539e87006863d5cbc",
+      "bytes": 17331
+    },
+    {
+      "archive_path": "repair/failed-schema001/Recorder.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/Recorder.v",
+      "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+      "bytes": 3297
+    },
+    {
+      "archive_path": "repair/failed-schema001/TOOL_POLICY.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/TOOL_POLICY.md",
+      "sha256": "ed9999a9ffbfa6a070cb6b96e0875d6d1ab1ae54fe5327e1f5d49e7fe0bcf219",
+      "bytes": 327
+    },
+    {
+      "archive_path": "repair/failed-schema001/class-identities.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/class-identities.json",
+      "sha256": "f0d3400306ee5bf63809dc34bae25e1e43a805b851ee08fb969910767cc03914",
+      "bytes": 1728
+    },
+    {
+      "archive_path": "repair/failed-schema001/coqc-recipe.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/coqc-recipe.json",
+      "sha256": "455a262fb9ec65a75e97e93b234edd5c68bd00167d551eef5590667770cd9a76",
+      "bytes": 4308
+    },
+    {
+      "archive_path": "repair/failed-schema001/excluded.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/excluded.json",
+      "sha256": "9eed943e190e5457ea13538b71e28ee3eef9fa0d264e9e051fd021fe8f92b97f",
+      "bytes": 1923
+    },
+    {
+      "archive_path": "repair/failed-schema001/import-union-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/import-union-audit.json",
+      "sha256": "3ebc716d88855a5244270de81a0eb3ef61639ff796a92c9a0de196ba09fb5003",
+      "bytes": 27442
+    },
+    {
+      "archive_path": "repair/failed-schema001/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/inputs.json",
+      "sha256": "41915b388d84afdf4d4a5d122c9a0e8a6489f3797f808444fe84364b85f0def7",
+      "bytes": 1200179
+    },
+    {
+      "archive_path": "repair/failed-schema001/inventory.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/inventory.json",
+      "sha256": "3db4f430113f83c5a539bf30213d757c8c6299003b11fcd61cfce7a688a3b36a",
+      "bytes": 3489
+    },
+    {
+      "archive_path": "repair/failed-schema001/off/6970/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/off/6970/Boundary.v",
+      "sha256": "369118dd75c7753a2ef68a837f3b612945b8a9c65b404be147c565e1cf0728f2",
+      "bytes": 7968
+    },
+    {
+      "archive_path": "repair/failed-schema001/off/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/off/6970/Preflight.v",
+      "sha256": "7d32a44eb029a5dd743dc6c4449c46a835de72f6cf3be3731373864ed428ce22",
+      "bytes": 16323
+    },
+    {
+      "archive_path": "repair/failed-schema001/off/698c/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/off/698c/Boundary.v",
+      "sha256": "63557d4c25867313c5ef4afc4e6d0c776384714375303b71a7308b56f98a3e59",
+      "bytes": 12069
+    },
+    {
+      "archive_path": "repair/failed-schema001/off/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/off/698c/Preflight.v",
+      "sha256": "b2bdcfe5364c4ef84fe2e1eed5ac6dde0ba564b013acbc1a303c4294904c5e81",
+      "bytes": 20300
+    },
+    {
+      "archive_path": "repair/failed-schema001/off/Prologue/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/off/Prologue/Boundary.v",
+      "sha256": "0f66bfb76d871d22cb44e0a71e5f3efb901d06680386ca0501f0ed20109b7672",
+      "bytes": 6564
+    },
+    {
+      "archive_path": "repair/failed-schema001/off/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/off/Prologue/Preflight.v",
+      "sha256": "360b1be561e8940a2c1a762196e59be0e268f6b740f205929282be0573db7300",
+      "bytes": 13286
+    },
+    {
+      "archive_path": "repair/failed-schema001/on/6970/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/on/6970/Boundary.v",
+      "sha256": "a8b98dbc213c934868f6c35c6778f89aae71220fc0b5bf654bfc68eefab4a8a9",
+      "bytes": 8027
+    },
+    {
+      "archive_path": "repair/failed-schema001/on/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/on/6970/Preflight.v",
+      "sha256": "71389c75c6946f12a2a445769614667f2d9c35080bd0a1cdcab3b5cee344704f",
+      "bytes": 16324
+    },
+    {
+      "archive_path": "repair/failed-schema001/on/698c/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/on/698c/Boundary.v",
+      "sha256": "7a97a7f6e4e0f61f9486f2fceb2a508a2d3b7bca6c6c2e899d599e8501935d52",
+      "bytes": 12128
+    },
+    {
+      "archive_path": "repair/failed-schema001/on/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/on/698c/Preflight.v",
+      "sha256": "1594f2867579e527d8384e10295c310b64b6c2ac9f079acd02a31f2523d33d7f",
+      "bytes": 20301
+    },
+    {
+      "archive_path": "repair/failed-schema001/on/Prologue/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/on/Prologue/Boundary.v",
+      "sha256": "df4ea5691525090e8e04cde1c63fbc2ab9a979fadbf0ed43b82b8cc4554b9661",
+      "bytes": 6623
+    },
+    {
+      "archive_path": "repair/failed-schema001/on/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/on/Prologue/Preflight.v",
+      "sha256": "3146b7bb1b3dc35d8f5a474f546d8c7794e5abf857fe09f70d1d3a66b24455d9",
+      "bytes": 13287
+    },
+    {
+      "archive_path": "repair/failed-schema001/pairs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/pairs.json",
+      "sha256": "4f51ec27254e6d5da0a81e15cd532454076d572f7430e6e422cb62a3a7193bd0",
+      "bytes": 4167
+    },
+    {
+      "archive_path": "repair/failed-schema001/reuse-preflights.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/reuse-preflights.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "archive_path": "repair/failed-schema001/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/run.py",
+      "sha256": "ffb5fa98bbf9a513b9a0971ba4bbb490af793ad21f9afde17a19dde06e1a420d",
+      "bytes": 5955
+    },
+    {
+      "archive_path": "repair/failed-schema001/setup-failures-001/off/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/setup-failures-001/off/6970/Preflight.v",
+      "sha256": "16e559d5c95a4d8f36d0064afcb119eb427c3126a1c32290714844749d28eb20",
+      "bytes": 16380
+    },
+    {
+      "archive_path": "repair/failed-schema001/setup-failures-001/off/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/setup-failures-001/off/698c/Preflight.v",
+      "sha256": "0847b2a0c05b5ef524fccab912f0617f1604172b84b34027ad44f8c348ad376d",
+      "bytes": 20357
+    },
+    {
+      "archive_path": "repair/failed-schema001/setup-failures-001/off/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/setup-failures-001/off/Prologue/Preflight.v",
+      "sha256": "7ef2e633a736a7b0003eecc7dd4deb2158ff273c5d397ec31d55aa12612b808d",
+      "bytes": 13343
+    },
+    {
+      "archive_path": "repair/failed-schema001/setup-failures-001/on/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/setup-failures-001/on/6970/Preflight.v",
+      "sha256": "e99376e75514bcef1d427c5e7ef4b36c35d2f2d9d3acbbda58dc082eb89e7940",
+      "bytes": 16381
+    },
+    {
+      "archive_path": "repair/failed-schema001/setup-failures-001/on/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/setup-failures-001/on/698c/Preflight.v",
+      "sha256": "dc342a1e2d709716b5cd33775a45c5f878df7f6b1eeadaf16a380a39a75e53ad",
+      "bytes": 20358
+    },
+    {
+      "archive_path": "repair/failed-schema001/setup-failures-001/on/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/setup-failures-001/on/Prologue/Preflight.v",
+      "sha256": "deeff335e487f17ef709ad1ab67ee1df338781a862b9dfa29545ae43ff35c1db",
+      "bytes": 13344
+    },
+    {
+      "archive_path": "repair/failed-schema001/source-identity.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-001/source-identity.json",
+      "sha256": "f12e3ad98ec4b031a0b294144ea473d4fc3fb8a9c06dd2235f079fcb3f009816",
+      "bytes": 1900
+    },
+    {
+      "archive_path": "repair/comparison002/Recorder.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/Recorder.v",
+      "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+      "bytes": 3297
+    },
+    {
+      "archive_path": "repair/comparison002/TOOL_POLICY.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/TOOL_POLICY.md",
+      "sha256": "ed9999a9ffbfa6a070cb6b96e0875d6d1ab1ae54fe5327e1f5d49e7fe0bcf219",
+      "bytes": 327
+    },
+    {
+      "archive_path": "repair/comparison002/class-identities.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/class-identities.json",
+      "sha256": "f0d3400306ee5bf63809dc34bae25e1e43a805b851ee08fb969910767cc03914",
+      "bytes": 1728
+    },
+    {
+      "archive_path": "repair/comparison002/coqc-recipe.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/coqc-recipe.json",
+      "sha256": "455a262fb9ec65a75e97e93b234edd5c68bd00167d551eef5590667770cd9a76",
+      "bytes": 4308
+    },
+    {
+      "archive_path": "repair/comparison002/excluded.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/excluded.json",
+      "sha256": "9eed943e190e5457ea13538b71e28ee3eef9fa0d264e9e051fd021fe8f92b97f",
+      "bytes": 1923
+    },
+    {
+      "archive_path": "repair/comparison002/import-union-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/import-union-audit.json",
+      "sha256": "3ebc716d88855a5244270de81a0eb3ef61639ff796a92c9a0de196ba09fb5003",
+      "bytes": 27442
+    },
+    {
+      "archive_path": "repair/comparison002/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/inputs.json",
+      "sha256": "e2e8cef2a2d66c005a84cb32bd6ad16ef9b07e4b5d118c498fb5eb1ab9759c06",
+      "bytes": 1363029
+    },
+    {
+      "archive_path": "repair/comparison002/inventory.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/inventory.json",
+      "sha256": "3db4f430113f83c5a539bf30213d757c8c6299003b11fcd61cfce7a688a3b36a",
+      "bytes": 3489
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/Boundary.v",
+      "sha256": "d4ab413c798b9963050e341bc5bad407695908e61697b808cc46966a4f918ab0",
+      "bytes": 7968
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/Preflight.v",
+      "sha256": "7d32a44eb029a5dd743dc6c4449c46a835de72f6cf3be3731373864ed428ce22",
+      "bytes": 16323
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/preflight/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/preflight/compiler.json",
+      "sha256": "f0ed46a4fffc6460b7a27e248e3ec8259db3e8e512f595cff6bd78572c9519ef",
+      "bytes": 5687
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/preflight/compiler.log",
+      "sha256": "86b49a4d3a9c6bb33be77f3f1bebc857e8f49de82d2ff02a17a112e299b6dfb7",
+      "bytes": 15641
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/preflight/result.json",
+      "sha256": "22eba903c8f4983ba2c8c4c6f1220be7b3e705fceca0ba4ef4625fc22df26e50",
+      "bytes": 9908
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/primary/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/primary/compiler.json",
+      "sha256": "101edcd5c454923b0b0605134ebb8bdd2c2ad20a1c7e723f04d03cdc449a1b41",
+      "bytes": 5447
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/primary/compiler.log",
+      "sha256": "eaf81a1306af7b263281019b8a38b575349da4d268a2c86708c9f99943ab7fb8",
+      "bytes": 8067
+    },
+    {
+      "archive_path": "repair/comparison002/off/6970/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/primary/result.json",
+      "sha256": "53d5f6a31af1b9c1a0349c3a54d0adad0baf3ef4780e8191ef2194a44814e743",
+      "bytes": 7097
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/Boundary.v",
+      "sha256": "e60023fcf421d4e2da853a3f78d9ffde2c20835d5868049e9a083c86c2cb9f04",
+      "bytes": 12069
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/Preflight.v",
+      "sha256": "b2bdcfe5364c4ef84fe2e1eed5ac6dde0ba564b013acbc1a303c4294904c5e81",
+      "bytes": 20300
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/preflight/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/preflight/compiler.json",
+      "sha256": "3fd4901bc0cf9a92638159eedacc650379959671961df879a1357b286f5146fb",
+      "bytes": 5677
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/preflight/compiler.log",
+      "sha256": "3ae01fe85f396a487f7f24f7149a2579a848354ddda5712c792070f1c67b74ce",
+      "bytes": 20124
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/preflight/result.json",
+      "sha256": "cd55148e56d5ed6239ece9206b85403c91d7044099e0fa4522d236bf70297ac8",
+      "bytes": 9898
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/primary/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/primary/compiler.json",
+      "sha256": "41be6aec730c729a64ff661e88d519984e12b1500a027c25b7903e172464abb5",
+      "bytes": 5437
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/primary/compiler.log",
+      "sha256": "1d290b8e4b1136a4b05a96c095f711e807fe2250982d7f9f182e65546a4a5620",
+      "bytes": 158317
+    },
+    {
+      "archive_path": "repair/comparison002/off/698c/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/primary/result.json",
+      "sha256": "ab9294276e0f72dfcb72468d1ef6b61ae7d2fd868df947200691600686120843",
+      "bytes": 94271
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/Boundary.v",
+      "sha256": "56292798a7272d330836f9f727e7a44d1128868de60fa38385ba546071facd3e",
+      "bytes": 6564
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/Preflight.v",
+      "sha256": "360b1be561e8940a2c1a762196e59be0e268f6b740f205929282be0573db7300",
+      "bytes": 13286
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/preflight/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/preflight/compiler.json",
+      "sha256": "6a966f788bfdf21f30721d4bd0f414e7450abe78663a9617321ac200b1911d4b",
+      "bytes": 5695
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/preflight/compiler.log",
+      "sha256": "352d1ceea7405802035750d04b77003cef90682b1376f633bbf7af643d868189",
+      "bytes": 13464
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/preflight/result.json",
+      "sha256": "98fcfccebd1939d20837565f3ffe3489f97bb6d5e643c550a335e2ad45524d60",
+      "bytes": 9927
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/primary/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/primary/compiler.json",
+      "sha256": "0cc75fd13ab575274d6fdc5c8d7fa9da87a2fc19df0046187e04e5b0607ae1b3",
+      "bytes": 5443
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/primary/compiler.log",
+      "sha256": "fad3046555e677621dc704f6a55b971956bf43132d898febc9854d1e137604de",
+      "bytes": 8422
+    },
+    {
+      "archive_path": "repair/comparison002/off/Prologue/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/primary/result.json",
+      "sha256": "7e05ad66d1e4bad2d3491ba26e87e7ebd9eee2a7153aa73c32b2b04e0ba111e5",
+      "bytes": 7109
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/Boundary.v",
+      "sha256": "39e0f99fc517929d1c5d3ff28d7bb1c3f3edf08b341475e41223afaa803dcdb3",
+      "bytes": 8027
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/Preflight.v",
+      "sha256": "71389c75c6946f12a2a445769614667f2d9c35080bd0a1cdcab3b5cee344704f",
+      "bytes": 16324
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/preflight/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/preflight/compiler.json",
+      "sha256": "17e0bbdd3c57206d117d59554a0c1c1a897145e563b2b8bb37a047fc2fe1a6ce",
+      "bytes": 5675
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/preflight/compiler.log",
+      "sha256": "036f0971bd07351184a96a9588fe006591f1df5aebabe7186d87cf801f962ca1",
+      "bytes": 15712
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/preflight/result.json",
+      "sha256": "ac1bd7f22964dd556d7e43bbb3b47ae80a44e2790808a802ae4de21aca308a80",
+      "bytes": 9892
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/primary/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/primary/compiler.json",
+      "sha256": "2159f9ec026f51b5e7e16b12d264f734e8b8238c5ea33a7b360ba6d414754b75",
+      "bytes": 5439
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/primary/compiler.log",
+      "sha256": "cb39da68e5e2c17dbad1813ab41c0180d3d1922b6eb08c3bc911a908a974be23",
+      "bytes": 8135
+    },
+    {
+      "archive_path": "repair/comparison002/on/6970/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/primary/result.json",
+      "sha256": "49729e927249e205bad6a5ae3947864d53f4c65abbcde7b2a9b03db2c9eb1fdf",
+      "bytes": 7086
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/Boundary.v",
+      "sha256": "ebaac5568ee2386baf6f02720441a593d2af94c11ec23d95181d7187550fa5d9",
+      "bytes": 12128
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/Preflight.v",
+      "sha256": "1594f2867579e527d8384e10295c310b64b6c2ac9f079acd02a31f2523d33d7f",
+      "bytes": 20301
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/preflight/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/preflight/compiler.json",
+      "sha256": "0bc457842c9808145aa20cbc139c55ae7c9844463136aa630e065c3363426bcd",
+      "bytes": 5685
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/preflight/compiler.log",
+      "sha256": "941ec6d1fa57a227a684d02c121f1ad8eb4abb2e656b313868647ce43f13b13a",
+      "bytes": 20192
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/preflight/result.json",
+      "sha256": "9ad19d7ae0da11ae3f207a0367ee1359e3311d55370e2a9b63f23a4aa2875002",
+      "bytes": 9902
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/primary/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/primary/compiler.json",
+      "sha256": "4d2fbbacdef497c33e9b9b04be030d14b809deab1c5e923cff8401ca84eba86b",
+      "bytes": 5445
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/primary/compiler.log",
+      "sha256": "71b9e9a6aa699a6fe8ca6fc41b4b983f4689e65cdf7cba9f51d8213a119087e7",
+      "bytes": 158403
+    },
+    {
+      "archive_path": "repair/comparison002/on/698c/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/primary/result.json",
+      "sha256": "b19da3f06c650e219aff27c4b8175ded9c1cea5312e3644d3b769ccdbbce27bc",
+      "bytes": 94277
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/Boundary.v",
+      "sha256": "c2478c6f5651c33478cea49286e7cfcd4be976fd9938409e28c621c7b0f64f42",
+      "bytes": 6623
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/Preflight.v",
+      "sha256": "3146b7bb1b3dc35d8f5a474f546d8c7794e5abf857fe09f70d1d3a66b24455d9",
+      "bytes": 13287
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/preflight/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/preflight/compiler.json",
+      "sha256": "e5861bd9b208a86b412f837b9fecc2a52beee90297e7f47ddc292ccc07469e70",
+      "bytes": 5682
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/preflight/compiler.log",
+      "sha256": "997ed6430b568ee901bad389d713e8a2f4ddf70bebbee62565cd6241305ac973",
+      "bytes": 13541
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/preflight/result.json",
+      "sha256": "2a26823ddfb492cc3769b9cfa6fd8b0d99be5243fe4912d26f8d612c3234f523",
+      "bytes": 9912
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/primary/compiler-wrapper",
+      "sha256": "eb5d9edea0bb2aa606a2f95e7be1463f2a9926e958c4f437b22db6eae8265aee",
+      "bytes": 144
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/primary/compiler.json",
+      "sha256": "c5e69cff79340545b28e4e6d927d349d0f48b165dd3b8c0e6c5cef5f3160d187",
+      "bytes": 5451
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/primary/compiler.log",
+      "sha256": "36cae0e04025d3d1d6948b3527ef6ac1d2e1ba973d7eedc359f14b0de780b8e7",
+      "bytes": 8486
+    },
+    {
+      "archive_path": "repair/comparison002/on/Prologue/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/primary/result.json",
+      "sha256": "f23f38b32b3e2b12d62acab4c7c2c612e5ed3e18332deda63be7b53ea54b9a7c",
+      "bytes": 7113
+    },
+    {
+      "archive_path": "repair/comparison002/pairs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/pairs.json",
+      "sha256": "b5190129dba2409b39272997f7386ada3cee04387284cc1d986c4646a6bea3dc",
+      "bytes": 4167
+    },
+    {
+      "archive_path": "repair/comparison002/preflight-results.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/preflight-results.json",
+      "sha256": "03bf844dfdb7f2538f914cf5513fde632dd4b69281653a1d8032a24a6a8ee8c8",
+      "bytes": 62412
+    },
+    {
+      "archive_path": "repair/comparison002/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/result.json",
+      "sha256": "4b6bacc9ccc5823815f544badd29efabfa85c88c058649b8ccfbb9af7791be07",
+      "bytes": 289959
+    },
+    {
+      "archive_path": "repair/comparison002/reuse-preflights.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/reuse-preflights.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "archive_path": "repair/comparison002/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/run.py",
+      "sha256": "ffb5fa98bbf9a513b9a0971ba4bbb490af793ad21f9afde17a19dde06e1a420d",
+      "bytes": 5955
+    },
+    {
+      "archive_path": "repair/comparison002/source-identity.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/source-identity.json",
+      "sha256": "f12e3ad98ec4b031a0b294144ea473d4fc3fb8a9c06dd2235f079fcb3f009816",
+      "bytes": 1900
+    },
+    {
+      "archive_path": "repair/check-fast001/gate.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-gate-001/gate.sh",
+      "sha256": "4edeab64e885282929842326d1257d4feca3782be8de6307d35f1f9d85088b73",
+      "bytes": 427
+    },
+    {
+      "archive_path": "repair/check-fast001/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-gate-001/inputs.json",
+      "sha256": "fa63f2259ab92b258bcf88fcb0e8f94c14e50e8897dc42aabc581fa0b01b32f4",
+      "bytes": 1217020
+    },
+    {
+      "archive_path": "repair/check-fast001/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-gate-001/result.json",
+      "sha256": "98e98b79c7f4e599b7bfb27220740568a1e711a3ecd2dc446467189f7f294d08",
+      "bytes": 328
+    },
+    {
+      "archive_path": "repair/check-fast001/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-gate-001/run.py",
+      "sha256": "ac8a0b3881f147ab2a17192a1c6df5c2bc850d10fdc5a56350d215f4ba571fad",
+      "bytes": 863
+    },
+    {
+      "archive_path": "repair/dependencies001/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-dependencies-001/build.sh",
+      "sha256": "97906b0eaf2318b7c0c9f00c86379013d7e0418c2bdb4acc9a54e110c5dc96c4",
+      "bytes": 3152
+    },
+    {
+      "archive_path": "repair/dependencies001/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-dependencies-001/inputs.json",
+      "sha256": "c9db3ddae33e63d55b5ec7c44b2b1b4f4a45bfdd21535898c0784432d388b147",
+      "bytes": 992824
+    },
+    {
+      "archive_path": "repair/dependencies001/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-dependencies-001/result.json",
+      "sha256": "80d2592cf275cf7de2b8a58efe1e6eddea4018cf49d56c2effc8b8e11952e7ba",
+      "bytes": 169
+    },
+    {
+      "archive_path": "repair/dependencies001/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-dependencies-001/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "repair/dependencies001/targets.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-dependencies-001/targets.json",
+      "sha256": "aff51d505ab52ea4d0c7b773488eed47f0bed34185b69addc160c909568c23ba",
+      "bytes": 3081
+    },
+    {
+      "archive_path": "historical/repair-prototype001/FINAL_MCP_REPORT.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/FINAL_MCP_REPORT.json",
+      "sha256": "5500193b51136d91f2c109cfbda2cf22f5ae75145d6040366e1f34ae1a70f5a3",
+      "bytes": 16887
+    },
+    {
+      "archive_path": "historical/repair-prototype001/MCP_REPORT.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/MCP_REPORT.json",
+      "sha256": "7b0f6d220b8fec9200d81dd58dfaa1cafe67cece17c4ce212147f1269ab9692e",
+      "bytes": 15658
+    },
+    {
+      "archive_path": "historical/repair-prototype001/SHA256SUMS",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/SHA256SUMS",
+      "sha256": "4284447191eb743041f02d1a5726cd5ba9f82c2aae9dfaa2eec921d7df7245d1",
+      "bytes": 840
+    },
+    {
+      "archive_path": "historical/repair-prototype001/SOURCE_STATUS.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/SOURCE_STATUS.md",
+      "sha256": "df1b88b7686147b628d946da6915de5c4a5cef0ee1caaf496b62d0949b2019ca",
+      "bytes": 438
+    },
+    {
+      "archive_path": "historical/repair-prototype001/ScopeCount005.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/ScopeCount005.v",
+      "sha256": "27b3c8ebba7c1753b311d61996c2110343b8ee7fab9b261b5ddeb16cbe633426",
+      "bytes": 1531
+    },
+    {
+      "archive_path": "historical/repair-prototype001/ScopeCount008.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/ScopeCount008.v",
+      "sha256": "e3aedd2f4efb6ecfa7daea3bdc421821f55450c328e59d2b2e7e61732009df67",
+      "bytes": 7853
+    },
+    {
+      "archive_path": "historical/repair-prototype001/ScopeCount011.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/ScopeCount011.v",
+      "sha256": "87883939f9d479eb031f9d0a81e9ec821ea33108dbfd988e04dfb0616e43229b",
+      "bytes": 9702
+    },
+    {
+      "archive_path": "historical/repair-prototype001/ScopeCount012.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/ScopeCount012.v",
+      "sha256": "24a0ed786c77d36402ce30d75a4e04ce6d4facaff0ce1e0dc090ee71ee8057b9",
+      "bytes": 11192
+    },
+    {
+      "archive_path": "historical/repair-prototype001/SwitchDispatch.diff",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/SwitchDispatch.diff",
+      "sha256": "04308f429643d270f1632d055a515376c9ee9db9af93c9344774f80d2bd5a331",
+      "bytes": 1969
+    },
+    {
+      "archive_path": "historical/repair-prototype001/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/SwitchDispatch.v",
+      "sha256": "48c869f1393f9db727b7b681f6902fcf3a9a176e9c826aacf59712c83a97794b",
+      "bytes": 3037
+    },
+    {
+      "archive_path": "historical/repair-prototype001/shared-evar-report.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-repair-001/shared-evar-report.json",
+      "sha256": "1b47c07223ab30a36793353d4b50668318c3f0e89e593a8211912a45f672c4f6",
+      "bytes": 8328
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/REPORT.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/REPORT.md",
+      "sha256": "1dbcf349a7cb8b9d9e15c4b21e01d80083b28be9d5418d3d3ba0e21947db1ebc",
+      "bytes": 1623
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/SHA256SUMS",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/SHA256SUMS",
+      "sha256": "71b636fc6a5b1f9043d02a2cadae563e083fd4f7e16992d4ec31e184820f9d4e",
+      "bytes": 1983
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/manifest.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/manifest.json",
+      "sha256": "c3da3e44b0770cabf20612041c6ba4d6f8051eb9b73ea11666f82514a9980809",
+      "bytes": 6980
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/audit.json",
+      "sha256": "e4935df3fc2725999164ac05bbe56f5a7f663ffd420f11c3aa87752f20c78152",
+      "bytes": 825
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/corrected-targets.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/corrected-targets.json",
+      "sha256": "58d53f07de861aed80aee2912a3b0b6a0da3dcb4cfb0e2ddb6663905dda76cf6",
+      "bytes": 3024
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/import-union-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/import-union-audit.json",
+      "sha256": "6d701a4945c86f88683f03e1d88ee7f836ea688e6106dc2eb4ac9cce8d6ea797",
+      "bytes": 19590
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/marker-shapes-report.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/marker-shapes-report.json",
+      "sha256": "c8083f8be5bbc230fb08e2e431dbe80889fc5a3035d3571e62e4c217dd23c30a",
+      "bytes": 8759
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/production-fixture-report.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/production-fixture-report.json",
+      "sha256": "4380f806f48fe241fa606027f4fa96a0c333109736f932fa345c5bbcd1951411",
+      "bytes": 10119
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/prologue-limits-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/prologue-limits-001.json",
+      "sha256": "5d88267f59418a2b94884874e85a50bff2039a25f0a13c65c86f90a9cfb35346",
+      "bytes": 2662
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/source-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/source-audit.json",
+      "sha256": "4b40f26fd27508963b7ad4f651b49faa96f5312fa55d5d36918392f508f57b83",
+      "bytes": 669
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/source-identity-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/source-identity-audit.json",
+      "sha256": "02963fcbc0c4226e1f9f65a7287c45877615ae6c5d6dc74c09f696efe79fc5c5",
+      "bytes": 5707
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/reports/source-link-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/reports/source-link-audit.json",
+      "sha256": "8f14a3f1c30aa58ed2de22a993ae35ae590f40f4cb31eb652c43d7f17a6ffa79",
+      "bytes": 1568
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/source.patch",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/source.patch",
+      "sha256": "c599ebdd2f5aee66c99871cce2e66fb0ce7dd14cf8bbe4d2fd2f0c0e4282963c",
+      "bytes": 24023
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/ByteArrayLengths.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/ByteArrayLengths.v",
+      "sha256": "3e7b6786a579bae22b792994df9b6d8e56d84da3a76bc6f7f579db5935b78ebf",
+      "bytes": 874
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/Finish.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/Finish.v",
+      "sha256": "f515d561048aa6af259a8610166b3a6a395c0a25c05ad42639a8b968de126f13",
+      "bytes": 26603
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/Hooks.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/Hooks.v",
+      "sha256": "627e0df3cb6cc7b50bcec6da8126250f69bfc3329db87b5eb5eea7fc235386eb",
+      "bytes": 65955
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/ReturnBundle.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/ReturnBundle.v",
+      "sha256": "eba6f9486d417e9f176d582cfa3c859f1631d4df98e1667df75b9742cdefa97b",
+      "bytes": 1222
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/ReturnWand.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/ReturnWand.v",
+      "sha256": "32d684cc8fa6892825f0f81622d8c55f55c598110e2ddad9eb39e8312437176b",
+      "bytes": 523
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/SwitchDispatch.v",
+      "sha256": "88df80af0a195c55745e3d99cf72d480a12eb8aba66d913c9edc13fdfe352d6f",
+      "bytes": 2361
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "sha256": "54c050ef53f3a2add813ce8247859847f98111da3589dffa97a7a4a7e0468e0b",
+      "bytes": 122
+    },
+    {
+      "archive_path": "historical/old-source-evidence001/sources/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-001/sources/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "sha256": "51c6c28a106536d7d82923845315764613caf40b3cfad153fcc6bdc2038ea4d2",
+      "bytes": 3832
+    },
+    {
+      "archive_path": "historical/defect-evidence002/REPORT.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/REPORT.md",
+      "sha256": "30a5aae80412687ad194165e2553a436bc4ffbddb6a5e8e1be6ce19a6e931edd",
+      "bytes": 1462
+    },
+    {
+      "archive_path": "historical/defect-evidence002/SHA256SUMS",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/SHA256SUMS",
+      "sha256": "587d33f97c4831a691ca01f0eefc46758f923c9146cc098c03c384523bb70cfb",
+      "bytes": 2872
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/698c-active.diff",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/698c-active.diff",
+      "sha256": "62ad33cdcb7569d24afb512632c4ab505f6ee39720b9d3216a171f9764b495e4",
+      "bytes": 6803
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/SharedEvars002.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/SharedEvars002.v",
+      "sha256": "a34e8d8576a4652bbacf4a6c30e4378b8977b125b20c12751247aab300f27df3",
+      "bytes": 860
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/TOOL_POLICY.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/TOOL_POLICY.md",
+      "sha256": "bc3aca17a67287d114b52910a0535a88a6a5da447d1a5e4b37282375e6f7755c",
+      "bytes": 234
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/audit.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/audit.py",
+      "sha256": "25ad9a8fdc829928711034b7a4e6e62025039d63f21d6da009458e059b25a15b",
+      "bytes": 6604
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/execution-inventory-003.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/execution-inventory-003.json",
+      "sha256": "14246c75e22a0327c6d111f403ebb231b5d369853adc98df9a0e3aa7be6d446f",
+      "bytes": 5272
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/inputs.json",
+      "sha256": "e8c51277ff26003e9b50324932a1c9a577157792c87d61b649b4c9216ed6718e",
+      "bytes": 1301562
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/repaired-run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/repaired-run.py",
+      "sha256": "461c335dc9772ededb8a6ca5e7e2c2ea6086d7217711de07612aac640a6fc6a4",
+      "bytes": 5780
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/result.json",
+      "sha256": "db2827cd9489160eabdcca64f7e4b8bef0d04a476674811b0cae61ef0e1b03e6",
+      "bytes": 294726
+    },
+    {
+      "archive_path": "historical/defect-evidence002/completed-audit/shared-evar-report.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/completed-audit/shared-evar-report.json",
+      "sha256": "1b47c07223ab30a36793353d4b50668318c3f0e89e593a8211912a45f672c4f6",
+      "bytes": 8328
+    },
+    {
+      "archive_path": "historical/defect-evidence002/manifest.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/manifest.json",
+      "sha256": "9e53a53092970632e3ef6245c8980e466854ab2eab0e72c2aa2bc778f88a518a",
+      "bytes": 9678
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/audit.json",
+      "sha256": "e4935df3fc2725999164ac05bbe56f5a7f663ffd420f11c3aa87752f20c78152",
+      "bytes": 825
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/corrected-targets.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/corrected-targets.json",
+      "sha256": "58d53f07de861aed80aee2912a3b0b6a0da3dcb4cfb0e2ddb6663905dda76cf6",
+      "bytes": 3024
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/import-union-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/import-union-audit.json",
+      "sha256": "6d701a4945c86f88683f03e1d88ee7f836ea688e6106dc2eb4ac9cce8d6ea797",
+      "bytes": 19590
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/marker-shapes-report.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/marker-shapes-report.json",
+      "sha256": "c8083f8be5bbc230fb08e2e431dbe80889fc5a3035d3571e62e4c217dd23c30a",
+      "bytes": 8759
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/production-fixture-report.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/production-fixture-report.json",
+      "sha256": "4380f806f48fe241fa606027f4fa96a0c333109736f932fa345c5bbcd1951411",
+      "bytes": 10119
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/prologue-limits-001.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/prologue-limits-001.json",
+      "sha256": "5d88267f59418a2b94884874e85a50bff2039a25f0a13c65c86f90a9cfb35346",
+      "bytes": 2662
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/source-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/source-audit.json",
+      "sha256": "4b40f26fd27508963b7ad4f651b49faa96f5312fa55d5d36918392f508f57b83",
+      "bytes": 669
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/source-identity-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/source-identity-audit.json",
+      "sha256": "02963fcbc0c4226e1f9f65a7287c45877615ae6c5d6dc74c09f696efe79fc5c5",
+      "bytes": 5707
+    },
+    {
+      "archive_path": "historical/defect-evidence002/reports/source-link-audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/reports/source-link-audit.json",
+      "sha256": "8f14a3f1c30aa58ed2de22a993ae35ae590f40f4cb31eb652c43d7f17a6ffa79",
+      "bytes": 1568
+    },
+    {
+      "archive_path": "historical/defect-evidence002/source.patch",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/source.patch",
+      "sha256": "c599ebdd2f5aee66c99871cce2e66fb0ce7dd14cf8bbe4d2fd2f0c0e4282963c",
+      "bytes": 24023
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/ByteArrayLengths.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/ByteArrayLengths.v",
+      "sha256": "3e7b6786a579bae22b792994df9b6d8e56d84da3a76bc6f7f579db5935b78ebf",
+      "bytes": 874
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/Finish.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/Finish.v",
+      "sha256": "f515d561048aa6af259a8610166b3a6a395c0a25c05ad42639a8b968de126f13",
+      "bytes": 26603
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/Hooks.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/Hooks.v",
+      "sha256": "627e0df3cb6cc7b50bcec6da8126250f69bfc3329db87b5eb5eea7fc235386eb",
+      "bytes": 65955
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/ReturnBundle.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/ReturnBundle.v",
+      "sha256": "eba6f9486d417e9f176d582cfa3c859f1631d4df98e1667df75b9742cdefa97b",
+      "bytes": 1222
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/ReturnWand.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/ReturnWand.v",
+      "sha256": "32d684cc8fa6892825f0f81622d8c55f55c598110e2ddad9eb39e8312437176b",
+      "bytes": 523
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/SwitchDispatch.v",
+      "sha256": "88df80af0a195c55745e3d99cf72d480a12eb8aba66d913c9edc13fdfe352d6f",
+      "bytes": 2361
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "sha256": "54c050ef53f3a2add813ce8247859847f98111da3589dffa97a7a4a7e0468e0b",
+      "bytes": 122
+    },
+    {
+      "archive_path": "historical/defect-evidence002/sources/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-evidence-002/sources/ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "sha256": "51c6c28a106536d7d82923845315764613caf40b3cfad153fcc6bdc2038ea4d2",
+      "bytes": 3832
+    },
+    {
+      "archive_path": "historical/parser-failure003/Recorder.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/Recorder.v",
+      "sha256": "e737619f53e1babb42d5d3f5489795cb48bce7794405992f2e1c13f5090f4328",
+      "bytes": 3297
+    },
+    {
+      "archive_path": "historical/parser-failure003/class-identities.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/class-identities.json",
+      "sha256": "4f4ececa35b08f015d989f4a5027f3e91d2c0992df1b505a6a8ae13097e49d3a",
+      "bytes": 1645
+    },
+    {
+      "archive_path": "historical/parser-failure003/coqc-recipe.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/coqc-recipe.json",
+      "sha256": "0647c7b4454aa705f98239225255437464c04dd29ed431b11c0190801ff2bf2b",
+      "bytes": 4288
+    },
+    {
+      "archive_path": "historical/parser-failure003/excluded.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/excluded.json",
+      "sha256": "9eed943e190e5457ea13538b71e28ee3eef9fa0d264e9e051fd021fe8f92b97f",
+      "bytes": 1923
+    },
+    {
+      "archive_path": "historical/parser-failure003/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/inputs.json",
+      "sha256": "675d77934bede80990f0073dcaead9f63dc4478fc65512e3a9eb8e290687f511",
+      "bytes": 1294405
+    },
+    {
+      "archive_path": "historical/parser-failure003/inventory.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/inventory.json",
+      "sha256": "5010b76256ea49181325c268f0c0b0cf2d36baea0aed2ddece2353b822085d2f",
+      "bytes": 3077
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/6970/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/6970/Boundary.v",
+      "sha256": "d07ee7223f6e8706f523f3ef2fc0bd66f34a464ff6f7a1f5e0e3502439711902",
+      "bytes": 7889
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/6970/Preflight.v",
+      "sha256": "d35a5c8ad420661fddd4a5d75c6e21f69cdc586667cc705622eec9d3a981e381",
+      "bytes": 15726
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/6970/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/6970/primary/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/6970/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/6970/primary/compiler.json",
+      "sha256": "f02d06bbb90639b2a668693fc34b76784fd1a81903c1bcae3dfdc7b9a6aa8f95",
+      "bytes": 5413
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/6970/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/6970/primary/compiler.log",
+      "sha256": "3c817cef216788b9f1a7811c67b252d1cd5a850cb33fc6357a7cae95fd1d9b99",
+      "bytes": 7984
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/Boundary.v",
+      "sha256": "7a17c7c140c7af4770e95addad261d3dd23ed1fe96699be362aa5fb12d92107e",
+      "bytes": 11990
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/Preflight.v",
+      "sha256": "767215e4a376a8fffba962cc33be22ad5e179675874a9a88a122857de526eb47",
+      "bytes": 19703
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/preflight/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/preflight/compiler.json",
+      "sha256": "48d2407ca88bb845853aef8e52baa68f9ffe741f8641e6927214c02cbfe165bc",
+      "bytes": 5634
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/preflight/compiler.log",
+      "sha256": "f1e081b4440dabc1dc2911b5f71637351cf4c981cea8abf61c09527a9a3594f4",
+      "bytes": 18913
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/preflight/result.json",
+      "sha256": "3c31aac930e99827b15e7c6b8f6b987302c6cbb35681e792da46bf3013478181",
+      "bytes": 9744
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/primary/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/primary/compiler.json",
+      "sha256": "bb17da4eca3b3953a7d9d6db94dcca5f0d8c47564483b89527d9ecc9418a4070",
+      "bytes": 5417
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/698c/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/698c/primary/compiler.log",
+      "sha256": "7fbabcb31d66c9820568bb8af02e7319f5c5fc2da20854195942a89bc5b45fce",
+      "bytes": 158242
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/Prologue/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/Prologue/Boundary.v",
+      "sha256": "5ff79323280f0adec47d07ca0b975401ada720fa43677faa09bcfa5ae2aaf47f",
+      "bytes": 6485
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/Prologue/Preflight.v",
+      "sha256": "1226c3879ce4fd16beca8721667a3642efcfdb973f8230d3dd444951933109c0",
+      "bytes": 12689
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/Prologue/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/Prologue/primary/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/Prologue/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/Prologue/primary/compiler.json",
+      "sha256": "f0637c3f8cd3696a2ef2aac1c84d8f1a112ad3955bd275ed4f672aed035a640c",
+      "bytes": 5413
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/Prologue/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/Prologue/primary/compiler.log",
+      "sha256": "af0e85832a9cf11e6fb9ed64dffdda8c62b24ff7b0bbcf5b21480f2de71abfee",
+      "bytes": 8619
+    },
+    {
+      "archive_path": "historical/parser-failure003/off/Prologue/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/off/Prologue/primary/result.json",
+      "sha256": "90fc2cfaafdef8da0f88beb5a9fdef337c4603498d1516a929e783ea559eb90d",
+      "bytes": 7051
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/6970/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/6970/Boundary.v",
+      "sha256": "a5b70e32b368e03ef77609d644142a720a3eeba965b80442e83ed100e222cded",
+      "bytes": 7948
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/6970/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/6970/Preflight.v",
+      "sha256": "cac580a81bbebb5e5592eb5817817733c167bfbc5b1ce81a48bd2cce5b0af380",
+      "bytes": 15727
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/6970/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/6970/primary/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/6970/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/6970/primary/compiler.json",
+      "sha256": "56d20b72ceab132dbf2096f232191872e30ee02a6cdd5746d5b90b3b6662e153",
+      "bytes": 5410
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/6970/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/6970/primary/compiler.log",
+      "sha256": "ad0ff5595ca73c36911e2492c67d279f1fa420929bb9b185667d9606bc5107c1",
+      "bytes": 8051
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/Boundary.v",
+      "sha256": "bd3b5378480659af3eec6fb2031378382effc862f85caf2af0b73497bbf0f94d",
+      "bytes": 12049
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/Preflight.v",
+      "sha256": "ee82d9fbd4420a5831024812d3efdeb71e1d26e7fcca6f447186cef63d46a7e2",
+      "bytes": 19704
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/preflight/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/preflight/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/preflight/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/preflight/compiler.json",
+      "sha256": "7c4dcf41da6dd90cb1995a8eeab3ec4f54da7e5c4442a754fef3aa3424088f55",
+      "bytes": 5634
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/preflight/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/preflight/compiler.log",
+      "sha256": "183cc5e375f382a1911bc4e2f6cb1f199b5f69094c05ff663a64744f80f21132",
+      "bytes": 18988
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/preflight/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/preflight/result.json",
+      "sha256": "286cf0856d37a8f9c53c40caee98b95059796e53259ea783d826c375fd38a0d0",
+      "bytes": 9741
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/primary/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/primary/compiler.json",
+      "sha256": "a60f9a6c42a849d76530c71a500e5ad7875bb790c2761b8d3af33c6a5c6257ac",
+      "bytes": 5409
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/698c/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/698c/primary/compiler.log",
+      "sha256": "1cc025721b8d34c689c04047070e6439ef4b8dc3ec8f700c598d5bad8c8f47ff",
+      "bytes": 159089
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/Prologue/Boundary.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/Prologue/Boundary.v",
+      "sha256": "ab196360fdc69696090ee37260763b350043772be74f9a1fc2c8e308df7936a8",
+      "bytes": 6544
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/Prologue/Preflight.v",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/Prologue/Preflight.v",
+      "sha256": "54799fed0d2a3b33bcb3ebaf286138f58632b0e88bb0f2fbeb4c158bce8592b3",
+      "bytes": 12690
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/Prologue/primary/compiler-wrapper",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/Prologue/primary/compiler-wrapper",
+      "sha256": "b73b3931d7cb8aa042b3502675f22d6f12ae8dd9efa09b000545fa2e66b6838a",
+      "bytes": 137
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/Prologue/primary/compiler.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/Prologue/primary/compiler.json",
+      "sha256": "e2b6b5378fa58c7ed66af58bb97aabfa726a06b780a9e86d4a547610ed2239dc",
+      "bytes": 5424
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/Prologue/primary/compiler.log",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/Prologue/primary/compiler.log",
+      "sha256": "c00dc8ca888b0de4139d7cd3025bd7e13e68594eada601576e7465848c0bd5f6",
+      "bytes": 8680
+    },
+    {
+      "archive_path": "historical/parser-failure003/on/Prologue/primary/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/on/Prologue/primary/result.json",
+      "sha256": "67297b38304da8fe0e7e708c8e5fd9da0de7417f3921fbfa16ab4d0fe3e11283",
+      "bytes": 7058
+    },
+    {
+      "archive_path": "historical/parser-failure003/pairs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/pairs.json",
+      "sha256": "14cbb7c46378b7cde4e30970d0a14d0ed062f7d97348fd2197aa227e1aac5bd3",
+      "bytes": 4083
+    },
+    {
+      "archive_path": "historical/parser-failure003/preflight-results.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/preflight-results.json",
+      "sha256": "0ef897b1c38c24ddb9e059cd962898ec46c0e8562b64acc15f3c4914b6956e55",
+      "bytes": 63749
+    },
+    {
+      "archive_path": "historical/parser-failure003/reuse-preflights.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/reuse-preflights.json",
+      "sha256": "a8f41de7d1b0710115393632c6e04ac1ba890750d697356239fe3a9308e1d991",
+      "bytes": 45452
+    },
+    {
+      "archive_path": "historical/parser-failure003/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-003/run.py",
+      "sha256": "c7470d3272205ba528b1794931e148f31a3d6b2dee6307ff9485253b2f7264e6",
+      "bytes": 5780
+    },
+    {
+      "archive_path": "historical/post-processing004/698c-active.diff",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/698c-active.diff",
+      "sha256": "62ad33cdcb7569d24afb512632c4ab505f6ee39720b9d3216a171f9764b495e4",
+      "bytes": 6803
+    },
+    {
+      "archive_path": "historical/post-processing004/TOOL_POLICY.md",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/TOOL_POLICY.md",
+      "sha256": "bc3aca17a67287d114b52910a0535a88a6a5da447d1a5e4b37282375e6f7755c",
+      "bytes": 234
+    },
+    {
+      "archive_path": "historical/post-processing004/audit.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/audit.py",
+      "sha256": "25ad9a8fdc829928711034b7a4e6e62025039d63f21d6da009458e059b25a15b",
+      "bytes": 6604
+    },
+    {
+      "archive_path": "historical/post-processing004/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/inputs.json",
+      "sha256": "e8c51277ff26003e9b50324932a1c9a577157792c87d61b649b4c9216ed6718e",
+      "bytes": 1301562
+    },
+    {
+      "archive_path": "historical/post-processing004/off/6970/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/off/6970/result.json",
+      "sha256": "3711a193ac0876670af12c91213f9c15227f597db36e3efbbfb8ee346f46897a",
+      "bytes": 7517
+    },
+    {
+      "archive_path": "historical/post-processing004/off/698c/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/off/698c/result.json",
+      "sha256": "55780ea8062b2b168025cadc223fae4e3c5528bfe7358cf3fe51c8de5eebc071",
+      "bytes": 94631
+    },
+    {
+      "archive_path": "historical/post-processing004/off/Prologue/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/off/Prologue/result.json",
+      "sha256": "ac922355a697d9765fbc250c8f893ea1f4cd15c72060e32bd0c79c3c5c99ddfd",
+      "bytes": 7724
+    },
+    {
+      "archive_path": "historical/post-processing004/on/6970/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/on/6970/result.json",
+      "sha256": "105669b55076969b0e4c2e9374451cd68945578b9684e1ecbdb7e6c63bdcfe33",
+      "bytes": 7511
+    },
+    {
+      "archive_path": "historical/post-processing004/on/698c/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/on/698c/result.json",
+      "sha256": "de5b23e73fd71d43919986f76d3ff77841e2fea8a6445568c685e3084c05ce02",
+      "bytes": 95022
+    },
+    {
+      "archive_path": "historical/post-processing004/on/Prologue/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/on/Prologue/result.json",
+      "sha256": "d5c18445c9c6cd8f9f00f0eb0e201d4eeadcac795a929d07dc510f359ce69ba6",
+      "bytes": 7731
+    },
+    {
+      "archive_path": "historical/post-processing004/repaired-run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/repaired-run.py",
+      "sha256": "461c335dc9772ededb8a6ca5e7e2c2ea6086d7217711de07612aac640a6fc6a4",
+      "bytes": 5780
+    },
+    {
+      "archive_path": "historical/post-processing004/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-comparison-004/result.json",
+      "sha256": "db2827cd9489160eabdcca64f7e4b8bef0d04a476674811b0cae61ef0e1b03e6",
+      "bytes": 294726
+    },
+    {
+      "archive_path": "historical/dependencies002/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-002/build.sh",
+      "sha256": "c7c4b85532cbc119deaa3540948fbfc04ef23bd43c4fcead3cb1feb6b6664e57",
+      "bytes": 488
+    },
+    {
+      "archive_path": "historical/dependencies002/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-002/inputs.json",
+      "sha256": "0210cc89c0cf69a5d9eddc9b095b262d7c4ebfad2512ef796ec9d12a5b4e2979",
+      "bytes": 22882
+    },
+    {
+      "archive_path": "historical/dependencies002/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-002/result.json",
+      "sha256": "09a617998319a91d7d7f5171ad33a3f4d4cb063d43547ac29c15d348f7d46515",
+      "bytes": 170
+    },
+    {
+      "archive_path": "historical/dependencies002/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-002/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "historical/dependencies003/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-003/build.sh",
+      "sha256": "c7c4b85532cbc119deaa3540948fbfc04ef23bd43c4fcead3cb1feb6b6664e57",
+      "bytes": 488
+    },
+    {
+      "archive_path": "historical/dependencies003/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-003/inputs.json",
+      "sha256": "109fda0ec5aedf7a97fa1332955651f7bb5993ffa8c9934ec628ddb742cf16f0",
+      "bytes": 1752173
+    },
+    {
+      "archive_path": "historical/dependencies003/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-003/result.json",
+      "sha256": "dd8889b7932a776d104682a26a05025eafeb062ee8783adf2bffe6573355ab86",
+      "bytes": 169
+    },
+    {
+      "archive_path": "historical/dependencies003/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-003/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "historical/dependencies004/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-004/build.sh",
+      "sha256": "6a825b1ff38a94d182ece94ef6a17332f64acc9b2f4a9adc927dd0d27ca8a1bd",
+      "bytes": 3022
+    },
+    {
+      "archive_path": "historical/dependencies004/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-004/inputs.json",
+      "sha256": "2403cee95661d73214cf1310be83f1e99e9c267371dfbc106483c27df2ab8937",
+      "bytes": 1797243
+    },
+    {
+      "archive_path": "historical/dependencies004/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-004/result.json",
+      "sha256": "3c4842e7996558f467d65e99b519c552d9d1c7b1fd5b40c935cf2da75dbbdcfe",
+      "bytes": 169
+    },
+    {
+      "archive_path": "historical/dependencies004/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-004/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "historical/dependencies005/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-005/build.sh",
+      "sha256": "6a825b1ff38a94d182ece94ef6a17332f64acc9b2f4a9adc927dd0d27ca8a1bd",
+      "bytes": 3022
+    },
+    {
+      "archive_path": "historical/dependencies005/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-005/inputs.json",
+      "sha256": "299d8776f9353bf0ed9f9c6b4c73502e84721a4aedeebc54bca52d772b99839a",
+      "bytes": 1797243
+    },
+    {
+      "archive_path": "historical/dependencies005/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-005/result.json",
+      "sha256": "24808d130e11bb8b4495ab85037b0588b4b0f02a249a89cc6f3b6e40fe8e98eb",
+      "bytes": 169
+    },
+    {
+      "archive_path": "historical/dependencies005/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-005/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "historical/dependencies006/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-006/build.sh",
+      "sha256": "6a825b1ff38a94d182ece94ef6a17332f64acc9b2f4a9adc927dd0d27ca8a1bd",
+      "bytes": 3022
+    },
+    {
+      "archive_path": "historical/dependencies006/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-006/inputs.json",
+      "sha256": "d39db3e2378fe332ba25ef6f5cf5cad7d5c366941820a6cb654c28b00a725c48",
+      "bytes": 1797243
+    },
+    {
+      "archive_path": "historical/dependencies006/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-006/result.json",
+      "sha256": "23a317b290928859e07c069f739ea0c01ea96e3e459b9e96456d6707206c481e",
+      "bytes": 170
+    },
+    {
+      "archive_path": "historical/dependencies006/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-006/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "historical/dependencies007/build.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-007/build.sh",
+      "sha256": "36f23176e04d0e13c5785f7d9a07043f45e7e8241ae765685d14cbbec116898c",
+      "bytes": 395
+    },
+    {
+      "archive_path": "historical/dependencies007/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-007/inputs.json",
+      "sha256": "a3cdd1824b5e1d2307f926235e52de246e67f9bafa1860045bee2edd9351e3fa",
+      "bytes": 1797243
+    },
+    {
+      "archive_path": "historical/dependencies007/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-007/result.json",
+      "sha256": "a098b0cdf6e1b269eccc183595c9ba11f56a0159d10b1360a8cb0dbf5d541626",
+      "bytes": 170
+    },
+    {
+      "archive_path": "historical/dependencies007/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-dependencies/attempt-007/run.py",
+      "sha256": "7ad50ab1659d16842c641e4e9a3d888254c2ad0b42c7a765427feed14ec732ef",
+      "bytes": 710
+    },
+    {
+      "archive_path": "historical/check-fast001/gate.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-001/gate.sh",
+      "sha256": "e5145574c93faaf2daf64c68fea6864f56d7bf1649c0bf2c4d0c342fe9f66fae",
+      "bytes": 399
+    },
+    {
+      "archive_path": "historical/check-fast001/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-001/inputs.json",
+      "sha256": "b2ac1db4f764987bdb7621a1528ef2339b2d8db316f7edc75badfcb047442f21",
+      "bytes": 68354
+    },
+    {
+      "archive_path": "historical/check-fast001/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-001/run.py",
+      "sha256": "bd88fb60f4a9192a584d899ae37320113c34b24ef69dca60b065b50b6f32ef8d",
+      "bytes": 799
+    },
+    {
+      "archive_path": "historical/check-fast002/gate.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-002/gate.sh",
+      "sha256": "e5145574c93faaf2daf64c68fea6864f56d7bf1649c0bf2c4d0c342fe9f66fae",
+      "bytes": 399
+    },
+    {
+      "archive_path": "historical/check-fast002/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-002/inputs.json",
+      "sha256": "1629e474bb733fb127865a5c2e77b97dfd1c532ec065fd449b2eb1e1310fbbcf",
+      "bytes": 68354
+    },
+    {
+      "archive_path": "historical/check-fast002/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-002/result.json",
+      "sha256": "5ef36e75c124deecb44d5d1b7f3816ea197acb43592e9f899552e8d36b3af377",
+      "bytes": 314
+    },
+    {
+      "archive_path": "historical/check-fast002/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-002/run.py",
+      "sha256": "b01c8568c060edbf1522ce2316c3920a72afd932b3576c2dd9461cc8c0bfb47d",
+      "bytes": 799
+    },
+    {
+      "archive_path": "historical/check-fast003/audit.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-003/audit.json",
+      "sha256": "e4935df3fc2725999164ac05bbe56f5a7f663ffd420f11c3aa87752f20c78152",
+      "bytes": 825
+    },
+    {
+      "archive_path": "historical/check-fast003/gate.sh",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-003/gate.sh",
+      "sha256": "e5145574c93faaf2daf64c68fea6864f56d7bf1649c0bf2c4d0c342fe9f66fae",
+      "bytes": 399
+    },
+    {
+      "archive_path": "historical/check-fast003/inputs.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-003/inputs.json",
+      "sha256": "3463a7918a72fc0f01c2a7747b1316912bd7bc0171dd0e639a030f44e659a921",
+      "bytes": 68538
+    },
+    {
+      "archive_path": "historical/check-fast003/result.json",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-003/result.json",
+      "sha256": "5f352e572c4e173f76e8cb196cd4aed7558866cb501f0bf2b2ded50851c5ba42",
+      "bytes": 314
+    },
+    {
+      "archive_path": "historical/check-fast003/run.py",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch/_build/switch-dispatch-gates/check-fast-003/run.py",
+      "sha256": "b01c8568c060edbf1522ce2316c3920a72afd932b3576c2dd9461cc8c0bfb47d",
+      "bytes": 799
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-224617-child-c-switch-dispatch-dependencies.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-224617-child-c-switch-dispatch-dependencies.log",
+      "sha256": "ed5ace0a9987f99890bb85e5e2fac7298553c9bd8c5818abb73998b99a6c32ee",
+      "bytes": 259
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-224935-child-c-switch-dispatch-dependencies002.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-224935-child-c-switch-dispatch-dependencies002.log",
+      "sha256": "6504353fae71a0cdc8da74e641512ca969a7d876aff72185029daef8bd5d85d3",
+      "bytes": 597
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-225058-child-c-switch-dispatch-dependencies003.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-225058-child-c-switch-dispatch-dependencies003.log",
+      "sha256": "3e70e498651b6001efc33899709c3305293f8e3897fe85b9b030d95ce8c9df16",
+      "bytes": 22208
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-225754-child-c-switch-dispatch-dependencies004.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-225754-child-c-switch-dispatch-dependencies004.log",
+      "sha256": "85e737b2ce4be9ad8131316f5057e21ad4cb69c9926e0dc2b399e64f792ddb9e",
+      "bytes": 7675
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-230212-child-c-switch-dispatch-dependencies005.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-230212-child-c-switch-dispatch-dependencies005.log",
+      "sha256": "f70cab8ba98067ff3817094eda7118973a84112d4126699b8ab1ff2e1854ea71",
+      "bytes": 20595
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-230638-child-c-switch-dispatch-dependencies006.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-230638-child-c-switch-dispatch-dependencies006.log",
+      "sha256": "a239eef4f3b330c84a66e802a2f1f6cd8600c6619057acdf7dcb636be705ce32",
+      "bytes": 1127
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-230851-child-c-switch-dispatch-comparison001.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-230851-child-c-switch-dispatch-comparison001.log",
+      "sha256": "d5555ab263ba6a99c3aa3ff56707147268c2f53cd456942e05b8847fe126541e",
+      "bytes": 1274
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-230945-child-c-switch-dispatch-dependencies007.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-230945-child-c-switch-dispatch-dependencies007.log",
+      "sha256": "23720194cca6fe97ddd973b7b680a686a84d89756b6cd826cb3b47f47639ccdf",
+      "bytes": 446
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-231115-child-c-switch-dispatch-comparison003.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-231115-child-c-switch-dispatch-comparison003.log",
+      "sha256": "ef35b68f49ad7c84c76485ab9c276bf92aeeed345b453ebd1da648ccbef4e0f6",
+      "bytes": 2426
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-231609-child-c-switch-dispatch-check-fast002.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-231609-child-c-switch-dispatch-check-fast002.log",
+      "sha256": "831d373fad60278e5923752058ae4ea44b6befac8689fda675b0c7471abb5cd3",
+      "bytes": 4485
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261006-231810-child-c-switch-dispatch-check-fast003.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261006-231810-child-c-switch-dispatch-check-fast003.log",
+      "sha256": "da6c499ab6af70a5a6f7e6e460d808032741143ce943dbdaea9186ce1267e1aa",
+      "bytes": 35303
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261007-012453-child-c-switch-dispatch-repair-dependencies001.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-012453-child-c-switch-dispatch-repair-dependencies001.log",
+      "sha256": "93cd15df87caadf19f35133bd93a19927a49d1e36a889b2cf0053406c8d0dd22",
+      "bytes": 41300
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261007-015015-child-c-switch-dispatch-repair-comparison001.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-015015-child-c-switch-dispatch-repair-comparison001.log",
+      "sha256": "899a88b316e24b0d08040ab9411ebe1102426c3c3c9a47b2f50040c764d05cf7",
+      "bytes": 529
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261007-015158-child-c-switch-dispatch-repair-comparison002.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-015158-child-c-switch-dispatch-repair-comparison002.log",
+      "sha256": "58e1717acadf9aaa0af03d42f096ea2c1ab8119bc9a5a149f68baca28847b60b",
+      "bytes": 3514
+    },
+    {
+      "archive_path": "watcher/worker-build-2-20261007-015304-child-c-switch-dispatch-repair-check-fast001.log",
+      "source_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-015304-child-c-switch-dispatch-repair-check-fast001.log",
+      "sha256": "9edbd6b353d7e5123643628c9cc144e1fa401aa087bb41842795fca98573458e",
+      "bytes": 36619
+    }
+  ],
+  "archive_sha256": "26941621857af728a578dafa3633e84df87e1313ce4c516d41f7108cc82419dd"
+}

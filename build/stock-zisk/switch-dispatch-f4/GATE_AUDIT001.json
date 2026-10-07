@@ -1,0 +1,16 @@
+{
+  "status": "Passed",
+  "gate_result": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-gate-001/result.json",
+  "result_sha256": "98e98b79c7f4e599b7bfb27220740568a1e711a3ecd2dc446467189f7f294d08",
+  "seal_sha256": "fa63f2259ab92b258bcf88fcb0e8f94c14e50e8897dc42aabc581fa0b01b32f4",
+  "inputs_checked": 6195,
+  "changed_inputs": [],
+  "watcher_log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-015304-child-c-switch-dispatch-repair-check-fast001.log",
+  "watcher_log_sha256": "9edbd6b353d7e5123643628c9cc144e1fa401aa087bb41842795fca98573458e",
+  "elapsed_seconds": 2747.420795076061,
+  "workers": 6,
+  "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/agents/worker2-switch-dispatch-repair-gate",
+  "source_is_current": true,
+  "scope": "Independent child check-fast. No parent Iris gate started.",
+  "comparison_objects": "Private comparison artifacts remain sealed. The gate uses a separate private build directory."
+}

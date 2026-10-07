@@ -1,0 +1,345 @@
+{
+  "audit_passed": true,
+  "result_sha256": "4b6bacc9ccc5823815f544badd29efabfa85c88c058649b8ccfbb9af7791be07",
+  "seal_sha256": "e2e8cef2a2d66c005a84cb32bd6ad16ef9b07e4b5d118c498fb5eb1ab9759c06",
+  "recipe_sha256": "455a262fb9ec65a75e97e93b234edd5c68bd00167d551eef5590667770cd9a76",
+  "inputs_checked": 7105,
+  "changed_inputs": [],
+  "workers": 2,
+  "elapsed_seconds": 3304.2217226701323,
+  "watcher_log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-015158-child-c-switch-dispatch-repair-comparison002.log",
+  "watcher_log_sha256": "58e1717acadf9aaa0af03d42f096ea2c1ab8119bc9a5a149f68baca28847b60b",
+  "preflights_passed": 6,
+  "primaries_completed": 6,
+  "sources_checked": [
+    {
+      "path": "ZesuSsz/Automation/ByteArrayLengths.v",
+      "sha256": "3e7b6786a579bae22b792994df9b6d8e56d84da3a76bc6f7f579db5935b78ebf"
+    },
+    {
+      "path": "ZesuSsz/Automation/Finish.v",
+      "sha256": "f73f09a1d15754063cde3d300bab9030cd017a64b8925c0bdea0c4526a6d8e98"
+    },
+    {
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "sha256": "b42eac84066f33d926aaf5a026838a3210776e190fce2dd13c18668da126abdd"
+    },
+    {
+      "path": "ZesuSsz/Automation/ReturnBundle.v",
+      "sha256": "eba6f9486d417e9f176d582cfa3c859f1631d4df98e1667df75b9742cdefa97b"
+    },
+    {
+      "path": "ZesuSsz/Automation/ReturnWand.v",
+      "sha256": "32d684cc8fa6892825f0f81622d8c55f55c598110e2ddad9eb39e8312437176b"
+    },
+    {
+      "path": "ZesuSsz/Automation/SwitchDispatch.v",
+      "sha256": "48c869f1393f9db727b7b681f6902fcf3a9a176e9c826aacf59712c83a97794b"
+    },
+    {
+      "path": "ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "sha256": "54c050ef53f3a2add813ce8247859847f98111da3589dffa97a7a4a7e0468e0b"
+    },
+    {
+      "path": "ZesuSsz/Evidence/SwitchDispatchFixtures.v",
+      "sha256": "beecede127d78043f58834713ff87aabe26ff2a296f51f1899f1797f27f7d07d"
+    }
+  ],
+  "declaration_qed_checks": [
+    {
+      "site": "Prologue",
+      "arm": "off",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/Boundary.v",
+      "source_sha256": "56292798a7272d330836f9f727e7a44d1128868de60fa38385ba546071facd3e",
+      "statement_sha256": "c2e8b7e2bf45ba2d88f78916d10cd39ba396cd4e5409d47a1982ba9031ebc38c",
+      "theorem": "decodeItemPrologueTo6974Bridge_correct",
+      "qed_attempt": "decodeItemPrologueTo6974Bridge_correct",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/Prologue/primary/compiler.log",
+      "log_sha256": "fad3046555e677621dc704f6a55b971956bf43132d898febc9854d1e137604de",
+      "qed_compiled": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "groups": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "stop": "cpu",
+      "cpu_seconds": 1199.675709,
+      "peak_rss_kib": 5343296,
+      "compiler_wall_seconds": 1204.4495138481725,
+      "wrapper_wall_seconds": 1206.3837416679598,
+      "compiler_exit": -9,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 6291456
+      },
+      "declaration_matches_original": true,
+      "body_prefix_matches_original": true,
+      "qed_present_in_source": true,
+      "qed_reached": false,
+      "active_sha256": null
+    },
+    {
+      "site": "Prologue",
+      "arm": "on",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/Boundary.v",
+      "source_sha256": "c2478c6f5651c33478cea49286e7cfcd4be976fd9938409e28c621c7b0f64f42",
+      "statement_sha256": "c2e8b7e2bf45ba2d88f78916d10cd39ba396cd4e5409d47a1982ba9031ebc38c",
+      "theorem": "decodeItemPrologueTo6974Bridge_correct",
+      "qed_attempt": "decodeItemPrologueTo6974Bridge_correct",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/Prologue/primary/compiler.log",
+      "log_sha256": "36cae0e04025d3d1d6948b3527ef6ac1d2e1ba973d7eedc359f14b0de780b8e7",
+      "qed_compiled": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "groups": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "stop": "memory",
+      "cpu_seconds": 982.4536049999999,
+      "peak_rss_kib": 6291540,
+      "compiler_wall_seconds": 986.5782785310876,
+      "wrapper_wall_seconds": 988.6691520467866,
+      "compiler_exit": -15,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 6291456
+      },
+      "declaration_matches_original": true,
+      "body_prefix_matches_original": true,
+      "qed_present_in_source": true,
+      "qed_reached": false,
+      "active_sha256": null
+    },
+    {
+      "site": "698c",
+      "arm": "off",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/Boundary.v",
+      "source_sha256": "e60023fcf421d4e2da853a3f78d9ffde2c20835d5868049e9a083c86c2cb9f04",
+      "statement_sha256": "0271fee75312dda7e09f70629c47b8425c3ec3ae2f3b121055c50039fbe564b3",
+      "theorem": "DesignedBoundary_800d698c",
+      "qed_attempt": "DesignedBoundary_800d698c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/698c/primary/compiler.log",
+      "log_sha256": "1d290b8e4b1136a4b05a96c095f711e807fe2250982d7f9f182e65546a4a5620",
+      "qed_compiled": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "groups": {
+        "active": "raw returned records",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "stop": "incomplete_qed",
+      "cpu_seconds": 905.217055,
+      "peak_rss_kib": 2763340,
+      "compiler_wall_seconds": 908.4976874219719,
+      "wrapper_wall_seconds": 1094.943701924989,
+      "compiler_exit": 1,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 12582912
+      },
+      "declaration_matches_original": true,
+      "body_prefix_matches_original": true,
+      "qed_present_in_source": true,
+      "qed_reached": true,
+      "active_sha256": [
+        "619b122c5a8381c1d4dca1c99c483f9a9205a89e41b5da4db4feda4dd8bd27e4",
+        "da1966256f88452f880cedaf114f5e5770a8261368af8c5f23fef95b71675d07",
+        "cd93c743decd55f80fb379d5cb6a08601676c39a91112eefc67ace3fae4128b8",
+        "b8fdd5f0cadd4d4a8f3590ee432b15a5349b88b7f75dfa50ba78db2df846713c",
+        "6ed634a4bec433ea3c272a7875ab06420d6bf1573ff3668c471863910ad3a63c",
+        "af3f80ede70a998f746a011e99c946da341f5764fda38e72d8950f4766b5b7d7"
+      ]
+    },
+    {
+      "site": "698c",
+      "arm": "on",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/Boundary.v",
+      "source_sha256": "ebaac5568ee2386baf6f02720441a593d2af94c11ec23d95181d7187550fa5d9",
+      "statement_sha256": "0271fee75312dda7e09f70629c47b8425c3ec3ae2f3b121055c50039fbe564b3",
+      "theorem": "DesignedBoundary_800d698c",
+      "qed_attempt": "DesignedBoundary_800d698c",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/698c/primary/compiler.log",
+      "log_sha256": "71b9e9a6aa699a6fe8ca6fc41b4b983f4689e65cdf7cba9f51d8213a119087e7",
+      "qed_compiled": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "groups": {
+        "active": "raw returned records",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "stop": "incomplete_qed",
+      "cpu_seconds": 228.82269599999998,
+      "peak_rss_kib": 2689568,
+      "compiler_wall_seconds": 229.75754229701124,
+      "wrapper_wall_seconds": 236.90022443700582,
+      "compiler_exit": 1,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 12582912
+      },
+      "declaration_matches_original": true,
+      "body_prefix_matches_original": true,
+      "qed_present_in_source": true,
+      "qed_reached": true,
+      "active_sha256": [
+        "619b122c5a8381c1d4dca1c99c483f9a9205a89e41b5da4db4feda4dd8bd27e4",
+        "da1966256f88452f880cedaf114f5e5770a8261368af8c5f23fef95b71675d07",
+        "cd93c743decd55f80fb379d5cb6a08601676c39a91112eefc67ace3fae4128b8",
+        "b8fdd5f0cadd4d4a8f3590ee432b15a5349b88b7f75dfa50ba78db2df846713c",
+        "6ed634a4bec433ea3c272a7875ab06420d6bf1573ff3668c471863910ad3a63c",
+        "af3f80ede70a998f746a011e99c946da341f5764fda38e72d8950f4766b5b7d7"
+      ]
+    },
+    {
+      "site": "6970",
+      "arm": "off",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/Boundary.v",
+      "source_sha256": "d4ab413c798b9963050e341bc5bad407695908e61697b808cc46966a4f918ab0",
+      "statement_sha256": "201c3b52b3075a42a596f983c7d8bf44e27654acbd098a9073434ab56355bcb3",
+      "theorem": "decodeItemJoin6ae0From6970_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6970_automatic",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/off/6970/primary/compiler.log",
+      "log_sha256": "eaf81a1306af7b263281019b8a38b575349da4d268a2c86708c9f99943ab7fb8",
+      "qed_compiled": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "groups": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "stop": "cpu",
+      "cpu_seconds": 1199.8667919999998,
+      "peak_rss_kib": 2928696,
+      "compiler_wall_seconds": 1203.9020296931267,
+      "wrapper_wall_seconds": 1211.3148665889166,
+      "compiler_exit": -9,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 6291456
+      },
+      "declaration_matches_original": true,
+      "body_prefix_matches_original": true,
+      "qed_present_in_source": true,
+      "qed_reached": false,
+      "active_sha256": null
+    },
+    {
+      "site": "6970",
+      "arm": "on",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/Boundary.v",
+      "source_sha256": "39e0f99fc517929d1c5d3ff28d7bb1c3f3edf08b341475e41223afaa803dcdb3",
+      "statement_sha256": "201c3b52b3075a42a596f983c7d8bf44e27654acbd098a9073434ab56355bcb3",
+      "theorem": "decodeItemJoin6ae0From6970_automatic",
+      "qed_attempt": "decodeItemJoin6ae0From6970_automatic",
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-switch-dispatch-repair/_build/switch-dispatch-repair-comparison-002/on/6970/primary/compiler.log",
+      "log_sha256": "cb39da68e5e2c17dbad1813ab41c0180d3d1922b6eb08c3bc911a908a974be23",
+      "qed_compiled": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "groups": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "stop": "cpu",
+      "cpu_seconds": 1199.878338,
+      "peak_rss_kib": 3024808,
+      "compiler_wall_seconds": 1203.6955040469766,
+      "wrapper_wall_seconds": 1208.2250678930432,
+      "compiler_exit": -9,
+      "limits": {
+        "module_seconds": null,
+        "cpu_seconds": 1200,
+        "rss_kib": 6291456
+      },
+      "declaration_matches_original": true,
+      "body_prefix_matches_original": true,
+      "qed_present_in_source": true,
+      "qed_reached": false,
+      "active_sha256": null
+    }
+  ],
+  "comparisons": [
+    {
+      "site": "Prologue",
+      "statements_equal": true,
+      "active_available": false,
+      "active_raw_equal": null,
+      "off_active_count": null,
+      "on_active_count": null,
+      "auxiliary_groups": "unavailable",
+      "off_cpu": 1199.675709,
+      "on_cpu": 982.4536049999999,
+      "off_qed_compiled": false,
+      "on_qed_compiled": false
+    },
+    {
+      "site": "698c",
+      "statements_equal": true,
+      "active_available": true,
+      "active_raw_equal": true,
+      "off_active_count": 6,
+      "on_active_count": 6,
+      "auxiliary_groups": "unavailable",
+      "off_cpu": 905.217055,
+      "on_cpu": 228.82269599999998,
+      "off_qed_compiled": false,
+      "on_qed_compiled": false
+    },
+    {
+      "site": "6970",
+      "statements_equal": true,
+      "active_available": false,
+      "active_raw_equal": null,
+      "off_active_count": null,
+      "on_active_count": null,
+      "auxiliary_groups": "unavailable",
+      "off_cpu": 1199.8667919999998,
+      "on_cpu": 1199.878338,
+      "off_qed_compiled": false,
+      "on_qed_compiled": false
+    }
+  ],
+  "all_six_698c_terms_equal": true,
+  "formerly_tagged_positions": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "native_qed_compiled": 0,
+  "native_assumptions": "Unavailable for all six arms.",
+  "auxiliary_groups": "Unavailable in native captures. MCP fixtures check exact active/shelf terms and order.",
+  "scope": "Returned active-state equality and frozen measurements. No closure, handler attribution, or production optimization claim.",
+  "gate_rechecked": true
+}
