@@ -196,3 +196,60 @@ Qed.
   end : typeclass_instances.
 
 Print Assumptions decodeItemShortStringNegatedGuardUnsigned.
+
+Lemma decodeItemNativeMaskConstant : (128%bv : bv 64) = Z_to_bv 64 128.
+Proof. apply bv_eq. vm_compute. reflexivity. Qed.
+
+Lemma decodeItemNativeMaskNonempty (prefix : byte) :
+  bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv ->
+  bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128.
+Proof. rewrite decodeItemNativeMaskConstant. trivial. Qed.
+
+Lemma decodeItemNativeMaskEmptyPrefix (prefix : byte) :
+  bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv ->
+  bv_unsigned prefix = 128.
+Proof.
+  intros Hmask. pose proof (f_equal bv_unsigned Hmask) as Hvalue.
+  rewrite decodeItemSignedPrefixMask in Hvalue. exact Hvalue.
+Qed.
+
+Lemma decodeItemNativeMaskEmptyAccepted args (prefix : byte) rest :
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
+  decodeItemInputHead args prefix rest ->
+  bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv ->
+  decodeItemAcceptedFacts args false 1 0.
+Proof.
+  intros Hdomain Hhead Hmask.
+  apply (decodeItemMaskedEmptyStringAccepted args prefix rest Hdomain Hhead).
+  rewrite <- decodeItemNativeMaskConstant. exact Hmask.
+Qed.
+
+#[export] Hint Extern 1
+  (SimplAnd (bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 <> Z_to_bv 64 128) True) =>
+  match goal with
+  | Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 <> 128%bv |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exact (decodeItemNativeMaskNonempty prefix Hmask) | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1 (SimplAnd (bv_unsigned ?prefix = 128) True) =>
+  match goal with
+  | Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 = 128%bv |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exact (decodeItemNativeMaskEmptyPrefix prefix Hmask) | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1 (SimplAnd (decodeItemAcceptedFacts ?args false 1 0) True) =>
+  match goal with
+  | Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args,
+    Hhead : decodeItemInputHead args ?prefix ?rest,
+    Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 = 128%bv |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exact (decodeItemNativeMaskEmptyAccepted args prefix rest Hdomain Hhead Hmask)
+    | intros _; exact I]
+  end : typeclass_instances.
+
+Print Assumptions decodeItemNativeMaskConstant.
+Print Assumptions decodeItemNativeMaskNonempty.
+Print Assumptions decodeItemNativeMaskEmptyPrefix.
+Print Assumptions decodeItemNativeMaskEmptyAccepted.
