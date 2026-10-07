@@ -1,0 +1,39 @@
+{
+  "scope": "Explicit resumed child window. It excludes work before the recorded start. Parent metrics are unavailable.",
+  "session_log": "/home/cody/.codex/sessions/2026/10/06/rollout-2026-10-06T22-40-12-01a1143b-9a5d-7fe2-a170-05ab9ee8c622.jsonl",
+  "start_timestamp": "2026-10-07T12:21:39.765Z",
+  "end_timestamp": "2026-10-07T15:30:31.825992+00:00",
+  "elapsed_minutes": 188.86768320000002,
+  "baseline_before_release": {
+    "timestamp": "2026-10-07T12:21:29.103Z",
+    "usage": {
+      "input_tokens": 47136498,
+      "cached_input_tokens": 45915008,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 243230,
+      "reasoning_output_tokens": 93950,
+      "total_tokens": 47379728
+    }
+  },
+  "last_token_count": {
+    "timestamp": "2026-10-07T15:29:44.584Z",
+    "usage": {
+      "input_tokens": 58502727,
+      "cached_input_tokens": 56987136,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 301066,
+      "reasoning_output_tokens": 118279,
+      "total_tokens": 58803793
+    }
+  },
+  "token_delta": {
+    "input_tokens": 11366229,
+    "cached_input_tokens": 11072128,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 57836,
+    "reasoning_output_tokens": 24329,
+    "total_tokens": 11424065
+  },
+  "native_pass_wall_seconds": 8643.131527830847,
+  "native_compiler_cpu_seconds": 16234.642709
+}

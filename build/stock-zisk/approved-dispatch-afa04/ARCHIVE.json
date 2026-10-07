@@ -1,0 +1,10 @@
+{
+  "root": "afa04ce1795ae24348f444a0d35f4901caacb015",
+  "path": "/home/cody/zesislar-archive/stock-zisk/approved-dispatch-afa04/059e6fa8382a193018383acfb993f734e89e79b2c40fe76d0fddacf10d46f7ba.tar.gz",
+  "sha256": "059e6fa8382a193018383acfb993f734e89e79b2c40fe76d0fddacf10d46f7ba",
+  "size_bytes": 35699990,
+  "manifest_sha256": "fd816a3196e35551b717e14943c9d2ec6e2fafbd084f44d57bd12c9000691c26",
+  "members": 7829,
+  "source_records": 7828,
+  "all_member_hashes_verified": true
+}
