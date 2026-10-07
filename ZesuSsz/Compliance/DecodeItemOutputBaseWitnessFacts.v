@@ -34,3 +34,15 @@ Qed.
 Print Assumptions decodeItemOutputBaseOffset.
 Print Assumptions decodeItemOutputBaseOffsetHint.
 Print Assumptions decodeItemFlagUpdatedBaseBound.
+
+Lemma decodeItemOutputOffset8 (args : DecodeItemArgs) :
+  Z.of_nat 8 = decodeItemOutputPointer args + 8 - decodeItemOutputPointer args.
+Proof. lia. Qed.
+
+#[export] Instance decodeItemOutputOffset8Hint (args : DecodeItemArgs) :
+  SimplAnd (Z.of_nat 8 =
+    decodeItemOutputPointer args + 8 - decodeItemOutputPointer args) True.
+Proof. unfold SimplAnd; split; [intros _; apply decodeItemOutputOffset8 | intros _; exact I]. Qed.
+
+Print Assumptions decodeItemOutputOffset8.
+Print Assumptions decodeItemOutputOffset8Hint.
