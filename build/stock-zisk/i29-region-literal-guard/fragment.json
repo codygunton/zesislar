@@ -1,0 +1,17 @@
+{
+  "item": "I29-698c-region-literal-guard",
+  "generated_artifacts": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/build/stock-zisk/i29-region-literal-guard/REPORT.json",
+      "sha256": "d2c14c5ac4dc340b7c021c1e74fc8a2f8b6e344743b776a1edc6e09072b69861",
+      "archive": "/home/cody/zesislar-archive/sha256/d2/d2c14c5ac4dc340b7c021c1e74fc8a2f8b6e344743b776a1edc6e09072b69861",
+      "bytes": 8748
+    }
+  ],
+  "evidence_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-i29-698c/build/stock-zisk/i29-region-literal-guard/archive-index.json",
+    "sha256": "cf801e9a2c47d4e3efbad2459998f64201154e79f42cbba6c7d765eb12c2ff37",
+    "archive": "/home/cody/zesislar-archive/sha256/cf/cf801e9a2c47d4e3efbad2459998f64201154e79f42cbba6c7d765eb12c2ff37",
+    "bytes": 12384894
+  }
+}
