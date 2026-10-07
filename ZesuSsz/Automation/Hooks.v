@@ -812,6 +812,24 @@ Ltac zesu_defer_unresolved_sidecondition_if_enabled :=
       zesu_condition_has_unresolved_evar condition
   end.
 
+Class ZesuStepEvarImplicationGuard : Prop :=
+  zesu_step_evar_implication_guard : True.
+
+(* Keep unresolved implication premises out of typeclass simplification. *)
+Ltac zesu_defer_unresolved_implication_if_enabled :=
+  let _ := constr:(_ : ZesuStepEvarImplicationGuard) in
+  lazymatch goal with
+  | |- ?premise -> _ =>
+      let sort := type of premise in
+      constr_eq sort Prop;
+      zesu_condition_has_unresolved_evar premise
+  end.
+
+Ltac liImpl ::=
+  tryif zesu_defer_unresolved_implication_if_enabled
+  then fail 0 "unresolved implication premise"
+  else normalize_and_simpl_impl false.
+
 Class ZesuStepPureWitnessConstraints : Prop :=
   zesu_step_pure_witness_constraints : True.
 
