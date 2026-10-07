@@ -1,0 +1,32 @@
+{
+  "attempt001": {
+    "PRESERVED-FIRST-ERROR.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/55/552d65a34dd4d677a2703dee6e9ba55f083214fe904473103756d47bfed3ac5c",
+      "bytes": 380,
+      "sha256": "552d65a34dd4d677a2703dee6e9ba55f083214fe904473103756d47bfed3ac5c"
+    },
+    "gate.log": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c1/c1d7718a6e00bdfb49df6b098e25f59a5d350e5184e7cc1ec478bb2a46a788da",
+      "bytes": 4691,
+      "sha256": "c1d7718a6e00bdfb49df6b098e25f59a5d350e5184e7cc1ec478bb2a46a788da"
+    },
+    "result.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/30/30f1b36d38806d3715c60d795e65bb5c04b6992fc2e1fd9542c32bd79550ae75",
+      "bytes": 569,
+      "sha256": "30f1b36d38806d3715c60d795e65bb5c04b6992fc2e1fd9542c32bd79550ae75"
+    }
+  },
+  "measurement_limit": "The first gate stopped before Coq signature compilation.",
+  "setup_repair": {
+    "FOCUSED-CHECK.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/f9/f9a0d87c1a98a625355261e87e0692ace19903d736cd7cdfac5e97a1d57e3a27",
+      "bytes": 481,
+      "sha256": "f9a0d87c1a98a625355261e87e0692ace19903d736cd7cdfac5e97a1d57e3a27"
+    },
+    "SOURCE-LINK-REPAIR.json": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/6f/6f839c69f02f7fb8faab745c104c162d7662f823af716797a9419622bb498ae9",
+      "bytes": 1480,
+      "sha256": "6f839c69f02f7fb8faab745c104c162d7662f823af716797a9419622bb498ae9"
+    }
+  }
+}

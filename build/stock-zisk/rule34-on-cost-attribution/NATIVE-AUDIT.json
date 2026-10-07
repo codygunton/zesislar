@@ -1,0 +1,1006 @@
+{
+  "attempts": [
+    {
+      "bound": 1280,
+      "compiler_cpu_seconds": 455.129625,
+      "compiler_elapsed_seconds": 456.7359804601874,
+      "compiler_exit": 1,
+      "count_reached": 1280,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-bound1280-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=457219 rss_kb=2731744\n",
+      "name": "rule34-cost-bisection-bound1280-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2733584,
+      "raw_final_goal_count": 32,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-bound1280-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a09c23e0c4b3758d1c19e60a550dc7ab6fae4061829ba32f7d4cf39d7d5693a",
+          "bytes": 7832,
+          "sha256": "4a09c23e0c4b3758d1c19e60a550dc7ab6fae4061829ba32f7d4cf39d7d5693a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-bound1280-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/32/32446de8bf75067dc573191849cc315b288a260af0037ef37dfbda8b627f07e1",
+          "bytes": 2387843,
+          "sha256": "32446de8bf75067dc573191849cc315b288a260af0037ef37dfbda8b627f07e1"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-bound1280-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/32/32ac0cf97eda196191069ddc524eb9d4946c6ff6f5d4df8d79c6dfe26476aa87",
+          "bytes": 20523,
+          "sha256": "32ac0cf97eda196191069ddc524eb9d4946c6ff6f5d4df8d79c6dfe26476aa87"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-bound1280-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 1408,
+      "compiler_cpu_seconds": 556.896081,
+      "compiler_elapsed_seconds": 558.8572083041072,
+      "compiler_exit": 1,
+      "count_reached": 1408,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-upper-bound1408-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=559328 rss_kb=2791276\n",
+      "name": "rule34-cost-bisection-upper-bound1408-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2793132,
+      "raw_final_goal_count": 34,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-upper-bound1408-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/f2/f2e8cddb5848e0d6da7ee65d3e47def86bdc3e83280ed497435bc576f3d1ffc0",
+          "bytes": 7844,
+          "sha256": "f2e8cddb5848e0d6da7ee65d3e47def86bdc3e83280ed497435bc576f3d1ffc0"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-upper-bound1408-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/c0/c0acf0efea7b5152a8d859f129b634a8c5e9b08530f8783a42d5e9592e81b361",
+          "bytes": 2387891,
+          "sha256": "c0acf0efea7b5152a8d859f129b634a8c5e9b08530f8783a42d5e9592e81b361"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-upper-bound1408-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/e3/e343317e8ceeac7b5b7090803c9e1ce9822fd32849d020ac2485fcf9849b9b36",
+          "bytes": 20523,
+          "sha256": "e343317e8ceeac7b5b7090803c9e1ce9822fd32849d020ac2485fcf9849b9b36"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bisection-upper-bound1408-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 1,
+      "compiler_cpu_seconds": 1.20124,
+      "compiler_elapsed_seconds": 1.263729128986597,
+      "compiler_exit": 1,
+      "count_reached": 1,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound001-002/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=1650 rss_kb=976240\n",
+      "name": "rule34-cost-bound001-002",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 977328,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound001-002/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/d7/d7dcbd7fec9b055e241fecc1e5c4d7eb8435e7b4c93c29811e2576e45cf61aa7",
+          "bytes": 7811,
+          "sha256": "d7dcbd7fec9b055e241fecc1e5c4d7eb8435e7b4c93c29811e2576e45cf61aa7"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound001-002/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/f4/f49964e4ab46e64c4899008f908b68dbd6d679c3721239ad2499850101469eab",
+          "bytes": 2382768,
+          "sha256": "f49964e4ab46e64c4899008f908b68dbd6d679c3721239ad2499850101469eab"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound001-002/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/04/04ac7a8fad391d87310cb0a01afb0099c6f51ba8f791867280ec95560d486536",
+          "bytes": 19988,
+          "sha256": "04ac7a8fad391d87310cb0a01afb0099c6f51ba8f791867280ec95560d486536"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound001-002/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 2,
+      "compiler_cpu_seconds": 1.763817,
+      "compiler_elapsed_seconds": 1.797926144907251,
+      "compiler_exit": 1,
+      "count_reached": 2,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound002-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=3708 rss_kb=976388\n",
+      "name": "rule34-cost-bound002-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 977464,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound002-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/33/3309268333e33a0b6a2225ced4f08e6566aa972205851d4ee94b3e3ea8a51854",
+          "bytes": 7811,
+          "sha256": "3309268333e33a0b6a2225ced4f08e6566aa972205851d4ee94b3e3ea8a51854"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound002-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/25/2536c7b6c2fbf26ff7a5b81e752bdd7326d1b7d4d35ad52f2faabb9abe07eaf2",
+          "bytes": 2382768,
+          "sha256": "2536c7b6c2fbf26ff7a5b81e752bdd7326d1b7d4d35ad52f2faabb9abe07eaf2"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound002-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/0c/0c1b2d0900abf515a3d9d9cd791ba0c05669f2cbaf384285d12b45f5ff15f053",
+          "bytes": 19988,
+          "sha256": "0c1b2d0900abf515a3d9d9cd791ba0c05669f2cbaf384285d12b45f5ff15f053"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound002-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 4,
+      "compiler_cpu_seconds": 2.165254,
+      "compiler_elapsed_seconds": 2.179149383911863,
+      "compiler_exit": 1,
+      "count_reached": 4,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound004-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=2913 rss_kb=976408\n",
+      "name": "rule34-cost-bound004-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 979392,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound004-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/de/de6b5a2c60a00defff30f871114ad7e7b28e51ee2bd2bd8b6c5d5a6a991028c3",
+          "bytes": 7812,
+          "sha256": "de6b5a2c60a00defff30f871114ad7e7b28e51ee2bd2bd8b6c5d5a6a991028c3"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound004-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/bf/bf28d81a24714ee30fa78730b1b080f11c2dbb0ae63a3fd46ff1c2e81a42fe3e",
+          "bytes": 2382768,
+          "sha256": "bf28d81a24714ee30fa78730b1b080f11c2dbb0ae63a3fd46ff1c2e81a42fe3e"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound004-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/a7/a7b1e0d457638d5b96c028fbd7ec9e7f54b63e425a96fa55f00b3394910f083a",
+          "bytes": 19988,
+          "sha256": "a7b1e0d457638d5b96c028fbd7ec9e7f54b63e425a96fa55f00b3394910f083a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound004-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 8,
+      "compiler_cpu_seconds": 2.8608200000000004,
+      "compiler_elapsed_seconds": 2.8835421761032194,
+      "compiler_exit": 1,
+      "count_reached": 8,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound008-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=3852 rss_kb=975544\n",
+      "name": "rule34-cost-bound008-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 977776,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound008-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/ed/ed559b5499d89dfa6186979c556015148aa855179c619bc72e2420595d13348f",
+          "bytes": 7825,
+          "sha256": "ed559b5499d89dfa6186979c556015148aa855179c619bc72e2420595d13348f"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound008-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/44/44c365cbe71a97f284099cf0d5ea668b9b4f2fe3d11af0e274704b4a16d21460",
+          "bytes": 2382768,
+          "sha256": "44c365cbe71a97f284099cf0d5ea668b9b4f2fe3d11af0e274704b4a16d21460"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound008-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/0e/0ecec2bace9fef8b77af9866a0502a05fe4a2f39b31b474e4254765be210268a",
+          "bytes": 19988,
+          "sha256": "0ecec2bace9fef8b77af9866a0502a05fe4a2f39b31b474e4254765be210268a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound008-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 16,
+      "compiler_cpu_seconds": 3.153527,
+      "compiler_elapsed_seconds": 3.188999871024862,
+      "compiler_exit": 1,
+      "count_reached": 16,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound016-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=3742 rss_kb=975328\n",
+      "name": "rule34-cost-bound016-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 977568,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound016-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/6c/6c0353ef04f9bef62f6f5b2c3272a1850495daba4a82b98e76802bdf7c33ebcc",
+          "bytes": 7814,
+          "sha256": "6c0353ef04f9bef62f6f5b2c3272a1850495daba4a82b98e76802bdf7c33ebcc"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound016-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/e3/e33229968824c2585fadb92d15573f4500c00e341bc24f420f06cea760845ef2",
+          "bytes": 2382769,
+          "sha256": "e33229968824c2585fadb92d15573f4500c00e341bc24f420f06cea760845ef2"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound016-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/d3/d3e66e371e18b13dbbe1fd0610f8d9f505ec8882216f3fc05dd93bc841ed83d4",
+          "bytes": 19989,
+          "sha256": "d3e66e371e18b13dbbe1fd0610f8d9f505ec8882216f3fc05dd93bc841ed83d4"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound016-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 32,
+      "compiler_cpu_seconds": 5.198769,
+      "compiler_elapsed_seconds": 5.238383961142972,
+      "compiler_exit": 1,
+      "count_reached": 32,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound032-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=5679 rss_kb=986448\n",
+      "name": "rule34-cost-bound032-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 987616,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound032-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/9f/9f162de3863c8e55006536303d0ac2f04a2b837dc5d03954414a910627b1e005",
+          "bytes": 7815,
+          "sha256": "9f162de3863c8e55006536303d0ac2f04a2b837dc5d03954414a910627b1e005"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound032-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/70/70ccd01638007118e9850a7e2901d42a755e4f24b37168e49a74656812e19171",
+          "bytes": 2382769,
+          "sha256": "70ccd01638007118e9850a7e2901d42a755e4f24b37168e49a74656812e19171"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound032-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/b2/b24716b904997a23109984f0e23550718c9803e3756eab04e5ae1033dda623cf",
+          "bytes": 19989,
+          "sha256": "b24716b904997a23109984f0e23550718c9803e3756eab04e5ae1033dda623cf"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound032-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 64,
+      "compiler_cpu_seconds": 10.152953,
+      "compiler_elapsed_seconds": 10.186850229045376,
+      "compiler_exit": 1,
+      "count_reached": 64,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound064-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=10672 rss_kb=1020396\n",
+      "name": "rule34-cost-bound064-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 1020684,
+      "raw_final_goal_count": 1,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound064-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/d1/d1f4f359854ea1a1df1c5364c681ca2d2ab91fb876482aa0c18c859142d76c27",
+          "bytes": 7821,
+          "sha256": "d1f4f359854ea1a1df1c5364c681ca2d2ab91fb876482aa0c18c859142d76c27"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound064-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/e5/e52a651c8d59c07f5b982e39113f29fc33c6525d6f2024404363c0d313da9196",
+          "bytes": 2382769,
+          "sha256": "e52a651c8d59c07f5b982e39113f29fc33c6525d6f2024404363c0d313da9196"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound064-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/02/02f20c3c6a345065233cd7035e7062484a89fb74c005344dfcfa9ca1835144d8",
+          "bytes": 19989,
+          "sha256": "02f20c3c6a345065233cd7035e7062484a89fb74c005344dfcfa9ca1835144d8"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound064-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 128,
+      "compiler_cpu_seconds": 269.358679,
+      "compiler_elapsed_seconds": 270.0962960529141,
+      "compiler_exit": 1,
+      "count_reached": 128,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound128-001/Diagnostic.v\", line 319, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=271039 rss_kb=1936692\n",
+      "name": "rule34-cost-bound128-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 1938544,
+      "raw_final_goal_count": 3,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound128-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/ba/bacd295a62a9f0256041fe04a95da071dee0b59f0d9f508b1a766944a3135219",
+          "bytes": 7825,
+          "sha256": "bacd295a62a9f0256041fe04a95da071dee0b59f0d9f508b1a766944a3135219"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound128-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/fe/feed9968d891313039ec86d40f76d947a444f76fce9e23f81c9f5cd50ddd53bd",
+          "bytes": 2382770,
+          "sha256": "feed9968d891313039ec86d40f76d947a444f76fce9e23f81c9f5cd50ddd53bd"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound128-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/b4/b47a73ceea9fd0fc9983a5fbac646337a599fed8212e064bcae013a964c87c36",
+          "bytes": 19990,
+          "sha256": "b47a73ceea9fd0fc9983a5fbac646337a599fed8212e064bcae013a964c87c36"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-bound128-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 1024,
+      "compiler_cpu_seconds": 208.550661,
+      "compiler_elapsed_seconds": 209.3301924879197,
+      "compiler_exit": 1,
+      "count_reached": 1024,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound1024-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=209862 rss_kb=2516084\n",
+      "name": "rule34-cost-light-bound1024-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2517040,
+      "raw_final_goal_count": 25,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound1024-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/35/354245abfbe15d156f21c6d2113feb3d9c159b814648ac9271531ae662dc8273",
+          "bytes": 7823,
+          "sha256": "354245abfbe15d156f21c6d2113feb3d9c159b814648ac9271531ae662dc8273"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound1024-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/d6/d6c14318060405c3135425e0e8a77fb1e25834bee3af479d7d9c3a772d066c50",
+          "bytes": 2388512,
+          "sha256": "d6c14318060405c3135425e0e8a77fb1e25834bee3af479d7d9c3a772d066c50"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound1024-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/74/741ff078bb0c6318d3877d672c8e473f411abc789aaab252ceb5f01934d9b61c",
+          "bytes": 20499,
+          "sha256": "741ff078bb0c6318d3877d672c8e473f411abc789aaab252ceb5f01934d9b61c"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound1024-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 128,
+      "compiler_cpu_seconds": 8.681301,
+      "compiler_elapsed_seconds": 8.74161556805484,
+      "compiler_exit": 1,
+      "count_reached": 128,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound128-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=9186 rss_kb=1063256\n",
+      "name": "rule34-cost-light-bound128-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 1063972,
+      "raw_final_goal_count": 3,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound128-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/23/2341a3383555a7d4d7304baed42b7e24a3e657f893a9631b7f9635c158b9e55d",
+          "bytes": 7813,
+          "sha256": "2341a3383555a7d4d7304baed42b7e24a3e657f893a9631b7f9635c158b9e55d"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound128-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/89/8996d1859d69dc5d5a1d521d91d2c7532f5ac37867c29da16b419bd15a94a952",
+          "bytes": 2388503,
+          "sha256": "8996d1859d69dc5d5a1d521d91d2c7532f5ac37867c29da16b419bd15a94a952"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound128-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/d5/d54a8f750e553c3c3821e8bea67487df0b769b81f9917d9c50b9c3855f735088",
+          "bytes": 20498,
+          "sha256": "d54a8f750e553c3c3821e8bea67487df0b769b81f9917d9c50b9c3855f735088"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound128-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 256,
+      "compiler_cpu_seconds": 19.915860000000002,
+      "compiler_elapsed_seconds": 19.986786633031443,
+      "compiler_exit": 1,
+      "count_reached": 256,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound256-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=20452 rss_kb=1261728\n",
+      "name": "rule34-cost-light-bound256-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 1263108,
+      "raw_final_goal_count": 8,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound256-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/3d/3d5234ac696e5a3500f28b27b21cdd690ae6cd669d47e2918a4f9b10fdc0936f",
+          "bytes": 7826,
+          "sha256": "3d5234ac696e5a3500f28b27b21cdd690ae6cd669d47e2918a4f9b10fdc0936f"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound256-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/a0/a035ba5f757b81f5165680ccb3ae4bca5206cb091bc925eb21d728112fa10a4a",
+          "bytes": 2388503,
+          "sha256": "a035ba5f757b81f5165680ccb3ae4bca5206cb091bc925eb21d728112fa10a4a"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound256-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/f3/f3945bdb414db5eb7e54570bb3f627e6cce59d8579799aa7e101bef03b037ed6",
+          "bytes": 20498,
+          "sha256": "f3945bdb414db5eb7e54570bb3f627e6cce59d8579799aa7e101bef03b037ed6"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound256-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 512,
+      "compiler_cpu_seconds": 28.357039000000004,
+      "compiler_elapsed_seconds": 28.46754255797714,
+      "compiler_exit": 1,
+      "count_reached": 512,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound512-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=28961 rss_kb=1363992\n",
+      "name": "rule34-cost-light-bound512-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 1365496,
+      "raw_final_goal_count": 13,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound512-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/6d/6d1add3c81b24eddc5ba94685638029e8d6c7d7ed4badc0c8202995758d55096",
+          "bytes": 7827,
+          "sha256": "6d1add3c81b24eddc5ba94685638029e8d6c7d7ed4badc0c8202995758d55096"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound512-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/28/2850a7e73e6187b5b73fbe9b6b366f47eddc6262543f34a5e9e55202c5ed0d92",
+          "bytes": 2388503,
+          "sha256": "2850a7e73e6187b5b73fbe9b6b366f47eddc6262543f34a5e9e55202c5ed0d92"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound512-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/eb/ebbbc3f02eb6cb0585fdc243ca8c32eba64c80a9945fbfadcbec33558b437741",
+          "bytes": 20498,
+          "sha256": "ebbbc3f02eb6cb0585fdc243ca8c32eba64c80a9945fbfadcbec33558b437741"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-light-bound512-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 1296,
+      "compiler_cpu_seconds": 519.237614,
+      "compiler_elapsed_seconds": 521.2638732758351,
+      "compiler_exit": 1,
+      "count_reached": 1296,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/Diagnostic.v\", line 338, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=522147 rss_kb=2727280\n",
+      "name": "rule34-cost-profile-bound1296-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2727776,
+      "raw_final_goal_count": 33,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/22/22b5e70e543c6680693ef67c2a191284641aa5c3262b44de2326430d75299b67",
+          "bytes": 7828,
+          "sha256": "22b5e70e543c6680693ef67c2a191284641aa5c3262b44de2326430d75299b67"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/0a/0a1b5c027a61fee87ea5ddf09763b2bb9c35ee2b8681e45d34243628b7274a57",
+          "bytes": 2388388,
+          "sha256": "0a1b5c027a61fee87ea5ddf09763b2bb9c35ee2b8681e45d34243628b7274a57"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/71/718984bf00bcbb211e6697c43367d18b5c6d9ead1b266c66a4367b211aaf4d7c",
+          "bytes": 20913,
+          "sha256": "718984bf00bcbb211e6697c43367d18b5c6d9ead1b266c66a4367b211aaf4d7c"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 1536,
+      "compiler_cpu_seconds": 801.247475,
+      "compiler_elapsed_seconds": 804.549748676829,
+      "compiler_exit": 1,
+      "count_reached": 1536,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound1536-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=804969 rss_kb=2852216\n",
+      "name": "rule34-cost-targeted-bound1536-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2852924,
+      "raw_final_goal_count": 36,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound1536-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/59/596776589f36aa65f447351852c77d7dc0e61f5dc38c4c3d9e3b025983a5908e",
+          "bytes": 7829,
+          "sha256": "596776589f36aa65f447351852c77d7dc0e61f5dc38c4c3d9e3b025983a5908e"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound1536-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/0c/0c09c6f1fd98cc7ee101ca3803a22a05531c96052284832ddea85fc958ad7e60",
+          "bytes": 2387805,
+          "sha256": "0c09c6f1fd98cc7ee101ca3803a22a05531c96052284832ddea85fc958ad7e60"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound1536-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/fc/fc374ec39ab9bb6edd029f3330809305cfb4570d580fd8a0f608b618efa7be39",
+          "bytes": 20511,
+          "sha256": "fc374ec39ab9bb6edd029f3330809305cfb4570d580fd8a0f608b618efa7be39"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound1536-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 943,
+      "compiler_cpu_seconds": 135.751873,
+      "compiler_elapsed_seconds": 136.2384292280767,
+      "compiler_exit": 1,
+      "count_reached": 943,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound943-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=136575 rss_kb=2382296\n",
+      "name": "rule34-cost-targeted-bound943-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2383632,
+      "raw_final_goal_count": 23,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound943-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/2c/2ca1b18cd7d972687daaa10400e653c6772d9aed9ac878ae89635d9b6dcf5027",
+          "bytes": 7827,
+          "sha256": "2ca1b18cd7d972687daaa10400e653c6772d9aed9ac878ae89635d9b6dcf5027"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound943-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/2d/2df8b614038084fb56664443cc4d6afab1aadc1ac9b23cad3aae92550bf59ac0",
+          "bytes": 2387796,
+          "sha256": "2df8b614038084fb56664443cc4d6afab1aadc1ac9b23cad3aae92550bf59ac0"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound943-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/56/56383b64938e7690d7a91078c12ba7f96720ca092357fbca28acedc1943b189b",
+          "bytes": 20510,
+          "sha256": "56383b64938e7690d7a91078c12ba7f96720ca092357fbca28acedc1943b189b"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound943-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 944,
+      "compiler_cpu_seconds": 137.765212,
+      "compiler_elapsed_seconds": 138.24546646885574,
+      "compiler_exit": 1,
+      "count_reached": 944,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound944-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=138806 rss_kb=2385100\n",
+      "name": "rule34-cost-targeted-bound944-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 2387860,
+      "raw_final_goal_count": 24,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound944-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/01/018f1792c8519c636d4ba045cdc14cb0232519c6a196949bc3eba36cd2724335",
+          "bytes": 7827,
+          "sha256": "018f1792c8519c636d4ba045cdc14cb0232519c6a196949bc3eba36cd2724335"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound944-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/9e/9ed61803f7d5524dc157e5f15b20f30b64fe37994a775e0655af29616ff7777f",
+          "bytes": 2387796,
+          "sha256": "9ed61803f7d5524dc157e5f15b20f30b64fe37994a775e0655af29616ff7777f"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound944-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/82/825c78664b3b82135a06e44a352b60649619c634162cee4a057a6e8c5b693c60",
+          "bytes": 20510,
+          "sha256": "825c78664b3b82135a06e44a352b60649619c634162cee4a057a6e8c5b693c60"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-targeted-bound944-001/Diagnostic.v"
+      }
+    },
+    {
+      "bound": 2048,
+      "compiler_cpu_seconds": 1332.186865,
+      "compiler_elapsed_seconds": 1337.1509372780565,
+      "compiler_exit": 1,
+      "count_reached": 2048,
+      "counter_budget_exhausted": true,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/Diagnostic.v\", line 332, characters 0-4:\nError:  (in proof DesignedBoundary_800d6ac4): Attempt to save an incomplete proof\n\nexit=1 ms=1337491 rss_kb=3307992\n",
+      "name": "rule34-cost-terminal-bound2048-001",
+      "named_qed_attempted": true,
+      "peak_rss_kib": 3311484,
+      "raw_final_goal_count": 49,
+      "recipe": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/00/00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649",
+          "bytes": 4308,
+          "sha256": "00920e6f8ef2d509ce577c00bc6fcd43e49723358a58634a5a1cc2a488712649"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/sealed-coqc-recipe.json"
+      },
+      "resource_limit": null,
+      "result": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/a9/a9d9c2b45ba0f5bddc914630c2512640dcbbf1801349a9d644b0252bddb1f435",
+          "bytes": 7834,
+          "sha256": "a9d9c2b45ba0f5bddc914630c2512640dcbbf1801349a9d644b0252bddb1f435"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/result.json"
+      },
+      "sealed_inputs": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/3e/3e1e609694e194958171d41cac049593b8dc4d992ee2e2263216ec2b75f7a146",
+          "bytes": 2388253,
+          "sha256": "3e1e609694e194958171d41cac049593b8dc4d992ee2e2263216ec2b75f7a146"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/run-inputs.json"
+      },
+      "source": {
+        "archive": {
+          "archive_path": "/home/cody/zesislar-archive/sha256/31/314352b064de1002d9d254b8626bc28c339eb6ef3c16c077daf88a73cd1df298",
+          "bytes": 20523,
+          "sha256": "314352b064de1002d9d254b8626bc28c339eb6ef3c16c077daf88a73cd1df298"
+        },
+        "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/Diagnostic.v"
+      }
+    }
+  ],
+  "baseline_switches": 23,
+  "candidate_tree": "a1a861399ead593f1b4ba246b35ebcc458e76cb3",
+  "complete_attempt_archive": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ee/ee70722bcc682fbc0904cd911105a1daf20915e1c4b3a867901dd751e860b902",
+      "bytes": 168558,
+      "sha256": "ee70722bcc682fbc0904cd911105a1daf20915e1c4b3a867901dd751e860b902"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-attribution-preparation-001/PRESERVED-COST-ATTEMPTS-006.json"
+  },
+  "complete_attempt_archive_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ad/ad4e4c41c9a36c5af2a39b54827deaeedbc87dd5f70746e46b85d217114bbd77",
+      "bytes": 229,
+      "sha256": "ad4e4c41c9a36c5af2a39b54827deaeedbc87dd5f70746e46b85d217114bbd77"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-attribution-preparation-001/ARCHIVE-AUDIT-006.json"
+  },
+  "cpu_limit_seconds": 2400,
+  "entry": "0x800d6ac4",
+  "expansion_stopped": true,
+  "handoff": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/4a/4a5ec6c567e889581554d11853734769de18ba5a19cbfeb470e31f21d59441ed",
+      "bytes": 2888,
+      "sha256": "4a5ec6c567e889581554d11853734769de18ba5a19cbfeb470e31f21d59441ed"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-preparation-002/map-handoff.json"
+  },
+  "handoff_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/5c/5c661d7c84b346d49bf6f65b3ee878f9c4fb62bcfdc1feb0ce410f8ad7c901e5",
+      "bytes": 2333,
+      "sha256": "5c661d7c84b346d49bf6f65b3ee878f9c4fb62bcfdc1feb0ce410f8ad7c901e5"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-preparation-002/HANDOFF-AUDIT.json"
+  },
+  "hints": 15,
+  "historical_switches_off": 17,
+  "input_archive": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/5f/5f00243cc219db67958d8ad34f5d52831445c3a051bea3aeb51bdbd8e6332dd9",
+      "bytes": 5118014,
+      "sha256": "5f00243cc219db67958d8ad34f5d52831445c3a051bea3aeb51bdbd8e6332dd9"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-attribution-preparation-001/SEALED-SOURCE-ARCHIVE.json"
+  },
+  "light_full128_trace_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/35/35a0fd1bc1ac613910d425be6091d775a31e061389c4a42152c159282f13a30b",
+      "bytes": 686,
+      "sha256": "35a0fd1bc1ac613910d425be6091d775a31e061389c4a42152c159282f13a30b"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-attribution-preparation-001/TRACE-RECORD-AUDIT-128.json"
+  },
+  "memory_gib": 6,
+  "native_closure": false,
+  "original_capture": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/39/39e3d6f6ce26e9c51091a47a9d09e8bd17e97bbd960b1ad9cfd0f10742c22578",
+      "bytes": 416220,
+      "sha256": "39e3d6f6ce26e9c51091a47a9d09e8bd17e97bbd960b1ad9cfd0f10742c22578"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-preparation-002/original-active-goals.json"
+  },
+  "original_comparison": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/ed/edf25732bd58e1971c71198917dbf34b319e7b95b1cbd611cbc9a175394d3c6f",
+      "bytes": 128570,
+      "sha256": "edf25732bd58e1971c71198917dbf34b319e7b95b1cbd611cbc9a175394d3c6f"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/ORIGINAL-FINAL-COMPARISON.json"
+  },
+  "original_extra1200_cpu_attribution": "unresolved",
+  "original_twelve_goal_equivalence": false,
+  "profile_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/c1/c152b8cd86f7235eb23b59810642cd734418d7b80d1f77a59f8d1f4dcc8a6511",
+      "bytes": 59583,
+      "sha256": "c152b8cd86f7235eb23b59810642cd734418d7b80d1f77a59f8d1f4dcc8a6511"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/SCOPED-PROFILE-AUDIT.json"
+  },
+  "profile_native_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/aa/aa534f0a53ca13c2f6a0bb3fd0fb6695936bace86fac5e886ddd221e27a7bf35",
+      "bytes": 623915,
+      "sha256": "aa534f0a53ca13c2f6a0bb3fd0fb6695936bace86fac5e886ddd221e27a7bf35"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/PROFILE-COST-AUDIT.json"
+  },
+  "profile_output": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/71/7108a7805215353d4adf0f61067acdd9c628b441720f9b053a30b6501bb29f72",
+      "bytes": 47625,
+      "sha256": "7108a7805215353d4adf0f61067acdd9c628b441720f9b053a30b6501bb29f72"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/PROFILE-OUTPUT.txt"
+  },
+  "profile_residual_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/df/df57d0a2f2e1f75babf83695107e1066d99052b456bb1cc49d7947d34fbcce45",
+      "bytes": 77843,
+      "sha256": "df57d0a2f2e1f75babf83695107e1066d99052b456bb1cc49d7947d34fbcce45"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-profile-bound1296-001/RESIDUAL-AND-SOURCE-AUDIT.json"
+  },
+  "root": "9d4ecda138584fac3744e44234ccf2a3f0df9aeb",
+  "scheduler_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/24/24759c0277d617ce9f139533541c7a1e6868e87e1b6f71644fe3a4ecc7465b67",
+      "bytes": 2271,
+      "sha256": "24759c0277d617ce9f139533541c7a1e6868e87e1b6f71644fe3a4ecc7465b67"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-attribution-preparation-001/FROZEN-SCHEDULER-AUDIT.json"
+  },
+  "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+  "switches": 24,
+  "terminal_audit": {
+    "archive": {
+      "archive_path": "/home/cody/zesislar-archive/sha256/e8/e85433335150d9790c2c86b42362ceca520be2a2fc55baec7ee8ab900396ecaf",
+      "bytes": 1025928,
+      "sha256": "e85433335150d9790c2c86b42362ceca520be2a2fc55baec7ee8ab900396ecaf"
+    },
+    "source_path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule34-cost-9d-002/_build/rule34-cost-terminal-bound2048-001/TERMINAL-COST-AUDIT.json"
+  },
+  "theorem": "DesignedBoundary_800d6ac4",
+  "wall_limit": null
+}

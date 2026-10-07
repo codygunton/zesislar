@@ -1,0 +1,25 @@
+{
+  "accounting_scope": "RUSAGE_CHILDREN covers wrapper children. Guarded compiler scopes can fall outside this accounting.",
+  "children_max_rss_kib": 3037236,
+  "exit_code": 0,
+  "finalization_scope": "Only gate evidence and documentation changed after the passing gate.",
+  "gate001_preserved": true,
+  "log": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/75/7559cfd3426a64a93dea246b462c484c51305bcaea3186ce8d140096aa1fe239",
+    "bytes": 154040,
+    "sha256": "7559cfd3426a64a93dea246b462c484c51305bcaea3186ce8d140096aa1fe239"
+  },
+  "post_gate_audit": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0c/0cd08ae218238ef700c50ac29e56ec108bfb1869e1b59fb9c182e9d0ce657ead",
+    "bytes": 432,
+    "sha256": "0cd08ae218238ef700c50ac29e56ec108bfb1869e1b59fb9c182e9d0ce657ead"
+  },
+  "result": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/30/3018af5e91a6c0e62f3246eadabf2312a8489d6169fca1784bdc74bea2afd427",
+    "bytes": 571,
+    "sha256": "3018af5e91a6c0e62f3246eadabf2312a8489d6169fca1784bdc74bea2afd427"
+  },
+  "source_link_repair_preserved": true,
+  "wall_seconds": 596.3518115510233,
+  "workers": 6
+}

@@ -1,0 +1,21 @@
+{
+  "archive_records_match": 8306,
+  "native_certificate": null,
+  "package_files_checked": {
+    "FIXTURE-AUDIT.json": "c2df687cc36edb23f4b48a9c39017cc66a477f99cc0ca90987b403856d6a2c0f",
+    "GATE-HISTORY.json": "a4a3824b4232b8db050446dc6d30c4bc06797e670f9e3bc3e4424cf9bc7cc556",
+    "GATE.json": "32b0668db9105e7edc74567175d845db5181801fec14884fdafc75fab56ffa2f",
+    "METHOD.md": "a949b24ddecba36379b0f5dba11363a1590961539d02d0060fbd9b0e57b4b6a3",
+    "METRICS.md": "f86d82ba70c4a3ea4544701594805c6a322da5bf346eb6a280f11230c5cee001",
+    "NATIVE-AUDIT.json": "19cea836fc6617d52415bcb6af00eaf567021b1053be747650c9fec4fd74de63",
+    "REPORT.md": "c658681f93aef79a62461e8b6b264f07a05a3dd26c2b1f3cb2dcf1901b2b5bc7",
+    "RULING.json": "3d252dbc98918d37f5f4eba200fbc277854127d26e5a9cd8e6e51307b8c469b3"
+  },
+  "post_gate_live_input_audit": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/0c/0cd08ae218238ef700c50ac29e56ec108bfb1869e1b59fb9c182e9d0ce657ead",
+    "bytes": 432,
+    "sha256": "0cd08ae218238ef700c50ac29e56ec108bfb1869e1b59fb9c182e9d0ce657ead"
+  },
+  "production_changes": false,
+  "self_excluded": true
+}
