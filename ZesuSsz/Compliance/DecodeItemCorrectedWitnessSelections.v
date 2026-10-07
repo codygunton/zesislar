@@ -283,13 +283,65 @@ Proof.
     + rewrite Hbytes Hn. reflexivity.
 Qed.
 
+Lemma decodeItemFoldWordArrayIndex args n i payloadStart bytes :
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
+  decodeItemByteFoldFacts args n i payloadStart bytes ->
+  Z.of_nat (Z.to_nat (1 + i)) =
+    (bv_unsigned (bv_add (Z_to_bv 64 (payloadStart + i)) 0) -
+      decodeItemInputPointer args) `div` 1.
+Proof.
+  intros Hdomain Hfold.
+  assert (Hbounds : 0 <= payloadStart + i < bv_modulus 64).
+  { destruct (proj2 Hdomain) as (_ & _ & Hlayout).
+    unfold decodeItemEntryLayout in Hlayout.
+    destruct Hlayout as (Hpointer & Hlength & Hnowrap & Hrest).
+    destruct Hfold as (Hwidth & Hi & Hstart & Hbytes & Hcount & Hfits).
+    unfold word64Modulus in Hnowrap.
+    change (0 <= payloadStart + i < 2^64). lia. }
+  replace (bv_add (Z_to_bv 64 (payloadStart + i)) 0) with
+    (Z_to_bv 64 (payloadStart + i)) by bv_solve.
+  rewrite (Z_to_bv_small 64 _ Hbounds).
+  pose proof (decodeItemFoldArrayIndex args n i payloadStart bytes Hfold) as Hindex.
+  rewrite Z.add_0_r in Hindex. exact Hindex.
+Qed.
+
+Lemma decodeItemFoldWordArrayIndexWitness `{!islaG Sigma}
+    args n i payloadStart bytes (continuation : nat -> iProp Sigma) :
+  @ZesuPureFactIntro Sigma
+    (∃ index : nat,
+      ⌜Z.of_nat index =
+        (bv_unsigned (bv_add (Z_to_bv 64 (payloadStart + i)) 0) -
+          decodeItemInputPointer args) `div` 1⌝ ∗ continuation index)%I
+    (⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args⌝ ∗
+     ⌜decodeItemByteFoldFacts args n i payloadStart bytes⌝ ∗
+     continuation (Z.to_nat (1 + i)))%I.
+Proof.
+  unfold ZesuPureFactIntro. iIntros "(%Hdomain & %Hfold & Hcontinuation)".
+  iExists (Z.to_nat (1 + i)). iFrame. iPureIntro.
+  exact (decodeItemFoldWordArrayIndex args n i payloadStart bytes Hdomain Hfold).
+Qed.
+
 #[export] Hint Extern 1
   (@ZesuPureFactIntro ?Sigma
     (∃ index : nat,
-      ⌜Z.of_nat index = (?payloadStart + ?i + 0 - decodeItemInputPointer ?args) `div` 1⌝ ∗
+      ⌜Z.of_nat index = (?payloadStart + ?i + 0 - decodeItemInputPointer ?args) `div` ?divisor⌝ ∗
       ?continuation index)%I _) =>
+  lazymatch divisor with 1 => idtac | Z.of_N 1 => idtac end;
   match goal with Hfold : decodeItemByteFoldFacts args ?n i payloadStart ?bytes |- _ =>
     exact (@decodeItemFoldArrayIndexWitness Sigma _ args n i payloadStart bytes continuation)
+  end : typeclass_instances.
+
+#[export] Hint Extern 1
+  (@ZesuPureFactIntro ?Sigma
+    (∃ index : nat,
+      ⌜Z.of_nat index =
+        (bv_unsigned (bv_add (Z_to_bv 64 (?payloadStart + ?i)) 0) -
+          decodeItemInputPointer ?args) `div` ?divisor⌝ ∗ ?continuation index)%I _) =>
+  lazymatch divisor with 1 => idtac | Z.of_N 1 => idtac end;
+  match goal with
+  | Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args,
+    Hfold : decodeItemByteFoldFacts args ?n i payloadStart ?bytes |- _ =>
+    exact (@decodeItemFoldWordArrayIndexWitness Sigma _ args n i payloadStart bytes continuation)
   end : typeclass_instances.
 
 #[export] Hint Extern 1
@@ -306,6 +358,8 @@ Qed.
     end ] : typeclass_instances.
 
 Print Assumptions decodeItemFoldArrayIndex.
+Print Assumptions decodeItemFoldWordArrayIndex.
+Print Assumptions decodeItemFoldWordArrayIndexWitness.
 Print Assumptions decodeItemFoldSteppedCursor.
 Print Assumptions decodeItemFoldByteAtSuccessor.
 Print Assumptions decodeItemFoldSteppedAccumulator.
