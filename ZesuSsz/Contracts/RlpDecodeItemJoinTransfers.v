@@ -59,12 +59,27 @@ Definition decodeItemJoin6a24From6a14 `{!islaG Sigma} `{!threadG}
        oldAcc oldCursor loaded inputPrefix rest)
     (decodeItemEntryAt800d6a24 args inputPrefix rest).
 
+(* The backedge keeps args and frameBytes unchanged. These lemmas retain
+   only their pure facts; they do not prove machine preservation. *)
+Lemma decodeItemBackedgeDomainAtPreserved (args : DecodeItemArgs) :
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args.
+Proof. exact (fun Hdomain => Hdomain). Qed.
+
+Lemma decodeItemBackedgeSavedFrameFactsPreserved
+    (args : DecodeItemArgs) (frameBytes : list byte) :
+  decodeItemSavedFrameFacts args frameBytes ->
+  decodeItemSavedFrameFacts args frameBytes.
+Proof. exact (fun Hframe => Hframe). Qed.
+
 Definition decodeItemJoin6a24Backedge `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n i payloadStart : Z)
     (lengthBytes frameBytes : list byte) (loaded : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6a24 0x800d6a24
     (⌜i + 1 < n /\
+       decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
+       decodeItemSavedFrameFacts args frameBytes /\
        decodeItemFoldProvenance args false inputPrefix rest n payloadStart lengthBytes⌝ ∗
      "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 0x800d6a24) ∗
      decodeItemByteFoldStringHeader args n i payloadStart
@@ -88,6 +103,8 @@ Definition decodeItemJoin6ac4Backedge `{!islaG Sigma} `{!threadG}
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   decodeItemJoinTransferObligation 0x800d6ac4 0x800d6ac4
     (⌜i + 1 < n /\
+       decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
+       decodeItemSavedFrameFacts args frameBytes /\
        decodeItemFoldProvenance args true inputPrefix rest n payloadStart lengthBytes⌝ ∗
      "PC" ↦ᵣ RVal_Bits (Z_to_bv 64 0x800d6ac4) ∗
      decodeItemByteFoldListHeader args n i payloadStart
