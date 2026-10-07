@@ -1,0 +1,432 @@
+{
+  "source_root": "4877f4ed8c2340743389ad0b0f5a617a0371f3bc",
+  "candidate_tree": "3974a331fe07a55886e6a9a59eef805296265bbd",
+  "candidate_patch_sha256": "d4d9d43d90d97a3090b43658a823cff662d70728d0d6ecd99c50a3273a201f5a",
+  "candidate_status": "Evidence only. The pair shows no measured native progress. No candidate source enters this checkpoint.",
+  "comparison_entry": "0x800d69e8",
+  "lemma": "decodeItemJoin698cFrom69e8_correct",
+  "boundary": "supporting transfer consumed by Level 1; no whole Level 1 claim",
+  "statement_sha256": "5b43b7c6efed32b243b585279e540af1925bc58ea6fa3306b1dfe046acb4b3ba",
+  "primary_body_sha256": "65131e433bc698eab474ad157800471b3b0aa624cc000f56b1e7482ea4dae65f",
+  "policy": {
+    "cpu_seconds": 1200,
+    "memory_gib": 6,
+    "wall_seconds": null,
+    "named_qed": true
+  },
+  "scope": {
+    "off": {
+      "active_baseline": [
+        "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+        "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+        "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+        "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+        "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+        "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff",
+        "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+        "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+        "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+        "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+        "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+        "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard",
+        "SWITCH DISPATCH",
+        "ZesuStepPureFactExistential"
+      ],
+      "historical_inactive": [
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+      ],
+      "i39_active": false,
+      "effective_switches": 25
+    },
+    "on": {
+      "active_baseline": [
+        "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+        "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+        "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+        "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+        "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+        "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff",
+        "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+        "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+        "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+        "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+        "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+        "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+        "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+        "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+        "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+        "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard",
+        "SWITCH DISPATCH",
+        "ZesuStepPureFactExistential"
+      ],
+      "historical_inactive": [
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+      ],
+      "i39_active": true,
+      "effective_switches": 26
+    }
+  },
+  "mcp_exact_checks": 14,
+  "mcp_assumptions_each": [],
+  "mcp_health_interactive_compile_verify": true,
+  "native_helper_firing": "unmeasured; no invocation recorder exists in these arms",
+  "observed_effect": "Both captures are byte-identical. No residual progress or witness correction is measured.",
+  "residual_classes": [
+    "rest length encoding",
+    "rest field image at zero",
+    "rest field image at eight",
+    "rest equals pointer encoding",
+    "rest has eight bytes"
+  ],
+  "contexts_per_goal": 131,
+  "arms": {
+    "off": {
+      "result_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/off-001/result.json",
+      "result_sha256": "144c754af58f34f5a1f103e3ab224ee59369dffc461098020261386a83ef6695",
+      "evidence_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/off-001/evidence.json",
+      "evidence_sha256": "89eb99db5f97f6cd3c535fda32c5d5391d6d2fab061747d0668a8773dc95eb38",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/off-001/Boundary.v",
+      "source_sha256": "0361580001539ce76864bfec13bef3773e4b97afc16897689cb50b1f4a493165",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/off-001/compiler.log",
+      "compiler_log_sha256": "0d0a022f884036e226a2c2aca581fc5c4fd95bdcea7a597c3bc05d5034a42813",
+      "active_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/off-001/active-goals.json",
+      "active_capture_sha256": "3befabd6e8c6f459c43cdbf60f935b15ed63f5da9a310216a15c25a1c63096bd",
+      "active_goal_count": 5,
+      "compiler_exit": 1,
+      "compiler_cpu_seconds": 542.6223610000001,
+      "compiler_peak_rss_kib": 3614656,
+      "compiler_limit": null,
+      "scratch_exit": 1,
+      "outcome": "native-residual",
+      "named_qed_attempted": true,
+      "named_qed_failure": true,
+      "boundary_closed": false,
+      "level1_closed": false,
+      "termination_proved": false,
+      "assumption_verification": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "checked_seals": 10531,
+      "all_seals_match": true,
+      "effective_switches": 25,
+      "rule34": "ON",
+      "dispatch": "ON",
+      "historical_classes_active": []
+    },
+    "on": {
+      "result_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/on-001/result.json",
+      "result_sha256": "cf277d5a42b935a09da15197ed99c2d47db323ee73d743ddca387897da0fa874",
+      "evidence_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/on-001/evidence.json",
+      "evidence_sha256": "c359522ec34a7b74a79b498e536258e3fdeabc33f8a5358084056f8961ed8a25",
+      "source_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/on-001/Boundary.v",
+      "source_sha256": "86a73ff3f1363363df3d50398fe38f13e1a30acffe0a96220d1fef61f2d8f6dc",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/on-001/compiler.log",
+      "compiler_log_sha256": "95e839c4d8a11019dfe99176a54b1027a000bea9b76752dd1f51bfb60a858e0a",
+      "active_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/on-001/active-goals.json",
+      "active_capture_sha256": "3befabd6e8c6f459c43cdbf60f935b15ed63f5da9a310216a15c25a1c63096bd",
+      "active_goal_count": 5,
+      "compiler_exit": 1,
+      "compiler_cpu_seconds": 510.79754099999997,
+      "compiler_peak_rss_kib": 3630552,
+      "compiler_limit": null,
+      "scratch_exit": 1,
+      "outcome": "native-residual",
+      "named_qed_attempted": true,
+      "named_qed_failure": true,
+      "boundary_closed": false,
+      "level1_closed": false,
+      "termination_proved": false,
+      "assumption_verification": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "checked_seals": 10531,
+      "all_seals_match": true,
+      "effective_switches": 26,
+      "rule34": "ON",
+      "dispatch": "ON",
+      "historical_classes_active": []
+    }
+  },
+  "native_assumption_certificates": "unavailable; both named Qed commands fail",
+  "boundary_closed": false,
+  "level1_closed": false,
+  "termination_proved": false,
+  "capture_limits": [
+    "Some printed contexts and large fieldImage terms contain ellipses.",
+    "Actual shelf, stack, and given_up groups are unavailable."
+  ],
+  "metrics": {
+    "instruction_count": 6,
+    "branch_count": 1,
+    "loop_count": 0,
+    "handwritten_primary_lines": 5,
+    "off_cpu_seconds": 542.6223610000001,
+    "on_cpu_seconds": 510.79754099999997,
+    "off_peak_rss_kib": 3614656,
+    "on_peak_rss_kib": 3630552,
+    "cost_interpretation": "These single measurements do not establish a speed improvement.",
+    "token_total": null,
+    "token_accounting": "Unavailable. No estimate was substituted.",
+    "child_gate_seconds": 590.4489562299568,
+    "child_gate_workers": 6,
+    "child_gate_peak_child_rss_kib": 3039804,
+    "gate_rss_scope": "Maximum child RSS from RUSAGE_CHILDREN, not aggregate concurrent RSS."
+  },
+  "archive_index": {
+    "sha256": "5fc1cf4bf7f98dfb6769210d4259126d890149cfd030e911686305412e936143",
+    "archive_path": "/home/cody/zesislar-archive/sha256/5f/5fc1cf4bf7f98dfb6769210d4259126d890149cfd030e911686305412e936143",
+    "bytes": 4048974
+  },
+  "archive_audit": {
+    "checked_records": 10617,
+    "mismatches": [],
+    "content_addressed_index_checked": true
+  },
+  "key_records": {
+    "_build/i39-s33-comparison-001/pair-audit.json": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/pair-audit.json",
+      "sha256": "bba444f58189e77741c845a21fb28389bc095099af325310ea4c4efd7ac247bd",
+      "archive_path": "/home/cody/zesislar-archive/sha256/bb/bba444f58189e77741c845a21fb28389bc095099af325310ea4c4efd7ac247bd",
+      "bytes": 21060
+    },
+    "_build/i39-s33-comparison-001/candidate.patch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/candidate.patch",
+      "sha256": "d4d9d43d90d97a3090b43658a823cff662d70728d0d6ecd99c50a3273a201f5a",
+      "archive_path": "/home/cody/zesislar-archive/sha256/d4/d4d9d43d90d97a3090b43658a823cff662d70728d0d6ecd99c50a3273a201f5a",
+      "bytes": 9060
+    },
+    "_build/i39-s33-comparison-001/candidate.json": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/candidate.json",
+      "sha256": "81b7310c9de7bc2366500c0fb6b8f67a2dfa17b72af538254afd838c0b5a380f",
+      "archive_path": "/home/cody/zesislar-archive/sha256/81/81b7310c9de7bc2366500c0fb6b8f67a2dfa17b72af538254afd838c0b5a380f",
+      "bytes": 767
+    },
+    "_build/i39-s33-comparison-001/sealed-coqc-recipe.json": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-comparison-001/sealed-coqc-recipe.json",
+      "sha256": "ee726aefee32df5089ae6dbbe844a0dae4f656f4ed28dad4ccbe760509004a99",
+      "archive_path": "/home/cody/zesislar-archive/sha256/ee/ee726aefee32df5089ae6dbbe844a0dae4f656f4ed28dad4ccbe760509004a99",
+      "bytes": 4304
+    },
+    "_build/i39-s33-fixtures-001/mcp-results.json": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-fixtures-001/mcp-results.json",
+      "sha256": "edb6f02cc4f958db02afa0a53392f3d7f9149ae7c9ae71ce8c36a0081710df2c",
+      "archive_path": "/home/cody/zesislar-archive/sha256/ed/edb6f02cc4f958db02afa0a53392f3d7f9149ae7c9ae71ce8c36a0081710df2c",
+      "bytes": 187160
+    },
+    "_build/i39-s33-fixtures-001/REPORT.json": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33/_build/i39-s33-fixtures-001/REPORT.json",
+      "sha256": "48ad14ac84df91af7a220acbfc3b97724cc4394f72db73423d9639b46c209e48",
+      "archive_path": "/home/cody/zesislar-archive/sha256/48/48ad14ac84df91af7a220acbfc3b97724cc4394f72db73423d9639b46c209e48",
+      "bytes": 6569
+    }
+  },
+  "child_gate": {
+    "source_head": "4877f4ed8c2340743389ad0b0f5a617a0371f3bc",
+    "source_tree": "f461c61e2a32e944693698ac44ce2abbaf49b3b4",
+    "command": [
+      "make",
+      "check-fast",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33-evidence/_build/agents/worker2-child-platform-i39-s33-evidence"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 590.4489562299568,
+    "workers": 6,
+    "peak_children_rss_kib": 3039804,
+    "gate_log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33-evidence/_build/i39-s33-evidence-gate-001/gate.log",
+    "gate_log_sha256": "b70cb66daddffec9a50e767a9db5c1fbed1e0eb828cf6d2dbab02aa767df7cb5",
+    "pre_gate_native_seals": {
+      "off": {
+        "checked": 10531,
+        "mismatches": []
+      },
+      "on": {
+        "checked": 10531,
+        "mismatches": []
+      }
+    },
+    "post_gate_native_seals": {
+      "off": {
+        "checked": 10531,
+        "mismatches": []
+      },
+      "on": {
+        "checked": 10531,
+        "mismatches": []
+      }
+    },
+    "candidate_source_integrated": false,
+    "status": "passed",
+    "archive_records": {
+      "source-links.json": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33-evidence/_build/i39-s33-evidence-gate-001/source-links.json",
+        "sha256": "2c6b5aa73924765afcd0d0fdb3b5dfafde33463a983dfc889fe7a283b7bdf6ab",
+        "archive_path": "/home/cody/zesislar-archive/sha256/2c/2c6b5aa73924765afcd0d0fdb3b5dfafde33463a983dfc889fe7a283b7bdf6ab",
+        "bytes": 992
+      },
+      "launcher.py": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33-evidence/_build/i39-s33-evidence-gate-001/launcher.py",
+        "sha256": "258cf16c272194f86b7e6701acbeefa8fbffda3a69c8e802da41bb6024bc2486",
+        "archive_path": "/home/cody/zesislar-archive/sha256/25/258cf16c272194f86b7e6701acbeefa8fbffda3a69c8e802da41bb6024bc2486",
+        "bytes": 2173
+      },
+      "gate.log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33-evidence/_build/i39-s33-evidence-gate-001/gate.log",
+        "sha256": "b70cb66daddffec9a50e767a9db5c1fbed1e0eb828cf6d2dbab02aa767df7cb5",
+        "archive_path": "/home/cody/zesislar-archive/sha256/b7/b70cb66daddffec9a50e767a9db5c1fbed1e0eb828cf6d2dbab02aa767df7cb5",
+        "bytes": 158653
+      },
+      "result.json": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i39-s33-evidence/_build/i39-s33-evidence-gate-001/result.json",
+        "sha256": "6cc97edb8b15e304ae6c76e9667871f321f93b2f12ceae6fd93c3ad02c40b6a8",
+        "archive_path": "/home/cody/zesislar-archive/sha256/6c/6cc97edb8b15e304ae6c76e9667871f321f93b2f12ceae6fd93c3ad02c40b6a8",
+        "bytes": 1063
+      },
+      "worker-build-2-20261007-114935-child-a-i39-s33-evidence-check-fast-001.log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-114935-child-a-i39-s33-evidence-check-fast-001.log",
+        "sha256": "0494a5cd3ba9ecb1d8c90f6a2fae8443fa1e13fc4d4dddc305d80c461081177f",
+        "archive_path": "/home/cody/zesislar-archive/sha256/04/0494a5cd3ba9ecb1d8c90f6a2fae8443fa1e13fc4d4dddc305d80c461081177f",
+        "bytes": 917
+      }
+    }
+  },
+  "integration_status": "Evidence checkpoint only. The candidate is not a native repair.",
+  "queue": [
+    "evidence-only commit",
+    "parent archive review",
+    "I40 diagnostic design"
+  ],
+  "subsequent_spec_classification": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s63-match/REPORT.md",
+    "sha256": "30771054ff746a2fe185dd1bd2dc54fed61a3865835ea22794b2acea71922365",
+    "scope": "Earlier rule34 ON 6ac4 capture. Statement coverage does not establish native matching in this 69e8 pair."
+  },
+  "original_scope_imports": [
+    "Require Import ZesuSsz.Automation.All.",
+    "Require Import ZesuSsz.Automation.Switches.PureFactExistential.",
+    "Require Import isla.riscv64.riscv64.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.DecodeItemSelected.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.",
+    "Require Import ZesuSsz.Automation.Switches.InstructionLookup.",
+    "Require Import ZesuSsz.Automation.Switches.StackWrite.",
+    "Require Import ZesuSsz.Automation.Switches.RamFault.",
+    "Require Import ZesuSsz.Automation.Switches.RegionFault.",
+    "Require Import ZesuSsz.Automation.Switches.LowMask.",
+    "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress.",
+    "Require Import ZesuSsz.Automation.Switches.RecordWitness.",
+    "Require Import ZesuSsz.Automation.Switches.ArrayBounds.",
+    "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff.",
+    "Require Import ZesuSsz.Automation.Switches.ReturnBundle.",
+    "Require Import ZesuSsz.Automation.Switches.ReturnWand.",
+    "Require Import ZesuSsz.Automation.Switches.StrictSigned.",
+    "Require Import ZesuSsz.Automation.Switches.ListWitness.",
+    "Require Import ZesuSsz.Automation.Switches.TupleWitness.",
+    "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.",
+    "Require Import ZesuSsz.Automation.Switches.PureFactHints.",
+    "Require Import ZesuSsz.Automation.Switches.KnownPairWitness.",
+    "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints.",
+    "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection.",
+    "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard.",
+    "Require Import ZesuSsz.Automation.Switches.EvarImplicationGuard.",
+    "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization.",
+    "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor.",
+    "Require Import ZesuSsz.Compliance.DecodeItemBranchGuardFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemDataWitnessFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses.",
+    "Require Import ZesuSsz.Compliance.DecodeItemFoldZeroFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemShortListHandoffFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses.",
+    "Require Import ZesuSsz.Compliance.DecodeItemS40GuardFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.",
+    "Require Import ZesuSsz.Compliance.DecodeItemCanonicalAnchors.",
+    "Require Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemInitializationPureFacts.",
+    "Require Import ZesuSsz.Compliance.DecodeItemRawOutputFacts.",
+    "Require Import ZesuSsz.Automation.Switches.SwitchDispatch.",
+    "Require Import ZesuSsz.Compliance.DecodeItemOutputWitnessSelections.",
+    "Require Import ZesuSsz.Compliance.DecodeItemFoldExitFacts."
+  ],
+  "prior_archive_index": {
+    "sha256": "ecb7e24bd7362872351fbc93203678718ba4230b80b45a496def804eecaef67c",
+    "archive_path": "/home/cody/zesislar-archive/sha256/ec/ecb7e24bd7362872351fbc93203678718ba4230b80b45a496def804eecaef67c",
+    "bytes": 4047087
+  },
+  "idle_session_cleanup": {
+    "pet_pid": 2910402,
+    "transport_pid": 3999354,
+    "transport_owner": 3992466,
+    "rss_kib_before": 2877408,
+    "close_method": "SIGTERM of owned idle Pet only",
+    "process_state_after": "Z",
+    "rss_kib_after": 0,
+    "process_absent_after": false,
+    "current_owned_live_pets": 0,
+    "limit": "The transport retains the exited process as a zombie until its next reap."
+  }
+}
