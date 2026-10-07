@@ -1,0 +1,11 @@
+{
+  "source_report": "/home/cody/zesislar/.worktrees/worker1-spec-c/build/stock-zisk/spec-c-s69/REPORT.json",
+  "source_report_sha256": "b114c727def2c817de938d1a085930bf53e928b9f889e999937fd5f64b12e863",
+  "original_native_root": "afa04ce1795ae24348f444a0d35f4901caacb015",
+  "current_measurement_root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+  "native_entry": "The original DesignedEntry6960 binds EntryResources plus True and omits the caller instr_pre continuation.",
+  "hand_bridge": "The hand bridge separately owns decodeItemBranchContinuationAt and requires nonzero input. It covers 6974 only.",
+  "classification_limit": "This read-only comparison does not prove impossibility or classify every residual. It does not replace the frozen two-branch statement.",
+  "frozen_statements_and_debts_unchanged": true
+}

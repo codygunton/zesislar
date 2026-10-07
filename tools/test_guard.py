@@ -1141,10 +1141,28 @@ class GuardLockTest(unittest.TestCase):
                        capture_output=True, env=self.environment)
         self.assertFalse(log.exists())
         self.environment["GUARD_TEST_USED_GIB"] = "200"
-        subprocess.run(["timeout", "0.2", str(GUARD), "watch"],
-                       capture_output=True, env=self.environment)
-        self.assertIn("young.scope", log.read_text())
-        self.assertNotIn("old.scope", log.read_text())
+        # Delay the mock action beyond the former fixed timeout.
+        systemctl = self.bin / "systemctl"
+        systemctl.write_text(systemctl.read_text().replace(
+            "elif 'kill' in args or 'stop' in args:\n",
+            "elif 'kill' in args or 'stop' in args:\n import time;time.sleep(0.25)\n"))
+        process = subprocess.Popen([str(GUARD), "watch"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   text=True, env=self.environment)
+        actions = ""
+        try:
+            deadline = time.monotonic() + 3
+            while time.monotonic() < deadline and process.poll() is None:
+                actions = log.read_text() if log.exists() else ""
+                if "young.scope" in actions:
+                    break
+                time.sleep(0.02)
+        finally:
+            if process.poll() is None:
+                process.terminate()
+            stdout, stderr = process.communicate(timeout=3)
+        self.assertIn("young.scope", actions, f"stdout: {stdout}\nstderr: {stderr}")
+        self.assertNotIn("old.scope", actions)
 
     def test_startup_prunes_scope_registry_to_live_units(self):
         state = Path(self.environment["ZESU_GUARD_STATE"])

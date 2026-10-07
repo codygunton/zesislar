@@ -1,0 +1,281 @@
+{
+  "root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "health_ok": true,
+  "compile_successes": 10,
+  "exact_module_m_verifications": 10,
+  "assumptions": [],
+  "certificates": [
+    {
+      "id": "block_0x800d69d8",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d69d8",
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "source_sha256": "56adce48495be1f9edcbcf8743e8a65b009abb201fd53c04a2818cebdb05bfc1",
+      "problem_sha256": "52f7444b83a363ef2cc39e141d5019e7be40097dd1ca1d4c2364cc21ff7ac2f2",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69d8/primary/Boundary.vo",
+        "sha256": "63588572e235ea4d73f872f6321179446214a83082aa26ca1585f71db121eb36"
+      },
+      "object_after_sha256": "63588572e235ea4d73f872f6321179446214a83082aa26ca1585f71db121eb36",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d69d8/Boundary.vo",
+        "sha256": "63588572e235ea4d73f872f6321179446214a83082aa26ca1585f71db121eb36"
+      },
+      "copy_after_sha256": "63588572e235ea4d73f872f6321179446214a83082aa26ca1585f71db121eb36",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "block_0x800d69e0",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d69e0",
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "source_sha256": "9975475b2ab22139f842c1b4e079bd97ee0fea2a455bf0902e8171050953c90a",
+      "problem_sha256": "a9b26ff5fc844098c474a17cd97be5238cccab4ea6e66b6473201904bd02b408",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d69e0/primary/Boundary.vo",
+        "sha256": "abf4ae0058ce1956b2e2575721146266d606f1964493af9cd67770c020ef22aa"
+      },
+      "object_after_sha256": "abf4ae0058ce1956b2e2575721146266d606f1964493af9cd67770c020ef22aa",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d69e0/Boundary.vo",
+        "sha256": "abf4ae0058ce1956b2e2575721146266d606f1964493af9cd67770c020ef22aa"
+      },
+      "copy_after_sha256": "abf4ae0058ce1956b2e2575721146266d606f1964493af9cd67770c020ef22aa",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "block_0x800d6a00",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d6a00",
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "source_sha256": "b6460e8af20fde9c157287029e0e3fbc141a30c47079d27affa9b0172da0e9b2",
+      "problem_sha256": "db28b6ecdab2a8a1161817bbd76d6ba6fb8f177e2bfe08748b9e8aa35b0730d2",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a00/primary/Boundary.vo",
+        "sha256": "2bdc5e816175dba5cf60125dcdbb931ce4d2923c0cf37ad339a3e12e0a353e27"
+      },
+      "object_after_sha256": "2bdc5e816175dba5cf60125dcdbb931ce4d2923c0cf37ad339a3e12e0a353e27",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d6a00/Boundary.vo",
+        "sha256": "2bdc5e816175dba5cf60125dcdbb931ce4d2923c0cf37ad339a3e12e0a353e27"
+      },
+      "copy_after_sha256": "2bdc5e816175dba5cf60125dcdbb931ce4d2923c0cf37ad339a3e12e0a353e27",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "block_0x800d6a14",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d6a14",
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "source_sha256": "e927c539e65685f2777c9b4733de88b1a2832c003e4ade095d5ca71698b76c16",
+      "problem_sha256": "f7e2ed99effc2b6dc498d4255aa6ac5d125e3d8b49ed3e167ac523592ab84c36",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a14/primary/Boundary.vo",
+        "sha256": "5a7a03713282c98b59c0cd515f4887195a864876789bfb98d1440f0223e8f544"
+      },
+      "object_after_sha256": "5a7a03713282c98b59c0cd515f4887195a864876789bfb98d1440f0223e8f544",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d6a14/Boundary.vo",
+        "sha256": "5a7a03713282c98b59c0cd515f4887195a864876789bfb98d1440f0223e8f544"
+      },
+      "copy_after_sha256": "5a7a03713282c98b59c0cd515f4887195a864876789bfb98d1440f0223e8f544",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "block_0x800d6a64",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d6a64",
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "source_sha256": "807ee5e7f3460f25c57fb99152f4187008432628b9b63d2c77ef9f644da07ccb",
+      "problem_sha256": "0d293a4a82de46a0a1d8a5eed3c6e28badd9ad0e459f2591f7a3cd3979bb0d80",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a64/primary/Boundary.vo",
+        "sha256": "4d0677750c1e88e1cba48f4ae35d93e44d5c521f0ff88fea1dbd7b7de7806736"
+      },
+      "object_after_sha256": "4d0677750c1e88e1cba48f4ae35d93e44d5c521f0ff88fea1dbd7b7de7806736",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d6a64/Boundary.vo",
+        "sha256": "4d0677750c1e88e1cba48f4ae35d93e44d5c521f0ff88fea1dbd7b7de7806736"
+      },
+      "copy_after_sha256": "4d0677750c1e88e1cba48f4ae35d93e44d5c521f0ff88fea1dbd7b7de7806736",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d6a6c",
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "source_sha256": "c54968155be26a1d1b72fc2653970922fb007793c7c6d549dae03fbc4cd4ebb1",
+      "problem_sha256": "7ec92e3a9565e5fdaa1c5b3a2bed90fd8fb5e59469af52d203cd4d76cdd68369",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6a6c/primary/Boundary.vo",
+        "sha256": "3f485be85aff9f7c314c7fc52b6898c3e3c03ef1dc9b39b550fc3dfdb71b3a23"
+      },
+      "object_after_sha256": "3f485be85aff9f7c314c7fc52b6898c3e3c03ef1dc9b39b550fc3dfdb71b3a23",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d6a6c/Boundary.vo",
+        "sha256": "3f485be85aff9f7c314c7fc52b6898c3e3c03ef1dc9b39b550fc3dfdb71b3a23"
+      },
+      "copy_after_sha256": "3f485be85aff9f7c314c7fc52b6898c3e3c03ef1dc9b39b550fc3dfdb71b3a23",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "kind": "native",
+      "lemma": "DesignedBoundary_800d6ab4",
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "source_sha256": "6eb467076cd4fd0ff66fab311173030141f703090ae57b9460d64ffed735f463",
+      "problem_sha256": "16d3d61eb895ee27f7c3ee59874f48d8a161381b24bbf1eede70ae0a7589d729",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/block_0x800d6ab4/primary/Boundary.vo",
+        "sha256": "9a72b896612f2c7420344f20dd6239faab53e50eff9e55b1b4cbd68d91c866f7"
+      },
+      "object_after_sha256": "9a72b896612f2c7420344f20dd6239faab53e50eff9e55b1b4cbd68d91c866f7",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/block_0x800d6ab4/Boundary.vo",
+        "sha256": "9a72b896612f2c7420344f20dd6239faab53e50eff9e55b1b4cbd68d91c866f7"
+      },
+      "copy_after_sha256": "9a72b896612f2c7420344f20dd6239faab53e50eff9e55b1b4cbd68d91c866f7",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "kind": "adapter",
+      "lemma": "decodeItemJoin6a24From6a14_automatic",
+      "statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "source_sha256": "ed99e079cd8409d37731543666aa769f287c51304d9604c1400bd46d8361635b",
+      "problem_sha256": "6a6fc808f5717c61c4c66507d9cb1e316e4752d72a869d49e3b632cd2ea2c994",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6a24From6a14/primary/Boundary.vo",
+        "sha256": "5b15cf6d8067617e3c68aaf1d726ab24100614ec739ae83c5ba09200a9d9f259"
+      },
+      "object_after_sha256": "5b15cf6d8067617e3c68aaf1d726ab24100614ec739ae83c5ba09200a9d9f259",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/decodeItemJoin6a24From6a14/Boundary.vo",
+        "sha256": "5b15cf6d8067617e3c68aaf1d726ab24100614ec739ae83c5ba09200a9d9f259"
+      },
+      "copy_after_sha256": "5b15cf6d8067617e3c68aaf1d726ab24100614ec739ae83c5ba09200a9d9f259",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "kind": "adapter",
+      "lemma": "decodeItemJoin6ac4From6ab4_automatic",
+      "statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "source_sha256": "26e54fdc1b9b34dfff8534db6c9a4be6a17fb37274b91d8749f06fd242b5f71c",
+      "problem_sha256": "7655dd320d2bfda97456c8e9d1e0836ff7be939511915a1de0f33b586f116358",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ac4From6ab4/primary/Boundary.vo",
+        "sha256": "1d9547795e8fb691ab77fa49c443aad775ed4d5aa54afbf1210d5138423ffc82"
+      },
+      "object_after_sha256": "1d9547795e8fb691ab77fa49c443aad775ed4d5aa54afbf1210d5138423ffc82",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/decodeItemJoin6ac4From6ab4/Boundary.vo",
+        "sha256": "1d9547795e8fb691ab77fa49c443aad775ed4d5aa54afbf1210d5138423ffc82"
+      },
+      "copy_after_sha256": "1d9547795e8fb691ab77fa49c443aad775ed4d5aa54afbf1210d5138423ffc82",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "kind": "adapter",
+      "lemma": "decodeItemJoin6ae0From69e0_automatic",
+      "statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "source_sha256": "dc8be8a232dc3f6aae6e4c55721a6a76cd2c03cee92ab4def44a491fe55bdd62",
+      "problem_sha256": "91b9051bc2486c1c9cb693b4cd9b320de9d33915cb1136b44c4eaaf48a669851",
+      "object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-pass-001/decodeItemJoin6ae0From69e0/primary/Boundary.vo",
+        "sha256": "d6d86f3811ac7cac74ad3bfa801854c33959c8f87ea8a8ccbb332d998ee4e0ab"
+      },
+      "object_after_sha256": "d6d86f3811ac7cac74ad3bfa801854c33959c8f87ea8a8ccbb332d998ee4e0ab",
+      "imported_object_copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-certificate-standalone-001/decodeItemJoin6ae0From69e0/Boundary.vo",
+        "sha256": "d6d86f3811ac7cac74ad3bfa801854c33959c8f87ea8a8ccbb332d998ee4e0ab"
+      },
+      "copy_after_sha256": "d6d86f3811ac7cac74ad3bfa801854c33959c8f87ea8a8ccbb332d998ee4e0ab",
+      "compile_success": true,
+      "verify_success": true,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+      "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855"
+    }
+  ],
+  "result_sha256": "818d01b24f501237ced363d5ff6f2ba7cf5777a547258d11c6e0ac4a433313cb",
+  "log_path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-171707-child-c-approved-rule34-s35-certificates001.log",
+  "log_sha256": "13c0eec958f18b70bee1e80d20ffbb7b9fe05cb0528162a958b4c7bd8e0feddd",
+  "seal_sha256": "1e370e027d188716954b720c9070459f9fb2af08263a6d03ef1c19de65aa5532",
+  "all_sealed_inputs_unchanged": true,
+  "normal_transport_close": true,
+  "owned_live_processes": [],
+  "native_replays": 0,
+  "shell_fallback": false,
+  "interactive_limitation": "Not repeated. The prior afa Pet mapping limitation remains preserved separately.",
+  "guard_fixture_audit": {
+    "result_sha256": "bc1b38e7be25b6de406198cf92311ef1a9d97feb92d3cb9a5efc3380ef0d3756",
+    "log_sha256": "c915cf65141b1653b670727b1891a59e326906e89fb204b3f45d0d1abdc3cf46",
+    "source_sha256": "ed86318104adbce8d84de820d3cc48461da3aee6a81c963335a06f9f7f7b7e03",
+    "statement": "exists P : Prop, P -> True",
+    "statement_body_equal_to_preserved_guard": true,
+    "assumptions": [],
+    "verification": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "final_goal_rendering": "No goals remaining.",
+    "proof_finished": true,
+    "auxiliary_groups": "Not exposed separately by this response.",
+    "transport_closed_normally": true,
+    "applications_sources_exact": true,
+    "entry_rows": 24,
+    "scope_preflights_completed": 0,
+    "primary_count": 0
+  },
+  "failed_MCP001_preserved": true
+}

@@ -1,0 +1,28 @@
+{
+  "root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "exit": 0,
+  "elapsed_seconds": 2225.1792550268583,
+  "changed_inputs": [],
+  "seal_sha256": "08b16d37d88636118b9b7459245f0881a691579b5462874bf9818031e99bb8cc",
+  "FAST_JOBS": 6,
+  "AGENT_JOBS": 6,
+  "gate_class": "child",
+  "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/agents/worker2-approved-rule34-s35-gate",
+  "result_sha256": "17ab84ad66aee1bfcfd12bd383ce5d03cd65b876adffb41d6820f19777e5efe7",
+  "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261007-172030-child-c-approved-rule34-s35-check-fast001.log",
+  "log_sha256": "89bc6c899bb70cbf803031f2f91e4232df1c04c5a8d308ccde092f165e55f6da",
+  "sealed_file_count": 18094,
+  "all_input_hashes_verified": true,
+  "test_summaries": [
+    "Ran 558 tests in 85.030s",
+    "OK (skipped=11)",
+    "Ran 17 tests in 0.135s",
+    "OK",
+    "Ran 4 tests in 0.000s",
+    "OK",
+    "Ran 2 tests in 0.001s",
+    "OK",
+    "Ran 71 tests in 0.038s",
+    "OK"
+  ]
+}

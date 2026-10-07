@@ -231,7 +231,7 @@ def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_secon
     compiled = bool(done.returncode == 0 and compiler and compiler['exit_code'] == 0 and
                     compiler['limit'] is None and compiler['compiled_object'])
     outcome = ('native-qed-certificate' if compiled and assumption['verified'] else
-               'automation-search-failure' if (compiler and compiler['limit']) or
+               'limit-stop' if (compiler and compiler['limit']) or
                    'proof limit exceeded:' in output else
                'native-residual' if active or ('COQC-PRIMARY-BEGIN' in output and
                    'Attempt to save an incomplete proof' in output) else 'coqc-primary-unavailable')

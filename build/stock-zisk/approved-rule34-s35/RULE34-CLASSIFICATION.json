@@ -1,0 +1,49 @@
+{
+  "external_report": "/home/cody/zesislar/.worktrees/worker1-spec-b/build/stock-zisk/spec-b-rule34-a4-classification/CLASSIFICATION.json",
+  "external_report_sha256": "de2d851c758dcba01957f8dd53b6ae5dece092244f21d6c31052603d924912b9",
+  "measurement_root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "classification_spec_root": "246a0fde8c84ed338a8b4f79e2947930823fe58e",
+  "native_records": 70,
+  "counts": {
+    "rule gap": 27,
+    "spatial witness gap": 2,
+    "existing pure fact": 21,
+    "source and spatial gap": 2,
+    "witness gap": 18
+  },
+  "capture_hashes_verified": true,
+  "69a4": {
+    "entry_pc": "0x800d69a4",
+    "index": 1,
+    "classification": "existing pure fact",
+    "reason": "H1/H2 and H9 imply the nonempty prefix bound. The existing BranchGuard registration requires the unreduced Z_to_bv constant form. S64 supplies its bridge as a separate pure fact. The bound hint does not request that bridge through SimplAnd. Direct matching of its guard premise differs from the literal captured guard.",
+    "helpers": [
+      "decodeItemNativeMaskNonempty",
+      "decodeItemNonemptyStringPrefixGuard"
+    ],
+    "required_premises": [
+      "H1",
+      "H2",
+      "H9"
+    ],
+    "exact_conclusion": "(129 \u2264 bv_unsigned inputPrefix)",
+    "capture": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule34-s35/_build/approved-rule34-review/captures/block_0x800d69a4/active-001.json",
+      "sha256": "0b47023bf28b9d7e93d362a0437fb2daa5e9f00b2d9b543147bb9bf698646838"
+    },
+    "raw_goal_sha256": "ce756572ec401b483fd77db2d0eab4d00f46f5798c3b4346ce781f5815faa451",
+    "registration_consumption": "unobserved",
+    "current_matching": "not measured"
+  },
+  "classification": "The literal128%bv guard needs the S64 bridge to the Z_to_bv64 128 registration. The bound hint does not request that bridge through SimplAnd. This is a registration/scheduling gap.",
+  "limits": [
+    "Exact captured terms and contexts remain separate from native registration matching.",
+    "Earlier introductions cannot prove incompatible committed witnesses.",
+    "The evidence gate was pending at dispatch. This audit does not release it.",
+    "The hand root bridge requires nonzero input. Seven native closures do not prove full Level 1 closure.",
+    "The specification root differs from the measurement root. This classification does not prove native consumption or isolated rule34 cost."
+  ],
+  "archive_timing": "This reference arrived after the immutable S35 archive completed. The archive remains unchanged.",
+  "native_replays": 0,
+  "production_edits": 0
+}
