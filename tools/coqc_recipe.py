@@ -1,5 +1,6 @@
 """Preserve a compiler recipe across cached Dune builds."""
 
+import hashlib
 import json
 import tempfile
 from pathlib import Path
@@ -71,3 +72,25 @@ def remember_recipe(build_dir: Path):
             pending.replace(cache)
         return recipe
     return cached
+
+
+def snapshot_recipe(build_dir: Path, destination: Path):
+    """Seal one preflight recipe without replacing an existing snapshot."""
+    destination = Path(destination)
+    if destination.exists():
+        raise ValueError("An existing recipe snapshot must be reused")
+    recipe = remember_recipe(Path(build_dir))
+    if recipe is None:
+        raise ValueError("A compiler recipe is unavailable")
+    data = (json.dumps(recipe, sort_keys=True) + "\n").encode()
+    with destination.open("xb") as output:
+        output.write(data)
+    return hashlib.sha256(data).hexdigest()
+
+
+def read_snapshot(path: Path, expected_sha256: str):
+    """Check immutable bytes without consulting the mutable Dune trace."""
+    data = Path(path).read_bytes()
+    if hashlib.sha256(data).hexdigest() != expected_sha256:
+        raise ValueError("The compiler recipe snapshot changed")
+    return json.loads(data)

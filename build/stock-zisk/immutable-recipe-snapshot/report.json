@@ -1,0 +1,78 @@
+{
+  "item": "immutable-recipe-snapshot",
+  "root": "fc56babab2e6266198b5fb8059366546f6d07eec",
+  "observed_defect": {
+    "path": "worker2-child-i29-698c/_build/agents/i29-qualified-dune/coqc_recipe.json",
+    "recorded_sha256": "ee312684f648bb06e67bdb4c115ada2c9215b66e8f4e3d69601aa72a33bf3074",
+    "later_sha256": "5fbefa5c5ea12277bfa4b9ef3d2afc54121022d8042a95d768649cccd3933fb9",
+    "difference": "Only the discarded .v argument changed after a later Dune gate trace. Effective compiler flags and working directory remained equal.",
+    "source": "C supplied the recovered audit. No primary was repeated."
+  },
+  "interface": {
+    "preflight": "snapshot_recipe(build_dir, destination) returns SHA256 and refuses an existing destination.",
+    "measurement": "Set ZESU_SCRATCH_RECIPE and ZESU_SCRATCH_RECIPE_SHA256 together. coqc_scratch checks the bytes before compiler entry.",
+    "no_refresh": "Snapshot mode never calls remember_recipe or reads the mutable trace.",
+    "default": "Without snapshot fields, the scratch helper retains remember_recipe behavior."
+  },
+  "tests": {
+    "count": 12,
+    "cases": [
+      "A later source-only cache rewrite leaves the snapshot unchanged.",
+      "A later flag rewrite leaves the snapshot unchanged.",
+      "Snapshot tampering stops before compiler entry.",
+      "Missing recipe and snapshot are rejected.",
+      "An existing snapshot is not replaced.",
+      "A partial path/SHA pair stops before compiler entry.",
+      "Actual scratch invocation retains frozen flags without a trace and does not refresh the cache.",
+      "Existing nonmeasurement recipe tests remain green."
+    ],
+    "native_proofs": 0
+  },
+  "limits": [
+    "The snapshot binds compiler configuration only. It does not certify dependency objects or proof closure.",
+    "Current frozen fc56 and C/B harness sources remain unchanged. This repair is not silently inserted into their bindings."
+  ],
+  "sources": {
+    "tools/coqc_recipe.py": "2422db33a9d2ece821f2d6b9a7af90a1831949e9c9eec515418f51a2ad85c754",
+    "tools/coqc_scratch.sh": "38dd7326c0047ed032de312092fa410116342504f405b5ecb1c7c095063a6caf",
+    "tools/test_coqc_recipe.py": "2dd7376d78325eedd0a7722f23d06b3f0023367875fc4872cfe608626a964909",
+    "tools/test_residual.py": "f91fd5f324d8f49939f82ec7a21f03c62e32169bcd4f65f9fdf8907d798aa715"
+  },
+  "gate": {
+    "status": "passed",
+    "jobs": 6,
+    "wall_s": 63,
+    "log_sha256": "a6dc7219ed602a42bc98537cf889466f83de16a7672d19f04f4bc0cdccac535c",
+    "archive": "/home/cody/zesislar-archive/sha256/a6/a6dc7219ed602a42bc98537cf889466f83de16a7672d19f04f4bc0cdccac535c"
+  },
+  "failures": [
+    {
+      "gate_wall_s": 55,
+      "jobs": 6,
+      "test": "test_residual.ScratchCompilerGuard.test_wait_precedes_compiler_and_failed_wait_stops_it",
+      "error": "The temporary stub omitted read_snapshot.",
+      "repair": "The fixture now copies the actual coqc_recipe.py and writes its real coqc_recipe.json cache.",
+      "focused_result": "The affected test passes. Guard ordering assertions remain unchanged.",
+      "log_sha256": "46436aacfee405a82225c098b41ae8900f37b602a79b6dfeec967cbb67aa43ea",
+      "archive": "/home/cody/zesislar-archive/sha256/46/46436aacfee405a82225c098b41ae8900f37b602a79b6dfeec967cbb67aa43ea"
+    }
+  ],
+  "accounting": {
+    "start": "2026-10-07T00:37:42.866Z",
+    "end": "2026-10-07T00:43:42.028646Z",
+    "child_min": 5.986044,
+    "tokens_child": 3341989,
+    "token_samples": [
+      [
+        "2026-10-07T00:37:39.645Z",
+        450573047
+      ],
+      [
+        "2026-10-07T00:43:27.866Z",
+        453915036
+      ]
+    ],
+    "parent_min": "unavailable",
+    "tokens_parent": "unavailable"
+  }
+}
