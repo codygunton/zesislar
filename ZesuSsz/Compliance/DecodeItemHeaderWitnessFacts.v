@@ -347,3 +347,56 @@ Print Assumptions decodeItemCompletedFoldRejectGuard.
   end : typeclass_instances.
 
 Print Assumptions decodeItemInputPointerCastWitnessFacts.
+
+Lemma decodeItemCompletedFoldFitsContradiction args n payloadStart lengthBytes :
+  decodeItemByteFoldFacts args n n payloadStart lengthBytes ->
+  decodeItemFoldLengthFits args n lengthBytes = false ->
+  ~ bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) <
+    bv_signed (bv_zero_extend 128
+      (Z_to_bv 64 (bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1))) ->
+  False.
+Proof.
+  intros Hfold Hrejected Hguard.
+  pose proof (decodeItemCompletedFoldFitsGuard args n payloadStart lengthBytes
+    Hfold Hguard) as Hfits. congruence.
+Qed.
+
+Lemma decodeItemCompletedFoldAlternateFitsContradiction args n payloadStart lengthBytes :
+  decodeItemByteFoldFacts args n n payloadStart lengthBytes ->
+  decodeItemFoldLengthFits args n lengthBytes = false ->
+  bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) >=
+    bv_signed (bv_zero_extend 128
+      (Z_to_bv 64 (bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1))) ->
+  False.
+Proof.
+  intros Hfold Hrejected Hguard.
+  apply (decodeItemCompletedFoldFitsContradiction args n payloadStart lengthBytes
+    Hfold Hrejected). lia.
+Qed.
+
+#[export] Hint Extern 1 (SimplAnd ?P True) =>
+  match goal with
+  | Hfold : decodeItemByteFoldFacts ?args ?n ?n ?payloadStart ?bytes,
+    Hrejected : decodeItemFoldLengthFits ?args ?n ?bytes = false,
+    Hguard : ~ bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength ?args))) <
+      bv_signed (bv_zero_extend 128
+        (Z_to_bv 64 (bigEndian (take (Z.to_nat ?n) ?bytes)) + Z_to_bv 64 (?n + 1))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exfalso; exact (decodeItemCompletedFoldFitsContradiction
+      args n payloadStart bytes Hfold Hrejected Hguard) | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1 (SimplAnd ?P True) =>
+  match goal with
+  | Hfold : decodeItemByteFoldFacts ?args ?n ?n ?payloadStart ?bytes,
+    Hrejected : decodeItemFoldLengthFits ?args ?n ?bytes = false,
+    Hguard : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength ?args))) >=
+      bv_signed (bv_zero_extend 128
+        (Z_to_bv 64 (bigEndian (take (Z.to_nat ?n) ?bytes)) + Z_to_bv 64 (?n + 1))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; exfalso; exact (decodeItemCompletedFoldAlternateFitsContradiction
+      args n payloadStart bytes Hfold Hrejected Hguard) | intros _; exact I]
+  end : typeclass_instances.
+
+Print Assumptions decodeItemCompletedFoldFitsContradiction.
+Print Assumptions decodeItemCompletedFoldAlternateFitsContradiction.
