@@ -7084,8 +7084,8 @@
   "secret_audit": {
     "known_value_and_credential_patterns_checked": true,
     "matches": 0,
-    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-gates/secret-audit.json",
-    "sha256": "b26c73cee9507b5d5ea624db3f50ef90b47f213aa8fcf4db68443fb815f4c4aa",
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/build/stock-zisk/rule35-target-registration/secret-audit.json",
+    "sha256": "4de55503fab8e9625dbcee3ab422779dd67f47d2f7f57fa67f7541da31e8242e",
     "trace_archived": false
   },
   "standalone_confirmation": {
